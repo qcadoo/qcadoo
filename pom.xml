@@ -28,7 +28,7 @@
 		<hibernate.version>3.6.1.Final</hibernate.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<profile.name>default</profile.name>
-		<sonar.host.url>http://localhost:9000/sonar</sonar.host.url>
+		<sonar.host.url>http://127.0.0.1:9000/sonar</sonar.host.url>
 	</properties>
 
 	<dependencyManagement>
@@ -457,27 +457,15 @@
 		</repository>
 	</repositories>
 
-	<pluginRepositories>
-		<pluginRepository>
-			<id>qcadoo-repository</id>
-			<url>http://nexus.qcadoo.org/content/groups/public</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</pluginRepository>
-	</pluginRepositories>
-
 	<distributionManagement>
 		<repository>
 			<id>qcadoo-releases-repository</id>
-			<url>dav:http://http://nexus.qcadoo.org/content/repositories/releases</url>
+			<url>dav:http://nexus.qcadoo.org/content/repositories/releases</url>
 		</repository>
 		<snapshotRepository>
 			<id>qcadoo-snapshots-repository</id>
 			<url>dav:http://nexus.qcadoo.org/content/repositories/snapshots</url>
+			<uniqueVersion>false</uniqueVersion>
 		</snapshotRepository>
 	</distributionManagement>
 
