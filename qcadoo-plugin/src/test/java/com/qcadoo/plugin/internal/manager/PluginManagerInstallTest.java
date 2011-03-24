@@ -48,7 +48,6 @@ import org.springframework.core.io.Resource;
 import com.qcadoo.plugin.api.Plugin;
 import com.qcadoo.plugin.api.PluginAccessor;
 import com.qcadoo.plugin.api.PluginDependencyInformation;
-import com.qcadoo.plugin.api.PluginServerManager;
 import com.qcadoo.plugin.api.PluginState;
 import com.qcadoo.plugin.api.Version;
 import com.qcadoo.plugin.api.VersionOfDependency;
@@ -77,8 +76,6 @@ public class PluginManagerInstallTest {
 
     private final PluginFileManager pluginFileManager = mock(PluginFileManager.class);
 
-    private final PluginServerManager pluginServerManager = mock(PluginServerManager.class);
-
     private final PluginDescriptorParser pluginDescriptorParser = mock(PluginDescriptorParser.class);
 
     private final PluginDescriptorResolver pluginDescriptorResolver = mock(PluginDescriptorResolver.class);
@@ -105,7 +102,6 @@ public class PluginManagerInstallTest {
         pluginManager.setPluginDao(pluginDao);
         pluginManager.setPluginDependencyManager(pluginDependencyManager);
         pluginManager.setPluginFileManager(pluginFileManager);
-        pluginManager.setPluginServerManager(pluginServerManager);
         pluginManager.setPluginDescriptorParser(pluginDescriptorParser);
         pluginManager.setPluginDescriptorResolver(pluginDescriptorResolver);
     }

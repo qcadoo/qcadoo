@@ -97,8 +97,8 @@ public final class ValidationService {
         }
     }
 
-    private Object parseAndValidateValue(final InternalDataDefinition dataDefinition,
-            final InternalFieldDefinition fieldDefinition, final Object value, final Entity validatedEntity) {
+    private Object parseAndValidateValue(final InternalFieldDefinition fieldDefinition, final Object value,
+            final Entity validatedEntity) {
         Object fieldValue = null;
         if (value != null) {
             fieldValue = fieldDefinition.getType().toObject(fieldDefinition, value, validatedEntity);
@@ -147,7 +147,7 @@ public final class ValidationService {
             referencedEntity = null;
         }
 
-        return parseAndValidateValue(dataDefinition, fieldDefinition, referencedEntity, validatedEntity);
+        return parseAndValidateValue(fieldDefinition, referencedEntity, validatedEntity);
     }
 
     private Object parseAndValidateField(final InternalDataDefinition dataDefinition,
@@ -159,7 +159,7 @@ public final class ValidationService {
         } else if (fieldDefinition.getType() instanceof TreeType) {
             return value;
         } else {
-            return parseAndValidateValue(dataDefinition, fieldDefinition, trimAndNullIfEmpty(value), validatedEntity);
+            return parseAndValidateValue(fieldDefinition, trimAndNullIfEmpty(value), validatedEntity);
         }
     }
 

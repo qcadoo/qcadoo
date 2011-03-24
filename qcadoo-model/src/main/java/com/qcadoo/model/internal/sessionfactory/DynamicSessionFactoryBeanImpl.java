@@ -40,7 +40,7 @@ public final class DynamicSessionFactoryBeanImpl implements DynamicSessionFactor
     private final LocalSessionFactoryBean factoryBean = new LocalSessionFactoryBean();
 
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet() {
         // ignore
     }
 
@@ -61,7 +61,7 @@ public final class DynamicSessionFactoryBeanImpl implements DynamicSessionFactor
     }
 
     @Override
-    public SessionFactory getObject() throws Exception {
+    public SessionFactory getObject() {
         return new DynamicSessionFactory(factoryBean);
     }
 
@@ -76,7 +76,7 @@ public final class DynamicSessionFactoryBeanImpl implements DynamicSessionFactor
     }
 
     @Override
-    public void destroy() throws Exception {
+    public void destroy() {
         factoryBean.destroy();
     }
 
