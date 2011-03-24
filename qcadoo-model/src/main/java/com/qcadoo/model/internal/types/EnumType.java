@@ -30,9 +30,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.FieldDefinition;
-import com.qcadoo.model.api.localization.TranslationService;
 import com.qcadoo.model.api.types.EnumeratedType;
 
 public final class EnumType implements EnumeratedType {

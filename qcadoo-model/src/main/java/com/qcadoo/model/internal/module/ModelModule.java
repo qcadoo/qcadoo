@@ -46,7 +46,7 @@ public class ModelModule extends Module {
 
     @Override
     public void init(final PluginState state) {
-        if (!PluginState.ENABLED.equals(state)) {
+        if (!PluginState.ENABLED.equals(state) && !PluginState.ENABLING.equals(state)) {
             disable();
         }
     }

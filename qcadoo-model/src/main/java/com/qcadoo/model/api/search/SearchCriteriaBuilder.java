@@ -24,6 +24,7 @@
 
 package com.qcadoo.model.api.search;
 
+import com.qcadoo.model.api.Entity;
 
 /**
  * Object represents the criteria builer for finding entities.
@@ -42,6 +43,14 @@ public interface SearchCriteriaBuilder {
      * @see com.qcadoo.model.internal.api.DataAccessService#find(SearchCriteria)
      */
     SearchResult list();
+
+    /**
+     * Find unique entity.
+     * 
+     * @return entity
+     * @see com.qcadoo.model.internal.api.DataAccessService#find(SearchCriteria)
+     */
+    Entity uniqueResult();
 
     /**
      * Add the restriction.

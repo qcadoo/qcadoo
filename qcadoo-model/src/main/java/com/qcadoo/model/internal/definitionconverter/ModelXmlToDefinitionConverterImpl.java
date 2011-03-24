@@ -52,10 +52,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.DictionaryService;
 import com.qcadoo.model.api.FieldDefinition;
-import com.qcadoo.model.api.localization.TranslationService;
 import com.qcadoo.model.api.security.PasswordEncoder;
 import com.qcadoo.model.api.types.FieldType;
 import com.qcadoo.model.api.types.HasManyType;

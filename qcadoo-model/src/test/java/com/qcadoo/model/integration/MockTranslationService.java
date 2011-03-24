@@ -24,15 +24,27 @@
 
 package com.qcadoo.model.integration;
 
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
-import com.qcadoo.model.api.localization.TranslationService;
+import com.qcadoo.localization.api.TranslationService;
 
 public class MockTranslationService implements TranslationService {
 
     @Override
     public String translate(final String code, final Locale locale, final Object... args) {
         return code;
+    }
+
+    @Override
+    public Map<String, String> getMessagesForPrefix(final String prefix, final Locale locale) {
+        return null;
+    }
+
+    @Override
+    public String translate(final List<String> messageCodes, final Locale locale, final Object... args) {
+        return messageCodes.isEmpty() ? null : messageCodes.get(0);
     }
 
 }

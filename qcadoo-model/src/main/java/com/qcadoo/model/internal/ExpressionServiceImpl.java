@@ -46,10 +46,10 @@ import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.stereotype.Component;
 
+import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.ExpressionService;
 import com.qcadoo.model.api.FieldDefinition;
-import com.qcadoo.model.api.localization.TranslationService;
 import com.qcadoo.model.api.types.BelongsToType;
 import com.qcadoo.model.api.types.FieldType;
 

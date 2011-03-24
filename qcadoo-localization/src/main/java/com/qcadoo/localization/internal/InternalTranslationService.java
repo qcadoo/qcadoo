@@ -1,8 +1,8 @@
 /**
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
- * Project: Qcadoo Framework
- * Version: 0.4.0
+ * Project: Qcadoo MES
+ * Version: 0.3.0
  *
  * This file is part of Qcadoo.
  *
@@ -22,12 +22,18 @@
  * ***************************************************************************
  */
 
-package com.qcadoo.model.api.localization;
+package com.qcadoo.localization.internal;
 
-import java.util.Locale;
+import com.qcadoo.localization.api.TranslationService;
 
-public interface TranslationService {
+/**
+ * Service for getting translations.
+ * 
+ * @apiviz.uses com.qcadoo.mes.model.DataDefinition
+ * @apiviz.uses com.qcadoo.mes.model.validators.ErrorMessage
+ */
+public interface InternalTranslationService extends TranslationService {
 
-    String translate(String code, Locale locale, Object... args);
+    void prepareMessagesForPrefix(String prefix);
 
 }

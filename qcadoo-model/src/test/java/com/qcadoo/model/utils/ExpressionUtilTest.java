@@ -38,11 +38,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;
+import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.ExpressionService;
 import com.qcadoo.model.api.FieldDefinition;
-import com.qcadoo.model.api.localization.TranslationService;
 import com.qcadoo.model.api.types.BelongsToType;
 import com.qcadoo.model.internal.DefaultEntity;
 import com.qcadoo.model.internal.ExpressionServiceImpl;

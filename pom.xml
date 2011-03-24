@@ -9,6 +9,7 @@
 
 	<modules>
 		<module>qcadoo-plugin</module>
+		<module>qcadoo-localization</module>
 		<module>qcadoo-model</module>
 	</modules>
 

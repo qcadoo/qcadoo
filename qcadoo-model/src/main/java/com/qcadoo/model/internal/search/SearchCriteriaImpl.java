@@ -34,6 +34,7 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import com.qcadoo.model.api.DataDefinition;
+import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.search.Restriction;
 import com.qcadoo.model.api.search.SearchCriteria;
 import com.qcadoo.model.api.search.SearchCriteriaBuilder;
@@ -101,6 +102,19 @@ public final class SearchCriteriaImpl implements SearchCriteria, SearchCriteriaB
     @Override
     public SearchResult list() {
         return ((InternalDataDefinition) dataDefinition).find(this);
+    }
+
+    @Override
+    public Entity uniqueResult() {
+        SearchResult results = list();
+
+        if (results.getEntities().isEmpty()) {
+            return null;
+        } else if (results.getEntities().size() == 1) {
+            return results.getEntities().get(0);
+        } else {
+            throw new IllegalStateException("Too many results, expected one, found " + results.getEntities().size());
+        }
     }
 
     @Override
