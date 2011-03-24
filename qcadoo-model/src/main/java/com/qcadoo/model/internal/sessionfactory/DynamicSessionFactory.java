@@ -51,7 +51,7 @@ public class DynamicSessionFactory implements SessionFactory {
 
     private final FactoryBean<SessionFactory> sessionFactoryBean;
 
-    private SessionFactory sessionFactory;
+    private volatile SessionFactory sessionFactory;
 
     public DynamicSessionFactory(final FactoryBean<SessionFactory> sessionFactoryBean) {
         this.sessionFactoryBean = sessionFactoryBean;
@@ -59,7 +59,7 @@ public class DynamicSessionFactory implements SessionFactory {
 
     private SessionFactory getSessionFactory() {
         if (sessionFactory == null) {
-            synchronized (this) {
+            synchronized (DynamicSessionFactory.class) {
                 if (sessionFactory == null) {
                     try {
                         sessionFactory = sessionFactoryBean.getObject();
