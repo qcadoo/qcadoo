@@ -1,8 +1,8 @@
 /**
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
- * Project: Qcadoo Framework
- * Version: 0.4.0
+ * Project: Qcadoo MES
+ * Version: 0.3.0
  *
  * This file is part of Qcadoo.
  *
@@ -22,13 +22,15 @@
  * ***************************************************************************
  */
 
-package com.qcadoo.model.api.security;
+package com.qcadoo.security.api;
 
+/**
+ * Service for getting current user.
+ */
+public interface SecurityService {
 
-public interface PasswordEncoder {
+    String getCurrentUserName();
 
-    String encodePassword(String rawPass, Object salt);
-
-    boolean isPasswordValid(String encPass, String rawPass, Object salt);
+    Object getCurrentUserId();
 
 }

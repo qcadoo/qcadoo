@@ -37,11 +37,11 @@ import java.util.Date;
 import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.security.authentication.encoding.PasswordEncoder;
 
 import com.qcadoo.mes.internal.DataAccessTest;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.FieldDefinition;
-import com.qcadoo.model.api.security.PasswordEncoder;
 import com.qcadoo.model.api.types.FieldType;
 import com.qcadoo.model.internal.DefaultEntity;
 import com.qcadoo.model.internal.FieldDefinitionImpl;
