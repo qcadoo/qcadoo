@@ -38,6 +38,9 @@ import org.jdom.output.XMLOutputter;
 
 public class JdomUtils {
 
+    private JdomUtils() {
+    }
+
     @SuppressWarnings("unchecked")
     public static Element replaceNamespace(final Element element, final Namespace namespace) {
         element.setNamespace(namespace);

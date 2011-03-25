@@ -61,7 +61,7 @@ public final class ExpressionServiceImpl implements ExpressionService {
 
     private static final Logger LOG = LoggerFactory.getLogger(ExpressionServiceImpl.class);
 
-    public static ExpressionService instance = null;
+    private static ExpressionService instance = null;
 
     @Autowired
     private TranslationService translationService;

@@ -26,7 +26,7 @@ package com.qcadoo.plugin.internal.api;
 
 import com.qcadoo.plugin.internal.dependencymanager.PluginDependencyResult;
 
-public class PluginOperationResult {
+public final class PluginOperationResult {
 
     private final PluginOperationStatus status;
 
