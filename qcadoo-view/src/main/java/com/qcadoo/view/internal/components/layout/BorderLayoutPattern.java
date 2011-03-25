@@ -44,7 +44,7 @@ public class BorderLayoutPattern extends AbstractLayoutPattern {
 
     private static final String JSP_PATH = "containers/layout/borderLayout.jsp";
 
-    private static final String JS_PATH = "/js/crud/qcd/components/containers/layout/borderLayout.js";
+    private static final String JS_PATH = "/qcadooView/public/js/crud/qcd/components/containers/layout/borderLayout.js";
 
     private String label;
 

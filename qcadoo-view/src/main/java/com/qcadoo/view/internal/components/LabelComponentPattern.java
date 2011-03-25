@@ -44,7 +44,7 @@ public class LabelComponentPattern extends AbstractComponentPattern {
 
     private static final String JSP_PATH = "elements/label.jsp";
 
-    private static final String JS_PATH = "/js/crud/qcd/components/elements/label.js";
+    private static final String JS_PATH = "/qcadooView/public/js/crud/qcd/components/elements/label.js";
 
     private String labelStyle = "normal";
 

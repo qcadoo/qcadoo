@@ -51,12 +51,8 @@ public class UniversalResourceModule extends ResourceModule {
         }
     }
 
-    private boolean matchPattern(final String uri) {
-        return matcher.match(uriPattern, uri);
-    }
-
     private Resource getResourceFromURI(final String uri) {
-        if (matchPattern(uri)) {
+        if (matcher.match(uriPattern, uri)) {
             return applicationContext.getResource("classpath:" + uri);
         }
         return null;
@@ -74,8 +70,8 @@ public class UniversalResourceModule extends ResourceModule {
             return "image/png";
         } else {
             // TODO mina more types
+            return "image/" + ext;
         }
-        return "";
     }
 
     private static final int IO_BUFFER_SIZE = 4 * 1024;

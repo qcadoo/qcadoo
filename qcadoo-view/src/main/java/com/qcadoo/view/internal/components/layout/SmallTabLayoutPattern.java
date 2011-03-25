@@ -48,7 +48,7 @@ public class SmallTabLayoutPattern extends AbstractLayoutPattern {
 
     private static final String JSP_PATH = "containers/layout/smallTabLayout.jsp";
 
-    private static final String JS_PATH = "/js/crud/qcd/components/containers/layout/smallTabLayout.js";
+    private static final String JS_PATH = "/qcadooView/public/js/crud/qcd/components/containers/layout/smallTabLayout.js";
 
     // private String label;
     private List<SmallTabLayoutPatternTab> tabs = new LinkedList<SmallTabLayoutPatternTab>();

@@ -37,7 +37,7 @@ public class SeparatorLinePattern extends AbstractComponentPattern {
 
     private static final String JSP_PATH = "elements/separatorLine.jsp";
 
-    private static final String JS_PATH = "/js/crud/qcd/components/elements/separatorLine.js";
+    private static final String JS_PATH = "/qcadooView/public/js/crud/qcd/components/elements/separatorLine.js";
 
     public SeparatorLinePattern(final ComponentDefinition componentDefinition) {
         super(componentDefinition);

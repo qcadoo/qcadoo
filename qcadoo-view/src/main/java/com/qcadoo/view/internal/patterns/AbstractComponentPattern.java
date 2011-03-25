@@ -66,7 +66,7 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
 
     protected static final String JSP_PATH = "AbstractJspPath";
 
-    protected static final String JS_PATH = "AbstractJavaScriptPath";
+    protected static final String JS_PATH = null;
 
     protected static final String JS_OBJECT = "AbstractJavascriptObject";
 

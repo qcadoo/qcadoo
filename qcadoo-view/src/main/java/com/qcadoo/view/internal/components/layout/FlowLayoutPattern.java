@@ -38,7 +38,7 @@ public class FlowLayoutPattern extends AbstractLayoutPattern {
 
     private static final String JSP_PATH = "containers/layout/flowLayout.jsp";
 
-    private static final String JS_PATH = "/js/crud/qcd/components/containers/layout/flowLayout.js";
+    private static final String JS_PATH = "/qcadooView/public/js/crud/qcd/components/containers/layout/flowLayout.js";
 
     public FlowLayoutPattern(final ComponentDefinition componentDefinition) {
         super(componentDefinition);

@@ -38,7 +38,7 @@ public class VerticalLayoutPattern extends AbstractLayoutPattern {
 
     private static final String JSP_PATH = "containers/layout/verticalLayout.jsp";
 
-    private static final String JS_PATH = "/js/crud/qcd/components/containers/layout/verticalLayout.js";
+    private static final String JS_PATH = "/qcadooView/public/js/crud/qcd/components/containers/layout/verticalLayout.js";
 
     public VerticalLayoutPattern(final ComponentDefinition componentDefinition) {
         super(componentDefinition);

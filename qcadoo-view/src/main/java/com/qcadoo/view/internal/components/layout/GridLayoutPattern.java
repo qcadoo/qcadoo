@@ -45,7 +45,7 @@ public class GridLayoutPattern extends AbstractLayoutPattern {
 
     private static final String JSP_PATH = "containers/layout/gridLayout.jsp";
 
-    private static final String JS_PATH = "/js/crud/qcd/components/containers/layout/gridLayout.js";
+    private static final String JS_PATH = "/qcadooView/public/js/crud/qcd/components/containers/layout/gridLayout.js";
 
     private GridLayoutCell[][] cells;
 
