@@ -24,6 +24,7 @@
 
 package com.qcadoo.plugin.internal.dependencymanager;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -164,6 +165,24 @@ public final class DefaultPluginDependencyManager implements PluginDependencyMan
         return PluginDependencyResult.dependenciesToUpdate(dependentPlugins, dependenciesToDisableUnsatisfiedAfterUpdate);
     }
 
+    private static class DependencyComparator implements Comparator<Plugin>, Serializable {
+
+        /**
+         * 
+         */
+        private static final long serialVersionUID = 1821666538483568800L;
+
+        @Override
+        public int compare(final Plugin o1, final Plugin o2) {
+            if (o1.isSystemPlugin() && !o2.isSystemPlugin()) {
+                return -1;
+            } else if (!o1.isSystemPlugin() && o2.isSystemPlugin()) {
+                return 1;
+            }
+            return 0;
+        }
+    }
+
     @Override
     public List<Plugin> sortPluginsInDependencyOrder(final Collection<Plugin> plugins) {
 
@@ -187,17 +206,7 @@ public final class DefaultPluginDependencyManager implements PluginDependencyMan
 
         List<Plugin> sortedPlugins = convertIdentifiersToPlugins(initializedPlugins);
 
-        Collections.sort(sortedPlugins, new Comparator<Plugin>() {
-
-            public int compare(Plugin o1, Plugin o2) {
-                if (o1.isSystemPlugin() && !o2.isSystemPlugin()) {
-                    return -1;
-                } else if (!o1.isSystemPlugin() && o2.isSystemPlugin()) {
-                    return 1;
-                }
-                return 0;
-            }
-        });
+        Collections.sort(sortedPlugins, new DependencyComparator());
 
         return sortedPlugins;
     }

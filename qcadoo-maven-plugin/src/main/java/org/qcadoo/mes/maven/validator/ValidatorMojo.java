@@ -68,6 +68,15 @@ public class ValidatorMojo extends AbstractMojo {
 
     private static final String PLUGIN_SCHEMA = "../resources/schemas/plugin.xsd";
 
+    private static class FileNameFilterImpl implements FilenameFilter {
+
+        @Override
+        public boolean accept(final File d, final String n) {
+            return n.endsWith(".xml");
+        }
+    }
+
+    @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         /**
          * PLUGIN XML VALIDATION
@@ -102,12 +111,7 @@ public class ValidatorMojo extends AbstractMojo {
     private void validateXmlFilesInALocation(final Entry<String, String> entry) throws MojoFailureException {
         File file = new File(entry.getKey());
 
-        File[] files = file.listFiles(new FilenameFilter() {
-
-            public boolean accept(File d, String n) {
-                return n.endsWith(".xml");
-            }
-        });
+        File[] files = file.listFiles(new FileNameFilterImpl());
 
         for (int i = 0; i < files.length; i++) {
             validateFile(entry.getValue(), files[i]);
@@ -130,11 +134,11 @@ public class ValidatorMojo extends AbstractMojo {
             parser.parse(file);
 
         } catch (ParserConfigurationException e) {
-            throw new MojoFailureException("We couldn't parse the file: " + file);
+            throw (MojoFailureException) new MojoFailureException("We couldn't parse the file: " + file).initCause(e);
         } catch (SAXException e) {
-            throw new MojoFailureException("We couldn't parse the file: " + file);
+            throw (MojoFailureException) new MojoFailureException("We couldn't parse the file: " + file).initCause(e);
         } catch (IOException e) {
-            throw new MojoFailureException("We couldn't parse the file: " + file);
+            throw (MojoFailureException) new MojoFailureException("We couldn't parse the file: " + file).initCause(e);
         }
     }
 
