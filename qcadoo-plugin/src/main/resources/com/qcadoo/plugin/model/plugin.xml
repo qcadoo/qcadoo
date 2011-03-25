@@ -10,7 +10,5 @@
 		<string name="vendor" persistent="false" />
 		<string name="vendorUrl" persistent="false" />
 	</fields>
-	<hooks>
-		<onView class="com.qcadoo.mes.plugins.controller.PluginManagmentDataHook" method="updatePluginData" />
-	</hooks>
+	<hooks />
 </model>

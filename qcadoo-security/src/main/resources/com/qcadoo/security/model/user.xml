@@ -28,7 +28,7 @@
 <model name="user" xmlns="http://www.qcadoo.com/model">
 	<fields>
 		<string name="userName" required="true" unique="true">
-			<validatesRegex pattern="^[a-zA-Z0-9\\.]+$" message="users.validate.global.error.loginIllegalCharacters" />
+			<validatesRegex pattern="^[a-zA-Z0-9\\.]+$" message="qcadooSecurity.validate.global.error.loginIllegalCharacters" />
 		</string>
 		<belongsTo name="userGroup" model="group" lazy="false" required="true" />
 		<string name="email" />
