@@ -65,13 +65,13 @@
 		<repository>
 			<id>repo</id>
 			<name>Repository Name</name>
-			<url>scp://host/path/to/repo</url>
+			<url>http://nexus.qcadoo.org/service/local/staging/deploy/maven2</url>
 		</repository>
 		<!-- use the following if you ARE using a snapshot version. -->
 		<snapshotRepository>
 			<id>repo</id>
 			<name>Repository Name</name>
-			<url>scp://host/path/to/repo</url>
+			<url>http://nexus.qcadoo.org/content/repositories/snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
 
