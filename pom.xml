@@ -13,6 +13,7 @@
 		<module>qcadoo-security</module>
 		<module>qcadoo-model</module>
 		<module>qcadoo-view</module>
+		<module>qcadoo-report</module>
 		<module>qcadoo-maven-plugin</module>
 	</modules>
 
