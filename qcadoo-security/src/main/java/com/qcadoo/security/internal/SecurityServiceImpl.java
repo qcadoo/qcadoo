@@ -78,7 +78,7 @@ public final class SecurityServiceImpl implements SecurityService, UserDetailsSe
 
         List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
 
-        authorities.add(new GrantedAuthorityImpl(entity.getBelongsToField("userGroup").getStringField("name")));
+        authorities.add(new GrantedAuthorityImpl(entity.getBelongsToField("userGroup").getStringField("role")));
 
         checkState(authorities.size() > 0, "Current user with login %s cannot be found", username);
 

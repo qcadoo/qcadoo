@@ -12,6 +12,7 @@
 		<module>qcadoo-localization</module>
 		<module>qcadoo-security</module>
 		<module>qcadoo-model</module>
+		<module>qcadoo-maven-plugin</module>
 	</modules>
 
 	<name>Qcadoo Framework</name>
