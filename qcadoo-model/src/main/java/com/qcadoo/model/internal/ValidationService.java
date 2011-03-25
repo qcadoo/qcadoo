@@ -77,8 +77,7 @@ public final class ValidationService {
 
     private void parseAndValidateEntity(final InternalDataDefinition dataDefinition, final Entity genericEntity) {
         for (Entry<String, FieldDefinition> fieldDefinitionEntry : dataDefinition.getFields().entrySet()) {
-            Object validateFieldValue = parseAndValidateField(dataDefinition,
-                    (InternalFieldDefinition) fieldDefinitionEntry.getValue(),
+            Object validateFieldValue = parseAndValidateField((InternalFieldDefinition) fieldDefinitionEntry.getValue(),
                     genericEntity.getField(fieldDefinitionEntry.getKey()), genericEntity);
             genericEntity.setField(fieldDefinitionEntry.getKey(), validateFieldValue);
         }
@@ -150,8 +149,8 @@ public final class ValidationService {
         return parseAndValidateValue(fieldDefinition, referencedEntity, validatedEntity);
     }
 
-    private Object parseAndValidateField(final InternalDataDefinition dataDefinition,
-            final InternalFieldDefinition fieldDefinition, final Object value, final Entity validatedEntity) {
+    private Object parseAndValidateField(final InternalFieldDefinition fieldDefinition, final Object value,
+            final Entity validatedEntity) {
         if (fieldDefinition.getType() instanceof BelongsToType) {
             return parseAndValidateBelongsToField(fieldDefinition, trimAndNullIfEmpty(value), validatedEntity);
         } else if (fieldDefinition.getType() instanceof HasManyType) {

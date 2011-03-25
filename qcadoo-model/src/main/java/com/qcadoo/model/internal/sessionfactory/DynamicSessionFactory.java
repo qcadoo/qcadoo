@@ -33,7 +33,6 @@ import javax.naming.NamingException;
 import javax.naming.Reference;
 
 import org.hibernate.Cache;
-import org.hibernate.HibernateException;
 import org.hibernate.Interceptor;
 import org.hibernate.SessionFactory;
 import org.hibernate.StatelessSession;
@@ -193,7 +192,7 @@ public class DynamicSessionFactory implements SessionFactory {
     }
 
     @Override
-    public void evictQueries() throws HibernateException {
+    public void evictQueries() {
         getSessionFactory().evictQueries();
     }
 

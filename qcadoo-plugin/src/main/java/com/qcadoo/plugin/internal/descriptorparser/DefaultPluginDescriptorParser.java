@@ -102,7 +102,7 @@ public class DefaultPluginDescriptorParser implements PluginDescriptorParser {
     }
 
     @Override
-    public Plugin parse(final Resource resource) throws PluginException {
+    public Plugin parse(final Resource resource) {
 
         try {
             LOG.info("Parsing: " + resource);

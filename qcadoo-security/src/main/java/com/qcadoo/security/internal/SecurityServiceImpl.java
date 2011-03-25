@@ -30,14 +30,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.GrantedAuthorityImpl;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.qcadoo.model.api.DataDefinitionService;
@@ -73,7 +71,7 @@ public final class SecurityServiceImpl implements SecurityService, UserDetailsSe
 
     @Override
     @Monitorable
-    public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException, DataAccessException {
+    public UserDetails loadUserByUsername(final String username) {
         Entity entity = getUserEntity(username);
 
         List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
