@@ -129,7 +129,7 @@ public class PluginsPlugin {
         } else if (!identifier.equals(other.identifier)) {
             return false;
         }
-        if (state != other.state) {
+        if (!state.equals(other.state)) {
             return false;
         }
         if (version == null) {

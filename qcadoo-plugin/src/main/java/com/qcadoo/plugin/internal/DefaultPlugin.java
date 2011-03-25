@@ -45,7 +45,7 @@ import com.qcadoo.plugin.api.PluginState;
 import com.qcadoo.plugin.api.Version;
 import com.qcadoo.plugin.api.VersionOfDependency;
 
-public class DefaultPlugin implements Plugin {
+public final class DefaultPlugin implements Plugin {
 
     private final List<Module> modules;
 

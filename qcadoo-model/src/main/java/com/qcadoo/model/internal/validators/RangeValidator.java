@@ -39,11 +39,9 @@ public final class RangeValidator implements FieldHookDefinition, ErrorMessageDe
 
     private static final String OUT_OF_RANGE_ERROR_LARGE = "core.validate.field.error.outOfRange.toLarge";
 
-    private final String errorMessageSmall = OUT_OF_RANGE_ERROR_SMALL;
+    private String errorMessageSmall = OUT_OF_RANGE_ERROR_SMALL;
 
-    private final String errorMessageLarge = OUT_OF_RANGE_ERROR_LARGE;
-
-    private String customErrorMessage;
+    private String errorMessageLarge = OUT_OF_RANGE_ERROR_LARGE;
 
     private final Object from;
 
@@ -117,7 +115,8 @@ public final class RangeValidator implements FieldHookDefinition, ErrorMessageDe
             addToSmallError(fieldDefinition, validatedEntity);
             return false;
         }
-        if (to != null && ((!inclusively && value.compareTo((String) to) > 0) || (inclusively && value.compareTo((String) to) >= 0))) {
+        if (to != null
+                && ((!inclusively && value.compareTo((String) to) > 0) || (inclusively && value.compareTo((String) to) >= 0))) {
             addToLargeError(fieldDefinition, validatedEntity);
             return false;
         }
@@ -125,23 +124,16 @@ public final class RangeValidator implements FieldHookDefinition, ErrorMessageDe
     }
 
     private void addToSmallError(final FieldDefinition fieldDefinition, final Entity validatedEntity) {
-        if (customErrorMessage != null) {
-            validatedEntity.addError(fieldDefinition, customErrorMessage, String.valueOf(from), String.valueOf(to));
-        } else {
-            validatedEntity.addError(fieldDefinition, errorMessageSmall, String.valueOf(from), String.valueOf(to));
-        }
+        validatedEntity.addError(fieldDefinition, errorMessageSmall, String.valueOf(from), String.valueOf(to));
     }
 
     private void addToLargeError(final FieldDefinition fieldDefinition, final Entity validatedEntity) {
-        if (customErrorMessage != null) {
-            validatedEntity.addError(fieldDefinition, customErrorMessage, String.valueOf(from), String.valueOf(to));
-        } else {
-            validatedEntity.addError(fieldDefinition, errorMessageLarge, String.valueOf(from), String.valueOf(to));
-        }
+        validatedEntity.addError(fieldDefinition, errorMessageLarge, String.valueOf(from), String.valueOf(to));
     }
 
     @Override
     public void setErrorMessage(final String errorMessage) {
-        this.customErrorMessage = errorMessage;
+        this.errorMessageLarge = errorMessage;
+        this.errorMessageSmall = errorMessage;
     }
 }

@@ -89,7 +89,9 @@ public final class DateUtils {
             }
             return cal.getTime();
         } catch (NumberFormatException e) {
-            throw new ParseException("wrong date", 1);
+            ParseException parseException = new ParseException("wrong date", 1);
+            parseException.initCause(e);
+            throw parseException;
         }
     }
 
