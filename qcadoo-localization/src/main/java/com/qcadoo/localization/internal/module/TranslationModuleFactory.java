@@ -18,7 +18,7 @@ public class TranslationModuleFactory implements ModuleFactory<Module> {
         // register languages
         // move it to qcadoo-plugin.xml
         translationService.prepareMessagesForPrefix("commons");
-        translationService.prepareMessagesForPrefix("secority");
+        translationService.prepareMessagesForPrefix("security");
         translationService.prepareMessagesForPrefix("core.dashboard");
     }
 

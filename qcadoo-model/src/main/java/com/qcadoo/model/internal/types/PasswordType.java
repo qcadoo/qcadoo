@@ -26,9 +26,10 @@ package com.qcadoo.model.internal.types;
 
 import java.util.Locale;
 
+import org.springframework.security.authentication.encoding.PasswordEncoder;
+
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.FieldDefinition;
-import com.qcadoo.model.api.security.PasswordEncoder;
 import com.qcadoo.model.api.types.FieldType;
 
 public final class PasswordType implements FieldType {
@@ -51,7 +52,7 @@ public final class PasswordType implements FieldType {
 
     @Override
     public String toString(final Object value, final Locale locale) {
-        return null;
+        return (String) value;
     }
 
     @Override
