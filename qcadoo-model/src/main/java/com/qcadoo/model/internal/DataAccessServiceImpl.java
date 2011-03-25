@@ -631,7 +631,7 @@ public final class DataAccessServiceImpl implements DataAccessService {
             getCurrentSession().flush();
         } catch (ConstraintViolationException e) {
             throw new IllegalStateException(String.format("Entity [ENTITY.%s] is in use",
-                    expressionService.getValue(entity, dataDefinition.getIdentifierExpression(), Locale.ENGLISH), e));
+                    expressionService.getValue(entity, dataDefinition.getIdentifierExpression(), Locale.ENGLISH)), e);
         }
 
         LOG.info("Entity[" + dataDefinition.getPluginIdentifier() + "." + dataDefinition.getName() + "][id=" + entityId

@@ -79,7 +79,7 @@ public class DefaultPluginDescriptorParser implements PluginDescriptorParser {
             factory.setValidating(true);
             factory.setNamespaceAware(true);
 
-            // TODO
+            // TODO not working on jetty
 
             // SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
             // schemaFactory.setFeature("http://apache.org/xml/features/validation/schema-full-checking", false);
@@ -273,7 +273,7 @@ public class DefaultPluginDescriptorParser implements PluginDescriptorParser {
         return null;
     }
 
-    private class ValidationErrorHandler implements ErrorHandler {
+    private static class ValidationErrorHandler implements ErrorHandler {
 
         @Override
         public void warning(final SAXParseException e) throws SAXException {
