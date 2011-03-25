@@ -60,4 +60,19 @@
 		</resources>
 	</build>
 
+	<distributionManagement>
+		<!-- use the following if you're not using a snapshot version. -->
+		<repository>
+			<id>repo</id>
+			<name>Repository Name</name>
+			<url>scp://host/path/to/repo</url>
+		</repository>
+		<!-- use the following if you ARE using a snapshot version. -->
+		<snapshotRepository>
+			<id>repo</id>
+			<name>Repository Name</name>
+			<url>scp://host/path/to/repo</url>
+		</snapshotRepository>
+	</distributionManagement>
+
 </project>

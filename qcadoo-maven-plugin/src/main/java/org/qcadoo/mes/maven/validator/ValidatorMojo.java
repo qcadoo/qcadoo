@@ -8,6 +8,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -76,6 +77,8 @@ public class ValidatorMojo extends AbstractMojo {
 
         // URL myurl = this.getClass().getResource("/validator-maven-plugin/src/main/resources/schemas/model.xsd");
         Map<String, String> schemas = new HashMap<String, String>();
+        URL model = getClass().getResource("model.xsd");
+        System.out.println(model);
         schemas.put(fullModelDir, MODEL_SCHEMA);
         // schemas.put(fullViewDir, VIEW_SCHEMA);
 
@@ -165,10 +168,12 @@ public class ValidatorMojo extends AbstractMojo {
         getLog().info("Validating file: " + file);
 
         InputStream in = null;
+        InputStreamReader isr = null;
 
         try {
             in = new FileInputStream(file);
-            BufferedReader data = new BufferedReader(new InputStreamReader(in));
+            isr = new InputStreamReader(in);
+            BufferedReader data = new BufferedReader(isr);
             String line = null;
 
             while ((line = data.readLine()) != null) {
@@ -184,6 +189,7 @@ public class ValidatorMojo extends AbstractMojo {
             getLog().error(e.getMessage());
         } finally {
             try {
+                isr.close();
                 in.close();
             } catch (IOException e) {
                 getLog().error(e.getMessage());
