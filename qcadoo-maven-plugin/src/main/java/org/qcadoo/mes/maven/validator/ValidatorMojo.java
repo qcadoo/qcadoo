@@ -4,11 +4,9 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,10 +17,15 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.qcadoo.mes.maven.SimpleErrorHandler;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
@@ -54,37 +57,18 @@ public class ValidatorMojo extends AbstractMojo {
      */
     private String basedir;
 
-    /**
-     * @parameter default-value="${mes.plugin.identifier}"
-     * @required
-     * @readonly
-     */
-    private String pluginId;
-
     // private static final String VIEW_SCHEMA =
     // "file:/Users/mady/qcadoo/mes/mes-core/src/main/resources/com/qcadoo/mes/core/view.xsd";
 
-    private static final String MODEL_SCHEMA = "../resources/schemas/model.xsd";
+    private static final String MODEL_SCHEMA = "file:/Users/mady/qcadoo/qcadoo/qcadoo/qcadoo-maven-plugin/src/main/resources/schemas/model.xsd";
 
-    private static final String PLUGIN_SCHEMA = "../resources/schemas/plugin.xsd";
+    private static final String PLUGIN_SCHEMA = "file:/Users/mady/qcadoo/qcadoo/qcadoo/qcadoo-maven-plugin/src/main/resources/schemas/plugin.xsd";
 
     public void execute() throws MojoExecutionException, MojoFailureException {
         /**
-         * PLUGIN XML VALIDATION
+         * JAVA SOURCE CODE VALIDATION
          */
-        // String fullViewDir = basedir + xmlPath + pluginId + "/view";
-        String fullModelDir = basedir + resourcePath + pluginId + "/model";
-
-        // URL myurl = this.getClass().getResource("/validator-maven-plugin/src/main/resources/schemas/model.xsd");
-        Map<String, String> schemas = new HashMap<String, String>();
-        URL model = getClass().getResource("model.xsd");
-        System.out.println(model);
-        schemas.put(fullModelDir, MODEL_SCHEMA);
-        // schemas.put(fullViewDir, VIEW_SCHEMA);
-
-        for (Entry<String, String> entry : schemas.entrySet()) {
-            validateXmlFilesInALocation(entry);
-        }
+        validateJavaClasses();
 
         /**
          * PLUGIN XML VALIDATION
@@ -93,24 +77,55 @@ public class ValidatorMojo extends AbstractMojo {
         validateFile(PLUGIN_SCHEMA, new File(fullPluginDir));
 
         /**
-         * JAVA SOURCE CODE VALIDATION
+         * PLUGIN XML VALIDATION
          */
-        validateJavaClasses();
 
+        Map<List<String>, String> schemas = new HashMap<List<String>, String>();
+        schemas.put(getFileList("model:model", fullPluginDir), MODEL_SCHEMA);
+        // schemas.put(getFileList("view:view"), VIEW_SCHEMA);
+
+        for (Entry<List<String>, String> entry : schemas.entrySet()) {
+            validateXmlFiles(entry);
+        }
     }
 
-    private void validateXmlFilesInALocation(final Entry<String, String> entry) throws MojoFailureException {
-        File file = new File(entry.getKey());
+    private List<String> getFileList(String type, String pluginDir) {
+        List<String> fileList = new ArrayList<String>();
 
-        File[] files = file.listFiles(new FilenameFilter() {
+        try {
+            File plugin = new File(pluginDir);
 
-            public boolean accept(File d, String n) {
-                return n.endsWith(".xml");
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            DocumentBuilder db;
+            db = dbf.newDocumentBuilder();
+            Document doc = db.parse(plugin);
+            doc.getDocumentElement().normalize();
+            NodeList nList = doc.getElementsByTagName(type);
+
+            for (int i = 0; i < nList.getLength(); i++) {
+
+                Node nNode = nList.item(i);
+                if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+
+                    Element eElement = (Element) nNode;
+                    fileList.add(basedir + resourcePath + eElement.getAttribute("resource"));
+                }
             }
-        });
 
-        for (int i = 0; i < files.length; i++) {
-            validateFile(entry.getValue(), files[i]);
+        } catch (ParserConfigurationException e) {
+            getLog().error(e.getMessage());
+        } catch (SAXException e) {
+            getLog().error(e.getMessage());
+        } catch (IOException e) {
+            getLog().error(e.getMessage());
+        }
+
+        return fileList;
+    }
+
+    private void validateXmlFiles(final Entry<List<String>, String> entry) throws MojoFailureException {
+        for (String filePath : entry.getKey()) {
+            validateFile(entry.getValue(), new File(filePath));
         }
     }
 
@@ -130,10 +145,13 @@ public class ValidatorMojo extends AbstractMojo {
             parser.parse(file);
 
         } catch (ParserConfigurationException e) {
+            e.printStackTrace();
             throw new MojoFailureException("We couldn't parse the file: " + file);
         } catch (SAXException e) {
+            e.printStackTrace();
             throw new MojoFailureException("We couldn't parse the file: " + file);
         } catch (IOException e) {
+            e.printStackTrace();
             throw new MojoFailureException("We couldn't parse the file: " + file);
         }
     }
@@ -183,18 +201,14 @@ public class ValidatorMojo extends AbstractMojo {
                 }
             }
 
+            IOUtils.closeQuietly(in);
+            IOUtils.closeQuietly(isr);
+            IOUtils.closeQuietly(data);
+
         } catch (FileNotFoundException e) {
             getLog().error(e.getMessage());
         } catch (IOException e) {
             getLog().error(e.getMessage());
-        } finally {
-            try {
-                isr.close();
-                in.close();
-            } catch (IOException e) {
-                getLog().error(e.getMessage());
-            }
         }
-
     }
 }
