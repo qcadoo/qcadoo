@@ -24,6 +24,7 @@
 
 package com.qcadoo.plugin.internal.dependencymanager;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -164,7 +165,12 @@ public final class DefaultPluginDependencyManager implements PluginDependencyMan
         return PluginDependencyResult.dependenciesToUpdate(dependentPlugins, dependenciesToDisableUnsatisfiedAfterUpdate);
     }
 
-    private static class DependencyComparator implements Comparator<Plugin> {
+    private static class DependencyComparator implements Comparator<Plugin>, Serializable {
+
+        /**
+         * 
+         */
+        private static final long serialVersionUID = 1821666538483568800L;
 
         @Override
         public int compare(final Plugin o1, final Plugin o2) {
