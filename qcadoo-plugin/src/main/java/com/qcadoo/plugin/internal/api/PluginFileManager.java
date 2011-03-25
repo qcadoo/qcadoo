@@ -28,12 +28,12 @@ import java.io.File;
 
 public interface PluginFileManager {
 
-    public boolean installPlugin(final String... filename);
+    boolean installPlugin(final String... filename);
 
-    public File uploadPlugin(final PluginArtifact pluginArtifact);
+    File uploadPlugin(final PluginArtifact pluginArtifact);
 
-    public void uninstallPlugin(final String... filename);
+    void uninstallPlugin(final String... filename);
 
-    public void renamePlugin(final String source, final String destination);
+    void renamePlugin(final String source, final String destination);
 
 }

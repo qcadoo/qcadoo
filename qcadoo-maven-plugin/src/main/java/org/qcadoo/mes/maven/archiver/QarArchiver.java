@@ -62,7 +62,7 @@ public class QarArchiver extends AbstractMojo {
      * @parameter
      */
 
-    protected MavenArchiveConfiguration archive = new MavenArchiveConfiguration();
+    private MavenArchiveConfiguration archive = new MavenArchiveConfiguration();
 
     /**
      * @parameter expression="${project.build.directory}"

@@ -31,7 +31,7 @@ import org.springframework.util.StringUtils;
 
 public class VersionOfDependency {
 
-    private final static Pattern PATTERN = Pattern
+    private static final Pattern PATTERN = Pattern
             .compile("((\\(|\\[)?(\\d+(.\\d+(.\\d+)?)?))??,?((\\d+(.\\d+(.\\d+)?)?)(\\)|\\])?)??");
 
     private final Version minVersion;
@@ -64,10 +64,8 @@ public class VersionOfDependency {
                     if (compareResult > 0) {
                         throw new IllegalStateException("Version " + version
                                 + " is invalid: min version is larger than max version");
-                    } else if (compareResult == 0) {
-                        if (!(includeMinVersion && includeMaxVersion)) {
-                            throw new IllegalStateException("Version " + version + " is invalid: range is empty");
-                        }
+                    } else if (compareResult == 0 && !(includeMinVersion && includeMaxVersion)) {
+                        throw new IllegalStateException("Version " + version + " is invalid: range is empty");
                     }
                 }
             } else {
