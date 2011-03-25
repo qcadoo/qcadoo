@@ -31,8 +31,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -41,7 +39,6 @@ import com.qcadoo.plugin.api.Plugin;
 import com.qcadoo.plugin.api.PluginAccessor;
 import com.qcadoo.plugin.api.PluginDependencyInformation;
 import com.qcadoo.plugin.api.PluginManager;
-import com.qcadoo.plugin.api.PluginServerManager;
 import com.qcadoo.plugin.api.PluginState;
 import com.qcadoo.plugin.internal.PluginException;
 import com.qcadoo.plugin.internal.api.PluginArtifact;
@@ -56,8 +53,6 @@ import com.qcadoo.plugin.internal.dependencymanager.PluginDependencyResult;
 @Service
 public final class DefaultPluginManager implements PluginManager {
 
-    private static final Logger LOG = LoggerFactory.getLogger(DefaultPluginManager.class);
-
     @Autowired
     private PluginAccessor pluginAccessor;
 
@@ -66,8 +61,6 @@ public final class DefaultPluginManager implements PluginManager {
 
     @Autowired
     private PluginFileManager pluginFileManager;
-
-    private PluginServerManager pluginServerManager;
 
     @Autowired
     private PluginDependencyManager pluginDependencyManager;
@@ -361,10 +354,6 @@ public final class DefaultPluginManager implements PluginManager {
 
     void setPluginFileManager(final PluginFileManager pluginFileManager) {
         this.pluginFileManager = pluginFileManager;
-    }
-
-    void setPluginServerManager(final PluginServerManager pluginServerManager) {
-        this.pluginServerManager = pluginServerManager;
     }
 
     void setPluginDependencyManager(final PluginDependencyManager pluginDependencyManager) {

@@ -44,7 +44,6 @@ import org.mockito.InOrder;
 import com.qcadoo.plugin.api.Plugin;
 import com.qcadoo.plugin.api.PluginAccessor;
 import com.qcadoo.plugin.api.PluginDependencyInformation;
-import com.qcadoo.plugin.api.PluginServerManager;
 import com.qcadoo.plugin.api.PluginState;
 import com.qcadoo.plugin.api.VersionOfDependency;
 import com.qcadoo.plugin.internal.api.PluginDao;
@@ -69,8 +68,6 @@ public class PluginManagerTest {
 
     private final PluginFileManager pluginFileManager = mock(PluginFileManager.class);
 
-    private final PluginServerManager pluginServerManager = mock(PluginServerManager.class);
-
     private final PluginDescriptorParser pluginDescriptorParser = mock(PluginDescriptorParser.class);
 
     private DefaultPluginManager pluginManager;
@@ -85,7 +82,6 @@ public class PluginManagerTest {
         pluginManager.setPluginDao(pluginDao);
         pluginManager.setPluginDependencyManager(pluginDependencyManager);
         pluginManager.setPluginFileManager(pluginFileManager);
-        pluginManager.setPluginServerManager(pluginServerManager);
         pluginManager.setPluginDescriptorParser(pluginDescriptorParser);
     }
 
