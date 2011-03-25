@@ -22,11 +22,11 @@
  * ***************************************************************************
  */
 
-package com.qcadoo.model.beans.dictionaries;
+package com.qcadoo.model.beans.qcadooModel;
 
 import java.util.Set;
 
-public class DictionariesDictionary {
+public class QcadooModelDictionary {
 
     private Long id;
 
@@ -35,7 +35,7 @@ public class DictionariesDictionary {
     // TODO take me from properties file
     private String label;
 
-    private Set<DictionariesDictionaryItem> dictionaryItems;
+    private Set<QcadooModelDictionaryItem> dictionaryItems;
 
     public Long getId() {
         return id;
@@ -61,11 +61,11 @@ public class DictionariesDictionary {
         this.label = label;
     }
 
-    public Set<DictionariesDictionaryItem> getDictionaryItems() {
+    public Set<QcadooModelDictionaryItem> getDictionaryItems() {
         return dictionaryItems;
     }
 
-    public void setDictionaryItems(final Set<DictionariesDictionaryItem> dictionaryItems) {
+    public void setDictionaryItems(final Set<QcadooModelDictionaryItem> dictionaryItems) {
         this.dictionaryItems = dictionaryItems;
     }
 

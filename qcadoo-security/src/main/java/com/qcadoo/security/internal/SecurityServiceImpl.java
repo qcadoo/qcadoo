@@ -59,8 +59,8 @@ public final class SecurityServiceImpl implements SecurityService, UserDetailsSe
     }
 
     private Entity getUserEntity(final String login) {
-        List<Entity> users = dataDefinitionService.get("users", "user").find().restrictedWith(Restrictions.eq("userName", login))
-                .withMaxResults(1).list().getEntities();
+        List<Entity> users = dataDefinitionService.get("qcadooSecurity", "user").find()
+                .restrictedWith(Restrictions.eq("userName", login)).withMaxResults(1).list().getEntities();
         checkState(users.size() > 0, "Current user with login %s cannot be found", login);
         return users.get(0);
     }

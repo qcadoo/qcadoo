@@ -3,8 +3,8 @@
 
     ***************************************************************************
     Copyright (c) 2010 Qcadoo Limited
-    Project: Qcadoo Framework
-    Version: 0.4.0
+    Project: Qcadoo MES
+    Version: 0.3.0
 
     This file is part of Qcadoo.
 
@@ -25,11 +25,26 @@
 
 -->
 
-<model name="dictionary" deletable="false" xmlns="http://www.qcadoo.com/model">
+<model name="user" xmlns="http://www.qcadoo.com/model">
 	<fields>
-		<string name="name" required="true" unique="true" />
-		<string name="label" required="true" unique="true" />
-		<hasMany name="dictionaryItems" model="dictionaryItem" joinField="dictionary" cascade="delete" />
+		<string name="userName" required="true" unique="true">
+			<validatesRegex pattern="^[a-zA-Z0-9\\.]+$" message="users.validate.global.error.loginIllegalCharacters" />
+		</string>
+		<belongsTo name="userGroup" model="group" lazy="false" required="true" />
+		<string name="email" />
+		<string name="firstName" />
+		<string name="lastName" />
+		<boolean name="enabled" default="true" />
+		<string name="description" >
+			<validatesLength max="255"/>
+		</string>
+		<password name="password" /><!-- TODO validatesPresenceOnCreate -->
+		<password name="passwordConfirmation" persistent="false" /><!-- TODO validatesPresenceOnCreate -->
+		<password name="oldPassword" persistent="false" />
+		<string name="viewIdentifier" persistent="false" />
 	</fields>
-	<hooks />
+	<hooks>
+		<validatesWith class="com.qcadoo.mes.users.UserService" method="checkPassword" />
+	</hooks>
+	<identifier expression="#userName"/>
 </model>
