@@ -63,9 +63,9 @@ public class ValidatorMojo extends AbstractMojo {
     // private static final String VIEW_SCHEMA =
     // "file:/Users/mady/qcadoo/mes/mes-core/src/main/resources/com/qcadoo/mes/core/view.xsd";
 
-    private static final String MODEL_SCHEMA = "file:/Users/mady/qcadoo/validator-maven-plugin/src/main/resources/schemas/model.xsd";
+    private static final String MODEL_SCHEMA = "../resources/schemas/model.xsd";
 
-    private static final String PLUGIN_SCHEMA = "file:/Users/mady/qcadoo/validator-maven-plugin/src/main/resources/schemas/plugin.xsd";
+    private static final String PLUGIN_SCHEMA = "../resources/schemas/plugin.xsd";
 
     public void execute() throws MojoExecutionException, MojoFailureException {
         /**
@@ -74,6 +74,7 @@ public class ValidatorMojo extends AbstractMojo {
         // String fullViewDir = basedir + xmlPath + pluginId + "/view";
         String fullModelDir = basedir + resourcePath + pluginId + "/model";
 
+        // URL myurl = this.getClass().getResource("/validator-maven-plugin/src/main/resources/schemas/model.xsd");
         Map<String, String> schemas = new HashMap<String, String>();
         schemas.put(fullModelDir, MODEL_SCHEMA);
         // schemas.put(fullViewDir, VIEW_SCHEMA);
@@ -149,7 +150,7 @@ public class ValidatorMojo extends AbstractMojo {
         File[] currentFilesAndDirs = startingDir.listFiles();
 
         for (File file : currentFilesAndDirs) {
-            if (file.getName().toString().contains("java")) {
+            if (file.getName().contains("java")) {
                 filesFound.add(file);
             } else if (file.isDirectory()) {
                 filesFound.addAll(getFileListRecursively(file));
@@ -163,10 +164,12 @@ public class ValidatorMojo extends AbstractMojo {
 
         getLog().info("Validating file: " + file);
 
+        InputStream in = null;
+
         try {
-            InputStream in = new FileInputStream(file);
+            in = new FileInputStream(file);
             BufferedReader data = new BufferedReader(new InputStreamReader(in));
-            String line = data.readLine();
+            String line = null;
 
             while ((line = data.readLine()) != null) {
                 if (line.contains(re)) {
@@ -175,11 +178,16 @@ public class ValidatorMojo extends AbstractMojo {
                 }
             }
 
-            in.close();
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            getLog().error(e.getMessage());
         } catch (IOException e) {
-            e.printStackTrace();
+            getLog().error(e.getMessage());
+        } finally {
+            try {
+                in.close();
+            } catch (IOException e) {
+                getLog().error(e.getMessage());
+            }
         }
 
     }
