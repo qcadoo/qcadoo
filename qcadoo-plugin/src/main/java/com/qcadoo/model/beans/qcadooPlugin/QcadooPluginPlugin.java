@@ -22,7 +22,7 @@
  * ***************************************************************************
  */
 
-package com.qcadoo.model.beans.plugins;
+package com.qcadoo.model.beans.qcadooPlugin;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -34,8 +34,8 @@ import javax.persistence.Table;
 import com.qcadoo.plugin.api.Plugin;
 
 @Entity
-@Table(name = "plugins_plugin")
-public class PluginsPlugin {
+@Table(name = "qcadooplugin_plugin")
+public class QcadooPluginPlugin {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -50,11 +50,11 @@ public class PluginsPlugin {
     @Column
     private String state;
 
-    public PluginsPlugin() {
+    public QcadooPluginPlugin() {
         // empty
     }
 
-    public PluginsPlugin(final Plugin plugin) {
+    public QcadooPluginPlugin(final Plugin plugin) {
         identifier = plugin.getIdentifier();
         version = plugin.getVersion().toString();
         state = plugin.getState().toString();
@@ -111,10 +111,10 @@ public class PluginsPlugin {
         if (obj == null) {
             return false;
         }
-        if (!(obj instanceof PluginsPlugin)) {
+        if (!(obj instanceof QcadooPluginPlugin)) {
             return false;
         }
-        PluginsPlugin other = (PluginsPlugin) obj;
+        QcadooPluginPlugin other = (QcadooPluginPlugin) obj;
         if (id == null) {
             if (other.id != null) {
                 return false;

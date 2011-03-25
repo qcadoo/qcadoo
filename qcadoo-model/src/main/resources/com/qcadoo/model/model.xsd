@@ -178,7 +178,6 @@
 	<xs:complexType name="dictionaryFieldType">
 		<xs:complexContent>
 			<xs:extension base="fieldType">
-				<xs:attribute name="plugin" type="identifierType" use="optional" />
 				<xs:attribute name="dictionary" type="identifierType"
 					use="required" />
 			</xs:extension>

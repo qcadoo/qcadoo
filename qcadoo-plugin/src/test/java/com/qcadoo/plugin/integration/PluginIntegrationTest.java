@@ -86,7 +86,7 @@ public class PluginIntegrationTest {
 
     @After
     public void destroy() throws Exception {
-        sessionFactory.openSession().createSQLQuery("delete from plugins_plugin").executeUpdate();
+        sessionFactory.openSession().createSQLQuery("delete from qcadooplugin_plugin").executeUpdate();
         pluginResolver = null;
         pluginResolver = null;
         pluginManager = null;

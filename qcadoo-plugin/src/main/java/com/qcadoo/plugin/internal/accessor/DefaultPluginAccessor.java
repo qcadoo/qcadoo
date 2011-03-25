@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.qcadoo.model.beans.plugins.PluginsPlugin;
+import com.qcadoo.model.beans.qcadooPlugin.QcadooPluginPlugin;
 import com.qcadoo.plugin.api.Plugin;
 import com.qcadoo.plugin.api.PluginAccessor;
 import com.qcadoo.plugin.api.PluginState;
@@ -107,11 +107,11 @@ public final class DefaultPluginAccessor implements PluginAccessor {
         long time = System.currentTimeMillis();
 
         Set<Plugin> pluginsFromDescriptor = pluginDescriptorParser.loadPlugins();
-        Set<PluginsPlugin> pluginsFromDatabase = pluginDao.list();
+        Set<QcadooPluginPlugin> pluginsFromDatabase = pluginDao.list();
 
         for (Plugin plugin : pluginsFromDescriptor) {
-            PluginsPlugin existingPlugin = null;
-            for (PluginsPlugin databasePlugin : pluginsFromDatabase) {
+            QcadooPluginPlugin existingPlugin = null;
+            for (QcadooPluginPlugin databasePlugin : pluginsFromDatabase) {
                 if (plugin.getIdentifier().equals(databasePlugin.getIdentifier())) {
                     existingPlugin = databasePlugin;
                     break;
@@ -133,7 +133,7 @@ public final class DefaultPluginAccessor implements PluginAccessor {
 
             plugins.put(plugin.getIdentifier(), plugin);
         }
-        for (PluginsPlugin databasePlugin : pluginsFromDatabase) {
+        for (QcadooPluginPlugin databasePlugin : pluginsFromDatabase) {
             if (databasePlugin.getState().equals(PluginState.TEMPORARY.toString())) {
                 continue;
             }

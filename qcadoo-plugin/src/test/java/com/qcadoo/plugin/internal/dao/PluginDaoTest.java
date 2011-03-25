@@ -42,7 +42,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;
-import com.qcadoo.model.beans.plugins.PluginsPlugin;
+import com.qcadoo.model.beans.qcadooPlugin.QcadooPluginPlugin;
 import com.qcadoo.plugin.api.Plugin;
 import com.qcadoo.plugin.api.PluginState;
 import com.qcadoo.plugin.api.Version;
@@ -53,9 +53,9 @@ public class PluginDaoTest {
 
     private final SessionFactory sessionFactory = mock(SessionFactory.class);
 
-    private final PluginsPlugin plugin1 = new PluginsPlugin();
+    private final QcadooPluginPlugin plugin1 = new QcadooPluginPlugin();
 
-    private final PluginsPlugin plugin2 = new PluginsPlugin();
+    private final QcadooPluginPlugin plugin2 = new QcadooPluginPlugin();
 
     private final Plugin plugin11 = mock(Plugin.class);
 
@@ -71,7 +71,7 @@ public class PluginDaoTest {
         given(sessionFactory.getCurrentSession()).willReturn(session);
 
         given(plugin11.getIdentifier()).willReturn("identifier1");
-        given(session.createCriteria(PluginsPlugin.class)).willReturn(criteria);
+        given(session.createCriteria(QcadooPluginPlugin.class)).willReturn(criteria);
         given(criteria.add(any(Criterion.class))).willReturn(criteria);
 
         pluginDao = new DefaultPluginDao();
@@ -116,7 +116,7 @@ public class PluginDaoTest {
 
         // then
         verify(session, never()).save(plugin1);
-        verify(session).save(any(PluginsPlugin.class));
+        verify(session).save(any(QcadooPluginPlugin.class));
     }
 
     @Test
@@ -148,7 +148,7 @@ public class PluginDaoTest {
         given(criteria.list()).willReturn(Lists.newArrayList(plugin1, plugin2));
 
         // when
-        Set<PluginsPlugin> plugins = pluginDao.list();
+        Set<QcadooPluginPlugin> plugins = pluginDao.list();
 
         // then
         assertEquals(2, plugins.size());

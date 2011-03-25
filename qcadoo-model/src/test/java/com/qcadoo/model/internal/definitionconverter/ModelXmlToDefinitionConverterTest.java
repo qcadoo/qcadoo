@@ -55,7 +55,7 @@ import com.qcadoo.model.api.DictionaryService;
 import com.qcadoo.model.api.types.BelongsToType;
 import com.qcadoo.model.api.types.HasManyType;
 import com.qcadoo.model.api.types.TreeType;
-import com.qcadoo.model.beans.dictionaries.DictionariesDictionary;
+import com.qcadoo.model.beans.qcadooModel.QcadooModelDictionary;
 import com.qcadoo.model.internal.DataDefinitionImpl;
 import com.qcadoo.model.internal.DataDefinitionServiceImpl;
 import com.qcadoo.model.internal.FieldDefinitionImpl;
@@ -111,10 +111,10 @@ public class ModelXmlToDefinitionConverterTest {
         dataAccessService = mock(DataAccessService.class);
         dictionaryService = mock(DictionaryService.class);
 
-        DictionariesDictionary dictionary = new DictionariesDictionary();
+        QcadooModelDictionary dictionary = new QcadooModelDictionary();
         SessionFactory sessionFactory = mock(SessionFactory.class, RETURNS_DEEP_STUBS);
         given(
-                sessionFactory.getCurrentSession().createCriteria(DictionariesDictionary.class).add(Mockito.any(Criterion.class))
+                sessionFactory.getCurrentSession().createCriteria(QcadooModelDictionary.class).add(Mockito.any(Criterion.class))
                         .setMaxResults(1).uniqueResult()).willReturn(dictionary);
 
         dataDefinitionService = new DataDefinitionServiceImpl();

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin plugin="qcadooView" version="0.4.0" system="true" xmlns="http://www.qcadoo.com/plugin" xmlns:model="http://www.qcadoo.com/modules/model" xmlns:view="http://www.qcadoo.com/modules/view">
+
+	<information>
+		<name>Qcadoo Framework View</name>
+		<vendor>
+			<name>Qcadoo Limited</name>
+			<url>http://www.qcadoo.com/</url>
+		</vendor>
+	</information>
+	
+	<modules>
+		<model:model model="category" resource="com/qcadoo/view/model/category.xml" />
+		<model:model model="item" resource="com/qcadoo/view/model/item.xml" />
+		<model:model model="view" resource="com/qcadoo/view/model/view.xml" />
+	</modules>
+
+</plugin>
