@@ -90,7 +90,7 @@ public class ValidatorMojo extends AbstractMojo {
         }
     }
 
-    private List<String> getFileList(String type, String pluginDir) {
+    private List<String> getFileList(final String type, final String pluginDir) {
         List<String> fileList = new ArrayList<String>();
 
         try {
@@ -147,13 +147,13 @@ public class ValidatorMojo extends AbstractMojo {
 
         } catch (ParserConfigurationException e) {
             getLog().error(e.getMessage());
-            throw new MojoFailureException("We couldn't parse the file: " + file);
+            throw (MojoFailureException) new MojoFailureException("We couldn't parse the file: " + file).initCause(e);
         } catch (SAXException e) {
             getLog().error(e.getMessage());
-            throw new MojoFailureException("We couldn't parse the file: " + file);
+            throw (MojoFailureException) new MojoFailureException("We couldn't parse the file: " + file).initCause(e);
         } catch (IOException e) {
             getLog().error(e.getMessage());
-            throw new MojoFailureException("We couldn't parse the file: " + file);
+            throw (MojoFailureException) new MojoFailureException("We couldn't parse the file: " + file).initCause(e);
         }
     }
 

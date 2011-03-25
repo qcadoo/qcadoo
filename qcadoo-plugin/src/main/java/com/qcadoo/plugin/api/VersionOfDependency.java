@@ -149,18 +149,23 @@ public class VersionOfDependency {
 
     @Override
     public String toString() {
-        String tmpMinVersion = minVersion != null ? minVersion.toString() : "0.0.0";
-        if (minVersion == null && maxVersion == null) {
-            return tmpMinVersion;
-        } else if (minVersion != null && maxVersion == null) {
-            return (includeMinVersion ? "[" : "(") + tmpMinVersion;
-        } else if (minVersion == null && maxVersion != null) {
-            return maxVersion.toString() + (includeMaxVersion ? "]" : ")");
-        } else if (minVersion.equals(maxVersion)) {
-            return tmpMinVersion;
+        if (minVersion == null) {
+            if (maxVersion == null) {
+                return "0.0.0";
+            } else {
+                return maxVersion.toString() + (includeMaxVersion ? "]" : ")");
+            }
         } else {
-            return (includeMinVersion ? "[" : "(") + tmpMinVersion + "," + maxVersion.toString()
-                    + (includeMaxVersion ? "]" : ")");
+            if (maxVersion == null) {
+                return (includeMinVersion ? "[" : "(") + minVersion.toString();
+            } else {
+                if (minVersion.equals(maxVersion)) {
+                    return minVersion.toString();
+                } else {
+                    return (includeMinVersion ? "[" : "(") + minVersion.toString() + "," + maxVersion.toString()
+                            + (includeMaxVersion ? "]" : ")");
+                }
+            }
         }
     }
 }
