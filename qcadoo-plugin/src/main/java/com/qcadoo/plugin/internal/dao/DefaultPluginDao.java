@@ -34,7 +34,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.collect.Sets;
-import com.qcadoo.model.beans.plugins.PluginsPlugin;
+import com.qcadoo.model.beans.qcadooPlugin.QcadooPluginPlugin;
 import com.qcadoo.plugin.api.Plugin;
 import com.qcadoo.plugin.internal.api.PluginDao;
 
@@ -47,33 +47,33 @@ public class DefaultPluginDao implements PluginDao {
 
     @Override
     @Transactional
-    public void save(final PluginsPlugin plugin) {
+    public void save(final QcadooPluginPlugin plugin) {
         sessionFactory.getCurrentSession().save(plugin);
     }
 
     @Override
     @Transactional
     public void save(final Plugin plugin) {
-        PluginsPlugin existingPlugin = get(plugin.getIdentifier());
+        QcadooPluginPlugin existingPlugin = get(plugin.getIdentifier());
         if (existingPlugin != null) {
             existingPlugin.setState(plugin.getState().toString());
             existingPlugin.setVersion(plugin.getVersion().toString());
         } else {
-            existingPlugin = new PluginsPlugin(plugin);
+            existingPlugin = new QcadooPluginPlugin(plugin);
         }
         save(existingPlugin);
     }
 
     @Override
     @Transactional
-    public void delete(final PluginsPlugin plugin) {
+    public void delete(final QcadooPluginPlugin plugin) {
         sessionFactory.getCurrentSession().delete(plugin);
     }
 
     @Override
     @Transactional
     public void delete(final Plugin plugin) {
-        PluginsPlugin existingPlugin = get(plugin.getIdentifier());
+        QcadooPluginPlugin existingPlugin = get(plugin.getIdentifier());
         if (existingPlugin != null) {
             delete(existingPlugin);
         }
@@ -82,12 +82,12 @@ public class DefaultPluginDao implements PluginDao {
     @Override
     @SuppressWarnings("unchecked")
     @Transactional(readOnly = true)
-    public Set<PluginsPlugin> list() {
-        return Sets.newHashSet(sessionFactory.getCurrentSession().createCriteria(PluginsPlugin.class).list());
+    public Set<QcadooPluginPlugin> list() {
+        return Sets.newHashSet(sessionFactory.getCurrentSession().createCriteria(QcadooPluginPlugin.class).list());
     }
 
-    private PluginsPlugin get(final String identifier) {
-        return (PluginsPlugin) sessionFactory.getCurrentSession().createCriteria(PluginsPlugin.class)
+    private QcadooPluginPlugin get(final String identifier) {
+        return (QcadooPluginPlugin) sessionFactory.getCurrentSession().createCriteria(QcadooPluginPlugin.class)
                 .add(Restrictions.eq("identifier", identifier)).uniqueResult();
     }
 

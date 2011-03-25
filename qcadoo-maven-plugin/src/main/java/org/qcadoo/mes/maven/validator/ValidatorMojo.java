@@ -64,6 +64,7 @@ public class ValidatorMojo extends AbstractMojo {
 
     private static final String PLUGIN_SCHEMA = "file:/Users/mady/qcadoo/qcadoo/qcadoo/qcadoo-maven-plugin/src/main/resources/schemas/plugin.xsd";
 
+    @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         /**
          * JAVA SOURCE CODE VALIDATION
@@ -145,13 +146,13 @@ public class ValidatorMojo extends AbstractMojo {
             parser.parse(file);
 
         } catch (ParserConfigurationException e) {
-            e.printStackTrace();
+            getLog().error(e.getMessage());
             throw new MojoFailureException("We couldn't parse the file: " + file);
         } catch (SAXException e) {
-            e.printStackTrace();
+            getLog().error(e.getMessage());
             throw new MojoFailureException("We couldn't parse the file: " + file);
         } catch (IOException e) {
-            e.printStackTrace();
+            getLog().error(e.getMessage());
             throw new MojoFailureException("We couldn't parse the file: " + file);
         }
     }

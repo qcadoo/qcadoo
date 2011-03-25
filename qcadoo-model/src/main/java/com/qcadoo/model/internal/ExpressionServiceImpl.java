@@ -68,7 +68,11 @@ public final class ExpressionServiceImpl implements ExpressionService {
 
     @PostConstruct
     public void init() {
-        instance = this;
+        initialise(this);
+    }
+
+    private static void initialise(final ExpressionService expressionService) {
+        instance = expressionService;
     }
 
     public static ExpressionService getInstance() {

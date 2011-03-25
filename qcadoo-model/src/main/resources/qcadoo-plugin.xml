@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin plugin="qcadooModel" version="0.4.0" system="true" xmlns="http://www.qcadoo.com/plugin" xmlns:model="http://www.qcadoo.com/modules/model" xmlns:view="http://www.qcadoo.com/modules/view">
+
+	<information>
+		<name>Qcadoo Framework Model</name>
+		<vendor>
+			<name>Qcadoo Limited</name>
+			<url>http://www.qcadoo.com/</url>
+		</vendor>
+	</information>
+	
+	<modules>
+		<model:model model="dictionary" resource="com/qcadoo/model/model/dictionary.xml" />
+		<model:model model="dictionaryItem" resource="com/qcadoo/model/model/dictionaryItem.xml" />
+	</modules>
+
+</plugin>

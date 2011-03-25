@@ -45,8 +45,8 @@ import org.mockito.Mockito;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import com.qcadoo.model.api.DictionaryService;
-import com.qcadoo.model.beans.dictionaries.DictionariesDictionary;
-import com.qcadoo.model.beans.dictionaries.DictionariesDictionaryItem;
+import com.qcadoo.model.beans.qcadooModel.QcadooModelDictionary;
+import com.qcadoo.model.beans.qcadooModel.QcadooModelDictionaryItem;
 import com.qcadoo.model.internal.dictionaries.DictionaryServiceImpl;
 
 public class DictionaryServiceTest {
@@ -64,11 +64,11 @@ public class DictionaryServiceTest {
     @Test
     public void shouldReturnListOfDictionaries() throws Exception {
         // given
-        DictionariesDictionary dict1 = new DictionariesDictionary();
+        QcadooModelDictionary dict1 = new QcadooModelDictionary();
         dict1.setName("Dict1");
-        DictionariesDictionary dict2 = new DictionariesDictionary();
+        QcadooModelDictionary dict2 = new QcadooModelDictionary();
         dict2.setName("Dict2");
-        DictionariesDictionary dict3 = new DictionariesDictionary();
+        QcadooModelDictionary dict3 = new QcadooModelDictionary();
         dict3.setName("Dict3");
 
         given(sessionFactory.getCurrentSession().createQuery("from Dictionary").list()).willReturn(
@@ -85,15 +85,15 @@ public class DictionaryServiceTest {
     @Test
     public void shouldReturnSortedListOfDictionaryValues() throws Exception {
         // given
-        DictionariesDictionaryItem item1 = new DictionariesDictionaryItem();
+        QcadooModelDictionaryItem item1 = new QcadooModelDictionaryItem();
         item1.setName("aaa");
-        DictionariesDictionaryItem item2 = new DictionariesDictionaryItem();
+        QcadooModelDictionaryItem item2 = new QcadooModelDictionaryItem();
         item2.setName("ccc");
-        DictionariesDictionaryItem item3 = new DictionariesDictionaryItem();
+        QcadooModelDictionaryItem item3 = new QcadooModelDictionaryItem();
         item3.setName("bbb");
 
         given(
-                sessionFactory.getCurrentSession().createCriteria(DictionariesDictionaryItem.class)
+                sessionFactory.getCurrentSession().createCriteria(QcadooModelDictionaryItem.class)
                         .createAlias("dictionary", "dc").add(Mockito.any(Criterion.class)).addOrder(Mockito.any(Order.class))
                         .list()).willReturn(newArrayList(item1, item3, item2));
 

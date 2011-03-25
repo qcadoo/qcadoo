@@ -22,10 +22,10 @@
  * ***************************************************************************
  */
 
-package com.qcadoo.model.beans.dictionaries;
+package com.qcadoo.model.beans.qcadooModel;
 
 
-public class DictionariesDictionaryItem {
+public class QcadooModelDictionaryItem {
 
     private Long id;
 
@@ -33,7 +33,7 @@ public class DictionariesDictionaryItem {
 
     private String description;
 
-    private DictionariesDictionary dictionary;
+    private QcadooModelDictionary dictionary;
 
     public Long getId() {
         return id;
@@ -59,11 +59,11 @@ public class DictionariesDictionaryItem {
         this.description = description;
     }
 
-    public DictionariesDictionary getDictionary() {
+    public QcadooModelDictionary getDictionary() {
         return dictionary;
     }
 
-    public void setDictionary(final DictionariesDictionary dictionary) {
+    public void setDictionary(final QcadooModelDictionary dictionary) {
         this.dictionary = dictionary;
     }
 

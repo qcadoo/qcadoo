@@ -43,8 +43,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.qcadoo.model.api.aop.Monitorable;
-import com.qcadoo.model.beans.dictionaries.DictionariesDictionary;
-import com.qcadoo.model.beans.dictionaries.DictionariesDictionaryItem;
+import com.qcadoo.model.beans.qcadooModel.QcadooModelDictionary;
+import com.qcadoo.model.beans.qcadooModel.QcadooModelDictionaryItem;
 import com.qcadoo.model.internal.api.InternalDictionaryService;
 
 @Service
@@ -60,13 +60,13 @@ public final class DictionaryServiceImpl implements InternalDictionaryService {
     public List<String> keys(final String dictionary) {
         checkArgument(hasText(dictionary), "dictionary name must be given");
 
-        List<DictionariesDictionaryItem> items = sessionFactory.getCurrentSession()
-                .createCriteria(DictionariesDictionaryItem.class).createAlias("dictionary", "dc")
+        List<QcadooModelDictionaryItem> items = sessionFactory.getCurrentSession()
+                .createCriteria(QcadooModelDictionaryItem.class).createAlias("dictionary", "dc")
                 .add(Restrictions.eq("dc.name", dictionary)).addOrder(Order.asc("name")).list();
 
         List<String> keys = new ArrayList<String>();
 
-        for (DictionariesDictionaryItem item : items) {
+        for (QcadooModelDictionaryItem item : items) {
             keys.add(item.getName());
         }
 
@@ -80,15 +80,15 @@ public final class DictionaryServiceImpl implements InternalDictionaryService {
     public Map<String, String> values(final String dictionary, final Locale locale) {
         checkArgument(hasText(dictionary), "dictionary name must be given");
 
-        List<DictionariesDictionaryItem> items = sessionFactory.getCurrentSession()
-                .createCriteria(DictionariesDictionaryItem.class).createAlias("dictionary", "dc")
+        List<QcadooModelDictionaryItem> items = sessionFactory.getCurrentSession()
+                .createCriteria(QcadooModelDictionaryItem.class).createAlias("dictionary", "dc")
                 .add(Restrictions.eq("dc.name", dictionary)).addOrder(Order.asc("name")).list();
 
         Map<String, String> values = new LinkedHashMap<String, String>();
 
         // TODO - i18n
 
-        for (DictionariesDictionaryItem item : items) {
+        for (QcadooModelDictionaryItem item : items) {
             values.put(item.getName(), item.getName());
         }
 
@@ -100,11 +100,11 @@ public final class DictionaryServiceImpl implements InternalDictionaryService {
     @Monitorable
     @SuppressWarnings("unchecked")
     public Set<String> dictionaries() {
-        List<DictionariesDictionary> dictionaries = sessionFactory.getCurrentSession().createQuery("from Dictionary").list();
+        List<QcadooModelDictionary> dictionaries = sessionFactory.getCurrentSession().createQuery("from Dictionary").list();
 
         Set<String> names = new HashSet<String>();
 
-        for (DictionariesDictionary dictionary : dictionaries) {
+        for (QcadooModelDictionary dictionary : dictionaries) {
             names.add(dictionary.getName());
         }
 
@@ -115,19 +115,19 @@ public final class DictionaryServiceImpl implements InternalDictionaryService {
     @Transactional
     @Monitorable
     public void createIfNotExists(final String name, final String... values) {
-        if (sessionFactory.getCurrentSession().createCriteria(DictionariesDictionary.class).add(Restrictions.eq("name", name))
+        if (sessionFactory.getCurrentSession().createCriteria(QcadooModelDictionary.class).add(Restrictions.eq("name", name))
                 .list().size() > 0) {
             return;
         }
 
-        DictionariesDictionary dictionary = new DictionariesDictionary();
+        QcadooModelDictionary dictionary = new QcadooModelDictionary();
         dictionary.setName(name);
         dictionary.setLabel(name);
 
         sessionFactory.getCurrentSession().save(dictionary);
 
         for (String value : values) {
-            DictionariesDictionaryItem item = new DictionariesDictionaryItem();
+            QcadooModelDictionaryItem item = new QcadooModelDictionaryItem();
             item.setDictionary(dictionary);
             item.setDescription("");
             item.setName(value);
