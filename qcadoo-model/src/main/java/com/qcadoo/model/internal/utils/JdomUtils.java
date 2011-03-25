@@ -36,7 +36,7 @@ import org.jdom.Namespace;
 import org.jdom.input.SAXBuilder;
 import org.jdom.output.XMLOutputter;
 
-public class JdomUtils {
+public final class JdomUtils {
 
     private JdomUtils() {
     }

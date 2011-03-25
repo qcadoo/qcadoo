@@ -78,12 +78,12 @@ public class DynamicSessionFactory implements SessionFactory {
     }
 
     @Override
-    public Session openSession() throws HibernateException {
+    public Session openSession() {
         return getSessionFactory().openSession();
     }
 
     @Override
-    public Session openSession(final Interceptor interceptor) throws HibernateException {
+    public Session openSession(final Interceptor interceptor) {
         return getSessionFactory().openSession(interceptor);
     }
 
@@ -98,7 +98,7 @@ public class DynamicSessionFactory implements SessionFactory {
     }
 
     @Override
-    public Session getCurrentSession() throws HibernateException {
+    public Session getCurrentSession() {
         return getSessionFactory().getCurrentSession();
     }
 
@@ -143,7 +143,7 @@ public class DynamicSessionFactory implements SessionFactory {
     }
 
     @Override
-    public void close() throws HibernateException {
+    public void close() {
         getSessionFactory().close();
     }
 
@@ -158,37 +158,37 @@ public class DynamicSessionFactory implements SessionFactory {
     }
 
     @Override
-    public void evict(final Class persistentClass) throws HibernateException {
+    public void evict(final Class persistentClass) {
         getSessionFactory().evict(persistentClass);
     }
 
     @Override
-    public void evict(final Class persistentClass, final Serializable id) throws HibernateException {
+    public void evict(final Class persistentClass, final Serializable id) {
         getSessionFactory().evict(persistentClass, id);
     }
 
     @Override
-    public void evictEntity(final String entityName) throws HibernateException {
+    public void evictEntity(final String entityName) {
         getSessionFactory().evictEntity(entityName);
     }
 
     @Override
-    public void evictEntity(final String entityName, final Serializable id) throws HibernateException {
+    public void evictEntity(final String entityName, final Serializable id) {
         getSessionFactory().evictEntity(entityName, id);
     }
 
     @Override
-    public void evictCollection(final String roleName) throws HibernateException {
+    public void evictCollection(final String roleName) {
         getSessionFactory().evictCollection(roleName);
     }
 
     @Override
-    public void evictCollection(final String roleName, final Serializable id) throws HibernateException {
+    public void evictCollection(final String roleName, final Serializable id) {
         getSessionFactory().evictCollection(roleName, id);
     }
 
     @Override
-    public void evictQueries(final String cacheRegion) throws HibernateException {
+    public void evictQueries(final String cacheRegion) {
         getSessionFactory().evictQueries(cacheRegion);
     }
 
@@ -203,7 +203,7 @@ public class DynamicSessionFactory implements SessionFactory {
     }
 
     @Override
-    public FilterDefinition getFilterDefinition(final String filterName) throws HibernateException {
+    public FilterDefinition getFilterDefinition(final String filterName) {
         return getSessionFactory().getFilterDefinition(filterName);
     }
 
