@@ -17,7 +17,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -27,6 +26,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+
+import sun.misc.IOUtils;
 
 /**
  * 
@@ -90,7 +91,7 @@ public class ValidatorMojo extends AbstractMojo {
         }
     }
 
-    private List<String> getFileList(String type, String pluginDir) {
+    private List<String> getFileList(final String type, final String pluginDir) {
         List<String> fileList = new ArrayList<String>();
 
         try {
@@ -147,13 +148,13 @@ public class ValidatorMojo extends AbstractMojo {
 
         } catch (ParserConfigurationException e) {
             getLog().error(e.getMessage());
-            throw new MojoFailureException("We couldn't parse the file: " + file);
+            throw (MojoFailureException) new MojoFailureException("We couldn't parse the file: " + file).initCause(e);
         } catch (SAXException e) {
             getLog().error(e.getMessage());
-            throw new MojoFailureException("We couldn't parse the file: " + file);
+            throw (MojoFailureException) new MojoFailureException("We couldn't parse the file: " + file).initCause(e);
         } catch (IOException e) {
             getLog().error(e.getMessage());
-            throw new MojoFailureException("We couldn't parse the file: " + file);
+            throw (MojoFailureException) new MojoFailureException("We couldn't parse the file: " + file).initCause(e);
         }
     }
 
