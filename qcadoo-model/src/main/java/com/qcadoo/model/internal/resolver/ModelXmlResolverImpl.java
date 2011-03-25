@@ -69,6 +69,7 @@ public final class ModelXmlResolverImpl implements ModelXmlResolver, ModelXmlHol
 
     @Override
     public void put(final String pluginIdentifier, final String modelName, final InputStream stream) {
+        LOG.info(" -----------> " + pluginIdentifier + "." + modelName);
         Document document = JdomUtils.inputStreamToDocument(stream);
         document.getRootElement().setAttribute("plugin", pluginIdentifier);
         documents.put(pluginIdentifier + "." + modelName, document);
