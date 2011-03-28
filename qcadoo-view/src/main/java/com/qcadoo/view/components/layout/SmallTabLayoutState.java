@@ -32,9 +32,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.qcadoo.view.api.ComponentPattern;
 import com.qcadoo.view.api.ComponentState;
-import com.qcadoo.view.internal.ComponentPattern;
-import com.qcadoo.view.internal.components.layout.SmallTabLayoutPatternTab;
 import com.qcadoo.view.internal.states.AbstractContainerState;
 
 public class SmallTabLayoutState extends AbstractContainerState {

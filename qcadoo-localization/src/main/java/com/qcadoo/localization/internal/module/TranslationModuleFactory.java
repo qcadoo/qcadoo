@@ -14,7 +14,7 @@ public class TranslationModuleFactory implements ModuleFactory<Module> {
 
     @Override
     public void init() {
-        // TODO
+        // TODO plugin masz
         // register languages
         // move it to qcadoo-plugin.xml
         translationService.prepareMessagesForPrefix("commons");

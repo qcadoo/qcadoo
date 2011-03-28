@@ -54,23 +54,23 @@ import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.types.BelongsToType;
 import com.qcadoo.model.api.types.HasManyType;
 import com.qcadoo.model.internal.types.StringType;
+import com.qcadoo.view.api.ComponentPattern;
 import com.qcadoo.view.api.ViewDefinition;
 import com.qcadoo.view.api.ViewDefinitionService;
-import com.qcadoo.view.internal.ComponentPattern;
+import com.qcadoo.view.api.ribbon.RibbonActionItem;
+import com.qcadoo.view.components.ButtonComponentPattern;
+import com.qcadoo.view.components.CheckBoxComponentPattern;
+import com.qcadoo.view.components.TextAreaComponentPattern;
+import com.qcadoo.view.components.TextInputComponentPattern;
+import com.qcadoo.view.components.form.FormComponentPattern;
+import com.qcadoo.view.components.grid.GridComponentPattern;
+import com.qcadoo.view.components.window.WindowComponentPattern;
 import com.qcadoo.view.internal.HookDefinition;
 import com.qcadoo.view.internal.ViewDefinitionServiceImpl;
-import com.qcadoo.view.internal.components.ButtonComponentPattern;
-import com.qcadoo.view.internal.components.CheckBoxComponentPattern;
-import com.qcadoo.view.internal.components.TextAreaComponentPattern;
-import com.qcadoo.view.internal.components.TextInputComponentPattern;
-import com.qcadoo.view.internal.components.form.FormComponentPattern;
-import com.qcadoo.view.internal.components.grid.GridComponentPattern;
-import com.qcadoo.view.internal.components.window.WindowComponentPattern;
+import com.qcadoo.view.internal.api.InternalViewDefinition;
 import com.qcadoo.view.internal.hooks.HookFactory;
 import com.qcadoo.view.internal.internal.ComponentCustomEvent;
 import com.qcadoo.view.internal.internal.ViewComponentsResolver;
-import com.qcadoo.view.internal.ribbon.RibbonActionItem;
-import com.qcadoo.view.internal.xml.ViewDefinitionParserImpl;
 
 public class ViewDefinitionParserImplTest {
 
@@ -171,7 +171,7 @@ public class ViewDefinitionParserImplTest {
     @Test
     public void shouldSetViewDefinitionAttributes() {
         // given
-        ViewDefinition viewDefinition = parseAndGetViewDefinition();
+        InternalViewDefinition viewDefinition = parseAndGetViewDefinition();
 
         // then
         assertEquals("simpleView", viewDefinition.getName());
@@ -183,7 +183,7 @@ public class ViewDefinitionParserImplTest {
     @Test
     public void shouldHasRibbon() throws Exception {
         // given
-        ViewDefinition viewDefinition = parseAndGetViewDefinition();
+        InternalViewDefinition viewDefinition = parseAndGetViewDefinition();
         TranslationService translationService = mock(TranslationService.class);
         setField(viewDefinition, "translationService", translationService);
 
@@ -247,7 +247,7 @@ public class ViewDefinitionParserImplTest {
     @Test
     public void shouldSetFields() {
         // given
-        ViewDefinition vd = parseAndGetViewDefinition();
+        InternalViewDefinition vd = parseAndGetViewDefinition();
 
         // then
         checkComponent(vd.getComponentByReference("mainWindow"), WindowComponentPattern.class, "mainWindow", "beanB");
@@ -318,8 +318,8 @@ public class ViewDefinitionParserImplTest {
         return viewDefinitionParser.parseViewXml(new ClassPathResource(xml));
     }
 
-    private ViewDefinition parseAndGetViewDefinition() {
-        return viewDefinitionParser.parseViewXml(new ClassPathResource(xml)).get(0);
+    private InternalViewDefinition parseAndGetViewDefinition() {
+        return (InternalViewDefinition) viewDefinitionParser.parseViewXml(new ClassPathResource(xml)).get(0);
     }
 
     @SuppressWarnings("unchecked")

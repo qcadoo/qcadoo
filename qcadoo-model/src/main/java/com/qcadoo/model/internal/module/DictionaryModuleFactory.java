@@ -48,7 +48,7 @@ public class DictionaryModuleFactory implements ModuleFactory<DictionaryModule> 
             throw new IllegalStateException("Missing name attribute of dictionary module");
         }
 
-        return new DictionaryModule(name, dictionaryService);
+        return new DictionaryModule(pluginIdentifier, name, dictionaryService);
     }
 
     @Override

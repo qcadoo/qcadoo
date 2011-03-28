@@ -38,12 +38,12 @@ import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.aop.Monitorable;
 import com.qcadoo.model.api.search.Restrictions;
 import com.qcadoo.plugin.api.PluginAccessor;
-import com.qcadoo.view.internal.api.MenuService;
+import com.qcadoo.view.internal.api.InternalMenuService;
 import com.qcadoo.view.internal.menu.items.UrlMenuItem;
 import com.qcadoo.view.internal.menu.items.ViewDefinitionMenuItemItem;
 
 @Service
-public final class MenuServiceImpl implements MenuService {
+public final class MenuServiceImpl implements InternalMenuService {
 
     @Autowired
     private PluginAccessor pluginAccessor;

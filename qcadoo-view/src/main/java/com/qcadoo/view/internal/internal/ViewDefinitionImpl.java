@@ -42,16 +42,16 @@ import org.springframework.util.StringUtils;
 
 import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.api.DataDefinition;
-import com.qcadoo.view.api.ViewDefinition;
+import com.qcadoo.view.api.ComponentPattern;
+import com.qcadoo.view.api.ContainerPattern;
 import com.qcadoo.view.api.ViewDefinitionState;
-import com.qcadoo.view.internal.ComponentPattern;
-import com.qcadoo.view.internal.ContainerPattern;
+import com.qcadoo.view.components.window.WindowComponentPattern;
 import com.qcadoo.view.internal.HookDefinition;
+import com.qcadoo.view.internal.api.InternalViewDefinition;
 import com.qcadoo.view.internal.api.InternalViewDefinitionService;
-import com.qcadoo.view.internal.components.window.WindowComponentPattern;
 import com.qcadoo.view.internal.patterns.AbstractComponentPattern;
 
-public final class ViewDefinitionImpl implements ViewDefinition {
+public final class ViewDefinitionImpl implements InternalViewDefinition {
 
     private final String name;
 

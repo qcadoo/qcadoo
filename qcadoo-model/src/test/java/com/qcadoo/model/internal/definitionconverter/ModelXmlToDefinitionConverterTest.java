@@ -32,7 +32,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
 import static org.springframework.test.util.ReflectionTestUtils.getField;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
@@ -41,11 +40,8 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.List;
 
-import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Criterion;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.mockito.Mockito;
 import org.springframework.context.ApplicationContext;
 
 import com.qcadoo.model.CustomHook;
@@ -55,7 +51,6 @@ import com.qcadoo.model.api.DictionaryService;
 import com.qcadoo.model.api.types.BelongsToType;
 import com.qcadoo.model.api.types.HasManyType;
 import com.qcadoo.model.api.types.TreeType;
-import com.qcadoo.model.beans.qcadooModel.QcadooModelDictionary;
 import com.qcadoo.model.internal.DataDefinitionImpl;
 import com.qcadoo.model.internal.DataDefinitionServiceImpl;
 import com.qcadoo.model.internal.FieldDefinitionImpl;
@@ -111,19 +106,12 @@ public class ModelXmlToDefinitionConverterTest {
         dataAccessService = mock(DataAccessService.class);
         dictionaryService = mock(DictionaryService.class);
 
-        QcadooModelDictionary dictionary = new QcadooModelDictionary();
-        SessionFactory sessionFactory = mock(SessionFactory.class, RETURNS_DEEP_STUBS);
-        given(
-                sessionFactory.getCurrentSession().createCriteria(QcadooModelDictionary.class).add(Mockito.any(Criterion.class))
-                        .setMaxResults(1).uniqueResult()).willReturn(dictionary);
-
         dataDefinitionService = new DataDefinitionServiceImpl();
 
         modelXmlToDefinitionConverter = new ModelXmlToDefinitionConverterImpl();
         setField(modelXmlToDefinitionConverter, "dataDefinitionService", dataDefinitionService);
         setField(modelXmlToDefinitionConverter, "dataAccessService", dataAccessService);
         setField(modelXmlToDefinitionConverter, "applicationContext", applicationContext);
-        setField(modelXmlToDefinitionConverter, "sessionFactory", sessionFactory);
 
         given(applicationContext.getBean(CustomHook.class)).willReturn(new CustomHook());
 
@@ -224,11 +212,11 @@ public class ModelXmlToDefinitionConverterTest {
         assertNotNull(dataDefinition.getField("fieldEnum"));
         assertThat(dataDefinition.getField("fieldEnum").getType(), instanceOf(EnumType.class));
 
-        // TODO
+        // TODO plugin masz
         // assertThat(((EnumType) dataDefinition.getField("fieldEnum").getType()).values(Locale.ENGLISH).keySet(),
         // hasItems("one", "two", "three"));
 
-        // TODO
+        // TODO plugin masz
         // assertNotNull(dataDefinition.getField("category"));
         // assertThat(dataDefinition.getField("fieldDictionary").getType(), instanceOf(DictionaryType.class));
         // assertEquals("categories", getField(dataDefinition.getField("fieldDictionary").getType(), "dictionaryName"));
@@ -238,7 +226,7 @@ public class ModelXmlToDefinitionConverterTest {
         assertTrue(dataDefinition.getField("fieldText").isReadOnly());
     }
 
-    // TODO
+    // TODO plugin masz
     // <string name="fieldStringNotPersistent" persistent="false" />
     // <string name="fieldStringWithExpression" expression="#fString" />
     // <toString expression="#fieldString" />

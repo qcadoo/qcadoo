@@ -28,7 +28,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.qcadoo.view.components.FieldComponentState;
-import com.qcadoo.view.internal.components.select.SelectComponentPattern;
 
 public final class SelectComponentState extends FieldComponentState {
 

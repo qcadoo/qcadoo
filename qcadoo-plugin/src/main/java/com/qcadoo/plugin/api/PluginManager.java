@@ -24,8 +24,8 @@
 
 package com.qcadoo.plugin.api;
 
-import com.qcadoo.plugin.internal.api.PluginArtifact;
-import com.qcadoo.plugin.internal.api.PluginOperationResult;
+import com.qcadoo.plugin.api.artifact.PluginArtifact;
+
 
 public interface PluginManager {
 

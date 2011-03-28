@@ -4,12 +4,12 @@ import org.jdom.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.qcadoo.plugin.api.ModuleFactory;
-import com.qcadoo.view.internal.api.MenuService;
+import com.qcadoo.view.internal.api.InternalMenuService;
 
 public class MenuViewModuleFactory implements ModuleFactory<MenuModule> {
 
     @Autowired
-    private MenuService menuService;
+    private InternalMenuService menuService;
 
     @Override
     public void init() {

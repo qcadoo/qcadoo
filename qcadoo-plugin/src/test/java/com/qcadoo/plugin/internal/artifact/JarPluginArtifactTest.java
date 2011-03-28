@@ -36,8 +36,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-import com.qcadoo.plugin.internal.api.PluginArtifact;
-import com.qcadoo.plugin.internal.artifact.JarPluginArtifact;
+import com.qcadoo.plugin.api.artifact.JarPluginArtifact;
+import com.qcadoo.plugin.api.artifact.PluginArtifact;
 
 public class JarPluginArtifactTest {
 

@@ -38,9 +38,8 @@ import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.ContainerState;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.components.FieldComponentState;
+import com.qcadoo.view.components.form.FormComponentPattern;
 import com.qcadoo.view.components.form.FormComponentState;
-import com.qcadoo.view.internal.components.awesomeDynamicList.AwesomeDynamicListPattern;
-import com.qcadoo.view.internal.components.form.FormComponentPattern;
 import com.qcadoo.view.internal.internal.ViewDefinitionStateImpl;
 
 public class AwesomeDynamicListState extends FieldComponentState implements ContainerState {

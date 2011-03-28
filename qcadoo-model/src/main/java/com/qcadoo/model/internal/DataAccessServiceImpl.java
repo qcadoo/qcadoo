@@ -62,6 +62,7 @@ import com.qcadoo.model.api.EntityTree;
 import com.qcadoo.model.api.ExpressionService;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.aop.Monitorable;
+import com.qcadoo.model.api.search.Order;
 import com.qcadoo.model.api.search.Restriction;
 import com.qcadoo.model.api.search.Restrictions;
 import com.qcadoo.model.api.search.SearchCriteria;
@@ -71,7 +72,6 @@ import com.qcadoo.model.api.types.TreeType;
 import com.qcadoo.model.api.validators.ErrorMessage;
 import com.qcadoo.model.internal.api.DataAccessService;
 import com.qcadoo.model.internal.api.InternalDataDefinition;
-import com.qcadoo.model.internal.search.Order;
 import com.qcadoo.model.internal.search.SearchResultImpl;
 
 @Service
@@ -486,7 +486,7 @@ public final class DataAccessServiceImpl implements DataAccessService {
 
         List<?> results = criteria.list();
 
-        // FIXME masz distinct
+        // FIXME plugin masz distinct
 
         // if (searchCriteria.getDistinctProperty() != null) {
         // Class<?> entityClass = ((InternalDataDefinition) searchCriteria.getDataDefinition()).getClassForEntity();

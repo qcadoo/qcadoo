@@ -32,11 +32,11 @@ import java.util.Locale;
 import org.json.JSONObject;
 
 import com.qcadoo.localization.api.TranslationService;
+import com.qcadoo.view.api.ComponentPattern;
+import com.qcadoo.view.api.ContainerPattern;
 import com.qcadoo.view.api.ViewDefinition;
 import com.qcadoo.view.internal.ComponentDefinition;
-import com.qcadoo.view.internal.ComponentPattern;
-import com.qcadoo.view.internal.ContainerPattern;
-import com.qcadoo.view.internal.patterns.AbstractComponentPattern;
+import com.qcadoo.view.internal.api.InternalViewDefinition;
 
 public abstract class AbstractPatternTest {
 
@@ -61,7 +61,7 @@ public abstract class AbstractPatternTest {
         if (viewDefinition != null) {
             componentDefinition.setViewDefinition(viewDefinition);
         } else {
-            componentDefinition.setViewDefinition(mock(ViewDefinition.class));
+            componentDefinition.setViewDefinition(mock(InternalViewDefinition.class));
         }
         return componentDefinition;
     }

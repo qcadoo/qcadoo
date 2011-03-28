@@ -42,7 +42,6 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,9 +100,6 @@ import com.qcadoo.model.internal.validators.UniqueValidator;
 public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlConverter implements ModelXmlToDefinitionConverter {
 
     private static final Logger LOG = LoggerFactory.getLogger(ModelXmlToDefinitionConverterImpl.class);
-
-    @Autowired
-    private SessionFactory sessionFactory;
 
     @Autowired
     private DictionaryService dictionaryService;

@@ -56,13 +56,13 @@ import com.qcadoo.model.internal.types.EnumType;
 import com.qcadoo.model.internal.types.IntegerType;
 import com.qcadoo.model.internal.types.StringType;
 import com.qcadoo.view.api.ComponentState;
-import com.qcadoo.view.api.ViewDefinition;
 import com.qcadoo.view.api.ViewDefinitionState;
+import com.qcadoo.view.components.TextInputComponentPattern;
+import com.qcadoo.view.components.grid.GridComponentPattern;
 import com.qcadoo.view.components.grid.GridComponentState;
 import com.qcadoo.view.internal.ComponentDefinition;
 import com.qcadoo.view.internal.ComponentOption;
-import com.qcadoo.view.internal.components.TextInputComponentPattern;
-import com.qcadoo.view.internal.components.grid.GridComponentPattern;
+import com.qcadoo.view.internal.api.InternalViewDefinition;
 import com.qcadoo.view.internal.patterns.AbstractComponentPattern;
 import com.qcadoo.view.internal.patterns.AbstractPatternTest;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
@@ -74,7 +74,7 @@ public class GridComponentPatternTest extends AbstractPatternTest {
     public void shouldInitializeOptions() throws Exception {
         // given
         DataDefinition dataDefinition = mock(DataDefinition.class);
-        ViewDefinition viewDefinition = mock(ViewDefinition.class);
+        InternalViewDefinition viewDefinition = mock(InternalViewDefinition.class);
         TranslationService translationService = mock(TranslationService.class);
         given(translationService.translate(Mockito.anyString(), Mockito.any(Locale.class))).willReturn("i18n");
         FieldDefinition nameFieldDefinition = mock(FieldDefinition.class);
@@ -156,7 +156,7 @@ public class GridComponentPatternTest extends AbstractPatternTest {
         assertEquals("left", name.getString("align"));
         assertEquals(2, name.getJSONObject("filterValues").length());
 
-        // TODO
+        // TODO plugin mina
         // assertEquals("i18n", name.getJSONObject("filterValues").getString("v1"));
         // assertEquals("i18n", name.getJSONObject("filterValues").getString("v2"));
 
@@ -172,7 +172,7 @@ public class GridComponentPatternTest extends AbstractPatternTest {
     public void shouldHaveDefaultValues() throws Exception {
         // given
         DataDefinition dataDefinition = mock(DataDefinition.class);
-        ViewDefinition viewDefinition = mock(ViewDefinition.class);
+        InternalViewDefinition viewDefinition = mock(InternalViewDefinition.class);
         TranslationService translationService = mock(TranslationService.class);
         given(viewDefinition.getDataDefinition()).willReturn(dataDefinition);
         ComponentDefinition componentDefinition = getComponentDefinition("grid", viewDefinition);
@@ -206,7 +206,7 @@ public class GridComponentPatternTest extends AbstractPatternTest {
     public void shouldBeFullscreen() throws Exception {
         // given
         DataDefinition dataDefinition = mock(DataDefinition.class);
-        ViewDefinition viewDefinition = mock(ViewDefinition.class);
+        InternalViewDefinition viewDefinition = mock(InternalViewDefinition.class);
         TranslationService translationService = mock(TranslationService.class);
         given(viewDefinition.getDataDefinition()).willReturn(dataDefinition);
         ComponentDefinition componentDefinition = getComponentDefinition("grid", viewDefinition);
@@ -252,7 +252,7 @@ public class GridComponentPatternTest extends AbstractPatternTest {
         given(dataDefinition.getField("field")).willReturn(hasManyFieldDefinition);
         given(dataDefinition.getField("joinName")).willReturn(belongsToFieldDefinition);
 
-        ViewDefinition viewDefinition = mock(ViewDefinition.class);
+        InternalViewDefinition viewDefinition = mock(InternalViewDefinition.class);
 
         AbstractComponentPattern sourceComponent = new TextInputComponentPattern(getComponentDefinition("component",
                 viewDefinition));
@@ -300,7 +300,7 @@ public class GridComponentPatternTest extends AbstractPatternTest {
         given(dataDefinition.getField("field")).willReturn(hasManyFieldDefinition);
         given(dataDefinition.getField("joinName")).willReturn(belongsToFieldDefinition);
 
-        ViewDefinition viewDefinition = mock(ViewDefinition.class);
+        InternalViewDefinition viewDefinition = mock(InternalViewDefinition.class);
 
         AbstractComponentPattern sourceComponent = new TextInputComponentPattern(getComponentDefinition("component",
                 viewDefinition));
@@ -332,7 +332,7 @@ public class GridComponentPatternTest extends AbstractPatternTest {
     public void shouldParsePredefinedFilters() throws Exception {
         // given
         DataDefinition dataDefinition = mock(DataDefinition.class);
-        ViewDefinition viewDefinition = mock(ViewDefinition.class);
+        InternalViewDefinition viewDefinition = mock(InternalViewDefinition.class);
         TranslationService translationService = mock(TranslationService.class);
         given(viewDefinition.getDataDefinition()).willReturn(dataDefinition);
         ComponentDefinition componentDefinition = getComponentDefinition("grid", viewDefinition);

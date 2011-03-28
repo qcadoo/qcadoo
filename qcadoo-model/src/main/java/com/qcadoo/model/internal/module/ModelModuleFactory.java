@@ -94,7 +94,8 @@ public class ModelModuleFactory implements ModuleFactory<ModelModule> {
 
         if (resource != null) {
             try {
-                modelXmlHolder.put(pluginIdentifier, modelName, new ClassPathResource(resource).getInputStream());
+                modelXmlHolder.put(pluginIdentifier, modelName,
+                        new ClassPathResource(pluginIdentifier + "/" + resource).getInputStream());
             } catch (IOException e) {
                 throw new IllegalStateException(e.getMessage(), e);
             }

@@ -10,8 +10,8 @@
 	</information>
 	
 	<modules>
-		<model:model model="dictionary" resource="com/qcadoo/model/model/dictionary.xml" />
-		<model:model model="dictionaryItem" resource="com/qcadoo/model/model/dictionaryItem.xml" />
+		<model:model model="dictionary" resource="model/dictionary.xml" />
+		<model:model model="dictionaryItem" resource="model/dictionaryItem.xml" />
 	</modules>
 
 </plugin>

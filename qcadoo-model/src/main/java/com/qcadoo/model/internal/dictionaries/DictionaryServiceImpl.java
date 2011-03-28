@@ -36,15 +36,14 @@ import java.util.Map;
 import java.util.Set;
 
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.qcadoo.model.api.DataDefinitionService;
+import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.aop.Monitorable;
-import com.qcadoo.model.beans.qcadooModel.QcadooModelDictionary;
-import com.qcadoo.model.beans.qcadooModel.QcadooModelDictionaryItem;
+import com.qcadoo.model.api.search.Restrictions;
 import com.qcadoo.model.internal.api.InternalDictionaryService;
 
 @Service
@@ -53,21 +52,22 @@ public final class DictionaryServiceImpl implements InternalDictionaryService {
     @Autowired
     private SessionFactory sessionFactory;
 
+    @Autowired
+    private DataDefinitionService dataDefinitionService;
+
     @Override
     @Transactional(readOnly = true)
     @Monitorable
-    @SuppressWarnings("unchecked")
     public List<String> keys(final String dictionary) {
         checkArgument(hasText(dictionary), "dictionary name must be given");
 
-        List<QcadooModelDictionaryItem> items = sessionFactory.getCurrentSession()
-                .createCriteria(QcadooModelDictionaryItem.class).createAlias("dictionary", "dc")
-                .add(Restrictions.eq("dc.name", dictionary)).addOrder(Order.asc("name")).list();
+        List<Entity> items = dataDefinitionService.get("qcadooModel", "dictionaryItem").find()
+                .restrictedWith(Restrictions.eq("dictionary.name", dictionary)).orderAscBy("name").list().getEntities();
 
         List<String> keys = new ArrayList<String>();
 
-        for (QcadooModelDictionaryItem item : items) {
-            keys.add(item.getName());
+        for (Entity item : items) {
+            keys.add(item.getStringField("name"));
         }
 
         return keys;
@@ -76,20 +76,18 @@ public final class DictionaryServiceImpl implements InternalDictionaryService {
     @Override
     @Transactional(readOnly = true)
     @Monitorable
-    @SuppressWarnings("unchecked")
     public Map<String, String> values(final String dictionary, final Locale locale) {
         checkArgument(hasText(dictionary), "dictionary name must be given");
 
-        List<QcadooModelDictionaryItem> items = sessionFactory.getCurrentSession()
-                .createCriteria(QcadooModelDictionaryItem.class).createAlias("dictionary", "dc")
-                .add(Restrictions.eq("dc.name", dictionary)).addOrder(Order.asc("name")).list();
+        List<Entity> items = dataDefinitionService.get("qcadooModel", "dictionaryItem").find()
+                .restrictedWith(Restrictions.eq("dictionary.name", dictionary)).orderAscBy("name").list().getEntities();
 
         Map<String, String> values = new LinkedHashMap<String, String>();
 
-        // TODO - i18n
+        // TODO plugin masz - i18n
 
-        for (QcadooModelDictionaryItem item : items) {
-            values.put(item.getName(), item.getName());
+        for (Entity item : items) {
+            values.put(item.getStringField("name"), item.getStringField("name"));
         }
 
         return values;
@@ -98,14 +96,14 @@ public final class DictionaryServiceImpl implements InternalDictionaryService {
     @Override
     @Transactional(readOnly = true)
     @Monitorable
-    @SuppressWarnings("unchecked")
     public Set<String> dictionaries() {
-        List<QcadooModelDictionary> dictionaries = sessionFactory.getCurrentSession().createQuery("from Dictionary").list();
+        List<Entity> dictionaries = dataDefinitionService.get("qcadooModel", "dictionary").find().orderAscBy("name").list()
+                .getEntities();
 
         Set<String> names = new HashSet<String>();
 
-        for (QcadooModelDictionary dictionary : dictionaries) {
-            names.add(dictionary.getName());
+        for (Entity dictionary : dictionaries) {
+            names.add(dictionary.getStringField("name"));
         }
 
         return names;
@@ -114,25 +112,24 @@ public final class DictionaryServiceImpl implements InternalDictionaryService {
     @Override
     @Transactional
     @Monitorable
-    public void createIfNotExists(final String name, final String... values) {
-        if (sessionFactory.getCurrentSession().createCriteria(QcadooModelDictionary.class).add(Restrictions.eq("name", name))
-                .list().size() > 0) {
+    public void createIfNotExists(final String pluginIdentifier, final String name, final String... values) {
+        if (dataDefinitionService.get("qcadooModel", "dictionary").find().restrictedWith(Restrictions.eq("name", name)).list()
+                .getTotalNumberOfEntities() > 0) {
             return;
         }
 
-        QcadooModelDictionary dictionary = new QcadooModelDictionary();
-        dictionary.setName(name);
-        dictionary.setLabel(name);
-
-        sessionFactory.getCurrentSession().save(dictionary);
+        Entity dictionary = dataDefinitionService.get("qcadooModel", "dictionary").create();
+        dictionary.setField("pluginIdentifier", pluginIdentifier);
+        dictionary.setField("name", name);
+        dictionary = dataDefinitionService.get("qcadooModel", "dictionary").save(dictionary);
 
         for (String value : values) {
-            QcadooModelDictionaryItem item = new QcadooModelDictionaryItem();
-            item.setDictionary(dictionary);
-            item.setDescription("");
-            item.setName(value);
-
-            sessionFactory.getCurrentSession().save(item);
+            Entity item = dataDefinitionService.get("qcadooModel", "dictionaryItem").create();
+            item.setField("dictionary", dictionary);
+            item.setField("description", "");
+            item.setField("name", value);
+            dataDefinitionService.get("qcadooModel", "dictionaryItem").save(item);
         }
     }
+
 }

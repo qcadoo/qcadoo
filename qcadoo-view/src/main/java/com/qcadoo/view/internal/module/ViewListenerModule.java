@@ -3,8 +3,8 @@ package com.qcadoo.view.internal.module;
 import com.google.common.base.Preconditions;
 import com.qcadoo.plugin.api.Module;
 import com.qcadoo.plugin.api.PluginState;
-import com.qcadoo.view.api.ViewDefinition;
-import com.qcadoo.view.internal.ComponentPattern;
+import com.qcadoo.view.api.ComponentPattern;
+import com.qcadoo.view.internal.api.InternalViewDefinition;
 import com.qcadoo.view.internal.api.InternalViewDefinitionService;
 import com.qcadoo.view.internal.internal.ComponentCustomEvent;
 
@@ -47,7 +47,8 @@ public class ViewListenerModule extends Module {
     }
 
     private ComponentPattern getComponent() {
-        ViewDefinition extendsView = viewDefinitionService.getWithoutSession(extendsViewPlugin, extendsViewName);
+        InternalViewDefinition extendsView = (InternalViewDefinition) viewDefinitionService.getWithoutSession(extendsViewPlugin,
+                extendsViewName);
         Preconditions.checkNotNull(extendsView,
                 "View Listener extension error: View listener extension referes to view which not exists (" + extendsViewPlugin
                         + " - " + extendsViewName + ")");

@@ -44,13 +44,13 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.qcadoo.plugin.api.PluginAccessor;
 import com.qcadoo.plugin.api.PluginManager;
+import com.qcadoo.plugin.api.PluginOperationResult;
+import com.qcadoo.plugin.api.PluginOperationStatus;
 import com.qcadoo.plugin.api.PluginState;
 import com.qcadoo.plugin.api.Version;
+import com.qcadoo.plugin.api.artifact.JarPluginArtifact;
 import com.qcadoo.plugin.internal.api.PluginDescriptorResolver;
 import com.qcadoo.plugin.internal.api.PluginFileManager;
-import com.qcadoo.plugin.internal.api.PluginOperationResult;
-import com.qcadoo.plugin.internal.api.PluginOperationStatus;
-import com.qcadoo.plugin.internal.artifact.JarPluginArtifact;
 
 public class PluginIntegrationTest {
 
@@ -339,6 +339,6 @@ public class PluginIntegrationTest {
         assertEquals(new Version("1.2.4"), pluginAccessor.getPlugin("plugin4").getVersion());
     }
 
-    // TODO test all update cases
+    // TODO plugin masz test all update cases
 
 }

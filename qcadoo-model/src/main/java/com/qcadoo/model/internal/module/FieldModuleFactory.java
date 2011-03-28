@@ -26,12 +26,10 @@ package com.qcadoo.model.internal.module;
 
 import java.util.List;
 
-import org.jdom.Document;
 import org.jdom.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.qcadoo.model.internal.api.InternalDataDefinitionService;
-import com.qcadoo.model.internal.utils.JdomUtils;
 import com.qcadoo.plugin.api.ModuleFactory;
 
 public class FieldModuleFactory implements ModuleFactory<FieldModule> {
@@ -69,20 +67,9 @@ public class FieldModuleFactory implements ModuleFactory<FieldModule> {
             throw new IllegalStateException("Only one field can be defined in single field module");
         }
 
-        Document document = modelXmlHolder.get(targetPluginIdentifier, targetModelName);
+        String fieldName = elements.get(0).getAttributeValue("name");
 
-        Element field = JdomUtils.replaceNamespace(elements.get(0), document.getRootElement().getNamespace());
-
-        String fieldName = field.getAttributeValue("name");
-
-        Element fields = (Element) document.getRootElement().getChildren().get(0);
-
-        if (!"fields".equals(fields.getName())) {
-            throw new IllegalStateException("Expected element fields, found " + fields.getName());
-        }
-
-        field.setAttribute("required", "false");
-        fields.addContent(field.detach());
+        modelXmlHolder.addField(targetPluginIdentifier, targetModelName, elements.get(0));
 
         return new FieldModule(targetPluginIdentifier, targetModelName, fieldName, dataDefinitionService);
     }
