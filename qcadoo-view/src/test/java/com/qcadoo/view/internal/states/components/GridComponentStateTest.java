@@ -68,9 +68,9 @@ import com.qcadoo.model.internal.ExpressionServiceImpl;
 import com.qcadoo.model.internal.types.StringType;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.ViewDefinitionState;
+import com.qcadoo.view.components.grid.GridComponentColumn;
 import com.qcadoo.view.components.grid.GridComponentState;
 import com.qcadoo.view.internal.FieldEntityIdChangeListener;
-import com.qcadoo.view.internal.components.grid.GridComponentColumn;
 import com.qcadoo.view.internal.states.AbstractStateTest;
 
 public class GridComponentStateTest extends AbstractStateTest {

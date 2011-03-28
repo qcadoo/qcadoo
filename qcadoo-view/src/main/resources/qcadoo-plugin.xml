@@ -10,9 +10,10 @@
 	</information>
 	
 	<modules>
-		<model:model model="category" resource="com/qcadoo/view/model/category.xml" />
-		<model:model model="item" resource="com/qcadoo/view/model/item.xml" />
-		<model:model model="view" resource="com/qcadoo/view/model/view.xml" />
+		<model:model model="category" resource="model/category.xml" />
+		<model:model model="item" resource="model/item.xml" />
+		<model:model model="view" resource="model/view.xml" />
+		
 		<resource uri="public/**/*" />
 	</modules>
 	

@@ -46,13 +46,12 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import com.qcadoo.model.api.DataDefinition;
+import com.qcadoo.view.api.ComponentPattern;
 import com.qcadoo.view.api.ComponentState;
-import com.qcadoo.view.api.ViewDefinition;
 import com.qcadoo.view.api.ViewDefinitionState;
-import com.qcadoo.view.internal.ComponentPattern;
-import com.qcadoo.view.internal.HookDefinition;
-import com.qcadoo.view.internal.components.form.FormComponentPattern;
-import com.qcadoo.view.internal.components.window.WindowComponentPattern;
+import com.qcadoo.view.components.form.FormComponentPattern;
+import com.qcadoo.view.components.window.WindowComponentPattern;
+import com.qcadoo.view.internal.api.InternalViewDefinition;
 import com.qcadoo.view.internal.internal.ViewDefinitionImpl;
 import com.qcadoo.view.internal.patterns.AbstractContainerPattern;
 import com.qcadoo.view.internal.patterns.AbstractPatternTest;
@@ -173,16 +172,16 @@ public class ViewDefinitionTest extends AbstractPatternTest {
         viewDefinition.addComponentPattern(pattern);
 
         JSONObject eventJson = new JSONObject();
-        eventJson.put(ViewDefinition.JSON_EVENT_NAME, "eventName");
-        eventJson.put(ViewDefinition.JSON_EVENT_COMPONENT, "componentName");
-        eventJson.put(ViewDefinition.JSON_EVENT_ARGS, new JSONArray(newArrayList("arg1", "arg2")));
+        eventJson.put(InternalViewDefinition.JSON_EVENT_NAME, "eventName");
+        eventJson.put(InternalViewDefinition.JSON_EVENT_COMPONENT, "componentName");
+        eventJson.put(InternalViewDefinition.JSON_EVENT_ARGS, new JSONArray(newArrayList("arg1", "arg2")));
 
         JSONObject contentJson = new JSONObject(of("asd", "qwe"));
         JSONObject componentJson = new JSONObject(of(ComponentState.JSON_CONTENT, contentJson));
 
         JSONObject json = new JSONObject();
-        json.put(ViewDefinition.JSON_EVENT, eventJson);
-        json.put(ViewDefinition.JSON_COMPONENTS, new JSONObject(of("componentName", componentJson)));
+        json.put(InternalViewDefinition.JSON_EVENT, eventJson);
+        json.put(InternalViewDefinition.JSON_COMPONENTS, new JSONObject(of("componentName", componentJson)));
 
         // when
         JSONObject result = viewDefinition.performEvent(json, Locale.ENGLISH);
@@ -235,12 +234,12 @@ public class ViewDefinitionTest extends AbstractPatternTest {
         viewDefinition.addPreRenderHook(preRenderHook);
 
         JSONObject eventJson = new JSONObject();
-        eventJson.put(ViewDefinition.JSON_EVENT_NAME, "eventName");
-        eventJson.put(ViewDefinition.JSON_EVENT_ARGS, new JSONArray(newArrayList("arg1", "arg2")));
+        eventJson.put(InternalViewDefinition.JSON_EVENT_NAME, "eventName");
+        eventJson.put(InternalViewDefinition.JSON_EVENT_ARGS, new JSONArray(newArrayList("arg1", "arg2")));
 
         JSONObject json = new JSONObject();
-        json.put(ViewDefinition.JSON_EVENT, eventJson);
-        json.put(ViewDefinition.JSON_COMPONENTS, new JSONObject());
+        json.put(InternalViewDefinition.JSON_EVENT, eventJson);
+        json.put(InternalViewDefinition.JSON_COMPONENTS, new JSONObject());
 
         // when
         viewDefinition.performEvent(json, Locale.ENGLISH);

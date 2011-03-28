@@ -52,11 +52,12 @@ import com.google.common.base.Preconditions;
 import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.DataDefinitionService;
+import com.qcadoo.view.api.ComponentPattern;
+import com.qcadoo.view.api.ContainerPattern;
 import com.qcadoo.view.api.ViewDefinition;
+import com.qcadoo.view.api.ribbon.RibbonGroup;
 import com.qcadoo.view.internal.ComponentDefinition;
 import com.qcadoo.view.internal.ComponentOption;
-import com.qcadoo.view.internal.ComponentPattern;
-import com.qcadoo.view.internal.ContainerPattern;
 import com.qcadoo.view.internal.HookDefinition;
 import com.qcadoo.view.internal.api.InternalViewDefinitionService;
 import com.qcadoo.view.internal.hooks.HookDefinitionImpl;
@@ -65,7 +66,6 @@ import com.qcadoo.view.internal.internal.ComponentCustomEvent;
 import com.qcadoo.view.internal.internal.ViewComponentsResolver;
 import com.qcadoo.view.internal.internal.ViewDefinitionImpl;
 import com.qcadoo.view.internal.patterns.AbstractComponentPattern;
-import com.qcadoo.view.internal.ribbon.RibbonGroup;
 import com.qcadoo.view.internal.ribbon.RibbonUtils;
 
 @Service

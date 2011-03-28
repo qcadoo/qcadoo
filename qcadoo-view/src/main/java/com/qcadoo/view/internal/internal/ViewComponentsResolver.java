@@ -41,8 +41,8 @@ import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ClassUtils;
 
+import com.qcadoo.view.api.ComponentPattern;
 import com.qcadoo.view.internal.ComponentDefinition;
-import com.qcadoo.view.internal.ComponentPattern;
 import com.qcadoo.view.internal.ViewComponent;
 
 @Service

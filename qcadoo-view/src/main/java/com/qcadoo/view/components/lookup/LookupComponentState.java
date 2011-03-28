@@ -39,7 +39,6 @@ import com.qcadoo.model.api.search.SearchCriteriaBuilder;
 import com.qcadoo.model.api.search.SearchResult;
 import com.qcadoo.model.api.utils.ExpressionUtils;
 import com.qcadoo.view.components.FieldComponentState;
-import com.qcadoo.view.internal.components.lookup.LookupComponentPattern;
 
 public final class LookupComponentState extends FieldComponentState {
 

@@ -3,8 +3,8 @@ package com.qcadoo.view.internal.module;
 import com.google.common.base.Preconditions;
 import com.qcadoo.plugin.api.Module;
 import com.qcadoo.plugin.api.PluginState;
-import com.qcadoo.view.api.ViewDefinition;
 import com.qcadoo.view.internal.HookDefinition;
+import com.qcadoo.view.internal.api.InternalViewDefinition;
 import com.qcadoo.view.internal.api.InternalViewDefinitionService;
 
 public class ViewHookModule extends Module {
@@ -15,12 +15,12 @@ public class ViewHookModule extends Module {
 
     private final String extendsViewName;
 
-    private final ViewDefinition.HookType hookType;
+    private final InternalViewDefinition.HookType hookType;
 
     private final HookDefinition hook;
 
     public ViewHookModule(final InternalViewDefinitionService viewDefinitionService, final String extendsViewPlugin,
-            final String extendsViewName, final ViewDefinition.HookType hookType, final HookDefinition hook) {
+            final String extendsViewName, final InternalViewDefinition.HookType hookType, final HookDefinition hook) {
         this.viewDefinitionService = viewDefinitionService;
         this.extendsViewPlugin = extendsViewPlugin;
         this.extendsViewName = extendsViewName;
@@ -45,8 +45,9 @@ public class ViewHookModule extends Module {
         getViewDefinition().removeHook(hookType, hook);
     }
 
-    private ViewDefinition getViewDefinition() {
-        ViewDefinition extendsView = viewDefinitionService.getWithoutSession(extendsViewPlugin, extendsViewName);
+    private InternalViewDefinition getViewDefinition() {
+        InternalViewDefinition extendsView = (InternalViewDefinition) viewDefinitionService.getWithoutSession(extendsViewPlugin,
+                extendsViewName);
         Preconditions.checkNotNull(extendsView, "View hook extension referes to view which not exists (" + extendsViewPlugin
                 + " - " + extendsViewName + ")");
         return extendsView;

@@ -11,12 +11,18 @@ import org.json.JSONObject;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.qcadoo.view.api.ComponentPattern;
 import com.qcadoo.view.api.ViewDefinition;
-import com.qcadoo.view.internal.ComponentPattern;
+import com.qcadoo.view.api.ribbon.Ribbon;
+import com.qcadoo.view.api.ribbon.RibbonActionItem;
+import com.qcadoo.view.api.ribbon.RibbonComboBox;
+import com.qcadoo.view.api.ribbon.RibbonComboItem;
+import com.qcadoo.view.api.ribbon.RibbonGroup;
+import com.qcadoo.view.internal.api.InternalViewDefinition;
 import com.qcadoo.view.internal.patterns.AbstractComponentPattern;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
 
-public class RibbonUtils {
+public final class RibbonUtils {
 
     private final RibbonTemplates ribbonTemplates;
 
@@ -208,7 +214,8 @@ public class RibbonUtils {
         String translateAction = action;
 
         while (m.find()) {
-            ComponentPattern actionComponentPattern = viewDefinition.getComponentByReference(m.group(1));
+            ComponentPattern actionComponentPattern = ((InternalViewDefinition) viewDefinition).getComponentByReference(m
+                    .group(1));
 
             if (actionComponentPattern == null) {
                 throw new IllegalStateException("Cannot find action component for: " + action + " [" + m.group(1) + "]");

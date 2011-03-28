@@ -40,13 +40,11 @@ import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.types.BelongsToType;
 import com.qcadoo.model.api.types.FieldType;
 import com.qcadoo.model.api.types.HasManyType;
-import com.qcadoo.view.api.ViewDefinition;
-import com.qcadoo.view.internal.components.TextInputComponentPattern;
-import com.qcadoo.view.internal.components.form.FormComponentPattern;
-import com.qcadoo.view.internal.components.window.WindowComponentPattern;
+import com.qcadoo.view.components.TextInputComponentPattern;
+import com.qcadoo.view.components.form.FormComponentPattern;
+import com.qcadoo.view.components.window.WindowComponentPattern;
+import com.qcadoo.view.internal.api.InternalViewDefinition;
 import com.qcadoo.view.internal.internal.ViewDefinitionImpl;
-import com.qcadoo.view.internal.patterns.AbstractComponentPattern;
-import com.qcadoo.view.internal.patterns.AbstractContainerPattern;
 
 public class InitializationTest extends AbstractPatternTest {
 
@@ -54,7 +52,7 @@ public class InitializationTest extends AbstractPatternTest {
     public void shouldTakeDataDefinitionFromView() throws Exception {
         // given
         DataDefinition dataDefinition = mock(DataDefinition.class);
-        ViewDefinition viewDefinition = mock(ViewDefinition.class);
+        InternalViewDefinition viewDefinition = mock(InternalViewDefinition.class);
         given(viewDefinition.getDataDefinition()).willReturn(dataDefinition);
 
         AbstractComponentPattern pattern = new TextInputComponentPattern(getComponentDefinition("test", viewDefinition));
@@ -70,7 +68,7 @@ public class InitializationTest extends AbstractPatternTest {
     public void shouldTakeDataDefinitionFromParent() throws Exception {
         // given
         DataDefinition dataDefinition = mock(DataDefinition.class);
-        ViewDefinition viewDefinition = mock(ViewDefinition.class);
+        InternalViewDefinition viewDefinition = mock(InternalViewDefinition.class);
 
         AbstractContainerPattern parent = new WindowComponentPattern(getComponentDefinition("parent", viewDefinition));
         setField(parent, "dataDefinition", dataDefinition);
@@ -92,7 +90,7 @@ public class InitializationTest extends AbstractPatternTest {
         DataDefinition dataDefinition = mock(DataDefinition.class);
         given(dataDefinition.getField("field")).willReturn(fieldDefinition);
 
-        ViewDefinition viewDefinition = mock(ViewDefinition.class);
+        InternalViewDefinition viewDefinition = mock(InternalViewDefinition.class);
 
         AbstractComponentPattern fieldComponent = new TextInputComponentPattern(getComponentDefinition("component",
                 viewDefinition));
@@ -120,7 +118,7 @@ public class InitializationTest extends AbstractPatternTest {
         DataDefinition dataDefinition = mock(DataDefinition.class);
         given(dataDefinition.getField("field")).willReturn(fieldDefinition);
 
-        ViewDefinition viewDefinition = mock(ViewDefinition.class);
+        InternalViewDefinition viewDefinition = mock(InternalViewDefinition.class);
 
         AbstractContainerPattern parent = new WindowComponentPattern(getComponentDefinition("parent", viewDefinition));
         setField(parent, "dataDefinition", dataDefinition);
@@ -145,7 +143,7 @@ public class InitializationTest extends AbstractPatternTest {
         DataDefinition dataDefinition = mock(DataDefinition.class);
         given(dataDefinition.getField("field")).willReturn(fieldDefinition);
 
-        ViewDefinition viewDefinition = mock(ViewDefinition.class);
+        InternalViewDefinition viewDefinition = mock(InternalViewDefinition.class);
 
         AbstractComponentPattern sourceComponent = new TextInputComponentPattern(getComponentDefinition("component",
                 viewDefinition));
@@ -173,7 +171,7 @@ public class InitializationTest extends AbstractPatternTest {
         DataDefinition dataDefinition = mock(DataDefinition.class);
         given(dataDefinition.getField("field")).willReturn(fieldDefinition);
 
-        ViewDefinition viewDefinition = mock(ViewDefinition.class);
+        InternalViewDefinition viewDefinition = mock(InternalViewDefinition.class);
 
         AbstractContainerPattern parent = new WindowComponentPattern(getComponentDefinition("parent", viewDefinition));
         setField(parent, "dataDefinition", dataDefinition);
@@ -204,7 +202,7 @@ public class InitializationTest extends AbstractPatternTest {
         DataDefinition belongsToDefinition = mock(DataDefinition.class);
         given(fieldType.getDataDefinition()).willReturn(belongsToDefinition);
 
-        ViewDefinition viewDefinition = mock(ViewDefinition.class);
+        InternalViewDefinition viewDefinition = mock(InternalViewDefinition.class);
 
         AbstractContainerPattern parent = new WindowComponentPattern(getComponentDefinition("parent", viewDefinition));
         setField(parent, "dataDefinition", dataDefinition);
@@ -235,7 +233,7 @@ public class InitializationTest extends AbstractPatternTest {
         DataDefinition belongsToDefinition = mock(DataDefinition.class);
         given(fieldType.getDataDefinition()).willReturn(belongsToDefinition);
 
-        ViewDefinition viewDefinition = mock(ViewDefinition.class);
+        InternalViewDefinition viewDefinition = mock(InternalViewDefinition.class);
 
         AbstractContainerPattern parent = new WindowComponentPattern(getComponentDefinition("parent", viewDefinition));
         setField(parent, "dataDefinition", dataDefinition);
@@ -266,7 +264,7 @@ public class InitializationTest extends AbstractPatternTest {
         DataDefinition belongsToDefinition = mock(DataDefinition.class);
         given(fieldType.getDataDefinition()).willReturn(belongsToDefinition);
 
-        ViewDefinition viewDefinition = mock(ViewDefinition.class);
+        InternalViewDefinition viewDefinition = mock(InternalViewDefinition.class);
 
         AbstractContainerPattern parent = new WindowComponentPattern(getComponentDefinition("parent", viewDefinition));
         setField(parent, "dataDefinition", dataDefinition);
@@ -297,7 +295,7 @@ public class InitializationTest extends AbstractPatternTest {
         DataDefinition belongsToDefinition = mock(DataDefinition.class);
         given(fieldType.getDataDefinition()).willReturn(belongsToDefinition);
 
-        ViewDefinition viewDefinition = mock(ViewDefinition.class);
+        InternalViewDefinition viewDefinition = mock(InternalViewDefinition.class);
 
         AbstractContainerPattern parent = new WindowComponentPattern(getComponentDefinition("parent", viewDefinition));
         setField(parent, "dataDefinition", dataDefinition);

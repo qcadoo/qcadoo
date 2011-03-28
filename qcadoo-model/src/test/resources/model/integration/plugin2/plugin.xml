@@ -39,7 +39,7 @@
 	</dependencies>
 
 	<modules>
-		<model:model model="machine" resource="model/integration/machine.xml" />
+		<model:model model="machine" resource="model/machine.xml" />
 		<model:field plugin="products" model="component">
 			<belongsTo plugin="machines" name="machine" model="machine" required="false" />
 		</model:field>

@@ -5,8 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.google.common.base.Preconditions;
 import com.qcadoo.plugin.api.ModuleFactory;
-import com.qcadoo.view.api.ViewDefinition;
 import com.qcadoo.view.internal.HookDefinition;
+import com.qcadoo.view.internal.api.InternalViewDefinition;
 import com.qcadoo.view.internal.api.InternalViewDefinitionService;
 import com.qcadoo.view.internal.hooks.HookFactory;
 
@@ -37,15 +37,15 @@ public class ViewHookModuleFactory implements ModuleFactory<ViewHookModule> {
 
         HookDefinition hook = hookFactory.getHook(bean, method);
 
-        ViewDefinition.HookType hookType;
+        InternalViewDefinition.HookType hookType;
         if ("postConstructHook".equals(hookTypeStr)) {
-            hookType = ViewDefinition.HookType.POST_CONSTRUCT;
+            hookType = InternalViewDefinition.HookType.POST_CONSTRUCT;
         } else if ("postInitializeHook".equals(hookTypeStr)) {
-            hookType = ViewDefinition.HookType.POST_INITIALIZE;
+            hookType = InternalViewDefinition.HookType.POST_INITIALIZE;
         } else if ("preInitializeHook".equals(hookTypeStr)) {
-            hookType = ViewDefinition.HookType.PRE_INITIALIZE;
+            hookType = InternalViewDefinition.HookType.PRE_INITIALIZE;
         } else if ("preRenderHook".equals(hookTypeStr)) {
-            hookType = ViewDefinition.HookType.PRE_RENDER;
+            hookType = InternalViewDefinition.HookType.PRE_RENDER;
         } else {
             throw new IllegalStateException("Unknow view extension hook type: " + hookTypeStr);
         }

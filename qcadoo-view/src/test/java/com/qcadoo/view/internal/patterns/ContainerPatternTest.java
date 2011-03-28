@@ -36,15 +36,13 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import com.qcadoo.view.api.ComponentPattern;
 import com.qcadoo.view.api.ComponentState;
-import com.qcadoo.view.api.ViewDefinition;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.components.EmptyContainerState;
-import com.qcadoo.view.internal.ComponentPattern;
-import com.qcadoo.view.internal.components.TextInputComponentPattern;
-import com.qcadoo.view.internal.components.form.FormComponentPattern;
-import com.qcadoo.view.internal.patterns.AbstractComponentPattern;
-import com.qcadoo.view.internal.patterns.AbstractContainerPattern;
+import com.qcadoo.view.components.TextInputComponentPattern;
+import com.qcadoo.view.components.form.FormComponentPattern;
+import com.qcadoo.view.internal.api.InternalViewDefinition;
 import com.qcadoo.view.internal.states.AbstractContainerState;
 
 public class ContainerPatternTest extends AbstractPatternTest {
@@ -100,7 +98,7 @@ public class ContainerPatternTest extends AbstractPatternTest {
     @Test
     public void shouldNotCallInitializeOnChildren() throws Exception {
         // given
-        ViewDefinition viewDefinition = Mockito.mock(ViewDefinition.class);
+        InternalViewDefinition viewDefinition = Mockito.mock(InternalViewDefinition.class);
 
         ComponentPattern child = Mockito.mock(ComponentPattern.class);
 
@@ -134,7 +132,7 @@ public class ContainerPatternTest extends AbstractPatternTest {
     @Test
     public void shouldCallCreateComponentStateOnChildren() throws Exception {
         // given
-        ViewDefinition viewDefinition = mock(ViewDefinition.class);
+        InternalViewDefinition viewDefinition = mock(InternalViewDefinition.class);
         ViewDefinitionState viewDefinitionState = mock(ViewDefinitionState.class);
         AbstractContainerState state = new EmptyContainerState();
         ComponentState state1 = mock(ComponentState.class);
