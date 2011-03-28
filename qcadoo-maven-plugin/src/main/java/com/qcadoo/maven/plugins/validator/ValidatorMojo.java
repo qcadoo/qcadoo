@@ -177,11 +177,14 @@ public class ValidatorMojo extends AbstractMojo {
         List<File> filesFound = new ArrayList<File>();
         File[] currentFilesAndDirs = startingDir.listFiles();
 
-        for (File file : currentFilesAndDirs) {
-            if (file.getName().contains("java")) {
-                filesFound.add(file);
-            } else if (file.isDirectory()) {
-                filesFound.addAll(getFileListRecursively(file));
+        if (currentFilesAndDirs != null) {
+
+            for (File file : currentFilesAndDirs) {
+                if (file.getName().contains("java")) {
+                    filesFound.add(file);
+                } else if (file.isDirectory()) {
+                    filesFound.addAll(getFileListRecursively(file));
+                }
             }
         }
 
