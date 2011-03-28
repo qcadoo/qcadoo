@@ -79,7 +79,7 @@ public class DefaultPluginDescriptorParser implements PluginDescriptorParser {
             factory.setValidating(true);
             factory.setNamespaceAware(true);
 
-            // TODO not working on jetty
+            // TODO plugin masz not working on jetty
 
             // SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
             // schemaFactory.setFeature("http://apache.org/xml/features/validation/schema-full-checking", false);
@@ -233,7 +233,7 @@ public class DefaultPluginDescriptorParser implements PluginDescriptorParser {
         }
     }
 
-    // TODO use jdom instead of w3 dom
+    // TODO plugin mina use jdom instead of w3 dom
     private Element convertNodeToJdomElement(final Node child) {
         return new DOMBuilder().build((org.w3c.dom.Element) child);
     }

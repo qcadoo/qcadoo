@@ -55,7 +55,6 @@ public class DictionaryModule extends Module {
     @Override
     public void disable() {
         // empty
-
     }
 
 }

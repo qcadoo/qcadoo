@@ -67,7 +67,7 @@ public class FieldTypeFactoryTest extends DataAccessTest {
         entity = new DefaultEntity(dataDefinition);
     }
 
-    // TODO
+    // TODO plugin masz
     // @Test
     // public void shouldReturnEnumType() throws Exception {
     // // when
@@ -88,7 +88,7 @@ public class FieldTypeFactoryTest extends DataAccessTest {
     // assertEquals("[val1, val2, val3]", entity.getError("aa").getVars()[0]);
     // }
 
-    // TODO
+    // TODO plugin masz
     // @Test
     // public void shouldReturnDictionaryType() throws Exception {
     // // given
