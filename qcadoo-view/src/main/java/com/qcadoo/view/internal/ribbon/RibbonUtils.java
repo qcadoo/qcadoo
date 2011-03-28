@@ -22,7 +22,7 @@ import com.qcadoo.view.internal.api.InternalViewDefinition;
 import com.qcadoo.view.internal.patterns.AbstractComponentPattern;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
 
-public class RibbonUtils {
+public final class RibbonUtils {
 
     private final RibbonTemplates ribbonTemplates;
 

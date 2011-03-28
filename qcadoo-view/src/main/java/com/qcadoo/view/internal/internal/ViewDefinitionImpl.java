@@ -265,6 +265,8 @@ public final class ViewDefinitionImpl implements InternalViewDefinition {
             case POST_CONSTRUCT:
                 addPostConstructHook(hookDefinition);
                 break;
+            default:
+                throw new IllegalArgumentException("Unknown hook type");
         }
     }
 
@@ -283,6 +285,8 @@ public final class ViewDefinitionImpl implements InternalViewDefinition {
             case POST_CONSTRUCT:
                 postConstructHooks.remove(hookDefinition);
                 break;
+            default:
+                throw new IllegalArgumentException("Unknown hook type");
         }
     }
 

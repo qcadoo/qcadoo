@@ -46,10 +46,9 @@ public class TranslatedFieldComponentState extends FieldComponentState {
         String value = (String) getFieldValue();
 
         FieldDefinition fieldDefinition = pattern.getFieldComponentFieldDefinition();
-        if (fieldDefinition != null) {
-            if (EnumeratedType.class.isAssignableFrom(fieldDefinition.getType().getClass())) {
-                value = ((EnumeratedType) fieldDefinition.getType()).values(getLocale()).get(value);
-            }
+
+        if (fieldDefinition != null && EnumeratedType.class.isAssignableFrom(fieldDefinition.getType().getClass())) {
+            value = ((EnumeratedType) fieldDefinition.getType()).values(getLocale()).get(value);
         }
 
         json.put(JSON_VALUE, value);

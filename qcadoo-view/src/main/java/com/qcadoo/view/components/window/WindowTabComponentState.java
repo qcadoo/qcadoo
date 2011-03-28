@@ -18,8 +18,7 @@ public class WindowTabComponentState extends AbstractContainerState {
 
     @Override
     protected JSONObject renderContent() throws JSONException {
-        JSONObject json = new JSONObject();
-        return json;
+        return new JSONObject();
     }
 
 }

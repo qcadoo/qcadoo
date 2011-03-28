@@ -72,7 +72,7 @@ public class WindowComponentPattern extends AbstractContainerPattern {
 
             } else if ("windowTab".equals(child.getNodeName())) {
 
-                if (tabMode != null && tabMode == false) {
+                if (tabMode != null && !tabMode) {
                     throw new IllegalStateException("Window cannot have both 'windowTab' and 'component' tags");
                 }
                 tabMode = true;
@@ -87,7 +87,7 @@ public class WindowComponentPattern extends AbstractContainerPattern {
 
             } else if ("component".equals(child.getNodeName())) {
 
-                if (tabMode != null && tabMode == true) {
+                if (tabMode != null && tabMode) {
                     throw new IllegalStateException("Window cannot have both 'windowTab' and 'component' tags");
                 }
                 tabMode = false;
