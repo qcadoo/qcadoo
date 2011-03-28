@@ -9,9 +9,9 @@
 			</implementation>
 			<configuration>
 				<phases>
-					<validate>
-						com.qcadoo.maven.plugins:validator:validate
-					</validate>
+					<!-- validate>
+						com.qcadoo:qcadoo-maven-plugin:validate
+					</validate -->
 					<process-resources>
 						org.apache.maven.plugins:maven-resources-plugin:resources
 					</process-resources>
