@@ -97,12 +97,14 @@ public class TomcatMojo extends AbstractMojo {
     private File source;
 
     /**
-     * @parameter expression="${basedir}/conf/${profile.name}/"
+     * @parameter
+     * @required
      */
     private File configuration;
 
     /**
-     * @parameter expression="${basedir}/driver/postgresql-8.4-701.jdbc4.jar"
+     * @parameter
+     * @required
      */
     private File jdbcDriver;
 
