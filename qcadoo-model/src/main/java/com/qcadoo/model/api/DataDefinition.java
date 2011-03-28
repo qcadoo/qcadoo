@@ -76,7 +76,7 @@ public interface DataDefinition {
      * @param id
      *            set of id
      */
-    // TODO varargs
+    // TODO plugin masz varargs
     Set<Long> copy(final Set<Long> id);
 
     /**
@@ -93,7 +93,7 @@ public interface DataDefinition {
      * @param id
      *            set of id
      */
-    // TODO varargs
+    // TODO plugin masz varargs
     void delete(final Set<Long> id);
 
     /**
@@ -153,7 +153,7 @@ public interface DataDefinition {
      * 
      * @return priority field's definion, null if entity is not prioritizable
      */
-    // TODO it is neccessary to put it in API?
+    // TODO plugin masz it is neccessary to put it in API?
     FieldDefinition getPriorityField();
 
     /**
