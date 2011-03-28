@@ -27,7 +27,6 @@ package com.qcadoo.model.api.search;
 import java.util.Set;
 
 import com.qcadoo.model.api.DataDefinition;
-import com.qcadoo.model.internal.search.Order;
 
 /**
  * Object represents the criteria for finding entities. It is used for building SQL query.

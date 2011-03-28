@@ -36,42 +36,41 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Order;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.DictionaryService;
-import com.qcadoo.model.beans.qcadooModel.QcadooModelDictionary;
-import com.qcadoo.model.beans.qcadooModel.QcadooModelDictionaryItem;
+import com.qcadoo.model.api.Entity;
+import com.qcadoo.model.api.search.Restriction;
+import com.qcadoo.model.internal.DefaultEntity;
 import com.qcadoo.model.internal.dictionaries.DictionaryServiceImpl;
 
 public class DictionaryServiceTest {
 
-    private final SessionFactory sessionFactory = mock(SessionFactory.class, RETURNS_DEEP_STUBS);
+    private final DataDefinitionService dataDefinitionService = mock(DataDefinitionService.class, RETURNS_DEEP_STUBS);
 
     private DictionaryService dictionaryService = null;
 
     @Before
     public void init() {
         dictionaryService = new DictionaryServiceImpl();
-        ReflectionTestUtils.setField(dictionaryService, "sessionFactory", sessionFactory);
+        ReflectionTestUtils.setField(dictionaryService, "dataDefinitionService", dataDefinitionService);
     }
 
     @Test
     public void shouldReturnListOfDictionaries() throws Exception {
         // given
-        QcadooModelDictionary dict1 = new QcadooModelDictionary();
-        dict1.setName("Dict1");
-        QcadooModelDictionary dict2 = new QcadooModelDictionary();
-        dict2.setName("Dict2");
-        QcadooModelDictionary dict3 = new QcadooModelDictionary();
-        dict3.setName("Dict3");
+        Entity dict1 = new DefaultEntity(null);
+        dict1.setField("name", "Dict1");
+        Entity dict2 = new DefaultEntity(null);
+        dict2.setField("name", "Dict2");
+        Entity dict3 = new DefaultEntity(null);
+        dict3.setField("name", "Dict3");
 
-        given(sessionFactory.getCurrentSession().createQuery("from Dictionary").list()).willReturn(
+        given(dataDefinitionService.get("qcadooModel", "dictionary").find().orderAscBy("name").list().getEntities()).willReturn(
                 newArrayList(dict1, dict2, dict3));
 
         // when
@@ -85,17 +84,16 @@ public class DictionaryServiceTest {
     @Test
     public void shouldReturnSortedListOfDictionaryValues() throws Exception {
         // given
-        QcadooModelDictionaryItem item1 = new QcadooModelDictionaryItem();
-        item1.setName("aaa");
-        QcadooModelDictionaryItem item2 = new QcadooModelDictionaryItem();
-        item2.setName("ccc");
-        QcadooModelDictionaryItem item3 = new QcadooModelDictionaryItem();
-        item3.setName("bbb");
+        Entity item1 = new DefaultEntity(null);
+        item1.setField("name", "aaa");
+        Entity item2 = new DefaultEntity(null);
+        item2.setField("name", "ccc");
+        Entity item3 = new DefaultEntity(null);
+        item3.setField("name", "bbb");
 
         given(
-                sessionFactory.getCurrentSession().createCriteria(QcadooModelDictionaryItem.class)
-                        .createAlias("dictionary", "dc").add(Mockito.any(Criterion.class)).addOrder(Mockito.any(Order.class))
-                        .list()).willReturn(newArrayList(item1, item3, item2));
+                dataDefinitionService.get("qcadooModel", "dictionaryItem").find().restrictedWith(Mockito.any(Restriction.class))
+                        .orderAscBy("name").list().getEntities()).willReturn(newArrayList(item1, item3, item2));
 
         // when
         Map<String, String> values = dictionaryService.values("dict", Locale.ENGLISH);

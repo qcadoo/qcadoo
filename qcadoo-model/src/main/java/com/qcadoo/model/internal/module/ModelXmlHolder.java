@@ -26,12 +26,14 @@ package com.qcadoo.model.internal.module;
 
 import java.io.InputStream;
 
-import org.jdom.Document;
+import org.jdom.Element;
 
 public interface ModelXmlHolder {
 
     void put(String pluginIdentifier, String modelName, InputStream stream);
 
-    Document get(String pluginIdentifier, String modelName);
+    void addField(String pluginIdentifier, String modelName, Element field);
+
+    void addHook(String pluginIdentifier, String modelName, Element hook);
 
 }

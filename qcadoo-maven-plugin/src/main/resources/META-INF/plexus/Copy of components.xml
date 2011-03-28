@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component-set>
+	<components>
+		<component>
+			<role>org.apache.maven.lifecycle.mapping.LifecycleMapping</role>
+			<role-hint>qcadoo-plugin</role-hint>
+			<implementation>
+				org.apache.maven.lifecycle.mapping.DefaultLifecycleMapping
+			</implementation>
+			<configuration>
+				<phases>
+					<validate>
+						com.qcadoo.maven.plugins:validator:validate
+					</validate>
+					<process-resources>
+						org.apache.maven.plugins:maven-resources-plugin:resources
+					</process-resources>
+					<package>
+						org.apache.maven.plugins:maven-jar-plugin:jar
+				  	</package>
+					<install>
+						org.apache.maven.plugins:maven-install-plugin:install
+					</install>
+					<deploy>
+						org.apache.maven.plugins:maven-deploy-plugin:deploy
+					</deploy>
+				</phases>
+			</configuration>
+		</component>
+		<component>
+			<role>org.apache.maven.artifact.handler.ArtifactHandler</role>
+			<role-hint>qcadoo-plugin</role-hint>
+			<implementation>
+				org.apache.maven.artifact.handler.DefaultArtifactHandler
+			</implementation>
+			<configuration>
+				<extension>jar</extension>
+				<type>qcadoo-plugin</type>
+				<packaging>qcadoo-plugin</packaging>
+			</configuration>
+		</component>
+	</components>
+</component-set>

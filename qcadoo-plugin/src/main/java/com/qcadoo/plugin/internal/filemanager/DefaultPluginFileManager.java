@@ -39,8 +39,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.qcadoo.plugin.api.artifact.PluginArtifact;
 import com.qcadoo.plugin.internal.PluginException;
-import com.qcadoo.plugin.internal.api.PluginArtifact;
 import com.qcadoo.plugin.internal.api.PluginFileManager;
 
 @Service

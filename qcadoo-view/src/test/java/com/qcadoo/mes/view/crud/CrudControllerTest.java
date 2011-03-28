@@ -38,16 +38,16 @@ import org.junit.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.qcadoo.view.api.ViewDefinition;
 import com.qcadoo.view.api.ViewDefinitionService;
-import com.qcadoo.view.internal.crud.CrudController;
+import com.qcadoo.view.api.crud.CrudController;
+import com.qcadoo.view.internal.api.InternalViewDefinition;
 
 public class CrudControllerTest {
 
     @Test
     public void shouldReturnValidView() throws Exception {
         // given
-        ViewDefinition viewDefinition = mock(ViewDefinition.class);
+        InternalViewDefinition viewDefinition = mock(InternalViewDefinition.class);
 
         ViewDefinitionService viewDefinitionService = mock(ViewDefinitionService.class);
         given(viewDefinitionService.get("testPlugin", "testView")).willReturn(viewDefinition);
@@ -73,7 +73,7 @@ public class CrudControllerTest {
     @Test
     public void shouldReturnValidViewWithContextAndPopup() throws Exception {
         // given
-        ViewDefinition viewDefinition = mock(ViewDefinition.class);
+        InternalViewDefinition viewDefinition = mock(InternalViewDefinition.class);
         given(viewDefinition.translateContextReferences("testContext")).willReturn("{context: translatedTestContext}");
 
         ViewDefinitionService viewDefinitionService = mock(ViewDefinitionService.class);
@@ -101,7 +101,7 @@ public class CrudControllerTest {
     @Test
     public void shouldPerformEvent() throws Exception {
         // given
-        ViewDefinition viewDefinition = mock(ViewDefinition.class);
+        InternalViewDefinition viewDefinition = mock(InternalViewDefinition.class);
 
         ViewDefinitionService viewDefinitionService = mock(ViewDefinitionService.class);
         given(viewDefinitionService.get("testPlugin", "testView")).willReturn(viewDefinition);

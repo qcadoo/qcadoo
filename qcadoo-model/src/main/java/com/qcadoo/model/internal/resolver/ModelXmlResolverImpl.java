@@ -29,10 +29,13 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.jdom.Document;
+import org.jdom.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ByteArrayResource;
@@ -50,9 +53,16 @@ public final class ModelXmlResolverImpl implements ModelXmlResolver, ModelXmlHol
 
     private final Map<String, Document> documents = new HashMap<String, Document>();
 
+    private final Map<String, Set<Element>> fields = new HashMap<String, Set<Element>>();
+
+    private final Map<String, Set<Element>> hooks = new HashMap<String, Set<Element>>();
+
     @Override
     public Resource[] getResources() {
         List<Resource> resources = new ArrayList<Resource>();
+
+        addFields();
+        addHooks();
 
         for (Document document : documents.values()) {
             byte[] out = JdomUtils.documentToByteArray(document);
@@ -63,22 +73,67 @@ public final class ModelXmlResolverImpl implements ModelXmlResolver, ModelXmlHol
         }
 
         documents.clear();
+        fields.clear();
+        hooks.clear();
 
         return resources.toArray(new Resource[resources.size()]);
     }
 
+    private void addFields() {
+        for (Map.Entry<String, Set<Element>> modelFields : fields.entrySet()) {
+            Document document = documents.get(modelFields.getKey());
+            checkNotNull(document, "Cannot find model for " + modelFields.getKey());
+            Element fields = (Element) document.getRootElement().getChildren().get(0);
+
+            if (!"fields".equals(fields.getName())) {
+                throw new IllegalStateException("Expected element fields, found " + fields.getName());
+            }
+
+            for (Element field : modelFields.getValue()) {
+                field = JdomUtils.replaceNamespace(field, document.getRootElement().getNamespace());
+                field.setAttribute("required", "false");
+                fields.addContent(field.detach());
+            }
+        }
+    }
+
+    private void addHooks() {
+        for (Map.Entry<String, Set<Element>> modelHooks : hooks.entrySet()) {
+            Document document = documents.get(modelHooks.getKey());
+            checkNotNull(document, "Cannot find model for " + modelHooks.getKey());
+            Element hooks = (Element) document.getRootElement().getChildren().get(1);
+
+            if (!"hooks".equals(hooks.getName())) {
+                throw new IllegalStateException("Expected element hooks, found " + hooks.getName());
+            }
+
+            for (Element hook : modelHooks.getValue()) {
+                hook = JdomUtils.replaceNamespace(hook, document.getRootElement().getNamespace());
+                hooks.addContent(hook.detach());
+            }
+        }
+    }
+
     @Override
     public void put(final String pluginIdentifier, final String modelName, final InputStream stream) {
-        LOG.info(" -----------> " + pluginIdentifier + "." + modelName);
         Document document = JdomUtils.inputStreamToDocument(stream);
         document.getRootElement().setAttribute("plugin", pluginIdentifier);
         documents.put(pluginIdentifier + "." + modelName, document);
     }
 
     @Override
-    public Document get(final String pluginIdentifier, final String modelName) {
-        Document document = documents.get(pluginIdentifier + "." + modelName);
-        checkNotNull(document, "Cannot find model for " + pluginIdentifier + "." + modelName);
-        return document;
+    public void addField(final String pluginIdentifier, final String modelName, final Element field) {
+        if (!fields.containsKey(pluginIdentifier + "." + modelName)) {
+            fields.put(pluginIdentifier + "." + modelName, new HashSet<Element>());
+        }
+        fields.get(pluginIdentifier + "." + modelName).add(field);
+    }
+
+    @Override
+    public void addHook(final String pluginIdentifier, final String modelName, final Element hook) {
+        if (!hooks.containsKey(pluginIdentifier + "." + modelName)) {
+            hooks.put(pluginIdentifier + "." + modelName, new HashSet<Element>());
+        }
+        hooks.get(pluginIdentifier + "." + modelName).add(hook);
     }
 }

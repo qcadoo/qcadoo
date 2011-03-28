@@ -9,8 +9,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.qcadoo.view.api.ComponentState;
-import com.qcadoo.view.internal.components.window.WindowComponentPattern;
-import com.qcadoo.view.internal.ribbon.Ribbon;
+import com.qcadoo.view.api.ribbon.Ribbon;
 import com.qcadoo.view.internal.ribbon.RibbonUtils;
 import com.qcadoo.view.internal.states.AbstractContainerState;
 

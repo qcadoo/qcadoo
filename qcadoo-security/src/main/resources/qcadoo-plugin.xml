@@ -10,8 +10,8 @@
 	</information>
 	
 	<modules>
-		<model:model model="user" resource="com/qcadoo/security/model/user.xml"/>
-		<model:model model="group" resource="com/qcadoo/security/model/group.xml"/>
+		<model:model model="user" resource="model/user.xml"/>
+		<model:model model="group" resource="model/group.xml"/>
 	</modules>
 
 </plugin>

@@ -10,7 +10,7 @@
 	</information>
 	
 	<modules>
-		<model:model model="plugin" resource="com/qcadoo/plugin/model/plugin.xml"/>
+		<model:model model="plugin" resource="model/plugin.xml"/>
 	</modules>
 
 </plugin>

@@ -29,7 +29,6 @@ import org.json.JSONObject;
 
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.types.EnumeratedType;
-import com.qcadoo.view.internal.components.FieldComponentPattern;
 
 public class TranslatedFieldComponentState extends FieldComponentState {
 

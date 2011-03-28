@@ -36,14 +36,13 @@ import org.junit.Test;
 import org.mockito.BDDMockito;
 import org.mockito.Mockito;
 
+import com.qcadoo.view.api.ComponentPattern;
 import com.qcadoo.view.api.ComponentState;
-import com.qcadoo.view.api.ViewDefinition;
 import com.qcadoo.view.api.ViewDefinitionState;
-import com.qcadoo.view.internal.ComponentPattern;
+import com.qcadoo.view.components.TextInputComponentPattern;
 import com.qcadoo.view.internal.FieldEntityIdChangeListener;
 import com.qcadoo.view.internal.ScopeEntityIdChangeListener;
-import com.qcadoo.view.internal.components.TextInputComponentPattern;
-import com.qcadoo.view.internal.patterns.AbstractContainerPattern;
+import com.qcadoo.view.internal.api.InternalViewDefinition;
 import com.qcadoo.view.internal.states.ComponentStateMock;
 
 public class FieldAndScopeListenerPatternTest extends AbstractPatternTest {
@@ -51,7 +50,7 @@ public class FieldAndScopeListenerPatternTest extends AbstractPatternTest {
     @Test
     public void shouldHaveFieldListeners() throws Exception {
         // given
-        ViewDefinition viewDefinition = mock(ViewDefinition.class);
+        InternalViewDefinition viewDefinition = mock(InternalViewDefinition.class);
 
         AbstractContainerPattern parent = new ContainerPatternMock(getComponentDefinition("f1", viewDefinition));
 
@@ -78,7 +77,7 @@ public class FieldAndScopeListenerPatternTest extends AbstractPatternTest {
     @Test
     public void shouldUpdateStateFieldListeners() throws Exception {
         // given
-        ViewDefinition viewDefinition = mock(ViewDefinition.class);
+        InternalViewDefinition viewDefinition = mock(InternalViewDefinition.class);
 
         AbstractContainerPattern parent = new ContainerPatternMock(getComponentDefinition("f1", viewDefinition));
 
@@ -120,7 +119,7 @@ public class FieldAndScopeListenerPatternTest extends AbstractPatternTest {
     @Test
     public void shouldAddItselfToRelationFieldComponentWhenComplexFieldPath() throws Exception {
         // given
-        ViewDefinition viewDefinition = Mockito.mock(ViewDefinition.class);
+        InternalViewDefinition viewDefinition = Mockito.mock(InternalViewDefinition.class);
 
         AbstractContainerPattern parent = Mockito.mock(AbstractContainerPattern.class);
 
@@ -141,7 +140,7 @@ public class FieldAndScopeListenerPatternTest extends AbstractPatternTest {
     @Test
     public void shouldHaveScopeListeners() throws Exception {
         // given
-        ViewDefinition viewDefinition = mock(ViewDefinition.class);
+        InternalViewDefinition viewDefinition = mock(InternalViewDefinition.class);
 
         AbstractContainerPattern parent = new ContainerPatternMock(getComponentDefinition("f1", viewDefinition));
 
@@ -168,7 +167,7 @@ public class FieldAndScopeListenerPatternTest extends AbstractPatternTest {
     @Test
     public void shouldUpdateStateScopeListeners() throws Exception {
         // given
-        ViewDefinition viewDefinition = mock(ViewDefinition.class);
+        InternalViewDefinition viewDefinition = mock(InternalViewDefinition.class);
 
         AbstractContainerPattern parent = new ContainerPatternMock(getComponentDefinition("f1", viewDefinition));
 
@@ -209,7 +208,7 @@ public class FieldAndScopeListenerPatternTest extends AbstractPatternTest {
     @Test
     public void shouldAddItselfToRelationScopeComponentWhenComplexFieldPath() throws Exception {
         // given
-        ViewDefinition viewDefinition = Mockito.mock(ViewDefinition.class);
+        InternalViewDefinition viewDefinition = Mockito.mock(InternalViewDefinition.class);
 
         AbstractContainerPattern parent = Mockito.mock(AbstractContainerPattern.class);
 

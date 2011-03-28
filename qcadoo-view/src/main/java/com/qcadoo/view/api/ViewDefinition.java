@@ -24,60 +24,19 @@
 
 package com.qcadoo.view.api;
 
-import java.util.Locale;
-import java.util.Map;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.qcadoo.model.api.DataDefinition;
-import com.qcadoo.view.internal.ComponentPattern;
-import com.qcadoo.view.internal.HookDefinition;
-import com.qcadoo.view.internal.components.window.WindowComponentPattern;
+import com.qcadoo.view.components.window.WindowComponentPattern;
 
 public interface ViewDefinition {
-
-    enum HookType {
-        POST_INITIALIZE, PRE_RENDER, PRE_INITIALIZE, POST_CONSTRUCT
-    }
-
-    String JSON_EVENT = "event";
-
-    String JSON_EVENT_NAME = "name";
-
-    String JSON_EVENT_COMPONENT = "component";
-
-    String JSON_EVENT_ARGS = "args";
-
-    String JSON_COMPONENTS = "components";
-
-    String JSON_JS_FILE_PATHS = "jsFilePaths";
 
     String getName();
 
     String getPluginIdentifier();
 
-    Map<String, Object> prepareView(JSONObject jsonObject, Locale locale);
+    DataDefinition getDataDefinition();
 
-    JSONObject performEvent(JSONObject jsonObject, Locale locale) throws JSONException;
+    WindowComponentPattern getRootWindow();
 
     ComponentPattern getComponentByReference(String reference);
 
-    boolean isMenuAccessible();
-
-    DataDefinition getDataDefinition();
-
-    void addJsFilePath(String jsFilePath);
-
-    void registerComponent(String reference, String path, ComponentPattern pattern);
-
-    void unregisterComponent(String reference, String path);
-
-    String translateContextReferences(String context);
-
-    void addHook(HookType type, HookDefinition hookDefinition);
-
-    void removeHook(HookType type, HookDefinition hookDefinition);
-
-    WindowComponentPattern getRootWindow();
 }

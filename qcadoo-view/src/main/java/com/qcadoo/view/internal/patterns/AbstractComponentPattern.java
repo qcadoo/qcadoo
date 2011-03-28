@@ -48,14 +48,15 @@ import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.types.BelongsToType;
 import com.qcadoo.model.api.types.HasManyType;
 import com.qcadoo.model.api.types.TreeType;
+import com.qcadoo.view.api.ComponentPattern;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.ViewDefinition;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.internal.ComponentDefinition;
 import com.qcadoo.view.internal.ComponentOption;
-import com.qcadoo.view.internal.ComponentPattern;
 import com.qcadoo.view.internal.FieldEntityIdChangeListener;
 import com.qcadoo.view.internal.ScopeEntityIdChangeListener;
+import com.qcadoo.view.internal.api.InternalViewDefinition;
 import com.qcadoo.view.internal.api.InternalViewDefinitionService;
 import com.qcadoo.view.internal.internal.ComponentCustomEvent;
 import com.qcadoo.view.internal.states.AbstractComponentState;
@@ -90,7 +91,7 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
 
     private final TranslationService translationService;
 
-    private final ViewDefinition viewDefinition;
+    private final InternalViewDefinition viewDefinition;
 
     private final Map<String, ComponentPattern> fieldEntityIdChangeListeners = new HashMap<String, ComponentPattern>();
 
@@ -129,7 +130,7 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
         this.defaultVisible = componentDefinition.isDefaultVisible();
         this.translationService = componentDefinition.getTranslationService();
         this.dataDefinition = componentDefinition.getDataDefinition();
-        this.viewDefinition = componentDefinition.getViewDefinition();
+        this.viewDefinition = (InternalViewDefinition) componentDefinition.getViewDefinition();
         this.viewDefinition.registerComponent(getReference(), getPath(), this);
     }
 

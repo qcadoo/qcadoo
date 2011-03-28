@@ -35,6 +35,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
+import com.qcadoo.model.api.search.Order;
 import com.qcadoo.model.api.search.Restriction;
 import com.qcadoo.model.api.search.SearchCriteria;
 import com.qcadoo.model.api.search.SearchCriteriaBuilder;
