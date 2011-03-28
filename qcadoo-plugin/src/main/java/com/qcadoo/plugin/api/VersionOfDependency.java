@@ -168,4 +168,12 @@ public class VersionOfDependency {
             }
         }
     }
+
+    public Version getMinVersion() {
+        return minVersion;
+    }
+
+    public Version getMaxVersion() {
+        return maxVersion;
+    }
 }
