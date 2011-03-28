@@ -28,7 +28,7 @@
 						org.apache.maven.plugins:maven-surefire-plugin:test
 				 	</test>
 					<package>
-						org.qcadoo.mes:validator:package
+						com.qcadoo.mes:validator:package
 				  	</package>
 					<install>
 						org.apache.maven.plugins:maven-install-plugin:install
