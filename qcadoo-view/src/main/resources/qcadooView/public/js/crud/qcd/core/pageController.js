@@ -53,6 +53,8 @@ QCD.PageController = function(_viewName, _pluginIdentifier, _hasDataDefinition, 
 	
 	function constructor(_this) {
 		
+		QCD.info("TEST 3");
+		
 		QCDConnector.windowName = "/page/"+pluginIdentifier+"/"+viewName;
 		QCDConnector.mainController = _this;
 		
