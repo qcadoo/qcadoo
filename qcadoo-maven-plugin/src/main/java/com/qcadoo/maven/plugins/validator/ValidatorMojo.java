@@ -102,7 +102,12 @@ public class ValidatorMojo extends AbstractMojo {
             db = dbf.newDocumentBuilder();
             Document doc = db.parse(plugin);
             doc.getDocumentElement().normalize();
-            NodeList nList = doc.getElementsByTagName(type);
+
+            NodeList nList = doc.getElementsByTagName("plugin");
+
+            String pluginName = ((Element) nList.item(0)).getAttribute("plugin");
+
+            nList = doc.getElementsByTagName(type);
 
             for (int i = 0; i < nList.getLength(); i++) {
 
@@ -110,7 +115,7 @@ public class ValidatorMojo extends AbstractMojo {
                 if (nNode.getNodeType() == Node.ELEMENT_NODE) {
 
                     Element eElement = (Element) nNode;
-                    fileList.add(basedir + resourcePath + eElement.getAttribute("resource"));
+                    fileList.add(basedir + resourcePath + pluginName + "/" + eElement.getAttribute("resource"));
                 }
             }
 
