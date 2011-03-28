@@ -56,6 +56,7 @@ div.headerActionButton {
 	background-repeat:repeat-x;
 	vertical-align: middle;
 	position: relative;
+	line-height: 18px;
 }
 
 div.headerActionButton .ribbon_description_icon {

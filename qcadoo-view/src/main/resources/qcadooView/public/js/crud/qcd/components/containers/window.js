@@ -223,7 +223,7 @@ QCD.components.containers.Window = function(_element, _mainController) {
 			//var componentsHeight = height ? height-18 : null;
 			var componentsHeight = height;
 			for (var i in this.components) {
-				this.components[i].updateSize(width-20, componentsHeight);
+				this.components[i].updateSize(width, componentsHeight);
 			}
 		}
 		

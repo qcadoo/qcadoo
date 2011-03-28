@@ -20,6 +20,7 @@ import org.codehaus.plexus.archiver.zip.ZipArchiver;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.io.InputStreamFacade;
 import org.codehaus.plexus.util.io.RawInputStreamFacade;
+import org.springframework.core.io.ClassPathResource;
 
 /**
  * @goal tomcat
@@ -253,9 +254,8 @@ public class TomcatMojo extends AbstractMojo {
     }
 
     private void copyClassPathResource(final String resourceName) throws IOException {
-        getLog().info("Adding classpath resource " + resourceName);
-        InputStreamFacade resource = new RawInputStreamFacade(getClass().getClassLoader().getResourceAsStream(
-                "tomcat/" + resourceName));
+        getLog().info("Adding classpath resource /tomcat/" + resourceName);
+        InputStreamFacade resource = new RawInputStreamFacade(new ClassPathResource("/tomcat/" + resourceName).getInputStream());
         File target = new File(rootDirectory, resourceName);
         target.getParentFile().mkdirs();
         FileUtils.copyStreamToFile(resource, target);
