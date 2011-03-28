@@ -9,15 +9,15 @@
 			</implementation>
 			<configuration>
 				<phases>
-					<generate-resources>
-						org.apache.maven.plugins:maven-dependency-plugin:unpack-dependencies
-					</generate-resources>
 					<process-resources>
 						org.apache.maven.plugins:maven-resources-plugin:resources
 					</process-resources>
 					<compile>
 						org.apache.maven.plugins:maven-compiler-plugin:compile
 					</compile>
+					<validate>
+						com.qcadoo:qcadoo-maven-plugin:validate
+					</validate>
 					<process-test-resources>
 						org.apache.maven.plugins:maven-resources-plugin:testResources
 					</process-test-resources>
@@ -28,14 +28,14 @@
 						org.apache.maven.plugins:maven-surefire-plugin:test
 				 	</test>
 					<package>
-						com.qcadoo:qcadoo-maven-plugin:validate
+						org.apache.maven.plugins:maven-jar-plugin:jar
 				  	</package>
 					<install>
 						org.apache.maven.plugins:maven-install-plugin:install
 					</install>
 					<deploy>
 						org.apache.maven.plugins:maven-deploy-plugin:deploy
-					</deploy>
+					</deploy>				
 				</phases>
 			</configuration>
 		</component>
