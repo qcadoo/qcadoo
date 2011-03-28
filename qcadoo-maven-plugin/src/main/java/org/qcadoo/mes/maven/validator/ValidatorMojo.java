@@ -60,9 +60,9 @@ public class ValidatorMojo extends AbstractMojo {
     // private static final String VIEW_SCHEMA =
     // "file:/Users/mady/qcadoo/mes/mes-core/src/main/resources/com/qcadoo/mes/core/view.xsd";
 
-    private static final String MODEL_SCHEMA = "/Users/mady/qcadoo/qcadoo/qcadoo/qcadoo-maven-plugin/src/main/resources/schemas/model.xsd";
+    private static final String MODEL_SCHEMA = "http://schema.qcadoo.org/model.xsd";
 
-    private static final String PLUGIN_SCHEMA = "/Users/mady/qcadoo/qcadoo/qcadoo/qcadoo-maven-plugin/src/main/resources/schemas/plugin.xsd";
+    private static final String PLUGIN_SCHEMA = "http://schema.qcadoo.org/plugin.xsd";
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
