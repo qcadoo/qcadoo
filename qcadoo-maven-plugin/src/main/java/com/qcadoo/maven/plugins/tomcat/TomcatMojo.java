@@ -254,7 +254,6 @@ public class TomcatMojo extends AbstractMojo {
     }
 
     private void copyClassPathResource(final String resourceName) throws IOException {
-        getLog().info("Adding classpath resource /tomcat/" + resourceName);
         InputStreamFacade resource = new RawInputStreamFacade(new ClassPathResource("/tomcat/" + resourceName).getInputStream());
         File target = new File(rootDirectory, resourceName);
         target.getParentFile().mkdirs();
