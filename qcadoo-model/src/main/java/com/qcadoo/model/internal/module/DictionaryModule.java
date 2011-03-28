@@ -34,31 +34,27 @@ public class DictionaryModule extends Module {
 
     private final InternalDictionaryService dictionaryService;
 
-    public DictionaryModule(final String name, final InternalDictionaryService dictionaryService) {
+    private final String pluginIdentifier;
+
+    public DictionaryModule(final String pluginIdentifier, final String name, final InternalDictionaryService dictionaryService) {
+        this.pluginIdentifier = pluginIdentifier;
         this.name = name;
         this.dictionaryService = dictionaryService;
     }
 
     @Override
     public void init(final PluginState state) {
-        dictionaryService.createIfNotExists(name);
-
-        if (!PluginState.ENABLED.equals(state)) {
-            disable();
-        }
+        // empty
     }
 
     @Override
     public void enable() {
-        // TODO plugin masz
-        // włącza słownik
+        dictionaryService.createIfNotExists(pluginIdentifier, name);
     }
 
     @Override
     public void disable() {
-        // TODO plugin masz
-        // wyłącza słownik
-
+        // empty
     }
 
 }

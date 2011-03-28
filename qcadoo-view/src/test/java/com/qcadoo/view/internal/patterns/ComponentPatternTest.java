@@ -44,20 +44,18 @@ import org.junit.Test;
 
 import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.mes.beans.sample.CustomEntityService;
+import com.qcadoo.view.api.ComponentPattern;
 import com.qcadoo.view.api.ComponentState;
-import com.qcadoo.view.api.ViewDefinition;
+import com.qcadoo.view.api.ContainerPattern;
 import com.qcadoo.view.api.ViewDefinitionState;
+import com.qcadoo.view.components.TextInputComponentPattern;
+import com.qcadoo.view.components.form.FormComponentPattern;
 import com.qcadoo.view.components.form.FormComponentState;
+import com.qcadoo.view.components.window.WindowComponentPattern;
 import com.qcadoo.view.internal.ComponentDefinition;
-import com.qcadoo.view.internal.ComponentPattern;
-import com.qcadoo.view.internal.ContainerPattern;
-import com.qcadoo.view.internal.components.TextInputComponentPattern;
-import com.qcadoo.view.internal.components.form.FormComponentPattern;
-import com.qcadoo.view.internal.components.window.WindowComponentPattern;
+import com.qcadoo.view.internal.api.InternalViewDefinition;
 import com.qcadoo.view.internal.internal.ComponentCustomEvent;
 import com.qcadoo.view.internal.internal.EventHandlerHolder;
-import com.qcadoo.view.internal.patterns.AbstractComponentPattern;
-import com.qcadoo.view.internal.patterns.AbstractContainerPattern;
 
 public class ComponentPatternTest extends AbstractPatternTest {
 
@@ -67,7 +65,7 @@ public class ComponentPatternTest extends AbstractPatternTest {
         // given
         ViewDefinitionState viewDefinitionState = mock(ViewDefinitionState.class);
         TranslationService translationService = mock(TranslationService.class);
-        ViewDefinition viewDefinition = mock(ViewDefinition.class);
+        InternalViewDefinition viewDefinition = mock(InternalViewDefinition.class);
         ComponentDefinition componentDefinition = getComponentDefinition("testName", null);
         componentDefinition.setTranslationService(translationService);
         componentDefinition.setViewDefinition(viewDefinition);
@@ -139,7 +137,7 @@ public class ComponentPatternTest extends AbstractPatternTest {
     @Test
     public void shouldAddItselfToParentOnInitialize() throws Exception {
         // given
-        ViewDefinition viewDefinition = mock(ViewDefinition.class);
+        InternalViewDefinition viewDefinition = mock(InternalViewDefinition.class);
         AbstractContainerPattern parent = new WindowComponentPattern(getComponentDefinition("test", viewDefinition));
 
         ComponentPattern pattern = new TextInputComponentPattern(getComponentDefinition("testName", "testField", null, parent,
@@ -200,7 +198,7 @@ public class ComponentPatternTest extends AbstractPatternTest {
     public void shouldHaveListenersOnEmptyOptions() throws Exception {
         // given
         TranslationService translationService = mock(TranslationService.class);
-        ViewDefinition viewDefinition = mock(ViewDefinition.class);
+        InternalViewDefinition viewDefinition = mock(InternalViewDefinition.class);
         ComponentDefinition componentDefinition = getComponentDefinition("testName", null);
         componentDefinition.setTranslationService(translationService);
         componentDefinition.setViewDefinition(viewDefinition);
@@ -231,7 +229,7 @@ public class ComponentPatternTest extends AbstractPatternTest {
     @Test
     public void shouldHaveListenersInOptions() throws Exception {
         // given
-        ViewDefinition viewDefinition = mock(ViewDefinition.class);
+        InternalViewDefinition viewDefinition = mock(InternalViewDefinition.class);
 
         AbstractContainerPattern parent = new WindowComponentPattern(getComponentDefinition("f1", viewDefinition));
 

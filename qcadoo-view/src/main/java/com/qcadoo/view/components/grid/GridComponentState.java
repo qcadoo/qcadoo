@@ -53,7 +53,6 @@ import com.qcadoo.model.api.search.SearchCriteriaBuilder;
 import com.qcadoo.model.api.search.SearchResult;
 import com.qcadoo.model.api.types.BelongsToType;
 import com.qcadoo.model.api.utils.DateUtils;
-import com.qcadoo.view.internal.components.grid.GridComponentColumn;
 import com.qcadoo.view.internal.states.AbstractComponentState;
 
 public final class GridComponentState extends AbstractComponentState {

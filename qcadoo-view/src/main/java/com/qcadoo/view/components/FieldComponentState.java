@@ -27,7 +27,6 @@ package com.qcadoo.view.components;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.qcadoo.view.internal.components.FieldComponentPattern;
 import com.qcadoo.view.internal.states.AbstractComponentState;
 
 public class FieldComponentState extends AbstractComponentState {

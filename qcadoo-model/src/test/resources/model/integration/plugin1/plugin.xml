@@ -32,8 +32,8 @@
 	</information>
 
 	<modules>
-		<model:model model="product" resource="model/integration/product.xml" />
-		<model:model model="component" resource="model/integration/component.xml" />
+		<model:model model="product" resource="model/product.xml" />
+		<model:model model="component" resource="model/component.xml" />
 	</modules>
 	
 </plugin>

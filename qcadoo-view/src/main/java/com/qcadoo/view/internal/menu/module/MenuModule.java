@@ -2,11 +2,11 @@ package com.qcadoo.view.internal.menu.module;
 
 import com.qcadoo.plugin.api.Module;
 import com.qcadoo.plugin.api.PluginState;
-import com.qcadoo.view.internal.api.MenuService;
+import com.qcadoo.view.internal.api.InternalMenuService;
 
 public class MenuModule extends Module {
 
-    private final MenuService menuService;
+    private final InternalMenuService menuService;
 
     private final String menuName;
 
@@ -20,7 +20,7 @@ public class MenuModule extends Module {
 
     private final String menuViewName;
 
-    public MenuModule(final MenuService menuService, final String pluginIdentifier, final String menuName,
+    public MenuModule(final InternalMenuService menuService, final String pluginIdentifier, final String menuName,
             final String menuCategory, final String menuViewPluginIdentifier, final String menuViewName, final String menuUrl) {
         this.menuService = menuService;
         this.pluginIdentifier = pluginIdentifier;

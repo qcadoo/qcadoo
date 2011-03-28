@@ -28,7 +28,7 @@ import java.util.Collection;
 import java.util.List;
 
 import com.qcadoo.plugin.api.Plugin;
-import com.qcadoo.plugin.internal.dependencymanager.PluginDependencyResult;
+import com.qcadoo.plugin.api.PluginDependencyResult;
 
 public interface PluginDependencyManager {
 

@@ -1,6 +1,8 @@
 package com.qcadoo.view.internal.ribbon;
 
 import com.qcadoo.view.api.ViewDefinition;
+import com.qcadoo.view.api.ribbon.RibbonActionItem;
+import com.qcadoo.view.api.ribbon.RibbonGroup;
 
 public class RibbonTemplates {
 

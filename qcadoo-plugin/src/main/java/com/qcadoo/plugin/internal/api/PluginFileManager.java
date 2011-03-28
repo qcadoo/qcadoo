@@ -26,6 +26,8 @@ package com.qcadoo.plugin.internal.api;
 
 import java.io.File;
 
+import com.qcadoo.plugin.api.artifact.PluginArtifact;
+
 public interface PluginFileManager {
 
     boolean installPlugin(final String... filename);

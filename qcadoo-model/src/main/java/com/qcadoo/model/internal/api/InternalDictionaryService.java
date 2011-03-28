@@ -28,6 +28,6 @@ import com.qcadoo.model.api.DictionaryService;
 
 public interface InternalDictionaryService extends DictionaryService {
 
-    void createIfNotExists(String name, String... values);
+    void createIfNotExists(String pluginIdentifier, String name, String... values);
 
 }

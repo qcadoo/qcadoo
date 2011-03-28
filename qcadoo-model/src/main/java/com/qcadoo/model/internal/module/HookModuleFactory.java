@@ -26,12 +26,10 @@ package com.qcadoo.model.internal.module;
 
 import java.util.List;
 
-import org.jdom.Document;
 import org.jdom.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.qcadoo.model.internal.api.InternalDataDefinitionService;
-import com.qcadoo.model.internal.utils.JdomUtils;
 import com.qcadoo.plugin.api.ModuleFactory;
 
 public class HookModuleFactory implements ModuleFactory<HookModule> {
@@ -69,21 +67,11 @@ public class HookModuleFactory implements ModuleFactory<HookModule> {
             throw new IllegalStateException("Only one hook can be defined in single hook module");
         }
 
-        Document document = modelXmlHolder.get(targetPluginIdentifier, targetModelName);
+        String hookType = elements.get(0).getName();
+        String hookClass = elements.get(0).getAttributeValue("class");
+        String hookMethod = elements.get(0).getAttributeValue("method");
 
-        Element hook = JdomUtils.replaceNamespace(elements.get(0), document.getRootElement().getNamespace());
-
-        String hookType = hook.getName();
-        String hookClass = hook.getAttributeValue("class");
-        String hookMethod = hook.getAttributeValue("method");
-
-        Element hooks = (Element) document.getRootElement().getChildren().get(1);
-
-        if (!"hooks".equals(hooks.getName())) {
-            throw new IllegalStateException("Expected element hooks, found " + hooks.getName());
-        }
-
-        hooks.addContent(hook.detach());
+        modelXmlHolder.addHook(targetPluginIdentifier, targetModelName, elements.get(0));
 
         return new HookModule(targetPluginIdentifier, targetModelName, hookType, hookClass, hookMethod, dataDefinitionService);
     }

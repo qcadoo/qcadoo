@@ -27,7 +27,6 @@ package com.qcadoo.view.components;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.qcadoo.view.internal.components.PasswordComponentPattern;
 
 public class PasswordComponentState extends FieldComponentState {
 
