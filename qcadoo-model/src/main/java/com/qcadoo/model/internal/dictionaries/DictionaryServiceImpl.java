@@ -86,7 +86,7 @@ public final class DictionaryServiceImpl implements InternalDictionaryService {
 
         Map<String, String> values = new LinkedHashMap<String, String>();
 
-        // TODO - i18n
+        // TODO plugin masz - i18n
 
         for (QcadooModelDictionaryItem item : items) {
             values.put(item.getName(), item.getName());

@@ -486,7 +486,7 @@ public final class DataAccessServiceImpl implements DataAccessService {
 
         List<?> results = criteria.list();
 
-        // FIXME masz distinct
+        // FIXME plugin masz distinct
 
         // if (searchCriteria.getDistinctProperty() != null) {
         // Class<?> entityClass = ((InternalDataDefinition) searchCriteria.getDataDefinition()).getClassForEntity();

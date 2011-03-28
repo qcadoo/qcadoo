@@ -32,7 +32,7 @@ public class QcadooModelDictionary {
 
     private String name;
 
-    // TODO take me from properties file
+    // TODO plugin masz take me from properties file
     private String label;
 
     private Set<QcadooModelDictionaryItem> dictionaryItems;

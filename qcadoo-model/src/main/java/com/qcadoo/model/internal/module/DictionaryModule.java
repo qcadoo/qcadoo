@@ -50,13 +50,13 @@ public class DictionaryModule extends Module {
 
     @Override
     public void enable() {
-        // TODO
+        // TODO plugin masz
         // włącza słownik
     }
 
     @Override
     public void disable() {
-        // TODO
+        // TODO plugin masz
         // wyłącza słownik
 
     }

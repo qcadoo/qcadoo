@@ -74,7 +74,7 @@ public class ModelXmlToHbmConverterTest {
     @Ignore
     // @Test(expected = IllegalStateException.class)
     public void shouldFailForInvalidModelXml() throws Exception {
-        // TODO
+        // TODO plugin masz
         modelXmlToHbmConverter.convert(Utils.MODEL_XML_INVALID_RESOURCE);
     }
 

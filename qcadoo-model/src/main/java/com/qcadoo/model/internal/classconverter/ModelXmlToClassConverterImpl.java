@@ -219,7 +219,7 @@ public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverte
             }
         }
 
-        // TODO - toString, equals, hashCode
+        // TODO plugin masz- toString, equals, hashCode
     }
 
     private void parseField(final XMLStreamReader reader, final String pluginIdentifier, final CtClass ctClass, final String tag)
@@ -275,7 +275,7 @@ public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverte
     }
 
     private void createHasManyField(final CtClass ctClass, final String pluginIdentifier, final XMLStreamReader reader) {
-        // TODO - generics
+        // TODO plugin masz - generics
         createField(ctClass, getStringAttribute(reader, "name"), "java.util.Set");
     }
 

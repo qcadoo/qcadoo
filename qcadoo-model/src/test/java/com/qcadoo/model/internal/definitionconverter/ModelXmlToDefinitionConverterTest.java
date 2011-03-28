@@ -224,11 +224,11 @@ public class ModelXmlToDefinitionConverterTest {
         assertNotNull(dataDefinition.getField("fieldEnum"));
         assertThat(dataDefinition.getField("fieldEnum").getType(), instanceOf(EnumType.class));
 
-        // TODO
+        // TODO plugin masz
         // assertThat(((EnumType) dataDefinition.getField("fieldEnum").getType()).values(Locale.ENGLISH).keySet(),
         // hasItems("one", "two", "three"));
 
-        // TODO
+        // TODO plugin masz
         // assertNotNull(dataDefinition.getField("category"));
         // assertThat(dataDefinition.getField("fieldDictionary").getType(), instanceOf(DictionaryType.class));
         // assertEquals("categories", getField(dataDefinition.getField("fieldDictionary").getType(), "dictionaryName"));
@@ -238,7 +238,7 @@ public class ModelXmlToDefinitionConverterTest {
         assertTrue(dataDefinition.getField("fieldText").isReadOnly());
     }
 
-    // TODO
+    // TODO plugin masz
     // <string name="fieldStringNotPersistent" persistent="false" />
     // <string name="fieldStringWithExpression" expression="#fString" />
     // <toString expression="#fieldString" />
