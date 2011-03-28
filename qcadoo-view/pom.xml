@@ -30,5 +30,52 @@
 			<version>20090211</version>
 		</dependency>
 	</dependencies>
+	
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>net.alchim31.maven</groupId>
+          		<artifactId>yuicompressor-maven-plugin</artifactId>
+          		<version>1.1</version>
+          		<executions>
+		          <execution>
+		            <goals>
+		              <goal>compress</goal>
+		            </goals>
+		          </execution>
+		        </executions>
+		        <configuration>
+		        	<force>true</force>
+		        	<suffix>-qcadoo.min</suffix>
+          			<outputDirectory>src/main/resources/</outputDirectory>
+          			<excludes>
+		                <exclude>**/*qcadoo.min.js</exclude>
+		                <exclude>**/*qcadoo.min.css</exclude>
+		                <exclude>**/*qcadoo-min.js</exclude>
+		                <exclude>**/*qcadoo-min.js</exclude>
+		            </excludes>
+          			<aggregations>
+            			<aggregation>
+            				<removeIncluded>true</removeIncluded>
+            				<output>src/main/resources/qcadooView/public/qcadoo-min.js</output>
+            				<includes>
+				                <include>**/*qcadoo.min.js</include>
+				            </includes>
+				            <excludes>
+				                <exclude>**/qcadoo-min.js</exclude>
+				            </excludes>
+            			</aggregation>
+            			<aggregation>
+            				<removeIncluded>true</removeIncluded>
+            				<output>src/main/resources/qcadooView/public/qcadoo-min.css</output>
+            				<includes>
+				                <include>**/*qcadoo.min.css</include>
+				            </includes>
+            			</aggregation>
+            		</aggregations>	
+        		</configuration>  
+			</plugin>
+		</plugins>
+	</build>
 
 </project>
