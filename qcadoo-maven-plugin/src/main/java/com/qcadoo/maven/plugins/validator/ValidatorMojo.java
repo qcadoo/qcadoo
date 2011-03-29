@@ -8,10 +8,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -58,67 +57,87 @@ public class ValidatorMojo extends AbstractMojo {
      */
     private String basedir;
 
-    // private static final String VIEW_SCHEMA =
-    // "file:/Users/mady/qcadoo/mes/mes-core/src/main/resources/com/qcadoo/mes/core/view.xsd";
-
-    private static final String MODEL_SCHEMA = "http://schema.qcadoo.org/model.xsd";
-
-    private static final String PLUGIN_SCHEMA = "http://schema.qcadoo.org/plugin.xsd";
+    private final String[] forbiddenPackages = new String[] { "com.qcadoo.model.internal.", "com.qcadoo.view.internal.",
+            "com.qcadoo.localization.internal.", "com.qcadoo.plugin.internal.", "com.qcadoo.report.internal.",
+            "com.qcadoo.security.internal." };
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        /**
-         * JAVA SOURCE CODE VALIDATION
-         */
         validateJavaClasses();
-
-        /**
-         * PLUGIN XML VALIDATION
-         */
-        String fullPluginDir = basedir + resourcePath + "qcadoo-plugin.xml";
-        validateFile(PLUGIN_SCHEMA, new File(fullPluginDir));
-
-        /**
-         * PLUGIN XML VALIDATION
-         */
-
-        Map<List<String>, String> schemas = new HashMap<List<String>, String>();
-        schemas.put(getFileList("model:model", fullPluginDir), MODEL_SCHEMA);
-        // schemas.put(getFileList("view:view"), VIEW_SCHEMA);
-
-        for (Entry<List<String>, String> entry : schemas.entrySet()) {
-            validateXmlFiles(entry);
-        }
+        validateSchemas();
     }
 
-    private List<String> getFileList(final String type, final String pluginDir) {
-        List<String> fileList = new ArrayList<String>();
+    private void validateSchemas() throws MojoFailureException {
+        String pluginDescriptor = basedir + resourcePath + "qcadoo-plugin.xml";
+
+        validateSchema(basedir + resourcePath + "qcadoo-plugin.xml");
+
+        for (String file : getModelResources(pluginDescriptor)) {
+            validateSchema(file);
+        }
+
+        // TODO enable after view schema refactoring
+        // for (String file : getViewResources(pluginDescriptor)) {
+        // validateSchema(file);
+        // }
+    }
+
+    // private Set<String> getViewResources(final String pluginDescriptor) {
+    // Set<String> resources = new HashSet<String>();
+    //
+    // try {
+    // DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+    // DocumentBuilder db;
+    // db = dbf.newDocumentBuilder();
+    // Document doc = db.parse(new File(pluginDescriptor));
+    // doc.getDocumentElement().normalize();
+    //
+    // NodeList nList = doc.getElementsByTagName("plugin");
+    //
+    // String pluginName = ((Element) nList.item(0)).getAttribute("plugin");
+    //
+    // nList = doc.getElementsByTagName("view");
+    //
+    // for (int i = 0; i < nList.getLength(); i++) {
+    // NodeList nNodeList = nList.item(i).getChildNodes();
+    // for (int j = 0; j < nNodeList.getLength(); j++) {
+    // resources.add(basedir + resourcePath + pluginName + "/" + nNodeList.item(i).getTextContent());
+    // }
+    // }
+    // } catch (ParserConfigurationException e) {
+    // getLog().error(e.getMessage());
+    // } catch (SAXException e) {
+    // getLog().error(e.getMessage());
+    // } catch (IOException e) {
+    // getLog().error(e.getMessage());
+    // }
+    //
+    // return resources;
+    // }
+
+    private Set<String> getModelResources(final String pluginDescriptor) {
+        Set<String> resources = new HashSet<String>();
 
         try {
-            File plugin = new File(pluginDir);
-
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db;
             db = dbf.newDocumentBuilder();
-            Document doc = db.parse(plugin);
+            Document doc = db.parse(new File(pluginDescriptor));
             doc.getDocumentElement().normalize();
 
             NodeList nList = doc.getElementsByTagName("plugin");
 
             String pluginName = ((Element) nList.item(0)).getAttribute("plugin");
 
-            nList = doc.getElementsByTagName(type);
+            nList = doc.getElementsByTagName("model");
 
             for (int i = 0; i < nList.getLength(); i++) {
-
                 Node nNode = nList.item(i);
                 if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-
                     Element eElement = (Element) nNode;
-                    fileList.add(basedir + resourcePath + pluginName + "/" + eElement.getAttribute("resource"));
+                    resources.add(basedir + resourcePath + pluginName + "/" + eElement.getAttribute("resource"));
                 }
             }
-
         } catch (ParserConfigurationException e) {
             getLog().error(e.getMessage());
         } catch (SAXException e) {
@@ -127,16 +146,10 @@ public class ValidatorMojo extends AbstractMojo {
             getLog().error(e.getMessage());
         }
 
-        return fileList;
+        return resources;
     }
 
-    private void validateXmlFiles(final Entry<List<String>, String> entry) throws MojoFailureException {
-        for (String filePath : entry.getKey()) {
-            validateFile(entry.getValue(), new File(filePath));
-        }
-    }
-
-    private void validateFile(final String schema, final File file) throws MojoFailureException {
+    private void validateSchema(final String file) throws MojoFailureException {
         try {
             getLog().info("Validating file: " + file);
 
@@ -145,11 +158,10 @@ public class ValidatorMojo extends AbstractMojo {
             factory.setNamespaceAware(true);
             factory.setValidating(true);
             factory.setAttribute("http://java.sun.com/xml/jaxp/properties/schemaLanguage", "http://www.w3.org/2001/XMLSchema");
-            factory.setAttribute("http://java.sun.com/xml/jaxp/properties/schemaSource", schema);
 
             DocumentBuilder parser = factory.newDocumentBuilder();
             parser.setErrorHandler(new SimpleErrorHandler());
-            parser.parse(file);
+            parser.parse(new File(file));
 
         } catch (ParserConfigurationException e) {
             getLog().error(e.getMessage());
@@ -169,7 +181,9 @@ public class ValidatorMojo extends AbstractMojo {
         List<File> files = getFileListRecursively(file);
 
         for (File fileToGrep : files) {
-            grepFile(fileToGrep, "import com.qcadoo.mes.internal.");
+            for (String firbiddenPackage : forbiddenPackages) {
+                grepFile(fileToGrep, "import " + firbiddenPackage);
+            }
         }
     }
 
@@ -192,8 +206,7 @@ public class ValidatorMojo extends AbstractMojo {
     }
 
     public void grepFile(final File file, final String re) throws MojoFailureException {
-
-        getLog().info("Validating file: " + file);
+        getLog().info("Validating file " + file + " with pattern '" + re + "'");
 
         InputStream in = null;
         InputStreamReader isr = null;

@@ -71,7 +71,7 @@
 	
 	<xs:complexType name="modules">
 		<xs:sequence>
-			<xs:any minOccurs="0" maxOccurs="unbounded" processContents="lax"/>
+			<xs:any minOccurs="0" maxOccurs="unbounded" processContents="strict" />
 		</xs:sequence>
 	</xs:complexType>
 
