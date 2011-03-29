@@ -77,12 +77,18 @@ public class ValidatorMojo extends AbstractMojo {
         }
 
         // TODO enable after view schema refactoring
-        // for (String file : getViewResources(pluginDescriptor)) {
+        // for (String file : getViewResources(pluginDescriptor, "view")) {
+        // validateSchema(file);
+        // }
+        // for (String file : getViewResources(pluginDescriptor, "viewRibbonExtension")) {
+        // validateSchema(file);
+        // }
+        // for (String file : getViewResources(pluginDescriptor, "viewWindowTabExtension")) {
         // validateSchema(file);
         // }
     }
 
-    // private Set<String> getViewResources(final String pluginDescriptor) {
+    // private Set<String> getViewResources(final String pluginDescriptor, final String type) {
     // Set<String> resources = new HashSet<String>();
     //
     // try {
@@ -96,7 +102,7 @@ public class ValidatorMojo extends AbstractMojo {
     //
     // String pluginName = ((Element) nList.item(0)).getAttribute("plugin");
     //
-    // nList = doc.getElementsByTagName("view");
+    // nList = doc.getElementsByTagName("view:" + type);
     //
     // for (int i = 0; i < nList.getLength(); i++) {
     // NodeList nNodeList = nList.item(i).getChildNodes();
@@ -129,7 +135,7 @@ public class ValidatorMojo extends AbstractMojo {
 
             String pluginName = ((Element) nList.item(0)).getAttribute("plugin");
 
-            nList = doc.getElementsByTagName("model");
+            nList = doc.getElementsByTagName("model:model");
 
             for (int i = 0; i < nList.getLength(); i++) {
                 Node nNode = nList.item(i);
