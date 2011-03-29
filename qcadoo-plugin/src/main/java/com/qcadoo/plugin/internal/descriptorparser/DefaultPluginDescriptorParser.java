@@ -240,7 +240,6 @@ public class DefaultPluginDescriptorParser implements PluginDescriptorParser {
         }
     }
 
-    // TODO plugin mina use jdom instead of w3 dom
     private Element convertNodeToJdomElement(final Node child) {
         return new DOMBuilder().build((org.w3c.dom.Element) child);
     }

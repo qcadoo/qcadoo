@@ -325,6 +325,13 @@ public final class GridComponentState extends AbstractComponentState {
         totalEntities = entities.size();
     }
 
+    public List<Entity> getEntities() {
+        if (entities == null) {
+            eventPerformer.reload();
+        }
+        return entities;
+    }
+
     public void setSelectedEntityId(final Long selectedEntityId) {
         this.selectedEntityId = selectedEntityId;
         notifyEntityIdChangeListeners(selectedEntityId);

@@ -37,7 +37,6 @@ public class MenuModule extends Module {
             menuService.createViewIfNotExists(pluginIdentifier, menuName, null, menuUrl);
             menuService.createItemIfNotExists(pluginIdentifier, menuName, menuCategory, pluginIdentifier, menuName);
         } else {
-            // TODO plugin masz menu view be created in ViewModule?
             menuService.createViewIfNotExists(menuViewPluginIdentifier, menuViewName, menuViewName, null);
             menuService.createItemIfNotExists(pluginIdentifier, menuName, menuCategory, menuViewPluginIdentifier, menuViewName);
         }

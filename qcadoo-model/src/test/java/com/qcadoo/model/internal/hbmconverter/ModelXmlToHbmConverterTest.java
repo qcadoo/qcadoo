@@ -35,7 +35,6 @@ import org.custommonkey.xmlunit.Validator;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.custommonkey.xmlunit.XpathEngine;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
@@ -69,13 +68,6 @@ public class ModelXmlToHbmConverterTest {
                 modelXmlToHbmConverter.convert(Utils.FULL_SECOND_ENTITY_XML_RESOURCE)[0].getInputStream()));
         hbmThirdEntity = buildControlDocument(new InputSource(
                 modelXmlToHbmConverter.convert(Utils.FULL_THIRD_ENTITY_XML_RESOURCE)[0].getInputStream()));
-    }
-
-    @Ignore
-    // @Test(expected = IllegalStateException.class)
-    public void shouldFailForInvalidModelXml() throws Exception {
-        // TODO plugin masz
-        modelXmlToHbmConverter.convert(Utils.MODEL_XML_INVALID_RESOURCE);
     }
 
     @Test

@@ -31,6 +31,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.junit.matchers.JUnitMatchers.hasItems;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.springframework.test.util.ReflectionTestUtils.getField;
@@ -39,11 +40,13 @@ import static org.springframework.test.util.ReflectionTestUtils.setField;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 
+import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.CustomHook;
 import com.qcadoo.model.Utils;
 import com.qcadoo.model.api.DataDefinition;
@@ -66,6 +69,7 @@ import com.qcadoo.model.internal.types.BooleanType;
 import com.qcadoo.model.internal.types.DateTimeType;
 import com.qcadoo.model.internal.types.DateType;
 import com.qcadoo.model.internal.types.DecimalType;
+import com.qcadoo.model.internal.types.DictionaryType;
 import com.qcadoo.model.internal.types.EnumType;
 import com.qcadoo.model.internal.types.HasManyEntitiesType;
 import com.qcadoo.model.internal.types.IntegerType;
@@ -96,6 +100,8 @@ public class ModelXmlToDefinitionConverterTest {
 
     private static DictionaryService dictionaryService;
 
+    private static TranslationService translationService;
+
     private static InternalDataDefinition dataDefinition;
 
     private static Collection<DataDefinition> dataDefinitions;
@@ -105,6 +111,7 @@ public class ModelXmlToDefinitionConverterTest {
         applicationContext = mock(ApplicationContext.class);
         dataAccessService = mock(DataAccessService.class);
         dictionaryService = mock(DictionaryService.class);
+        translationService = mock(TranslationService.class);
 
         dataDefinitionService = new DataDefinitionServiceImpl();
 
@@ -112,6 +119,7 @@ public class ModelXmlToDefinitionConverterTest {
         setField(modelXmlToDefinitionConverter, "dataDefinitionService", dataDefinitionService);
         setField(modelXmlToDefinitionConverter, "dataAccessService", dataAccessService);
         setField(modelXmlToDefinitionConverter, "applicationContext", applicationContext);
+        setField(modelXmlToDefinitionConverter, "translationService", translationService);
 
         given(applicationContext.getBean(CustomHook.class)).willReturn(new CustomHook());
 
@@ -212,24 +220,33 @@ public class ModelXmlToDefinitionConverterTest {
         assertNotNull(dataDefinition.getField("fieldEnum"));
         assertThat(dataDefinition.getField("fieldEnum").getType(), instanceOf(EnumType.class));
 
-        // TODO plugin masz
-        // assertThat(((EnumType) dataDefinition.getField("fieldEnum").getType()).values(Locale.ENGLISH).keySet(),
-        // hasItems("one", "two", "three"));
+        assertThat(((EnumType) dataDefinition.getField("fieldEnum").getType()).values(Locale.ENGLISH).keySet(),
+                hasItems("one", "two", "three"));
 
-        // TODO plugin masz
-        // assertNotNull(dataDefinition.getField("category"));
-        // assertThat(dataDefinition.getField("fieldDictionary").getType(), instanceOf(DictionaryType.class));
-        // assertEquals("categories", getField(dataDefinition.getField("fieldDictionary").getType(), "dictionaryName"));
+        assertNotNull(dataDefinition.getField("fieldDictionary"));
+        assertThat(dataDefinition.getField("fieldDictionary").getType(), instanceOf(DictionaryType.class));
+        assertEquals("categories", getField(dataDefinition.getField("fieldDictionary").getType(), "dictionary"));
 
         assertThat(dataDefinition.getField("fieldPassword").getType(), instanceOf(PasswordType.class));
         assertFalse(dataDefinition.getField("fieldInteger").isReadOnly());
         assertTrue(dataDefinition.getField("fieldText").isReadOnly());
     }
 
-    // TODO plugin masz
-    // <string name="fieldStringNotPersistent" persistent="false" />
-    // <string name="fieldStringWithExpression" expression="#fString" />
-    // <toString expression="#fieldString" />
+    @Test
+    public void shouldDefineIdentifierExpression() throws Exception {
+        assertEquals("#fieldString", dataDefinition.getIdentifierExpression());
+    }
+
+    @Test
+    public void shouldDefineFieldExpression() throws Exception {
+        assertEquals("#fString", dataDefinition.getField("fieldStringWithExpression").getExpression());
+    }
+
+    @Test
+    public void shouldSetPersistentFlag() throws Exception {
+        assertFalse(dataDefinition.getField("fieldStringNotPersistent").isPersistent());
+        assertTrue(dataDefinition.getField("fieldString").isPersistent());
+    }
 
     @Test
     public void shouldSetFieldValidators() {

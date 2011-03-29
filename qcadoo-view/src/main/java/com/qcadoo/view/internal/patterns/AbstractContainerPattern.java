@@ -118,7 +118,6 @@ public abstract class AbstractContainerPattern extends AbstractComponentPattern 
 
     @Override
     public void updateComponentStateListeners(final ViewDefinitionState viewDefinitionState) {
-        // TODO masz is this really neccessary?
         super.updateComponentStateListeners(viewDefinitionState);
         for (ComponentPattern child : children.values()) {
             ((AbstractComponentPattern) child).updateComponentStateListeners(viewDefinitionState);
