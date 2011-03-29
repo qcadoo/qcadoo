@@ -3,6 +3,7 @@ package com.qcadoo.view.internal.resource.module;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URLConnection;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -39,7 +40,7 @@ public class UniversalResourceModule extends ResourceModule {
     public boolean serveResource(final HttpServletRequest request, final HttpServletResponse response) {
         Resource resource = getResourceFromURI(request.getRequestURI());
         if (resource != null && resource.exists()) {
-            response.setContentType(getContentTypeFromURI(request.getRequestURI()));
+            response.setContentType(getContentTypeFromURI(request));
             try {
                 copy(resource.getInputStream(), response.getOutputStream());
             } catch (IOException e) {
@@ -58,19 +59,15 @@ public class UniversalResourceModule extends ResourceModule {
         return null;
     }
 
-    private String getContentTypeFromURI(final String uri) {
-        String[] arr = uri.split("\\.");
+    private String getContentTypeFromURI(final HttpServletRequest request) {
+        String[] arr = request.getRequestURI().split("\\.");
         String ext = arr[arr.length - 1];
-
         if ("js".equals(ext)) {
             return "text/javascript";
         } else if ("css".equals(ext)) {
             return "text/css";
-        } else if ("png".equals(ext)) {
-            return "image/png";
         } else {
-            // TODO mina more types
-            return "image/" + ext;
+            return URLConnection.guessContentTypeFromName(request.getRequestURL().toString());
         }
     }
 
@@ -83,4 +80,5 @@ public class UniversalResourceModule extends ResourceModule {
             out.write(b, 0, read);
         }
     }
+
 }
