@@ -959,7 +959,7 @@ ul.ribbon_list li.twoB.enabled ul li a.twoB_down:hover {
 	height: 9px;
 	top: 0;
 	left: 0;
-	background: url(/css/core/images/info.icon.grey.png);
+	background: url(/qcadooView/public/css/core/images/info.icon.grey.png);
 	filter:alpha(opacity=80); /* filtr dla IE*/
 	opacity: 0.8; /* filtr dla Opera*/
 	-moz-opacity:0.8; /* filtr dla Mozilla Firefox */
@@ -968,7 +968,7 @@ ul.ribbon_list li.twoB.enabled ul li a.twoB_down:hover {
 	top: 8px;
 }
 .ribbon_content .enabled .ribbon_description_icon {
-	background-image: url(/css/core/images/info.icon.png);
+	background-image: url(/qcadooView/public/css/core/images/info.icon.png);
 }
 .ribbon_description_icon:hover {
 	filter:alpha(opacity=100); /* filtr dla IE*/
