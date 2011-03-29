@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<plugin plugin="qcadooView" version="0.4.0" system="true" xmlns="http://www.qcadoo.com/plugin" xmlns:model="http://www.qcadoo.com/modules/model" xmlns:view="http://www.qcadoo.com/modules/view">
+<plugin plugin="qcadooView" version="0.4.0" system="true"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schema.qcadoo.org/plugin"
+	xmlns:model="http://schema.qcadoo.org/modules/model" xmlns:view="http://schema.qcadoo.org/modules/view"
+	xsi:schemaLocation="
+       http://schema.qcadoo.org/plugin
+       http://schema.qcadoo.org/plugin.xsd
+       http://schema.qcadoo.org/modules/model
+       http://schema.qcadoo.org/modules/model.xsd
+       http://schema.qcadoo.org/modules/view
+       http://schema.qcadoo.org/modules/view.xsd">
 
 	<information>
 		<name>Qcadoo Framework View</name>
@@ -8,14 +17,14 @@
 			<url>http://www.qcadoo.com/</url>
 		</vendor>
 	</information>
-	
+
 	<modules>
 		<model:model model="category" resource="model/category.xml" />
 		<model:model model="item" resource="model/item.xml" />
 		<model:model model="view" resource="model/view.xml" />
-		
-		<resource uri="public/**/*" />
+
+		<view:resource uri="public/**/*" />
 	</modules>
-	
+
 
 </plugin>

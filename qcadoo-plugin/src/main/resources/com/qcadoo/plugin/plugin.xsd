@@ -28,6 +28,10 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
 	targetNamespace="http://schema.qcadoo.org/plugin" xmlns="http://schema.qcadoo.org/plugin" elementFormDefault="qualified">
 
+	<xs:element name="databasePreparation">
+		<xs:complexType />
+	</xs:element>
+		
 	<xs:element name="plugin">
 		<xs:complexType>
 			<xs:sequence>
