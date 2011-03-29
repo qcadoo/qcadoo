@@ -139,7 +139,7 @@ public class PluginManagerInstallTest {
     @Test
     public void shouldFailureWithCorruptedPluginOnInstall() throws Exception {
         // given
-        given(pluginDescriptorParser.parse(resource)).willThrow(new PluginException());
+        given(pluginDescriptorParser.parse(resource)).willThrow(new PluginException(""));
         given(pluginFileManager.uploadPlugin(pluginArtifact)).willReturn(file);
         given(file.getName()).willReturn("filename");
 
@@ -157,7 +157,7 @@ public class PluginManagerInstallTest {
     @Test
     public void shouldFailureOnUploadingPluginOnInstall() throws Exception {
         // given
-        given(pluginFileManager.uploadPlugin(pluginArtifact)).willThrow(new PluginException());
+        given(pluginFileManager.uploadPlugin(pluginArtifact)).willThrow(new PluginException(""));
 
         // when
         PluginOperationResult pluginOperationResult = pluginManager.installPlugin(pluginArtifact);

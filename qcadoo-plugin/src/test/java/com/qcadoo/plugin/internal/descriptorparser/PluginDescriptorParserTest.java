@@ -288,4 +288,18 @@ public class PluginDescriptorParserTest {
 
         // then
     }
+
+    @Test(expected = PluginException.class)
+    public void shouldFailForDuplicatedPlugins() throws Exception {
+        // given
+        Resource[] testXmlsList = new Resource[] { xmlFile1, xmlFile2, xmlFile2 };
+
+        given(pluginDescriptorResolver.getDescriptors()).willReturn(testXmlsList);
+
+        // when
+        parser.loadPlugins();
+
+        // then
+    }
+
 }

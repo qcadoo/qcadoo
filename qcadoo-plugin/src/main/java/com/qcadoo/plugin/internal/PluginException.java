@@ -35,8 +35,8 @@ public class PluginException extends RuntimeException {
         super(message, cause);
     }
 
-    public PluginException() {
-        super();
+    public PluginException(final String message) {
+        super(message);
     }
 
 }
