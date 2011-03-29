@@ -189,6 +189,7 @@ QCD.components.elements.Tree = function(_element, _mainController) {
 		tree = contentElement.jstree({ plugins : ["json_data", "themes", "crrm", "ui", "dnd"  /*"hotkeys"*/ ],
 			"themes" : {
 				"theme": "classic",
+				"url": "/qcadooView/public/css/crud/empty.css",
 				"dots" : true,
 				"icons" : true
 			},
