@@ -75,8 +75,6 @@ public class ValidatorMojo extends AbstractMojo {
         for (String file : getModelResources(pluginDescriptor)) {
             validateSchema(file);
         }
-
-        // TODO enable after view schema refactoring
         // for (String file : getViewResources(pluginDescriptor, "view")) {
         // validateSchema(file);
         // }
@@ -105,9 +103,14 @@ public class ValidatorMojo extends AbstractMojo {
     // nList = doc.getElementsByTagName("view:" + type);
     //
     // for (int i = 0; i < nList.getLength(); i++) {
-    // NodeList nNodeList = nList.item(i).getChildNodes();
+    // Node nNode = nList.item(i);
+    // if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+    // NodeList nNodeList = nNode.getChildNodes();
     // for (int j = 0; j < nNodeList.getLength(); j++) {
-    // resources.add(basedir + resourcePath + pluginName + "/" + nNodeList.item(i).getTextContent());
+    // if (nNodeList.item(j).getNodeType() == Node.ELEMENT_NODE) {
+    // resources.add(basedir + resourcePath + pluginName + "/" + nNodeList.item(j).getNodeValue());
+    // }
+    // }
     // }
     // }
     // } catch (ParserConfigurationException e) {
