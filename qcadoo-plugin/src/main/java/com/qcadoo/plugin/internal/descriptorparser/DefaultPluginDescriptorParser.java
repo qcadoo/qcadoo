@@ -105,6 +105,7 @@ public class DefaultPluginDescriptorParser implements PluginDescriptorParser {
     public Plugin parse(final Resource resource) {
 
         try {
+            System.out.println(" -----> " + resource);
             LOG.info("Parsing: " + resource);
 
             Document document = documentBuilder.parse(resource.getInputStream());
@@ -122,6 +123,7 @@ public class DefaultPluginDescriptorParser implements PluginDescriptorParser {
         } catch (IOException e) {
             throw new PluginException(e.getMessage(), e);
         } catch (Exception e) {
+            System.out.println(" -----> " + e.getMessage());
             throw new PluginException(e.getMessage(), e);
         }
     }
