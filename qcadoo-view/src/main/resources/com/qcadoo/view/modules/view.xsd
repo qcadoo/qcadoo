@@ -9,12 +9,39 @@
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
-
+	
+	<xs:element name="viewRibbonExtension">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="resource" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="viewWindowTabExtension">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="resource" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
 	<xs:element name="viewHookExtension">
 		<xs:complexType>
 			<xs:attribute name="plugin" type="xs:string" use="required" />
 			<xs:attribute name="view" type="xs:string" use="required" />
 			<xs:attribute name="hookType" type="xs:string" use="required" />
+			<xs:attribute name="bean" type="xs:string" use="required" />
+			<xs:attribute name="method" type="xs:string" use="required" />
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="viewListenerExtension">
+		<xs:complexType>
+			<xs:attribute name="plugin" type="xs:string" use="required" />
+			<xs:attribute name="view" type="xs:string" use="required" />
+			<xs:attribute name="component" type="xs:string" use="required" />
+			<xs:attribute name="event" type="xs:string" use="required" />
 			<xs:attribute name="bean" type="xs:string" use="required" />
 			<xs:attribute name="method" type="xs:string" use="required" />
 		</xs:complexType>
