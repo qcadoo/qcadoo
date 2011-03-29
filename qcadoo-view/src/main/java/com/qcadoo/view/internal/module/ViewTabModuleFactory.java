@@ -33,7 +33,7 @@ public class ViewTabModuleFactory implements ModuleFactory<ViewTabModule> {
             if (resource == null) {
                 throw new IllegalStateException("Missing resource element of view module");
             }
-            xmlFiles.add(new ClassPathResource(resource));
+            xmlFiles.add(new ClassPathResource(pluginIdentifier + "/" + resource));
         }
         return new ViewTabModule(xmlFiles, viewDefinitionService, viewDefinitionParser);
     }

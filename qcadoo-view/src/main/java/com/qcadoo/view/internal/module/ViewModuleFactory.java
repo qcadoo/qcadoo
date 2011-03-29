@@ -33,7 +33,7 @@ public class ViewModuleFactory implements ModuleFactory<ViewModule> {
             if (resource == null) {
                 throw new IllegalStateException("Missing resource element of view module");
             }
-            xmlFiles.add(new ClassPathResource(resource));
+            xmlFiles.add(new ClassPathResource(pluginIdentifier + "/" + resource));
         }
         return new ViewModule(xmlFiles, viewDefinitionParser, viewDefinitionService);
 

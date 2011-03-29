@@ -75,54 +75,54 @@ public class ValidatorMojo extends AbstractMojo {
         for (String file : getModelResources(pluginDescriptor)) {
             validateSchema(file);
         }
-        // for (String file : getViewResources(pluginDescriptor, "view")) {
-        // validateSchema(file);
-        // }
-        // for (String file : getViewResources(pluginDescriptor, "viewRibbonExtension")) {
-        // validateSchema(file);
-        // }
-        // for (String file : getViewResources(pluginDescriptor, "viewWindowTabExtension")) {
-        // validateSchema(file);
-        // }
+        for (String file : getViewResources(pluginDescriptor, "view")) {
+            validateSchema(file);
+        }
+        for (String file : getViewResources(pluginDescriptor, "viewRibbonExtension")) {
+            validateSchema(file);
+        }
+        for (String file : getViewResources(pluginDescriptor, "viewWindowTabExtension")) {
+            validateSchema(file);
+        }
     }
 
-    // private Set<String> getViewResources(final String pluginDescriptor, final String type) {
-    // Set<String> resources = new HashSet<String>();
-    //
-    // try {
-    // DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-    // DocumentBuilder db;
-    // db = dbf.newDocumentBuilder();
-    // Document doc = db.parse(new File(pluginDescriptor));
-    // doc.getDocumentElement().normalize();
-    //
-    // NodeList nList = doc.getElementsByTagName("plugin");
-    //
-    // String pluginName = ((Element) nList.item(0)).getAttribute("plugin");
-    //
-    // nList = doc.getElementsByTagName("view:" + type);
-    //
-    // for (int i = 0; i < nList.getLength(); i++) {
-    // Node nNode = nList.item(i);
-    // if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-    // NodeList nNodeList = nNode.getChildNodes();
-    // for (int j = 0; j < nNodeList.getLength(); j++) {
-    // if (nNodeList.item(j).getNodeType() == Node.ELEMENT_NODE) {
-    // resources.add(basedir + resourcePath + pluginName + "/" + nNodeList.item(j).getNodeValue());
-    // }
-    // }
-    // }
-    // }
-    // } catch (ParserConfigurationException e) {
-    // getLog().error(e.getMessage());
-    // } catch (SAXException e) {
-    // getLog().error(e.getMessage());
-    // } catch (IOException e) {
-    // getLog().error(e.getMessage());
-    // }
-    //
-    // return resources;
-    // }
+    private Set<String> getViewResources(final String pluginDescriptor, final String type) {
+        Set<String> resources = new HashSet<String>();
+
+        try {
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            DocumentBuilder db;
+            db = dbf.newDocumentBuilder();
+            Document doc = db.parse(new File(pluginDescriptor));
+            doc.getDocumentElement().normalize();
+
+            NodeList nList = doc.getElementsByTagName("plugin");
+
+            String pluginName = ((Element) nList.item(0)).getAttribute("plugin");
+
+            nList = doc.getElementsByTagName("view:" + type);
+
+            for (int i = 0; i < nList.getLength(); i++) {
+                Node nNode = nList.item(i);
+                if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+                    NodeList nNodeList = nNode.getChildNodes();
+                    for (int j = 0; j < nNodeList.getLength(); j++) {
+                        if (nNodeList.item(j).getNodeType() == Node.ELEMENT_NODE) {
+                            resources.add(basedir + resourcePath + pluginName + "/" + nNodeList.item(j).getTextContent());
+                        }
+                    }
+                }
+            }
+        } catch (ParserConfigurationException e) {
+            getLog().error(e.getMessage());
+        } catch (SAXException e) {
+            getLog().error(e.getMessage());
+        } catch (IOException e) {
+            getLog().error(e.getMessage());
+        }
+
+        return resources;
+    }
 
     private Set<String> getModelResources(final String pluginDescriptor) {
         Set<String> resources = new HashSet<String>();
