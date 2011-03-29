@@ -36,7 +36,7 @@
 		<prop key="restartCommand"></prop>
 		<prop key="pluginsPath"></prop>
 		<prop key="pluginsTmpPath"></prop>
-		<prop key="descriptors">model/integration/*/plugin.xml</prop>
+		<prop key="descriptors">model/integration/*/qcadoo-plugin.xml</prop>
 	</util:properties>
 
 	<context:component-scan base-package="com.qcadoo.plugin" />

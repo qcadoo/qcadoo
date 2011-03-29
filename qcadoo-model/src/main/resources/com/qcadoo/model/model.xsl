@@ -1,34 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-
-    ***************************************************************************
-    Copyright (c) 2010 Qcadoo Limited
-    Project: Qcadoo Framework
-    Version: 0.4.0
-
-    This file is part of Qcadoo.
-
-    Qcadoo is free software; you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation; either version 3 of the License,
-    or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty
-    of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-    See the GNU Affero General Public License for more details.
-
-    You should have received a copy of the GNU Affero General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-    ***************************************************************************
-
--->
+<!-- *************************************************************************** 
+	Copyright (c) 2010 Qcadoo Limited Project: Qcadoo Framework Version: 0.4.0 
+	This file is part of Qcadoo. Qcadoo is free software; you can redistribute 
+	it and/or modify it under the terms of the GNU Affero General Public License 
+	as published by the Free Software Foundation; either version 3 of the License, 
+	or (at your option) any later version. This program is distributed in the 
+	hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied 
+	warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+	GNU Affero General Public License for more details. You should have received 
+	a copy of the GNU Affero General Public License along with this program; 
+	if not, write to the Free Software Foundation, Inc., 51 Franklin St, Fifth 
+	Floor, Boston, MA 02110-1301 USA *************************************************************************** -->
 
 
 <xsl:stylesheet version="1.0"
-	xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:qcd="http://www.qcadoo.com/model"
-	exclude-result-prefixes="qcd">
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+	xmlns:qcd="http://schema.qcadoo.org/model"
+	xsi:schemaLocation="http://schema.qcadoo.org/model http://schema.qcadoo.org/model.xsd"
+	exclude-result-prefixes="qcd xsi">
 
 	<xsl:output method="xml" version="1.0" encoding="UTF-8"
 		doctype-system="http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd"
@@ -41,7 +30,8 @@
 		<xsl:param name="modelName" />
 		<xsl:param name="pluginName" />
 		<xsl:attribute name="class">
-			<xsl:value-of select="concat('com.qcadoo.model.beans.', $pluginName, '.', translate(substring($pluginName, 1, 1),  $smallcase, $uppercase), substring($pluginName, 2), translate(substring($modelName, 1, 1),  $smallcase, $uppercase), substring($modelName, 2))" />
+			<xsl:value-of
+			select="concat('com.qcadoo.model.beans.', $pluginName, '.', translate(substring($pluginName, 1, 1),  $smallcase, $uppercase), substring($pluginName, 2), translate(substring($modelName, 1, 1),  $smallcase, $uppercase), substring($modelName, 2))" />
 		</xsl:attribute>
 	</xsl:template>
 
@@ -55,7 +45,8 @@
 				    <xsl:value-of select="$table_name" />
 				</xsl:attribute>
 				<xsl:attribute name="name">
-					<xsl:value-of select="concat('com.qcadoo.model.beans.', @plugin, '.', translate(substring(@plugin, 1, 1),  $smallcase, $uppercase), substring(@plugin, 2), translate(substring(@name, 1, 1),  $smallcase, $uppercase), substring(@name, 2))" />
+					<xsl:value-of
+					select="concat('com.qcadoo.model.beans.', @plugin, '.', translate(substring(@plugin, 1, 1),  $smallcase, $uppercase), substring(@plugin, 2), translate(substring(@name, 1, 1),  $smallcase, $uppercase), substring(@name, 2))" />
 				</xsl:attribute>
 				<id column="id" name="id" type="long">
 					<generator class="increment" />
@@ -158,7 +149,8 @@
 		</column>
 	</xsl:template>
 
-	<xsl:template match="//qcd:model/qcd:fields/qcd:integer[not(@persistent='false')]">
+	<xsl:template
+		match="//qcd:model/qcd:fields/qcd:integer[not(@persistent='false')]">
 		<property>
 			<xsl:attribute name="type">integer</xsl:attribute>
 			<xsl:call-template name="property" />
@@ -172,98 +164,112 @@
 		</property>
 	</xsl:template>
 
-	<xsl:template match="//qcd:model/qcd:fields/qcd:string[not(@expression) and not(@persistent='false')]">
+	<xsl:template
+		match="//qcd:model/qcd:fields/qcd:string[not(@expression) and not(@persistent='false')]">
 		<property>
 			<xsl:attribute name="type">string</xsl:attribute>
 			<xsl:call-template name="property" />
 		</property>
 	</xsl:template>
 
-	<xsl:template match="//qcd:model/qcd:fields/qcd:password[not(@persistent='false')]">
+	<xsl:template
+		match="//qcd:model/qcd:fields/qcd:password[not(@persistent='false')]">
 		<property>
 			<xsl:attribute name="type">string</xsl:attribute>
 			<xsl:call-template name="property" />
 		</property>
 	</xsl:template>
 
-	<xsl:template match="//qcd:model/qcd:fields/qcd:text[not(@persistent='false')]">
+	<xsl:template
+		match="//qcd:model/qcd:fields/qcd:text[not(@persistent='false')]">
 		<property>
 			<xsl:attribute name="type">text</xsl:attribute>
 			<xsl:call-template name="property" />
 		</property>
 	</xsl:template>
 
-	<xsl:template match="//qcd:model/qcd:fields/qcd:decimal[not(@persistent='false')]">
+	<xsl:template
+		match="//qcd:model/qcd:fields/qcd:decimal[not(@persistent='false')]">
 		<property>
 			<xsl:attribute name="type">big_decimal</xsl:attribute>
 			<xsl:call-template name="property" />
 		</property>
 	</xsl:template>
 
-	<xsl:template match="//qcd:model/qcd:fields/qcd:datetime[not(@persistent='false')]">
+	<xsl:template
+		match="//qcd:model/qcd:fields/qcd:datetime[not(@persistent='false')]">
 		<property>
 			<xsl:attribute name="type">timestamp</xsl:attribute>
 			<xsl:call-template name="property" />
 		</property>
 	</xsl:template>
 
-	<xsl:template match="//qcd:model/qcd:fields/qcd:date[not(@persistent='false')]">
+	<xsl:template
+		match="//qcd:model/qcd:fields/qcd:date[not(@persistent='false')]">
 		<property>
 			<xsl:attribute name="type">date</xsl:attribute>
 			<xsl:call-template name="property" />
 		</property>
 	</xsl:template>
 
-	<xsl:template match="//qcd:model/qcd:fields/qcd:boolean[not(@persistent='false')]">
+	<xsl:template
+		match="//qcd:model/qcd:fields/qcd:boolean[not(@persistent='false')]">
 		<property>
 			<xsl:attribute name="type">boolean</xsl:attribute>
 			<xsl:call-template name="property" />
 		</property>
 	</xsl:template>
 
-	<xsl:template match="//qcd:model/qcd:fields/qcd:enum[not(@persistent='false')]">
+	<xsl:template
+		match="//qcd:model/qcd:fields/qcd:enum[not(@persistent='false')]">
 		<property>
 			<xsl:attribute name="type">string</xsl:attribute>
 			<xsl:call-template name="property" />
 		</property>
 	</xsl:template>
 
-	<xsl:template match="//qcd:model/qcd:fields/qcd:dictionary[not(@persistent='false')]">
+	<xsl:template
+		match="//qcd:model/qcd:fields/qcd:dictionary[not(@persistent='false')]">
 		<property>
 			<xsl:attribute name="type">string</xsl:attribute>
 			<xsl:call-template name="property" />
 		</property>
 	</xsl:template>
 
-	<xsl:template match="//qcd:model/qcd:fields/qcd:long[not(@persistent='false')]">
+	<xsl:template
+		match="//qcd:model/qcd:fields/qcd:long[not(@persistent='false')]">
 		<property>
 			<xsl:attribute name="type">long</xsl:attribute>
 			<xsl:call-template name="property" />
 		</property>
 	</xsl:template>
 
-	<xsl:template match="//qcd:model/qcd:fields/qcd:short[not(@persistent='false')]">
+	<xsl:template
+		match="//qcd:model/qcd:fields/qcd:short[not(@persistent='false')]">
 		<property>
 			<xsl:attribute name="type">short</xsl:attribute>
 			<xsl:call-template name="property" />
 		</property>
 	</xsl:template>
 
-	<xsl:template match="//qcd:model/qcd:fields/qcd:float[not(@persistent='false')]">
+	<xsl:template
+		match="//qcd:model/qcd:fields/qcd:float[not(@persistent='false')]">
 		<property>
 			<xsl:attribute name="type">float</xsl:attribute>
 			<xsl:call-template name="property" />
 		</property>
 	</xsl:template>
 
-	<xsl:template match="//qcd:model/qcd:fields/qcd:double[not(@persistent='false')]">
+	<xsl:template
+		match="//qcd:model/qcd:fields/qcd:double[not(@persistent='false')]">
 		<property>
 			<xsl:attribute name="type">double</xsl:attribute>
 			<xsl:call-template name="property" />
 		</property>
 	</xsl:template>
 
-	<xsl:template match="//qcd:model/qcd:fields/qcd:hasMany[not(@persistent='false')] | //qcd:model/qcd:fields/qcd:tree[not(@persistent='false')]">
+	<xsl:template
+		match="//qcd:model/qcd:fields/qcd:hasMany[not(@persistent='false')] | //qcd:model/qcd:fields/qcd:tree[not(@persistent='false')]">
 		<set>
 			<xsl:attribute name="cascade">
 			<xsl:choose>
@@ -299,7 +305,8 @@
 		</set>
 	</xsl:template>
 
-	<xsl:template match="//qcd:model/qcd:fields/qcd:belongsTo[not(@persistent='false')]">
+	<xsl:template
+		match="//qcd:model/qcd:fields/qcd:belongsTo[not(@persistent='false')]">
 		<many-to-one>
 			<xsl:choose>
 				<xsl:when test="@plugin">
