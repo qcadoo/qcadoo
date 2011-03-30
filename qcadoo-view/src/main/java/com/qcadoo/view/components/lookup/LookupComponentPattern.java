@@ -45,8 +45,8 @@ import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.ViewDefinition;
 import com.qcadoo.view.api.ribbon.Ribbon;
 import com.qcadoo.view.api.ribbon.RibbonActionItem;
-import com.qcadoo.view.api.ribbon.RibbonGroup;
 import com.qcadoo.view.api.ribbon.RibbonActionItem.Type;
+import com.qcadoo.view.api.ribbon.RibbonGroup;
 import com.qcadoo.view.components.FieldComponentPattern;
 import com.qcadoo.view.components.grid.GridComponentPattern;
 import com.qcadoo.view.components.window.WindowComponentPattern;
@@ -176,9 +176,6 @@ public final class LookupComponentPattern extends FieldComponentPattern {
         if (getFieldDefinition() != null) {
             codes.add(getFieldDefinition().getDataDefinition().getPluginIdentifier() + "."
                     + getFieldDefinition().getDataDefinition().getName() + "." + getFieldDefinition().getName() + ".label.focus");
-        } else {
-            codes.add(getFieldDefinition().getDataDefinition().getPluginIdentifier() + "."
-                    + getFieldDefinition().getDataDefinition().getName() + "." + getName() + ".label.focus");
         }
 
         translations.put("labelOnFocus", getTranslationService().translate(codes, locale));

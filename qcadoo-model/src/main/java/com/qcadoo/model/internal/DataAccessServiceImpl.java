@@ -487,40 +487,6 @@ public final class DataAccessServiceImpl implements DataAccessService {
 
         List<?> results = criteria.list();
 
-        // FIXME plugin masz distinct
-
-        // if (searchCriteria.getDistinctProperty() != null) {
-        // Class<?> entityClass = ((InternalDataDefinition) searchCriteria.getDataDefinition()).getClassForEntity();
-        // Set<String> batches = new HashSet<String>();
-        // List<Object> uniqueResults = new ArrayList<Object>();
-        //
-        // if (GenealogiesGenealogy.class.equals(entityClass)) {
-        // for (Object o : results) {
-        // String batch = ((GenealogiesGenealogy) o).getBatch();
-        //
-        // if (!batches.contains(batch)) {
-        // uniqueResults.add(o);
-        // batches.add(batch);
-        // }
-        // }
-        //
-        // results = uniqueResults;
-        // totalNumberOfEntities = results.size();
-        // } else if (GenealogiesProductInBatch.class.equals(entityClass)) {
-        // for (Object o : results) {
-        // String batch = ((GenealogiesProductInBatch) o).getBatch();
-        //
-        // if (!batches.contains(batch)) {
-        // uniqueResults.add(o);
-        // batches.add(batch);
-        // }
-        // }
-        //
-        // results = uniqueResults;
-        // totalNumberOfEntities = results.size();
-        // }
-        // }
-
         LOG.info("There are " + totalNumberOfEntities + " entities matching criteria " + searchCriteria);
 
         return getResultSet(searchCriteria, dataDefinition, totalNumberOfEntities, results);
