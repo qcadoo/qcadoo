@@ -271,6 +271,9 @@
 	<xsl:template
 		match="//qcd:model/qcd:fields/qcd:hasMany[not(@persistent='false')] | //qcd:model/qcd:fields/qcd:tree[not(@persistent='false')]">
 		<set>
+			<xsl:attribute name="inverse">
+				<xsl:text>true</xsl:text>
+			</xsl:attribute>
 			<xsl:attribute name="cascade">
 			<xsl:choose>
 				<xsl:when test="@cascade='delete'">delete</xsl:when>
