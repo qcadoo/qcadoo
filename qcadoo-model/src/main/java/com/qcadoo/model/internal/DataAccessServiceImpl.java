@@ -171,6 +171,7 @@ public final class DataAccessServiceImpl implements DataAccessService {
         for (Entry<String, FieldDefinition> fieldEntry : dataDefinition.getFields().entrySet()) {
             if (fieldEntry.getValue().getType() instanceof HasManyType) {
                 List<Entity> entities = (List<Entity>) genericEntity.getField(fieldEntry.getKey());
+
                 HasManyType hasManyType = (HasManyType) fieldEntry.getValue().getType();
 
                 if (entities == null || entities instanceof EntityListImpl) {
