@@ -29,19 +29,27 @@ import static junit.framework.Assert.assertNull;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.junit.matchers.JUnitMatchers.hasItems;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.security.authentication.encoding.PasswordEncoder;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
+import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.mes.internal.DataAccessTest;
+import com.qcadoo.model.api.DictionaryService;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.FieldDefinition;
+import com.qcadoo.model.api.types.EnumeratedType;
 import com.qcadoo.model.api.types.FieldType;
 import com.qcadoo.model.internal.DefaultEntity;
 import com.qcadoo.model.internal.FieldDefinitionImpl;
@@ -50,6 +58,8 @@ import com.qcadoo.model.internal.types.BooleanType;
 import com.qcadoo.model.internal.types.DateTimeType;
 import com.qcadoo.model.internal.types.DateType;
 import com.qcadoo.model.internal.types.DecimalType;
+import com.qcadoo.model.internal.types.DictionaryType;
+import com.qcadoo.model.internal.types.EnumType;
 import com.qcadoo.model.internal.types.IntegerType;
 import com.qcadoo.model.internal.types.PasswordType;
 import com.qcadoo.model.internal.types.PriorityType;
@@ -67,48 +77,51 @@ public class FieldTypeFactoryTest extends DataAccessTest {
         entity = new DefaultEntity(dataDefinition);
     }
 
-    // TODO plugin masz
-    // @Test
-    // public void shouldReturnEnumType() throws Exception {
-    // // when
-    // EnumeratedType fieldType = fieldTypeFactory.enumType("val1", "val2", "val3");
-    //
-    // // then
-    // assertThat(fieldType, is(EnumType.class));
-    //
-    // assertThat(fieldType.values(), JUnitMatchers.hasItems("val1", "val2", "val3"));
-    // assertTrue(fieldType.isSearchable());
-    // assertTrue(fieldType.isOrderable());
-    // assertFalse(fieldType.isAggregable());
-    // assertEquals(String.class, fieldType.getType());
-    //
-    // assertNotNull(fieldType.toObject(fieldDefinition, "val1", entity));
-    // assertNull(fieldType.toObject(fieldDefinition, "val4", entity));
-    // assertEquals("core.validate.field.error.invalidDictionaryItem", entity.getError("aa").getMessage());
-    // assertEquals("[val1, val2, val3]", entity.getError("aa").getVars()[0]);
-    // }
+    @Test
+    public void shouldReturnEnumType() throws Exception {
+        // given
+        TranslationService translationService = mock(TranslationService.class);
+        given(translationService.translate("path.value.val1", Locale.ENGLISH)).willReturn("i18nVal1");
+        given(translationService.translate("path.value.val2", Locale.ENGLISH)).willReturn("i18nVal2");
+        given(translationService.translate("path.value.val3", Locale.ENGLISH)).willReturn("i18nVal3");
 
-    // TODO plugin masz
-    // @Test
-    // public void shouldReturnDictionaryType() throws Exception {
-    // // given
-    // given(dictionaryService.values("dict")).willReturn(newArrayList("val1", "val2", "val3"));
-    //
-    // // when
-    // EnumeratedType fieldType = fieldTypeFactory.dictionaryType("dict");
-    //
-    // // then
-    // assertThat(fieldType, is(DictionaryType.class));
-    // assertThat(fieldType.values(), JUnitMatchers.hasItems("val1", "val2", "val3"));
-    // assertTrue(fieldType.isSearchable());
-    // assertTrue(fieldType.isOrderable());
-    // assertFalse(fieldType.isAggregable());
-    // assertEquals(String.class, fieldType.getType());
-    // assertNotNull(fieldType.toObject(fieldDefinition, "val1", entity));
-    // assertNull(fieldType.toObject(fieldDefinition, "val4", entity));
-    // assertEquals("core.validate.field.error.invalidDictionaryItem", entity.getError("aa").getMessage());
-    // assertEquals("[val1, val2, val3]", entity.getError("aa").getVars()[0]);
-    // }
+        // when
+        EnumeratedType fieldType = new EnumType(translationService, "path", "val1", "val2", "val3");
+
+        // then
+        assertThat(fieldType, is(EnumType.class));
+
+        assertThat(fieldType.values(Locale.ENGLISH).keySet(), hasItems("val1", "val2", "val3"));
+        assertThat(fieldType.values(Locale.ENGLISH).values(), hasItems("i18nVal1", "i18nVal2", "i18nVal3"));
+        assertEquals(String.class, fieldType.getType());
+
+        assertNotNull(fieldType.toObject(fieldDefinition, "val1", entity));
+        assertNull(fieldType.toObject(fieldDefinition, "val4", entity));
+        assertEquals("core.validate.field.error.invalidDictionaryItem", entity.getError("aa").getMessage());
+        assertEquals("[val1, val2, val3]", entity.getError("aa").getVars()[0]);
+    }
+
+    @Test
+    public void shouldReturnDictionaryType() throws Exception {
+        // given
+        DictionaryService dictionaryService = mock(DictionaryService.class);
+        given(dictionaryService.values("dictionary", Locale.ENGLISH)).willReturn(
+                ImmutableMap.of("val1", "val1", "val2", "val2", "val3", "val3"));
+        given(dictionaryService.keys("dictionary")).willReturn(Lists.newArrayList("val1", "val2", "val3"));
+
+        // when
+        EnumeratedType fieldType = new DictionaryType("dictionary", dictionaryService);
+
+        // then
+        assertThat(fieldType, is(DictionaryType.class));
+        assertThat(fieldType.values(Locale.ENGLISH).keySet(), hasItems("val1", "val2", "val3"));
+        assertThat(fieldType.values(Locale.ENGLISH).values(), hasItems("val1", "val2", "val3"));
+        assertEquals(String.class, fieldType.getType());
+        assertNotNull(fieldType.toObject(fieldDefinition, "val1", entity));
+        assertNull(fieldType.toObject(fieldDefinition, "val4", entity));
+        assertEquals("core.validate.field.error.invalidDictionaryItem", entity.getError("aa").getMessage());
+        assertEquals("[val1, val2, val3]", entity.getError("aa").getVars()[0]);
+    }
 
     @Test
     public void shouldReturnBooleanType() throws Exception {

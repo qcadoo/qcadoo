@@ -156,9 +156,8 @@ public class GridComponentPatternTest extends AbstractPatternTest {
         assertEquals("left", name.getString("align"));
         assertEquals(2, name.getJSONObject("filterValues").length());
 
-        // TODO plugin mina
-        // assertEquals("i18n", name.getJSONObject("filterValues").getString("v1"));
-        // assertEquals("i18n", name.getJSONObject("filterValues").getString("v2"));
+        assertEquals("i18n", name.getJSONObject("filterValues").getString("v1"));
+        assertEquals("i18n", name.getJSONObject("filterValues").getString("v2"));
 
         assertEquals("product", product.getString("name"));
         assertFalse(product.getBoolean("link"));

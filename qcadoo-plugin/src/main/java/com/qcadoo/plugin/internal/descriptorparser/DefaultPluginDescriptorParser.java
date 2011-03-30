@@ -27,9 +27,11 @@ package com.qcadoo.plugin.internal.descriptorparser;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -103,7 +105,6 @@ public class DefaultPluginDescriptorParser implements PluginDescriptorParser {
 
     @Override
     public Plugin parse(final Resource resource) {
-
         try {
             LOG.info("Parsing: " + resource);
 
@@ -128,11 +129,17 @@ public class DefaultPluginDescriptorParser implements PluginDescriptorParser {
 
     @Override
     public Set<Plugin> loadPlugins() {
-        Set<Plugin> loadedplugins = new HashSet<Plugin>();
+        Map<String, Plugin> loadedplugins = new HashMap<String, Plugin>();
         for (Resource resource : pluginDescriptorResolver.getDescriptors()) {
-            loadedplugins.add(parse(resource));
+            Plugin plugin = parse(resource);
+
+            if (loadedplugins.containsKey(plugin.getIdentifier())) {
+                throw new PluginException("Duplicated plugin identifier: " + plugin.getIdentifier());
+            }
+
+            loadedplugins.put(plugin.getIdentifier(), plugin);
         }
-        return loadedplugins;
+        return new HashSet<Plugin>(loadedplugins.values());
     }
 
     private Plugin parsePluginNode(final Node pluginNode) {
@@ -233,7 +240,6 @@ public class DefaultPluginDescriptorParser implements PluginDescriptorParser {
         }
     }
 
-    // TODO plugin mina use jdom instead of w3 dom
     private Element convertNodeToJdomElement(final Node child) {
         return new DOMBuilder().build((org.w3c.dom.Element) child);
     }

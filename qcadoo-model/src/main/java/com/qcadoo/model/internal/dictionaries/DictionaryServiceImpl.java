@@ -35,11 +35,11 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.aop.Monitorable;
@@ -50,7 +50,7 @@ import com.qcadoo.model.internal.api.InternalDictionaryService;
 public final class DictionaryServiceImpl implements InternalDictionaryService {
 
     @Autowired
-    private SessionFactory sessionFactory;
+    private TranslationService translationService;
 
     @Autowired
     private DataDefinitionService dataDefinitionService;
@@ -84,7 +84,7 @@ public final class DictionaryServiceImpl implements InternalDictionaryService {
 
         Map<String, String> values = new LinkedHashMap<String, String>();
 
-        // TODO plugin masz - i18n
+        // TODO translate dictionary values
 
         for (Entity item : items) {
             values.put(item.getStringField("name"), item.getStringField("name"));
@@ -130,6 +130,14 @@ public final class DictionaryServiceImpl implements InternalDictionaryService {
             item.setField("name", value);
             dataDefinitionService.get("qcadooModel", "dictionaryItem").save(item);
         }
+    }
+
+    @Override
+    public String translate(final String dictionaryName, final Locale locale) {
+        Entity dictionary = dataDefinitionService.get("qcadooModel", "dictionary").find()
+                .restrictedWith(Restrictions.eq("name", dictionaryName)).withMaxResults(1).uniqueResult();
+        return translationService.translate(dictionary.getStringField("pluginIdentifier") + "." + dictionaryName + ".dictionary",
+                locale);
     }
 
 }

@@ -52,4 +52,6 @@ public interface DictionaryService {
      */
     Set<String> dictionaries();
 
+    String translate(String dictionary, Locale locale);
+
 }

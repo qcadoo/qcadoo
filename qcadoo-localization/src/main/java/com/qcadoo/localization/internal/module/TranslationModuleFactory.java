@@ -1,5 +1,7 @@
 package com.qcadoo.localization.internal.module;
 
+import java.io.Serializable;
+
 import org.jdom.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -7,16 +9,15 @@ import com.qcadoo.localization.internal.InternalTranslationService;
 import com.qcadoo.plugin.api.Module;
 import com.qcadoo.plugin.api.ModuleFactory;
 
-public class TranslationModuleFactory implements ModuleFactory<Module> {
+public class TranslationModuleFactory implements ModuleFactory<Module>, Serializable {
 
     @Autowired
     private InternalTranslationService translationService;
 
     @Override
     public void init() {
-        // TODO plugin masz
-        // register languages
-        // move it to qcadoo-plugin.xml
+        // TODO register languages in qcadoo-plugin.xml
+        // TOTO register message groups in qcadoo-plugin.xml
         translationService.prepareMessagesForPrefix("commons");
         translationService.prepareMessagesForPrefix("security");
         translationService.prepareMessagesForPrefix("core.dashboard");

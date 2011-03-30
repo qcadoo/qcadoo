@@ -118,11 +118,6 @@ public final class TranslationServiceImpl implements InternalTranslationService 
         return commonsTranslations;
     }
 
-    // @Override
-    // public String getEntityFieldBaseMessageCode(final DataDefinition dataDefinition, final String fieldName) {
-    // return dataDefinition.getPluginIdentifier() + "." + dataDefinition.getName() + "." + fieldName;
-    // }
-
     @Override
     public void prepareMessagesForPrefix(final String prefix) {
         Set<String> messages = new HashSet<String>();
@@ -157,10 +152,5 @@ public final class TranslationServiceImpl implements InternalTranslationService 
             }
         }
     }
-
-    // @Override
-    // public String translateErrorMessage(final ErrorMessage errorMessage, final Locale locale) {
-    // return translate(errorMessage.getMessage(), locale, (Object[]) errorMessage.getVars());
-    // }
 
 }
