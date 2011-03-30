@@ -124,7 +124,6 @@ public final class DataAccessServiceImpl implements DataAccessService {
         if (alreadySavedEntities.contains(genericEntity)) {
             return genericEntity;
         }
-
         Entity genericEntityToSave = genericEntity.copy();
 
         Object existingDatabaseEntity = getExistingDatabaseEntity(dataDefinition, genericEntity);
