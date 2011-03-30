@@ -31,7 +31,7 @@
 		</dependency>
 		<!--
 		
-		Note: there is a problem with xerces implementation - null in DefaultPluginDescriptorParser() - setSchema(...) 
+		Note: there is a problem with xerces implementation - null in DefaultPluginDescriptorParser() - setSchema(...)
 		
 		<dependency>
 			<groupId>net.sf.barcode4j</groupId>
