@@ -275,7 +275,6 @@ public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverte
     }
 
     private void createHasManyField(final CtClass ctClass, final String pluginIdentifier, final XMLStreamReader reader) {
-        // TODO plugin masz - generics
         createField(ctClass, getStringAttribute(reader, "name"), "java.util.Set");
     }
 
