@@ -3,9 +3,22 @@
 	targetNamespace="http://schema.qcadoo.org/modules/localization" xmlns="http://schema.qcadoo.org/modules/localization" elementFormDefault="qualified">
 
 	<xs:element name="translation">
-		<xs:complexType>
-			<xs:attribute name="locale" type="xs:string" use="required" />
-			<xs:attribute name="resource" type="xs:string" use="required" />
+		<xs:complexType>			
+			<xs:attribute name="path" type="xs:string" use="required" />
+			<xs:attribute name="basename" type="xs:string" use="optional" default="*" />
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="group">
+		<xs:complexType>			
+			<xs:attribute name="name" type="xs:string" use="required" />
+			<xs:attribute name="prefix" type="xs:string" use="required" />
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="locale">
+		<xs:complexType>			
+			<xs:attribute name="locale" type="xs:language" use="required" />
 		</xs:complexType>
 	</xs:element>
 	
