@@ -87,17 +87,6 @@ public final class ViewComponentsResolverImpl implements ViewComponentsResolver 
     }
 
     @Override
-    public void unregister(final String name, final Class<? extends ComponentPattern> clazz) {
-        LOG.info("Unregistering view component " + name);
-
-        if (components.get(name) != null && components.get(name) != clazz) {
-            throw new IllegalStateException("Trying to remove component " + name + " with different classes: " + clazz + " and "
-                    + components.get(name));
-        }
-        components.remove(name);
-    }
-
-    @Override
     public void register(final String name, final Class<? extends ComponentPattern> clazz) {
         LOG.info("Registering view component " + name);
 

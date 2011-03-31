@@ -15,8 +15,6 @@ public interface ViewComponentsResolver {
 
     ComponentPattern getComponentInstance(String name, ComponentDefinition componentDefinition);
 
-    void unregister(String name, Class<? extends ComponentPattern> clazz);
-
     void register(String name, Class<? extends ComponentPattern> clazz);
 
 }
