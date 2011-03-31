@@ -26,8 +26,8 @@ package com.qcadoo.model.internal.types;
 
 import java.util.Locale;
 
-import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.FieldDefinition;
+import com.qcadoo.model.api.search.ValueAndError;
 import com.qcadoo.model.api.types.FieldType;
 
 public final class BooleanType implements FieldType {
@@ -38,11 +38,11 @@ public final class BooleanType implements FieldType {
     }
 
     @Override
-    public Object toObject(final FieldDefinition fieldDefinition, final Object value, final Entity validatedEntity) {
+    public ValueAndError toObject(final FieldDefinition fieldDefinition, final Object value) {
         if (value instanceof Boolean) {
-            return value;
+            return ValueAndError.withoutError(value);
         }
-        return parseStringToBoolean(String.valueOf(value));
+        return ValueAndError.withoutError(parseStringToBoolean(String.valueOf(value)));
     }
 
     private Boolean parseStringToBoolean(final String value) {

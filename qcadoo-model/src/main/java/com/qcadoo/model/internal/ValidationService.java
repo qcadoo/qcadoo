@@ -32,6 +32,7 @@ import org.springframework.util.StringUtils;
 
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.FieldDefinition;
+import com.qcadoo.model.api.search.ValueAndError;
 import com.qcadoo.model.api.types.BelongsToType;
 import com.qcadoo.model.api.types.HasManyType;
 import com.qcadoo.model.api.types.TreeType;
@@ -98,16 +99,17 @@ public final class ValidationService {
 
     private Object parseAndValidateValue(final InternalFieldDefinition fieldDefinition, final Object value,
             final Entity validatedEntity) {
-        Object fieldValue = null;
+        ValueAndError valueAndError = ValueAndError.empty();
         if (value != null) {
-            fieldValue = fieldDefinition.getType().toObject(fieldDefinition, value, validatedEntity);
-            if (!validatedEntity.isFieldValid(fieldDefinition.getName())) {
+            valueAndError = fieldDefinition.getType().toObject(fieldDefinition, value);
+            if (!valueAndError.isValid()) {
+                validatedEntity.addError(fieldDefinition, valueAndError.getMessage(), valueAndError.getArgs());
                 return null;
             }
         }
 
-        if (fieldDefinition.callValidators(validatedEntity, null, fieldValue)) {
-            return fieldValue;
+        if (fieldDefinition.callValidators(validatedEntity, null, valueAndError.getValue())) {
+            return valueAndError.getValue();
         } else {
             return null;
         }

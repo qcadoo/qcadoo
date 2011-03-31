@@ -33,8 +33,8 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.FieldDefinition;
+import com.qcadoo.model.api.search.ValueAndError;
 import com.qcadoo.model.api.types.FieldType;
 import com.qcadoo.model.api.utils.DateUtils;
 
@@ -46,9 +46,9 @@ public final class DateType implements FieldType {
     }
 
     @Override
-    public Object toObject(final FieldDefinition fieldDefinition, final Object value, final Entity validatedEntity) {
+    public ValueAndError toObject(final FieldDefinition fieldDefinition, final Object value) {
         if (value instanceof Date) {
-            return value;
+            return ValueAndError.withoutError(value);
         }
         try {
             DateTimeFormatter fmt = DateTimeFormat.forPattern(DateUtils.DATE_FORMAT);
@@ -56,8 +56,7 @@ public final class DateType implements FieldType {
 
             int year = dt.getYear();
             if (year < 1500 || year > 2500) {
-                validatedEntity.addError(fieldDefinition, "core.validate.field.error.invalidDateFormat.range");
-                return null;
+                return ValueAndError.withoutError("core.validate.field.error.invalidDateFormat.range");
             }
 
             Date date = dt.toDate();
@@ -74,11 +73,10 @@ public final class DateType implements FieldType {
                 date = c.getTime();
             }
 
-            return date;
+            return ValueAndError.withoutError(date);
         } catch (IllegalArgumentException e) {
-            validatedEntity.addError(fieldDefinition, "core.validate.field.error.invalidDateFormat");
+            return ValueAndError.withError("core.validate.field.error.invalidDateFormat");
         }
-        return null;
     }
 
     @Override

@@ -28,8 +28,8 @@ import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.FieldDefinition;
+import com.qcadoo.model.api.search.ValueAndError;
 import com.qcadoo.model.api.types.FieldType;
 
 public final class TextType implements FieldType {
@@ -40,13 +40,12 @@ public final class TextType implements FieldType {
     }
 
     @Override
-    public Object toObject(final FieldDefinition fieldDefinition, final Object value, final Entity entity) {
+    public ValueAndError toObject(final FieldDefinition fieldDefinition, final Object value) {
         String stringValue = String.valueOf(value);
         if (StringUtils.length(stringValue) > 2048) {
-            entity.addError(fieldDefinition, "core.validate.field.error.invalidLength", String.valueOf(2048));
-            return null;
+            return ValueAndError.withError("core.validate.field.error.invalidLength", String.valueOf(2048));
         }
-        return stringValue;
+        return ValueAndError.withoutError(stringValue);
     }
 
     @Override
