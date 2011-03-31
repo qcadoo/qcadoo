@@ -196,6 +196,9 @@ public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverte
 
         createField(ctClass, "id", Long.class.getCanonicalName());
 
+        List<String> fields = new ArrayList<String>();
+        fields.add("id");
+
         while (reader.hasNext() && reader.next() > 0) {
             if (isTagEnded(reader, TAG_MODEL)) {
                 break;
@@ -213,17 +216,85 @@ public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverte
                         continue;
                     }
 
-                    parseField(reader, pluginIdentifier, ctClass, tag);
+                    parseField(reader, pluginIdentifier, ctClass, tag, fields);
                 }
                 break;
             }
         }
 
-        // TODO plugin masz- toString, equals, hashCode
+        buildToString(ctClass, fields);
+        buildHashCode(ctClass, fields);
+        buildEquals(ctClass, fields);
     }
 
-    private void parseField(final XMLStreamReader reader, final String pluginIdentifier, final CtClass ctClass, final String tag)
-            throws XMLStreamException {
+    private void buildToString(final CtClass ctClass, final List<String> fields) {
+        try {
+            StringBuilder sb = new StringBuilder();
+            sb.append("return new java.lang.StringBuilder().append(\"" + ctClass.getName() + "[\").");
+
+            boolean first = true;
+
+            for (String field : fields) {
+                if (!first) {
+                    sb.append("append(\",\").");
+                } else {
+                    first = false;
+                }
+                sb.append("append(\"" + field + "=\").append(get" + StringUtils.capitalize(field) + "()).");
+            }
+
+            sb.append("append(\"]\").toString();");
+
+            ctClass.addMethod(CtNewMethod.make("public String toString() { " + sb.toString() + " }", ctClass));
+        } catch (CannotCompileException e) {
+            throw new IllegalStateException("Failed to compile class " + ctClass.getName(), e);
+        }
+    }
+
+    private void buildHashCode(final CtClass ctClass, final List<String> fields) {
+        try {
+            StringBuilder sb = new StringBuilder();
+            sb.append("final int prime = 31;");
+            sb.append("int result = 1;");
+
+            for (String field : fields) {
+                sb.append("result = prime * result + ((get" + StringUtils.capitalize(field) + "() == null) ? 0 : get"
+                        + StringUtils.capitalize(field) + "().hashCode());");
+            }
+
+            sb.append("return result;");
+
+            ctClass.addMethod(CtNewMethod.make("public int hashCode() { " + sb.toString() + " }", ctClass));
+        } catch (CannotCompileException e) {
+            throw new IllegalStateException("Failed to compile class " + ctClass.getName(), e);
+        }
+    }
+
+    private void buildEquals(final CtClass ctClass, final List<String> fields) {
+        try {
+            StringBuilder sb = new StringBuilder();
+            sb.append("if (obj == null) { return false; }");
+            sb.append("if (obj == this) { return true; }");
+            sb.append("if (!(obj instanceof " + ctClass.getName() + ")) { return false; }");
+            sb.append(ctClass.getName() + " other = (" + ctClass.getName() + ") obj;");
+
+            for (String field : fields) {
+                sb.append("if (get" + StringUtils.capitalize(field) + "() == null) {");
+                sb.append("if (other.get" + StringUtils.capitalize(field) + "() != null) { return false; }");
+                sb.append("} else if (!get" + StringUtils.capitalize(field) + "().equals(other.get"
+                        + StringUtils.capitalize(field) + "())) { return false; }");
+            }
+
+            sb.append("return true;");
+
+            ctClass.addMethod(CtNewMethod.make("public boolean equals(Object obj) { " + sb.toString() + " }", ctClass));
+        } catch (CannotCompileException e) {
+            throw new IllegalStateException("Failed to compile class " + ctClass.getName(), e);
+        }
+    }
+
+    private void parseField(final XMLStreamReader reader, final String pluginIdentifier, final CtClass ctClass, final String tag,
+            final List<String> fields) throws XMLStreamException {
         FieldsTag modelTag = FieldsTag.valueOf(tag.toUpperCase(Locale.ENGLISH));
 
         if (!getBooleanAttribute(reader, "persistent", true)) {
@@ -238,6 +309,7 @@ public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverte
             case PRIORITY:
             case INTEGER:
                 createField(ctClass, getStringAttribute(reader, "name"), Integer.class.getCanonicalName());
+                fields.add(getStringAttribute(reader, "name"));
                 break;
             case STRING:
             case TEXT:
@@ -245,19 +317,24 @@ public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverte
             case DICTIONARY:
             case PASSWORD:
                 createField(ctClass, getStringAttribute(reader, "name"), String.class.getCanonicalName());
+                fields.add(getStringAttribute(reader, "name"));
                 break;
             case DECIMAL:
                 createField(ctClass, getStringAttribute(reader, "name"), BigDecimal.class.getCanonicalName());
+                fields.add(getStringAttribute(reader, "name"));
                 break;
             case DATETIME:
             case DATE:
                 createField(ctClass, getStringAttribute(reader, "name"), Date.class.getCanonicalName());
+                fields.add(getStringAttribute(reader, "name"));
                 break;
             case BOOLEAN:
                 createField(ctClass, getStringAttribute(reader, "name"), Boolean.class.getCanonicalName());
+                fields.add(getStringAttribute(reader, "name"));
                 break;
             case BELONGSTO:
                 createBelongsField(ctClass, pluginIdentifier, reader);
+                fields.add(getStringAttribute(reader, "name"));
                 break;
             case HASMANY:
             case TREE:
