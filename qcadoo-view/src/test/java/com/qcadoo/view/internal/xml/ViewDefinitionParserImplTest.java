@@ -70,7 +70,7 @@ import com.qcadoo.view.internal.ViewDefinitionServiceImpl;
 import com.qcadoo.view.internal.api.InternalViewDefinition;
 import com.qcadoo.view.internal.hooks.HookFactory;
 import com.qcadoo.view.internal.internal.ComponentCustomEvent;
-import com.qcadoo.view.internal.internal.ViewComponentsResolver;
+import com.qcadoo.view.internal.internal.ViewComponentsResolverImpl;
 
 public class ViewDefinitionParserImplTest {
 
@@ -92,12 +92,18 @@ public class ViewDefinitionParserImplTest {
 
     private TranslationService translationService;
 
-    private static ViewComponentsResolver viewComponentsResolver;
+    private static ViewComponentsResolverImpl viewComponentsResolver;
 
     @BeforeClass
     public static void initClass() throws Exception {
-        viewComponentsResolver = new ViewComponentsResolver();
-        viewComponentsResolver.refreshAvailableComponentsList();
+        viewComponentsResolver = new ViewComponentsResolverImpl();
+        viewComponentsResolver.register("window", WindowComponentPattern.class);
+        viewComponentsResolver.register("form", FormComponentPattern.class);
+        viewComponentsResolver.register("checkbox", CheckBoxComponentPattern.class);
+        viewComponentsResolver.register("input", TextInputComponentPattern.class);
+        viewComponentsResolver.register("textarea", TextAreaComponentPattern.class);
+        viewComponentsResolver.register("grid", GridComponentPattern.class);
+        viewComponentsResolver.register("button", ButtonComponentPattern.class);
     }
 
     @Before

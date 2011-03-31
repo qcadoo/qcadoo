@@ -37,10 +37,8 @@ import com.google.common.base.Preconditions;
 import com.qcadoo.view.api.ComponentPattern;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.internal.ComponentDefinition;
-import com.qcadoo.view.internal.ViewComponent;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
 
-@ViewComponent("smallTabLayout")
 public class SmallTabLayoutPattern extends AbstractLayoutPattern {
 
     private static final String JS_OBJECT = "QCD.components.containers.layout.SmallTabLayout";
@@ -50,7 +48,7 @@ public class SmallTabLayoutPattern extends AbstractLayoutPattern {
     private static final String JS_PATH = "/qcadooView/public/js/crud/qcd/components/containers/layout/smallTabLayout.js";
 
     // private String label;
-    private List<SmallTabLayoutPatternTab> tabs = new LinkedList<SmallTabLayoutPatternTab>();
+    private final List<SmallTabLayoutPatternTab> tabs = new LinkedList<SmallTabLayoutPatternTab>();
 
     public SmallTabLayoutPattern(final ComponentDefinition componentDefinition) {
         super(componentDefinition);

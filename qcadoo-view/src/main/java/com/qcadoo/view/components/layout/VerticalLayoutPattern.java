@@ -29,9 +29,7 @@ import org.json.JSONException;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.components.EmptyContainerState;
 import com.qcadoo.view.internal.ComponentDefinition;
-import com.qcadoo.view.internal.ViewComponent;
 
-@ViewComponent("verticalLayout")
 public class VerticalLayoutPattern extends AbstractLayoutPattern {
 
     private static final String JS_OBJECT = "QCD.components.containers.layout.VerticalLayout";

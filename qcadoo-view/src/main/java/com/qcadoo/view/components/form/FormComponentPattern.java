@@ -34,10 +34,8 @@ import org.json.JSONObject;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.internal.ComponentDefinition;
 import com.qcadoo.view.internal.ComponentOption;
-import com.qcadoo.view.internal.ViewComponent;
 import com.qcadoo.view.internal.patterns.AbstractContainerPattern;
 
-@ViewComponent("form")
 public final class FormComponentPattern extends AbstractContainerPattern {
 
     private static final String JSP_PATH = "containers/form.jsp";

@@ -39,9 +39,7 @@ import com.qcadoo.model.api.types.EnumeratedType;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.components.FieldComponentPattern;
 import com.qcadoo.view.internal.ComponentDefinition;
-import com.qcadoo.view.internal.ViewComponent;
 
-@ViewComponent("select")
 public final class SelectComponentPattern extends FieldComponentPattern {
 
     private static final String JSP_PATH = "elements/select.jsp";

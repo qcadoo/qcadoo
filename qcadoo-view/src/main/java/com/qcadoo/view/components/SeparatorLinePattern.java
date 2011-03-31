@@ -26,10 +26,8 @@ package com.qcadoo.view.components;
 
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.internal.ComponentDefinition;
-import com.qcadoo.view.internal.ViewComponent;
 import com.qcadoo.view.internal.patterns.AbstractComponentPattern;
 
-@ViewComponent("separatorLine")
 public class SeparatorLinePattern extends AbstractComponentPattern {
 
     private static final String JS_OBJECT = "QCD.components.containers.layout.SeperatorLine";

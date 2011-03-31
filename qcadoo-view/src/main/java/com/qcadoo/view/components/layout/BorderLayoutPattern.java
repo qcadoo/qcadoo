@@ -35,9 +35,7 @@ import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.components.EmptyContainerState;
 import com.qcadoo.view.internal.ComponentDefinition;
 import com.qcadoo.view.internal.ComponentOption;
-import com.qcadoo.view.internal.ViewComponent;
 
-@ViewComponent("borderLayout")
 public class BorderLayoutPattern extends AbstractLayoutPattern {
 
     private static final String JS_OBJECT = "QCD.components.containers.layout.BorderLayout";

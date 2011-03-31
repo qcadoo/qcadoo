@@ -41,11 +41,9 @@ import com.qcadoo.view.components.form.FormComponentPattern;
 import com.qcadoo.view.components.layout.FlowLayoutPattern;
 import com.qcadoo.view.internal.ComponentDefinition;
 import com.qcadoo.view.internal.ComponentOption;
-import com.qcadoo.view.internal.ViewComponent;
 import com.qcadoo.view.internal.api.InternalViewDefinitionService;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
 
-@ViewComponent("awesomeDynamicList")
 public class AwesomeDynamicListPattern extends FieldComponentPattern {
 
     private static final String JS_OBJECT = "QCD.components.elements.AwesomeDynamicList";

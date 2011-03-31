@@ -33,10 +33,8 @@ import org.json.JSONException;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.internal.ComponentDefinition;
 import com.qcadoo.view.internal.ComponentOption;
-import com.qcadoo.view.internal.ViewComponent;
 import com.qcadoo.view.internal.patterns.AbstractComponentPattern;
 
-@ViewComponent("button")
 public final class ButtonComponentPattern extends AbstractComponentPattern {
 
     private static final String JS_OBJECT = "QCD.components.elements.LinkButton";

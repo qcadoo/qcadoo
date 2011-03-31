@@ -52,11 +52,9 @@ import com.qcadoo.view.components.grid.GridComponentPattern;
 import com.qcadoo.view.components.window.WindowComponentPattern;
 import com.qcadoo.view.internal.ComponentDefinition;
 import com.qcadoo.view.internal.ComponentOption;
-import com.qcadoo.view.internal.ViewComponent;
 import com.qcadoo.view.internal.api.InternalViewDefinitionService;
 import com.qcadoo.view.internal.internal.ViewDefinitionImpl;
 
-@ViewComponent("lookup")
 public final class LookupComponentPattern extends FieldComponentPattern {
 
     private static final String JSP_PATH = "elements/lookup.jsp";
