@@ -36,6 +36,4 @@ public interface PluginFileManager {
 
     void uninstallPlugin(final String... filename);
 
-    void renamePlugin(final String source, final String destination);
-
 }

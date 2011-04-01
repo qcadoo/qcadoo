@@ -59,12 +59,15 @@ public final class DefaultPlugin implements Plugin {
 
     private final Version version;
 
+    private final String fileName;
+
     private PluginState state;
 
-    private DefaultPlugin(final String identifier, final boolean system, final Version version, final List<Module> modules,
-            final PluginInformation information, final Set<PluginDependencyInformation> dependencies) {
+    private DefaultPlugin(final String identifier, final String fileName, final boolean system, final Version version,
+            final List<Module> modules, final PluginInformation information, final Set<PluginDependencyInformation> dependencies) {
         this.state = UNKNOWN;
         this.identifier = identifier;
+        this.fileName = fileName;
         this.version = version;
         this.modules = modules;
         this.information = information;
@@ -137,7 +140,7 @@ public final class DefaultPlugin implements Plugin {
 
     @Override
     public String getFilename() {
-        return identifier + "-" + version + ".jar";
+        return fileName;
     }
 
     @Override
@@ -164,6 +167,8 @@ public final class DefaultPlugin implements Plugin {
 
         private final String identifier;
 
+        private String fileName;
+
         private Version version;
 
         private String description;
@@ -186,6 +191,11 @@ public final class DefaultPlugin implements Plugin {
 
         public static Builder identifier(final String identifier) {
             return new Builder(identifier);
+        }
+
+        public Builder withFileName(final String fileName) {
+            this.fileName = fileName;
+            return this;
         }
 
         public Builder withModule(final Module module) {
@@ -230,7 +240,7 @@ public final class DefaultPlugin implements Plugin {
 
         public Plugin build() {
             PluginInformation pluginInformation = new PluginInformation(name, description, vendor, vendorUrl);
-            return new DefaultPlugin(identifier, system, version, unmodifiableList(modules), pluginInformation,
+            return new DefaultPlugin(identifier, fileName, system, version, unmodifiableList(modules), pluginInformation,
                     unmodifiableSet(dependencyInformations));
         }
 
@@ -261,6 +271,7 @@ public final class DefaultPlugin implements Plugin {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((identifier == null) ? 0 : identifier.hashCode());
+        result = prime * result + ((fileName == null) ? 0 : fileName.hashCode());
         result = prime * result + ((state == null) ? 0 : state.hashCode());
         result = prime * result + ((version == null) ? 0 : version.hashCode());
         return result;
@@ -283,6 +294,13 @@ public final class DefaultPlugin implements Plugin {
                 return false;
             }
         } else if (!identifier.equals(other.identifier)) {
+            return false;
+        }
+        if (fileName == null) {
+            if (other.fileName != null) {
+                return false;
+            }
+        } else if (!fileName.equals(other.fileName)) {
             return false;
         }
         if (state != other.state) {
