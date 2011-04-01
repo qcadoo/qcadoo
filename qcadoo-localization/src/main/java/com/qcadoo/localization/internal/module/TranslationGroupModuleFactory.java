@@ -30,7 +30,7 @@ public class TranslationGroupModuleFactory implements ModuleFactory<TranslationG
 
     @Override
     public String getIdentifier() {
-        return "translationGroup";
+        return "group";
     }
 
 }

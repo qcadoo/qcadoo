@@ -19,10 +19,12 @@ public class LocaleModuleFactory implements ModuleFactory<LocaleModule> {
     @Override
     public LocaleModule parse(String pluginIdentifier, Element element) {
         String locale = element.getAttributeValue("locale");
+        String label = element.getAttributeValue("label");
 
-        Preconditions.checkNotNull(locale, "Missing locale attribute of localization module");
+        Preconditions.checkNotNull(locale, "Missing locale attribute of locale module");
+        Preconditions.checkNotNull(label, "Missing label attribute of locale module");
 
-        return new LocaleModule(translationService, locale);
+        return new LocaleModule(translationService, locale, label);
     }
 
     @Override

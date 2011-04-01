@@ -58,7 +58,6 @@ public final class TranslationServiceImpl implements InternalTranslationService 
     @Value("${ignoreMissingTranslations}")
     private boolean ignoreMissingTranslations;
 
-    @Value("${locales}")
     private Map<String, String> locales = new HashMap<String, String>();
 
     @Autowired
@@ -157,13 +156,13 @@ public final class TranslationServiceImpl implements InternalTranslationService 
     }
 
     @Override
-    public void addLocaleToList(final String value, final String name) {
-        locales.put(value, name);
+    public void addLocaleToList(final String locale, final String label) {
+        locales.put(locale, label);
     }
 
     @Override
-    public void removeLocaleToList(final String value) {
-        locales.remove(value);
+    public void removeLocaleToList(final String locale) {
+        locales.remove(locale);
     }
 
     @Override

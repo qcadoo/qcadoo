@@ -10,9 +10,12 @@ public class LocaleModule extends Module {
 
     private String locale;
 
-    public LocaleModule(final InternalTranslationService translationService, final String locale) {
+    private String label;
+
+    public LocaleModule(final InternalTranslationService translationService, final String locale, final String label) {
         this.translationService = translationService;
         this.locale = locale;
+        this.label = label;
     }
 
     @Override
@@ -21,7 +24,7 @@ public class LocaleModule extends Module {
 
     @Override
     public void enable() {
-        // translationService.addLocaleToList(locale, name);
+        translationService.addLocaleToList(locale, label);
     }
 
     @Override
