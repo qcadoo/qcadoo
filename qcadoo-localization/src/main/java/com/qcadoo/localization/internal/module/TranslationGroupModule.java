@@ -10,12 +10,12 @@ public class TranslationGroupModule extends Module {
 
     private String prefix;
 
-    private String name;
+    // private String name;
 
     public TranslationGroupModule(final InternalTranslationService translationService, final String prefix, final String name) {
         this.translationService = translationService;
         this.prefix = prefix;
-        this.name = name;
+        // this.name = name;
     }
 
     @Override
