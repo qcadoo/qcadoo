@@ -36,4 +36,8 @@ public interface InternalTranslationService extends TranslationService {
 
     void prepareMessagesForPrefix(String prefix);
 
+    void addLocaleToList(String value, String name);
+
+    void removeLocaleToList(String value);
+
 }
