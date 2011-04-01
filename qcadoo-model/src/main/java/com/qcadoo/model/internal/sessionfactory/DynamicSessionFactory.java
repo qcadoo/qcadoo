@@ -57,18 +57,20 @@ public class DynamicSessionFactory implements SessionFactory {
     }
 
     private SessionFactory getSessionFactory() {
-        if (sessionFactory == null) {
-            synchronized (DynamicSessionFactory.class) {
-                if (sessionFactory == null) {
+        SessionFactory result = sessionFactory;
+        if (result == null) {
+            synchronized (this) {
+                result = sessionFactory;
+                if (result == null) {
                     try {
-                        sessionFactory = sessionFactoryBean.getObject();
+                        result = sessionFactory = sessionFactoryBean.getObject();
                     } catch (Exception e) {
                         throw new IllegalStateException(e.getMessage(), e);
                     }
                 }
             }
         }
-        return sessionFactory;
+        return result;
     }
 
     @Override
@@ -112,6 +114,7 @@ public class DynamicSessionFactory implements SessionFactory {
     }
 
     @Override
+    @SuppressWarnings("rawtypes")
     public ClassMetadata getClassMetadata(final Class entityClass) {
         return getSessionFactory().getClassMetadata(entityClass);
     }
@@ -132,6 +135,7 @@ public class DynamicSessionFactory implements SessionFactory {
     }
 
     @Override
+    @SuppressWarnings("rawtypes")
     public Map getAllCollectionMetadata() {
         return getSessionFactory().getAllCollectionMetadata();
     }
@@ -157,46 +161,55 @@ public class DynamicSessionFactory implements SessionFactory {
     }
 
     @Override
+    @SuppressWarnings({ "deprecation", "rawtypes" })
     public void evict(final Class persistentClass) {
         getSessionFactory().evict(persistentClass);
     }
 
     @Override
+    @SuppressWarnings({ "deprecation", "rawtypes" })
     public void evict(final Class persistentClass, final Serializable id) {
         getSessionFactory().evict(persistentClass, id);
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void evictEntity(final String entityName) {
         getSessionFactory().evictEntity(entityName);
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void evictEntity(final String entityName, final Serializable id) {
         getSessionFactory().evictEntity(entityName, id);
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void evictCollection(final String roleName) {
         getSessionFactory().evictCollection(roleName);
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void evictCollection(final String roleName, final Serializable id) {
         getSessionFactory().evictCollection(roleName, id);
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void evictQueries(final String cacheRegion) {
         getSessionFactory().evictQueries(cacheRegion);
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void evictQueries() {
         getSessionFactory().evictQueries();
     }
 
     @Override
+    @SuppressWarnings("rawtypes")
     public Set getDefinedFilterNames() {
         return getSessionFactory().getDefinedFilterNames();
     }

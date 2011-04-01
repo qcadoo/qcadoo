@@ -76,7 +76,6 @@ public interface DataDefinition {
      * @param id
      *            set of id
      */
-    // TODO plugin masz varargs
     Set<Long> copy(final Set<Long> id);
 
     /**
@@ -93,7 +92,6 @@ public interface DataDefinition {
      * @param id
      *            set of id
      */
-    // TODO plugin masz varargs
     void delete(final Set<Long> id);
 
     /**

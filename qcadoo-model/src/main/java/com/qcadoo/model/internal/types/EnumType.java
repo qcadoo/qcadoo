@@ -32,8 +32,8 @@ import java.util.Map;
 
 import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.api.FieldDefinition;
-import com.qcadoo.model.api.search.ValueAndError;
 import com.qcadoo.model.api.types.EnumeratedType;
+import com.qcadoo.model.internal.api.ValueAndError;
 
 public final class EnumType implements EnumeratedType {
 

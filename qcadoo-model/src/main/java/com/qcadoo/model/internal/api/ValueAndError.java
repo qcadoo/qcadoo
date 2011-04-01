@@ -1,4 +1,4 @@
-package com.qcadoo.model.api.search;
+package com.qcadoo.model.internal.api;
 
 public class ValueAndError {
 

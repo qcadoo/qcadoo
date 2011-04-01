@@ -27,8 +27,8 @@ package com.qcadoo.model.internal.types;
 import java.util.Locale;
 
 import com.qcadoo.model.api.FieldDefinition;
-import com.qcadoo.model.api.search.ValueAndError;
 import com.qcadoo.model.api.types.FieldType;
+import com.qcadoo.model.internal.api.ValueAndError;
 
 public final class BooleanType implements FieldType {
 

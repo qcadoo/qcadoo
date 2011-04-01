@@ -27,7 +27,7 @@ package com.qcadoo.model.api.types;
 import java.util.Locale;
 
 import com.qcadoo.model.api.FieldDefinition;
-import com.qcadoo.model.api.search.ValueAndError;
+import com.qcadoo.model.internal.api.ValueAndError;
 
 /**
  * Object represents field type.
