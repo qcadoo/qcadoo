@@ -26,9 +26,7 @@ package com.qcadoo.model.api.search;
 
 import org.apache.commons.beanutils.PropertyUtils;
 
-import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.FieldDefinition;
-import com.qcadoo.model.internal.DefaultEntity;
 import com.qcadoo.model.internal.search.RestrictionLogicalOperator;
 import com.qcadoo.model.internal.search.restrictions.BelongsToRestriction;
 import com.qcadoo.model.internal.search.restrictions.IsNotNullRestriction;
@@ -59,12 +57,11 @@ public final class Restrictions {
      * @return restriction
      */
     public static Restriction eq(final FieldDefinition fieldDefinition, final Object expectedValue) {
-        Entity validatedEntity = new DefaultEntity(null); // TODO try not to use entity here
-        Object value = validateValue(fieldDefinition, expectedValue, validatedEntity);
-        if (!validatedEntity.getErrors().isEmpty()) {
+        ValueAndError value = validateValue(fieldDefinition, expectedValue);
+        if (!value.isValid()) {
             return null;
         }
-        return createEqRestriction(fieldDefinition.getName(), value);
+        return createEqRestriction(fieldDefinition.getName(), value.getValue());
     }
 
     /**
@@ -134,12 +131,11 @@ public final class Restrictions {
      * @return restriction
      */
     public static Restriction ge(final FieldDefinition fieldDefinition, final Object expectedValue) {
-        Entity validatedEntity = new DefaultEntity(null); // TODO try not to use entity here
-        Object value = validateValue(fieldDefinition, expectedValue, validatedEntity);
-        if (!validatedEntity.getErrors().isEmpty()) {
+        ValueAndError value = validateValue(fieldDefinition, expectedValue);
+        if (!value.isValid()) {
             return null;
         }
-        return new SimpleRestriction(fieldDefinition.getName(), value, RestrictionOperator.GE);
+        return new SimpleRestriction(fieldDefinition.getName(), value.getValue(), RestrictionOperator.GE);
     }
 
     /**
@@ -152,12 +148,11 @@ public final class Restrictions {
      * @return restriction
      */
     public static Restriction gt(final FieldDefinition fieldDefinition, final Object expectedValue) {
-        Entity validatedEntity = new DefaultEntity(null); // TODO try not to use entity here
-        Object value = validateValue(fieldDefinition, expectedValue, validatedEntity);
-        if (!validatedEntity.getErrors().isEmpty()) {
+        ValueAndError value = validateValue(fieldDefinition, expectedValue);
+        if (!value.isValid()) {
             return null;
         }
-        return new SimpleRestriction(fieldDefinition.getName(), value, RestrictionOperator.GT);
+        return new SimpleRestriction(fieldDefinition.getName(), value.getValue(), RestrictionOperator.GT);
     }
 
     /**
@@ -192,12 +187,11 @@ public final class Restrictions {
      * @return restriction
      */
     public static Restriction le(final FieldDefinition fieldDefinition, final Object expectedValue) {
-        Entity validatedEntity = new DefaultEntity(null); // TODO try not to use entity here
-        Object value = validateValue(fieldDefinition, expectedValue, validatedEntity);
-        if (!validatedEntity.getErrors().isEmpty()) {
+        ValueAndError value = validateValue(fieldDefinition, expectedValue);
+        if (!value.isValid()) {
             return null;
         }
-        return new SimpleRestriction(fieldDefinition.getName(), value, RestrictionOperator.LE);
+        return new SimpleRestriction(fieldDefinition.getName(), value.getValue(), RestrictionOperator.LE);
     }
 
     /**
@@ -210,12 +204,11 @@ public final class Restrictions {
      * @return restriction
      */
     public static Restriction lt(final FieldDefinition fieldDefinition, final Object expectedValue) {
-        Entity validatedEntity = new DefaultEntity(null); // TODO try not to use entity here
-        Object value = validateValue(fieldDefinition, expectedValue, validatedEntity);
-        if (!validatedEntity.getErrors().isEmpty()) {
+        ValueAndError value = validateValue(fieldDefinition, expectedValue);
+        if (!value.isValid()) {
             return null;
         }
-        return new SimpleRestriction(fieldDefinition.getName(), value, RestrictionOperator.LT);
+        return new SimpleRestriction(fieldDefinition.getName(), value.getValue(), RestrictionOperator.LT);
     }
 
     /**
@@ -228,17 +221,16 @@ public final class Restrictions {
      * @return restriction
      */
     public static Restriction ne(final FieldDefinition fieldDefinition, final Object expectedValue) {
-        Entity validatedEntity = new DefaultEntity(null); // TODO try not to use entity here
-        Object value = validateValue(fieldDefinition, expectedValue, validatedEntity);
-        if (!validatedEntity.getErrors().isEmpty()) {
-            return null;
-        }
         if (expectedValue instanceof String && ((String) expectedValue).matches(".*[\\*%\\?_].*")) {
             String preperadValue = ((String) expectedValue).replace('*', '%').replace('?', '_');
-
             return not(new LikeRestriction(fieldDefinition.getName(), preperadValue));
+        } else {
+            ValueAndError value = validateValue(fieldDefinition, expectedValue);
+            if (!value.isValid()) {
+                return null;
+            }
+            return new SimpleRestriction(fieldDefinition.getName(), value.getValue(), RestrictionOperator.NE);
         }
-        return new SimpleRestriction(fieldDefinition.getName(), value, RestrictionOperator.NE);
     }
 
     public static Restriction forOperator(final RestrictionOperator operator, final FieldDefinition fieldDefinition,
@@ -277,17 +269,16 @@ public final class Restrictions {
         return new LogicalOperatorRestriction(RestrictionLogicalOperator.OR, restrictions);
     }
 
-    private static Object validateValue(final FieldDefinition fieldDefinition, final Object value, final Entity validatedEntity) {
+    private static ValueAndError validateValue(final FieldDefinition fieldDefinition, final Object value) {
         Object fieldValue = value;
         if (fieldValue != null && !fieldDefinition.getType().getType().isInstance(fieldValue)) {
             if (fieldValue instanceof String) {
-                fieldValue = fieldDefinition.getType().toObject(fieldDefinition, fieldValue, validatedEntity);
+                return fieldDefinition.getType().toObject(fieldDefinition, fieldValue);
             } else {
-                validatedEntity.addError(fieldDefinition, "core.validation.error.wrongType", fieldValue.getClass()
-                        .getSimpleName(), fieldDefinition.getType().getType().getSimpleName());
-                return null;
+                return ValueAndError.empty();
             }
         }
-        return fieldValue;
+        return ValueAndError.withoutError(fieldValue);
     }
+
 }

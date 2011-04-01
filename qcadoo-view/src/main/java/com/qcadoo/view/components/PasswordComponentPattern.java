@@ -26,9 +26,7 @@ package com.qcadoo.view.components;
 
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.internal.ComponentDefinition;
-import com.qcadoo.view.internal.ViewComponent;
 
-@ViewComponent("password")
 public final class PasswordComponentPattern extends FieldComponentPattern {
 
     private static final String JSP_PATH = "elements/password.jsp";

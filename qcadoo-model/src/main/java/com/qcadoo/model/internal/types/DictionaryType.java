@@ -29,8 +29,8 @@ import java.util.Locale;
 import java.util.Map;
 
 import com.qcadoo.model.api.DictionaryService;
-import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.FieldDefinition;
+import com.qcadoo.model.api.search.ValueAndError;
 import com.qcadoo.model.api.types.EnumeratedType;
 
 public final class DictionaryType implements EnumeratedType {
@@ -55,14 +55,13 @@ public final class DictionaryType implements EnumeratedType {
     }
 
     @Override
-    public Object toObject(final FieldDefinition fieldDefinition, final Object value, final Entity entity) {
+    public ValueAndError toObject(final FieldDefinition fieldDefinition, final Object value) {
         String stringValue = String.valueOf(value);
         List<String> keys = dictionaryService.keys(dictionary);
         if (!keys.contains(stringValue)) {
-            entity.addError(fieldDefinition, "core.validate.field.error.invalidDictionaryItem", String.valueOf(keys));
-            return null;
+            return ValueAndError.withError("core.validate.field.error.invalidDictionaryItem", String.valueOf(keys));
         }
-        return stringValue;
+        return ValueAndError.withoutError(stringValue);
     }
 
     @Override

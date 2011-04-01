@@ -23,6 +23,28 @@
 		<model:model model="item" resource="model/item.xml" />
 		<model:model model="view" resource="model/view.xml" />
 
+		<view:component name="button" class="com.qcadoo.view.components.ButtonComponentPattern" />
+		<view:component name="label" class="com.qcadoo.view.components.LabelComponentPattern" />
+		<view:component name="checkbox" class="com.qcadoo.view.components.CheckBoxComponentPattern" />
+		<view:component name="calendar" class="com.qcadoo.view.components.CalendarComponentPattern" />
+		<view:component name="password" class="com.qcadoo.view.components.PasswordComponentPattern" />
+		<view:component name="form" class="com.qcadoo.view.components.form.FormComponentPattern" />
+		<view:component name="grid" class="com.qcadoo.view.components.grid.GridComponentPattern" />
+		<view:component name="separatorLine" class="com.qcadoo.view.components.SeparatorLinePattern" />
+		<view:component name="textarea" class="com.qcadoo.view.components.TextAreaComponentPattern" />
+		<view:component name="input" class="com.qcadoo.view.components.TextInputComponentPattern" />
+		<view:component name="awesomeDynamicList" class="com.qcadoo.view.components.awesomeDynamicList.AwesomeDynamicListPattern" />
+		<view:component name="staticPage" class="com.qcadoo.view.components.StaticPageComponentPattern" />
+		<view:component name="window" class="com.qcadoo.view.components.window.WindowComponentPattern" />
+		<view:component name="tree" class="com.qcadoo.view.components.tree.TreeComponentPattern" />
+		<view:component name="select" class="com.qcadoo.view.components.select.SelectComponentPattern" />
+		<view:component name="lookup" class="com.qcadoo.view.components.lookup.LookupComponentPattern" />
+		<view:component name="verticalLayout" class="com.qcadoo.view.components.layout.VerticalLayoutPattern" />
+		<view:component name="gridLayout" class="com.qcadoo.view.components.layout.GridLayoutPattern" />
+		<view:component name="borderLayout" class="com.qcadoo.view.components.layout.BorderLayoutPattern" />
+		<view:component name="flowLayout" class="com.qcadoo.view.components.layout.FlowLayoutPattern" />
+		<view:component name="smallTabLayout" class="com.qcadoo.view.components.layout.SmallTabLayoutPattern" />
+
 		<view:resource uri="public/**/*" />
 	</modules>
 

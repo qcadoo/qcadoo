@@ -32,9 +32,7 @@ import org.json.JSONException;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.internal.ComponentDefinition;
 import com.qcadoo.view.internal.ComponentOption;
-import com.qcadoo.view.internal.ViewComponent;
 
-@ViewComponent("input")
 public final class TextInputComponentPattern extends FieldComponentPattern {
 
     private static final String JSP_PATH = "elements/input.jsp";

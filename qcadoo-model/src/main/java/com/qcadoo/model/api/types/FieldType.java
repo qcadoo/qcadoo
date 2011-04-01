@@ -26,8 +26,8 @@ package com.qcadoo.model.api.types;
 
 import java.util.Locale;
 
-import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.FieldDefinition;
+import com.qcadoo.model.api.search.ValueAndError;
 
 /**
  * Object represents field type.
@@ -52,7 +52,7 @@ public interface FieldType {
      *            entity
      * @return valid value
      */
-    Object toObject(FieldDefinition fieldDefinition, Object value, Entity entity);
+    ValueAndError toObject(FieldDefinition fieldDefinition, Object value);
 
     /**
      * Convert field's value to string.

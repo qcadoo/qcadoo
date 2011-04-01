@@ -26,9 +26,7 @@ package com.qcadoo.view.components;
 
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.internal.ComponentDefinition;
-import com.qcadoo.view.internal.ViewComponent;
 
-@ViewComponent("calendar")
 public final class CalendarComponentPattern extends FieldComponentPattern {
 
     private static final String JSP_PATH = "elements/calendar.jsp";

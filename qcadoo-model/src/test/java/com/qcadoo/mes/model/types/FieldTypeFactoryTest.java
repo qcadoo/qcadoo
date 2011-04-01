@@ -28,7 +28,9 @@ import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.junit.matchers.JUnitMatchers.hasItems;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -38,7 +40,6 @@ import java.util.Date;
 import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
-import org.junit.Before;
 import org.junit.Test;
 import org.springframework.security.authentication.encoding.PasswordEncoder;
 
@@ -47,8 +48,8 @@ import com.google.common.collect.Lists;
 import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.mes.internal.DataAccessTest;
 import com.qcadoo.model.api.DictionaryService;
-import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.FieldDefinition;
+import com.qcadoo.model.api.search.ValueAndError;
 import com.qcadoo.model.api.types.EnumeratedType;
 import com.qcadoo.model.api.types.FieldType;
 import com.qcadoo.model.internal.DefaultEntity;
@@ -68,14 +69,7 @@ import com.qcadoo.model.internal.types.TextType;
 
 public class FieldTypeFactoryTest extends DataAccessTest {
 
-    private Entity entity = null;
-
     private final FieldDefinition fieldDefinition = new FieldDefinitionImpl(null, "aa");
-
-    @Before
-    public void init() {
-        entity = new DefaultEntity(dataDefinition);
-    }
 
     @Test
     public void shouldReturnEnumType() throws Exception {
@@ -95,10 +89,15 @@ public class FieldTypeFactoryTest extends DataAccessTest {
         assertThat(fieldType.values(Locale.ENGLISH).values(), hasItems("i18nVal1", "i18nVal2", "i18nVal3"));
         assertEquals(String.class, fieldType.getType());
 
-        assertNotNull(fieldType.toObject(fieldDefinition, "val1", entity));
-        assertNull(fieldType.toObject(fieldDefinition, "val4", entity));
-        assertEquals("core.validate.field.error.invalidDictionaryItem", entity.getError("aa").getMessage());
-        assertEquals("[val1, val2, val3]", entity.getError("aa").getVars()[0]);
+        ValueAndError valueAndError1 = fieldType.toObject(fieldDefinition, "val1");
+        ValueAndError valueAndError2 = fieldType.toObject(fieldDefinition, "val4");
+
+        assertTrue(valueAndError1.isValid());
+        assertFalse(valueAndError2.isValid());
+        assertNotNull(valueAndError1.getValue());
+        assertNull(valueAndError2.getValue());
+        assertEquals("core.validate.field.error.invalidDictionaryItem", valueAndError2.getMessage());
+        assertEquals("[val1, val2, val3]", valueAndError2.getArgs()[0]);
     }
 
     @Test
@@ -117,10 +116,13 @@ public class FieldTypeFactoryTest extends DataAccessTest {
         assertThat(fieldType.values(Locale.ENGLISH).keySet(), hasItems("val1", "val2", "val3"));
         assertThat(fieldType.values(Locale.ENGLISH).values(), hasItems("val1", "val2", "val3"));
         assertEquals(String.class, fieldType.getType());
-        assertNotNull(fieldType.toObject(fieldDefinition, "val1", entity));
-        assertNull(fieldType.toObject(fieldDefinition, "val4", entity));
-        assertEquals("core.validate.field.error.invalidDictionaryItem", entity.getError("aa").getMessage());
-        assertEquals("[val1, val2, val3]", entity.getError("aa").getVars()[0]);
+
+        ValueAndError valueAndError1 = fieldType.toObject(fieldDefinition, "val1");
+        ValueAndError valueAndError2 = fieldType.toObject(fieldDefinition, "val4");
+        assertNotNull(valueAndError1.getValue());
+        assertNull(valueAndError2.getValue());
+        assertEquals("core.validate.field.error.invalidDictionaryItem", valueAndError2.getMessage());
+        assertEquals("[val1, val2, val3]", valueAndError2.getArgs()[0]);
     }
 
     @Test
@@ -131,7 +133,7 @@ public class FieldTypeFactoryTest extends DataAccessTest {
         // then
         assertThat(fieldType, is(BooleanType.class));
         assertEquals(Boolean.class, fieldType.getType());
-        assertNotNull(fieldType.toObject(fieldDefinition, false, entity));
+        assertTrue(fieldType.toObject(fieldDefinition, false).isValid());
     }
 
     @Test
@@ -142,7 +144,7 @@ public class FieldTypeFactoryTest extends DataAccessTest {
         // then
         assertThat(fieldType, is(DateType.class));
         assertEquals(Date.class, fieldType.getType());
-        assertNotNull(fieldType.toObject(fieldDefinition, new Date(), entity));
+        assertTrue(fieldType.toObject(fieldDefinition, new Date()).isValid());
     }
 
     @Test
@@ -153,7 +155,7 @@ public class FieldTypeFactoryTest extends DataAccessTest {
         // then
         assertThat(fieldType, is(DateTimeType.class));
         assertEquals(Date.class, fieldType.getType());
-        assertNotNull(fieldType.toObject(fieldDefinition, new Date(), entity));
+        assertTrue(fieldType.toObject(fieldDefinition, new Date()).isValid());
     }
 
     @Test
@@ -164,10 +166,10 @@ public class FieldTypeFactoryTest extends DataAccessTest {
         // then
         assertThat(fieldType, is(DecimalType.class));
         assertEquals(BigDecimal.class, fieldType.getType());
-        assertNotNull(fieldType.toObject(fieldDefinition, BigDecimal.valueOf(1.21), entity));
-        assertNotNull(fieldType.toObject(fieldDefinition, BigDecimal.valueOf(1), entity));
-        assertNotNull(fieldType.toObject(fieldDefinition, BigDecimal.valueOf(1), entity));
-        assertNotNull(fieldType.toObject(fieldDefinition, BigDecimal.valueOf(1234567), entity));
+        assertTrue(fieldType.toObject(fieldDefinition, BigDecimal.valueOf(1.21)).isValid());
+        assertTrue(fieldType.toObject(fieldDefinition, BigDecimal.valueOf(1)).isValid());
+        assertTrue(fieldType.toObject(fieldDefinition, BigDecimal.valueOf(1)).isValid());
+        assertTrue(fieldType.toObject(fieldDefinition, BigDecimal.valueOf(1234567)).isValid());
     }
 
     @Test
@@ -178,8 +180,8 @@ public class FieldTypeFactoryTest extends DataAccessTest {
         // then
         assertThat(fieldType, is(IntegerType.class));
         assertEquals(Integer.class, fieldType.getType());
-        assertNotNull(fieldType.toObject(fieldDefinition, 1, entity));
-        assertNotNull(fieldType.toObject(fieldDefinition, 1234567890, entity));
+        assertTrue(fieldType.toObject(fieldDefinition, 1).isValid());
+        assertTrue(fieldType.toObject(fieldDefinition, 1234567890).isValid());
     }
 
     @Test
@@ -190,11 +192,14 @@ public class FieldTypeFactoryTest extends DataAccessTest {
         // then
         assertThat(fieldType, is(StringType.class));
         assertEquals(String.class, fieldType.getType());
-        assertNotNull(fieldType.toObject(fieldDefinition, "test", entity));
-        assertNotNull(fieldType.toObject(fieldDefinition, StringUtils.repeat("a", 255), entity));
-        assertNull(fieldType.toObject(fieldDefinition, StringUtils.repeat("a", 256), entity));
-        assertEquals("core.validate.field.error.invalidLength", entity.getError("aa").getMessage());
-        assertEquals("255", entity.getError("aa").getVars()[0]);
+        assertTrue(fieldType.toObject(fieldDefinition, "test").isValid());
+        assertTrue(fieldType.toObject(fieldDefinition, StringUtils.repeat("a", 255)).isValid());
+
+        ValueAndError valueAndError = fieldType.toObject(fieldDefinition, StringUtils.repeat("a", 256));
+
+        assertFalse(valueAndError.isValid());
+        assertEquals("core.validate.field.error.invalidLength", valueAndError.getMessage());
+        assertEquals("255", valueAndError.getArgs()[0]);
     }
 
     @Test
@@ -205,11 +210,14 @@ public class FieldTypeFactoryTest extends DataAccessTest {
         // then
         assertThat(fieldType, is(TextType.class));
         assertEquals(String.class, fieldType.getType());
-        assertNotNull(fieldType.toObject(fieldDefinition, "test", entity));
-        assertNotNull(fieldType.toObject(fieldDefinition, StringUtils.repeat("a", 2048), entity));
-        assertNull(fieldType.toObject(fieldDefinition, StringUtils.repeat("a", 2049), entity));
-        assertEquals("core.validate.field.error.invalidLength", entity.getError("aa").getMessage());
-        assertEquals("2048", entity.getError("aa").getVars()[0]);
+        assertTrue(fieldType.toObject(fieldDefinition, "test").isValid());
+        assertTrue(fieldType.toObject(fieldDefinition, StringUtils.repeat("a", 2048)).isValid());
+
+        ValueAndError valueAndError = fieldType.toObject(fieldDefinition, StringUtils.repeat("a", 2049));
+
+        assertFalse(valueAndError.isValid());
+        assertEquals("core.validate.field.error.invalidLength", valueAndError.getMessage());
+        assertEquals("2048", valueAndError.getArgs()[0]);
     }
 
     @Test
@@ -220,7 +228,7 @@ public class FieldTypeFactoryTest extends DataAccessTest {
         // then
         assertThat(fieldType, is(BelongsToEntityType.class));
         assertEquals(Object.class, fieldType.getType());
-        assertNotNull(fieldType.toObject(fieldDefinition, new DefaultEntity(dataDefinition), entity));
+        assertTrue(fieldType.toObject(fieldDefinition, new DefaultEntity(dataDefinition)).isValid());
     }
 
     @Test
@@ -245,7 +253,7 @@ public class FieldTypeFactoryTest extends DataAccessTest {
         // then
         assertThat(fieldType, is(PriorityType.class));
         assertEquals(Integer.class, fieldType.getType());
-        assertNotNull(fieldType.toObject(fieldDefinition, 1, entity));
+        assertTrue(fieldType.toObject(fieldDefinition, 1).isValid());
         assertEquals(fieldDefinition, ((PriorityType) fieldType).getScopeFieldDefinition());
     }
 }

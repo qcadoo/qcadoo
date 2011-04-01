@@ -31,7 +31,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -63,7 +62,7 @@ import com.qcadoo.view.internal.api.InternalViewDefinitionService;
 import com.qcadoo.view.internal.hooks.HookDefinitionImpl;
 import com.qcadoo.view.internal.hooks.HookFactory;
 import com.qcadoo.view.internal.internal.ComponentCustomEvent;
-import com.qcadoo.view.internal.internal.ViewComponentsResolver;
+import com.qcadoo.view.internal.internal.ViewComponentsResolverImpl;
 import com.qcadoo.view.internal.internal.ViewDefinitionImpl;
 import com.qcadoo.view.internal.patterns.AbstractComponentPattern;
 import com.qcadoo.view.internal.ribbon.RibbonUtils;
@@ -80,7 +79,7 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
     private InternalViewDefinitionService viewDefinitionService;
 
     @Autowired
-    private ViewComponentsResolver viewComponentsResolver;
+    private ViewComponentsResolverImpl viewComponentsResolver;
 
     @Autowired
     private TranslationService translationService;
@@ -88,15 +87,7 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
     @Autowired
     private HookFactory hookFactory;
 
-    @Autowired
-    private ViewComponentsResolver viewComponentResolver;
-
     private int currentIndexOrder;
-
-    @PostConstruct
-    public void init() {
-        viewComponentResolver.refreshAvailableComponentsList();
-    }
 
     @Override
     public List<ViewDefinition> parseViewXml(final Resource viewXml) {
@@ -262,7 +253,7 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
             throw new IllegalStateException("Unsupported component: " + type);
         }
 
-        ComponentPattern component = viewComponentsResolver.getViewComponentInstance(type,
+        ComponentPattern component = viewComponentsResolver.getComponentInstance(type,
                 getComponentDefinition(componentNode, parent, viewDefinition));
 
         component.parse(componentNode, this);

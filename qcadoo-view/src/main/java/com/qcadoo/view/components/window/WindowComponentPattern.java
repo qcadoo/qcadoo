@@ -14,13 +14,10 @@ import org.w3c.dom.NodeList;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.ribbon.Ribbon;
 import com.qcadoo.view.internal.ComponentDefinition;
-import com.qcadoo.view.internal.ViewComponent;
 import com.qcadoo.view.internal.patterns.AbstractContainerPattern;
 import com.qcadoo.view.internal.ribbon.RibbonUtils;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
 
-//@ViewComponent("tabWindow")
-@ViewComponent("window")
 public class WindowComponentPattern extends AbstractContainerPattern {
 
     private static final String JSP_PATH = "containers/window.jsp";

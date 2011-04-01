@@ -124,7 +124,7 @@ public final class MenuServiceImpl implements InternalMenuService {
         }
 
         if (showAdministrationMenu) {
-            if (!hasMenuManagement) {
+            if (!hasMenuManagement && pluginAccessor.getEnabledPlugin("menu") != null) {
                 if (administrationCategory == null) {
                     administrationCategory = new MenulItemsGroup("administration", translationService.translate(
                             "basic.menu.administration", locale));

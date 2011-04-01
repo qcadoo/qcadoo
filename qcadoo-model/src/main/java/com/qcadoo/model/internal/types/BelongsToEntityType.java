@@ -30,6 +30,7 @@ import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.FieldDefinition;
+import com.qcadoo.model.api.search.ValueAndError;
 import com.qcadoo.model.api.types.BelongsToType;
 
 public final class BelongsToEntityType implements BelongsToType {
@@ -56,8 +57,8 @@ public final class BelongsToEntityType implements BelongsToType {
     }
 
     @Override
-    public Object toObject(final FieldDefinition fieldDefinition, final Object value, final Entity validatedEntity) {
-        return value;
+    public ValueAndError toObject(final FieldDefinition fieldDefinition, final Object value) {
+        return ValueAndError.withoutError(value);
     }
 
     @Override

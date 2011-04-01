@@ -45,11 +45,9 @@ import com.qcadoo.model.api.types.HasManyType;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.internal.ComponentDefinition;
 import com.qcadoo.view.internal.ComponentOption;
-import com.qcadoo.view.internal.ViewComponent;
 import com.qcadoo.view.internal.patterns.AbstractComponentPattern;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
 
-@ViewComponent("grid")
 public final class GridComponentPattern extends AbstractComponentPattern {
 
     private static final String JSP_PATH = "elements/grid.jsp";

@@ -40,10 +40,8 @@ import com.qcadoo.model.api.types.TreeType;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.components.FieldComponentPattern;
 import com.qcadoo.view.internal.ComponentDefinition;
-import com.qcadoo.view.internal.ViewComponent;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
 
-@ViewComponent("tree")
 public final class TreeComponentPattern extends FieldComponentPattern {
 
     private static final String JSP_PATH = "elements/tree.jsp";

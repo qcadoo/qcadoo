@@ -221,7 +221,7 @@
 					</includes>
 					<excludes>
 						<exclude>**/lib/**</exclude>
-						<exclude>mes-tomcat/**</exclude>
+						<exclude>src/main/resource/tomcat/**</exclude>
 					</excludes>
 				</configuration>
 			</plugin>

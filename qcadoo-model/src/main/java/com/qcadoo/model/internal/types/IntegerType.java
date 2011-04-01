@@ -28,8 +28,8 @@ import java.text.NumberFormat;
 import java.text.ParsePosition;
 import java.util.Locale;
 
-import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.FieldDefinition;
+import com.qcadoo.model.api.search.ValueAndError;
 import com.qcadoo.model.api.types.FieldType;
 
 public final class IntegerType implements FieldType {
@@ -40,15 +40,14 @@ public final class IntegerType implements FieldType {
     }
 
     @Override
-    public Object toObject(final FieldDefinition fieldDefinition, final Object value, final Entity validatedEntity) {
+    public ValueAndError toObject(final FieldDefinition fieldDefinition, final Object value) {
         if (value instanceof Integer) {
-            return value;
+            return ValueAndError.withoutError(value);
         }
         try {
-            return Integer.parseInt(String.valueOf(value));
+            return ValueAndError.withoutError(Integer.parseInt(String.valueOf(value)));
         } catch (NumberFormatException e) {
-            validatedEntity.addError(fieldDefinition, "core.validate.field.error.invalidNumericFormat");
-            return null;
+            return ValueAndError.withError("core.validate.field.error.invalidNumericFormat");
         }
     }
 

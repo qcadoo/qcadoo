@@ -28,8 +28,8 @@ import java.util.Locale;
 
 import org.springframework.security.authentication.encoding.PasswordEncoder;
 
-import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.FieldDefinition;
+import com.qcadoo.model.api.search.ValueAndError;
 import com.qcadoo.model.api.types.FieldType;
 
 public final class PasswordType implements FieldType {
@@ -46,8 +46,8 @@ public final class PasswordType implements FieldType {
     }
 
     @Override
-    public Object toObject(final FieldDefinition fieldDefinition, final Object value, final Entity validatedEntity) {
-        return passwordEncoder.encodePassword(String.valueOf(value), null);
+    public ValueAndError toObject(final FieldDefinition fieldDefinition, final Object value) {
+        return ValueAndError.withoutError(passwordEncoder.encodePassword(String.valueOf(value), null));
     }
 
     @Override

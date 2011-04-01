@@ -29,8 +29,8 @@ import java.text.NumberFormat;
 import java.text.ParsePosition;
 import java.util.Locale;
 
-import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.FieldDefinition;
+import com.qcadoo.model.api.search.ValueAndError;
 import com.qcadoo.model.api.types.FieldType;
 
 public final class DecimalType implements FieldType {
@@ -41,7 +41,7 @@ public final class DecimalType implements FieldType {
     }
 
     @Override
-    public Object toObject(final FieldDefinition fieldDefinition, final Object value, final Entity validatedEntity) {
+    public ValueAndError toObject(final FieldDefinition fieldDefinition, final Object value) {
         BigDecimal decimal = null;
 
         if (value instanceof BigDecimal) {
@@ -50,11 +50,10 @@ public final class DecimalType implements FieldType {
             try {
                 decimal = new BigDecimal(String.valueOf(value));
             } catch (NumberFormatException e) {
-                validatedEntity.addError(fieldDefinition, "core.validate.field.error.invalidNumericFormat");
-                return null;
+                return ValueAndError.withError("core.validate.field.error.invalidNumericFormat");
             }
         }
-        return decimal;
+        return ValueAndError.withoutError(decimal);
     }
 
     @Override

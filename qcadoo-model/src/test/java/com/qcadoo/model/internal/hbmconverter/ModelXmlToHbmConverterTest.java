@@ -243,6 +243,8 @@ public class ModelXmlToHbmConverterTest {
         assertNodeCount(0, "/hibernate-mapping/class[1]/set", hbmThirdEntity);
         assertNodeExists("/hibernate-mapping/class[1]/set[@name='fieldTree']", hbmFirstEntity);
         assertNodeExists("/hibernate-mapping/class[1]/set[@name='fieldHasMany']", hbmFirstEntity);
+        assertNodeExists("/hibernate-mapping/class[1]/set[@inverse='true']", hbmFirstEntity);
+        assertNodeExists("/hibernate-mapping/class[1]/set[@inverse='true']", hbmFirstEntity);
         assertNodeEquals("com.qcadoo.model.beans.full.FullSecondEntity",
                 "/hibernate-mapping/class[1]/set[@name='fieldTree']/one-to-many/@class", hbmFirstEntity);
         assertNodeEquals("com.qcadoo.model.beans.full.FullThirdEntity",

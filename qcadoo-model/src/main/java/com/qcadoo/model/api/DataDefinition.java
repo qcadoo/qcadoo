@@ -153,7 +153,6 @@ public interface DataDefinition {
      * 
      * @return priority field's definion, null if entity is not prioritizable
      */
-    // TODO plugin masz it is neccessary to put it in API?
     FieldDefinition getPriorityField();
 
     /**

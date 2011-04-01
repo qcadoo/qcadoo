@@ -24,6 +24,8 @@
 
 package com.qcadoo.model.internal.classconverter;
 
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -35,6 +37,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -113,6 +116,66 @@ public class ModelXmlToClassConverterTest {
     public void shouldDefineHasManyFields() throws Exception {
         verifyField(propertyDescriptors.get("fieldTree"), Set.class);
         verifyField(propertyDescriptors.get("fieldHasMany"), Set.class);
+    }
+
+    @Test
+    public void shouldHaveToStringMethod() throws Exception {
+        // given
+        Object entity = classes.get(ClassNameUtils.getFullyQualifiedClassName("full", "firstEntity")).newInstance();
+
+        BeanUtils.setProperty(entity, "fieldInteger", 13);
+        BeanUtils.setProperty(entity, "fieldString", "Xxx");
+
+        // when
+        String string = entity.toString();
+
+        System.out.println(string);
+
+        // then
+        assertTrue(string.contains("fieldInteger=13"));
+        assertTrue(string.contains("fieldString=Xxx"));
+        assertTrue(string.contains(ClassNameUtils.getFullyQualifiedClassName("full", "firstEntity")));
+    }
+
+    @Test
+    public void shouldHaveHashCodeMethod() throws Exception {
+        Object entity1 = classes.get(ClassNameUtils.getFullyQualifiedClassName("full", "firstEntity")).newInstance();
+        Object entity2 = classes.get(ClassNameUtils.getFullyQualifiedClassName("full", "firstEntity")).newInstance();
+
+        BeanUtils.setProperty(entity1, "fieldInteger", 13);
+        BeanUtils.setProperty(entity2, "fieldInteger", 13);
+        BeanUtils.setProperty(entity1, "fieldString", "Xxx");
+        BeanUtils.setProperty(entity2, "fieldString", "Xxx");
+
+        assertTrue(entity1.hashCode() == entity1.hashCode());
+        assertTrue(entity1.hashCode() == entity2.hashCode());
+
+        BeanUtils.setProperty(entity2, "fieldString", "Xxz");
+
+        assertFalse(entity1.hashCode() == entity2.hashCode());
+    }
+
+    @Test
+    public void shouldHaveEqualsMethod() throws Exception {
+        Object entity1 = classes.get(ClassNameUtils.getFullyQualifiedClassName("full", "firstEntity")).newInstance();
+        Object entity2 = classes.get(ClassNameUtils.getFullyQualifiedClassName("full", "firstEntity")).newInstance();
+        Object entity3 = classes.get(ClassNameUtils.getFullyQualifiedClassName("full", "secondEntity")).newInstance();
+
+        BeanUtils.setProperty(entity1, "fieldInteger", 13);
+        BeanUtils.setProperty(entity2, "fieldInteger", 13);
+        BeanUtils.setProperty(entity1, "fieldString", "Xxx");
+        BeanUtils.setProperty(entity2, "fieldString", "Xxx");
+
+        assertTrue(entity1.equals(entity1));
+        assertTrue(entity1.equals(entity2));
+        assertTrue(entity2.equals(entity1));
+
+        BeanUtils.setProperty(entity2, "fieldString", "Xxz");
+
+        assertFalse(entity1.equals(entity2));
+        assertFalse(entity2.equals(entity1));
+        assertFalse(entity1.equals(null));
+        assertFalse(entity1.equals(entity3));
     }
 
     private void verifyField(final PropertyDescriptor propertyDescriptor, final Class<?> type) {

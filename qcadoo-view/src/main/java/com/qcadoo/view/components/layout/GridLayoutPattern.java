@@ -35,10 +35,8 @@ import org.w3c.dom.NodeList;
 import com.google.common.base.Preconditions;
 import com.qcadoo.view.api.ComponentPattern;
 import com.qcadoo.view.internal.ComponentDefinition;
-import com.qcadoo.view.internal.ViewComponent;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
 
-@ViewComponent("gridLayout")
 public class GridLayoutPattern extends AbstractLayoutPattern {
 
     private static final String JS_OBJECT = "QCD.components.containers.layout.GridLayout";

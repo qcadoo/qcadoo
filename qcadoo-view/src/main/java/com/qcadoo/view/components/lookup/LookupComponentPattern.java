@@ -45,18 +45,16 @@ import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.ViewDefinition;
 import com.qcadoo.view.api.ribbon.Ribbon;
 import com.qcadoo.view.api.ribbon.RibbonActionItem;
-import com.qcadoo.view.api.ribbon.RibbonGroup;
 import com.qcadoo.view.api.ribbon.RibbonActionItem.Type;
+import com.qcadoo.view.api.ribbon.RibbonGroup;
 import com.qcadoo.view.components.FieldComponentPattern;
 import com.qcadoo.view.components.grid.GridComponentPattern;
 import com.qcadoo.view.components.window.WindowComponentPattern;
 import com.qcadoo.view.internal.ComponentDefinition;
 import com.qcadoo.view.internal.ComponentOption;
-import com.qcadoo.view.internal.ViewComponent;
 import com.qcadoo.view.internal.api.InternalViewDefinitionService;
 import com.qcadoo.view.internal.internal.ViewDefinitionImpl;
 
-@ViewComponent("lookup")
 public final class LookupComponentPattern extends FieldComponentPattern {
 
     private static final String JSP_PATH = "elements/lookup.jsp";
@@ -176,9 +174,6 @@ public final class LookupComponentPattern extends FieldComponentPattern {
         if (getFieldDefinition() != null) {
             codes.add(getFieldDefinition().getDataDefinition().getPluginIdentifier() + "."
                     + getFieldDefinition().getDataDefinition().getName() + "." + getFieldDefinition().getName() + ".label.focus");
-        } else {
-            codes.add(getFieldDefinition().getDataDefinition().getPluginIdentifier() + "."
-                    + getFieldDefinition().getDataDefinition().getName() + "." + getName() + ".label.focus");
         }
 
         translations.put("labelOnFocus", getTranslationService().translate(codes, locale));

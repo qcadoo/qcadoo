@@ -42,6 +42,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionParser;
+import org.springframework.expression.spel.SpelEvaluationException;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.stereotype.Component;
@@ -124,10 +125,17 @@ public final class ExpressionServiceImpl implements ExpressionService {
             }
         }
 
-        String value = String.valueOf(exp.getValue(context));
+        String value = null;
 
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Calculating value of expression \"" + expression + "\" for " + entity + " : " + value);
+        try {
+            value = String.valueOf(exp.getValue(context));
+
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Calculating value of expression \"" + expression + "\" for " + entity + " : " + value);
+            }
+        } catch (SpelEvaluationException e) {
+            LOG.error("Error while calculating value of expression \"" + expression + "\" for " + entity, e);
+            value = "!!!";
         }
 
         if (StringUtils.isEmpty(value) || "null".equals(value)) {

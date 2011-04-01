@@ -124,7 +124,6 @@ public final class DataAccessServiceImpl implements DataAccessService {
         if (alreadySavedEntities.contains(genericEntity)) {
             return genericEntity;
         }
-
         Entity genericEntityToSave = genericEntity.copy();
 
         Object existingDatabaseEntity = getExistingDatabaseEntity(dataDefinition, genericEntity);
@@ -172,6 +171,7 @@ public final class DataAccessServiceImpl implements DataAccessService {
         for (Entry<String, FieldDefinition> fieldEntry : dataDefinition.getFields().entrySet()) {
             if (fieldEntry.getValue().getType() instanceof HasManyType) {
                 List<Entity> entities = (List<Entity>) genericEntity.getField(fieldEntry.getKey());
+
                 HasManyType hasManyType = (HasManyType) fieldEntry.getValue().getType();
 
                 if (entities == null || entities instanceof EntityListImpl) {
@@ -485,40 +485,6 @@ public final class DataAccessServiceImpl implements DataAccessService {
         addOrderToCriteria(searchCriteria.getOrder(), criteria);
 
         List<?> results = criteria.list();
-
-        // FIXME plugin masz distinct
-
-        // if (searchCriteria.getDistinctProperty() != null) {
-        // Class<?> entityClass = ((InternalDataDefinition) searchCriteria.getDataDefinition()).getClassForEntity();
-        // Set<String> batches = new HashSet<String>();
-        // List<Object> uniqueResults = new ArrayList<Object>();
-        //
-        // if (GenealogiesGenealogy.class.equals(entityClass)) {
-        // for (Object o : results) {
-        // String batch = ((GenealogiesGenealogy) o).getBatch();
-        //
-        // if (!batches.contains(batch)) {
-        // uniqueResults.add(o);
-        // batches.add(batch);
-        // }
-        // }
-        //
-        // results = uniqueResults;
-        // totalNumberOfEntities = results.size();
-        // } else if (GenealogiesProductInBatch.class.equals(entityClass)) {
-        // for (Object o : results) {
-        // String batch = ((GenealogiesProductInBatch) o).getBatch();
-        //
-        // if (!batches.contains(batch)) {
-        // uniqueResults.add(o);
-        // batches.add(batch);
-        // }
-        // }
-        //
-        // results = uniqueResults;
-        // totalNumberOfEntities = results.size();
-        // }
-        // }
 
         LOG.info("There are " + totalNumberOfEntities + " entities matching criteria " + searchCriteria);
 
