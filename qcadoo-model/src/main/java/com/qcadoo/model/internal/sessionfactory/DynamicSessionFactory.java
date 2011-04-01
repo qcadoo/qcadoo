@@ -57,18 +57,20 @@ public class DynamicSessionFactory implements SessionFactory {
     }
 
     private SessionFactory getSessionFactory() {
-        if (sessionFactory == null) {
-            synchronized (DynamicSessionFactory.class) {
-                if (sessionFactory == null) {
+        SessionFactory result = sessionFactory;
+        if (result == null) {
+            synchronized (this) {
+                result = sessionFactory;
+                if (result == null) {
                     try {
-                        sessionFactory = sessionFactoryBean.getObject();
+                        result = sessionFactory = sessionFactoryBean.getObject();
                     } catch (Exception e) {
                         throw new IllegalStateException(e.getMessage(), e);
                     }
                 }
             }
         }
-        return sessionFactory;
+        return result;
     }
 
     @Override

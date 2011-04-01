@@ -30,8 +30,8 @@ import java.util.Set;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.FieldDefinition;
-import com.qcadoo.model.api.search.ValueAndError;
 import com.qcadoo.model.api.types.HasManyType;
+import com.qcadoo.model.internal.api.ValueAndError;
 
 public final class HasManyEntitiesType implements HasManyType {
 

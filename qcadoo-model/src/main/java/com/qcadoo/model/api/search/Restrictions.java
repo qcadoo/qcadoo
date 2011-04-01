@@ -27,6 +27,7 @@ package com.qcadoo.model.api.search;
 import org.apache.commons.beanutils.PropertyUtils;
 
 import com.qcadoo.model.api.FieldDefinition;
+import com.qcadoo.model.internal.api.ValueAndError;
 import com.qcadoo.model.internal.search.RestrictionLogicalOperator;
 import com.qcadoo.model.internal.search.restrictions.BelongsToRestriction;
 import com.qcadoo.model.internal.search.restrictions.IsNotNullRestriction;
