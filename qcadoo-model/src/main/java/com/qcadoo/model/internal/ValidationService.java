@@ -67,6 +67,7 @@ public final class ValidationService {
             if (field.getValue().isReadOnly()) {
                 genericEntity.setField(field.getKey(), value);
             }
+            // TODO masz check it
             // if (field.getValue().isReadOnlyOnUpdate() && genericEntity.getId() != null) {
             // genericEntity.setField(field.getKey(), value);
             // }

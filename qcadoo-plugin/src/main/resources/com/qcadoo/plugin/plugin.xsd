@@ -28,6 +28,8 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
 	targetNamespace="http://schema.qcadoo.org/plugin" xmlns="http://schema.qcadoo.org/plugin" elementFormDefault="qualified">
 
+	<xs:include schemaLocation="http://schema.qcadoo.org/common/plugin.xsd" />
+	
 	<xs:element name="databasePreparation">
 		<xs:complexType />
 	</xs:element>
@@ -79,12 +81,6 @@
 		</xs:sequence>
 	</xs:complexType>
 
-	<xs:simpleType name="identifier">
-		<xs:restriction base="xs:string">
-			<xs:pattern value="[a-z][a-zA-Z0-9]*" />
-		</xs:restriction>
-	</xs:simpleType>
-	
 	<xs:simpleType name="version">
 		<xs:restriction base="xs:string">
 			<xs:pattern value="[0-9]+.[0-9]+.[0-9]+" />
@@ -97,10 +93,4 @@
 		</xs:restriction>
 	</xs:simpleType>
 	
-	<xs:simpleType name="notEmptyString">
-		<xs:restriction base="xs:string">
-			<xs:minLength value="1"/>
-		</xs:restriction>
-	</xs:simpleType>
-
 </xs:schema>
