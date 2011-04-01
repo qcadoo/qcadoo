@@ -32,7 +32,7 @@ import com.qcadoo.plugin.api.Plugin;
 
 public interface PluginDescriptorParser {
 
-    Plugin parse(final Resource resource);
+    Plugin parse(final Resource resource, final boolean ignoreModules);
 
     Set<Plugin> loadPlugins();
 

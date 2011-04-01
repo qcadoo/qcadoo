@@ -31,6 +31,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -52,6 +54,8 @@ import com.qcadoo.plugin.internal.api.PluginFileManager;
 
 @Service
 public final class DefaultPluginManager implements PluginManager {
+
+    private static final Logger LOG = LoggerFactory.getLogger(DefaultPluginManager.class);
 
     @Autowired
     private PluginAccessor pluginAccessor;
@@ -230,13 +234,12 @@ public final class DefaultPluginManager implements PluginManager {
         Plugin plugin = null;
         try {
             Resource descriptor = pluginDescriptorResolver.getDescriptor(pluginFile);
-            plugin = pluginDescriptorParser.parse(descriptor);
+            plugin = pluginDescriptorParser.parse(descriptor, true);
         } catch (PluginException e) {
+            LOG.error(e.getMessage());
             pluginFileManager.uninstallPlugin(pluginFile.getName());
             return PluginOperationResult.corruptedPlugin();
         }
-
-        pluginFileManager.renamePlugin(pluginFile.getName(), plugin.getFilename());
 
         if (plugin.isSystemPlugin()) {
             pluginFileManager.uninstallPlugin(plugin.getFilename());

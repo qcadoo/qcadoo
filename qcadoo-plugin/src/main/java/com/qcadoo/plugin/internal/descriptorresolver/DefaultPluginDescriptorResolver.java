@@ -30,12 +30,12 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.stereotype.Service;
 
+import com.qcadoo.plugin.internal.JarEntryResource;
 import com.qcadoo.plugin.internal.api.PluginDescriptorResolver;
 
 @Service
@@ -71,7 +71,7 @@ public class DefaultPluginDescriptorResolver implements PluginDescriptorResolver
                 }
             }
 
-            return new InputStreamResource(jar.getInputStream(entry));
+            return new JarEntryResource(file, jar.getInputStream(entry));
         } catch (IOException e) {
             throw new IllegalStateException("Plugin descriptor " + descriptor + " not found in " + file.getAbsolutePath(), e);
         }
