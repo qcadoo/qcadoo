@@ -114,6 +114,7 @@ public class DynamicSessionFactory implements SessionFactory {
     }
 
     @Override
+    @SuppressWarnings("rawtypes")
     public ClassMetadata getClassMetadata(final Class entityClass) {
         return getSessionFactory().getClassMetadata(entityClass);
     }
@@ -134,6 +135,7 @@ public class DynamicSessionFactory implements SessionFactory {
     }
 
     @Override
+    @SuppressWarnings("rawtypes")
     public Map getAllCollectionMetadata() {
         return getSessionFactory().getAllCollectionMetadata();
     }
@@ -159,46 +161,55 @@ public class DynamicSessionFactory implements SessionFactory {
     }
 
     @Override
+    @SuppressWarnings({ "deprecation", "rawtypes" })
     public void evict(final Class persistentClass) {
         getSessionFactory().evict(persistentClass);
     }
 
     @Override
+    @SuppressWarnings({ "deprecation", "rawtypes" })
     public void evict(final Class persistentClass, final Serializable id) {
         getSessionFactory().evict(persistentClass, id);
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void evictEntity(final String entityName) {
         getSessionFactory().evictEntity(entityName);
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void evictEntity(final String entityName, final Serializable id) {
         getSessionFactory().evictEntity(entityName, id);
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void evictCollection(final String roleName) {
         getSessionFactory().evictCollection(roleName);
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void evictCollection(final String roleName, final Serializable id) {
         getSessionFactory().evictCollection(roleName, id);
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void evictQueries(final String cacheRegion) {
         getSessionFactory().evictQueries(cacheRegion);
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void evictQueries() {
         getSessionFactory().evictQueries();
     }
 
     @Override
+    @SuppressWarnings("rawtypes")
     public Set getDefinedFilterNames() {
         return getSessionFactory().getDefinedFilterNames();
     }
