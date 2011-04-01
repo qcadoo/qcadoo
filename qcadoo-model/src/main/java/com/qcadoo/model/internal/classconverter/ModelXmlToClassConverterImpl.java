@@ -73,6 +73,7 @@ public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverte
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public Collection<Class<?>> convert(final Resource... resources) {
         try {
             Map<String, CtClass> ctClasses = new HashMap<String, CtClass>();
