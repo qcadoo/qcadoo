@@ -91,7 +91,6 @@ public final class ModelXmlResolverImpl implements ModelXmlResolver, ModelXmlHol
 
             for (Element field : modelFields.getValue()) {
                 field = JdomUtils.replaceNamespace(field, document.getRootElement().getNamespace());
-                field.setAttribute("required", "false");
                 fields.addContent(field.detach());
             }
         }

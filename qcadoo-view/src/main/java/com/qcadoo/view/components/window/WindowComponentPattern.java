@@ -116,6 +116,9 @@ public class WindowComponentPattern extends AbstractContainerPattern {
                     throw new IllegalStateException("Unknown option for window: " + type);
                 }
 
+            } else if ("listener".equals(child.getNodeName())) {
+                addCustomEvent(parser.parseCustomEvent(child));
+
             } else {
                 throw new IllegalStateException("Unknown tag for window: " + child.getNodeName());
             }

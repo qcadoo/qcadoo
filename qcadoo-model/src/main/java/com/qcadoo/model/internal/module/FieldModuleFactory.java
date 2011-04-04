@@ -69,7 +69,10 @@ public class FieldModuleFactory implements ModuleFactory<FieldModule> {
 
         String fieldName = elements.get(0).getAttributeValue("name");
 
-        modelXmlHolder.addField(targetPluginIdentifier, targetModelName, elements.get(0));
+        Element field = elements.get(0);
+        field.setAttribute("required", "false");
+
+        modelXmlHolder.addField(targetPluginIdentifier, targetModelName, field);
 
         return new FieldModule(targetPluginIdentifier, targetModelName, fieldName, dataDefinitionService);
     }

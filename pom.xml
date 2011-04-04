@@ -30,7 +30,7 @@
 	<url>http://www.qcadoo.com/</url>
 
 	<properties>
-		<spring.version>3.0.5.RELEASE</spring.version>
+		<spring.version>3.1.0.M1</spring.version>
 		<spring.security.version>3.0.5.RELEASE</spring.security.version>
 		<slf4j.version>1.6.1</slf4j.version>
 		<hibernate.version>3.6.1.Final</hibernate.version>
@@ -89,6 +89,12 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-web</artifactId>
 			<version>${spring.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>rome</groupId>
+					<artifactId>rome</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -330,6 +336,16 @@
 		<repository>
 			<id>jboss-repository</id>
 			<url>http://repository.jboss.org/nexus/content/groups/public/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>spring-repository</id>
+			<url>http://maven.alfresco.com/nexus/content/repositories/public/</url>
 			<releases>
 				<enabled>true</enabled>
 			</releases>
