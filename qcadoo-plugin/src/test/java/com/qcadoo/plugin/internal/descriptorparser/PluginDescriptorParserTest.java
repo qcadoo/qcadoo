@@ -102,7 +102,7 @@ public class PluginDescriptorParserTest {
         // given
 
         // when
-        Plugin result = parser.parse(xmlFile1);
+        Plugin result = parser.parse(xmlFile1, false);
 
         // then
         assertNotNull(result);
@@ -113,7 +113,7 @@ public class PluginDescriptorParserTest {
         // given
 
         // when
-        Plugin result = parser.parse(xmlFile2);
+        Plugin result = parser.parse(xmlFile2, false);
 
         // then
         assertNotNull(result);
@@ -124,7 +124,7 @@ public class PluginDescriptorParserTest {
         // given
 
         // when
-        parser.parse(xmlFile3);
+        parser.parse(xmlFile3, false);
 
         // then
     }
@@ -134,7 +134,7 @@ public class PluginDescriptorParserTest {
         // given
 
         // when
-        Plugin result = parser.parse(xmlFile1);
+        Plugin result = parser.parse(xmlFile1, false);
 
         // then
         assertEquals("testPlugin", result.getIdentifier());
@@ -147,7 +147,7 @@ public class PluginDescriptorParserTest {
         // given
 
         // when
-        Plugin result = parser.parse(xmlFile2);
+        Plugin result = parser.parse(xmlFile2, false);
 
         // then
         assertEquals("testPlugin2", result.getIdentifier());
@@ -160,7 +160,7 @@ public class PluginDescriptorParserTest {
         // given
 
         // when
-        Plugin result = parser.parse(xmlFile1);
+        Plugin result = parser.parse(xmlFile1, false);
 
         // then
         assertEquals("testPluginName", result.getPluginInformation().getName());
@@ -174,7 +174,7 @@ public class PluginDescriptorParserTest {
         // given
 
         // when
-        Plugin result = parser.parse(xmlFile2);
+        Plugin result = parser.parse(xmlFile2, false);
 
         // then
         assertEquals("testPlugin2Name", result.getPluginInformation().getName());
@@ -188,7 +188,7 @@ public class PluginDescriptorParserTest {
         // given
 
         // when
-        Plugin result = parser.parse(xmlFile1);
+        Plugin result = parser.parse(xmlFile1, false);
 
         // then
         Set<PluginDependencyInformation> dependencies = result.getRequiredPlugins();
@@ -205,7 +205,7 @@ public class PluginDescriptorParserTest {
         // given
 
         // when
-        Plugin result = parser.parse(xmlFile2);
+        Plugin result = parser.parse(xmlFile2, false);
 
         // then
         assertEquals(0, result.getRequiredPlugins().size());
@@ -216,7 +216,7 @@ public class PluginDescriptorParserTest {
         // given
 
         // when
-        Plugin result = parser.parse(xmlFile1);
+        Plugin result = parser.parse(xmlFile1, false);
 
         // then
         DefaultPlugin castedResult = (DefaultPlugin) result;
@@ -230,7 +230,7 @@ public class PluginDescriptorParserTest {
         // given
 
         // when
-        Plugin result = parser.parse(xmlFile2);
+        Plugin result = parser.parse(xmlFile2, false);
 
         // then
         DefaultPlugin castedResult = (DefaultPlugin) result;
@@ -264,8 +264,8 @@ public class PluginDescriptorParserTest {
 
         given(pluginDescriptorResolver.getDescriptors()).willReturn(testXmlsList);
 
-        Plugin p1 = parser.parse(xmlFile1);
-        Plugin p2 = parser.parse(xmlFile2);
+        Plugin p1 = parser.parse(xmlFile1, false);
+        Plugin p2 = parser.parse(xmlFile2, false);
 
         // when
         Set<Plugin> result = parser.loadPlugins();

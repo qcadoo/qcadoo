@@ -58,6 +58,8 @@ public final class TranslationServiceImpl implements InternalTranslationService 
     @Value("${ignoreMissingTranslations}")
     private boolean ignoreMissingTranslations;
 
+    private Map<String, String> locales = new HashMap<String, String>();
+
     @Autowired
     private MessageSource messageSource;
 
@@ -151,6 +153,21 @@ public final class TranslationServiceImpl implements InternalTranslationService 
                 messages.add((String) property);
             }
         }
+    }
+
+    @Override
+    public void addLocaleToList(final String locale, final String label) {
+        locales.put(locale, label);
+    }
+
+    @Override
+    public void removeLocaleToList(final String locale) {
+        locales.remove(locale);
+    }
+
+    @Override
+    public Map<String, String> getLocalesList() {
+        return locales;
     }
 
 }

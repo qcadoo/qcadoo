@@ -47,4 +47,9 @@ public class MockTranslationService implements TranslationService {
         return messageCodes.isEmpty() ? null : messageCodes.get(0);
     }
 
+    @Override
+    public Map<String, String> getLocalesList() {
+        return null;
+    }
+
 }

@@ -1,26 +1,30 @@
 package com.qcadoo.localization.internal.module;
 
 import org.jdom.Element;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import com.google.common.base.Preconditions;
+import com.qcadoo.localization.internal.InternalTranslationService;
 import com.qcadoo.plugin.api.ModuleFactory;
 
 public class LocaleModuleFactory implements ModuleFactory<LocaleModule> {
 
+    @Autowired
+    private InternalTranslationService translationService;
+
     @Override
     public void init() {
-        // TODO Auto-generated method stub
-
     }
 
     @Override
     public LocaleModule parse(String pluginIdentifier, Element element) {
         String locale = element.getAttributeValue("locale");
+        String label = element.getAttributeValue("label");
 
-        if (locale == null) {
-            throw new IllegalStateException("Missing locale attribute of localization module");
-        }
+        Preconditions.checkNotNull(locale, "Missing locale attribute of locale module");
+        Preconditions.checkNotNull(label, "Missing label attribute of locale module");
 
-        return new LocaleModule(locale);
+        return new LocaleModule(translationService, locale, label);
     }
 
     @Override

@@ -27,13 +27,10 @@ package com.qcadoo.plugin.internal.filemanager;
 import static java.lang.System.getProperty;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -80,18 +77,11 @@ public final class DefaultPluginFileManager implements PluginFileManager {
     public File uploadPlugin(final PluginArtifact pluginArtifact) {
         InputStream input = pluginArtifact.getInputStream();
         File pluginFile = new File(pluginsTmpPath + getProperty("file.separator") + pluginArtifact.getName());
-        OutputStream output = null;
         try {
-            output = new FileOutputStream(pluginFile);
-            IOUtils.copy(input, output);
-
-            output.flush();
+            FileUtils.copyInputStreamToFile(input, pluginFile);
         } catch (IOException e) {
             LOG.error("Problem with upload plugin file - " + e.getMessage());
             throw new PluginException(e.getMessage(), e);
-        } finally {
-            IOUtils.closeQuietly(input);
-            IOUtils.closeQuietly(output);
         }
         return pluginFile;
     }
@@ -113,18 +103,6 @@ public final class DefaultPluginFileManager implements PluginFileManager {
                 }
             }
         }
-    }
-
-    @Override
-    public void renamePlugin(final String source, final String destination) {
-        try {
-            FileUtils.moveFile(new File(pluginsTmpPath + getProperty("file.separator") + source), new File(pluginsTmpPath
-                    + getProperty("file.separator") + destination));
-        } catch (IOException e) {
-            LOG.error("Problem with renaming plugin file - " + e.getMessage());
-            throw new PluginException(e.getMessage(), e);
-        }
-
     }
 
     private boolean checkFileExists(final String key, final String path) {
