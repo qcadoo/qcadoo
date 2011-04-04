@@ -853,9 +853,8 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 			currentGridHeight += 35;
 		}
 		grid.setGridHeight(currentGridHeight);
-		
-		grid.setGridWidth(_width-24, RESIZE_COLUMNS_ON_UPDATE_SIZE);
-		//grid.setGridWidth(_width-4, RESIZE_COLUMNS_ON_UPDATE_SIZE);
+		//grid.setGridWidth(_width-24, RESIZE_COLUMNS_ON_UPDATE_SIZE);
+		grid.setGridWidth(_width-24, true);
 	}
 	
 	function onFiltersStateChange() {

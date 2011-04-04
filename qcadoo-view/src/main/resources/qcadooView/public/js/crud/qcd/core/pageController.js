@@ -53,18 +53,14 @@ QCD.PageController = function(_viewName, _pluginIdentifier, _hasDataDefinition, 
 	
 	function constructor(_this) {
 		
+		QCD.components.elements.utils.LoadingIndicator.blockElement($("body"));
+		
 		QCDConnector.windowName = "/page/"+pluginIdentifier+"/"+viewName;
 		QCDConnector.mainController = _this;
 		
 		var pageOptionsElement = $("#pageOptions");
 		pageOptions = JSON.parse($.trim(pageOptionsElement.html()));
 		pageOptionsElement.remove();
-		
-		if (isPopup && window.parent.changeModalSize) {
-			var modalWidth = pageOptions.windowWidth ? pageOptions.windowWidth : 600;
-			var modalHeight = pageOptions.windowHeight ? pageOptions.windowHeight : 400;
-			window.parent.changeModalSize(modalWidth, modalHeight);
-		}
 		
 		var contentElement = $("body");
 		pageComponents = QCDPageConstructor.getChildrenComponents(contentElement.children(), _this);
@@ -73,7 +69,9 @@ QCD.PageController = function(_viewName, _pluginIdentifier, _hasDataDefinition, 
 		tabController.updateTabObjects()
 		
 		$(window).bind('resize', updateSize);
-		updateSize();
+		if (! isPopup) {
+			updateSize();
+		}
 		
 		if (window.parent) {
 			$(window.parent).focus(onWindowClick);
@@ -81,10 +79,17 @@ QCD.PageController = function(_viewName, _pluginIdentifier, _hasDataDefinition, 
 			$(window).focus(onWindowClick);
 		}
 		
-		QCD.components.elements.utils.LoadingIndicator.blockElement($("body"));
 	}
 	
 	this.init = function(serializationObject) {
+		if (isPopup) {
+			if (isPopup && window.parent.changeModalSize) {
+				var modalWidth = pageOptions.windowWidth ? pageOptions.windowWidth : 600;
+				var modalHeight = pageOptions.windowHeight ? pageOptions.windowHeight : 400;
+				window.parent.changeModalSize(modalWidth, modalHeight);
+			}
+			updateSize();
+		}
 		QCD.components.elements.utils.LoadingIndicator.blockElement($("body"));
 		for (var i in pageComponents) {
 			pageComponents[i].performScript();

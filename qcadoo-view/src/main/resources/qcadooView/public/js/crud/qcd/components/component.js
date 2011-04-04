@@ -108,9 +108,11 @@ QCD.components.Component = function(_element, _mainController) {
 		this.contextObject[contextField] = contextValue;
 	}
 	
-	this.fireEvent = function(eventName, args) {
-		this.beforeEventFunction();
-		mainController.callEvent(eventName, elementPath, null, args);
+	this.fireEvent = function(actionsPerformer, eventName, args) {
+		if (this.beforeEventFunction) {
+			this.beforeEventFunction();
+		}
+		mainController.callEvent(eventName, elementPath, null, args, actionsPerformer);
 	}
 	
 	this.setState = function(state) {
