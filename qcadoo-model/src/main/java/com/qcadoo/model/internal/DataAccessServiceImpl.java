@@ -73,9 +73,11 @@ import com.qcadoo.model.api.validators.ErrorMessage;
 import com.qcadoo.model.internal.api.DataAccessService;
 import com.qcadoo.model.internal.api.InternalDataDefinition;
 import com.qcadoo.model.internal.search.SearchResultImpl;
+import com.qcadoo.plugin.api.profile.Standalone;
 
 @Service
-public final class DataAccessServiceImpl implements DataAccessService {
+@Standalone
+public class DataAccessServiceImpl implements DataAccessService {
 
     @Autowired
     private SessionFactory sessionFactory;
@@ -162,7 +164,7 @@ public final class DataAccessServiceImpl implements DataAccessService {
             priorityService.prioritizeEntity(dataDefinition, databaseEntity);
         }
 
-        getCurrentSession().save(databaseEntity);
+        saveDatabaseEntity(dataDefinition, databaseEntity);
 
         Entity savedEntity = entityService.convertToGenericEntity(dataDefinition, databaseEntity);
 
@@ -604,11 +606,11 @@ public final class DataAccessServiceImpl implements DataAccessService {
                 + "] has been deleted");
     }
 
-    private Session getCurrentSession() {
+    protected Session getCurrentSession() {
         return sessionFactory.getCurrentSession();
     }
 
-    private Criteria getCriteria(final SearchCriteria searchCriteria) {
+    protected Criteria getCriteria(final SearchCriteria searchCriteria) {
         InternalDataDefinition dataDefinition = (InternalDataDefinition) searchCriteria.getDataDefinition();
         Criteria criteria = getCurrentSession().createCriteria(dataDefinition.getClassForEntity());
 
@@ -659,8 +661,12 @@ public final class DataAccessServiceImpl implements DataAccessService {
         }
     }
 
-    private Object getDatabaseEntity(final InternalDataDefinition dataDefinition, final Long entityId) {
+    protected Object getDatabaseEntity(final InternalDataDefinition dataDefinition, final Long entityId) {
         return getCurrentSession().get(dataDefinition.getClassForEntity(), entityId);
+    }
+
+    protected void saveDatabaseEntity(final InternalDataDefinition dataDefinition, final Object databaseEntity) {
+        getCurrentSession().save(databaseEntity);
     }
 
     private void copyMissingFields(final Entity genericEntityToSave, final Entity existingGenericEntity) {
