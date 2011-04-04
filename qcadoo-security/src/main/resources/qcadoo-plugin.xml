@@ -21,6 +21,7 @@
 	<modules>
 		<model:model model="user" resource="model/user.xml" />
 		<model:model model="group" resource="model/group.xml" />
+		<model:model model="persistentToken" resource="model/persistentToken.xml" />
 	</modules>
 
 </plugin>

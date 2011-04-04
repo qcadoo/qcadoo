@@ -27,6 +27,7 @@ package com.qcadoo.security.internal;
 import static com.google.common.base.Preconditions.checkState;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.authentication.rememberme.PersistentRememberMeToken;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.stereotype.Service;
 
 import com.qcadoo.model.api.DataDefinitionService;
@@ -45,7 +48,7 @@ import com.qcadoo.model.api.search.Restrictions;
 import com.qcadoo.security.api.SecurityService;
 
 @Service("userDetailsService")
-public final class SecurityServiceImpl implements SecurityService, UserDetailsService {
+public final class SecurityServiceImpl implements SecurityService, UserDetailsService, PersistentTokenRepository {
 
     @Autowired
     private DataDefinitionService dataDefinitionService;
@@ -81,6 +84,59 @@ public final class SecurityServiceImpl implements SecurityService, UserDetailsSe
         checkState(authorities.size() > 0, "Current user with login %s cannot be found", username);
 
         return new User(username, entity.getStringField("password"), true, true, true, true, authorities);
+    }
+
+    @Override
+    public void createNewToken(final PersistentRememberMeToken token) {
+        Entity entity = dataDefinitionService.get("qcadooSecurity", "persistentToken").create();
+        entity.setField("userName", token.getUsername());
+        entity.setField("series", token.getSeries());
+        entity.setField("token", token.getTokenValue());
+        entity.setField("lastUsed", token.getDate());
+        dataDefinitionService.get("qcadooSecurity", "persistentToken").save(entity);
+    }
+
+    @Override
+    public void updateToken(final String series, final String tokenValue, final Date lastUsed) {
+        Entity entity = getPersistentToken(series);
+        if (entity != null) {
+            entity.setField("token", tokenValue);
+            entity.setField("lastUsed", lastUsed);
+            dataDefinitionService.get("qcadooSecurity", "persistentToken").save(entity);
+        }
+    }
+
+    @Override
+    public PersistentRememberMeToken getTokenForSeries(final String series) {
+        Entity entity = getPersistentToken(series);
+
+        if (entity != null) {
+            return new PersistentRememberMeToken(entity.getStringField("userName"), entity.getStringField("series"),
+                    entity.getStringField("token"), (Date) entity.getField("lastUsed"));
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public void removeUserTokens(final String username) {
+        List<Entity> entities = dataDefinitionService.get("qcadooSecurity", "persistentToken").find()
+                .restrictedWith(Restrictions.eq("userName", username)).list().getEntities();
+
+        for (Entity entity : entities) {
+            dataDefinitionService.get("qcadooSecurity", "persistentToken").delete(entity.getId());
+        }
+    }
+
+    private Entity getPersistentToken(final String series) {
+        List<Entity> entities = dataDefinitionService.get("qcadooSecurity", "persistentToken").find()
+                .restrictedWith(Restrictions.eq("series", series)).list().getEntities();
+
+        if (entities.size() == 1) {
+            return entities.get(0);
+        } else {
+            return null;
+        }
     }
 
 }
