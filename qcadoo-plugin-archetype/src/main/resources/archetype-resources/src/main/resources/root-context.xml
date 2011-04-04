@@ -1,3 +1,6 @@
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -8,8 +11,8 @@
        http://www.springframework.org/schema/context 
        http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
-	<context:property-placeholder location="file:${QCADOO_CONF}/mes.properties"/>
+	<context:property-placeholder location="file:${symbol_dollar}{QCADOO_CONF}/mes.properties"/>
 	
-	<context:component-scan base-package="com.qcadoo.mes.${artifactId}" />
+	<context:component-scan base-package="${package}.${artifactId}" />
 
 </beans>

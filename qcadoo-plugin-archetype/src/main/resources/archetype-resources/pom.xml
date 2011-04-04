@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
@@ -9,6 +10,8 @@
 	</parent>
 
 	<artifactId>${artifactId}</artifactId>
+
+	<groupId>${groupId}</groupId>
 	<packaging>qcadoo-plugin</packaging>
 
 	<name>Qcadoo MES :: Plugins :: ${artifactId}</name>
@@ -18,10 +21,13 @@
 			<plugin>
 				<groupId>com.qcadoo</groupId>
 				<artifactId>qcadoo-maven-plugin</artifactId>
-				<version>${qcadoo.version}</version>
+				<version>0.4.0-SNAPSHOT</version>
 				<extensions>true</extensions>
 			</plugin>
 		</plugins>
 	</build>
 	
+	<version>${version}</version>
+	
 </project>
+

@@ -77,7 +77,7 @@
 			<security:port-mapping http="8282" https="8443" />
 		</security:port-mappings>
 		
-		<security:remember-me user-service-ref="userDetailsService" data-source-ref="dataSource" services-alias="rememberMeServices" key="qcd01" />
+		<security:remember-me user-service-ref="userDetailsService" token-repository-ref="userDetailsService" services-alias="rememberMeServices" key="qcd01" />
 		
 	</security:http>
 
