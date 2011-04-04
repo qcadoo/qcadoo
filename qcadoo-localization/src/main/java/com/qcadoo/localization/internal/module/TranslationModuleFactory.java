@@ -22,8 +22,6 @@ public class TranslationModuleFactory implements ModuleFactory<Module>, Serializ
 
     @Override
     public void init() {
-        // TODO register languages in qcadoo-plugin.xml
-        // TODO register message groups in qcadoo-plugin.xml
     }
 
     @Override
