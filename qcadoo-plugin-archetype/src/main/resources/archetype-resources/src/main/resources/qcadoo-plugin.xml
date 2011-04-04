@@ -1,5 +1,8 @@
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
 <?xml version="1.0" encoding="UTF-8"?>
-<plugin plugin="test" version="0.4.0"
+<plugin plugin="${artifactId}" version="0.4.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schema.qcadoo.org/plugin"
 	xmlns:model="http://schema.qcadoo.org/modules/model" xmlns:view="http://schema.qcadoo.org/modules/view"
 	xmlns:localization="http://schema.qcadoo.org/modules/localization"
@@ -14,7 +17,7 @@
        http://schema.qcadoo.org/modules/localization.xsd">
 
 	<information>
-		<name>test</name>
+		<name>${artifactId}</name>
 		<vendor>
 			<name>Qcadoo Limited</name>
 			<url>http://www.qcadoo.com/</url>
@@ -25,15 +28,15 @@
 	<modules>
 		<localization:translation path="locales" />
 		
-		<model:model model="test" resource="model/test.xml" />
+		<model:model model="${identifier}" resource="model/${artifactId}.xml" />
 		
-		<view:menu-category name="test" />
+		<view:menu-category name="${artifactId}" />
 
-		<view:menu-item name="test" category="test"
-			view="test" />
+		<view:menu-item name="${identifier}" category="${identifier}"
+			view="${identifier}" />
 
 		<view:view>
-			<view:resource>view/test.xml</view:resource>
+			<view:resource>view/${artifactId}.xml</view:resource>
 		</view:view>
 		
 		<view:resource uri="public/**/*" />
