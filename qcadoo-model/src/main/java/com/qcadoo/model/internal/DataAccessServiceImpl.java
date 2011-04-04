@@ -611,7 +611,6 @@ public class DataAccessServiceImpl implements DataAccessService {
     }
 
     protected Criteria getCriteria(final SearchCriteria searchCriteria) {
-        System.out.println(" @getCriteria ---------> " + searchCriteria);
         InternalDataDefinition dataDefinition = (InternalDataDefinition) searchCriteria.getDataDefinition();
         Criteria criteria = getCurrentSession().createCriteria(dataDefinition.getClassForEntity());
 
@@ -663,12 +662,10 @@ public class DataAccessServiceImpl implements DataAccessService {
     }
 
     protected Object getDatabaseEntity(final InternalDataDefinition dataDefinition, final Long entityId) {
-        System.out.println(" @getDatabaseEntity ---------> " + dataDefinition + " - " + entityId);
         return getCurrentSession().get(dataDefinition.getClassForEntity(), entityId);
     }
 
     protected void saveDatabaseEntity(final InternalDataDefinition dataDefinition, final Object databaseEntity) {
-        System.out.println(" @saveDatabaseEntity ---------> " + databaseEntity);
         getCurrentSession().save(databaseEntity);
     }
 
