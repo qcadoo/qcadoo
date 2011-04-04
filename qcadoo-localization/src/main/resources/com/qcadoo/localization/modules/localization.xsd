@@ -19,6 +19,7 @@
 	<xs:element name="locale">
 		<xs:complexType>			
 			<xs:attribute name="locale" type="xs:language" use="required" />
+			<xs:attribute name="label" type="xs:string" use="required" />
 		</xs:complexType>
 	</xs:element>
 	

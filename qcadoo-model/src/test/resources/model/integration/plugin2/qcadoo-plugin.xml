@@ -46,13 +46,13 @@
 
 	<modules>
 		<model:field plugin="products" model="component">
-			<belongsTo plugin="machines" name="machine" model="machine" required="false" />
+			<model:belongsTo plugin="machines" name="machine" model="machine" required="false" />
 		</model:field>
 		<model:field plugin="products" model="component">
-			<string name="machineName" required="true" />
+			<model:string name="machineName" required="true" />
 		</model:field>
 		<model:hook plugin="products" model="product">
-			<onSave class="com.qcadoo.model.integration.MockHook" method="changeName"/>
+			<model:onSave class="com.qcadoo.model.integration.MockHook" method="changeName"/>
 		</model:hook>
 		<model:dictionary name="categories" />
 		<model:model model="machine" resource="model/machine.xml" />

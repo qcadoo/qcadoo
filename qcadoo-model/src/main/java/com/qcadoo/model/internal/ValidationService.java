@@ -32,12 +32,12 @@ import org.springframework.util.StringUtils;
 
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.FieldDefinition;
-import com.qcadoo.model.api.search.ValueAndError;
 import com.qcadoo.model.api.types.BelongsToType;
 import com.qcadoo.model.api.types.HasManyType;
 import com.qcadoo.model.api.types.TreeType;
 import com.qcadoo.model.internal.api.InternalDataDefinition;
 import com.qcadoo.model.internal.api.InternalFieldDefinition;
+import com.qcadoo.model.internal.api.ValueAndError;
 import com.qcadoo.model.internal.types.PasswordType;
 
 @Service
@@ -67,6 +67,7 @@ public final class ValidationService {
             if (field.getValue().isReadOnly()) {
                 genericEntity.setField(field.getKey(), value);
             }
+            // TODO masz check it
             // if (field.getValue().isReadOnlyOnUpdate() && genericEntity.getId() != null) {
             // genericEntity.setField(field.getKey(), value);
             // }

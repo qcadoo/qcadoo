@@ -50,13 +50,15 @@ public class ResourceBundleMessageSource extends ReloadableResourceBundleMessage
     @Value("${ignoreMissingTranslations}")
     private boolean ignoreMissingTranslations;
 
+    private Set<String> basenames = new HashSet<String>();
+
     @PostConstruct
     public void init() {
         setFallbackToSystemLocale(ignoreMissingTranslations);
 
         LOG.info("Locking for localization resources ...");
 
-        Set<String> basenames = new HashSet<String>();
+        // Set<String> basenames = new HashSet<String>();
 
         basenames.add("WEB-INF/locales/messages");
         LOG.info("Add the WEB-INF/locales/messages as localization resource");

@@ -42,6 +42,7 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
+import org.apache.commons.io.FilenameUtils;
 import org.jdom.Element;
 import org.jdom.input.DOMBuilder;
 import org.slf4j.Logger;
@@ -50,6 +51,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ResourceUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -108,7 +110,7 @@ public class DefaultPluginDescriptorParser implements PluginDescriptorParser {
     }
 
     @Override
-    public Plugin parse(final Resource resource) {
+    public Plugin parse(final Resource resource, final boolean ignoreModules) {
         try {
             LOG.info("Parsing: " + resource);
 
@@ -116,7 +118,10 @@ public class DefaultPluginDescriptorParser implements PluginDescriptorParser {
 
             Node root = document.getDocumentElement();
 
-            Plugin plugin = parsePluginNode(root);
+            Builder pluginBuilder = parsePluginNode(root, ignoreModules);
+
+            Plugin plugin = pluginBuilder.withFileName(
+                    FilenameUtils.getName(ResourceUtils.extractJarFileURL(resource.getURL()).toString())).build();
 
             LOG.info("Parse complete");
 
@@ -135,7 +140,7 @@ public class DefaultPluginDescriptorParser implements PluginDescriptorParser {
     public Set<Plugin> loadPlugins() {
         Map<String, Plugin> loadedplugins = new HashMap<String, Plugin>();
         for (Resource resource : pluginDescriptorResolver.getDescriptors()) {
-            Plugin plugin = parse(resource);
+            Plugin plugin = parse(resource, false);
 
             if (loadedplugins.containsKey(plugin.getIdentifier())) {
                 throw new PluginException("Duplicated plugin identifier: " + plugin.getIdentifier());
@@ -146,18 +151,18 @@ public class DefaultPluginDescriptorParser implements PluginDescriptorParser {
         return new HashSet<Plugin>(loadedplugins.values());
     }
 
-    private Plugin parsePluginNode(final Node pluginNode) {
+    private Builder parsePluginNode(final Node pluginNode, final boolean ignoreModules) {
         Preconditions.checkState("plugin".equals(pluginNode.getNodeName()), "Wrong plugin description root tag");
 
         String pluginIdentifier = getStringAttribute(pluginNode, "plugin");
-        Preconditions.checkNotNull(pluginIdentifier, "No plugin identifier");
+        checkNotNull(pluginIdentifier, "No plugin identifier");
 
         LOG.info("Parsing plugin " + pluginIdentifier);
 
         Builder pluginBuilder = new Builder(pluginIdentifier);
 
         String pluginVersionStr = getStringAttribute(pluginNode, "version");
-        Preconditions.checkNotNull(pluginVersionStr, "No plugin version");
+        checkNotNull(pluginVersionStr, "No plugin version");
         pluginBuilder.withVersion(pluginVersionStr);
 
         String isSystemPluginStr = getStringAttribute(pluginNode, "system");
@@ -171,13 +176,15 @@ public class DefaultPluginDescriptorParser implements PluginDescriptorParser {
             } else if ("dependencies".equals(child.getNodeName())) {
                 addDependenciesInformation(child, pluginBuilder);
             } else if ("modules".equals(child.getNodeName())) {
-                addModules(child, pluginBuilder, pluginIdentifier);
+                if (!ignoreModules) {
+                    addModules(child, pluginBuilder, pluginIdentifier);
+                }
             } else {
                 throw new IllegalStateException("Wrong plugin tag: " + child.getNodeName());
             }
         }
 
-        return pluginBuilder.build();
+        return pluginBuilder;
     }
 
     private void addPluginInformation(final Node informationsNode, final Builder pluginBuilder) {
@@ -230,7 +237,7 @@ public class DefaultPluginDescriptorParser implements PluginDescriptorParser {
             }
         }
 
-        Preconditions.checkNotNull(dependencyPluginIdentifier, "No plugin dependency identifier");
+        checkNotNull(dependencyPluginIdentifier, "No plugin dependency identifier");
         pluginBuilder.withDependency(dependencyPluginIdentifier, dependencyPluginVersion);
     }
 

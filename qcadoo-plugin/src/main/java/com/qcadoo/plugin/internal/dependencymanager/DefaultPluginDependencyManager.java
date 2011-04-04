@@ -168,9 +168,6 @@ public final class DefaultPluginDependencyManager implements PluginDependencyMan
 
     private static class DependencyComparator implements Comparator<Plugin>, Serializable {
 
-        /**
-         * 
-         */
         private static final long serialVersionUID = 1821666538483568800L;
 
         @Override

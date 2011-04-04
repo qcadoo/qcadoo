@@ -1,0 +1,12 @@
+<archetype xmlns="http://maven.apache.org/plugins/maven-archetype-plugin/archetype/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/plugins/maven-archetype-plugin/archetype/1.0.0 http://maven.apache.org/xsd/archetype-1.0.0.xsd">
+  <id/>
+  <resources> 
+  	<resource>src/main/resources/test/locales/test_pl.properties</resource>	
+  	<resource>src/main/resources/test/locales/test_en.properties</resource>	
+  	<resource>src/main/resources/test/model/test.xml</resource>	
+  	<resource>src/main/resources/test/view/test.xml</resource>	
+  	<resource>src/main/resources/qcadoo-plugin.xml</resource>	
+  	<resource>src/main/resources/root-context.xml</resource>	
+  </resources> 
+</archetype>

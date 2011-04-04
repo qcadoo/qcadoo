@@ -29,8 +29,8 @@ import java.util.Locale;
 import org.springframework.security.authentication.encoding.PasswordEncoder;
 
 import com.qcadoo.model.api.FieldDefinition;
-import com.qcadoo.model.api.search.ValueAndError;
 import com.qcadoo.model.api.types.FieldType;
+import com.qcadoo.model.internal.api.ValueAndError;
 
 public final class PasswordType implements FieldType {
 

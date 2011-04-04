@@ -27,7 +27,6 @@ package com.qcadoo.model.integration;
 import org.hibernate.SessionFactory;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.jdbc.core.JdbcTemplate;
 
@@ -59,11 +58,14 @@ public abstract class IntegrationTest {
 
     protected static JdbcTemplate jdbcTemplate;
 
-    protected static ApplicationContext applicationContext;
+    protected static ClassPathXmlApplicationContext applicationContext;
 
     @BeforeClass
     public static void classInit() throws Exception {
-        applicationContext = new ClassPathXmlApplicationContext("spring.xml");
+        applicationContext = new ClassPathXmlApplicationContext();
+        applicationContext.getEnvironment().setActiveProfiles("standalone");
+        applicationContext.setConfigLocation("spring.xml");
+        applicationContext.refresh();
         dataDefinitionService = applicationContext.getBean(InternalDataDefinitionService.class);
         sessionFactory = applicationContext.getBean("sessionFactory", SessionFactory.class);
         jdbcTemplate = applicationContext.getBean(JdbcTemplate.class);
