@@ -18,7 +18,6 @@
 		<module>qcadoo-plugin-archetype</module>
 		<module>qcadoo-webapp-archetype</module>
 		<module>qcadoo-maven-plugin</module>
-    <module>test</module>
   </modules>
 
 	<name>Qcadoo Framework</name>
