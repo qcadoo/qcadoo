@@ -8,7 +8,7 @@
 		<requiredProperty key="artifactId">
 		</requiredProperty>
 		<requiredProperty key="groupId">
-			<defaultValue>com.qcadoo</defaultValue>
+			<defaultValue>com.qcadoo.mes</defaultValue>
 		</requiredProperty>
 		<requiredProperty key="version">
 		</requiredProperty>
