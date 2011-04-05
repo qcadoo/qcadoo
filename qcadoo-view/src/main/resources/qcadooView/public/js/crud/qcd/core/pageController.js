@@ -162,12 +162,16 @@ QCD.PageController = function(_viewName, _pluginIdentifier, _hasDataDefinition, 
 				completeFunction();
 			}
 			if (response.redirect) {
+				var contextPath = window.location.protocol+"//"+window.location.host;
+				var redirectUrl = response.redirect.url.replace(/\$\{root\}/, contextPath)
 				if (response.redirect.openInNewWindow) {
-					window.open(response.redirect.url);
+					window.open(redirectUrl);
 				} else if (response.redirect.openInModalWindow) {
-					openModal(response.redirect.url, response.redirect.url);
+					openModal(redirectUrl, redirectUrl);
+				} else if (isPopup) {
+					window.location = redirectUrl;
 				} else {
-					goToPage(response.redirect.url, false, response.redirect.shouldSerializeWindow);
+					goToPage(redirectUrl, false, response.redirect.shouldSerializeWindow);
 					return;
 				}
 			} else {

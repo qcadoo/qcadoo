@@ -80,6 +80,13 @@ QCD.components.containers.Window = function(_element, _mainController) {
 				row3Element.append(tabsRightElement);
 				
 				tabRibbonDiv = tabsElement;
+				for (var tabName in tabs) {
+					var tabRibbonElement = tabs[tabName].getRibbonElement();
+					if (tabRibbonElement) {
+						tabRibbonElement.hide();
+						tabRibbonDiv.append(tabRibbonElement);
+					}
+				}
 			}
 			
 			ribbonShadowElement = $("<div>").attr("id", "q_row4_out");
@@ -104,6 +111,10 @@ QCD.components.containers.Window = function(_element, _mainController) {
 		if (currentTabName) {
 			tabs[currentTabName].element.children().hide();
 			tabHeaders[currentTabName].removeClass("activeTab");
+			var tabRibbonElement = tabs[currentTabName].getRibbonElement();
+			if (tabRibbonElement) {
+				tabRibbonElement.hide();
+			}
 		}
 		currentTabName = tabName;
 		if (! oneTab) {
@@ -114,11 +125,7 @@ QCD.components.containers.Window = function(_element, _mainController) {
 		if (tabRibbonDiv) {
 			if (tabs[tabName].getRibbonElement) {
 				if (tabs[tabName].getRibbonElement()) {
-					tabRibbonDiv.empty();
-					var tabRibbonElement = tabs[tabName].getRibbonElement();
-					if (tabRibbonElement) {
-						tabRibbonDiv.append(tabRibbonElement);
-					}
+					tabs[tabName].getRibbonElement().show();
 					tabRibbonDiv.css("display", "inline-block");
 					tabsLeftElement.css("display", "inline-block");
 					tabsRightElement.css("display", "inline-block");

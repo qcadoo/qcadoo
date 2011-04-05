@@ -97,7 +97,12 @@ QCD.WindowController = function(_menuStructure) {
 		}
 		url+="popup=true";
 		
-		modalObjects[id].show("page/"+url, function() {
+		var contextPath = window.location.protocol+"//"+window.location.host;
+		if (url.indexOf(contextPath) == -1) {
+			url = "page/"+url;
+		}
+		
+		modalObjects[id].show(url, function() {
 			if (this.src != "" && this.contentWindow.init) {
 				this.contentWindow.init(serializationObjectToInsert);
 				serializationObjectToInsert = null;

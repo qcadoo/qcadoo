@@ -268,19 +268,17 @@ div.filterButton {
 .gridContainer .ui-jqgrid-sortable .sortArrow.ui-jqgrid-sortable {
 	width: 16px;
 	height: 16px;
-	visible: none;
-	display: inline-block;
-	visibility: hidden;
+	display: none;
 	background: transparent url('/qcadooView/public/css/crud/images/grid/sortArrows.png') no-repeat 0 -16px;
 	vertical-align: top;
 	margin-left: 5px;
 }
 .gridContainer .sortColumn .ui-jqgrid-sortable .sortArrow.ui-jqgrid-sortable.upArrow {
-	visibility: visible;
+	display: inline-block;
 	background-position: 0 0;
 }
 .gridContainer .sortColumn .ui-jqgrid-sortable .sortArrow.ui-jqgrid-sortable.downArrow {
-	visibility: visible;
+	display: inline-block;
 	background-position: 0 -16px;
 }
 .gridContainer .ui-jqgrid-labels {
