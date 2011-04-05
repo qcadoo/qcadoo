@@ -4,7 +4,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.qcadoo.plugin.api.Module;
-import com.qcadoo.plugin.api.PluginState;
 
 public abstract class ResourceModule extends Module {
 
@@ -15,10 +14,8 @@ public abstract class ResourceModule extends Module {
     }
 
     @Override
-    public void init(final PluginState state) {
-        if (PluginState.ENABLED.equals(state)) {
-            enable();
-        }
+    public void enableOnStartup() {
+        enable();
     }
 
     @Override

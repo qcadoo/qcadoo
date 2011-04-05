@@ -6,15 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.qcadoo.plugin.api.ModuleFactory;
 import com.qcadoo.view.internal.api.InternalMenuService;
 
-public class MenuUrlModuleFactory implements ModuleFactory<MenuModule> {
+public class MenuUrlModuleFactory extends ModuleFactory<MenuModule> {
 
     @Autowired
     private InternalMenuService menuService;
-
-    @Override
-    public void init() {
-        // empty
-    }
 
     @Override
     public MenuModule parse(final String pluginIdentifier, final Element element) {

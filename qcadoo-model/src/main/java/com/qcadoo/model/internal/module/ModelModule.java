@@ -27,7 +27,6 @@ package com.qcadoo.model.internal.module;
 import com.qcadoo.model.internal.api.InternalDataDefinition;
 import com.qcadoo.model.internal.api.InternalDataDefinitionService;
 import com.qcadoo.plugin.api.Module;
-import com.qcadoo.plugin.api.PluginState;
 
 public class ModelModule extends Module {
 
@@ -45,10 +44,8 @@ public class ModelModule extends Module {
     }
 
     @Override
-    public void init(final PluginState state) {
-        if (!PluginState.ENABLED.equals(state) && !PluginState.ENABLING.equals(state)) {
-            disable();
-        }
+    public void disableOnStartup() {
+        disable();
     }
 
     @Override

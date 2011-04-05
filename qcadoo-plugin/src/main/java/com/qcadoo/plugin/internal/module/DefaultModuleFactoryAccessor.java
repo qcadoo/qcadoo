@@ -38,7 +38,7 @@ public final class DefaultModuleFactoryAccessor implements ModuleFactoryAccessor
     @Override
     public void init() {
         for (ModuleFactory<?> moduleFactory : moduleFactoryRegistry.values()) {
-            moduleFactory.init();
+            moduleFactory.postInit();
         }
     }
 

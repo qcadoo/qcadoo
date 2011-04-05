@@ -2,7 +2,6 @@ package com.qcadoo.view.internal.module;
 
 import com.google.common.base.Preconditions;
 import com.qcadoo.plugin.api.Module;
-import com.qcadoo.plugin.api.PluginState;
 import com.qcadoo.view.api.ComponentPattern;
 import com.qcadoo.view.internal.api.InternalViewDefinition;
 import com.qcadoo.view.internal.api.InternalViewDefinitionService;
@@ -30,10 +29,8 @@ public class ViewListenerModule extends Module {
     }
 
     @Override
-    public void init(final PluginState state) {
-        if (PluginState.ENABLED.equals(state)) {
-            enable();
-        }
+    public void enableOnStartup() {
+        enable();
     }
 
     @Override

@@ -11,7 +11,6 @@ import org.w3c.dom.Node;
 
 import com.google.common.base.Preconditions;
 import com.qcadoo.plugin.api.Module;
-import com.qcadoo.plugin.api.PluginState;
 import com.qcadoo.view.api.ComponentPattern;
 import com.qcadoo.view.api.ViewDefinition;
 import com.qcadoo.view.components.window.WindowComponentPattern;
@@ -45,10 +44,8 @@ public class ViewTabModule extends Module {
     }
 
     @Override
-    public void init(final PluginState state) {
-        if (PluginState.ENABLED.equals(state)) {
-            enable();
-        }
+    public void enableOnStartup() {
+        enable();
     }
 
     @Override

@@ -30,15 +30,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.qcadoo.model.internal.api.InternalDictionaryService;
 import com.qcadoo.plugin.api.ModuleFactory;
 
-public class DictionaryModuleFactory implements ModuleFactory<DictionaryModule> {
+public class DictionaryModuleFactory extends ModuleFactory<DictionaryModule> {
 
     @Autowired
     private InternalDictionaryService dictionaryService;
-
-    @Override
-    public void init() {
-        // ignore
-    }
 
     @Override
     public DictionaryModule parse(final String pluginIdentifier, final Element element) {

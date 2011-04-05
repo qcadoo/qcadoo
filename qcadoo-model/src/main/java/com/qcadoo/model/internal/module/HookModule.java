@@ -27,7 +27,6 @@ package com.qcadoo.model.internal.module;
 import com.qcadoo.model.internal.api.InternalDataDefinition;
 import com.qcadoo.model.internal.api.InternalDataDefinitionService;
 import com.qcadoo.plugin.api.Module;
-import com.qcadoo.plugin.api.PluginState;
 
 public class HookModule extends Module {
 
@@ -54,10 +53,8 @@ public class HookModule extends Module {
     }
 
     @Override
-    public void init(final PluginState state) {
-        if (!PluginState.ENABLED.equals(state)) {
-            disable();
-        }
+    public void disableOnStartup() {
+        disable();
     }
 
     @Override

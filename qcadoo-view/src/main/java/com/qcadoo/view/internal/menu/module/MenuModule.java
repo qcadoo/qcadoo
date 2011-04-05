@@ -1,7 +1,6 @@
 package com.qcadoo.view.internal.menu.module;
 
 import com.qcadoo.plugin.api.Module;
-import com.qcadoo.plugin.api.PluginState;
 import com.qcadoo.view.internal.api.InternalMenuService;
 
 public class MenuModule extends Module {
@@ -32,7 +31,7 @@ public class MenuModule extends Module {
     }
 
     @Override
-    public void init(final PluginState state) {
+    public void init() {
         if (menuUrl != null) {
             menuService.createViewIfNotExists(pluginIdentifier, menuName, null, menuUrl);
             menuService.createItemIfNotExists(pluginIdentifier, menuName, menuCategory, pluginIdentifier, menuName);

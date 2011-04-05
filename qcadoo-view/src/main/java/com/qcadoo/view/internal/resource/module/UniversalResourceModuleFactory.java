@@ -8,18 +8,13 @@ import com.google.common.base.Preconditions;
 import com.qcadoo.plugin.api.ModuleFactory;
 import com.qcadoo.view.internal.resource.ResourceService;
 
-public class UniversalResourceModuleFactory implements ModuleFactory<UniversalResourceModule> {
+public class UniversalResourceModuleFactory extends ModuleFactory<UniversalResourceModule> {
 
     @Autowired
     private ResourceService resourceService;
 
     @Autowired
     private ApplicationContext applicationContext;
-
-    @Override
-    public void init() {
-        // empty
-    }
 
     @Override
     public UniversalResourceModule parse(final String pluginIdentifier, final Element element) {

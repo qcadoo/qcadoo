@@ -28,11 +28,7 @@ import org.jdom.Element;
 
 import com.qcadoo.plugin.api.ModuleFactory;
 
-public class MockModuleFactory implements ModuleFactory<MockModule> {
-
-    @Override
-    public void init() {
-    }
+public class MockModuleFactory extends ModuleFactory<MockModule> {
 
     @Override
     public MockModule parse(final String pluginIdentifier, final Element element) {

@@ -24,13 +24,26 @@
 
 package com.qcadoo.plugin.api;
 
-
 public abstract class Module {
 
-    public abstract void init(PluginState state);
+    public void init() {
+        // empty
+    }
 
-    public abstract void enable();
+    public void enableOnStartup() {
+        // empty
+    }
 
-    public abstract void disable();
+    public void enable() {
+        // empty
+    }
+
+    public void disable() {
+        // empty
+    }
+
+    public void disableOnStartup() {
+        // empty
+    }
 
 }

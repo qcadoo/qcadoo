@@ -25,20 +25,7 @@
 package com.qcadoo.plugin.integration;
 
 import com.qcadoo.plugin.api.Module;
-import com.qcadoo.plugin.api.PluginState;
 
 public class MockModule extends Module {
-
-    @Override
-    public void init(final PluginState state) {
-    }
-
-    @Override
-    public void enable() {
-    }
-
-    @Override
-    public void disable() {
-    }
 
 }

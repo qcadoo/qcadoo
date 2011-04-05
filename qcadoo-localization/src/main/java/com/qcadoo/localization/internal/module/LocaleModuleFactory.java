@@ -7,17 +7,13 @@ import com.google.common.base.Preconditions;
 import com.qcadoo.localization.internal.InternalTranslationService;
 import com.qcadoo.plugin.api.ModuleFactory;
 
-public class LocaleModuleFactory implements ModuleFactory<LocaleModule> {
+public class LocaleModuleFactory extends ModuleFactory<LocaleModule> {
 
     @Autowired
     private InternalTranslationService translationService;
 
     @Override
-    public void init() {
-    }
-
-    @Override
-    public LocaleModule parse(String pluginIdentifier, Element element) {
+    public LocaleModule parse(final String pluginIdentifier, final Element element) {
         String locale = element.getAttributeValue("locale");
         String label = element.getAttributeValue("label");
 

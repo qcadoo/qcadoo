@@ -26,7 +26,6 @@ package com.qcadoo.model.internal.module;
 
 import com.qcadoo.model.internal.api.InternalDictionaryService;
 import com.qcadoo.plugin.api.Module;
-import com.qcadoo.plugin.api.PluginState;
 
 public class DictionaryModule extends Module {
 
@@ -43,18 +42,8 @@ public class DictionaryModule extends Module {
     }
 
     @Override
-    public void init(final PluginState state) {
-        // empty
-    }
-
-    @Override
     public void enable() {
         dictionaryService.createIfNotExists(pluginIdentifier, name);
-    }
-
-    @Override
-    public void disable() {
-        // empty
     }
 
 }

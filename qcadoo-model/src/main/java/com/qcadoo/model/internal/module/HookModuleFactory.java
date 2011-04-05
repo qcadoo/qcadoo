@@ -32,18 +32,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.qcadoo.model.internal.api.InternalDataDefinitionService;
 import com.qcadoo.plugin.api.ModuleFactory;
 
-public class HookModuleFactory implements ModuleFactory<HookModule> {
+public class HookModuleFactory extends ModuleFactory<HookModule> {
 
     @Autowired
     private ModelXmlHolder modelXmlHolder;
 
     @Autowired
     private InternalDataDefinitionService dataDefinitionService;
-
-    @Override
-    public void init() {
-        // empty
-    }
 
     @Override
     @SuppressWarnings("unchecked")

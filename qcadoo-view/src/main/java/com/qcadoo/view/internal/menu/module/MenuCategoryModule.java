@@ -1,7 +1,6 @@
 package com.qcadoo.view.internal.menu.module;
 
 import com.qcadoo.plugin.api.Module;
-import com.qcadoo.plugin.api.PluginState;
 import com.qcadoo.view.internal.api.InternalMenuService;
 
 public class MenuCategoryModule extends Module {
@@ -19,18 +18,8 @@ public class MenuCategoryModule extends Module {
     }
 
     @Override
-    public void init(final PluginState state) {
+    public void init() {
         menuService.createCategoryIfNotExists(pluginIdentifier, menuCategoryName);
-    }
-
-    @Override
-    public void enable() {
-        // empty
-    }
-
-    @Override
-    public void disable() {
-        // empty
     }
 
 }

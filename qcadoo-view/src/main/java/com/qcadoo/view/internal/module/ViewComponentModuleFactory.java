@@ -9,7 +9,7 @@ import com.qcadoo.plugin.api.ModuleFactory;
 import com.qcadoo.view.api.ComponentPattern;
 import com.qcadoo.view.internal.internal.ViewComponentsResolverImpl;
 
-public class ViewComponentModuleFactory implements ModuleFactory<EmptyModule>, BeanClassLoaderAware {
+public class ViewComponentModuleFactory extends ModuleFactory<EmptyModule> implements BeanClassLoaderAware {
 
     @Autowired
     private ViewComponentsResolverImpl viewComponentsResolver;
@@ -19,11 +19,6 @@ public class ViewComponentModuleFactory implements ModuleFactory<EmptyModule>, B
     @Override
     public void setBeanClassLoader(final ClassLoader classLoader) {
         this.classLoader = classLoader;
-    }
-
-    @Override
-    public void init() {
-        // empty
     }
 
     @Override

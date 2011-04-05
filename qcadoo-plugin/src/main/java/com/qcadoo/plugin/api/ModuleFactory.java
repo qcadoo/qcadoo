@@ -26,12 +26,18 @@ package com.qcadoo.plugin.api;
 
 import org.jdom.Element;
 
-public interface ModuleFactory<T extends Module> {
+public abstract class ModuleFactory<T extends Module> {
 
-    void init();
+    public void preInit() {
+        // empty
+    }
 
-    T parse(String pluginIdentifier, Element element);
+    public void postInit() {
+        // empty
+    }
 
-    String getIdentifier();
+    public abstract T parse(String pluginIdentifier, Element element);
+
+    public abstract String getIdentifier();
 
 }

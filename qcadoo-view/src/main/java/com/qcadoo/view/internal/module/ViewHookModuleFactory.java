@@ -10,17 +10,13 @@ import com.qcadoo.view.internal.api.InternalViewDefinition;
 import com.qcadoo.view.internal.api.InternalViewDefinitionService;
 import com.qcadoo.view.internal.hooks.HookFactory;
 
-public class ViewHookModuleFactory implements ModuleFactory<ViewHookModule> {
+public class ViewHookModuleFactory extends ModuleFactory<ViewHookModule> {
 
     @Autowired
     private HookFactory hookFactory;
 
     @Autowired
     private InternalViewDefinitionService viewDefinitionService;
-
-    @Override
-    public void init() {
-    }
 
     @Override
     public ViewHookModule parse(final String pluginIdentifier, final Element element) {

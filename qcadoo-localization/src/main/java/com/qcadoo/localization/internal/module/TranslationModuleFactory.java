@@ -1,7 +1,5 @@
 package com.qcadoo.localization.internal.module;
 
-import java.io.Serializable;
-
 import org.jdom.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -10,19 +8,13 @@ import com.qcadoo.localization.internal.TranslationModuleService;
 import com.qcadoo.plugin.api.Module;
 import com.qcadoo.plugin.api.ModuleFactory;
 
-public class TranslationModuleFactory implements ModuleFactory<Module>, Serializable {
-
-    private static final long serialVersionUID = -9206501890728921918L;
+public class TranslationModuleFactory extends ModuleFactory<Module> {
 
     @Autowired
     private ApplicationContext applicationContext;
 
     @Autowired
     private TranslationModuleService translationModuleService;
-
-    @Override
-    public void init() {
-    }
 
     @Override
     public Module parse(final String pluginIdentifier, final Element element) {

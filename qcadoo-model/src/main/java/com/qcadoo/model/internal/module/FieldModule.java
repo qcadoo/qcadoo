@@ -27,7 +27,6 @@ package com.qcadoo.model.internal.module;
 import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.internal.api.InternalFieldDefinition;
 import com.qcadoo.plugin.api.Module;
-import com.qcadoo.plugin.api.PluginState;
 
 public class FieldModule extends Module {
 
@@ -48,10 +47,8 @@ public class FieldModule extends Module {
     }
 
     @Override
-    public void init(final PluginState state) {
-        if (!PluginState.ENABLED.equals(state)) {
-            disable();
-        }
+    public void disableOnStartup() {
+        disable();
     }
 
     @Override

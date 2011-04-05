@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.core.io.Resource;
 
 import com.qcadoo.plugin.api.Module;
-import com.qcadoo.plugin.api.PluginState;
 import com.qcadoo.view.api.ViewDefinition;
 import com.qcadoo.view.internal.api.InternalViewDefinitionService;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
@@ -26,10 +25,8 @@ public class ViewModule extends Module {
     }
 
     @Override
-    public void init(final PluginState state) {
-        if (PluginState.ENABLED.equals(state)) {
-            enable();
-        }
+    public void enableOnStartup() {
+        enable();
     }
 
     @Override

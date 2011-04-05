@@ -2,15 +2,14 @@ package com.qcadoo.localization.internal.module;
 
 import com.qcadoo.localization.internal.InternalTranslationService;
 import com.qcadoo.plugin.api.Module;
-import com.qcadoo.plugin.api.PluginState;
 
 public class LocaleModule extends Module {
 
-    private InternalTranslationService translationService;
+    private final InternalTranslationService translationService;
 
-    private String locale;
+    private final String locale;
 
-    private String label;
+    private final String label;
 
     public LocaleModule(final InternalTranslationService translationService, final String locale, final String label) {
         this.translationService = translationService;
@@ -19,7 +18,8 @@ public class LocaleModule extends Module {
     }
 
     @Override
-    public void init(PluginState state) {
+    public void enableOnStartup() {
+        enable();
     }
 
     @Override

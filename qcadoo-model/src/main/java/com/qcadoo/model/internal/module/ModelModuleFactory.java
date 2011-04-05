@@ -42,7 +42,7 @@ import com.qcadoo.model.internal.api.ModelXmlToDefinitionConverter;
 import com.qcadoo.model.internal.api.ModelXmlToHbmConverter;
 import com.qcadoo.plugin.api.ModuleFactory;
 
-public class ModelModuleFactory implements ModuleFactory<ModelModule> {
+public class ModelModuleFactory extends ModuleFactory<ModelModule> {
 
     @Autowired
     private ModelXmlToHbmConverter modelXmlToHbmConverter;
@@ -66,7 +66,7 @@ public class ModelModuleFactory implements ModuleFactory<ModelModule> {
     private DynamicSessionFactoryBean sessionFactoryBean;
 
     @Override
-    public void init() {
+    public void postInit() {
         Resource[] resources = modelXmlResolver.getResources();
 
         modelXmlToClassConverter.convert(resources);

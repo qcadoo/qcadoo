@@ -6,17 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.qcadoo.localization.internal.InternalTranslationService;
 import com.qcadoo.plugin.api.ModuleFactory;
 
-public class TranslationGroupModuleFactory implements ModuleFactory<TranslationGroupModule> {
+public class TranslationGroupModuleFactory extends ModuleFactory<TranslationGroupModule> {
 
     @Autowired
     private InternalTranslationService translationService;
 
     @Override
-    public void init() {
-    }
-
-    @Override
-    public TranslationGroupModule parse(String pluginIdentifier, Element element) {
+    public TranslationGroupModule parse(final String pluginIdentifier, final Element element) {
         String prefix = element.getAttributeValue("prefix");
 
         if (prefix == null) {

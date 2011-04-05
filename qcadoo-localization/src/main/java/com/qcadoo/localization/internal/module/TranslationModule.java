@@ -12,21 +12,20 @@ import org.springframework.core.io.Resource;
 
 import com.qcadoo.localization.internal.TranslationModuleService;
 import com.qcadoo.plugin.api.Module;
-import com.qcadoo.plugin.api.PluginState;
 
 public class TranslationModule extends Module {
 
-    private ApplicationContext applicationContext;
+    private final ApplicationContext applicationContext;
 
-    private TranslationModuleService translationModuleService;
+    private final TranslationModuleService translationModuleService;
 
-    private Set<String> basenames = new LinkedHashSet<String>();
+    private final Set<String> basenames = new LinkedHashSet<String>();
 
-    private String pluginIdentifier;
+    private final String pluginIdentifier;
 
-    private String basename;
+    private final String basename;
 
-    private String path;
+    private final String path;
 
     public TranslationModule(final ApplicationContext applicationContext,
             final TranslationModuleService translationModuleService, final String pluginIdentifier, final String basename,
@@ -39,7 +38,8 @@ public class TranslationModule extends Module {
     }
 
     @Override
-    public void init(PluginState state) {
+    public void enableOnStartup() {
+        enable();
     }
 
     @Override

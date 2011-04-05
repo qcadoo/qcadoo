@@ -60,8 +60,8 @@ public class ModuleFactoryAccessorTest {
 
         // then
         InOrder inOrder = inOrder(moduleFactory1, moduleFactory2);
-        inOrder.verify(moduleFactory1).init();
-        inOrder.verify(moduleFactory2).init();
+        inOrder.verify(moduleFactory1).postInit();
+        inOrder.verify(moduleFactory2).postInit();
     }
 
     @Test

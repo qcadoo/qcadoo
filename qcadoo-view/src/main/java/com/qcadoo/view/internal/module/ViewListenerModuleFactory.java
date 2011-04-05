@@ -10,17 +10,13 @@ import com.qcadoo.view.internal.hooks.HookDefinitionImpl;
 import com.qcadoo.view.internal.hooks.HookFactory;
 import com.qcadoo.view.internal.internal.ComponentCustomEvent;
 
-public class ViewListenerModuleFactory implements ModuleFactory<ViewListenerModule> {
+public class ViewListenerModuleFactory extends ModuleFactory<ViewListenerModule> {
 
     @Autowired
     private HookFactory hookFactory;
 
     @Autowired
     private InternalViewDefinitionService viewDefinitionService;
-
-    @Override
-    public void init() {
-    }
 
     @Override
     public ViewListenerModule parse(final String pluginIdentifier, final Element element) {

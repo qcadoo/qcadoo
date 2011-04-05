@@ -12,17 +12,13 @@ import com.qcadoo.plugin.api.ModuleFactory;
 import com.qcadoo.view.internal.api.InternalViewDefinitionService;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
 
-public class ViewModuleFactory implements ModuleFactory<ViewModule> {
+public class ViewModuleFactory extends ModuleFactory<ViewModule> {
 
     @Autowired
     private ViewDefinitionParser viewDefinitionParser;
 
     @Autowired
     private InternalViewDefinitionService viewDefinitionService;
-
-    @Override
-    public void init() {
-    }
 
     @SuppressWarnings("unchecked")
     @Override

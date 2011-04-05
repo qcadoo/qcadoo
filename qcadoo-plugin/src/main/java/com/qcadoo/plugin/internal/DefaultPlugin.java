@@ -155,7 +155,11 @@ public final class DefaultPlugin implements Plugin {
         }
 
         for (Module module : modules) {
-            module.init(getState());
+            if (getState().equals(PluginState.ENABLED)) {
+                module.enableOnStartup();
+            } else {
+                module.disableOnStartup();
+            }
         }
     }
 
