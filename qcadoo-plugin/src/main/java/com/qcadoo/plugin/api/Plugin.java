@@ -24,6 +24,7 @@
 
 package com.qcadoo.plugin.api;
 
+import java.util.List;
 import java.util.Set;
 
 public interface Plugin {
@@ -48,6 +49,6 @@ public interface Plugin {
 
     boolean hasState(PluginState expectedState);
 
-    void init();
+    List<Module> getModules(ModuleFactory<?> moduleFactory);
 
 }

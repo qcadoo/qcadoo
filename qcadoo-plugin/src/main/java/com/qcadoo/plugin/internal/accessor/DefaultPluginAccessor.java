@@ -27,6 +27,7 @@ package com.qcadoo.plugin.internal.accessor;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -150,13 +151,11 @@ public final class DefaultPluginAccessor implements PluginAccessor {
             }
         }
 
-        moduleFactoryAccessor.init();
+        List<Plugin> sortedPlugins = pluginDependencyManager.sortPluginsInDependencyOrder(plugins.values());
 
-        for (Plugin plugin : pluginDependencyManager.sortPluginsInDependencyOrder(plugins.values())) {
-            plugin.init();
-        }
+        moduleFactoryAccessor.init(sortedPlugins);
 
-        for (Plugin plugin : pluginDependencyManager.sortPluginsInDependencyOrder(plugins.values())) {
+        for (Plugin plugin : sortedPlugins) {
             if (plugin.hasState(PluginState.ENABLING)) {
                 plugin.changeStateTo(PluginState.ENABLED);
                 pluginDao.save(plugin);

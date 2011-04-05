@@ -247,7 +247,7 @@ public class DefaultPluginDescriptorParser implements PluginDescriptorParser {
             LOG.info("Parsing module " + child.getLocalName() + " for plugin " + pluginIdentifier);
             Module module = moduleFactory.parse(pluginIdentifier, convertNodeToJdomElement(child));
             checkNotNull(module, "Module for " + child.getLocalName() + " is null");
-            pluginBuilder.withModule(module);
+            pluginBuilder.withModule(moduleFactory, module);
         }
     }
 

@@ -24,6 +24,7 @@
 
 package com.qcadoo.plugin.internal.module;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
@@ -38,11 +39,13 @@ import org.mockito.InOrder;
 
 import com.qcadoo.plugin.api.Module;
 import com.qcadoo.plugin.api.ModuleFactory;
+import com.qcadoo.plugin.api.Plugin;
+import com.qcadoo.plugin.api.PluginState;
 
 public class ModuleFactoryAccessorTest {
 
     @Test
-    public void shouldCallPostInitializeOnAllModuleFactories() throws Exception {
+    public void shouldCallInitOnAllModuleFactories() throws Exception {
         // given
         ModuleFactory<?> moduleFactory1 = mock(ModuleFactory.class);
         given(moduleFactory1.getIdentifier()).willReturn("module1");
@@ -55,13 +58,43 @@ public class ModuleFactoryAccessorTest {
         factoriesList.add(moduleFactory2);
         moduleFactoryAccessor.setModuleFactories(factoriesList);
 
+        Plugin plugin1 = mock(Plugin.class);
+        Module module111 = mock(Module.class);
+        Module module112 = mock(Module.class);
+        Module module12 = mock(Module.class);
+        given(plugin1.getModules(moduleFactory1)).willReturn(newArrayList(module111, module112));
+        given(plugin1.getModules(moduleFactory2)).willReturn(newArrayList(module12));
+        given(plugin1.hasState(PluginState.ENABLED)).willReturn(false);
+
+        Plugin plugin2 = mock(Plugin.class);
+        Module module21 = mock(Module.class);
+        Module module22 = mock(Module.class);
+        given(plugin2.getModules(moduleFactory1)).willReturn(newArrayList(module21));
+        given(plugin2.getModules(moduleFactory2)).willReturn(newArrayList(module22));
+        given(plugin2.hasState(PluginState.ENABLED)).willReturn(true);
+
+        List<Plugin> plugins = newArrayList(plugin1, plugin2);
+
         // when
-        moduleFactoryAccessor.init();
+        moduleFactoryAccessor.init(plugins);
 
         // then
-        InOrder inOrder = inOrder(moduleFactory1, moduleFactory2);
+        InOrder inOrder = inOrder(moduleFactory1, moduleFactory2, module111, module112, module12, module21, module22);
+
+        inOrder.verify(moduleFactory1).preInit();
+        inOrder.verify(module111).init();
+        inOrder.verify(module112).init();
+        inOrder.verify(module21).init();
         inOrder.verify(moduleFactory1).postInit();
+        inOrder.verify(module111).disableOnStartup();
+        inOrder.verify(module112).disableOnStartup();
+        inOrder.verify(module21).enableOnStartup();
+        inOrder.verify(moduleFactory2).preInit();
+        inOrder.verify(module12).init();
+        inOrder.verify(module22).init();
         inOrder.verify(moduleFactory2).postInit();
+        inOrder.verify(module12).disableOnStartup();
+        inOrder.verify(module22).enableOnStartup();
     }
 
     @Test

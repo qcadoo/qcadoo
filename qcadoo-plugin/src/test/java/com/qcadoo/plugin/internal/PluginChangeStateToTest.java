@@ -34,9 +34,9 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.qcadoo.plugin.api.Module;
+import com.qcadoo.plugin.api.ModuleFactory;
 import com.qcadoo.plugin.api.Plugin;
 import com.qcadoo.plugin.api.PluginState;
-import com.qcadoo.plugin.internal.DefaultPlugin;
 
 public class PluginChangeStateToTest {
 
@@ -93,10 +93,12 @@ public class PluginChangeStateToTest {
     private void assertOperationSupported(final PluginState from, final PluginState to, final boolean callEnable,
             final boolean callDisable) throws Exception {
         // given
+        ModuleFactory<?> moduleFactory = mock(ModuleFactory.class);
         Module module1 = mock(Module.class);
         Module module2 = mock(Module.class);
 
-        Plugin plugin = DefaultPlugin.Builder.identifier("identifier").withModule(module1).withModule(module2).build();
+        Plugin plugin = DefaultPlugin.Builder.identifier("identifier").withModule(moduleFactory, module1)
+                .withModule(moduleFactory, module2).build();
 
         if (from != null) {
             plugin.changeStateTo(from);

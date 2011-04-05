@@ -72,6 +72,10 @@ public class PluginDescriptorParserTest {
 
     private Module testModule2;
 
+    private ModuleFactory testModule1Factory;
+
+    private ModuleFactory testModule2Factory;
+
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Before
     public void init() {
@@ -85,8 +89,8 @@ public class PluginDescriptorParserTest {
         testModule1 = mock(Module.class);
         testModule2 = mock(Module.class);
 
-        ModuleFactory testModule1Factory = mock(ModuleFactory.class);
-        ModuleFactory testModule2Factory = mock(ModuleFactory.class);
+        testModule1Factory = mock(ModuleFactory.class);
+        testModule2Factory = mock(ModuleFactory.class);
 
         given(testModule1Factory.parse(Mockito.eq("testPlugin"), argThat(new HasNodeName("testModule1", "testModule1Content"))))
                 .willReturn(testModule1);
@@ -220,9 +224,8 @@ public class PluginDescriptorParserTest {
 
         // then
         DefaultPlugin castedResult = (DefaultPlugin) result;
-        assertEquals(2, castedResult.getModules().size());
-        assertTrue(castedResult.getModules().contains(testModule1));
-        assertTrue(castedResult.getModules().contains(testModule2));
+        assertTrue(castedResult.getModules(testModule1Factory).contains(testModule1));
+        assertTrue(castedResult.getModules(testModule2Factory).contains(testModule2));
     }
 
     @Test
@@ -234,7 +237,8 @@ public class PluginDescriptorParserTest {
 
         // then
         DefaultPlugin castedResult = (DefaultPlugin) result;
-        assertEquals(0, castedResult.getModules().size());
+        assertEquals(0, castedResult.getModules(testModule1Factory).size());
+        assertEquals(0, castedResult.getModules(testModule2Factory).size());
     }
 
     private class HasNodeName extends ArgumentMatcher<Element> {

@@ -24,11 +24,14 @@
 
 package com.qcadoo.plugin.internal.api;
 
+import java.util.List;
+
 import com.qcadoo.plugin.api.ModuleFactory;
+import com.qcadoo.plugin.api.Plugin;
 
 public interface ModuleFactoryAccessor {
 
-    void init();
+    void init(List<Plugin> plugins);
 
     ModuleFactory<?> getModuleFactory(String identifier);
 

@@ -28,7 +28,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.qcadoo.plugin.api.Module;
 import com.qcadoo.plugin.api.ModuleFactory;
+import com.qcadoo.plugin.api.Plugin;
+import com.qcadoo.plugin.api.PluginState;
 import com.qcadoo.plugin.internal.api.ModuleFactoryAccessor;
 
 public final class DefaultModuleFactoryAccessor implements ModuleFactoryAccessor {
@@ -36,9 +39,27 @@ public final class DefaultModuleFactoryAccessor implements ModuleFactoryAccessor
     private final Map<String, ModuleFactory<?>> moduleFactoryRegistry = new LinkedHashMap<String, ModuleFactory<?>>();
 
     @Override
-    public void init() {
+    public void init(final List<Plugin> plugins) {
         for (ModuleFactory<?> moduleFactory : moduleFactoryRegistry.values()) {
+            moduleFactory.preInit();
+
+            for (Plugin plugin : plugins) {
+                for (Module module : plugin.getModules(moduleFactory)) {
+                    module.init();
+                }
+            }
+
             moduleFactory.postInit();
+
+            for (Plugin plugin : plugins) {
+                for (Module module : plugin.getModules(moduleFactory)) {
+                    if (plugin.hasState(PluginState.ENABLED)) {
+                        module.enableOnStartup();
+                    } else {
+                        module.disableOnStartup();
+                    }
+                }
+            }
         }
     }
 

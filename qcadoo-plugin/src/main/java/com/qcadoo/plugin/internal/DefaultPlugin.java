@@ -30,14 +30,19 @@ import static com.qcadoo.plugin.api.PluginState.ENABLING;
 import static com.qcadoo.plugin.api.PluginState.TEMPORARY;
 import static com.qcadoo.plugin.api.PluginState.UNKNOWN;
 import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.unmodifiableMap;
 import static java.util.Collections.unmodifiableSet;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.qcadoo.plugin.api.Module;
+import com.qcadoo.plugin.api.ModuleFactory;
 import com.qcadoo.plugin.api.Plugin;
 import com.qcadoo.plugin.api.PluginDependencyInformation;
 import com.qcadoo.plugin.api.PluginInformation;
@@ -48,6 +53,8 @@ import com.qcadoo.plugin.api.VersionOfDependency;
 public final class DefaultPlugin implements Plugin {
 
     private final List<Module> modules;
+
+    private final Map<ModuleFactory<?>, List<Module>> modulesByFactories;
 
     private final PluginInformation information;
 
@@ -64,12 +71,14 @@ public final class DefaultPlugin implements Plugin {
     private PluginState state;
 
     private DefaultPlugin(final String identifier, final String fileName, final boolean system, final Version version,
-            final List<Module> modules, final PluginInformation information, final Set<PluginDependencyInformation> dependencies) {
+            final List<Module> modules, final Map<ModuleFactory<?>, List<Module>> modulesByFactories,
+            final PluginInformation information, final Set<PluginDependencyInformation> dependencies) {
         this.state = UNKNOWN;
         this.identifier = identifier;
         this.fileName = fileName;
         this.version = version;
         this.modules = modules;
+        this.modulesByFactories = modulesByFactories;
         this.information = information;
         this.dependencies = dependencies;
         this.system = system;
@@ -149,22 +158,12 @@ public final class DefaultPlugin implements Plugin {
     }
 
     @Override
-    public void init() {
-        if (hasState(PluginState.UNKNOWN)) {
-            throw new IllegalStateException("Plugin " + getIdentifier() + " is in unknown state, cannot be initialized");
+    public List<Module> getModules(final ModuleFactory<?> moduleFactory) {
+        if (modulesByFactories.containsKey(moduleFactory)) {
+            return modulesByFactories.get(moduleFactory);
+        } else {
+            return Collections.emptyList();
         }
-
-        for (Module module : modules) {
-            if (getState().equals(PluginState.ENABLED)) {
-                module.enableOnStartup();
-            } else {
-                module.disableOnStartup();
-            }
-        }
-    }
-
-    public List<Module> getModules() {
-        return modules;
     }
 
     public static class Builder {
@@ -187,6 +186,8 @@ public final class DefaultPlugin implements Plugin {
 
         private final List<Module> modules = new ArrayList<Module>();
 
+        private final Map<ModuleFactory<?>, List<Module>> modulesByFactories = new LinkedHashMap<ModuleFactory<?>, List<Module>>();
+
         private final Set<PluginDependencyInformation> dependencyInformations = new HashSet<PluginDependencyInformation>();
 
         public Builder(final String identifier) {
@@ -202,8 +203,12 @@ public final class DefaultPlugin implements Plugin {
             return this;
         }
 
-        public Builder withModule(final Module module) {
+        public Builder withModule(final ModuleFactory<?> moduleFactory, final Module module) {
             modules.add(module);
+            if (!modulesByFactories.containsKey(moduleFactory)) {
+                modulesByFactories.put(moduleFactory, new ArrayList<Module>());
+            }
+            modulesByFactories.get(moduleFactory).add(module);
             return this;
         }
 
@@ -244,8 +249,8 @@ public final class DefaultPlugin implements Plugin {
 
         public Plugin build() {
             PluginInformation pluginInformation = new PluginInformation(name, description, vendor, vendorUrl);
-            return new DefaultPlugin(identifier, fileName, system, version, unmodifiableList(modules), pluginInformation,
-                    unmodifiableSet(dependencyInformations));
+            return new DefaultPlugin(identifier, fileName, system, version, unmodifiableList(modules),
+                    unmodifiableMap(modulesByFactories), pluginInformation, unmodifiableSet(dependencyInformations));
         }
 
     }

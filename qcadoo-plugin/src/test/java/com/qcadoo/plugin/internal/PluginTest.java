@@ -27,67 +27,14 @@ package com.qcadoo.plugin.internal;
 import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
 
 import org.junit.Test;
 
-import com.qcadoo.plugin.api.Module;
 import com.qcadoo.plugin.api.Plugin;
 import com.qcadoo.plugin.api.PluginState;
 import com.qcadoo.plugin.api.Version;
 
 public class PluginTest {
-
-    @Test
-    public void shouldCallEnableOnStartupOnModules() throws Exception {
-        // given
-        Module module1 = mock(Module.class);
-        Module module2 = mock(Module.class);
-
-        Plugin plugin = DefaultPlugin.Builder.identifier("identifier").withModule(module1).withModule(module2).build();
-
-        plugin.changeStateTo(PluginState.ENABLED);
-
-        // when
-        plugin.init();
-
-        // then
-        verify(module1).enableOnStartup();
-        verify(module2).enableOnStartup();
-        verify(module1, never()).disableOnStartup();
-        verify(module2, never()).disableOnStartup();
-    }
-
-    @Test
-    public void shouldCallDisableOnStartupOnModules() throws Exception {
-        // given
-        Module module1 = mock(Module.class);
-        Module module2 = mock(Module.class);
-
-        Plugin plugin = DefaultPlugin.Builder.identifier("identifier").withModule(module1).withModule(module2).build();
-
-        plugin.changeStateTo(PluginState.DISABLED);
-
-        // when
-        plugin.init();
-
-        // then
-        verify(module1).disableOnStartup();
-        verify(module2).disableOnStartup();
-        verify(module1, never()).enableOnStartup();
-        verify(module2, never()).enableOnStartup();
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void shouldFailInitializingPluginWithUnknownState() throws Exception {
-        // given
-        Plugin plugin = DefaultPlugin.Builder.identifier("identifier").build();
-
-        // when
-        plugin.init();
-    }
 
     @Test
     public void shouldHaveUnknownStateByDefault() throws Exception {
