@@ -45,10 +45,12 @@ import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.aop.Monitorable;
 import com.qcadoo.model.api.search.Restrictions;
+import com.qcadoo.plugin.api.profile.Standalone;
 import com.qcadoo.security.api.SecurityService;
 
 @Service("userDetailsService")
-public final class SecurityServiceImpl implements SecurityService, UserDetailsService, PersistentTokenRepository {
+@Standalone
+public class SecurityServiceImpl implements SecurityService, UserDetailsService, PersistentTokenRepository {
 
     @Autowired
     private DataDefinitionService dataDefinitionService;
@@ -59,7 +61,7 @@ public final class SecurityServiceImpl implements SecurityService, UserDetailsSe
         return getUserEntity(SecurityContextHolder.getContext().getAuthentication().getName()).getStringField("userName");
     }
 
-    private Entity getUserEntity(final String login) {
+    protected Entity getUserEntity(final String login) {
         List<Entity> users = dataDefinitionService.get("qcadooSecurity", "user").find()
                 .restrictedWith(Restrictions.eq("userName", login)).withMaxResults(1).list().getEntities();
         checkState(users.size() > 0, "Current user with login %s cannot be found", login);
@@ -75,15 +77,17 @@ public final class SecurityServiceImpl implements SecurityService, UserDetailsSe
     @Override
     @Monitorable
     public UserDetails loadUserByUsername(final String username) {
-        Entity entity = getUserEntity(username);
+        return convertEntityToUserDetails(getUserEntity(username));
+    }
 
+    protected UserDetails convertEntityToUserDetails(final Entity entity) {
         List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
 
         authorities.add(new GrantedAuthorityImpl(entity.getBelongsToField("userGroup").getStringField("role")));
 
-        checkState(authorities.size() > 0, "Current user with login %s cannot be found", username);
+        checkState(authorities.size() > 0, "Current user with login %s cannot be found", entity.getStringField("userName"));
 
-        return new User(username, entity.getStringField("password"), true, true, true, true, authorities);
+        return new User(entity.getStringField("userName"), entity.getStringField("password"), true, true, true, true, authorities);
     }
 
     @Override
