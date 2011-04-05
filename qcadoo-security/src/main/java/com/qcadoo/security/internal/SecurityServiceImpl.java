@@ -24,6 +24,7 @@
 
 package com.qcadoo.security.internal;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
 import java.util.ArrayList;
@@ -37,6 +38,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.rememberme.PersistentRememberMeToken;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.stereotype.Service;
@@ -45,11 +47,9 @@ import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.aop.Monitorable;
 import com.qcadoo.model.api.search.Restrictions;
-import com.qcadoo.plugin.api.profile.Standalone;
 import com.qcadoo.security.api.SecurityService;
 
 @Service("userDetailsService")
-@Standalone
 public class SecurityServiceImpl implements SecurityService, UserDetailsService, PersistentTokenRepository {
 
     @Autowired
@@ -58,26 +58,41 @@ public class SecurityServiceImpl implements SecurityService, UserDetailsService,
     @Override
     @Monitorable
     public String getCurrentUserName() {
-        return getUserEntity(SecurityContextHolder.getContext().getAuthentication().getName()).getStringField("userName");
+        String login = SecurityContextHolder.getContext().getAuthentication().getName();
+        Entity entity = getUserEntity(SecurityContextHolder.getContext().getAuthentication().getName());
+        checkNotNull(entity, "Current user with login %s cannot be found", login);
+        return entity.getStringField("userName");
     }
 
     protected Entity getUserEntity(final String login) {
         List<Entity> users = dataDefinitionService.get("qcadooSecurity", "user").find()
                 .restrictedWith(Restrictions.eq("userName", login)).withMaxResults(1).list().getEntities();
-        checkState(users.size() > 0, "Current user with login %s cannot be found", login);
-        return users.get(0);
+        if (users.size() == 1) {
+            return users.get(0);
+        } else {
+            return null;
+        }
     }
 
     @Override
     @Monitorable
     public Long getCurrentUserId() {
-        return getUserEntity(SecurityContextHolder.getContext().getAuthentication().getName()).getId();
+        String login = SecurityContextHolder.getContext().getAuthentication().getName();
+        Entity entity = getUserEntity(SecurityContextHolder.getContext().getAuthentication().getName());
+        checkNotNull(entity, "Current user with login %s cannot be found", login);
+        return entity.getId();
     }
 
     @Override
     @Monitorable
     public UserDetails loadUserByUsername(final String username) {
-        return convertEntityToUserDetails(getUserEntity(username));
+        Entity entity = getUserEntity(username);
+
+        if (entity == null) {
+            throw new UsernameNotFoundException("Username " + username + " not found");
+        }
+
+        return convertEntityToUserDetails(entity);
     }
 
     protected UserDetails convertEntityToUserDetails(final Entity entity) {
@@ -114,7 +129,7 @@ public class SecurityServiceImpl implements SecurityService, UserDetailsService,
     public PersistentRememberMeToken getTokenForSeries(final String series) {
         Entity entity = getPersistentToken(series);
 
-        if (entity != null) {
+        if (entity != null && getUserEntity(entity.getStringField("userName")) != null) {
             return new PersistentRememberMeToken(entity.getStringField("userName"), entity.getStringField("series"),
                     entity.getStringField("token"), (Date) entity.getField("lastUsed"));
         } else {
