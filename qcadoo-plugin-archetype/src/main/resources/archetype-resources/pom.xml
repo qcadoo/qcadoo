@@ -14,7 +14,7 @@
 	<groupId>${groupId}</groupId>
 	<packaging>qcadoo-plugin</packaging>
 
-	<name>Qcadoo MES :: Plugins :: ${artifactId}</name>
+	<name>Qcadoo MES :: Plugins :: ${name}</name>
 	
 	<build>
 		<plugins>
@@ -30,3 +30,4 @@
 	<version>${version}</version>
 	
 </project>
+

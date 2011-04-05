@@ -17,7 +17,7 @@
        http://schema.qcadoo.org/modules/localization.xsd">
 
 	<information>
-		<name>${artifactId}</name>
+		<name>${name}</name>
 		<vendor>
 			<name>Qcadoo Limited</name>
 			<url>http://www.qcadoo.com/</url>
@@ -28,15 +28,15 @@
 	<modules>
 		<localization:translation path="locales" />
 		
-		<model:model model="${identifier}" resource="model/${artifactId}.xml" />
+		<model:model model="${identifier}" resource="model/${identifier}.xml" />
 		
-		<view:menu-category name="${artifactId}" />
+		<view:menu-category name="${identifier}" />
 
 		<view:menu-item name="${identifier}" category="${identifier}"
 			view="${identifier}" />
 
 		<view:view>
-			<view:resource>view/${artifactId}.xml</view:resource>
+			<view:resource>view/${identifier}.xml</view:resource>
 		</view:view>
 		
 		<view:resource uri="public/**/*" />
