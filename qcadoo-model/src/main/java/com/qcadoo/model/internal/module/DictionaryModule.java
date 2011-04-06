@@ -42,7 +42,7 @@ public class DictionaryModule extends Module {
     }
 
     @Override
-    public void enable() {
+    public void enableOnStartup() {
         dictionaryService.createIfNotExists(pluginIdentifier, name);
     }
 

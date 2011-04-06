@@ -24,50 +24,54 @@
 
 package com.qcadoo.model.internal.module;
 
-import java.util.List;
-
 import org.jdom.Element;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 
-import com.qcadoo.model.internal.api.InternalDataDefinitionService;
+import com.qcadoo.model.internal.api.DynamicSessionFactoryBean;
+import com.qcadoo.model.internal.api.ModelXmlResolver;
+import com.qcadoo.model.internal.api.ModelXmlToClassConverter;
+import com.qcadoo.model.internal.api.ModelXmlToDefinitionConverter;
+import com.qcadoo.model.internal.api.ModelXmlToHbmConverter;
 import com.qcadoo.plugin.api.ModuleFactory;
 
-public class FieldModuleFactory extends ModuleFactory<FieldModule> {
+public class HibernateModuleFactory extends ModuleFactory<ModelModule> {
 
     @Autowired
-    private ModelXmlHolder modelXmlHolder;
+    private ModelXmlToHbmConverter modelXmlToHbmConverter;
 
     @Autowired
-    private InternalDataDefinitionService dataDefinitionService;
+    private ModelXmlToClassConverter modelXmlToClassConverter;
+
+    @Autowired
+    private ModelXmlToDefinitionConverter modelXmlToDefinitionConverter;
+
+    @Autowired
+    private ModelXmlResolver modelXmlResolver;
+
+    @Autowired
+    private DynamicSessionFactoryBean sessionFactoryBean;
 
     @Override
-    @SuppressWarnings("unchecked")
-    public FieldModule parse(final String pluginIdentifier, final Element element) {
-        String targetPluginIdentifier = element.getAttributeValue("plugin");
-        String targetModelName = element.getAttributeValue("model");
+    public void postInit() {
+        Resource[] resources = modelXmlResolver.getResources();
 
-        if (targetPluginIdentifier == null) {
-            throw new IllegalStateException("Missing plugin attribute of field module");
-        }
+        modelXmlToClassConverter.convert(resources);
 
-        if (targetModelName == null) {
-            throw new IllegalStateException("Missing model attribute of field module");
-        }
+        sessionFactoryBean.initialize(modelXmlToHbmConverter.convert(resources));
 
-        List<Element> elements = element.getChildren();
+        modelXmlToDefinitionConverter.convert(resources);
+    }
 
-        if (elements.size() < 1) {
-            throw new IllegalStateException("Missing content of field module");
-        } else if (elements.size() > 1) {
-            throw new IllegalStateException("Only one field can be defined in single field module");
-        }
+    @Override
+    public ModelModule parse(final String pluginIdentifier, final Element element) {
+        throw new IllegalStateException("Cannot create hibernate module");
 
-        return new FieldModule(targetPluginIdentifier, targetModelName, elements.get(0), modelXmlHolder, dataDefinitionService);
     }
 
     @Override
     public String getIdentifier() {
-        return "field";
+        return "#hibernate";
     }
 
 }

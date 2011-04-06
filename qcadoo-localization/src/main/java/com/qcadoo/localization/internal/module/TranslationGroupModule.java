@@ -9,6 +9,9 @@ public class TranslationGroupModule extends Module {
 
     private final String prefix;
 
+    // TODO mady this module should contains only names and prefixes of groups
+    // messages for groups should be added and removed in TranslationModule
+
     // private String name;
 
     public TranslationGroupModule(final InternalTranslationService translationService, final String prefix, final String name) {
@@ -19,16 +22,7 @@ public class TranslationGroupModule extends Module {
 
     @Override
     public void enableOnStartup() {
-        enable();
-    }
-
-    @Override
-    public void enable() {
         translationService.prepareMessagesForPrefix(prefix);
-    }
-
-    @Override
-    public void disable() {
     }
 
 }

@@ -24,6 +24,8 @@
 
 package com.qcadoo.model.internal.module;
 
+import org.jdom.Element;
+
 import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.internal.api.InternalFieldDefinition;
 import com.qcadoo.plugin.api.Module;
@@ -38,12 +40,24 @@ public class FieldModule extends Module {
 
     private final DataDefinitionService dataDefinitionService;
 
-    public FieldModule(final String pluginIdentifier, final String modelName, final String fieldName,
-            final DataDefinitionService dataDefinitionService) {
+    private final ModelXmlHolder modelXmlHolder;
+
+    private final Element field;
+
+    public FieldModule(final String pluginIdentifier, final String modelName, final Element field,
+            final ModelXmlHolder modelXmlHolder, final DataDefinitionService dataDefinitionService) {
         this.pluginIdentifier = pluginIdentifier;
         this.modelName = modelName;
-        this.fieldName = fieldName;
+        this.field = field;
+        this.modelXmlHolder = modelXmlHolder;
+        this.fieldName = field.getAttributeValue("name");
         this.dataDefinitionService = dataDefinitionService;
+    }
+
+    @Override
+    public void init() {
+        field.setAttribute("required", "false");
+        modelXmlHolder.addField(pluginIdentifier, modelName, field);
     }
 
     @Override

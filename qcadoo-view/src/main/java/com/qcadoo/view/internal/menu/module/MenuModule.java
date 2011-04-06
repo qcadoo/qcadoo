@@ -39,7 +39,6 @@ public class MenuModule extends Module {
             menuService.createViewIfNotExists(menuViewPluginIdentifier, menuViewName, menuViewName, null);
             menuService.createItemIfNotExists(pluginIdentifier, menuName, menuCategory, menuViewPluginIdentifier, menuViewName);
         }
-
     }
 
     @Override
@@ -48,6 +47,11 @@ public class MenuModule extends Module {
             menuService.enableView(pluginIdentifier, menuName);
         }
         menuService.enableItem(pluginIdentifier, menuName);
+    }
+
+    @Override
+    public void disableOnStartup() {
+        disable();
     }
 
     @Override

@@ -97,6 +97,7 @@
 				<bean class="com.qcadoo.model.internal.module.ModelModuleFactory" />
 				<bean class="com.qcadoo.model.internal.module.FieldModuleFactory" />
 				<bean class="com.qcadoo.model.internal.module.HookModuleFactory" />
+				<bean class="com.qcadoo.model.internal.module.HibernateModuleFactory" />
 				<bean class="com.qcadoo.model.internal.module.DictionaryModuleFactory" />
 			</list>
 		</property>

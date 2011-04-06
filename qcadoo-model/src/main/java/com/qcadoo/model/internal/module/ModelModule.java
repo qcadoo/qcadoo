@@ -24,6 +24,10 @@
 
 package com.qcadoo.model.internal.module;
 
+import java.io.IOException;
+
+import org.springframework.core.io.ClassPathResource;
+
 import com.qcadoo.model.internal.api.InternalDataDefinition;
 import com.qcadoo.model.internal.api.InternalDataDefinitionService;
 import com.qcadoo.plugin.api.Module;
@@ -36,11 +40,27 @@ public class ModelModule extends Module {
 
     private final InternalDataDefinitionService dataDefinitionService;
 
-    public ModelModule(final String pluginIdentifier, final String modelName,
-            final InternalDataDefinitionService dataDefinitionService) {
+    private final ModelXmlHolder modelXmlHolder;
+
+    private final String resource;
+
+    public ModelModule(final String pluginIdentifier, final String modelName, final String resource,
+            final ModelXmlHolder modelXmlHolder, final InternalDataDefinitionService dataDefinitionService) {
         this.pluginIdentifier = pluginIdentifier;
         this.modelName = modelName;
+        this.resource = resource;
+        this.modelXmlHolder = modelXmlHolder;
         this.dataDefinitionService = dataDefinitionService;
+    }
+
+    @Override
+    public void init() {
+        try {
+            modelXmlHolder.put(pluginIdentifier, modelName,
+                    new ClassPathResource(pluginIdentifier + "/" + resource).getInputStream());
+        } catch (IOException e) {
+            throw new IllegalStateException(e.getMessage(), e);
+        }
     }
 
     @Override

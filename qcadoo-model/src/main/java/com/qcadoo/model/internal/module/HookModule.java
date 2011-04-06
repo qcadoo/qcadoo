@@ -24,6 +24,8 @@
 
 package com.qcadoo.model.internal.module;
 
+import org.jdom.Element;
+
 import com.qcadoo.model.internal.api.InternalDataDefinition;
 import com.qcadoo.model.internal.api.InternalDataDefinitionService;
 import com.qcadoo.plugin.api.Module;
@@ -42,14 +44,25 @@ public class HookModule extends Module {
 
     private final InternalDataDefinitionService dataDefinitionService;
 
-    public HookModule(final String pluginIdentifier, final String modelName, final String hookType, final String hookClassName,
-            final String hookMethodName, final InternalDataDefinitionService dataDefinitionService) {
+    private final Element hook;
+
+    private final ModelXmlHolder modelXmlHolder;
+
+    public HookModule(final String pluginIdentifier, final String modelName, final Element hook,
+            final ModelXmlHolder modelXmlHolder, final InternalDataDefinitionService dataDefinitionService) {
         this.pluginIdentifier = pluginIdentifier;
         this.modelName = modelName;
-        this.hookType = hookType;
-        this.hookClassName = hookClassName;
-        this.hookMethodName = hookMethodName;
+        this.hook = hook;
+        this.modelXmlHolder = modelXmlHolder;
+        this.hookType = hook.getName();
+        this.hookClassName = hook.getAttributeValue("class");
+        this.hookMethodName = hook.getAttributeValue("method");
         this.dataDefinitionService = dataDefinitionService;
+    }
+
+    @Override
+    public void init() {
+        modelXmlHolder.addHook(pluginIdentifier, modelName, hook);
     }
 
     @Override

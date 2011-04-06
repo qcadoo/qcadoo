@@ -62,13 +62,7 @@ public class HookModuleFactory extends ModuleFactory<HookModule> {
             throw new IllegalStateException("Only one hook can be defined in single hook module");
         }
 
-        String hookType = elements.get(0).getName();
-        String hookClass = elements.get(0).getAttributeValue("class");
-        String hookMethod = elements.get(0).getAttributeValue("method");
-
-        modelXmlHolder.addHook(targetPluginIdentifier, targetModelName, elements.get(0));
-
-        return new HookModule(targetPluginIdentifier, targetModelName, hookType, hookClass, hookMethod, dataDefinitionService);
+        return new HookModule(targetPluginIdentifier, targetModelName, elements.get(0), modelXmlHolder, dataDefinitionService);
     }
 
     @Override

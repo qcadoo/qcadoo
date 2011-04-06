@@ -42,24 +42,20 @@ public final class DefaultModuleFactoryAccessor implements ModuleFactoryAccessor
     public void init(final List<Plugin> plugins) {
         for (ModuleFactory<?> moduleFactory : moduleFactoryRegistry.values()) {
             moduleFactory.preInit();
-        }
 
-        for (ModuleFactory<?> moduleFactory : moduleFactoryRegistry.values()) {
             for (Plugin plugin : plugins) {
                 for (Module module : plugin.getModules(moduleFactory)) {
                     module.init();
                 }
             }
-        }
 
-        for (ModuleFactory<?> moduleFactory : moduleFactoryRegistry.values()) {
             moduleFactory.postInit();
         }
 
         for (ModuleFactory<?> moduleFactory : moduleFactoryRegistry.values()) {
             for (Plugin plugin : plugins) {
                 for (Module module : plugin.getModules(moduleFactory)) {
-                    if (plugin.hasState(PluginState.ENABLED)) {
+                    if (plugin.hasState(PluginState.ENABLED) || plugin.hasState(PluginState.ENABLING)) {
                         module.enableOnStartup();
                     } else {
                         module.disableOnStartup();
