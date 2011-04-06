@@ -26,8 +26,19 @@ package com.qcadoo.plugin.api;
 
 import org.jdom.Element;
 
+/**
+ * {@link ModuleFactory#parse(String, Element)}
+ * {@link ModuleFactory#preInit()}
+ * {@link Module#init()}
+ * {@link ModuleFactory#postInit()}
+ * {@link Module#enableOnStartup()}
+ * {@link Module#disableOnStartup()}
+ * {@link Module#enable()}
+ * {@link Module#disable()}
+ */
 public abstract class ModuleFactory<T extends Module> {
 
+    
     public void preInit() {
         // empty
     }

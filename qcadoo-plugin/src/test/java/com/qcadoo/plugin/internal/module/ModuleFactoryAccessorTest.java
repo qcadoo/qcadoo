@@ -82,17 +82,17 @@ public class ModuleFactoryAccessorTest {
         InOrder inOrder = inOrder(moduleFactory1, moduleFactory2, module111, module112, module12, module21, module22);
 
         inOrder.verify(moduleFactory1).preInit();
+        inOrder.verify(moduleFactory2).preInit();
         inOrder.verify(module111).init();
         inOrder.verify(module112).init();
         inOrder.verify(module21).init();
+        inOrder.verify(module12).init();
+        inOrder.verify(module22).init();
         inOrder.verify(moduleFactory1).postInit();
+        inOrder.verify(moduleFactory2).postInit();
         inOrder.verify(module111).disableOnStartup();
         inOrder.verify(module112).disableOnStartup();
         inOrder.verify(module21).enableOnStartup();
-        inOrder.verify(moduleFactory2).preInit();
-        inOrder.verify(module12).init();
-        inOrder.verify(module22).init();
-        inOrder.verify(moduleFactory2).postInit();
         inOrder.verify(module12).disableOnStartup();
         inOrder.verify(module22).enableOnStartup();
     }
