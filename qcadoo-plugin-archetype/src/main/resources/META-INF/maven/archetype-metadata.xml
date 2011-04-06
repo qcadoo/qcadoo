@@ -16,6 +16,12 @@
 		</requiredProperty>
 		<requiredProperty key="name">
 		</requiredProperty>
+		<requiredProperty key="vendorName">
+			<defaultValue>vendor</defaultValue>
+		</requiredProperty>
+		<requiredProperty key="vendorUrl">
+			<defaultValue></defaultValue>
+		</requiredProperty>
 	</requiredProperties>
 	<fileSets>
 		<fileSet filtered="true" encoding="UTF-8">

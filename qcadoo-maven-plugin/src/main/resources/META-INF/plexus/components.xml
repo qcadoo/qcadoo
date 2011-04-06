@@ -49,6 +49,8 @@
 				<extension>jar</extension>
 				<type>qcadoo-plugin</type>
 				<packaging>qcadoo-plugin</packaging>
+				<language>java</language>
+            	<addedToClasspath>true</addedToClasspath>
 			</configuration>
 		</component>
 	</components>

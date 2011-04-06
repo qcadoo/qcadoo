@@ -32,7 +32,7 @@
 				<group template="formSaveCopyAndRemoveActions" />
 			</ribbon>
 			<windowTab name="mainTab">
-				<component type="form" name="${identifier}" reference="form">
+				<component type="form" name="${identifier}Details" reference="form">
 					<component type="gridLayout" name="gridLayout" columns="1" rows="2">
 						<layoutElement column="1" row="1">
 							<component type="input" name="number" field="number" reference="number" />
