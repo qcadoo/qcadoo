@@ -42,7 +42,12 @@ public class DictionaryModule extends Module {
     }
 
     @Override
-    public void enableOnStartup() {
+    public void multiTenantEnableOnStartup() {
+        multiTenantEnable();
+    }
+
+    @Override
+    public void multiTenantEnable() {
         dictionaryService.createIfNotExists(pluginIdentifier, name);
     }
 

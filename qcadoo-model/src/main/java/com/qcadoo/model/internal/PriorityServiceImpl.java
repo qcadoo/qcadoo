@@ -35,11 +35,13 @@ import org.springframework.stereotype.Service;
 
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.FieldDefinition;
+import com.qcadoo.model.internal.api.EntityService;
 import com.qcadoo.model.internal.api.InternalDataDefinition;
+import com.qcadoo.model.internal.api.PriorityService;
 import com.qcadoo.model.internal.types.PriorityType;
 
 @Service
-public final class PriorityService {
+public final class PriorityServiceImpl implements PriorityService {
 
     @Autowired
     private SessionFactory sessionFactory;
@@ -47,6 +49,7 @@ public final class PriorityService {
     @Autowired
     private EntityService entityService;
 
+    @Override
     public void prioritizeEntity(final InternalDataDefinition dataDefinition, final Object databaseEntity) {
         if (!dataDefinition.isPrioritizable()) {
             return;
@@ -59,6 +62,7 @@ public final class PriorityService {
         entityService.setField(databaseEntity, fieldDefinition, totalNumberOfEntities + 1);
     }
 
+    @Override
     public void deprioritizeEntity(final InternalDataDefinition dataDefinition, final Object databaseEntity) {
         if (!dataDefinition.isPrioritizable()) {
             return;
@@ -75,6 +79,7 @@ public final class PriorityService {
         return ((PriorityType) fieldDefinition.getType()).getScopeFieldDefinition();
     }
 
+    @Override
     public void move(final InternalDataDefinition dataDefinition, final Object databaseEntity, final int position,
             final int offset) {
         FieldDefinition fieldDefinition = dataDefinition.getPriorityField();

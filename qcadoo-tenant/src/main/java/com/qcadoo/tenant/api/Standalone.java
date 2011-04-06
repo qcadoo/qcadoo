@@ -1,4 +1,4 @@
-package com.qcadoo.plugin.api.profile;
+package com.qcadoo.tenant.api;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -41,12 +41,16 @@ import com.qcadoo.plugin.api.Module;
 import com.qcadoo.plugin.api.ModuleFactory;
 import com.qcadoo.plugin.api.Plugin;
 import com.qcadoo.plugin.api.PluginState;
+import com.qcadoo.tenant.api.MultiTenantUtil;
+import com.qcadoo.tenant.internal.DefaultMultiTenantService;
 
 public class ModuleFactoryAccessorTest {
 
     @Test
     public void shouldCallInitOnAllModuleFactories() throws Exception {
         // given
+        new MultiTenantUtil(new DefaultMultiTenantService());
+
         ModuleFactory<?> moduleFactory1 = mock(ModuleFactory.class);
         given(moduleFactory1.getIdentifier()).willReturn("module1");
         ModuleFactory<?> moduleFactory2 = mock(ModuleFactory.class);
@@ -91,10 +95,15 @@ public class ModuleFactoryAccessorTest {
         inOrder.verify(module22).init();
         inOrder.verify(moduleFactory2).postInit();
         inOrder.verify(module111).disableOnStartup();
+        inOrder.verify(module111).multiTenantDisableOnStartup();
         inOrder.verify(module112).disableOnStartup();
+        inOrder.verify(module112).multiTenantDisableOnStartup();
         inOrder.verify(module21).enableOnStartup();
+        inOrder.verify(module21).multiTenantEnableOnStartup();
         inOrder.verify(module12).disableOnStartup();
+        inOrder.verify(module12).multiTenantDisableOnStartup();
         inOrder.verify(module22).enableOnStartup();
+        inOrder.verify(module22).multiTenantEnableOnStartup();
     }
 
     @Test

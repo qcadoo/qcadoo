@@ -49,6 +49,8 @@ import com.qcadoo.plugin.api.PluginInformation;
 import com.qcadoo.plugin.api.PluginState;
 import com.qcadoo.plugin.api.Version;
 import com.qcadoo.plugin.api.VersionOfDependency;
+import com.qcadoo.tenant.api.MultiTenantCallback;
+import com.qcadoo.tenant.api.MultiTenantUtil;
 
 public final class DefaultPlugin implements Plugin {
 
@@ -107,12 +109,30 @@ public final class DefaultPlugin implements Plugin {
         }
 
         if (!hasState(UNKNOWN) && targetState.equals(ENABLED)) {
-            for (Module module : modules) {
+            for (final Module module : modules) {
                 module.enable();
+
+                MultiTenantUtil.doInMultiTenantContext(new MultiTenantCallback() {
+
+                    @Override
+                    public void invoke() {
+                        module.multiTenantEnable();
+                    }
+
+                });
             }
         } else if (!hasState(UNKNOWN) && targetState.equals(DISABLED)) {
-            for (Module module : modules) {
+            for (final Module module : modules) {
                 module.disable();
+
+                MultiTenantUtil.doInMultiTenantContext(new MultiTenantCallback() {
+
+                    @Override
+                    public void invoke() {
+                        module.multiTenantDisable();
+                    }
+
+                });
             }
         }
 

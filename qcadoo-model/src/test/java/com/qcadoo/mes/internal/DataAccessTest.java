@@ -49,11 +49,14 @@ import com.qcadoo.model.api.types.HasManyType;
 import com.qcadoo.model.api.types.TreeType;
 import com.qcadoo.model.internal.DataAccessServiceImpl;
 import com.qcadoo.model.internal.DataDefinitionImpl;
-import com.qcadoo.model.internal.EntityService;
+import com.qcadoo.model.internal.EntityServiceImpl;
 import com.qcadoo.model.internal.FieldDefinitionImpl;
-import com.qcadoo.model.internal.PriorityService;
-import com.qcadoo.model.internal.ValidationService;
+import com.qcadoo.model.internal.PriorityServiceImpl;
+import com.qcadoo.model.internal.ValidationServiceImpl;
 import com.qcadoo.model.internal.api.DataAccessService;
+import com.qcadoo.model.internal.api.EntityService;
+import com.qcadoo.model.internal.api.PriorityService;
+import com.qcadoo.model.internal.api.ValidationService;
 import com.qcadoo.model.internal.types.BelongsToEntityType;
 import com.qcadoo.model.internal.types.BooleanType;
 import com.qcadoo.model.internal.types.DateType;
@@ -126,12 +129,12 @@ public abstract class DataAccessTest {
 
     @Before
     public void superInit() {
-        validationService = new ValidationService();
+        validationService = new ValidationServiceImpl();
 
-        entityService = new EntityService();
+        entityService = new EntityServiceImpl();
         ReflectionTestUtils.setField(entityService, "sessionFactory", sessionFactory);
 
-        priorityService = new PriorityService();
+        priorityService = new PriorityServiceImpl();
         ReflectionTestUtils.setField(priorityService, "entityService", entityService);
         ReflectionTestUtils.setField(priorityService, "sessionFactory", sessionFactory);
 

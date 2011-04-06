@@ -9,6 +9,7 @@
 	<packaging>pom</packaging>
 
 	<modules>
+		<module>qcadoo-tenant</module>
 		<module>qcadoo-plugin</module>
 		<module>qcadoo-localization</module>
 		<module>qcadoo-security</module>

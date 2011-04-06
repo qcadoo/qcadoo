@@ -61,7 +61,7 @@ import com.qcadoo.model.internal.ProxyEntity;
 import com.qcadoo.model.internal.types.IntegerType;
 import com.qcadoo.model.internal.types.StringType;
 
-public class EntityServiceTest extends DataAccessTest {
+public class EntityServiceImplTest extends DataAccessTest {
 
     @Test(expected = IllegalStateException.class)
     public void shouldThrownAnExceptionWhileGettingNotExistingField() throws Exception {

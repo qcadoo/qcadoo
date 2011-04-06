@@ -37,11 +37,15 @@ import com.qcadoo.plugin.api.Module;
 import com.qcadoo.plugin.api.ModuleFactory;
 import com.qcadoo.plugin.api.Plugin;
 import com.qcadoo.plugin.api.PluginState;
+import com.qcadoo.tenant.api.MultiTenantUtil;
+import com.qcadoo.tenant.internal.DefaultMultiTenantService;
 
 public class PluginChangeStateToTest {
 
     @Test
     public void shouldChangeState() throws Exception {
+        new MultiTenantUtil(new DefaultMultiTenantService());
+
         assertOperationNotSupported(null, PluginState.UNKNOWN);
         assertOperationSupported(null, PluginState.TEMPORARY, false, false);
         assertOperationSupported(null, PluginState.ENABLING, false, false);
@@ -113,17 +117,18 @@ public class PluginChangeStateToTest {
 
         if (callEnable) {
             verify(module1).enable();
+            verify(module1).multiTenantEnable();
             verify(module2).enable();
         } else {
             verify(module1, never()).enable();
-            verify(module2, never()).enable();
+            verify(module2, never()).multiTenantEnable();
         }
         if (callDisable) {
             verify(module1).disable();
-            verify(module2).disable();
+            verify(module2).multiTenantDisable();
         } else {
             verify(module1, never()).disable();
-            verify(module2, never()).disable();
+            verify(module2, never()).multiTenantDisable();
         }
     }
 

@@ -33,6 +33,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.internal.api.InternalDataDefinitionService;
 import com.qcadoo.plugin.api.PluginManager;
+import com.qcadoo.tenant.api.MultiTenantUtil;
+import com.qcadoo.tenant.internal.DefaultMultiTenantService;
 
 public abstract class IntegrationTest {
 
@@ -62,6 +64,8 @@ public abstract class IntegrationTest {
 
     @BeforeClass
     public static void classInit() throws Exception {
+        new MultiTenantUtil(new DefaultMultiTenantService());
+
         applicationContext = new ClassPathXmlApplicationContext();
         applicationContext.getEnvironment().setActiveProfiles("standalone");
         applicationContext.setConfigLocation("spring.xml");

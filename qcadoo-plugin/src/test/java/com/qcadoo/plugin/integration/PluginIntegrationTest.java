@@ -51,6 +51,8 @@ import com.qcadoo.plugin.api.Version;
 import com.qcadoo.plugin.api.artifact.JarPluginArtifact;
 import com.qcadoo.plugin.internal.api.PluginDescriptorResolver;
 import com.qcadoo.plugin.internal.api.PluginFileManager;
+import com.qcadoo.tenant.api.MultiTenantUtil;
+import com.qcadoo.tenant.internal.DefaultMultiTenantService;
 
 public class PluginIntegrationTest {
 
@@ -71,6 +73,8 @@ public class PluginIntegrationTest {
 
     @Before
     public void init() throws Exception {
+        new MultiTenantUtil(new DefaultMultiTenantService());
+
         new File("target/plugins").mkdir();
         new File("target/tmpPlugins").mkdir();
 

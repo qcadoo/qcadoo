@@ -18,7 +18,12 @@ public class MenuCategoryModule extends Module {
     }
 
     @Override
-    public void init() {
+    public void multiTenantEnableOnStartup() {
+        multiTenantEnable();
+    }
+
+    @Override
+    public void multiTenantEnable() {
         menuService.createCategoryIfNotExists(pluginIdentifier, menuCategoryName);
     }
 

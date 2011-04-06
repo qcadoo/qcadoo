@@ -37,12 +37,14 @@ import com.qcadoo.model.api.types.HasManyType;
 import com.qcadoo.model.api.types.TreeType;
 import com.qcadoo.model.internal.api.InternalDataDefinition;
 import com.qcadoo.model.internal.api.InternalFieldDefinition;
+import com.qcadoo.model.internal.api.ValidationService;
 import com.qcadoo.model.internal.api.ValueAndError;
 import com.qcadoo.model.internal.types.PasswordType;
 
 @Service
-public final class ValidationService {
+public final class ValidationServiceImpl implements ValidationService {
 
+    @Override
     public void validateGenericEntity(final InternalDataDefinition dataDefinition, final Entity genericEntity,
             final Entity existingGenericEntity) {
 

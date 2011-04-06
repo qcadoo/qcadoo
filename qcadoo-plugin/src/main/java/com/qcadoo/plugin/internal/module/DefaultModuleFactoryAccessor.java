@@ -33,6 +33,8 @@ import com.qcadoo.plugin.api.ModuleFactory;
 import com.qcadoo.plugin.api.Plugin;
 import com.qcadoo.plugin.api.PluginState;
 import com.qcadoo.plugin.internal.api.ModuleFactoryAccessor;
+import com.qcadoo.tenant.api.MultiTenantCallback;
+import com.qcadoo.tenant.api.MultiTenantUtil;
 
 public final class DefaultModuleFactoryAccessor implements ModuleFactoryAccessor {
 
@@ -54,11 +56,29 @@ public final class DefaultModuleFactoryAccessor implements ModuleFactoryAccessor
 
         for (ModuleFactory<?> moduleFactory : moduleFactoryRegistry.values()) {
             for (Plugin plugin : plugins) {
-                for (Module module : plugin.getModules(moduleFactory)) {
+                for (final Module module : plugin.getModules(moduleFactory)) {
                     if (plugin.hasState(PluginState.ENABLED) || plugin.hasState(PluginState.ENABLING)) {
                         module.enableOnStartup();
+
+                        MultiTenantUtil.doInMultiTenantContext(new MultiTenantCallback() {
+
+                            @Override
+                            public void invoke() {
+                                module.multiTenantEnableOnStartup();
+                            }
+
+                        });
                     } else {
                         module.disableOnStartup();
+
+                        MultiTenantUtil.doInMultiTenantContext(new MultiTenantCallback() {
+
+                            @Override
+                            public void invoke() {
+                                module.multiTenantDisableOnStartup();
+                            }
+
+                        });
                     }
                 }
             }

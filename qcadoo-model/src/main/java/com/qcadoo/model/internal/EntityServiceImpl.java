@@ -39,12 +39,13 @@ import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.types.BelongsToType;
 import com.qcadoo.model.api.types.HasManyType;
 import com.qcadoo.model.api.types.TreeType;
+import com.qcadoo.model.internal.api.EntityService;
 import com.qcadoo.model.internal.api.InternalDataDefinition;
 import com.qcadoo.model.internal.api.InternalFieldDefinition;
 import com.qcadoo.model.internal.types.PasswordType;
 
 @Service
-public final class EntityService {
+public final class EntityServiceImpl implements EntityService {
 
     @Autowired
     private SessionFactory sessionFactory;
@@ -52,16 +53,17 @@ public final class EntityService {
     @Autowired
     private ExpressionService expressionService;
 
-    public static final String FIELD_ID = "id";
-
+    @Override
     public Long getId(final Object databaseEntity) {
         return (Long) getField(databaseEntity, FIELD_ID);
     }
 
+    @Override
     public void setId(final Object databaseEntity, final Long id) {
         setField(databaseEntity, FIELD_ID, id);
     }
 
+    @Override
     public void setField(final Object databaseEntity, final FieldDefinition fieldDefinition, final Object value) {
         if (!((InternalFieldDefinition) fieldDefinition).isEnabled()) {
             return;
@@ -95,6 +97,7 @@ public final class EntityService {
         return sessionFactory.getCurrentSession().load(referencedClass, id);
     }
 
+    @Override
     public Object getField(final Object databaseEntity, final FieldDefinition fieldDefinition) {
         if (!((InternalFieldDefinition) fieldDefinition).isEnabled()) {
             return null;
@@ -109,6 +112,7 @@ public final class EntityService {
         }
     }
 
+    @Override
     public Entity convertToGenericEntity(final InternalDataDefinition dataDefinition, final Object databaseEntity) {
         Entity genericEntity = dataDefinition.create(getId(databaseEntity));
 
@@ -137,6 +141,7 @@ public final class EntityService {
         return genericEntity;
     }
 
+    @Override
     public Object convertToDatabaseEntity(final InternalDataDefinition dataDefinition, final Entity genericEntity,
             final Object existingDatabaseEntity) {
         Object databaseEntity = getDatabaseEntity(dataDefinition, genericEntity, existingDatabaseEntity);

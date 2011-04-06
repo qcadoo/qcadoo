@@ -71,9 +71,12 @@ import com.qcadoo.model.api.types.HasManyType;
 import com.qcadoo.model.api.types.TreeType;
 import com.qcadoo.model.api.validators.ErrorMessage;
 import com.qcadoo.model.internal.api.DataAccessService;
+import com.qcadoo.model.internal.api.EntityService;
 import com.qcadoo.model.internal.api.InternalDataDefinition;
+import com.qcadoo.model.internal.api.PriorityService;
+import com.qcadoo.model.internal.api.ValidationService;
 import com.qcadoo.model.internal.search.SearchResultImpl;
-import com.qcadoo.plugin.api.profile.Standalone;
+import com.qcadoo.tenant.api.Standalone;
 
 @Service
 @Standalone
@@ -686,6 +689,26 @@ public class DataAccessServiceImpl implements DataAccessService {
             genericEntityToSave.addError(dataDefinition.getField(error.getKey()), error.getValue().getMessage(), error.getValue()
                     .getVars());
         }
+    }
+
+    protected void setEntityService(final EntityService entityService) {
+        this.entityService = entityService;
+    }
+
+    protected void setExpressionService(final ExpressionService expressionService) {
+        this.expressionService = expressionService;
+    }
+
+    protected void setPriorityService(final PriorityService priorityService) {
+        this.priorityService = priorityService;
+    }
+
+    protected void setSessionFactory(final SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
+
+    protected void setValidationService(final ValidationService validationService) {
+        this.validationService = validationService;
     }
 
 }

@@ -46,4 +46,20 @@ public abstract class Module {
         // empty
     }
 
+    public void multiTenantEnableOnStartup() {
+        // empty
+    }
+
+    public void multiTenantEnable() {
+        // empty
+    }
+
+    public void multiTenantDisable() {
+        // empty
+    }
+
+    public void multiTenantDisableOnStartup() {
+        // empty
+    }
+
 }
