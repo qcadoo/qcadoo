@@ -1,4 +1,4 @@
-package com.qcadoo.maven.plugin;
+package com.qcadoo.maven.plugins;
 
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;

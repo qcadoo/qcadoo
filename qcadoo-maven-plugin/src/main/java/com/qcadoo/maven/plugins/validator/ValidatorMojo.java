@@ -20,13 +20,13 @@ import org.apache.commons.io.IOUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.JDOMException;
+import org.jdom.input.SAXBuilder;
 import org.xml.sax.SAXException;
 
-import com.qcadoo.maven.plugin.SimpleErrorHandler;
+import com.qcadoo.maven.plugins.SimpleErrorHandler;
 
 /**
  * 
@@ -86,72 +86,48 @@ public class ValidatorMojo extends AbstractMojo {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private Set<String> getViewResources(final String pluginDescriptor, final String type) {
         Set<String> resources = new HashSet<String>();
 
         try {
-            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            DocumentBuilder db;
-            db = dbf.newDocumentBuilder();
-            Document doc = db.parse(new File(pluginDescriptor));
-            doc.getDocumentElement().normalize();
+            Document document = new SAXBuilder().build(new File(pluginDescriptor));
 
-            NodeList nList = doc.getElementsByTagName("plugin");
+            String pluginName = document.getRootElement().getAttributeValue("plugin");
 
-            String pluginName = ((Element) nList.item(0)).getAttribute("plugin");
+            List<Element> elements = document.getRootElement().getChild("modules").getChildren("view:" + type);
 
-            nList = doc.getElementsByTagName("view:" + type);
-
-            for (int i = 0; i < nList.getLength(); i++) {
-                Node nNode = nList.item(i);
-                if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-                    NodeList nNodeList = nNode.getChildNodes();
-                    for (int j = 0; j < nNodeList.getLength(); j++) {
-                        if (nNodeList.item(j).getNodeType() == Node.ELEMENT_NODE) {
-                            resources.add(basedir + resourcePath + pluginName + "/" + nNodeList.item(j).getTextContent());
-                        }
-                    }
+            for (Element element : elements) {
+                for (Element resource : (List<Element>) element.getChildren()) {
+                    resources.add(basedir + resourcePath + pluginName + "/" + resource.getTextTrim());
                 }
             }
-        } catch (ParserConfigurationException e) {
-            getLog().error(e.getMessage());
-        } catch (SAXException e) {
-            getLog().error(e.getMessage());
         } catch (IOException e) {
+            getLog().error(e.getMessage());
+        } catch (JDOMException e) {
             getLog().error(e.getMessage());
         }
 
         return resources;
     }
 
+    @SuppressWarnings("unchecked")
     private Set<String> getModelResources(final String pluginDescriptor) {
         Set<String> resources = new HashSet<String>();
 
         try {
-            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            DocumentBuilder db;
-            db = dbf.newDocumentBuilder();
-            Document doc = db.parse(new File(pluginDescriptor));
-            doc.getDocumentElement().normalize();
+            Document document = new SAXBuilder().build(new File(pluginDescriptor));
 
-            NodeList nList = doc.getElementsByTagName("plugin");
+            String pluginName = document.getRootElement().getAttributeValue("plugin");
 
-            String pluginName = ((Element) nList.item(0)).getAttribute("plugin");
+            List<Element> elements = document.getRootElement().getChild("modules").getChildren("model:model");
 
-            nList = doc.getElementsByTagName("model:model");
-
-            for (int i = 0; i < nList.getLength(); i++) {
-                Node nNode = nList.item(i);
-                if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-                    Element eElement = (Element) nNode;
-                    resources.add(basedir + resourcePath + pluginName + "/" + eElement.getAttribute("resource"));
-                }
+            for (Element element : elements) {
+                resources.add(basedir + resourcePath + pluginName + "/" + element.getAttributeValue("resource"));
             }
-        } catch (ParserConfigurationException e) {
-            getLog().error(e.getMessage());
-        } catch (SAXException e) {
-            getLog().error(e.getMessage());
         } catch (IOException e) {
+            getLog().error(e.getMessage());
+        } catch (JDOMException e) {
             getLog().error(e.getMessage());
         }
 
