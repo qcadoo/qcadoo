@@ -19,8 +19,8 @@
 	<information>
 		<name>${name}</name>
 		<vendor>
-			<name>Qcadoo Limited</name>
-			<url>http://www.qcadoo.com/</url>
+			<name>${vendorName}</name>
+			<url>${vendorUrl}</url>
 		</vendor>
 	</information>
 

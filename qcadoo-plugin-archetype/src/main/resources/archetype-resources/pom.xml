@@ -3,18 +3,11 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>com.qcadoo.mes</groupId>
-		<artifactId>mes-plugins</artifactId>
-		<version>${version}</version>
-	</parent>
-
 	<artifactId>${artifactId}</artifactId>
-
 	<groupId>${groupId}</groupId>
 	<packaging>qcadoo-plugin</packaging>
-
-	<name>Qcadoo MES :: Plugins :: ${name}</name>
+	<name>${name}</name>
+	<version>${version}</version>
 	
 	<build>
 		<plugins>
@@ -26,8 +19,6 @@
 			</plugin>
 		</plugins>
 	</build>
-	
-	<version>${version}</version>
 	
 </project>
 
