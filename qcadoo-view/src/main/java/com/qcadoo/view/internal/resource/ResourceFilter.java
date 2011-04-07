@@ -39,7 +39,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-
 public final class ResourceFilter implements Filter {
 
     private boolean useJarStaticResources;
