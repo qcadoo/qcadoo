@@ -36,7 +36,7 @@ import com.qcadoo.plugin.api.PluginManager;
 
 public abstract class IntegrationTest {
 
-    protected static String PLUGIN_PRODUCTS_NAME = "products";
+    protected static String PLUGIN_PRODUCTS_NAME = "basic";
 
     protected static String PLUGIN_MACHINES_NAME = "machines";
 
