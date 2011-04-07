@@ -15,11 +15,11 @@ public class ViewModule extends Module {
 
     private final InternalViewDefinitionService viewDefinitionService;
 
-    private final List<Resource> xmlFiles;
+    private final Resource xmlFile;
 
-    public ViewModule(final List<Resource> xmlFiles, final ViewDefinitionParser viewDefinitionParser,
+    public ViewModule(final Resource xmlFile, final ViewDefinitionParser viewDefinitionParser,
             final InternalViewDefinitionService viewDefinitionService) {
-        this.xmlFiles = xmlFiles;
+        this.xmlFile = xmlFile;
         this.viewDefinitionParser = viewDefinitionParser;
         this.viewDefinitionService = viewDefinitionService;
     }
@@ -31,21 +31,17 @@ public class ViewModule extends Module {
 
     @Override
     public void enable() {
-        for (Resource xmlFile : xmlFiles) {
-            List<ViewDefinition> viewDefinitions = viewDefinitionParser.parseViewXml(xmlFile);
-            for (ViewDefinition viewDefinition : viewDefinitions) {
-                viewDefinitionService.save(viewDefinition);
-            }
+        List<ViewDefinition> viewDefinitions = viewDefinitionParser.parseViewXml(xmlFile);
+        for (ViewDefinition viewDefinition : viewDefinitions) {
+            viewDefinitionService.save(viewDefinition);
         }
     }
 
     @Override
     public void disable() {
-        for (Resource xmlFile : xmlFiles) {
-            List<ViewDefinition> viewDefinitions = viewDefinitionParser.parseViewXml(xmlFile);
-            for (ViewDefinition viewDefinition : viewDefinitions) {
-                viewDefinitionService.delete(viewDefinition);
-            }
+        List<ViewDefinition> viewDefinitions = viewDefinitionParser.parseViewXml(xmlFile);
+        for (ViewDefinition viewDefinition : viewDefinitions) {
+            viewDefinitionService.delete(viewDefinition);
         }
     }
 

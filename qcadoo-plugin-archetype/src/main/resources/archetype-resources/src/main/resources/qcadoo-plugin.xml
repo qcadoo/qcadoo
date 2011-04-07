@@ -35,11 +35,13 @@
 		<view:menu-item name="${identifier}" category="${identifier}"
 			view="${identifier}" />
 
+		<view:view resource="view/${identifier}.xml" /><!--
+
 		<view:view>
 			<view:resource>view/${identifier}.xml</view:resource>
 		</view:view>
 		
-		<view:resource uri="public/**/*" />
+		--><view:resource uri="public/**/*" />
 
 	</modules>
 
