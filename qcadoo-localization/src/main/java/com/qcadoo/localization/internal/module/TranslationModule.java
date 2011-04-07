@@ -50,7 +50,7 @@ public class TranslationModule extends Module {
             basenames.add("classpath:" + pluginIdentifier + "/" + path + "/" + basename);
         }
 
-        translationModuleService.addTranslationModul(basenames);
+        translationModuleService.addTranslationModule(basenames);
     }
 
     @Override
