@@ -62,6 +62,7 @@
 					<bean class="com.qcadoo.model.internal.module.FieldModuleFactory" />
 					<bean class="com.qcadoo.model.internal.module.HookModuleFactory" />
 					<bean class="com.qcadoo.model.internal.module.HibernateModuleFactory" />
+					<bean class="com.qcadoo.model.internal.module.EnumValueModuleFactory" />
 					<bean class="com.qcadoo.model.internal.module.DictionaryModuleFactory" />
 					<bean class="com.qcadoo.localization.internal.module.LocaleModuleFactory" />
 					<bean class="com.qcadoo.localization.internal.module.TranslationGroupModuleFactory" />

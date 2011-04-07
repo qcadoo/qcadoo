@@ -24,6 +24,7 @@
 
 package com.qcadoo.model.internal.types;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -46,7 +47,11 @@ public final class EnumType implements EnumeratedType {
     public EnumType(final TranslationService translationService, final String translationPath, final String... keys) {
         this.translationService = translationService;
         this.translationPath = translationPath;
-        this.keys = Arrays.asList(keys);
+        this.keys = new ArrayList<String>(Arrays.asList(keys));
+    }
+
+    public List<String> getKeys() {
+        return keys;
     }
 
     @Override

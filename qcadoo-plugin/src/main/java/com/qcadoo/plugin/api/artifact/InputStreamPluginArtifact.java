@@ -26,13 +26,21 @@ package com.qcadoo.plugin.api.artifact;
 
 import java.io.InputStream;
 
-
+/**
+ * Plugin artifact build on raw input stream.
+ */
 public class InputStreamPluginArtifact implements PluginArtifact {
 
     private final String name;
 
     private final InputStream inputStream;
 
+    /**
+     * @param name
+     *            name of the plugin
+     * @param inputStream
+     *            input stream
+     */
     public InputStreamPluginArtifact(final String name, final InputStream inputStream) {
         this.name = name;
         this.inputStream = inputStream;

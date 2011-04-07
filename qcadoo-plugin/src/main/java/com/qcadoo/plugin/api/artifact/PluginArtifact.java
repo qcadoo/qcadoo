@@ -26,10 +26,19 @@ package com.qcadoo.plugin.api.artifact;
 
 import java.io.InputStream;
 
+/**
+ * Abstraction which represents location of the plugin.
+ */
 public interface PluginArtifact {
 
+    /**
+     * @return name of the plugin, will be used to create filename
+     */
     String getName();
 
+    /**
+     * @return stream containing the jar with plugin
+     */
     InputStream getInputStream();
 
 }

@@ -18,6 +18,7 @@ import org.springframework.util.ReflectionUtils;
 
 /**
  * @goal jetty
+ * @requiresDependencyResolution runtime
  * @execute phase="test-compile"
  */
 public class JettyMojo extends JettyRunMojo {
@@ -74,19 +75,50 @@ public class JettyMojo extends JettyRunMojo {
      * @parameter expression="${project}"
      * @readonly
      */
-    private MavenProject project2;
+    private MavenProject _project;
 
     /**
-     * @parameter expression="${basedir}"
+     * @parameter expression="${maven.war.webxml}"
      * @readonly
      */
-    private String basedir;
+    private String _webXml;
+
+    /**
+     * @parameter expression="${project.build.outputDirectory}"
+     * @required
+     */
+    private File _classesDirectory;
+
+    /**
+     * @parameter expression="${maven.war.src}"
+     * @readonly
+     */
+    private File _webAppSourceDirectory;
+
+    /**
+     * @parameter expression="${plugin.artifacts}"
+     * @readonly
+     */
+    @SuppressWarnings("rawtypes")
+    private List _pluginArtifacts;
+
+    /**
+     * @parameter expression="${project.build.directory}/tmp"
+     * @readonly
+     */
+    protected File _tmpDirectory;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         setField("scanTargets", new File[] { jdbcDriver });
-        setField("project", project2);
+        setField("project", _project);
+        setField("webXml", _webXml);
+        setField("classesDirectory", _classesDirectory);
+        setField("webAppSourceDirectory", _webAppSourceDirectory);
+        setField("pluginArtifacts", _pluginArtifacts);
         setField("reload", "automatic");
+        setField("contextPath", "/");
+        setField("tmpDirectory", _tmpDirectory);
         setField("scanIntervalSeconds", 0);
 
         logs.mkdirs();
@@ -111,7 +143,7 @@ public class JettyMojo extends JettyRunMojo {
             resources.add(Resource.newResource(webapp.getAbsolutePath()));
             resources.add(Resource.newResource("${basedir}/../../../qcadoo/qcadoo-view/src/main/resources"));
             resources.add(Resource.newResource("${basedir}/../../mes-plugins/mes-plugins-plugin-management/src/main/resources"));
-            resources.add(Resource.newResource("${basedir}/../../mes-plugins/mes-plugins-products/src/main/resources"));
+            resources.add(Resource.newResource("${basedir}/../../mes-plugins/mes-plugins-technologies/src/main/resources"));
             webAppConfig.setBaseResource(new ResourceCollection(resources.toArray(new Resource[resources.size()])));
         } catch (Exception e) {
             throw new MojoExecutionException(e.getMessage(), e);
