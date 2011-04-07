@@ -2,11 +2,9 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
 	targetNamespace="http://schema.qcadoo.org/modules/view" xmlns="http://schema.qcadoo.org/modules/view" elementFormDefault="qualified">
 
-	<xs:element name="view">
+	<xs:element name="view" >
 		<xs:complexType>
-			<xs:sequence>
-				<xs:element name="resource" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-			</xs:sequence>
+			<xs:attribute name="resource" type="xs:string" use="required" />
 		</xs:complexType>
 	</xs:element>
 	
