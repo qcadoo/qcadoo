@@ -95,11 +95,13 @@ public class ValidatorMojo extends AbstractMojo {
 
             String pluginName = document.getRootElement().getAttributeValue("plugin");
 
-            List<Element> elements = document.getRootElement().getChild("modules").getChildren("view:" + type);
+            if (document.getRootElement().getChild("modules", null) != null) {
+                List<Element> elements = document.getRootElement().getChild("modules", null).getChildren(type, null);
 
-            for (Element element : elements) {
-                for (Element resource : (List<Element>) element.getChildren()) {
-                    resources.add(basedir + resourcePath + pluginName + "/" + resource.getTextTrim());
+                for (Element element : elements) {
+                    for (Element resource : (List<Element>) element.getChildren()) {
+                        resources.add(basedir + resourcePath + pluginName + "/" + resource.getTextTrim());
+                    }
                 }
             }
         } catch (IOException e) {
@@ -120,10 +122,12 @@ public class ValidatorMojo extends AbstractMojo {
 
             String pluginName = document.getRootElement().getAttributeValue("plugin");
 
-            List<Element> elements = document.getRootElement().getChild("modules").getChildren("model:model");
+            if (document.getRootElement().getChild("modules", null) != null) {
+                List<Element> elements = document.getRootElement().getChild("modules", null).getChildren("model", null);
 
-            for (Element element : elements) {
-                resources.add(basedir + resourcePath + pluginName + "/" + element.getAttributeValue("resource"));
+                for (Element element : elements) {
+                    resources.add(basedir + resourcePath + pluginName + "/" + element.getAttributeValue("resource"));
+                }
             }
         } catch (IOException e) {
             getLog().error(e.getMessage());
