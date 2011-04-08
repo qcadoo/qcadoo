@@ -58,6 +58,10 @@ public class SecurityServiceImpl implements SecurityService, UserDetailsService,
     @Override
     @Monitorable
     public String getCurrentUserName() {
+        if (SecurityContextHolder.getContext() == null || SecurityContextHolder.getContext().getAuthentication() == null
+                || SecurityContextHolder.getContext().getAuthentication().getName() == null) {
+            return null;
+        }
         String login = SecurityContextHolder.getContext().getAuthentication().getName();
         Entity entity = getUserEntity(SecurityContextHolder.getContext().getAuthentication().getName());
         checkNotNull(entity, "Current user with login %s cannot be found", login);

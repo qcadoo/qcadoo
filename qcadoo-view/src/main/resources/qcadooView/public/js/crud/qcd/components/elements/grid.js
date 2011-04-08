@@ -391,6 +391,7 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 				$("#gs_"+filterIndex).val(currentState.filters[filterIndex]);
 			}
 			findMatchingPredefiniedFilter();
+			onFiltersStateChange();
 		}
 		
 		if (state.newButtonClickedBefore) {
@@ -494,7 +495,9 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 			}
 		}
 		
-		if (value.isEditable != undefined && value.isEditable != null) {
+		if (currentState.isEditable == false) {
+			this.setComponentEditable(false);
+		} else if (value.isEditable != undefined && value.isEditable != null) {
 			this.setComponentEditable(value.isEditable);
 		}
 		
