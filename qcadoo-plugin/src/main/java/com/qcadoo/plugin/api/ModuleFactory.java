@@ -26,12 +26,10 @@ package com.qcadoo.plugin.api;
 
 import org.jdom.Element;
 
-import com.qcadoo.plugin.internal.api.InternalPlugin;
-
 /**
  * Factory is responsible for parsing descriptors and creating instances of {@link Module}.
  * 
- * @see InternalPlugin for plugin lifecycle
+ * @see Plugin for plugin lifecycle
  */
 public abstract class ModuleFactory<T extends Module> {
 

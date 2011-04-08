@@ -24,13 +24,11 @@
 
 package com.qcadoo.plugin.api;
 
-import com.qcadoo.plugin.internal.api.InternalPlugin;
-
 /**
- * Module is a part of {@link InternalPlugin} and represents some functionality, e.g. model, view, field, etc. Modules are instantiated by
+ * Module is a part of {@link Plugin} and represents some functionality, e.g. model, view, field, etc. Modules are instantiated by
  * {@link ModuleFactory}.
  * 
- * @see InternalPlugin for plugins and modules lifecycle
+ * @see Plugin for plugins and modules lifecycle
  */
 public class Module {
 
