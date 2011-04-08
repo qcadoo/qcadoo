@@ -26,7 +26,7 @@ import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 import org.xml.sax.SAXException;
 
-import com.qcadoo.maven.plugins.SimpleErrorHandler;
+import com.qcadoo.plugin.api.ValidationErrorHandler;
 
 /**
  * 
@@ -37,7 +37,7 @@ import com.qcadoo.maven.plugins.SimpleErrorHandler;
 public class ValidatorMojo extends AbstractMojo {
 
     /**
-     * @parameter expression="${validate.viewXmlPath}" default-value="/src/main/java/"
+     * @parameter expression="${validate.javaSourcePath}" default-value="/src/main/java/"
      * @required
      * @readonly
      */
@@ -149,7 +149,7 @@ public class ValidatorMojo extends AbstractMojo {
             factory.setAttribute("http://java.sun.com/xml/jaxp/properties/schemaLanguage", "http://www.w3.org/2001/XMLSchema");
 
             DocumentBuilder parser = factory.newDocumentBuilder();
-            parser.setErrorHandler(new SimpleErrorHandler());
+            parser.setErrorHandler(new ValidationErrorHandler());
             parser.parse(new File(file));
 
         } catch (ParserConfigurationException e) {
@@ -199,11 +199,12 @@ public class ValidatorMojo extends AbstractMojo {
 
         InputStream in = null;
         InputStreamReader isr = null;
+        BufferedReader data = null;
 
         try {
             in = new FileInputStream(file);
             isr = new InputStreamReader(in);
-            BufferedReader data = new BufferedReader(isr);
+            data = new BufferedReader(isr);
             String line = null;
 
             while ((line = data.readLine()) != null) {
@@ -213,14 +214,14 @@ public class ValidatorMojo extends AbstractMojo {
                 }
             }
 
-            IOUtils.closeQuietly(in);
-            IOUtils.closeQuietly(isr);
-            IOUtils.closeQuietly(data);
-
         } catch (FileNotFoundException e) {
             getLog().error(e.getMessage());
         } catch (IOException e) {
             getLog().error(e.getMessage());
+        } finally {
+            IOUtils.closeQuietly(in);
+            IOUtils.closeQuietly(isr);
+            IOUtils.closeQuietly(data);
         }
     }
 }
