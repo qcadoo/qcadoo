@@ -376,11 +376,11 @@ public class FormComponentState extends AbstractContainerState {
                 return;
             }
 
-            Entity copiedEntity = getDataDefinition().copy(entityId);
+            List<Entity> copiedEntities = getDataDefinition().copy(entityId);
 
-            if (copiedEntity.getId() != null) {
+            if (copiedEntities.size() > 0 && copiedEntities.get(0).getId() != null) {
                 clear(args);
-                setEntityId(copiedEntity.getId());
+                setEntityId(copiedEntities.get(0).getId());
                 initialize(args);
                 addMessage(translateMessage("copyMessage"), MessageType.SUCCESS);
             } else {

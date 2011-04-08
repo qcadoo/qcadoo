@@ -33,7 +33,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -101,23 +100,13 @@ public final class DataDefinitionImpl implements InternalDataDefinition {
     }
 
     @Override
-    public Entity copy(final Long id) {
+    public List<Entity> copy(final Long... id) {
         return dataAccessService.copy(this, id);
     }
 
     @Override
-    public Set<Long> copy(final Set<Long> id) {
-        return dataAccessService.copy(this, id);
-    }
-
-    @Override
-    public void delete(final Long id) {
+    public void delete(final Long... id) {
         dataAccessService.delete(this, id);
-    }
-
-    @Override
-    public void delete(final Set<Long> id) {
-        dataAccessService.delete(this, id.toArray(new Long[id.size()]));
     }
 
     @Override

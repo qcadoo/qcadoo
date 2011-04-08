@@ -283,34 +283,28 @@ public class DataAccessServiceImpl implements DataAccessService {
     @Override
     @Transactional
     @Monitorable
-    public Entity copy(final InternalDataDefinition dataDefinition, final Long entityId) {
-        Entity sourceEntity = get(dataDefinition, entityId);
-        Entity targetEntity = copy(dataDefinition, sourceEntity);
-
-        if (targetEntity == null) {
-            throw new IllegalStateException("Cannot copy " + sourceEntity);
-        }
-
-        LOG.info(sourceEntity + " has been copied to " + targetEntity);
-
-        targetEntity = save(dataDefinition, targetEntity);
-
-        if (!targetEntity.isValid()) {
-            throw new CopyException(targetEntity);
-        }
-
-        return targetEntity;
-    }
-
-    @Override
-    @Transactional
-    @Monitorable
-    public Set<Long> copy(final InternalDataDefinition dataDefinition, final Set<Long> entityIds) {
-        Set<Long> copiedIds = new HashSet<Long>();
+    public List<Entity> copy(final InternalDataDefinition dataDefinition, final Long... entityIds) {
+        List<Entity> copiedEntities = new ArrayList<Entity>();
         for (Long entityId : entityIds) {
-            copiedIds.add(copy(dataDefinition, entityId).getId());
+            Entity sourceEntity = get(dataDefinition, entityId);
+            Entity targetEntity = copy(dataDefinition, sourceEntity);
+
+            if (targetEntity == null) {
+                throw new IllegalStateException("Cannot copy " + sourceEntity);
+            }
+
+            LOG.info(sourceEntity + " has been copied to " + targetEntity);
+
+            targetEntity = save(dataDefinition, targetEntity);
+
+            if (!targetEntity.isValid()) {
+                throw new CopyException(targetEntity);
+            }
+
+            copiedEntities.add(targetEntity);
         }
-        return copiedIds;
+
+        return copiedEntities;
     }
 
     public Entity copy(final InternalDataDefinition dataDefinition, final Entity sourceEntity) {

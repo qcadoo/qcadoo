@@ -24,8 +24,8 @@
 
 package com.qcadoo.model.api;
 
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.qcadoo.model.api.search.SearchCriteriaBuilder;
 
@@ -68,15 +68,7 @@ public interface DataDefinition {
      *            id
      * @return entity
      */
-    Entity copy(final Long id);
-
-    /**
-     * Copy set of entities related with this data definition.
-     * 
-     * @param id
-     *            set of id
-     */
-    Set<Long> copy(final Set<Long> id);
+    List<Entity> copy(final Long... id);
 
     /**
      * Delete the entity related with this data definition, by its id.
@@ -84,15 +76,7 @@ public interface DataDefinition {
      * @param id
      *            id
      */
-    void delete(final Long id);
-
-    /**
-     * Delete set of entities related with this data definition, by its id.
-     * 
-     * @param id
-     *            set of id
-     */
-    void delete(final Set<Long> id);
+    void delete(final Long... id);
 
     /**
      * Save the entity related with this data definition.
