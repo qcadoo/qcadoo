@@ -27,7 +27,7 @@ package com.qcadoo.plugin.api;
 import org.jdom.Element;
 
 /**
- * Factory is responsible for parsing descriptors and creating instances of {@link Module}.
+ * Factory responsible for parsing descriptors and creating instances of {@link Module}.
  * 
  * @see Plugin plugins and modules lifecycle
  */
