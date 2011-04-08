@@ -28,15 +28,13 @@ public class ViewRibbonModule extends Module {
 
     private Map<WindowComponentPattern, RibbonGroup> addedGroups;
 
-    public ViewRibbonModule(final List<Resource> xmlFiles, final InternalViewDefinitionService viewDefinitionService,
+    public ViewRibbonModule(final Resource xmlFile, final InternalViewDefinitionService viewDefinitionService,
             final ViewDefinitionParser viewDefinitionParser) {
         this.viewDefinitionService = viewDefinitionService;
         this.viewDefinitionParser = viewDefinitionParser;
         viewExtensions = new LinkedList<ViewExtension>();
         try {
-            for (Resource xmlFile : xmlFiles) {
-                viewExtensions.addAll(viewDefinitionParser.getViewExtensionNodes(xmlFile.getInputStream(), "ribbonExtension"));
-            }
+            viewExtensions.addAll(viewDefinitionParser.getViewExtensionNodes(xmlFile.getInputStream(), "ribbonExtension"));
         } catch (IOException e) {
             throw new IllegalStateException(e.getMessage(), e);
         }

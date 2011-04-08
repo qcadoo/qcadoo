@@ -10,17 +10,13 @@
 	
 	<xs:element name="viewRibbonExtension">
 		<xs:complexType>
-			<xs:sequence>
-				<xs:element name="resource" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-			</xs:sequence>
+			<xs:attribute name="resource" type="xs:string" use="required" />
 		</xs:complexType>
 	</xs:element>
 	
 	<xs:element name="viewWindowTabExtension">
 		<xs:complexType>
-			<xs:sequence>
-				<xs:element name="resource" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
-			</xs:sequence>
+			<xs:attribute name="resource" type="xs:string" use="required" />
 		</xs:complexType>
 	</xs:element>
 	
