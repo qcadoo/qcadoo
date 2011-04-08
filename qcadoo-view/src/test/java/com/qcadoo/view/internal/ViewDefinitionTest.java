@@ -31,7 +31,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -245,10 +244,10 @@ public class ViewDefinitionTest extends AbstractPatternTest {
         viewDefinition.performEvent(json, Locale.ENGLISH);
 
         // then
-        verify(preInitializeHook).callWithViewState(any(ViewDefinitionState.class), eq(Locale.ENGLISH));
-        verify(postInitializeHook1).callWithViewState(any(ViewDefinitionState.class), eq(Locale.ENGLISH));
-        verify(postInitializeHook2).callWithViewState(any(ViewDefinitionState.class), eq(Locale.ENGLISH));
-        verify(preRenderHook).callWithViewState(any(ViewDefinitionState.class), eq(Locale.ENGLISH));
+        verify(preInitializeHook).callWithViewState(any(ViewDefinitionState.class));
+        verify(postInitializeHook1).callWithViewState(any(ViewDefinitionState.class));
+        verify(postInitializeHook2).callWithViewState(any(ViewDefinitionState.class));
+        verify(preRenderHook).callWithViewState(any(ViewDefinitionState.class));
     }
 
 }

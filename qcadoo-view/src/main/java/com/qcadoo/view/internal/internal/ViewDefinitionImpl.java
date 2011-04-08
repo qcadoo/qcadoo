@@ -167,7 +167,7 @@ public final class ViewDefinitionImpl implements InternalViewDefinition {
             viewDefinitionState.addChild(cp.createComponentState(viewDefinitionState));
         }
 
-        callHooks(preInitializeHooks, viewDefinitionState, locale);
+        callHooks(preInitializeHooks, viewDefinitionState);
 
         viewDefinitionState.initialize(jsonObject, locale);
 
@@ -175,7 +175,7 @@ public final class ViewDefinitionImpl implements InternalViewDefinition {
             ((AbstractComponentPattern) cp).updateComponentStateListeners(viewDefinitionState);
         }
 
-        callHooks(postInitializeHooks, viewDefinitionState, locale);
+        callHooks(postInitializeHooks, viewDefinitionState);
 
         JSONObject eventJson = jsonObject.getJSONObject(JSON_EVENT);
         String eventName = eventJson.getString(JSON_EVENT_NAME);
@@ -188,7 +188,7 @@ public final class ViewDefinitionImpl implements InternalViewDefinition {
 
         viewDefinitionState.performEvent(eventComponent, eventName, eventArgs);
 
-        callHooks(preRenderHooks, viewDefinitionState, locale);
+        callHooks(preRenderHooks, viewDefinitionState);
 
         return viewDefinitionState.render();
     }
@@ -306,9 +306,9 @@ public final class ViewDefinitionImpl implements InternalViewDefinition {
         postConstructHooks.add(hookDefinition);
     }
 
-    private void callHooks(final List<HookDefinition> hooks, final ViewDefinitionState viewDefinitionState, final Locale locale) {
+    private void callHooks(final List<HookDefinition> hooks, final ViewDefinitionState viewDefinitionState) {
         for (HookDefinition hook : hooks) {
-            hook.callWithViewState(viewDefinitionState, locale);
+            hook.callWithViewState(viewDefinitionState);
         }
     }
 

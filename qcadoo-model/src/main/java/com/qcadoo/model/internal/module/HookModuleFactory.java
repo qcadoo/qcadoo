@@ -24,6 +24,9 @@
 
 package com.qcadoo.model.internal.module;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
+
 import java.util.List;
 
 import org.jdom.Element;
@@ -46,21 +49,13 @@ public class HookModuleFactory extends ModuleFactory<HookModule> {
         String targetPluginIdentifier = element.getAttributeValue("plugin");
         String targetModelName = element.getAttributeValue("model");
 
-        if (targetPluginIdentifier == null) {
-            throw new IllegalStateException("Missing plugin attribute of hook module");
-        }
-
-        if (targetModelName == null) {
-            throw new IllegalStateException("Missing model attribute of hook module");
-        }
+        checkNotNull(targetPluginIdentifier, "Missing plugin attribute of " + getIdentifier() + " module");
+        checkNotNull(targetModelName, "Missing model attribute of " + getIdentifier() + " module");
 
         List<Element> elements = element.getChildren();
 
-        if (elements.size() < 1) {
-            throw new IllegalStateException("Missing content of hook module");
-        } else if (elements.size() > 1) {
-            throw new IllegalStateException("Only one hook can be defined in single hook module");
-        }
+        checkState(elements.size() != 0, "Missing content of " + getIdentifier() + " module");
+        checkState(elements.size() == 1, "Only one hook can be defined in single " + getIdentifier() + " module");
 
         return new HookModule(targetPluginIdentifier, targetModelName, elements.get(0), modelXmlHolder, dataDefinitionService);
     }

@@ -24,6 +24,9 @@
 
 package com.qcadoo.model.internal.module;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
+
 import java.util.List;
 
 import org.jdom.Element;
@@ -46,21 +49,13 @@ public class FieldModuleFactory extends ModuleFactory<FieldModule> {
         String targetPluginIdentifier = element.getAttributeValue("plugin");
         String targetModelName = element.getAttributeValue("model");
 
-        if (targetPluginIdentifier == null) {
-            throw new IllegalStateException("Missing plugin attribute of field module");
-        }
-
-        if (targetModelName == null) {
-            throw new IllegalStateException("Missing model attribute of field module");
-        }
+        checkNotNull(targetPluginIdentifier, "Missing plugin attribute of " + getIdentifier() + " module");
+        checkNotNull(targetModelName, "Missing model attribute of " + getIdentifier() + " module");
 
         List<Element> elements = element.getChildren();
 
-        if (elements.size() < 1) {
-            throw new IllegalStateException("Missing content of field module");
-        } else if (elements.size() > 1) {
-            throw new IllegalStateException("Only one field can be defined in single field module");
-        }
+        checkState(elements.size() != 0, "Missing content of " + getIdentifier() + " module");
+        checkState(elements.size() == 1, "Only one field can be defined in single " + getIdentifier() + " module");
 
         return new FieldModule(targetPluginIdentifier, targetModelName, elements.get(0), modelXmlHolder, dataDefinitionService);
     }

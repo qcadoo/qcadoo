@@ -1,5 +1,6 @@
 /**
  * ***************************************************************************
+
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
  * Version: 0.4.0
@@ -27,13 +28,17 @@ package com.qcadoo.model.integration;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 
+import java.util.Locale;
 import java.util.Map;
 
 import org.junit.Test;
+import org.junit.matchers.JUnitMatchers;
 
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
+import com.qcadoo.model.api.types.EnumeratedType;
 import com.qcadoo.plugin.api.PluginManager;
 
 public class ModuleIntegrationTest extends IntegrationTest {
@@ -72,6 +77,9 @@ public class ModuleIntegrationTest extends IntegrationTest {
 
         assertNotNull(productResult);
         assertEquals("XXX", productResult.get("changeableName"));
+
+        assertThat(((EnumeratedType) productDao.getField("enum").getType()).values(Locale.ENGLISH).keySet(),
+                JUnitMatchers.hasItems("one", "two", "three"));
     }
 
     @Test(expected = IllegalStateException.class)
@@ -121,6 +129,9 @@ public class ModuleIntegrationTest extends IntegrationTest {
 
         assertNotNull(productResult);
         assertEquals("xxx", productResult.get("changeableName"));
+
+        assertThat(((EnumeratedType) productDao.getField("enum").getType()).values(Locale.ENGLISH).keySet(),
+                JUnitMatchers.hasItems("one", "two"));
     }
 
 }

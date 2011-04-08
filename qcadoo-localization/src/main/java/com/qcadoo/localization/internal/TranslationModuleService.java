@@ -23,7 +23,7 @@ public class TranslationModuleService {
         basenames.add("WEB-INF/locales/messages");
     }
 
-    public void addTranslationModul(final Collection<? extends String> moduleBasenames) {
+    public void addTranslationModule(final Collection<? extends String> moduleBasenames) {
         basenames.addAll(moduleBasenames);
         messageSource.clearCache();
         messageSource.setBasenames(basenames.toArray(new String[basenames.size()]));

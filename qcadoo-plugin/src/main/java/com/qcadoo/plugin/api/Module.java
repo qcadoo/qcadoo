@@ -24,7 +24,10 @@
 
 package com.qcadoo.plugin.api;
 
-public abstract class Module {
+/**
+ * Module is a part of {@link Plugin} and represents some functionality, e.g. model, view, field, etc.
+ */
+public class Module {
 
     public void init() {
         // empty

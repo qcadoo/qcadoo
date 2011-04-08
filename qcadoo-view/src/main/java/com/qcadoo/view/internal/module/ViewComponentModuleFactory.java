@@ -4,12 +4,12 @@ import org.jdom.Element;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.qcadoo.plugin.api.EmptyModule;
+import com.qcadoo.plugin.api.Module;
 import com.qcadoo.plugin.api.ModuleFactory;
 import com.qcadoo.view.api.ComponentPattern;
 import com.qcadoo.view.internal.internal.ViewComponentsResolverImpl;
 
-public class ViewComponentModuleFactory extends ModuleFactory<EmptyModule> implements BeanClassLoaderAware {
+public class ViewComponentModuleFactory extends ModuleFactory<Module> implements BeanClassLoaderAware {
 
     @Autowired
     private ViewComponentsResolverImpl viewComponentsResolver;
@@ -23,7 +23,7 @@ public class ViewComponentModuleFactory extends ModuleFactory<EmptyModule> imple
 
     @Override
     @SuppressWarnings("unchecked")
-    public EmptyModule parse(final String pluginIdentifier, final Element element) {
+    public Module parse(final String pluginIdentifier, final Element element) {
         String name = element.getAttributeValue("name");
         String clazzName = element.getAttributeValue("class");
 
@@ -41,7 +41,7 @@ public class ViewComponentModuleFactory extends ModuleFactory<EmptyModule> imple
             throw new IllegalStateException("Cannot find component class: " + clazzName, e);
         }
 
-        return new EmptyModule();
+        return new Module();
     }
 
     @Override

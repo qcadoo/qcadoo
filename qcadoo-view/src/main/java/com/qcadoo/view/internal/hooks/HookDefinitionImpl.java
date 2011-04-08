@@ -65,8 +65,8 @@ public final class HookDefinitionImpl implements HookDefinition {
     }
 
     @Override
-    public void callWithViewState(final ViewDefinitionState viewDefinitionState, final Locale locale) {
-        call(new Object[] { viewDefinitionState, locale }, new Class[] { ViewDefinitionState.class, Locale.class });
+    public void callWithViewState(final ViewDefinitionState viewDefinitionState) {
+        call(new Object[] { viewDefinitionState }, new Class[] { ViewDefinitionState.class });
     }
 
     @Override

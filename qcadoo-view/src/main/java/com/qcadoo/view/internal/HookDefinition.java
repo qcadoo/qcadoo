@@ -44,7 +44,7 @@ public interface HookDefinition {
      * @param locale
      *            locale
      */
-    void callWithViewState(ViewDefinitionState viewDefinitionState, final Locale locale);
+    void callWithViewState(ViewDefinitionState viewDefinitionState);
 
     /**
      * Call custom hook on view.

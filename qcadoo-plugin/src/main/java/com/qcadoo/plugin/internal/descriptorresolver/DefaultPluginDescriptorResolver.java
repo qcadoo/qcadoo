@@ -26,6 +26,7 @@ package com.qcadoo.plugin.internal.descriptorresolver;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -34,6 +35,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.stereotype.Service;
+import org.springframework.util.AntPathMatcher;
+import org.springframework.util.PathMatcher;
 
 import com.qcadoo.plugin.internal.JarEntryResource;
 import com.qcadoo.plugin.internal.api.PluginDescriptorResolver;
@@ -45,6 +48,8 @@ public class DefaultPluginDescriptorResolver implements PluginDescriptorResolver
 
     @Value("#{plugin.descriptors}")
     private String descriptor;
+
+    private final PathMatcher matcher = new AntPathMatcher();
 
     @Override
     public Resource[] getDescriptors() {
@@ -59,19 +64,39 @@ public class DefaultPluginDescriptorResolver implements PluginDescriptorResolver
     @Override
     public Resource getDescriptor(final File file) {
         try {
-            JarFile jar = new JarFile(file);
 
-            JarEntry entry = jar.getJarEntry(descriptor);
+            JarFile jarFile = new JarFile(file);
+            JarEntry descriptorEntry = null;
 
-            if (entry == null) {
-                entry = jar.getJarEntry(descriptor.split("/")[descriptor.split("/").length - 1]);
-
-                if (entry == null) {
-                    throw new IllegalStateException("Plugin descriptor " + descriptor + " not found in " + file.getAbsolutePath());
+            Enumeration<JarEntry> jarEntries = jarFile.entries();
+            while (jarEntries.hasMoreElements()) {
+                JarEntry jarEntry = jarEntries.nextElement();
+                if (matcher.match(descriptor, jarEntry.getName())) {
+                    descriptorEntry = jarEntry;
+                    break;
                 }
             }
 
-            return new JarEntryResource(file, jar.getInputStream(entry));
+            if (descriptorEntry == null) {
+                throw new IllegalStateException("Plugin descriptor " + descriptor + " not found in " + file.getAbsolutePath());
+            }
+
+            return new JarEntryResource(file, jarFile.getInputStream(descriptorEntry));
+
+            // TODO mina test and delete
+            // JarFile jar = new JarFile(file);
+            //
+            // JarEntry entry = jar.getJarEntry(descriptor);
+            //
+            // if (entry == null) {
+            // entry = jar.getJarEntry(descriptor.split("/")[descriptor.split("/").length - 1]);
+            //
+            // if (entry == null) {
+            // throw new IllegalStateException("Plugin descriptor " + descriptor + " not found in " + file.getAbsolutePath());
+            // }
+            // }
+            // return new JarEntryResource(file, jar.getInputStream(entry));
+
         } catch (IOException e) {
             throw new IllegalStateException("Plugin descriptor " + descriptor + " not found in " + file.getAbsolutePath(), e);
         }

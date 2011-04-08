@@ -24,6 +24,8 @@
 
 package com.qcadoo.model.internal.module;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import org.jdom.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -41,16 +43,10 @@ public class ModelModuleFactory extends ModuleFactory<ModelModule> {
     @Override
     public ModelModule parse(final String pluginIdentifier, final Element element) {
         String modelName = element.getAttributeValue("model");
-
-        if (modelName == null) {
-            throw new IllegalStateException("Missing model attribute of model module");
-        }
-
         String resource = element.getAttributeValue("resource");
 
-        if (resource == null) {
-            throw new IllegalStateException("Missing resource attribute of model module");
-        }
+        checkNotNull(modelName, "Missing model attribute of " + getIdentifier() + " module");
+        checkNotNull(resource, "Missing resource attribute of " + getIdentifier() + " module");
 
         return new ModelModule(pluginIdentifier, modelName, resource, modelXmlHolder, dataDefinitionService);
 

@@ -29,11 +29,17 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
-
+/**
+ * Plugin artifact build on JAR file.
+ */
 public final class JarPluginArtifact implements PluginArtifact {
 
     private final File file;
 
+    /**
+     * @param file
+     *            JAR file
+     */
     public JarPluginArtifact(final File file) {
         if (!file.exists() || !file.canRead()) {
             throw new IllegalStateException("Cannot read file " + file.getAbsolutePath());

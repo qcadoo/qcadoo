@@ -19,6 +19,7 @@
 		<string name="number" required="true" unique="true" />
 		<string name="name" required="true" />
 		<string name="changeableName" />
+		<enum name="enum" values="one,two" />
 		<integer name="quantity">
 			<validatesRange from="0" exclusively="true" />
 		</integer>

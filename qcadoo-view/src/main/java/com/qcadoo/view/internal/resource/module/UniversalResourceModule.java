@@ -1,13 +1,12 @@
 package com.qcadoo.view.internal.resource.module;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URLConnection;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.IOUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.util.AntPathMatcher;
@@ -42,7 +41,7 @@ public class UniversalResourceModule extends ResourceModule {
         if (resource != null && resource.exists()) {
             response.setContentType(getContentTypeFromURI(request));
             try {
-                copy(resource.getInputStream(), response.getOutputStream());
+                IOUtils.copy(resource.getInputStream(), response.getOutputStream());
             } catch (IOException e) {
                 throw new IllegalStateException(e.getMessage(), e);
             }
@@ -68,16 +67,6 @@ public class UniversalResourceModule extends ResourceModule {
             return "text/css";
         } else {
             return URLConnection.guessContentTypeFromName(request.getRequestURL().toString());
-        }
-    }
-
-    private static final int IO_BUFFER_SIZE = 4 * 1024;
-
-    private void copy(final InputStream in, final OutputStream out) throws IOException {
-        byte[] b = new byte[IO_BUFFER_SIZE];
-        int read;
-        while ((read = in.read(b)) != -1) {
-            out.write(b, 0, read);
         }
     }
 
