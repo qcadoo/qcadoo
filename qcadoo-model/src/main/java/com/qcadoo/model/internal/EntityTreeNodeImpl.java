@@ -76,16 +76,6 @@ public final class EntityTreeNodeImpl implements EntityTreeNode {
     }
 
     @Override
-    public String getName() {
-        return entity.getName();
-    }
-
-    @Override
-    public String getPluginIdentifier() {
-        return entity.getPluginIdentifier();
-    }
-
-    @Override
     public Object getField(final String fieldName) {
         return entity.getField(fieldName);
     }

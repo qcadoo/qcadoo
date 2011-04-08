@@ -73,11 +73,13 @@ public class PluginDescriptorParserTest {
 
     private Module testModule2;
 
+    @SuppressWarnings("rawtypes")
     private ModuleFactory testModule1Factory;
 
+    @SuppressWarnings("rawtypes")
     private ModuleFactory testModule2Factory;
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings("unchecked")
     @Before
     public void init() {
         moduleFactoryAccessor = mock(ModuleFactoryAccessor.class);

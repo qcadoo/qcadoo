@@ -61,22 +61,6 @@ public interface Entity {
     DataDefinition getDataDefinition();
 
     /**
-     * Return the entity's name.
-     * 
-     * @return the entity's name
-     */
-    @Deprecated
-    String getName();
-
-    /**
-     * Return the entity's plugin identifier.
-     * 
-     * @return the entity's plugin identifier
-     */
-    @Deprecated
-    String getPluginIdentifier();
-
-    /**
      * Return the value of the field with given name.
      * 
      * @param fieldName

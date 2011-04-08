@@ -203,16 +203,6 @@ public final class DefaultEntity implements Entity {
     }
 
     @Override
-    public String getName() {
-        return dataDefinition.getName();
-    }
-
-    @Override
-    public String getPluginIdentifier() {
-        return dataDefinition.getPluginIdentifier();
-    }
-
-    @Override
     public DataDefinition getDataDefinition() {
         return dataDefinition;
     }

@@ -52,8 +52,6 @@ import com.qcadoo.plugin.api.Version;
 import com.qcadoo.plugin.api.artifact.JarPluginArtifact;
 import com.qcadoo.plugin.internal.api.InternalPlugin;
 import com.qcadoo.plugin.internal.api.InternalPluginAccessor;
-import com.qcadoo.plugin.internal.api.PluginDescriptorResolver;
-import com.qcadoo.plugin.internal.api.PluginFileManager;
 import com.qcadoo.tenant.api.MultiTenantUtil;
 import com.qcadoo.tenant.internal.DefaultMultiTenantService;
 
@@ -67,10 +65,6 @@ public class PluginIntegrationTest {
     private PluginManager pluginManager;
 
     private AbstractApplicationContext applicationContext;
-
-    private PluginFileManager pluginFileManager;
-
-    private PluginDescriptorResolver pluginResolver;
 
     private SessionFactory sessionFactory;
 
@@ -86,20 +80,15 @@ public class PluginIntegrationTest {
         applicationContext = new ClassPathXmlApplicationContext("com/qcadoo/plugin/integration/spring.xml");
         applicationContext.registerShutdownHook();
 
-        pluginResolver = applicationContext.getBean(PluginDescriptorResolver.class);
         pluginAccessor = applicationContext.getBean(InternalPluginAccessor.class);
         pluginManager = applicationContext.getBean(PluginManager.class);
-        pluginFileManager = applicationContext.getBean(PluginFileManager.class);
         sessionFactory = applicationContext.getBean(SessionFactory.class);
     }
 
     @After
     public void destroy() throws Exception {
         sessionFactory.openSession().createSQLQuery("delete from qcadooplugin_plugin").executeUpdate();
-        pluginResolver = null;
-        pluginResolver = null;
         pluginManager = null;
-        pluginFileManager = null;
         sessionFactory.close();
         sessionFactory = null;
         applicationContext.close();
@@ -148,8 +137,7 @@ public class PluginIntegrationTest {
         assertFalse(result.isSuccess());
         assertFalse(result.isRestartNeccessary());
         assertEquals(1, result.getPluginDependencyResult().getDependenciesToEnable().size());
-        assertEquals("plugin1", result.getPluginDependencyResult().getDependenciesToEnable().iterator().next()
-                .getIdentifier());
+        assertEquals("plugin1", result.getPluginDependencyResult().getDependenciesToEnable().iterator().next().getIdentifier());
         assertEquals(PluginOperationStatus.DEPENDENCIES_TO_ENABLE, result.getStatus());
     }
 
