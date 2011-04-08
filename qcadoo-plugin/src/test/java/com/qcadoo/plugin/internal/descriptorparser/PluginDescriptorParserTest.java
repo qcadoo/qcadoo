@@ -124,16 +124,6 @@ public class PluginDescriptorParserTest {
         assertNotNull(result);
     }
 
-    @Test(expected = PluginException.class)
-    public void shouldNotParseXml3() {
-        // given
-
-        // when
-        parser.parse(xmlFile3, false);
-
-        // then
-    }
-
     @Test
     public void shouldHaveIdentifierVersionAndSystemForXml1() {
         // given
