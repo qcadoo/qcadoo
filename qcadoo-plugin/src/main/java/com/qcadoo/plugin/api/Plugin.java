@@ -1,54 +1,122 @@
-/**
- * ***************************************************************************
- * Copyright (c) 2010 Qcadoo Limited
- * Project: Qcadoo Framework
- * Version: 0.4.0
- *
- * This file is part of Qcadoo.
- *
- * Qcadoo is free software; you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published
- * by the Free Software Foundation; either version 3 of the License,
- * or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty
- * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- * ***************************************************************************
- */
-
 package com.qcadoo.plugin.api;
 
-import java.util.List;
 import java.util.Set;
 
+import org.jdom.Element;
+
+/**
+ * Plugin represents information from plugin descriptor and holds all its modules.
+ * 
+ * Plugin, {@link Module} and {@link ModuleFactory} are strongly connected. Below shows licecycle methods in the particular
+ * situations.
+ * 
+ * <h3>Application startup</h3>
+ * 
+ * For every module factory, in proper order:
+ * 
+ * <ul>
+ * <li>{@link ModuleFactory#parse(String, Element)}</li>
+ * <li>{@link ModuleFactory#preInit()}</li>
+ * <li>{@link Module#init()} for every module belongs to this module factory, in plugin dependency order</li>
+ * <li>{@link ModuleFactory#postInit()}</li>
+ * </ul>
+ * 
+ * Again for every module factory, in proper order:
+ * 
+ * <ul>
+ * <li>{@link Module#enableOnStartup()} or {@link Module#disableOnStartup()} for every module belongs to this module factory, in
+ * plugin dependency order</li>
+ * <li>{@link Module#multiTenantEnableOnStartup()} or {@link Module#multiTenantDisableOnStartup()} for every module belongs to
+ * this module factory, for every tenant, in plugin dependency order</li>
+ * </ul>
+ * 
+ * For every module factory with state {@link PluginState#ENABLING}:
+ * 
+ * <ul>
+ * <li>{@link Module#enable()}</li>
+ * <li>{@link Module#multiTenantEnable()} for every tenant</li>
+ * </ul>
+ * 
+ * <h3>Plugin enabling</h3>
+ * 
+ * For plugin in {@link PluginState#DISABLED} state.
+ * 
+ * <ul>
+ * <li>{@link Module#enable()}</li>
+ * <li>{@link Module#multiTenantEnable()} for every tenant</li>
+ * </ul>
+ * 
+ * For plugin in {@link PluginState#TEMPORARY} state, the state is changed to {@link PluginState#ENABLING} and the system is
+ * restarted.
+ * 
+ * <h3>Plugin disabling</h3>
+ * 
+ * <ul>
+ * <li>{@link Module#disable()}</li>
+ * <li>{@link Module#multiTenantDisable()} for every tenant</li>
+ * </ul>
+ * 
+ * <h3>Plugin installing</h3>
+ * 
+ * No additional method is called.
+ * 
+ * <h3>Plugin uninstalling</h3>
+ * 
+ * If the plugin is enabled, it will be disabled first. The system will be restarted.
+ * 
+ * <h3>Plugin updating</h3>
+ * 
+ * If the plugin is enabled, it will be disabled first. The state is set to {@link PluginState#ENABLING} and the system is
+ * restarted.
+ * 
+ */
 public interface Plugin {
 
+    /**
+     * @return plugin identifier, it is unique in the whole system
+     */
     String getIdentifier();
 
+    /**
+     * @return version of the plugin
+     */
     Version getVersion();
 
+    /**
+     * @return state of the plugin, only {@link PluginState#ENABLED} plugins are usable in system
+     */
     PluginState getState();
 
+    /**
+     * @return additional information
+     */
     PluginInformation getPluginInformation();
 
+    /**
+     * @return requirements information
+     */
     Set<PluginDependencyInformation> getRequiredPlugins();
 
+    /**
+     * @return true for system plugin, it cannot be disabled and removed
+     */
     boolean isSystemPlugin();
 
-    void changeStateTo(PluginState state);
-
+    /**
+     * @return name the file with plugin
+     */
     String getFilename();
 
+    /**
+     * @see Version#compareTo(Version)
+     */
     int compareVersion(Version version);
 
+    /**
+     * @param expectedState
+     *            expected state
+     * @return true if plugin is in expected state
+     */
     boolean hasState(PluginState expectedState);
-
-    List<Module> getModules(ModuleFactory<?> moduleFactory);
 
 }

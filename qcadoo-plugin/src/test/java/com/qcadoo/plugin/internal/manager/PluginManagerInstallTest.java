@@ -45,8 +45,8 @@ import org.mockito.InOrder;
 import org.mockito.Mockito;
 import org.springframework.core.io.Resource;
 
+import com.qcadoo.plugin.api.InternalPluginAccessor;
 import com.qcadoo.plugin.api.Plugin;
-import com.qcadoo.plugin.api.PluginAccessor;
 import com.qcadoo.plugin.api.PluginDependencyInformation;
 import com.qcadoo.plugin.api.PluginDependencyResult;
 import com.qcadoo.plugin.api.PluginOperationResult;
@@ -56,6 +56,7 @@ import com.qcadoo.plugin.api.Version;
 import com.qcadoo.plugin.api.VersionOfDependency;
 import com.qcadoo.plugin.api.artifact.PluginArtifact;
 import com.qcadoo.plugin.internal.PluginException;
+import com.qcadoo.plugin.internal.api.InternalPlugin;
 import com.qcadoo.plugin.internal.api.PluginDao;
 import com.qcadoo.plugin.internal.api.PluginDependencyManager;
 import com.qcadoo.plugin.internal.api.PluginDescriptorParser;
@@ -64,11 +65,11 @@ import com.qcadoo.plugin.internal.api.PluginFileManager;
 
 public class PluginManagerInstallTest {
 
-    private final Plugin plugin = mock(Plugin.class);
+    private final InternalPlugin plugin = mock(InternalPlugin.class);
 
-    private final Plugin anotherPlugin = mock(Plugin.class);
+    private final InternalPlugin anotherPlugin = mock(InternalPlugin.class);
 
-    private final PluginAccessor pluginAccessor = mock(PluginAccessor.class);
+    private final InternalPluginAccessor pluginAccessor = mock(InternalPluginAccessor.class);
 
     private final PluginDao pluginDao = mock(PluginDao.class);
 
@@ -120,7 +121,8 @@ public class PluginManagerInstallTest {
         given(file.getName()).willReturn("tempFileName");
 
         PluginDependencyResult pluginDependencyResult = PluginDependencyResult.satisfiedDependencies();
-        given(pluginDependencyManager.getDependenciesToEnable(newArrayList(anotherPlugin))).willReturn(pluginDependencyResult);
+        given(pluginDependencyManager.getDependenciesToEnable(newArrayList((Plugin) anotherPlugin))).willReturn(
+                pluginDependencyResult);
 
         // when
         PluginOperationResult pluginOperationResult = pluginManager.installPlugin(pluginArtifact);
@@ -146,8 +148,8 @@ public class PluginManagerInstallTest {
         PluginOperationResult pluginOperationResult = pluginManager.installPlugin(pluginArtifact);
 
         // then
-        verify(pluginDao, never()).save(Mockito.any(Plugin.class));
-        verify(pluginAccessor, never()).savePlugin(Mockito.any(Plugin.class));
+        verify(pluginDao, never()).save(Mockito.any(InternalPlugin.class));
+        verify(pluginAccessor, never()).savePlugin(Mockito.any(InternalPlugin.class));
         verify(pluginFileManager).uninstallPlugin("filename");
         assertFalse(pluginOperationResult.isSuccess());
         assertEquals(PluginOperationStatus.CORRUPTED_PLUGIN, pluginOperationResult.getStatus());
@@ -162,8 +164,8 @@ public class PluginManagerInstallTest {
         PluginOperationResult pluginOperationResult = pluginManager.installPlugin(pluginArtifact);
 
         // then
-        verify(pluginDao, never()).save(Mockito.any(Plugin.class));
-        verify(pluginAccessor, never()).savePlugin(Mockito.any(Plugin.class));
+        verify(pluginDao, never()).save(Mockito.any(InternalPlugin.class));
+        verify(pluginAccessor, never()).savePlugin(Mockito.any(InternalPlugin.class));
         assertFalse(pluginOperationResult.isSuccess());
         assertEquals(PluginOperationStatus.CANNOT_UPLOAD_PLUGIN, pluginOperationResult.getStatus());
     }
@@ -184,7 +186,8 @@ public class PluginManagerInstallTest {
 
         PluginDependencyResult pluginDependencyResult = PluginDependencyResult.unsatisfiedDependencies(Collections
                 .singleton(new PluginDependencyInformation("unknownplugin", new VersionOfDependency(null))));
-        given(pluginDependencyManager.getDependenciesToEnable(newArrayList(anotherPlugin))).willReturn(pluginDependencyResult);
+        given(pluginDependencyManager.getDependenciesToEnable(newArrayList((Plugin) anotherPlugin))).willReturn(
+                pluginDependencyResult);
 
         // when
         PluginOperationResult pluginOperationResult = pluginManager.installPlugin(pluginArtifact);
@@ -218,7 +221,8 @@ public class PluginManagerInstallTest {
         given(pluginFileManager.installPlugin("anotherFilename")).willReturn(true);
 
         PluginDependencyResult pluginDependencyResult = PluginDependencyResult.satisfiedDependencies();
-        given(pluginDependencyManager.getDependenciesToEnable(newArrayList(anotherPlugin))).willReturn(pluginDependencyResult);
+        given(pluginDependencyManager.getDependenciesToEnable(newArrayList((Plugin) anotherPlugin))).willReturn(
+                pluginDependencyResult);
 
         // when
         PluginOperationResult pluginOperationResult = pluginManager.installPlugin(pluginArtifact);
@@ -246,7 +250,8 @@ public class PluginManagerInstallTest {
 
         PluginDependencyResult pluginDependencyResult = PluginDependencyResult.unsatisfiedDependencies(Collections
                 .singleton(new PluginDependencyInformation("unknownplugin", new VersionOfDependency(""))));
-        given(pluginDependencyManager.getDependenciesToEnable(newArrayList(anotherPlugin))).willReturn(pluginDependencyResult);
+        given(pluginDependencyManager.getDependenciesToEnable(newArrayList((Plugin) anotherPlugin))).willReturn(
+                pluginDependencyResult);
 
         // when
         PluginOperationResult pluginOperationResult = pluginManager.installPlugin(pluginArtifact);
@@ -278,13 +283,14 @@ public class PluginManagerInstallTest {
         given(plugin.getFilename()).willReturn("filename");
 
         PluginDependencyResult pluginDependencyResult = PluginDependencyResult.satisfiedDependencies();
-        given(pluginDependencyManager.getDependenciesToEnable(newArrayList(anotherPlugin))).willReturn(pluginDependencyResult);
+        given(pluginDependencyManager.getDependenciesToEnable(newArrayList((Plugin) anotherPlugin))).willReturn(
+                pluginDependencyResult);
 
-        Plugin dependencyPlugin = mock(Plugin.class);
+        InternalPlugin dependencyPlugin = mock(InternalPlugin.class);
         given(pluginAccessor.getPlugin("dependencyplugin")).willReturn(dependencyPlugin);
         given(dependencyPlugin.getIdentifier()).willReturn("dependencyplugin");
 
-        Plugin dependencyPlugin2 = mock(Plugin.class);
+        InternalPlugin dependencyPlugin2 = mock(InternalPlugin.class);
         given(pluginAccessor.getPlugin("dependencyplugin2")).willReturn(dependencyPlugin2);
         given(dependencyPlugin2.getIdentifier()).willReturn("dependencyplugin2");
 
@@ -293,8 +299,10 @@ public class PluginManagerInstallTest {
                 new PluginDependencyInformation("dependencyplugin2", new VersionOfDependency(""))));
 
         given(pluginDependencyManager.getDependenciesToUpdate(plugin, anotherPlugin)).willReturn(installPluginDependencyResult);
-        given(pluginDependencyManager.sortPluginsInDependencyOrder(newArrayList(dependencyPlugin2, dependencyPlugin)))
-                .willReturn(newArrayList(dependencyPlugin, dependencyPlugin2));
+        given(
+                pluginDependencyManager.sortPluginsInDependencyOrder(newArrayList((Plugin) dependencyPlugin2,
+                        (Plugin) dependencyPlugin))).willReturn(
+                newArrayList((Plugin) dependencyPlugin, (Plugin) dependencyPlugin2));
 
         // when
         PluginOperationResult pluginOperationResult = pluginManager.installPlugin(pluginArtifact);
@@ -333,7 +341,8 @@ public class PluginManagerInstallTest {
         given(plugin.getFilename()).willReturn("filename");
 
         PluginDependencyResult pluginDependencyResult = PluginDependencyResult.satisfiedDependencies();
-        given(pluginDependencyManager.getDependenciesToEnable(newArrayList(anotherPlugin))).willReturn(pluginDependencyResult);
+        given(pluginDependencyManager.getDependenciesToEnable(newArrayList((Plugin) anotherPlugin))).willReturn(
+                pluginDependencyResult);
 
         PluginDependencyResult installPluginDependencyResult = PluginDependencyResult.dependenciesToUpdate(Collections
                 .<PluginDependencyInformation> emptySet(), newHashSet(new PluginDependencyInformation("dependencyplugin",
@@ -369,7 +378,8 @@ public class PluginManagerInstallTest {
 
         PluginDependencyResult pluginDependencyResult = PluginDependencyResult.unsatisfiedDependencies(Collections
                 .singleton(new PluginDependencyInformation("unknownplugin", new VersionOfDependency(""))));
-        given(pluginDependencyManager.getDependenciesToEnable(newArrayList(anotherPlugin))).willReturn(pluginDependencyResult);
+        given(pluginDependencyManager.getDependenciesToEnable(newArrayList((Plugin) anotherPlugin))).willReturn(
+                pluginDependencyResult);
 
         // when
         PluginOperationResult pluginOperationResult = pluginManager.installPlugin(pluginArtifact);
@@ -399,7 +409,8 @@ public class PluginManagerInstallTest {
 
         PluginDependencyResult pluginDependencyResult = PluginDependencyResult.dependenciesToEnable(Collections
                 .singleton(new PluginDependencyInformation("unknownplugin", new VersionOfDependency(""))));
-        given(pluginDependencyManager.getDependenciesToEnable(newArrayList(anotherPlugin))).willReturn(pluginDependencyResult);
+        given(pluginDependencyManager.getDependenciesToEnable(newArrayList((Plugin) anotherPlugin))).willReturn(
+                pluginDependencyResult);
 
         // when
         PluginOperationResult pluginOperationResult = pluginManager.installPlugin(pluginArtifact);
@@ -432,7 +443,8 @@ public class PluginManagerInstallTest {
         given(file.getName()).willReturn("tempFileName");
 
         PluginDependencyResult pluginDependencyResult = PluginDependencyResult.satisfiedDependencies();
-        given(pluginDependencyManager.getDependenciesToEnable(newArrayList(anotherPlugin))).willReturn(pluginDependencyResult);
+        given(pluginDependencyManager.getDependenciesToEnable(newArrayList((Plugin) anotherPlugin))).willReturn(
+                pluginDependencyResult);
 
         // when
         PluginOperationResult pluginOperationResult = pluginManager.installPlugin(pluginArtifact);
@@ -462,7 +474,8 @@ public class PluginManagerInstallTest {
         given(file.getName()).willReturn("tempFileName");
 
         PluginDependencyResult pluginDependencyResult = PluginDependencyResult.satisfiedDependencies();
-        given(pluginDependencyManager.getDependenciesToEnable(newArrayList(anotherPlugin))).willReturn(pluginDependencyResult);
+        given(pluginDependencyManager.getDependenciesToEnable(newArrayList((Plugin) anotherPlugin))).willReturn(
+                pluginDependencyResult);
 
         // when
         PluginOperationResult pluginOperationResult = pluginManager.installPlugin(pluginArtifact);
@@ -508,7 +521,8 @@ public class PluginManagerInstallTest {
         given(anotherPlugin.getFilename()).willReturn("anotherFilename");
 
         PluginDependencyResult pluginDependencyResult = PluginDependencyResult.satisfiedDependencies();
-        given(pluginDependencyManager.getDependenciesToEnable(newArrayList(anotherPlugin))).willReturn(pluginDependencyResult);
+        given(pluginDependencyManager.getDependenciesToEnable(newArrayList((Plugin) anotherPlugin))).willReturn(
+                pluginDependencyResult);
 
         // when
         PluginOperationResult pluginOperationResult = pluginManager.installPlugin(pluginArtifact);
@@ -534,7 +548,8 @@ public class PluginManagerInstallTest {
 
         PluginDependencyResult pluginDependencyResult = PluginDependencyResult.unsatisfiedDependencies(Collections
                 .singleton(new PluginDependencyInformation("unknownplugin", new VersionOfDependency(""))));
-        given(pluginDependencyManager.getDependenciesToEnable(newArrayList(anotherPlugin))).willReturn(pluginDependencyResult);
+        given(pluginDependencyManager.getDependenciesToEnable(newArrayList((Plugin) anotherPlugin))).willReturn(
+                pluginDependencyResult);
 
         // when
         PluginOperationResult pluginOperationResult = pluginManager.installPlugin(pluginArtifact);

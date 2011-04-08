@@ -36,11 +36,13 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.InOrder;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import com.qcadoo.plugin.api.Module;
 import com.qcadoo.plugin.api.ModuleFactory;
 import com.qcadoo.plugin.api.Plugin;
 import com.qcadoo.plugin.api.PluginState;
+import com.qcadoo.plugin.internal.api.InternalPlugin;
 import com.qcadoo.tenant.api.MultiTenantUtil;
 import com.qcadoo.tenant.internal.DefaultMultiTenantService;
 
@@ -49,7 +51,9 @@ public class ModuleFactoryAccessorTest {
     @Test
     public void shouldCallInitOnAllModuleFactories() throws Exception {
         // given
-        new MultiTenantUtil(new DefaultMultiTenantService());
+        MultiTenantUtil multiTenantUtil = new MultiTenantUtil();
+        ReflectionTestUtils.setField(multiTenantUtil, "multiTenantService", new DefaultMultiTenantService());
+        multiTenantUtil.init();
 
         ModuleFactory<?> moduleFactory1 = mock(ModuleFactory.class);
         given(moduleFactory1.getIdentifier()).willReturn("module1");
@@ -62,7 +66,7 @@ public class ModuleFactoryAccessorTest {
         factoriesList.add(moduleFactory2);
         moduleFactoryAccessor.setModuleFactories(factoriesList);
 
-        Plugin plugin1 = mock(Plugin.class);
+        InternalPlugin plugin1 = mock(InternalPlugin.class);
         Module module111 = mock(Module.class);
         Module module112 = mock(Module.class);
         Module module12 = mock(Module.class);
@@ -70,14 +74,14 @@ public class ModuleFactoryAccessorTest {
         given(plugin1.getModules(moduleFactory2)).willReturn(newArrayList(module12));
         given(plugin1.hasState(PluginState.ENABLED)).willReturn(false);
 
-        Plugin plugin2 = mock(Plugin.class);
+        InternalPlugin plugin2 = mock(InternalPlugin.class);
         Module module21 = mock(Module.class);
         Module module22 = mock(Module.class);
         given(plugin2.getModules(moduleFactory1)).willReturn(newArrayList(module21));
         given(plugin2.getModules(moduleFactory2)).willReturn(newArrayList(module22));
         given(plugin2.hasState(PluginState.ENABLED)).willReturn(true);
 
-        List<Plugin> plugins = newArrayList(plugin1, plugin2);
+        List<Plugin> plugins = newArrayList((Plugin) plugin1, (Plugin) plugin2);
 
         // when
         moduleFactoryAccessor.init(plugins);

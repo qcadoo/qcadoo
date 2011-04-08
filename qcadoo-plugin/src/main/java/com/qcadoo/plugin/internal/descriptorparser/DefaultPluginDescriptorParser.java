@@ -34,13 +34,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
 
 import org.apache.commons.io.FilenameUtils;
 import org.jdom.Element;
@@ -48,23 +44,20 @@ import org.jdom.input.DOMBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 
 import com.google.common.base.Preconditions;
 import com.qcadoo.plugin.api.Module;
 import com.qcadoo.plugin.api.ModuleFactory;
-import com.qcadoo.plugin.api.Plugin;
 import com.qcadoo.plugin.internal.DefaultPlugin.Builder;
 import com.qcadoo.plugin.internal.PluginException;
+import com.qcadoo.plugin.internal.api.InternalPlugin;
 import com.qcadoo.plugin.internal.api.ModuleFactoryAccessor;
 import com.qcadoo.plugin.internal.api.PluginDescriptorParser;
 import com.qcadoo.plugin.internal.api.PluginDescriptorResolver;
@@ -87,30 +80,19 @@ public class DefaultPluginDescriptorParser implements PluginDescriptorParser {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             factory.setValidating(true);
             factory.setNamespaceAware(true);
-
-            SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-            schemaFactory.setFeature("http://apache.org/xml/features/validation/schema-full-checking", false);
-
-            Schema schema = schemaFactory.newSchema(new StreamSource(new ClassPathResource("com/qcadoo/plugin/plugin.xsd")
-                    .getInputStream()));
-
-            factory.setSchema(schema);
+            factory.setAttribute("http://java.sun.com/xml/jaxp/properties/schemaLanguage", "http://www.w3.org/2001/XMLSchema");
 
             documentBuilder = factory.newDocumentBuilder();
 
-            documentBuilder.setErrorHandler(new ValidationErrorHandler());
+            documentBuilder.setErrorHandler(new com.qcadoo.plugin.api.ValidationErrorHandler());
 
-        } catch (SAXException e) {
-            throw new IllegalStateException("Error while parsing plugin xml schema", e);
         } catch (ParserConfigurationException e) {
-            throw new IllegalStateException("Error while parsing plugin xml schema", e);
-        } catch (IOException e) {
             throw new IllegalStateException("Error while parsing plugin xml schema", e);
         }
     }
 
     @Override
-    public Plugin parse(final Resource resource, final boolean ignoreModules) {
+    public InternalPlugin parse(final Resource resource, final boolean ignoreModules) {
         try {
             LOG.info("Parsing: " + resource);
 
@@ -120,7 +102,7 @@ public class DefaultPluginDescriptorParser implements PluginDescriptorParser {
 
             Builder pluginBuilder = parsePluginNode(root, ignoreModules);
 
-            Plugin plugin = pluginBuilder.withFileName(
+            InternalPlugin plugin = pluginBuilder.withFileName(
                     FilenameUtils.getName(ResourceUtils.extractJarFileURL(resource.getURL()).toString())).build();
 
             LOG.info("Parse complete");
@@ -137,10 +119,10 @@ public class DefaultPluginDescriptorParser implements PluginDescriptorParser {
     }
 
     @Override
-    public Set<Plugin> loadPlugins() {
-        Map<String, Plugin> loadedplugins = new HashMap<String, Plugin>();
+    public Set<InternalPlugin> loadPlugins() {
+        Map<String, InternalPlugin> loadedplugins = new HashMap<String, InternalPlugin>();
         for (Resource resource : pluginDescriptorResolver.getDescriptors()) {
-            Plugin plugin = parse(resource, false);
+            InternalPlugin plugin = parse(resource, false);
 
             if (loadedplugins.containsKey(plugin.getIdentifier())) {
                 throw new PluginException("Duplicated plugin identifier: " + plugin.getIdentifier());
@@ -148,7 +130,7 @@ public class DefaultPluginDescriptorParser implements PluginDescriptorParser {
 
             loadedplugins.put(plugin.getIdentifier(), plugin);
         }
-        return new HashSet<Plugin>(loadedplugins.values());
+        return new HashSet<InternalPlugin>(loadedplugins.values());
     }
 
     private Builder parsePluginNode(final Node pluginNode, final boolean ignoreModules) {
@@ -290,23 +272,23 @@ public class DefaultPluginDescriptorParser implements PluginDescriptorParser {
         return null;
     }
 
-    private static class ValidationErrorHandler implements ErrorHandler {
-
-        @Override
-        public void warning(final SAXParseException e) throws SAXException {
-            LOG.debug(e.getMessage());
-        }
-
-        @Override
-        public void error(final SAXParseException e) throws SAXException {
-            LOG.debug(e.getMessage());
-        }
-
-        @Override
-        public void fatalError(final SAXParseException e) throws SAXException {
-            LOG.error(e.getMessage());
-        }
-    }
+    // private static class ValidationErrorHandler implements ErrorHandler {
+    //
+    // @Override
+    // public void warning(final SAXParseException e) throws SAXException {
+    // LOG.debug(e.getMessage());
+    // }
+    //
+    // @Override
+    // public void error(final SAXParseException e) throws SAXException {
+    // LOG.debug(e.getMessage());
+    // }
+    //
+    // @Override
+    // public void fatalError(final SAXParseException e) throws SAXException {
+    // LOG.error(e.getMessage());
+    // }
+    // }
 
     public void setModuleFactoryAccessor(final ModuleFactoryAccessor moduleFactoryAccessor) {
         this.moduleFactoryAccessor = moduleFactoryAccessor;

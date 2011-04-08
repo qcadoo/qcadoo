@@ -46,6 +46,7 @@ import com.qcadoo.model.beans.qcadooPlugin.QcadooPluginPlugin;
 import com.qcadoo.plugin.api.Plugin;
 import com.qcadoo.plugin.api.PluginState;
 import com.qcadoo.plugin.api.Version;
+import com.qcadoo.plugin.internal.api.InternalPlugin;
 
 public class PluginDaoTest {
 
@@ -57,7 +58,7 @@ public class PluginDaoTest {
 
     private final QcadooPluginPlugin plugin2 = new QcadooPluginPlugin();
 
-    private final Plugin plugin11 = mock(Plugin.class);
+    private final Plugin plugin11 = mock(InternalPlugin.class);
 
     private final Session session = mock(Session.class);
 
