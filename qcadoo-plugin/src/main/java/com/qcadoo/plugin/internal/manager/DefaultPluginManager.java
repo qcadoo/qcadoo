@@ -37,7 +37,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
-import com.qcadoo.plugin.api.InternalPluginAccessor;
 import com.qcadoo.plugin.api.Plugin;
 import com.qcadoo.plugin.api.PluginDependencyInformation;
 import com.qcadoo.plugin.api.PluginDependencyResult;
@@ -47,6 +46,7 @@ import com.qcadoo.plugin.api.PluginState;
 import com.qcadoo.plugin.api.artifact.PluginArtifact;
 import com.qcadoo.plugin.internal.PluginException;
 import com.qcadoo.plugin.internal.api.InternalPlugin;
+import com.qcadoo.plugin.internal.api.InternalPluginAccessor;
 import com.qcadoo.plugin.internal.api.PluginDao;
 import com.qcadoo.plugin.internal.api.PluginDependencyManager;
 import com.qcadoo.plugin.internal.api.PluginDescriptorParser;
@@ -318,7 +318,7 @@ public final class DefaultPluginManager implements PluginManager {
                 List<Plugin> dependencyPlugins = new ArrayList<Plugin>();
                 for (PluginDependencyInformation pluginDependencyInformation : installPluginDependencyResult
                         .getDependenciesToDisable()) {
-                    dependencyPlugins.add(pluginAccessor.getPlugin(pluginDependencyInformation.getDependencyPluginIdentifier()));
+                    dependencyPlugins.add(pluginAccessor.getPlugin(pluginDependencyInformation.getIdentifier()));
                 }
                 dependencyPlugins = pluginDependencyManager.sortPluginsInDependencyOrder(dependencyPlugins);
                 Collections.reverse(dependencyPlugins);

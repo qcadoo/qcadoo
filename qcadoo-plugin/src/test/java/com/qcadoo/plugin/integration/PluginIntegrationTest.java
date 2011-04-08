@@ -43,7 +43,6 @@ import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import com.qcadoo.plugin.api.InternalPluginAccessor;
 import com.qcadoo.plugin.api.PluginAccessor;
 import com.qcadoo.plugin.api.PluginManager;
 import com.qcadoo.plugin.api.PluginOperationResult;
@@ -52,6 +51,7 @@ import com.qcadoo.plugin.api.PluginState;
 import com.qcadoo.plugin.api.Version;
 import com.qcadoo.plugin.api.artifact.JarPluginArtifact;
 import com.qcadoo.plugin.internal.api.InternalPlugin;
+import com.qcadoo.plugin.internal.api.InternalPluginAccessor;
 import com.qcadoo.plugin.internal.api.PluginDescriptorResolver;
 import com.qcadoo.plugin.internal.api.PluginFileManager;
 import com.qcadoo.tenant.api.MultiTenantUtil;
@@ -149,7 +149,7 @@ public class PluginIntegrationTest {
         assertFalse(result.isRestartNeccessary());
         assertEquals(1, result.getPluginDependencyResult().getDependenciesToEnable().size());
         assertEquals("plugin1", result.getPluginDependencyResult().getDependenciesToEnable().iterator().next()
-                .getDependencyPluginIdentifier());
+                .getIdentifier());
         assertEquals(PluginOperationStatus.DEPENDENCIES_TO_ENABLE, result.getStatus());
     }
 

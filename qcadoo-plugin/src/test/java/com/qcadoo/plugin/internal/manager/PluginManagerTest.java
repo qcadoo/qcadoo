@@ -41,7 +41,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InOrder;
 
-import com.qcadoo.plugin.api.InternalPluginAccessor;
 import com.qcadoo.plugin.api.Plugin;
 import com.qcadoo.plugin.api.PluginDependencyInformation;
 import com.qcadoo.plugin.api.PluginDependencyResult;
@@ -50,6 +49,7 @@ import com.qcadoo.plugin.api.PluginOperationStatus;
 import com.qcadoo.plugin.api.PluginState;
 import com.qcadoo.plugin.api.VersionOfDependency;
 import com.qcadoo.plugin.internal.api.InternalPlugin;
+import com.qcadoo.plugin.internal.api.InternalPluginAccessor;
 import com.qcadoo.plugin.internal.api.PluginDao;
 import com.qcadoo.plugin.internal.api.PluginDependencyManager;
 import com.qcadoo.plugin.internal.api.PluginDescriptorParser;

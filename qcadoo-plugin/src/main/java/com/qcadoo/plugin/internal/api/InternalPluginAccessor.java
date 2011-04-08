@@ -22,7 +22,10 @@
  * ***************************************************************************
  */
 
-package com.qcadoo.plugin.api;
+package com.qcadoo.plugin.internal.api;
+
+import com.qcadoo.plugin.api.Plugin;
+import com.qcadoo.plugin.api.PluginAccessor;
 
 public interface InternalPluginAccessor extends PluginAccessor {
 

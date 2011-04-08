@@ -79,7 +79,22 @@ public class VersionOfDependency {
         }
     }
 
-    public boolean isVersionSatisfied(final Version version) {
+    public Version getMinVersion() {
+        return minVersion;
+    }
+
+    public Version getMaxVersion() {
+        return maxVersion;
+    }
+
+    /**
+     * Returns true if version contains the given one.
+     * 
+     * @param version
+     *            version
+     * @return true if version contains the given one
+     */
+    public boolean contains(final Version version) {
         if (minVersion != null) {
             int minComparationResult = minVersion.compareTo(version);
             if (minComparationResult > 0) {
@@ -169,11 +184,4 @@ public class VersionOfDependency {
         }
     }
 
-    public Version getMinVersion() {
-        return minVersion;
-    }
-
-    public Version getMaxVersion() {
-        return maxVersion;
-    }
 }

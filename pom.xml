@@ -304,7 +304,7 @@
 					<nohelp>true</nohelp>
 					<use>false</use>
 					<notree>true</notree>
-					<excludePackageNames>*.internal.*</excludePackageNames>
+					<excludePackageNames>*.internal.*:com.qcadoo.maven.plugins:com.qcadoo.maven.plugins.*:com.qcadoo.tenant.*:com.qcadoo.model.beans.*</excludePackageNames>
 					<reportSets>
 						<reportSet>
 							<id>aggregate</id>
@@ -313,6 +313,32 @@
 							</reports>
 						</reportSet>
 					</reportSets>
+					<groups>
+			            <group>
+		              		<title>Localization</title>
+		              		<packages>com.qcadoo.localization.*</packages>
+			            </group>
+			            <group>
+		              		<title>Model</title>
+		              		<packages>com.qcadoo.model.*</packages>
+			            </group>
+						<group>
+		              		<title>Plugin</title>
+		              		<packages>com.qcadoo.plugin.*</packages>
+			            </group>
+			            <group>
+		              		<title>Report</title>
+		              		<packages>com.qcadoo.report.*</packages>
+			            </group>
+			            <group>
+		              		<title>Security</title>
+		              		<packages>com.qcadoo.security.*</packages>
+			            </group>
+			            <group>
+		              		<title>View</title>
+		              		<packages>com.qcadoo.view.*</packages>
+			            </group>
+		            </groups>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -408,6 +434,9 @@
 			<url>http://nexus.qcadoo.org/content/repositories/snapshots</url>
 			<uniqueVersion>false</uniqueVersion>
 		</snapshotRepository>
+		<site>
+			
+		</site>
 	</distributionManagement>
 
 	<scm>

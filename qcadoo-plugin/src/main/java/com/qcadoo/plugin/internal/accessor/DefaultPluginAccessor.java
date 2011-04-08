@@ -39,11 +39,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.qcadoo.model.beans.qcadooPlugin.QcadooPluginPlugin;
-import com.qcadoo.plugin.api.InternalPluginAccessor;
 import com.qcadoo.plugin.api.Plugin;
 import com.qcadoo.plugin.api.PluginState;
 import com.qcadoo.plugin.api.Version;
 import com.qcadoo.plugin.internal.api.InternalPlugin;
+import com.qcadoo.plugin.internal.api.InternalPluginAccessor;
 import com.qcadoo.plugin.internal.api.ModuleFactoryAccessor;
 import com.qcadoo.plugin.internal.api.PluginDao;
 import com.qcadoo.plugin.internal.api.PluginDependencyManager;
