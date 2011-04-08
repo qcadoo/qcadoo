@@ -41,7 +41,6 @@ import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.qcadoo.plugin.api.InternalPluginAccessor;
 import com.qcadoo.plugin.api.Plugin;
 import com.qcadoo.plugin.api.PluginAccessor;
 import com.qcadoo.plugin.api.PluginDependencyInformation;
@@ -50,6 +49,7 @@ import com.qcadoo.plugin.api.PluginState;
 import com.qcadoo.plugin.api.Version;
 import com.qcadoo.plugin.api.VersionOfDependency;
 import com.qcadoo.plugin.internal.api.InternalPlugin;
+import com.qcadoo.plugin.internal.api.InternalPluginAccessor;
 
 public class PluginDependencyManagerTest {
 

@@ -24,6 +24,9 @@
 
 package com.qcadoo.plugin.api;
 
+/**
+ * It holds plugin's additional information.
+ */
 public class PluginInformation {
 
     private final String description;
@@ -34,6 +37,18 @@ public class PluginInformation {
 
     private final String name;
 
+    /**
+     * Creates additional information with given fields.
+     * 
+     * @param name
+     *            readable name
+     * @param description
+     *            description
+     * @param vendor
+     *            vendor
+     * @param vendorUrl
+     *            verdor's URL
+     */
     public PluginInformation(final String name, final String description, final String vendor, final String vendorUrl) {
         super();
         this.name = name;
@@ -42,18 +57,38 @@ public class PluginInformation {
         this.vendorUrl = vendorUrl;
     }
 
+    /**
+     * Returns plugin's description
+     * 
+     * @return description
+     */
     public String getDescription() {
         return description;
     }
 
+    /**
+     * Returns plugin's vendor
+     * 
+     * @return vendor
+     */
     public String getVendor() {
         return vendor;
     }
 
+    /**
+     * Return's plugin's vendor's URL.
+     * 
+     * @return vendor's url
+     */
     public String getVendorUrl() {
         return vendorUrl;
     }
 
+    /**
+     * Return plugin's readable name.
+     * 
+     * @return name
+     */
     public String getName() {
         return name;
     }

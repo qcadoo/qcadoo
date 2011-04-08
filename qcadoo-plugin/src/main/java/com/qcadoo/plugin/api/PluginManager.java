@@ -26,14 +26,44 @@ package com.qcadoo.plugin.api;
 
 import com.qcadoo.plugin.api.artifact.PluginArtifact;
 
-
+/**
+ * Service to managing plugins.
+ */
 public interface PluginManager {
 
-    PluginOperationResult enablePlugin(final String... keys);
+    /**
+     * Enables plugins with given identifiers.
+     * 
+     * @param identifiers
+     *            identifiers to enable
+     * @return status of the operation
+     */
+    PluginOperationResult enablePlugin(final String... identifiers);
 
-    PluginOperationResult disablePlugin(final String... keys);
+    /**
+     * Disables plugins with given identifiers.
+     * 
+     * @param identifiers
+     *            identifiers to disable
+     * @return status of the operation
+     */
+    PluginOperationResult disablePlugin(final String... identifiers);
 
-    PluginOperationResult uninstallPlugin(final String... keys);
+    /**
+     * Uninstalls plugins with given identifiers.
+     * 
+     * @param identifiers
+     *            identifiers to uninstall
+     * @return status of the operation
+     */
+    PluginOperationResult uninstallPlugin(final String... identifiers);
 
+    /**
+     * Installs plugin from given artifact.
+     * 
+     * @param pluginArtifact
+     *            plugin's artifact
+     * @return status of the operation
+     */
     PluginOperationResult installPlugin(final PluginArtifact pluginArtifact);
 }

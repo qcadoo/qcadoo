@@ -75,7 +75,6 @@ public class RibbonTemplates {
         ribbonDeleteAction.setName("delete");
         ribbonDeleteAction.setType(RibbonActionItem.Type.SMALL_BUTTON);
         ribbonDeleteAction.setEnabled(false);
-        // ribbonDeleteAction.setMessage("noRecordSelected");
         ribbonDeleteAction.setScript("var listener = {onChange: function(selectedArray) {if (selectedArray.length == 0) {"
                 + "this.disable();} else {this.enable();}}}; #{grid}.addOnChangeListener(listener);");
         return ribbonDeleteAction;
@@ -87,7 +86,6 @@ public class RibbonTemplates {
         ribbonCopyAction.setIcon("copyIcon16.png");
         ribbonCopyAction.setName("copy");
         ribbonCopyAction.setEnabled(false);
-        // ribbonCopyAction.setMessage("noRecordSelected");
         ribbonCopyAction.setScript("var listener = {onChange: function(selectedArray) {if (selectedArray.length == 0) {"
                 + "this.disable();} else {this.enable();}}}; #{grid}.addOnChangeListener(listener);");
         ribbonCopyAction.setType(RibbonActionItem.Type.SMALL_BUTTON);

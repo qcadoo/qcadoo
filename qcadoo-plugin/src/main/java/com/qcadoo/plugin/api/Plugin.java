@@ -5,12 +5,12 @@ import java.util.Set;
 import org.jdom.Element;
 
 /**
- * Plugin represents information from plugin descriptor and holds all its modules.
+ * Plugin represents information from plugin's descriptor and holds all its modules.
  * 
  * Plugin, {@link Module} and {@link ModuleFactory} are strongly connected. Below shows licecycle methods in the particular
  * situations.
  * 
- * <h3>Application startup</h3>
+ * <h3>Starting application</h3>
  * 
  * For every module factory, in proper order:
  * 
@@ -37,7 +37,7 @@ import org.jdom.Element;
  * <li>{@link Module#multiTenantEnable()} for every tenant</li>
  * </ul>
  * 
- * <h3>Plugin enabling</h3>
+ * <h3>Enabling plugin</h3>
  * 
  * For plugin in {@link PluginState#DISABLED} state.
  * 
@@ -49,22 +49,22 @@ import org.jdom.Element;
  * For plugin in {@link PluginState#TEMPORARY} state, the state is changed to {@link PluginState#ENABLING} and the system is
  * restarted.
  * 
- * <h3>Plugin disabling</h3>
+ * <h3>Disabling plugin</h3>
  * 
  * <ul>
  * <li>{@link Module#disable()}</li>
  * <li>{@link Module#multiTenantDisable()} for every tenant</li>
  * </ul>
  * 
- * <h3>Plugin installing</h3>
+ * <h3>Installing plugin</h3>
  * 
  * No additional method is called.
  * 
- * <h3>Plugin uninstalling</h3>
+ * <h3>Uninstalling plugin</h3>
  * 
  * If the plugin is enabled, it will be disabled first. The system will be restarted.
  * 
- * <h3>Plugin updating</h3>
+ * <h3>Updating plugin</h3>
  * 
  * If the plugin is enabled, it will be disabled first. The state is set to {@link PluginState#ENABLING} and the system is
  * restarted.
@@ -73,46 +73,65 @@ import org.jdom.Element;
 public interface Plugin {
 
     /**
-     * @return plugin identifier, it is unique in the whole system
+     * Returns plugin's identifier, it is unique in the whole system.
+     * 
+     * @return identifier
      */
     String getIdentifier();
 
     /**
-     * @return version of the plugin
+     * Returns version of the plugin.
+     * 
+     * @return version
      */
     Version getVersion();
 
     /**
-     * @return state of the plugin, only {@link PluginState#ENABLED} plugins are usable in system
+     * Returns state of the plugin, only {@link PluginState#ENABLED} plugins are usable in system.
+     * 
+     * @return state
      */
     PluginState getState();
 
     /**
+     * Returns additional information.
+     * 
      * @return additional information
      */
     PluginInformation getPluginInformation();
 
     /**
+     * Returns requirements information.
+     * 
      * @return requirements information
      */
     Set<PluginDependencyInformation> getRequiredPlugins();
 
     /**
-     * @return true for system plugin, it cannot be disabled and removed
+     * Returns true for system plugin, it means that plugin cannot be disabled and removed.
+     * 
+     * @return true for system plugin
      */
     boolean isSystemPlugin();
 
     /**
-     * @return name the file with plugin
+     * Returns name the file with plugin.
+     * 
+     * @return filename
      */
     String getFilename();
 
     /**
+     * Compares version of the plugin with given version.
+     * 
      * @see Version#compareTo(Version)
+     * @return comparison result
      */
     int compareVersion(Version version);
 
     /**
+     * Checks if plugin has expected state.
+     * 
      * @param expectedState
      *            expected state
      * @return true if plugin is in expected state

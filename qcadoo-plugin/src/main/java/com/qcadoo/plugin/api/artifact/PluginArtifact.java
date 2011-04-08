@@ -32,12 +32,16 @@ import java.io.InputStream;
 public interface PluginArtifact {
 
     /**
-     * @return name of the plugin, will be used to create filename
+     * Name of the plugin, will be used to create filename.
+     * 
+     * @return name of the plugin
      */
     String getName();
 
     /**
-     * @return stream containing the jar with plugin
+     * Stream containing the jar with plugin.
+     * 
+     * @return stream
      */
     InputStream getInputStream();
 

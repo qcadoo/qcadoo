@@ -102,11 +102,11 @@ public class PluginDependencyInformationTest {
         Version v5 = new Version("3.0.1");
 
         // when
-        boolean res1 = dependencyInformation1.isVersionSatisfied(v1);
-        boolean res2 = dependencyInformation2.isVersionSatisfied(v2);
-        boolean res3 = dependencyInformation3.isVersionSatisfied(v3);
-        boolean res4 = dependencyInformation4.isVersionSatisfied(v4);
-        boolean res5 = dependencyInformation5.isVersionSatisfied(v5);
+        boolean res1 = dependencyInformation1.contains(v1);
+        boolean res2 = dependencyInformation2.contains(v2);
+        boolean res3 = dependencyInformation3.contains(v3);
+        boolean res4 = dependencyInformation4.contains(v4);
+        boolean res5 = dependencyInformation5.contains(v5);
 
         // then
         Assert.assertTrue(res1);
@@ -126,11 +126,11 @@ public class PluginDependencyInformationTest {
         Version v5 = new Version("3.0.2");
 
         // when
-        boolean res1 = dependencyInformation1.isVersionSatisfied(v1);
-        boolean res2 = dependencyInformation2.isVersionSatisfied(v2);
-        boolean res3 = dependencyInformation3.isVersionSatisfied(v3);
-        boolean res4 = dependencyInformation4.isVersionSatisfied(v4);
-        boolean res5 = dependencyInformation5.isVersionSatisfied(v5);
+        boolean res1 = dependencyInformation1.contains(v1);
+        boolean res2 = dependencyInformation2.contains(v2);
+        boolean res3 = dependencyInformation3.contains(v3);
+        boolean res4 = dependencyInformation4.contains(v4);
+        boolean res5 = dependencyInformation5.contains(v5);
 
         // then
         Assert.assertFalse(res1);

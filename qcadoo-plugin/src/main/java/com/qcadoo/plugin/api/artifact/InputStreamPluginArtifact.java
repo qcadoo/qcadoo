@@ -36,6 +36,8 @@ public class InputStreamPluginArtifact implements PluginArtifact {
     private final InputStream inputStream;
 
     /**
+     * Create artifact build on raw input stream.
+     * 
      * @param name
      *            name of the plugin
      * @param inputStream

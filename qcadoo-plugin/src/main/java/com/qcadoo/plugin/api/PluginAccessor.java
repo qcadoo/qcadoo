@@ -8,26 +8,34 @@ import java.util.Collection;
 public interface PluginAccessor {
 
     /**
+     * Returns plugin with given identifier and status {@link PluginState#ENABLED}.
+     * 
      * @param identifier
-     *            plugin identifier
-     * @return plugin with given identifier and status {@link PluginState#ENABLED}, otherwise null
+     *            plugin's identifier
+     * @return enabled plugin or null if not found
      */
     Plugin getEnabledPlugin(String identifier);
 
     /**
-     * @return all registered plugins with status {@link PluginState#ENABLED}
+     * Returns all registered plugins with status {@link PluginState#ENABLED}.
+     * 
+     * @return enabled plugins
      */
     Collection<Plugin> getEnabledPlugins();
 
     /**
+     * Returns plugin with given identifier.
+     * 
      * @param identifier
-     *            plugin identifier
-     * @return plugin with given identifier, otherwise null
+     *            plugin's identifier
+     * @return plugin or null if not found
      */
     Plugin getPlugin(String identifier);
 
     /**
-     * @return all registered plugins
+     * Returns all registered plugins.
+     * 
+     * @return plugins
      */
     Collection<Plugin> getPlugins();
 

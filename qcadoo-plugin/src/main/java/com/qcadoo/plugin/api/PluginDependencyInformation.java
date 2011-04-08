@@ -24,31 +24,65 @@
 
 package com.qcadoo.plugin.api;
 
+/**
+ * It represents plugin's requirements. It holds required plugin's identifier and optionally required version.
+ */
 public class PluginDependencyInformation {
 
     private final String identifier;
 
     private final VersionOfDependency version;
 
-    public PluginDependencyInformation(final String key) {
-        this(key, new VersionOfDependency(""));
+    /**
+     * Creates requirement for plugin with given identifier, no required version provided.
+     * 
+     * @param identifier
+     *            required plugin's identifier
+     */
+    public PluginDependencyInformation(final String identifier) {
+        this(identifier, new VersionOfDependency(""));
     }
 
+    /**
+     * Creates requirement for plugin with given identifier and version.
+     * 
+     * @param identifier
+     *            required plugin's identifier
+     * @param version
+     *            required plugin's version
+     */
     public PluginDependencyInformation(final String identifier, final VersionOfDependency version) {
         this.identifier = identifier;
         this.version = version;
     }
 
-    public String getDependencyPluginIdentifier() {
+    /**
+     * Returns required plugin's identifier.
+     * 
+     * @return required plugin's identifier
+     */
+    public String getIdentifier() {
         return identifier;
     }
 
-    public VersionOfDependency getDependencyPluginVersion() {
+    /**
+     * Returns required plugin's version
+     * 
+     * @return required plugin's version
+     */
+    public VersionOfDependency getVersionOfDependency() {
         return version;
     }
 
-    public boolean isVersionSatisfied(final Version version) {
-        return this.version.isVersionSatisfied(version);
+    /**
+     * Returns true if the required plugin's version contains the given one.
+     * 
+     * @param version
+     *            version
+     * @return true if the required plugin's version contains the given one
+     */
+    public boolean contains(final Version version) {
+        return this.version.contains(version);
     }
 
     @Override

@@ -37,8 +37,12 @@ public final class JarPluginArtifact implements PluginArtifact {
     private final File file;
 
     /**
+     * Create artifact build on JAR file.
+     * 
      * @param file
      *            JAR file
+     * @throws IllegalStateException
+     *             if file doesn't exists or cannot be read
      */
     public JarPluginArtifact(final File file) {
         if (!file.exists() || !file.canRead()) {
