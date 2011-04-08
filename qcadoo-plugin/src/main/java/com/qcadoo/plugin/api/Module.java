@@ -25,7 +25,7 @@
 package com.qcadoo.plugin.api;
 
 /**
- * Module is a part of {@link Plugin} and represents some functionality, e.g. model, view, field, etc. Modules are instantiated by
+ * Module is a part of {@link Plugin} and represents some functionality: model, view, field, etc. Modules are instantiated by
  * {@link ModuleFactory}.
  * 
  * @see Plugin plugins and modules lifecycle

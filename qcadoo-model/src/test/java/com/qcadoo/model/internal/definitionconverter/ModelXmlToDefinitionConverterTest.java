@@ -50,7 +50,6 @@ import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.CustomHook;
 import com.qcadoo.model.Utils;
 import com.qcadoo.model.api.DataDefinition;
-import com.qcadoo.model.api.DictionaryService;
 import com.qcadoo.model.api.types.BelongsToType;
 import com.qcadoo.model.api.types.HasManyType;
 import com.qcadoo.model.api.types.TreeType;
@@ -98,8 +97,6 @@ public class ModelXmlToDefinitionConverterTest {
 
     private static ApplicationContext applicationContext;
 
-    private static DictionaryService dictionaryService;
-
     private static TranslationService translationService;
 
     private static InternalDataDefinition dataDefinition;
@@ -110,7 +107,6 @@ public class ModelXmlToDefinitionConverterTest {
     public static void init() throws Exception {
         applicationContext = mock(ApplicationContext.class);
         dataAccessService = mock(DataAccessService.class);
-        dictionaryService = mock(DictionaryService.class);
         translationService = mock(TranslationService.class);
 
         dataDefinitionService = new DataDefinitionServiceImpl();
@@ -312,6 +308,7 @@ public class ModelXmlToDefinitionConverterTest {
         testListHookDefinition(dataDefinition, "copyHooks", CustomHook.class, "copyHook");
     }
 
+    @SuppressWarnings("unchecked")
     private void testListHookDefinition(final Object object, final String hookFieldName, final Class<?> hookBeanClass,
             final String hookMethodName) {
         List<EntityHookDefinition> hook = (List<EntityHookDefinition>) getField(object, hookFieldName);

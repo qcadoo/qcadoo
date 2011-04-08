@@ -133,6 +133,7 @@ public final class DataAccessServiceSaveTest extends DataAccessTest {
         assertTrue(entity.isValid());
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void shouldSaveHasManyField() throws Exception {
         // given
@@ -202,6 +203,7 @@ public final class DataAccessServiceSaveTest extends DataAccessTest {
         verify(session, times(1)).save(Mockito.any());
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void shouldSaveTreeField() throws Exception {
         // given

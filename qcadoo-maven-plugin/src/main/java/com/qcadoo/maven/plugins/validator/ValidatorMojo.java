@@ -26,7 +26,7 @@ import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 import org.xml.sax.SAXException;
 
-import com.qcadoo.plugin.api.ValidationErrorHandler;
+import com.qcadoo.plugin.api.errorhander.ValidationErrorHandler;
 
 /**
  * 

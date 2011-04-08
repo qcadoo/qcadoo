@@ -12,10 +12,15 @@ import org.jdom.Element;
  * 
  * <h3>Starting application</h3>
  * 
- * For every module factory, in proper order:
+ * For every plugin's description, for every module:
  * 
  * <ul>
  * <li>{@link ModuleFactory#parse(String, Element)}</li>
+ * </ul>
+ * 
+ * For every module factory, in proper order:
+ * 
+ * <ul>
  * <li>{@link ModuleFactory#preInit()}</li>
  * <li>{@link Module#init()} for every module belongs to this module factory, in plugin dependency order</li>
  * <li>{@link ModuleFactory#postInit()}</li>

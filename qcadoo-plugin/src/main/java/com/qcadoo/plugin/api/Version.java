@@ -26,6 +26,9 @@ package com.qcadoo.plugin.api;
 
 import java.io.Serializable;
 
+/**
+ * Version of the plugin - contains three numbers - major, minor and branch.
+ */
 public class Version implements Comparable<Version>, Serializable {
 
     private static final long serialVersionUID = 2842201303893250557L;
@@ -36,10 +39,30 @@ public class Version implements Comparable<Version>, Serializable {
 
     private final int branch;
 
+    /**
+     * Creates version from string. Numbers are split using dot. Dash and everything after it is ignored. If there is one number,
+     * minor and branch will be set to 0. If there are two numbers, branch will be set to 0.
+     * 
+     * Examples:
+     * 
+     * <ul>
+     * <li>2.3.4-SNAPSHOT: 2.3.4</li>
+     * <li>2.3.4: 2.3.4</li>
+     * <li>2.3: 2.3.0</li>
+     * <li>2: 2.0.0</li>
+     * </ul>
+     * 
+     * @param version
+     *            version
+     * @throws IllegalStateException
+     *             if there are more than three numbers or less than 1
+     * @throws NumberFormatException
+     *             if any of the number is not valid integer
+     */
     public Version(final String version) {
-        String[] split = version.split("\\.");
+        String[] split = version.split("-")[0].split("\\.");
 
-        if (split.length > 3) {
+        if (split.length > 3 || split.length < 1) {
             throw new IllegalStateException("Version " + version + " is invalid");
         }
 

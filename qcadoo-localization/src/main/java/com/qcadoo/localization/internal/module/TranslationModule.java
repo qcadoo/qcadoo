@@ -44,7 +44,7 @@ public class TranslationModule extends Module {
 
     @Override
     public void enable() {
-        if (basename == null) {
+        if (basename == null || "*".equals(basename)) {
             basenames.addAll(getAllFilesFromPath());
         } else {
             basenames.add("classpath:" + pluginIdentifier + "/" + path + "/" + basename);
@@ -55,7 +55,7 @@ public class TranslationModule extends Module {
 
     @Override
     public void disable() {
-        if (basename == null) {
+        if (basename == null || "*".equals(basename)) {
             basenames.removeAll(getAllFilesFromPath());
         } else {
             basenames.remove("classpath:" + pluginIdentifier + "/" + path + "/" + basename);
@@ -65,7 +65,6 @@ public class TranslationModule extends Module {
     }
 
     private Collection<? extends String> getAllFilesFromPath() {
-
         Set<String> basenamesInDirectory = new LinkedHashSet<String>();
 
         try {
