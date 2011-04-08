@@ -324,14 +324,28 @@
 	</reporting>
 
 	<repositories>
-		<repository>
-			<id>qcadoo-repository</id>
-			<url>http://nexus.qcadoo.org/content/groups/public</url>
+ 		<repository>
+			<id>qcadoo-releases-repository</id>
+			<url>http://nexus.qcadoo.org/content/repositories/releases</url>
 			<releases>
 				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+				<updatePolicy>never</updatePolicy>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>qcadoo-snapshots-repository</id>
+			<url>http://nexus.qcadoo.org/content/repositories/snapshots</url>
+			<releases>
+				<enabled>false</enabled>
+				<updatePolicy>never</updatePolicy>
 			</releases>
 			<snapshots>
 				<enabled>true</enabled>
+				<updatePolicy>interval:5</updatePolicy>
 			</snapshots>
 		</repository>
 		<repository>
@@ -339,9 +353,11 @@
 			<url>http://repository.jboss.org/nexus/content/groups/public/</url>
 			<releases>
 				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
 			</releases>
 			<snapshots>
 				<enabled>false</enabled>
+				<updatePolicy>never</updatePolicy>
 			</snapshots>
 		</repository>
 		<repository>
@@ -349,9 +365,11 @@
 			<url>http://maven.alfresco.com/nexus/content/repositories/public/</url>
 			<releases>
 				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
 			</releases>
 			<snapshots>
 				<enabled>false</enabled>
+				<updatePolicy>never</updatePolicy>
 			</snapshots>
 		</repository>
 		<repository>
@@ -359,9 +377,11 @@
 			<url>http://repository.codehaus.org/</url>
 			<releases>
 				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
 			</releases>
 			<snapshots>
 				<enabled>false</enabled>
+				<updatePolicy>never</updatePolicy>
 			</snapshots>
 		</repository>
 		<repository>
@@ -369,9 +389,11 @@
 			<url>http://mc-repo.googlecode.com/svn/maven2/releases</url>
 			<releases>
 				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
 			</releases>
 			<snapshots>
 				<enabled>false</enabled>
+				<updatePolicy>never</updatePolicy>
 			</snapshots>
 		</repository>
 	</repositories>
@@ -384,6 +406,7 @@
 		<snapshotRepository>
 			<id>qcadoo-snapshots-repository</id>
 			<url>http://nexus.qcadoo.org/content/repositories/snapshots</url>
+			<uniqueVersion>false</uniqueVersion>
 		</snapshotRepository>
 	</distributionManagement>
 
