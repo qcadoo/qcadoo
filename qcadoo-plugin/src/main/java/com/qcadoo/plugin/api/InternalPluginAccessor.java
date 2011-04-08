@@ -22,17 +22,12 @@
  * ***************************************************************************
  */
 
-package com.qcadoo.plugin.internal.api;
+package com.qcadoo.plugin.api;
 
-import java.util.Set;
+public interface InternalPluginAccessor extends PluginAccessor {
 
-import org.springframework.core.io.Resource;
+    void savePlugin(Plugin plugin);
 
-
-public interface PluginDescriptorParser {
-
-    InternalPlugin parse(final Resource resource, final boolean ignoreModules);
-
-    Set<InternalPlugin> loadPlugins();
+    void removePlugin(Plugin plugin);
 
 }

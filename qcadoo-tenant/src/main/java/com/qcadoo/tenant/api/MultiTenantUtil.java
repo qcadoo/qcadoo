@@ -1,20 +1,29 @@
 package com.qcadoo.tenant.api;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class MultiTenantUtil {
 
-    private static MultiTenantService multiTenantService;
-
     @Autowired
-    public MultiTenantUtil(final MultiTenantService multiTenantService) {
-        MultiTenantUtil.multiTenantService = multiTenantService;
+    private MultiTenantService multiTenantService;
+
+    private static MultiTenantUtil instance;
+
+    @PostConstruct
+    public void init() {
+        initialise(this);
+    }
+
+    private static void initialise(final MultiTenantUtil multiTenantUtil) {
+        MultiTenantUtil.instance = multiTenantUtil;
     }
 
     public static void doInMultiTenantContext(final MultiTenantCallback callback) {
-        MultiTenantUtil.multiTenantService.doInMultiTenantContext(callback);
+        MultiTenantUtil.instance.multiTenantService.doInMultiTenantContext(callback);
     }
 
 }

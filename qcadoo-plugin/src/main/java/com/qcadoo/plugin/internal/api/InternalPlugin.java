@@ -24,15 +24,17 @@
 
 package com.qcadoo.plugin.internal.api;
 
-import java.util.Set;
+import java.util.List;
 
-import org.springframework.core.io.Resource;
+import com.qcadoo.plugin.api.Module;
+import com.qcadoo.plugin.api.ModuleFactory;
+import com.qcadoo.plugin.api.Plugin;
+import com.qcadoo.plugin.api.PluginState;
 
+public interface InternalPlugin extends Plugin {
 
-public interface PluginDescriptorParser {
+    void changeStateTo(PluginState state);
 
-    InternalPlugin parse(final Resource resource, final boolean ignoreModules);
-
-    Set<InternalPlugin> loadPlugins();
+    List<Module> getModules(ModuleFactory<?> moduleFactory);
 
 }

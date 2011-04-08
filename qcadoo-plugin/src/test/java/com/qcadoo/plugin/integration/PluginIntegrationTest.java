@@ -41,7 +41,9 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.test.util.ReflectionTestUtils;
 
+import com.qcadoo.plugin.api.InternalPluginAccessor;
 import com.qcadoo.plugin.api.PluginAccessor;
 import com.qcadoo.plugin.api.PluginManager;
 import com.qcadoo.plugin.api.PluginOperationResult;
@@ -49,6 +51,7 @@ import com.qcadoo.plugin.api.PluginOperationStatus;
 import com.qcadoo.plugin.api.PluginState;
 import com.qcadoo.plugin.api.Version;
 import com.qcadoo.plugin.api.artifact.JarPluginArtifact;
+import com.qcadoo.plugin.internal.api.InternalPlugin;
 import com.qcadoo.plugin.internal.api.PluginDescriptorResolver;
 import com.qcadoo.plugin.internal.api.PluginFileManager;
 import com.qcadoo.tenant.api.MultiTenantUtil;
@@ -73,7 +76,9 @@ public class PluginIntegrationTest {
 
     @Before
     public void init() throws Exception {
-        new MultiTenantUtil(new DefaultMultiTenantService());
+        MultiTenantUtil multiTenantUtil = new MultiTenantUtil();
+        ReflectionTestUtils.setField(multiTenantUtil, "multiTenantService", new DefaultMultiTenantService());
+        multiTenantUtil.init();
 
         new File("target/plugins").mkdir();
         new File("target/tmpPlugins").mkdir();
@@ -82,7 +87,7 @@ public class PluginIntegrationTest {
         applicationContext.registerShutdownHook();
 
         pluginResolver = applicationContext.getBean(PluginDescriptorResolver.class);
-        pluginAccessor = applicationContext.getBean(PluginAccessor.class);
+        pluginAccessor = applicationContext.getBean(InternalPluginAccessor.class);
         pluginManager = applicationContext.getBean(PluginManager.class);
         pluginFileManager = applicationContext.getBean(PluginFileManager.class);
         sessionFactory = applicationContext.getBean(SessionFactory.class);
@@ -271,7 +276,7 @@ public class PluginIntegrationTest {
 
         pluginManager.installPlugin(artifact);
         pluginManager.enablePlugin("plugin4");
-        pluginAccessor.getPlugin("plugin4").changeStateTo(PluginState.ENABLED);
+        ((InternalPlugin) pluginAccessor.getPlugin("plugin4")).changeStateTo(PluginState.ENABLED);
 
         // when
         PluginOperationResult result = pluginManager.installPlugin(artifact2);

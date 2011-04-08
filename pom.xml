@@ -384,7 +384,6 @@
 		<snapshotRepository>
 			<id>qcadoo-snapshots-repository</id>
 			<url>http://nexus.qcadoo.org/content/repositories/snapshots</url>
-			<uniqueVersion>true</uniqueVersion>
 		</snapshotRepository>
 	</distributionManagement>
 

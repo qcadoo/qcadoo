@@ -32,11 +32,12 @@ import static org.mockito.Mockito.verify;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import com.qcadoo.plugin.api.Module;
 import com.qcadoo.plugin.api.ModuleFactory;
-import com.qcadoo.plugin.api.Plugin;
 import com.qcadoo.plugin.api.PluginState;
+import com.qcadoo.plugin.internal.api.InternalPlugin;
 import com.qcadoo.tenant.api.MultiTenantUtil;
 import com.qcadoo.tenant.internal.DefaultMultiTenantService;
 
@@ -44,7 +45,9 @@ public class PluginChangeStateToTest {
 
     @Test
     public void shouldChangeState() throws Exception {
-        new MultiTenantUtil(new DefaultMultiTenantService());
+        MultiTenantUtil multiTenantUtil = new MultiTenantUtil();
+        ReflectionTestUtils.setField(multiTenantUtil, "multiTenantService", new DefaultMultiTenantService());
+        multiTenantUtil.init();
 
         assertOperationNotSupported(null, PluginState.UNKNOWN);
         assertOperationSupported(null, PluginState.TEMPORARY, false, false);
@@ -79,7 +82,7 @@ public class PluginChangeStateToTest {
 
     private void assertOperationNotSupported(final PluginState from, final PluginState to) throws Exception {
         // given
-        Plugin plugin = DefaultPlugin.Builder.identifier("identifier").build();
+        InternalPlugin plugin = DefaultPlugin.Builder.identifier("identifier").build();
 
         if (from != null) {
             plugin.changeStateTo(from);
@@ -101,7 +104,7 @@ public class PluginChangeStateToTest {
         Module module1 = mock(Module.class);
         Module module2 = mock(Module.class);
 
-        Plugin plugin = DefaultPlugin.Builder.identifier("identifier").withModule(moduleFactory, module1)
+        InternalPlugin plugin = DefaultPlugin.Builder.identifier("identifier").withModule(moduleFactory, module1)
                 .withModule(moduleFactory, module2).build();
 
         if (from != null) {

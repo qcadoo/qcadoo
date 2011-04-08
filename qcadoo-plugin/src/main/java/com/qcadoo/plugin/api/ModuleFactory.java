@@ -27,28 +27,43 @@ package com.qcadoo.plugin.api;
 import org.jdom.Element;
 
 /**
- * {@link ModuleFactory#parse(String, Element)}
- * {@link ModuleFactory#preInit()}
- * {@link Module#init()}
- * {@link ModuleFactory#postInit()}
- * {@link Module#enableOnStartup()}
- * {@link Module#disableOnStartup()}
- * {@link Module#enable()}
- * {@link Module#disable()}
+ * Factory is responsible for parsing descriptors and creating instances of {@link Module}.
+ * 
+ * @see Plugin for plugin lifecycle
  */
 public abstract class ModuleFactory<T extends Module> {
 
-    
+    /**
+     * Callback is invoke once on application startup, before the {@link Module#init()}.
+     */
     public void preInit() {
         // empty
     }
 
+    /**
+     * Callback is invoke once on application startup, after the {@link Module#init()}.
+     */
     public void postInit() {
         // empty
     }
 
+    /**
+     * Parses descriptor and creates instance of {@link Module}.
+     * 
+     * @param pluginIdentifier
+     *            plugin identifier
+     * @param element
+     *            xml element describing module
+     * @return module instance
+     */
     public abstract T parse(String pluginIdentifier, Element element);
 
+    /**
+     * Identifier is used to distinguish the type of the module. It is equal to the name of the tag in section "modules" in plugin
+     * descriptor.
+     * 
+     * @return module identifier
+     */
     public abstract String getIdentifier();
 
 }
