@@ -47,7 +47,7 @@ public class PluginDependencyInformation {
         return version;
     }
 
-    public boolean isVersionSattisfied(final Version version) {
+    public boolean isVersionSatisfied(final Version version) {
         return this.version.isVersionSatisfied(version);
     }
 

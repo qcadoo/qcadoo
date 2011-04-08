@@ -353,4 +353,10 @@ public final class DefaultPlugin implements InternalPlugin {
         return true;
     }
 
+    @Override
+    public String toString() {
+        return "DefaultPlugin [identifier=" + identifier + ", version=" + version + ", state=" + state + ", system=" + system
+                + "]";
+    }
+
 }

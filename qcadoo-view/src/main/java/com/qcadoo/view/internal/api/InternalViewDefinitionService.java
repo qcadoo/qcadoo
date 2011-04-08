@@ -31,7 +31,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import com.qcadoo.view.api.ViewDefinition;
 import com.qcadoo.view.api.ViewDefinitionService;
 
-
 /**
  * Service for manipulating view definitions.
  * 
@@ -51,12 +50,9 @@ public interface InternalViewDefinitionService extends ViewDefinitionService {
      * @return the view definition, null if not found
      */
     @Override
-    @PreAuthorize("hasRole('ROLE_ADMIN') or (#pluginIdentifier == 'dictionaries') or (#pluginIdentifier == 'products' "
-            + "and (#viewName != 'orders' and #viewName != 'order' or hasRole('ROLE_SUPERVISOR'))) or "
-            + "(#pluginIdentifier == 'basic') or "
-            + "(#pluginIdentifier == 'qualityControls') or "
-            + "(#pluginIdentifier == 'genealogies') or "
-            + "(#pluginIdentifier == 'users' and (#viewName == 'profile' or #viewName == 'profileChangePassword')) or (#pluginIdentifier == 'core' and #viewName == 'systemInfo')")
+    @PreAuthorize("hasRole('ROLE_ADMIN') "
+            + "or !(((#pluginIdentifier == 'users') and !(#viewName == 'profile' or #viewName == 'profileChangePassword'))"
+            + "or (#pluginIdentifier == 'menu') or (#pluginIdentifier == 'plugins'))")
     ViewDefinition get(String pluginIdentifier, String viewName);
 
     /**

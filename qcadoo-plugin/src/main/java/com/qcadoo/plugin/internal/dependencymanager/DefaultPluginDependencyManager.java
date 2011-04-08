@@ -24,10 +24,8 @@
 
 package com.qcadoo.plugin.internal.dependencymanager;
 
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -93,7 +91,7 @@ public final class DefaultPluginDependencyManager implements PluginDependencyMan
                     continue;
                 }
 
-                if (!dependencyInfo.isVersionSattisfied(requiredPlugin.getVersion())) {
+                if (!dependencyInfo.isVersionSatisfied(requiredPlugin.getVersion())) {
                     unsatisfiedDependencies.add(dependencyInfo);
                 } else {
                     disabledDependencies.add(dependencyInfo);
@@ -155,7 +153,7 @@ public final class DefaultPluginDependencyManager implements PluginDependencyMan
             }
             for (PluginDependencyInformation dependencyInfo : plugin.getRequiredPlugins()) {
                 if (dependencyInfo.getDependencyPluginIdentifier().equals(existingPlugin.getIdentifier())) {
-                    if (!dependencyInfo.isVersionSattisfied(newPlugin.getVersion())) {
+                    if (!dependencyInfo.isVersionSatisfied(newPlugin.getVersion())) {
                         dependenciesToDisableUnsatisfiedAfterUpdate.add(new PluginDependencyInformation(plugin.getIdentifier()));
                     }
                     break;
@@ -166,35 +164,32 @@ public final class DefaultPluginDependencyManager implements PluginDependencyMan
         return PluginDependencyResult.dependenciesToUpdate(dependentPlugins, dependenciesToDisableUnsatisfiedAfterUpdate);
     }
 
-    private static class DependencyComparator implements Comparator<Plugin>, Serializable {
-
-        private static final long serialVersionUID = 1821666538483568800L;
-
-        @Override
-        public int compare(final Plugin o1, final Plugin o2) {
-            if (o1.isSystemPlugin() && !o2.isSystemPlugin()) {
-                return -1;
-            } else if (!o1.isSystemPlugin() && o2.isSystemPlugin()) {
-                return 1;
-            }
-            return 0;
-        }
-    }
-
     @Override
     public List<Plugin> sortPluginsInDependencyOrder(final Collection<Plugin> plugins) {
 
+        // Map: not initialized pugins -> its dependencies
         Map<String, Set<String>> notInitializedPlugins = createPluginsMapWithDependencies(plugins);
 
         List<String> initializedPlugins = new LinkedList<String>();
 
+        // While not all plugins are initialized...
         while (!notInitializedPlugins.isEmpty()) {
+
             Iterator<Map.Entry<String, Set<String>>> pluginsToInitializedIt = notInitializedPlugins.entrySet().iterator();
+
+            // ..for all not initialized plugins...
             while (pluginsToInitializedIt.hasNext()) {
+
                 Map.Entry<String, Set<String>> pluginToInitializeEntry = pluginsToInitializedIt.next();
+
+                // ...if plugin has no dependencies...
                 if (pluginToInitializeEntry.getValue().isEmpty()) {
+
+                    // ...set this plugin as initialized...
                     initializedPlugins.add(pluginToInitializeEntry.getKey());
                     pluginsToInitializedIt.remove();
+
+                    // ...and remove it from all dependencies
                     for (Set<String> dependencies : notInitializedPlugins.values()) {
                         dependencies.remove(pluginToInitializeEntry.getKey());
                     }
