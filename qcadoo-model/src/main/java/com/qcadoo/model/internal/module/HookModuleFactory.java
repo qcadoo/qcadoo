@@ -62,7 +62,7 @@ public class HookModuleFactory extends ModuleFactory<HookModule> {
 
     @Override
     public String getIdentifier() {
-        return "hook";
+        return "model-hook";
     }
 
 }

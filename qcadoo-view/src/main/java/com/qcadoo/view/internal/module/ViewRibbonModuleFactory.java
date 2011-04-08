@@ -30,7 +30,7 @@ public class ViewRibbonModuleFactory extends ModuleFactory<ViewRibbonModule> {
 
     @Override
     public String getIdentifier() {
-        return "viewRibbonExtension";
+        return "view-ribbon-group";
     }
 
 }

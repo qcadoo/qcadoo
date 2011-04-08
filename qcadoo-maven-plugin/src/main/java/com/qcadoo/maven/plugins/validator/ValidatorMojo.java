@@ -78,10 +78,10 @@ public class ValidatorMojo extends AbstractMojo {
         for (String file : getViewResources(pluginDescriptor, "view")) {
             validateSchema(file);
         }
-        for (String file : getViewResources(pluginDescriptor, "viewRibbonExtension")) {
+        for (String file : getViewResources(pluginDescriptor, "view-ribbon-group")) {
             validateSchema(file);
         }
-        for (String file : getViewResources(pluginDescriptor, "viewWindowTabExtension")) {
+        for (String file : getViewResources(pluginDescriptor, "view-tab")) {
             validateSchema(file);
         }
     }

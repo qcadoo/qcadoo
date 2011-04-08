@@ -51,7 +51,7 @@ public class ViewHookModuleFactory extends ModuleFactory<ViewHookModule> {
 
     @Override
     public String getIdentifier() {
-        return "viewHookExtension";
+        return "view-hook";
     }
 
 }

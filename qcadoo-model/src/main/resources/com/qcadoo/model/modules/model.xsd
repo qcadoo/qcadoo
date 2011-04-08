@@ -38,7 +38,7 @@
 		</xs:complexType>
 	</xs:element>
 	
-	<xs:element name="field">
+	<xs:element name="model-field">
 		<xs:complexType>	
 			<xs:sequence>
 				<xs:group ref="fieldsType" />
@@ -48,7 +48,7 @@
 		</xs:complexType>
 	</xs:element>
 	
-	<xs:element name="hook">
+	<xs:element name="model-hook">
 		<xs:complexType>
 			<xs:sequence>
 				<xs:group ref="hooksType" />

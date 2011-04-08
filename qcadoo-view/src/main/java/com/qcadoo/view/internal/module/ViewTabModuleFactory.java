@@ -30,7 +30,7 @@ public class ViewTabModuleFactory extends ModuleFactory<ViewTabModule> {
 
     @Override
     public String getIdentifier() {
-        return "viewWindowTabExtension";
+        return "view-tab";
     }
 
 }
