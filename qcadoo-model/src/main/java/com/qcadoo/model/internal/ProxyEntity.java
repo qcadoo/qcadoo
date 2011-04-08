@@ -210,16 +210,6 @@ public final class ProxyEntity implements Entity {
     }
 
     @Override
-    public String getName() {
-        return dataDefinition.getName();
-    }
-
-    @Override
-    public String getPluginIdentifier() {
-        return dataDefinition.getPluginIdentifier();
-    }
-
-    @Override
     public String toString() {
         return "EntityProxy[" + dataDefinition.getPluginIdentifier() + "." + dataDefinition.getName() + "][id=" + id + "]";
     }

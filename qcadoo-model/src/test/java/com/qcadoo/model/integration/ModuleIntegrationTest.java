@@ -97,7 +97,7 @@ public class ModuleIntegrationTest extends IntegrationTest {
     public void shouldNotHaveAdditinanalFieldsAndHooks() throws Exception {
         // given
         DataDefinition machineDao = dataDefinitionService.get(PLUGIN_MACHINES_NAME, ENTITY_NAME_MACHINE);
-        Entity machine = machineDao.save(createMachine("asd"));
+        machineDao.save(createMachine("asd"));
 
         applicationContext.getBean(PluginManager.class).disablePlugin("machines");
 

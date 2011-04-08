@@ -56,8 +56,8 @@ public class CrudIntegrationTest extends IntegrationTest {
         assertEquals("def", product.getField("number"));
         assertNotNull(product.getId());
         assertTrue(product.isValid());
-        assertEquals("product", product.getName());
-        assertEquals("products", product.getPluginIdentifier());
+        assertEquals("product", product.getDataDefinition().getName());
+        assertEquals("products", product.getDataDefinition().getPluginIdentifier());
 
         Map<String, Object> result = jdbcTemplate.queryForMap("select * from " + TABLE_NAME_PRODUCT);
 
