@@ -24,8 +24,16 @@
 
 package com.qcadoo.plugin.api;
 
+/**
+ * Servise to managing server.
+ */
 public interface PluginServerManager {
 
+    /**
+     * Restarts server.
+     * 
+     * @see PluginOperationStatus#SUCCESS_WITH_RESTART
+     */
     void restart();
 
 }

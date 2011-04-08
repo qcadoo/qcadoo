@@ -93,6 +93,16 @@ public class PluginTest {
     }
 
     @Test
+    public void shouldParseVersion() throws Exception {
+        assertEquals("1.2.3", new Version("1.2.3").toString());
+        assertEquals("1.2.0", new Version("1.2").toString());
+        assertEquals("1.0.0", new Version("1").toString());
+        assertEquals("1.2.3", new Version("1.2.3-SNAPSHOT").toString());
+        assertEquals("1.2.0", new Version("1.2-SNAPSHOT").toString());
+        assertEquals("1.0.0", new Version("1-SNAPSHOT").toString());
+    }
+
+    @Test
     public void shouldHaveInformation() throws Exception {
         // given
         Plugin plugin = DefaultPlugin.Builder.identifier("identifier1").withDescription("description").withName("name")
