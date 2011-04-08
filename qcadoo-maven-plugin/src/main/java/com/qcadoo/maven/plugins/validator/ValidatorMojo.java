@@ -72,22 +72,22 @@ public class ValidatorMojo extends AbstractMojo {
 
         validateSchema(basedir + resourcePath + "qcadoo-plugin.xml");
 
-        for (String file : getModelResources(pluginDescriptor)) {
+        for (String file : getResources(pluginDescriptor, "model")) {
             validateSchema(file);
         }
-        for (String file : getViewResources(pluginDescriptor, "view")) {
+        for (String file : getResources(pluginDescriptor, "view")) {
             validateSchema(file);
         }
-        for (String file : getViewResources(pluginDescriptor, "view-ribbon-group")) {
+        for (String file : getResources(pluginDescriptor, "view-ribbon-group")) {
             validateSchema(file);
         }
-        for (String file : getViewResources(pluginDescriptor, "view-tab")) {
+        for (String file : getResources(pluginDescriptor, "view-tab")) {
             validateSchema(file);
         }
     }
 
     @SuppressWarnings("unchecked")
-    private Set<String> getViewResources(final String pluginDescriptor, final String type) {
+    private Set<String> getResources(final String pluginDescriptor, final String type) {
         Set<String> resources = new HashSet<String>();
 
         try {
@@ -97,33 +97,6 @@ public class ValidatorMojo extends AbstractMojo {
 
             if (document.getRootElement().getChild("modules", null) != null) {
                 List<Element> elements = document.getRootElement().getChild("modules", null).getChildren(type, null);
-
-                for (Element element : elements) {
-                    for (Element resource : (List<Element>) element.getChildren()) {
-                        resources.add(basedir + resourcePath + pluginName + "/" + resource.getTextTrim());
-                    }
-                }
-            }
-        } catch (IOException e) {
-            getLog().error(e.getMessage());
-        } catch (JDOMException e) {
-            getLog().error(e.getMessage());
-        }
-
-        return resources;
-    }
-
-    @SuppressWarnings("unchecked")
-    private Set<String> getModelResources(final String pluginDescriptor) {
-        Set<String> resources = new HashSet<String>();
-
-        try {
-            Document document = new SAXBuilder().build(new File(pluginDescriptor));
-
-            String pluginName = document.getRootElement().getAttributeValue("plugin");
-
-            if (document.getRootElement().getChild("modules", null) != null) {
-                List<Element> elements = document.getRootElement().getChild("modules", null).getChildren("model", null);
 
                 for (Element element : elements) {
                     resources.add(basedir + resourcePath + pluginName + "/" + element.getAttributeValue("resource"));
