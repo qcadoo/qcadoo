@@ -1,10 +1,10 @@
-package com.qcadoo.maven.plugins;
+package com.qcadoo.plugin.api;
 
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-public class SimpleErrorHandler implements ErrorHandler {
+public class ValidationErrorHandler implements ErrorHandler {
 
     @Override
     public void error(final SAXParseException e) throws SAXException {
