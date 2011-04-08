@@ -62,9 +62,9 @@ import org.xml.sax.SAXParseException;
 import com.google.common.base.Preconditions;
 import com.qcadoo.plugin.api.Module;
 import com.qcadoo.plugin.api.ModuleFactory;
-import com.qcadoo.plugin.api.Plugin;
 import com.qcadoo.plugin.internal.DefaultPlugin.Builder;
 import com.qcadoo.plugin.internal.PluginException;
+import com.qcadoo.plugin.internal.api.InternalPlugin;
 import com.qcadoo.plugin.internal.api.ModuleFactoryAccessor;
 import com.qcadoo.plugin.internal.api.PluginDescriptorParser;
 import com.qcadoo.plugin.internal.api.PluginDescriptorResolver;
@@ -110,7 +110,7 @@ public class DefaultPluginDescriptorParser implements PluginDescriptorParser {
     }
 
     @Override
-    public Plugin parse(final Resource resource, final boolean ignoreModules) {
+    public InternalPlugin parse(final Resource resource, final boolean ignoreModules) {
         try {
             LOG.info("Parsing: " + resource);
 
@@ -120,7 +120,7 @@ public class DefaultPluginDescriptorParser implements PluginDescriptorParser {
 
             Builder pluginBuilder = parsePluginNode(root, ignoreModules);
 
-            Plugin plugin = pluginBuilder.withFileName(
+            InternalPlugin plugin = pluginBuilder.withFileName(
                     FilenameUtils.getName(ResourceUtils.extractJarFileURL(resource.getURL()).toString())).build();
 
             LOG.info("Parse complete");
@@ -137,10 +137,10 @@ public class DefaultPluginDescriptorParser implements PluginDescriptorParser {
     }
 
     @Override
-    public Set<Plugin> loadPlugins() {
-        Map<String, Plugin> loadedplugins = new HashMap<String, Plugin>();
+    public Set<InternalPlugin> loadPlugins() {
+        Map<String, InternalPlugin> loadedplugins = new HashMap<String, InternalPlugin>();
         for (Resource resource : pluginDescriptorResolver.getDescriptors()) {
-            Plugin plugin = parse(resource, false);
+            InternalPlugin plugin = parse(resource, false);
 
             if (loadedplugins.containsKey(plugin.getIdentifier())) {
                 throw new PluginException("Duplicated plugin identifier: " + plugin.getIdentifier());
@@ -148,7 +148,7 @@ public class DefaultPluginDescriptorParser implements PluginDescriptorParser {
 
             loadedplugins.put(plugin.getIdentifier(), plugin);
         }
-        return new HashSet<Plugin>(loadedplugins.values());
+        return new HashSet<InternalPlugin>(loadedplugins.values());
     }
 
     private Builder parsePluginNode(final Node pluginNode, final boolean ignoreModules) {

@@ -39,17 +39,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.qcadoo.model.beans.qcadooPlugin.QcadooPluginPlugin;
+import com.qcadoo.plugin.api.InternalPluginAccessor;
 import com.qcadoo.plugin.api.Plugin;
-import com.qcadoo.plugin.api.PluginAccessor;
 import com.qcadoo.plugin.api.PluginState;
 import com.qcadoo.plugin.api.Version;
+import com.qcadoo.plugin.internal.api.InternalPlugin;
 import com.qcadoo.plugin.internal.api.ModuleFactoryAccessor;
 import com.qcadoo.plugin.internal.api.PluginDao;
 import com.qcadoo.plugin.internal.api.PluginDependencyManager;
 import com.qcadoo.plugin.internal.api.PluginDescriptorParser;
 
 @Service
-public final class DefaultPluginAccessor implements PluginAccessor {
+public final class DefaultPluginAccessor implements InternalPluginAccessor {
 
     private static final Logger LOG = LoggerFactory.getLogger(DefaultPluginAccessor.class);
 
@@ -107,10 +108,10 @@ public final class DefaultPluginAccessor implements PluginAccessor {
 
         long time = System.currentTimeMillis();
 
-        Set<Plugin> pluginsFromDescriptor = pluginDescriptorParser.loadPlugins();
+        Set<InternalPlugin> pluginsFromDescriptor = pluginDescriptorParser.loadPlugins();
         Set<QcadooPluginPlugin> pluginsFromDatabase = pluginDao.list();
 
-        for (Plugin plugin : pluginsFromDescriptor) {
+        for (InternalPlugin plugin : pluginsFromDescriptor) {
             QcadooPluginPlugin existingPlugin = null;
             for (QcadooPluginPlugin databasePlugin : pluginsFromDatabase) {
                 if (plugin.getIdentifier().equals(databasePlugin.getIdentifier())) {
@@ -157,7 +158,7 @@ public final class DefaultPluginAccessor implements PluginAccessor {
 
         for (Plugin plugin : sortedPlugins) {
             if (plugin.hasState(PluginState.ENABLING)) {
-                plugin.changeStateTo(PluginState.ENABLED);
+                ((InternalPlugin) plugin).changeStateTo(PluginState.ENABLED);
                 pluginDao.save(plugin);
             }
         }

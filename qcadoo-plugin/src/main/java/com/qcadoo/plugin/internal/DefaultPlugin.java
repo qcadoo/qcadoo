@@ -33,6 +33,7 @@ import static java.util.Collections.unmodifiableList;
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Collections.unmodifiableSet;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -43,16 +44,16 @@ import java.util.Set;
 
 import com.qcadoo.plugin.api.Module;
 import com.qcadoo.plugin.api.ModuleFactory;
-import com.qcadoo.plugin.api.Plugin;
 import com.qcadoo.plugin.api.PluginDependencyInformation;
 import com.qcadoo.plugin.api.PluginInformation;
 import com.qcadoo.plugin.api.PluginState;
 import com.qcadoo.plugin.api.Version;
 import com.qcadoo.plugin.api.VersionOfDependency;
+import com.qcadoo.plugin.internal.api.InternalPlugin;
 import com.qcadoo.tenant.api.MultiTenantCallback;
 import com.qcadoo.tenant.api.MultiTenantUtil;
 
-public final class DefaultPlugin implements Plugin {
+public final class DefaultPlugin implements InternalPlugin {
 
     private final List<Module> modules;
 
@@ -99,6 +100,13 @@ public final class DefaultPlugin implements Plugin {
     @Override
     public boolean isSystemPlugin() {
         return system;
+    }
+
+    public static void main(final String[] args) {
+        System.out.println(new BigDecimal("0.1").scale());
+        System.out.println(new BigDecimal("0.01").scale());
+        System.out.println(new BigDecimal("0.001").scale());
+        System.out.println(new BigDecimal("0.0001").scale());
     }
 
     @Override
@@ -267,7 +275,7 @@ public final class DefaultPlugin implements Plugin {
             return this;
         }
 
-        public Plugin build() {
+        public InternalPlugin build() {
             PluginInformation pluginInformation = new PluginInformation(name, description, vendor, vendorUrl);
             return new DefaultPlugin(identifier, fileName, system, version, unmodifiableList(modules),
                     unmodifiableMap(modulesByFactories), pluginInformation, unmodifiableSet(dependencyInformations));

@@ -29,6 +29,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.internal.api.InternalDataDefinitionService;
@@ -64,7 +65,9 @@ public abstract class IntegrationTest {
 
     @BeforeClass
     public static void classInit() throws Exception {
-        new MultiTenantUtil(new DefaultMultiTenantService());
+        MultiTenantUtil multiTenantUtil = new MultiTenantUtil();
+        ReflectionTestUtils.setField(multiTenantUtil, "multiTenantService", new DefaultMultiTenantService());
+        multiTenantUtil.init();
 
         applicationContext = new ClassPathXmlApplicationContext();
         applicationContext.getEnvironment().setActiveProfiles("standalone");

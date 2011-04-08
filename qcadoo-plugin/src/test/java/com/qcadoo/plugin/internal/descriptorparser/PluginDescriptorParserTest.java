@@ -51,6 +51,7 @@ import com.qcadoo.plugin.api.Version;
 import com.qcadoo.plugin.api.VersionOfDependency;
 import com.qcadoo.plugin.internal.DefaultPlugin;
 import com.qcadoo.plugin.internal.PluginException;
+import com.qcadoo.plugin.internal.api.InternalPlugin;
 import com.qcadoo.plugin.internal.api.ModuleFactoryAccessor;
 import com.qcadoo.plugin.internal.api.PluginDescriptorResolver;
 
@@ -272,7 +273,7 @@ public class PluginDescriptorParserTest {
         Plugin p2 = parser.parse(xmlFile2, false);
 
         // when
-        Set<Plugin> result = parser.loadPlugins();
+        Set<InternalPlugin> result = parser.loadPlugins();
 
         // then
         assertEquals(2, result.size());

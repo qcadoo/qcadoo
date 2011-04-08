@@ -1,43 +1,34 @@
-/**
- * ***************************************************************************
- * Copyright (c) 2010 Qcadoo Limited
- * Project: Qcadoo Framework
- * Version: 0.4.0
- *
- * This file is part of Qcadoo.
- *
- * Qcadoo is free software; you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published
- * by the Free Software Foundation; either version 3 of the License,
- * or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty
- * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- * ***************************************************************************
- */
-
 package com.qcadoo.plugin.api;
 
 import java.util.Collection;
 
+/**
+ * Service to accessing plugins registered in the system.
+ */
 public interface PluginAccessor {
 
-    Plugin getEnabledPlugin(String pluginKey);
+    /**
+     * @param identifier
+     *            plugin identifier
+     * @return plugin with given identifier and status {@link PluginState#ENABLED}, otherwise null
+     */
+    Plugin getEnabledPlugin(String identifier);
 
+    /**
+     * @return all registered plugins with status {@link PluginState#ENABLED}
+     */
     Collection<Plugin> getEnabledPlugins();
 
-    Plugin getPlugin(String name);
+    /**
+     * @param identifier
+     *            plugin identifier
+     * @return plugin with given identifier, otherwise null
+     */
+    Plugin getPlugin(String identifier);
 
+    /**
+     * @return all registered plugins
+     */
     Collection<Plugin> getPlugins();
-
-    void savePlugin(Plugin plugin);
-
-    void removePlugin(Plugin plugin);
 
 }

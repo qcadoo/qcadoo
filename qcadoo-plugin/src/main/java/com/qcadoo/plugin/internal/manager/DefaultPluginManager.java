@@ -37,8 +37,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
+import com.qcadoo.plugin.api.InternalPluginAccessor;
 import com.qcadoo.plugin.api.Plugin;
-import com.qcadoo.plugin.api.PluginAccessor;
 import com.qcadoo.plugin.api.PluginDependencyInformation;
 import com.qcadoo.plugin.api.PluginDependencyResult;
 import com.qcadoo.plugin.api.PluginManager;
@@ -46,6 +46,7 @@ import com.qcadoo.plugin.api.PluginOperationResult;
 import com.qcadoo.plugin.api.PluginState;
 import com.qcadoo.plugin.api.artifact.PluginArtifact;
 import com.qcadoo.plugin.internal.PluginException;
+import com.qcadoo.plugin.internal.api.InternalPlugin;
 import com.qcadoo.plugin.internal.api.PluginDao;
 import com.qcadoo.plugin.internal.api.PluginDependencyManager;
 import com.qcadoo.plugin.internal.api.PluginDescriptorParser;
@@ -58,7 +59,7 @@ public final class DefaultPluginManager implements PluginManager {
     private static final Logger LOG = LoggerFactory.getLogger(DefaultPluginManager.class);
 
     @Autowired
-    private PluginAccessor pluginAccessor;
+    private InternalPluginAccessor pluginAccessor;
 
     @Autowired
     private PluginDao pluginDao;
@@ -121,9 +122,9 @@ public final class DefaultPluginManager implements PluginManager {
         plugins = pluginDependencyManager.sortPluginsInDependencyOrder(plugins);
         for (Plugin plugin : plugins) {
             if (plugin.hasState(PluginState.TEMPORARY)) {
-                plugin.changeStateTo(PluginState.ENABLING);
+                ((InternalPlugin) plugin).changeStateTo(PluginState.ENABLING);
             } else {
-                plugin.changeStateTo(PluginState.ENABLED);
+                ((InternalPlugin) plugin).changeStateTo(PluginState.ENABLED);
             }
             pluginDao.save(plugin);
             pluginAccessor.savePlugin(plugin);
@@ -166,7 +167,7 @@ public final class DefaultPluginManager implements PluginManager {
         plugins = pluginDependencyManager.sortPluginsInDependencyOrder(plugins);
         Collections.reverse(plugins);
         for (Plugin plugin : plugins) {
-            plugin.changeStateTo(PluginState.DISABLED);
+            ((InternalPlugin) plugin).changeStateTo(PluginState.DISABLED);
             pluginDao.save(plugin);
             pluginAccessor.savePlugin(plugin);
         }
@@ -210,7 +211,7 @@ public final class DefaultPluginManager implements PluginManager {
         Collections.reverse(plugins);
         for (Plugin plugin : plugins) {
             if (plugin.hasState(PluginState.ENABLED)) {
-                plugin.changeStateTo(PluginState.DISABLED);
+                ((InternalPlugin) plugin).changeStateTo(PluginState.DISABLED);
             }
             pluginDao.delete(plugin);
             pluginAccessor.removePlugin(plugin);
@@ -252,7 +253,7 @@ public final class DefaultPluginManager implements PluginManager {
 
         Plugin existingPlugin = pluginAccessor.getPlugin(plugin.getIdentifier());
         if (existingPlugin == null) {
-            plugin.changeStateTo(PluginState.TEMPORARY);
+            ((InternalPlugin) plugin).changeStateTo(PluginState.TEMPORARY);
             pluginDao.save(plugin);
             pluginAccessor.savePlugin(plugin);
 
@@ -271,12 +272,12 @@ public final class DefaultPluginManager implements PluginManager {
                 if (!pluginDependencyResult.isDependenciesSatisfied()
                         && !pluginDependencyResult.getUnsatisfiedDependencies().isEmpty()) {
                     pluginFileManager.uninstallPlugin(existingPlugin.getFilename());
-                    plugin.changeStateTo(existingPlugin.getState());
+                    ((InternalPlugin) plugin).changeStateTo(existingPlugin.getState());
                     pluginDao.save(plugin);
                     pluginAccessor.savePlugin(plugin);
                     return PluginOperationResult.successWithMissingDependencies(pluginDependencyResult);
                 }
-                plugin.changeStateTo(existingPlugin.getState());
+                ((InternalPlugin) plugin).changeStateTo(existingPlugin.getState());
             } else if (existingPlugin.hasState(PluginState.DISABLED)) {
                 if (!pluginDependencyResult.isDependenciesSatisfied()
                         && !pluginDependencyResult.getUnsatisfiedDependencies().isEmpty()) {
@@ -288,7 +289,7 @@ public final class DefaultPluginManager implements PluginManager {
                     return PluginOperationResult.cannotInstallPlugin();
                 }
                 shouldRestart = true;
-                plugin.changeStateTo(existingPlugin.getState());
+                ((InternalPlugin) plugin).changeStateTo(existingPlugin.getState());
             } else if (existingPlugin.hasState(PluginState.ENABLED)) {
                 if (!pluginDependencyResult.isDependenciesSatisfied()) {
                     if (!pluginDependencyResult.getUnsatisfiedDependencies().isEmpty()) {
@@ -322,15 +323,15 @@ public final class DefaultPluginManager implements PluginManager {
                 dependencyPlugins = pluginDependencyManager.sortPluginsInDependencyOrder(dependencyPlugins);
                 Collections.reverse(dependencyPlugins);
                 for (Plugin dependencyPlugin : dependencyPlugins) {
-                    dependencyPlugin.changeStateTo(PluginState.DISABLED);
+                    ((InternalPlugin) dependencyPlugin).changeStateTo(PluginState.DISABLED);
                 }
 
-                existingPlugin.changeStateTo(PluginState.DISABLED);
-                plugin.changeStateTo(PluginState.ENABLING);
+                ((InternalPlugin) existingPlugin).changeStateTo(PluginState.DISABLED);
+                ((InternalPlugin) plugin).changeStateTo(PluginState.ENABLING);
 
                 Collections.reverse(dependencyPlugins);
                 for (Plugin dependencyPlugin : dependencyPlugins) {
-                    dependencyPlugin.changeStateTo(PluginState.ENABLING);
+                    ((InternalPlugin) dependencyPlugin).changeStateTo(PluginState.ENABLING);
                     pluginDao.save(dependencyPlugin);
                 }
             }
@@ -345,7 +346,7 @@ public final class DefaultPluginManager implements PluginManager {
         }
     }
 
-    void setPluginAccessor(final PluginAccessor pluginAccessor) {
+    void setPluginAccessor(final InternalPluginAccessor pluginAccessor) {
         this.pluginAccessor = pluginAccessor;
 
     }

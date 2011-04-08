@@ -51,6 +51,7 @@ import com.qcadoo.model.beans.qcadooPlugin.QcadooPluginPlugin;
 import com.qcadoo.plugin.api.Plugin;
 import com.qcadoo.plugin.api.PluginState;
 import com.qcadoo.plugin.api.Version;
+import com.qcadoo.plugin.internal.api.InternalPlugin;
 import com.qcadoo.plugin.internal.api.ModuleFactoryAccessor;
 import com.qcadoo.plugin.internal.api.PluginDao;
 import com.qcadoo.plugin.internal.api.PluginDependencyManager;
@@ -85,7 +86,7 @@ public class PluginAccessorTest {
     @Test
     public void shouldSynchronizePluginsFromClasspathAndDatabase() throws Exception {
         // given
-        Plugin plugin1 = mock(Plugin.class);
+        InternalPlugin plugin1 = mock(InternalPlugin.class);
         QcadooPluginPlugin pluginsPlugin1 = mock(QcadooPluginPlugin.class);
         given(plugin1.getIdentifier()).willReturn("identifier1");
         given(pluginsPlugin1.getIdentifier()).willReturn("identifier1");
@@ -97,18 +98,18 @@ public class PluginAccessorTest {
         given(pluginsPlugin21.getIdentifier()).willReturn("identifier21");
         given(pluginsPlugin21.getIdentifier()).willReturn("identifier21");
         given(pluginsPlugin21.getState()).willReturn("ENABLED");
-        Plugin plugin22 = mock(Plugin.class);
+        InternalPlugin plugin22 = mock(InternalPlugin.class);
         given(plugin22.getIdentifier()).willReturn("identifier21");
         given(pluginsPlugin21.getVersion()).willReturn("0.0.0");
         given(plugin22.compareVersion(new Version(pluginsPlugin21.getVersion()))).willReturn(1);
 
-        Plugin plugin3 = mock(Plugin.class);
+        InternalPlugin plugin3 = mock(InternalPlugin.class);
         given(plugin3.getIdentifier()).willReturn("identifier3");
         QcadooPluginPlugin pluginsPlugin4 = mock(QcadooPluginPlugin.class);
         given(pluginsPlugin4.getIdentifier()).willReturn("identifier4");
         given(pluginsPlugin4.getState()).willReturn("ENABLED");
 
-        Set<Plugin> pluginsFromDescriptor = Sets.newHashSet(plugin1, plugin22, plugin3);
+        Set<InternalPlugin> pluginsFromDescriptor = Sets.newHashSet(plugin1, plugin22, plugin3);
         Set<QcadooPluginPlugin> pluginsFromDatabase = Sets.newHashSet(pluginsPlugin1, pluginsPlugin21, pluginsPlugin4);
 
         given(pluginDescriptorParser.loadPlugins()).willReturn(pluginsFromDescriptor);
@@ -129,7 +130,7 @@ public class PluginAccessorTest {
     @Test
     public void shouldListAllPlugins() throws Exception {
         // given
-        Plugin plugin1 = mock(Plugin.class, "plugin1");
+        InternalPlugin plugin1 = mock(InternalPlugin.class, "plugin1");
         QcadooPluginPlugin pluginsPlugin1 = mock(QcadooPluginPlugin.class, "plugin1");
         given(plugin1.getIdentifier()).willReturn("identifier1");
         given(pluginsPlugin1.getIdentifier()).willReturn("identifier1");
@@ -141,13 +142,13 @@ public class PluginAccessorTest {
         QcadooPluginPlugin pluginsPlugin21 = mock(QcadooPluginPlugin.class, "plugin21");
         given(pluginsPlugin21.getIdentifier()).willReturn("identifier21");
         given(pluginsPlugin21.getState()).willReturn("ENABLED");
-        Plugin plugin22 = mock(Plugin.class, "plugin22");
+        InternalPlugin plugin22 = mock(InternalPlugin.class, "plugin22");
         given(plugin22.getIdentifier()).willReturn("identifier21");
         given(plugin22.hasState(PluginState.ENABLED)).willReturn(true);
         given(pluginsPlugin21.getVersion()).willReturn("0.0.0");
         given(plugin22.compareVersion(new Version(pluginsPlugin21.getVersion()))).willReturn(1);
 
-        Plugin plugin3 = mock(Plugin.class, "plugin3");
+        InternalPlugin plugin3 = mock(InternalPlugin.class, "plugin3");
         QcadooPluginPlugin pluginsPlugin3 = mock(QcadooPluginPlugin.class, "plugin3");
         given(plugin3.getIdentifier()).willReturn("identifier3");
         given(pluginsPlugin3.getIdentifier()).willReturn("identifier3");
@@ -155,11 +156,11 @@ public class PluginAccessorTest {
         given(plugin3.hasState(PluginState.ENABLED)).willReturn(true);
         given(pluginsPlugin3.getState()).willReturn("ENABLED");
 
-        Plugin plugin4 = mock(Plugin.class, "plugin4");
+        InternalPlugin plugin4 = mock(InternalPlugin.class, "plugin4");
         given(plugin4.getIdentifier()).willReturn("identifier4");
         given(plugin4.hasState(PluginState.ENABLED)).willReturn(false);
 
-        Set<Plugin> pluginsFromDescriptor = Sets.newHashSet(plugin1, plugin22, plugin3, plugin4);
+        Set<InternalPlugin> pluginsFromDescriptor = Sets.newHashSet(plugin1, plugin22, plugin3, plugin4);
         Set<QcadooPluginPlugin> pluginsFromDatabase = Sets.newHashSet(pluginsPlugin1, pluginsPlugin21, pluginsPlugin3);
 
         given(pluginDescriptorParser.loadPlugins()).willReturn(pluginsFromDescriptor);
@@ -175,11 +176,11 @@ public class PluginAccessorTest {
         verify(plugin3).changeStateTo(PluginState.ENABLED);
         verify(plugin4).changeStateTo(PluginState.ENABLING);
 
-        assertThat(pluginAccessor.getPlugins(), hasItems(plugin1, plugin22, plugin3, plugin4));
+        assertThat(pluginAccessor.getPlugins(), hasItems((Plugin) plugin1, (Plugin) plugin22, (Plugin) plugin3, (Plugin) plugin4));
 
-        assertThat(pluginAccessor.getEnabledPlugins(), hasItems(plugin22, plugin3));
-        assertThat(pluginAccessor.getEnabledPlugins(), not(hasItem(plugin1)));
-        assertThat(pluginAccessor.getEnabledPlugins(), not(hasItem(plugin4)));
+        assertThat(pluginAccessor.getEnabledPlugins(), hasItems((Plugin) plugin22, (Plugin) plugin3));
+        assertThat(pluginAccessor.getEnabledPlugins(), not(hasItem((Plugin) plugin1)));
+        assertThat(pluginAccessor.getEnabledPlugins(), not(hasItem((Plugin) plugin4)));
 
         assertEquals(plugin1, pluginAccessor.getPlugin("identifier1"));
         assertEquals(plugin22, pluginAccessor.getPlugin("identifier21"));
@@ -194,7 +195,7 @@ public class PluginAccessorTest {
     @Test(expected = IllegalStateException.class)
     public void shouldFailOnPluginDowngrade() throws Exception {
         // given
-        Plugin plugin11 = mock(Plugin.class);
+        InternalPlugin plugin11 = mock(InternalPlugin.class);
         given(plugin11.getIdentifier()).willReturn("identifier11");
         QcadooPluginPlugin pluginsPlugin12 = mock(QcadooPluginPlugin.class);
         given(pluginsPlugin12.getIdentifier()).willReturn("identifier11");
@@ -202,7 +203,7 @@ public class PluginAccessorTest {
         given(pluginsPlugin12.getState()).willReturn("ENABLED");
         given(plugin11.compareVersion(new Version(pluginsPlugin12.getVersion()))).willReturn(-1);
 
-        Set<Plugin> pluginsFromDescriptor = Sets.newHashSet(plugin11);
+        Set<InternalPlugin> pluginsFromDescriptor = Sets.newHashSet(plugin11);
         Set<QcadooPluginPlugin> pluginsFromDatabase = Sets.newHashSet(pluginsPlugin12);
 
         given(pluginDescriptorParser.loadPlugins()).willReturn(pluginsFromDescriptor);
@@ -216,22 +217,22 @@ public class PluginAccessorTest {
     @Test
     public void shouldPerformInit() throws Exception {
         // given
-        Plugin plugin1 = mock(Plugin.class, "plugin1");
+        InternalPlugin plugin1 = mock(InternalPlugin.class, "plugin1");
         QcadooPluginPlugin pluginsPlugin1 = mock(QcadooPluginPlugin.class, "plugin1");
         given(plugin1.getIdentifier()).willReturn("identifier1");
         given(pluginsPlugin1.getIdentifier()).willReturn("identifier1");
         given(pluginsPlugin1.getState()).willReturn("ENABLED");
         given(pluginsPlugin1.getVersion()).willReturn("0.0.0");
-        Plugin plugin2 = mock(Plugin.class, "plugin2");
+        InternalPlugin plugin2 = mock(InternalPlugin.class, "plugin2");
         QcadooPluginPlugin pluginsPlugin2 = mock(QcadooPluginPlugin.class, "plugin2");
         given(plugin2.getIdentifier()).willReturn("identifier2");
         given(pluginsPlugin2.getIdentifier()).willReturn("identifier2");
         given(pluginsPlugin2.getVersion()).willReturn("0.0.0");
         given(pluginsPlugin2.getState()).willReturn("ENABLED");
 
-        Set<Plugin> pluginsFromDescriptor = Sets.newHashSet(plugin1, plugin2);
+        Set<InternalPlugin> pluginsFromDescriptor = Sets.newHashSet(plugin1, plugin2);
         Set<QcadooPluginPlugin> pluginsFromDatabase = Sets.newHashSet(pluginsPlugin1, pluginsPlugin2);
-        List<Plugin> sortedPluginsToInitialize = Lists.newArrayList(plugin2, plugin1);
+        List<Plugin> sortedPluginsToInitialize = Lists.newArrayList((Plugin) plugin2, (Plugin) plugin1);
 
         given(pluginDependencyManager.sortPluginsInDependencyOrder(Mockito.anyCollectionOf(Plugin.class))).willReturn(
                 sortedPluginsToInitialize);
@@ -251,30 +252,30 @@ public class PluginAccessorTest {
     @Test
     public void shouldPerformEnableOnEnablingPlugins() throws Exception {
         // given
-        Plugin plugin1 = mock(Plugin.class);
+        InternalPlugin plugin1 = mock(InternalPlugin.class);
         QcadooPluginPlugin pluginsPlugin1 = mock(QcadooPluginPlugin.class);
         given(plugin1.getIdentifier()).willReturn("identifier1");
         given(pluginsPlugin1.getIdentifier()).willReturn("identifier1");
         given(pluginsPlugin1.getState()).willReturn("ENABLING");
         given(pluginsPlugin1.getVersion()).willReturn("0.0.0");
         given(plugin1.hasState(PluginState.ENABLING)).willReturn(true);
-        Plugin plugin2 = mock(Plugin.class);
+        InternalPlugin plugin2 = mock(InternalPlugin.class);
         QcadooPluginPlugin pluginsPlugin2 = mock(QcadooPluginPlugin.class);
         given(plugin2.getIdentifier()).willReturn("identifier2");
         given(pluginsPlugin2.getIdentifier()).willReturn("identifier2");
         given(pluginsPlugin2.getState()).willReturn("ENABLING");
         given(pluginsPlugin2.getVersion()).willReturn("0.0.0");
         given(plugin2.hasState(PluginState.ENABLING)).willReturn(true);
-        Plugin plugin3 = mock(Plugin.class);
+        InternalPlugin plugin3 = mock(InternalPlugin.class);
         QcadooPluginPlugin pluginsPlugin3 = mock(QcadooPluginPlugin.class);
         given(pluginsPlugin3.getIdentifier()).willReturn("identifier3");
         given(pluginsPlugin3.getVersion()).willReturn("0.0.0");
         given(pluginsPlugin3.getState()).willReturn("DISABLED");
         given(plugin3.getIdentifier()).willReturn("identifier3");
 
-        Set<Plugin> pluginsFromDescriptor = Sets.newHashSet(plugin1, plugin2, plugin3);
+        Set<InternalPlugin> pluginsFromDescriptor = Sets.newHashSet(plugin1, plugin2, plugin3);
         Set<QcadooPluginPlugin> pluginsFromDatabase = Sets.newHashSet(pluginsPlugin1, pluginsPlugin2, pluginsPlugin3);
-        List<Plugin> sortedPluginsToInitialize = Lists.newArrayList(plugin2, plugin1);
+        List<Plugin> sortedPluginsToInitialize = Lists.newArrayList((Plugin) plugin2, (Plugin) plugin1);
 
         given(pluginDependencyManager.sortPluginsInDependencyOrder(Mockito.anyCollectionOf(Plugin.class))).willReturn(
                 sortedPluginsToInitialize);
@@ -305,7 +306,7 @@ public class PluginAccessorTest {
         QcadooPluginPlugin pluginsPlugin2 = mock(QcadooPluginPlugin.class);
         given(pluginsPlugin2.getState()).willReturn(PluginState.ENABLED.toString());
 
-        Set<Plugin> pluginsFromDescriptor = Sets.newHashSet();
+        Set<InternalPlugin> pluginsFromDescriptor = Sets.newHashSet();
         Set<QcadooPluginPlugin> pluginsFromDatabase = Sets.newHashSet(pluginsPlugin1, pluginsPlugin2);
 
         given(pluginDescriptorParser.loadPlugins()).willReturn(pluginsFromDescriptor);
@@ -321,7 +322,7 @@ public class PluginAccessorTest {
     @Test
     public void shouldRemovePlugin() throws Exception {
         // given
-        Plugin plugin1 = mock(Plugin.class, "plugin1");
+        InternalPlugin plugin1 = mock(InternalPlugin.class, "plugin1");
 
         given(plugin1.getIdentifier()).willReturn("identifier1");
 
@@ -330,7 +331,7 @@ public class PluginAccessorTest {
         given(pluginsPlugin1.getState()).willReturn("ENABLED");
         given(pluginsPlugin1.getVersion()).willReturn("0.0.0");
 
-        Plugin plugin2 = mock(Plugin.class);
+        InternalPlugin plugin2 = mock(InternalPlugin.class);
         given(plugin2.getIdentifier()).willReturn("identifier2");
 
         QcadooPluginPlugin pluginsPlugin2 = mock(QcadooPluginPlugin.class);
@@ -349,13 +350,13 @@ public class PluginAccessorTest {
 
         // then
         assertEquals(1, pluginAccessor.getPlugins().size());
-        assertThat(pluginAccessor.getPlugins(), hasItems(plugin2));
+        assertThat(pluginAccessor.getPlugins(), hasItems((Plugin) plugin2));
     }
 
     @Test
     public void shouldSaveNewPlugin() throws Exception {
         // given
-        Plugin plugin1 = mock(Plugin.class, "plugin1");
+        InternalPlugin plugin1 = mock(InternalPlugin.class, "plugin1");
 
         given(plugin1.getIdentifier()).willReturn("identifier1");
 
@@ -364,7 +365,7 @@ public class PluginAccessorTest {
         given(pluginsPlugin1.getState()).willReturn("ENABLED");
         given(pluginsPlugin1.getVersion()).willReturn("0.0.0");
 
-        Plugin plugin2 = mock(Plugin.class);
+        InternalPlugin plugin2 = mock(InternalPlugin.class);
         given(plugin2.getIdentifier()).willReturn("identifier2");
 
         given(pluginDescriptorParser.loadPlugins()).willReturn(Sets.newHashSet(plugin1));
@@ -377,17 +378,17 @@ public class PluginAccessorTest {
         pluginAccessor.savePlugin(plugin2);
 
         // then
-        assertThat(pluginAccessor.getPlugins(), hasItems(plugin1, plugin2));
+        assertThat(pluginAccessor.getPlugins(), hasItems((Plugin) plugin1, (Plugin) plugin2));
     }
 
     @Test
     public void shouldSaveExistingPlugin() throws Exception {
         // given
-        Plugin plugin1 = mock(Plugin.class, "plugin1");
+        InternalPlugin plugin1 = mock(InternalPlugin.class, "plugin1");
 
         given(plugin1.getIdentifier()).willReturn("identifier1");
 
-        Plugin plugin2 = mock(Plugin.class);
+        InternalPlugin plugin2 = mock(InternalPlugin.class);
         given(plugin2.getIdentifier()).willReturn("identifier1");
 
         QcadooPluginPlugin pluginsPlugin2 = mock(QcadooPluginPlugin.class);
@@ -406,7 +407,7 @@ public class PluginAccessorTest {
 
         // then
         assertEquals(1, pluginAccessor.getPlugins().size());
-        assertThat(pluginAccessor.getPlugins(), hasItems(plugin2));
+        assertThat(pluginAccessor.getPlugins(), hasItems((Plugin) plugin2));
     }
 
 }
