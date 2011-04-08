@@ -24,10 +24,6 @@
 
 package com.qcadoo.view.internal.api;
 
-import java.util.List;
-
-import org.springframework.security.access.prepost.PreAuthorize;
-
 import com.qcadoo.view.api.ViewDefinition;
 import com.qcadoo.view.api.ViewDefinitionService;
 
@@ -40,22 +36,6 @@ import com.qcadoo.view.api.ViewDefinitionService;
 public interface InternalViewDefinitionService extends ViewDefinitionService {
 
     /**
-     * Return the view definition matching the given plugin's identifier and view's name. The method checks if user has sufficient
-     * permissions.
-     * 
-     * @param pluginIdentifier
-     *            plugin's identifier
-     * @param viewName
-     *            view's name
-     * @return the view definition, null if not found
-     */
-    @Override
-    @PreAuthorize("hasRole('ROLE_ADMIN') "
-            + "or !(((#pluginIdentifier == 'users') and !(#viewName == 'profile' or #viewName == 'profileChangePassword'))"
-            + "or (#pluginIdentifier == 'menu') or (#pluginIdentifier == 'plugins'))")
-    ViewDefinition get(String pluginIdentifier, String viewName);
-
-    /**
      * Return the view definition matching the given plugin's identifier and view's name.
      * 
      * @param pluginIdentifier
@@ -65,14 +45,6 @@ public interface InternalViewDefinitionService extends ViewDefinitionService {
      * @return the view definition, null if not found
      */
     ViewDefinition getWithoutSession(String pluginIdentifier, String viewName);
-
-    /**
-     * Return all defined view definitions.
-     * 
-     * @return the data definitions
-     */
-    @Override
-    List<ViewDefinition> list();
 
     /**
      * Save the data definition.

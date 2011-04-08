@@ -28,7 +28,6 @@ import java.util.List;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 
-
 /**
  * Service for manipulating view definitions.
  * 
@@ -47,12 +46,10 @@ public interface ViewDefinitionService {
      *            view's name
      * @return the view definition, null if not found
      */
-    @PreAuthorize("hasRole('ROLE_ADMIN') or (#pluginIdentifier == 'dictionaries') or (#pluginIdentifier == 'products' "
-            + "and (#viewName != 'orders' and #viewName != 'order' or hasRole('ROLE_SUPERVISOR'))) or "
-            + "(#pluginIdentifier == 'basic') or "
-            + "(#pluginIdentifier == 'qualityControls') or "
-            + "(#pluginIdentifier == 'genealogies') or "
-            + "(#pluginIdentifier == 'users' and (#viewName == 'profile' or #viewName == 'profileChangePassword')) or (#pluginIdentifier == 'core' and #viewName == 'systemInfo')")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_SUPERVISOR') and ((#pluginIdentifier == 'dictionaries') or (#pluginIdentifier == 'orders')))"
+            + "or !(((#pluginIdentifier == 'users') and !(#viewName == 'profile' or #viewName == 'profileChangePassword')) "
+            + "or (#pluginIdentifier == 'orders') or (#pluginIdentifier == 'menu') "
+            + "or (#pluginIdentifier == 'plugins') or (#pluginIdentifier == 'dictionaries'))")
     ViewDefinition get(String pluginIdentifier, String viewName);
 
     /**
