@@ -511,7 +511,7 @@ public class GridComponentStateTest extends AbstractStateTest {
         grid.performEvent(viewDefinitionState, "remove", new String[0]);
 
         // then
-        verify(substituteDataDefinition).delete(Collections.singleton(13L));
+        verify(substituteDataDefinition).delete(13L);
 
         JSONObject json = grid.render();
 
@@ -552,13 +552,13 @@ public class GridComponentStateTest extends AbstractStateTest {
         grid.addFieldEntityIdChangeListener("field", listener);
         Entity copiedEntity = new DefaultEntity(substituteDataDefinition, 14L, Collections.singletonMap("name",
                 (Object) "text(1)"));
-        given(substituteDataDefinition.copy(13L)).willReturn(copiedEntity);
+        given(substituteDataDefinition.copy(13L)).willReturn(Collections.singletonList(copiedEntity));
 
         // when
         grid.performEvent(viewDefinitionState, "copy", new String[0]);
 
         // then
-        verify(substituteDataDefinition).copy(Collections.singleton(13L));
+        verify(substituteDataDefinition).copy(13L);
 
         JSONObject json = grid.render();
 

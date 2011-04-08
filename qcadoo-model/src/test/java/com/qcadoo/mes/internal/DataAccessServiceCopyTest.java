@@ -24,6 +24,7 @@
 
 package com.qcadoo.mes.internal;
 
+import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
@@ -31,6 +32,8 @@ import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+
+import java.util.List;
 
 import org.hibernate.criterion.Projections;
 import org.junit.Assert;
@@ -63,13 +66,14 @@ public final class DataAccessServiceCopyTest extends DataAccessTest {
         given(session.get(any(Class.class), Matchers.anyInt())).willReturn(simpleDatabaseObject);
 
         // when
-        Entity entity = dataDefinition.copy(13L);
+        List<Entity> entities = dataDefinition.copy(new Long[] { 13L });
 
         // then
         verify(session, times(1)).save(Mockito.any(SampleSimpleDatabaseObject.class));
-        assertTrue(entity.isValid());
-        Assert.assertEquals(66, entity.getField("age"));
-        Assert.assertEquals("Mr T", entity.getField("name"));
+        assertEquals(1, entities.size());
+        assertTrue(entities.get(0).isValid());
+        Assert.assertEquals(66, entities.get(0).getField("age"));
+        Assert.assertEquals("Mr T", entities.get(0).getField("name"));
     }
 
     @Test
@@ -89,13 +93,14 @@ public final class DataAccessServiceCopyTest extends DataAccessTest {
         given(session.get(any(Class.class), Matchers.anyInt())).willReturn(simpleDatabaseObject);
 
         // when
-        Entity entity = dataDefinition.copy(13L);
+        List<Entity> entities = dataDefinition.copy(new Long[] { 13L });
 
         // then
         verify(session, times(1)).save(Mockito.any(SampleSimpleDatabaseObject.class));
-        assertTrue(entity.isValid());
-        Assert.assertEquals(66, entity.getField("age"));
-        Assert.assertEquals("Mr T(1)", entity.getField("name"));
+        assertEquals(1, entities.size());
+        assertTrue(entities.get(0).isValid());
+        Assert.assertEquals(66, entities.get(0).getField("age"));
+        Assert.assertEquals("Mr T(1)", entities.get(0).getField("name"));
     }
 
     @Test
@@ -115,13 +120,14 @@ public final class DataAccessServiceCopyTest extends DataAccessTest {
         given(session.get(any(Class.class), Matchers.anyInt())).willReturn(simpleDatabaseObject);
 
         // when
-        Entity entity = dataDefinition.copy(13L);
+        List<Entity> entities = dataDefinition.copy(new Long[] { 13L });
 
         // then
         verify(session, times(1)).save(Mockito.any(SampleSimpleDatabaseObject.class));
-        assertTrue(entity.isValid());
-        Assert.assertEquals(66, entity.getField("age"));
-        Assert.assertEquals("Mr T(3)", entity.getField("name"));
+        assertEquals(1, entities.size());
+        assertTrue(entities.get(0).isValid());
+        Assert.assertEquals(66, entities.get(0).getField("age"));
+        Assert.assertEquals("Mr T(3)", entities.get(0).getField("name"));
     }
 
     @Test
@@ -142,11 +148,13 @@ public final class DataAccessServiceCopyTest extends DataAccessTest {
         given(criteria.list()).willReturn(Lists.newArrayList(simpleDatabaseObject));
 
         // when
-        Entity entity = parentDataDefinition.copy(13L);
+        List<Entity> entities = parentDataDefinition.copy(new Long[] { 13L });
 
         // then
-        Assert.assertEquals("Mr T", entity.getField("name"));
-        assertTrue(entity.isValid());
+        verify(session, times(1)).save(Mockito.any(SampleSimpleDatabaseObject.class));
+        assertEquals(1, entities.size());
+        assertTrue(entities.get(0).isValid());
+        Assert.assertEquals("Mr T", entities.get(0).getField("name"));
         verify(session, times(1)).save(Mockito.any());
         verify(session, never()).get(Mockito.eq(SampleSimpleDatabaseObject.class), anyInt());
     }
@@ -172,11 +180,12 @@ public final class DataAccessServiceCopyTest extends DataAccessTest {
         given(criteria.list()).willReturn(Lists.newArrayList(simpleDatabaseObject));
 
         // when
-        Entity entity = parentDataDefinition.copy(13L);
+        List<Entity> entities = parentDataDefinition.copy(new Long[] { 13L });
 
         // then
-        Assert.assertEquals("Mr T", entity.getField("name"));
-        assertTrue(entity.isValid());
+        assertEquals(1, entities.size());
+        assertTrue(entities.get(0).isValid());
+        Assert.assertEquals("Mr T", entities.get(0).getField("name"));
         verify(session, times(2)).save(Mockito.any());
         verify(session, never()).get(Mockito.eq(SampleSimpleDatabaseObject.class), anyInt());
     }
@@ -198,11 +207,12 @@ public final class DataAccessServiceCopyTest extends DataAccessTest {
         given(criteria.list()).willReturn(Lists.newArrayList(treeDatabaseObject));
 
         // when
-        Entity entity = parentDataDefinition.copy(13L);
+        List<Entity> entities = parentDataDefinition.copy(new Long[] { 13L });
 
         // then
-        Assert.assertEquals("Mr T", entity.getField("name"));
-        assertTrue(entity.isValid());
+        assertEquals(1, entities.size());
+        assertTrue(entities.get(0).isValid());
+        Assert.assertEquals("Mr T", entities.get(0).getField("name"));
         verify(session, times(1)).save(Mockito.any());
         verify(session, never()).get(Mockito.eq(SampleSimpleDatabaseObject.class), anyInt());
     }
@@ -227,11 +237,12 @@ public final class DataAccessServiceCopyTest extends DataAccessTest {
         given(criteria.list()).willReturn(Lists.newArrayList(treeDatabaseObject));
 
         // when
-        Entity entity = parentDataDefinition.copy(13L);
+        List<Entity> entities = parentDataDefinition.copy(new Long[] { 13L });
 
         // then
-        Assert.assertEquals("Mr T", entity.getField("name"));
-        assertTrue(entity.isValid());
+        assertEquals(1, entities.size());
+        assertTrue(entities.get(0).isValid());
+        Assert.assertEquals("Mr T", entities.get(0).getField("name"));
         verify(session, times(2)).save(Mockito.any());
         verify(session, never()).get(Mockito.eq(SampleSimpleDatabaseObject.class), anyInt());
     }

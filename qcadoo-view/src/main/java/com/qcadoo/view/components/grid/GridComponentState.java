@@ -371,7 +371,7 @@ public final class GridComponentState extends AbstractComponentState {
         }
 
         public void removeSelectedEntity(final String[] args) {
-            getDataDefinition().delete(selectedEntities);
+            getDataDefinition().delete(selectedEntities.toArray(new Long[selectedEntities.size()]));
             if (selectedEntities.size() == 1) {
                 addMessage(translateMessage("deleteMessage"), MessageType.SUCCESS);
             } else {
@@ -388,7 +388,12 @@ public final class GridComponentState extends AbstractComponentState {
         }
 
         public void copySelectedEntity(final String[] args) {
-            entitiesToMarkAsNew = getDataDefinition().copy(selectedEntities);
+            List<Entity> copiedEntities = getDataDefinition().copy(selectedEntities.toArray(new Long[selectedEntities.size()]));
+            entitiesToMarkAsNew = new HashSet<Long>();
+            for (Entity copiedEntity : copiedEntities) {
+                entitiesToMarkAsNew.add(copiedEntity.getId());
+            }
+
             if (selectedEntities.size() == 1) {
                 addMessage(translateMessage("copyMessage"), MessageType.SUCCESS);
             } else {

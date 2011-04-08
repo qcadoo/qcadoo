@@ -262,7 +262,7 @@ public class FormComponentStateTest extends AbstractStateTest {
     public void shouldCopyFormEntity() throws Exception {
         // given
         Entity copiedEntity = new DefaultEntity(dataDefinition, 14L, Collections.singletonMap("name", (Object) "text(1)"));
-        given(dataDefinition.copy(13L)).willReturn(copiedEntity);
+        given(dataDefinition.copy(13L)).willReturn(Collections.singletonList(copiedEntity));
         given(dataDefinition.get(14L)).willReturn(copiedEntity);
         name.setFieldValue("text");
         form.setFieldValue(13L);
