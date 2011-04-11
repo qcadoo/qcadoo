@@ -29,15 +29,13 @@ public class ViewTabModule extends Module {
 
     private Map<WindowComponentPattern, ComponentPattern> addedTabs;
 
-    public ViewTabModule(final List<Resource> xmlFiles, final InternalViewDefinitionService viewDefinitionService,
+    public ViewTabModule(final Resource xmlFile, final InternalViewDefinitionService viewDefinitionService,
             final ViewDefinitionParser viewDefinitionParser) {
         this.viewDefinitionService = viewDefinitionService;
         this.viewDefinitionParser = viewDefinitionParser;
         viewExtensions = new LinkedList<ViewExtension>();
         try {
-            for (Resource xmlFile : xmlFiles) {
-                viewExtensions.addAll(viewDefinitionParser.getViewExtensionNodes(xmlFile.getInputStream(), "windowTabExtension"));
-            }
+            viewExtensions.addAll(viewDefinitionParser.getViewExtensionNodes(xmlFile.getInputStream(), "windowTabExtension"));
         } catch (IOException e) {
             throw new IllegalStateException(e.getMessage(), e);
         }
@@ -69,8 +67,8 @@ public class ViewTabModule extends Module {
                 window.addChild(tabPattern);
                 addedTabs.put(window, tabPattern);
 
-                tabPattern.registerViews(viewDefinitionService);
                 tabPattern.initializeAll();
+                tabPattern.registerViews(viewDefinitionService);
             }
         }
     }

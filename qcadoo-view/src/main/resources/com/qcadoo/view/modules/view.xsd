@@ -8,23 +8,25 @@
 		</xs:complexType>
 	</xs:element>
 	
-	<xs:element name="viewRibbonExtension">
+	<xs:element name="view-ribbon-group">
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element name="resource" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
 			</xs:sequence>
+			<xs:attribute name="resource" type="xs:string" use="required" />
 		</xs:complexType>
 	</xs:element>
 	
-	<xs:element name="viewWindowTabExtension">
+	<xs:element name="view-tab">
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element name="resource" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
 			</xs:sequence>
+			<xs:attribute name="resource" type="xs:string" use="required" />
 		</xs:complexType>
 	</xs:element>
 	
-	<xs:element name="viewHookExtension">
+	<xs:element name="view-hook">
 		<xs:complexType>
 			<xs:attribute name="plugin" type="xs:string" use="required" />
 			<xs:attribute name="view" type="xs:string" use="required" />
@@ -34,7 +36,7 @@
 		</xs:complexType>
 	</xs:element>
 	
-	<xs:element name="viewListenerExtension">
+	<xs:element name="view-listener">
 		<xs:complexType>
 			<xs:attribute name="plugin" type="xs:string" use="required" />
 			<xs:attribute name="view" type="xs:string" use="required" />

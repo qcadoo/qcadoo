@@ -1,12 +1,8 @@
 package com.qcadoo.view.internal.module;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.jdom.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 
 import com.qcadoo.plugin.api.ModuleFactory;
 import com.qcadoo.view.internal.api.InternalViewDefinitionService;
@@ -20,23 +16,21 @@ public class ViewTabModuleFactory extends ModuleFactory<ViewTabModule> {
     @Autowired
     private ViewDefinitionParser viewDefinitionParser;
 
-    @SuppressWarnings("unchecked")
     @Override
     public ViewTabModule parse(final String pluginIdentifier, final Element element) {
-        List<Resource> xmlFiles = new ArrayList<Resource>();
-        for (Element resourceElement : (List<Element>) element.getChildren()) {
-            String resource = resourceElement.getText();
-            if (resource == null) {
-                throw new IllegalStateException("Missing resource element of view module");
-            }
-            xmlFiles.add(new ClassPathResource(pluginIdentifier + "/" + resource));
+        String resource = element.getAttributeValue("resource");
+
+        if (resource == null) {
+            throw new IllegalStateException("Missing resource attribute of view module");
         }
-        return new ViewTabModule(xmlFiles, viewDefinitionService, viewDefinitionParser);
+
+        return new ViewTabModule(new ClassPathResource(pluginIdentifier + "/" + resource), viewDefinitionService,
+                viewDefinitionParser);
     }
 
     @Override
     public String getIdentifier() {
-        return "viewWindowTabExtension";
+        return "view-tab";
     }
 
 }

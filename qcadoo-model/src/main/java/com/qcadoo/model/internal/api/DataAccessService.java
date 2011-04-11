@@ -24,7 +24,7 @@
 
 package com.qcadoo.model.internal.api;
 
-import java.util.Set;
+import java.util.List;
 
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.search.SearchCriteria;
@@ -36,9 +36,7 @@ public interface DataAccessService {
 
     Entity get(InternalDataDefinition dataDefinition, Long entityId);
 
-    Entity copy(InternalDataDefinition dataDefinition, Long entityId);
-
-    Set<Long> copy(InternalDataDefinition dataDefinition, Set<Long> entityIds);
+    List<Entity> copy(InternalDataDefinition dataDefinition, Long... entityId);
 
     void delete(InternalDataDefinition dataDefinition, Long... entityId);
 

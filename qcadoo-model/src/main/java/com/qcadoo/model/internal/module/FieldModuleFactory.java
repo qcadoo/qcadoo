@@ -62,7 +62,7 @@ public class FieldModuleFactory extends ModuleFactory<FieldModule> {
 
     @Override
     public String getIdentifier() {
-        return "field";
+        return "model-field";
     }
 
 }

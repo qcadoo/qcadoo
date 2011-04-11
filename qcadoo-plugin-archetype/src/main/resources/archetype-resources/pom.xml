@@ -9,6 +9,10 @@
 	<name>${name}</name>
 	<version>${version}</version>
 	
+	<properties>
+		<qcadoo.version>0.4.0-SNAPSHOT</qcadoo.version>
+	</properties>
+	
 	<build>
 		<plugins>
 			<plugin>
@@ -19,6 +23,33 @@
 			</plugin>
 		</plugins>
 	</build>
+	
+	<repositories>
+		<repository>
+			<id>qcadoo-releases-repository</id>
+			<url>http://nexus.qcadoo.org/content/repositories/releases</url>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+				<updatePolicy>never</updatePolicy>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>qcadoo-snapshots-repository</id>
+			<url>http://nexus.qcadoo.org/content/repositories/snapshots</url>
+			<releases>
+				<enabled>false</enabled>
+				<updatePolicy>never</updatePolicy>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>interval:5</updatePolicy>
+			</snapshots>
+		</repository>
+	</repositories>
 	
 </project>
 

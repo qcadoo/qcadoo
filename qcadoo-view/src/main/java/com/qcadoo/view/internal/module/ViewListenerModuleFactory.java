@@ -41,7 +41,7 @@ public class ViewListenerModuleFactory extends ModuleFactory<ViewListenerModule>
 
     @Override
     public String getIdentifier() {
-        return "viewListenerExtension";
+        return "view-listener";
     }
 
 }

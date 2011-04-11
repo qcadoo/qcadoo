@@ -45,16 +45,16 @@
 	</dependencies>
 
 	<modules>
-		<model:field plugin="products" model="component">
+		<model:model-field plugin="products" model="component">
 			<model:belongsTo plugin="machines" name="machine" model="machine" required="false" />
-		</model:field>
-		<model:field plugin="products" model="component">
+		</model:model-field>
+		<model:model-field plugin="products" model="component">
 			<model:string name="machineName" required="true" />
-		</model:field>
+		</model:model-field>
 		<model:model-enum-value plugin="products" model="product" enum="enum" value="three" />
-		<model:hook plugin="products" model="product">
+		<model:model-hook plugin="products" model="product">
 			<model:onSave class="com.qcadoo.model.integration.MockHook" method="changeName"/>
-		</model:hook>
+		</model:model-hook>
 		<model:dictionary name="categories" />
 		<model:model model="machine" resource="model/machine.xml" />
 	</modules>
