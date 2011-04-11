@@ -29,6 +29,9 @@ import java.util.regex.Pattern;
 
 import org.springframework.util.StringUtils;
 
+/**
+ * Version of the required plugin - contains lower and upper boundaries with information if boundary is included.
+ */
 public class VersionOfDependency {
 
     private static final Pattern PATTERN = Pattern
@@ -42,6 +45,44 @@ public class VersionOfDependency {
 
     private final boolean includeMaxVersion;
 
+    public static void main(final String[] args) {
+        System.out.println(new VersionOfDependency("[1.1.1,3"));
+    }
+
+    /**
+     * Creates version from string. It contains one or two (separated by comma) version strings. It also can contain, at the
+     * beginning and end of, parenthesis (means that boundary is excluded) or bracket (by default, means that boundary is
+     * included).
+     * 
+     * Examples:
+     * 
+     * <ul>
+     * <li>2.3.4: equals to 2.3.4</li>
+     * <li>2.3: equals to 2.3.0</li>
+     * <li>2: equals to 2.0.0</li>
+     * <li>[2.3.4: greater than or equals to 2.3.4</li>
+     * <li>(2.3.4: greater than 2.3.4</li>
+     * <li>2.3.4]: lower than or equals to 2.3.4</li>
+     * <li>2.3.4): lower than 2.3.4</li>
+     * <li>[2.3.4,2.5): greater than or equals to 2.3.4 and lower that 2.5.0</li>
+     * <li>(2.3.4,3]: greater than 2.3.4 and lower than or equals to 3.0.0</li>
+     * <li>2,3: greater than or equals to 2.0.0 and lower than or equals to 3.0.0</li>
+     * </ul>
+     * 
+     * @param version
+     *            version
+     * @throws IllegalStateException
+     *             if string doesn't match the pattern
+     * @throws IllegalStateException
+     *             if any of the version is not valid
+     * @throws IllegalStateException
+     *             if min version is greater that max version
+     * @throws IllegalStateException
+     *             if range is empty
+     * @throws NumberFormatException
+     *             if any of the number is not valid integer
+     * @see Version
+     */
     public VersionOfDependency(final String version) {
         if (StringUtils.hasText(version)) {
             Matcher matcher = PATTERN.matcher(version);
@@ -79,10 +120,20 @@ public class VersionOfDependency {
         }
     }
 
+    /**
+     * Returns minimum version of required plugin.
+     * 
+     * @return min version or null if not specified
+     */
     public Version getMinVersion() {
         return minVersion;
     }
 
+    /**
+     * Returns maximum version of required plugin.
+     * 
+     * @return max version or null if not specified
+     */
     public Version getMaxVersion() {
         return maxVersion;
     }
