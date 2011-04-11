@@ -54,8 +54,8 @@ public final class MenuServiceImpl implements InternalMenuService {
     @Autowired
     private DataDefinitionService dataDefinitionService;
 
-    @Value("${showAdministrationMenu}")
-    private boolean showAdministrationMenu;
+    @Value("${setAsDemoEnviroment}")
+    private boolean setAsDemoEnviroment;
 
     @Override
     @Transactional(readOnly = true)
@@ -123,7 +123,7 @@ public final class MenuServiceImpl implements InternalMenuService {
             }
         }
 
-        if (showAdministrationMenu) {
+        if (!setAsDemoEnviroment) {
             if (!hasMenuManagement && pluginAccessor.getEnabledPlugin("menu") != null) {
                 if (administrationCategory == null) {
                     administrationCategory = new MenulItemsGroup("administration", translationService.translate(
