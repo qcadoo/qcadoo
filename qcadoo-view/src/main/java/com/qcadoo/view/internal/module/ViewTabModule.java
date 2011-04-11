@@ -67,8 +67,8 @@ public class ViewTabModule extends Module {
                 window.addChild(tabPattern);
                 addedTabs.put(window, tabPattern);
 
-                tabPattern.registerViews(viewDefinitionService);
                 tabPattern.initializeAll();
+                tabPattern.registerViews(viewDefinitionService);
             }
         }
     }
