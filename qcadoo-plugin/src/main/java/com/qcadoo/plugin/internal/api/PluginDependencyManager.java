@@ -26,6 +26,7 @@ package com.qcadoo.plugin.internal.api;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import com.qcadoo.plugin.api.Plugin;
 import com.qcadoo.plugin.api.PluginDependencyResult;
@@ -37,6 +38,8 @@ public interface PluginDependencyManager {
     PluginDependencyResult getDependenciesToDisable(List<Plugin> plugins);
 
     List<Plugin> sortPluginsInDependencyOrder(Collection<Plugin> plugins);
+
+    List<Plugin> sortPluginsInDependencyOrder(final Collection<Plugin> plugins, final Map<String, Plugin> allPlugins);
 
     PluginDependencyResult getDependenciesToUninstall(List<Plugin> plugins);
 

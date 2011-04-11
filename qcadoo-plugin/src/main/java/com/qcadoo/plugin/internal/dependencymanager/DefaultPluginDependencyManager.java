@@ -165,8 +165,7 @@ public final class DefaultPluginDependencyManager implements PluginDependencyMan
     }
 
     @Override
-    public List<Plugin> sortPluginsInDependencyOrder(final Collection<Plugin> plugins) {
-
+    public List<Plugin> sortPluginsInDependencyOrder(final Collection<Plugin> plugins, final Map<String, Plugin> allPlugins) {
         // Map: not initialized pugins -> its dependencies
         Map<String, Set<String>> notInitializedPlugins = createPluginsMapWithDependencies(plugins);
 
@@ -197,11 +196,16 @@ public final class DefaultPluginDependencyManager implements PluginDependencyMan
             }
         }
 
-        List<Plugin> sortedPlugins = convertIdentifiersToPlugins(initializedPlugins);
+        List<Plugin> sortedPlugins = convertIdentifiersToPlugins(initializedPlugins, allPlugins);
 
         Collections.sort(sortedPlugins, new DependencyComparator());
 
         return sortedPlugins;
+    }
+
+    @Override
+    public List<Plugin> sortPluginsInDependencyOrder(final Collection<Plugin> plugins) {
+        return sortPluginsInDependencyOrder(plugins, null);
     }
 
     private Set<PluginDependencyInformation> getDependentPlugins(final List<Plugin> plugins, final boolean includeDisabled) {
@@ -267,10 +271,15 @@ public final class DefaultPluginDependencyManager implements PluginDependencyMan
         return resultMap;
     }
 
-    private List<Plugin> convertIdentifiersToPlugins(final Collection<String> pluginIdetifiers) {
+    private List<Plugin> convertIdentifiersToPlugins(final Collection<String> pluginIdetifiers,
+            final Map<String, Plugin> allPlugins) {
         List<Plugin> resultList = new LinkedList<Plugin>();
         for (String pluginIdentifier : pluginIdetifiers) {
-            resultList.add(pluginAccessor.getPlugin(pluginIdentifier));
+            if (allPlugins == null) {
+                resultList.add(pluginAccessor.getPlugin(pluginIdentifier));
+            } else {
+                resultList.add(allPlugins.get(pluginIdentifier));
+            }
         }
         return resultList;
     }
