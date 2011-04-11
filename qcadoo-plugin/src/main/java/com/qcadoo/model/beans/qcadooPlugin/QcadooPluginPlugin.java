@@ -50,6 +50,9 @@ public class QcadooPluginPlugin {
     @Column
     private String state;
 
+    @Column
+    private boolean isSystem;
+
     public QcadooPluginPlugin() {
         // empty
     }
@@ -58,6 +61,7 @@ public class QcadooPluginPlugin {
         identifier = plugin.getIdentifier();
         version = plugin.getVersion().toString();
         state = plugin.getState().toString();
+        isSystem = plugin.isSystemPlugin();
     }
 
     public String getIdentifier() {
@@ -139,7 +143,18 @@ public class QcadooPluginPlugin {
         } else if (!version.equals(other.version)) {
             return false;
         }
+        if (isSystem != other.isSystem) {
+            return false;
+        }
         return true;
+    }
+
+    public boolean getIsSystem() {
+        return isSystem;
+    }
+
+    public void setIsSystem(boolean isSystem) {
+        this.isSystem = isSystem;
     }
 
 }
