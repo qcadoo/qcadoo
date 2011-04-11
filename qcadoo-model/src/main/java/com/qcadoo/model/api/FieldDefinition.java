@@ -44,9 +44,6 @@ public interface FieldDefinition {
      */
     String getName();
 
-    /**
-     * {@link FieldType#toString(Object)}
-     */
     String getValue(final Object value, Locale locale);
 
     /**

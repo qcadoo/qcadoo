@@ -65,20 +65,12 @@ public interface SearchCriteriaBuilder {
     /**
      * Set the asc order by given field, by default there is an order by id.
      * 
-     * @param order
-     *            order
-     * @return this search builder
      * @see SearchCriteria#getOrder()
      */
     SearchCriteriaBuilder orderAscBy(String fieldName);
 
     /**
      * Set the desc order by given field, by default there is an order by id.
-     * 
-     * @param order
-     *            order
-     * @return this search builder
-     * @see SearchCriteria#getOrder()
      */
     SearchCriteriaBuilder orderDescBy(String fieldName);
 

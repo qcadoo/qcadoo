@@ -214,6 +214,7 @@ public class PluginAccessorTest {
         pluginAccessor.init();
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void shouldPerformInit() throws Exception {
         // given
@@ -234,8 +235,8 @@ public class PluginAccessorTest {
         Set<QcadooPluginPlugin> pluginsFromDatabase = Sets.newHashSet(pluginsPlugin1, pluginsPlugin2);
         List<Plugin> sortedPluginsToInitialize = Lists.newArrayList((Plugin) plugin2, (Plugin) plugin1);
 
-        given(pluginDependencyManager.sortPluginsInDependencyOrder(Mockito.anyCollectionOf(Plugin.class))).willReturn(
-                sortedPluginsToInitialize);
+        given(pluginDependencyManager.sortPluginsInDependencyOrder(Mockito.anyCollectionOf(Plugin.class), Mockito.anyMap()))
+                .willReturn(sortedPluginsToInitialize);
 
         given(pluginDescriptorParser.loadPlugins()).willReturn(pluginsFromDescriptor);
 
@@ -249,6 +250,7 @@ public class PluginAccessorTest {
         inOrder.verify(moduleFactoryAccessor).init(sortedPluginsToInitialize);
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void shouldPerformEnableOnEnablingPlugins() throws Exception {
         // given
@@ -277,8 +279,8 @@ public class PluginAccessorTest {
         Set<QcadooPluginPlugin> pluginsFromDatabase = Sets.newHashSet(pluginsPlugin1, pluginsPlugin2, pluginsPlugin3);
         List<Plugin> sortedPluginsToInitialize = Lists.newArrayList((Plugin) plugin2, (Plugin) plugin1);
 
-        given(pluginDependencyManager.sortPluginsInDependencyOrder(Mockito.anyCollectionOf(Plugin.class))).willReturn(
-                sortedPluginsToInitialize);
+        given(pluginDependencyManager.sortPluginsInDependencyOrder(Mockito.anyCollectionOf(Plugin.class), Mockito.anyMap()))
+                .willReturn(sortedPluginsToInitialize);
 
         given(pluginDescriptorParser.loadPlugins()).willReturn(pluginsFromDescriptor);
 

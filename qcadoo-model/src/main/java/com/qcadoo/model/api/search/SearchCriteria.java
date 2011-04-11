@@ -56,7 +56,6 @@ public interface SearchCriteria {
      * Return seach order.
      * 
      * @return order
-     * @see SearchCriteriaBuilder#orderBy(Order)
      */
     Order getOrder();
 

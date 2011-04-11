@@ -304,7 +304,7 @@
 					<nohelp>true</nohelp>
 					<use>false</use>
 					<notree>true</notree>
-					<excludePackageNames>*.internal.*:com.qcadoo.maven.plugins:com.qcadoo.maven.plugins.*:com.qcadoo.tenant.*:com.qcadoo.model.beans.*:com.qcadoo.plugin.api.errorhander.*</excludePackageNames>
+					<excludePackageNames>*.internal.*:com.qcadoo.maven.plugins:com.qcadoo.maven.plugins.*:com.qcadoo.tenant.*:com.qcadoo.model.beans.*:*.api.errorhandler.*</excludePackageNames>
 					<reportSets>
 						<reportSet>
 							<id>aggregate</id>

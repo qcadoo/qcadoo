@@ -29,6 +29,7 @@ package com.qcadoo.plugin.api;
  * {@link ModuleFactory}.
  * 
  * @see Plugin plugins and modules lifecycle
+ * @since 0.4.0
  */
 public class Module {
 

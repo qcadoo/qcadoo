@@ -26,6 +26,8 @@ package com.qcadoo.plugin.api;
 
 /**
  * Plugin's requirements. It holds required plugin's identifier and optionally required version.
+ * 
+ * @since 0.4.0
  */
 public class PluginDependencyInformation {
 

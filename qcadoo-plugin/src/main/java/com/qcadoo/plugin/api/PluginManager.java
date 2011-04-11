@@ -28,6 +28,8 @@ import com.qcadoo.plugin.api.artifact.PluginArtifact;
 
 /**
  * Service to managing plugins.
+ * 
+ * @since 0.4.0
  */
 public interface PluginManager {
 

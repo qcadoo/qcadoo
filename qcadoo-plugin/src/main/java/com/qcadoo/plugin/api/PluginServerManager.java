@@ -26,6 +26,8 @@ package com.qcadoo.plugin.api;
 
 /**
  * Servise to managing server.
+ * 
+ * @since 0.4.0
  */
 public interface PluginServerManager {
 

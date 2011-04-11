@@ -28,6 +28,8 @@ import java.io.Serializable;
 
 /**
  * Version of the plugin - contains three numbers - major, minor and branch.
+ * 
+ * @since 0.4.0
  */
 public class Version implements Comparable<Version>, Serializable {
 

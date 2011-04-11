@@ -26,6 +26,8 @@ package com.qcadoo.plugin.api;
 
 /**
  * State of the plugin.
+ * 
+ * @since 0.4.0
  */
 public enum PluginState {
 

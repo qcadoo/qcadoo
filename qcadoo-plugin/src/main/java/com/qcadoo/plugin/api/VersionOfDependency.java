@@ -31,6 +31,8 @@ import org.springframework.util.StringUtils;
 
 /**
  * Version of the required plugin - contains lower and upper boundaries with information if boundary is included.
+ * 
+ * @since 0.4.0
  */
 public class VersionOfDependency {
 

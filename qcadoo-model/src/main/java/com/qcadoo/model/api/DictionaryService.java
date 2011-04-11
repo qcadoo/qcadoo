@@ -39,7 +39,7 @@ public interface DictionaryService {
     /**
      * Return all values for given dictionary's name.
      * 
-     * @param dictionaryName
+     * @param dictionary
      *            dictionary's name
      * @return the dictionary's values
      */

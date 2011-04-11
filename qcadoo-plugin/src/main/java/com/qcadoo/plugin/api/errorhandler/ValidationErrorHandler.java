@@ -1,4 +1,4 @@
-package com.qcadoo.plugin.api.errorhander;
+package com.qcadoo.plugin.api.errorhandler;
 
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;

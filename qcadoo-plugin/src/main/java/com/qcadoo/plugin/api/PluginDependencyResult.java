@@ -33,6 +33,7 @@ import com.google.common.collect.Sets;
  * 
  * @see PluginManager
  * @see PluginOperationResult
+ * @since 0.4.0
  */
 public final class PluginDependencyResult {
 

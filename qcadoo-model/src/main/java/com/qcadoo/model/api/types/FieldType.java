@@ -43,14 +43,6 @@ public interface FieldType {
 
     /**
      * Convert given value to valid field's value.
-     * 
-     * @param fieldDefinition
-     *            field definition
-     * @param value
-     *            value
-     * @param validatedEntity
-     *            entity
-     * @return valid value
      */
     ValueAndError toObject(FieldDefinition fieldDefinition, Object value);
 

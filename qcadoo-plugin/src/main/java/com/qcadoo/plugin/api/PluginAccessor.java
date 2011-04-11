@@ -4,6 +4,8 @@ import java.util.Collection;
 
 /**
  * Service to accessing plugins registered in the system.
+ * 
+ * @since 0.4.0
  */
 public interface PluginAccessor {
 

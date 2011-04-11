@@ -30,6 +30,7 @@ import org.jdom.Element;
  * Factory responsible for parsing descriptors and creating instances of {@link Module}.
  * 
  * @see Plugin plugins and modules lifecycle
+ * @since 0.4.0
  */
 public abstract class ModuleFactory<T extends Module> {
 

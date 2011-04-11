@@ -26,6 +26,8 @@ package com.qcadoo.plugin.api;
 
 /**
  * Holder for the status and dependencies information returned by {@link PluginManager} methods.
+ * 
+ * @since 0.4.0
  */
 public final class PluginOperationResult {
 

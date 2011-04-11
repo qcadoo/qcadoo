@@ -26,6 +26,8 @@ package com.qcadoo.plugin.api;
 
 /**
  * Status returned by {@link PluginManager} methods.
+ * 
+ * @since 0.4.0
  */
 public enum PluginOperationStatus {
 

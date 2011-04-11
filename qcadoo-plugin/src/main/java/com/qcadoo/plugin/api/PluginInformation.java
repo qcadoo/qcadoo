@@ -26,6 +26,8 @@ package com.qcadoo.plugin.api;
 
 /**
  * Plugin's additional information.
+ * 
+ * @since 0.4.0
  */
 public class PluginInformation {
 

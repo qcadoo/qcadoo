@@ -31,6 +31,8 @@ import java.io.InputStream;
 
 /**
  * Plugin artifact build on JAR file.
+ * 
+ * @since 0.4.0
  */
 public final class JarPluginArtifact implements PluginArtifact {
 

@@ -152,7 +152,7 @@ public final class DefaultPluginAccessor implements InternalPluginAccessor {
             }
         }
 
-        List<Plugin> sortedPlugins = pluginDependencyManager.sortPluginsInDependencyOrder(plugins.values());
+        List<Plugin> sortedPlugins = pluginDependencyManager.sortPluginsInDependencyOrder(plugins.values(), plugins);
 
         moduleFactoryAccessor.init(sortedPlugins);
 

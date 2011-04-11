@@ -28,6 +28,8 @@ import java.io.InputStream;
 
 /**
  * Plugin artifact build on raw input stream.
+ * 
+ * @since 0.4.0
  */
 public class InputStreamPluginArtifact implements PluginArtifact {
 

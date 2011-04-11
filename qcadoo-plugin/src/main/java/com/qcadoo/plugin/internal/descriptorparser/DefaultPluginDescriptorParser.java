@@ -84,7 +84,7 @@ public class DefaultPluginDescriptorParser implements PluginDescriptorParser {
 
             documentBuilder = factory.newDocumentBuilder();
 
-            documentBuilder.setErrorHandler(new com.qcadoo.plugin.api.errorhander.ValidationErrorHandler());
+            documentBuilder.setErrorHandler(new com.qcadoo.plugin.api.errorhandler.ValidationErrorHandler());
 
         } catch (ParserConfigurationException e) {
             throw new IllegalStateException("Error while parsing plugin xml schema", e);

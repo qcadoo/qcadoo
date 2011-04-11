@@ -31,7 +31,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 /**
  * Service for manipulating view definitions.
  * 
- * @see com.qcadoo.view.internal.xml.ViewDefinitionParserImpl.ViewDefinitionParser
  * @apiviz.uses com.qcadoo.mes.view.ViewDefinition
  */
 public interface ViewDefinitionService {

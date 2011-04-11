@@ -28,6 +28,8 @@ import java.io.InputStream;
 
 /**
  * Abstraction which represents location of the plugin.
+ * 
+ * @since 0.4.0
  */
 public interface PluginArtifact {
 

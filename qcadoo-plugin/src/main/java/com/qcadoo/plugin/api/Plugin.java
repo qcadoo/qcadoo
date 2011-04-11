@@ -74,6 +74,7 @@ import org.jdom.Element;
  * If the plugin is enabled, it will be disabled first. The state is set to {@link PluginState#ENABLING} and the system is
  * restarted.
  * 
+ * @since 0.4.0
  */
 public interface Plugin {
 
