@@ -24,6 +24,35 @@
 
 package com.qcadoo.plugin.api;
 
+/**
+ * State of the plugin.
+ */
 public enum PluginState {
-    ENABLED, DISABLED, TEMPORARY, ENABLING, UNKNOWN;
+
+    /**
+     * Active in the system.
+     */
+    ENABLED,
+
+    /**
+     * Inactive in the system, can be activated without restart.
+     */
+    DISABLED,
+
+    /**
+     * Inactive in the system, cannot be activated without restart.
+     */
+    TEMPORARY,
+
+    /**
+     * Inactive in the system, will be activated after restart.
+     */
+    ENABLING,
+
+    /**
+     * Transitional state, after system restart before database synchronization. This status cannot exists in initialized
+     * application.
+     */
+    UNKNOWN;
+
 }

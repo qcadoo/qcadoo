@@ -24,6 +24,84 @@
 
 package com.qcadoo.plugin.api;
 
+/**
+ * Status returned by {@link PluginManager} methods.
+ */
 public enum PluginOperationStatus {
-    DEPENDENCIES_TO_ENABLE, SUCCESS, SUCCESS_WITH_RESTART, UNSATISFIED_DEPENDENCIES, DEPENDENCIES_TO_DISABLE, SYSTEM_PLUGIN_DISABLING, SUCCESS_WITH_MISSING_DEPENDENCIES, CORRUPTED_PLUGIN, CANNOT_UPLOAD_PLUGIN, CANNOT_INSTALL_PLUGIN_FILE, SYSTEM_PLUGIN_UNINSTALLING, SYSTEM_PLUGIN_UPDATING, CANNOT_DOWNGRADE_PLUGIN, DEPENDENCIES_TO_UNINSTALL, UNSATISFIED_DEPENDENCIES_AFTER_UPDATE;
+
+    /**
+     * Plugin cannot be enabled because its dependencies are not enabled. User decision is required.
+     */
+    DEPENDENCIES_TO_ENABLE,
+
+    /**
+     * Operation was successful.
+     */
+    SUCCESS,
+
+    /**
+     * Operation was successful, but restart is necessary.
+     */
+    SUCCESS_WITH_RESTART,
+
+    /**
+     * Plugin cannot be installed or enabled because there are missing dependencies.
+     */
+    UNSATISFIED_DEPENDENCIES,
+
+    /**
+     * Plugin cannot be disabled because it's a dependency for enabled plugins. User decision is required.
+     */
+    DEPENDENCIES_TO_DISABLE,
+
+    /**
+     * System plugin cannot be disabled.
+     */
+    SYSTEM_PLUGIN_DISABLING,
+
+    /**
+     * Plugin was successfully installed, but there are missing dependencies required to enable plugin.
+     */
+    SUCCESS_WITH_MISSING_DEPENDENCIES,
+
+    /**
+     * Plugin's file was successfully uploaded but it is not a JAR file or the descriptor hasn't been found.
+     */
+    CORRUPTED_PLUGIN,
+
+    /**
+     * Plugin's file cannot be uploaded.
+     */
+    CANNOT_UPLOAD_PLUGIN,
+
+    /**
+     * Plugin cannot be installed - plugin's file doesn't exist, cannot be read or move to target directory.
+     */
+    CANNOT_INSTALL_PLUGIN_FILE,
+
+    /**
+     * System plugin cannot be unistalled.
+     */
+    SYSTEM_PLUGIN_UNINSTALLING,
+
+    /**
+     * System plugin cannot be updated.
+     */
+    SYSTEM_PLUGIN_UPDATING,
+
+    /**
+     * Plugin cannot be downgraded.
+     */
+    CANNOT_DOWNGRADE_PLUGIN,
+
+    /**
+     * Plugin cannot be uninstalled because it's a dependency for other plugins. User decision is required.
+     */
+    DEPENDENCIES_TO_UNINSTALL,
+
+    /**
+     * Plugin cannot be updated because it's a dependency for other plugins, and these plugins have to been disabled.
+     */
+    UNSATISFIED_DEPENDENCIES_AFTER_UPDATE;
+
 }
