@@ -58,6 +58,7 @@ public class DefaultPluginDao implements PluginDao {
         if (existingPlugin != null) {
             existingPlugin.setState(plugin.getState().toString());
             existingPlugin.setVersion(plugin.getVersion().toString());
+            existingPlugin.setIsSystem(plugin.isSystemPlugin());
         } else {
             existingPlugin = new QcadooPluginPlugin(plugin);
         }
