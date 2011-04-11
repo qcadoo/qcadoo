@@ -65,7 +65,7 @@ public class PluginDescriptorParserTest {
 
     private final Resource xmlFile1 = new FileSystemResource("src/test/resources/xml/testPlugin1.xml");
 
-    private final Resource xmlFile2 = new FileSystemResource("src/test/resources/xml/testPlugin2.xml");
+    private final Resource xmlFile2 = new FileSystemResource("src/test/resources/xml/testplugin2.xml");
 
     private final Resource xmlFile3 = new FileSystemResource("src/test/resources/xml/testIncorrectPlugin.xml");
 
