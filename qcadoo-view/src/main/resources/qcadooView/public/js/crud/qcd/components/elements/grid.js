@@ -254,6 +254,10 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 		var selectedArray = new Array();
 		var selectedEntitiesArray = new Array();
 		for (var i in currentState.selectedEntities) {
+			if (i == "undefined") {
+				currentState.selectedEntities = false;
+				continue;
+			}
 			if (currentState.selectedEntities[i]) {
 				selectionCounter++;
 				lastSelectedRow = i;
@@ -263,6 +267,7 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 		}
 		
 		if (selectionCounter == 0) {
+			currentState.selectedEntities = new Object();
 			currentState.multiselectMode = false;
 			currentState.selectedEntityId = null;
 		} else if (selectionCounter == 1) {
