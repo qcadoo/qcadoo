@@ -30,6 +30,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 
 import java.io.File;
 
@@ -39,6 +41,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.mockito.Mockito;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -47,6 +50,7 @@ import com.qcadoo.plugin.api.PluginManager;
 import com.qcadoo.plugin.api.PluginOperationResult;
 import com.qcadoo.plugin.api.PluginOperationStatus;
 import com.qcadoo.plugin.api.PluginState;
+import com.qcadoo.plugin.api.PluginUtil;
 import com.qcadoo.plugin.api.Version;
 import com.qcadoo.plugin.api.artifact.JarPluginArtifact;
 import com.qcadoo.plugin.internal.api.InternalPlugin;
@@ -72,6 +76,13 @@ public class PluginIntegrationTest {
         MultiTenantUtil multiTenantUtil = new MultiTenantUtil();
         ReflectionTestUtils.setField(multiTenantUtil, "multiTenantService", new DefaultMultiTenantService());
         multiTenantUtil.init();
+
+        PluginAccessor mockPluginAccessor = mock(PluginAccessor.class);
+        given(mockPluginAccessor.isEnabled(Mockito.anyString())).willReturn(true);
+
+        PluginUtil pluginUtil = new PluginUtil();
+        ReflectionTestUtils.setField(pluginUtil, "pluginAccessor", mockPluginAccessor);
+        pluginUtil.init();
 
         new File("target/plugins").mkdir();
         new File("target/tmpPlugins").mkdir();

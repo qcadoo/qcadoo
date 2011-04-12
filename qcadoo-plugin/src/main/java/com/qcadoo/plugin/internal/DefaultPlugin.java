@@ -124,7 +124,7 @@ public final class DefaultPlugin implements InternalPlugin {
 
                     @Override
                     public void invoke() {
-                        if (PluginUtil.isPluginEnabled(DefaultPlugin.this)) {
+                        if (PluginUtil.isEnabled(identifier)) {
                             module.multiTenantEnable();
                         }
                     }
@@ -139,7 +139,7 @@ public final class DefaultPlugin implements InternalPlugin {
 
                     @Override
                     public void invoke() {
-                        if (!PluginUtil.isPluginEnabled(DefaultPlugin.this)) {
+                        if (!PluginUtil.isEnabled(identifier)) {
                             module.multiTenantDisable();
                         }
                     }

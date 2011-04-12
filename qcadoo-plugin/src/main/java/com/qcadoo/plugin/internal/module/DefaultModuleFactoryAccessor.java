@@ -66,7 +66,7 @@ public final class DefaultModuleFactoryAccessor implements ModuleFactoryAccessor
 
                             @Override
                             public void invoke() {
-                                if (PluginUtil.isPluginEnabled(plugin)) {
+                                if (PluginUtil.isEnabled(plugin.getIdentifier())) {
                                     module.multiTenantEnableOnStartup();
                                 }
                             }
@@ -79,7 +79,7 @@ public final class DefaultModuleFactoryAccessor implements ModuleFactoryAccessor
 
                             @Override
                             public void invoke() {
-                                if (!PluginUtil.isPluginEnabled(plugin)) {
+                                if (!PluginUtil.isEnabled(plugin.getIdentifier())) {
                                     module.multiTenantDisableOnStartup();
                                 }
                             }
