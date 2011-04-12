@@ -33,7 +33,6 @@ import static java.util.Collections.unmodifiableList;
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Collections.unmodifiableSet;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -47,6 +46,7 @@ import com.qcadoo.plugin.api.ModuleFactory;
 import com.qcadoo.plugin.api.PluginDependencyInformation;
 import com.qcadoo.plugin.api.PluginInformation;
 import com.qcadoo.plugin.api.PluginState;
+import com.qcadoo.plugin.api.PluginUtil;
 import com.qcadoo.plugin.api.Version;
 import com.qcadoo.plugin.api.VersionOfDependency;
 import com.qcadoo.plugin.internal.api.InternalPlugin;
@@ -102,13 +102,6 @@ public final class DefaultPlugin implements InternalPlugin {
         return system;
     }
 
-    public static void main(final String[] args) {
-        System.out.println(new BigDecimal("0.1").scale());
-        System.out.println(new BigDecimal("0.01").scale());
-        System.out.println(new BigDecimal("0.001").scale());
-        System.out.println(new BigDecimal("0.0001").scale());
-    }
-
     @Override
     public void changeStateTo(final PluginState targetState) {
         if (!isTransitionPossible(getState(), targetState)) {
@@ -116,7 +109,14 @@ public final class DefaultPlugin implements InternalPlugin {
                     + targetState);
         }
 
-        if (!hasState(UNKNOWN) && targetState.equals(ENABLED)) {
+        if (hasState(UNKNOWN)) {
+            state = targetState;
+            return;
+        } else {
+            state = targetState;
+        }
+
+        if (hasState(ENABLED)) {
             for (final Module module : modules) {
                 module.enable();
 
@@ -124,12 +124,14 @@ public final class DefaultPlugin implements InternalPlugin {
 
                     @Override
                     public void invoke() {
-                        module.multiTenantEnable();
+                        if (PluginUtil.isPluginEnabled(DefaultPlugin.this)) {
+                            module.multiTenantEnable();
+                        }
                     }
 
                 });
             }
-        } else if (!hasState(UNKNOWN) && targetState.equals(DISABLED)) {
+        } else if (hasState(DISABLED)) {
             for (final Module module : modules) {
                 module.disable();
 
@@ -137,14 +139,14 @@ public final class DefaultPlugin implements InternalPlugin {
 
                     @Override
                     public void invoke() {
-                        module.multiTenantDisable();
+                        if (!PluginUtil.isPluginEnabled(DefaultPlugin.this)) {
+                            module.multiTenantDisable();
+                        }
                     }
 
                 });
             }
         }
-
-        state = targetState;
     }
 
     private boolean isTransitionPossible(final PluginState from, final PluginState to) {

@@ -36,7 +36,7 @@ import org.json.JSONObject;
 
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.FieldDefinition;
-import com.qcadoo.model.api.utils.ExpressionUtils;
+import com.qcadoo.model.api.expression.ExpressionUtils;
 import com.qcadoo.model.api.validators.ErrorMessage;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.components.FieldComponentState;

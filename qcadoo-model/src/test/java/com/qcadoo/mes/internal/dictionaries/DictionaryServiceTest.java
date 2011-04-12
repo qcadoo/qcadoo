@@ -70,7 +70,7 @@ public class DictionaryServiceTest {
         Entity dict3 = new DefaultEntity(null);
         dict3.setField("name", "Dict3");
 
-        given(dataDefinitionService.get("qcadooModel", "dictionary").find().orderAscBy("name").list().getEntities()).willReturn(
+        given(dataDefinitionService.get("qcadooModel", "dictionary").find().setOrderAscBy("name").list().getEntities()).willReturn(
                 newArrayList(dict1, dict2, dict3));
 
         // when
@@ -92,8 +92,8 @@ public class DictionaryServiceTest {
         item3.setField("name", "bbb");
 
         given(
-                dataDefinitionService.get("qcadooModel", "dictionaryItem").find().restrictedWith(Mockito.any(Restriction.class))
-                        .orderAscBy("name").list().getEntities()).willReturn(newArrayList(item1, item3, item2));
+                dataDefinitionService.get("qcadooModel", "dictionaryItem").find().addRestriction(Mockito.any(Restriction.class))
+                        .setOrderAscBy("name").list().getEntities()).willReturn(newArrayList(item1, item3, item2));
 
         // when
         Map<String, String> values = dictionaryService.values("dict", Locale.ENGLISH);

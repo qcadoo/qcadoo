@@ -28,20 +28,22 @@ import com.qcadoo.model.api.DataDefinition;
 
 /**
  * Object represents "belongs to" field type.
+ * 
+ * @since 0.4.0
  */
 public interface BelongsToType extends FieldType {
 
     /**
-     * Return data definition.
+     * Returns data definition.
      * 
      * @return data definition
      */
     DataDefinition getDataDefinition();
 
     /**
-     * Return true if field will be lazy loaded.
+     * Returns true if field will be lazy loaded.
      * 
-     * @return is lazy loading
+     * @return true if lazy loading
      */
     boolean isLazyLoading();
 

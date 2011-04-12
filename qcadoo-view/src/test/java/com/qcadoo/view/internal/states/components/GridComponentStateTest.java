@@ -260,9 +260,9 @@ public class GridComponentStateTest extends AbstractStateTest {
         // then
         assertEquals(30, json.getInt(GridComponentState.JSON_FIRST_ENTITY));
         assertEquals(30, json.getInt(GridComponentState.JSON_MAX_ENTITIES));
-        verify(substituteCriteria, times(1)).withFirstResult(60);
-        verify(substituteCriteria, times(1)).withFirstResult(30);
-        verify(substituteCriteria, times(2)).withMaxResults(30);
+        verify(substituteCriteria, times(1)).setFirstResult(60);
+        verify(substituteCriteria, times(1)).setFirstResult(30);
+        verify(substituteCriteria, times(2)).setMaxResults(30);
         verify(substituteCriteria, times(2)).list();
     }
 
@@ -287,7 +287,7 @@ public class GridComponentStateTest extends AbstractStateTest {
         grid.render();
 
         // then
-        verify(substituteCriteria).orderAscBy("asdName");
+        verify(substituteCriteria).setOrderAscBy("asdName");
     }
 
     @Test
@@ -311,7 +311,7 @@ public class GridComponentStateTest extends AbstractStateTest {
         grid.render();
 
         // then
-        verify(substituteCriteria).restrictedWith(Restrictions.forOperator(RestrictionOperator.EQ, null, "test"));
+        verify(substituteCriteria).addRestriction(Restrictions.forOperator(RestrictionOperator.EQ, null, "test"));
     }
 
     @Test
@@ -337,7 +337,7 @@ public class GridComponentStateTest extends AbstractStateTest {
         grid.render();
 
         // then
-        verify(substituteCriteria).orderDescBy("product.name");
+        verify(substituteCriteria).setOrderDescBy("product.name");
     }
 
     @Test
@@ -364,7 +364,7 @@ public class GridComponentStateTest extends AbstractStateTest {
 
         // then
         // verify(substituteCriteria).restrictedWith(Restrictions.eq("product.name", "test"));
-        verify(substituteCriteria).restrictedWith(Restrictions.forOperator(RestrictionOperator.EQ, null, "test"));
+        verify(substituteCriteria).addRestriction(Restrictions.forOperator(RestrictionOperator.EQ, null, "test"));
     }
 
     @Test
@@ -402,7 +402,7 @@ public class GridComponentStateTest extends AbstractStateTest {
         grid.render();
 
         // then
-        verify(substituteCriteria).restrictedWith(Restrictions.forOperator(RestrictionOperator.EQ, null, "test*"));
+        verify(substituteCriteria).addRestriction(Restrictions.forOperator(RestrictionOperator.EQ, null, "test*"));
     }
 
     @Test
@@ -430,8 +430,8 @@ public class GridComponentStateTest extends AbstractStateTest {
         grid.render();
 
         // then
-        verify(substituteCriteria, never()).orderAscBy(anyString());
-        verify(substituteCriteria, never()).orderDescBy(anyString());
+        verify(substituteCriteria, never()).setOrderAscBy(anyString());
+        verify(substituteCriteria, never()).setOrderDescBy(anyString());
     }
 
     @Test
@@ -459,7 +459,7 @@ public class GridComponentStateTest extends AbstractStateTest {
         grid.render();
 
         // then
-        verify(substituteCriteria, times(1)).restrictedWith(any(Restriction.class));
+        verify(substituteCriteria, times(1)).addRestriction(any(Restriction.class));
     }
 
     @Test

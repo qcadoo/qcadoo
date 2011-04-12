@@ -112,34 +112,34 @@ public final class SearchCriteriaImpl implements SearchCriteria, SearchCriteriaB
     }
 
     @Override
-    public SearchCriteriaBuilder restrictedWith(final Restriction restriction) {
+    public SearchCriteriaBuilder addRestriction(final Restriction restriction) {
         checkState(restrictions.size() < MAX_RESTRICTIONS, "too many restriction, max is %s", MAX_RESTRICTIONS);
         this.restrictions.add(restriction);
         return this;
     }
 
     @Override
-    public SearchCriteriaBuilder orderAscBy(final String fieldName) {
+    public SearchCriteriaBuilder setOrderAscBy(final String fieldName) {
         checkNotNull(fieldName);
         this.order = Order.asc(fieldName);
         return this;
     }
 
     @Override
-    public SearchCriteriaBuilder orderDescBy(final String fieldName) {
+    public SearchCriteriaBuilder setOrderDescBy(final String fieldName) {
         checkNotNull(fieldName);
         this.order = Order.desc(fieldName);
         return this;
     }
 
     @Override
-    public SearchCriteriaBuilder withMaxResults(final int maxResults) {
+    public SearchCriteriaBuilder setMaxResults(final int maxResults) {
         this.maxResults = maxResults;
         return this;
     }
 
     @Override
-    public SearchCriteriaBuilder withFirstResult(final int firstResult) {
+    public SearchCriteriaBuilder setFirstResult(final int firstResult) {
         this.firstResult = firstResult;
         return this;
     }

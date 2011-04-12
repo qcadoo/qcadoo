@@ -62,7 +62,7 @@ public final class DictionaryServiceImpl implements InternalDictionaryService {
         checkArgument(hasText(dictionary), "dictionary name must be given");
 
         List<Entity> items = dataDefinitionService.get("qcadooModel", "dictionaryItem").find()
-                .restrictedWith(Restrictions.eq("dictionary.name", dictionary)).orderAscBy("name").list().getEntities();
+                .addRestriction(Restrictions.eq("dictionary.name", dictionary)).setOrderAscBy("name").list().getEntities();
 
         List<String> keys = new ArrayList<String>();
 
@@ -80,7 +80,7 @@ public final class DictionaryServiceImpl implements InternalDictionaryService {
         checkArgument(hasText(dictionary), "dictionary name must be given");
 
         List<Entity> items = dataDefinitionService.get("qcadooModel", "dictionaryItem").find()
-                .restrictedWith(Restrictions.eq("dictionary.name", dictionary)).orderAscBy("name").list().getEntities();
+                .addRestriction(Restrictions.eq("dictionary.name", dictionary)).setOrderAscBy("name").list().getEntities();
 
         Map<String, String> values = new LinkedHashMap<String, String>();
 
@@ -97,7 +97,7 @@ public final class DictionaryServiceImpl implements InternalDictionaryService {
     @Transactional(readOnly = true)
     @Monitorable
     public Set<String> dictionaries() {
-        List<Entity> dictionaries = dataDefinitionService.get("qcadooModel", "dictionary").find().orderAscBy("name").list()
+        List<Entity> dictionaries = dataDefinitionService.get("qcadooModel", "dictionary").find().setOrderAscBy("name").list()
                 .getEntities();
 
         Set<String> names = new HashSet<String>();
@@ -113,7 +113,7 @@ public final class DictionaryServiceImpl implements InternalDictionaryService {
     @Transactional
     @Monitorable
     public void createIfNotExists(final String pluginIdentifier, final String name, final String... values) {
-        if (dataDefinitionService.get("qcadooModel", "dictionary").find().restrictedWith(Restrictions.eq("name", name)).list()
+        if (dataDefinitionService.get("qcadooModel", "dictionary").find().addRestriction(Restrictions.eq("name", name)).list()
                 .getTotalNumberOfEntities() > 0) {
             return;
         }
@@ -135,7 +135,7 @@ public final class DictionaryServiceImpl implements InternalDictionaryService {
     @Override
     public String translate(final String dictionaryName, final Locale locale) {
         Entity dictionary = dataDefinitionService.get("qcadooModel", "dictionary").find()
-                .restrictedWith(Restrictions.eq("name", dictionaryName)).withMaxResults(1).uniqueResult();
+                .addRestriction(Restrictions.eq("name", dictionaryName)).setMaxResults(1).uniqueResult();
         return translationService.translate(dictionary.getStringField("pluginIdentifier") + "." + dictionaryName + ".dictionary",
                 locale);
     }

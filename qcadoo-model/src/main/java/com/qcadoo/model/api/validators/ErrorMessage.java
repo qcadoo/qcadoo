@@ -26,6 +26,8 @@ package com.qcadoo.model.api.validators;
 
 /**
  * Object holds validation error message.
+ * 
+ * @since 0.4.0
  */
 public final class ErrorMessage {
 

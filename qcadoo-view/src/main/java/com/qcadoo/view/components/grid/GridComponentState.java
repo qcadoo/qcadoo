@@ -42,6 +42,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.util.StringUtils;
 
+import com.qcadoo.localization.api.utils.DateUtils;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.FieldDefinition;
@@ -52,7 +53,6 @@ import com.qcadoo.model.api.search.Restrictions;
 import com.qcadoo.model.api.search.SearchCriteriaBuilder;
 import com.qcadoo.model.api.search.SearchResult;
 import com.qcadoo.model.api.types.BelongsToType;
-import com.qcadoo.model.api.utils.DateUtils;
 import com.qcadoo.view.internal.states.AbstractComponentState;
 
 public final class GridComponentState extends AbstractComponentState {
@@ -410,7 +410,7 @@ public final class GridComponentState extends AbstractComponentState {
             if (belongsToFieldDefinition == null || belongsToEntityId != null) {
                 SearchCriteriaBuilder criteria = getDataDefinition().find();
                 if (belongsToFieldDefinition != null) {
-                    criteria.restrictedWith(Restrictions.belongsTo(belongsToFieldDefinition, belongsToEntityId));
+                    criteria.addRestriction(Restrictions.belongsTo(belongsToFieldDefinition, belongsToEntityId));
                 }
 
                 try {
@@ -445,8 +445,8 @@ public final class GridComponentState extends AbstractComponentState {
         }
 
         private void addPaging(final SearchCriteriaBuilder criteria) {
-            criteria.withFirstResult(firstResult);
-            criteria.withMaxResults(maxResults);
+            criteria.setFirstResult(firstResult);
+            criteria.setMaxResults(maxResults);
         }
 
         private void addFilters(final SearchCriteriaBuilder criteria) throws ParseException {
@@ -464,17 +464,17 @@ public final class GridComponentState extends AbstractComponentState {
 
                     if (fieldDefinition != null && String.class.isAssignableFrom(fieldDefinition.getType().getType())) {
 
-                        criteria.restrictedWith(getRestrictionsToString(parsedFilterValue, fieldDefinition));
+                        criteria.addRestriction(getRestrictionsToString(parsedFilterValue, fieldDefinition));
 
                     } else if (fieldDefinition != null && Boolean.class.isAssignableFrom(fieldDefinition.getType().getType())) {
-                        criteria.restrictedWith(Restrictions.forOperator(parsedFilterValue.getKey(), fieldDefinition,
+                        criteria.addRestriction(Restrictions.forOperator(parsedFilterValue.getKey(), fieldDefinition,
                                 "1".equals(parsedFilterValue.getValue())));
                     } else if (fieldDefinition != null && Date.class.isAssignableFrom(fieldDefinition.getType().getType())) {
 
-                        criteria.restrictedWith(getRestrictionsToDate(parsedFilterValue, fieldDefinition));
+                        criteria.addRestriction(getRestrictionsToDate(parsedFilterValue, fieldDefinition));
 
                     } else {
-                        criteria.restrictedWith(Restrictions.forOperator(parsedFilterValue.getKey(), fieldDefinition,
+                        criteria.addRestriction(Restrictions.forOperator(parsedFilterValue.getKey(), fieldDefinition,
                                 parsedFilterValue.getValue()));
                     }
                 }
@@ -600,9 +600,9 @@ public final class GridComponentState extends AbstractComponentState {
 
                 if (field != null) {
                     if ("asc".equals(orderDirection)) {
-                        criteria.orderAscBy(field);
+                        criteria.setOrderAscBy(field);
                     } else {
-                        criteria.orderDescBy(field);
+                        criteria.setOrderDescBy(field);
                     }
                 }
             }

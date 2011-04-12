@@ -52,18 +52,18 @@ public final class SearchCriteriaBuilderTest extends DataAccessTest {
     @Test(expected = IllegalStateException.class)
     public void shouldThrownAnExceptionIfThereIsTooManyRestrictions() throws Exception {
         // when
-        dataDefinition.find().restrictedWith(Restrictions.eq(fieldDefinitionAge, 5))
-                .restrictedWith(Restrictions.eq(fieldDefinitionName, "asb%"))
-                .restrictedWith(Restrictions.eq(fieldDefinitionName, "asd%"))
-                .restrictedWith(Restrictions.eq(fieldDefinitionName, "asw%"))
-                .restrictedWith(Restrictions.eq(fieldDefinitionName, "asg%"))
-                .restrictedWith(Restrictions.eq(fieldDefinitionName, "asu%"));
+        dataDefinition.find().addRestriction(Restrictions.eq(fieldDefinitionAge, 5))
+                .addRestriction(Restrictions.eq(fieldDefinitionName, "asb%"))
+                .addRestriction(Restrictions.eq(fieldDefinitionName, "asd%"))
+                .addRestriction(Restrictions.eq(fieldDefinitionName, "asw%"))
+                .addRestriction(Restrictions.eq(fieldDefinitionName, "asg%"))
+                .addRestriction(Restrictions.eq(fieldDefinitionName, "asu%"));
     }
 
     @Test(expected = NullPointerException.class)
     public void shouldThrownAnExceptionIfOrderIsNull() throws Exception {
         // when
-        dataDefinition.find().orderAscBy(null);
+        dataDefinition.find().setOrderAscBy(null);
     }
 
 }

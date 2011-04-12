@@ -414,7 +414,7 @@ public class DataAccessServiceImpl implements DataAccessService {
         while (true) {
             String newValue = oldValue + "(" + (index++) + ")";
 
-            int matches = dataDefinition.find().withMaxResults(1).restrictedWith(Restrictions.eq(fieldDefinition, newValue))
+            int matches = dataDefinition.find().setMaxResults(1).addRestriction(Restrictions.eq(fieldDefinition, newValue))
                     .list().getTotalNumberOfEntities();
 
             if (matches == 0) {
