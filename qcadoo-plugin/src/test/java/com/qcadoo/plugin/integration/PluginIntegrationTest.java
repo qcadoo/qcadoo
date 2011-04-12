@@ -39,7 +39,6 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -64,7 +63,7 @@ public class PluginIntegrationTest {
 
     private PluginManager pluginManager;
 
-    private AbstractApplicationContext applicationContext;
+    private ClassPathXmlApplicationContext applicationContext;
 
     private SessionFactory sessionFactory;
 
@@ -77,8 +76,11 @@ public class PluginIntegrationTest {
         new File("target/plugins").mkdir();
         new File("target/tmpPlugins").mkdir();
 
-        applicationContext = new ClassPathXmlApplicationContext("com/qcadoo/plugin/integration/spring.xml");
+        applicationContext = new ClassPathXmlApplicationContext();
+        applicationContext.getEnvironment().setActiveProfiles("standalone");
+        applicationContext.setConfigLocation("com/qcadoo/plugin/integration/spring.xml");
         applicationContext.registerShutdownHook();
+        applicationContext.refresh();
 
         pluginAccessor = applicationContext.getBean(InternalPluginAccessor.class);
         pluginManager = applicationContext.getBean(PluginManager.class);

@@ -52,9 +52,11 @@ import com.qcadoo.plugin.internal.api.PluginDependencyManager;
 import com.qcadoo.plugin.internal.api.PluginDescriptorParser;
 import com.qcadoo.plugin.internal.api.PluginDescriptorResolver;
 import com.qcadoo.plugin.internal.api.PluginFileManager;
+import com.qcadoo.tenant.api.Standalone;
 
 @Service
-public final class DefaultPluginManager implements PluginManager {
+@Standalone
+public class DefaultPluginManager implements PluginManager {
 
     private static final Logger LOG = LoggerFactory.getLogger(DefaultPluginManager.class);
 
