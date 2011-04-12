@@ -31,44 +31,43 @@ import com.qcadoo.model.api.DataDefinition;
 /**
  * Object represents the criteria for finding entities. It is used for building SQL query.
  * 
- * @apiviz.owns com.qcadoo.mes.model.search.Restriction
- * @apiviz.has com.qcadoo.mes.model.search.Order
+ * @since 0.4.0
  */
 public interface SearchCriteria {
 
     /**
-     * Return max results.
+     * Returns max results.
      * 
      * @return max results
-     * @see SearchCriteriaBuilder#withMaxResults(int)
+     * @see SearchCriteriaBuilder#setMaxResults(int)
      */
     int getMaxResults();
 
     /**
-     * Return first result.
+     * Returns first result.
      * 
      * @return first result
-     * @see SearchCriteriaBuilder#withFirstResult(int)
+     * @see SearchCriteriaBuilder#setFirstResult(int)
      */
     int getFirstResult();
 
     /**
-     * Return seach order.
+     * Returns search order.
      * 
      * @return order
      */
     Order getOrder();
 
     /**
-     * Return list of search restrictions.
+     * Returns list of search restrictions.
      * 
      * @return restrictions
-     * @see SearchCriteriaBuilder#restrictedWith(Restriction)
+     * @see SearchCriteriaBuilder#addRestriction(Restriction)
      */
     Set<Restriction> getRestrictions();
 
     /**
-     * Return data definition for searching entities.
+     * Returns data definition for searching entities.
      * 
      * @return data definition
      */

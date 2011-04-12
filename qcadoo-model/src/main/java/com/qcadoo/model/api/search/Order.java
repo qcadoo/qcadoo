@@ -29,6 +29,8 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 
 /**
  * Object holds order for search criteria.
+ * 
+ * @since 0.4.0
  */
 public final class Order {
 
@@ -44,7 +46,7 @@ public final class Order {
     }
 
     /**
-     * Create asc order for given field.
+     * Create ascending order for given field.
      * 
      * @param fieldName
      *            field's name
@@ -55,7 +57,7 @@ public final class Order {
     }
 
     /**
-     * Create desc order for given field.
+     * Create descending order for given field.
      * 
      * @param fieldName
      *            field's name
@@ -66,7 +68,7 @@ public final class Order {
     }
 
     /**
-     * Create asc order using id field.
+     * Create ascending order using id field.
      * 
      * @return order
      */
@@ -75,7 +77,7 @@ public final class Order {
     }
 
     /**
-     * Return true if order is asc.
+     * Return true if order is ascending.
      * 
      * @return is asc
      */
@@ -86,7 +88,7 @@ public final class Order {
     /**
      * Return true if order is desc.
      * 
-     * @return is desc
+     * @return true if ascending
      */
     public boolean isDesc() {
         return !asc;

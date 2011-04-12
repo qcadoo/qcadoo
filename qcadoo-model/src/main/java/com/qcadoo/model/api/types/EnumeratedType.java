@@ -29,11 +29,13 @@ import java.util.Map;
 
 /**
  * Object represents "enum" field type.
+ * 
+ * @since 0.4.0
  */
 public interface EnumeratedType extends FieldType {
 
     /**
-     * Return all possible field values.
+     * Returns all possible field values with its translations.
      * 
      * @return values
      */

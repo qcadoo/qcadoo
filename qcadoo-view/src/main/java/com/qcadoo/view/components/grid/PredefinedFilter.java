@@ -35,7 +35,7 @@ import org.joda.time.DateTime;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.qcadoo.model.api.utils.DateUtils;
+import com.qcadoo.localization.api.utils.DateUtils;
 
 public class PredefinedFilter {
 

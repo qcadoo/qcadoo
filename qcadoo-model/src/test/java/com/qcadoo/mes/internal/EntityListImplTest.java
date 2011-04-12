@@ -64,7 +64,7 @@ public class EntityListImplTest {
         FieldDefinition fieldDefinition = mock(FieldDefinition.class);
         DataDefinition dataDefinition = mock(DataDefinition.class, RETURNS_DEEP_STUBS);
         given(dataDefinition.getField("hasMany")).willReturn(fieldDefinition);
-        given(dataDefinition.find().restrictedWith(Restrictions.belongsTo(fieldDefinition, 1L)).list().getEntities()).willReturn(
+        given(dataDefinition.find().addRestriction(Restrictions.belongsTo(fieldDefinition, 1L)).list().getEntities()).willReturn(
                 entities);
 
         EntityListImpl list = new EntityListImpl(dataDefinition, "hasMany", 1L);
@@ -81,7 +81,7 @@ public class EntityListImplTest {
         DataDefinition dataDefinition = mock(DataDefinition.class, RETURNS_DEEP_STUBS);
         given(dataDefinition.getField("hasMany")).willReturn(fieldDefinition);
         SearchCriteriaBuilder searchCriteriaBuilder = mock(SearchCriteriaBuilder.class);
-        given(dataDefinition.find().restrictedWith(Restrictions.belongsTo(fieldDefinition, 1L)))
+        given(dataDefinition.find().addRestriction(Restrictions.belongsTo(fieldDefinition, 1L)))
                 .willReturn(searchCriteriaBuilder);
 
         EntityList list = new EntityListImpl(dataDefinition, "hasMany", 1L);

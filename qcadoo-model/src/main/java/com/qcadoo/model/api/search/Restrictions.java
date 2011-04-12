@@ -39,8 +39,7 @@ import com.qcadoo.model.internal.search.restrictions.SimpleRestriction;
 /**
  * Class creates restrictions for search criteria.
  * 
- * @apiviz.uses com.qcadoo.mes.model.search.Restriction
- * @apiviz.uses com.qcadoo.mes.model.FieldDefinition
+ * @since 0.4.0
  */
 public final class Restrictions {
 

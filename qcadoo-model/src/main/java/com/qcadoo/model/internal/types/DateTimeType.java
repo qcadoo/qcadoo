@@ -32,9 +32,9 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import com.qcadoo.localization.api.utils.DateUtils;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.types.FieldType;
-import com.qcadoo.model.api.utils.DateUtils;
 import com.qcadoo.model.internal.api.ValueAndError;
 
 public final class DateTimeType implements FieldType {

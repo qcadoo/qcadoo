@@ -40,7 +40,7 @@ import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.EntityTree;
 import com.qcadoo.model.api.EntityTreeNode;
 import com.qcadoo.model.api.FieldDefinition;
-import com.qcadoo.model.api.utils.ExpressionUtils;
+import com.qcadoo.model.api.expression.ExpressionUtils;
 import com.qcadoo.view.components.FieldComponentState;
 
 public final class TreeComponentState extends FieldComponentState {

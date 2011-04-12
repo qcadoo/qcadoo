@@ -391,7 +391,7 @@ public class EntityServiceImplTest extends DataAccessTest {
 
         given(fieldDefinition.getName()).willReturn("joinField");
         given(dataDefinition.getField("joinField")).willReturn(fieldDefinition);
-        given(dataDefinition.find().restrictedWith(Restrictions.belongsTo(fieldDefinition, 5L)).list().getEntities()).willReturn(
+        given(dataDefinition.find().addRestriction(Restrictions.belongsTo(fieldDefinition, 5L)).list().getEntities()).willReturn(
                 Lists.newArrayList(entity1, entity2));
 
         List<Entity> entityList = new EntityListImpl(dataDefinition, "joinField", 5L);
