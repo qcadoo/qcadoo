@@ -65,7 +65,7 @@ public interface TranslationService {
     String translate(List<String> messageCodes, Locale locale, Object... args);
 
     /**
-     * Returns a map of defined in the qcadoo-plugin locales
+     * Returns a map of available locales, defined in basic's plugin qcadoo-plugin
      * 
      * @return a map with a locale value and its name
      */
