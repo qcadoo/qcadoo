@@ -41,7 +41,9 @@ import org.springframework.test.util.ReflectionTestUtils;
 import com.qcadoo.plugin.api.Module;
 import com.qcadoo.plugin.api.ModuleFactory;
 import com.qcadoo.plugin.api.Plugin;
+import com.qcadoo.plugin.api.PluginAccessor;
 import com.qcadoo.plugin.api.PluginState;
+import com.qcadoo.plugin.api.PluginUtil;
 import com.qcadoo.plugin.internal.api.InternalPlugin;
 import com.qcadoo.tenant.api.MultiTenantUtil;
 import com.qcadoo.tenant.internal.DefaultMultiTenantService;
@@ -54,6 +56,14 @@ public class ModuleFactoryAccessorTest {
         MultiTenantUtil multiTenantUtil = new MultiTenantUtil();
         ReflectionTestUtils.setField(multiTenantUtil, "multiTenantService", new DefaultMultiTenantService());
         multiTenantUtil.init();
+
+        PluginAccessor mockPluginAccessor = mock(PluginAccessor.class);
+        given(mockPluginAccessor.isEnabled("plugin1")).willReturn(false);
+        given(mockPluginAccessor.isEnabled("plugin2")).willReturn(true);
+
+        PluginUtil pluginUtil = new PluginUtil();
+        ReflectionTestUtils.setField(pluginUtil, "pluginAccessor", mockPluginAccessor);
+        pluginUtil.init();
 
         ModuleFactory<?> moduleFactory1 = mock(ModuleFactory.class);
         given(moduleFactory1.getIdentifier()).willReturn("module1");
@@ -73,6 +83,7 @@ public class ModuleFactoryAccessorTest {
         given(plugin1.getModules(moduleFactory1)).willReturn(newArrayList(module111, module112));
         given(plugin1.getModules(moduleFactory2)).willReturn(newArrayList(module12));
         given(plugin1.hasState(PluginState.ENABLED)).willReturn(false);
+        given(plugin1.getIdentifier()).willReturn("plugin1");
 
         InternalPlugin plugin2 = mock(InternalPlugin.class);
         Module module21 = mock(Module.class);
@@ -80,6 +91,7 @@ public class ModuleFactoryAccessorTest {
         given(plugin2.getModules(moduleFactory1)).willReturn(newArrayList(module21));
         given(plugin2.getModules(moduleFactory2)).willReturn(newArrayList(module22));
         given(plugin2.hasState(PluginState.ENABLED)).willReturn(true);
+        given(plugin2.getIdentifier()).willReturn("plugin2");
 
         List<Plugin> plugins = newArrayList((Plugin) plugin1, (Plugin) plugin2);
 
