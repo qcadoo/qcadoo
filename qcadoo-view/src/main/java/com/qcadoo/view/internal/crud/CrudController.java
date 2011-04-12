@@ -22,16 +22,14 @@
  * ***************************************************************************
  */
 
-package com.qcadoo.view.api.crud;
+package com.qcadoo.view.internal.crud;
 
 import java.util.Locale;
 import java.util.Map;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,8 +39,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.qcadoo.model.api.aop.Monitorable;
-import com.qcadoo.view.api.ViewDefinitionService;
-import com.qcadoo.view.internal.api.InternalViewDefinition;
+import com.qcadoo.view.api.crud.CrudService;
 
 @Controller
 public class CrudController {
@@ -54,7 +51,7 @@ public class CrudController {
     private static final String CONTROLLER_PATH = "page/{" + PLUGIN_IDENTIFIER_VARIABLE + "}/{" + VIEW_NAME_VARIABLE + "}";
 
     @Autowired
-    private ViewDefinitionService viewDefinitionService;
+    private CrudService crudService;
 
     @Monitorable(threshold = 500)
     @RequestMapping(value = CONTROLLER_PATH, method = RequestMethod.GET)
@@ -62,36 +59,7 @@ public class CrudController {
             @PathVariable(VIEW_NAME_VARIABLE) final String viewName, @RequestParam final Map<String, String> arguments,
             final Locale locale) {
 
-        InternalViewDefinition viewDefinition = (InternalViewDefinition) viewDefinitionService.get(pluginIdentifier, viewName);
-
-        ModelAndView modelAndView = new ModelAndView("crud/crudView");
-
-        String context = viewDefinition.translateContextReferences(arguments.get("context"));
-
-        JSONObject jsonContext = new JSONObject();
-
-        if (StringUtils.hasText(context)) {
-            try {
-                jsonContext = new JSONObject(context);
-            } catch (JSONException e) {
-                throw new IllegalStateException(e.getMessage(), e);
-            }
-        }
-
-        modelAndView.addObject("model", viewDefinition.prepareView(jsonContext, locale));
-        modelAndView.addObject("viewName", viewName);
-        modelAndView.addObject("pluginIdentifier", pluginIdentifier);
-        modelAndView.addObject("context", context);
-
-        boolean popup = false;
-        if (arguments.containsKey("popup")) {
-            popup = Boolean.parseBoolean(arguments.get("popup"));
-        }
-        modelAndView.addObject("popup", popup);
-
-        modelAndView.addObject("locale", locale.getLanguage());
-
-        return modelAndView;
+        return crudService.prepareView(pluginIdentifier, viewName, arguments, locale);
     }
 
     @Monitorable(threshold = 500)
@@ -100,13 +68,7 @@ public class CrudController {
     public Object performEvent(@PathVariable(PLUGIN_IDENTIFIER_VARIABLE) final String pluginIdentifier,
             @PathVariable(VIEW_NAME_VARIABLE) final String viewName, @RequestBody final JSONObject body, final Locale locale) {
 
-        InternalViewDefinition viewDefinition = (InternalViewDefinition) viewDefinitionService.get(pluginIdentifier, viewName);
-
-        try {
-            return viewDefinition.performEvent(body, locale);
-        } catch (JSONException e) {
-            throw new IllegalStateException(e.getMessage(), e);
-        }
+        return crudService.performEvent(pluginIdentifier, viewName, body, locale);
     }
 
 }

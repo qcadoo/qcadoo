@@ -26,4 +26,8 @@ public class PluginUtil {
         return instance.pluginAccessor.isEnabled(pluginIdentifier);
     }
 
+    public static boolean isPluginEnabled(final String pluginIdentifier) {
+        return true;
+    }
+
 }

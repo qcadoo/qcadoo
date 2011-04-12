@@ -304,7 +304,7 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
     public ComponentCustomEvent parseCustomEvent(final Node listenerNode) {
         HookDefinitionImpl hookDefinition = (HookDefinitionImpl) parseHook(listenerNode);
         return new ComponentCustomEvent(getStringAttribute(listenerNode, "event"), hookDefinition.getObject(),
-                hookDefinition.getMethod());
+                hookDefinition.getMethod(), null);
     }
 
     public HookDefinition parseHook(final Node hookNode) {

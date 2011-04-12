@@ -22,7 +22,7 @@
  * ***************************************************************************
  */
 
-package com.qcadoo.view.internal.menu;
+package com.qcadoo.view.api.menu;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -30,6 +30,7 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 
 /**
  * Represents top menu in application

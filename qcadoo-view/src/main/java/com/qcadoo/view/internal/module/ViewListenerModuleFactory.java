@@ -34,7 +34,7 @@ public class ViewListenerModuleFactory extends ModuleFactory<ViewListenerModule>
         Preconditions.checkNotNull(method, "View listener extension error: method not defined");
 
         HookDefinitionImpl hook = (HookDefinitionImpl) hookFactory.getHook(bean, method);
-        ComponentCustomEvent event = new ComponentCustomEvent(eventName, hook.getObject(), method);
+        ComponentCustomEvent event = new ComponentCustomEvent(eventName, hook.getObject(), method, pluginIdentifier);
 
         return new ViewListenerModule(viewDefinitionService, plugin, view, component, event);
     }

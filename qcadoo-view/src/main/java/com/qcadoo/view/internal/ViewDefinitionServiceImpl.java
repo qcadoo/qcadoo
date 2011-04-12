@@ -37,7 +37,7 @@ import com.qcadoo.view.api.ViewDefinition;
 import com.qcadoo.view.internal.api.InternalViewDefinitionService;
 
 @Service
-public final class ViewDefinitionServiceImpl implements InternalViewDefinitionService {
+public class ViewDefinitionServiceImpl implements InternalViewDefinitionService {
 
     private final Map<String, ViewDefinition> viewDefinitions = new HashMap<String, ViewDefinition>();
 

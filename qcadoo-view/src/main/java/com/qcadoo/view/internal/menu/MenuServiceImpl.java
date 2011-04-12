@@ -38,6 +38,8 @@ import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.aop.Monitorable;
 import com.qcadoo.model.api.search.Restrictions;
 import com.qcadoo.plugin.api.PluginAccessor;
+import com.qcadoo.view.api.menu.MenuDefinition;
+import com.qcadoo.view.api.menu.MenulItemsGroup;
 import com.qcadoo.view.internal.api.InternalMenuService;
 import com.qcadoo.view.internal.menu.items.UrlMenuItem;
 import com.qcadoo.view.internal.menu.items.ViewDefinitionMenuItemItem;
