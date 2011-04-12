@@ -26,8 +26,9 @@ public class PluginUtil {
         return instance.pluginAccessor.isEnabled(pluginIdentifier);
     }
 
+    @Deprecated
     public static boolean isPluginEnabled(final String pluginIdentifier) {
-        return true;
+        return isEnabled(pluginIdentifier);
     }
 
 }
