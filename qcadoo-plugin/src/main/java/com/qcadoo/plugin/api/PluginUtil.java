@@ -6,4 +6,8 @@ public class PluginUtil {
         return plugin.hasState(PluginState.ENABLED) || plugin.hasState(PluginState.ENABLING);
     }
 
+    public static boolean isPluginEnabled(final String pluginIdentifier) {
+        return true;
+    }
+
 }

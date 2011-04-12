@@ -148,8 +148,8 @@ public abstract class AbstractComponentState implements ComponentState, FieldEnt
 
     protected abstract void initializeContent(final JSONObject json) throws JSONException;
 
-    public final void registerCustomEvent(final String name, final Object obj, final String method) {
-        eventHandlerHolder.registemCustomEvent(name, obj, method);
+    public final void registerCustomEvent(final String name, final Object obj, final String method, final String pluginIdentifier) {
+        eventHandlerHolder.registemCustomEvent(name, obj, method, pluginIdentifier);
     }
 
     protected final void registerEvent(final String name, final Object obj, final String method) {

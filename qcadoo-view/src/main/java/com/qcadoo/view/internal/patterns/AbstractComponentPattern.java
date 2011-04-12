@@ -197,7 +197,8 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
         state.setTranslationService(translationService);
         state.setTranslationPath(getTranslationPath());
         for (ComponentCustomEvent customEvent : customEvents) {
-            state.registerCustomEvent(customEvent.getEvent(), customEvent.getObject(), customEvent.getMethod());
+            state.registerCustomEvent(customEvent.getEvent(), customEvent.getObject(), customEvent.getMethod(),
+                    customEvent.getPluginIdentifier());
         }
         if (viewDefinitionState != null) {
             viewDefinitionState.registerComponent(getReference(), getPath(), state);

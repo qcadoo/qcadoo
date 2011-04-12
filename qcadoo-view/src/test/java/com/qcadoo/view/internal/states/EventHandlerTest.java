@@ -59,7 +59,7 @@ public class EventHandlerTest {
 
         CustomEventBean bean = mock(CustomEventBean.class);
         FormComponentState component = new FormComponentState(null, null);
-        component.registerCustomEvent("custom", bean, "customMethod");
+        component.registerCustomEvent("custom", bean, "customMethod", null);
 
         // when
         component.performEvent(viewDefinitionState, "custom", "arg0", "arg1");
@@ -77,10 +77,10 @@ public class EventHandlerTest {
         component.setFieldValue(13L);
 
         CustomEventBean bean1 = mock(CustomEventBean.class);
-        component.registerCustomEvent("clear", bean1, "customMethod");
+        component.registerCustomEvent("clear", bean1, "customMethod", null);
 
         CustomEventBean bean2 = mock(CustomEventBean.class);
-        component.registerCustomEvent("clear", bean2, "customMethod");
+        component.registerCustomEvent("clear", bean2, "customMethod", null);
 
         // when
         component.performEvent(viewDefinitionState, "clear");

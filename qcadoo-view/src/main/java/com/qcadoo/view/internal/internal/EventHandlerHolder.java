@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.qcadoo.plugin.api.PluginUtil;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.ViewDefinitionState;
 
@@ -44,12 +45,12 @@ public final class EventHandlerHolder {
 
     private final Map<String, List<EventHandler>> eventHandlers = new HashMap<String, List<EventHandler>>();
 
-    public void registemCustomEvent(final String event, final Object obj, final String method) {
-        registemEvent(event, new EventHandler(obj, method, true));
+    public void registemCustomEvent(final String event, final Object obj, final String method, final String pluginIdentifier) {
+        registemEvent(event, new EventHandler(obj, method, pluginIdentifier, true));
     }
 
     public void registemEvent(final String event, final Object obj, final String method) {
-        registemEvent(event, new EventHandler(obj, method, false));
+        registemEvent(event, new EventHandler(obj, method, null, false));
     }
 
     private void registemEvent(final String event, final EventHandler eventHandler) {
@@ -75,11 +76,14 @@ public final class EventHandlerHolder {
 
         private final Object obj;
 
+        private final String pluginIdentifier;
+
         private final boolean isCustom;
 
-        public EventHandler(final Object obj, final String method, final boolean isCustom) {
+        public EventHandler(final Object obj, final String method, final String pluginIdentifier, final boolean isCustom) {
             this.isCustom = isCustom;
             this.obj = obj;
+            this.pluginIdentifier = pluginIdentifier;
             try {
                 if (isCustom) {
                     this.method = obj.getClass().getDeclaredMethod(method, ViewDefinitionState.class, ComponentState.class,
@@ -95,6 +99,9 @@ public final class EventHandlerHolder {
         }
 
         public void invokeEvent(final ViewDefinitionState viewDefinitionState, final String[] args) {
+            if (pluginIdentifier != null && !PluginUtil.isPluginEnabled(pluginIdentifier)) {
+                return;
+            }
             try {
                 if (isCustom) {
                     method.invoke(obj, viewDefinitionState, owner, args);
@@ -109,7 +116,6 @@ public final class EventHandlerHolder {
                 throw new IllegalStateException(e.getMessage(), e);
             }
         }
-
     }
 
 }

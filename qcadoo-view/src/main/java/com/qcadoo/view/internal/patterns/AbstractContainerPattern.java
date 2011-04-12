@@ -53,6 +53,7 @@ public abstract class AbstractContainerPattern extends AbstractComponentPattern 
         ContainerState componentState = (ContainerState) super.createComponentState(viewDefinitionState);
 
         for (ComponentPattern componentPattern : children.values()) {
+            // TODO mina check if child is enabled
             componentState.addChild(componentPattern.createComponentState(viewDefinitionState));
         }
 
@@ -108,6 +109,7 @@ public abstract class AbstractContainerPattern extends AbstractComponentPattern 
         Map<String, Object> childrenModels = new LinkedHashMap<String, Object>();
 
         for (ComponentPattern child : children.values()) {
+            // TODO mina check if child is enabled
             childrenModels.put(child.getName(), child.prepareView(locale));
         }
 
@@ -120,6 +122,7 @@ public abstract class AbstractContainerPattern extends AbstractComponentPattern 
     public void updateComponentStateListeners(final ViewDefinitionState viewDefinitionState) {
         super.updateComponentStateListeners(viewDefinitionState);
         for (ComponentPattern child : children.values()) {
+            // TODO mina check if child is enabled
             ((AbstractComponentPattern) child).updateComponentStateListeners(viewDefinitionState);
         }
     }

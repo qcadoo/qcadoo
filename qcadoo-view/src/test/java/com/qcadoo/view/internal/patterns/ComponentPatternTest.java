@@ -71,7 +71,7 @@ public class ComponentPatternTest extends AbstractPatternTest {
         componentDefinition.setViewDefinition(viewDefinition);
         AbstractComponentPattern pattern = new FormComponentPattern(componentDefinition);
         CustomEntityService object = mock(CustomEntityService.class);
-        pattern.addCustomEvent(new ComponentCustomEvent("save", object, "saveForm"));
+        pattern.addCustomEvent(new ComponentCustomEvent("save", object, "saveForm", null));
 
         // when
         ComponentState state = pattern.createComponentState(viewDefinitionState);
