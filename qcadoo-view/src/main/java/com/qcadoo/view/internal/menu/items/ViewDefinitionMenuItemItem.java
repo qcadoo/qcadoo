@@ -24,7 +24,7 @@
 
 package com.qcadoo.view.internal.menu.items;
 
-import com.qcadoo.view.internal.menu.MenuItem;
+import com.qcadoo.view.api.menu.MenuItem;
 
 /**
  * Menu item that leads to specified ViewDefinition.

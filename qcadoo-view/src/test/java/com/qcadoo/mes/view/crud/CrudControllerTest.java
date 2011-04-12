@@ -39,8 +39,9 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.qcadoo.view.api.ViewDefinitionService;
-import com.qcadoo.view.api.crud.CrudController;
+import com.qcadoo.view.api.crud.CrudService;
 import com.qcadoo.view.internal.api.InternalViewDefinition;
+import com.qcadoo.view.internal.crud.CrudServiceImpl;
 
 public class CrudControllerTest {
 
@@ -55,7 +56,7 @@ public class CrudControllerTest {
         Map<String, String> arguments = new HashMap<String, String>();
         arguments.put("context", "");
 
-        CrudController crud = new CrudController();
+        CrudService crud = new CrudServiceImpl();
         ReflectionTestUtils.setField(crud, "viewDefinitionService", viewDefinitionService);
 
         // when
@@ -83,7 +84,7 @@ public class CrudControllerTest {
         arguments.put("context", "testContext");
         arguments.put("popup", "true");
 
-        CrudController crud = new CrudController();
+        CrudService crud = new CrudServiceImpl();
         ReflectionTestUtils.setField(crud, "viewDefinitionService", viewDefinitionService);
 
         // when
@@ -111,7 +112,7 @@ public class CrudControllerTest {
         JSONObject jsonResult = new JSONObject();
         jsonResult.put("test", "testVal2");
 
-        CrudController crud = new CrudController();
+        CrudService crud = new CrudServiceImpl();
         ReflectionTestUtils.setField(crud, "viewDefinitionService", viewDefinitionService);
 
         given(viewDefinition.performEvent(jsonBody, Locale.ENGLISH)).willReturn(jsonResult);
