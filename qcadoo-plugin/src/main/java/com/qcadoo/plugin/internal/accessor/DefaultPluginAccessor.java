@@ -80,6 +80,19 @@ public class DefaultPluginAccessor implements InternalPluginAccessor {
     }
 
     @Override
+    public Collection<Plugin> getSystemPlugins() {
+        Set<Plugin> systemPlugins = new HashSet<Plugin>();
+
+        for (Plugin plugin : plugins.values()) {
+            if (plugin.isSystemPlugin()) {
+                systemPlugins.add(plugin);
+            }
+        }
+
+        return systemPlugins;
+    }
+
+    @Override
     public Collection<Plugin> getEnabledPlugins() {
         Set<Plugin> enabledPlugins = new HashSet<Plugin>();
 
