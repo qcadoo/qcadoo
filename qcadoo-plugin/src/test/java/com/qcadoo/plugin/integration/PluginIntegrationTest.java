@@ -50,6 +50,7 @@ import com.qcadoo.plugin.api.PluginManager;
 import com.qcadoo.plugin.api.PluginOperationResult;
 import com.qcadoo.plugin.api.PluginOperationStatus;
 import com.qcadoo.plugin.api.PluginState;
+import com.qcadoo.plugin.api.PluginStateResolver;
 import com.qcadoo.plugin.api.PluginUtil;
 import com.qcadoo.plugin.api.Version;
 import com.qcadoo.plugin.api.artifact.JarPluginArtifact;
@@ -77,11 +78,11 @@ public class PluginIntegrationTest {
         ReflectionTestUtils.setField(multiTenantUtil, "multiTenantService", new DefaultMultiTenantService());
         multiTenantUtil.init();
 
-        PluginAccessor mockPluginAccessor = mock(PluginAccessor.class);
-        given(mockPluginAccessor.isEnabled(Mockito.anyString())).willReturn(true);
+        PluginStateResolver mockPluginStateResolver = mock(PluginStateResolver.class);
+        given(mockPluginStateResolver.isEnabled(Mockito.anyString())).willReturn(true);
 
         PluginUtil pluginUtil = new PluginUtil();
-        ReflectionTestUtils.setField(pluginUtil, "pluginAccessor", mockPluginAccessor);
+        ReflectionTestUtils.setField(pluginUtil, "pluginStateResolver", mockPluginStateResolver);
         pluginUtil.init();
 
         new File("target/plugins").mkdir();

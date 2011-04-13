@@ -37,8 +37,8 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.internal.api.InternalDataDefinitionService;
-import com.qcadoo.plugin.api.PluginAccessor;
 import com.qcadoo.plugin.api.PluginManager;
+import com.qcadoo.plugin.api.PluginStateResolver;
 import com.qcadoo.plugin.api.PluginUtil;
 import com.qcadoo.tenant.api.MultiTenantUtil;
 import com.qcadoo.tenant.internal.DefaultMultiTenantService;
@@ -75,11 +75,11 @@ public abstract class IntegrationTest {
         ReflectionTestUtils.setField(multiTenantUtil, "multiTenantService", new DefaultMultiTenantService());
         multiTenantUtil.init();
 
-        PluginAccessor mockPluginAccessor = mock(PluginAccessor.class);
-        given(mockPluginAccessor.isEnabled(Mockito.anyString())).willReturn(true);
+        PluginStateResolver mockPluginStateResolver = mock(PluginStateResolver.class);
+        given(mockPluginStateResolver.isEnabled(Mockito.anyString())).willReturn(true);
 
         PluginUtil pluginUtil = new PluginUtil();
-        ReflectionTestUtils.setField(pluginUtil, "pluginAccessor", mockPluginAccessor);
+        ReflectionTestUtils.setField(pluginUtil, "pluginStateResolver", mockPluginStateResolver);
         pluginUtil.init();
 
         applicationContext = new ClassPathXmlApplicationContext();

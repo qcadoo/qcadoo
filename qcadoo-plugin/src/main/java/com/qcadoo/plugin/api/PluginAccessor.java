@@ -41,13 +41,4 @@ public interface PluginAccessor {
      */
     Collection<Plugin> getPlugins();
 
-    /**
-     * Returns true if plugin is enabled.
-     * 
-     * @param pluginIdentifier
-     *            plugin's identifier
-     * @return true if enabled
-     */
-    boolean isEnabled(String pluginIdentifier);
-
 }

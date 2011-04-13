@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 public class PluginUtil {
 
     @Autowired
-    private PluginAccessor pluginAccessor;
+    private PluginStateResolver pluginStateResolver;
 
     private static PluginUtil instance;
 
@@ -23,7 +23,7 @@ public class PluginUtil {
     }
 
     public static boolean isEnabled(final String pluginIdentifier) {
-        return instance.pluginAccessor.isEnabled(pluginIdentifier);
+        return instance.pluginStateResolver.isEnabled(pluginIdentifier);
     }
 
 }
