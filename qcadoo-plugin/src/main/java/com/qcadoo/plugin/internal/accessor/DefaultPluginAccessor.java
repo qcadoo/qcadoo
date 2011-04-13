@@ -41,6 +41,7 @@ import org.springframework.stereotype.Service;
 import com.qcadoo.model.beans.qcadooPlugin.QcadooPluginPlugin;
 import com.qcadoo.plugin.api.Plugin;
 import com.qcadoo.plugin.api.PluginState;
+import com.qcadoo.plugin.api.PluginUtil;
 import com.qcadoo.plugin.api.Version;
 import com.qcadoo.plugin.internal.api.InternalPlugin;
 import com.qcadoo.plugin.internal.api.InternalPluginAccessor;
@@ -66,6 +67,10 @@ public class DefaultPluginAccessor implements InternalPluginAccessor {
     @Autowired
     private ModuleFactoryAccessor moduleFactoryAccessor;
 
+    @Autowired
+    @SuppressWarnings("unused")
+    private PluginUtil pluginUtil;
+
     private final Map<String, Plugin> plugins = new HashMap<String, Plugin>();
 
     @Override
@@ -77,6 +82,19 @@ public class DefaultPluginAccessor implements InternalPluginAccessor {
         } else {
             return null;
         }
+    }
+
+    @Override
+    public Collection<Plugin> getSystemPlugins() {
+        Set<Plugin> systemPlugins = new HashSet<Plugin>();
+
+        for (Plugin plugin : plugins.values()) {
+            if (plugin.isSystemPlugin()) {
+                systemPlugins.add(plugin);
+            }
+        }
+
+        return systemPlugins;
     }
 
     @Override

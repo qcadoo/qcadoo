@@ -13,7 +13,11 @@ public class DefaultMultiTenantService implements MultiTenantService {
     @Override
     public void doInMultiTenantContext(final MultiTenantCallback callback) {
         callback.invoke();
+    }
 
+    @Override
+    public void doInMultiTenantContext(final int tenantId, final MultiTenantCallback callback) {
+        doInMultiTenantContext(callback);
     }
 
 }

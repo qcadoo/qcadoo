@@ -41,4 +41,11 @@ public interface PluginAccessor {
      */
     Collection<Plugin> getPlugins();
 
+    /**
+     * Returns all system plugins.
+     * 
+     * @return system plugins
+     */
+    Collection<Plugin> getSystemPlugins();
+
 }

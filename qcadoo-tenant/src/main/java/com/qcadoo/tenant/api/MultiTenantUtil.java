@@ -26,4 +26,8 @@ public class MultiTenantUtil {
         MultiTenantUtil.instance.multiTenantService.doInMultiTenantContext(callback);
     }
 
+    public static void doInMultiTenantContext(final int tenantId, final MultiTenantCallback callback) {
+        MultiTenantUtil.instance.multiTenantService.doInMultiTenantContext(tenantId, callback);
+    }
+
 }

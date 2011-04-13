@@ -154,6 +154,7 @@ public class PluginAccessorTest {
         given(pluginsPlugin3.getIdentifier()).willReturn("identifier3");
         given(pluginsPlugin3.getVersion()).willReturn("0.0.0");
         given(plugin3.hasState(PluginState.ENABLED)).willReturn(true);
+        given(plugin3.isSystemPlugin()).willReturn(true);
         given(pluginsPlugin3.getState()).willReturn("ENABLED");
 
         InternalPlugin plugin4 = mock(InternalPlugin.class, "plugin4");
@@ -181,6 +182,7 @@ public class PluginAccessorTest {
         assertThat(pluginAccessor.getEnabledPlugins(), hasItems((Plugin) plugin22, (Plugin) plugin3));
         assertThat(pluginAccessor.getEnabledPlugins(), not(hasItem((Plugin) plugin1)));
         assertThat(pluginAccessor.getEnabledPlugins(), not(hasItem((Plugin) plugin4)));
+        assertThat(pluginAccessor.getSystemPlugins(), hasItem((Plugin) plugin3));
 
         assertEquals(plugin1, pluginAccessor.getPlugin("identifier1"));
         assertEquals(plugin22, pluginAccessor.getPlugin("identifier21"));
