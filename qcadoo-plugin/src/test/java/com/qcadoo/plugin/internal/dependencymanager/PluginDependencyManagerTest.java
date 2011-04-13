@@ -77,6 +77,7 @@ public class PluginDependencyManagerTest {
     public void init() {
         manager = new DefaultPluginDependencyManager();
         manager.setPluginAccessor(pluginAccessor);
+        manager.setPluginStatusResolver(new SimplePluginStatusResolver());
 
         plugin1 = mock(InternalPlugin.class, RETURNS_DEEP_STUBS);
         given(plugin1.getIdentifier()).willReturn("testPlugin1");

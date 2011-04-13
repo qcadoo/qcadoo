@@ -33,6 +33,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.qcadoo.model.api.aop.Monitorable;
+import com.qcadoo.plugin.api.PluginUtil;
 import com.qcadoo.view.api.ViewDefinition;
 import com.qcadoo.view.internal.api.InternalViewDefinitionService;
 
@@ -45,7 +46,10 @@ public class ViewDefinitionServiceImpl implements InternalViewDefinitionService 
     @Transactional(readOnly = true)
     @Monitorable
     public ViewDefinition get(final String pluginIdentifier, final String viewName) {
-        return getWithoutSession(pluginIdentifier, viewName);
+        if (PluginUtil.isEnabled(pluginIdentifier)) {
+            return getWithoutSession(pluginIdentifier, viewName);
+        }
+        return null;
     }
 
     @Override
@@ -64,7 +68,13 @@ public class ViewDefinitionServiceImpl implements InternalViewDefinitionService 
     @Transactional(readOnly = true)
     @Monitorable
     public List<ViewDefinition> list() {
-        return new ArrayList<ViewDefinition>(viewDefinitions.values());
+        List<ViewDefinition> result = new ArrayList<ViewDefinition>();
+        for (ViewDefinition viewDefinition : viewDefinitions.values()) {
+            if (PluginUtil.isEnabled(viewDefinition.getPluginIdentifier())) {
+                result.add(viewDefinition);
+            }
+        }
+        return result;
     }
 
     @Override

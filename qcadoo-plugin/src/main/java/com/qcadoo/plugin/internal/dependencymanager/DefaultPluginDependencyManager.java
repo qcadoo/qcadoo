@@ -35,20 +35,19 @@ import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import com.qcadoo.plugin.api.Plugin;
 import com.qcadoo.plugin.api.PluginAccessor;
 import com.qcadoo.plugin.api.PluginDependencyInformation;
 import com.qcadoo.plugin.api.PluginDependencyResult;
-import com.qcadoo.plugin.api.PluginState;
 import com.qcadoo.plugin.internal.api.PluginDependencyManager;
 
-@Service
 public final class DefaultPluginDependencyManager implements PluginDependencyManager {
 
     @Autowired
     private PluginAccessor pluginAccessor;
+
+    private PluginStatusResolver pluginStatusResolver;
 
     @Override
     public PluginDependencyResult getDependenciesToEnable(final List<Plugin> plugins) {
@@ -148,7 +147,7 @@ public final class DefaultPluginDependencyManager implements PluginDependencyMan
 
         Set<PluginDependencyInformation> dependenciesToDisableUnsatisfiedAfterUpdate = new HashSet<PluginDependencyInformation>();
         for (Plugin plugin : pluginAccessor.getPlugins()) {
-            if (PluginState.TEMPORARY.equals(plugin.getState())) {
+            if (pluginStatusResolver.isPluginNotInstalled(plugin)) {
                 continue;
             }
             for (PluginDependencyInformation dependencyInfo : plugin.getRequiredPlugins()) {
@@ -216,11 +215,11 @@ public final class DefaultPluginDependencyManager implements PluginDependencyMan
 
         for (Plugin plugin : pluginAccessor.getPlugins()) {
             if (includeDisabled) {
-                if (PluginState.TEMPORARY.equals(plugin.getState())) {
+                if (pluginStatusResolver.isPluginNotInstalled(plugin)) {
                     continue;
                 }
             } else {
-                if (!PluginState.ENABLED.equals(plugin.getState())) {
+                if (!pluginStatusResolver.isPluginEnabled(plugin)) {
                     continue;
                 }
             }
@@ -293,11 +292,14 @@ public final class DefaultPluginDependencyManager implements PluginDependencyMan
     }
 
     private boolean isPluginDisabled(final Plugin plugin) {
-        return PluginState.DISABLED.equals(plugin.getState()) || PluginState.TEMPORARY.equals(plugin.getState());
+        return pluginStatusResolver.isPluginDisabled(plugin) || pluginStatusResolver.isPluginNotInstalled(plugin);
     }
 
     void setPluginAccessor(final PluginAccessor pluginAccessor) {
         this.pluginAccessor = pluginAccessor;
     }
 
+    public void setPluginStatusResolver(final PluginStatusResolver pluginStatusResolver) {
+        this.pluginStatusResolver = pluginStatusResolver;
+    }
 }
