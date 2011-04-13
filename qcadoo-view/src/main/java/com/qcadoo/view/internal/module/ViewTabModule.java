@@ -15,11 +15,14 @@ import com.qcadoo.view.api.ComponentPattern;
 import com.qcadoo.view.api.ViewDefinition;
 import com.qcadoo.view.components.window.WindowComponentPattern;
 import com.qcadoo.view.components.window.WindowTabComponentPattern;
+import com.qcadoo.view.internal.ComponentDefinition;
 import com.qcadoo.view.internal.api.InternalViewDefinitionService;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
 import com.qcadoo.view.internal.xml.ViewExtension;
 
 public class ViewTabModule extends Module {
+
+    private final String pluginIdentifier;
 
     private final InternalViewDefinitionService viewDefinitionService;
 
@@ -29,8 +32,9 @@ public class ViewTabModule extends Module {
 
     private Map<WindowComponentPattern, ComponentPattern> addedTabs;
 
-    public ViewTabModule(final Resource xmlFile, final InternalViewDefinitionService viewDefinitionService,
-            final ViewDefinitionParser viewDefinitionParser) {
+    public ViewTabModule(final String pluginIdentifier, final Resource xmlFile,
+            final InternalViewDefinitionService viewDefinitionService, final ViewDefinitionParser viewDefinitionParser) {
+        this.pluginIdentifier = pluginIdentifier;
         this.viewDefinitionService = viewDefinitionService;
         this.viewDefinitionParser = viewDefinitionParser;
         viewExtensions = new LinkedList<ViewExtension>();
@@ -60,8 +64,10 @@ public class ViewTabModule extends Module {
                 WindowComponentPattern window = viewDefinition.getRootWindow();
                 Preconditions.checkNotNull(window, getErrorMessage("cannot add ribbon element to view", viewExtension));
 
-                ComponentPattern tabPattern = new WindowTabComponentPattern(viewDefinitionParser.getComponentDefinition(tabNode,
-                        window, viewDefinition));
+                ComponentDefinition tabDefinition = viewDefinitionParser.getComponentDefinition(tabNode, window, viewDefinition);
+                tabDefinition.setExtensionPluginIdentifier(pluginIdentifier);
+
+                ComponentPattern tabPattern = new WindowTabComponentPattern(tabDefinition);
                 tabPattern.parse(tabNode, viewDefinitionParser);
 
                 window.addChild(tabPattern);

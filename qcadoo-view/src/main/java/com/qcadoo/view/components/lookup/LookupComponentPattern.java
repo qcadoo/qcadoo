@@ -296,8 +296,7 @@ public final class LookupComponentPattern extends FieldComponentPattern {
         ribbonCancelActionItem.setType(Type.BIG_BUTTON);
         ribbonCancelActionItem.setEnabled(true);
 
-        RibbonGroup ribbonGroup = new RibbonGroup();
-        ribbonGroup.setName("navigation");
+        RibbonGroup ribbonGroup = new RibbonGroup("navigation");
         ribbonGroup.addItem(ribbonSelectActionItem);
         ribbonGroup.addItem(ribbonCancelActionItem);
 

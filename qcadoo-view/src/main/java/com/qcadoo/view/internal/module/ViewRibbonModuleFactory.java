@@ -24,8 +24,8 @@ public class ViewRibbonModuleFactory extends ModuleFactory<ViewRibbonModule> {
             throw new IllegalStateException("Missing resource attribute of view module");
         }
 
-        return new ViewRibbonModule(new ClassPathResource(pluginIdentifier + "/" + resource), viewDefinitionService,
-                viewDefinitionParser);
+        return new ViewRibbonModule(pluginIdentifier, new ClassPathResource(pluginIdentifier + "/" + resource),
+                viewDefinitionService, viewDefinitionParser);
     }
 
     @Override

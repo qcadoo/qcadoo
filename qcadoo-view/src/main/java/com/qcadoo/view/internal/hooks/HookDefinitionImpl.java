@@ -70,14 +70,14 @@ public final class HookDefinitionImpl implements HookDefinition {
 
     @Override
     public void callWithViewState(final ViewDefinitionState viewDefinitionState) {
-        if (pluginIdentifier == null || PluginUtil.isPluginEnabled(pluginIdentifier)) {
+        if (pluginIdentifier == null || PluginUtil.isEnabled(pluginIdentifier)) {
             call(new Object[] { viewDefinitionState }, new Class[] { ViewDefinitionState.class });
         }
     }
 
     @Override
     public void callWithJSONObject(final ViewDefinition viewDefinition, final JSONObject object, final Locale locale) {
-        if (pluginIdentifier == null || PluginUtil.isPluginEnabled(pluginIdentifier)) {
+        if (pluginIdentifier == null || PluginUtil.isEnabled(pluginIdentifier)) {
             call(new Object[] { viewDefinition, object, locale }, new Class[] { ViewDefinition.class, JSONObject.class,
                     Locale.class });
         }

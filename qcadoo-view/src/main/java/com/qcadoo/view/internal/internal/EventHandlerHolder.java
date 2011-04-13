@@ -99,7 +99,7 @@ public final class EventHandlerHolder {
         }
 
         public void invokeEvent(final ViewDefinitionState viewDefinitionState, final String[] args) {
-            if (pluginIdentifier != null && !PluginUtil.isPluginEnabled(pluginIdentifier)) {
+            if (pluginIdentifier != null && !PluginUtil.isEnabled(pluginIdentifier)) {
                 return;
             }
             try {

@@ -49,6 +49,8 @@ public interface ComponentPattern {
 
     String getName();
 
+    String getExtensionPluginIdentifier();
+
     String getPath();
 
     String getReference();

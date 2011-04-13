@@ -53,8 +53,9 @@ public abstract class AbstractContainerPattern extends AbstractComponentPattern 
         ContainerState componentState = (ContainerState) super.createComponentState(viewDefinitionState);
 
         for (ComponentPattern componentPattern : children.values()) {
-            // TODO mina check if child is enabled
-            componentState.addChild(componentPattern.createComponentState(viewDefinitionState));
+            if (isComponentEnabled(componentPattern)) {
+                componentState.addChild(componentPattern.createComponentState(viewDefinitionState));
+            }
         }
 
         return componentState;
@@ -109,8 +110,9 @@ public abstract class AbstractContainerPattern extends AbstractComponentPattern 
         Map<String, Object> childrenModels = new LinkedHashMap<String, Object>();
 
         for (ComponentPattern child : children.values()) {
-            // TODO mina check if child is enabled
-            childrenModels.put(child.getName(), child.prepareView(locale));
+            if (isComponentEnabled(child)) {
+                childrenModels.put(child.getName(), child.prepareView(locale));
+            }
         }
 
         model.put("children", childrenModels);
@@ -122,23 +124,33 @@ public abstract class AbstractContainerPattern extends AbstractComponentPattern 
     public void updateComponentStateListeners(final ViewDefinitionState viewDefinitionState) {
         super.updateComponentStateListeners(viewDefinitionState);
         for (ComponentPattern child : children.values()) {
-            // TODO mina check if child is enabled
-            ((AbstractComponentPattern) child).updateComponentStateListeners(viewDefinitionState);
+            if (isComponentEnabled(child)) {
+                ((AbstractComponentPattern) child).updateComponentStateListeners(viewDefinitionState);
+            }
         }
     }
 
     @Override
     public void parse(final Node componentNode, final ViewDefinitionParser parser) {
         super.parse(componentNode, parser);
-
         NodeList childNodes = componentNode.getChildNodes();
 
         for (int i = 0; i < childNodes.getLength(); i++) {
             Node child = childNodes.item(i);
 
             if ("component".equals(child.getNodeName())) {
-                addChild(parser.parseComponent(child, this));
+                AbstractComponentPattern childComponent = (AbstractComponentPattern) parser.parseComponent(child, this);
+                childComponent.setExtensionPluginIdentifier(getExtensionPluginIdentifier());
+                addChild(childComponent);
             }
+        }
+    }
+
+    @Override
+    public void setExtensionPluginIdentifier(final String extensionPluginIdentifier) {
+        super.setExtensionPluginIdentifier(extensionPluginIdentifier);
+        for (ComponentPattern child : children.values()) {
+            ((AbstractComponentPattern) child).setExtensionPluginIdentifier(extensionPluginIdentifier);
         }
     }
 

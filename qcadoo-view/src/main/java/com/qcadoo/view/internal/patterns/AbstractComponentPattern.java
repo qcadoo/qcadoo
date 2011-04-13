@@ -48,6 +48,7 @@ import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.types.BelongsToType;
 import com.qcadoo.model.api.types.HasManyType;
 import com.qcadoo.model.api.types.TreeType;
+import com.qcadoo.plugin.api.PluginUtil;
 import com.qcadoo.view.api.ComponentPattern;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.ViewDefinition;
@@ -72,6 +73,8 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
     protected static final String JS_OBJECT = "AbstractJavascriptObject";
 
     private final String name;
+
+    private String extensionPluginIdentifier;
 
     private final String fieldPath;
 
@@ -120,6 +123,7 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
     public AbstractComponentPattern(final ComponentDefinition componentDefinition) {
         checkArgument(hasText(componentDefinition.getName()), "Component name must be specified");
         this.name = componentDefinition.getName();
+        this.extensionPluginIdentifier = componentDefinition.getExtensionPluginIdentifier();
         this.fieldPath = componentDefinition.getFieldPath();
         this.scopeFieldPath = componentDefinition.getSourceFieldPath();
         this.parent = componentDefinition.getParent();
@@ -166,6 +170,11 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
 
     protected ComponentPattern getParent() {
         return parent;
+    }
+
+    @Override
+    public String getExtensionPluginIdentifier() {
+        return extensionPluginIdentifier;
     }
 
     @Override
@@ -368,22 +377,35 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
             AbstractComponentState thisComponentState = (AbstractComponentState) viewDefinitionState
                     .getComponentByReference(getReference());
             for (Map.Entry<String, ComponentPattern> listenerPattern : fieldEntityIdChangeListeners.entrySet()) {
-                ComponentState listenerState = viewDefinitionState.getComponentByReference(listenerPattern.getValue()
-                        .getReference());
-                thisComponentState.addFieldEntityIdChangeListener(listenerPattern.getKey(),
-                        (FieldEntityIdChangeListener) listenerState);
+                if (isComponentEnabled(listenerPattern.getValue())) {
+                    ComponentState listenerState = viewDefinitionState.getComponentByReference(listenerPattern.getValue()
+                            .getReference());
+                    if (listenerState != null) {
+                        thisComponentState.addFieldEntityIdChangeListener(listenerPattern.getKey(),
+                                (FieldEntityIdChangeListener) listenerState);
+                    }
+                }
             }
         }
         if (scopeEntityIdChangeListeners.size() > 0) {
             AbstractComponentState thisComponentState = (AbstractComponentState) viewDefinitionState
                     .getComponentByReference(getReference());
             for (Map.Entry<String, ComponentPattern> listenerPattern : scopeEntityIdChangeListeners.entrySet()) {
-                ComponentState listenerState = viewDefinitionState.getComponentByReference(listenerPattern.getValue()
-                        .getReference());
-                thisComponentState.addScopeEntityIdChangeListener(listenerPattern.getKey(),
-                        (ScopeEntityIdChangeListener) listenerState);
+                if (isComponentEnabled(listenerPattern.getValue())) {
+                    ComponentState listenerState = viewDefinitionState.getComponentByReference(listenerPattern.getValue()
+                            .getReference());
+                    if (listenerState != null) {
+                        thisComponentState.addScopeEntityIdChangeListener(listenerPattern.getKey(),
+                                (ScopeEntityIdChangeListener) listenerState);
+                    }
+                }
             }
         }
+    }
+
+    protected boolean isComponentEnabled(final ComponentPattern componentPattern) {
+        return componentPattern.getExtensionPluginIdentifier() == null
+                || PluginUtil.isEnabled(componentPattern.getExtensionPluginIdentifier());
     }
 
     protected final Map<String, ComponentPattern> getFieldEntityIdChangeListeners() {
@@ -451,6 +473,10 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
         return viewDefinition;
     }
 
+    public void setExtensionPluginIdentifier(final String extensionPluginIdentifier) {
+        this.extensionPluginIdentifier = extensionPluginIdentifier;
+    }
+
     public final String getTranslationPath() {
         return getViewDefinition().getPluginIdentifier() + "." + getViewDefinition().getName() + "." + getFunctionalPath();
     }
@@ -459,10 +485,14 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
         JSONArray listeners = new JSONArray();
         if (fieldEntityIdChangeListeners.size() > 0 || scopeEntityIdChangeListeners.size() > 0) {
             for (ComponentPattern listener : fieldEntityIdChangeListeners.values()) {
-                listeners.put(listener.getPath());
+                if (isComponentEnabled(listener)) {
+                    listeners.put(listener.getPath());
+                }
             }
             for (ComponentPattern listener : scopeEntityIdChangeListeners.values()) {
-                listeners.put(listener.getPath());
+                if (isComponentEnabled(listener)) {
+                    listeners.put(listener.getPath());
+                }
             }
         }
         if (customEvents.size() > 0) {

@@ -36,9 +36,15 @@ import org.json.JSONObject;
  */
 public final class RibbonGroup {
 
-    private String name;
+    private final String name;
+
+    private String extensionPluginIdentifier;
 
     private final List<RibbonActionItem> items = new LinkedList<RibbonActionItem>();;
+
+    public RibbonGroup(final String name) {
+        this.name = name;
+    }
 
     /**
      * get identifier of this ribbon group
@@ -47,16 +53,6 @@ public final class RibbonGroup {
      */
     public String getName() {
         return name;
-    }
-
-    /**
-     * set identifier of this ribbon group
-     * 
-     * @param name
-     *            identifier of this ribbon group
-     */
-    public void setName(final String name) {
-        this.name = name;
     }
 
     /**
@@ -110,8 +106,8 @@ public final class RibbonGroup {
     }
 
     public RibbonGroup getCopy() {
-        RibbonGroup copy = new RibbonGroup();
-        copy.setName(name);
+        RibbonGroup copy = new RibbonGroup(name);
+        copy.setExtensionPluginIdentifier(extensionPluginIdentifier);
         for (RibbonActionItem item : items) {
             copy.addItem(item.getCopy());
         }
@@ -119,9 +115,9 @@ public final class RibbonGroup {
     }
 
     public RibbonGroup getUpdate() {
-        RibbonGroup diff = new RibbonGroup();
+        RibbonGroup diff = new RibbonGroup(name);
+        diff.setExtensionPluginIdentifier(extensionPluginIdentifier);
         boolean isDiffrence = false;
-        diff.setName(name);
         for (RibbonActionItem item : items) {
             if (item.isShouldBeUpdated()) {
                 diff.addItem(item);
@@ -132,5 +128,13 @@ public final class RibbonGroup {
             return diff;
         }
         return null;
+    }
+
+    public String getExtensionPluginIdentifier() {
+        return extensionPluginIdentifier;
+    }
+
+    public void setExtensionPluginIdentifier(String extensionPluginIdentifier) {
+        this.extensionPluginIdentifier = extensionPluginIdentifier;
     }
 }

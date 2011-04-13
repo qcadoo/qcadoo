@@ -36,32 +36,28 @@ public class RibbonTemplates {
         ribbonBackAction.setEnabled(true);
         ribbonBackAction.setType(RibbonActionItem.Type.BIG_BUTTON);
 
-        RibbonGroup ribbonGroup = new RibbonGroup();
-        ribbonGroup.setName("navigation");
+        RibbonGroup ribbonGroup = new RibbonGroup("navigation");
         ribbonGroup.addItem(ribbonBackAction);
 
         return ribbonGroup;
     }
 
     private RibbonGroup createGridNewAndRemoveActionsTemplate(final ViewDefinition viewDefinition) {
-        RibbonGroup ribbonGroup = new RibbonGroup();
-        ribbonGroup.setName("actions");
+        RibbonGroup ribbonGroup = new RibbonGroup("actions");
         ribbonGroup.addItem(createGridNewAction(viewDefinition));
         ribbonGroup.addItem(createGridDeleteAction(viewDefinition));
         return ribbonGroup;
     }
 
     private RibbonGroup createGridNewAndCopyActionTemplate(final ViewDefinition viewDefinition) {
-        RibbonGroup ribbonGroup = new RibbonGroup();
-        ribbonGroup.setName("actions");
+        RibbonGroup ribbonGroup = new RibbonGroup("actions");
         ribbonGroup.addItem(createGridNewAction(viewDefinition));
         ribbonGroup.addItem(createGridCopyAction(viewDefinition));
         return ribbonGroup;
     }
 
     private RibbonGroup createGridNewCopyAndRemoveActionTemplate(final ViewDefinition viewDefinition) {
-        RibbonGroup ribbonGroup = new RibbonGroup();
-        ribbonGroup.setName("actions");
+        RibbonGroup ribbonGroup = new RibbonGroup("actions");
         ribbonGroup.addItem(createGridNewAction(viewDefinition));
         ribbonGroup.addItem(createGridCopyAction(viewDefinition));
         ribbonGroup.addItem(createGridDeleteAction(viewDefinition));
@@ -103,8 +99,7 @@ public class RibbonTemplates {
     }
 
     private RibbonGroup createFormSaveCopyAndRemoveActionsTemplate(final ViewDefinition viewDefinition) {
-        RibbonGroup ribbonGroup = new RibbonGroup();
-        ribbonGroup.setName("actions");
+        RibbonGroup ribbonGroup = new RibbonGroup("actions");
         ribbonGroup.addItem(createFormSaveAction(viewDefinition));
         ribbonGroup.addItem(createFormSaveAndBackAction(viewDefinition));
         ribbonGroup.addItem(createFormSaveAndNewAction(viewDefinition));
@@ -115,8 +110,7 @@ public class RibbonTemplates {
     }
 
     private RibbonGroup createFormSaveAndRemoveActionsTemplate(final ViewDefinition viewDefinition) {
-        RibbonGroup ribbonGroup = new RibbonGroup();
-        ribbonGroup.setName("actions");
+        RibbonGroup ribbonGroup = new RibbonGroup("actions");
         ribbonGroup.addItem(createFormSaveAction(viewDefinition));
         ribbonGroup.addItem(createFormSaveAndBackAction(viewDefinition));
         ribbonGroup.addItem(createFormCancelAction(viewDefinition));
@@ -125,8 +119,7 @@ public class RibbonTemplates {
     }
 
     private RibbonGroup createFormSaveAndBackAndRemoveActionsTemplate(final ViewDefinition viewDefinition) {
-        RibbonGroup ribbonGroup = new RibbonGroup();
-        ribbonGroup.setName("actions");
+        RibbonGroup ribbonGroup = new RibbonGroup("actions");
         ribbonGroup.addItem(createFormSaveAndBackAction(viewDefinition));
         ribbonGroup.addItem(createFormCancelAction(viewDefinition));
         ribbonGroup.addItem(createFormDeleteAction(viewDefinition));
@@ -141,8 +134,7 @@ public class RibbonTemplates {
         ribbonSaveAction.setName("save");
         ribbonSaveAction.setType(RibbonActionItem.Type.BIG_BUTTON);
         ribbonSaveAction.setEnabled(true);
-        RibbonGroup ribbonGroup = new RibbonGroup();
-        ribbonGroup.setName("actions");
+        RibbonGroup ribbonGroup = new RibbonGroup("actions");
         ribbonGroup.addItem(ribbonSaveAction);
 
         return ribbonGroup;

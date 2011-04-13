@@ -20,6 +20,8 @@ import com.qcadoo.view.internal.xml.ViewExtension;
 
 public class ViewRibbonModule extends Module {
 
+    private final String pluginIdentifier;
+
     private final InternalViewDefinitionService viewDefinitionService;
 
     private final ViewDefinitionParser viewDefinitionParser;
@@ -28,8 +30,9 @@ public class ViewRibbonModule extends Module {
 
     private Map<WindowComponentPattern, RibbonGroup> addedGroups;
 
-    public ViewRibbonModule(final Resource xmlFile, final InternalViewDefinitionService viewDefinitionService,
-            final ViewDefinitionParser viewDefinitionParser) {
+    public ViewRibbonModule(final String pluginIdentifier, final Resource xmlFile,
+            final InternalViewDefinitionService viewDefinitionService, final ViewDefinitionParser viewDefinitionParser) {
+        this.pluginIdentifier = pluginIdentifier;
         this.viewDefinitionService = viewDefinitionService;
         this.viewDefinitionParser = viewDefinitionParser;
         viewExtensions = new LinkedList<ViewExtension>();
@@ -57,6 +60,7 @@ public class ViewRibbonModule extends Module {
             for (Node groupNode : viewDefinitionParser.geElementChildren(viewExtension.getExtesionNode())) {
 
                 RibbonGroup group = viewDefinitionParser.parseRibbonGroup(groupNode, viewDefinition);
+                group.setExtensionPluginIdentifier(pluginIdentifier);
 
                 WindowComponentPattern window = viewDefinition.getRootWindow();
                 Preconditions.checkNotNull(window, getErrorMessage("cannot add ribbon element to view", viewExtension));

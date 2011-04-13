@@ -109,8 +109,7 @@ public final class RibbonUtils {
         if (template != null) {
             return ribbonTemplates.getGroupTemplate(template, viewDefinition);
         } else {
-            RibbonGroup ribbonGroup = new RibbonGroup();
-            ribbonGroup.setName(parser.getStringAttribute(groupNode, "name"));
+            RibbonGroup ribbonGroup = new RibbonGroup(parser.getStringAttribute(groupNode, "name"));
 
             NodeList childNodes = groupNode.getChildNodes();
 

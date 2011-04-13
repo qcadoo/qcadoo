@@ -24,8 +24,8 @@ public class ViewTabModuleFactory extends ModuleFactory<ViewTabModule> {
             throw new IllegalStateException("Missing resource attribute of view module");
         }
 
-        return new ViewTabModule(new ClassPathResource(pluginIdentifier + "/" + resource), viewDefinitionService,
-                viewDefinitionParser);
+        return new ViewTabModule(pluginIdentifier, new ClassPathResource(pluginIdentifier + "/" + resource),
+                viewDefinitionService, viewDefinitionParser);
     }
 
     @Override

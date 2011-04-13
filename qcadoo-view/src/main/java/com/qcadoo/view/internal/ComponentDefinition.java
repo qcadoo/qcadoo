@@ -39,6 +39,8 @@ public final class ComponentDefinition {
 
     private String reference;
 
+    private String extensionPluginIdentifier;
+
     private boolean defaultEnabled = true;
 
     private boolean defaultVisible = true;
@@ -149,6 +151,14 @@ public final class ComponentDefinition {
 
     public void setDataDefinition(final DataDefinition dataDefinition) {
         this.dataDefinition = dataDefinition;
+    }
+
+    public String getExtensionPluginIdentifier() {
+        return extensionPluginIdentifier;
+    }
+
+    public void setExtensionPluginIdentifier(String extensionPluginIdentifier) {
+        this.extensionPluginIdentifier = extensionPluginIdentifier;
     }
 
 }
