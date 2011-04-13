@@ -312,7 +312,7 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
         String methodName = getStringAttribute(hookNode, "method");
         Preconditions.checkState(StringUtils.hasText(fullyQualifiedClassName), "Hook bean name is required");
         Preconditions.checkState(StringUtils.hasText(methodName), "Hook method name is required");
-        return hookFactory.getHook(fullyQualifiedClassName, methodName);
+        return hookFactory.getHook(fullyQualifiedClassName, methodName, null);
     }
 
     public int getCurrentIndexOrder() {

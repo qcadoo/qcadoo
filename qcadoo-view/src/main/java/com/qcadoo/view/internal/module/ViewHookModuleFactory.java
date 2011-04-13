@@ -31,7 +31,7 @@ public class ViewHookModuleFactory extends ModuleFactory<ViewHookModule> {
         Preconditions.checkNotNull(bean, "View hook extension error: bean not defined");
         Preconditions.checkNotNull(method, "View hook extension error: method not defined");
 
-        HookDefinition hook = hookFactory.getHook(bean, method);
+        HookDefinition hook = hookFactory.getHook(bean, method, pluginIdentifier);
 
         InternalViewDefinition.HookType hookType;
         if ("postConstructHook".equals(hookTypeStr)) {

@@ -23,7 +23,7 @@ public class MultiTenantUtil {
     }
 
     public static void doInMultiTenantContext(final MultiTenantCallback callback) {
-        MultiTenantUtil.instance.multiTenantService.doInMultiTenantContext(callback);
+        // MultiTenantUtil.instance.multiTenantService.doInMultiTenantContext(callback);
     }
 
 }
