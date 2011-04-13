@@ -92,6 +92,42 @@ public final class DefaultModuleFactoryAccessor implements ModuleFactoryAccessor
     }
 
     @Override
+    public void multiTenantEnable(final int tenantId, final Plugin plugin) {
+        for (ModuleFactory<?> moduleFactory : moduleFactoryRegistry.values()) {
+            for (final Module module : ((InternalPlugin) plugin).getModules(moduleFactory)) {
+                MultiTenantUtil.doInMultiTenantContext(tenantId, new MultiTenantCallback() {
+
+                    @Override
+                    public void invoke() {
+                        if (PluginUtil.isEnabled(plugin.getIdentifier())) {
+                            module.multiTenantEnable();
+                        }
+                    }
+
+                });
+            }
+        }
+    }
+
+    @Override
+    public void multiTenantDisable(final int tenantId, final Plugin plugin) {
+        for (ModuleFactory<?> moduleFactory : moduleFactoryRegistry.values()) {
+            for (final Module module : ((InternalPlugin) plugin).getModules(moduleFactory)) {
+                MultiTenantUtil.doInMultiTenantContext(tenantId, new MultiTenantCallback() {
+
+                    @Override
+                    public void invoke() {
+                        if (!PluginUtil.isEnabled(plugin.getIdentifier())) {
+                            module.multiTenantDisable();
+                        }
+                    }
+
+                });
+            }
+        }
+    }
+
+    @Override
     public ModuleFactory<?> getModuleFactory(final String identifier) {
         if (!moduleFactoryRegistry.containsKey(identifier)) {
             throw new IllegalStateException("ModuleFactory " + identifier + " is not defined");

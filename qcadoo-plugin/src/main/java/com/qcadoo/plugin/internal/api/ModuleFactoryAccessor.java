@@ -33,6 +33,10 @@ public interface ModuleFactoryAccessor {
 
     void init(List<Plugin> plugins);
 
+    void multiTenantEnable(int tenantId, Plugin plugin);
+
+    void multiTenantDisable(int tenantId, Plugin plugin);
+
     ModuleFactory<?> getModuleFactory(String identifier);
 
 }
