@@ -251,6 +251,8 @@ public final class DefaultPluginManager implements PluginManager {
 
         PluginDependencyResult pluginDependencyResult = pluginDependencyManager.getDependenciesToEnable(newArrayList(plugin));
 
+        // TODO KRNA check cycle
+
         Plugin existingPlugin = pluginAccessor.getPlugin(plugin.getIdentifier());
         if (existingPlugin == null) {
             ((InternalPlugin) plugin).changeStateTo(PluginState.TEMPORARY);
