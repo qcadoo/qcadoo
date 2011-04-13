@@ -40,7 +40,7 @@ public class UserModule extends Module {
 
     @Override
     public void multiTenantEnable() {
-        if (dataDefinitionService.get("qcadooSecurity", "user").find().addRestriction(Restrictions.eq("login", login)).list()
+        if (dataDefinitionService.get("qcadooSecurity", "user").find().addRestriction(Restrictions.eq("userName", login)).list()
                 .getTotalNumberOfEntities() > 0) {
             return;
         }
