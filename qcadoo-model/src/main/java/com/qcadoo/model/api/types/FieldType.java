@@ -35,14 +35,21 @@ import com.qcadoo.model.internal.api.ValueAndError;
 public interface FieldType {
 
     /**
-     * Return field class.
+     * Returns field class.
      * 
      * @return class
      */
     Class<?> getType();
 
     /**
-     * Convert given value to valid field's value.
+     * Convert given value to valid field's value defined in {@link FieldType#getType()}. During conversion validation is
+     * executed.
+     * 
+     * @param fieldDefinition
+     *            field definition
+     * @param value
+     *            value
+     * @return value with validation result
      */
     ValueAndError toObject(FieldDefinition fieldDefinition, Object value);
 
@@ -51,16 +58,20 @@ public interface FieldType {
      * 
      * @param value
      *            value
+     * @param locale
+     *            locale
      * @return string value
      */
     String toString(Object value, Locale locale);
 
     /**
-     * Convert field's value to string.
+     * Convert field's value to object defined in {@link FieldType#getType()}.
      * 
      * @param value
      *            value
-     * @return string value
+     * @param locale
+     *            locale
+     * @return converted value
      */
     Object fromString(String value, Locale locale);
 

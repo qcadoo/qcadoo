@@ -22,7 +22,7 @@
  * ***************************************************************************
  */
 
-package com.qcadoo.model.api.utils;
+package com.qcadoo.model.api.expression;
 
 import java.util.List;
 import java.util.Locale;

@@ -50,7 +50,7 @@ import com.qcadoo.plugin.internal.api.PluginDependencyManager;
 import com.qcadoo.plugin.internal.api.PluginDescriptorParser;
 
 @Service
-public final class DefaultPluginAccessor implements InternalPluginAccessor {
+public class DefaultPluginAccessor implements InternalPluginAccessor {
 
     private static final Logger LOG = LoggerFactory.getLogger(DefaultPluginAccessor.class);
 

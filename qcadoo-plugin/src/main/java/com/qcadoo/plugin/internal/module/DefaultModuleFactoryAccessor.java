@@ -32,6 +32,7 @@ import com.qcadoo.plugin.api.Module;
 import com.qcadoo.plugin.api.ModuleFactory;
 import com.qcadoo.plugin.api.Plugin;
 import com.qcadoo.plugin.api.PluginState;
+import com.qcadoo.plugin.api.PluginUtil;
 import com.qcadoo.plugin.internal.api.InternalPlugin;
 import com.qcadoo.plugin.internal.api.ModuleFactoryAccessor;
 import com.qcadoo.tenant.api.MultiTenantCallback;
@@ -56,7 +57,7 @@ public final class DefaultModuleFactoryAccessor implements ModuleFactoryAccessor
         }
 
         for (ModuleFactory<?> moduleFactory : moduleFactoryRegistry.values()) {
-            for (Plugin plugin : plugins) {
+            for (final Plugin plugin : plugins) {
                 for (final Module module : ((InternalPlugin) plugin).getModules(moduleFactory)) {
                     if (plugin.hasState(PluginState.ENABLED) || plugin.hasState(PluginState.ENABLING)) {
                         module.enableOnStartup();
@@ -65,7 +66,9 @@ public final class DefaultModuleFactoryAccessor implements ModuleFactoryAccessor
 
                             @Override
                             public void invoke() {
-                                module.multiTenantEnableOnStartup();
+                                if (PluginUtil.isEnabled(plugin.getIdentifier())) {
+                                    module.multiTenantEnableOnStartup();
+                                }
                             }
 
                         });
@@ -76,7 +79,9 @@ public final class DefaultModuleFactoryAccessor implements ModuleFactoryAccessor
 
                             @Override
                             public void invoke() {
-                                module.multiTenantDisableOnStartup();
+                                if (!PluginUtil.isEnabled(plugin.getIdentifier())) {
+                                    module.multiTenantDisableOnStartup();
+                                }
                             }
 
                         });

@@ -1,5 +1,5 @@
 /**
- * Services for managing plugin in the framework.
+ * Services for managing plugins in the framework.
  * 
  * @since 0.4.0
  */

@@ -304,7 +304,7 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
     public ComponentCustomEvent parseCustomEvent(final Node listenerNode) {
         HookDefinitionImpl hookDefinition = (HookDefinitionImpl) parseHook(listenerNode);
         return new ComponentCustomEvent(getStringAttribute(listenerNode, "event"), hookDefinition.getObject(),
-                hookDefinition.getMethod());
+                hookDefinition.getMethod(), null);
     }
 
     public HookDefinition parseHook(final Node hookNode) {
@@ -312,7 +312,7 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
         String methodName = getStringAttribute(hookNode, "method");
         Preconditions.checkState(StringUtils.hasText(fullyQualifiedClassName), "Hook bean name is required");
         Preconditions.checkState(StringUtils.hasText(methodName), "Hook method name is required");
-        return hookFactory.getHook(fullyQualifiedClassName, methodName);
+        return hookFactory.getHook(fullyQualifiedClassName, methodName, null);
     }
 
     public int getCurrentIndexOrder() {

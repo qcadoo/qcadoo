@@ -29,15 +29,17 @@ import org.hibernate.criterion.Criterion;
 
 /**
  * Restriction represents the part of WHERE clause in SQL query.
+ * 
+ * @since 0.4.0
  */
 public interface Restriction {
 
     /**
-     * Add this restriction to hibernate criteria.
+     * Add this restriction to Hibernate criteria.
      * 
      * @param criteria
-     *            hibernate criteria
-     * @return hibernate criteria
+     *            Hibernate criteria
+     * @return Hibernate criteria
      */
     Criterion addToHibernateCriteria(Criteria criteria);
 

@@ -70,7 +70,7 @@ public class SecurityServiceImpl implements SecurityService, UserDetailsService,
 
     protected Entity getUserEntity(final String login) {
         List<Entity> users = dataDefinitionService.get("qcadooSecurity", "user").find()
-                .restrictedWith(Restrictions.eq("userName", login)).withMaxResults(1).list().getEntities();
+                .addRestriction(Restrictions.eq("userName", login)).setMaxResults(1).list().getEntities();
         if (users.size() == 1) {
             return users.get(0);
         } else {
@@ -144,7 +144,7 @@ public class SecurityServiceImpl implements SecurityService, UserDetailsService,
     @Override
     public void removeUserTokens(final String username) {
         List<Entity> entities = dataDefinitionService.get("qcadooSecurity", "persistentToken").find()
-                .restrictedWith(Restrictions.eq("userName", username)).list().getEntities();
+                .addRestriction(Restrictions.eq("userName", username)).list().getEntities();
 
         for (Entity entity : entities) {
             dataDefinitionService.get("qcadooSecurity", "persistentToken").delete(entity.getId());
@@ -153,7 +153,7 @@ public class SecurityServiceImpl implements SecurityService, UserDetailsService,
 
     private Entity getPersistentToken(final String series) {
         List<Entity> entities = dataDefinitionService.get("qcadooSecurity", "persistentToken").find()
-                .restrictedWith(Restrictions.eq("series", series)).list().getEntities();
+                .addRestriction(Restrictions.eq("series", series)).list().getEntities();
 
         if (entities.size() == 1) {
             return entities.get(0);

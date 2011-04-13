@@ -27,7 +27,9 @@ package com.qcadoo.model.api.types;
 import com.qcadoo.model.api.DataDefinition;
 
 /**
- * Object represents "has many" field type.
+ * Object represents "tree" field type.
+ * 
+ * @since 0.4.0
  */
 public interface TreeType extends FieldType {
 
@@ -39,30 +41,30 @@ public interface TreeType extends FieldType {
     }
 
     /**
-     * Return join field name.
+     * Returns field name joining the relation.
      * 
      * @return join field
      */
     String getJoinFieldName();
 
     /**
-     * Return data definition.
+     * Returns data definition.
      * 
      * @return data definition
      */
     DataDefinition getDataDefinition();
 
     /**
-     * Return cascade type.
+     * Returns cascade type.
      * 
      * @return cascade type
      */
     Cascade getCascade();
 
     /**
-     * Return true if field should be copied.
+     * Returns true if field should be copied.
      * 
-     * @return copyable
+     * @return true if should be copied
      */
     boolean isCopyable();
 

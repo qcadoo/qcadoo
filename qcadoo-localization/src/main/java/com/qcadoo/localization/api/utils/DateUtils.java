@@ -22,25 +22,58 @@
  * ***************************************************************************
  */
 
-package com.qcadoo.model.api.utils;
+package com.qcadoo.localization.api.utils;
 
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 
+/**
+ * Utility for date localization.
+ * 
+ * @since 0.4.0
+ */
 public final class DateUtils {
 
     private DateUtils() {
     }
 
+    /**
+     * Date format.
+     */
     public static final String DATE_FORMAT = "yyyy-MM-dd";
 
+    /**
+     * Date-time format.
+     */
     public static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
+    /**
+     * Date-time format for filenames.
+     */
     public static final String REPORT_DATE_TIME_FORMAT = "yyyy_MM_dd_HH_mm_ss";
 
-    public static Date parseDate(final String dateExpression, final boolean roundToUp) throws ParseException {
-        String[] dateExpressionParts = dateExpression.split("-");
+    /**
+     * Parse string into date, with autocomplete missing month and day.
+     * 
+     * Examples with up-complete:
+     * 
+     * 2010: 2010-12-31 2010-03: 2010-03-31 2010-03-06: 2010-03-06
+     * 
+     * Examples with down-complete:
+     * 
+     * 2010: 2010-01-01 2010-03: 2010-03-01 2010-03-06: 2010-03-06
+     * 
+     * @param expression
+     *            string with date expression
+     * @param upComplete
+     *            true if up-complete, otherwise down-complete
+     * @return date or null if year is lower than 1500
+     * @throws ParseException
+     *             if year, month or day is invalid
+     */
+    public static Date parseDate(final String expression, final boolean upComplete) throws ParseException {
+        String[] dateExpressionParts = expression.split("-");
 
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.YEAR, 2000);
@@ -66,7 +99,7 @@ public final class DateUtils {
                 }
                 cal.set(Calendar.MONTH, month - 1);
             } else {
-                if (roundToUp) {
+                if (upComplete) {
                     cal.set(Calendar.MONTH, cal.getActualMaximum(Calendar.MONTH));
                 } else {
                     cal.set(Calendar.MONTH, cal.getActualMinimum(Calendar.MONTH));
@@ -81,7 +114,7 @@ public final class DateUtils {
                 }
             }
             if (!dayDefined) {
-                if (roundToUp) {
+                if (upComplete) {
                     cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
                 } else {
                     cal.set(Calendar.DAY_OF_MONTH, cal.getActualMinimum(Calendar.DAY_OF_MONTH));

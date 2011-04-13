@@ -26,6 +26,7 @@ package com.qcadoo.plugin.internal;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -37,17 +38,27 @@ import org.springframework.test.util.ReflectionTestUtils;
 import com.qcadoo.plugin.api.Module;
 import com.qcadoo.plugin.api.ModuleFactory;
 import com.qcadoo.plugin.api.PluginState;
+import com.qcadoo.plugin.api.PluginStateResolver;
+import com.qcadoo.plugin.api.PluginUtil;
 import com.qcadoo.plugin.internal.api.InternalPlugin;
 import com.qcadoo.tenant.api.MultiTenantUtil;
 import com.qcadoo.tenant.internal.DefaultMultiTenantService;
 
 public class PluginChangeStateToTest {
 
+    private PluginStateResolver mockPluginStateResolver;
+
     @Test
     public void shouldChangeState() throws Exception {
         MultiTenantUtil multiTenantUtil = new MultiTenantUtil();
         ReflectionTestUtils.setField(multiTenantUtil, "multiTenantService", new DefaultMultiTenantService());
         multiTenantUtil.init();
+
+        mockPluginStateResolver = mock(PluginStateResolver.class);
+
+        PluginUtil pluginUtil = new PluginUtil();
+        ReflectionTestUtils.setField(pluginUtil, "pluginStateResolver", mockPluginStateResolver);
+        pluginUtil.init();
 
         assertOperationNotSupported(null, PluginState.UNKNOWN);
         assertOperationSupported(null, PluginState.TEMPORARY, false, false);
@@ -110,6 +121,8 @@ public class PluginChangeStateToTest {
         if (from != null) {
             plugin.changeStateTo(from);
         }
+
+        given(mockPluginStateResolver.isEnabled("identifier")).willReturn(PluginState.ENABLED.equals(to));
 
         // when
         plugin.changeStateTo(to);

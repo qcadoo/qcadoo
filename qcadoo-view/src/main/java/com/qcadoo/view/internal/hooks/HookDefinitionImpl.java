@@ -32,6 +32,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.qcadoo.plugin.api.PluginUtil;
 import com.qcadoo.view.api.ViewDefinition;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.internal.HookDefinition;
@@ -44,9 +45,12 @@ public final class HookDefinitionImpl implements HookDefinition {
 
     private final String methodName;
 
-    public HookDefinitionImpl(final Object bean, final String methodName) {
+    private final String pluginIdentifier;
+
+    public HookDefinitionImpl(final Object bean, final String methodName, final String pluginIdentifier) {
         this.bean = bean;
         this.methodName = methodName;
+        this.pluginIdentifier = pluginIdentifier;
     }
 
     private Object call(final Object[] params, final Class<?>[] paramClasses) {
@@ -66,13 +70,17 @@ public final class HookDefinitionImpl implements HookDefinition {
 
     @Override
     public void callWithViewState(final ViewDefinitionState viewDefinitionState) {
-        call(new Object[] { viewDefinitionState }, new Class[] { ViewDefinitionState.class });
+        if (pluginIdentifier == null || PluginUtil.isPluginEnabled(pluginIdentifier)) {
+            call(new Object[] { viewDefinitionState }, new Class[] { ViewDefinitionState.class });
+        }
     }
 
     @Override
     public void callWithJSONObject(final ViewDefinition viewDefinition, final JSONObject object, final Locale locale) {
-        call(new Object[] { viewDefinition, object, locale },
-                new Class[] { ViewDefinition.class, JSONObject.class, Locale.class });
+        if (pluginIdentifier == null || PluginUtil.isPluginEnabled(pluginIdentifier)) {
+            call(new Object[] { viewDefinition, object, locale }, new Class[] { ViewDefinition.class, JSONObject.class,
+                    Locale.class });
+        }
     }
 
     public String getMethod() {

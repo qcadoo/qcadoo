@@ -24,9 +24,42 @@
 
 package com.qcadoo.model.api.search;
 
+/**
+ * Restriction comparison operator.
+ * 
+ * @since 0.4.0
+ */
 public enum RestrictionOperator {
 
-    EQ("="), GE(">="), GT(">"), LE("<="), LT("<"), NE("<>");
+    /**
+     * Equals.
+     */
+    EQ("="),
+
+    /**
+     * Greaten than or equals.
+     */
+    GE(">="),
+
+    /**
+     * Greaten than.
+     */
+    GT(">"),
+
+    /**
+     * Less than or equals.
+     */
+    LE("<="),
+
+    /**
+     * Less than.
+     */
+    LT("<"),
+
+    /**
+     * Not equals.
+     */
+    NE("<>");
 
     private String value;
 
@@ -34,6 +67,11 @@ public enum RestrictionOperator {
         this.value = value;
     }
 
+    /**
+     * HQL representation of operator.
+     * 
+     * @return representation of operator
+     */
     public String getValue() {
         return value;
     }

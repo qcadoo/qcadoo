@@ -53,13 +53,13 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.qcadoo.localization.api.TranslationService;
+import com.qcadoo.localization.api.utils.DateUtils;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.DictionaryService;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.types.FieldType;
 import com.qcadoo.model.api.types.HasManyType;
 import com.qcadoo.model.api.types.TreeType;
-import com.qcadoo.model.api.utils.DateUtils;
 import com.qcadoo.model.internal.AbstractModelXmlConverter;
 import com.qcadoo.model.internal.DataDefinitionImpl;
 import com.qcadoo.model.internal.FieldDefinitionImpl;

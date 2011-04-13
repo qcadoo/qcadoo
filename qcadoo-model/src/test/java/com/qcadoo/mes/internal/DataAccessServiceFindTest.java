@@ -47,7 +47,7 @@ public class DataAccessServiceFindTest extends DataAccessTest {
         databaseObjects.add(createDatabaseObject(3L, "name3", 3));
         databaseObjects.add(createDatabaseObject(4L, "name4", 4));
 
-        SearchCriteriaBuilder searchCriteriaBuilder = dataDefinition.find().withFirstResult(0).withMaxResults(4);
+        SearchCriteriaBuilder searchCriteriaBuilder = dataDefinition.find().setFirstResult(0).setMaxResults(4);
 
         given(criteria.uniqueResult()).willReturn(4);
         given(criteria.list()).willReturn(databaseObjects);

@@ -30,68 +30,72 @@ import com.qcadoo.model.api.Entity;
  * Object represents the criteria builer for finding entities.
  * 
  * @see com.qcadoo.model.api.search.SearchCriteria
- * @apiviz.owns com.qcadoo.mes.model.search.Restriction
- * @apiviz.has com.qcadoo.mes.model.search.Order
- * @apiviz.uses com.qcadoo.mes.internal.DataAccessService
+ * @since 0.4.0
  */
 public interface SearchCriteriaBuilder {
 
     /**
-     * Find entities using this criteria.
+     * Finds entities using this criteria.
      * 
-     * @return search result
      * @see com.qcadoo.model.internal.api.DataAccessService#find(SearchCriteria)
+     * @return search result
      */
     SearchResult list();
 
     /**
-     * Find unique entity.
+     * Finds unique entity.
      * 
-     * @return entity
      * @see com.qcadoo.model.internal.api.DataAccessService#find(SearchCriteria)
+     * @return entity
      */
     Entity uniqueResult();
 
     /**
-     * Add the restriction.
+     * Adds the restriction.
      * 
      * @param restriction
      *            restriction
-     * @return this search builder
      * @see SearchCriteria#getRestrictions()
+     * @return this search builder
      */
-    SearchCriteriaBuilder restrictedWith(Restriction restriction);
+    SearchCriteriaBuilder addRestriction(Restriction restriction);
 
     /**
-     * Set the asc order by given field, by default there is an order by id.
+     * Sets the ascending order by given field, by default there is an order by id.
      * 
      * @see SearchCriteria#getOrder()
+     * @see Order#asc(String)
+     * @return this search builder
      */
-    SearchCriteriaBuilder orderAscBy(String fieldName);
+    SearchCriteriaBuilder setOrderAscBy(String fieldName);
 
     /**
-     * Set the desc order by given field, by default there is an order by id.
+     * Sets the descending order by given field, by default there is an order by id.
+     * 
+     * @see SearchCriteria#getOrder()
+     * @see Order#desc(String)
+     * @return this search builder
      */
-    SearchCriteriaBuilder orderDescBy(String fieldName);
+    SearchCriteriaBuilder setOrderDescBy(String fieldName);
 
     /**
-     * Set the max results, by default there is no limit.
+     * Sets the max results, by default there is no limit.
      * 
      * @param maxResults
      *            max results
-     * @return this search builder
      * @see SearchCriteria#getMaxResults()
+     * @return this search builder
      */
-    SearchCriteriaBuilder withMaxResults(int maxResults);
+    SearchCriteriaBuilder setMaxResults(int maxResults);
 
     /**
-     * Set the first result, by default the first result is equal to zero.
+     * Sets the first result, by default the first result is equal to zero.
      * 
      * @param firstResult
      *            first result
-     * @return this search builder
      * @see SearchCriteria#getFirstResult()
+     * @return this search builder
      */
-    SearchCriteriaBuilder withFirstResult(int firstResult);
+    SearchCriteriaBuilder setFirstResult(int firstResult);
 
 }

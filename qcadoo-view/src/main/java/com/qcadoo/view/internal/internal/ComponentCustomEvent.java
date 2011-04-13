@@ -32,10 +32,13 @@ public final class ComponentCustomEvent {
 
     private final String method;
 
-    public ComponentCustomEvent(final String event, final Object object, final String method) {
+    private final String pluginIdentifier;
+
+    public ComponentCustomEvent(final String event, final Object object, final String method, final String pluginIdentifier) {
         this.event = event;
         this.object = object;
         this.method = method;
+        this.pluginIdentifier = pluginIdentifier;
     }
 
     public String getMethod() {
@@ -48,6 +51,10 @@ public final class ComponentCustomEvent {
 
     public String getEvent() {
         return event;
+    }
+
+    public String getPluginIdentifier() {
+        return pluginIdentifier;
     }
 
 }

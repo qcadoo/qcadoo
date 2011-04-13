@@ -51,7 +51,7 @@ import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 import com.lowagie.text.pdf.draw.LineSeparator;
-import com.qcadoo.model.api.utils.DateUtils;
+import com.qcadoo.localization.api.utils.DateUtils;
 
 public final class PdfUtil {
 

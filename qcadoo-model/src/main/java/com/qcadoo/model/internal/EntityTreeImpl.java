@@ -61,7 +61,7 @@ public final class EntityTreeImpl extends AbstractList<Entity> implements Entity
 
     private void loadEntities() {
         if (entities == null) {
-            entities = find().orderAscBy("priority").list().getEntities();
+            entities = find().setOrderAscBy("priority").list().getEntities();
 
             Map<Long, EntityTreeNodeImpl> entitiesById = new LinkedHashMap<Long, EntityTreeNodeImpl>();
 
@@ -98,7 +98,7 @@ public final class EntityTreeImpl extends AbstractList<Entity> implements Entity
      */
     @Override
     public SearchCriteriaBuilder find() {
-        return dataDefinition.find().restrictedWith(Restrictions.belongsTo(joinFieldDefinition, belongsToId));
+        return dataDefinition.find().addRestriction(Restrictions.belongsTo(joinFieldDefinition, belongsToId));
     }
 
     @Override

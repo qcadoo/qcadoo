@@ -63,7 +63,7 @@ public final class EntityListImpl extends AbstractList<Entity> implements Entity
 
     @Override
     public SearchCriteriaBuilder find() {
-        return dataDefinition.find().restrictedWith(Restrictions.belongsTo(joinFieldDefinition, parentId));
+        return dataDefinition.find().addRestriction(Restrictions.belongsTo(joinFieldDefinition, parentId));
     }
 
     @Override
