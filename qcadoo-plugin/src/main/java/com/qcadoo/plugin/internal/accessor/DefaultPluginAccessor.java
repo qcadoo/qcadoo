@@ -48,10 +48,8 @@ import com.qcadoo.plugin.internal.api.ModuleFactoryAccessor;
 import com.qcadoo.plugin.internal.api.PluginDao;
 import com.qcadoo.plugin.internal.api.PluginDependencyManager;
 import com.qcadoo.plugin.internal.api.PluginDescriptorParser;
-import com.qcadoo.tenant.api.Standalone;
 
 @Service
-@Standalone
 public class DefaultPluginAccessor implements InternalPluginAccessor {
 
     private static final Logger LOG = LoggerFactory.getLogger(DefaultPluginAccessor.class);
@@ -192,11 +190,6 @@ public class DefaultPluginAccessor implements InternalPluginAccessor {
     @Override
     public void removePlugin(final Plugin plugin) {
         plugins.remove(plugin.getIdentifier());
-    }
-
-    @Override
-    public boolean isEnabled(final String pluginIdentifier) {
-        return getEnabledPlugin(pluginIdentifier) != null;
     }
 
 }

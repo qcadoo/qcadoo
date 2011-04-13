@@ -41,8 +41,8 @@ import org.springframework.test.util.ReflectionTestUtils;
 import com.qcadoo.plugin.api.Module;
 import com.qcadoo.plugin.api.ModuleFactory;
 import com.qcadoo.plugin.api.Plugin;
-import com.qcadoo.plugin.api.PluginAccessor;
 import com.qcadoo.plugin.api.PluginState;
+import com.qcadoo.plugin.api.PluginStateResolver;
 import com.qcadoo.plugin.api.PluginUtil;
 import com.qcadoo.plugin.internal.api.InternalPlugin;
 import com.qcadoo.tenant.api.MultiTenantUtil;
@@ -57,12 +57,12 @@ public class ModuleFactoryAccessorTest {
         ReflectionTestUtils.setField(multiTenantUtil, "multiTenantService", new DefaultMultiTenantService());
         multiTenantUtil.init();
 
-        PluginAccessor mockPluginAccessor = mock(PluginAccessor.class);
-        given(mockPluginAccessor.isEnabled("plugin1")).willReturn(false);
-        given(mockPluginAccessor.isEnabled("plugin2")).willReturn(true);
+        PluginStateResolver mockPluginStateResolver = mock(PluginStateResolver.class);
+        given(mockPluginStateResolver.isEnabled("plugin1")).willReturn(false);
+        given(mockPluginStateResolver.isEnabled("plugin2")).willReturn(true);
 
         PluginUtil pluginUtil = new PluginUtil();
-        ReflectionTestUtils.setField(pluginUtil, "pluginAccessor", mockPluginAccessor);
+        ReflectionTestUtils.setField(pluginUtil, "pluginStateResolver", mockPluginStateResolver);
         pluginUtil.init();
 
         ModuleFactory<?> moduleFactory1 = mock(ModuleFactory.class);
