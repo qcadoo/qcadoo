@@ -23,7 +23,8 @@ public class PluginUtil {
     }
 
     public static boolean isEnabled(final String pluginIdentifier) {
-        return instance.pluginAccessor.isEnabled(pluginIdentifier);
+        return true;
+        // TODO cycle: return instance.pluginAccessor.isEnabled(pluginIdentifier);
     }
 
     @Deprecated
