@@ -114,6 +114,11 @@ public enum PluginOperationStatus {
     /**
      * Plugin cannot be enabled - was disabled by system admin or shop service.
      */
-    PLUGIN_ENABLING_IS_NOT_ALLOWED;
+    PLUGIN_ENABLING_IS_NOT_ALLOWED,
+
+    /**
+     * Plugin not exist.
+     */
+    PLUGIN_NOT_EXIST;
 
 }

@@ -253,4 +253,13 @@ public final class PluginOperationResult {
     public static PluginOperationResult cannotInstallPlugin() {
         return new PluginOperationResult(PluginOperationStatus.CANNOT_INSTALL_PLUGIN_FILE);
     }
+
+    /**
+     * Creates holder with {@link PluginOperationStatus#PLUGIN_NOT_EXIST}
+     * 
+     * @return holder
+     */
+    public static PluginOperationResult pluginNotExist() {
+        return new PluginOperationResult(PluginOperationStatus.PLUGIN_NOT_EXIST);
+    }
 }
