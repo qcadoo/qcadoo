@@ -97,6 +97,11 @@ public enum PluginOperationStatus {
     CANNOT_DOWNGRADE_PLUGIN,
 
     /**
+     * Plugin cannot be installed - dependencies cycles exists.
+     */
+    DEPENDENCIES_CYCLES_EXISTS,
+
+    /**
      * Plugin cannot be uninstalled because it's a dependency for other plugins. User decision is required.
      */
     DEPENDENCIES_TO_UNINSTALL,

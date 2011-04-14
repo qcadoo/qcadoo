@@ -206,6 +206,15 @@ public final class PluginOperationResult {
     }
 
     /**
+     * Creates holder with {@link PluginOperationStatus#DEPENDENCIES_CYCLES_EXISTS}
+     * 
+     * @return holder
+     */
+    public static PluginOperationResult dependenciesCyclesExists() {
+        return new PluginOperationResult(PluginOperationStatus.DEPENDENCIES_CYCLES_EXISTS);
+    }
+
+    /**
      * Creates holder with {@link PluginOperationStatus#DEPENDENCIES_TO_UNINSTALL}
      * 
      * @param pluginDependencyResult
