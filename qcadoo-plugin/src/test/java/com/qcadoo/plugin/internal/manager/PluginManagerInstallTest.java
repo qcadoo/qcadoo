@@ -590,6 +590,10 @@ public class PluginManagerInstallTest {
         given(anotherPlugin.getVersion()).willReturn(new Version("1.2.0"));
         given(anotherPlugin.getFilename()).willReturn("anotherFilename");
         given(file.getName()).willReturn("tempFileName");
+        PluginDependencyResult pluginDependencyResult = PluginDependencyResult.satisfiedDependencies();
+        given(
+                pluginDependencyManager.getDependenciesToEnable(Mockito.eq(newArrayList((Plugin) anotherPlugin)),
+                        Mockito.any(SimplePluginStatusResolver.class))).willReturn(pluginDependencyResult);
 
         // when
         PluginOperationResult pluginOperationResult = pluginManager.installPlugin(pluginArtifact);
@@ -600,6 +604,29 @@ public class PluginManagerInstallTest {
         verify(pluginFileManager).uninstallPlugin("anotherFilename");
         assertFalse(pluginOperationResult.isSuccess());
         assertEquals(PluginOperationStatus.CANNOT_DOWNGRADE_PLUGIN, pluginOperationResult.getStatus());
+    }
+
+    @Test
+    public void shouldNotInstallPluginWithCyclicDependencies() throws Exception {
+        // given
+        given(pluginDescriptorParser.parse(resource, true)).willReturn(anotherPlugin);
+        given(pluginFileManager.uploadPlugin(pluginArtifact)).willReturn(file);
+        given(anotherPlugin.getFilename()).willReturn("anotherFilename");
+        given(file.getName()).willReturn("tempFileName");
+        PluginDependencyResult pluginDependencyResult = PluginDependencyResult.cyclicDependencies();
+        given(
+                pluginDependencyManager.getDependenciesToEnable(Mockito.eq(newArrayList((Plugin) anotherPlugin)),
+                        Mockito.any(SimplePluginStatusResolver.class))).willReturn(pluginDependencyResult);
+
+        // when
+        PluginOperationResult pluginOperationResult = pluginManager.installPlugin(pluginArtifact);
+
+        // then
+        verify(pluginDao, never()).save(anotherPlugin);
+        verify(pluginAccessor, never()).savePlugin(anotherPlugin);
+        verify(pluginFileManager).uninstallPlugin("anotherFilename");
+        assertFalse(pluginOperationResult.isSuccess());
+        assertEquals(PluginOperationStatus.DEPENDENCIES_CYCLES_EXISTS, pluginOperationResult.getStatus());
     }
 
 }

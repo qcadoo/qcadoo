@@ -162,6 +162,24 @@ public final class PluginOperationResult {
     }
 
     /**
+     * Creates holder with {@link PluginOperationStatus#DEPENDENCIES_CYCLES_EXISTS}
+     * 
+     * @return holder
+     */
+    public static PluginOperationResult dependenciesCyclesExists() {
+        return new PluginOperationResult(PluginOperationStatus.DEPENDENCIES_CYCLES_EXISTS);
+    }
+
+    /**
+     * Creates holder with {@link PluginOperationStatus#PLUGIN_ENABLING_IS_NOT_ALLOWED}
+     * 
+     * @return holder
+     */
+    public static PluginOperationResult pluginEnablingIsNotAllowed() {
+        return new PluginOperationResult(PluginOperationStatus.PLUGIN_ENABLING_IS_NOT_ALLOWED);
+    }
+
+    /**
      * Creates holder with {@link PluginOperationStatus#DEPENDENCIES_TO_ENABLE}
      * 
      * @param pluginDependencyResult

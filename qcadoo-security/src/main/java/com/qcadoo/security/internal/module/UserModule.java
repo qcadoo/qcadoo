@@ -48,9 +48,7 @@ public class UserModule extends Module {
         Entity group = dataDefinitionService.get("qcadooSecurity", "group").find()
                 .addRestriction(Restrictions.eq("name", groupName)).uniqueResult();
 
-        if (group == null) {
-
-        }
+        // TODO masz if (group == null) { }
 
         Entity entity = dataDefinitionService.get("qcadooSecurity", "user").create();
         entity.setField("userName", login);
