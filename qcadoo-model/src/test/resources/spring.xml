@@ -49,13 +49,6 @@
 	
 	<bean class="com.qcadoo.model.integration.MockHook" />
 	
-	<bean id="pluginDependencyManager"
-		class="com.qcadoo.plugin.internal.dependencymanager.DefaultPluginDependencyManager">
-		<property name="pluginStatusResolver">
-			<bean class="com.qcadoo.plugin.internal.dependencymanager.SimplePluginStatusResolver" />
-		</property>
-	</bean>
-
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
 		destroy-method="close">
 		<property name="driverClassName" value="org.hsqldb.jdbcDriver" />

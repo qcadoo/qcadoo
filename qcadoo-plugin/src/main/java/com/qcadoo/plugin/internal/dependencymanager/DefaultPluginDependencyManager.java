@@ -35,6 +35,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.qcadoo.plugin.api.Plugin;
 import com.qcadoo.plugin.api.PluginAccessor;
@@ -42,19 +43,20 @@ import com.qcadoo.plugin.api.PluginDependencyInformation;
 import com.qcadoo.plugin.api.PluginDependencyResult;
 import com.qcadoo.plugin.internal.api.PluginDependencyManager;
 
+@Service
 public final class DefaultPluginDependencyManager implements PluginDependencyManager {
 
     @Autowired
     private PluginAccessor pluginAccessor;
 
-    private PluginStatusResolver pluginStatusResolver;
-
     @Override
-    public PluginDependencyResult getDependenciesToEnable(final List<Plugin> plugins) {
-        return getDependenciesToEnable(plugins, new HashSet<String>());
+    public PluginDependencyResult getDependenciesToEnable(final List<Plugin> plugins,
+            final PluginStatusResolver pluginStatusResolver) {
+        return getDependenciesToEnable(plugins, new HashSet<String>(), pluginStatusResolver);
     }
 
-    private PluginDependencyResult getDependenciesToEnable(final List<Plugin> plugins, final Set<String> markedNodes) {
+    private PluginDependencyResult getDependenciesToEnable(final List<Plugin> plugins, final Set<String> markedNodes,
+            final PluginStatusResolver pluginStatusResolver) {
 
         Set<PluginDependencyInformation> disabledDependencies = new HashSet<PluginDependencyInformation>();
         Set<PluginDependencyInformation> unsatisfiedDependencies = new HashSet<PluginDependencyInformation>();
@@ -86,7 +88,7 @@ public final class DefaultPluginDependencyManager implements PluginDependencyMan
                     continue;
                 }
 
-                if (!isPluginDisabled(requiredPlugin)) {
+                if (!isPluginDisabled(requiredPlugin, pluginStatusResolver)) {
                     continue;
                 }
 
@@ -96,7 +98,7 @@ public final class DefaultPluginDependencyManager implements PluginDependencyMan
                     disabledDependencies.add(dependencyInfo);
 
                     PluginDependencyResult nextLevelDependencioesResult = getDependenciesToEnable(
-                            Collections.singletonList(requiredPlugin), markedNodes);
+                            Collections.singletonList(requiredPlugin), markedNodes, pluginStatusResolver);
 
                     if (!nextLevelDependencioesResult.getUnsatisfiedDependencies().isEmpty()
                             || nextLevelDependencioesResult.isCyclic()) {
@@ -132,18 +134,22 @@ public final class DefaultPluginDependencyManager implements PluginDependencyMan
     }
 
     @Override
-    public PluginDependencyResult getDependenciesToDisable(final List<Plugin> plugins) {
-        return PluginDependencyResult.dependenciesToDisable(getDependentPlugins(plugins, false));
+    public PluginDependencyResult getDependenciesToDisable(final List<Plugin> plugins,
+            final PluginStatusResolver pluginStatusResolver) {
+        return PluginDependencyResult.dependenciesToDisable(getDependentPlugins(plugins, false, pluginStatusResolver));
     }
 
     @Override
-    public PluginDependencyResult getDependenciesToUninstall(final List<Plugin> plugins) {
-        return PluginDependencyResult.dependenciesToUninstall(getDependentPlugins(plugins, true));
+    public PluginDependencyResult getDependenciesToUninstall(final List<Plugin> plugins,
+            final PluginStatusResolver pluginStatusResolver) {
+        return PluginDependencyResult.dependenciesToUninstall(getDependentPlugins(plugins, true, pluginStatusResolver));
     }
 
     @Override
-    public PluginDependencyResult getDependenciesToUpdate(final Plugin existingPlugin, final Plugin newPlugin) {
-        Set<PluginDependencyInformation> dependentPlugins = getDependentPlugins(Collections.singletonList(existingPlugin), false);
+    public PluginDependencyResult getDependenciesToUpdate(final Plugin existingPlugin, final Plugin newPlugin,
+            final PluginStatusResolver pluginStatusResolver) {
+        Set<PluginDependencyInformation> dependentPlugins = getDependentPlugins(Collections.singletonList(existingPlugin), false,
+                pluginStatusResolver);
 
         Set<PluginDependencyInformation> dependenciesToDisableUnsatisfiedAfterUpdate = new HashSet<PluginDependencyInformation>();
         for (Plugin plugin : pluginAccessor.getPlugins()) {
@@ -207,7 +213,8 @@ public final class DefaultPluginDependencyManager implements PluginDependencyMan
         return sortPluginsInDependencyOrder(plugins, null);
     }
 
-    private Set<PluginDependencyInformation> getDependentPlugins(final List<Plugin> plugins, final boolean includeDisabled) {
+    private Set<PluginDependencyInformation> getDependentPlugins(final List<Plugin> plugins, final boolean includeDisabled,
+            final PluginStatusResolver pluginStatusResolver) {
 
         List<Plugin> enabledDependencyPlugins = new LinkedList<Plugin>();
 
@@ -239,7 +246,8 @@ public final class DefaultPluginDependencyManager implements PluginDependencyMan
         }
 
         if (!enabledDependencyPlugins.isEmpty()) {
-            PluginDependencyResult nextLevelDependencioesResult = getDependenciesToDisable(enabledDependencyPlugins);
+            PluginDependencyResult nextLevelDependencioesResult = getDependenciesToDisable(enabledDependencyPlugins,
+                    pluginStatusResolver);
             enabledDependencies.addAll(nextLevelDependencioesResult.getDependenciesToDisable());
         }
 
@@ -291,7 +299,7 @@ public final class DefaultPluginDependencyManager implements PluginDependencyMan
         return argumentPluginInformationsSet;
     }
 
-    private boolean isPluginDisabled(final Plugin plugin) {
+    private boolean isPluginDisabled(final Plugin plugin, final PluginStatusResolver pluginStatusResolver) {
         return pluginStatusResolver.isPluginDisabled(plugin) || pluginStatusResolver.isPluginNotInstalled(plugin);
     }
 
@@ -299,7 +307,4 @@ public final class DefaultPluginDependencyManager implements PluginDependencyMan
         this.pluginAccessor = pluginAccessor;
     }
 
-    public void setPluginStatusResolver(final PluginStatusResolver pluginStatusResolver) {
-        this.pluginStatusResolver = pluginStatusResolver;
-    }
 }

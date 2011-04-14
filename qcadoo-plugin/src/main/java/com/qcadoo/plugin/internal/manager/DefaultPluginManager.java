@@ -52,6 +52,8 @@ import com.qcadoo.plugin.internal.api.PluginDependencyManager;
 import com.qcadoo.plugin.internal.api.PluginDescriptorParser;
 import com.qcadoo.plugin.internal.api.PluginDescriptorResolver;
 import com.qcadoo.plugin.internal.api.PluginFileManager;
+import com.qcadoo.plugin.internal.dependencymanager.PluginStatusResolver;
+import com.qcadoo.plugin.internal.dependencymanager.SimplePluginStatusResolver;
 import com.qcadoo.tenant.api.Standalone;
 
 @Service
@@ -78,6 +80,8 @@ public class DefaultPluginManager implements PluginManager {
     @Autowired
     private PluginDescriptorResolver pluginDescriptorResolver;
 
+    private final PluginStatusResolver pluginStatusResolver = new SimplePluginStatusResolver();
+
     @Override
     public PluginOperationResult enablePlugin(final String... keys) {
         List<Plugin> plugins = new ArrayList<Plugin>();
@@ -94,7 +98,8 @@ public class DefaultPluginManager implements PluginManager {
             return PluginOperationResult.success();
         }
 
-        PluginDependencyResult pluginDependencyResult = pluginDependencyManager.getDependenciesToEnable(plugins);
+        PluginDependencyResult pluginDependencyResult = pluginDependencyManager.getDependenciesToEnable(plugins,
+                pluginStatusResolver);
 
         if (!pluginDependencyResult.isDependenciesSatisfied()) {
             if (!pluginDependencyResult.getUnsatisfiedDependencies().isEmpty()) {
@@ -160,7 +165,8 @@ public class DefaultPluginManager implements PluginManager {
             return PluginOperationResult.success();
         }
 
-        PluginDependencyResult pluginDependencyResult = pluginDependencyManager.getDependenciesToDisable(plugins);
+        PluginDependencyResult pluginDependencyResult = pluginDependencyManager.getDependenciesToDisable(plugins,
+                pluginStatusResolver);
 
         if (!pluginDependencyResult.isDependenciesSatisfied() && !pluginDependencyResult.getDependenciesToDisable().isEmpty()) {
             return PluginOperationResult.dependenciesToDisable(pluginDependencyResult);
@@ -191,7 +197,8 @@ public class DefaultPluginManager implements PluginManager {
             plugins.add(plugin);
         }
 
-        PluginDependencyResult pluginDependencyResult = pluginDependencyManager.getDependenciesToUninstall(plugins);
+        PluginDependencyResult pluginDependencyResult = pluginDependencyManager.getDependenciesToUninstall(plugins,
+                pluginStatusResolver);
 
         if (!pluginDependencyResult.isDependenciesSatisfied() && !pluginDependencyResult.getDependenciesToUninstall().isEmpty()) {
             return PluginOperationResult.dependenciesToUninstall(pluginDependencyResult);
@@ -251,7 +258,8 @@ public class DefaultPluginManager implements PluginManager {
 
         boolean shouldRestart = false;
 
-        PluginDependencyResult pluginDependencyResult = pluginDependencyManager.getDependenciesToEnable(newArrayList(plugin));
+        PluginDependencyResult pluginDependencyResult = pluginDependencyManager.getDependenciesToEnable(newArrayList(plugin),
+                pluginStatusResolver);
 
         // TODO KRNA check cycle
 
@@ -312,7 +320,7 @@ public class DefaultPluginManager implements PluginManager {
                 }
                 shouldRestart = true;
                 PluginDependencyResult installPluginDependencyResult = pluginDependencyManager.getDependenciesToUpdate(
-                        existingPlugin, plugin);
+                        existingPlugin, plugin, pluginStatusResolver);
 
                 if (!installPluginDependencyResult.getDependenciesToDisableUnsatisfiedAfterUpdate().isEmpty()) {
                     pluginFileManager.uninstallPlugin(plugin.getFilename());

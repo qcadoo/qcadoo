@@ -73,11 +73,12 @@ public class PluginDependencyManagerTest {
 
     private DefaultPluginDependencyManager manager = null;
 
+    private SimplePluginStatusResolver pluginStatusResolver = new SimplePluginStatusResolver();
+
     @Before
     public void init() {
         manager = new DefaultPluginDependencyManager();
         manager.setPluginAccessor(pluginAccessor);
-        manager.setPluginStatusResolver(new SimplePluginStatusResolver());
 
         plugin1 = mock(InternalPlugin.class, RETURNS_DEEP_STUBS);
         given(plugin1.getIdentifier()).willReturn("testPlugin1");
@@ -106,7 +107,7 @@ public class PluginDependencyManagerTest {
         given(plugin1.getRequiredPlugins()).willReturn(Collections.<PluginDependencyInformation> emptySet());
 
         // when
-        PluginDependencyResult result = manager.getDependenciesToEnable(singletonList((Plugin) plugin1));
+        PluginDependencyResult result = manager.getDependenciesToEnable(singletonList((Plugin) plugin1), pluginStatusResolver);
 
         // then
         assertFalse(result.isCyclic());
@@ -125,7 +126,7 @@ public class PluginDependencyManagerTest {
         given(plugin1.getRequiredPlugins()).willReturn(Collections.singleton(dependencyInfo2));
 
         // when
-        PluginDependencyResult result = manager.getDependenciesToEnable(singletonList((Plugin) plugin1));
+        PluginDependencyResult result = manager.getDependenciesToEnable(singletonList((Plugin) plugin1), pluginStatusResolver);
 
         // then
         assertFalse(result.isCyclic());
@@ -154,7 +155,8 @@ public class PluginDependencyManagerTest {
         given(pluginToEnable.getRequiredPlugins()).willReturn(disabledRequiredPlugins);
 
         // when
-        PluginDependencyResult result = manager.getDependenciesToEnable(singletonList((Plugin) pluginToEnable));
+        PluginDependencyResult result = manager.getDependenciesToEnable(singletonList((Plugin) pluginToEnable),
+                pluginStatusResolver);
 
         // then
         assertFalse(result.isCyclic());
@@ -188,7 +190,8 @@ public class PluginDependencyManagerTest {
         given(pluginToEnable.getRequiredPlugins()).willReturn(disabledRequiredPlugins);
 
         // when
-        PluginDependencyResult result = manager.getDependenciesToEnable(singletonList((Plugin) pluginToEnable));
+        PluginDependencyResult result = manager.getDependenciesToEnable(singletonList((Plugin) pluginToEnable),
+                pluginStatusResolver);
 
         // then
         assertFalse(result.isCyclic());
@@ -224,7 +227,7 @@ public class PluginDependencyManagerTest {
         plugins.add(plugin2);
 
         // when
-        PluginDependencyResult result = manager.getDependenciesToEnable(plugins);
+        PluginDependencyResult result = manager.getDependenciesToEnable(plugins, pluginStatusResolver);
 
         // then
         assertFalse(result.isCyclic());
@@ -258,7 +261,7 @@ public class PluginDependencyManagerTest {
         plugins.add(plugin2);
 
         // when
-        PluginDependencyResult result = manager.getDependenciesToEnable(plugins);
+        PluginDependencyResult result = manager.getDependenciesToEnable(plugins, pluginStatusResolver);
 
         // then
         assertFalse(result.isCyclic());
@@ -286,7 +289,7 @@ public class PluginDependencyManagerTest {
         given(pluginAccessor.getPlugin("testPlugin3")).willReturn(plugin3);
 
         // when
-        PluginDependencyResult result = manager.getDependenciesToEnable(singletonList((Plugin) plugin1));
+        PluginDependencyResult result = manager.getDependenciesToEnable(singletonList((Plugin) plugin1), pluginStatusResolver);
 
         // then
         assertFalse(result.isCyclic());
@@ -318,7 +321,7 @@ public class PluginDependencyManagerTest {
         plugins.add(plugin3);
 
         // when
-        PluginDependencyResult result = manager.getDependenciesToEnable(plugins);
+        PluginDependencyResult result = manager.getDependenciesToEnable(plugins, pluginStatusResolver);
 
         // then
         assertFalse(result.isCyclic());
@@ -351,7 +354,7 @@ public class PluginDependencyManagerTest {
         plugins.add(plugin3);
 
         // when
-        PluginDependencyResult result = manager.getDependenciesToEnable(plugins);
+        PluginDependencyResult result = manager.getDependenciesToEnable(plugins, pluginStatusResolver);
 
         // then
         assertTrue(result.isCyclic());
@@ -381,7 +384,7 @@ public class PluginDependencyManagerTest {
         given(pluginAccessor.getPlugin("testPlugin3")).willReturn(plugin3);
 
         // when
-        PluginDependencyResult result = manager.getDependenciesToEnable(singletonList((Plugin) plugin1));
+        PluginDependencyResult result = manager.getDependenciesToEnable(singletonList((Plugin) plugin1), pluginStatusResolver);
 
         // then
         assertTrue(result.isCyclic());
@@ -412,7 +415,7 @@ public class PluginDependencyManagerTest {
         given(pluginAccessor.getPlugin("testPlugin3")).willReturn(plugin3);
 
         // when
-        PluginDependencyResult result = manager.getDependenciesToEnable(singletonList((Plugin) plugin1));
+        PluginDependencyResult result = manager.getDependenciesToEnable(singletonList((Plugin) plugin1), pluginStatusResolver);
 
         // then
         assertTrue(result.isCyclic());
@@ -448,7 +451,7 @@ public class PluginDependencyManagerTest {
         given(pluginAccessor.getPlugin("testPlugin4")).willReturn(plugin4);
 
         // when
-        PluginDependencyResult result = manager.getDependenciesToEnable(singletonList((Plugin) plugin1));
+        PluginDependencyResult result = manager.getDependenciesToEnable(singletonList((Plugin) plugin1), pluginStatusResolver);
 
         // then
         assertTrue(result.isCyclic());
@@ -463,7 +466,7 @@ public class PluginDependencyManagerTest {
         given(plugin1.getRequiredPlugins()).willReturn(Collections.<PluginDependencyInformation> emptySet());
 
         // when
-        PluginDependencyResult result = manager.getDependenciesToDisable(singletonList((Plugin) plugin1));
+        PluginDependencyResult result = manager.getDependenciesToDisable(singletonList((Plugin) plugin1), pluginStatusResolver);
 
         // then
         assertEquals(0, result.getDependenciesToEnable().size());
@@ -484,7 +487,7 @@ public class PluginDependencyManagerTest {
         given(pluginAccessor.getPlugins()).willReturn(plugins);
 
         // when
-        PluginDependencyResult result = manager.getDependenciesToDisable(singletonList((Plugin) plugin1));
+        PluginDependencyResult result = manager.getDependenciesToDisable(singletonList((Plugin) plugin1), pluginStatusResolver);
 
         // then
         assertEquals(0, result.getDependenciesToEnable().size());
@@ -513,7 +516,7 @@ public class PluginDependencyManagerTest {
         given(pluginAccessor.getPlugins()).willReturn(plugins);
 
         // when
-        PluginDependencyResult result = manager.getDependenciesToDisable(singletonList((Plugin) plugin1));
+        PluginDependencyResult result = manager.getDependenciesToDisable(singletonList((Plugin) plugin1), pluginStatusResolver);
 
         // then
         assertEquals(0, result.getDependenciesToEnable().size());
@@ -544,7 +547,7 @@ public class PluginDependencyManagerTest {
         given(pluginAccessor.getPlugins()).willReturn(plugins);
 
         // when
-        PluginDependencyResult result = manager.getDependenciesToDisable(singletonList((Plugin) plugin1));
+        PluginDependencyResult result = manager.getDependenciesToDisable(singletonList((Plugin) plugin1), pluginStatusResolver);
 
         // then
         assertEquals(0, result.getDependenciesToEnable().size());
@@ -571,7 +574,7 @@ public class PluginDependencyManagerTest {
         argumentPlugins.add(plugin2);
 
         // when
-        PluginDependencyResult result = manager.getDependenciesToDisable(argumentPlugins);
+        PluginDependencyResult result = manager.getDependenciesToDisable(argumentPlugins, pluginStatusResolver);
 
         // then
         assertEquals(0, result.getDependenciesToEnable().size());
@@ -599,7 +602,7 @@ public class PluginDependencyManagerTest {
         given(pluginAccessor.getPlugins()).willReturn(plugins);
 
         // when
-        PluginDependencyResult result = manager.getDependenciesToDisable(singletonList((Plugin) plugin1));
+        PluginDependencyResult result = manager.getDependenciesToDisable(singletonList((Plugin) plugin1), pluginStatusResolver);
 
         // then
         assertEquals(0, result.getDependenciesToEnable().size());
@@ -631,7 +634,7 @@ public class PluginDependencyManagerTest {
         given(pluginAccessor.getPlugins()).willReturn(plugins);
 
         // when
-        PluginDependencyResult result = manager.getDependenciesToDisable(singletonList((Plugin) plugin1));
+        PluginDependencyResult result = manager.getDependenciesToDisable(singletonList((Plugin) plugin1), pluginStatusResolver);
 
         // then
         assertEquals(0, result.getDependenciesToEnable().size());
@@ -664,7 +667,7 @@ public class PluginDependencyManagerTest {
         argumentPlugins.add(plugin3);
 
         // when
-        PluginDependencyResult result = manager.getDependenciesToDisable(argumentPlugins);
+        PluginDependencyResult result = manager.getDependenciesToDisable(argumentPlugins, pluginStatusResolver);
 
         // then
         assertEquals(0, result.getDependenciesToEnable().size());
@@ -881,7 +884,7 @@ public class PluginDependencyManagerTest {
         argumentPlugins.add(plugin3);
 
         // when
-        PluginDependencyResult result = manager.getDependenciesToUninstall(argumentPlugins);
+        PluginDependencyResult result = manager.getDependenciesToUninstall(argumentPlugins, pluginStatusResolver);
 
         // then
         assertEquals(0, result.getDependenciesToEnable().size());
@@ -909,7 +912,7 @@ public class PluginDependencyManagerTest {
         given(plugin3.getState()).willReturn(PluginState.DISABLED);
 
         // when
-        PluginDependencyResult result = manager.getDependenciesToUpdate(plugin1, plugin4);
+        PluginDependencyResult result = manager.getDependenciesToUpdate(plugin1, plugin4, pluginStatusResolver);
 
         // then
         assertEquals(0, result.getDependenciesToEnable().size());
@@ -942,7 +945,7 @@ public class PluginDependencyManagerTest {
         given(plugin4.getVersion()).willReturn(new Version("2.1.0"));
 
         // when
-        PluginDependencyResult result = manager.getDependenciesToUpdate(plugin1, plugin4);
+        PluginDependencyResult result = manager.getDependenciesToUpdate(plugin1, plugin4, pluginStatusResolver);
 
         // then
         assertEquals(0, result.getDependenciesToEnable().size());
@@ -978,7 +981,7 @@ public class PluginDependencyManagerTest {
         given(plugin4.getVersion()).willReturn(new Version("2.1.0"));
 
         // when
-        PluginDependencyResult result = manager.getDependenciesToUpdate(plugin1, plugin4);
+        PluginDependencyResult result = manager.getDependenciesToUpdate(plugin1, plugin4, pluginStatusResolver);
 
         // then
         assertEquals(0, result.getDependenciesToEnable().size());

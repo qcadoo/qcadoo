@@ -30,19 +30,21 @@ import java.util.Map;
 
 import com.qcadoo.plugin.api.Plugin;
 import com.qcadoo.plugin.api.PluginDependencyResult;
+import com.qcadoo.plugin.internal.dependencymanager.PluginStatusResolver;
 
 public interface PluginDependencyManager {
 
-    PluginDependencyResult getDependenciesToEnable(List<Plugin> plugins);
+    PluginDependencyResult getDependenciesToEnable(List<Plugin> plugins, PluginStatusResolver pluginStatusResolver);
 
-    PluginDependencyResult getDependenciesToDisable(List<Plugin> plugins);
+    PluginDependencyResult getDependenciesToDisable(List<Plugin> plugins, PluginStatusResolver pluginStatusResolver);
 
     List<Plugin> sortPluginsInDependencyOrder(Collection<Plugin> plugins);
 
     List<Plugin> sortPluginsInDependencyOrder(final Collection<Plugin> plugins, final Map<String, Plugin> allPlugins);
 
-    PluginDependencyResult getDependenciesToUninstall(List<Plugin> plugins);
+    PluginDependencyResult getDependenciesToUninstall(List<Plugin> plugins, PluginStatusResolver pluginStatusResolver);
 
-    PluginDependencyResult getDependenciesToUpdate(Plugin existingPlugin, Plugin newPlugin);
+    PluginDependencyResult getDependenciesToUpdate(Plugin existingPlugin, Plugin newPlugin,
+            PluginStatusResolver pluginStatusResolver);
 
 }

@@ -40,6 +40,7 @@ import java.util.Collections;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InOrder;
+import org.mockito.Mockito;
 
 import com.qcadoo.plugin.api.Plugin;
 import com.qcadoo.plugin.api.PluginDependencyInformation;
@@ -54,6 +55,7 @@ import com.qcadoo.plugin.internal.api.PluginDao;
 import com.qcadoo.plugin.internal.api.PluginDependencyManager;
 import com.qcadoo.plugin.internal.api.PluginDescriptorParser;
 import com.qcadoo.plugin.internal.api.PluginFileManager;
+import com.qcadoo.plugin.internal.dependencymanager.SimplePluginStatusResolver;
 
 public class PluginManagerTest {
 
@@ -106,7 +108,9 @@ public class PluginManagerTest {
     public void shouldEnableDisabledPlugin() throws Exception {
         // given
         PluginDependencyResult pluginDependencyResult = PluginDependencyResult.satisfiedDependencies();
-        given(pluginDependencyManager.getDependenciesToEnable(singletonList((Plugin) plugin))).willReturn(pluginDependencyResult);
+        given(
+                pluginDependencyManager.getDependenciesToEnable(Mockito.eq(singletonList((Plugin) plugin)),
+                        Mockito.any(SimplePluginStatusResolver.class))).willReturn(pluginDependencyResult);
         given(pluginDependencyManager.sortPluginsInDependencyOrder(singletonList((Plugin) plugin))).willReturn(
                 singletonList((Plugin) plugin));
 
@@ -131,8 +135,9 @@ public class PluginManagerTest {
         given(pluginFileManager.installPlugin("filename")).willReturn(true);
 
         PluginDependencyResult pluginDependencyResult = PluginDependencyResult.satisfiedDependencies();
-        given(pluginDependencyManager.getDependenciesToEnable(singletonList((Plugin) anotherPlugin))).willReturn(
-                pluginDependencyResult);
+        given(
+                pluginDependencyManager.getDependenciesToEnable(Mockito.eq(singletonList((Plugin) anotherPlugin)),
+                        Mockito.any(SimplePluginStatusResolver.class))).willReturn(pluginDependencyResult);
         given(pluginDependencyManager.sortPluginsInDependencyOrder(singletonList((Plugin) anotherPlugin))).willReturn(
                 singletonList((Plugin) anotherPlugin));
 
@@ -158,8 +163,9 @@ public class PluginManagerTest {
         given(pluginFileManager.installPlugin("filename")).willReturn(false);
 
         PluginDependencyResult pluginDependencyResult = PluginDependencyResult.satisfiedDependencies();
-        given(pluginDependencyManager.getDependenciesToEnable(singletonList((Plugin) anotherPlugin))).willReturn(
-                pluginDependencyResult);
+        given(
+                pluginDependencyManager.getDependenciesToEnable(Mockito.eq(singletonList((Plugin) anotherPlugin)),
+                        Mockito.any(SimplePluginStatusResolver.class))).willReturn(pluginDependencyResult);
 
         // when
         PluginOperationResult pluginOperationResult = pluginManager.enablePlugin("anotherPluginname");
@@ -182,7 +188,9 @@ public class PluginManagerTest {
 
         PluginDependencyResult pluginDependencyResult = PluginDependencyResult.dependenciesToEnable(Collections
                 .singleton(new PluginDependencyInformation("unknownplugin", new VersionOfDependency(""))));
-        given(pluginDependencyManager.getDependenciesToEnable(singletonList((Plugin) plugin))).willReturn(pluginDependencyResult);
+        given(
+                pluginDependencyManager.getDependenciesToEnable(Mockito.eq(singletonList((Plugin) plugin)),
+                        Mockito.any(SimplePluginStatusResolver.class))).willReturn(pluginDependencyResult);
 
         // when
         PluginOperationResult pluginOperationResult = pluginManager.enablePlugin("pluginname");
@@ -207,7 +215,9 @@ public class PluginManagerTest {
 
         PluginDependencyResult pluginDependencyResult = PluginDependencyResult.unsatisfiedDependencies(Collections
                 .singleton(new PluginDependencyInformation("unknownplugin", new VersionOfDependency(""))));
-        given(pluginDependencyManager.getDependenciesToEnable(singletonList((Plugin) plugin))).willReturn(pluginDependencyResult);
+        given(
+                pluginDependencyManager.getDependenciesToEnable(Mockito.eq(singletonList((Plugin) plugin)),
+                        Mockito.any(SimplePluginStatusResolver.class))).willReturn(pluginDependencyResult);
 
         // when
         PluginOperationResult pluginOperationResult = pluginManager.enablePlugin("pluginname");
@@ -239,8 +249,9 @@ public class PluginManagerTest {
 
         PluginDependencyResult pluginDependencyResult = PluginDependencyResult.satisfiedDependencies();
         given(
-                pluginDependencyManager.getDependenciesToEnable(newArrayList((Plugin) plugin, (Plugin) anotherPlugin,
-                        (Plugin) nextPlugin))).willReturn(pluginDependencyResult);
+                pluginDependencyManager.getDependenciesToEnable(
+                        Mockito.eq(newArrayList((Plugin) plugin, (Plugin) anotherPlugin, (Plugin) nextPlugin)),
+                        Mockito.any(SimplePluginStatusResolver.class))).willReturn(pluginDependencyResult);
         given(
                 pluginDependencyManager.sortPluginsInDependencyOrder(newArrayList((Plugin) plugin, (Plugin) anotherPlugin,
                         (Plugin) nextPlugin))).willReturn(
@@ -290,8 +301,9 @@ public class PluginManagerTest {
         given(plugin.hasState(PluginState.ENABLED)).willReturn(true);
 
         PluginDependencyResult pluginDependencyResult = PluginDependencyResult.satisfiedDependencies();
-        given(pluginDependencyManager.getDependenciesToDisable(singletonList((Plugin) plugin)))
-                .willReturn(pluginDependencyResult);
+        given(
+                pluginDependencyManager.getDependenciesToDisable(Mockito.eq(singletonList((Plugin) plugin)),
+                        Mockito.any(SimplePluginStatusResolver.class))).willReturn(pluginDependencyResult);
         given(pluginDependencyManager.sortPluginsInDependencyOrder(singletonList((Plugin) plugin))).willReturn(
                 singletonList((Plugin) plugin));
 
@@ -316,8 +328,10 @@ public class PluginManagerTest {
         given(anotherPlugin.hasState(PluginState.ENABLED)).willReturn(true);
 
         PluginDependencyResult pluginDependencyResult = PluginDependencyResult.satisfiedDependencies();
-        given(pluginDependencyManager.getDependenciesToDisable(newArrayList((Plugin) plugin, (Plugin) anotherPlugin)))
-                .willReturn(pluginDependencyResult);
+        given(
+                pluginDependencyManager.getDependenciesToDisable(
+                        Mockito.eq(newArrayList((Plugin) plugin, (Plugin) anotherPlugin)),
+                        Mockito.any(SimplePluginStatusResolver.class))).willReturn(pluginDependencyResult);
 
         // when
         PluginOperationResult pluginOperationResult = pluginManager.disablePlugin("pluginname", "anotherPluginname");
@@ -341,8 +355,9 @@ public class PluginManagerTest {
 
         PluginDependencyResult pluginDependencyResult = PluginDependencyResult.dependenciesToDisable(Collections
                 .singleton(new PluginDependencyInformation("unknownplugin", new VersionOfDependency(""))));
-        given(pluginDependencyManager.getDependenciesToDisable(singletonList((Plugin) plugin)))
-                .willReturn(pluginDependencyResult);
+        given(
+                pluginDependencyManager.getDependenciesToDisable(Mockito.eq(singletonList((Plugin) plugin)),
+                        Mockito.any(SimplePluginStatusResolver.class))).willReturn(pluginDependencyResult);
 
         // when
         PluginOperationResult pluginOperationResult = pluginManager.disablePlugin("pluginname");
@@ -366,8 +381,9 @@ public class PluginManagerTest {
         given(plugin.hasState(PluginState.ENABLED)).willReturn(true);
 
         PluginDependencyResult pluginDependencyResult = PluginDependencyResult.satisfiedDependencies();
-        given(pluginDependencyManager.getDependenciesToUninstall(singletonList((Plugin) plugin))).willReturn(
-                pluginDependencyResult);
+        given(
+                pluginDependencyManager.getDependenciesToUninstall(Mockito.eq(singletonList((Plugin) plugin)),
+                        Mockito.any(SimplePluginStatusResolver.class))).willReturn(pluginDependencyResult);
         given(pluginDependencyManager.sortPluginsInDependencyOrder(singletonList((Plugin) plugin))).willReturn(
                 singletonList((Plugin) plugin));
 
@@ -393,8 +409,9 @@ public class PluginManagerTest {
         given(plugin.hasState(PluginState.TEMPORARY)).willReturn(true);
 
         PluginDependencyResult pluginDependencyResult = PluginDependencyResult.satisfiedDependencies();
-        given(pluginDependencyManager.getDependenciesToUninstall(singletonList((Plugin) plugin))).willReturn(
-                pluginDependencyResult);
+        given(
+                pluginDependencyManager.getDependenciesToUninstall(Mockito.eq(singletonList((Plugin) plugin)),
+                        Mockito.any(SimplePluginStatusResolver.class))).willReturn(pluginDependencyResult);
         given(pluginDependencyManager.sortPluginsInDependencyOrder(singletonList((Plugin) plugin))).willReturn(
                 singletonList((Plugin) plugin));
 
@@ -419,8 +436,9 @@ public class PluginManagerTest {
         // given
         PluginDependencyResult pluginDependencyResult = PluginDependencyResult.dependenciesToUninstall(Collections
                 .singleton(new PluginDependencyInformation("unknownplugin", new VersionOfDependency(""))));
-        given(pluginDependencyManager.getDependenciesToUninstall(singletonList((Plugin) plugin))).willReturn(
-                pluginDependencyResult);
+        given(
+                pluginDependencyManager.getDependenciesToUninstall(Mockito.eq(singletonList((Plugin) plugin)),
+                        Mockito.any(SimplePluginStatusResolver.class))).willReturn(pluginDependencyResult);
 
         given(plugin.getFilename()).willReturn("filename");
 
@@ -447,7 +465,9 @@ public class PluginManagerTest {
         given(plugin.isSystemPlugin()).willReturn(true);
 
         PluginDependencyResult pluginDependencyResult = PluginDependencyResult.satisfiedDependencies();
-        given(pluginDependencyManager.getDependenciesToDisable(newArrayList((Plugin) plugin))).willReturn(pluginDependencyResult);
+        given(
+                pluginDependencyManager.getDependenciesToDisable(Mockito.eq(newArrayList((Plugin) plugin)),
+                        Mockito.any(SimplePluginStatusResolver.class))).willReturn(pluginDependencyResult);
 
         // when
         PluginOperationResult pluginOperationResult = pluginManager.uninstallPlugin("pluginname");
@@ -472,8 +492,9 @@ public class PluginManagerTest {
         given(pluginAccessor.getPlugin("nextPluginname")).willReturn(nextPlugin);
 
         PluginDependencyResult pluginDependencyResult = PluginDependencyResult.satisfiedDependencies();
-        given(pluginDependencyManager.getDependenciesToDisable(newArrayList((Plugin) plugin, (Plugin) nextPlugin))).willReturn(
-                pluginDependencyResult);
+        given(
+                pluginDependencyManager.getDependenciesToDisable(Mockito.eq(newArrayList((Plugin) plugin, (Plugin) nextPlugin)),
+                        Mockito.any(SimplePluginStatusResolver.class))).willReturn(pluginDependencyResult);
         given(pluginDependencyManager.sortPluginsInDependencyOrder(newArrayList((Plugin) plugin, (Plugin) nextPlugin)))
                 .willReturn(newArrayList((Plugin) plugin, (Plugin) nextPlugin));
 
@@ -512,8 +533,9 @@ public class PluginManagerTest {
 
         PluginDependencyResult pluginDependencyResult = PluginDependencyResult.satisfiedDependencies();
         given(
-                pluginDependencyManager.getDependenciesToUninstall(newArrayList((Plugin) plugin, (Plugin) anotherPlugin,
-                        (Plugin) nextPlugin))).willReturn(pluginDependencyResult);
+                pluginDependencyManager.getDependenciesToUninstall(
+                        Mockito.eq(newArrayList((Plugin) plugin, (Plugin) anotherPlugin, (Plugin) nextPlugin)),
+                        Mockito.any(SimplePluginStatusResolver.class))).willReturn(pluginDependencyResult);
         given(
                 pluginDependencyManager.sortPluginsInDependencyOrder(newArrayList((Plugin) plugin, (Plugin) anotherPlugin,
                         (Plugin) nextPlugin))).willReturn(
