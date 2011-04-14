@@ -109,6 +109,11 @@ public enum PluginOperationStatus {
     /**
      * Plugin cannot be updated because it's a dependency for other plugins, and these plugins have to been disabled.
      */
-    UNSATISFIED_DEPENDENCIES_AFTER_UPDATE;
+    UNSATISFIED_DEPENDENCIES_AFTER_UPDATE,
+
+    /**
+     * Plugin cannot be enabled - was disabled by system admin or shop service.
+     */
+    PLUGIN_ENABLING_IS_NOT_ALLOWED;
 
 }
