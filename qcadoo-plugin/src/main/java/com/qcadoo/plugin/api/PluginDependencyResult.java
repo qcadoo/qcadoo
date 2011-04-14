@@ -180,12 +180,10 @@ public final class PluginDependencyResult {
     /**
      * Creates holder with plugins to disable, after update.
      * 
-     * TODO mina what is the different between dependenciesToDisableUnsatisfiedAfterUpdate and dependenciesToDisable
-     * 
      * @param dependenciesToDisable
      *            plugins to disable
      * @param dependenciesToDisableUnsatisfiedAfterUpdate
-     *            plugins to disable
+     *            plugins which will not be able to enable after updating
      * @return holder
      */
     public static PluginDependencyResult dependenciesToUpdate(final Set<PluginDependencyInformation> dependenciesToDisable,
@@ -197,7 +195,7 @@ public final class PluginDependencyResult {
     }
 
     /**
-     * Creates holder with plugins to disable, after update.
+     * Creates holder with cyclic dependencies.
      * 
      * @return holder
      */
