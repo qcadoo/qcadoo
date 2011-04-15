@@ -158,4 +158,14 @@ public class AwesomeDynamicListState extends FieldComponentState implements Cont
     @Override
     public void addChild(final ComponentState state) {
     }
+
+    @Override
+    public boolean isHasError() {
+        for (FormComponentState form : forms) {
+            if (form.isHasError()) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
