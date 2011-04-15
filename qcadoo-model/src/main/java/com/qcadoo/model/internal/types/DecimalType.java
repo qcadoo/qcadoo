@@ -25,6 +25,7 @@
 package com.qcadoo.model.internal.types;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
 import java.util.Locale;
@@ -72,8 +73,10 @@ public final class DecimalType implements FieldType {
     @Override
     public Object fromString(final String value, final Locale locale) {
         ParsePosition parsePosition = new ParsePosition(0);
-        String trimedValue = value.replace(" ", "");
-        Object parsedValue = NumberFormat.getNumberInstance(locale).parse(trimedValue, parsePosition);
+        String trimedValue = value.replaceAll(" ", "");
+        DecimalFormat formatter = (DecimalFormat) NumberFormat.getNumberInstance(locale);
+        formatter.setParseBigDecimal(true);
+        Object parsedValue = formatter.parseObject(trimedValue, parsePosition);
         if (parsePosition.getIndex() != trimedValue.length()) {
             return value;
         } else {

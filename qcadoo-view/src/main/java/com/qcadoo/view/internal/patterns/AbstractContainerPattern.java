@@ -27,6 +27,7 @@ package com.qcadoo.view.internal.patterns;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -88,7 +89,13 @@ public abstract class AbstractContainerPattern extends AbstractComponentPattern 
 
     @Override
     public final Map<String, ComponentPattern> getChildren() {
-        return children;
+        Map<String, ComponentPattern> result = new LinkedHashMap<String, ComponentPattern>();
+        for (Entry<String, ComponentPattern> child : children.entrySet()) {
+            if (isComponentEnabled(child.getValue())) {
+                result.put(child.getKey(), child.getValue());
+            }
+        }
+        return result;
     }
 
     public final void addChild(final ComponentPattern child) {
