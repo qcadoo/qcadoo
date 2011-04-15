@@ -65,13 +65,16 @@ public class DictionaryServiceTest {
         // given
         Entity dict1 = new DefaultEntity(null);
         dict1.setField("name", "Dict1");
+        dict1.setField("active", true);
         Entity dict2 = new DefaultEntity(null);
         dict2.setField("name", "Dict2");
+        dict2.setField("active", true);
         Entity dict3 = new DefaultEntity(null);
         dict3.setField("name", "Dict3");
+        dict3.setField("active", true);
 
-        given(dataDefinitionService.get("qcadooModel", "dictionary").find().setOrderAscBy("name").list().getEntities()).willReturn(
-                newArrayList(dict1, dict2, dict3));
+        given(dataDefinitionService.get("qcadooModel", "dictionary").find().setOrderAscBy("name").list().getEntities())
+                .willReturn(newArrayList(dict1, dict2, dict3));
 
         // when
         Set<String> dictionaries = dictionaryService.dictionaries();

@@ -25,7 +25,8 @@ public class EnumValueModuleFactory extends ModuleFactory<EnumValueModule> {
         checkNotNull(targetEnumFieldName, "Missing enum attribute of " + getIdentifier() + " module");
         checkNotNull(value, "Missing value attribute of " + getIdentifier() + " module");
 
-        return new EnumValueModule(dataDefinitionService, targetPluginIdentifier, targetModelName, targetEnumFieldName, value);
+        return new EnumValueModule(pluginIdentifier, dataDefinitionService, targetPluginIdentifier, targetModelName,
+                targetEnumFieldName, value);
     }
 
     @Override

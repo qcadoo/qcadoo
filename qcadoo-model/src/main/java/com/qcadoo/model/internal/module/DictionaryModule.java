@@ -51,4 +51,14 @@ public class DictionaryModule extends Module {
         dictionaryService.createIfNotExists(pluginIdentifier, name);
     }
 
+    @Override
+    public void disable() {
+        multiTenantDisable();
+    }
+
+    @Override
+    public void multiTenantDisable() {
+        dictionaryService.disable(pluginIdentifier, name);
+    }
+
 }

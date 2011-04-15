@@ -30,4 +30,6 @@ public interface InternalDictionaryService extends DictionaryService {
 
     void createIfNotExists(String pluginIdentifier, String name, String... values);
 
+    void disable(String pluginIdentifier, String name);
+
 }

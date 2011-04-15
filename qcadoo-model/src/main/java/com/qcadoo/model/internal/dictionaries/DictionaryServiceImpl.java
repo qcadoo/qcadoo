@@ -44,6 +44,7 @@ import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.aop.Monitorable;
 import com.qcadoo.model.api.search.Restrictions;
+import com.qcadoo.model.api.search.SearchResult;
 import com.qcadoo.model.internal.api.InternalDictionaryService;
 
 @Service
@@ -103,7 +104,9 @@ public final class DictionaryServiceImpl implements InternalDictionaryService {
         Set<String> names = new HashSet<String>();
 
         for (Entity dictionary : dictionaries) {
-            names.add(dictionary.getStringField("name"));
+            if ((Boolean) dictionary.getField("active")) {
+                names.add(dictionary.getStringField("name"));
+            }
         }
 
         return names;
@@ -113,14 +116,19 @@ public final class DictionaryServiceImpl implements InternalDictionaryService {
     @Transactional
     @Monitorable
     public void createIfNotExists(final String pluginIdentifier, final String name, final String... values) {
-        if (dataDefinitionService.get("qcadooModel", "dictionary").find().addRestriction(Restrictions.eq("name", name)).list()
-                .getTotalNumberOfEntities() > 0) {
+        SearchResult serachResult = dataDefinitionService.get("qcadooModel", "dictionary").find()
+                .addRestriction(Restrictions.eq("name", name)).list();
+        if (serachResult.getTotalNumberOfEntities() > 0) {
+            Entity dictionaryEntity = serachResult.getEntities().get(0);
+            dictionaryEntity.setField("active", true);
+            dataDefinitionService.get("qcadooModel", "dictionary").save(dictionaryEntity);
             return;
         }
 
         Entity dictionary = dataDefinitionService.get("qcadooModel", "dictionary").create();
         dictionary.setField("pluginIdentifier", pluginIdentifier);
         dictionary.setField("name", name);
+        dictionary.setField("active", true);
         dictionary = dataDefinitionService.get("qcadooModel", "dictionary").save(dictionary);
 
         for (String value : values) {
@@ -138,6 +146,20 @@ public final class DictionaryServiceImpl implements InternalDictionaryService {
                 .addRestriction(Restrictions.eq("name", dictionaryName)).setMaxResults(1).uniqueResult();
         return translationService.translate(dictionary.getStringField("pluginIdentifier") + "." + dictionaryName + ".dictionary",
                 locale);
+    }
+
+    @Override
+    @Transactional
+    @Monitorable
+    public void disable(String pluginIdentifier, String name) {
+        // TODO disable
+        SearchResult serachResult = dataDefinitionService.get("qcadooModel", "dictionary").find()
+                .addRestriction(Restrictions.eq("name", name)).list();
+        if (serachResult.getTotalNumberOfEntities() > 0) {
+            Entity dictionaryEntity = serachResult.getEntities().get(0);
+            dictionaryEntity.setField("active", false);
+            dataDefinitionService.get("qcadooModel", "dictionary").save(dictionaryEntity);
+        }
     }
 
 }

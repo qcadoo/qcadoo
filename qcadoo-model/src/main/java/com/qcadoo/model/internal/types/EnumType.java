@@ -25,7 +25,6 @@
 package com.qcadoo.model.internal.types;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -35,10 +34,11 @@ import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.types.EnumeratedType;
 import com.qcadoo.model.internal.api.ValueAndError;
+import com.qcadoo.plugin.api.PluginUtil;
 
 public final class EnumType implements EnumeratedType {
 
-    private final List<String> keys;
+    private final List<EnumTypeKey> keys;
 
     private final TranslationService translationService;
 
@@ -47,18 +47,20 @@ public final class EnumType implements EnumeratedType {
     public EnumType(final TranslationService translationService, final String translationPath, final String... keys) {
         this.translationService = translationService;
         this.translationPath = translationPath;
-        this.keys = new ArrayList<String>(Arrays.asList(keys));
+        this.keys = new ArrayList<EnumTypeKey>();
+        for (String key : keys) {
+            this.keys.add(new EnumTypeKey(key, null));
+        }
     }
 
-    public List<String> getKeys() {
+    public List<EnumTypeKey> getKeys() {
         return keys;
     }
 
     @Override
     public Map<String, String> values(final Locale locale) {
         Map<String, String> values = new HashMap<String, String>();
-
-        for (String key : keys) {
+        for (String key : toStringList()) {
             values.put(key, translationService.translate(translationPath + ".value." + key, locale));
         }
 
@@ -73,10 +75,20 @@ public final class EnumType implements EnumeratedType {
     @Override
     public ValueAndError toObject(final FieldDefinition fieldDefinition, final Object value) {
         String stringValue = String.valueOf(value);
-        if (!keys.contains(stringValue)) {
-            return ValueAndError.withError("core.validate.field.error.invalidDictionaryItem", String.valueOf(keys));
+        if (toStringList().contains(stringValue)) {
+            return ValueAndError.withoutError(stringValue);
         }
-        return ValueAndError.withoutError(stringValue);
+        return ValueAndError.withError("core.validate.field.error.invalidDictionaryItem", String.valueOf(toStringList()));
+    }
+
+    private List<String> toStringList() {
+        List<String> result = new ArrayList<String>();
+        for (EnumTypeKey key : keys) {
+            if (key.getOriginPluginIdentifier() == null || PluginUtil.isEnabled(key.getOriginPluginIdentifier())) {
+                result.add(key.getValue());
+            }
+        }
+        return result;
     }
 
     @Override
