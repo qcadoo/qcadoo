@@ -568,27 +568,31 @@ public class DataAccessServiceImpl implements DataAccessService {
             if (fieldDefinition.getType() instanceof HasManyType) {
                 HasManyType hasManyFieldType = (HasManyType) fieldDefinition.getType();
                 EntityList children = entity.getHasManyField(fieldDefinition.getName());
-                // EntityList children = (EntityList) entityService.getField(databaseEntity, fieldDefinition);
                 InternalDataDefinition childDataDefinition = (InternalDataDefinition) hasManyFieldType.getDataDefinition();
                 if (HasManyType.Cascade.NULLIFY.equals(hasManyFieldType.getCascade())) {
-                    for (Object child : children) {
-                        DefaultEntity defaultEntity = (DefaultEntity) child;
-                        defaultEntity.setField(hasManyFieldType.getJoinFieldName(), null);
-                        save(childDataDefinition, defaultEntity);
+                    for (Entity child : children) {
+                        child.setField(hasManyFieldType.getJoinFieldName(), null);
+                        child = save(childDataDefinition, child);
+                        if (!child.isValid()) {
+                            throw new IllegalStateException(String.format("Entity [ENTITY.%s] is in use",
+                                    expressionService.getValue(entity, dataDefinition.getIdentifierExpression(), Locale.ENGLISH)));
+                        }
                     }
                 }
             }
 
             if (fieldDefinition.getType() instanceof TreeType) {
                 TreeType treeFieldType = (TreeType) fieldDefinition.getType();
-                // EntityTree children = (EntityTree) entityService.getField(databaseEntity, fieldDefinition);
                 EntityTree children = entity.getTreeField(fieldDefinition.getName());
                 InternalDataDefinition childDataDefinition = (InternalDataDefinition) treeFieldType.getDataDefinition();
                 if (TreeType.Cascade.NULLIFY.equals(treeFieldType.getCascade())) {
-                    for (Object child : children) {
-                        DefaultEntity defaultEntity = (DefaultEntity) child;
-                        defaultEntity.setField(treeFieldType.getJoinFieldName(), null);
-                        save(childDataDefinition, defaultEntity);
+                    for (Entity child : children) {
+                        child.setField(treeFieldType.getJoinFieldName(), null);
+                        child = save(childDataDefinition, child);
+                        if (!child.isValid()) {
+                            throw new IllegalStateException(String.format("Entity [ENTITY.%s] is in use",
+                                    expressionService.getValue(entity, dataDefinition.getIdentifierExpression(), Locale.ENGLISH)));
+                        }
                     }
                 }
             }
