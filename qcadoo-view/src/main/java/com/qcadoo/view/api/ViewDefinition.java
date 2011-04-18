@@ -25,6 +25,7 @@
 package com.qcadoo.view.api;
 
 import com.qcadoo.model.api.DataDefinition;
+import com.qcadoo.security.api.SecurityRole;
 import com.qcadoo.view.components.window.WindowComponentPattern;
 
 public interface ViewDefinition {
@@ -32,6 +33,8 @@ public interface ViewDefinition {
     String getName();
 
     String getPluginIdentifier();
+
+    SecurityRole getAuthorizationRole();
 
     DataDefinition getDataDefinition();
 

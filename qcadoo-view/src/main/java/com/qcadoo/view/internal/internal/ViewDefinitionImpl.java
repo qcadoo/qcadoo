@@ -42,6 +42,7 @@ import org.springframework.util.StringUtils;
 
 import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.api.DataDefinition;
+import com.qcadoo.security.api.SecurityRole;
 import com.qcadoo.view.api.ComponentPattern;
 import com.qcadoo.view.api.ContainerPattern;
 import com.qcadoo.view.api.ViewDefinitionState;
@@ -56,6 +57,8 @@ public final class ViewDefinitionImpl implements InternalViewDefinition {
     private final String name;
 
     private final String pluginIdentifier;
+
+    private final SecurityRole authorizationRole;
 
     private final DataDefinition dataDefinition;
 
@@ -83,7 +86,13 @@ public final class ViewDefinitionImpl implements InternalViewDefinition {
 
     public ViewDefinitionImpl(final String name, final String pluginIdentifier, final DataDefinition dataDefinition,
             final boolean menuAccessible, final TranslationService translationService) {
+        this(name, pluginIdentifier, null, dataDefinition, menuAccessible, translationService);
+    }
+
+    public ViewDefinitionImpl(final String name, final String pluginIdentifier, final SecurityRole authorizationRole,
+            final DataDefinition dataDefinition, final boolean menuAccessible, final TranslationService translationService) {
         this.name = name;
+        this.authorizationRole = authorizationRole;
         this.dataDefinition = dataDefinition;
         this.pluginIdentifier = pluginIdentifier;
         this.menuAccessible = menuAccessible;
@@ -372,5 +381,9 @@ public final class ViewDefinitionImpl implements InternalViewDefinition {
         } catch (JSONException e) {
             throw new IllegalStateException(e.getMessage(), e);
         }
+    }
+
+    public SecurityRole getAuthorizationRole() {
+        return authorizationRole;
     }
 }
