@@ -38,6 +38,10 @@ import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.aop.Monitorable;
 import com.qcadoo.model.api.search.Restrictions;
 import com.qcadoo.plugin.api.PluginAccessor;
+import com.qcadoo.plugin.api.PluginUtil;
+import com.qcadoo.security.api.SecurityRole;
+import com.qcadoo.security.api.SecurityRolesService;
+import com.qcadoo.security.api.SecurityViewDefinitionRoleResolver;
 import com.qcadoo.view.api.menu.MenuDefinition;
 import com.qcadoo.view.api.menu.MenulItemsGroup;
 import com.qcadoo.view.internal.api.InternalMenuService;
@@ -59,6 +63,12 @@ public final class MenuServiceImpl implements InternalMenuService {
     @Value("${setAsDemoEnviroment}")
     private boolean setAsDemoEnviroment;
 
+    @Autowired
+    private SecurityRolesService securityRolesService;
+
+    @Autowired
+    private SecurityViewDefinitionRoleResolver viewDefinitionRoleResolver;
+
     @Override
     @Transactional(readOnly = true)
     @Monitorable
@@ -66,12 +76,12 @@ public final class MenuServiceImpl implements InternalMenuService {
 
         MenuDefinition menuDefinition = new MenuDefinition();
 
-        List<Entity> menuCategories = dataDefinitionService.get("qcadooView", "category").find().setOrderAscBy("succession").list()
-                .getEntities();
+        List<Entity> menuCategories = dataDefinitionService.get("qcadooView", "category").find().setOrderAscBy("succession")
+                .list().getEntities();
 
-        MenulItemsGroup administrationCategory = null;
+        // MenulItemsGroup administrationCategory = null;
 
-        boolean hasMenuManagement = false;
+        // boolean hasMenuManagement = false;
 
         for (Entity menuCategory : menuCategories) {
             String label = menuCategory.getStringField("name");
@@ -107,44 +117,62 @@ public final class MenuServiceImpl implements InternalMenuService {
                 if (menuView.getStringField("url") != null) {
                     category.addItem(new UrlMenuItem(menuItem.getStringField("name"), itemLabel, null, menuView
                             .getStringField("url")));
-                } else if (belongsToActivePlugin(menuView.getStringField("pluginIdentifier"))) {
+
+                } else if (canAccess(menuView.getStringField("pluginIdentifier"), menuView.getStringField("name"))) {
                     category.addItem(new ViewDefinitionMenuItemItem(menuItem.getStringField("name"), itemLabel, menuView
                             .getStringField("pluginIdentifier"), menuView.getStringField("name")));
                 }
 
-                if ("menu".equals(menuView.getStringField("pluginIdentifier"))
-                        && "menuCategories".equals(menuView.getStringField("view"))) {
-                    hasMenuManagement = true;
-                }
+                // if ("menu".equals(menuView.getStringField("pluginIdentifier"))
+                // && "menuCategories".equals(menuView.getStringField("view"))) {
+                // hasMenuManagement = true;
+                // }
             }
 
-            if ("administration".equals(menuCategory.getStringField("name"))) {
-                administrationCategory = category;
-            } else if (!category.getItems().isEmpty()) {
-                menuDefinition.addItem(category);
+            // if ("administration".equals(menuCategory.getStringField("name"))) {
+            // administrationCategory = category;
+            // } else if (!category.getItems().isEmpty()) {
+            // menuDefinition.addItem(category);
+            // }
+
+            if (!category.getItems().isEmpty()) {
+                if ("administration".equals(category.getName())) {
+                    menuDefinition.setAdministrationCategory(category);
+                } else {
+                    menuDefinition.addItem(category);
+                }
             }
         }
 
-        if (!setAsDemoEnviroment) {
-            if (!hasMenuManagement && pluginAccessor.getEnabledPlugin("menu") != null) {
-                if (administrationCategory == null) {
-                    administrationCategory = new MenulItemsGroup("administration", translationService.translate(
-                            "basic.menu.administration", locale));
-                }
-                administrationCategory.addItem(new ViewDefinitionMenuItemItem("menuCategories", translationService.translate(
-                        "menu.menu.administration.menu", locale), "menu", "menuCategories"));
-            }
-
-            if (administrationCategory != null) {
-                menuDefinition.addItem(administrationCategory);
-            }
-        }
+        // if (!setAsDemoEnviroment) {
+        // if (!hasMenuManagement && pluginAccessor.getEnabledPlugin("menu") != null) {
+        // if (administrationCategory == null) {
+        // administrationCategory = new MenulItemsGroup("administration", translationService.translate(
+        // "basic.menu.administration", locale));
+        // }
+        // administrationCategory.addItem(new ViewDefinitionMenuItemItem("menuCategories", translationService.translate(
+        // "menu.menu.administration.menu", locale), "menu", "menuCategories"));
+        // }
+        //
+        // if (administrationCategory != null) {
+        // menuDefinition.addItem(administrationCategory);
+        // }
+        // }
 
         return menuDefinition;
     }
 
-    private boolean belongsToActivePlugin(final String pluginIdentifier) {
-        return pluginAccessor.getEnabledPlugin(pluginIdentifier) != null;
+    private boolean canAccess(final String pluginIdentifier, final String viewName) {
+        if (!PluginUtil.isEnabled(pluginIdentifier)) {
+            return false;
+        }
+
+        SecurityRole viewRole = viewDefinitionRoleResolver.getRoleForView(pluginIdentifier, viewName);
+        if (!securityRolesService.canAccess(viewRole)) {
+            return false;
+        }
+
+        return true;
     }
 
     @Override

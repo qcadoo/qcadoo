@@ -45,10 +45,7 @@ public interface ViewDefinitionService {
      *            view's name
      * @return the view definition, null if not found
      */
-    @PreAuthorize("hasRole('ROLE_ADMIN') or (hasRole('ROLE_SUPERVISOR') and ((#pluginIdentifier == 'dictionaries') or (#pluginIdentifier == 'orders')))"
-            + "or !(((#pluginIdentifier == 'users') and !(#viewName == 'profile' or #viewName == 'profileChangePassword')) "
-            + "or (#pluginIdentifier == 'orders') or (#pluginIdentifier == 'menu') "
-            + "or (#pluginIdentifier == 'plugins') or (#pluginIdentifier == 'dictionaries'))")
+    @PreAuthorize("isAuthenticated() and hasPermission(#pluginIdentifier + '#' + #viewName, 'viewDefinition', 'isAuthorizedToSee')")
     ViewDefinition get(String pluginIdentifier, String viewName);
 
     /**

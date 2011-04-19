@@ -51,6 +51,8 @@ import com.google.common.base.Preconditions;
 import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.DataDefinitionService;
+import com.qcadoo.security.api.SecurityRole;
+import com.qcadoo.security.api.SecurityRolesService;
 import com.qcadoo.view.api.ComponentPattern;
 import com.qcadoo.view.api.ContainerPattern;
 import com.qcadoo.view.api.ViewDefinition;
@@ -83,6 +85,9 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
 
     @Autowired
     private TranslationService translationService;
+
+    @Autowired
+    private SecurityRolesService securityRolesService;
 
     @Autowired
     private HookFactory hookFactory;
@@ -148,6 +153,15 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
             windowHeight = Integer.parseInt(windowHeightStr);
         }
 
+        String authorizationRole = getStringAttribute(viewNode, "defaultAuthorizationRole");
+        SecurityRole role = null;
+        if (authorizationRole != null) {
+            role = securityRolesService.getRole(authorizationRole);
+            if (role == null) {
+                throw new IllegalStateException("no such role: '" + authorizationRole + "'");
+            }
+        }
+
         DataDefinition dataDefinition = null;
 
         if (getStringAttribute(viewNode, "model") != null) {
@@ -156,7 +170,7 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
             dataDefinition = dataDefinitionService.get(modelPluginIdentifier, getStringAttribute(viewNode, "model"));
         }
 
-        ViewDefinitionImpl viewDefinition = new ViewDefinitionImpl(name, pluginIdentifier, dataDefinition, menuAccessible,
+        ViewDefinitionImpl viewDefinition = new ViewDefinitionImpl(name, pluginIdentifier, role, dataDefinition, menuAccessible,
                 translationService);
 
         viewDefinition.setWindowDimmension(windowWidth, windowHeight);

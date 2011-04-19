@@ -7,11 +7,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.plugin.api.ModuleFactory;
+import com.qcadoo.security.internal.role.InternalSecurityRolesService;
 
 public class UserGroupModuleFactory extends ModuleFactory<UserGroupModule> {
 
     @Autowired
     private DataDefinitionService dataDefinitionService;
+
+    @Autowired
+    private InternalSecurityRolesService securityRolesService;
 
     @Override
     public UserGroupModule parse(final String pluginIdentifier, final Element element) {
@@ -21,7 +25,7 @@ public class UserGroupModuleFactory extends ModuleFactory<UserGroupModule> {
         checkNotNull(name, "Missing name attribute of " + getIdentifier() + " module");
         checkNotNull(role, "Missing role attribute of " + getIdentifier() + " module");
 
-        return new UserGroupModule(name, role, dataDefinitionService);
+        return new UserGroupModule(name, role, dataDefinitionService, securityRolesService);
     }
 
     @Override

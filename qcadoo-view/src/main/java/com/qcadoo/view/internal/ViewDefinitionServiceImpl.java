@@ -34,11 +34,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.qcadoo.model.api.aop.Monitorable;
 import com.qcadoo.plugin.api.PluginUtil;
+import com.qcadoo.security.api.SecurityRole;
+import com.qcadoo.security.api.SecurityViewDefinitionRoleResolver;
 import com.qcadoo.view.api.ViewDefinition;
 import com.qcadoo.view.internal.api.InternalViewDefinitionService;
 
 @Service
-public class ViewDefinitionServiceImpl implements InternalViewDefinitionService {
+public class ViewDefinitionServiceImpl implements InternalViewDefinitionService, SecurityViewDefinitionRoleResolver {
 
     private final Map<String, ViewDefinition> viewDefinitions = new HashMap<String, ViewDefinition>();
 
@@ -89,6 +91,15 @@ public class ViewDefinitionServiceImpl implements InternalViewDefinitionService 
     @Monitorable
     public void delete(final ViewDefinition viewDefinition) {
         viewDefinitions.remove(viewDefinition.getPluginIdentifier() + "." + viewDefinition.getName());
+    }
+
+    @Override
+    public SecurityRole getRoleForView(final String pluginIdentifier, final String viewName) {
+        ViewDefinition view = getWithoutSession(pluginIdentifier, viewName);
+        if (view == null) {
+            return null;
+        }
+        return view.getAuthorizationRole();
     }
 
 }
