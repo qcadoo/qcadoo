@@ -101,6 +101,9 @@ ul.q_row1 {
 	color:#fff;
 	font-family:"Lucida Grande",Arial, Helvetica, sans-serif;
 }
+ul.q_row1.q_row1_administration {
+	float:right;
+}
 ul.q_row1 li {
 	height: 29px;
 	float:left;
@@ -122,6 +125,13 @@ ul.q_row1 li a span {
 	padding:2px 0px 0px; 
 	margin: 0px 15px 0px 15px;
 	line-height: 29px;
+}
+ul.q_row1 li a span div.administration {
+	background-image:url('/qcadooView/public/img/core/menu/gears.png');
+	background-repeat:no-repeat;
+	background-position: 0px 5px;
+	width: 24px;
+	height: 29px;
 }
 ul.q_row1 li:hover {
 	background-image:url('/qcadooView/public/css/core/menu/images/btn_row1_hover_l.png');

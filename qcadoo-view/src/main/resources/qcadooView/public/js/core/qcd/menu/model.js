@@ -25,14 +25,14 @@
 var QCD = QCD || {};
 QCD.menu = QCD.menu || {};
 
-QCD.menu.MenuModel = function(menuItems) {
+QCD.menu.MenuModel = function(menuStructure) {
 	
 	this.selectedItem = null;
 	
 	this.items = new Array();
 	this.itemsMap = new Object();
-	for (var i in menuItems) {
-		var button = new QCD.menu.FirstButton(menuItems[i]);
+	for (var i in menuStructure.menuItems) {
+		var button = new QCD.menu.FirstButton(menuStructure.menuItems[i]);
 		this.items.push(button);
 		this.itemsMap[button.name] = button;
 		if (! this.selectedItem) {
@@ -40,9 +40,17 @@ QCD.menu.MenuModel = function(menuItems) {
 			button.selectedItem = button.items[0]; 
 		}
 	}
+	var button = new QCD.menu.FirstButton(menuStructure.administrationCategory, true);
+	this.items.push(button);
+	this.itemsMap[button.name] = button;
+	if (! this.selectedItem) {
+		this.selectedItem = button;
+		button.selectedItem = button.items[0]; 
+	}
 }
 
-QCD.menu.FirstButton = function(menuItem) {
+QCD.menu.FirstButton = function(menuItem, isAdministrationItem) {
+	this.isAdministrationItem = isAdministrationItem ? isAdministrationItem : false;
 	this.name = menuItem.name;
 	this.label = menuItem.label;
 	
