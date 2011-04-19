@@ -125,6 +125,18 @@ public class TomcatMojo extends AbstractMojo {
      */
     private ZipArchiver zipArchiver;
 
+    /**
+     * @parameter expression="${spring.profiles.active}"
+     * @readonly
+     */
+    private String springProfile;
+
+    /**
+     * @parameter expression="${basedir}/target/tomcat-archiver/${project.artifactId}/ws-test-app"
+     * @readonly
+     */
+    private File wsTestApp;
+
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         try {
@@ -134,6 +146,9 @@ public class TomcatMojo extends AbstractMojo {
             copyConfiguration();
             copyJdbcDriver();
             copyDependencies();
+            if ("saas".equals(springProfile)) {
+                moveWar();
+            }
             createArchive();
             registerArtifact();
         } catch (ArchiverException e) {
@@ -185,26 +200,31 @@ public class TomcatMojo extends AbstractMojo {
         FileUtils.copyFileToDirectory(jdbcDriver, libDirectory);
     }
 
+    private void moveWar() throws IOException, ArtifactResolutionException, ArtifactNotFoundException {
+        wsTestApp.mkdirs();
+        copyDependency(wsTestApp, "com.qcadoo.saas", "qcadoo-saas-webapp", project.getVersion(), "war");
+    }
+
     private void copyConfiguration() throws IOException {
         FileUtils.copyDirectory(configuration, configurationDirectory);
     }
 
     private void copyDependencies() throws ArtifactResolutionException, ArtifactNotFoundException, IOException {
-        copyDependency(binDirectory, "commons-daemon", "commons-daemon", "1.0.3", "commons-daemon.jar");
-        copyDependency(binDirectory, "org.apache.tomcat", "juli", "6.0.29", "tomcat-juli.jar");
-        copyDependency(binDirectory, "org.apache.tomcat", "bootstrap", "6.0.29", "bootstrap.jar");
-        copyDependency(libDirectory, "org.apache.tomcat", "annotations-api", "6.0.29");
-        copyDependency(libDirectory, "org.apache.tomcat", "catalina", "6.0.29");
-        copyDependency(libDirectory, "org.apache.tomcat", "tribes", "6.0.29");
-        copyDependency(libDirectory, "org.apache.tomcat", "catalina-ha", "6.0.29");
-        copyDependency(libDirectory, "org.apache.tomcat", "el-api", "6.0.29");
-        copyDependency(libDirectory, "org.apache.tomcat", "jasper-jdt", "6.0.29");
-        copyDependency(libDirectory, "org.apache.tomcat", "jasper-el", "6.0.29");
-        copyDependency(libDirectory, "org.apache.tomcat", "jasper", "6.0.29");
-        copyDependency(libDirectory, "org.apache.tomcat", "jsp-api", "6.0.29");
-        copyDependency(libDirectory, "org.apache.tomcat", "servlet-api", "6.0.29");
-        copyDependency(libDirectory, "org.apache.tomcat", "coyote", "6.0.29");
-        copyDependency(libDirectory, "org.apache.tomcat", "dbcp", "6.0.29");
+        copyDependency(binDirectory, "commons-daemon", "commons-daemon", "1.0.3", "jar", "commons-daemon.jar");
+        copyDependency(binDirectory, "org.apache.tomcat", "juli", "6.0.29", "jar", "tomcat-juli.jar");
+        copyDependency(binDirectory, "org.apache.tomcat", "bootstrap", "6.0.29", "jar", "bootstrap.jar");
+        copyDependency(libDirectory, "org.apache.tomcat", "annotations-api", "6.0.29", "jar");
+        copyDependency(libDirectory, "org.apache.tomcat", "catalina", "6.0.29", "jar");
+        copyDependency(libDirectory, "org.apache.tomcat", "tribes", "6.0.29", "jar");
+        copyDependency(libDirectory, "org.apache.tomcat", "catalina-ha", "6.0.29", "jar");
+        copyDependency(libDirectory, "org.apache.tomcat", "el-api", "6.0.29", "jar");
+        copyDependency(libDirectory, "org.apache.tomcat", "jasper-jdt", "6.0.29", "jar");
+        copyDependency(libDirectory, "org.apache.tomcat", "jasper-el", "6.0.29", "jar");
+        copyDependency(libDirectory, "org.apache.tomcat", "jasper", "6.0.29", "jar");
+        copyDependency(libDirectory, "org.apache.tomcat", "jsp-api", "6.0.29", "jar");
+        copyDependency(libDirectory, "org.apache.tomcat", "servlet-api", "6.0.29", "jar");
+        copyDependency(libDirectory, "org.apache.tomcat", "coyote", "6.0.29", "jar");
+        copyDependency(libDirectory, "org.apache.tomcat", "dbcp", "6.0.29", "jar");
     }
 
     private void copyClassPathResources() throws IOException {
@@ -261,14 +281,14 @@ public class TomcatMojo extends AbstractMojo {
 
     }
 
-    private void copyDependency(final File target, final String groupId, final String artifactId, final String version)
-            throws ArtifactResolutionException, ArtifactNotFoundException, IOException {
-        copyDependency(target, groupId, artifactId, version, null);
+    private void copyDependency(final File target, final String groupId, final String artifactId, final String version,
+            final String type) throws ArtifactResolutionException, ArtifactNotFoundException, IOException {
+        copyDependency(target, groupId, artifactId, version, type, null);
     }
 
     private void copyDependency(final File target, final String groupId, final String artifactId, final String version,
-            final String finalName) throws ArtifactResolutionException, ArtifactNotFoundException, IOException {
-        Artifact artifact = artifactFactory.createArtifactWithClassifier(groupId, artifactId, version, "jar", null);
+            final String type, final String finalName) throws ArtifactResolutionException, ArtifactNotFoundException, IOException {
+        Artifact artifact = artifactFactory.createArtifactWithClassifier(groupId, artifactId, version, type, null);
         resolver.resolve(artifact, remoteRepositories, localRepository);
         FileUtils.copyFileToDirectory(artifact.getFile(), target);
         if (finalName != null) {

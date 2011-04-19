@@ -423,9 +423,14 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 			currentState.maxEntities = value.maxEntities;
 		}
 		
+		if(value.isEditable) {
+			currentState.isEditable = value.isEditable;
+		}
+		
 		if (value.entities == null) {
 			return;
 		}
+		
 		grid.jqGrid('clearGridData');
 		var rowCounter = 1;
 		currentEntities = new Object();
@@ -457,6 +462,7 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 			}
 			rowCounter++;
 		}
+		
 		if (rowCounter == 1) {
 			noRecordsDiv.show();
 		} else {
