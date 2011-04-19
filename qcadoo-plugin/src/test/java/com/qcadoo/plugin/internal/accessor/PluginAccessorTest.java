@@ -56,6 +56,7 @@ import com.qcadoo.plugin.internal.api.ModuleFactoryAccessor;
 import com.qcadoo.plugin.internal.api.PluginDao;
 import com.qcadoo.plugin.internal.api.PluginDependencyManager;
 import com.qcadoo.plugin.internal.api.PluginDescriptorParser;
+import com.qcadoo.plugin.internal.stateresolver.InternalPluginStateResolver;
 
 public class PluginAccessorTest {
 
@@ -67,6 +68,8 @@ public class PluginAccessorTest {
 
     private final ModuleFactoryAccessor moduleFactoryAccessor = mock(ModuleFactoryAccessor.class);
 
+    private final InternalPluginStateResolver pluginStateResolver = mock(InternalPluginStateResolver.class);
+
     private DefaultPluginAccessor pluginAccessor;
 
     @Before
@@ -76,6 +79,7 @@ public class PluginAccessorTest {
         pluginAccessor.setPluginDao(pluginDao);
         pluginAccessor.setPluginDependencyManager(pluginDependencyManager);
         pluginAccessor.setModuleFactoryAccessor(moduleFactoryAccessor);
+        pluginAccessor.setInternalPluginStateResolver(pluginStateResolver);
     }
 
     @Test

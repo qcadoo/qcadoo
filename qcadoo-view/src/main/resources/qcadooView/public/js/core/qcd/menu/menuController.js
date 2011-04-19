@@ -41,7 +41,6 @@ QCD.menu.MenuController = function(menuStructure, _windowController) {
 	currentActive.second = null;
 	
 	function constructor(menuStructure) {
-		QCD.info(menuStructure);
 		
 		model = new QCD.menu.MenuModel(menuStructure);
 		
@@ -61,7 +60,7 @@ QCD.menu.MenuController = function(menuStructure, _windowController) {
 			
 			var firstLevelButton;
 			if (item.isAdministrationItem) {
-				firstLevelButton = $("<li>").html("<a href='#'><span><div class='administration'></div></span></a>").attr("id", "firstLevelButton_"+item.name);
+				firstLevelButton = $("<li>").html("<a href='#'><span><div class='administration' title='"+item.label+"'></div></span></a>").attr("id", "firstLevelButton_"+item.name);
 				menuAdministrationContentElement.append(firstLevelButton);
 			} else {
 				firstLevelButton = $("<li>").html("<a href='#'><span>"+item.label+"</span></a>").attr("id", "firstLevelButton_"+item.name);

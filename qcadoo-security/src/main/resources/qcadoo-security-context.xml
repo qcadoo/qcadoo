@@ -109,6 +109,7 @@
 		class="org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl">
 		<property name="hierarchy">
 			<value>
+				ROLE_SYSTEM_ADMIN > ROLE_ADMIN
 				ROLE_ADMIN > ROLE_SUPERVISOR
 				ROLE_SUPERVISOR > ROLE_USER
 			</value>

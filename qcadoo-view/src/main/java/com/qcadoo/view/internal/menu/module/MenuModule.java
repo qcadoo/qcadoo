@@ -38,7 +38,7 @@ public class MenuModule extends Module {
     @Override
     public void multiTenantEnable() {
         createViewAndItem();
-        if (menuUrl != null) {
+        if (menuViewName != null) {
             menuService.enableView(pluginIdentifier, menuName);
         }
         menuService.enableItem(pluginIdentifier, menuName);
@@ -52,7 +52,7 @@ public class MenuModule extends Module {
     @Override
     public void multiTenantDisable() {
         createViewAndItem();
-        if (menuUrl != null) {
+        if (menuViewName != null) {
             menuService.disableView(pluginIdentifier, menuName);
         }
         menuService.disableItem(pluginIdentifier, menuName);

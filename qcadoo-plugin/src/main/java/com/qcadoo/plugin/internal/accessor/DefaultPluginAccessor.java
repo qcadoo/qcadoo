@@ -49,6 +49,7 @@ import com.qcadoo.plugin.internal.api.ModuleFactoryAccessor;
 import com.qcadoo.plugin.internal.api.PluginDao;
 import com.qcadoo.plugin.internal.api.PluginDependencyManager;
 import com.qcadoo.plugin.internal.api.PluginDescriptorParser;
+import com.qcadoo.plugin.internal.stateresolver.InternalPluginStateResolver;
 
 @Service
 public class DefaultPluginAccessor implements InternalPluginAccessor {
@@ -66,6 +67,9 @@ public class DefaultPluginAccessor implements InternalPluginAccessor {
 
     @Autowired
     private ModuleFactoryAccessor moduleFactoryAccessor;
+
+    @Autowired
+    private InternalPluginStateResolver pluginStateResolver;
 
     @Autowired
     @SuppressWarnings("unused")
@@ -181,6 +185,8 @@ public class DefaultPluginAccessor implements InternalPluginAccessor {
             }
         }
 
+        pluginStateResolver.setPluginAccessor(this);
+
         LOG.info("Plugin Framework initialized in " + (System.currentTimeMillis() - time) + "ms");
     }
 
@@ -198,6 +204,10 @@ public class DefaultPluginAccessor implements InternalPluginAccessor {
 
     void setModuleFactoryAccessor(final ModuleFactoryAccessor moduleFactoryAccessor) {
         this.moduleFactoryAccessor = moduleFactoryAccessor;
+    }
+
+    void setInternalPluginStateResolver(final InternalPluginStateResolver pluginStateResolver) {
+        this.pluginStateResolver = pluginStateResolver;
     }
 
     @Override

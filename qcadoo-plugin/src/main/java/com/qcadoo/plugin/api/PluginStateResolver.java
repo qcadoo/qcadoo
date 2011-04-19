@@ -1,6 +1,5 @@
 package com.qcadoo.plugin.api;
 
-
 /**
  * Service to accessing plugins registered in the system.
  * 
@@ -16,5 +15,7 @@ public interface PluginStateResolver {
      * @return true if enabled
      */
     boolean isEnabled(String pluginIdentifier);
+
+    boolean isEnabled(final Plugin plugin);
 
 }
