@@ -1,16 +1,13 @@
 package com.qcadoo.security.internal.permissionEvaluators.implementations;
 
-import java.util.Collection;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 
 import com.qcadoo.security.api.SecurityRole;
 import com.qcadoo.security.api.SecurityViewDefinitionRoleResolver;
 import com.qcadoo.security.internal.permissionEvaluators.QcadooPermisionEvaluator;
+import com.qcadoo.security.internal.role.InternalSecurityRolesService;
 
 public class ViewDefinitionPermissionEvaluator implements QcadooPermisionEvaluator {
 
@@ -21,7 +18,7 @@ public class ViewDefinitionPermissionEvaluator implements QcadooPermisionEvaluat
     private SecurityViewDefinitionRoleResolver viewDefinitionRoleResolver;
 
     @Autowired
-    private RoleHierarchy roleHierarchy;
+    private InternalSecurityRolesService securityRolesService;
 
     @Override
     public String getTargetType() {
@@ -35,19 +32,7 @@ public class ViewDefinitionPermissionEvaluator implements QcadooPermisionEvaluat
 
             SecurityRole role = getViewRole(targetId);
 
-            if (role == null) {
-                return true;
-            }
-            Collection<GrantedAuthority> reachableAuthorities = roleHierarchy.getReachableGrantedAuthorities(authentication
-                    .getAuthorities());
-
-            for (GrantedAuthority grantedAuthority : reachableAuthorities) {
-                if (grantedAuthority.getAuthority().equals(role.getRoleIdentifier())) {
-                    return true;
-                }
-            }
-
-            return false;
+            return securityRolesService.canAccess(authentication, role);
 
         } else {
             throw new IllegalArgumentException("permission type '" + permission + "' not supported");
