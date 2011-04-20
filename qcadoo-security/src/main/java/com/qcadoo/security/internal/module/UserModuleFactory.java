@@ -27,9 +27,6 @@ public class UserModuleFactory extends ModuleFactory<UserModule> {
         String groupName = element.getAttributeValue("groupName");
 
         checkNotNull(login, "Missing login attribute of " + getIdentifier() + " module");
-        checkNotNull(email, "Missing email attribute of " + getIdentifier() + " module");
-        checkNotNull(firstName, "Missing firstName attribute of " + getIdentifier() + " module");
-        checkNotNull(lastName, "Missing lastName attribute of " + getIdentifier() + " module");
         checkNotNull(password, "Missing password attribute of " + getIdentifier() + " module");
         checkNotNull(groupName, "Missing groupName attribute of " + getIdentifier() + " module");
 

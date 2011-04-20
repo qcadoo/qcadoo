@@ -47,6 +47,8 @@ import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.aop.Monitorable;
 import com.qcadoo.model.api.search.Restrictions;
+import com.qcadoo.security.api.SecurityRole;
+import com.qcadoo.security.api.SecurityRolesService;
 import com.qcadoo.security.api.SecurityService;
 
 @Service("userDetailsService")
@@ -54,6 +56,9 @@ public class SecurityServiceImpl implements SecurityService, UserDetailsService,
 
     @Autowired
     private DataDefinitionService dataDefinitionService;
+
+    @Autowired
+    private SecurityRolesService securityRolesService;
 
     @Override
     @Monitorable
@@ -102,7 +107,11 @@ public class SecurityServiceImpl implements SecurityService, UserDetailsService,
     protected UserDetails convertEntityToUserDetails(final Entity entity) {
         List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
 
-        authorities.add(new GrantedAuthorityImpl(entity.getBelongsToField("userGroup").getStringField("role")));
+        SecurityRole role = securityRolesService.getRoleByName(entity.getStringField("role"));
+
+        checkState(role != null, "Role '%s' not defined", entity.getStringField("role"));
+
+        authorities.add(new GrantedAuthorityImpl(role.getRoleIdentifier()));
 
         checkState(authorities.size() > 0, "Current user with login %s cannot be found", entity.getStringField("userName"));
 

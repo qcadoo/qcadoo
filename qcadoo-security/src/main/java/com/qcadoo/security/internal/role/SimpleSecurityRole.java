@@ -8,17 +8,27 @@ public class SimpleSecurityRole implements SecurityRole {
 
     private final String roleIdentifier;
 
-    public SimpleSecurityRole(String name, String roleIdentifier) {
+    private final boolean isAccessible;
+
+    public SimpleSecurityRole(String name, String roleIdentifier, final boolean isAccessible) {
         this.name = name;
         this.roleIdentifier = roleIdentifier;
+        this.isAccessible = isAccessible;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public String getRoleIdentifier() {
         return roleIdentifier;
+    }
+
+    @Override
+    public boolean isAccessible() {
+        return isAccessible;
     }
 
     @Override

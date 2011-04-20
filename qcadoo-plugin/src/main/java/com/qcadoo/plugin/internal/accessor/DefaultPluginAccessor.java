@@ -130,6 +130,8 @@ public class DefaultPluginAccessor implements InternalPluginAccessor {
 
         long time = System.currentTimeMillis();
 
+        pluginStateResolver.setPluginAccessor(this);
+
         Set<InternalPlugin> pluginsFromDescriptor = pluginDescriptorParser.loadPlugins();
         Set<QcadooPluginPlugin> pluginsFromDatabase = pluginDao.list();
 
@@ -184,8 +186,6 @@ public class DefaultPluginAccessor implements InternalPluginAccessor {
                 pluginDao.save(plugin);
             }
         }
-
-        pluginStateResolver.setPluginAccessor(this);
 
         LOG.info("Plugin Framework initialized in " + (System.currentTimeMillis() - time) + "ms");
     }

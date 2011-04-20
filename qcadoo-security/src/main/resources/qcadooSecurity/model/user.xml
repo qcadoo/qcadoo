@@ -20,8 +20,7 @@
 			<validatesRegex pattern="^[a-zA-Z0-9\\.]+$"
 				message="qcadooSecurity.validate.global.error.loginIllegalCharacters" />
 		</string>
-		<belongsTo name="userGroup" model="group" lazy="false"
-			required="true" />
+		<enum name="role" values="" required="true"/>
 		<string name="email" />
 		<string name="firstName" />
 		<string name="lastName" />

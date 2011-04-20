@@ -324,6 +324,9 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
 
     private FieldType getEnumType(final XMLStreamReader reader, final String translationPath) throws XMLStreamException {
         String values = getStringAttribute(reader, "values");
+        if (values.trim().length() == 0) {
+            return new EnumType(translationService, translationPath);
+        }
         return new EnumType(translationService, translationPath, values.split(","));
     }
 

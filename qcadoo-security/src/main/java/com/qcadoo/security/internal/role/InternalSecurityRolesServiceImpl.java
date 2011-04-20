@@ -23,8 +23,20 @@ public class InternalSecurityRolesServiceImpl implements InternalSecurityRolesSe
     private final Map<String, SecurityRole> roles = new HashMap<String, SecurityRole>();
 
     @Override
-    public SecurityRole getRole(final String roleIdetifier) {
+    public SecurityRole getRoleByIdentifier(final String roleIdetifier) {
         return roles.get(roleIdetifier);
+    }
+
+    @Override
+    public SecurityRole getRoleByName(String roleName) {
+        Preconditions.checkNotNull(roleName, "roleName must be not null");
+        for (SecurityRole role : roles.values()) {
+            if (roleName.equals(role.getName())) {
+                return role;
+            }
+        }
+        return null;
+
     }
 
     @Override
@@ -35,7 +47,7 @@ public class InternalSecurityRolesServiceImpl implements InternalSecurityRolesSe
     @Override
     public boolean canAccess(final String targetRoleIdetifier) {
         Preconditions.checkNotNull(targetRoleIdetifier, "targetRoleIdetifier must be not null");
-        SecurityRole targetRole = getRole(targetRoleIdetifier);
+        SecurityRole targetRole = getRoleByIdentifier(targetRoleIdetifier);
         Preconditions.checkState(targetRoleIdetifier != null, "No such role '" + targetRoleIdetifier + "'");
         return canAccess(targetRole);
     }
