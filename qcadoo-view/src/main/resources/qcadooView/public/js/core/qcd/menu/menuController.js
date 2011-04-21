@@ -41,11 +41,14 @@ QCD.menu.MenuController = function(menuStructure, _windowController) {
 	currentActive.second = null;
 	
 	function constructor(menuStructure) {
-		model = new QCD.menu.MenuModel(menuStructure.menuItems);
+		
+		model = new QCD.menu.MenuModel(menuStructure);
 		
 		var menuContentElement = $("<ul>").addClass("q_row1");
+		var menuAdministrationContentElement = $("<ul>").addClass("q_row1").addClass("q_row1_administration");
 		var q_menu_row1 = $("<div>").attr("id", "q_menu_row1");
 			q_menu_row1.append(menuContentElement);
+			q_menu_row1.append(menuAdministrationContentElement);
 		var q_row1 = $("<div>").attr("id", "q_row1");
 			q_row1.append(q_menu_row1);
 		var q_row1_out = $("<div>").attr("id", "q_row1_out");
@@ -55,8 +58,15 @@ QCD.menu.MenuController = function(menuStructure, _windowController) {
 		for (var i in model.items) {
 			var item = model.items[i];
 			
-			var firstLevelButton = $("<li>").html("<a href='#'><span>"+item.label+"</span></a>").attr("id", "firstLevelButton_"+item.name);
-			menuContentElement.append(firstLevelButton);
+			var firstLevelButton;
+			if (item.isAdministrationItem) {
+				firstLevelButton = $("<li>").html("<a href='#'><span><div class='administration' title='"+item.label+"'></div></span></a>").attr("id", "firstLevelButton_"+item.name);
+				menuAdministrationContentElement.append(firstLevelButton);
+			} else {
+				firstLevelButton = $("<li>").html("<a href='#'><span>"+item.label+"</span></a>").attr("id", "firstLevelButton_"+item.name);
+				menuContentElement.append(firstLevelButton);
+			}
+			
 			item.element = firstLevelButton;
 			
 			firstLevelButton.click(function(e) {

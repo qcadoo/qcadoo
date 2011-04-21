@@ -46,7 +46,6 @@ import com.qcadoo.plugin.api.ModuleFactory;
 import com.qcadoo.plugin.api.PluginDependencyInformation;
 import com.qcadoo.plugin.api.PluginInformation;
 import com.qcadoo.plugin.api.PluginState;
-import com.qcadoo.plugin.api.PluginUtil;
 import com.qcadoo.plugin.api.Version;
 import com.qcadoo.plugin.api.VersionOfDependency;
 import com.qcadoo.plugin.internal.api.InternalPlugin;
@@ -124,9 +123,7 @@ public final class DefaultPlugin implements InternalPlugin {
 
                     @Override
                     public void invoke() {
-                        if (PluginUtil.isEnabled(identifier)) {
-                            module.multiTenantEnable();
-                        }
+                        module.multiTenantEnable();
                     }
 
                 });
@@ -139,9 +136,7 @@ public final class DefaultPlugin implements InternalPlugin {
 
                     @Override
                     public void invoke() {
-                        if (!PluginUtil.isEnabled(identifier)) {
-                            module.multiTenantDisable();
-                        }
+                        module.multiTenantDisable();
                     }
 
                 });

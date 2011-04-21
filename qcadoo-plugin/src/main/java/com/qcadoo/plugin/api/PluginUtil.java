@@ -22,6 +22,10 @@ public class PluginUtil {
         PluginUtil.instance = pluginUtil;
     }
 
+    public static boolean isEnabled(final Plugin plugin) {
+        return instance.pluginStateResolver.isEnabled(plugin);
+    }
+
     public static boolean isEnabled(final String pluginIdentifier) {
         return instance.pluginStateResolver.isEnabled(pluginIdentifier);
     }

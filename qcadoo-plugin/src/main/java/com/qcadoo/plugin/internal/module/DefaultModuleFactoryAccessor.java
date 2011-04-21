@@ -66,9 +66,7 @@ public final class DefaultModuleFactoryAccessor implements ModuleFactoryAccessor
 
                             @Override
                             public void invoke() {
-                                if (PluginUtil.isEnabled(plugin.getIdentifier())) {
-                                    module.multiTenantEnableOnStartup();
-                                }
+                                module.multiTenantEnableOnStartup();
                             }
 
                         });
@@ -79,9 +77,7 @@ public final class DefaultModuleFactoryAccessor implements ModuleFactoryAccessor
 
                             @Override
                             public void invoke() {
-                                if (!PluginUtil.isEnabled(plugin.getIdentifier())) {
-                                    module.multiTenantDisableOnStartup();
-                                }
+                                module.multiTenantDisableOnStartup();
                             }
 
                         });
@@ -99,7 +95,7 @@ public final class DefaultModuleFactoryAccessor implements ModuleFactoryAccessor
 
                     @Override
                     public void invoke() {
-                        if (PluginUtil.isEnabled(plugin.getIdentifier())) {
+                        if (PluginUtil.isEnabled(plugin)) {
                             module.multiTenantEnable();
                         }
                     }
@@ -111,15 +107,14 @@ public final class DefaultModuleFactoryAccessor implements ModuleFactoryAccessor
 
     @Override
     public void multiTenantDisable(final int tenantId, final Plugin plugin) {
+
         for (ModuleFactory<?> moduleFactory : moduleFactoryRegistry.values()) {
             for (final Module module : ((InternalPlugin) plugin).getModules(moduleFactory)) {
                 MultiTenantUtil.doInMultiTenantContext(tenantId, new MultiTenantCallback() {
 
                     @Override
                     public void invoke() {
-                        if (!PluginUtil.isEnabled(plugin.getIdentifier())) {
-                            module.multiTenantDisable();
-                        }
+                        module.multiTenantDisable();
                     }
 
                 });

@@ -34,21 +34,11 @@ public class UserModule extends Module {
     }
 
     @Override
-    public void multiTenantEnableOnStartup() {
-        multiTenantEnable();
-    }
-
-    @Override
     public void multiTenantEnable() {
         if (dataDefinitionService.get("qcadooSecurity", "user").find().addRestriction(Restrictions.eq("userName", login)).list()
                 .getTotalNumberOfEntities() > 0) {
             return;
         }
-
-        Entity group = dataDefinitionService.get("qcadooSecurity", "group").find()
-                .addRestriction(Restrictions.eq("name", groupName)).uniqueResult();
-
-        // TODO masz if (group == null) { }
 
         Entity entity = dataDefinitionService.get("qcadooSecurity", "user").create();
         entity.setField("userName", login);
@@ -58,7 +48,7 @@ public class UserModule extends Module {
         entity.setField("password", password);
         entity.setField("passwordConfirmation", password);
         entity.setField("enabled", true);
-        entity.setField("userGroup", group);
+        entity.setField("role", groupName);
         dataDefinitionService.get("qcadooSecurity", "user").save(entity);
     }
 

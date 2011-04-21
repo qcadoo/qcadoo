@@ -156,7 +156,7 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
         String authorizationRole = getStringAttribute(viewNode, "defaultAuthorizationRole");
         SecurityRole role = null;
         if (authorizationRole != null) {
-            role = securityRolesService.getRole(authorizationRole);
+            role = securityRolesService.getRoleByIdentifier(authorizationRole);
             if (role == null) {
                 throw new IllegalStateException("no such role: '" + authorizationRole + "'");
             }

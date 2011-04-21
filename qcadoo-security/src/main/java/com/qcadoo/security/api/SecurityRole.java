@@ -6,4 +6,6 @@ public interface SecurityRole {
 
     String getRoleIdentifier();
 
+    boolean isAccessible();
+
 }

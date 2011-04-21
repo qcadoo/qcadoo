@@ -31,13 +31,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
 /**
  * Represents top menu in application
  */
 public final class MenuDefinition {
 
     private final List<MenulItemsGroup> items;
+
+    private MenulItemsGroup administrationCategory;
 
     public MenuDefinition() {
         items = new LinkedList<MenulItemsGroup>();
@@ -74,9 +75,22 @@ public final class MenuDefinition {
             }
             JSONObject menuStructure = new JSONObject();
             menuStructure.put("menuItems", menuItems);
+
+            if (administrationCategory != null) {
+                menuStructure.put("administrationCategory", administrationCategory.getAsJson());
+            }
+
             return menuStructure.toString();
         } catch (JSONException e) {
             throw new IllegalStateException(e.getMessage(), e);
         }
+    }
+
+    public MenulItemsGroup getAdministrationCategory() {
+        return administrationCategory;
+    }
+
+    public void setAdministrationCategory(MenulItemsGroup administrationCategory) {
+        this.administrationCategory = administrationCategory;
     }
 }

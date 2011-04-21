@@ -41,7 +41,6 @@ import java.util.regex.Pattern;
 
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
-import org.hibernate.annotations.Check;
 import org.hibernate.classic.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Projections;
@@ -450,7 +449,7 @@ public class DataAccessServiceImpl implements DataAccessService {
 
     @Override
     @Transactional
-    @Check(constraints = "flag = true")
+    // @Check(constraints = "flag = true")
     @Monitorable
     public void delete(final InternalDataDefinition dataDefinition, final Long... entityIds) {
         checkNotNull(dataDefinition, "DataDefinition must be given");

@@ -136,7 +136,11 @@ public final class MenuServiceImpl implements InternalMenuService {
             // }
 
             if (!category.getItems().isEmpty()) {
-                menuDefinition.addItem(category);
+                if ("administration".equals(category.getName())) {
+                    menuDefinition.setAdministrationCategory(category);
+                } else {
+                    menuDefinition.addItem(category);
+                }
             }
         }
 
