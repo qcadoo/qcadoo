@@ -54,11 +54,11 @@ QCDConnector.sendGet = function(type, parameters, responseFunction, errorFunctio
 		complete: function(XMLHttpRequest, textStatus) {
 			if (XMLHttpRequest.status == 200) {
 				var responseText = $.trim(XMLHttpRequest.responseText); 
-				if (responseText == "sessionExpired") {
+				if (responseText == "sessionExpired" && QCDConnector.mainController) {
 					QCDConnector.mainController.onSessionExpired();
 					return;
 				}
-				if (responseText.substring(0, 20) == "<![CDATA[ERROR PAGE:") {
+				if (responseText.substring(0, 20) == "<![CDATA[ERROR PAGE:" && QCDConnector.mainController) {
 					var messageBody = responseText.substring(20, responseText.search("]]>"));
 					QCDConnector.showErrorMessage(messageBody,errorFunction);
 					return;
@@ -72,7 +72,9 @@ QCDConnector.sendGet = function(type, parameters, responseFunction, errorFunctio
 					}
 				}
 			} else {
-				QCDConnector.showErrorMessage("connection error: "+XMLHttpRequest.statusText);
+				if (QCDConnector.mainController) {
+					QCDConnector.showErrorMessage("connection error: "+XMLHttpRequest.statusText);
+				}
 				if (errorFunction) {
 					errorFunction(XMLHttpRequest.statusText);
 				}

@@ -834,6 +834,10 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 		 performDelete();
 	}
 	
+	this.setDeleteEnabled = function(enabled) {
+		headerController.setDeleteEnabled(enabled);
+	}
+	
 	this.onUpButtonClicked = function() {
 		blockGrid();
 		mainController.callEvent("moveUp", elementPath, function() {
