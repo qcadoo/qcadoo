@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
@@ -19,16 +20,28 @@
 		<module>qcadoo-plugin-archetype</module>
 		<module>qcadoo-webapp-archetype</module>
 		<module>qcadoo-maven-plugin</module>
-  </modules>
+	</modules>
 
 	<name>Qcadoo Framework</name>
+
+	<description></description>
+
+	<url>https://github.com/qcadoo/qcadoo</url>
 
 	<organization>
 		<name>Qcadoo Limited</name>
 		<url>http://www.qcadoo.com/</url>
 	</organization>
+	
+	<inceptionYear>2010</inceptionYear>
+	
+	<licenses>
+		<license>
+			<name>GNU Affero General Public License</name>
+			<url>https://github.com/qcadoo/qcadoo/raw/master/licence.txt</url>
+		</license>
+	</licenses>	
 
-	<url>http://www.qcadoo.com/</url>
 
 	<properties>
 		<spring.version>3.1.0.M1</spring.version>
@@ -36,6 +49,7 @@
 		<slf4j.version>1.6.1</slf4j.version>
 		<hibernate.version>3.6.1.Final</hibernate.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<sonar.host.url>http://127.0.0.1:9000/sonar</sonar.host.url>
 	</properties>
 
@@ -45,7 +59,7 @@
 			<artifactId>servlet-api</artifactId>
 			<version>2.5</version>
 			<scope>provided</scope>
-		</dependency>		
+		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-aop</artifactId>
@@ -128,9 +142,9 @@
 			<version>${slf4j.version}</version>
 		</dependency>
 		<dependency>
-		    <groupId>org.jdom</groupId>
-		    <artifactId>jdom</artifactId>
-		    <version>1.1</version>
+			<groupId>org.jdom</groupId>
+			<artifactId>jdom</artifactId>
+			<version>1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-lang</groupId>
@@ -263,8 +277,8 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-    			<artifactId>maven-deploy-plugin</artifactId>
-    			<version>2.5</version>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<version>2.5</version>
 				<executions>
 					<execution>
 						<id>deploy</id>
@@ -274,7 +288,7 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>	
+			</plugin>
 		</plugins>
 	</build>
 
@@ -284,27 +298,29 @@
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>2.7</version>
 				<configuration>
-					<doclet>org.jboss.apiviz.APIviz</doclet>
+					<!-- doclet>org.jboss.apiviz.APIviz</doclet>
 					<docletArtifact>
 						<groupId>org.jboss.apiviz</groupId>
 						<artifactId>apiviz</artifactId>
 						<version>1.3.1.GA</version>
-					</docletArtifact>
+					</docletArtifact -->
+					<author>false</author>
+					<bottom><![CDATA[Copyright &#169; ${inceptionYear}-{currentYear} <a href="${organization.url}">${organization.name}<a>]]></bottom>
+					<nohelp>true</nohelp>
+					<nodeprecated>true</nodeprecated>
+					<nodeprecatedlist>true</nodeprecatedlist>
+					<show>public</show>
+					<detectLinks>true</detectLinks>
 					<useStandardDocletOptions>true</useStandardDocletOptions>
 					<charset>UTF-8</charset>
 					<encoding>UTF-8</encoding>
 					<docencoding>UTF-8</docencoding>
 					<breakiterator>true</breakiterator>
 					<version>false</version>
-					<author>false</author>
 					<failOnError>false</failOnError>
-					<nodeprecated>true</nodeprecated>
-					<nodeprecatedlist>true</nodeprecatedlist>
-					<nosince>true</nosince>
-					<nohelp>true</nohelp>
 					<use>false</use>
 					<notree>true</notree>
-					<excludePackageNames>*.internal.*:com.qcadoo.maven.plugins:com.qcadoo.maven.plugins.*:com.qcadoo.tenant.*:com.qcadoo.model.beans.*:*.api.errorhandler.*</excludePackageNames>
+					<excludePackageNames>*.internal.*:com.qcadoo.maven.plugins:com.qcadoo.maven.plugins.*:com.qcadoo.tenant.*:com.qcadoo.model.beans.*:*.api.errorhandler.*:com.qcadoo.report.*</excludePackageNames>
 					<reportSets>
 						<reportSet>
 							<id>aggregate</id>
@@ -314,31 +330,31 @@
 						</reportSet>
 					</reportSets>
 					<groups>
-			            <group>
-		              		<title>Localization</title>
-		              		<packages>com.qcadoo.localization.*</packages>
-			            </group>
-			            <group>
-		              		<title>Model</title>
-		              		<packages>com.qcadoo.model.*</packages>
-			            </group>
 						<group>
-		              		<title>Plugin</title>
-		              		<packages>com.qcadoo.plugin.*</packages>
-			            </group>
-			            <group>
-		              		<title>Report</title>
-		              		<packages>com.qcadoo.report.*</packages>
-			            </group>
-			            <group>
-		              		<title>Security</title>
-		              		<packages>com.qcadoo.security.*</packages>
-			            </group>
-			            <group>
-		              		<title>View</title>
-		              		<packages>com.qcadoo.view.*</packages>
-			            </group>
-		            </groups>
+							<title>Localization</title>
+							<packages>com.qcadoo.localization.*</packages>
+						</group>
+						<group>
+							<title>Model</title>
+							<packages>com.qcadoo.model.*</packages>
+						</group>
+						<group>
+							<title>Plugin</title>
+							<packages>com.qcadoo.plugin.*</packages>
+						</group>
+						<!-- group>
+							<title>Report</title>
+							<packages>com.qcadoo.report.*</packages>
+						</group -->
+						<group>
+							<title>Security</title>
+							<packages>com.qcadoo.security.*</packages>
+						</group>
+						<group>
+							<title>View</title>
+							<packages>com.qcadoo.view.*</packages>
+						</group>
+					</groups>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -350,7 +366,7 @@
 	</reporting>
 
 	<repositories>
- 		<repository>
+		<repository>
 			<id>qcadoo-releases-repository</id>
 			<url>http://nexus.qcadoo.org/content/repositories/releases</url>
 			<releases>
@@ -429,20 +445,20 @@
 			<id>qcadoo-releases-repository</id>
 			<url>http://nexus.qcadoo.org/content/repositories/releases</url>
 		</repository>
-  		<snapshotRepository>
+		<snapshotRepository>
 			<id>qcadoo-snapshots-repository</id>
 			<url>http://emhyr.local/nexus/content/repositories/snapshots</url>
 			<uniqueVersion>false</uniqueVersion>
 		</snapshotRepository>
 		<site>
-			
+
 		</site>
 	</distributionManagement>
 
 	<scm>
 		<connection>scm:git:ssh://github.com/qcadoo/qcadoo.git</connection>
-   		<developerConnection>scm:git:ssh://git@github.com/qcadoo/qcadoo.git</developerConnection>
-   		<url>http://github.com/qcadoo/qcadoo</url>
+		<developerConnection>scm:git:ssh://git@github.com/qcadoo/qcadoo.git</developerConnection>
+		<url>http://github.com/qcadoo/qcadoo</url>
 	</scm>
 
 	<profiles>

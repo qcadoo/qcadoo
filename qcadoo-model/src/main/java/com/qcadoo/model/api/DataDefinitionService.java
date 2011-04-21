@@ -29,7 +29,7 @@ import java.util.List;
 /**
  * Service for manipulating data definitions.
  * 
- * @apiviz.uses com.qcadoo.mes.model.DataDefinition
+ * @since 0.4.0
  */
 public interface DataDefinitionService {
 

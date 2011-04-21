@@ -1,5 +1,5 @@
 /**
- * Utilities.
+ * Utilities for localizating application.
  * 
  * @since 0.4.0
  */

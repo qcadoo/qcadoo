@@ -27,16 +27,35 @@ package com.qcadoo.model.api;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * Service to evaluate expression for entity.
+ * 
+ * @version 0.4.0
+ */
 public interface ExpressionService {
 
     /**
-     * Generates text to display in grid cell. If columnDefinition has expression - uses it, otherwise result is value of field
-     * (or comma separated fields values when columDefinition has more than one field). Returns null when generated value is null.
+     * Evaluate expression - result is value of field (or comma separated fields values). Returns null when generated value is
+     * null.
+     * 
+     * @param entity
+     *            entity
+     * @param fields
+     *            fields
+     * @param locale
+     *            locale
+     * @return evaluated expression or null
      */
-    String getValue(Entity entity, List<FieldDefinition> fieldDefinitions, Locale locale);
+    String getValue(Entity entity, List<FieldDefinition> fields, Locale locale);
 
     /**
      * Evaluate expression value using entity fields values. Returns null when generated value is null.
+     * 
+     * @param entity
+     *            entity
+     * @param locale
+     *            locale
+     * @return evaluated expression or null
      */
     String getValue(Entity entity, String expression, Locale locale);
 

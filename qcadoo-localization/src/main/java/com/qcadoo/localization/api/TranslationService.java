@@ -31,15 +31,23 @@ import java.util.Map;
 /**
  * Service for getting translations.
  * 
- * @apiviz.uses com.qcadoo.mes.model.DataDefinition
- * @apiviz.uses com.qcadoo.mes.model.validators.ErrorMessage
+ * @since 0.4.0
  */
 public interface TranslationService {
 
+    /**
+     * Returns all messages (key and translation) for given prefix.
+     * 
+     * @param prefix
+     *            prefix
+     * @param locale
+     *            prefix
+     * @return messages
+     */
     Map<String, String> getMessagesForPrefix(String prefix, Locale locale);
 
     /**
-     * Translate given code into the locale using the args.
+     * Translates given code into the locale using the args.
      * 
      * @param messageCode
      *            message's code
@@ -52,7 +60,7 @@ public interface TranslationService {
     String translate(String messageCode, Locale locale, Object... args);
 
     /**
-     * Translate given codes into the locale using the args. First translated code will be returned.
+     * Translates given codes into the locale using the args. First translated code will be returned.
      * 
      * @param messageCodes
      *            message's codes

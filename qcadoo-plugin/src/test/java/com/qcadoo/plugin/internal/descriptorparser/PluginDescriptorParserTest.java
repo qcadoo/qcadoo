@@ -43,6 +43,7 @@ import org.mockito.Mockito;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
+import com.google.common.collect.Lists;
 import com.qcadoo.plugin.api.Module;
 import com.qcadoo.plugin.api.ModuleFactory;
 import com.qcadoo.plugin.api.Plugin;
@@ -85,10 +86,6 @@ public class PluginDescriptorParserTest {
         moduleFactoryAccessor = mock(ModuleFactoryAccessor.class);
         pluginDescriptorResolver = mock(PluginDescriptorResolver.class);
 
-        parser = new DefaultPluginDescriptorParser();
-        parser.setModuleFactoryAccessor(moduleFactoryAccessor);
-        parser.setPluginDescriptorResolver(pluginDescriptorResolver);
-
         testModule1 = mock(Module.class);
         testModule2 = mock(Module.class);
 
@@ -102,6 +99,13 @@ public class PluginDescriptorParserTest {
 
         given(moduleFactoryAccessor.getModuleFactory("testModule1")).willReturn(testModule1Factory);
         given(moduleFactoryAccessor.getModuleFactory("testModule2")).willReturn(testModule2Factory);
+        given(moduleFactoryAccessor.getModuleFactories()).willReturn(
+                Lists.<ModuleFactory<?>> newArrayList(testModule1Factory, testModule2Factory));
+
+        parser = new DefaultPluginDescriptorParser();
+        parser.setModuleFactoryAccessor(moduleFactoryAccessor);
+        parser.setPluginDescriptorResolver(pluginDescriptorResolver);
+
     }
 
     @Test

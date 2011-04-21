@@ -31,6 +31,8 @@ import java.util.Set;
 
 /**
  * Service for getting dictionaries.
+ * 
+ * @since 0.4.0
  */
 public interface DictionaryService {
 
@@ -52,6 +54,15 @@ public interface DictionaryService {
      */
     Set<String> dictionaries();
 
+    /**
+     * Translate dictionary name.
+     * 
+     * @param dictionary
+     *            dictionary
+     * @param locale
+     *            locale
+     * @return translated dictionary name
+     */
     String translate(String dictionary, Locale locale);
 
 }

@@ -54,9 +54,11 @@ import com.qcadoo.tenant.api.MultiTenantUtil;
 
 public final class DefaultPlugin implements InternalPlugin {
 
-    private final List<Module> modules;
-
     private final Map<ModuleFactory<?>, List<Module>> modulesByFactories;
+
+    private final List<ModuleFactory<?>> factories;
+
+    private final List<ModuleFactory<?>> reversedFactories;
 
     private final PluginInformation information;
 
@@ -73,17 +75,19 @@ public final class DefaultPlugin implements InternalPlugin {
     private PluginState state;
 
     private DefaultPlugin(final String identifier, final String fileName, final boolean system, final Version version,
-            final List<Module> modules, final Map<ModuleFactory<?>, List<Module>> modulesByFactories,
+            final List<ModuleFactory<?>> factories, final Map<ModuleFactory<?>, List<Module>> modulesByFactories,
             final PluginInformation information, final Set<PluginDependencyInformation> dependencies) {
         this.state = UNKNOWN;
         this.identifier = identifier;
         this.fileName = fileName;
         this.version = version;
-        this.modules = modules;
         this.modulesByFactories = modulesByFactories;
         this.information = information;
         this.dependencies = dependencies;
         this.system = system;
+        this.factories = factories;
+        this.reversedFactories = new ArrayList<ModuleFactory<?>>(factories);
+        Collections.reverse(reversedFactories);
     }
 
     @Override
@@ -116,30 +120,39 @@ public final class DefaultPlugin implements InternalPlugin {
         }
 
         if (hasState(ENABLED)) {
-            for (final Module module : modules) {
-                module.enable();
+            for (final ModuleFactory<?> factory : factories) {
+                List<Module> modules = modulesByFactories.get(factory);
 
-                MultiTenantUtil.doInMultiTenantContext(new MultiTenantCallback() {
+                for (final Module module : modules) {
+                    module.enable();
 
-                    @Override
-                    public void invoke() {
-                        module.multiTenantEnable();
-                    }
+                    MultiTenantUtil.doInMultiTenantContext(new MultiTenantCallback() {
 
-                });
+                        @Override
+                        public void invoke() {
+                            module.multiTenantEnable();
+                        }
+
+                    });
+                }
             }
         } else if (hasState(DISABLED)) {
-            for (final Module module : modules) {
-                module.disable();
+            for (final ModuleFactory<?> factory : reversedFactories) {
+                List<Module> modules = modulesByFactories.get(factory);
+                Collections.reverse(modules);
 
-                MultiTenantUtil.doInMultiTenantContext(new MultiTenantCallback() {
+                for (final Module module : modules) {
+                    module.disable();
 
-                    @Override
-                    public void invoke() {
-                        module.multiTenantDisable();
-                    }
+                    MultiTenantUtil.doInMultiTenantContext(new MultiTenantCallback() {
 
-                });
+                        @Override
+                        public void invoke() {
+                            module.multiTenantDisable();
+                        }
+
+                    });
+                }
             }
         }
     }
@@ -209,18 +222,22 @@ public final class DefaultPlugin implements InternalPlugin {
 
         private boolean system;
 
-        private final List<Module> modules = new ArrayList<Module>();
-
         private final Map<ModuleFactory<?>, List<Module>> modulesByFactories = new LinkedHashMap<ModuleFactory<?>, List<Module>>();
 
         private final Set<PluginDependencyInformation> dependencyInformations = new HashSet<PluginDependencyInformation>();
 
-        public Builder(final String identifier) {
+        private final List<ModuleFactory<?>> factories;
+
+        public Builder(final String identifier, final List<ModuleFactory<?>> factories) {
             this.identifier = identifier;
+            this.factories = factories;
+            for (ModuleFactory<?> factory : factories) {
+                modulesByFactories.put(factory, new ArrayList<Module>());
+            }
         }
 
-        public static Builder identifier(final String identifier) {
-            return new Builder(identifier);
+        public static Builder identifier(final String identifier, final List<ModuleFactory<?>> factories) {
+            return new Builder(identifier, factories);
         }
 
         public Builder withFileName(final String fileName) {
@@ -229,10 +246,6 @@ public final class DefaultPlugin implements InternalPlugin {
         }
 
         public Builder withModule(final ModuleFactory<?> moduleFactory, final Module module) {
-            modules.add(module);
-            if (!modulesByFactories.containsKey(moduleFactory)) {
-                modulesByFactories.put(moduleFactory, new ArrayList<Module>());
-            }
             modulesByFactories.get(moduleFactory).add(module);
             return this;
         }
@@ -274,7 +287,7 @@ public final class DefaultPlugin implements InternalPlugin {
 
         public InternalPlugin build() {
             PluginInformation pluginInformation = new PluginInformation(name, description, vendor, vendorUrl);
-            return new DefaultPlugin(identifier, fileName, system, version, unmodifiableList(modules),
+            return new DefaultPlugin(identifier, fileName, system, version, unmodifiableList(factories),
                     unmodifiableMap(modulesByFactories), pluginInformation, unmodifiableSet(dependencyInformations));
         }
 

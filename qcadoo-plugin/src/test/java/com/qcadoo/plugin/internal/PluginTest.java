@@ -28,8 +28,11 @@ import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Collections;
+
 import org.junit.Test;
 
+import com.qcadoo.plugin.api.ModuleFactory;
 import com.qcadoo.plugin.api.Plugin;
 import com.qcadoo.plugin.api.PluginState;
 import com.qcadoo.plugin.api.Version;
@@ -39,7 +42,7 @@ public class PluginTest {
     @Test
     public void shouldHaveUnknownStateByDefault() throws Exception {
         // given
-        Plugin plugin = DefaultPlugin.Builder.identifier("identifier").build();
+        Plugin plugin = DefaultPlugin.Builder.identifier("identifier", Collections.<ModuleFactory<?>> emptyList()).build();
 
         // then
         assertTrue(plugin.hasState(PluginState.UNKNOWN));
@@ -49,11 +52,16 @@ public class PluginTest {
     @Test
     public void shouldCompareVersions() throws Exception {
         // given
-        Plugin plugin1 = DefaultPlugin.Builder.identifier("identifier").withVersion("2.3.4").build();
-        Plugin plugin2 = DefaultPlugin.Builder.identifier("identifier").withVersion("2.3.4").build();
-        Plugin plugin3 = DefaultPlugin.Builder.identifier("identifier").withVersion("2.3.5").build();
-        Plugin plugin4 = DefaultPlugin.Builder.identifier("identifier").withVersion("2.4.4").build();
-        Plugin plugin5 = DefaultPlugin.Builder.identifier("identifier").withVersion("3.3.4").build();
+        Plugin plugin1 = DefaultPlugin.Builder.identifier("identifier", Collections.<ModuleFactory<?>> emptyList())
+                .withVersion("2.3.4").build();
+        Plugin plugin2 = DefaultPlugin.Builder.identifier("identifier", Collections.<ModuleFactory<?>> emptyList())
+                .withVersion("2.3.4").build();
+        Plugin plugin3 = DefaultPlugin.Builder.identifier("identifier", Collections.<ModuleFactory<?>> emptyList())
+                .withVersion("2.3.5").build();
+        Plugin plugin4 = DefaultPlugin.Builder.identifier("identifier", Collections.<ModuleFactory<?>> emptyList())
+                .withVersion("2.4.4").build();
+        Plugin plugin5 = DefaultPlugin.Builder.identifier("identifier", Collections.<ModuleFactory<?>> emptyList())
+                .withVersion("3.3.4").build();
 
         // then
         assertEquals(0, plugin1.compareVersion(plugin2.getVersion()));
@@ -75,8 +83,9 @@ public class PluginTest {
     @Test
     public void shouldHaveSystemFlag() throws Exception {
         // given
-        Plugin plugin1 = DefaultPlugin.Builder.identifier("identifier1").asSystem().build();
-        Plugin plugin2 = DefaultPlugin.Builder.identifier("identifier1").build();
+        Plugin plugin1 = DefaultPlugin.Builder.identifier("identifier1", Collections.<ModuleFactory<?>> emptyList()).asSystem()
+                .build();
+        Plugin plugin2 = DefaultPlugin.Builder.identifier("identifier1", Collections.<ModuleFactory<?>> emptyList()).build();
 
         // then
         assertTrue(plugin1.isSystemPlugin());
@@ -86,7 +95,8 @@ public class PluginTest {
     @Test
     public void shouldHaveVersion() throws Exception {
         // given
-        Plugin plugin = DefaultPlugin.Builder.identifier("identifier1").withVersion("1.2.3").build();
+        Plugin plugin = DefaultPlugin.Builder.identifier("identifier1", Collections.<ModuleFactory<?>> emptyList())
+                .withVersion("1.2.3").build();
 
         // then
         assertEquals(new Version("1.2.3"), plugin.getVersion());
@@ -105,8 +115,8 @@ public class PluginTest {
     @Test
     public void shouldHaveInformation() throws Exception {
         // given
-        Plugin plugin = DefaultPlugin.Builder.identifier("identifier1").withDescription("description").withName("name")
-                .withVendor("vendor").withVendorUrl("vendorUrl").build();
+        Plugin plugin = DefaultPlugin.Builder.identifier("identifier1", Collections.<ModuleFactory<?>> emptyList())
+                .withDescription("description").withName("name").withVendor("vendor").withVendorUrl("vendorUrl").build();
 
         // then
         assertEquals("description", plugin.getPluginInformation().getDescription());

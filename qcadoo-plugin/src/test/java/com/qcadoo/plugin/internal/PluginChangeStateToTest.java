@@ -31,10 +31,13 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
+import java.util.Collections;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import com.google.common.collect.Lists;
 import com.qcadoo.plugin.api.Module;
 import com.qcadoo.plugin.api.ModuleFactory;
 import com.qcadoo.plugin.api.PluginState;
@@ -93,7 +96,8 @@ public class PluginChangeStateToTest {
 
     private void assertOperationNotSupported(final PluginState from, final PluginState to) throws Exception {
         // given
-        InternalPlugin plugin = DefaultPlugin.Builder.identifier("identifier").build();
+        InternalPlugin plugin = DefaultPlugin.Builder.identifier("identifier", Collections.<ModuleFactory<?>> emptyList())
+                .build();
 
         if (from != null) {
             plugin.changeStateTo(from);
@@ -115,8 +119,9 @@ public class PluginChangeStateToTest {
         Module module1 = mock(Module.class);
         Module module2 = mock(Module.class);
 
-        InternalPlugin plugin = DefaultPlugin.Builder.identifier("identifier").withModule(moduleFactory, module1)
-                .withModule(moduleFactory, module2).build();
+        InternalPlugin plugin = DefaultPlugin.Builder
+                .identifier("identifier", Lists.<ModuleFactory<?>> newArrayList(moduleFactory))
+                .withModule(moduleFactory, module1).withModule(moduleFactory, module2).build();
 
         if (from != null) {
             plugin.changeStateTo(from);

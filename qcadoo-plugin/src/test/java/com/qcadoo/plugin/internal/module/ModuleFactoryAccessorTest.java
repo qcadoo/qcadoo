@@ -110,16 +110,16 @@ public class ModuleFactoryAccessorTest {
         inOrder.verify(module12).init();
         inOrder.verify(module22).init();
         inOrder.verify(moduleFactory2).postInit();
-        inOrder.verify(module111).disableOnStartup();
-        inOrder.verify(module111).multiTenantDisableOnStartup();
-        inOrder.verify(module112).disableOnStartup();
-        inOrder.verify(module112).multiTenantDisableOnStartup();
         inOrder.verify(module21).enableOnStartup();
         inOrder.verify(module21).multiTenantEnableOnStartup();
-        inOrder.verify(module12).disableOnStartup();
-        inOrder.verify(module12).multiTenantDisableOnStartup();
         inOrder.verify(module22).enableOnStartup();
         inOrder.verify(module22).multiTenantEnableOnStartup();
+        inOrder.verify(module12).disableOnStartup();
+        inOrder.verify(module12).multiTenantDisableOnStartup();
+        inOrder.verify(module112).disableOnStartup();
+        inOrder.verify(module112).multiTenantDisableOnStartup();
+        inOrder.verify(module111).disableOnStartup();
+        inOrder.verify(module111).multiTenantDisableOnStartup();
     }
 
     @Test

@@ -32,6 +32,8 @@ import java.lang.annotation.Target;
 /**
  * Describes monitorable attributes on a method. Every call of this method will be logged into log file (method name, parameters
  * and the time of execution).
+ * 
+ * @since 0.4.0
  */
 @Target({ ElementType.METHOD, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
