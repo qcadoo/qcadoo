@@ -65,6 +65,7 @@ public class PluginDaoTest {
     private final Criteria criteria = mock(Criteria.class);
 
     @Before
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public void init() {
         plugin1.setIdentifier("plugin1");
         plugin2.setIdentifier("plugin2");

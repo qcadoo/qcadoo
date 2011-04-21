@@ -151,7 +151,7 @@ public final class DictionaryServiceImpl implements InternalDictionaryService {
     @Override
     @Transactional
     @Monitorable
-    public void disable(String pluginIdentifier, String name) {
+    public void disable(final String pluginIdentifier, final String name) {
         // TODO disable
         SearchResult serachResult = dataDefinitionService.get("qcadooModel", "dictionary").find()
                 .addRestriction(Restrictions.eq("name", name)).list();

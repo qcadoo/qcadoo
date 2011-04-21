@@ -55,6 +55,11 @@
 			</property>
 		</bean>
 		
+		<bean id="pluginTransactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+			<qualifier value="plugin" />
+			<property name="sessionFactory" ref="pluginSessionFactory" />
+		</bean> 
+		
 		<bean class="com.qcadoo.plugin.internal.module.DefaultModuleFactoryAccessor">
 			<property name="moduleFactories">
 				<list>
