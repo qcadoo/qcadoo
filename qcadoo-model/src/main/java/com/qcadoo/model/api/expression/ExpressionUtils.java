@@ -31,15 +31,41 @@ import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.internal.ExpressionServiceImpl;
 
+/**
+ * Utility to evaluate expression for entity.
+ * 
+ * @version 0.4.0
+ */
 public final class ExpressionUtils {
 
     private ExpressionUtils() {
     }
 
+    /**
+     * Evaluate expression - result is value of field (or comma separated fields values). Returns null when generated value is
+     * null.
+     * 
+     * @param entity
+     *            entity
+     * @param fields
+     *            fields
+     * @param locale
+     *            locale
+     * @return evaluated expression or null
+     */
     public static String getValue(final Entity entity, final List<FieldDefinition> fieldDefinitions, final Locale locale) {
         return ExpressionServiceImpl.getInstance().getValue(entity, fieldDefinitions, locale);
     }
 
+    /**
+     * Evaluate expression value using entity fields values. Returns null when generated value is null.
+     * 
+     * @param entity
+     *            entity
+     * @param locale
+     *            locale
+     * @return evaluated expression or null
+     */
     public static String getValue(final Entity entity, final String expression, final Locale locale) {
         return ExpressionServiceImpl.getInstance().getValue(entity, expression, locale);
     }

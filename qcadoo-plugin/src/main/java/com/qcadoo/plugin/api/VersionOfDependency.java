@@ -47,10 +47,6 @@ public class VersionOfDependency {
 
     private final boolean includeMaxVersion;
 
-    public static void main(final String[] args) {
-        System.out.println(new VersionOfDependency("[1.1.1,3"));
-    }
-
     /**
      * Creates version from string. It contains one or two (separated by comma) version strings. It also can contain, at the
      * beginning and end of, parenthesis (means that boundary is excluded) or bracket (by default, means that boundary is

@@ -32,9 +32,7 @@ import com.qcadoo.model.api.search.SearchCriteriaBuilder;
 /**
  * Object defines database structure. The {@link #getPluginIdentifier()} and {@link #getName()} are used to calculate table name.
  * 
- * @apiviz.owns com.qcadoo.mes.model.FieldDefinition
- * @apiviz.owns com.qcadoo.mes.model.validators.EntityValidator
- * @apiviz.uses com.qcadoo.mes.model.search.SearchCriteriaBuilder
+ * @since 0.4.0
  */
 public interface DataDefinition {
 
@@ -144,8 +142,20 @@ public interface DataDefinition {
      */
     boolean isPrioritizable();
 
+    /**
+     * Create entity with given id.
+     * 
+     * @param id
+     *            id
+     * @return entity
+     */
     Entity create(Long id);
 
+    /**
+     * Create entity.
+     * 
+     * @return entity
+     */
     Entity create();
 
 }

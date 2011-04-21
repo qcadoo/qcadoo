@@ -24,6 +24,8 @@
 
 package com.qcadoo.plugin.internal.module;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,11 +45,11 @@ public final class DefaultModuleFactoryAccessor implements ModuleFactoryAccessor
     private final Map<String, ModuleFactory<?>> moduleFactoryRegistry = new LinkedHashMap<String, ModuleFactory<?>>();
 
     @Override
-    public void init(final List<Plugin> plugins) {
+    public void init(final List<Plugin> pluginsToInitialize) {
         for (ModuleFactory<?> moduleFactory : moduleFactoryRegistry.values()) {
             moduleFactory.preInit();
 
-            for (Plugin plugin : plugins) {
+            for (Plugin plugin : pluginsToInitialize) {
                 for (Module module : ((InternalPlugin) plugin).getModules(moduleFactory)) {
                     module.init();
                 }
@@ -56,9 +58,14 @@ public final class DefaultModuleFactoryAccessor implements ModuleFactoryAccessor
             moduleFactory.postInit();
         }
 
-        for (ModuleFactory<?> moduleFactory : moduleFactoryRegistry.values()) {
+        List<ModuleFactory<?>> factories = new ArrayList<ModuleFactory<?>>(moduleFactoryRegistry.values());
+        List<Plugin> plugins = new ArrayList<Plugin>(pluginsToInitialize);
+
+        for (ModuleFactory<?> moduleFactory : factories) {
             for (final Plugin plugin : plugins) {
-                for (final Module module : ((InternalPlugin) plugin).getModules(moduleFactory)) {
+                List<Module> modules = ((InternalPlugin) plugin).getModules(moduleFactory);
+
+                for (final Module module : modules) {
                     if (plugin.hasState(PluginState.ENABLED) || plugin.hasState(PluginState.ENABLING)) {
                         module.enableOnStartup();
 
@@ -70,7 +77,22 @@ public final class DefaultModuleFactoryAccessor implements ModuleFactoryAccessor
                             }
 
                         });
-                    } else {
+                    }
+                }
+            }
+        }
+
+        Collections.reverse(factories);
+        Collections.reverse(plugins);
+
+        for (ModuleFactory<?> moduleFactory : factories) {
+            for (final Plugin plugin : plugins) {
+
+                List<Module> modules = ((InternalPlugin) plugin).getModules(moduleFactory);
+                Collections.reverse(modules);
+
+                for (final Module module : modules) {
+                    if (!plugin.hasState(PluginState.ENABLED) && !plugin.hasState(PluginState.ENABLING)) {
                         module.disableOnStartup();
 
                         MultiTenantUtil.doInMultiTenantContext(new MultiTenantCallback() {
@@ -89,8 +111,12 @@ public final class DefaultModuleFactoryAccessor implements ModuleFactoryAccessor
 
     @Override
     public void multiTenantEnable(final int tenantId, final Plugin plugin) {
-        for (ModuleFactory<?> moduleFactory : moduleFactoryRegistry.values()) {
-            for (final Module module : ((InternalPlugin) plugin).getModules(moduleFactory)) {
+        List<ModuleFactory<?>> factories = new ArrayList<ModuleFactory<?>>(moduleFactoryRegistry.values());
+
+        for (ModuleFactory<?> moduleFactory : factories) {
+            List<Module> modules = ((InternalPlugin) plugin).getModules(moduleFactory);
+
+            for (final Module module : modules) {
                 MultiTenantUtil.doInMultiTenantContext(tenantId, new MultiTenantCallback() {
 
                     @Override
@@ -107,9 +133,14 @@ public final class DefaultModuleFactoryAccessor implements ModuleFactoryAccessor
 
     @Override
     public void multiTenantDisable(final int tenantId, final Plugin plugin) {
+        List<ModuleFactory<?>> factories = new ArrayList<ModuleFactory<?>>(moduleFactoryRegistry.values());
+        Collections.reverse(factories);
 
-        for (ModuleFactory<?> moduleFactory : moduleFactoryRegistry.values()) {
-            for (final Module module : ((InternalPlugin) plugin).getModules(moduleFactory)) {
+        for (ModuleFactory<?> moduleFactory : factories) {
+            List<Module> modules = ((InternalPlugin) plugin).getModules(moduleFactory);
+            Collections.reverse(modules);
+
+            for (final Module module : modules) {
                 MultiTenantUtil.doInMultiTenantContext(tenantId, new MultiTenantCallback() {
 
                     @Override
@@ -128,6 +159,11 @@ public final class DefaultModuleFactoryAccessor implements ModuleFactoryAccessor
             throw new IllegalStateException("ModuleFactory " + identifier + " is not defined");
         }
         return moduleFactoryRegistry.get(identifier);
+    }
+
+    @Override
+    public List<ModuleFactory<?>> getModuleFactories() {
+        return new ArrayList<ModuleFactory<?>>(moduleFactoryRegistry.values());
     }
 
     public void setModuleFactories(final List<ModuleFactory<?>> moduleFactories) {

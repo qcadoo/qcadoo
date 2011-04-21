@@ -31,7 +31,6 @@ import com.qcadoo.view.api.ViewDefinitionService;
  * Service for manipulating view definitions.
  * 
  * @see com.qcadoo.view.internal.xml.ViewDefinitionParserImpl.ViewDefinitionParser
- * @apiviz.uses com.qcadoo.mes.view.ViewDefinition
  */
 public interface InternalViewDefinitionService extends ViewDefinitionService {
 

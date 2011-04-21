@@ -37,6 +37,8 @@ public interface ModuleFactoryAccessor {
 
     void multiTenantDisable(int tenantId, Plugin plugin);
 
+    List<ModuleFactory<?>> getModuleFactories();
+
     ModuleFactory<?> getModuleFactory(String identifier);
 
 }

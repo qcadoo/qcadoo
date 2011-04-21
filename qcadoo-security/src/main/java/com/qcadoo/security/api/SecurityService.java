@@ -26,19 +26,23 @@ package com.qcadoo.security.api;
 
 /**
  * Service for getting current user.
+ * 
+ * @since 0.4.0
  */
 public interface SecurityService {
 
-    /*
+    /**
      * Returns the name of the currently logged in user
+     * 
      * @return currently logged in user's name
      */
     String getCurrentUserName();
 
-    /*
-     * Returns the ID of the currently logged in user
-     * @return currently logged in user's ID
+    /**
+     * Returns the id of the currently logged in user
+     * 
+     * @return currently logged in user's id
      */
-    Object getCurrentUserId();
+    Long getCurrentUserId();
 
 }

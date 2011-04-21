@@ -141,7 +141,7 @@ public class DefaultPluginDescriptorParser implements PluginDescriptorParser {
 
         LOG.info("Parsing plugin " + pluginIdentifier);
 
-        Builder pluginBuilder = new Builder(pluginIdentifier);
+        Builder pluginBuilder = new Builder(pluginIdentifier, moduleFactoryAccessor.getModuleFactories());
 
         String pluginVersionStr = getStringAttribute(pluginNode, "version");
         checkNotNull(pluginVersionStr, "No plugin version");
