@@ -27,30 +27,33 @@ QCD.menu = QCD.menu || {};
 
 QCD.menu.MenuModel = function(menuStructure) {
 	
-	this.selectedItem = null;
-	
-	this.items = new Array();
-	this.itemsMap = new Object();
-	for (var i in menuStructure.menuItems) {
-		var button = new QCD.menu.FirstButton(menuStructure.menuItems[i]);
-		this.items.push(button);
-		this.itemsMap[button.name] = button;
-		if (! this.selectedItem) {
-			this.selectedItem = button;
+	function addCategory(model, item, type) {
+		var button = new QCD.menu.FirstButton(item, type);
+		model.items.push(button);
+		model.itemsMap[button.name] = button;
+		if (! model.selectedItem) {
+			model.selectedItem = button;
 			button.selectedItem = button.items[0]; 
 		}
 	}
-	var button = new QCD.menu.FirstButton(menuStructure.administrationCategory, true);
-	this.items.push(button);
-	this.itemsMap[button.name] = button;
-	if (! this.selectedItem) {
-		this.selectedItem = button;
-		button.selectedItem = button.items[0]; 
+	
+	this.selectedItem = null;
+	this.items = new Array();
+	this.itemsMap = new Object();
+	
+	addCategory(this, menuStructure.homeCategory, QCD.menu.MenuModel.HOME_CATEGORY);
+	for (var i in menuStructure.menuItems) {
+		addCategory(this, menuStructure.menuItems[i]);
 	}
+	addCategory(this, menuStructure.administrationCategory, QCD.menu.MenuModel.ADMINISTRATION_CATEGORY);
 }
 
-QCD.menu.FirstButton = function(menuItem, isAdministrationItem) {
-	this.isAdministrationItem = isAdministrationItem ? isAdministrationItem : false;
+QCD.menu.MenuModel.HOME_CATEGORY = 1;
+QCD.menu.MenuModel.ADMINISTRATION_CATEGORY = 2;
+QCD.menu.MenuModel.REGULAR_CATEGORY = 3;
+
+QCD.menu.FirstButton = function(menuItem, menuItemType) {
+	this.type = menuItemType ? menuItemType : QCD.menu.MenuModel.REGULAR_CATEGORY;
 	this.name = menuItem.name;
 	this.label = menuItem.label;
 	

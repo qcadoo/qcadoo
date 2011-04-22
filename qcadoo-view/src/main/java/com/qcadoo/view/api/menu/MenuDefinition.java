@@ -38,6 +38,8 @@ public final class MenuDefinition {
 
     private final List<MenulItemsGroup> items;
 
+    private MenulItemsGroup homeCategory;
+
     private MenulItemsGroup administrationCategory;
 
     public MenuDefinition() {
@@ -76,6 +78,10 @@ public final class MenuDefinition {
             JSONObject menuStructure = new JSONObject();
             menuStructure.put("menuItems", menuItems);
 
+            if (homeCategory != null) {
+                menuStructure.put("homeCategory", homeCategory.getAsJson());
+            }
+
             if (administrationCategory != null) {
                 menuStructure.put("administrationCategory", administrationCategory.getAsJson());
             }
@@ -92,5 +98,13 @@ public final class MenuDefinition {
 
     public void setAdministrationCategory(MenulItemsGroup administrationCategory) {
         this.administrationCategory = administrationCategory;
+    }
+
+    public MenulItemsGroup getHomeCategory() {
+        return homeCategory;
+    }
+
+    public void setHomeCategory(MenulItemsGroup homeCategory) {
+        this.homeCategory = homeCategory;
     }
 }

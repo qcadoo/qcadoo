@@ -29,7 +29,7 @@ QCD.menu.MenuController = function(menuStructure, _windowController) {
 	
 	var windowController = _windowController;
 	
-	var firstLevelElement = $("#firstLevelMenu");
+	var firstLevelElement;
 	var secondLevelElement = $("#secondLevelMenu");
 	
 	var previousActive = new Object();
@@ -42,26 +42,74 @@ QCD.menu.MenuController = function(menuStructure, _windowController) {
 	
 	function constructor(menuStructure) {
 		
+		firstLevelElement = $("<div>").attr("id", "q_menu_row1");
+		var q_row1 = $("<div>").attr("id", "q_row1");
+			q_row1.append(firstLevelElement);
+		var q_row1_out = $("<div>").attr("id", "q_row1_out");
+			q_row1_out.append(q_row1);
+		$("#firstLevelMenu").append(q_row1_out);
+		
+		createMenu(menuStructure);
+		
+		previousActive.first = model.selectedItem;
+		model.selectedItem.element.addClass("path");
+		previousActive.second = model.selectedItem.selectedItem;
+		
+		updateState();
+		
+		changePage(model.selectedItem.selectedItem.page);
+	}
+	
+	this.updateMenu = function() {
+		var selectedFirstName = model.selectedItem.name;
+		var selectedSecondName = model.selectedItem.selectedItem.name;
+		$.ajax({
+			url: "/menu.html",
+			type: 'GET',
+			dataType: 'text',
+			contentType: 'plain/text; charset=utf-8',
+			complete: function(XMLHttpRequest, textStatus) {
+				if (XMLHttpRequest.status == 200) {
+					var responseText = $.trim(XMLHttpRequest.responseText); 
+					if (responseText == "sessionExpired") {
+						return;
+					}
+					if (responseText.substring(0, 20) == "<![CDATA[ERROR PAGE:") {
+						return;
+					}
+					if (responseText != "") {
+						var response = JSON.parse(responseText);
+						firstLevelElement.children().remove();
+						createMenu(response);
+						model.selectedItem = model.itemsMap[selectedFirstName];
+						model.selectedItem.selectedItem = model.selectedItem.itemsMap[selectedSecondName];
+						updateState();
+					}
+				}
+			}
+		});
+	}
+	
+	function createMenu(menuStructure) {
 		model = new QCD.menu.MenuModel(menuStructure);
 		
 		var menuContentElement = $("<ul>").addClass("q_row1");
+		var menuHomeContentElement = $("<ul>").addClass("q_row1").addClass("q_row1_home");
 		var menuAdministrationContentElement = $("<ul>").addClass("q_row1").addClass("q_row1_administration");
-		var q_menu_row1 = $("<div>").attr("id", "q_menu_row1");
-			q_menu_row1.append(menuContentElement);
-			q_menu_row1.append(menuAdministrationContentElement);
-		var q_row1 = $("<div>").attr("id", "q_row1");
-			q_row1.append(q_menu_row1);
-		var q_row1_out = $("<div>").attr("id", "q_row1_out");
-			q_row1_out.append(q_row1);
-		firstLevelElement.append(q_row1_out);
+			firstLevelElement.append(menuHomeContentElement);
+			firstLevelElement.append(menuContentElement);
+			firstLevelElement.append(menuAdministrationContentElement);
 		
 		for (var i in model.items) {
 			var item = model.items[i];
 			
 			var firstLevelButton;
-			if (item.isAdministrationItem) {
-				firstLevelButton = $("<li>").html("<a href='#'><span><div class='administration' title='"+item.label+"'></div></span></a>").attr("id", "firstLevelButton_"+item.name);
+			if (item.type == QCD.menu.MenuModel.ADMINISTRATION_CATEGORY) {
+				firstLevelButton = $("<li>").html("<a href='#'><span><div class='administrationMenuItem' title='"+item.label+"'></div></span></a>").attr("id", "firstLevelButton_"+item.name);
 				menuAdministrationContentElement.append(firstLevelButton);
+			} else if (item.type == QCD.menu.MenuModel.HOME_CATEGORY) {
+				firstLevelButton = $("<li>").html("<a href='#'><span><div class='homeMenuItem' title='"+item.label+"'></div></span></a>").attr("id", "firstLevelButton_"+item.name);
+				menuHomeContentElement.append(firstLevelButton);
 			} else {
 				firstLevelButton = $("<li>").html("<a href='#'><span>"+item.label+"</span></a>").attr("id", "firstLevelButton_"+item.name);
 				menuContentElement.append(firstLevelButton);
@@ -73,16 +121,7 @@ QCD.menu.MenuController = function(menuStructure, _windowController) {
 				onTopItemClick($(this), e);
 			});
 		}
-		previousActive.first = model.selectedItem;
-		model.selectedItem.element.addClass("path");
-		previousActive.second = model.selectedItem.selectedItem;
-		
-		updateState();
-		
-		changePage(model.selectedItem.selectedItem.page);
 	}
-	
-	
 	
 	function onTopItemClick(itemElement, e) {
 		itemElement.children().blur();

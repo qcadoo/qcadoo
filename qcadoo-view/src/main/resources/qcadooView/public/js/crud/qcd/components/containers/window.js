@@ -251,6 +251,10 @@ QCD.components.containers.Window = function(_element, _mainController) {
 		}
 	}
 	
+	this.updateMenu = function() {
+		mainController.updateMenu();
+	}
+	
 	this.performCloseWindow = function(actionsPerformer) {
 		mainController.closeWindow();
 		if (actionsPerformer) {
