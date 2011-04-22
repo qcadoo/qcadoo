@@ -129,12 +129,13 @@ ul.q_row1 li a span {
 ul.q_row1 li a span div.homeMenuItem {
 	background-image:url('/qcadooView/public/img/core/menu/home_transparent.png');
 	background-repeat:no-repeat;
-	background-position: 0px 3px;
+	background-position: 0px 2px;
 	width: 24px;
 	height: 29px;
 }
 ul.q_row1 li.activ a span div.homeMenuItem {
 	background-image:url('/qcadooView/public/img/core/menu/home_active.png');
+	background-position: 0px 3px;
 }
 ul.q_row1 li a span div.administrationMenuItem {
 	background-image:url('/qcadooView/public/img/core/menu/gears.png');
