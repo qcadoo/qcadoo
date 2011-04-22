@@ -33,6 +33,7 @@ import org.json.JSONObject;
 import com.qcadoo.view.api.ComponentPattern;
 import com.qcadoo.view.api.ViewDefinition;
 import com.qcadoo.view.internal.HookDefinition;
+import com.qcadoo.view.internal.components.window.WindowComponentPattern;
 
 public interface InternalViewDefinition extends ViewDefinition {
 
@@ -69,5 +70,11 @@ public interface InternalViewDefinition extends ViewDefinition {
     void addHook(HookType type, HookDefinition hookDefinition);
 
     void removeHook(HookType type, HookDefinition hookDefinition);
+
+    WindowComponentPattern getRootWindow();
+
+    public abstract void addComponentPattern(final ComponentPattern componentPattern);
+
+    public abstract void initialize();
 
 }

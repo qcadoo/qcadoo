@@ -57,12 +57,12 @@ import com.qcadoo.model.internal.types.IntegerType;
 import com.qcadoo.model.internal.types.StringType;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.ViewDefinitionState;
-import com.qcadoo.view.components.TextInputComponentPattern;
-import com.qcadoo.view.components.grid.GridComponentPattern;
-import com.qcadoo.view.components.grid.GridComponentState;
+import com.qcadoo.view.api.components.GridComponent;
 import com.qcadoo.view.internal.ComponentDefinition;
 import com.qcadoo.view.internal.ComponentOption;
 import com.qcadoo.view.internal.api.InternalViewDefinition;
+import com.qcadoo.view.internal.components.TextInputComponentPattern;
+import com.qcadoo.view.internal.components.grid.GridComponentPattern;
 import com.qcadoo.view.internal.patterns.AbstractComponentPattern;
 import com.qcadoo.view.internal.patterns.AbstractPatternTest;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
@@ -320,7 +320,7 @@ public class GridComponentPatternTest extends AbstractPatternTest {
         ComponentState state = pattern.createComponentState(viewDefinitionState);
 
         // then
-        assertTrue(state instanceof GridComponentState);
+        assertTrue(state instanceof GridComponent);
 
         assertEquals(belongsToFieldDefinition, getField(state, "belongsToFieldDefinition"));
         assertEquals(getField(pattern, "columns"), getField(state, "columns"));

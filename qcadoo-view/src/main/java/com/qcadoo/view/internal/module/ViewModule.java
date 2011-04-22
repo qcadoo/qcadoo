@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.core.io.Resource;
 
 import com.qcadoo.plugin.api.Module;
-import com.qcadoo.view.api.ViewDefinition;
+import com.qcadoo.view.internal.api.InternalViewDefinition;
 import com.qcadoo.view.internal.api.InternalViewDefinitionService;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
 
@@ -31,16 +31,16 @@ public class ViewModule extends Module {
 
     @Override
     public void enable() {
-        List<ViewDefinition> viewDefinitions = viewDefinitionParser.parseViewXml(xmlFile);
-        for (ViewDefinition viewDefinition : viewDefinitions) {
+        List<InternalViewDefinition> viewDefinitions = viewDefinitionParser.parseViewXml(xmlFile);
+        for (InternalViewDefinition viewDefinition : viewDefinitions) {
             viewDefinitionService.save(viewDefinition);
         }
     }
 
     @Override
     public void disable() {
-        List<ViewDefinition> viewDefinitions = viewDefinitionParser.parseViewXml(xmlFile);
-        for (ViewDefinition viewDefinition : viewDefinitions) {
+        List<InternalViewDefinition> viewDefinitions = viewDefinitionParser.parseViewXml(xmlFile);
+        for (InternalViewDefinition viewDefinition : viewDefinitions) {
             viewDefinitionService.delete(viewDefinition);
         }
     }

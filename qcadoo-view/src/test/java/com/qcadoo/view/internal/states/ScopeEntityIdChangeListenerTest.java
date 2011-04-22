@@ -29,8 +29,8 @@ import static org.mockito.Mockito.verify;
 import org.junit.Test;
 
 import com.qcadoo.view.api.ComponentState;
-import com.qcadoo.view.components.form.FormComponentState;
 import com.qcadoo.view.internal.ScopeEntityIdChangeListener;
+import com.qcadoo.view.internal.components.form.FormComponentState;
 
 public class ScopeEntityIdChangeListenerTest extends AbstractStateTest {
 

@@ -23,27 +23,27 @@
 		<model:model model="item" resource="model/item.xml" />
 		<model:model model="view" resource="model/view.xml" />
 
-		<view:view-component name="button" class="com.qcadoo.view.components.ButtonComponentPattern" />
-		<view:view-component name="label" class="com.qcadoo.view.components.LabelComponentPattern" />
-		<view:view-component name="checkbox" class="com.qcadoo.view.components.CheckBoxComponentPattern" />
-		<view:view-component name="calendar" class="com.qcadoo.view.components.CalendarComponentPattern" />
-		<view:view-component name="password" class="com.qcadoo.view.components.PasswordComponentPattern" />
-		<view:view-component name="form" class="com.qcadoo.view.components.form.FormComponentPattern" />
-		<view:view-component name="grid" class="com.qcadoo.view.components.grid.GridComponentPattern" />
-		<view:view-component name="separatorLine" class="com.qcadoo.view.components.SeparatorLinePattern" />
-		<view:view-component name="textarea" class="com.qcadoo.view.components.TextAreaComponentPattern" />
-		<view:view-component name="input" class="com.qcadoo.view.components.TextInputComponentPattern" />
-		<view:view-component name="awesomeDynamicList" class="com.qcadoo.view.components.awesomeDynamicList.AwesomeDynamicListPattern" />
-		<view:view-component name="staticPage" class="com.qcadoo.view.components.StaticPageComponentPattern" />
-		<view:view-component name="window" class="com.qcadoo.view.components.window.WindowComponentPattern" />
-		<view:view-component name="tree" class="com.qcadoo.view.components.tree.TreeComponentPattern" />
-		<view:view-component name="select" class="com.qcadoo.view.components.select.SelectComponentPattern" />
-		<view:view-component name="lookup" class="com.qcadoo.view.components.lookup.LookupComponentPattern" />
-		<view:view-component name="verticalLayout" class="com.qcadoo.view.components.layout.VerticalLayoutPattern" />
-		<view:view-component name="gridLayout" class="com.qcadoo.view.components.layout.GridLayoutPattern" />
-		<view:view-component name="borderLayout" class="com.qcadoo.view.components.layout.BorderLayoutPattern" />
-		<view:view-component name="flowLayout" class="com.qcadoo.view.components.layout.FlowLayoutPattern" />
-		<view:view-component name="smallTabLayout" class="com.qcadoo.view.components.layout.SmallTabLayoutPattern" />
+		<view:view-component name="button" class="com.qcadoo.view.internal.components.ButtonComponentPattern" />
+		<view:view-component name="label" class="com.qcadoo.view.internal.components.LabelComponentPattern" />
+		<view:view-component name="checkbox" class="com.qcadoo.view.internal.components.CheckBoxComponentPattern" />
+		<view:view-component name="calendar" class="com.qcadoo.view.internal.components.CalendarComponentPattern" />
+		<view:view-component name="password" class="com.qcadoo.view.internal.components.PasswordComponentPattern" />
+		<view:view-component name="form" class="com.qcadoo.view.internal.components.form.FormComponentPattern" />
+		<view:view-component name="grid" class="com.qcadoo.view.internal.components.grid.GridComponentPattern" />
+		<view:view-component name="separatorLine" class="com.qcadoo.view.internal.components.SeparatorLinePattern" />
+		<view:view-component name="textarea" class="com.qcadoo.view.internal.components.TextAreaComponentPattern" />
+		<view:view-component name="input" class="com.qcadoo.view.internal.components.TextInputComponentPattern" />
+		<view:view-component name="awesomeDynamicList" class="com.qcadoo.view.internal.components.awesomeDynamicList.AwesomeDynamicListPattern" />
+		<view:view-component name="staticPage" class="com.qcadoo.view.internal.components.StaticPageComponentPattern" />
+		<view:view-component name="window" class="com.qcadoo.view.internal.components.window.WindowComponentPattern" />
+		<view:view-component name="tree" class="com.qcadoo.view.internal.components.tree.TreeComponentPattern" />
+		<view:view-component name="select" class="com.qcadoo.view.internal.components.select.SelectComponentPattern" />
+		<view:view-component name="lookup" class="com.qcadoo.view.internal.components.lookup.LookupComponentPattern" />
+		<view:view-component name="verticalLayout" class="com.qcadoo.view.internal.components.layout.VerticalLayoutPattern" />
+		<view:view-component name="gridLayout" class="com.qcadoo.view.internal.components.layout.GridLayoutPattern" />
+		<view:view-component name="borderLayout" class="com.qcadoo.view.internal.components.layout.BorderLayoutPattern" />
+		<view:view-component name="flowLayout" class="com.qcadoo.view.internal.components.layout.FlowLayoutPattern" />
+		<view:view-component name="smallTabLayout" class="com.qcadoo.view.internal.components.layout.SmallTabLayoutPattern" />
 
 		<view:resource uri="public/**/*" />
 	</modules>

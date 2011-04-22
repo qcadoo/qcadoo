@@ -7,8 +7,8 @@ import org.springframework.util.StringUtils;
 import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.search.SearchResult;
 import com.qcadoo.view.api.ViewDefinitionState;
-import com.qcadoo.view.components.FieldComponentState;
-import com.qcadoo.view.components.form.FormComponentState;
+import com.qcadoo.view.api.components.FieldComponent;
+import com.qcadoo.view.api.components.FormComponent;
 
 @Service
 public class NumberGeneratorService {
@@ -21,14 +21,14 @@ public class NumberGeneratorService {
         if (!checkIfShouldInsertNumber(state, formFieldReferenceName, numberFieldReferenceName)) {
             return;
         }
-        FieldComponentState number = (FieldComponentState) state.getComponentByReference(numberFieldReferenceName);
+        FieldComponent number = (FieldComponent) state.getComponentByReference(numberFieldReferenceName);
         number.setFieldValue(generateNumber(plugin, entityName));
     }
 
     public boolean checkIfShouldInsertNumber(final ViewDefinitionState state, final String formFieldReferenceName,
             final String numberFieldReferenceName) {
-        FormComponentState form = (FormComponentState) state.getComponentByReference(formFieldReferenceName);
-        FieldComponentState number = (FieldComponentState) state.getComponentByReference(numberFieldReferenceName);
+        FormComponent form = (FormComponent) state.getComponentByReference(formFieldReferenceName);
+        FieldComponent number = (FieldComponent) state.getComponentByReference(numberFieldReferenceName);
         if (form.getEntityId() != null) {
             // form is already saved
             return false;

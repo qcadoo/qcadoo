@@ -12,11 +12,11 @@ import org.w3c.dom.Node;
 import com.google.common.base.Preconditions;
 import com.qcadoo.plugin.api.Module;
 import com.qcadoo.view.api.ComponentPattern;
-import com.qcadoo.view.api.ViewDefinition;
-import com.qcadoo.view.components.window.WindowComponentPattern;
-import com.qcadoo.view.components.window.WindowTabComponentPattern;
 import com.qcadoo.view.internal.ComponentDefinition;
+import com.qcadoo.view.internal.api.InternalViewDefinition;
 import com.qcadoo.view.internal.api.InternalViewDefinitionService;
+import com.qcadoo.view.internal.components.window.WindowComponentPattern;
+import com.qcadoo.view.internal.components.window.WindowTabComponentPattern;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
 import com.qcadoo.view.internal.xml.ViewExtension;
 
@@ -55,7 +55,7 @@ public class ViewTabModule extends Module {
         addedTabs = new HashMap<WindowComponentPattern, ComponentPattern>();
         for (ViewExtension viewExtension : viewExtensions) {
 
-            ViewDefinition viewDefinition = viewDefinitionService.getWithoutSession(viewExtension.getPluginName(),
+            InternalViewDefinition viewDefinition = viewDefinitionService.getWithoutSession(viewExtension.getPluginName(),
                     viewExtension.getViewName());
             Preconditions.checkNotNull(viewDefinition, getErrorMessage("reference to view which not exists", viewExtension));
 
