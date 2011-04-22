@@ -31,40 +31,23 @@ public class MenuModule extends Module {
     }
 
     @Override
-    public void multiTenantEnableOnStartup() {
-        multiTenantEnable();
-    }
-
-    @Override
     public void multiTenantEnable() {
-        createViewAndItem();
-        if (menuViewName != null) {
-            menuService.enableView(pluginIdentifier, menuName);
+        if (menuUrl != null) {
+            menuService.addView(pluginIdentifier, menuName, null, menuUrl);
+            menuService.createItem(pluginIdentifier, menuName, menuCategory, pluginIdentifier, menuName);
+        } else {
+            menuService.addView(menuViewPluginIdentifier, menuViewName, menuViewName, null);
+            menuService.createItem(pluginIdentifier, menuName, menuCategory, menuViewPluginIdentifier, menuViewName);
         }
-        menuService.enableItem(pluginIdentifier, menuName);
-    }
-
-    @Override
-    public void multiTenantDisableOnStartup() {
-        multiTenantDisable();
     }
 
     @Override
     public void multiTenantDisable() {
-        createViewAndItem();
-        if (menuViewName != null) {
-            menuService.disableView(pluginIdentifier, menuName);
-        }
-        menuService.disableItem(pluginIdentifier, menuName);
-    }
-
-    private void createViewAndItem() {
+        menuService.removeItem(pluginIdentifier, menuName);
         if (menuUrl != null) {
-            menuService.createViewIfNotExists(pluginIdentifier, menuName, null, menuUrl);
-            menuService.createItemIfNotExists(pluginIdentifier, menuName, menuCategory, pluginIdentifier, menuName);
+            menuService.removeView(pluginIdentifier, menuName);
         } else {
-            menuService.createViewIfNotExists(menuViewPluginIdentifier, menuViewName, menuViewName, null);
-            menuService.createItemIfNotExists(pluginIdentifier, menuName, menuCategory, menuViewPluginIdentifier, menuViewName);
+            menuService.removeView(menuViewPluginIdentifier, menuViewName);
         }
     }
 }

@@ -34,6 +34,7 @@ QCD.components.elements.grid.GridHeaderController = function(_gridController, _m
 	var gridParameters = _gridParameters;
 	var translations = _translations;
 	
+	var deleteButtonEnabled = true;
 	
 	var pagingVars = new Object();
 	pagingVars.first = null;
@@ -291,6 +292,11 @@ QCD.components.elements.grid.GridHeaderController = function(_gridController, _m
 		refreshButtons();
 	}
 	
+	this.setDeleteEnabled = function(enabled) {
+		deleteButtonEnabled = enabled;
+		refreshButtons();
+	}
+	
 	this.onSelectionChange = function(_multiselectMode, _selectedRowIndex) {
 		multiselectMode = _multiselectMode;
 		rowIndex = _selectedRowIndex;
@@ -339,7 +345,7 @@ QCD.components.elements.grid.GridHeaderController = function(_gridController, _m
 				setEnabledButton(headerElements.newButton, true);
 			}
 			if (headerElements.deleteButton != null) {
-				if (multiselectMode || rowIndex != null) {
+				if ((multiselectMode || rowIndex != null) && deleteButtonEnabled) {
 					setEnabledButton(headerElements.deleteButton, true);
 				} else {
 					setEnabledButton(headerElements.deleteButton, false);

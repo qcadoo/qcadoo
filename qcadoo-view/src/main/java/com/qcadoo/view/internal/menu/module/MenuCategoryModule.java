@@ -18,13 +18,13 @@ public class MenuCategoryModule extends Module {
     }
 
     @Override
-    public void multiTenantEnableOnStartup() {
-        multiTenantEnable();
+    public void multiTenantEnable() {
+        menuService.createCategory(pluginIdentifier, menuCategoryName);
     }
 
     @Override
-    public void multiTenantEnable() {
-        menuService.createCategoryIfNotExists(pluginIdentifier, menuCategoryName);
+    public void multiTenantDisable() {
+        menuService.removeCategory(pluginIdentifier, menuCategoryName);
     }
 
 }

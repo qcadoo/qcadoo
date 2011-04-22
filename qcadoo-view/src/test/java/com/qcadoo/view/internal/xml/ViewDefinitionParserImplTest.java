@@ -58,16 +58,16 @@ import com.qcadoo.view.api.ComponentPattern;
 import com.qcadoo.view.api.ViewDefinition;
 import com.qcadoo.view.api.ViewDefinitionService;
 import com.qcadoo.view.api.ribbon.RibbonActionItem;
-import com.qcadoo.view.components.ButtonComponentPattern;
-import com.qcadoo.view.components.CheckBoxComponentPattern;
-import com.qcadoo.view.components.TextAreaComponentPattern;
-import com.qcadoo.view.components.TextInputComponentPattern;
-import com.qcadoo.view.components.form.FormComponentPattern;
-import com.qcadoo.view.components.grid.GridComponentPattern;
-import com.qcadoo.view.components.window.WindowComponentPattern;
 import com.qcadoo.view.internal.HookDefinition;
 import com.qcadoo.view.internal.ViewDefinitionServiceImpl;
 import com.qcadoo.view.internal.api.InternalViewDefinition;
+import com.qcadoo.view.internal.components.ButtonComponentPattern;
+import com.qcadoo.view.internal.components.CheckBoxComponentPattern;
+import com.qcadoo.view.internal.components.TextAreaComponentPattern;
+import com.qcadoo.view.internal.components.TextInputComponentPattern;
+import com.qcadoo.view.internal.components.form.FormComponentPattern;
+import com.qcadoo.view.internal.components.grid.GridComponentPattern;
+import com.qcadoo.view.internal.components.window.WindowComponentPattern;
 import com.qcadoo.view.internal.hooks.HookFactory;
 import com.qcadoo.view.internal.internal.ComponentCustomEvent;
 import com.qcadoo.view.internal.internal.ViewComponentsResolverImpl;
@@ -166,7 +166,7 @@ public class ViewDefinitionParserImplTest {
     @Test
     public void shouldParseXml() {
         // given
-        List<ViewDefinition> viewDefinitions = parseAndGetViewDefinitions();
+        List<InternalViewDefinition> viewDefinitions = parseAndGetViewDefinitions();
 
         // then
         assertEquals(2, viewDefinitions.size());
@@ -320,7 +320,7 @@ public class ViewDefinitionParserImplTest {
         assertEquals(hookMethodName, getField(hook, "methodName"));
     }
 
-    private List<ViewDefinition> parseAndGetViewDefinitions() {
+    private List<InternalViewDefinition> parseAndGetViewDefinitions() {
         return viewDefinitionParser.parseViewXml(new ClassPathResource(xml));
     }
 

@@ -33,8 +33,7 @@ import com.qcadoo.model.api.validators.ErrorMessage;
  * Object represents data from the database tables. All fields are aggregated into key-value map. The key is the name of the field
  * from its definition - {@link com.qcadoo.model.api.FieldDefinition#getName()}.
  * 
- * @apiviz.uses com.qcadoo.mes.model.FieldDefinition
- * @apiviz.uses com.qcadoo.mes.model.validators.ErrorMessage
+ * @since 0.4.0
  */
 public interface Entity {
 

@@ -37,12 +37,13 @@ import com.qcadoo.plugin.api.PluginUtil;
 import com.qcadoo.security.api.SecurityRole;
 import com.qcadoo.security.api.SecurityViewDefinitionRoleResolver;
 import com.qcadoo.view.api.ViewDefinition;
+import com.qcadoo.view.internal.api.InternalViewDefinition;
 import com.qcadoo.view.internal.api.InternalViewDefinitionService;
 
 @Service
 public class ViewDefinitionServiceImpl implements InternalViewDefinitionService, SecurityViewDefinitionRoleResolver {
 
-    private final Map<String, ViewDefinition> viewDefinitions = new HashMap<String, ViewDefinition>();
+    private final Map<String, InternalViewDefinition> viewDefinitions = new HashMap<String, InternalViewDefinition>();
 
     @Override
     @Transactional(readOnly = true)
@@ -57,7 +58,7 @@ public class ViewDefinitionServiceImpl implements InternalViewDefinitionService,
     @Override
     @Transactional(readOnly = true)
     @Monitorable
-    public ViewDefinition getWithoutSession(final String pluginIdentifier, final String viewName) {
+    public InternalViewDefinition getWithoutSession(final String pluginIdentifier, final String viewName) {
         String key = pluginIdentifier + "." + viewName;
         if (viewDefinitions.containsKey(key)) {
             return viewDefinitions.get(key);
@@ -82,14 +83,14 @@ public class ViewDefinitionServiceImpl implements InternalViewDefinitionService,
     @Override
     @Transactional
     @Monitorable
-    public void save(final ViewDefinition viewDefinition) {
+    public void save(final InternalViewDefinition viewDefinition) {
         viewDefinitions.put(viewDefinition.getPluginIdentifier() + "." + viewDefinition.getName(), viewDefinition);
     }
 
     @Override
     @Transactional
     @Monitorable
-    public void delete(final ViewDefinition viewDefinition) {
+    public void delete(final InternalViewDefinition viewDefinition) {
         viewDefinitions.remove(viewDefinition.getPluginIdentifier() + "." + viewDefinition.getName());
     }
 

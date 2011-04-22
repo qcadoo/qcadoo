@@ -24,14 +24,12 @@
 
 package com.qcadoo.view.internal.api;
 
-import com.qcadoo.view.api.ViewDefinition;
 import com.qcadoo.view.api.ViewDefinitionService;
 
 /**
  * Service for manipulating view definitions.
  * 
  * @see com.qcadoo.view.internal.xml.ViewDefinitionParserImpl.ViewDefinitionParser
- * @apiviz.uses com.qcadoo.mes.view.ViewDefinition
  */
 public interface InternalViewDefinitionService extends ViewDefinitionService {
 
@@ -44,7 +42,7 @@ public interface InternalViewDefinitionService extends ViewDefinitionService {
      *            view's name
      * @return the view definition, null if not found
      */
-    ViewDefinition getWithoutSession(String pluginIdentifier, String viewName);
+    InternalViewDefinition getWithoutSession(String pluginIdentifier, String viewName);
 
     /**
      * Save the data definition.
@@ -52,7 +50,7 @@ public interface InternalViewDefinitionService extends ViewDefinitionService {
      * @param viewDefinition
      *            view definition
      */
-    void save(ViewDefinition viewDefinition);
+    void save(InternalViewDefinition viewDefinition);
 
     /**
      * Delete the data definition.
@@ -60,6 +58,6 @@ public interface InternalViewDefinitionService extends ViewDefinitionService {
      * @param viewDefinition
      *            view definition
      */
-    void delete(ViewDefinition viewDefinition);
+    void delete(InternalViewDefinition viewDefinition);
 
 }

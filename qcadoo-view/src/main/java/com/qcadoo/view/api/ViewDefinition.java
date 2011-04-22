@@ -26,7 +26,6 @@ package com.qcadoo.view.api;
 
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.security.api.SecurityRole;
-import com.qcadoo.view.components.window.WindowComponentPattern;
 
 public interface ViewDefinition {
 
@@ -37,8 +36,6 @@ public interface ViewDefinition {
     SecurityRole getAuthorizationRole();
 
     DataDefinition getDataDefinition();
-
-    WindowComponentPattern getRootWindow();
 
     ComponentPattern getComponentByReference(String reference);
 

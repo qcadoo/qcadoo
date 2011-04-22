@@ -39,7 +39,7 @@ import org.json.JSONObject;
 import org.junit.Test;
 
 import com.qcadoo.view.api.ComponentState;
-import com.qcadoo.view.components.form.FormComponentState;
+import com.qcadoo.view.internal.components.form.FormComponentState;
 
 public class ContainerStateTest extends AbstractStateTest {
 

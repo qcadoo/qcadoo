@@ -60,6 +60,7 @@ import com.qcadoo.view.api.ribbon.RibbonGroup;
 import com.qcadoo.view.internal.ComponentDefinition;
 import com.qcadoo.view.internal.ComponentOption;
 import com.qcadoo.view.internal.HookDefinition;
+import com.qcadoo.view.internal.api.InternalViewDefinition;
 import com.qcadoo.view.internal.api.InternalViewDefinitionService;
 import com.qcadoo.view.internal.hooks.HookDefinitionImpl;
 import com.qcadoo.view.internal.hooks.HookFactory;
@@ -95,7 +96,7 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
     private int currentIndexOrder;
 
     @Override
-    public List<ViewDefinition> parseViewXml(final Resource viewXml) {
+    public List<InternalViewDefinition> parseViewXml(final Resource viewXml) {
         try {
             return parse(viewXml.getInputStream());
         } catch (IOException e) {
@@ -103,7 +104,7 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
         }
     }
 
-    private List<ViewDefinition> parse(final InputStream dataDefinitionInputStream) {
+    private List<InternalViewDefinition> parse(final InputStream dataDefinitionInputStream) {
         try {
             DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             Document document = documentBuilder.parse(dataDefinitionInputStream);
@@ -114,7 +115,7 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
 
             NodeList childNodes = root.getChildNodes();
 
-            List<ViewDefinition> views = new LinkedList<ViewDefinition>();
+            List<InternalViewDefinition> views = new LinkedList<InternalViewDefinition>();
 
             for (int i = 0; i < childNodes.getLength(); i++) {
                 Node child = childNodes.item(i);
@@ -135,7 +136,7 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
         }
     }
 
-    private ViewDefinition parseViewDefinition(final Node viewNode, final String pluginIdentifier, final String name) {
+    private InternalViewDefinition parseViewDefinition(final Node viewNode, final String pluginIdentifier, final String name) {
         currentIndexOrder = 1;
 
         LOG.info("Reading view " + name + " for plugin " + pluginIdentifier);

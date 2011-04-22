@@ -36,6 +36,7 @@ import com.qcadoo.view.api.ViewDefinition;
 import com.qcadoo.view.api.ribbon.RibbonGroup;
 import com.qcadoo.view.internal.ComponentDefinition;
 import com.qcadoo.view.internal.ComponentOption;
+import com.qcadoo.view.internal.api.InternalViewDefinition;
 import com.qcadoo.view.internal.internal.ComponentCustomEvent;
 
 public interface ViewDefinitionParser {
@@ -56,7 +57,7 @@ public interface ViewDefinitionParser {
 
     List<Node> geElementChildren(Node node);
 
-    List<ViewDefinition> parseViewXml(final Resource viewXml);
+    List<InternalViewDefinition> parseViewXml(final Resource viewXml);
 
     List<ViewExtension> getViewExtensionNodes(InputStream resource, String tagType);
 

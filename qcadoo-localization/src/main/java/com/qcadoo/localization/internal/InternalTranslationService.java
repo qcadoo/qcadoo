@@ -28,9 +28,6 @@ import com.qcadoo.localization.api.TranslationService;
 
 /**
  * Service for getting translations.
- * 
- * @apiviz.uses com.qcadoo.mes.model.DataDefinition
- * @apiviz.uses com.qcadoo.mes.model.validators.ErrorMessage
  */
 public interface InternalTranslationService extends TranslationService {
 

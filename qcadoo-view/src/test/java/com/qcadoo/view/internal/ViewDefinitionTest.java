@@ -48,9 +48,9 @@ import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.view.api.ComponentPattern;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.ViewDefinitionState;
-import com.qcadoo.view.components.form.FormComponentPattern;
-import com.qcadoo.view.components.window.WindowComponentPattern;
 import com.qcadoo.view.internal.api.InternalViewDefinition;
+import com.qcadoo.view.internal.components.form.FormComponentPattern;
+import com.qcadoo.view.internal.components.window.WindowComponentPattern;
 import com.qcadoo.view.internal.internal.ViewDefinitionImpl;
 import com.qcadoo.view.internal.patterns.AbstractContainerPattern;
 import com.qcadoo.view.internal.patterns.AbstractPatternTest;
@@ -65,7 +65,7 @@ public class ViewDefinitionTest extends AbstractPatternTest {
         // given
         DataDefinition dataDefinition = mock(DataDefinition.class);
 
-        ViewDefinitionImpl viewDefinition = new ViewDefinitionImpl("name", "plugin", dataDefinition, true, null);
+        InternalViewDefinition viewDefinition = new ViewDefinitionImpl("name", "plugin", dataDefinition, true, null);
 
         // then
         assertEquals("name", viewDefinition.getName());
@@ -77,7 +77,7 @@ public class ViewDefinitionTest extends AbstractPatternTest {
     @Test
     public void shouldReturnPattern() throws Exception {
         // given
-        ViewDefinitionImpl viewDefinition = new ViewDefinitionImpl("name", "plugin", mock(DataDefinition.class), true, null);
+        InternalViewDefinition viewDefinition = new ViewDefinitionImpl("name", "plugin", mock(DataDefinition.class), true, null);
 
         ComponentPattern pattern = Mockito.mock(ComponentPattern.class);
 
@@ -93,7 +93,7 @@ public class ViewDefinitionTest extends AbstractPatternTest {
     @Test
     public void shouldReturnNullWhenPatternNotExists() throws Exception {
         // given
-        ViewDefinitionImpl viewDefinition = new ViewDefinitionImpl("name", "plugin", mock(DataDefinition.class), true, null);
+        InternalViewDefinition viewDefinition = new ViewDefinitionImpl("name", "plugin", mock(DataDefinition.class), true, null);
 
         // when
         ComponentPattern actualPattern = viewDefinition.getComponentByReference("xxx");
@@ -105,7 +105,7 @@ public class ViewDefinitionTest extends AbstractPatternTest {
     @Test
     public void shouldCallInitializeOnChildren() throws Exception {
         // given
-        ViewDefinitionImpl viewDefinition = new ViewDefinitionImpl("name", "plugin", mock(DataDefinition.class), true, null);
+        InternalViewDefinition viewDefinition = new ViewDefinitionImpl("name", "plugin", mock(DataDefinition.class), true, null);
 
         ComponentPattern pattern1 = Mockito.mock(ComponentPattern.class);
         given(pattern1.getName()).willReturn("test1");
@@ -129,7 +129,7 @@ public class ViewDefinitionTest extends AbstractPatternTest {
     @Test(expected = IllegalStateException.class)
     public void shouldThrowCyclicDependencyOnInitialize() throws Exception {
         // given
-        ViewDefinitionImpl viewDefinition = new ViewDefinitionImpl("name", "plugin", mock(DataDefinition.class), true, null);
+        InternalViewDefinition viewDefinition = new ViewDefinitionImpl("name", "plugin", mock(DataDefinition.class), true, null);
 
         ComponentPattern pattern1 = Mockito.mock(ComponentPattern.class);
         given(pattern1.getName()).willReturn("test1");
@@ -159,7 +159,7 @@ public class ViewDefinitionTest extends AbstractPatternTest {
     @Test
     public void shouldCallEvent() throws Exception {
         // given
-        ViewDefinitionImpl viewDefinition = new ViewDefinitionImpl("name", "plugin", mock(DataDefinition.class), true, null);
+        InternalViewDefinition viewDefinition = new ViewDefinitionImpl("name", "plugin", mock(DataDefinition.class), true, null);
 
         TestEvent event = mock(TestEvent.class);
 

@@ -40,10 +40,10 @@ import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.types.BelongsToType;
 import com.qcadoo.model.api.types.FieldType;
 import com.qcadoo.model.api.types.HasManyType;
-import com.qcadoo.view.components.TextInputComponentPattern;
-import com.qcadoo.view.components.form.FormComponentPattern;
-import com.qcadoo.view.components.window.WindowComponentPattern;
 import com.qcadoo.view.internal.api.InternalViewDefinition;
+import com.qcadoo.view.internal.components.TextInputComponentPattern;
+import com.qcadoo.view.internal.components.form.FormComponentPattern;
+import com.qcadoo.view.internal.components.window.WindowComponentPattern;
 import com.qcadoo.view.internal.internal.ViewDefinitionImpl;
 
 public class InitializationTest extends AbstractPatternTest {
@@ -334,7 +334,7 @@ public class InitializationTest extends AbstractPatternTest {
         given(hasManyType.getDataDefinition()).willReturn(hasManyDataDefinition);
         given(belongsToType.getDataDefinition()).willReturn(belongsToDataDefinition);
 
-        ViewDefinitionImpl viewDefinition = new ViewDefinitionImpl("view", "plugin", dataDefinition, true, null);
+        InternalViewDefinition viewDefinition = new ViewDefinitionImpl("view", "plugin", dataDefinition, true, null);
 
         AbstractContainerPattern parent = new FormComponentPattern(getComponentDefinition("parent", viewDefinition));
         AbstractContainerPattern form = new FormComponentPattern(getComponentDefinition("form", null, null, parent,

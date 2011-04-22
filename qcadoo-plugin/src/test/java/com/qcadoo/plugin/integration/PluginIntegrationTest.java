@@ -44,6 +44,7 @@ import org.junit.rules.TemporaryFolder;
 import org.mockito.Mockito;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.qcadoo.plugin.api.PluginAccessor;
 import com.qcadoo.plugin.api.PluginManager;
@@ -100,6 +101,7 @@ public class PluginIntegrationTest {
     }
 
     @After
+    @Transactional("plugin")
     public void destroy() throws Exception {
         sessionFactory.openSession().createSQLQuery("delete from qcadooplugin_plugin").executeUpdate();
         pluginManager = null;

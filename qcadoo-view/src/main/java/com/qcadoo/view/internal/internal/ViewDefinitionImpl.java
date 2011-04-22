@@ -46,10 +46,10 @@ import com.qcadoo.security.api.SecurityRole;
 import com.qcadoo.view.api.ComponentPattern;
 import com.qcadoo.view.api.ContainerPattern;
 import com.qcadoo.view.api.ViewDefinitionState;
-import com.qcadoo.view.components.window.WindowComponentPattern;
 import com.qcadoo.view.internal.HookDefinition;
 import com.qcadoo.view.internal.api.InternalViewDefinition;
 import com.qcadoo.view.internal.api.InternalViewDefinitionService;
+import com.qcadoo.view.internal.components.window.WindowComponentPattern;
 import com.qcadoo.view.internal.patterns.AbstractComponentPattern;
 
 public final class ViewDefinitionImpl implements InternalViewDefinition {
@@ -104,6 +104,7 @@ public final class ViewDefinitionImpl implements InternalViewDefinition {
         this.windowHeight = windowHeight;
     }
 
+    @Override
     public void initialize() {
         List<ComponentPattern> list = getPatternsAsList(patterns.values());
 
@@ -208,6 +209,7 @@ public final class ViewDefinitionImpl implements InternalViewDefinition {
         }
     }
 
+    @Override
     public void addComponentPattern(final ComponentPattern componentPattern) {
         patterns.put(componentPattern.getName(), componentPattern);
     }

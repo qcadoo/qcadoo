@@ -39,10 +39,10 @@ import org.mockito.Mockito;
 import com.qcadoo.view.api.ComponentPattern;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.ViewDefinitionState;
-import com.qcadoo.view.components.EmptyContainerState;
-import com.qcadoo.view.components.TextInputComponentPattern;
-import com.qcadoo.view.components.form.FormComponentPattern;
 import com.qcadoo.view.internal.api.InternalViewDefinition;
+import com.qcadoo.view.internal.components.EmptyContainerState;
+import com.qcadoo.view.internal.components.TextInputComponentPattern;
+import com.qcadoo.view.internal.components.form.FormComponentPattern;
 import com.qcadoo.view.internal.states.AbstractContainerState;
 
 public class ContainerPatternTest extends AbstractPatternTest {

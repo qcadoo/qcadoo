@@ -27,7 +27,7 @@ public class SimpleSecurityRole implements SecurityRole {
     }
 
     @Override
-    public boolean isAccessible() {
+    public boolean isAccessibleForUsers() {
         return isAccessible;
     }
 

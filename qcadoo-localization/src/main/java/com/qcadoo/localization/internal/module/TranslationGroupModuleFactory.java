@@ -26,7 +26,7 @@ public class TranslationGroupModuleFactory extends ModuleFactory<TranslationGrou
 
     @Override
     public String getIdentifier() {
-        return "group";
+        return "translation-group";
     }
 
 }

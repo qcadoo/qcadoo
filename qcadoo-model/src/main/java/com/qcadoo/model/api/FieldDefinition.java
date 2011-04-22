@@ -31,9 +31,7 @@ import com.qcadoo.model.api.types.FieldType;
 /**
  * Object defines database field.
  * 
- * @apiviz.has com.qcadoo.mes.core.data.definition.FieldType
- * @apiviz.owns com.qcadoo.mes.core.data.definition.FieldValidator
- * @apiviz.has com.qcadoo.mes.model.DataDefinition
+ * @since 0.4.0
  */
 public interface FieldDefinition {
 
@@ -44,6 +42,16 @@ public interface FieldDefinition {
      */
     String getName();
 
+    /**
+     * Convert value to string.
+     * 
+     * @param value
+     *            value
+     * @param locale
+     *            locale
+     * @return string or null
+     * @see FieldType#toString(Object, Locale)
+     */
     String getValue(final Object value, Locale locale);
 
     /**
@@ -82,7 +90,7 @@ public interface FieldDefinition {
     boolean isUnique();
 
     /**
-     * Return true if this field is unique persistent (will be saved in database).
+     * Return true if this field is persistent (will be saved in database).
      * 
      * @return is persistent
      */

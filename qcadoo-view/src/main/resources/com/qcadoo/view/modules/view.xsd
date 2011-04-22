@@ -46,40 +46,17 @@
 			<xs:attribute name="method" type="xs:string" use="required" />
 		</xs:complexType>
 	</xs:element>
+
+	<xs:element name="view-component">
+		<xs:complexType>
+			<xs:attribute name="name" type="xs:string" use="required" />
+			<xs:attribute name="class" type="xs:string" use="required" />
+		</xs:complexType>
+	</xs:element>
 	
 	<xs:element name="resource">
 		<xs:complexType>
 			<xs:attribute name="uri" type="xs:string" use="required" />
-		</xs:complexType>
-	</xs:element>
-
-	<xs:element name="menu-item">
-		<xs:complexType>
-			<xs:attribute name="name" type="xs:string" use="required" />
-			<xs:attribute name="category" type="xs:string" use="required" />
-			<xs:attribute name="plugin" type="xs:string" use="optional" />
-			<xs:attribute name="view" type="xs:string" use="required" />
-		</xs:complexType>
-	</xs:element>
-	
-	<xs:element name="menu-item-url">
-		<xs:complexType>
-			<xs:attribute name="name" type="xs:string" use="required" />
-			<xs:attribute name="category" type="xs:string" use="required" />
-			<xs:attribute name="url" type="xs:string" use="required" />
-		</xs:complexType>
-	</xs:element>
-	
-	<xs:element name="menu-category">
-		<xs:complexType>
-			<xs:attribute name="name" type="xs:string" use="required" />
-		</xs:complexType>
-	</xs:element>
-	
-	<xs:element name="component">
-		<xs:complexType>
-			<xs:attribute name="name" type="xs:string" use="required" />
-			<xs:attribute name="class" type="xs:string" use="required" />
 		</xs:complexType>
 	</xs:element>
 	

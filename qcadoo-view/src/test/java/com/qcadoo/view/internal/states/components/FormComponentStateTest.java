@@ -55,9 +55,10 @@ import com.qcadoo.model.internal.types.StringType;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.ContainerState;
 import com.qcadoo.view.api.ViewDefinitionState;
-import com.qcadoo.view.components.FieldComponentPattern;
-import com.qcadoo.view.components.FieldComponentState;
-import com.qcadoo.view.components.form.FormComponentState;
+import com.qcadoo.view.api.components.FormComponent;
+import com.qcadoo.view.internal.components.FieldComponentPattern;
+import com.qcadoo.view.internal.components.FieldComponentState;
+import com.qcadoo.view.internal.components.form.FormComponentState;
 import com.qcadoo.view.internal.states.AbstractComponentState;
 import com.qcadoo.view.internal.states.AbstractContainerState;
 import com.qcadoo.view.internal.states.AbstractStateTest;
@@ -181,7 +182,7 @@ public class FormComponentStateTest extends AbstractStateTest {
         form.performEvent(viewDefinitionState, "initialize", new String[0]);
 
         // then
-        assertFalse(((FormComponentState) form).isValid());
+        assertFalse(((FormComponent) form).isValid());
         assertTrue(form.render().toString().contains("translated entityNotFound"));
 
     }
@@ -255,7 +256,7 @@ public class FormComponentStateTest extends AbstractStateTest {
         verify(dataDefinition).save(eq(entity));
         assertEquals("text2", name.getFieldValue());
         assertEquals(13L, form.getFieldValue());
-        assertTrue(((FormComponentState) form).isValid());
+        assertTrue(((FormComponent) form).isValid());
     }
 
     @Test
@@ -306,7 +307,7 @@ public class FormComponentStateTest extends AbstractStateTest {
         verify(dataDefinition).save(eq(entity));
         assertEquals("text2", name.getFieldValue());
         assertEquals(13L, form.getFieldValue());
-        assertTrue(((FormComponentState) form).isValid());
+        assertTrue(((FormComponent) form).isValid());
     }
 
     @Test
@@ -330,7 +331,7 @@ public class FormComponentStateTest extends AbstractStateTest {
 
         // then
         verify(dataDefinition).save(eq(entity));
-        assertFalse(((FormComponentState) form).isValid());
+        assertFalse(((FormComponent) form).isValid());
         assertTrue(form.render().toString().contains("translated global error"));
     }
 }

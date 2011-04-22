@@ -25,7 +25,7 @@ public class LocaleModuleFactory extends ModuleFactory<LocaleModule> {
 
     @Override
     public String getIdentifier() {
-        return "locale";
+        return "translation-locale";
     }
 
 }

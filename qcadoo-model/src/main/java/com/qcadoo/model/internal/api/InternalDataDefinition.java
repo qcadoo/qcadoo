@@ -31,9 +31,6 @@ import com.qcadoo.model.api.search.SearchResult;
 
 /**
  * Object defines database structure. This is {@link DataDefinition} extension for internal usage.
- * 
- * @apiviz.uses com.qcadoo.mes.model.search.SearchCriteria
- * @apiviz.uses com.qcadoo.mes.model.search.SearchResult
  */
 public interface InternalDataDefinition extends DataDefinition {
 

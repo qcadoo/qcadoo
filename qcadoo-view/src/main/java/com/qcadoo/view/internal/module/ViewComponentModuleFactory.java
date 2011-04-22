@@ -46,7 +46,7 @@ public class ViewComponentModuleFactory extends ModuleFactory<Module> implements
 
     @Override
     public String getIdentifier() {
-        return "component";
+        return "view-component";
     }
 
 }

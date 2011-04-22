@@ -152,6 +152,10 @@ QCD.WindowController = function(_menuStructure) {
 		return menuController.hasMenuPosition(position);
 	}
 	
+	this.updateMenu = function() {
+		menuController.updateMenu();
+	}
+	
 	this.onSessionExpired = function(serializationObject, isModal) {
 		serializationObjectToInsert = serializationObject;
 		if (isModal) {

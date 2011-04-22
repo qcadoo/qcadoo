@@ -336,6 +336,10 @@ QCD.PageController = function(_viewName, _pluginIdentifier, _hasDataDefinition, 
 		return isPopup;
 	}
 	
+	this.updateMenu = function() {
+		window.parent.updateMenu();
+	}
+	
 	this.goToPage = function(url, isPage, serialize) {
 		if (isPage == undefined || isPage == null) {
 			isPage = true;

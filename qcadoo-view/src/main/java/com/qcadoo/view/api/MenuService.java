@@ -2,6 +2,7 @@ package com.qcadoo.view.api;
 
 import java.util.Locale;
 
+import com.qcadoo.model.api.Entity;
 import com.qcadoo.view.api.menu.MenuDefinition;
 
 /**
@@ -19,5 +20,9 @@ public interface MenuService {
      * @return menu definition for current user
      */
     MenuDefinition getMenu(final Locale locale);
+
+    String getCategoryTranslation(final Entity category, final Locale locale);
+
+    String getItemTranslation(final Entity item, final Locale locale);
 
 }

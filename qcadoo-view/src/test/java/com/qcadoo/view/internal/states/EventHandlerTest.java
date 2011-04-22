@@ -32,7 +32,8 @@ import org.mockito.Mockito;
 
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.ViewDefinitionState;
-import com.qcadoo.view.components.form.FormComponentState;
+import com.qcadoo.view.api.components.FormComponent;
+import com.qcadoo.view.internal.components.form.FormComponentState;
 
 public class EventHandlerTest {
 
@@ -41,7 +42,7 @@ public class EventHandlerTest {
         // given
         ViewDefinitionState viewDefinitionState = mock(ViewDefinitionState.class);
 
-        FormComponentState component = new FormComponentState(null, null);
+        FormComponent component = new FormComponentState(null, null);
         component.setFieldValue(13L);
 
         // when
@@ -96,7 +97,7 @@ public class EventHandlerTest {
         // given
         ViewDefinitionState viewDefinitionState = mock(ViewDefinitionState.class);
 
-        FormComponentState component = new FormComponentState(null, null);
+        FormComponent component = new FormComponentState(null, null);
         component.setFieldValue(13L);
 
         // when

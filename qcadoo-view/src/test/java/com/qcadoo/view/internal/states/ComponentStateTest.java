@@ -40,8 +40,8 @@ import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.internal.ExpressionServiceImpl;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.ComponentState.MessageType;
-import com.qcadoo.view.components.SimpleComponentState;
-import com.qcadoo.view.components.form.FormComponentState;
+import com.qcadoo.view.internal.components.SimpleComponentState;
+import com.qcadoo.view.internal.components.form.FormComponentState;
 import com.qcadoo.view.internal.states.AbstractComponentState;
 
 public class ComponentStateTest {
