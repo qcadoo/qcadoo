@@ -1,10 +1,21 @@
 package com.qcadoo.security.api;
 
 /**
+ * Interface for service that will provide information about access role of view definitions.
+ * 
  * @since 0.4.0
  */
 public interface SecurityViewDefinitionRoleResolver {
 
+    /**
+     * gets access role of view definition
+     * 
+     * @param pluginIdentifier
+     *            plugin identifier of view definition
+     * @param viewName
+     *            name of view definition
+     * @return security role of view definition - can be null if no role defined to this view
+     */
     SecurityRole getRoleForView(String pluginIdentifier, String viewName);
 
 }
