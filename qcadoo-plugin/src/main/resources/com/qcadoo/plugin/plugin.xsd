@@ -30,10 +30,6 @@
 
 	<xs:include schemaLocation="http://schema.qcadoo.org/common/plugin.xsd" />
 	
-	<xs:element name="databasePreparation">
-		<xs:complexType />
-	</xs:element>
-		
 	<xs:element name="plugin">
 		<xs:complexType>
 			<xs:sequence>
