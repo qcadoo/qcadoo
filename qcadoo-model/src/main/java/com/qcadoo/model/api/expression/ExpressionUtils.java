@@ -54,7 +54,7 @@ public final class ExpressionUtils {
      * @return evaluated expression or null
      */
     public static String getValue(final Entity entity, final List<FieldDefinition> fields, final Locale locale) {
-        return ExpressionServiceImpl.getInstance().getValue(entity, fieldDefinitions, locale);
+        return ExpressionServiceImpl.getInstance().getValue(entity, fields, locale);
     }
 
     /**

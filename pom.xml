@@ -263,20 +263,6 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.7</version>
-				<executions>
-					<execution>
-						<id>attach-javadocs</id>
-						<phase>deploy</phase>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-deploy-plugin</artifactId>
 				<version>2.5</version>
 				<executions>
@@ -300,7 +286,7 @@
 						<version>1.3.1.GA</version>
 					</docletArtifact -->
 					<author>false</author>
-					<bottom><![CDATA[Copyright &#169; ${inceptionYear}-{currentYear} <a href="${organization.url}">${organization.name}<a>]]></bottom>
+					<bottom><![CDATA[Copyright &#169; ${project.inceptionYear}-{currentYear} <a href="${project.organization.url}">${project.organization.name}<a>]]></bottom>
 					<nohelp>true</nohelp>
 					<nodeprecated>true</nodeprecated>
 					<nodeprecatedlist>true</nodeprecatedlist>
