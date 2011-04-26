@@ -24,6 +24,7 @@
 
 package com.qcadoo.view.api;
 
+
 public interface ViewDefinitionState extends ContainerState {
 
     void performEvent(String path, String event, String... args);

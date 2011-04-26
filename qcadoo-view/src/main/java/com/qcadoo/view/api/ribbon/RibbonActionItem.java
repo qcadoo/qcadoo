@@ -29,11 +29,13 @@ import org.json.JSONObject;
 
 /**
  * Represents single ribbon item
+ * 
+ * @since 0.4.0
  */
 public class RibbonActionItem {
 
     /**
-     * type of ribbon item
+     * Type of ribbon item
      */
     public static enum Type {
         /**
@@ -75,7 +77,7 @@ public class RibbonActionItem {
     private boolean shouldBeUpdated = false;
 
     /**
-     * get defined item click action
+     * Get defined item click action
      * 
      * @return defined item click action
      */
@@ -84,7 +86,7 @@ public class RibbonActionItem {
     }
 
     /**
-     * set defined item action
+     * Set defined item action
      * 
      * @param clickAction
      *            defined item action
@@ -94,7 +96,7 @@ public class RibbonActionItem {
     }
 
     /**
-     * get identifier of this ribbon item
+     * Get identifier of this ribbon item
      * 
      * @return identifier of this ribbon item
      */
@@ -103,7 +105,7 @@ public class RibbonActionItem {
     }
 
     /**
-     * set identifier of this ribbon item
+     * Set identifier of this ribbon item
      * 
      * @param name
      *            identifier of this ribbon item
@@ -113,7 +115,7 @@ public class RibbonActionItem {
     }
 
     /**
-     * get item type
+     * Get item type
      * 
      * @return item type
      */
@@ -122,7 +124,7 @@ public class RibbonActionItem {
     }
 
     /**
-     * set item type
+     * Set item type
      * 
      * @param type
      *            item type
@@ -132,7 +134,7 @@ public class RibbonActionItem {
     }
 
     /**
-     * get item icon (null if item without icon)
+     * Get item icon (null if item without icon)
      * 
      * @return item icon
      */
@@ -141,7 +143,7 @@ public class RibbonActionItem {
     }
 
     /**
-     * set item icon (null if item without icon)
+     * Set item icon (null if item without icon)
      * 
      * @param icon
      *            item icon
@@ -151,7 +153,7 @@ public class RibbonActionItem {
     }
 
     /**
-     * generates JSON representation of this ribbon item
+     * Generates JSON representation of this ribbon item
      * 
      * @return JSON representation of this ribbon item
      * @throws JSONException
@@ -170,30 +172,68 @@ public class RibbonActionItem {
         return itemObject;
     }
 
+    /**
+     * Returns script of this ribbon item
+     * 
+     * @return script of this ribbon item
+     */
     public String getScript() {
         return script;
     }
 
+    /**
+     * Sets script of this ribbon item
+     * 
+     * @param script
+     *            script of this ribbon item
+     */
     public void setScript(String script) {
         this.script = script;
     }
 
+    /**
+     * Returns true if this item is enabled
+     * 
+     * @return true if this item is enabled
+     */
     public Boolean isEnabled() {
         return enabled;
     }
 
+    /**
+     * Sets this item state
+     * 
+     * @param enabled
+     *            true when this item should be enabled or false when this item should be disabled
+     */
     public void setEnabled(Boolean enabled) {
         this.enabled = enabled;
     }
 
+    /**
+     * Returns message connected to this item
+     * 
+     * @return message connected to this item
+     */
     public String getMessage() {
         return message;
     }
 
+    /**
+     * sets message connected to this item
+     * 
+     * @param message
+     *            new message connected to this item
+     */
     public void setMessage(String message) {
         this.message = message;
     }
 
+    /**
+     * Returns copy of this item - internal usage only
+     * 
+     * @return copy of this item
+     */
     public RibbonActionItem getCopy() {
         RibbonActionItem copy = new RibbonActionItem();
         copyFields(copy);
@@ -210,10 +250,21 @@ public class RibbonActionItem {
         item.setMessage(message);
     }
 
+    /**
+     * Returns information if this item state should be updated
+     * 
+     * @return information if this item state should be updated
+     */
     public boolean isShouldBeUpdated() {
         return shouldBeUpdated;
     }
 
+    /**
+     * Informs that this item state should be updated
+     * 
+     * @param shouldBeUpdated
+     *            true if this item state should be updated
+     */
     public void setShouldBeUpdated(boolean shouldBeUpdated) {
         this.shouldBeUpdated = shouldBeUpdated;
     }

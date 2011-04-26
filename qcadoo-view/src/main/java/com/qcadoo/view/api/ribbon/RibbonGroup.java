@@ -33,6 +33,8 @@ import org.json.JSONObject;
 
 /**
  * Represents ribbon items group
+ * 
+ * @since 0.4.0
  */
 public final class RibbonGroup {
 
@@ -47,7 +49,7 @@ public final class RibbonGroup {
     }
 
     /**
-     * get identifier of this ribbon group
+     * Get identifier of this ribbon group
      * 
      * @return identifier of this ribbon group
      */
@@ -56,7 +58,7 @@ public final class RibbonGroup {
     }
 
     /**
-     * get items of this group
+     * Get items of this group
      * 
      * @return items of this group
      */
@@ -65,7 +67,7 @@ public final class RibbonGroup {
     }
 
     /**
-     * get item by name
+     * Get item by name
      * 
      * @return item or null when no item witch such name
      */
@@ -79,7 +81,7 @@ public final class RibbonGroup {
     }
 
     /**
-     * add item to this group
+     * Add item to this group
      * 
      * @param item
      *            item to add
@@ -89,7 +91,7 @@ public final class RibbonGroup {
     }
 
     /**
-     * generates JSON representation of this ribbon group
+     * Generates JSON representation of this ribbon group
      * 
      * @return JSON representation of this ribbon group
      * @throws JSONException
@@ -105,6 +107,11 @@ public final class RibbonGroup {
         return groupObject;
     }
 
+    /**
+     * Gets copy of this group - internal usage only
+     * 
+     * @return copy of this group
+     */
     public RibbonGroup getCopy() {
         RibbonGroup copy = new RibbonGroup(name);
         copy.setExtensionPluginIdentifier(extensionPluginIdentifier);
@@ -114,6 +121,11 @@ public final class RibbonGroup {
         return copy;
     }
 
+    /**
+     * Gets ribbon group with only updated items - internal usage only
+     * 
+     * @return ribon group with only updated fields
+     */
     public RibbonGroup getUpdate() {
         RibbonGroup diff = new RibbonGroup(name);
         diff.setExtensionPluginIdentifier(extensionPluginIdentifier);
@@ -130,10 +142,21 @@ public final class RibbonGroup {
         return null;
     }
 
+    /**
+     * Returns identifier of plugin that created this group or null when no such plugin identifier defined
+     * 
+     * @return identifier of plugin that created this group or null when no such plugin identifier defined
+     */
     public String getExtensionPluginIdentifier() {
         return extensionPluginIdentifier;
     }
 
+    /**
+     * Sets identifier of plugin that created this group - internal usage only
+     * 
+     * @param extensionPluginIdentifier
+     *            identifier of plugin that created this group
+     */
     public void setExtensionPluginIdentifier(String extensionPluginIdentifier) {
         this.extensionPluginIdentifier = extensionPluginIdentifier;
     }

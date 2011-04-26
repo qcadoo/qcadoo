@@ -338,14 +338,12 @@ public final class GridComponentState extends AbstractComponentState implements 
         return entities;
     }
 
-    @Override
-    public void setSelectedEntityId(final Long selectedEntityId) {
+    private void setSelectedEntityId(final Long selectedEntityId) {
         this.selectedEntityId = selectedEntityId;
         notifyEntityIdChangeListeners(selectedEntityId);
     }
 
-    @Override
-    public Long getSelectedEntityId() {
+    private Long getSelectedEntityId() {
         return selectedEntityId;
     }
 

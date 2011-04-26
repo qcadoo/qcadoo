@@ -29,7 +29,7 @@ import com.qcadoo.view.api.menu.MenuItem;
 /**
  * Menu item that leads to specified ViewDefinition.
  * 
- * @see com.qcadoo.mes.view.ViewDefinition
+ * @see com.qcadoo.view.api.ViewDefinition
  */
 public final class ViewDefinitionMenuItemItem extends MenuItem {
 

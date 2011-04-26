@@ -31,6 +31,10 @@ import org.json.JSONObject;
 
 public interface ComponentState {
 
+    public enum MessageType {
+        FAILURE, SUCCESS, INFO
+    }
+
     String JSON_UPDATE_STATE = "updateState";
 
     String JSON_VISIBLE = "visible";
@@ -55,25 +59,19 @@ public interface ComponentState {
 
     String JSON_MESSAGE_AUTOCLOSE = "autoClose";
 
-    public enum MessageType {
-        FAILURE, SUCCESS, INFO
-    }
-
-    String getName();
-
     void initialize(JSONObject json, Locale locale) throws JSONException;
 
-    void performEvent(ViewDefinitionState viewDefinitionState, String event, String... args);
-
     JSONObject render() throws JSONException;
-
-    void setFieldValue(Object value);
-
-    Object getFieldValue();
 
     void addMessage(String message, MessageType type);
 
     void addMessage(String message, MessageType type, boolean autoClose);
+
+    Locale getLocale();
+
+    void setFieldValue(Object value);
+
+    Object getFieldValue();
 
     boolean isVisible();
 
@@ -83,8 +81,9 @@ public interface ComponentState {
 
     void setEnabled(boolean enable);
 
-    Locale getLocale();
+    void performEvent(ViewDefinitionState viewDefinitionState, String event, String... args);
 
     boolean isHasError();
 
+    String getName();
 }

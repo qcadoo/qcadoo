@@ -35,6 +35,8 @@ import com.qcadoo.plugin.api.PluginUtil;
 
 /**
  * Represents ribbon in application
+ * 
+ * @since 0.4.0
  */
 public final class Ribbon {
 
@@ -43,7 +45,7 @@ public final class Ribbon {
     private final List<RibbonGroup> groups = new LinkedList<RibbonGroup>();
 
     /**
-     * get identifier of this ribbon
+     * Get identifier of this ribbon
      * 
      * @return identifier of this ribbon
      */
@@ -52,7 +54,7 @@ public final class Ribbon {
     }
 
     /**
-     * set identifier of this ribbon
+     * Set identifier of this ribbon
      * 
      * @param name
      *            identifier of this ribbon
@@ -62,7 +64,7 @@ public final class Ribbon {
     }
 
     /**
-     * get groups of this ribbon
+     * Get groups of this ribbon
      * 
      * @return groups of this ribbon
      */
@@ -71,7 +73,7 @@ public final class Ribbon {
     }
 
     /**
-     * get group by name of this ribbon
+     * Get group by name of this ribbon
      * 
      * @return group or null when no group witch such name
      */
@@ -85,7 +87,7 @@ public final class Ribbon {
     }
 
     /**
-     * add group to this ribbon
+     * Add group to this ribbon
      * 
      * @param group
      *            group to add
@@ -94,6 +96,12 @@ public final class Ribbon {
         this.groups.add(group);
     }
 
+    /**
+     * Removes group from this ribbon
+     * 
+     * @param group
+     *            group to remove
+     */
     public void removeGroup(final RibbonGroup group) {
         this.groups.remove(group);
     }
@@ -120,6 +128,11 @@ public final class Ribbon {
         }
     }
 
+    /**
+     * Gets copy of this robbon - internal usage only
+     * 
+     * @return copy of this ribbon
+     */
     public Ribbon getCopy() {
         Ribbon copy = new Ribbon();
         copy.setName(name);
@@ -129,6 +142,11 @@ public final class Ribbon {
         return copy;
     }
 
+    /**
+     * Gets ribbon with only updated fields - internal usage only
+     * 
+     * @return ribon with only updated fields
+     */
     public Ribbon getUpdate() {
         Ribbon diff = new Ribbon();
         boolean isDiffrence = false;

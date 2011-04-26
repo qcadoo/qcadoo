@@ -8,7 +8,7 @@ package com.qcadoo.security.api;
 public interface SecurityRolesService {
 
     /**
-     * returns role with defined identifier or null if no such role found
+     * Returns role with defined identifier or null if no such role found
      * 
      * @param roleIdetifier
      *            identifier of role
@@ -17,7 +17,7 @@ public interface SecurityRolesService {
     SecurityRole getRoleByIdentifier(String roleIdetifier);
 
     /**
-     * returns role with defined name or null if no such role found
+     * Returns role with defined name or null if no such role found
      * 
      * @param roleName
      *            name of role

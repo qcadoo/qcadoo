@@ -562,7 +562,6 @@ public class GridComponentStateTest extends AbstractStateTest {
 
         JSONObject json = grid.render();
 
-        assertEquals(Long.valueOf(13L), grid.getSelectedEntityId());
         assertEquals("SUCCESS",
                 json.getJSONArray(ComponentState.JSON_MESSAGES).getJSONObject(0).getString(ComponentState.JSON_MESSAGE_TYPE));
         assertEquals("i18n",

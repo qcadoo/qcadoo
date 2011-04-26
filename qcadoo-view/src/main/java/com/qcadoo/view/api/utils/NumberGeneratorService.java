@@ -10,12 +10,31 @@ import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.api.components.FieldComponent;
 import com.qcadoo.view.api.components.FormComponent;
 
+/**
+ * Helper service for automatically generating numbers for entities
+ * 
+ * @since 0.4.0
+ */
 @Service
 public class NumberGeneratorService {
 
     @Autowired
     private DataDefinitionService dataDefinitionService;
 
+    /**
+     * Generates and inserts new number to entity's form
+     * 
+     * @param state
+     *            main view state definition
+     * @param plugin
+     *            plugin identifier of entity
+     * @param entityName
+     *            name of entity
+     * @param formFieldReferenceName
+     *            reference name of form
+     * @param numberFieldReferenceName
+     *            reference name of field into which generated number should be inserted
+     */
     public void generateAndInsertNumber(final ViewDefinitionState state, final String plugin, final String entityName,
             final String formFieldReferenceName, final String numberFieldReferenceName) {
         if (!checkIfShouldInsertNumber(state, formFieldReferenceName, numberFieldReferenceName)) {
@@ -25,6 +44,17 @@ public class NumberGeneratorService {
         number.setFieldValue(generateNumber(plugin, entityName));
     }
 
+    /**
+     * Checks if new entity number should be generated and inserted
+     * 
+     * @param state
+     *            main view state definition
+     * @param formFieldReferenceName
+     *            reference name of form
+     * @param numberFieldReferenceName
+     *            reference name of field into which generated number should be inserted
+     * @return true if new entity number should be generated and inserted
+     */
     public boolean checkIfShouldInsertNumber(final ViewDefinitionState state, final String formFieldReferenceName,
             final String numberFieldReferenceName) {
         FormComponent form = (FormComponent) state.getComponentByReference(formFieldReferenceName);
@@ -44,10 +74,30 @@ public class NumberGeneratorService {
         return true;
     }
 
+    /**
+     * Generate new 6-digits number of entity
+     * 
+     * @param plugin
+     *            plugin identifier of entity
+     * @param entityName
+     *            name of entity
+     * @return new number of entity
+     */
     public String generateNumber(final String plugin, final String entityName) {
         return generateNumber(plugin, entityName, 6);
     }
 
+    /**
+     * Generate new number of entity with specified digits number
+     * 
+     * @param plugin
+     *            plugin identifier of entity
+     * @param entityName
+     *            name of entity
+     * @param digitsNumber
+     *            number of digits of generated number
+     * @return new number of entity
+     */
     public String generateNumber(final String plugin, final String entityName, final int digitsNumber) {
 
         SearchResult results = dataDefinitionService.get(plugin, entityName).find().setMaxResults(1).setOrderDescBy("id").list();
@@ -60,7 +110,7 @@ public class NumberGeneratorService {
             longValue = results.getEntities().get(0).getId() + 1;
         }
 
-        return String.format("%06d", longValue);
+        return String.format("%0" + digitsNumber + "d", longValue);
     }
 
 }
