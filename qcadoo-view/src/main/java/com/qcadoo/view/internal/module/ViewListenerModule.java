@@ -2,10 +2,10 @@ package com.qcadoo.view.internal.module;
 
 import com.google.common.base.Preconditions;
 import com.qcadoo.plugin.api.Module;
+import com.qcadoo.view.api.ComponentCustomEvent;
 import com.qcadoo.view.api.ComponentPattern;
 import com.qcadoo.view.internal.api.InternalViewDefinition;
 import com.qcadoo.view.internal.api.InternalViewDefinitionService;
-import com.qcadoo.view.internal.internal.ComponentCustomEvent;
 
 public class ViewListenerModule extends Module {
 

@@ -46,7 +46,6 @@ import org.mockito.Mockito;
 
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.view.api.ComponentPattern;
-import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.internal.api.InternalViewDefinition;
 import com.qcadoo.view.internal.components.form.FormComponentPattern;
@@ -55,6 +54,7 @@ import com.qcadoo.view.internal.internal.ViewDefinitionImpl;
 import com.qcadoo.view.internal.patterns.AbstractContainerPattern;
 import com.qcadoo.view.internal.patterns.AbstractPatternTest;
 import com.qcadoo.view.internal.patterns.ComponentPatternMock;
+import com.qcadoo.view.internal.states.AbstractComponentState;
 import com.qcadoo.view.internal.states.ComponentStateMock;
 import com.qcadoo.view.internal.states.ComponentStateMock.TestEvent;
 
@@ -176,7 +176,7 @@ public class ViewDefinitionTest extends AbstractPatternTest {
         eventJson.put(InternalViewDefinition.JSON_EVENT_ARGS, new JSONArray(newArrayList("arg1", "arg2")));
 
         JSONObject contentJson = new JSONObject(of("asd", "qwe"));
-        JSONObject componentJson = new JSONObject(of(ComponentState.JSON_CONTENT, contentJson));
+        JSONObject componentJson = new JSONObject(of(AbstractComponentState.JSON_CONTENT, contentJson));
 
         JSONObject json = new JSONObject();
         json.put(InternalViewDefinition.JSON_EVENT, eventJson);

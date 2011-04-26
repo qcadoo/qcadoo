@@ -26,10 +26,31 @@ package com.qcadoo.view.api;
 
 import java.util.Map;
 
+/**
+ * ContainerPattern is a definition of single view element which can contain other components. For more informations see
+ * {@link com.qcadoo.view.api.ComponentPattern}.
+ * 
+ * @since 0.4.0
+ * 
+ * @see com.qcadoo.view.api.ComponentPattern
+ * @see com.qcadoo.view.api.ContainerState
+ */
 public interface ContainerPattern extends ComponentPattern {
 
+    /**
+     * Returns map of all children components of this component by pair name -> component
+     * 
+     * @return map of all children components
+     */
     Map<String, ComponentPattern> getChildren();
 
+    /**
+     * Returns child component with specified name or null if no such component can be found
+     * 
+     * @param name
+     *            name of child component
+     * @return child component with specified name
+     */
     ComponentPattern getChild(String name);
 
 }

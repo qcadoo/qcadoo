@@ -159,7 +159,7 @@ public final class ViewDefinitionStateImpl extends AbstractContainerState implem
     }
 
     @Override
-    public void registerComponent(final String reference, final String path, final ComponentState state) {
+    public void registerComponent(final String reference, final ComponentState state) {
         if (registry.containsKey(reference)) {
             throw new IllegalStateException("Duplicated state reference : " + reference);
         }

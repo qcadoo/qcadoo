@@ -42,7 +42,6 @@ import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.ComponentState.MessageType;
 import com.qcadoo.view.internal.components.SimpleComponentState;
 import com.qcadoo.view.internal.components.form.FormComponentState;
-import com.qcadoo.view.internal.states.AbstractComponentState;
 
 public class ComponentStateTest {
 
@@ -53,8 +52,8 @@ public class ComponentStateTest {
 
         JSONObject json = new JSONObject();
         JSONObject jsonContent = new JSONObject();
-        jsonContent.put(ComponentState.JSON_VALUE, "text");
-        json.put(ComponentState.JSON_CONTENT, jsonContent);
+        jsonContent.put(AbstractComponentState.JSON_VALUE, "text");
+        json.put(AbstractComponentState.JSON_CONTENT, jsonContent);
 
         // when
         componentState.initialize(json, Locale.ENGLISH);
@@ -74,7 +73,7 @@ public class ComponentStateTest {
         JSONObject json = componentState.render();
 
         // then
-        assertEquals("text", json.getJSONObject(ComponentState.JSON_CONTENT).getString(ComponentState.JSON_VALUE));
+        assertEquals("text", json.getJSONObject(AbstractComponentState.JSON_CONTENT).getString(AbstractComponentState.JSON_VALUE));
     }
 
     @Test
@@ -88,7 +87,7 @@ public class ComponentStateTest {
         JSONObject json = componentState.render();
 
         // then
-        assertFalse(json.getJSONObject(ComponentState.JSON_CONTENT).has(ComponentState.JSON_VALUE));
+        assertFalse(json.getJSONObject(AbstractComponentState.JSON_CONTENT).has(AbstractComponentState.JSON_VALUE));
     }
 
     @Test
@@ -100,7 +99,7 @@ public class ComponentStateTest {
         JSONObject json = componentState.render();
 
         // then
-        assertFalse(json.has(ComponentState.JSON_CONTENT));
+        assertFalse(json.has(AbstractComponentState.JSON_CONTENT));
     }
 
     @Test
@@ -120,7 +119,7 @@ public class ComponentStateTest {
         JSONObject json = componentState.render();
 
         // then
-        assertTrue(json.getBoolean(ComponentState.JSON_UPDATE_STATE));
+        assertTrue(json.getBoolean(AbstractComponentState.JSON_UPDATE_STATE));
     }
 
     @Test
@@ -136,7 +135,7 @@ public class ComponentStateTest {
         JSONObject json = componentState.render();
 
         // then
-        assertFalse(json.getBoolean(ComponentState.JSON_UPDATE_STATE));
+        assertFalse(json.getBoolean(AbstractComponentState.JSON_UPDATE_STATE));
     }
 
     @Test
@@ -146,16 +145,16 @@ public class ComponentStateTest {
 
         JSONObject json = new JSONObject();
         JSONObject jsonContent = new JSONObject();
-        jsonContent.put(ComponentState.JSON_VALUE, "text");
-        json.put(ComponentState.JSON_CONTENT, jsonContent);
-        json.put(ComponentState.JSON_VISIBLE, true);
+        jsonContent.put(AbstractComponentState.JSON_VALUE, "text");
+        json.put(AbstractComponentState.JSON_CONTENT, jsonContent);
+        json.put(AbstractComponentState.JSON_VISIBLE, true);
 
         // when
         componentState.initialize(json, Locale.ENGLISH);
 
         // then
         assertTrue(componentState.isVisible());
-        assertTrue(componentState.render().getBoolean(ComponentState.JSON_VISIBLE));
+        assertTrue(componentState.render().getBoolean(AbstractComponentState.JSON_VISIBLE));
     }
 
     @Test
@@ -168,7 +167,7 @@ public class ComponentStateTest {
 
         // then
         assertFalse(componentState.isVisible());
-        assertFalse(componentState.render().getBoolean(ComponentState.JSON_VISIBLE));
+        assertFalse(componentState.render().getBoolean(AbstractComponentState.JSON_VISIBLE));
     }
 
     @Test
@@ -178,16 +177,16 @@ public class ComponentStateTest {
 
         JSONObject json = new JSONObject();
         JSONObject jsonContent = new JSONObject();
-        jsonContent.put(ComponentState.JSON_VALUE, "text");
-        json.put(ComponentState.JSON_CONTENT, jsonContent);
-        json.put(ComponentState.JSON_ENABLED, true);
+        jsonContent.put(AbstractComponentState.JSON_VALUE, "text");
+        json.put(AbstractComponentState.JSON_CONTENT, jsonContent);
+        json.put(AbstractComponentState.JSON_ENABLED, true);
 
         // when
         componentState.initialize(json, Locale.ENGLISH);
 
         // then
         assertTrue(componentState.isEnabled());
-        assertTrue(componentState.render().getBoolean(ComponentState.JSON_ENABLED));
+        assertTrue(componentState.render().getBoolean(AbstractComponentState.JSON_ENABLED));
     }
 
     @Test
@@ -200,7 +199,7 @@ public class ComponentStateTest {
 
         // then
         assertFalse(componentState.isEnabled());
-        assertFalse(componentState.render().getBoolean(ComponentState.JSON_ENABLED));
+        assertFalse(componentState.render().getBoolean(AbstractComponentState.JSON_ENABLED));
     }
 
 }

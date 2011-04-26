@@ -49,7 +49,7 @@ public class ViewDefinitionStateTest extends AbstractStateTest {
 
         ContainerState state = mock(ContainerState.class);
 
-        viewDefinitionState.registerComponent("reference", "path", state);
+        viewDefinitionState.registerComponent("reference", state);
 
         // when
         ComponentState actualState = viewDefinitionState.getComponentByReference("reference");

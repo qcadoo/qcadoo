@@ -44,6 +44,7 @@ import org.junit.Test;
 
 import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.mes.beans.sample.CustomEntityService;
+import com.qcadoo.view.api.ComponentCustomEvent;
 import com.qcadoo.view.api.ComponentPattern;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.ContainerPattern;
@@ -54,7 +55,6 @@ import com.qcadoo.view.internal.api.InternalViewDefinition;
 import com.qcadoo.view.internal.components.TextInputComponentPattern;
 import com.qcadoo.view.internal.components.form.FormComponentPattern;
 import com.qcadoo.view.internal.components.window.WindowComponentPattern;
-import com.qcadoo.view.internal.internal.ComponentCustomEvent;
 import com.qcadoo.view.internal.internal.EventHandlerHolder;
 
 public class ComponentPatternTest extends AbstractPatternTest {

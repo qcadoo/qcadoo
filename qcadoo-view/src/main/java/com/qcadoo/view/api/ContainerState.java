@@ -26,12 +26,40 @@ package com.qcadoo.view.api;
 
 import java.util.Map;
 
+/**
+ * ContainerState is a instance of single view element which can contain other components. Form more informations see
+ * 
+ * @link com.qcadoo.view.api.ComponentState}.
+ * 
+ * @since 0.4.0
+ * 
+ * @see com.qcadoo.view.api.ComponentState
+ * @see com.qcadoo.view.api.ContainerPattern
+ */
 public interface ContainerState extends ComponentState {
 
+    /**
+     * Returns map of all children components of this component by pair name -> component
+     * 
+     * @return map of all children components
+     */
     Map<String, ComponentState> getChildren();
 
+    /**
+     * Returns child component with specified name or null if no such component can be found
+     * 
+     * @param name
+     *            name of child component
+     * @return child component with specified name
+     */
     ComponentState getChild(String name);
 
+    /**
+     * Adds new child to this component
+     * 
+     * @param state
+     *            child to add
+     */
     void addChild(ComponentState state);
 
 }
