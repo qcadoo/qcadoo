@@ -92,7 +92,7 @@
 					<bean class="com.qcadoo.view.internal.menu.module.MenuCategoryModuleFactory" />
 					<bean class="com.qcadoo.view.internal.menu.module.MenuViewModuleFactory" />
 					<bean class="com.qcadoo.view.internal.menu.module.MenuUrlModuleFactory" />
-					<bean class="com.qcadoo.mes.internal.module.DatabasePreparationModuleFactory" />
+					<bean class="com.qcadoo.plugin.internal.module.CustomModuleFactory" />
 				</list>
 			</property>
 		</bean>

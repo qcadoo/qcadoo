@@ -2,13 +2,16 @@
 <plugin plugin="qcadooView" version="0.4.0" system="true"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schema.qcadoo.org/plugin"
 	xmlns:model="http://schema.qcadoo.org/modules/model" xmlns:view="http://schema.qcadoo.org/modules/view"
+	xmlns:menu="http://schema.qcadoo.org/modules/menu"
 	xsi:schemaLocation="
        http://schema.qcadoo.org/plugin
        http://schema.qcadoo.org/plugin.xsd
        http://schema.qcadoo.org/modules/model
        http://schema.qcadoo.org/modules/model.xsd
        http://schema.qcadoo.org/modules/view
-       http://schema.qcadoo.org/modules/view.xsd">
+       http://schema.qcadoo.org/modules/view.xsd
+       http://schema.qcadoo.org/modules/menu
+       http://schema.qcadoo.org/modules/menu.xsd">
 
 	<information>
 		<name>Qcadoo Framework View</name>
@@ -22,6 +25,14 @@
 		<model:model model="category" resource="model/category.xml" />
 		<model:model model="item" resource="model/item.xml" />
 		<model:model model="view" resource="model/view.xml" />
+
+		<view:view resource="view/systemInfo.xml" />
+
+		<menu:menu-category name="home" />
+		<menu:menu-category name="administration" />
+		
+		<menu:menu-item-url name="home" category="home" url="/dashboard.html" />
+		<menu:menu-item-url name="systemInfo" category="administration" url="/systemInfo.html" />
 
 		<view:view-component name="button" class="com.qcadoo.view.internal.components.ButtonComponentPattern" />
 		<view:view-component name="label" class="com.qcadoo.view.internal.components.LabelComponentPattern" />

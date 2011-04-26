@@ -126,10 +126,10 @@
 	</bean>
 
 	<bean id="mySessionExpirationFilter"
-		class="com.qcadoo.mes.security.internal.SessionExpirationFilter" />
+		class="com.qcadoo.security.internal.filters.SessionExpirationFilter" />
 
 	<bean id="customAuthenticationFilter"
-		class="com.qcadoo.mes.security.internal.CustomAuthenticationFilter">
+		class="com.qcadoo.security.internal.filters.CustomAuthenticationFilter">
 		<property name="authenticationManager" ref="authenticationManager" />
 		<property name="authenticationFailureHandler" ref="failureHandler" />
 		<property name="authenticationSuccessHandler" ref="successHandler" />
