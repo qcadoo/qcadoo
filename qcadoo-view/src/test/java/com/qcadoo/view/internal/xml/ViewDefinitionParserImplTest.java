@@ -54,6 +54,7 @@ import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.types.BelongsToType;
 import com.qcadoo.model.api.types.HasManyType;
 import com.qcadoo.model.internal.types.StringType;
+import com.qcadoo.view.api.ComponentCustomEvent;
 import com.qcadoo.view.api.ComponentPattern;
 import com.qcadoo.view.api.ViewDefinition;
 import com.qcadoo.view.api.ViewDefinitionService;
@@ -69,7 +70,6 @@ import com.qcadoo.view.internal.components.form.FormComponentPattern;
 import com.qcadoo.view.internal.components.grid.GridComponentPattern;
 import com.qcadoo.view.internal.components.window.WindowComponentPattern;
 import com.qcadoo.view.internal.hooks.HookFactory;
-import com.qcadoo.view.internal.internal.ComponentCustomEvent;
 import com.qcadoo.view.internal.internal.ViewComponentsResolverImpl;
 
 public class ViewDefinitionParserImplTest {

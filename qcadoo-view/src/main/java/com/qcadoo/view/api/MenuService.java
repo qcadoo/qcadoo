@@ -21,8 +21,26 @@ public interface MenuService {
      */
     MenuDefinition getMenu(final Locale locale);
 
+    /**
+     * Returns category translation
+     * 
+     * @param category
+     *            category entity
+     * @param locale
+     *            localization
+     * @return category translation
+     */
     String getCategoryTranslation(final Entity category, final Locale locale);
 
+    /**
+     * Returns item translation
+     * 
+     * @param item
+     *            item entity
+     * @param locale
+     *            localization
+     * @return item translation
+     */
     String getItemTranslation(final Entity item, final Locale locale);
 
 }

@@ -29,6 +29,8 @@ import org.json.JSONObject;
 
 /**
  * Represents single menu item
+ * 
+ * @since 0.4.0
  */
 public abstract class MenuItem {
 
@@ -53,7 +55,7 @@ public abstract class MenuItem {
     }
 
     /**
-     * get identifier of item
+     * Get identifier of item
      * 
      * @return identifier of item
      */
@@ -62,7 +64,7 @@ public abstract class MenuItem {
     }
 
     /**
-     * get item label to display
+     * Get item label to display
      * 
      * @return item label to display
      */
@@ -71,7 +73,7 @@ public abstract class MenuItem {
     }
 
     /**
-     * get plugin identifier of this item
+     * Get plugin identifier of this item
      * 
      * @return plugin identifier of this item
      */
@@ -80,14 +82,14 @@ public abstract class MenuItem {
     }
 
     /**
-     * get URL that this item leads to
+     * Get URL that this item leads to
      * 
      * @return URL that this item leads to
      */
     public abstract String getPage();
 
     /**
-     * generates JSON representation of this item
+     * Generates JSON representation of this item
      * 
      * @return JSON representation of this item
      * @throws JSONException

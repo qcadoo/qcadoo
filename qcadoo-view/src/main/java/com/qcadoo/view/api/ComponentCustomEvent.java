@@ -22,8 +22,13 @@
  * ***************************************************************************
  */
 
-package com.qcadoo.view.internal.internal;
+package com.qcadoo.view.api;
 
+/**
+ * Represents custom event which can be added to every {@link com.qcadoo.view.api.ComponentPattern}.
+ * 
+ * @since 0.4.0
+ */
 public final class ComponentCustomEvent {
 
     private final String event;
@@ -34,6 +39,18 @@ public final class ComponentCustomEvent {
 
     private final String pluginIdentifier;
 
+    /**
+     * Basic constructor
+     * 
+     * @param event
+     *            event name
+     * @param object
+     *            object with method to call
+     * @param method
+     *            name of method to call
+     * @param pluginIdentifier
+     *            identifier of plugin with add this custom event (can be null)
+     */
     public ComponentCustomEvent(final String event, final Object object, final String method, final String pluginIdentifier) {
         this.event = event;
         this.object = object;
@@ -41,18 +58,38 @@ public final class ComponentCustomEvent {
         this.pluginIdentifier = pluginIdentifier;
     }
 
+    /**
+     * Returns name of method to call
+     * 
+     * @return name of method to call
+     */
     public String getMethod() {
         return method;
     }
 
+    /**
+     * Returns object with method to call
+     * 
+     * @return object with method to call
+     */
     public Object getObject() {
         return object;
     }
 
+    /**
+     * Returns event name
+     * 
+     * @return event name
+     */
     public String getEvent() {
         return event;
     }
 
+    /**
+     * Returns identifier of plugin with add this custom event or null if no such identifier specified
+     * 
+     * @return identifier of plugin with add this custom event
+     */
     public String getPluginIdentifier() {
         return pluginIdentifier;
     }

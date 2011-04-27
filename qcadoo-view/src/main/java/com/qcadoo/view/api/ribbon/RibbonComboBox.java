@@ -33,15 +33,27 @@ import org.json.JSONObject;
 
 /**
  * Represents ribbon combo box
+ * 
+ * @since 0.4.0
  */
 public class RibbonComboBox extends RibbonActionItem {
 
     private List<String> options = new LinkedList<String>();
 
+    /**
+     * Add new option to this ribbon combo box
+     * 
+     * @param option
+     *            option to add
+     */
     public void addOption(String option) {
         options.add(option);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public JSONObject getAsJson() throws JSONException {
         JSONObject obj = super.getAsJson();
         JSONArray optionsArray = new JSONArray();
@@ -52,6 +64,9 @@ public class RibbonComboBox extends RibbonActionItem {
         return obj;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public RibbonActionItem getCopy() {
         RibbonComboBox copy = new RibbonComboBox();

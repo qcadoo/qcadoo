@@ -29,62 +29,155 @@ import java.util.Locale;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * ComponentState is instance of single view element. It is created by {@link com.qcadoo.view.api.ComponentPattern} in request
+ * scope.
+ * <p>
+ * ComponentState contains all informations about state of this component. Changing this data will also change state displayed to
+ * system user.
+ * 
+ * @since 0.4.0
+ * 
+ * @see com.qcadoo.view.api.ComponentPattern
+ */
 public interface ComponentState {
 
-    String JSON_UPDATE_STATE = "updateState";
-
-    String JSON_VISIBLE = "visible";
-
-    String JSON_ENABLED = "enabled";
-
-    String JSON_CONTENT = "content";
-
-    String JSON_CONTEXT = "context";
-
-    String JSON_VALUE = "value";
-
-    String JSON_CHILDREN = "components";
-
-    String JSON_MESSAGES = "messages";
-
-    String JSON_MESSAGE_TITLE = "title";
-
-    String JSON_MESSAGE_BODY = "content";
-
-    String JSON_MESSAGE_TYPE = "type";
-
-    String JSON_MESSAGE_AUTOCLOSE = "autoClose";
-
+    /**
+     * Type of displayed message.
+     */
     public enum MessageType {
-        FAILURE, SUCCESS, INFO
+        /**
+         * Error message.
+         */
+        FAILURE,
+        /**
+         * Success message.
+         */
+        SUCCESS,
+        /**
+         * Information message.
+         */
+        INFO
     }
 
-    String getName();
-
+    /**
+     * Initialize this component state using data from client. <b>For internal usage only</b>
+     * 
+     * @param json
+     *            data from client
+     * @param locale
+     *            current localization
+     * @throws JSONException
+     *             when data from client contains errors
+     */
     void initialize(JSONObject json, Locale locale) throws JSONException;
 
-    void performEvent(ViewDefinitionState viewDefinitionState, String event, String... args);
-
+    /**
+     * Renders this component state back to client. <b>For internal usage only</b>
+     * 
+     * @return data to client
+     * @throws JSONException
+     *             when data for client contains errors
+     */
     JSONObject render() throws JSONException;
 
-    void setFieldValue(Object value);
-
-    Object getFieldValue();
-
+    /**
+     * Adds message to this component. Message will automatically close after some time.
+     * 
+     * @param message
+     *            message content
+     * @param type
+     *            message type
+     */
     void addMessage(String message, MessageType type);
 
+    /**
+     * Adds message to this component.
+     * 
+     * @param message
+     *            message content
+     * @param type
+     *            message type
+     * @param autoClose
+     *            true if this message should automatically close after some time
+     */
     void addMessage(String message, MessageType type, boolean autoClose);
 
-    boolean isVisible();
-
-    void setVisible(boolean visible);
-
-    boolean isEnabled();
-
-    void setEnabled(boolean enable);
-
+    /**
+     * Returns current localization
+     * 
+     * @return current localization
+     */
     Locale getLocale();
 
+    /**
+     * Sets new value of element defined by this component or do nothing if this component don't contains value
+     * 
+     * @param value
+     *            new value of element defined by this component
+     */
+    void setFieldValue(Object value);
+
+    /**
+     * Returns value of element defined by this component or null if this component don't contains value
+     * 
+     * @return value of element defined by this component
+     */
+    Object getFieldValue();
+
+    /**
+     * Returns true if element defined by this component is visible and false if it is hidden.
+     * 
+     * @return true if element defined by this component is visible and false if it is hidden
+     */
+    boolean isVisible();
+
+    /**
+     * Defines if element defined by this component should be visible.
+     * 
+     * @param visible
+     *            true if element defined by this component should be visible and false if it should be hidden
+     */
+    void setVisible(boolean visible);
+
+    /**
+     * Returns true if element defined by this component is be enabled
+     * 
+     * @return true if element defined by this component is enabled
+     */
+    boolean isEnabled();
+
+    /**
+     * Defines if element defined by this component should be enabled.
+     * 
+     * @param enable
+     *            true if element defined by this component should be enabled
+     */
+    void setEnabled(boolean enable);
+
+    /**
+     * Performs event on this component. <b>For internal usage only</b>
+     * 
+     * @param viewDefinitionState
+     *            viewDefinitionState
+     * @param event
+     *            name of event
+     * @param args
+     *            arguments of event
+     */
+    void performEvent(ViewDefinitionState viewDefinitionState, String event, String... args);
+
+    /**
+     * Returns true if this component has any error.
+     * 
+     * @return true if this component has any error
+     */
     boolean isHasError();
 
+    /**
+     * Returns name of this component.
+     * 
+     * @return name of this component
+     */
+    String getName();
 }

@@ -42,6 +42,30 @@ import com.qcadoo.view.internal.internal.MessageHolder;
 
 public abstract class AbstractComponentState implements ComponentState, FieldEntityIdChangeListener, ScopeEntityIdChangeListener {
 
+    public static final String JSON_UPDATE_STATE = "updateState";
+
+    public static final String JSON_VISIBLE = "visible";
+
+    public static final String JSON_ENABLED = "enabled";
+
+    public static final String JSON_CONTENT = "content";
+
+    public static final String JSON_CONTEXT = "context";
+
+    public static final String JSON_VALUE = "value";
+
+    public static final String JSON_CHILDREN = "components";
+
+    public static final String JSON_MESSAGES = "messages";
+
+    public static final String JSON_MESSAGE_TITLE = "title";
+
+    public static final String JSON_MESSAGE_BODY = "content";
+
+    public static final String JSON_MESSAGE_TYPE = "type";
+
+    public static final String JSON_MESSAGE_AUTOCLOSE = "autoClose";
+
     private final EntityIdChangeListenerHolder listenerHolder = new EntityIdChangeListenerHolder();
 
     private final EventHandlerHolder eventHandlerHolder = new EventHandlerHolder(this);

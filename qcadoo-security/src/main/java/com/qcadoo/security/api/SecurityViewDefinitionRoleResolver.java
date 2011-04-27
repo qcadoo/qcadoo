@@ -8,7 +8,7 @@ package com.qcadoo.security.api;
 public interface SecurityViewDefinitionRoleResolver {
 
     /**
-     * gets access role of view definition
+     * Gets access role of view definition
      * 
      * @param pluginIdentifier
      *            plugin identifier of view definition

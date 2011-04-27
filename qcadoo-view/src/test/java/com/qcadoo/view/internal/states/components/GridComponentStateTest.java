@@ -66,11 +66,11 @@ import com.qcadoo.model.api.types.HasManyType;
 import com.qcadoo.model.internal.DefaultEntity;
 import com.qcadoo.model.internal.ExpressionServiceImpl;
 import com.qcadoo.model.internal.types.StringType;
-import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.internal.FieldEntityIdChangeListener;
 import com.qcadoo.view.internal.components.grid.GridComponentColumn;
 import com.qcadoo.view.internal.components.grid.GridComponentState;
+import com.qcadoo.view.internal.states.AbstractComponentState;
 import com.qcadoo.view.internal.states.AbstractStateTest;
 
 public class GridComponentStateTest extends AbstractStateTest {
@@ -119,7 +119,7 @@ public class GridComponentStateTest extends AbstractStateTest {
 
         jsonContent.put(GridComponentState.JSON_FILTERS, jsonFilters);
 
-        json = new JSONObject(Collections.singletonMap(ComponentState.JSON_CONTENT, jsonContent));
+        json = new JSONObject(Collections.singletonMap(AbstractComponentState.JSON_CONTENT, jsonContent));
 
         entity = mock(Entity.class);
         given(entity.getField("name")).willReturn("text");
@@ -194,7 +194,7 @@ public class GridComponentStateTest extends AbstractStateTest {
         grid = new GridComponentState(null, columns, null, null);
         grid.setDataDefinition(substituteDataDefinition);
 
-        JSONObject json = new JSONObject(Collections.singletonMap(ComponentState.JSON_CONTENT, new JSONObject()));
+        JSONObject json = new JSONObject(Collections.singletonMap(AbstractComponentState.JSON_CONTENT, new JSONObject()));
 
         // when
         grid.initialize(json, Locale.ENGLISH);
@@ -227,7 +227,7 @@ public class GridComponentStateTest extends AbstractStateTest {
         grid.initialize(json, Locale.ENGLISH);
 
         // then
-        JSONObject json = grid.render().getJSONObject(ComponentState.JSON_CONTENT);
+        JSONObject json = grid.render().getJSONObject(AbstractComponentState.JSON_CONTENT);
 
         // then
         assertEquals(13L, json.getLong(GridComponentState.JSON_SELECTED_ENTITY_ID));
@@ -255,7 +255,7 @@ public class GridComponentStateTest extends AbstractStateTest {
         grid.initialize(json, Locale.ENGLISH);
 
         // when
-        JSONObject json = grid.render().getJSONObject(ComponentState.JSON_CONTENT);
+        JSONObject json = grid.render().getJSONObject(AbstractComponentState.JSON_CONTENT);
 
         // then
         assertEquals(30, json.getInt(GridComponentState.JSON_FIRST_ENTITY));
@@ -324,7 +324,7 @@ public class GridComponentStateTest extends AbstractStateTest {
 
         JSONObject jsonOrder = new JSONObject(ImmutableMap.of("column", "asd", "direction", "desc"));
 
-        json.getJSONObject(ComponentState.JSON_CONTENT).put(GridComponentState.JSON_ORDER, jsonOrder);
+        json.getJSONObject(AbstractComponentState.JSON_CONTENT).put(GridComponentState.JSON_ORDER, jsonOrder);
 
         grid.initialize(json, Locale.ENGLISH);
 
@@ -350,7 +350,7 @@ public class GridComponentStateTest extends AbstractStateTest {
 
         JSONObject jsonOrder = new JSONObject(ImmutableMap.of("column", "asd", "direction", "desc"));
 
-        json.getJSONObject(ComponentState.JSON_CONTENT).put(GridComponentState.JSON_ORDER, jsonOrder);
+        json.getJSONObject(AbstractComponentState.JSON_CONTENT).put(GridComponentState.JSON_ORDER, jsonOrder);
 
         grid.initialize(json, Locale.ENGLISH);
 
@@ -389,7 +389,7 @@ public class GridComponentStateTest extends AbstractStateTest {
 
         JSONObject jsonOrder = new JSONObject(ImmutableMap.of("column", "asd", "direction", "desc"));
 
-        json.getJSONObject(ComponentState.JSON_CONTENT).put(GridComponentState.JSON_ORDER, jsonOrder);
+        json.getJSONObject(AbstractComponentState.JSON_CONTENT).put(GridComponentState.JSON_ORDER, jsonOrder);
 
         grid.initialize(json, Locale.ENGLISH);
 
@@ -515,11 +515,15 @@ public class GridComponentStateTest extends AbstractStateTest {
 
         JSONObject json = grid.render();
 
-        assertFalse(json.getJSONObject(ComponentState.JSON_CONTENT).has(GridComponentState.JSON_SELECTED_ENTITY_ID));
-        assertEquals("SUCCESS",
-                json.getJSONArray(ComponentState.JSON_MESSAGES).getJSONObject(0).getString(ComponentState.JSON_MESSAGE_TYPE));
-        assertEquals("i18n",
-                json.getJSONArray(ComponentState.JSON_MESSAGES).getJSONObject(0).getString(ComponentState.JSON_MESSAGE_BODY));
+        assertFalse(json.getJSONObject(AbstractComponentState.JSON_CONTENT).has(GridComponentState.JSON_SELECTED_ENTITY_ID));
+        assertEquals(
+                "SUCCESS",
+                json.getJSONArray(AbstractComponentState.JSON_MESSAGES).getJSONObject(0)
+                        .getString(AbstractComponentState.JSON_MESSAGE_TYPE));
+        assertEquals(
+                "i18n",
+                json.getJSONArray(AbstractComponentState.JSON_MESSAGES).getJSONObject(0)
+                        .getString(AbstractComponentState.JSON_MESSAGE_BODY));
         verify(listener).onFieldEntityIdChange(null);
     }
 
@@ -562,11 +566,14 @@ public class GridComponentStateTest extends AbstractStateTest {
 
         JSONObject json = grid.render();
 
-        assertEquals(Long.valueOf(13L), grid.getSelectedEntityId());
-        assertEquals("SUCCESS",
-                json.getJSONArray(ComponentState.JSON_MESSAGES).getJSONObject(0).getString(ComponentState.JSON_MESSAGE_TYPE));
-        assertEquals("i18n",
-                json.getJSONArray(ComponentState.JSON_MESSAGES).getJSONObject(0).getString(ComponentState.JSON_MESSAGE_BODY));
+        assertEquals(
+                "SUCCESS",
+                json.getJSONArray(AbstractComponentState.JSON_MESSAGES).getJSONObject(0)
+                        .getString(AbstractComponentState.JSON_MESSAGE_TYPE));
+        assertEquals(
+                "i18n",
+                json.getJSONArray(AbstractComponentState.JSON_MESSAGES).getJSONObject(0)
+                        .getString(AbstractComponentState.JSON_MESSAGE_BODY));
         verify(listener, never()).onFieldEntityIdChange(13L);
     }
 
@@ -589,10 +596,14 @@ public class GridComponentStateTest extends AbstractStateTest {
 
         JSONObject json = grid.render();
 
-        assertEquals("SUCCESS",
-                json.getJSONArray(ComponentState.JSON_MESSAGES).getJSONObject(0).getString(ComponentState.JSON_MESSAGE_TYPE));
-        assertEquals("i18n",
-                json.getJSONArray(ComponentState.JSON_MESSAGES).getJSONObject(0).getString(ComponentState.JSON_MESSAGE_BODY));
+        assertEquals(
+                "SUCCESS",
+                json.getJSONArray(AbstractComponentState.JSON_MESSAGES).getJSONObject(0)
+                        .getString(AbstractComponentState.JSON_MESSAGE_TYPE));
+        assertEquals(
+                "i18n",
+                json.getJSONArray(AbstractComponentState.JSON_MESSAGES).getJSONObject(0)
+                        .getString(AbstractComponentState.JSON_MESSAGE_BODY));
         verify(listener, never()).onFieldEntityIdChange(13L);
     }
 
@@ -631,10 +642,14 @@ public class GridComponentStateTest extends AbstractStateTest {
 
         JSONObject json = grid.render();
 
-        assertEquals("SUCCESS",
-                json.getJSONArray(ComponentState.JSON_MESSAGES).getJSONObject(0).getString(ComponentState.JSON_MESSAGE_TYPE));
-        assertEquals("i18n",
-                json.getJSONArray(ComponentState.JSON_MESSAGES).getJSONObject(0).getString(ComponentState.JSON_MESSAGE_BODY));
+        assertEquals(
+                "SUCCESS",
+                json.getJSONArray(AbstractComponentState.JSON_MESSAGES).getJSONObject(0)
+                        .getString(AbstractComponentState.JSON_MESSAGE_TYPE));
+        assertEquals(
+                "i18n",
+                json.getJSONArray(AbstractComponentState.JSON_MESSAGES).getJSONObject(0)
+                        .getString(AbstractComponentState.JSON_MESSAGE_BODY));
         verify(listener, never()).onFieldEntityIdChange(13L);
     }
 

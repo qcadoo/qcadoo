@@ -28,8 +28,11 @@ import java.util.List;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 
+
 /**
  * Service for manipulating view definitions.
+ * 
+ * @since 0.4.0
  */
 public interface ViewDefinitionService {
 

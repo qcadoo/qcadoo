@@ -33,6 +33,8 @@ import org.json.JSONObject;
 
 /**
  * Represents top menu in application
+ * 
+ * @since 0.4.0
  */
 public final class MenuDefinition {
 
@@ -47,7 +49,7 @@ public final class MenuDefinition {
     }
 
     /**
-     * get all menu groups
+     * Get all menu groups
      * 
      * @return menu groups
      */
@@ -56,7 +58,7 @@ public final class MenuDefinition {
     }
 
     /**
-     * add group to menu
+     * Add group to menu
      * 
      * @param item
      */
@@ -65,7 +67,7 @@ public final class MenuDefinition {
     }
 
     /**
-     * generates JSON string that contains all menu definition
+     * Generates JSON string that contains all menu definition
      * 
      * @return JSON menu definition
      */
@@ -92,18 +94,40 @@ public final class MenuDefinition {
         }
     }
 
+    /**
+     * Returns administration category of this menu
+     * 
+     * @return administration category of this menu
+     */
     public MenulItemsGroup getAdministrationCategory() {
         return administrationCategory;
     }
 
+    /**
+     * Sets content of administration category
+     * 
+     * @param administrationCategory
+     *            new content of administration category
+     */
     public void setAdministrationCategory(MenulItemsGroup administrationCategory) {
         this.administrationCategory = administrationCategory;
     }
 
+    /**
+     * Returns home category of this menu
+     * 
+     * @return home category of this menu
+     */
     public MenulItemsGroup getHomeCategory() {
         return homeCategory;
     }
 
+    /**
+     * Sets content of home category
+     * 
+     * @param homeCategory
+     *            new content of home category
+     */
     public void setHomeCategory(MenulItemsGroup homeCategory) {
         this.homeCategory = homeCategory;
     }

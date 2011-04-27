@@ -123,9 +123,9 @@ public class FormComponentStateTest extends AbstractStateTest {
         JSONObject json = new JSONObject();
         JSONObject jsonContent = new JSONObject();
         jsonContent.put(FormComponentState.JSON_ENTITY_ID, 13L);
-        json.put(ComponentState.JSON_CONTENT, jsonContent);
+        json.put(AbstractComponentState.JSON_CONTENT, jsonContent);
         JSONObject jsonChildren = new JSONObject();
-        json.put(ComponentState.JSON_CHILDREN, jsonChildren);
+        json.put(AbstractComponentState.JSON_CHILDREN, jsonChildren);
 
         // when
         componentState.initialize(json, Locale.ENGLISH);
@@ -142,9 +142,9 @@ public class FormComponentStateTest extends AbstractStateTest {
         JSONObject json = new JSONObject();
         JSONObject jsonContent = new JSONObject();
         jsonContent.put(FormComponentState.JSON_ENTITY_ID, (String) null);
-        json.put(ComponentState.JSON_CONTENT, jsonContent);
+        json.put(AbstractComponentState.JSON_CONTENT, jsonContent);
         JSONObject jsonChildren = new JSONObject();
-        json.put(ComponentState.JSON_CHILDREN, jsonChildren);
+        json.put(AbstractComponentState.JSON_CHILDREN, jsonChildren);
 
         // when
         componentState.initialize(json, Locale.ENGLISH);
@@ -168,7 +168,7 @@ public class FormComponentStateTest extends AbstractStateTest {
         JSONObject json = componentState.render();
 
         // then
-        assertEquals(13L, json.getJSONObject(ComponentState.JSON_CONTENT).getLong(FormComponentState.JSON_ENTITY_ID));
+        assertEquals(13L, json.getJSONObject(AbstractComponentState.JSON_CONTENT).getLong(FormComponentState.JSON_ENTITY_ID));
     }
 
     @Test
@@ -294,9 +294,9 @@ public class FormComponentStateTest extends AbstractStateTest {
         jsonContext.put("name", "text2");
         JSONObject jsonContent = new JSONObject();
         jsonContent.put(FormComponentState.JSON_ENTITY_ID, 13L);
-        json.put(ComponentState.JSON_CONTEXT, jsonContext);
-        json.put(ComponentState.JSON_CONTENT, jsonContent);
-        json.put(ComponentState.JSON_CHILDREN, new JSONObject());
+        json.put(AbstractComponentState.JSON_CONTEXT, jsonContext);
+        json.put(AbstractComponentState.JSON_CONTENT, jsonContent);
+        json.put(AbstractComponentState.JSON_CHILDREN, new JSONObject());
 
         form.initialize(json, Locale.ENGLISH);
 

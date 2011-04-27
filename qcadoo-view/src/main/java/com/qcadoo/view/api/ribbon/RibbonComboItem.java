@@ -33,13 +33,15 @@ import org.json.JSONObject;
 
 /**
  * Represents ribbon item that contains dropdown submenu with other items
+ * 
+ * @since 0.4.0
  */
 public final class RibbonComboItem extends RibbonActionItem {
 
     private final List<RibbonActionItem> items = new LinkedList<RibbonActionItem>();
 
     /**
-     * get list of dropdown items
+     * Get list of dropdown items
      * 
      * @return list of dropdown items
      */
@@ -48,7 +50,7 @@ public final class RibbonComboItem extends RibbonActionItem {
     }
 
     /**
-     * add dropdown item
+     * Add dropdown item
      * 
      * @param item
      *            dropdown item
@@ -57,6 +59,9 @@ public final class RibbonComboItem extends RibbonActionItem {
         items.add(item);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public JSONObject getAsJson() throws JSONException {
         JSONObject itemObject = super.getAsJson();
@@ -68,6 +73,9 @@ public final class RibbonComboItem extends RibbonActionItem {
         return itemObject;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public RibbonComboItem getCopy() {
         RibbonComboItem copy = new RibbonComboItem();

@@ -31,9 +31,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
 /**
  * Represents menu items group
+ * 
+ * @since 0.4.0
  * 
  */
 public final class MenulItemsGroup {
@@ -59,7 +60,7 @@ public final class MenulItemsGroup {
     }
 
     /**
-     * get identifier of group
+     * Get identifier of group
      * 
      * @return identifier of group
      */
@@ -68,7 +69,7 @@ public final class MenulItemsGroup {
     }
 
     /**
-     * get group label to display
+     * Get group label to display
      * 
      * @return group label to display
      */
@@ -77,7 +78,7 @@ public final class MenulItemsGroup {
     }
 
     /**
-     * get list of all items of group
+     * Get list of all items of group
      * 
      * @return list of all items of group
      */
@@ -86,7 +87,7 @@ public final class MenulItemsGroup {
     }
 
     /**
-     * add item to menu group
+     * Add item to menu group
      * 
      * @param item
      *            item to add
@@ -96,7 +97,7 @@ public final class MenulItemsGroup {
     }
 
     /**
-     * generates JSON representation of this menu group
+     * Generates JSON representation of this menu group
      * 
      * @return JSON group representation
      * @throws JSONException

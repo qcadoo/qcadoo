@@ -33,8 +33,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.qcadoo.localization.api.TranslationService;
-import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.ComponentState.MessageType;
+import com.qcadoo.view.internal.states.AbstractComponentState;
 
 public final class MessageHolder {
 
@@ -70,10 +70,10 @@ public final class MessageHolder {
 
         for (Object[] message : messages) {
             JSONObject jsonMessage = new JSONObject();
-            jsonMessage.put(ComponentState.JSON_MESSAGE_TITLE, message[0]);
-            jsonMessage.put(ComponentState.JSON_MESSAGE_BODY, message[1]);
-            jsonMessage.put(ComponentState.JSON_MESSAGE_TYPE, message[2]);
-            jsonMessage.put(ComponentState.JSON_MESSAGE_AUTOCLOSE, message[3]);
+            jsonMessage.put(AbstractComponentState.JSON_MESSAGE_TITLE, message[0]);
+            jsonMessage.put(AbstractComponentState.JSON_MESSAGE_BODY, message[1]);
+            jsonMessage.put(AbstractComponentState.JSON_MESSAGE_TYPE, message[2]);
+            jsonMessage.put(AbstractComponentState.JSON_MESSAGE_AUTOCLOSE, message[3]);
             json.put(jsonMessage);
         }
 

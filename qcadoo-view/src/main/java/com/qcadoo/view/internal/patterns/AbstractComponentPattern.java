@@ -49,6 +49,7 @@ import com.qcadoo.model.api.types.BelongsToType;
 import com.qcadoo.model.api.types.HasManyType;
 import com.qcadoo.model.api.types.TreeType;
 import com.qcadoo.plugin.api.PluginUtil;
+import com.qcadoo.view.api.ComponentCustomEvent;
 import com.qcadoo.view.api.ComponentPattern;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.ViewDefinition;
@@ -59,7 +60,6 @@ import com.qcadoo.view.internal.FieldEntityIdChangeListener;
 import com.qcadoo.view.internal.ScopeEntityIdChangeListener;
 import com.qcadoo.view.internal.api.InternalViewDefinition;
 import com.qcadoo.view.internal.api.InternalViewDefinitionService;
-import com.qcadoo.view.internal.internal.ComponentCustomEvent;
 import com.qcadoo.view.internal.states.AbstractComponentState;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
 import com.qcadoo.view.internal.xml.ViewDefinitionParserImpl;
@@ -210,7 +210,7 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
                     customEvent.getPluginIdentifier());
         }
         if (viewDefinitionState != null) {
-            viewDefinitionState.registerComponent(getReference(), getPath(), state);
+            viewDefinitionState.registerComponent(getReference(), state);
         }
         return state;
     }

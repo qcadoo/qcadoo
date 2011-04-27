@@ -24,16 +24,70 @@
 
 package com.qcadoo.view.api;
 
+/**
+ * ViewDefinitionState is instance of single view. It is generated using {@link com.qcadoo.view.api.ViewDefinition} in request
+ * scope.
+ * <p>
+ * It contains all {@link com.qcadoo.view.api.ComponentState ComponentStates} of this view and other data necessary display this
+ * view to client. Changing its data will also change state displayed to system user.
+ * 
+ * @since 0.4.0
+ * 
+ * @see com.qcadoo.view.api.ViewDefinition
+ * @see com.qcadoo.view.api.ComponentState
+ */
 public interface ViewDefinitionState extends ContainerState {
 
+    /**
+     * Performs event on this view. <b>For internal usage only</b>
+     * 
+     * @param path
+     *            dotted separated path and name of component that send this event. If null than this event will be executed on
+     *            all components inside this view.
+     * @param event
+     *            event name
+     * @param args
+     *            event additional arguments
+     */
     void performEvent(String path, String event, String... args);
 
+    /**
+     * Returns component state with specified reference name or null if no such component found
+     * 
+     * @param reference
+     *            reference name of component
+     * @return component state with specified reference name
+     */
     ComponentState getComponentByReference(String reference);
 
+    /**
+     * Informs client that should redirect to some url.
+     * 
+     * @param redirectToUrl
+     *            target url of redirection
+     * @param openInNewWindow
+     *            true if client should open given url in new window
+     * @param shouldSerialize
+     *            true if before this redirection client should save window state
+     */
     void redirectTo(String redirectToUrl, boolean openInNewWindow, boolean shouldSerialize);
 
+    /**
+     * Informs client that should open new modal window.
+     * 
+     * @param url
+     *            target url of opened window
+     */
     void openModal(String url);
 
-    void registerComponent(String reference, String path, ComponentState state);
+    /**
+     * Registers new component into this view.
+     * 
+     * @param reference
+     *            reference name of newly registered component
+     * @param state
+     *            component state to register
+     */
+    void registerComponent(String reference, ComponentState state);
 
 }

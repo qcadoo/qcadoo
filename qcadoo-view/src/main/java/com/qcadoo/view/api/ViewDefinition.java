@@ -27,16 +27,55 @@ package com.qcadoo.view.api;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.security.api.SecurityRole;
 
+/**
+ * ViewDefinition defines single 'view' in system.
+ * <p>
+ * It contains all {@link com.qcadoo.view.api.ComponentPattern ComponentPatterns} of this view and other data necessary to create
+ * {@link com.qcadoo.view.api.ViewDefinitionState}.
+ * 
+ * @since 0.4.0
+ * 
+ * @see com.qcadoo.view.api.ViewDefinitionState
+ * @see com.qcadoo.view.api.ViewDefinitionService
+ * @see com.qcadoo.view.api.ComponentPattern
+ */
 public interface ViewDefinition {
 
+    /**
+     * Returns name of this view
+     * 
+     * @return name of this view
+     */
     String getName();
 
+    /**
+     * Returns identifier of plugin that created this view
+     * 
+     * @return identifier of plugin that created this view
+     */
     String getPluginIdentifier();
 
+    /**
+     * Returns default authorization role necessary to be able to see this view or null if no such role defined
+     * 
+     * @return default authorization role
+     */
     SecurityRole getAuthorizationRole();
 
+    /**
+     * Returns main data definition of this view or null if no such data definition defined
+     * 
+     * @return main data definition of this view
+     */
     DataDefinition getDataDefinition();
 
+    /**
+     * Returns component with specified reference name or null if no such component found
+     * 
+     * @param reference
+     *            reference name of component
+     * @return component with specified reference name
+     */
     ComponentPattern getComponentByReference(String reference);
 
 }
