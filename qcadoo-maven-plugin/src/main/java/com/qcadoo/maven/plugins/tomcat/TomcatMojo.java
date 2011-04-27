@@ -125,18 +125,6 @@ public class TomcatMojo extends AbstractMojo {
      */
     private ZipArchiver zipArchiver;
 
-    /**
-     * @parameter expression="${spring.profiles.active}"
-     * @readonly
-     */
-    private String springProfile;
-
-    /**
-     * @parameter expression="${basedir}/target/tomcat-archiver/${project.artifactId}/ws-test-app"
-     * @readonly
-     */
-    private File wsTestApp;
-
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         try {
@@ -146,9 +134,6 @@ public class TomcatMojo extends AbstractMojo {
             copyConfiguration();
             copyJdbcDriver();
             copyDependencies();
-            if ("saas".equals(springProfile)) {
-                moveWar();
-            }
             createArchive();
             registerArtifact();
         } catch (ArchiverException e) {
@@ -198,11 +183,6 @@ public class TomcatMojo extends AbstractMojo {
 
     private void copyJdbcDriver() throws IOException {
         FileUtils.copyFileToDirectory(jdbcDriver, libDirectory);
-    }
-
-    private void moveWar() throws IOException, ArtifactResolutionException, ArtifactNotFoundException {
-        wsTestApp.mkdirs();
-        copyDependency(wsTestApp, "com.qcadoo.saas", "qcadoo-saas-webapp", project.getVersion(), "war");
     }
 
     private void copyConfiguration() throws IOException {
