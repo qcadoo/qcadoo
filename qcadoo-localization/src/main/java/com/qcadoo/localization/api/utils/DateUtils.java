@@ -58,13 +58,21 @@ public final class DateUtils {
      * 
      * Examples with up-complete:
      * 
-     * 2010: 2010-12-31 2010-03: 2010-03-31 2010-03-06: 2010-03-06
+     * <ul>
+     * <li>2010: 2010-12-31</li>
+     * <li>2010-03: 2010-03-31</li>
+     * <li>2010-03-06: 2010-03-06</li>
+     * </ul>
      * 
      * Examples with down-complete:
      * 
-     * 2010: 2010-01-01 2010-03: 2010-03-01 2010-03-06: 2010-03-06
+     * <ul>
+     * <li>2010: 2010-01-01</li>
+     * <li>2010-03: 2010-03-01</li>
+     * <li>2010-03-06: 2010-03-06</li>
+     * </ul>
      * 
-     * @param expression
+     * @param dateExpression
      *            string with date expression
      * @param upComplete
      *            true if up-complete, otherwise down-complete
@@ -72,8 +80,8 @@ public final class DateUtils {
      * @throws ParseException
      *             if year, month or day is invalid
      */
-    public static Date parseDate(final String expression, final boolean upComplete) throws ParseException {
-        String[] dateExpressionParts = expression.split("-");
+    public static Date parseDate(final String dateExpression, final boolean upComplete) throws ParseException {
+        String[] dateExpressionParts = dateExpression.split("-");
 
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.YEAR, 2000);

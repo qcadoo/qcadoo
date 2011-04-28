@@ -87,6 +87,9 @@ public class Version implements Comparable<Version>, Serializable {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int compareTo(final Version otherVersion) {
         if (major < otherVersion.major) {
@@ -110,11 +113,17 @@ public class Version implements Comparable<Version>, Serializable {
         return 0;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toString() {
         return major + "." + minor + "." + branch;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -125,6 +134,9 @@ public class Version implements Comparable<Version>, Serializable {
         return result;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean equals(final Object obj) {
         if (this == obj) {

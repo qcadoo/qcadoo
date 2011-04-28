@@ -87,11 +87,17 @@ public class PluginDependencyInformation {
         return this.version.contains(version);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toString() {
         return identifier + " " + version;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -101,6 +107,9 @@ public class PluginDependencyInformation {
         return result;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean equals(final Object obj) {
         if (this == obj) {

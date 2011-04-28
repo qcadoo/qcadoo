@@ -36,6 +36,8 @@ import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Service;
 
 import com.qcadoo.model.beans.qcadooPlugin.QcadooPluginPlugin;
@@ -52,7 +54,7 @@ import com.qcadoo.plugin.internal.api.PluginDescriptorParser;
 import com.qcadoo.plugin.internal.stateresolver.InternalPluginStateResolver;
 
 @Service
-public class DefaultPluginAccessor implements InternalPluginAccessor {
+public class DefaultPluginAccessor implements InternalPluginAccessor, ApplicationListener<ContextRefreshedEvent> {
 
     private static final Logger LOG = LoggerFactory.getLogger(DefaultPluginAccessor.class);
 
@@ -176,6 +178,13 @@ public class DefaultPluginAccessor implements InternalPluginAccessor {
             }
         }
 
+        LOG.info("Plugin Framework initialized in " + (System.currentTimeMillis() - time) + "ms");
+    }
+
+    @Override
+    public void onApplicationEvent(final ContextRefreshedEvent event) {
+        long time = System.currentTimeMillis();
+
         List<Plugin> sortedPlugins = pluginDependencyManager.sortPluginsInDependencyOrder(plugins.values(), plugins);
 
         moduleFactoryAccessor.init(sortedPlugins);
@@ -187,7 +196,7 @@ public class DefaultPluginAccessor implements InternalPluginAccessor {
             }
         }
 
-        LOG.info("Plugin Framework initialized in " + (System.currentTimeMillis() - time) + "ms");
+        LOG.info("Plugin Framework started in " + (System.currentTimeMillis() - time) + "ms");
     }
 
     void setPluginDescriptorParser(final PluginDescriptorParser pluginDescriptorParser) {

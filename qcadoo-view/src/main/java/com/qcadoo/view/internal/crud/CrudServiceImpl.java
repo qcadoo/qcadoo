@@ -20,6 +20,7 @@ public class CrudServiceImpl implements CrudService {
     @Autowired
     private ViewDefinitionService viewDefinitionService;
 
+    @Override
     public ModelAndView prepareView(final String pluginIdentifier, final String viewName, final Map<String, String> arguments,
             final Locale locale) {
 
@@ -55,7 +56,9 @@ public class CrudServiceImpl implements CrudService {
         return modelAndView;
     }
 
-    public Object performEvent(final String pluginIdentifier, final String viewName, final JSONObject body, final Locale locale) {
+    @Override
+    public JSONObject performEvent(final String pluginIdentifier, final String viewName, final JSONObject body,
+            final Locale locale) {
 
         InternalViewDefinition viewDefinition = (InternalViewDefinition) viewDefinitionService.get(pluginIdentifier, viewName);
 
