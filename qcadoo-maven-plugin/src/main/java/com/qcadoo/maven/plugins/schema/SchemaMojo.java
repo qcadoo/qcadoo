@@ -68,14 +68,14 @@ public class SchemaMojo extends AbstractMojo {
         try {
             prepareWorkingDirectory();
 
-            boolean skipWithoutVersion = isSkipWithoutVersionProfileActive();
+            boolean ignoreWithoutVersion = isIgnoreWithoutVersionProfileActive();
 
             String version = prepareVersion();
 
             for (File file : (Collection<File>) FileUtils
                     .getFiles(baseDirectory, "*/src/main/resources/com/qcadoo/*/*.xsd", null)) {
                 FileUtils.copyFile(file, prepareDestinationFile(file, version, false, workingDirectory));
-                if (!skipWithoutVersion) {
+                if (!ignoreWithoutVersion) {
                     FileUtils.copyFile(file, prepareDestinationFile(file, version, true, workingDirectory));
                 }
             }
@@ -83,7 +83,7 @@ public class SchemaMojo extends AbstractMojo {
             for (File file : (Collection<File>) FileUtils.getFiles(baseDirectory,
                     "*/src/main/resources/com/qcadoo/*/modules/*.xsd", null)) {
                 FileUtils.copyFile(file, prepareDestinationFile(file, version, false, modulesWorkingDirectory));
-                if (!skipWithoutVersion) {
+                if (!ignoreWithoutVersion) {
                     FileUtils.copyFile(file, prepareDestinationFile(file, version, true, modulesWorkingDirectory));
                 }
             }
@@ -91,7 +91,7 @@ public class SchemaMojo extends AbstractMojo {
             for (File file : (Collection<File>) FileUtils.getFiles(baseDirectory,
                     "*/src/main/resources/com/qcadoo/*/common/*.xsd", null)) {
                 FileUtils.copyFile(file, prepareDestinationFile(file, version, false, commonWorkingDirectory));
-                if (!skipWithoutVersion) {
+                if (!ignoreWithoutVersion) {
                     FileUtils.copyFile(file, prepareDestinationFile(file, version, true, commonWorkingDirectory));
                 }
             }
@@ -106,9 +106,9 @@ public class SchemaMojo extends AbstractMojo {
         }
     }
 
-    private File prepareDestinationFile(final File file, final String version, final boolean skipVersion,
+    private File prepareDestinationFile(final File file, final String version, final boolean ignoreWithoutVersion,
             final File targetDirectory) {
-        if (skipVersion) {
+        if (!ignoreWithoutVersion) {
             return new File(targetDirectory, file.getName());
         } else {
             return new File(targetDirectory, file.getName().replaceAll(".xsd", "") + "-" + version + ".xsd");
@@ -126,9 +126,9 @@ public class SchemaMojo extends AbstractMojo {
     }
 
     @SuppressWarnings("unchecked")
-    private boolean isSkipWithoutVersionProfileActive() {
+    private boolean isIgnoreWithoutVersionProfileActive() {
         for (Profile profile : ((List<Profile>) project.getActiveProfiles())) {
-            if ("skipWithoutVersion".equals(profile.getId())) {
+            if ("ignoreWithoutVersion".equals(profile.getId())) {
                 return true;
             }
         }
