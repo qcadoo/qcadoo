@@ -68,23 +68,32 @@ public class SchemaMojo extends AbstractMojo {
         try {
             prepareWorkingDirectory();
 
-            boolean skipVersion = isSkipVersionProfileActive();
+            boolean skipWithoutVersion = isSkipWithoutVersionProfileActive();
 
             String version = prepareVersion();
 
             for (File file : (Collection<File>) FileUtils
                     .getFiles(baseDirectory, "*/src/main/resources/com/qcadoo/*/*.xsd", null)) {
-                FileUtils.copyFile(file, prepareDestinationFile(file, version, skipVersion, workingDirectory));
+                FileUtils.copyFile(file, prepareDestinationFile(file, version, false, workingDirectory));
+                if (!skipWithoutVersion) {
+                    FileUtils.copyFile(file, prepareDestinationFile(file, version, true, workingDirectory));
+                }
             }
 
             for (File file : (Collection<File>) FileUtils.getFiles(baseDirectory,
                     "*/src/main/resources/com/qcadoo/*/modules/*.xsd", null)) {
-                FileUtils.copyFile(file, prepareDestinationFile(file, version, skipVersion, modulesWorkingDirectory));
+                FileUtils.copyFile(file, prepareDestinationFile(file, version, false, modulesWorkingDirectory));
+                if (!skipWithoutVersion) {
+                    FileUtils.copyFile(file, prepareDestinationFile(file, version, true, modulesWorkingDirectory));
+                }
             }
 
             for (File file : (Collection<File>) FileUtils.getFiles(baseDirectory,
                     "*/src/main/resources/com/qcadoo/*/common/*.xsd", null)) {
-                FileUtils.copyFile(file, prepareDestinationFile(file, version, skipVersion, commonWorkingDirectory));
+                FileUtils.copyFile(file, prepareDestinationFile(file, version, false, commonWorkingDirectory));
+                if (!skipWithoutVersion) {
+                    FileUtils.copyFile(file, prepareDestinationFile(file, version, true, commonWorkingDirectory));
+                }
             }
 
             createArchive();
@@ -117,9 +126,9 @@ public class SchemaMojo extends AbstractMojo {
     }
 
     @SuppressWarnings("unchecked")
-    private boolean isSkipVersionProfileActive() {
+    private boolean isSkipWithoutVersionProfileActive() {
         for (Profile profile : ((List<Profile>) project.getActiveProfiles())) {
-            if ("skipVersion".equals(profile.getId())) {
+            if ("skipWithoutVersion".equals(profile.getId())) {
                 return true;
             }
         }

@@ -61,7 +61,7 @@
 	
 	<profiles>
 		<profile>
-			<id>skipVersion</id>
+			<id>skipWithoutVersion</id>
 		</profile>
 	</profiles>
 
