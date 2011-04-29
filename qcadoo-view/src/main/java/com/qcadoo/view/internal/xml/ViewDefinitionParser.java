@@ -57,9 +57,9 @@ public interface ViewDefinitionParser {
 
     List<Node> geElementChildren(Node node);
 
-    List<InternalViewDefinition> parseViewXml(final Resource viewXml);
+    InternalViewDefinition parseViewXml(Resource viewXml, String pluginIdentifier);
 
-    List<ViewExtension> getViewExtensionNodes(InputStream resource, String tagType);
+    ViewExtension getViewExtensionNode(InputStream resource, String tagType);
 
     RibbonGroup parseRibbonGroup(Node groupNode, ViewDefinition viewDefinition);
 

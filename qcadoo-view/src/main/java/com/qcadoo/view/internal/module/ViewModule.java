@@ -1,7 +1,5 @@
 package com.qcadoo.view.internal.module;
 
-import java.util.List;
-
 import org.springframework.core.io.Resource;
 
 import com.qcadoo.plugin.api.Module;
@@ -15,10 +13,13 @@ public class ViewModule extends Module {
 
     private final InternalViewDefinitionService viewDefinitionService;
 
+    private final String pluginIdentifier;
+
     private final Resource xmlFile;
 
-    public ViewModule(final Resource xmlFile, final ViewDefinitionParser viewDefinitionParser,
+    public ViewModule(final String pluginIdentifier, final Resource xmlFile, final ViewDefinitionParser viewDefinitionParser,
             final InternalViewDefinitionService viewDefinitionService) {
+        this.pluginIdentifier = pluginIdentifier;
         this.xmlFile = xmlFile;
         this.viewDefinitionParser = viewDefinitionParser;
         this.viewDefinitionService = viewDefinitionService;
@@ -31,18 +32,14 @@ public class ViewModule extends Module {
 
     @Override
     public void enable() {
-        List<InternalViewDefinition> viewDefinitions = viewDefinitionParser.parseViewXml(xmlFile);
-        for (InternalViewDefinition viewDefinition : viewDefinitions) {
-            viewDefinitionService.save(viewDefinition);
-        }
+        InternalViewDefinition viewDefinition = viewDefinitionParser.parseViewXml(xmlFile, pluginIdentifier);
+        viewDefinitionService.save(viewDefinition);
     }
 
     @Override
     public void disable() {
-        List<InternalViewDefinition> viewDefinitions = viewDefinitionParser.parseViewXml(xmlFile);
-        for (InternalViewDefinition viewDefinition : viewDefinitions) {
-            viewDefinitionService.delete(viewDefinition);
-        }
+        InternalViewDefinition viewDefinition = viewDefinitionParser.parseViewXml(xmlFile, pluginIdentifier);
+        viewDefinitionService.delete(viewDefinition);
     }
 
 }

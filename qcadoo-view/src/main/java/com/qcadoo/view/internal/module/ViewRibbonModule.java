@@ -2,8 +2,6 @@ package com.qcadoo.view.internal.module;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.core.io.Resource;
@@ -26,7 +24,7 @@ public class ViewRibbonModule extends Module {
 
     private final ViewDefinitionParser viewDefinitionParser;
 
-    private final List<ViewExtension> viewExtensions;
+    private final ViewExtension viewExtension;
 
     private Map<WindowComponentPattern, RibbonGroup> addedGroups;
 
@@ -35,9 +33,8 @@ public class ViewRibbonModule extends Module {
         this.pluginIdentifier = pluginIdentifier;
         this.viewDefinitionService = viewDefinitionService;
         this.viewDefinitionParser = viewDefinitionParser;
-        viewExtensions = new LinkedList<ViewExtension>();
         try {
-            viewExtensions.addAll(viewDefinitionParser.getViewExtensionNodes(xmlFile.getInputStream(), "ribbonExtension"));
+            viewExtension = viewDefinitionParser.getViewExtensionNode(xmlFile.getInputStream(), "ribbonExtension");
         } catch (IOException e) {
             throw new IllegalStateException(e.getMessage(), e);
         }
@@ -51,23 +48,21 @@ public class ViewRibbonModule extends Module {
     @Override
     public void enable() {
         addedGroups = new HashMap<WindowComponentPattern, RibbonGroup>();
-        for (ViewExtension viewExtension : viewExtensions) {
 
-            InternalViewDefinition viewDefinition = viewDefinitionService.getWithoutSession(viewExtension.getPluginName(),
-                    viewExtension.getViewName());
-            Preconditions.checkNotNull(viewDefinition, getErrorMessage("reference to view which not exists", viewExtension));
+        InternalViewDefinition viewDefinition = viewDefinitionService.getWithoutSession(viewExtension.getPluginName(),
+                viewExtension.getViewName());
+        Preconditions.checkNotNull(viewDefinition, getErrorMessage("reference to view which not exists", viewExtension));
 
-            for (Node groupNode : viewDefinitionParser.geElementChildren(viewExtension.getExtesionNode())) {
+        for (Node groupNode : viewDefinitionParser.geElementChildren(viewExtension.getExtesionNode())) {
 
-                RibbonGroup group = viewDefinitionParser.parseRibbonGroup(groupNode, viewDefinition);
-                group.setExtensionPluginIdentifier(pluginIdentifier);
+            RibbonGroup group = viewDefinitionParser.parseRibbonGroup(groupNode, viewDefinition);
+            group.setExtensionPluginIdentifier(pluginIdentifier);
 
-                WindowComponentPattern window = viewDefinition.getRootWindow();
-                Preconditions.checkNotNull(window, getErrorMessage("cannot add ribbon element to view", viewExtension));
+            WindowComponentPattern window = viewDefinition.getRootWindow();
+            Preconditions.checkNotNull(window, getErrorMessage("cannot add ribbon element to view", viewExtension));
 
-                window.getRibbon().addGroup(group);
-                addedGroups.put(window, group);
-            }
+            window.getRibbon().addGroup(group);
+            addedGroups.put(window, group);
         }
     }
 

@@ -25,7 +25,7 @@ public class ViewModuleFactory extends ModuleFactory<ViewModule> {
             throw new IllegalStateException("Missing resource attribute of view module");
         }
 
-        return new ViewModule(new ClassPathResource(pluginIdentifier + "/" + resource), viewDefinitionParser,
+        return new ViewModule(pluginIdentifier, new ClassPathResource(pluginIdentifier + "/" + resource), viewDefinitionParser,
                 viewDefinitionService);
 
     }

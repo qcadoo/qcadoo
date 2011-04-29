@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://schema.qcadoo.org/modules/ribbonExtension" xmlns="http://schema.qcadoo.org/modules/ribbonExtension" elementFormDefault="qualified">
+	
+	<xs:element name="ribbonExtension">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="group" type="ribbonGroupType" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="plugin" type="identifierType" use="required" />		
+			<xs:attribute name="view" type="identifierType" use="required" />
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:complexType name="ribbonGroupType">
+		<xs:sequence>
+			<xs:any minOccurs="1" maxOccurs="unbounded" processContents="skip"/>
+		</xs:sequence>
+		<xs:attribute name="name" type="identifierType" use="required" />
+	</xs:complexType>
+	
+	<xs:simpleType name="identifierType">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[a-z][a-zA-Z0-9]*" />
+		</xs:restriction>
+	</xs:simpleType>
+
+</xs:schema>

@@ -34,6 +34,7 @@ import static org.mockito.Mockito.mock;
 import static org.springframework.test.util.ReflectionTestUtils.getField;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -84,7 +85,9 @@ public class ViewDefinitionParserImplTest {
 
     private ApplicationContext applicationContext;
 
-    private String xml;
+    private String xml1;
+
+    private String xml2;
 
     private DataDefinition dataDefinitionA;
 
@@ -125,7 +128,8 @@ public class ViewDefinitionParserImplTest {
         setField(viewDefinitionParser, "translationService", translationService);
         setField(viewDefinitionParser, "viewComponentsResolver", viewComponentsResolver);
 
-        xml = "view/test.xml";
+        xml1 = "view/test1.xml";
+        xml2 = "view/test2.xml";
 
         given(applicationContext.getBean(CustomEntityService.class)).willReturn(new CustomEntityService());
 
@@ -321,11 +325,14 @@ public class ViewDefinitionParserImplTest {
     }
 
     private List<InternalViewDefinition> parseAndGetViewDefinitions() {
-        return viewDefinitionParser.parseViewXml(new ClassPathResource(xml));
+        List<InternalViewDefinition> views = new LinkedList<InternalViewDefinition>();
+        views.add(viewDefinitionParser.parseViewXml(new ClassPathResource(xml1), "sample"));
+        views.add(viewDefinitionParser.parseViewXml(new ClassPathResource(xml2), "sample"));
+        return views;
     }
 
     private InternalViewDefinition parseAndGetViewDefinition() {
-        return (InternalViewDefinition) viewDefinitionParser.parseViewXml(new ClassPathResource(xml)).get(0);
+        return (InternalViewDefinition) viewDefinitionParser.parseViewXml(new ClassPathResource(xml1), "sample");
     }
 
     @SuppressWarnings("unchecked")

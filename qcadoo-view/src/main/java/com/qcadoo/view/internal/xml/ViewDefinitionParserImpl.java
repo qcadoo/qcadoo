@@ -96,37 +96,25 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
     private int currentIndexOrder;
 
     @Override
-    public List<InternalViewDefinition> parseViewXml(final Resource viewXml) {
+    public InternalViewDefinition parseViewXml(final Resource viewXml, final String pluginIdentifier) {
         try {
-            return parse(viewXml.getInputStream());
+            return parse(viewXml.getInputStream(), pluginIdentifier);
         } catch (IOException e) {
             throw new IllegalStateException("Error while reading view resource", e);
         }
     }
 
-    private List<InternalViewDefinition> parse(final InputStream dataDefinitionInputStream) {
+    private InternalViewDefinition parse(final InputStream dataDefinitionInputStream, final String pluginIdentifier) {
         try {
             DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             Document document = documentBuilder.parse(dataDefinitionInputStream);
 
             Node root = document.getDocumentElement();
 
-            String pluginIdentifier = getPluginIdentifier(root);
+            Preconditions.checkState("view".equals(root.getNodeName()), "Wrong root node '" + root.getNodeName() + "'");
 
-            NodeList childNodes = root.getChildNodes();
+            return parseViewDefinition(root, pluginIdentifier);
 
-            List<InternalViewDefinition> views = new LinkedList<InternalViewDefinition>();
-
-            for (int i = 0; i < childNodes.getLength(); i++) {
-                Node child = childNodes.item(i);
-
-                if ("view".equals(child.getNodeName())) {
-                    String name = getStringAttribute(child, "name");
-                    views.add(parseViewDefinition(child, pluginIdentifier, name));
-                }
-            }
-
-            return views;
         } catch (ParserConfigurationException e) {
             throw new IllegalStateException(e.getMessage(), e);
         } catch (SAXException e) {
@@ -136,8 +124,10 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
         }
     }
 
-    private InternalViewDefinition parseViewDefinition(final Node viewNode, final String pluginIdentifier, final String name) {
+    private InternalViewDefinition parseViewDefinition(final Node viewNode, final String pluginIdentifier) {
         currentIndexOrder = 1;
+        String name = getStringAttribute(viewNode, "name");
+        Preconditions.checkState(name != null && !"".equals(name.trim()), "Name attribute cannot be empty");
 
         LOG.info("Reading view " + name + " for plugin " + pluginIdentifier);
 
@@ -165,10 +155,10 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
 
         DataDefinition dataDefinition = null;
 
-        if (getStringAttribute(viewNode, "model") != null) {
-            String modelPluginIdentifier = getStringAttribute(viewNode, "plugin") != null ? getStringAttribute(viewNode, "plugin")
-                    : pluginIdentifier;
-            dataDefinition = dataDefinitionService.get(modelPluginIdentifier, getStringAttribute(viewNode, "model"));
+        if (getStringAttribute(viewNode, "modelName") != null) {
+            String modelPluginIdentifier = getStringAttribute(viewNode, "modelPlugin") != null ? getStringAttribute(viewNode,
+                    "modelPlugin") : pluginIdentifier;
+            dataDefinition = dataDefinitionService.get(modelPluginIdentifier, getStringAttribute(viewNode, "modelName"));
         }
 
         ViewDefinitionImpl viewDefinition = new ViewDefinitionImpl(name, pluginIdentifier, role, dataDefinition, menuAccessible,
@@ -201,10 +191,6 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
         viewDefinition.registerViews(viewDefinitionService);
 
         return viewDefinition;
-    }
-
-    private String getPluginIdentifier(final Node node) {
-        return getStringAttribute(node, "plugin");
     }
 
     @Override
@@ -348,32 +334,22 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
     }
 
     @Override
-    public List<ViewExtension> getViewExtensionNodes(final InputStream resource, final String tagType) {
+    public ViewExtension getViewExtensionNode(final InputStream resource, final String tagType) {
         try {
             DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             Document document = documentBuilder.parse(resource);
 
             Node root = document.getDocumentElement();
 
-            NodeList childNodes = root.getChildNodes();
+            Preconditions.checkState(root.getNodeName().equals(tagType), "Wrong root node name: " + root.getNodeName());
 
-            List<ViewExtension> extensions = new LinkedList<ViewExtension>();
+            String plugin = getStringAttribute(root, "plugin");
+            String view = getStringAttribute(root, "view");
 
-            for (int i = 0; i < childNodes.getLength(); i++) {
-                Node child = childNodes.item(i);
+            Preconditions.checkNotNull(plugin, "View extension error: plugin not defined");
+            Preconditions.checkNotNull(view, "View extension error: view not defined");
 
-                if (tagType.equals(child.getNodeName())) {
-                    String plugin = getStringAttribute(child, "plugin");
-                    String view = getStringAttribute(child, "view");
-
-                    Preconditions.checkNotNull(plugin, "View extension error: plugin not defined");
-                    Preconditions.checkNotNull(view, "View extension error: view not defined");
-
-                    extensions.add(new ViewExtension(plugin, view, child));
-                }
-            }
-
-            return extensions;
+            return new ViewExtension(plugin, view, root);
 
         } catch (ParserConfigurationException e) {
             throw new IllegalStateException(e.getMessage(), e);
