@@ -1,11 +1,16 @@
 package com.qcadoo.maven.plugins.tomcat;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionException;
+import org.apache.maven.model.Profile;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -130,6 +135,12 @@ public class TomcatMojo extends AbstractMojo {
         try {
             prepareWorkingDirectory();
             copyClassPathResources();
+
+            if (isSaasProfileActive()) {
+                updateSetenvShForSaas();
+                updateSetenvBatForSaas();
+            }
+
             unpackWar();
             copyConfiguration();
             copyJdbcDriver();
@@ -149,6 +160,38 @@ public class TomcatMojo extends AbstractMojo {
         } catch (IOException e) {
             throw new MojoExecutionException("Exception while creating zip", e);
         }
+    }
+
+    private void updateSetenvBatForSaas() throws IOException {
+        BufferedWriter writer = null;
+
+        try {
+            writer = new BufferedWriter(new FileWriter(new File(rootDirectory, "bin/setenv.bat"), true));
+            writer.append("set \"JAVA_OPTS=%JAVA_OPTS% -Dspring.profiles.active=saas\"\n");
+        } finally {
+            IOUtils.closeQuietly(writer);
+        }
+    }
+
+    private void updateSetenvShForSaas() throws IOException {
+        BufferedWriter writer = null;
+
+        try {
+            writer = new BufferedWriter(new FileWriter(new File(rootDirectory, "bin/setenv.sh"), true));
+            writer.append("JAVA_OPTS=\"$JAVA_OPTS -Dspring.profiles.active=saas\"\n");
+        } finally {
+            IOUtils.closeQuietly(writer);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private boolean isSaasProfileActive() {
+        for (Profile profile : ((List<Profile>) project.getActiveProfiles())) {
+            if ("saas".equals(profile.getId())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void registerArtifact() {

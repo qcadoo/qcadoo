@@ -250,6 +250,7 @@ public class PluginAccessorTest {
 
         // when
         pluginAccessor.init();
+        pluginAccessor.onApplicationEvent(null);
 
         // then
         InOrder inOrder = inOrder(plugin2, plugin1, moduleFactoryAccessor);
@@ -294,6 +295,7 @@ public class PluginAccessorTest {
 
         // when
         pluginAccessor.init();
+        pluginAccessor.onApplicationEvent(null);
 
         // then
         InOrder inOrder = inOrder(plugin2, plugin1, moduleFactoryAccessor);
