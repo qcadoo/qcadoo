@@ -40,6 +40,26 @@
 			</configuration>
 		</component>
 		<component>
+			<role>org.apache.maven.lifecycle.mapping.LifecycleMapping</role>
+			<role-hint>qcadoo-schema</role-hint>
+			<implementation>
+				org.apache.maven.lifecycle.mapping.DefaultLifecycleMapping
+			</implementation>
+			<configuration>
+				<phases>					
+					<package>
+						com.qcadoo:qcadoo-maven-plugin:schema
+				  	</package>
+					<install>
+						org.apache.maven.plugins:maven-install-plugin:install
+					</install>
+					<deploy>
+						org.apache.maven.plugins:maven-deploy-plugin:deploy
+					</deploy>				
+				</phases>
+			</configuration>
+		</component>
+		<component>
 			<role>org.apache.maven.artifact.handler.ArtifactHandler</role>
 			<role-hint>qcadoo-plugin</role-hint>
 			<implementation>
@@ -51,6 +71,18 @@
 				<packaging>qcadoo-plugin</packaging>
 				<language>java</language>
             	<addedToClasspath>true</addedToClasspath>
+			</configuration>
+		</component>
+		<component>
+			<role>org.apache.maven.artifact.handler.ArtifactHandler</role>
+			<role-hint>qcadoo-schema</role-hint>
+			<implementation>
+				org.apache.maven.artifact.handler.DefaultArtifactHandler
+			</implementation>
+			<configuration>
+				<extension>zip</extension>
+				<type>qcadoo-schema</type>
+				<packaging>qcadoo-schema</packaging>
 			</configuration>
 		</component>
 	</components>

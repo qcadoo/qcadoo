@@ -20,6 +20,7 @@
 		<module>qcadoo-plugin-archetype</module>
 		<module>qcadoo-webapp-archetype</module>
 		<module>qcadoo-maven-plugin</module>
+		<module>qcadoo-schema</module>
 	</modules>
 
 	<name>Qcadoo Framework</name>
@@ -435,9 +436,6 @@
 			<url>http://emhyr.local/nexus/content/repositories/snapshots</url>
 			<uniqueVersion>false</uniqueVersion>
 		</snapshotRepository>
-		<site>
-
-		</site>
 	</distributionManagement>
 
 	<scm>
