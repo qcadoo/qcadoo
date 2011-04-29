@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionException;
@@ -162,15 +163,25 @@ public class TomcatMojo extends AbstractMojo {
     }
 
     private void updateSetenvBatForSaas() throws IOException {
-        BufferedWriter writer = new BufferedWriter(new FileWriter(new File(rootDirectory, "bin/setenv.bat"), true));
-        writer.append("set \"JAVA_OPTS=%JAVA_OPTS% -Dspring.profiles.active=saas\"\n");
-        writer.close();
+        BufferedWriter writer = null;
+
+        try {
+            writer = new BufferedWriter(new FileWriter(new File(rootDirectory, "bin/setenv.bat"), true));
+            writer.append("set \"JAVA_OPTS=%JAVA_OPTS% -Dspring.profiles.active=saas\"\n");
+        } finally {
+            IOUtils.closeQuietly(writer);
+        }
     }
 
     private void updateSetenvShForSaas() throws IOException {
-        BufferedWriter writer = new BufferedWriter(new FileWriter(new File(rootDirectory, "bin/setenv.sh"), true));
-        writer.append("JAVA_OPTS=\"$JAVA_OPTS -Dspring.profiles.active=saas\"\n");
-        writer.close();
+        BufferedWriter writer = null;
+
+        try {
+            writer = new BufferedWriter(new FileWriter(new File(rootDirectory, "bin/setenv.sh"), true));
+            writer.append("JAVA_OPTS=\"$JAVA_OPTS -Dspring.profiles.active=saas\"\n");
+        } finally {
+            IOUtils.closeQuietly(writer);
+        }
     }
 
     @SuppressWarnings("unchecked")
