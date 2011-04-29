@@ -430,6 +430,10 @@
 			<url>http://emhyr.local/nexus/content/repositories/snapshots</url>
 			<uniqueVersion>false</uniqueVersion>
 		</snapshotRepository>
+		<site>
+			<id>local-site-repository</id>
+			<url>file:///${basedir}/target</url>
+		</site>
 	</distributionManagement>
 
 	<scm>
@@ -451,36 +455,24 @@
 			<build>
 				<plugins>
 					<plugin>
-						<artifactId>maven-javadoc-plugin</artifactId>
-						<version>2.7</version>
-						<executions>
-							<execution>
-								<id>generate-javadoc</id>
-								<phase>package</phase>
-								<goals>
-									<goal>aggregate</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
 						<artifactId>maven-assembly-plugin</artifactId>
 						<version>2.2.1</version>
 						<configuration>
 							<descriptors>
 								<descriptor>javadoc.xml</descriptor>
 							</descriptors>
-							<finalName>${project.artifactId}</finalName>
+							<finalName>${project.artifactId}</finalName>							
 						</configuration>
 						<executions>
 							<execution>
 								<id>assembly-javadoc</id>
-								<phase>package</phase>
+								<phase>site</phase>
 								<goals>
 									<goal>assembly</goal>
 								</goals>
 							</execution>
 						</executions>
+						<inherited>false</inherited>
 					</plugin>
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
@@ -489,7 +481,7 @@
 						<executions>
 							<execution>
 								<id>deploy</id>
-								<phase>deploy</phase>
+								<phase>site</phase>
 								<goals>
 									<goal>upload-single</goal>
 								</goals>
@@ -507,6 +499,7 @@
 								<version>1.0-beta-7</version>
 							</dependency>
 						</dependencies>
+						<inherited>false</inherited>
 					</plugin>
 				</plugins>
 			</build>

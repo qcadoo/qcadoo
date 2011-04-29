@@ -8,10 +8,13 @@
 	<formats>
 		<format>zip</format>
 	</formats>
+
+	<includeBaseDirectory>false</includeBaseDirectory>
 	
 	<fileSets>
 		<fileSet>
 			<directory>${basedir}/target/site/apidocs/</directory>
+			<outputDirectory>/</outputDirectory>
 		</fileSet>
 	</fileSets>
 	
