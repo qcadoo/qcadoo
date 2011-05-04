@@ -9,7 +9,8 @@
        http://schema.qcadoo.org/modules/model
        http://schema.qcadoo.org/modules/model.xsd
        http://schema.qcadoo.org/modules/view
-       http://schema.qcadoo.org/modules/view.xsd">
+       /Users/mnawalany/Documents/workspace/qcadoo/qcadoo-view/src/main/resources/com/qcadoo/view/modules/view.xsd
+       ">
 
 	<information>
 		<name>Qcadoo Framework Model</name>

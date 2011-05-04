@@ -175,11 +175,11 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
 
             if ("component".equals(child.getNodeName())) {
                 root = parseComponent(child, viewDefinition, null, pluginIdentifier);
-            } else if ("preInitializeHook".equals(child.getNodeName())) {
+            } else if ("beforeInitalize".equals(child.getNodeName())) {
                 viewDefinition.addPreInitializeHook(parseHook(child));
-            } else if ("postInitializeHook".equals(child.getNodeName())) {
+            } else if ("afterInitialize".equals(child.getNodeName())) {
                 viewDefinition.addPostInitializeHook(parseHook(child));
-            } else if ("preRenderHook".equals(child.getNodeName())) {
+            } else if ("beforeRender".equals(child.getNodeName())) {
                 viewDefinition.addPreRenderHook(parseHook(child));
             }
         }
@@ -309,9 +309,9 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
     }
 
     public HookDefinition parseHook(final Node hookNode) {
-        String fullyQualifiedClassName = getStringAttribute(hookNode, "bean");
+        String fullyQualifiedClassName = getStringAttribute(hookNode, "class");
         String methodName = getStringAttribute(hookNode, "method");
-        Preconditions.checkState(StringUtils.hasText(fullyQualifiedClassName), "Hook bean name is required");
+        Preconditions.checkState(StringUtils.hasText(fullyQualifiedClassName), "Hook class name is required");
         Preconditions.checkState(StringUtils.hasText(methodName), "Hook method name is required");
         return hookFactory.getHook(fullyQualifiedClassName, methodName, null);
     }

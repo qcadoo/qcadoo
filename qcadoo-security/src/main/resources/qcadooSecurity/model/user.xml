@@ -35,7 +35,7 @@
 		<string name="viewIdentifier" persistent="false" />
 	</fields>
 	<hooks>
-		<validatesWith class="com.qcadoo.mes.users.UserService"
+		<validatesWith class="com.qcadoo.security.internal.validators.PasswordValidationService"
 			method="checkPassword" />
 	</hooks>
 	<identifier expression="#userName" />

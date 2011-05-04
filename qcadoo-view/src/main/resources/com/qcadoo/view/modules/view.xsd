@@ -27,12 +27,36 @@
 	</xs:element>
 	
 	<xs:element name="view-hook">
+		<xs:annotation><xs:documentation>Hooks are methods that will be executed every time when request to server is send</xs:documentation></xs:annotation>
 		<xs:complexType>
-			<xs:attribute name="plugin" type="xs:string" use="required" />
-			<xs:attribute name="view" type="xs:string" use="required" />
-			<xs:attribute name="hookType" type="xs:string" use="required" />
-			<xs:attribute name="bean" type="xs:string" use="required" />
-			<xs:attribute name="method" type="xs:string" use="required" />
+			<xs:attribute name="plugin" type="xs:string" use="required">
+				<xs:annotation><xs:documentation>Name of the plugin where the view belongs</xs:documentation></xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="view" type="xs:string" use="required">
+				<xs:annotation><xs:documentation>Name of the view where the component belongs</xs:documentation></xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="type" use="required" >
+				<xs:annotation><xs:documentation>Type of the hook</xs:documentation></xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+      					<xs:enumeration value="beforeInitalize">
+      						<xs:annotation><xs:documentation>This hook is executed before view state initialization</xs:documentation></xs:annotation>
+      					</xs:enumeration>
+      					<xs:enumeration value="afterInitialize">
+      						<xs:annotation><xs:documentation>This hook is executed after initialization, but before event execution</xs:documentation></xs:annotation>
+      					</xs:enumeration>
+      					<xs:enumeration value="beforeRender">
+      						<xs:annotation><xs:documentation>This is most common used hook type. This hook is executed after event execution, just before response is send to clients browser</xs:documentation></xs:annotation>
+      					</xs:enumeration>
+    				</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			<xs:attribute name="class" type="xs:string" use="required">
+				<xs:annotation><xs:documentation>Name of the class where the hook is defined</xs:documentation></xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="method" type="xs:string" use="required">
+				<xs:annotation><xs:documentation>Name of the hooks's method</xs:documentation></xs:annotation>
+			</xs:attribute>
 		</xs:complexType>
 	</xs:element>
 	
@@ -42,7 +66,7 @@
 			<xs:attribute name="view" type="xs:string" use="required" />
 			<xs:attribute name="component" type="xs:string" use="required" />
 			<xs:attribute name="event" type="xs:string" use="required" />
-			<xs:attribute name="bean" type="xs:string" use="required" />
+			<xs:attribute name="class" type="xs:string" use="required" />
 			<xs:attribute name="method" type="xs:string" use="required" />
 		</xs:complexType>
 	</xs:element>

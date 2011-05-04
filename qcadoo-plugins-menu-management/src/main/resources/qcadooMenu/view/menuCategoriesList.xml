@@ -33,6 +33,6 @@
 			});
 		]]></script>
 	</component>
-	<preRenderHook bean="com.qcadoo.menu.MenuAdministrationService" method="addRestrictionToCategoriesGrid" />
-	<preRenderHook bean="com.qcadoo.menu.MenuAdministrationService" method="translateCategoriesGrid" />
+	<beforeRender class="com.qcadoo.menu.MenuAdministrationService" method="addRestrictionToCategoriesGrid" />
+	<beforeRender class="com.qcadoo.menu.MenuAdministrationService" method="translateCategoriesGrid" />
 </view>

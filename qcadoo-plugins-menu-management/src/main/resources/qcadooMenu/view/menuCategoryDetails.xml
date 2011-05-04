@@ -52,5 +52,5 @@
 			});
 		]]></script>
 	</component>
-	<preRenderHook bean="com.qcadoo.menu.MenuAdministrationService" method="translateCategoryForm" />
+	<beforeRender class="com.qcadoo.menu.MenuAdministrationService" method="translateCategoryForm" />
 </view>
