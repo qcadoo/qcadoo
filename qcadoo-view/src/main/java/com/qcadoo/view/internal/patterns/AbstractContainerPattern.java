@@ -32,12 +32,12 @@ import java.util.Map.Entry;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.qcadoo.view.api.ComponentPattern;
 import com.qcadoo.view.api.ComponentState;
-import com.qcadoo.view.api.ContainerPattern;
 import com.qcadoo.view.api.ContainerState;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.internal.ComponentDefinition;
+import com.qcadoo.view.internal.api.ComponentPattern;
+import com.qcadoo.view.internal.api.ContainerPattern;
 import com.qcadoo.view.internal.api.InternalViewDefinitionService;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
 

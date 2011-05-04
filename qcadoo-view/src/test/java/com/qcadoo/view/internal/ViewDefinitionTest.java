@@ -45,8 +45,8 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import com.qcadoo.model.api.DataDefinition;
-import com.qcadoo.view.api.ComponentPattern;
 import com.qcadoo.view.api.ViewDefinitionState;
+import com.qcadoo.view.internal.api.ComponentPattern;
 import com.qcadoo.view.internal.api.InternalViewDefinition;
 import com.qcadoo.view.internal.components.form.FormComponentPattern;
 import com.qcadoo.view.internal.components.window.WindowComponentPattern;

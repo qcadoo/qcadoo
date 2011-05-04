@@ -22,10 +22,10 @@
  * ***************************************************************************
  */
 
-package com.qcadoo.view.api;
+package com.qcadoo.view.internal.api;
 
 /**
- * Represents custom event which can be added to every {@link com.qcadoo.view.api.ComponentPattern}.
+ * Represents custom event which can be added to every {@link com.qcadoo.view.internal.api.ComponentPattern}.
  * 
  * @since 0.4.0
  */

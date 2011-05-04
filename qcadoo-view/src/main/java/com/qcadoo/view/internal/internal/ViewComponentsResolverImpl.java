@@ -34,8 +34,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.qcadoo.view.api.ComponentPattern;
 import com.qcadoo.view.internal.ComponentDefinition;
+import com.qcadoo.view.internal.api.ComponentPattern;
 import com.qcadoo.view.internal.api.ViewComponentsResolver;
 
 @Service

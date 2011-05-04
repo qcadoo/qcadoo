@@ -37,6 +37,6 @@ public interface FormComponent extends ComponentState {
      * @param enabled
      *            true if this form and all its inner components should be enabled, false if disabled
      */
-    void setEnabledWithChildren(boolean enabled);
+    void setFormEnabled(boolean enabled);
 
 }

@@ -30,7 +30,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * ComponentState is instance of single view element. It is created by {@link com.qcadoo.view.api.ComponentPattern} in request
+ * ComponentState is instance of single view element. It is created by {@link com.qcadoo.view.internal.api.ComponentPattern} in request
  * scope.
  * <p>
  * ComponentState contains all informations about state of this component. Changing this data will also change state displayed to
@@ -38,7 +38,7 @@ import org.json.JSONObject;
  * 
  * @since 0.4.0
  * 
- * @see com.qcadoo.view.api.ComponentPattern
+ * @see com.qcadoo.view.internal.api.ComponentPattern
  */
 public interface ComponentState {
 

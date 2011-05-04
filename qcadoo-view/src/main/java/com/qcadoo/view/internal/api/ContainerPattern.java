@@ -22,17 +22,19 @@
  * ***************************************************************************
  */
 
-package com.qcadoo.view.api;
+package com.qcadoo.view.internal.api;
 
 import java.util.Map;
 
+import com.qcadoo.view.api.ContainerState;
+
 /**
  * ContainerPattern is a definition of single view element which can contain other components. For more informations see
- * {@link com.qcadoo.view.api.ComponentPattern}.
+ * {@link com.qcadoo.view.internal.api.ComponentPattern}.
  * 
  * @since 0.4.0
  * 
- * @see com.qcadoo.view.api.ComponentPattern
+ * @see com.qcadoo.view.internal.api.ComponentPattern
  * @see com.qcadoo.view.api.ContainerState
  */
 public interface ContainerPattern extends ComponentPattern {

@@ -44,13 +44,13 @@ import org.junit.Test;
 
 import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.mes.beans.sample.CustomEntityService;
-import com.qcadoo.view.api.ComponentCustomEvent;
-import com.qcadoo.view.api.ComponentPattern;
 import com.qcadoo.view.api.ComponentState;
-import com.qcadoo.view.api.ContainerPattern;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.api.components.FormComponent;
 import com.qcadoo.view.internal.ComponentDefinition;
+import com.qcadoo.view.internal.api.ComponentCustomEvent;
+import com.qcadoo.view.internal.api.ComponentPattern;
+import com.qcadoo.view.internal.api.ContainerPattern;
 import com.qcadoo.view.internal.api.InternalViewDefinition;
 import com.qcadoo.view.internal.components.TextInputComponentPattern;
 import com.qcadoo.view.internal.components.form.FormComponentPattern;

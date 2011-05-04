@@ -9,8 +9,8 @@ import org.w3c.dom.Node;
 
 import com.google.common.base.Preconditions;
 import com.qcadoo.plugin.api.Module;
-import com.qcadoo.view.api.ComponentPattern;
 import com.qcadoo.view.internal.ComponentDefinition;
+import com.qcadoo.view.internal.api.ComponentPattern;
 import com.qcadoo.view.internal.api.InternalViewDefinition;
 import com.qcadoo.view.internal.api.InternalViewDefinitionService;
 import com.qcadoo.view.internal.components.window.WindowComponentPattern;

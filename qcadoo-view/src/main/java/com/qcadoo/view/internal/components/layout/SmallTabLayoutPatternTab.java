@@ -27,7 +27,7 @@ package com.qcadoo.view.internal.components.layout;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.qcadoo.view.api.ComponentPattern;
+import com.qcadoo.view.internal.api.ComponentPattern;
 
 public class SmallTabLayoutPatternTab {
 
