@@ -292,7 +292,6 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
     private void addFieldElement(final XMLStreamReader reader, final String pluginIdentifier,
             final DataDefinitionImpl dataDefinition, final String tag) throws XMLStreamException {
         FieldsTag fieldTag = FieldsTag.valueOf(tag.toUpperCase(Locale.ENGLISH));
-
         switch (fieldTag) {
             case PRIORITY:
                 dataDefinition.addPriorityField(getPriorityFieldDefinition(reader, dataDefinition));

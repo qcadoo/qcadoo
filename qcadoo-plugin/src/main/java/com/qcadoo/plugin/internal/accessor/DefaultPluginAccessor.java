@@ -39,6 +39,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.support.XmlWebApplicationContext;
 
 import com.qcadoo.model.beans.qcadooPlugin.QcadooPluginPlugin;
 import com.qcadoo.plugin.api.Plugin;
@@ -183,6 +184,21 @@ public class DefaultPluginAccessor implements InternalPluginAccessor, Applicatio
 
     @Override
     public void onApplicationEvent(final ContextRefreshedEvent event) {
+
+        // TODO masz there are two events on application startup:
+        // first one is ok, second one don't have 'tenentId' field in model xml (maybe it's using ModelModuleFactory instead of
+        // MultiTenantModelModuleFactory) - so in consequence saas isn't working.
+        // First one is 'Root WebApplicationContext', second one is 'WebApplicationContext for namespace 'Qcadoo MES-servlet' and
+        // has parent 'Root WebApplicationContext'
+        // So I return immediately when event parent is present
+        // Probably it should be done better way - so check this out
+        if (event != null && event.getSource() != null && event.getSource() instanceof XmlWebApplicationContext) {
+            XmlWebApplicationContext eventSource = (XmlWebApplicationContext) event.getSource();
+            if (eventSource.getParent() != null) {
+                return;
+            }
+        }
+
         long time = System.currentTimeMillis();
 
         List<Plugin> sortedPlugins = pluginDependencyManager.sortPluginsInDependencyOrder(plugins.values(), plugins);

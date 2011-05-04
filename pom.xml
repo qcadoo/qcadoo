@@ -21,6 +21,10 @@
 		<module>qcadoo-webapp-archetype</module>
 		<module>qcadoo-maven-plugin</module>
 		<module>qcadoo-schema</module>
+		<module>qcadoo-plugins-plugin-management</module>
+		<module>qcadoo-plugins-user-management</module>
+		<module>qcadoo-plugins-dictionary-management</module>
+		<module>qcadoo-plugins-menu-management</module>
 	</modules>
 
 	<name>Qcadoo Framework</name>
