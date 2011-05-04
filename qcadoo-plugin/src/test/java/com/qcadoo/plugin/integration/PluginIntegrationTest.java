@@ -52,7 +52,7 @@ import com.qcadoo.plugin.api.PluginOperationResult;
 import com.qcadoo.plugin.api.PluginOperationStatus;
 import com.qcadoo.plugin.api.PluginState;
 import com.qcadoo.plugin.api.PluginStateResolver;
-import com.qcadoo.plugin.api.PluginUtil;
+import com.qcadoo.plugin.api.PluginUtils;
 import com.qcadoo.plugin.api.Version;
 import com.qcadoo.plugin.api.artifact.JarPluginArtifact;
 import com.qcadoo.plugin.internal.api.InternalPlugin;
@@ -82,7 +82,7 @@ public class PluginIntegrationTest {
         PluginStateResolver mockPluginStateResolver = mock(PluginStateResolver.class);
         given(mockPluginStateResolver.isEnabled(Mockito.anyString())).willReturn(true);
 
-        PluginUtil pluginUtil = new PluginUtil();
+        PluginUtils pluginUtil = new PluginUtils();
         ReflectionTestUtils.setField(pluginUtil, "pluginStateResolver", mockPluginStateResolver);
         pluginUtil.init();
 

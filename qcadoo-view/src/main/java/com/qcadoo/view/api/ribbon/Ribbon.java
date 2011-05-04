@@ -31,7 +31,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.qcadoo.plugin.api.PluginUtil;
+import com.qcadoo.plugin.api.PluginUtils;
 
 /**
  * Represents ribbon in application
@@ -117,7 +117,7 @@ public final class Ribbon {
             ribbonJson.put("name", name);
             JSONArray groupsArray = new JSONArray();
             for (RibbonGroup group : groups) {
-                if (group.getExtensionPluginIdentifier() == null || PluginUtil.isEnabled(group.getExtensionPluginIdentifier())) {
+                if (group.getExtensionPluginIdentifier() == null || PluginUtils.isEnabled(group.getExtensionPluginIdentifier())) {
                     groupsArray.put(group.getAsJson());
                 }
             }

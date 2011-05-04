@@ -63,7 +63,7 @@ public final class MainController {
         ModelAndView mav = new ModelAndView();
         mav.setViewName("qcadooView/main");
         mav.addObject("viewsList", viewDefinitionService.list());
-        mav.addObject("commonTranslations", translationService.getMessagesForPrefix("commons", locale));
+        mav.addObject("commonTranslations", translationService.getMessagesGroup("commons", locale));
         mav.addObject("menuStructure", menuService.getMenu(locale).getAsJson());
         mav.addObject("userLogin", securityService.getCurrentUserName());
         mav.addObject("useCompressedStaticResources", useCompressedStaticResources);

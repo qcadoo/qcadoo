@@ -48,7 +48,7 @@ import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.types.BelongsToType;
 import com.qcadoo.model.api.types.HasManyType;
 import com.qcadoo.model.api.types.TreeType;
-import com.qcadoo.plugin.api.PluginUtil;
+import com.qcadoo.plugin.api.PluginUtils;
 import com.qcadoo.view.api.ComponentCustomEvent;
 import com.qcadoo.view.api.ComponentPattern;
 import com.qcadoo.view.api.ComponentState;
@@ -405,7 +405,7 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
 
     protected boolean isComponentEnabled(final ComponentPattern componentPattern) {
         return componentPattern.getExtensionPluginIdentifier() == null
-                || PluginUtil.isEnabled(componentPattern.getExtensionPluginIdentifier());
+                || PluginUtils.isEnabled(componentPattern.getExtensionPluginIdentifier());
     }
 
     protected final Map<String, ComponentPattern> getFieldEntityIdChangeListeners() {

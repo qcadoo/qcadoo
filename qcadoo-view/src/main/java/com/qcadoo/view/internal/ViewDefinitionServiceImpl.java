@@ -33,7 +33,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.qcadoo.model.api.aop.Monitorable;
-import com.qcadoo.plugin.api.PluginUtil;
+import com.qcadoo.plugin.api.PluginUtils;
 import com.qcadoo.security.api.SecurityRole;
 import com.qcadoo.security.api.SecurityViewDefinitionRoleResolver;
 import com.qcadoo.view.api.ViewDefinition;
@@ -49,7 +49,7 @@ public class ViewDefinitionServiceImpl implements InternalViewDefinitionService,
     @Transactional(readOnly = true)
     @Monitorable
     public ViewDefinition get(final String pluginIdentifier, final String viewName) {
-        if (PluginUtil.isEnabled(pluginIdentifier)) {
+        if (PluginUtils.isEnabled(pluginIdentifier)) {
             return getWithoutSession(pluginIdentifier, viewName);
         }
         return null;
@@ -73,7 +73,7 @@ public class ViewDefinitionServiceImpl implements InternalViewDefinitionService,
     public List<ViewDefinition> list() {
         List<ViewDefinition> result = new ArrayList<ViewDefinition>();
         for (ViewDefinition viewDefinition : viewDefinitions.values()) {
-            if (PluginUtil.isEnabled(viewDefinition.getPluginIdentifier())) {
+            if (PluginUtils.isEnabled(viewDefinition.getPluginIdentifier())) {
                 result.add(viewDefinition);
             }
         }

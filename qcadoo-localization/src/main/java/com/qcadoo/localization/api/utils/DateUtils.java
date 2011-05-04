@@ -80,7 +80,7 @@ public final class DateUtils {
      * @throws ParseException
      *             if year, month or day is invalid
      */
-    public static Date parseDate(final String dateExpression, final boolean upComplete) throws ParseException {
+    public static Date parseAndComplete(final String dateExpression, final boolean upComplete) throws ParseException {
         String[] dateExpressionParts = dateExpression.split("-");
 
         Calendar cal = Calendar.getInstance();
