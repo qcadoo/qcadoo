@@ -335,7 +335,7 @@ public class FormComponentState extends AbstractContainerState implements FormCo
     }
 
     @Override
-    public void setEnabledWithChildren(final boolean enabled) {
+    public void setFormEnabled(final boolean enabled) {
         for (Map.Entry<String, FieldComponentState> field : getFieldComponents().entrySet()) {
             FieldDefinition fieldDefinition = getDataDefinition().getField(field.getKey());
 
@@ -424,7 +424,7 @@ public class FormComponentState extends AbstractContainerState implements FormCo
                 setFieldValue(entity.getId());
                 setFieldsRequiredAndDisables();
             } else if (entityId != null) {
-                setEnabledWithChildren(false);
+                setFormEnabled(false);
                 valid = false;
                 addMessage(translateMessage("entityNotFound"), MessageType.FAILURE);
             } else {

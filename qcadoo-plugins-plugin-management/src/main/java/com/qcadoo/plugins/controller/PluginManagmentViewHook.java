@@ -48,10 +48,10 @@ public class PluginManagmentViewHook {
         List<String> pluginIdentifiers = new LinkedList<String>();
         GridComponent grid = (GridComponent) viewDefinitionState.getComponentByReference("grid");
 
-        Preconditions.checkState(grid.getSelectedEntitiesId().size() > 0, "No record selected");
+        Preconditions.checkState(grid.getSelectedEntitiesIds().size() > 0, "No record selected");
 
         DataDefinition pluginDataDefinition = dataDefinitionService.get("qcadooPlugin", "plugin");
-        for (Long entityId : grid.getSelectedEntitiesId()) {
+        for (Long entityId : grid.getSelectedEntitiesIds()) {
             Entity pluginEntity = pluginDataDefinition.get(entityId);
             pluginIdentifiers.add(pluginEntity.getStringField("identifier"));
         }

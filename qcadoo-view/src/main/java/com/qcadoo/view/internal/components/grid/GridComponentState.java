@@ -305,17 +305,17 @@ public final class GridComponentState extends AbstractComponentState implements 
     }
 
     @Override
-    public Set<Long> getSelectedEntitiesId() {
+    public Set<Long> getSelectedEntitiesIds() {
         return selectedEntities;
     }
 
     @Override
-    public void setIsEditable(final boolean isEditable) {
+    public void setEditable(final boolean isEditable) {
         this.isEditable = isEditable;
     }
 
     @Override
-    public void setSelectedEntitiesId(final Set<Long> selectedEntities) {
+    public void setSelectedEntitiesIds(final Set<Long> selectedEntities) {
         this.selectedEntities = selectedEntities;
         if (selectedEntities == null || selectedEntities.size() < 2) {
             multiselectMode = false;

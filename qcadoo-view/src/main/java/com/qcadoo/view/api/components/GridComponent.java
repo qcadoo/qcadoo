@@ -19,7 +19,7 @@ public interface GridComponent extends ComponentState {
      * 
      * @return ids of all selected entities
      */
-    Set<Long> getSelectedEntitiesId();
+    Set<Long> getSelectedEntitiesIds();
 
     /**
      * Sets new collection of selected entities
@@ -27,7 +27,7 @@ public interface GridComponent extends ComponentState {
      * @param selectedEntities
      *            ids of selected entities
      */
-    void setSelectedEntitiesId(final Set<Long> selectedEntities);
+    void setSelectedEntitiesIds(final Set<Long> selectedEntities);
 
     /**
      * Sets new content of grid
@@ -61,6 +61,6 @@ public interface GridComponent extends ComponentState {
      * @param isEditable
      *            true if this grid should be editable, false if not
      */
-    void setIsEditable(boolean isEditable);
+    void setEditable(boolean isEditable);
 
 }
