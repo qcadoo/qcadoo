@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.qcadoo.plugin.api.Module;
 import com.qcadoo.plugin.api.ModuleFactory;
-import com.qcadoo.view.api.ComponentPattern;
+import com.qcadoo.view.internal.api.ComponentPattern;
 import com.qcadoo.view.internal.internal.ViewComponentsResolverImpl;
 
 public class ViewComponentModuleFactory extends ModuleFactory<Module> implements BeanClassLoaderAware {

@@ -265,7 +265,7 @@ public class RibbonActionItem {
      * @param shouldBeUpdated
      *            true if this item state should be updated
      */
-    public void setShouldBeUpdated(boolean shouldBeUpdated) {
+    public void requestUpdate(boolean shouldBeUpdated) {
         this.shouldBeUpdated = shouldBeUpdated;
     }
 }

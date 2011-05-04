@@ -111,11 +111,11 @@ public class MenuAdministrationService {
         WindowComponent window = (WindowComponent) viewDefinitionState.getComponentByReference("window");
         Ribbon ribbon = window.getRibbon();
         ribbon.getGroupByName("actions").getItemByName("save").setEnabled(false);
-        ribbon.getGroupByName("actions").getItemByName("save").setShouldBeUpdated(true);
+        ribbon.getGroupByName("actions").getItemByName("save").requestUpdate(true);
         ribbon.getGroupByName("actions").getItemByName("saveBack").setEnabled(false);
-        ribbon.getGroupByName("actions").getItemByName("saveBack").setShouldBeUpdated(true);
+        ribbon.getGroupByName("actions").getItemByName("saveBack").requestUpdate(true);
         ribbon.getGroupByName("actions").getItemByName("cancel").setEnabled(false);
-        ribbon.getGroupByName("actions").getItemByName("cancel").setShouldBeUpdated(true);
+        ribbon.getGroupByName("actions").getItemByName("cancel").requestUpdate(true);
         window.requestRibbonRender();
     }
 }
