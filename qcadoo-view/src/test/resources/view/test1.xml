@@ -30,8 +30,8 @@
 				<component type="input" name="name" field="name" reference="beanAFormName"/>
 			</component>
 			<option type="header" value="false" />	
-			<listener event="save" bean="com.qcadoo.mes.beans.sample.CustomEntityService" method="saveForm" />
-			<listener event="generate" bean="com.qcadoo.mes.beans.sample.CustomEntityService" method="generate" />
+			<listener event="save" class="com.qcadoo.mes.beans.sample.CustomEntityService" method="saveForm" />
+			<listener event="generate" class="com.qcadoo.mes.beans.sample.CustomEntityService" method="generate" />
 		</component>
 		<component type="textarea" name="name" field="#{beanBForm}.name" reference="referenceToTextarea" />
 		<component type="grid" name="beansBGrig" source="#{selectBeanA}.beansB" reference="beansBGrig">
@@ -51,7 +51,7 @@
 			<option type="url" value="download.html" />
 		</component>
 	</component>
-	<preInitializeHook bean="com.qcadoo.mes.beans.sample.CustomEntityService" method="onView" />
-	<postInitializeHook bean="com.qcadoo.mes.beans.sample.CustomEntityService" method="onView" />
-	<preRenderHook bean="com.qcadoo.mes.beans.sample.CustomEntityService" method="onView" />
+	<beforeInitalize class="com.qcadoo.mes.beans.sample.CustomEntityService" method="onView" />
+	<afterInitialize class="com.qcadoo.mes.beans.sample.CustomEntityService" method="onView" />
+	<beforeRender class="com.qcadoo.mes.beans.sample.CustomEntityService" method="onView" />
 </view>

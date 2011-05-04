@@ -2,7 +2,6 @@ package com.qcadoo.view.internal.api;
 
 import java.util.Set;
 
-import com.qcadoo.view.api.ComponentPattern;
 import com.qcadoo.view.internal.ComponentDefinition;
 
 public interface ViewComponentsResolver {

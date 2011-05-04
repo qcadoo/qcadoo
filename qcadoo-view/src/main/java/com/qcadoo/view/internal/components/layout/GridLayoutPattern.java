@@ -33,8 +33,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.google.common.base.Preconditions;
-import com.qcadoo.view.api.ComponentPattern;
 import com.qcadoo.view.internal.ComponentDefinition;
+import com.qcadoo.view.internal.api.ComponentPattern;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
 
 public class GridLayoutPattern extends AbstractLayoutPattern {

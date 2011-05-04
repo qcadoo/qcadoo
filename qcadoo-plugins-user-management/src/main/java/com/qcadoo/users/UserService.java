@@ -27,8 +27,6 @@ package com.qcadoo.users;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.qcadoo.model.api.DataDefinition;
-import com.qcadoo.model.api.Entity;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.api.components.FieldComponent;
@@ -44,8 +42,7 @@ public final class UserService {
         FieldComponent viewIdentifier = (FieldComponent) state.getComponentByReference("viewIdentifierHiddenInput");
         FieldComponent oldPassword = (FieldComponent) state.getComponentByReference("oldPasswordTextInput");
         FieldComponent password = (FieldComponent) state.getComponentByReference("passwordTextInput");
-        FieldComponent passwordConfirmation = (FieldComponent) state
-                .getComponentByReference("passwordConfirmationTextInput");
+        FieldComponent passwordConfirmation = (FieldComponent) state.getComponentByReference("passwordConfirmationTextInput");
 
         oldPassword.setRequired(true);
         password.setRequired(true);
@@ -63,8 +60,7 @@ public final class UserService {
     public void setPasswordAsRequired(final ViewDefinitionState state) {
         FieldComponent viewIdentifier = (FieldComponent) state.getComponentByReference("viewIdentifierHiddenInput");
         FieldComponent password = (FieldComponent) state.getComponentByReference("passwordTextInput");
-        FieldComponent passwordConfirmation = (FieldComponent) state
-                .getComponentByReference("passwordConfirmationTextInput");
+        FieldComponent passwordConfirmation = (FieldComponent) state.getComponentByReference("passwordConfirmationTextInput");
 
         password.setRequired(true);
         passwordConfirmation.setRequired(true);
@@ -74,8 +70,7 @@ public final class UserService {
     public void hidePasswordOnUpdateForm(final ViewDefinitionState state) {
         FormComponent form = (FormComponent) state.getComponentByReference("form");
         FieldComponent password = (FieldComponent) state.getComponentByReference("passwordTextInput");
-        FieldComponent passwordConfirmation = (FieldComponent) state
-                .getComponentByReference("passwordConfirmationTextInput");
+        FieldComponent passwordConfirmation = (FieldComponent) state.getComponentByReference("passwordConfirmationTextInput");
         ComponentState changePasswordButton = state.getComponentByReference("changePasswordButton");
 
         password.setRequired(true);
@@ -92,45 +87,4 @@ public final class UserService {
         }
     }
 
-    public boolean checkPassword(final DataDefinition dataDefinition, final Entity entity) {
-        String password = entity.getStringField("password");
-        String passwordConfirmation = entity.getStringField("passwordConfirmation");
-        String oldPassword = entity.getStringField("oldPassword");
-        String viewIdentifier = entity.getId() == null ? "userChangePassword" : entity.getStringField("viewIdentifier");
-
-        if (!"profileChangePassword".equals(viewIdentifier) && !"userChangePassword".equals(viewIdentifier)) {
-            return true;
-        }
-
-        if ("profileChangePassword".equals(viewIdentifier)) {
-            if (oldPassword == null) {
-                entity.addError(dataDefinition.getField("oldPassword"), "users.validate.global.error.noOldPassword");
-                return false;
-            }
-            Object currentPassword = dataDefinition.get(entity.getId()).getField("password");
-
-            if (!currentPassword.equals(oldPassword)) {
-                entity.addError(dataDefinition.getField("oldPassword"), "users.validate.global.error.wrongOldPassword");
-                return false;
-            }
-        }
-
-        if (password == null) {
-            entity.addError(dataDefinition.getField("password"), "users.validate.global.error.noPassword");
-            return false;
-        }
-
-        if (passwordConfirmation == null) {
-            entity.addError(dataDefinition.getField("passwordConfirmation"), "users.validate.global.error.noPasswordConfirmation");
-            return false;
-        }
-
-        if (!password.equals(passwordConfirmation)) {
-            entity.addError(dataDefinition.getField("password"), "users.validate.global.error.notMatch");
-            entity.addError(dataDefinition.getField("passwordConfirmation"), "users.validate.global.error.notMatch");
-            return false;
-        }
-
-        return true;
-    }
 }

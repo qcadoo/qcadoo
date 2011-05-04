@@ -38,5 +38,5 @@
 				value="#name + ' - ' + #category['name'] + '[' + #succession + ']'" />
 		</component>
 	</component>
-	<preRenderHook bean="com.qcadoo.menu.MenuAdministrationService" method="translateItemForm" />
+	<beforeRender class="com.qcadoo.menu.MenuAdministrationService" method="translateItemForm" />
 </view>

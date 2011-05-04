@@ -26,18 +26,19 @@ package com.qcadoo.view.api;
 
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.security.api.SecurityRole;
+import com.qcadoo.view.internal.api.ComponentPattern;
 
 /**
  * ViewDefinition defines single 'view' in system.
  * <p>
- * It contains all {@link com.qcadoo.view.api.ComponentPattern ComponentPatterns} of this view and other data necessary to create
+ * It contains all {@link com.qcadoo.view.internal.api.ComponentPattern ComponentPatterns} of this view and other data necessary to create
  * {@link com.qcadoo.view.api.ViewDefinitionState}.
  * 
  * @since 0.4.0
  * 
  * @see com.qcadoo.view.api.ViewDefinitionState
  * @see com.qcadoo.view.api.ViewDefinitionService
- * @see com.qcadoo.view.api.ComponentPattern
+ * @see com.qcadoo.view.internal.api.ComponentPattern
  */
 public interface ViewDefinition {
 

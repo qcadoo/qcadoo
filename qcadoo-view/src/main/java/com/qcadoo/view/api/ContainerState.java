@@ -34,7 +34,7 @@ import java.util.Map;
  * @since 0.4.0
  * 
  * @see com.qcadoo.view.api.ComponentState
- * @see com.qcadoo.view.api.ContainerPattern
+ * @see com.qcadoo.view.internal.api.ContainerPattern
  */
 public interface ContainerState extends ComponentState {
 

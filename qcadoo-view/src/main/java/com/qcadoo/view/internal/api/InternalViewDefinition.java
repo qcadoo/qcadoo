@@ -30,7 +30,6 @@ import java.util.Map;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.qcadoo.view.api.ComponentPattern;
 import com.qcadoo.view.api.ViewDefinition;
 import com.qcadoo.view.internal.HookDefinition;
 import com.qcadoo.view.internal.components.window.WindowComponentPattern;
