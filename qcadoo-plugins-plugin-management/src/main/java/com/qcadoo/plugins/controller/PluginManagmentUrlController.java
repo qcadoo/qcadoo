@@ -122,7 +122,7 @@ public class PluginManagmentUrlController {
     private ModelAndView getCrudPopupView(final String viewName, final Locale locale) {
         Map<String, String> crudArgs = new HashMap<String, String>();
         crudArgs.put("popup", "true");
-        return crudController.prepareView("plugins", viewName, crudArgs, locale);
+        return crudController.prepareView("qcadooPlugins", viewName, crudArgs, locale);
     }
 
     private Map<String, String> createDependenciesMap(final Map<String, String> arguments, final Locale locale) {
