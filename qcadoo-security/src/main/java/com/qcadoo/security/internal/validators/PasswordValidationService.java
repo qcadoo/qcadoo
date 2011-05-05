@@ -20,30 +20,31 @@ public class PasswordValidationService {
 
         if ("profileChangePassword".equals(viewIdentifier)) {
             if (oldPassword == null) {
-                entity.addError(dataDefinition.getField("oldPassword"), "users.validate.global.error.noOldPassword");
+                entity.addError(dataDefinition.getField("oldPassword"), "qcadooUsers.validate.global.error.noOldPassword");
                 return false;
             }
             Object currentPassword = dataDefinition.get(entity.getId()).getField("password");
 
             if (!currentPassword.equals(oldPassword)) {
-                entity.addError(dataDefinition.getField("oldPassword"), "users.validate.global.error.wrongOldPassword");
+                entity.addError(dataDefinition.getField("oldPassword"), "qcadooUsers.validate.global.error.wrongOldPassword");
                 return false;
             }
         }
 
         if (password == null) {
-            entity.addError(dataDefinition.getField("password"), "users.validate.global.error.noPassword");
+            entity.addError(dataDefinition.getField("password"), "qcadooUsers.validate.global.error.noPassword");
             return false;
         }
 
         if (passwordConfirmation == null) {
-            entity.addError(dataDefinition.getField("passwordConfirmation"), "users.validate.global.error.noPasswordConfirmation");
+            entity.addError(dataDefinition.getField("passwordConfirmation"),
+                    "qcadooUsers.validate.global.error.noPasswordConfirmation");
             return false;
         }
 
         if (!password.equals(passwordConfirmation)) {
-            entity.addError(dataDefinition.getField("password"), "users.validate.global.error.notMatch");
-            entity.addError(dataDefinition.getField("passwordConfirmation"), "users.validate.global.error.notMatch");
+            entity.addError(dataDefinition.getField("password"), "qcadooUsers.validate.global.error.notMatch");
+            entity.addError(dataDefinition.getField("passwordConfirmation"), "qcadooUsers.validate.global.error.notMatch");
             return false;
         }
 

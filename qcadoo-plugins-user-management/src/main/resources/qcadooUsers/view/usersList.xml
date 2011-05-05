@@ -24,7 +24,7 @@
 			<option type="order" column="login" direction="asc" />
 			<option type="orderable" value="login,email,firstName,lastName,role" />
 			<option type="searchable" value="login,email,firstName,lastName,role" />
-			<option type="correspondingView" value="users/userDetails" />
+			<option type="correspondingView" value="qcadooUsers/userDetails" />
 			<option type="correspondingComponent" value="form" />
 			<option type="fullscreen" value="true" />
 			<option type="multiselect" value="true" />
