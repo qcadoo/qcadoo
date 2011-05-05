@@ -172,15 +172,15 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
 
         for (int i = 0; i < childNodes.getLength(); i++) {
             Node child = childNodes.item(i);
-
+            if (Node.ELEMENT_NODE != child.getNodeType()) {
+                continue;
+            }
             if ("component".equals(child.getNodeName())) {
                 root = parseComponent(child, viewDefinition, null, pluginIdentifier);
-            } else if ("beforeInitalize".equals(child.getNodeName())) {
-                viewDefinition.addPreInitializeHook(parseHook(child));
-            } else if ("afterInitialize".equals(child.getNodeName())) {
-                viewDefinition.addPostInitializeHook(parseHook(child));
-            } else if ("beforeRender".equals(child.getNodeName())) {
-                viewDefinition.addPreRenderHook(parseHook(child));
+            } else if ("hooks".equals(child.getNodeName())) {
+                parseViewHooks(child, viewDefinition);
+            } else {
+                throw new IllegalStateException("Unknown node: " + child.getNodeName());
             }
         }
 
@@ -306,6 +306,25 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
         HookDefinitionImpl hookDefinition = (HookDefinitionImpl) parseHook(listenerNode);
         return new ComponentCustomEvent(getStringAttribute(listenerNode, "event"), hookDefinition.getObject(),
                 hookDefinition.getMethod(), null);
+    }
+
+    private void parseViewHooks(final Node hookNode, final ViewDefinitionImpl viewDefinition) {
+        NodeList childNodes = hookNode.getChildNodes();
+        for (int i = 0; i < childNodes.getLength(); i++) {
+            Node child = childNodes.item(i);
+            if (Node.ELEMENT_NODE != child.getNodeType()) {
+                continue;
+            }
+            if ("beforeInitalize".equals(child.getNodeName())) {
+                viewDefinition.addPreInitializeHook(parseHook(child));
+            } else if ("afterInitialize".equals(child.getNodeName())) {
+                viewDefinition.addPostInitializeHook(parseHook(child));
+            } else if ("beforeRender".equals(child.getNodeName())) {
+                viewDefinition.addPreRenderHook(parseHook(child));
+            } else {
+                throw new IllegalStateException("Unknown hook type: " + child.getNodeName());
+            }
+        }
     }
 
     public HookDefinition parseHook(final Node hookNode) {

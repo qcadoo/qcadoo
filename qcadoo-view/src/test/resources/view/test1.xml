@@ -51,7 +51,9 @@
 			<option type="url" value="download.html" />
 		</component>
 	</component>
-	<beforeInitalize class="com.qcadoo.mes.beans.sample.CustomEntityService" method="onView" />
-	<afterInitialize class="com.qcadoo.mes.beans.sample.CustomEntityService" method="onView" />
-	<beforeRender class="com.qcadoo.mes.beans.sample.CustomEntityService" method="onView" />
+	<hooks>
+		<beforeInitalize class="com.qcadoo.mes.beans.sample.CustomEntityService" method="onView" />
+		<afterInitialize class="com.qcadoo.mes.beans.sample.CustomEntityService" method="onView" />
+		<beforeRender class="com.qcadoo.mes.beans.sample.CustomEntityService" method="onView" />
+	</hooks>
 </view>
