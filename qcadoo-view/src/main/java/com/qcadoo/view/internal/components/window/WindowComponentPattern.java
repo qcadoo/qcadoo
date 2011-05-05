@@ -12,9 +12,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.qcadoo.view.api.ComponentState;
-import com.qcadoo.view.api.ribbon.Ribbon;
 import com.qcadoo.view.internal.ComponentDefinition;
 import com.qcadoo.view.internal.patterns.AbstractContainerPattern;
+import com.qcadoo.view.internal.ribbon.InternalRibbon;
 import com.qcadoo.view.internal.ribbon.RibbonUtils;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
 
@@ -28,7 +28,7 @@ public class WindowComponentPattern extends AbstractContainerPattern {
 
     private Boolean fixedHeight;
 
-    private Ribbon ribbon;
+    private InternalRibbon ribbon;
 
     private boolean hasRibbon = true;
 
@@ -167,11 +167,11 @@ public class WindowComponentPattern extends AbstractContainerPattern {
         return json;
     }
 
-    public void setRibbon(final Ribbon ribbon) {
+    public void setRibbon(final InternalRibbon ribbon) {
         this.ribbon = ribbon;
     }
 
-    public Ribbon getRibbon() {
+    public InternalRibbon getRibbon() {
         return ribbon;
     }
 

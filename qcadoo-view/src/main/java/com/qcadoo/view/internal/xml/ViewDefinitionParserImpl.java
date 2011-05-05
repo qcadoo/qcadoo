@@ -53,7 +53,6 @@ import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.security.api.SecurityRole;
 import com.qcadoo.security.api.SecurityRolesService;
-import com.qcadoo.view.api.ribbon.RibbonGroup;
 import com.qcadoo.view.internal.ComponentDefinition;
 import com.qcadoo.view.internal.ComponentOption;
 import com.qcadoo.view.internal.HookDefinition;
@@ -68,6 +67,7 @@ import com.qcadoo.view.internal.hooks.HookFactory;
 import com.qcadoo.view.internal.internal.ViewComponentsResolverImpl;
 import com.qcadoo.view.internal.internal.ViewDefinitionImpl;
 import com.qcadoo.view.internal.patterns.AbstractComponentPattern;
+import com.qcadoo.view.internal.ribbon.InternalRibbonGroup;
 import com.qcadoo.view.internal.ribbon.RibbonUtils;
 
 @Service
@@ -361,7 +361,7 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
     }
 
     @Override
-    public RibbonGroup parseRibbonGroup(final Node groupNode, final ViewDefinition viewDefinition) {
+    public InternalRibbonGroup parseRibbonGroup(final Node groupNode, final ViewDefinition viewDefinition) {
         return RibbonUtils.getInstance().parseRibbonGroup(groupNode, this, viewDefinition);
     }
 }
