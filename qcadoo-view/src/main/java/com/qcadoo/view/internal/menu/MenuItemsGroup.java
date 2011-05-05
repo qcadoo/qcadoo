@@ -22,7 +22,7 @@
  * ***************************************************************************
  */
 
-package com.qcadoo.view.api.menu;
+package com.qcadoo.view.internal.menu;
 
 import java.util.LinkedList;
 import java.util.List;

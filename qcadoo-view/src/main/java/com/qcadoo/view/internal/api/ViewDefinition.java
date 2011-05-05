@@ -26,13 +26,12 @@ package com.qcadoo.view.internal.api;
 
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.security.api.SecurityRole;
-import com.qcadoo.view.api.ViewDefinitionState;
 
 /**
  * ViewDefinition defines single 'view' in system.
  * <p>
- * It contains all {@link com.qcadoo.view.internal.api.ComponentPattern ComponentPatterns} of this view and other data necessary to create
- * {@link com.qcadoo.view.api.ViewDefinitionState}.
+ * It contains all {@link com.qcadoo.view.internal.api.ComponentPattern ComponentPatterns} of this view and other data necessary
+ * to create {@link com.qcadoo.view.api.ViewDefinitionState}.
  * 
  * @since 0.4.0
  * 
@@ -69,14 +68,5 @@ public interface ViewDefinition {
      * @return main data definition of this view
      */
     DataDefinition getDataDefinition();
-
-    /**
-     * Returns component with specified reference name or null if no such component found
-     * 
-     * @param reference
-     *            reference name of component
-     * @return component with specified reference name
-     */
-    ComponentPattern getComponentByReference(String reference);
 
 }

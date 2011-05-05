@@ -52,10 +52,10 @@ import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.internal.DefaultEntity;
 import com.qcadoo.model.internal.ExpressionServiceImpl;
 import com.qcadoo.model.internal.types.StringType;
-import com.qcadoo.view.api.ComponentState;
-import com.qcadoo.view.api.ContainerState;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.api.components.FormComponent;
+import com.qcadoo.view.internal.api.ContainerState;
+import com.qcadoo.view.internal.api.InternalComponentState;
 import com.qcadoo.view.internal.components.FieldComponentPattern;
 import com.qcadoo.view.internal.components.FieldComponentState;
 import com.qcadoo.view.internal.components.form.FormComponentState;
@@ -118,7 +118,7 @@ public class FormComponentStateTest extends AbstractStateTest {
     @Test
     public void shouldInitialeFormWithEntityId() throws Exception {
         // given
-        ComponentState componentState = new FormComponentState(null, null);
+        InternalComponentState componentState = new FormComponentState(null, null);
 
         JSONObject json = new JSONObject();
         JSONObject jsonContent = new JSONObject();
@@ -137,7 +137,7 @@ public class FormComponentStateTest extends AbstractStateTest {
     @Test
     public void shouldInitialeFormWithNullEntityId() throws Exception {
         // given
-        ComponentState componentState = new FormComponentState(null, null);
+        InternalComponentState componentState = new FormComponentState(null, null);
 
         JSONObject json = new JSONObject();
         JSONObject jsonContent = new JSONObject();

@@ -56,11 +56,11 @@ import com.qcadoo.model.internal.types.EnumType;
 import com.qcadoo.model.internal.types.IntegerType;
 import com.qcadoo.model.internal.types.StringType;
 import com.qcadoo.view.api.ComponentState;
-import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.api.components.GridComponent;
 import com.qcadoo.view.internal.ComponentDefinition;
 import com.qcadoo.view.internal.ComponentOption;
 import com.qcadoo.view.internal.api.InternalViewDefinition;
+import com.qcadoo.view.internal.api.InternalViewDefinitionState;
 import com.qcadoo.view.internal.components.TextInputComponentPattern;
 import com.qcadoo.view.internal.components.grid.GridComponentPattern;
 import com.qcadoo.view.internal.patterns.AbstractComponentPattern;
@@ -278,7 +278,7 @@ public class GridComponentPatternTest extends AbstractPatternTest {
     @Test
     public void shouldReturnState() throws Exception {
         // given
-        ViewDefinitionState viewDefinitionState = mock(ViewDefinitionState.class);
+        InternalViewDefinitionState viewDefinitionState = mock(InternalViewDefinitionState.class);
         DataDefinition dataDefinition = mock(DataDefinition.class);
         TranslationService translationService = mock(TranslationService.class);
 

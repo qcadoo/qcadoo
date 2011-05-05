@@ -39,6 +39,7 @@ import org.json.JSONObject;
 import org.junit.Test;
 
 import com.qcadoo.view.api.ComponentState;
+import com.qcadoo.view.internal.api.InternalComponentState;
 import com.qcadoo.view.internal.components.form.FormComponentState;
 
 public class ContainerStateTest extends AbstractStateTest {
@@ -49,7 +50,7 @@ public class ContainerStateTest extends AbstractStateTest {
         FormComponentState container = new FormComponentState(null, null);
 
         // when
-        Map<String, ComponentState> children = container.getChildren();
+        Map<String, InternalComponentState> children = container.getChildren();
 
         // then
         assertNotNull(children);
@@ -59,15 +60,15 @@ public class ContainerStateTest extends AbstractStateTest {
     @Test
     public void shouldHaveChildren() throws Exception {
         // given
-        ComponentState component1 = createMockComponent("component1");
-        ComponentState component2 = createMockComponent("component2");
+        InternalComponentState component1 = createMockComponent("component1");
+        InternalComponentState component2 = createMockComponent("component2");
 
         FormComponentState container = new FormComponentState(null, null);
         container.addChild(component1);
         container.addChild(component2);
 
         // when
-        Map<String, ComponentState> children = container.getChildren();
+        Map<String, InternalComponentState> children = container.getChildren();
 
         // then
         assertNotNull(children);
@@ -77,7 +78,7 @@ public class ContainerStateTest extends AbstractStateTest {
     @Test
     public void shouldReturnChildByName() throws Exception {
         // given
-        ComponentState component = createMockComponent("component");
+        InternalComponentState component = createMockComponent("component");
 
         FormComponentState container = new FormComponentState(null, null);
         container.addChild(component);
@@ -104,8 +105,8 @@ public class ContainerStateTest extends AbstractStateTest {
     @Test
     public void shouldInitializeChildren() throws Exception {
         // given
-        ComponentState component1 = createMockComponent("component1");
-        ComponentState component2 = createMockComponent("component2");
+        InternalComponentState component1 = createMockComponent("component1");
+        InternalComponentState component2 = createMockComponent("component2");
 
         FormComponentState container = new FormComponentState(null, null);
         container.addChild(component1);
@@ -138,9 +139,9 @@ public class ContainerStateTest extends AbstractStateTest {
         JSONObject component2Json = new JSONObject();
         component2Json.put(AbstractComponentState.JSON_CONTENT, "test2");
 
-        ComponentState component1 = createMockComponent("component1");
+        InternalComponentState component1 = createMockComponent("component1");
         given(component1.render()).willReturn(component1Json);
-        ComponentState component2 = createMockComponent("component2");
+        InternalComponentState component2 = createMockComponent("component2");
         given(component2.render()).willReturn(component2Json);
 
         FormComponentState container = new FormComponentState(null, null);

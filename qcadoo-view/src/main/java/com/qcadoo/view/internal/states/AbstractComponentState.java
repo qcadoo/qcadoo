@@ -32,15 +32,16 @@ import org.json.JSONObject;
 
 import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.api.DataDefinition;
-import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.internal.FieldEntityIdChangeListener;
 import com.qcadoo.view.internal.ScopeEntityIdChangeListener;
+import com.qcadoo.view.internal.api.InternalComponentState;
 import com.qcadoo.view.internal.internal.EntityIdChangeListenerHolder;
 import com.qcadoo.view.internal.internal.EventHandlerHolder;
 import com.qcadoo.view.internal.internal.MessageHolder;
 
-public abstract class AbstractComponentState implements ComponentState, FieldEntityIdChangeListener, ScopeEntityIdChangeListener {
+public abstract class AbstractComponentState implements InternalComponentState, FieldEntityIdChangeListener,
+        ScopeEntityIdChangeListener {
 
     public static final String JSON_UPDATE_STATE = "updateState";
 

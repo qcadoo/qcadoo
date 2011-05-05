@@ -13,12 +13,12 @@ import com.qcadoo.model.api.search.Restrictions;
 import com.qcadoo.model.api.search.SimpleCustomRestriction;
 import com.qcadoo.report.api.Pair;
 import com.qcadoo.view.api.ComponentState;
-import com.qcadoo.view.api.MenuService;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.api.components.FormComponent;
 import com.qcadoo.view.api.components.GridComponent;
 import com.qcadoo.view.api.components.WindowComponent;
 import com.qcadoo.view.api.ribbon.Ribbon;
+import com.qcadoo.view.api.utils.TranslationUtilsService;
 
 @Service
 public class MenuAdministrationService {
@@ -27,7 +27,7 @@ public class MenuAdministrationService {
     private DataDefinitionService dataDefinitionService;
 
     @Autowired
-    private MenuService menuService;
+    private TranslationUtilsService translationUtilsService;
 
     private static final List<Pair<String, String>> disabledCategories;
 
@@ -60,7 +60,7 @@ public class MenuAdministrationService {
         for (Entity categoryEntity : categoriesGrid.getEntities()) {
             if (categoryEntity.getStringField("pluginIdentifier") != null) {
                 categoryEntity.setField("name",
-                        menuService.getCategoryTranslation(categoryEntity, viewDefinitionState.getLocale()));
+                        translationUtilsService.getCategoryTranslation(categoryEntity, viewDefinitionState.getLocale()));
             }
         }
     }
@@ -75,7 +75,8 @@ public class MenuAdministrationService {
         if (categoryEntity != null && categoryEntity.getStringField("pluginIdentifier") != null) {
             ComponentState categoryNameField = viewDefinitionState.getComponentByReference("categoryName");
             categoryNameField.setEnabled(false);
-            categoryNameField.setFieldValue(menuService.getCategoryTranslation(categoryEntity, viewDefinitionState.getLocale()));
+            categoryNameField.setFieldValue(translationUtilsService.getCategoryTranslation(categoryEntity,
+                    viewDefinitionState.getLocale()));
 
             disableWinfowButtons(viewDefinitionState);
         }
@@ -83,7 +84,8 @@ public class MenuAdministrationService {
         GridComponent categoryItemsGrid = (GridComponent) viewDefinitionState.getComponentByReference("itemsGrid");
         for (Entity itemEntity : categoryItemsGrid.getEntities()) {
             if (itemEntity.getStringField("pluginIdentifier") != null) {
-                itemEntity.setField("name", menuService.getItemTranslation(itemEntity, viewDefinitionState.getLocale()));
+                itemEntity.setField("name",
+                        translationUtilsService.getItemTranslation(itemEntity, viewDefinitionState.getLocale()));
             }
         }
     }
@@ -97,7 +99,7 @@ public class MenuAdministrationService {
         if (itemEntity != null && itemEntity.getStringField("pluginIdentifier") != null) {
             ComponentState itemNameField = viewDefinitionState.getComponentByReference("itemName");
             itemNameField.setEnabled(false);
-            itemNameField.setFieldValue(menuService.getItemTranslation(itemEntity, viewDefinitionState.getLocale()));
+            itemNameField.setFieldValue(translationUtilsService.getItemTranslation(itemEntity, viewDefinitionState.getLocale()));
 
             viewDefinitionState.getComponentByReference("itemView").setEnabled(false);
 

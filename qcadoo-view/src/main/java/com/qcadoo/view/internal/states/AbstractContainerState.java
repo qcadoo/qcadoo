@@ -32,11 +32,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.qcadoo.view.api.ComponentState;
-import com.qcadoo.view.api.ContainerState;
+import com.qcadoo.view.internal.api.ContainerState;
+import com.qcadoo.view.internal.api.InternalComponentState;
 
 public abstract class AbstractContainerState extends AbstractComponentState implements ContainerState {
 
-    private final Map<String, ComponentState> children = new HashMap<String, ComponentState>();
+    private final Map<String, InternalComponentState> children = new HashMap<String, InternalComponentState>();
 
     @Override
     public final void initialize(final JSONObject json, final Locale locale) throws JSONException {
@@ -47,7 +48,7 @@ public abstract class AbstractContainerState extends AbstractComponentState impl
             childerJson = json.getJSONObject(JSON_CHILDREN);
         }
 
-        for (Map.Entry<String, ComponentState> child : children.entrySet()) {
+        for (Map.Entry<String, InternalComponentState> child : children.entrySet()) {
             if (childerJson == null) {
                 child.getValue().initialize(new JSONObject(), locale);
             } else {
@@ -62,7 +63,7 @@ public abstract class AbstractContainerState extends AbstractComponentState impl
 
         JSONObject childerJson = new JSONObject();
 
-        for (Map.Entry<String, ComponentState> child : children.entrySet()) {
+        for (Map.Entry<String, InternalComponentState> child : children.entrySet()) {
             childerJson.put(child.getKey(), child.getValue().render());
         }
 
@@ -85,17 +86,17 @@ public abstract class AbstractContainerState extends AbstractComponentState impl
     }
 
     @Override
-    public final Map<String, ComponentState> getChildren() {
+    public final Map<String, InternalComponentState> getChildren() {
         return children;
     }
 
     @Override
-    public final ComponentState getChild(final String name) {
+    public final InternalComponentState getChild(final String name) {
         return children.get(name);
     }
 
     @Override
-    public final void addChild(final ComponentState state) {
+    public final void addChild(final InternalComponentState state) {
         children.put(state.getName(), state);
     }
 

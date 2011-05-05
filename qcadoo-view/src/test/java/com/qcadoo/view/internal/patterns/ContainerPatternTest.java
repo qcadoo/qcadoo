@@ -39,7 +39,9 @@ import org.mockito.Mockito;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.internal.api.ComponentPattern;
+import com.qcadoo.view.internal.api.InternalComponentState;
 import com.qcadoo.view.internal.api.InternalViewDefinition;
+import com.qcadoo.view.internal.api.InternalViewDefinitionState;
 import com.qcadoo.view.internal.components.EmptyContainerState;
 import com.qcadoo.view.internal.components.TextInputComponentPattern;
 import com.qcadoo.view.internal.components.form.FormComponentPattern;
@@ -133,11 +135,11 @@ public class ContainerPatternTest extends AbstractPatternTest {
     public void shouldCallCreateComponentStateOnChildren() throws Exception {
         // given
         InternalViewDefinition viewDefinition = mock(InternalViewDefinition.class);
-        ViewDefinitionState viewDefinitionState = mock(ViewDefinitionState.class);
+        InternalViewDefinitionState viewDefinitionState = mock(InternalViewDefinitionState.class);
         AbstractContainerState state = new EmptyContainerState();
-        ComponentState state1 = mock(ComponentState.class);
+        InternalComponentState state1 = mock(InternalComponentState.class);
         given(state1.getName()).willReturn("name1");
-        ComponentState state2 = mock(ComponentState.class);
+        InternalComponentState state2 = mock(InternalComponentState.class);
         given(state2.getName()).willReturn("name2");
         ComponentPattern pattern1 = mock(ComponentPattern.class);
         given(pattern1.getName()).willReturn("name1");

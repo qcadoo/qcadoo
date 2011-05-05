@@ -14,17 +14,17 @@ public abstract class ResourceModule extends Module {
     }
 
     @Override
-    public void enableOnStartup() {
+    public final void enableOnStartup() {
         enable();
     }
 
     @Override
-    public void enable() {
+    public final void enable() {
         resourceService.addResourceModule(this);
     }
 
     @Override
-    public void disable() {
+    public final void disable() {
         resourceService.removeResourceModule(this);
     }
 

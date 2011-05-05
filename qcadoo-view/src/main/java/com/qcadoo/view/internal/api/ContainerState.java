@@ -22,7 +22,7 @@
  * ***************************************************************************
  */
 
-package com.qcadoo.view.api;
+package com.qcadoo.view.internal.api;
 
 import java.util.Map;
 
@@ -36,14 +36,14 @@ import java.util.Map;
  * @see com.qcadoo.view.api.ComponentState
  * @see com.qcadoo.view.internal.api.ContainerPattern
  */
-public interface ContainerState extends ComponentState {
+public interface ContainerState extends InternalComponentState {
 
     /**
      * Returns map of all children components of this component by pair name -> component
      * 
      * @return map of all children components
      */
-    Map<String, ComponentState> getChildren();
+    Map<String, InternalComponentState> getChildren();
 
     /**
      * Returns child component with specified name or null if no such component can be found
@@ -52,7 +52,7 @@ public interface ContainerState extends ComponentState {
      *            name of child component
      * @return child component with specified name
      */
-    ComponentState getChild(String name);
+    InternalComponentState getChild(String name);
 
     /**
      * Adds new child to this component
@@ -60,6 +60,6 @@ public interface ContainerState extends ComponentState {
      * @param state
      *            child to add
      */
-    void addChild(ComponentState state);
+    void addChild(InternalComponentState state);
 
 }

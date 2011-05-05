@@ -84,7 +84,7 @@ public final class DataDefinitionImpl implements InternalDataDefinition {
 
     private boolean enabled = true;
 
-    private String identifierExpression = "#number";
+    private String identifierExpression = "#id";
 
     private Class<?> classForEntity;
 

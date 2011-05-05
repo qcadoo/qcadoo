@@ -52,5 +52,7 @@
 			});
 		]]></script>
 	</component>
-	<beforeRender class="com.qcadoo.menu.MenuAdministrationService" method="translateCategoryForm" />
+	<hooks>
+		<beforeRender class="com.qcadoo.menu.MenuAdministrationService" method="translateCategoryForm" />
+	</hooks>
 </view>

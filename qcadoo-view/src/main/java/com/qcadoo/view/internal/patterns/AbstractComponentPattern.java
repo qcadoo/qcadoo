@@ -57,8 +57,10 @@ import com.qcadoo.view.internal.FieldEntityIdChangeListener;
 import com.qcadoo.view.internal.ScopeEntityIdChangeListener;
 import com.qcadoo.view.internal.api.ComponentCustomEvent;
 import com.qcadoo.view.internal.api.ComponentPattern;
+import com.qcadoo.view.internal.api.InternalComponentState;
 import com.qcadoo.view.internal.api.InternalViewDefinition;
 import com.qcadoo.view.internal.api.InternalViewDefinitionService;
+import com.qcadoo.view.internal.api.InternalViewDefinitionState;
 import com.qcadoo.view.internal.api.ViewDefinition;
 import com.qcadoo.view.internal.states.AbstractComponentState;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
@@ -197,7 +199,7 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
     }
 
     @Override
-    public ComponentState createComponentState(final ViewDefinitionState viewDefinitionState) {
+    public InternalComponentState createComponentState(final InternalViewDefinitionState viewDefinitionState) {
         AbstractComponentState state = (AbstractComponentState) getComponentStateInstance();
         state.setDataDefinition(dataDefinition);
         state.setName(name);

@@ -25,8 +25,13 @@
 package com.qcadoo.view.api;
 
 /**
+<<<<<<< HEAD
+ * ViewDefinitionState is instance of single view. It is generated using {@link com.qcadoo.view.internal.api.ViewDefinition} in
+ * request scope.
+=======
  * ViewDefinitionState is instance of single view. It is generated using {@link com.qcadoo.view.internal.api.ViewDefinition} in request
  * scope.
+>>>>>>> 0f5c207ff2fed734dd993d31af1dcd8904d6d37f
  * <p>
  * It contains all {@link com.qcadoo.view.api.ComponentState ComponentStates} of this view and other data necessary display this
  * view to client. Changing its data will also change state displayed to system user.
@@ -36,20 +41,7 @@ package com.qcadoo.view.api;
  * @see com.qcadoo.view.internal.api.ViewDefinition
  * @see com.qcadoo.view.api.ComponentState
  */
-public interface ViewDefinitionState extends ContainerState {
-
-    /**
-     * Performs event on this view. <b>For internal usage only</b>
-     * 
-     * @param path
-     *            dotted separated path and name of component that send this event. If null than this event will be executed on
-     *            all components inside this view.
-     * @param event
-     *            event name
-     * @param args
-     *            event additional arguments
-     */
-    void performEvent(String path, String event, String... args);
+public interface ViewDefinitionState extends ComponentState {
 
     /**
      * Returns component state with specified reference name or null if no such component found
@@ -79,15 +71,5 @@ public interface ViewDefinitionState extends ContainerState {
      *            target url of opened window
      */
     void openModal(String url);
-
-    /**
-     * Registers new component into this view.
-     * 
-     * @param reference
-     *            reference name of newly registered component
-     * @param state
-     *            component state to register
-     */
-    void registerComponent(String reference, ComponentState state);
 
 }

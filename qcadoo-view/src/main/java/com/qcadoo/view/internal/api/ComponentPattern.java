@@ -29,8 +29,6 @@ import java.util.Map;
 
 import org.w3c.dom.Node;
 
-import com.qcadoo.view.api.ComponentState;
-import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
 
 /**
@@ -85,7 +83,7 @@ public interface ComponentPattern {
      * 
      * @return created ComponentState
      */
-    ComponentState createComponentState(ViewDefinitionState viewDefinitionState);
+    InternalComponentState createComponentState(InternalViewDefinitionState viewDefinitionState);
 
     /**
      * Returns map necessary to display this component to client. It contains options of this component, translations etc.
