@@ -22,11 +22,12 @@
  * ***************************************************************************
  */
 
-package com.qcadoo.view.api;
+package com.qcadoo.view.internal.api;
 
 import java.util.List;
 
 import org.springframework.security.access.prepost.PreAuthorize;
+
 
 
 /**

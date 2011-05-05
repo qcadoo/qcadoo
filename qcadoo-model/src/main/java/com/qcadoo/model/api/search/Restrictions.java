@@ -109,16 +109,69 @@ public final class Restrictions {
     }
 
     /**
-     * Create simple restriction for id field, comparing it to expected value using given operator.
+     * Create simple restriction for id field, comparing it to expected value using operator "equal".
      * 
      * @param id
      *            expected value
-     * @param operator
-     *            operator
      * @return restriction
      */
-    public static Restriction idRestriction(final Long id, final RestrictionOperator operator) {
-        return new SimpleRestriction("id", id, operator);
+    public static Restriction idEq(final Long id) {
+        return new SimpleRestriction("id", id, RestrictionOperator.EQ);
+    }
+
+    /**
+     * Create simple restriction for id field, comparing it to expected value using operator "less than or equal".
+     * 
+     * @param id
+     *            expected value
+     * @return restriction
+     */
+    public static Restriction idLe(final Long id) {
+        return new SimpleRestriction("id", id, RestrictionOperator.LE);
+    }
+
+    /**
+     * Create simple restriction for id field, comparing it to expected value using operator "less than".
+     * 
+     * @param id
+     *            expected value
+     * @return restriction
+     */
+    public static Restriction idLt(final Long id) {
+        return new SimpleRestriction("id", id, RestrictionOperator.LT);
+    }
+
+    /**
+     * Create simple restriction for id field, comparing it to expected value using operator "greater than or equal".
+     * 
+     * @param id
+     *            expected value
+     * @return restriction
+     */
+    public static Restriction idGe(final Long id) {
+        return new SimpleRestriction("id", id, RestrictionOperator.GE);
+    }
+
+    /**
+     * Create simple restriction for id field, comparing it to expected value using operator "greater than".
+     * 
+     * @param id
+     *            expected value
+     * @return restriction
+     */
+    public static Restriction idGt(final Long id) {
+        return new SimpleRestriction("id", id, RestrictionOperator.GT);
+    }
+
+    /**
+     * Create simple restriction for id field, comparing it to expected value using operator "not equal".
+     * 
+     * @param id
+     *            expected value
+     * @return restriction
+     */
+    public static Restriction idNe(final Long id) {
+        return new SimpleRestriction("id", id, RestrictionOperator.NE);
     }
 
     /**

@@ -44,7 +44,7 @@ import com.qcadoo.security.api.SecurityRole;
 import com.qcadoo.security.api.SecurityRolesService;
 import com.qcadoo.security.api.SecurityViewDefinitionRoleResolver;
 import com.qcadoo.view.api.menu.MenuDefinition;
-import com.qcadoo.view.api.menu.MenulItemsGroup;
+import com.qcadoo.view.api.menu.MenuItemsGroup;
 import com.qcadoo.view.internal.api.InternalMenuService;
 import com.qcadoo.view.internal.menu.items.UrlMenuItem;
 import com.qcadoo.view.internal.menu.items.ViewDefinitionMenuItemItem;
@@ -80,7 +80,7 @@ public final class MenuServiceImpl implements InternalMenuService {
                 label = getCategoryTranslation(menuCategory, locale);
             }
 
-            MenulItemsGroup category = new MenulItemsGroup(menuCategory.getStringField("name"), label);
+            MenuItemsGroup category = new MenuItemsGroup(menuCategory.getStringField("name"), label);
 
             List<Entity> menuItems = getDataDefinition("item").find()
                     .addRestriction(Restrictions.belongsTo(getDataDefinition("item").getField("category"), menuCategory))

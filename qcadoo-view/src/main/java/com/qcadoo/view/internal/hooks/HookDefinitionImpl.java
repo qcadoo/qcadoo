@@ -33,9 +33,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.qcadoo.plugin.api.PluginUtil;
-import com.qcadoo.view.api.ViewDefinition;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.internal.HookDefinition;
+import com.qcadoo.view.internal.api.ViewDefinition;
 
 public final class HookDefinitionImpl implements HookDefinition {
 

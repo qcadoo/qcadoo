@@ -10,9 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.qcadoo.view.api.ViewDefinitionService;
 import com.qcadoo.view.api.crud.CrudService;
 import com.qcadoo.view.internal.api.InternalViewDefinition;
+import com.qcadoo.view.internal.api.ViewDefinitionService;
 
 @Service
 public class CrudServiceImpl implements CrudService {

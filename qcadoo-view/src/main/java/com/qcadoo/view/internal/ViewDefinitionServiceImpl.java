@@ -36,9 +36,9 @@ import com.qcadoo.model.api.aop.Monitorable;
 import com.qcadoo.plugin.api.PluginUtil;
 import com.qcadoo.security.api.SecurityRole;
 import com.qcadoo.security.api.SecurityViewDefinitionRoleResolver;
-import com.qcadoo.view.api.ViewDefinition;
 import com.qcadoo.view.internal.api.InternalViewDefinition;
 import com.qcadoo.view.internal.api.InternalViewDefinitionService;
+import com.qcadoo.view.internal.api.ViewDefinition;
 
 @Service
 public class ViewDefinitionServiceImpl implements InternalViewDefinitionService, SecurityViewDefinitionRoleResolver {

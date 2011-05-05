@@ -30,7 +30,6 @@ import java.util.Map;
 import org.w3c.dom.Node;
 
 import com.qcadoo.view.api.ComponentState;
-import com.qcadoo.view.api.ViewDefinition;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
 
@@ -69,7 +68,7 @@ public interface ComponentPattern {
     void registerViews(InternalViewDefinitionService viewDefinitionService);
 
     /**
-     * Unregisters component by removing it from {@link com.qcadoo.view.api.ViewDefinition}, removing this component from
+     * Unregisters component by removing it from {@link com.qcadoo.view.internal.api.ViewDefinition}, removing this component from
      * listeners list of all other components and removing all additional views added by this component from
      * viewDefinitionService.
      * 

@@ -22,11 +22,11 @@
  * ***************************************************************************
  */
 
-package com.qcadoo.view.api;
+package com.qcadoo.view.internal.api;
 
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.security.api.SecurityRole;
-import com.qcadoo.view.internal.api.ComponentPattern;
+import com.qcadoo.view.api.ViewDefinitionState;
 
 /**
  * ViewDefinition defines single 'view' in system.
@@ -37,7 +37,7 @@ import com.qcadoo.view.internal.api.ComponentPattern;
  * @since 0.4.0
  * 
  * @see com.qcadoo.view.api.ViewDefinitionState
- * @see com.qcadoo.view.api.ViewDefinitionService
+ * @see com.qcadoo.view.internal.api.ViewDefinitionService
  * @see com.qcadoo.view.internal.api.ComponentPattern
  */
 public interface ViewDefinition {

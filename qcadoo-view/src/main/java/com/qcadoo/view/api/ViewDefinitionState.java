@@ -25,7 +25,7 @@
 package com.qcadoo.view.api;
 
 /**
- * ViewDefinitionState is instance of single view. It is generated using {@link com.qcadoo.view.api.ViewDefinition} in request
+ * ViewDefinitionState is instance of single view. It is generated using {@link com.qcadoo.view.internal.api.ViewDefinition} in request
  * scope.
  * <p>
  * It contains all {@link com.qcadoo.view.api.ComponentState ComponentStates} of this view and other data necessary display this
@@ -33,7 +33,7 @@ package com.qcadoo.view.api;
  * 
  * @since 0.4.0
  * 
- * @see com.qcadoo.view.api.ViewDefinition
+ * @see com.qcadoo.view.internal.api.ViewDefinition
  * @see com.qcadoo.view.api.ComponentState
  */
 public interface ViewDefinitionState extends ContainerState {

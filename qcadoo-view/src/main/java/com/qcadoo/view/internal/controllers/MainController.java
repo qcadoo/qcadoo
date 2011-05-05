@@ -38,7 +38,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.security.api.SecurityService;
 import com.qcadoo.view.api.MenuService;
-import com.qcadoo.view.api.ViewDefinitionService;
+import com.qcadoo.view.internal.api.ViewDefinitionService;
 
 @Controller
 public final class MainController {
