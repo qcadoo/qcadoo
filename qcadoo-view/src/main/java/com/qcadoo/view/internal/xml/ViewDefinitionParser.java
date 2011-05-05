@@ -30,7 +30,6 @@ import java.util.List;
 import org.springframework.core.io.Resource;
 import org.w3c.dom.Node;
 
-import com.qcadoo.view.api.ViewDefinition;
 import com.qcadoo.view.api.ribbon.RibbonGroup;
 import com.qcadoo.view.internal.ComponentDefinition;
 import com.qcadoo.view.internal.ComponentOption;
@@ -38,6 +37,7 @@ import com.qcadoo.view.internal.api.ComponentCustomEvent;
 import com.qcadoo.view.internal.api.ComponentPattern;
 import com.qcadoo.view.internal.api.ContainerPattern;
 import com.qcadoo.view.internal.api.InternalViewDefinition;
+import com.qcadoo.view.internal.api.ViewDefinition;
 
 public interface ViewDefinitionParser {
 

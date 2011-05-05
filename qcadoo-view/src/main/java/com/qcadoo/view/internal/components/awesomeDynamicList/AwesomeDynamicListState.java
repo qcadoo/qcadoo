@@ -34,10 +34,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.qcadoo.model.api.Entity;
-import com.qcadoo.view.api.ComponentState;
-import com.qcadoo.view.api.ContainerState;
-import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.api.components.FormComponent;
+import com.qcadoo.view.internal.api.ContainerState;
+import com.qcadoo.view.internal.api.InternalComponentState;
+import com.qcadoo.view.internal.api.InternalViewDefinitionState;
 import com.qcadoo.view.internal.components.FieldComponentState;
 import com.qcadoo.view.internal.components.form.FormComponentPattern;
 import com.qcadoo.view.internal.components.form.FormComponentState;
@@ -65,7 +65,7 @@ public class AwesomeDynamicListState extends FieldComponentState implements Cont
                 JSONObject value = formValues.getJSONObject(i);
                 String formName = value.getString("name");
                 JSONObject formValue = value.getJSONObject("value");
-                ViewDefinitionState innerFormState = new ViewDefinitionStateImpl();
+                InternalViewDefinitionState innerFormState = new ViewDefinitionStateImpl();
                 FormComponentState formState = (FormComponentState) innerFormPattern.createComponentState(innerFormState);
                 formState.setName(formName);
                 innerFormPattern.updateComponentStateListeners(innerFormState);
@@ -83,7 +83,7 @@ public class AwesomeDynamicListState extends FieldComponentState implements Cont
         if (value != null) {
             List<Entity> entities = (List<Entity>) value;
             for (Entity entity : entities) {
-                ViewDefinitionState innerFormState = new ViewDefinitionStateImpl();
+                InternalViewDefinitionState innerFormState = new ViewDefinitionStateImpl();
                 FormComponentState formState = (FormComponentState) innerFormPattern.createComponentState(innerFormState);
                 innerFormPattern.updateComponentStateListeners(innerFormState);
                 try {
@@ -112,7 +112,7 @@ public class AwesomeDynamicListState extends FieldComponentState implements Cont
         JSONObject json = super.render();
         if (!json.has(JSON_CONTENT)) {
             JSONObject childerJson = new JSONObject();
-            for (FormComponent form : forms) {
+            for (FormComponentState form : forms) {
                 childerJson.put(form.getName(), form.render());
             }
             JSONObject content = new JSONObject();
@@ -127,7 +127,7 @@ public class AwesomeDynamicListState extends FieldComponentState implements Cont
         JSONObject json = new JSONObject();
 
         JSONArray formValues = new JSONArray();
-        for (FormComponent formState : forms) {
+        for (FormComponentState formState : forms) {
             formValues.put(formState.render());
         }
         json.put(JSON_FORM_VALUES, formValues);
@@ -138,17 +138,17 @@ public class AwesomeDynamicListState extends FieldComponentState implements Cont
     }
 
     @Override
-    public Map<String, ComponentState> getChildren() {
-        Map<String, ComponentState> children = new HashMap<String, ComponentState>();
-        for (FormComponent form : forms) {
+    public Map<String, InternalComponentState> getChildren() {
+        Map<String, InternalComponentState> children = new HashMap<String, InternalComponentState>();
+        for (FormComponentState form : forms) {
             children.put(form.getName(), form);
         }
         return children;
     }
 
     @Override
-    public ComponentState getChild(final String name) {
-        for (FormComponent form : forms) {
+    public InternalComponentState getChild(final String name) {
+        for (FormComponentState form : forms) {
             if (name.equals(form.getName())) {
                 return form;
             }
@@ -157,7 +157,7 @@ public class AwesomeDynamicListState extends FieldComponentState implements Cont
     }
 
     @Override
-    public void addChild(final ComponentState state) {
+    public void addChild(final InternalComponentState state) {
     }
 
     @Override

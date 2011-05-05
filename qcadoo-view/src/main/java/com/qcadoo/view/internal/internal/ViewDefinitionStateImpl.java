@@ -34,11 +34,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.qcadoo.view.api.ComponentState;
-import com.qcadoo.view.api.ContainerState;
-import com.qcadoo.view.api.ViewDefinitionState;
+import com.qcadoo.view.internal.api.ContainerState;
+import com.qcadoo.view.internal.api.InternalComponentState;
+import com.qcadoo.view.internal.api.InternalViewDefinitionState;
 import com.qcadoo.view.internal.states.AbstractContainerState;
 
-public final class ViewDefinitionStateImpl extends AbstractContainerState implements ViewDefinitionState {
+public final class ViewDefinitionStateImpl extends AbstractContainerState implements InternalViewDefinitionState {
 
     private String redirectToUrl;
 
@@ -81,7 +82,7 @@ public final class ViewDefinitionStateImpl extends AbstractContainerState implem
 
         boolean isOk = true;
 
-        List<ComponentState> states = getStatesAsList(getChildren().values());
+        List<InternalComponentState> states = getStatesAsList(getChildren().values());
 
         for (ComponentState state : states) {
             if (state.isHasError()) {
@@ -122,7 +123,8 @@ public final class ViewDefinitionStateImpl extends AbstractContainerState implem
         return registry.get(reference);
     }
 
-    private void performEventOnChildren(final Collection<ComponentState> components, final String event, final String... args) {
+    private void performEventOnChildren(final Collection<InternalComponentState> components, final String event,
+            final String... args) {
         for (ComponentState component : components) {
             component.performEvent(this, event, args);
             if (component instanceof ContainerState) {
@@ -131,10 +133,10 @@ public final class ViewDefinitionStateImpl extends AbstractContainerState implem
         }
     }
 
-    private List<ComponentState> getStatesAsList(final Collection<ComponentState> states) {
-        List<ComponentState> list = new ArrayList<ComponentState>();
+    private List<InternalComponentState> getStatesAsList(final Collection<InternalComponentState> states) {
+        List<InternalComponentState> list = new ArrayList<InternalComponentState>();
         list.addAll(states);
-        for (ComponentState state : states) {
+        for (InternalComponentState state : states) {
             if (state instanceof ContainerState) {
                 list.addAll(getStatesAsList(((ContainerState) state).getChildren().values()));
             }

@@ -45,13 +45,13 @@ import org.junit.Test;
 import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.mes.beans.sample.CustomEntityService;
 import com.qcadoo.view.api.ComponentState;
-import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.api.components.FormComponent;
 import com.qcadoo.view.internal.ComponentDefinition;
 import com.qcadoo.view.internal.api.ComponentCustomEvent;
 import com.qcadoo.view.internal.api.ComponentPattern;
 import com.qcadoo.view.internal.api.ContainerPattern;
 import com.qcadoo.view.internal.api.InternalViewDefinition;
+import com.qcadoo.view.internal.api.InternalViewDefinitionState;
 import com.qcadoo.view.internal.components.TextInputComponentPattern;
 import com.qcadoo.view.internal.components.form.FormComponentPattern;
 import com.qcadoo.view.internal.components.window.WindowComponentPattern;
@@ -63,7 +63,7 @@ public class ComponentPatternTest extends AbstractPatternTest {
     @SuppressWarnings("unchecked")
     public void shouldHaveValidInstance() throws Exception {
         // given
-        ViewDefinitionState viewDefinitionState = mock(ViewDefinitionState.class);
+        InternalViewDefinitionState viewDefinitionState = mock(InternalViewDefinitionState.class);
         TranslationService translationService = mock(TranslationService.class);
         InternalViewDefinition viewDefinition = mock(InternalViewDefinition.class);
         ComponentDefinition componentDefinition = getComponentDefinition("testName", null);
@@ -105,7 +105,7 @@ public class ComponentPatternTest extends AbstractPatternTest {
     @Test(expected = IllegalArgumentException.class)
     public void shouldFailWithoutName() throws Exception {
         // given
-        ViewDefinitionState viewDefinitionState = mock(ViewDefinitionState.class);
+        InternalViewDefinitionState viewDefinitionState = mock(InternalViewDefinitionState.class);
         ComponentDefinition componentDefinition = new ComponentDefinition();
         ComponentPattern pattern = new FormComponentPattern(componentDefinition);
 

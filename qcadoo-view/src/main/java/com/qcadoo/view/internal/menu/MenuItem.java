@@ -22,7 +22,7 @@
  * ***************************************************************************
  */
 
-package com.qcadoo.view.api.menu;
+package com.qcadoo.view.internal.menu;
 
 import org.json.JSONException;
 import org.json.JSONObject;

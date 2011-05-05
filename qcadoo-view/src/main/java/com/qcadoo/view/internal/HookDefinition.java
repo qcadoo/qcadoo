@@ -28,8 +28,8 @@ import java.util.Locale;
 
 import org.json.JSONObject;
 
-import com.qcadoo.view.api.ViewDefinition;
 import com.qcadoo.view.api.ViewDefinitionState;
+import com.qcadoo.view.internal.api.ViewDefinition;
 
 /**
  * Defines hooks for validation/saving entities and generating views.

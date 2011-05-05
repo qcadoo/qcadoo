@@ -24,12 +24,12 @@
 
 package com.qcadoo.view.internal.menu.items;
 
-import com.qcadoo.view.api.menu.MenuItem;
+import com.qcadoo.view.internal.menu.MenuItem;
 
 /**
  * Menu item that leads to specified ViewDefinition.
  * 
- * @see com.qcadoo.view.api.ViewDefinition
+ * @see com.qcadoo.view.internal.api.ViewDefinition
  */
 public final class ViewDefinitionMenuItemItem extends MenuItem {
 

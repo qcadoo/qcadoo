@@ -35,8 +35,10 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import com.qcadoo.view.api.ComponentState;
-import com.qcadoo.view.api.ContainerState;
 import com.qcadoo.view.api.ViewDefinitionState;
+import com.qcadoo.view.internal.api.ContainerState;
+import com.qcadoo.view.internal.api.InternalComponentState;
+import com.qcadoo.view.internal.api.InternalViewDefinitionState;
 import com.qcadoo.view.internal.internal.ViewDefinitionStateImpl;
 import com.qcadoo.view.internal.states.AbstractStateTest;
 
@@ -45,7 +47,7 @@ public class ViewDefinitionStateTest extends AbstractStateTest {
     @Test
     public void shouldReturnStateByFunctionalPath() throws Exception {
         // given
-        ViewDefinitionState viewDefinitionState = new ViewDefinitionStateImpl();
+        InternalViewDefinitionState viewDefinitionState = new ViewDefinitionStateImpl();
 
         ContainerState state = mock(ContainerState.class);
 
@@ -73,12 +75,12 @@ public class ViewDefinitionStateTest extends AbstractStateTest {
     @Test
     public void shouldPerformEventOnState() throws Exception {
         // given
-        ViewDefinitionState viewDefinitionState = new ViewDefinitionStateImpl();
+        ViewDefinitionStateImpl viewDefinitionState = new ViewDefinitionStateImpl();
 
         ContainerState state1 = mock(ContainerState.class);
         given(state1.getName()).willReturn("name1");
 
-        ComponentState state2 = mock(ComponentState.class);
+        InternalComponentState state2 = mock(InternalComponentState.class);
 
         viewDefinitionState.addChild(state1);
         given(state1.getChild("name2")).willReturn(state2);
@@ -93,12 +95,12 @@ public class ViewDefinitionStateTest extends AbstractStateTest {
     @Test
     public void shouldPerformEventOnAllComponent() throws Exception {
         // given
-        ViewDefinitionState viewDefinitionState = new ViewDefinitionStateImpl();
+        ViewDefinitionStateImpl viewDefinitionState = new ViewDefinitionStateImpl();
 
         ContainerState state1 = mock(ContainerState.class);
         given(state1.getName()).willReturn("name1");
 
-        ComponentState state2 = mock(ComponentState.class);
+        InternalComponentState state2 = mock(InternalComponentState.class);
 
         viewDefinitionState.addChild(state1);
         given(state1.getChildren()).willReturn(Collections.singletonMap("name2", state2));

@@ -38,9 +38,9 @@ import org.junit.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.qcadoo.view.api.ViewDefinitionService;
 import com.qcadoo.view.api.crud.CrudService;
 import com.qcadoo.view.internal.api.InternalViewDefinition;
+import com.qcadoo.view.internal.api.ViewDefinitionService;
 import com.qcadoo.view.internal.crud.CrudServiceImpl;
 
 public class CrudControllerTest {

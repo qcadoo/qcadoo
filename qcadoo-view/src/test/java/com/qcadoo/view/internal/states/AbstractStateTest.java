@@ -28,14 +28,14 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.withSettings;
 
-import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.internal.FieldEntityIdChangeListener;
 import com.qcadoo.view.internal.ScopeEntityIdChangeListener;
+import com.qcadoo.view.internal.api.InternalComponentState;
 
 public abstract class AbstractStateTest {
 
-    protected ComponentState createMockComponent(final String name) {
-        ComponentState component1 = mock(ComponentState.class,
+    protected InternalComponentState createMockComponent(final String name) {
+        InternalComponentState component1 = mock(InternalComponentState.class,
                 withSettings().extraInterfaces(ScopeEntityIdChangeListener.class, FieldEntityIdChangeListener.class));
         given(component1.getName()).willReturn(name);
         return component1;

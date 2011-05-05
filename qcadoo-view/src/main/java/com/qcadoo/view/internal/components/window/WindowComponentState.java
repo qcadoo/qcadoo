@@ -8,9 +8,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.components.WindowComponent;
 import com.qcadoo.view.api.ribbon.Ribbon;
+import com.qcadoo.view.internal.api.InternalComponentState;
 import com.qcadoo.view.internal.ribbon.RibbonUtils;
 import com.qcadoo.view.internal.states.AbstractContainerState;
 
@@ -35,7 +35,7 @@ public class WindowComponentState extends AbstractContainerState implements Wind
         JSONObject json = new JSONObject();
 
         List<String> errorTabs = new LinkedList<String>();
-        for (Map.Entry<String, ComponentState> child : getChildren().entrySet()) {
+        for (Map.Entry<String, InternalComponentState> child : getChildren().entrySet()) {
             if (child.getValue().isHasError()) {
                 errorTabs.add(child.getKey());
             }
