@@ -52,6 +52,7 @@ import com.qcadoo.plugin.internal.api.PluginDependencyManager;
 import com.qcadoo.plugin.internal.api.PluginDescriptorParser;
 import com.qcadoo.plugin.internal.api.PluginDescriptorResolver;
 import com.qcadoo.plugin.internal.api.PluginFileManager;
+import com.qcadoo.plugin.internal.api.PluginOperationResultImpl;
 import com.qcadoo.plugin.internal.dependencymanager.PluginStatusResolver;
 import com.qcadoo.plugin.internal.dependencymanager.SimplePluginStatusResolver;
 import com.qcadoo.tenant.api.Standalone;
@@ -95,7 +96,7 @@ public class DefaultPluginManager implements PluginManager {
         }
 
         if (plugins.isEmpty()) {
-            return PluginOperationResult.success();
+            return PluginOperationResultImpl.success();
         }
 
         PluginDependencyResult pluginDependencyResult = pluginDependencyManager.getDependenciesToEnable(plugins,
@@ -103,11 +104,11 @@ public class DefaultPluginManager implements PluginManager {
 
         if (!pluginDependencyResult.isDependenciesSatisfied()) {
             if (!pluginDependencyResult.getUnsatisfiedDependencies().isEmpty()) {
-                return PluginOperationResult.unsatisfiedDependencies(pluginDependencyResult);
+                return PluginOperationResultImpl.unsatisfiedDependencies(pluginDependencyResult);
             }
 
             if (!pluginDependencyResult.getDependenciesToEnable().isEmpty()) {
-                return PluginOperationResult.dependenciesToEnable(pluginDependencyResult);
+                return PluginOperationResultImpl.dependenciesToEnable(pluginDependencyResult);
             }
         }
 
@@ -121,7 +122,7 @@ public class DefaultPluginManager implements PluginManager {
         }
         if (!fileNames.isEmpty()) {
             if (!pluginFileManager.installPlugin(fileNames.toArray(new String[fileNames.size()]))) {
-                return PluginOperationResult.cannotInstallPlugin();
+                return PluginOperationResultImpl.cannotInstallPlugin();
             }
             shouldRestart = true;
         }
@@ -138,9 +139,9 @@ public class DefaultPluginManager implements PluginManager {
         }
 
         if (shouldRestart) {
-            return PluginOperationResult.successWithRestart();
+            return PluginOperationResultImpl.successWithRestart();
         } else {
-            return PluginOperationResult.success();
+            return PluginOperationResultImpl.success();
         }
 
     }
@@ -153,7 +154,7 @@ public class DefaultPluginManager implements PluginManager {
             Plugin plugin = pluginAccessor.getPlugin(key);
 
             if (plugin.isSystemPlugin()) {
-                return PluginOperationResult.systemPluginDisabling();
+                return PluginOperationResultImpl.systemPluginDisabling();
             }
 
             if (plugin.hasState(PluginState.ENABLED)) {
@@ -162,14 +163,14 @@ public class DefaultPluginManager implements PluginManager {
         }
 
         if (plugins.isEmpty()) {
-            return PluginOperationResult.success();
+            return PluginOperationResultImpl.success();
         }
 
         PluginDependencyResult pluginDependencyResult = pluginDependencyManager.getDependenciesToDisable(plugins,
                 pluginStatusResolver);
 
         if (!pluginDependencyResult.isDependenciesSatisfied() && !pluginDependencyResult.getDependenciesToDisable().isEmpty()) {
-            return PluginOperationResult.dependenciesToDisable(pluginDependencyResult);
+            return PluginOperationResultImpl.dependenciesToDisable(pluginDependencyResult);
         }
 
         plugins = pluginDependencyManager.sortPluginsInDependencyOrder(plugins);
@@ -180,7 +181,7 @@ public class DefaultPluginManager implements PluginManager {
             pluginAccessor.savePlugin(plugin);
         }
 
-        return PluginOperationResult.success();
+        return PluginOperationResultImpl.success();
     }
 
     @Override
@@ -191,7 +192,7 @@ public class DefaultPluginManager implements PluginManager {
             Plugin plugin = pluginAccessor.getPlugin(key);
 
             if (plugin.isSystemPlugin()) {
-                return PluginOperationResult.systemPluginUninstalling();
+                return PluginOperationResultImpl.systemPluginUninstalling();
             }
 
             plugins.add(plugin);
@@ -201,7 +202,7 @@ public class DefaultPluginManager implements PluginManager {
                 pluginStatusResolver);
 
         if (!pluginDependencyResult.isDependenciesSatisfied() && !pluginDependencyResult.getDependenciesToUninstall().isEmpty()) {
-            return PluginOperationResult.dependenciesToUninstall(pluginDependencyResult);
+            return PluginOperationResultImpl.dependenciesToUninstall(pluginDependencyResult);
         }
 
         boolean shouldRestart = false;
@@ -227,9 +228,9 @@ public class DefaultPluginManager implements PluginManager {
         }
 
         if (shouldRestart) {
-            return PluginOperationResult.successWithRestart();
+            return PluginOperationResultImpl.successWithRestart();
         } else {
-            return PluginOperationResult.success();
+            return PluginOperationResultImpl.success();
         }
     }
 
@@ -239,7 +240,7 @@ public class DefaultPluginManager implements PluginManager {
         try {
             pluginFile = pluginFileManager.uploadPlugin(pluginArtifact);
         } catch (PluginException e) {
-            return PluginOperationResult.cannotUploadPlugin();
+            return PluginOperationResultImpl.cannotUploadPlugin();
         }
         Plugin plugin = null;
         try {
@@ -248,12 +249,12 @@ public class DefaultPluginManager implements PluginManager {
         } catch (PluginException e) {
             LOG.error(e.getMessage());
             pluginFileManager.uninstallPlugin(pluginFile.getName());
-            return PluginOperationResult.corruptedPlugin();
+            return PluginOperationResultImpl.corruptedPlugin();
         }
 
         if (plugin.isSystemPlugin()) {
             pluginFileManager.uninstallPlugin(plugin.getFilename());
-            return PluginOperationResult.systemPluginUpdating();
+            return PluginOperationResultImpl.systemPluginUpdating();
         }
 
         boolean shouldRestart = false;
@@ -263,7 +264,7 @@ public class DefaultPluginManager implements PluginManager {
 
         if (pluginDependencyResult.isCyclic()) {
             pluginFileManager.uninstallPlugin(plugin.getFilename());
-            return PluginOperationResult.dependenciesCyclesExists();
+            return PluginOperationResultImpl.dependenciesCyclesExists();
         }
 
         Plugin existingPlugin = pluginAccessor.getPlugin(plugin.getIdentifier());
@@ -274,14 +275,14 @@ public class DefaultPluginManager implements PluginManager {
 
             if (!pluginDependencyResult.isDependenciesSatisfied()
                     && !pluginDependencyResult.getUnsatisfiedDependencies().isEmpty()) {
-                return PluginOperationResult.successWithMissingDependencies(pluginDependencyResult);
+                return PluginOperationResultImpl.successWithMissingDependencies(pluginDependencyResult);
             } else {
-                return PluginOperationResult.success();
+                return PluginOperationResultImpl.success();
             }
         } else {
             if (existingPlugin.getVersion().compareTo(plugin.getVersion()) >= 0) {
                 pluginFileManager.uninstallPlugin(plugin.getFilename());
-                return PluginOperationResult.cannotDowngradePlugin();
+                return PluginOperationResultImpl.cannotDowngradePlugin();
             }
             if (existingPlugin.hasState(PluginState.TEMPORARY)) {
                 if (!pluginDependencyResult.isDependenciesSatisfied()
@@ -290,18 +291,18 @@ public class DefaultPluginManager implements PluginManager {
                     ((InternalPlugin) plugin).changeStateTo(existingPlugin.getState());
                     pluginDao.save(plugin);
                     pluginAccessor.savePlugin(plugin);
-                    return PluginOperationResult.successWithMissingDependencies(pluginDependencyResult);
+                    return PluginOperationResultImpl.successWithMissingDependencies(pluginDependencyResult);
                 }
                 ((InternalPlugin) plugin).changeStateTo(existingPlugin.getState());
             } else if (existingPlugin.hasState(PluginState.DISABLED)) {
                 if (!pluginDependencyResult.isDependenciesSatisfied()
                         && !pluginDependencyResult.getUnsatisfiedDependencies().isEmpty()) {
                     pluginFileManager.uninstallPlugin(plugin.getFilename());
-                    return PluginOperationResult.unsatisfiedDependencies(pluginDependencyResult);
+                    return PluginOperationResultImpl.unsatisfiedDependencies(pluginDependencyResult);
                 }
                 if (!pluginFileManager.installPlugin(plugin.getFilename())) {
                     pluginFileManager.uninstallPlugin(plugin.getFilename());
-                    return PluginOperationResult.cannotInstallPlugin();
+                    return PluginOperationResultImpl.cannotInstallPlugin();
                 }
                 shouldRestart = true;
                 ((InternalPlugin) plugin).changeStateTo(existingPlugin.getState());
@@ -309,17 +310,17 @@ public class DefaultPluginManager implements PluginManager {
                 if (!pluginDependencyResult.isDependenciesSatisfied()) {
                     if (!pluginDependencyResult.getUnsatisfiedDependencies().isEmpty()) {
                         pluginFileManager.uninstallPlugin(plugin.getFilename());
-                        return PluginOperationResult.unsatisfiedDependencies(pluginDependencyResult);
+                        return PluginOperationResultImpl.unsatisfiedDependencies(pluginDependencyResult);
                     }
 
                     if (!pluginDependencyResult.getDependenciesToEnable().isEmpty()) {
                         pluginFileManager.uninstallPlugin(plugin.getFilename());
-                        return PluginOperationResult.dependenciesToEnable(pluginDependencyResult);
+                        return PluginOperationResultImpl.dependenciesToEnable(pluginDependencyResult);
                     }
                 }
                 if (!pluginFileManager.installPlugin(plugin.getFilename())) {
                     pluginFileManager.uninstallPlugin(plugin.getFilename());
-                    return PluginOperationResult.cannotInstallPlugin();
+                    return PluginOperationResultImpl.cannotInstallPlugin();
                 }
                 shouldRestart = true;
                 PluginDependencyResult installPluginDependencyResult = pluginDependencyManager.getDependenciesToUpdate(
@@ -327,7 +328,7 @@ public class DefaultPluginManager implements PluginManager {
 
                 if (!installPluginDependencyResult.getDependenciesToDisableUnsatisfiedAfterUpdate().isEmpty()) {
                     pluginFileManager.uninstallPlugin(plugin.getFilename());
-                    return PluginOperationResult.unsatisfiedDependenciesAfterUpdate(installPluginDependencyResult);
+                    return PluginOperationResultImpl.unsatisfiedDependenciesAfterUpdate(installPluginDependencyResult);
                 }
 
                 List<Plugin> dependencyPlugins = new ArrayList<Plugin>();
@@ -354,9 +355,9 @@ public class DefaultPluginManager implements PluginManager {
             pluginDao.save(plugin);
             pluginAccessor.savePlugin(plugin);
             if (shouldRestart) {
-                return PluginOperationResult.successWithRestart();
+                return PluginOperationResultImpl.successWithRestart();
             } else {
-                return PluginOperationResult.success();
+                return PluginOperationResultImpl.success();
             }
         }
     }
