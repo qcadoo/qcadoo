@@ -27,7 +27,6 @@ package com.qcadoo.model.internal.validators;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.FieldDefinition;
-import com.qcadoo.model.api.search.RestrictionOperator;
 import com.qcadoo.model.api.search.Restrictions;
 import com.qcadoo.model.api.search.SearchCriteriaBuilder;
 import com.qcadoo.model.api.search.SearchResult;
@@ -55,7 +54,7 @@ public final class UniqueValidator implements FieldHookDefinition, ErrorMessageD
         SearchCriteriaBuilder searchCriteriaBuilder = dataDefinition.find()
                 .addRestriction(Restrictions.eq(fieldDefinition, entity.getField(fieldDefinition.getName()))).setMaxResults(1);
         if (entity.getId() != null) {
-            searchCriteriaBuilder.addRestriction(Restrictions.idRestriction(entity.getId(), RestrictionOperator.NE));
+            searchCriteriaBuilder.addRestriction(Restrictions.idNe(entity.getId()));
         }
 
         SearchResult results = searchCriteriaBuilder.list();

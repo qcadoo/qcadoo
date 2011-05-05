@@ -491,7 +491,7 @@ public final class GridComponentState extends AbstractComponentState implements 
         private Restriction getRestrictionsToString(final Map.Entry<RestrictionOperator, String> parsedFilterValue,
                 final FieldDefinition fieldDefinition) {
             if (parsedFilterValue.getKey().equals(RestrictionOperator.EQ)) {
-                return Restrictions.forOperator(parsedFilterValue.getKey(), fieldDefinition, parsedFilterValue.getValue() + "*");
+                return Restrictions.eq(fieldDefinition, parsedFilterValue.getValue() + "*");
             } else if (parsedFilterValue.getKey().equals(RestrictionOperator.NE)) {
                 return Restrictions.not(Restrictions.eq(fieldDefinition, parsedFilterValue.getValue() + "*"));
             } else if (parsedFilterValue.getKey().equals(RestrictionOperator.GT)) {

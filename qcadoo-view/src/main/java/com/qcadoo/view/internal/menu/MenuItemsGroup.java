@@ -37,7 +37,7 @@ import org.json.JSONObject;
  * @since 0.4.0
  * 
  */
-public final class MenulItemsGroup {
+public final class MenuItemsGroup {
 
     private final String name;
 
@@ -52,7 +52,7 @@ public final class MenulItemsGroup {
      * @param label
      *            group label to display
      */
-    public MenulItemsGroup(final String name, final String label) {
+    public MenuItemsGroup(final String name, final String label) {
         super();
         this.name = name;
         this.label = label;

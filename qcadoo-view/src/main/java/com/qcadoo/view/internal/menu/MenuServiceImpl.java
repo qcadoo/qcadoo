@@ -77,7 +77,7 @@ public final class MenuServiceImpl implements InternalMenuService {
                 label = translationUtilsService.getCategoryTranslation(menuCategory, locale);
             }
 
-            MenulItemsGroup category = new MenulItemsGroup(menuCategory.getStringField("name"), label);
+            MenuItemsGroup category = new MenuItemsGroup(menuCategory.getStringField("name"), label);
 
             List<Entity> menuItems = getDataDefinition("item").find()
                     .addRestriction(Restrictions.belongsTo(getDataDefinition("item").getField("category"), menuCategory))
