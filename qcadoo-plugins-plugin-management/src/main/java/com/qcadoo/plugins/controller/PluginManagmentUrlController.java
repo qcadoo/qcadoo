@@ -37,9 +37,9 @@ public class PluginManagmentUrlController {
     public ModelAndView getDownloadPageView(final Locale locale) {
         ModelAndView mav = getCrudPopupView("pluginDownload", locale);
 
-        mav.addObject("headerLabel", translationService.translate("plugins.downloadView.header", locale));
-        mav.addObject("buttonLabel", translationService.translate("plugins.downloadView.button", locale));
-        mav.addObject("chooseFileLabel", translationService.translate("plugins.downloadView.chooseFileLabel", locale));
+        mav.addObject("headerLabel", translationService.translate("qcadooPlugins.downloadView.header", locale));
+        mav.addObject("buttonLabel", translationService.translate("qcadooPlugins.downloadView.button", locale));
+        mav.addObject("chooseFileLabel", translationService.translate("qcadooPlugins.downloadView.chooseFileLabel", locale));
 
         return mav;
     }
@@ -61,25 +61,26 @@ public class PluginManagmentUrlController {
 
         if ("success".equals(arguments.get("type"))) {
             mav.addObject("headerClass", "successHeader");
-            mav.addObject("headerLabel", translationService.translate("plugins.pluginInfo.successHeader", locale));
+            mav.addObject("headerLabel", translationService.translate("qcadooPlugins.pluginInfo.successHeader", locale));
 
         } else if ("error".equals(arguments.get("type"))) {
             mav.addObject("headerClass", "errorHeader");
-            mav.addObject("headerLabel", translationService.translate("plugins.pluginInfo.errorHeader", locale));
+            mav.addObject("headerLabel", translationService.translate("qcadooPlugins.pluginInfo.errorHeader", locale));
 
         } else if ("confirm".equals(arguments.get("type"))) {
-            mav.addObject("headerLabel", translationService.translate("plugins.pluginInfo.confirmHeader", locale));
+            mav.addObject("headerLabel", translationService.translate("qcadooPlugins.pluginInfo.confirmHeader", locale));
             mav.addObject("isConfirm", true);
             mav.addObject("cancelButtonLabel",
-                    translationService.translate("plugins.pluginInfo.buttons." + arguments.get("cancelLabel"), locale));
+                    translationService.translate("qcadooPlugins.pluginInfo.buttons." + arguments.get("cancelLabel"), locale));
             mav.addObject("acceptButtonLabel",
-                    translationService.translate("plugins.pluginInfo.buttons." + arguments.get("acceptLabel"), locale));
+                    translationService.translate("qcadooPlugins.pluginInfo.buttons." + arguments.get("acceptLabel"), locale));
             mav.addObject("acceptRedirect", arguments.get("acceptRedirect"));
 
         } else {
             throw new IllegalStateException("Unsuported plugin info type: " + arguments.get("type"));
         }
-        mav.addObject("content", translationService.translate("plugins.pluginInfo.content." + arguments.get("status"), locale));
+        mav.addObject("content",
+                translationService.translate("qcadooPlugins.pluginInfo.content." + arguments.get("status"), locale));
         mav.addObject("dependencies", createDependenciesMap(arguments, locale));
 
         return mav;
@@ -89,9 +90,9 @@ public class PluginManagmentUrlController {
     public ModelAndView getRestartPageView(@RequestParam final Map<String, String> arguments, final Locale locale) {
         ModelAndView mav = getCrudPopupView("restartView", locale);
 
-        mav.addObject("headerLabel", translationService.translate("plugins.restartView.header", locale));
-        mav.addObject("restartMessage", translationService.translate("plugins.restartView.message", locale));
-        mav.addObject("restartErrorMessage", translationService.translate("plugins.restartView.errorMessage", locale));
+        mav.addObject("headerLabel", translationService.translate("qcadooPlugins.restartView.header", locale));
+        mav.addObject("restartMessage", translationService.translate("qcadooPlugins.restartView.message", locale));
+        mav.addObject("restartErrorMessage", translationService.translate("qcadooPlugins.restartView.errorMessage", locale));
         mav.addObject("redirectPage", arguments.get("redirect"));
 
         return mav;
@@ -148,21 +149,21 @@ public class PluginManagmentUrlController {
 
     private String convertVersionString(final String versionStr, final Locale locale) {
         StringBuilder result = new StringBuilder();
-        result.append(translationService.translate("plugins.pluginInfo.inVersion", locale));
+        result.append(translationService.translate("qcadooPlugins.pluginInfo.inVersion", locale));
         result.append(" ");
         VersionOfDependency version = new VersionOfDependency(versionStr);
         if (version.getMinVersion() != null) {
-            result.append(translationService.translate("plugins.pluginInfo.versionFrom", locale));
+            result.append(translationService.translate("qcadooPlugins.pluginInfo.versionFrom", locale));
             result.append(" ");
             result.append(version.getMinVersion());
         }
         if (version.getMinVersion() != null && version.getMaxVersion() != null) {
             result.append(" ");
-            result.append(translationService.translate("plugins.pluginInfo.versionAnd", locale));
+            result.append(translationService.translate("qcadooPlugins.pluginInfo.versionAnd", locale));
             result.append(" ");
         }
         if (version.getMaxVersion() != null) {
-            result.append(translationService.translate("plugins.pluginInfo.versionTo", locale));
+            result.append(translationService.translate("qcadooPlugins.pluginInfo.versionTo", locale));
             result.append(" ");
             result.append(version.getMaxVersion());
         }
