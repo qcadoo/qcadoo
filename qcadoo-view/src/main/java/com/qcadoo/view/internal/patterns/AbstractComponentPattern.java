@@ -48,13 +48,7 @@ import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.types.BelongsToType;
 import com.qcadoo.model.api.types.HasManyType;
 import com.qcadoo.model.api.types.TreeType;
-<<<<<<< HEAD
 import com.qcadoo.plugin.api.PluginUtils;
-import com.qcadoo.view.api.ComponentCustomEvent;
-import com.qcadoo.view.api.ComponentPattern;
-=======
-import com.qcadoo.plugin.api.PluginUtil;
->>>>>>> 7187c1490d551a863916744582912af0ef40ce1e
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.ViewDefinition;
 import com.qcadoo.view.api.ViewDefinitionState;
