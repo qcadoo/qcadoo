@@ -26,12 +26,9 @@ package com.qcadoo.view.api;
 
 import java.util.Locale;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 /**
- * ComponentState is instance of single view element. It is created by {@link com.qcadoo.view.internal.api.ComponentPattern} in request
- * scope.
+ * ComponentState is instance of single view element. It is created by {@link com.qcadoo.view.internal.api.ComponentPattern} in
+ * request scope.
  * <p>
  * ComponentState contains all informations about state of this component. Changing this data will also change state displayed to
  * system user.
@@ -59,27 +56,6 @@ public interface ComponentState {
          */
         INFO
     }
-
-    /**
-     * Initialize this component state using data from client. <b>For internal usage only</b>
-     * 
-     * @param json
-     *            data from client
-     * @param locale
-     *            current localization
-     * @throws JSONException
-     *             when data from client contains errors
-     */
-    void initialize(JSONObject json, Locale locale) throws JSONException;
-
-    /**
-     * Renders this component state back to client. <b>For internal usage only</b>
-     * 
-     * @return data to client
-     * @throws JSONException
-     *             when data for client contains errors
-     */
-    JSONObject render() throws JSONException;
 
     /**
      * Adds message to this component. Message will automatically close after some time.

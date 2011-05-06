@@ -25,8 +25,8 @@
 package com.qcadoo.view.internal.patterns;
 
 import com.qcadoo.view.api.ComponentState;
-import com.qcadoo.view.api.ContainerState;
 import com.qcadoo.view.internal.ComponentDefinition;
+import com.qcadoo.view.internal.api.ContainerState;
 import com.qcadoo.view.internal.patterns.AbstractContainerPattern;
 import com.qcadoo.view.internal.states.ContainerStateMock;
 

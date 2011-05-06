@@ -24,6 +24,8 @@
 		<option type="fixedHeight" value="true" />
 		<option type="header" value="false" />
 	</component>
-	<beforeRender class="com.qcadoo.dictionaries.ViewDictionaryService" method="addRestrictionToDictionariesGrid" />
-	<beforeRender class="com.qcadoo.dictionaries.ViewDictionaryService" method="translateLabel" />
+	<hooks>
+		<beforeRender class="com.qcadoo.dictionaries.ViewDictionaryService" method="addRestrictionToDictionariesGrid" />
+		<beforeRender class="com.qcadoo.dictionaries.ViewDictionaryService" method="translateLabel" />
+	</hooks>
 </view>

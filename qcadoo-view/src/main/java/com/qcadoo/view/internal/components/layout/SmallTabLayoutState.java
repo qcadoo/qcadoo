@@ -32,8 +32,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.internal.api.ComponentPattern;
+import com.qcadoo.view.internal.api.InternalComponentState;
 import com.qcadoo.view.internal.states.AbstractContainerState;
 
 public class SmallTabLayoutState extends AbstractContainerState {
@@ -54,7 +54,7 @@ public class SmallTabLayoutState extends AbstractContainerState {
     protected JSONObject renderContent() throws JSONException {
         JSONObject state = new JSONObject();
         List<String> errorTabs = new LinkedList<String>();
-        for (Map.Entry<String, ComponentState> child : getChildren().entrySet()) {
+        for (Map.Entry<String, InternalComponentState> child : getChildren().entrySet()) {
             if (child.getValue().isHasError()) {
                 for (SmallTabLayoutPatternTab tab : tabs) {
                     boolean found = false;

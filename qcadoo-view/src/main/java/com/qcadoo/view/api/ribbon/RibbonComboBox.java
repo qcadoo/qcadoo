@@ -24,21 +24,13 @@
 
 package com.qcadoo.view.api.ribbon;
 
-import java.util.LinkedList;
-import java.util.List;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  * Represents ribbon combo box
  * 
  * @since 0.4.0
  */
-public class RibbonComboBox extends RibbonActionItem {
-
-    private List<String> options = new LinkedList<String>();
+public interface RibbonComboBox extends RibbonActionItem {
 
     /**
      * Add new option to this ribbon combo box
@@ -46,35 +38,6 @@ public class RibbonComboBox extends RibbonActionItem {
      * @param option
      *            option to add
      */
-    public void addOption(String option) {
-        options.add(option);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public JSONObject getAsJson() throws JSONException {
-        JSONObject obj = super.getAsJson();
-        JSONArray optionsArray = new JSONArray();
-        for (String option : options) {
-            optionsArray.put(option);
-        }
-        obj.put("options", optionsArray);
-        return obj;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public RibbonActionItem getCopy() {
-        RibbonComboBox copy = new RibbonComboBox();
-        copyFields(copy);
-        for (String option : options) {
-            copy.addOption(option);
-        }
-        return copy;
-    }
+    void addOption(String option);
 
 }

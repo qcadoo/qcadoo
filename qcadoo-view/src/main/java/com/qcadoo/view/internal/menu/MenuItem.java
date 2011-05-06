@@ -22,95 +22,84 @@
  * ***************************************************************************
  */
 
-package com.qcadoo.view.api.menu;
+package com.qcadoo.view.internal.menu;
 
-import java.util.LinkedList;
-import java.util.List;
-
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * Represents menu items group
+ * Represents single menu item
  * 
  * @since 0.4.0
- * 
  */
-public final class MenulItemsGroup {
+public abstract class MenuItem {
 
     private final String name;
 
     private final String label;
 
-    private final List<MenuItem> items;
+    private final String pluginIdentifier;
 
     /**
-     * 
      * @param name
-     *            identifier of group
+     *            identifier of item
      * @param label
-     *            group label to display
+     *            item label to display
+     * @param pluginIdentifier
+     *            plugin identifier of this item
      */
-    public MenulItemsGroup(final String name, final String label) {
-        super();
+    public MenuItem(final String name, final String label, final String pluginIdentifier) {
         this.name = name;
         this.label = label;
-        items = new LinkedList<MenuItem>();
+        this.pluginIdentifier = pluginIdentifier;
     }
 
     /**
-     * Get identifier of group
+     * Get identifier of item
      * 
-     * @return identifier of group
+     * @return identifier of item
      */
-    public String getName() {
+    public final String getName() {
         return name;
     }
 
     /**
-     * Get group label to display
+     * Get item label to display
      * 
-     * @return group label to display
+     * @return item label to display
      */
-    public String getLabel() {
+    public final String getLabel() {
         return label;
     }
 
     /**
-     * Get list of all items of group
+     * Get plugin identifier of this item
      * 
-     * @return list of all items of group
+     * @return plugin identifier of this item
      */
-    public List<MenuItem> getItems() {
-        return items;
+    public final String getPluginIdentifier() {
+        return pluginIdentifier;
     }
 
     /**
-     * Add item to menu group
+     * Get URL that this item leads to
      * 
-     * @param item
-     *            item to add
+     * @return URL that this item leads to
      */
-    public void addItem(final MenuItem item) {
-        items.add(item);
-    }
+    public abstract String getPage();
 
     /**
-     * Generates JSON representation of this menu group
+     * Generates JSON representation of this item
      * 
-     * @return JSON group representation
+     * @return JSON representation of this item
      * @throws JSONException
      */
-    public JSONObject getAsJson() throws JSONException {
+    public final JSONObject getAsJson() throws JSONException {
         JSONObject itemObject = new JSONObject();
-        itemObject.put("name", name);
-        itemObject.put("label", label);
-        JSONArray itemsArray = new JSONArray();
-        for (MenuItem item : items) {
-            itemsArray.put(item.getAsJson());
-        }
-        itemObject.put("items", itemsArray);
+        itemObject.put("name", getName());
+        itemObject.put("label", getLabel());
+        itemObject.put("page", getPage());
         return itemObject;
     }
+
 }

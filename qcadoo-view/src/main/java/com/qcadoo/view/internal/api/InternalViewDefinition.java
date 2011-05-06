@@ -30,7 +30,6 @@ import java.util.Map;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.qcadoo.view.api.ViewDefinition;
 import com.qcadoo.view.internal.HookDefinition;
 import com.qcadoo.view.internal.components.window.WindowComponentPattern;
 
@@ -71,6 +70,8 @@ public interface InternalViewDefinition extends ViewDefinition {
     void removeHook(HookType type, HookDefinition hookDefinition);
 
     WindowComponentPattern getRootWindow();
+
+    ComponentPattern getComponentByReference(String reference);
 
     public abstract void addComponentPattern(final ComponentPattern componentPattern);
 

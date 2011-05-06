@@ -1,12 +1,11 @@
 package com.qcadoo.view.internal.ribbon;
 
-import com.qcadoo.view.api.ViewDefinition;
 import com.qcadoo.view.api.ribbon.RibbonActionItem;
-import com.qcadoo.view.api.ribbon.RibbonGroup;
+import com.qcadoo.view.internal.api.ViewDefinition;
 
 public class RibbonTemplates {
 
-    public RibbonGroup getGroupTemplate(final String templateName, final ViewDefinition viewDefinition) {
+    public InternalRibbonGroup getGroupTemplate(final String templateName, final ViewDefinition viewDefinition) {
         if ("navigation".equals(templateName)) {
             return createNavigationTemplate(viewDefinition);
         } else if ("gridNewAndRemoveAction".equals(templateName)) {
@@ -28,44 +27,44 @@ public class RibbonTemplates {
         }
     }
 
-    private RibbonGroup createNavigationTemplate(final ViewDefinition viewDefinition) {
-        RibbonActionItem ribbonBackAction = new RibbonActionItem();
+    private InternalRibbonGroup createNavigationTemplate(final ViewDefinition viewDefinition) {
+        InternalRibbonActionItem ribbonBackAction = new RibbonActionItemImpl();
         ribbonBackAction.setAction(RibbonUtils.getInstance().translateRibbonAction("#{window}.performBack", viewDefinition));
         ribbonBackAction.setIcon("backIcon24.png");
         ribbonBackAction.setName("back");
         ribbonBackAction.setEnabled(true);
         ribbonBackAction.setType(RibbonActionItem.Type.BIG_BUTTON);
 
-        RibbonGroup ribbonGroup = new RibbonGroup("navigation");
+        InternalRibbonGroup ribbonGroup = new RibbonGroupImpl("navigation");
         ribbonGroup.addItem(ribbonBackAction);
 
         return ribbonGroup;
     }
 
-    private RibbonGroup createGridNewAndRemoveActionsTemplate(final ViewDefinition viewDefinition) {
-        RibbonGroup ribbonGroup = new RibbonGroup("actions");
+    private InternalRibbonGroup createGridNewAndRemoveActionsTemplate(final ViewDefinition viewDefinition) {
+        InternalRibbonGroup ribbonGroup = new RibbonGroupImpl("actions");
         ribbonGroup.addItem(createGridNewAction(viewDefinition));
         ribbonGroup.addItem(createGridDeleteAction(viewDefinition));
         return ribbonGroup;
     }
 
-    private RibbonGroup createGridNewAndCopyActionTemplate(final ViewDefinition viewDefinition) {
-        RibbonGroup ribbonGroup = new RibbonGroup("actions");
+    private InternalRibbonGroup createGridNewAndCopyActionTemplate(final ViewDefinition viewDefinition) {
+        InternalRibbonGroup ribbonGroup = new RibbonGroupImpl("actions");
         ribbonGroup.addItem(createGridNewAction(viewDefinition));
         ribbonGroup.addItem(createGridCopyAction(viewDefinition));
         return ribbonGroup;
     }
 
-    private RibbonGroup createGridNewCopyAndRemoveActionTemplate(final ViewDefinition viewDefinition) {
-        RibbonGroup ribbonGroup = new RibbonGroup("actions");
+    private InternalRibbonGroup createGridNewCopyAndRemoveActionTemplate(final ViewDefinition viewDefinition) {
+        InternalRibbonGroup ribbonGroup = new RibbonGroupImpl("actions");
         ribbonGroup.addItem(createGridNewAction(viewDefinition));
         ribbonGroup.addItem(createGridCopyAction(viewDefinition));
         ribbonGroup.addItem(createGridDeleteAction(viewDefinition));
         return ribbonGroup;
     }
 
-    private RibbonActionItem createGridDeleteAction(final ViewDefinition viewDefinition) {
-        RibbonActionItem ribbonDeleteAction = new RibbonActionItem();
+    private InternalRibbonActionItem createGridDeleteAction(final ViewDefinition viewDefinition) {
+        InternalRibbonActionItem ribbonDeleteAction = new RibbonActionItemImpl();
         ribbonDeleteAction.setAction(RibbonUtils.getInstance().translateRibbonAction("#{grid}.performDelete;", viewDefinition));
         ribbonDeleteAction.setIcon("deleteIcon16.png");
         ribbonDeleteAction.setName("delete");
@@ -76,8 +75,8 @@ public class RibbonTemplates {
         return ribbonDeleteAction;
     }
 
-    private RibbonActionItem createGridCopyAction(final ViewDefinition viewDefinition) {
-        RibbonActionItem ribbonCopyAction = new RibbonActionItem();
+    private InternalRibbonActionItem createGridCopyAction(final ViewDefinition viewDefinition) {
+        InternalRibbonActionItem ribbonCopyAction = new RibbonActionItemImpl();
         ribbonCopyAction.setAction(RibbonUtils.getInstance().translateRibbonAction("#{grid}.performCopy;", viewDefinition));
         ribbonCopyAction.setIcon("copyIcon16.png");
         ribbonCopyAction.setName("copy");
@@ -88,8 +87,8 @@ public class RibbonTemplates {
         return ribbonCopyAction;
     }
 
-    private RibbonActionItem createGridNewAction(final ViewDefinition viewDefinition) {
-        RibbonActionItem ribbonNewAction = new RibbonActionItem();
+    private InternalRibbonActionItem createGridNewAction(final ViewDefinition viewDefinition) {
+        InternalRibbonActionItem ribbonNewAction = new RibbonActionItemImpl();
         ribbonNewAction.setAction(RibbonUtils.getInstance().translateRibbonAction("#{grid}.performNew;", viewDefinition));
         ribbonNewAction.setIcon("newIcon24.png");
         ribbonNewAction.setName("new");
@@ -98,8 +97,8 @@ public class RibbonTemplates {
         return ribbonNewAction;
     }
 
-    private RibbonGroup createFormSaveCopyAndRemoveActionsTemplate(final ViewDefinition viewDefinition) {
-        RibbonGroup ribbonGroup = new RibbonGroup("actions");
+    private InternalRibbonGroup createFormSaveCopyAndRemoveActionsTemplate(final ViewDefinition viewDefinition) {
+        InternalRibbonGroup ribbonGroup = new RibbonGroupImpl("actions");
         ribbonGroup.addItem(createFormSaveAction(viewDefinition));
         ribbonGroup.addItem(createFormSaveAndBackAction(viewDefinition));
         ribbonGroup.addItem(createFormSaveAndNewAction(viewDefinition));
@@ -109,8 +108,8 @@ public class RibbonTemplates {
         return ribbonGroup;
     }
 
-    private RibbonGroup createFormSaveAndRemoveActionsTemplate(final ViewDefinition viewDefinition) {
-        RibbonGroup ribbonGroup = new RibbonGroup("actions");
+    private InternalRibbonGroup createFormSaveAndRemoveActionsTemplate(final ViewDefinition viewDefinition) {
+        InternalRibbonGroup ribbonGroup = new RibbonGroupImpl("actions");
         ribbonGroup.addItem(createFormSaveAction(viewDefinition));
         ribbonGroup.addItem(createFormSaveAndBackAction(viewDefinition));
         ribbonGroup.addItem(createFormCancelAction(viewDefinition));
@@ -118,30 +117,30 @@ public class RibbonTemplates {
         return ribbonGroup;
     }
 
-    private RibbonGroup createFormSaveAndBackAndRemoveActionsTemplate(final ViewDefinition viewDefinition) {
-        RibbonGroup ribbonGroup = new RibbonGroup("actions");
+    private InternalRibbonGroup createFormSaveAndBackAndRemoveActionsTemplate(final ViewDefinition viewDefinition) {
+        InternalRibbonGroup ribbonGroup = new RibbonGroupImpl("actions");
         ribbonGroup.addItem(createFormSaveAndBackAction(viewDefinition));
         ribbonGroup.addItem(createFormCancelAction(viewDefinition));
         ribbonGroup.addItem(createFormDeleteAction(viewDefinition));
         return ribbonGroup;
     }
 
-    private RibbonGroup createFormSaveActionTemplate(final ViewDefinition viewDefinition) {
-        RibbonActionItem ribbonSaveAction = new RibbonActionItem();
+    private InternalRibbonGroup createFormSaveActionTemplate(final ViewDefinition viewDefinition) {
+        InternalRibbonActionItem ribbonSaveAction = new RibbonActionItemImpl();
         ribbonSaveAction.setAction(RibbonUtils.getInstance().translateRibbonAction("#{form}.performSave; #{window}.performBack",
                 viewDefinition));
         ribbonSaveAction.setIcon("saveBackIcon24.png");
         ribbonSaveAction.setName("save");
         ribbonSaveAction.setType(RibbonActionItem.Type.BIG_BUTTON);
         ribbonSaveAction.setEnabled(true);
-        RibbonGroup ribbonGroup = new RibbonGroup("actions");
+        InternalRibbonGroup ribbonGroup = new RibbonGroupImpl("actions");
         ribbonGroup.addItem(ribbonSaveAction);
 
         return ribbonGroup;
     }
 
-    private RibbonActionItem createFormDeleteAction(final ViewDefinition viewDefinition) {
-        RibbonActionItem ribbonDeleteAction = new RibbonActionItem();
+    private InternalRibbonActionItem createFormDeleteAction(final ViewDefinition viewDefinition) {
+        InternalRibbonActionItem ribbonDeleteAction = new RibbonActionItemImpl();
         ribbonDeleteAction.setAction(RibbonUtils.getInstance().translateRibbonAction(
                 "#{form}.performDelete; #{window}.performBack", viewDefinition));
         ribbonDeleteAction.setIcon("deleteIcon16.png");
@@ -155,8 +154,8 @@ public class RibbonTemplates {
         return ribbonDeleteAction;
     }
 
-    private RibbonActionItem createFormCancelAction(final ViewDefinition viewDefinition) {
-        RibbonActionItem ribbonCancelAction = new RibbonActionItem();
+    private InternalRibbonActionItem createFormCancelAction(final ViewDefinition viewDefinition) {
+        InternalRibbonActionItem ribbonCancelAction = new RibbonActionItemImpl();
         ribbonCancelAction.setAction(RibbonUtils.getInstance().translateRibbonAction("#{form}.performCancel;", viewDefinition));
         ribbonCancelAction.setIcon("cancelIcon16.png");
         ribbonCancelAction.setName("cancel");
@@ -165,8 +164,8 @@ public class RibbonTemplates {
         return ribbonCancelAction;
     }
 
-    private RibbonActionItem createFormCopyAction(final ViewDefinition viewDefinition) {
-        RibbonActionItem ribbonCopyAction = new RibbonActionItem();
+    private InternalRibbonActionItem createFormCopyAction(final ViewDefinition viewDefinition) {
+        InternalRibbonActionItem ribbonCopyAction = new RibbonActionItemImpl();
         ribbonCopyAction.setAction(RibbonUtils.getInstance().translateRibbonAction("#{form}.performCopy;", viewDefinition));
         ribbonCopyAction.setIcon("copyIcon16.png");
         ribbonCopyAction.setName("copy");
@@ -179,8 +178,8 @@ public class RibbonTemplates {
         return ribbonCopyAction;
     }
 
-    private RibbonActionItem createFormSaveAndBackAction(final ViewDefinition viewDefinition) {
-        RibbonActionItem ribbonSaveBackAction = new RibbonActionItem();
+    private InternalRibbonActionItem createFormSaveAndBackAction(final ViewDefinition viewDefinition) {
+        InternalRibbonActionItem ribbonSaveBackAction = new RibbonActionItemImpl();
         ribbonSaveBackAction.setAction(RibbonUtils.getInstance().translateRibbonAction(
                 "#{form}.performSave; #{window}.performBack;", viewDefinition));
         ribbonSaveBackAction.setIcon("saveBackIcon24.png");
@@ -190,8 +189,8 @@ public class RibbonTemplates {
         return ribbonSaveBackAction;
     }
 
-    private RibbonActionItem createFormSaveAndNewAction(final ViewDefinition viewDefinition) {
-        RibbonActionItem ribbonSaveNewAction = new RibbonActionItem();
+    private InternalRibbonActionItem createFormSaveAndNewAction(final ViewDefinition viewDefinition) {
+        InternalRibbonActionItem ribbonSaveNewAction = new RibbonActionItemImpl();
         ribbonSaveNewAction.setAction(RibbonUtils.getInstance().translateRibbonAction("#{form}.performSaveAndClear;",
                 viewDefinition));
         ribbonSaveNewAction.setIcon("saveNewIcon16.png");
@@ -201,8 +200,8 @@ public class RibbonTemplates {
         return ribbonSaveNewAction;
     }
 
-    private RibbonActionItem createFormSaveAction(final ViewDefinition viewDefinition) {
-        RibbonActionItem ribbonSaveAction = new RibbonActionItem();
+    private InternalRibbonActionItem createFormSaveAction(final ViewDefinition viewDefinition) {
+        InternalRibbonActionItem ribbonSaveAction = new RibbonActionItemImpl();
         ribbonSaveAction.setAction(RibbonUtils.getInstance().translateRibbonAction("#{form}.performSave;", viewDefinition));
         ribbonSaveAction.setIcon("saveIcon24.png");
         ribbonSaveAction.setName("save");

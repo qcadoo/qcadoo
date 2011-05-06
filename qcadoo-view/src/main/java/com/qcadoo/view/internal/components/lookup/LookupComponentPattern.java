@@ -42,19 +42,22 @@ import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.types.HasManyType;
 import com.qcadoo.view.api.ComponentState;
-import com.qcadoo.view.api.ViewDefinition;
-import com.qcadoo.view.api.ribbon.Ribbon;
-import com.qcadoo.view.api.ribbon.RibbonActionItem;
 import com.qcadoo.view.api.ribbon.RibbonActionItem.Type;
-import com.qcadoo.view.api.ribbon.RibbonGroup;
 import com.qcadoo.view.internal.ComponentDefinition;
 import com.qcadoo.view.internal.ComponentOption;
 import com.qcadoo.view.internal.api.InternalViewDefinition;
 import com.qcadoo.view.internal.api.InternalViewDefinitionService;
+import com.qcadoo.view.internal.api.ViewDefinition;
 import com.qcadoo.view.internal.components.FieldComponentPattern;
 import com.qcadoo.view.internal.components.grid.GridComponentPattern;
 import com.qcadoo.view.internal.components.window.WindowComponentPattern;
 import com.qcadoo.view.internal.internal.ViewDefinitionImpl;
+import com.qcadoo.view.internal.ribbon.InternalRibbon;
+import com.qcadoo.view.internal.ribbon.InternalRibbonActionItem;
+import com.qcadoo.view.internal.ribbon.InternalRibbonGroup;
+import com.qcadoo.view.internal.ribbon.RibbonActionItemImpl;
+import com.qcadoo.view.internal.ribbon.RibbonGroupImpl;
+import com.qcadoo.view.internal.ribbon.RibbonImpl;
 
 public final class LookupComponentPattern extends FieldComponentPattern {
 
@@ -278,8 +281,8 @@ public final class LookupComponentPattern extends FieldComponentPattern {
         return window;
     }
 
-    private Ribbon createRibbon() {
-        RibbonActionItem ribbonSelectActionItem = new RibbonActionItem();
+    private InternalRibbon createRibbon() {
+        InternalRibbonActionItem ribbonSelectActionItem = new RibbonActionItemImpl();
         ribbonSelectActionItem.setName("select");
         ribbonSelectActionItem.setIcon("acceptIcon24.png");
         ribbonSelectActionItem.setAction("#{window.grid}.performLinkClicked();");
@@ -290,18 +293,18 @@ public final class LookupComponentPattern extends FieldComponentPattern {
                 .setScript("#{grid}.addOnChangeListener({onChange: function(selectedArray) {if (!selectedArray || selectedArray.length == 0) {"
                         + "this.disable('#{translate(noRecordSelected)}');} else {this.enable();}}});");
 
-        RibbonActionItem ribbonCancelActionItem = new RibbonActionItem();
+        InternalRibbonActionItem ribbonCancelActionItem = new RibbonActionItemImpl();
         ribbonCancelActionItem.setName("cancel");
         ribbonCancelActionItem.setIcon("cancelIcon24.png");
         ribbonCancelActionItem.setAction("#{window}.performCloseWindow");
         ribbonCancelActionItem.setType(Type.BIG_BUTTON);
         ribbonCancelActionItem.setEnabled(true);
 
-        RibbonGroup ribbonGroup = new RibbonGroup("navigation");
+        InternalRibbonGroup ribbonGroup = new RibbonGroupImpl("navigation");
         ribbonGroup.addItem(ribbonSelectActionItem);
         ribbonGroup.addItem(ribbonCancelActionItem);
 
-        Ribbon ribbon = new Ribbon();
+        InternalRibbon ribbon = new RibbonImpl();
         ribbon.addGroup(ribbonGroup);
 
         return ribbon;

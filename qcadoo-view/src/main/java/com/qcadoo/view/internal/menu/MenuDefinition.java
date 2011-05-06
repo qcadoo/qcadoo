@@ -22,7 +22,7 @@
  * ***************************************************************************
  */
 
-package com.qcadoo.view.api.menu;
+package com.qcadoo.view.internal.menu;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -38,14 +38,14 @@ import org.json.JSONObject;
  */
 public final class MenuDefinition {
 
-    private final List<MenulItemsGroup> items;
+    private final List<MenuItemsGroup> items;
 
-    private MenulItemsGroup homeCategory;
+    private MenuItemsGroup homeCategory;
 
-    private MenulItemsGroup administrationCategory;
+    private MenuItemsGroup administrationCategory;
 
     public MenuDefinition() {
-        items = new LinkedList<MenulItemsGroup>();
+        items = new LinkedList<MenuItemsGroup>();
     }
 
     /**
@@ -53,7 +53,7 @@ public final class MenuDefinition {
      * 
      * @return menu groups
      */
-    public List<MenulItemsGroup> getItems() {
+    public List<MenuItemsGroup> getItems() {
         return items;
     }
 
@@ -62,7 +62,7 @@ public final class MenuDefinition {
      * 
      * @param item
      */
-    public void addItem(final MenulItemsGroup item) {
+    public void addItem(final MenuItemsGroup item) {
         items.add(item);
     }
 
@@ -74,7 +74,7 @@ public final class MenuDefinition {
     public String getAsJson() {
         try {
             JSONArray menuItems = new JSONArray();
-            for (MenulItemsGroup item : items) {
+            for (MenuItemsGroup item : items) {
                 menuItems.put(item.getAsJson());
             }
             JSONObject menuStructure = new JSONObject();
@@ -99,7 +99,7 @@ public final class MenuDefinition {
      * 
      * @return administration category of this menu
      */
-    public MenulItemsGroup getAdministrationCategory() {
+    public MenuItemsGroup getAdministrationCategory() {
         return administrationCategory;
     }
 
@@ -109,7 +109,7 @@ public final class MenuDefinition {
      * @param administrationCategory
      *            new content of administration category
      */
-    public void setAdministrationCategory(MenulItemsGroup administrationCategory) {
+    public void setAdministrationCategory(MenuItemsGroup administrationCategory) {
         this.administrationCategory = administrationCategory;
     }
 
@@ -118,7 +118,7 @@ public final class MenuDefinition {
      * 
      * @return home category of this menu
      */
-    public MenulItemsGroup getHomeCategory() {
+    public MenuItemsGroup getHomeCategory() {
         return homeCategory;
     }
 
@@ -128,7 +128,7 @@ public final class MenuDefinition {
      * @param homeCategory
      *            new content of home category
      */
-    public void setHomeCategory(MenulItemsGroup homeCategory) {
+    public void setHomeCategory(MenuItemsGroup homeCategory) {
         this.homeCategory = homeCategory;
     }
 }

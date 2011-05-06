@@ -16,7 +16,7 @@
        http://schema.qcadoo.org/modules/menu.xsd">
 
 	<information>
-		<name>User Management</name>
+		<name>Qcadoo User Management</name>
 		<vendor>
 			<name>Qcadoo Limited</name>
 			<url>http://www.qcadoo.com/</url>

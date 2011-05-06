@@ -171,7 +171,7 @@ public final class ViewDefinitionImpl implements InternalViewDefinition {
     public JSONObject performEvent(final JSONObject jsonObject, final Locale locale) throws JSONException {
         callHooks(postConstructHooks, jsonObject, locale);
 
-        ViewDefinitionState viewDefinitionState = new ViewDefinitionStateImpl();
+        ViewDefinitionStateImpl viewDefinitionState = new ViewDefinitionStateImpl();
 
         for (ComponentPattern cp : patterns.values()) {
             viewDefinitionState.addChild(cp.createComponentState(viewDefinitionState));

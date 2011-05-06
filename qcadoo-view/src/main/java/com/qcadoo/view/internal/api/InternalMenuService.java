@@ -1,6 +1,6 @@
 package com.qcadoo.view.internal.api;
 
-import com.qcadoo.view.api.MenuService;
+import com.qcadoo.view.internal.menu.MenuService;
 
 public interface InternalMenuService extends MenuService {
 

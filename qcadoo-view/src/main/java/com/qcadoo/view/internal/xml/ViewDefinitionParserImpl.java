@@ -53,8 +53,6 @@ import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.security.api.SecurityRole;
 import com.qcadoo.security.api.SecurityRolesService;
-import com.qcadoo.view.api.ViewDefinition;
-import com.qcadoo.view.api.ribbon.RibbonGroup;
 import com.qcadoo.view.internal.ComponentDefinition;
 import com.qcadoo.view.internal.ComponentOption;
 import com.qcadoo.view.internal.HookDefinition;
@@ -63,11 +61,13 @@ import com.qcadoo.view.internal.api.ComponentPattern;
 import com.qcadoo.view.internal.api.ContainerPattern;
 import com.qcadoo.view.internal.api.InternalViewDefinition;
 import com.qcadoo.view.internal.api.InternalViewDefinitionService;
+import com.qcadoo.view.internal.api.ViewDefinition;
 import com.qcadoo.view.internal.hooks.HookDefinitionImpl;
 import com.qcadoo.view.internal.hooks.HookFactory;
 import com.qcadoo.view.internal.internal.ViewComponentsResolverImpl;
 import com.qcadoo.view.internal.internal.ViewDefinitionImpl;
 import com.qcadoo.view.internal.patterns.AbstractComponentPattern;
+import com.qcadoo.view.internal.ribbon.InternalRibbonGroup;
 import com.qcadoo.view.internal.ribbon.RibbonUtils;
 
 @Service
@@ -172,15 +172,15 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
 
         for (int i = 0; i < childNodes.getLength(); i++) {
             Node child = childNodes.item(i);
-
+            if (Node.ELEMENT_NODE != child.getNodeType()) {
+                continue;
+            }
             if ("component".equals(child.getNodeName())) {
                 root = parseComponent(child, viewDefinition, null, pluginIdentifier);
-            } else if ("beforeInitalize".equals(child.getNodeName())) {
-                viewDefinition.addPreInitializeHook(parseHook(child));
-            } else if ("afterInitialize".equals(child.getNodeName())) {
-                viewDefinition.addPostInitializeHook(parseHook(child));
-            } else if ("beforeRender".equals(child.getNodeName())) {
-                viewDefinition.addPreRenderHook(parseHook(child));
+            } else if ("hooks".equals(child.getNodeName())) {
+                parseViewHooks(child, viewDefinition);
+            } else {
+                throw new IllegalStateException("Unknown node: " + child.getNodeName());
             }
         }
 
@@ -308,6 +308,25 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
                 hookDefinition.getMethod(), null);
     }
 
+    private void parseViewHooks(final Node hookNode, final ViewDefinitionImpl viewDefinition) {
+        NodeList childNodes = hookNode.getChildNodes();
+        for (int i = 0; i < childNodes.getLength(); i++) {
+            Node child = childNodes.item(i);
+            if (Node.ELEMENT_NODE != child.getNodeType()) {
+                continue;
+            }
+            if ("beforeInitalize".equals(child.getNodeName())) {
+                viewDefinition.addPreInitializeHook(parseHook(child));
+            } else if ("afterInitialize".equals(child.getNodeName())) {
+                viewDefinition.addPostInitializeHook(parseHook(child));
+            } else if ("beforeRender".equals(child.getNodeName())) {
+                viewDefinition.addPreRenderHook(parseHook(child));
+            } else {
+                throw new IllegalStateException("Unknown hook type: " + child.getNodeName());
+            }
+        }
+    }
+
     public HookDefinition parseHook(final Node hookNode) {
         String fullyQualifiedClassName = getStringAttribute(hookNode, "class");
         String methodName = getStringAttribute(hookNode, "method");
@@ -361,7 +380,7 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
     }
 
     @Override
-    public RibbonGroup parseRibbonGroup(final Node groupNode, final ViewDefinition viewDefinition) {
+    public InternalRibbonGroup parseRibbonGroup(final Node groupNode, final ViewDefinition viewDefinition) {
         return RibbonUtils.getInstance().parseRibbonGroup(groupNode, this, viewDefinition);
     }
 }

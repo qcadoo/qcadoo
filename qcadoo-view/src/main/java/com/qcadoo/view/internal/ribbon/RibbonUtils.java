@@ -11,14 +11,12 @@ import org.json.JSONObject;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.qcadoo.view.api.ViewDefinition;
-import com.qcadoo.view.api.ribbon.Ribbon;
 import com.qcadoo.view.api.ribbon.RibbonActionItem;
 import com.qcadoo.view.api.ribbon.RibbonComboBox;
 import com.qcadoo.view.api.ribbon.RibbonComboItem;
-import com.qcadoo.view.api.ribbon.RibbonGroup;
 import com.qcadoo.view.internal.api.ComponentPattern;
 import com.qcadoo.view.internal.api.InternalViewDefinition;
+import com.qcadoo.view.internal.api.ViewDefinition;
 import com.qcadoo.view.internal.patterns.AbstractComponentPattern;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
 
@@ -36,8 +34,9 @@ public final class RibbonUtils {
         return instance;
     }
 
-    public Ribbon parseRibbon(final Node ribbonNode, final ViewDefinitionParser parser, final ViewDefinition viewDefinition) {
-        Ribbon ribbon = new Ribbon();
+    public InternalRibbon parseRibbon(final Node ribbonNode, final ViewDefinitionParser parser,
+            final ViewDefinition viewDefinition) {
+        InternalRibbon ribbon = new RibbonImpl();
 
         NodeList childNodes = ribbonNode.getChildNodes();
 
@@ -52,7 +51,7 @@ public final class RibbonUtils {
         return ribbon;
     }
 
-    public JSONObject translateRibbon(final Ribbon ribbon, final Locale locale, final AbstractComponentPattern pattern)
+    public JSONObject translateRibbon(final InternalRibbon ribbon, final Locale locale, final AbstractComponentPattern pattern)
             throws JSONException {
         JSONObject json = ribbon.getAsJson();
 
@@ -102,14 +101,14 @@ public final class RibbonUtils {
         return Arrays.asList(new String[] { pattern.getTranslationPath() + ".ribbon." + key, "core.ribbon." + key });
     }
 
-    public RibbonGroup parseRibbonGroup(final Node groupNode, final ViewDefinitionParser parser,
+    public InternalRibbonGroup parseRibbonGroup(final Node groupNode, final ViewDefinitionParser parser,
             final ViewDefinition viewDefinition) {
         String template = parser.getStringAttribute(groupNode, "template");
 
         if (template != null) {
             return ribbonTemplates.getGroupTemplate(template, viewDefinition);
         } else {
-            RibbonGroup ribbonGroup = new RibbonGroup(parser.getStringAttribute(groupNode, "name"));
+            InternalRibbonGroup ribbonGroup = new RibbonGroupImpl(parser.getStringAttribute(groupNode, "name"));
 
             NodeList childNodes = groupNode.getChildNodes();
 
@@ -125,7 +124,7 @@ public final class RibbonUtils {
         }
     }
 
-    private RibbonActionItem parseRibbonItem(final Node itemNode, final ViewDefinitionParser parser,
+    private InternalRibbonActionItem parseRibbonItem(final Node itemNode, final ViewDefinitionParser parser,
             final ViewDefinition viewDefinition) {
         String stringType = itemNode.getNodeName();
 
@@ -140,13 +139,13 @@ public final class RibbonUtils {
             type = RibbonActionItem.Type.SMALL_EMPTY_SPACE;
         }
 
-        RibbonActionItem item = null;
+        InternalRibbonActionItem item = null;
         if ("bigButtons".equals(stringType) || "smallButtons".equals(stringType)) {
-            item = new RibbonComboItem();
+            item = new RibbonComboItemImpl();
         } else if ("combobox".equals(stringType)) {
-            item = new RibbonComboBox();
+            item = new RibbonComboBoxImpl();
         } else {
-            item = new RibbonActionItem();
+            item = new RibbonActionItemImpl();
         }
 
         item.setIcon(parser.getStringAttribute(itemNode, "icon"));
@@ -182,7 +181,7 @@ public final class RibbonUtils {
             for (int i = 0; i < childNodes.getLength(); i++) {
                 Node child = childNodes.item(i);
                 if (child.getNodeType() == Node.ELEMENT_NODE && !"script".equals(child.getNodeName())) {
-                    ((RibbonComboItem) item).addItem(parseRibbonItem(child, parser, viewDefinition));
+                    ((InternalRibbonComboItem) item).addItem(parseRibbonItem(child, parser, viewDefinition));
                 }
             }
         } else if (item instanceof RibbonComboBox) {

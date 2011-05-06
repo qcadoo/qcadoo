@@ -9,10 +9,10 @@ import org.w3c.dom.Node;
 
 import com.google.common.base.Preconditions;
 import com.qcadoo.plugin.api.Module;
-import com.qcadoo.view.api.ribbon.RibbonGroup;
 import com.qcadoo.view.internal.api.InternalViewDefinition;
 import com.qcadoo.view.internal.api.InternalViewDefinitionService;
 import com.qcadoo.view.internal.components.window.WindowComponentPattern;
+import com.qcadoo.view.internal.ribbon.InternalRibbonGroup;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
 import com.qcadoo.view.internal.xml.ViewExtension;
 
@@ -26,7 +26,7 @@ public class ViewRibbonModule extends Module {
 
     private final ViewExtension viewExtension;
 
-    private Map<WindowComponentPattern, RibbonGroup> addedGroups;
+    private Map<WindowComponentPattern, InternalRibbonGroup> addedGroups;
 
     public ViewRibbonModule(final String pluginIdentifier, final Resource xmlFile,
             final InternalViewDefinitionService viewDefinitionService, final ViewDefinitionParser viewDefinitionParser) {
@@ -47,7 +47,7 @@ public class ViewRibbonModule extends Module {
 
     @Override
     public void enable() {
-        addedGroups = new HashMap<WindowComponentPattern, RibbonGroup>();
+        addedGroups = new HashMap<WindowComponentPattern, InternalRibbonGroup>();
 
         InternalViewDefinition viewDefinition = viewDefinitionService.getWithoutSession(viewExtension.getPluginName(),
                 viewExtension.getViewName());
@@ -55,7 +55,7 @@ public class ViewRibbonModule extends Module {
 
         for (Node groupNode : viewDefinitionParser.geElementChildren(viewExtension.getExtesionNode())) {
 
-            RibbonGroup group = viewDefinitionParser.parseRibbonGroup(groupNode, viewDefinition);
+            InternalRibbonGroup group = viewDefinitionParser.parseRibbonGroup(groupNode, viewDefinition);
             group.setExtensionPluginIdentifier(pluginIdentifier);
 
             WindowComponentPattern window = viewDefinition.getRootWindow();
@@ -68,7 +68,7 @@ public class ViewRibbonModule extends Module {
 
     @Override
     public void disable() {
-        for (Map.Entry<WindowComponentPattern, RibbonGroup> addedGroupEntry : addedGroups.entrySet()) {
+        for (Map.Entry<WindowComponentPattern, InternalRibbonGroup> addedGroupEntry : addedGroups.entrySet()) {
             addedGroupEntry.getKey().getRibbon().removeGroup(addedGroupEntry.getValue());
         }
     }

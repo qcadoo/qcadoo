@@ -25,7 +25,6 @@
 package com.qcadoo.view.internal.menu;
 
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
@@ -33,7 +32,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.Entity;
@@ -43,17 +41,13 @@ import com.qcadoo.plugin.api.PluginUtils;
 import com.qcadoo.security.api.SecurityRole;
 import com.qcadoo.security.api.SecurityRolesService;
 import com.qcadoo.security.api.SecurityViewDefinitionRoleResolver;
-import com.qcadoo.view.api.menu.MenuDefinition;
-import com.qcadoo.view.api.menu.MenulItemsGroup;
+import com.qcadoo.view.api.utils.TranslationUtilsService;
 import com.qcadoo.view.internal.api.InternalMenuService;
 import com.qcadoo.view.internal.menu.items.UrlMenuItem;
 import com.qcadoo.view.internal.menu.items.ViewDefinitionMenuItemItem;
 
 @Service
 public final class MenuServiceImpl implements InternalMenuService {
-
-    @Autowired
-    private TranslationService translationService;
 
     @Autowired
     private DataDefinitionService dataDefinitionService;
@@ -63,6 +57,9 @@ public final class MenuServiceImpl implements InternalMenuService {
 
     @Autowired
     private SecurityViewDefinitionRoleResolver viewDefinitionRoleResolver;
+
+    @Autowired
+    private TranslationUtilsService translationUtilsService;
 
     @Override
     @Transactional(readOnly = true)
@@ -77,10 +74,10 @@ public final class MenuServiceImpl implements InternalMenuService {
             String label = menuCategory.getStringField("name");
 
             if (menuCategory.getStringField("pluginIdentifier") != null) {
-                label = getCategoryTranslation(menuCategory, locale);
+                label = translationUtilsService.getCategoryTranslation(menuCategory, locale);
             }
 
-            MenulItemsGroup category = new MenulItemsGroup(menuCategory.getStringField("name"), label);
+            MenuItemsGroup category = new MenuItemsGroup(menuCategory.getStringField("name"), label);
 
             List<Entity> menuItems = getDataDefinition("item").find()
                     .addRestriction(Restrictions.belongsTo(getDataDefinition("item").getField("category"), menuCategory))
@@ -96,7 +93,7 @@ public final class MenuServiceImpl implements InternalMenuService {
                 String itemLabel = menuItem.getStringField("name");
 
                 if (menuItem.getStringField("pluginIdentifier") != null) {
-                    itemLabel = getItemTranslation(menuItem, locale);
+                    itemLabel = translationUtilsService.getItemTranslation(menuItem, locale);
                 }
 
                 if (menuView.getStringField("url") != null) {
@@ -242,24 +239,6 @@ public final class MenuServiceImpl implements InternalMenuService {
             return;
         }
         getDataDefinition("item").delete(menuItem.getId());
-    }
-
-    @Override
-    public String getCategoryTranslation(final Entity category, final Locale locale) {
-        List<String> code = new LinkedList<String>();
-        code.add(category.getStringField("pluginIdentifier") + ".menu." + category.getStringField("name"));
-        code.add("core.menu." + category.getStringField("name"));
-        return translationService.translate(code, locale);
-    }
-
-    @Override
-    public String getItemTranslation(final Entity item, final Locale locale) {
-        Entity categoryEntity = item.getBelongsToField("category");
-        List<String> code = new LinkedList<String>();
-        code.add(item.getStringField("pluginIdentifier") + ".menu." + categoryEntity.getStringField("name") + "."
-                + item.getStringField("name"));
-        code.add("core.menu." + categoryEntity.getStringField("name") + "." + item.getStringField("name"));
-        return translationService.translate(code, locale);
     }
 
     private DataDefinition getDataDefinition(final String entityName) {

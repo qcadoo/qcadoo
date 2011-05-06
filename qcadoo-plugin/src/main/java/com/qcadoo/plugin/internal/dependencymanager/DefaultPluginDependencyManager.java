@@ -42,6 +42,7 @@ import com.qcadoo.plugin.api.PluginAccessor;
 import com.qcadoo.plugin.api.PluginDependencyInformation;
 import com.qcadoo.plugin.api.PluginDependencyResult;
 import com.qcadoo.plugin.internal.api.PluginDependencyManager;
+import com.qcadoo.plugin.internal.api.PluginDependencyResultImpl;
 
 @Service
 public final class DefaultPluginDependencyManager implements PluginDependencyManager {
@@ -112,15 +113,15 @@ public final class DefaultPluginDependencyManager implements PluginDependencyMan
         }
 
         if (isCyclic) {
-            return PluginDependencyResult.cyclicDependencies();
+            return PluginDependencyResultImpl.cyclicDependencies();
         }
 
         if (!unsatisfiedDependencies.isEmpty()) {
-            return PluginDependencyResult.unsatisfiedDependencies(unsatisfiedDependencies);
+            return PluginDependencyResultImpl.unsatisfiedDependencies(unsatisfiedDependencies);
         }
 
         if (disabledDependencies.isEmpty()) {
-            return PluginDependencyResult.satisfiedDependencies();
+            return PluginDependencyResultImpl.satisfiedDependencies();
         }
 
         Iterator<PluginDependencyInformation> dependencyInfoIterator = disabledDependencies.iterator();
@@ -130,19 +131,19 @@ public final class DefaultPluginDependencyManager implements PluginDependencyMan
             }
         }
 
-        return PluginDependencyResult.dependenciesToEnable(disabledDependencies);
+        return PluginDependencyResultImpl.dependenciesToEnable(disabledDependencies);
     }
 
     @Override
     public PluginDependencyResult getDependenciesToDisable(final List<Plugin> plugins,
             final PluginStatusResolver pluginStatusResolver) {
-        return PluginDependencyResult.dependenciesToDisable(getDependentPlugins(plugins, false, pluginStatusResolver));
+        return PluginDependencyResultImpl.dependenciesToDisable(getDependentPlugins(plugins, false, pluginStatusResolver));
     }
 
     @Override
     public PluginDependencyResult getDependenciesToUninstall(final List<Plugin> plugins,
             final PluginStatusResolver pluginStatusResolver) {
-        return PluginDependencyResult.dependenciesToUninstall(getDependentPlugins(plugins, true, pluginStatusResolver));
+        return PluginDependencyResultImpl.dependenciesToUninstall(getDependentPlugins(plugins, true, pluginStatusResolver));
     }
 
     @Override
@@ -166,7 +167,7 @@ public final class DefaultPluginDependencyManager implements PluginDependencyMan
             }
         }
 
-        return PluginDependencyResult.dependenciesToUpdate(dependentPlugins, dependenciesToDisableUnsatisfiedAfterUpdate);
+        return PluginDependencyResultImpl.dependenciesToUpdate(dependentPlugins, dependenciesToDisableUnsatisfiedAfterUpdate);
     }
 
     @Override

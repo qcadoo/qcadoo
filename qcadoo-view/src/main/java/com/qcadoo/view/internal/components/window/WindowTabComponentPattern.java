@@ -8,9 +8,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.qcadoo.view.api.ComponentState;
-import com.qcadoo.view.api.ribbon.Ribbon;
 import com.qcadoo.view.internal.ComponentDefinition;
 import com.qcadoo.view.internal.patterns.AbstractContainerPattern;
+import com.qcadoo.view.internal.ribbon.InternalRibbon;
 import com.qcadoo.view.internal.ribbon.RibbonUtils;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
 
@@ -20,7 +20,7 @@ public class WindowTabComponentPattern extends AbstractContainerPattern {
 
     private static final String JS_OBJECT = "QCD.components.containers.WindowTab";
 
-    private Ribbon ribbon;
+    private InternalRibbon ribbon;
 
     public WindowTabComponentPattern(final ComponentDefinition componentDefinition) {
         super(componentDefinition);
@@ -54,7 +54,7 @@ public class WindowTabComponentPattern extends AbstractContainerPattern {
         return json;
     }
 
-    public void setRibbon(final Ribbon ribbon) {
+    public void setRibbon(final InternalRibbon ribbon) {
         this.ribbon = ribbon;
     }
 

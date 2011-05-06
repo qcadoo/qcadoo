@@ -41,7 +41,7 @@
 		<property name="user" value="${dbUsername}" />
 		<property name="password" value="${dbPassword}" />
 	</bean>
-	
+
 	<beans profile="standalone">
 	
 		<bean id="pluginSessionFactory"

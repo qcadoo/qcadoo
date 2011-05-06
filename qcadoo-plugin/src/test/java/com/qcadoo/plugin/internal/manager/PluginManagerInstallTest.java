@@ -59,6 +59,7 @@ import com.qcadoo.plugin.internal.api.InternalPlugin;
 import com.qcadoo.plugin.internal.api.InternalPluginAccessor;
 import com.qcadoo.plugin.internal.api.PluginDao;
 import com.qcadoo.plugin.internal.api.PluginDependencyManager;
+import com.qcadoo.plugin.internal.api.PluginDependencyResultImpl;
 import com.qcadoo.plugin.internal.api.PluginDescriptorParser;
 import com.qcadoo.plugin.internal.api.PluginDescriptorResolver;
 import com.qcadoo.plugin.internal.api.PluginFileManager;
@@ -121,7 +122,7 @@ public class PluginManagerInstallTest {
         given(anotherPlugin.getFilename()).willReturn("anotherFilename");
         given(file.getName()).willReturn("tempFileName");
 
-        PluginDependencyResult pluginDependencyResult = PluginDependencyResult.satisfiedDependencies();
+        PluginDependencyResult pluginDependencyResult = PluginDependencyResultImpl.satisfiedDependencies();
         given(
                 pluginDependencyManager.getDependenciesToEnable(Mockito.eq(newArrayList((Plugin) anotherPlugin)),
                         Mockito.any(SimplePluginStatusResolver.class))).willReturn(pluginDependencyResult);
@@ -186,7 +187,7 @@ public class PluginManagerInstallTest {
         given(anotherPlugin.getFilename()).willReturn("anotherFilename");
         given(file.getName()).willReturn("tempFileName");
 
-        PluginDependencyResult pluginDependencyResult = PluginDependencyResult.unsatisfiedDependencies(Collections
+        PluginDependencyResult pluginDependencyResult = PluginDependencyResultImpl.unsatisfiedDependencies(Collections
                 .singleton(new PluginDependencyInformation("unknownplugin", new VersionOfDependency(null))));
         given(
                 pluginDependencyManager.getDependenciesToEnable(Mockito.eq(newArrayList((Plugin) anotherPlugin)),
@@ -223,7 +224,7 @@ public class PluginManagerInstallTest {
 
         given(pluginFileManager.installPlugin("anotherFilename")).willReturn(true);
 
-        PluginDependencyResult pluginDependencyResult = PluginDependencyResult.satisfiedDependencies();
+        PluginDependencyResult pluginDependencyResult = PluginDependencyResultImpl.satisfiedDependencies();
         given(
                 pluginDependencyManager.getDependenciesToEnable(Mockito.eq(newArrayList((Plugin) anotherPlugin)),
                         Mockito.any(SimplePluginStatusResolver.class))).willReturn(pluginDependencyResult);
@@ -252,7 +253,7 @@ public class PluginManagerInstallTest {
         given(anotherPlugin.getFilename()).willReturn("filename");
         given(file.getName()).willReturn("tempFileName");
 
-        PluginDependencyResult pluginDependencyResult = PluginDependencyResult.unsatisfiedDependencies(Collections
+        PluginDependencyResult pluginDependencyResult = PluginDependencyResultImpl.unsatisfiedDependencies(Collections
                 .singleton(new PluginDependencyInformation("unknownplugin", new VersionOfDependency(""))));
         given(
                 pluginDependencyManager.getDependenciesToEnable(Mockito.eq(newArrayList((Plugin) anotherPlugin)),
@@ -287,7 +288,7 @@ public class PluginManagerInstallTest {
         given(file.getName()).willReturn("tempFileName");
         given(plugin.getFilename()).willReturn("filename");
 
-        PluginDependencyResult pluginDependencyResult = PluginDependencyResult.satisfiedDependencies();
+        PluginDependencyResult pluginDependencyResult = PluginDependencyResultImpl.satisfiedDependencies();
         given(
                 pluginDependencyManager.getDependenciesToEnable(Mockito.eq(newArrayList((Plugin) anotherPlugin)),
                         Mockito.any(SimplePluginStatusResolver.class))).willReturn(pluginDependencyResult);
@@ -300,7 +301,7 @@ public class PluginManagerInstallTest {
         given(pluginAccessor.getPlugin("dependencyplugin2")).willReturn(dependencyPlugin2);
         given(dependencyPlugin2.getIdentifier()).willReturn("dependencyplugin2");
 
-        PluginDependencyResult installPluginDependencyResult = PluginDependencyResult.dependenciesToDisable(newHashSet(
+        PluginDependencyResult installPluginDependencyResult = PluginDependencyResultImpl.dependenciesToDisable(newHashSet(
                 new PluginDependencyInformation("dependencyplugin", new VersionOfDependency("")),
                 new PluginDependencyInformation("dependencyplugin2", new VersionOfDependency(""))));
 
@@ -348,12 +349,12 @@ public class PluginManagerInstallTest {
         given(file.getName()).willReturn("tempFileName");
         given(plugin.getFilename()).willReturn("filename");
 
-        PluginDependencyResult pluginDependencyResult = PluginDependencyResult.satisfiedDependencies();
+        PluginDependencyResult pluginDependencyResult = PluginDependencyResultImpl.satisfiedDependencies();
         given(
                 pluginDependencyManager.getDependenciesToEnable(Mockito.eq(newArrayList((Plugin) anotherPlugin)),
                         Mockito.any(SimplePluginStatusResolver.class))).willReturn(pluginDependencyResult);
 
-        PluginDependencyResult installPluginDependencyResult = PluginDependencyResult.dependenciesToUpdate(Collections
+        PluginDependencyResult installPluginDependencyResult = PluginDependencyResultImpl.dependenciesToUpdate(Collections
                 .<PluginDependencyInformation> emptySet(), newHashSet(new PluginDependencyInformation("dependencyplugin",
                 new VersionOfDependency(""))));
 
@@ -387,7 +388,7 @@ public class PluginManagerInstallTest {
         given(anotherPlugin.getFilename()).willReturn("filename");
         given(file.getName()).willReturn("tempFileName");
 
-        PluginDependencyResult pluginDependencyResult = PluginDependencyResult.unsatisfiedDependencies(Collections
+        PluginDependencyResult pluginDependencyResult = PluginDependencyResultImpl.unsatisfiedDependencies(Collections
                 .singleton(new PluginDependencyInformation("unknownplugin", new VersionOfDependency(""))));
         given(
                 pluginDependencyManager.getDependenciesToEnable(Mockito.eq(newArrayList((Plugin) anotherPlugin)),
@@ -419,7 +420,7 @@ public class PluginManagerInstallTest {
         given(anotherPlugin.getFilename()).willReturn("filename");
         given(file.getName()).willReturn("tempFileName");
 
-        PluginDependencyResult pluginDependencyResult = PluginDependencyResult.dependenciesToEnable(Collections
+        PluginDependencyResult pluginDependencyResult = PluginDependencyResultImpl.dependenciesToEnable(Collections
                 .singleton(new PluginDependencyInformation("unknownplugin", new VersionOfDependency(""))));
         given(
                 pluginDependencyManager.getDependenciesToEnable(Mockito.eq(newArrayList((Plugin) anotherPlugin)),
@@ -455,7 +456,7 @@ public class PluginManagerInstallTest {
         given(pluginFileManager.installPlugin("anotherFilename")).willReturn(false);
         given(file.getName()).willReturn("tempFileName");
 
-        PluginDependencyResult pluginDependencyResult = PluginDependencyResult.satisfiedDependencies();
+        PluginDependencyResult pluginDependencyResult = PluginDependencyResultImpl.satisfiedDependencies();
         given(
                 pluginDependencyManager.getDependenciesToEnable(Mockito.eq(newArrayList((Plugin) anotherPlugin)),
                         Mockito.any(SimplePluginStatusResolver.class))).willReturn(pluginDependencyResult);
@@ -487,7 +488,7 @@ public class PluginManagerInstallTest {
         given(pluginFileManager.installPlugin("anotherFilename")).willReturn(false);
         given(file.getName()).willReturn("tempFileName");
 
-        PluginDependencyResult pluginDependencyResult = PluginDependencyResult.satisfiedDependencies();
+        PluginDependencyResult pluginDependencyResult = PluginDependencyResultImpl.satisfiedDependencies();
         given(
                 pluginDependencyManager.getDependenciesToEnable(Mockito.eq(newArrayList((Plugin) anotherPlugin)),
                         Mockito.any(SimplePluginStatusResolver.class))).willReturn(pluginDependencyResult);
@@ -535,7 +536,7 @@ public class PluginManagerInstallTest {
         given(file.getName()).willReturn("tempFileName");
         given(anotherPlugin.getFilename()).willReturn("anotherFilename");
 
-        PluginDependencyResult pluginDependencyResult = PluginDependencyResult.satisfiedDependencies();
+        PluginDependencyResult pluginDependencyResult = PluginDependencyResultImpl.satisfiedDependencies();
         given(
                 pluginDependencyManager.getDependenciesToEnable(Mockito.eq(newArrayList((Plugin) anotherPlugin)),
                         Mockito.any(SimplePluginStatusResolver.class))).willReturn(pluginDependencyResult);
@@ -562,7 +563,7 @@ public class PluginManagerInstallTest {
         given(file.getName()).willReturn("tempFileName");
         given(anotherPlugin.getFilename()).willReturn("anotherFilename");
 
-        PluginDependencyResult pluginDependencyResult = PluginDependencyResult.unsatisfiedDependencies(Collections
+        PluginDependencyResult pluginDependencyResult = PluginDependencyResultImpl.unsatisfiedDependencies(Collections
                 .singleton(new PluginDependencyInformation("unknownplugin", new VersionOfDependency(""))));
         given(
                 pluginDependencyManager.getDependenciesToEnable(Mockito.eq(newArrayList((Plugin) anotherPlugin)),
@@ -590,7 +591,7 @@ public class PluginManagerInstallTest {
         given(anotherPlugin.getVersion()).willReturn(new Version("1.2.0"));
         given(anotherPlugin.getFilename()).willReturn("anotherFilename");
         given(file.getName()).willReturn("tempFileName");
-        PluginDependencyResult pluginDependencyResult = PluginDependencyResult.satisfiedDependencies();
+        PluginDependencyResult pluginDependencyResult = PluginDependencyResultImpl.satisfiedDependencies();
         given(
                 pluginDependencyManager.getDependenciesToEnable(Mockito.eq(newArrayList((Plugin) anotherPlugin)),
                         Mockito.any(SimplePluginStatusResolver.class))).willReturn(pluginDependencyResult);
@@ -613,7 +614,7 @@ public class PluginManagerInstallTest {
         given(pluginFileManager.uploadPlugin(pluginArtifact)).willReturn(file);
         given(anotherPlugin.getFilename()).willReturn("anotherFilename");
         given(file.getName()).willReturn("tempFileName");
-        PluginDependencyResult pluginDependencyResult = PluginDependencyResult.cyclicDependencies();
+        PluginDependencyResult pluginDependencyResult = PluginDependencyResultImpl.cyclicDependencies();
         given(
                 pluginDependencyManager.getDependenciesToEnable(Mockito.eq(newArrayList((Plugin) anotherPlugin)),
                         Mockito.any(SimplePluginStatusResolver.class))).willReturn(pluginDependencyResult);

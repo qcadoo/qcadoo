@@ -40,6 +40,8 @@
 			<option type="expression" value="#userName" />
 		</component>
 	</component>
-	<beforeRender class="com.qcadoo.users.UserService"
-		method="hidePasswordOnUpdateForm" />
+	<hooks>
+		<beforeRender class="com.qcadoo.users.UserService"
+			method="hidePasswordOnUpdateForm" />
+	</hooks>
 </view>

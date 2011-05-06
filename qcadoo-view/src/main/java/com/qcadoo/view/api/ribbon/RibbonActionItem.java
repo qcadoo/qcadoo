@@ -24,15 +24,12 @@
 
 package com.qcadoo.view.api.ribbon;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 /**
  * Represents single ribbon item
  * 
  * @since 0.4.0
  */
-public class RibbonActionItem {
+public interface RibbonActionItem {
 
     /**
      * Type of ribbon item
@@ -60,87 +57,33 @@ public class RibbonActionItem {
         SMALL_EMPTY_SPACE
     }
 
-    private String name;
-
-    private Type type;
-
-    private String icon;
-
-    private String script;
-
-    private String clickAction;
-
-    private Boolean enabled;
-
-    private String message;
-
-    private boolean shouldBeUpdated = false;
-
     /**
      * Get defined item click action
      * 
      * @return defined item click action
      */
-    public final String getAction() {
-        return clickAction;
-    }
-
-    /**
-     * Set defined item action
-     * 
-     * @param clickAction
-     *            defined item action
-     */
-    public final void setAction(final String clickAction) {
-        this.clickAction = clickAction;
-    }
+    String getAction();
 
     /**
      * Get identifier of this ribbon item
      * 
      * @return identifier of this ribbon item
      */
-    public final String getName() {
-        return name;
-    }
-
-    /**
-     * Set identifier of this ribbon item
-     * 
-     * @param name
-     *            identifier of this ribbon item
-     */
-    public final void setName(final String name) {
-        this.name = name;
-    }
+    String getName();
 
     /**
      * Get item type
      * 
      * @return item type
      */
-    public final Type getType() {
-        return type;
-    }
-
-    /**
-     * Set item type
-     * 
-     * @param type
-     *            item type
-     */
-    public final void setType(final Type type) {
-        this.type = type;
-    }
+    Type getType();
 
     /**
      * Get item icon (null if item without icon)
      * 
      * @return item icon
      */
-    public final String getIcon() {
-        return icon;
-    }
+    String getIcon();
 
     /**
      * Set item icon (null if item without icon)
@@ -148,57 +91,21 @@ public class RibbonActionItem {
      * @param icon
      *            item icon
      */
-    public final void setIcon(final String icon) {
-        this.icon = icon;
-    }
-
-    /**
-     * Generates JSON representation of this ribbon item
-     * 
-     * @return JSON representation of this ribbon item
-     * @throws JSONException
-     */
-    public JSONObject getAsJson() throws JSONException {
-        JSONObject itemObject = new JSONObject();
-        itemObject.put("name", name);
-        itemObject.put("type", type);
-        itemObject.put("icon", icon);
-        itemObject.put("enabled", enabled);
-        itemObject.put("message", message);
-        if (script != null) {
-            itemObject.put("script", script);
-        }
-        itemObject.put("clickAction", clickAction);
-        return itemObject;
-    }
+    void setIcon(String icon);
 
     /**
      * Returns script of this ribbon item
      * 
      * @return script of this ribbon item
      */
-    public String getScript() {
-        return script;
-    }
-
-    /**
-     * Sets script of this ribbon item
-     * 
-     * @param script
-     *            script of this ribbon item
-     */
-    public void setScript(String script) {
-        this.script = script;
-    }
+    String getScript();
 
     /**
      * Returns true if this item is enabled
      * 
      * @return true if this item is enabled
      */
-    public Boolean isEnabled() {
-        return enabled;
-    }
+    Boolean isEnabled();
 
     /**
      * Sets this item state
@@ -206,18 +113,14 @@ public class RibbonActionItem {
      * @param enabled
      *            true when this item should be enabled or false when this item should be disabled
      */
-    public void setEnabled(Boolean enabled) {
-        this.enabled = enabled;
-    }
+    void setEnabled(Boolean enabled);
 
     /**
      * Returns message connected to this item
      * 
      * @return message connected to this item
      */
-    public String getMessage() {
-        return message;
-    }
+    String getMessage();
 
     /**
      * sets message connected to this item
@@ -225,39 +128,7 @@ public class RibbonActionItem {
      * @param message
      *            new message connected to this item
      */
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    /**
-     * Returns copy of this item - internal usage only
-     * 
-     * @return copy of this item
-     */
-    public RibbonActionItem getCopy() {
-        RibbonActionItem copy = new RibbonActionItem();
-        copyFields(copy);
-        return copy;
-    }
-
-    protected void copyFields(RibbonActionItem item) {
-        item.setName(name);
-        item.setType(type);
-        item.setIcon(icon);
-        item.setScript(script);
-        item.setAction(clickAction);
-        item.setEnabled(enabled);
-        item.setMessage(message);
-    }
-
-    /**
-     * Returns information if this item state should be updated
-     * 
-     * @return information if this item state should be updated
-     */
-    public boolean isShouldBeUpdated() {
-        return shouldBeUpdated;
-    }
+    void setMessage(String message);
 
     /**
      * Informs that this item state should be updated
@@ -265,7 +136,5 @@ public class RibbonActionItem {
      * @param shouldBeUpdated
      *            true if this item state should be updated
      */
-    public void requestUpdate(boolean shouldBeUpdated) {
-        this.shouldBeUpdated = shouldBeUpdated;
-    }
+    void requestUpdate(boolean shouldBeUpdated);
 }
