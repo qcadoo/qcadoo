@@ -17,11 +17,12 @@ public class TranslationGroupModule extends Module {
     public TranslationGroupModule(final InternalTranslationService translationService, final String prefix, final String name) {
         this.translationService = translationService;
         this.prefix = prefix;
-        // TODO mady this.name = name;
+        // this.name = name;
     }
 
     @Override
     public void enableOnStartup() {
+        // translationService.addTranslationGroup(name, prefix);
         translationService.prepareMessagesForPrefix(prefix);
     }
 

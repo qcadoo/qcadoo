@@ -36,7 +36,7 @@ import java.util.Map;
 public interface TranslationService {
 
     /**
-     * Returns all messages (key and translation) for given prefix.
+     * Returns all messages (key and translation) for given group name.
      * 
      * @param group
      *            prefix

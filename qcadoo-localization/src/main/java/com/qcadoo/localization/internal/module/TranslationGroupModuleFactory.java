@@ -16,10 +16,14 @@ public class TranslationGroupModuleFactory extends ModuleFactory<TranslationGrou
         String prefix = element.getAttributeValue("prefix");
 
         if (prefix == null) {
-            throw new IllegalStateException("Missing prefix attribute of localization module");
+            throw new IllegalStateException("Missing prefix attribute of localization group module");
         }
 
         String name = element.getAttributeValue("name");
+
+        if (name == null) {
+            throw new IllegalStateException("Missing name attribute of localization group module");
+        }
 
         return new TranslationGroupModule(translationService, prefix, name);
     }
