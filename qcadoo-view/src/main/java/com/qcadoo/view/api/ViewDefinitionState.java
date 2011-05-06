@@ -25,13 +25,8 @@
 package com.qcadoo.view.api;
 
 /**
-<<<<<<< HEAD
  * ViewDefinitionState is instance of single view. It is generated using {@link com.qcadoo.view.internal.api.ViewDefinition} in
  * request scope.
-=======
- * ViewDefinitionState is instance of single view. It is generated using {@link com.qcadoo.view.internal.api.ViewDefinition} in request
- * scope.
->>>>>>> 0f5c207ff2fed734dd993d31af1dcd8904d6d37f
  * <p>
  * It contains all {@link com.qcadoo.view.api.ComponentState ComponentStates} of this view and other data necessary display this
  * view to client. Changing its data will also change state displayed to system user.

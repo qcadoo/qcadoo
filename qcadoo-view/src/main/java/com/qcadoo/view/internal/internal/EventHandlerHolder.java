@@ -31,7 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.qcadoo.plugin.api.PluginUtil;
+import com.qcadoo.plugin.api.PluginUtils;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.ViewDefinitionState;
 
@@ -99,7 +99,7 @@ public final class EventHandlerHolder {
         }
 
         public void invokeEvent(final ViewDefinitionState viewDefinitionState, final String[] args) {
-            if (pluginIdentifier != null && !PluginUtil.isEnabled(pluginIdentifier)) {
+            if (pluginIdentifier != null && !PluginUtils.isEnabled(pluginIdentifier)) {
                 return;
             }
             try {

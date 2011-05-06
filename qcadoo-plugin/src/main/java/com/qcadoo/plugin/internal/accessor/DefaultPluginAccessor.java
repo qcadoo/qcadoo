@@ -44,7 +44,7 @@ import org.springframework.web.context.support.XmlWebApplicationContext;
 import com.qcadoo.model.beans.qcadooPlugin.QcadooPluginPlugin;
 import com.qcadoo.plugin.api.Plugin;
 import com.qcadoo.plugin.api.PluginState;
-import com.qcadoo.plugin.api.PluginUtil;
+import com.qcadoo.plugin.api.PluginUtils;
 import com.qcadoo.plugin.api.Version;
 import com.qcadoo.plugin.internal.api.InternalPlugin;
 import com.qcadoo.plugin.internal.api.InternalPluginAccessor;
@@ -76,7 +76,7 @@ public class DefaultPluginAccessor implements InternalPluginAccessor, Applicatio
 
     @Autowired
     @SuppressWarnings("unused")
-    private PluginUtil pluginUtil;
+    private PluginUtils pluginUtil;
 
     private final Map<String, Plugin> plugins = new HashMap<String, Plugin>();
 

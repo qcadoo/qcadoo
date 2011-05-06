@@ -34,7 +34,7 @@ import com.qcadoo.plugin.api.Module;
 import com.qcadoo.plugin.api.ModuleFactory;
 import com.qcadoo.plugin.api.Plugin;
 import com.qcadoo.plugin.api.PluginState;
-import com.qcadoo.plugin.api.PluginUtil;
+import com.qcadoo.plugin.api.PluginUtils;
 import com.qcadoo.plugin.internal.api.InternalPlugin;
 import com.qcadoo.plugin.internal.api.ModuleFactoryAccessor;
 import com.qcadoo.tenant.api.MultiTenantCallback;
@@ -121,7 +121,7 @@ public final class DefaultModuleFactoryAccessor implements ModuleFactoryAccessor
 
                     @Override
                     public void invoke() {
-                        if (PluginUtil.isEnabled(plugin)) {
+                        if (PluginUtils.isEnabled(plugin)) {
                             module.multiTenantEnable();
                         }
                     }

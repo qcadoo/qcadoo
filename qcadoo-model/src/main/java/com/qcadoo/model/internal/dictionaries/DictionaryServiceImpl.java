@@ -59,7 +59,7 @@ public final class DictionaryServiceImpl implements InternalDictionaryService {
     @Override
     @Transactional(readOnly = true)
     @Monitorable
-    public List<String> keys(final String dictionary) {
+    public List<String> getKeys(final String dictionary) {
         checkArgument(hasText(dictionary), "dictionary name must be given");
 
         List<Entity> items = dataDefinitionService.get("qcadooModel", "dictionaryItem").find()
@@ -77,7 +77,7 @@ public final class DictionaryServiceImpl implements InternalDictionaryService {
     @Override
     @Transactional(readOnly = true)
     @Monitorable
-    public Map<String, String> values(final String dictionary, final Locale locale) {
+    public Map<String, String> getValues(final String dictionary, final Locale locale) {
         checkArgument(hasText(dictionary), "dictionary name must be given");
 
         List<Entity> items = dataDefinitionService.get("qcadooModel", "dictionaryItem").find()
@@ -97,7 +97,7 @@ public final class DictionaryServiceImpl implements InternalDictionaryService {
     @Override
     @Transactional(readOnly = true)
     @Monitorable
-    public Set<String> dictionaries() {
+    public Set<String> getDictionaries() {
         List<Entity> dictionaries = dataDefinitionService.get("qcadooModel", "dictionary").find().setOrderAscBy("name").list()
                 .getEntities();
 
@@ -141,7 +141,7 @@ public final class DictionaryServiceImpl implements InternalDictionaryService {
     }
 
     @Override
-    public String translate(final String dictionaryName, final Locale locale) {
+    public String getName(final String dictionaryName, final Locale locale) {
         Entity dictionary = dataDefinitionService.get("qcadooModel", "dictionary").find()
                 .addRestriction(Restrictions.eq("name", dictionaryName)).setMaxResults(1).uniqueResult();
         return translationService.translate(dictionary.getStringField("pluginIdentifier") + "." + dictionaryName + ".dictionary",

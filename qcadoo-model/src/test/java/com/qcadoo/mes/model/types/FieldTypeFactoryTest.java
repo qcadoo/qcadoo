@@ -104,9 +104,9 @@ public class FieldTypeFactoryTest extends DataAccessTest {
     public void shouldReturnDictionaryType() throws Exception {
         // given
         DictionaryService dictionaryService = mock(DictionaryService.class);
-        given(dictionaryService.values("dictionary", Locale.ENGLISH)).willReturn(
+        given(dictionaryService.getValues("dictionary", Locale.ENGLISH)).willReturn(
                 ImmutableMap.of("val1", "val1", "val2", "val2", "val3", "val3"));
-        given(dictionaryService.keys("dictionary")).willReturn(Lists.newArrayList("val1", "val2", "val3"));
+        given(dictionaryService.getKeys("dictionary")).willReturn(Lists.newArrayList("val1", "val2", "val3"));
 
         // when
         EnumeratedType fieldType = new DictionaryType("dictionary", dictionaryService);

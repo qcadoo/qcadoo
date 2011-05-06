@@ -36,7 +36,7 @@ import java.util.Set;
  */
 public interface DictionaryService {
 
-    List<String> keys(String dictionary);
+    List<String> getKeys(String dictionary);
 
     /**
      * Return all values for given dictionary's name.
@@ -45,14 +45,14 @@ public interface DictionaryService {
      *            dictionary's name
      * @return the dictionary's values
      */
-    Map<String, String> values(String dictionary, Locale locale);
+    Map<String, String> getValues(String dictionary, Locale locale);
 
     /**
      * Return all defined dictionaries.
      * 
      * @return the dictionaries
      */
-    Set<String> dictionaries();
+    Set<String> getDictionaries();
 
     /**
      * Translate dictionary name.
@@ -63,6 +63,6 @@ public interface DictionaryService {
      *            locale
      * @return translated dictionary name
      */
-    String translate(String dictionary, Locale locale);
+    String getName(String dictionary, Locale locale);
 
 }

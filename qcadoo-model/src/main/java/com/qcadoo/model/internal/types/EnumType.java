@@ -34,7 +34,7 @@ import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.types.EnumeratedType;
 import com.qcadoo.model.internal.api.ValueAndError;
-import com.qcadoo.plugin.api.PluginUtil;
+import com.qcadoo.plugin.api.PluginUtils;
 
 public final class EnumType implements EnumeratedType {
 
@@ -84,7 +84,7 @@ public final class EnumType implements EnumeratedType {
     private List<String> toStringList() {
         List<String> result = new ArrayList<String>();
         for (EnumTypeKey key : keys) {
-            if (key.getOriginPluginIdentifier() == null || PluginUtil.isEnabled(key.getOriginPluginIdentifier())) {
+            if (key.getOriginPluginIdentifier() == null || PluginUtils.isEnabled(key.getOriginPluginIdentifier())) {
                 result.add(key.getValue());
             }
         }

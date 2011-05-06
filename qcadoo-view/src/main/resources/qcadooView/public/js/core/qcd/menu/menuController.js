@@ -56,8 +56,12 @@ QCD.menu.MenuController = function(menuStructure, _windowController) {
 		previousActive.second = model.selectedItem.selectedItem;
 		
 		updateState();
-		
-		changePage(model.selectedItem.selectedItem.page);
+		if (model.selectedItem.selectedItem) {
+			changePage(model.selectedItem.selectedItem.page);
+		} else {
+			//changePage("http://www.idols.pl/jessica-alba/slides/jessica-alba-36.jpg");
+			changePage("noDashboard.html");
+		}
 	}
 	
 	this.updateMenu = function() {

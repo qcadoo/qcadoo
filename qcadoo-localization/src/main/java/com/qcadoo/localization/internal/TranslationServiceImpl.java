@@ -106,7 +106,7 @@ public final class TranslationServiceImpl implements InternalTranslationService 
     }
 
     @Override
-    public Map<String, String> getMessagesForPrefix(final String prefix, final Locale locale) {
+    public Map<String, String> getMessagesGroup(final String prefix, final Locale locale) {
         if (!PREFIX_MESSAGES.containsKey(prefix)) {
             return Collections.emptyMap();
         }
@@ -166,7 +166,7 @@ public final class TranslationServiceImpl implements InternalTranslationService 
     }
 
     @Override
-    public Map<String, String> getLocalesList() {
+    public Map<String, String> getLocales() {
         return locales;
     }
 

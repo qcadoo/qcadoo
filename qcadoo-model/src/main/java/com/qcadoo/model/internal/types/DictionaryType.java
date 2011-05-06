@@ -46,7 +46,7 @@ public final class DictionaryType implements EnumeratedType {
 
     @Override
     public Map<String, String> values(final Locale locale) {
-        return dictionaryService.values(dictionary, locale);
+        return dictionaryService.getValues(dictionary, locale);
     }
 
     @Override
@@ -57,7 +57,7 @@ public final class DictionaryType implements EnumeratedType {
     @Override
     public ValueAndError toObject(final FieldDefinition fieldDefinition, final Object value) {
         String stringValue = String.valueOf(value);
-        List<String> keys = dictionaryService.keys(dictionary);
+        List<String> keys = dictionaryService.getKeys(dictionary);
         if (!keys.contains(stringValue)) {
             return ValueAndError.withError("core.validate.field.error.invalidDictionaryItem", String.valueOf(keys));
         }

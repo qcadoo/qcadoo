@@ -22,7 +22,7 @@
  * ***************************************************************************
  */
 
-package com.qcadoo.view.internal.controllers;
+package com.qcadoo.users;
 
 import java.util.Locale;
 import java.util.Map;

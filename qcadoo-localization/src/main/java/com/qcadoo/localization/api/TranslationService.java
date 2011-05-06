@@ -38,13 +38,13 @@ public interface TranslationService {
     /**
      * Returns all messages (key and translation) for given prefix.
      * 
-     * @param prefix
+     * @param group
      *            prefix
      * @param locale
      *            prefix
      * @return messages
      */
-    Map<String, String> getMessagesForPrefix(String prefix, Locale locale);
+    Map<String, String> getMessagesGroup(String group, Locale locale);
 
     /**
      * Translates given code into the locale using the args.
@@ -77,5 +77,5 @@ public interface TranslationService {
      * 
      * @return a map with a locale value and its name
      */
-    Map<String, String> getLocalesList();
+    Map<String, String> getLocales();
 }

@@ -510,8 +510,8 @@ public final class GridComponentState extends AbstractComponentState implements 
 
         private Restriction getRestrictionsToDate(final Map.Entry<RestrictionOperator, String> parsedFilterValue,
                 final FieldDefinition fieldDefinition) throws ParseException {
-            Date minDate = DateUtils.parseDate(parsedFilterValue.getValue(), false);
-            Date maxDate = DateUtils.parseDate(parsedFilterValue.getValue(), true);
+            Date minDate = DateUtils.parseAndComplete(parsedFilterValue.getValue(), false);
+            Date maxDate = DateUtils.parseAndComplete(parsedFilterValue.getValue(), true);
             if (minDate == null || maxDate == null) {
                 throw new ParseException("wrong date", 1);
             }
