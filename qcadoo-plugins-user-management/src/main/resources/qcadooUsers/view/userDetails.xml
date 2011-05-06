@@ -29,7 +29,7 @@
 							reference="passwordConfirmationTextInput" field="passwordConfirmation" />
 						<component type="button" name="changePasswordButton"
 							reference="changePasswordButton" source="#{form}">
-							<option type="correspondingView" value="users/userChangePassword" />
+							<option type="correspondingView" value="qcadooUsers/userChangePassword" />
 							<option type="correspondingComponent" value="form" />
 							<option type="correspondingViewInModal" value="true" />
 						</component>

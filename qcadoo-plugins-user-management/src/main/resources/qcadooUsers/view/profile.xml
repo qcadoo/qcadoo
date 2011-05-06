@@ -37,7 +37,7 @@
 				<layoutElement column="1" row="8">
 					<component type="button" name="changePasswordButton"
 						reference="changePasswordButton" source="#{form}">
-						<option type="correspondingView" value="users/profileChangePassword" />
+						<option type="correspondingView" value="qcadooUsers/profileChangePassword" />
 						<option type="correspondingComponent" value="form" />
 						<option type="correspondingViewInModal" value="true" />
 					</component>
