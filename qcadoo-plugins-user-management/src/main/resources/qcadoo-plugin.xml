@@ -29,7 +29,7 @@
 
 		<menu:menu-item name="users" category="administration"
 			view="usersList" />
-		<menu:menu-item-url name="profile" category="home"
+		<menu:menu-item-url name="profile" category="administration"
 			url="/userProfile.html" />
 
 		<view:view resource="view/usersList.xml" />

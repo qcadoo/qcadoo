@@ -24,6 +24,7 @@
 
 package com.qcadoo.view.internal.controllers;
 
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
@@ -70,4 +71,21 @@ public final class MainController {
         return mav;
     }
 
+    @RequestMapping(value = "noDashboard", method = RequestMethod.GET)
+    public ModelAndView getStartViewWhenNoDashboard(@RequestParam final Map<String, String> arguments, final Locale locale) {
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("qcadooView/noDashboard");
+        mav.addObject("userLogin", securityService.getCurrentUserName());
+        // mav.addObject("translationsMap", translationService.getMessagesForPrefix("qcadooView.noDashboardPage", locale));
+        Map<String, String> translationsMap = new HashMap<String, String>();
+        translationsMap.put("qcadooView.noDashboardPage.hello",
+                translationService.translate("qcadooView.noDashboardPage.hello", locale));
+        translationsMap.put("qcadooView.noDashboardPage.header",
+                translationService.translate("qcadooView.noDashboardPage.header", locale));
+        translationsMap.put("qcadooView.noDashboardPage.content",
+                translationService.translate("qcadooView.noDashboardPage.content", locale));
+        mav.addObject("translationsMap", translationsMap);
+        mav.addObject("useCompressedStaticResources", useCompressedStaticResources);
+        return mav;
+    }
 }

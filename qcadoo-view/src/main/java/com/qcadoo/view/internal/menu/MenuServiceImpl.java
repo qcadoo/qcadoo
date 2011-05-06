@@ -97,8 +97,10 @@ public final class MenuServiceImpl implements InternalMenuService {
                 }
 
                 if (menuView.getStringField("url") != null) {
-                    category.addItem(new UrlMenuItem(menuItem.getStringField("name"), itemLabel, null, menuView
-                            .getStringField("url")));
+                    if (canAccess(menuView.getStringField("pluginIdentifier"), menuView.getStringField("name"))) {
+                        category.addItem(new UrlMenuItem(menuItem.getStringField("name"), itemLabel, null, menuView
+                                .getStringField("url")));
+                    }
 
                 } else if (canAccess(menuView.getStringField("pluginIdentifier"), menuView.getStringField("name"))) {
                     category.addItem(new ViewDefinitionMenuItemItem(menuItem.getStringField("name"), itemLabel, menuView
@@ -107,14 +109,12 @@ public final class MenuServiceImpl implements InternalMenuService {
 
             }
 
-            if (!category.getItems().isEmpty()) {
-                if ("administration".equals(category.getName())) {
-                    menuDefinition.setAdministrationCategory(category);
-                } else if ("home".equals(category.getName())) {
-                    menuDefinition.setHomeCategory(category);
-                } else {
-                    menuDefinition.addItem(category);
-                }
+            if ("administration".equals(category.getName())) {
+                menuDefinition.setAdministrationCategory(category);
+            } else if ("home".equals(category.getName())) {
+                menuDefinition.setHomeCategory(category);
+            } else if (!category.getItems().isEmpty()) {
+                menuDefinition.addItem(category);
             }
         }
 
