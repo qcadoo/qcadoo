@@ -148,6 +148,12 @@ QCD.WindowController = function(_menuStructure) {
 		menuController.goToMenuPosition(position);
 	}
 	
+	this.goToDashboard = function() {
+		if (hasMenuPosition("home.home")) {
+			this.goToMenuPosition("home.home");
+		}
+	}
+	
 	this.hasMenuPosition = function(position) {
 		return menuController.hasMenuPosition(position);
 	}

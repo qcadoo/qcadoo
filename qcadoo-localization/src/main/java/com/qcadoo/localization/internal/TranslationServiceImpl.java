@@ -39,7 +39,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -64,7 +63,7 @@ public final class TranslationServiceImpl implements InternalTranslationService 
     private MessageSource messageSource;
 
     @Autowired
-    private ApplicationContext applicationContext;
+    private TranslationModuleService translationModuleService;
 
     @Override
     public String translate(final String messageCode, final Locale locale, final Object... args) {
@@ -116,7 +115,6 @@ public final class TranslationServiceImpl implements InternalTranslationService 
         for (String commonMessage : PREFIX_MESSAGES.get(prefix)) {
             commonsTranslations.put(commonMessage, translate(commonMessage, locale));
         }
-
         return commonsTranslations;
     }
 
@@ -129,18 +127,12 @@ public final class TranslationServiceImpl implements InternalTranslationService 
 
     private void getMessagesByPrefix(final String prefix, final Set<String> messages) {
         try {
-            Resource[] resources = applicationContext.getResources("classpath*:locales/*.properties");
-            for (Resource resource : resources) {
-                getMessagesByPrefix(prefix, messages, resource.getInputStream());
-            }
-            resources = applicationContext.getResources("WEB-INF/locales/*.properties");
-            for (Resource resource : resources) {
+            for (Resource resource : translationModuleService.getLocalizationResources()) {
                 getMessagesByPrefix(prefix, messages, resource.getInputStream());
             }
         } catch (IOException e) {
             LOG.error("Cannot read messages file", e);
         }
-
         LOG.info("Messages for " + prefix + ": " + messages);
     }
 

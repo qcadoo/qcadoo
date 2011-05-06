@@ -56,10 +56,10 @@ QCD.menu.MenuController = function(menuStructure, _windowController) {
 		previousActive.second = model.selectedItem.selectedItem;
 		
 		updateState();
+		updateTopButtons();
 		if (model.selectedItem.selectedItem) {
 			changePage(model.selectedItem.selectedItem.page);
 		} else {
-			//changePage("http://www.idols.pl/jessica-alba/slides/jessica-alba-36.jpg");
 			changePage("noDashboard.html");
 		}
 	}
@@ -89,9 +89,18 @@ QCD.menu.MenuController = function(menuStructure, _windowController) {
 						model.selectedItem.selectedItem = model.selectedItem.itemsMap[selectedSecondName];
 						updateState();
 					}
+					updateTopButtons();
 				}
 			}
 		});
+	}
+	
+	function updateTopButtons() {
+		if (hasMenuPosition("administration.profile")) {
+			$("#profileButton").show();
+		} else {
+			$("#profileButton").hide();
+		}
 	}
 	
 	function createMenu(menuStructure) {
@@ -192,6 +201,7 @@ QCD.menu.MenuController = function(menuStructure, _windowController) {
 		}
 		return true;
 	}
+	var hasMenuPosition = this.hasMenuPosition;
 	
 	this.restoreState = function() {
 		model.selectedItem = previousActive.first;
