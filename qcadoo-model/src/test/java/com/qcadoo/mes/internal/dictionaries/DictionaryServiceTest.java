@@ -77,7 +77,7 @@ public class DictionaryServiceTest {
                 .willReturn(newArrayList(dict1, dict2, dict3));
 
         // when
-        Set<String> dictionaries = dictionaryService.dictionaries();
+        Set<String> dictionaries = dictionaryService.getDictionaries();
 
         // then
         assertThat(dictionaries.size(), equalTo(3));
@@ -99,7 +99,7 @@ public class DictionaryServiceTest {
                         .setOrderAscBy("name").list().getEntities()).willReturn(newArrayList(item1, item3, item2));
 
         // when
-        Map<String, String> values = dictionaryService.values("dict", Locale.ENGLISH);
+        Map<String, String> values = dictionaryService.getValues("dict", Locale.ENGLISH);
 
         // then
         assertThat(values.size(), equalTo(3));
@@ -111,13 +111,13 @@ public class DictionaryServiceTest {
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrownAnExceptionIfDictionaryNameIsNull() throws Exception {
         // when
-        dictionaryService.values(null, Locale.ENGLISH);
+        dictionaryService.getValues(null, Locale.ENGLISH);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrownAnExceptionIfDictionaryNameIsEmpty() throws Exception {
         // when
-        dictionaryService.values("", Locale.ENGLISH);
+        dictionaryService.getValues("", Locale.ENGLISH);
     }
 
 }

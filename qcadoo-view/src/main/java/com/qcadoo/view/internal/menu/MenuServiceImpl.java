@@ -37,7 +37,7 @@ import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.aop.Monitorable;
 import com.qcadoo.model.api.search.Restrictions;
-import com.qcadoo.plugin.api.PluginUtil;
+import com.qcadoo.plugin.api.PluginUtils;
 import com.qcadoo.security.api.SecurityRole;
 import com.qcadoo.security.api.SecurityRolesService;
 import com.qcadoo.security.api.SecurityViewDefinitionRoleResolver;
@@ -122,7 +122,7 @@ public final class MenuServiceImpl implements InternalMenuService {
     }
 
     private boolean canAccess(final String pluginIdentifier, final String viewName) {
-        if (!PluginUtil.isEnabled(pluginIdentifier)) {
+        if (!PluginUtils.isEnabled(pluginIdentifier)) {
             return false;
         }
 

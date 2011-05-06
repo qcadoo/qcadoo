@@ -52,6 +52,7 @@ public interface Ribbon {
      * 
      * @return group or null when no group witch such name
      */
+
     RibbonGroup getGroupByName(String groupName);
 
 }

@@ -38,7 +38,7 @@ public class MockTranslationService implements TranslationService {
     }
 
     @Override
-    public Map<String, String> getMessagesForPrefix(final String prefix, final Locale locale) {
+    public Map<String, String> getMessagesGroup(final String prefix, final Locale locale) {
         return null;
     }
 
@@ -48,7 +48,7 @@ public class MockTranslationService implements TranslationService {
     }
 
     @Override
-    public Map<String, String> getLocalesList() {
+    public Map<String, String> getLocales() {
         return null;
     }
 

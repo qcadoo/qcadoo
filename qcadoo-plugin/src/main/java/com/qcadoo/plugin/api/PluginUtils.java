@@ -11,20 +11,20 @@ import org.springframework.stereotype.Service;
  * @since 0.4.0
  */
 @Service
-public class PluginUtil {
+public class PluginUtils {
 
     @Autowired
     private PluginStateResolver pluginStateResolver;
 
-    private static PluginUtil instance;
+    private static PluginUtils instance;
 
     @PostConstruct
     public void init() {
         initialise(this);
     }
 
-    private static void initialise(final PluginUtil pluginUtil) {
-        PluginUtil.instance = pluginUtil;
+    private static void initialise(final PluginUtils pluginUtil) {
+        PluginUtils.instance = pluginUtil;
     }
 
     /**

@@ -32,7 +32,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.qcadoo.plugin.api.PluginUtil;
+import com.qcadoo.plugin.api.PluginUtils;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.internal.HookDefinition;
 import com.qcadoo.view.internal.api.ViewDefinition;
@@ -70,14 +70,14 @@ public final class HookDefinitionImpl implements HookDefinition {
 
     @Override
     public void callWithViewState(final ViewDefinitionState viewDefinitionState) {
-        if (pluginIdentifier == null || PluginUtil.isEnabled(pluginIdentifier)) {
+        if (pluginIdentifier == null || PluginUtils.isEnabled(pluginIdentifier)) {
             call(new Object[] { viewDefinitionState }, new Class[] { ViewDefinitionState.class });
         }
     }
 
     @Override
     public void callWithJSONObject(final ViewDefinition viewDefinition, final JSONObject object, final Locale locale) {
-        if (pluginIdentifier == null || PluginUtil.isEnabled(pluginIdentifier)) {
+        if (pluginIdentifier == null || PluginUtils.isEnabled(pluginIdentifier)) {
             call(new Object[] { viewDefinition, object, locale }, new Class[] { ViewDefinition.class, JSONObject.class,
                     Locale.class });
         }

@@ -42,7 +42,7 @@ import com.qcadoo.plugin.api.Module;
 import com.qcadoo.plugin.api.ModuleFactory;
 import com.qcadoo.plugin.api.PluginState;
 import com.qcadoo.plugin.api.PluginStateResolver;
-import com.qcadoo.plugin.api.PluginUtil;
+import com.qcadoo.plugin.api.PluginUtils;
 import com.qcadoo.plugin.internal.api.InternalPlugin;
 import com.qcadoo.tenant.api.MultiTenantUtil;
 import com.qcadoo.tenant.internal.DefaultMultiTenantService;
@@ -59,7 +59,7 @@ public class PluginChangeStateToTest {
 
         mockPluginStateResolver = mock(PluginStateResolver.class);
 
-        PluginUtil pluginUtil = new PluginUtil();
+        PluginUtils pluginUtil = new PluginUtils();
         ReflectionTestUtils.setField(pluginUtil, "pluginStateResolver", mockPluginStateResolver);
         pluginUtil.init();
 
