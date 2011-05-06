@@ -15,7 +15,7 @@
 			<option type="column" name="label" fields="name" link="true" />
 			<option type="order" column="label" direction="asc" />
 			<option type="paginable" value="true" />
-			<option type="correspondingView" value="dictionaries/dictionaryDetails" />
+			<option type="correspondingView" value="qcadooDictionaries/dictionaryDetails" />
 			<option type="correspondingComponent" value="form" />
 			<option type="deletable" value="false" />
 			<option type="creatable" value="false" />
