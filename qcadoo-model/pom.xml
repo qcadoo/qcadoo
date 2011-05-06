@@ -11,7 +11,7 @@
 	<artifactId>qcadoo-model</artifactId>
 	<packaging>jar</packaging>
 
-	<name>Qcadoo Framework Model</name>
+	<name>Qcadoo Framework :: Model</name>
 
 	<dependencies>
 		<dependency>

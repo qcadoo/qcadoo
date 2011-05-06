@@ -12,7 +12,7 @@
 	<artifactId>qcadoo-plugin</artifactId>
 	<packaging>jar</packaging>
 
-	<name>Qcadoo Framework Plugin</name>
+	<name>Qcadoo Framework :: Plugin</name>
 
 	<dependencies>
 		<dependency>

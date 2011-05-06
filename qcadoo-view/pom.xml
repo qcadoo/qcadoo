@@ -11,7 +11,7 @@
 	<artifactId>qcadoo-view</artifactId>
 	<packaging>jar</packaging>
 
-	<name>Qcadoo Framework View</name>
+	<name>Qcadoo Framework :: View</name>
 
 	<dependencies>
 		<dependency>

@@ -11,6 +11,6 @@
 	<artifactId>qcadoo-tenant</artifactId>
 	<packaging>jar</packaging>
 
-	<name>Qcadoo Framework Tenant</name>
+	<name>Qcadoo Framework :: Tenant</name>
 
 </project>

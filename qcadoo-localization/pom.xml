@@ -11,7 +11,7 @@
 	<artifactId>qcadoo-localization</artifactId>
 	<packaging>jar</packaging>
 
-	<name>Qcadoo Framework Localization</name>
+	<name>Qcadoo Framework :: Localization</name>
 
 	<dependencies>
 		<dependency>

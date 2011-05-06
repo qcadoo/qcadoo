@@ -12,7 +12,7 @@
 	<artifactId>qcadoo-schema</artifactId>
 	<packaging>qcadoo-schema</packaging>
 
-	<name>Qcadoo Framework Schema</name>
+	<name>Qcadoo Framework :: Schema</name>
 
 	<dependencies>
 		<dependency>

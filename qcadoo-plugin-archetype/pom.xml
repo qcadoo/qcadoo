@@ -7,7 +7,7 @@
   <version>0.4.0-SNAPSHOT</version>
   <packaging>maven-archetype</packaging>
 
-  <name>Qcadoo Framework Plugin Archetype</name>
+  <name>Qcadoo Framework :: Plugin Archetype</name>
 
   <build>
     <extensions>

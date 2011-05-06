@@ -11,7 +11,7 @@
 	<artifactId>qcadoo-security</artifactId>
 	<packaging>jar</packaging>
 
-	<name>Qcadoo Framework Security</name>
+	<name>Qcadoo Framework :: Security</name>
 
 	<dependencies>
 		<dependency>
