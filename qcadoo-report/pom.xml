@@ -11,7 +11,7 @@
 	<artifactId>qcadoo-report</artifactId>
 	<packaging>jar</packaging>
 
-	<name>Qcadoo Framework Report</name>
+	<name>Qcadoo Framework :: Report</name>
 
 	<dependencies>
 		<dependency>

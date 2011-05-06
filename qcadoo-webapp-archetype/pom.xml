@@ -11,6 +11,6 @@
 	<artifactId>qcadoo-webapp-archetype</artifactId>
 	<packaging>jar</packaging>
 
-	<name>Qcadoo Framework Webapp Archetype</name>
+	<name>Qcadoo Framework :: Webapp Archetype</name>
 
 </project>
