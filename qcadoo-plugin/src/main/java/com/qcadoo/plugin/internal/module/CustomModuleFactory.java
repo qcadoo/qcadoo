@@ -40,9 +40,7 @@ public final class CustomModuleFactory extends ModuleFactory<Module> {
 
     @Override
     public Module parse(final String pluginIdentifier, final Element element) {
-        String className = element.getAttributeValue("class");
-
-        checkNotNull(className, "Missing class attribute of " + getIdentifier() + " module");
+        String className = getRequiredAttribute(element, "class");
 
         Class<?> clazz = null;
 

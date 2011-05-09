@@ -1,7 +1,5 @@
 package com.qcadoo.model.internal.module;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import org.jdom.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -15,15 +13,10 @@ public class EnumValueModuleFactory extends ModuleFactory<EnumValueModule> {
 
     @Override
     public EnumValueModule parse(final String pluginIdentifier, final Element element) {
-        String targetPluginIdentifier = element.getAttributeValue("plugin");
-        String targetModelName = element.getAttributeValue("model");
-        String targetEnumFieldName = element.getAttributeValue("enum");
-        String value = element.getAttributeValue("value");
-
-        checkNotNull(targetPluginIdentifier, "Missing plugin attribute of " + getIdentifier() + " module");
-        checkNotNull(targetModelName, "Missing model attribute of " + getIdentifier() + " module");
-        checkNotNull(targetEnumFieldName, "Missing enum attribute of " + getIdentifier() + " module");
-        checkNotNull(value, "Missing value attribute of " + getIdentifier() + " module");
+        String targetPluginIdentifier = getRequiredAttribute(element, "plugin");
+        String targetModelName = getRequiredAttribute(element, "model");
+        String targetEnumFieldName = getRequiredAttribute(element, "enum");
+        String value = getRequiredAttribute(element, "value");
 
         return new EnumValueModule(pluginIdentifier, dataDefinitionService, targetPluginIdentifier, targetModelName,
                 targetEnumFieldName, value);

@@ -24,8 +24,6 @@
 
 package com.qcadoo.model.internal.module;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import org.jdom.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -39,11 +37,7 @@ public class DictionaryModuleFactory extends ModuleFactory<DictionaryModule> {
 
     @Override
     public DictionaryModule parse(final String pluginIdentifier, final Element element) {
-        String name = element.getAttributeValue("name");
-
-        checkNotNull(name, "Missing name attribute of " + getIdentifier() + " module");
-
-        return new DictionaryModule(pluginIdentifier, name, dictionaryService);
+        return new DictionaryModule(pluginIdentifier, getRequiredAttribute(element, "name"), dictionaryService);
     }
 
     @Override

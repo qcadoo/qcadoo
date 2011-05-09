@@ -1,7 +1,5 @@
 package com.qcadoo.security.internal.module;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import org.jdom.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -19,11 +17,8 @@ public class UserGroupModuleFactory extends ModuleFactory<UserGroupModule> {
 
     @Override
     public UserGroupModule parse(final String pluginIdentifier, final Element element) {
-        String name = element.getAttributeValue("name");
-        String role = element.getAttributeValue("role");
-
-        checkNotNull(name, "Missing name attribute of " + getIdentifier() + " module");
-        checkNotNull(role, "Missing role attribute of " + getIdentifier() + " module");
+        String name = getRequiredAttribute(element, "name");
+        String role = getRequiredAttribute(element, "role");
 
         return new UserGroupModule(name, role, dataDefinitionService, securityRolesService);
     }

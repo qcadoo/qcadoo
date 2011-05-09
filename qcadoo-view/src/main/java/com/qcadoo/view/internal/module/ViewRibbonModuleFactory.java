@@ -18,11 +18,7 @@ public class ViewRibbonModuleFactory extends ModuleFactory<ViewRibbonModule> {
 
     @Override
     public ViewRibbonModule parse(final String pluginIdentifier, final Element element) {
-        String resource = element.getAttributeValue("resource");
-
-        if (resource == null) {
-            throw new IllegalStateException("Missing resource attribute of view module");
-        }
+        String resource = getRequiredAttribute(element, "resource");
 
         return new ViewRibbonModule(pluginIdentifier, new ClassPathResource(pluginIdentifier + "/" + resource),
                 viewDefinitionService, viewDefinitionParser);

@@ -18,13 +18,8 @@ public class TranslationModuleFactory extends ModuleFactory<Module> {
 
     @Override
     public Module parse(final String pluginIdentifier, final Element element) {
-        String path = element.getAttributeValue("path");
-
-        if (path == null) {
-            throw new IllegalStateException("Missing path attribute of localization module");
-        }
-
-        String basename = element.getAttributeValue("basename");
+        String path = getRequiredAttribute(element, "path");
+        String basename = getAttribute(element, "basename");
 
         return new TranslationModule(applicationContext, translationModuleService, pluginIdentifier, basename, path);
     }
