@@ -24,8 +24,6 @@
 
 package com.qcadoo.view.internal.components.layout;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -62,8 +60,8 @@ public class BorderLayoutPattern extends AbstractLayoutPattern {
     @Override
     protected Map<String, Object> getJspOptions(final Locale locale) {
         Map<String, Object> options = super.getJspOptions(locale);
-        List<String> codes = Arrays.asList(new String[] { getTranslationPath() + "." + label, label });
-        options.put("label", label != null ? getTranslationService().translate(codes, locale) : null);
+        options.put("label", label != null ? getTranslationService().translate(getTranslationPath() + "." + label, label, locale)
+                : null);
         return options;
     }
 

@@ -24,7 +24,6 @@
 
 package com.qcadoo.view.internal.components.grid;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -205,17 +204,24 @@ public final class GridComponentPattern extends AbstractComponentPattern {
     }
 
     private void addTranslation(final JSONObject translation, final String key, final Locale locale) throws JSONException {
-        List<String> codes = Arrays.asList(new String[] { getTranslationPath() + "." + key, "core.grid." + key });
-        translation.put(key, getTranslationService().translate(codes, locale));
+        translation.put(key, getTranslationService().translate(getTranslationPath() + "." + key, "core.grid." + key, locale));
     }
 
     private JSONArray getColumnsForJsOptions(final Locale locale) throws JSONException {
         JSONArray jsonColumns = new JSONArray();
-
+        String nameTranslation = null;
         for (GridComponentColumn column : columns.values()) {
+            if (column.getFields().size() == 1) {
+                String fieldCode = getDataDefinition().getPluginIdentifier() + "." + getDataDefinition().getName() + "."
+                        + column.getFields().get(0).getName();
+                nameTranslation = getTranslationService().translate(getTranslationPath() + ".column." + column.getName(),
+                        fieldCode + ".label", locale);
+            } else {
+                nameTranslation = getTranslationService().translate(getTranslationPath() + ".column." + column.getName(), locale);
+            }
             JSONObject jsonColumn = new JSONObject();
             jsonColumn.put("name", column.getName());
-            jsonColumn.put("label", getTranslationService().translate(getColumnTranslationCodes(column), locale));
+            jsonColumn.put("label", nameTranslation);
             jsonColumn.put("link", column.isLink());
             jsonColumn.put("hidden", column.isHidden());
             jsonColumn.put("width", column.getWidth());
@@ -251,16 +257,6 @@ public final class GridComponentPattern extends AbstractComponentPattern {
             return null;
         }
 
-    }
-
-    private List<String> getColumnTranslationCodes(final GridComponentColumn column) {
-        if (column.getFields().size() == 1) {
-            String fieldCode = getDataDefinition().getPluginIdentifier() + "." + getDataDefinition().getName() + "."
-                    + column.getFields().get(0).getName();
-            return Arrays.asList(new String[] { getTranslationPath() + ".column." + column.getName(), fieldCode + ".label" });
-        } else {
-            return Arrays.asList(new String[] { getTranslationPath() + ".column." + column.getName() });
-        }
     }
 
     @Override

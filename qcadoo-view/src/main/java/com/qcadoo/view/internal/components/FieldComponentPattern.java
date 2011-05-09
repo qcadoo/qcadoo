@@ -25,13 +25,11 @@
 package com.qcadoo.view.internal.components;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 import org.json.JSONException;
 
-import com.google.common.collect.Lists;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.types.BelongsToType;
@@ -66,26 +64,29 @@ public abstract class FieldComponentPattern extends AbstractComponentPattern {
         Map<String, Object> options = new HashMap<String, Object>();
         Map<String, Object> translations = new HashMap<String, Object>();
 
-        List<String> codes = Lists.newArrayList(getTranslationPath() + ".label");
-
-        if (getFieldDefinition() != null) {
-            codes.add(getFieldDefinition().getDataDefinition().getPluginIdentifier() + "."
-                    + getFieldDefinition().getDataDefinition().getName() + "." + getFieldDefinition().getName() + ".label");
+        if (getFieldDefinition() == null) {
+            translations.put("label", getTranslationService().translate(getTranslationPath() + ".label", locale));
+        } else {
+            String code1 = getFieldDefinition().getDataDefinition().getPluginIdentifier() + "."
+                    + getFieldDefinition().getDataDefinition().getName() + "." + getFieldDefinition().getName() + ".label";
 
             if (BelongsToType.class.isAssignableFrom(getFieldDefinition().getType().getClass())) {
                 DataDefinition fieldDataDefinition = ((BelongsToType) getFieldDefinition().getType()).getDataDefinition();
-                codes.add(fieldDataDefinition.getPluginIdentifier() + "." + fieldDataDefinition.getName() + "."
-                        + getFieldDefinition().getName() + ".label");
+                String code2 = fieldDataDefinition.getPluginIdentifier() + "." + fieldDataDefinition.getName() + "."
+                        + getFieldDefinition().getName() + ".label";
+                translations.put("label", getTranslationService()
+                        .translate(getTranslationPath() + ".label", code1, code2, locale));
+            } else {
+                translations.put("label", getTranslationService().translate(getTranslationPath() + ".label", code1, locale));
             }
         }
 
-        translations.put("label", getTranslationService().translate(codes, locale));
-
         if (isHasDescription()) {
             translations.put("description", getTranslationService().translate(getTranslationPath() + ".description", locale));
-            List<String> headerCodes = Lists.newArrayList(getTranslationPath() + "." + getPath() + ".descriptionHeader",
-                    "core.form.descriptionHeader");
-            translations.put("descriptionHeader", getTranslationService().translate(headerCodes, locale));
+            translations.put(
+                    "descriptionHeader",
+                    getTranslationService().translate(getTranslationPath() + "." + getPath() + ".descriptionHeader",
+                            "core.form.descriptionHeader", locale));
         }
 
         options.put("translations", translations);

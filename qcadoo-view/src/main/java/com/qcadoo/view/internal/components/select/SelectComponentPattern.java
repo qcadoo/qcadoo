@@ -25,7 +25,6 @@
 package com.qcadoo.view.internal.components.select;
 
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -33,7 +32,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.google.common.collect.Lists;
 import com.qcadoo.model.api.types.BelongsToType;
 import com.qcadoo.model.api.types.EnumeratedType;
 import com.qcadoo.view.api.ComponentState;
@@ -63,8 +61,8 @@ public final class SelectComponentPattern extends FieldComponentPattern {
             if (isRequired()) {
                 coreBlankTranslationKey = "core.form.requiredBlankComboBoxValue";
             }
-            List<String> blankCodes = Lists.newArrayList(getTranslationPath() + ".blankValue", coreBlankTranslationKey);
-            values.put("", getTranslationService().translate(blankCodes, locale));
+            values.put("",
+                    getTranslationService().translate(getTranslationPath() + ".blankValue", coreBlankTranslationKey, locale));
         }
 
         if (EnumeratedType.class.isAssignableFrom(getFieldDefinition().getType().getClass())) {
