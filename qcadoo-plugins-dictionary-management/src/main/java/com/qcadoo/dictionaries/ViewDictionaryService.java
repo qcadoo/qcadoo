@@ -17,7 +17,7 @@ import com.qcadoo.view.api.components.GridComponent;
 public class ViewDictionaryService {
 
     @Autowired
-    DictionaryService dictionaryService;
+    private DictionaryService dictionaryService;
 
     public void translateLabel(final ViewDefinitionState state) {
         GridComponent grid = (GridComponent) state.getComponentByReference("grid");

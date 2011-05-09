@@ -1,7 +1,5 @@
 package com.qcadoo.view.api.utils;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,10 +29,9 @@ public class TranslationUtilsService {
      * @return category translation
      */
     public String getCategoryTranslation(final Entity category, final Locale locale) {
-        List<String> code = new LinkedList<String>();
-        code.add(category.getStringField("pluginIdentifier") + ".menu." + category.getStringField("name"));
-        code.add("core.menu." + category.getStringField("name"));
-        return translationService.translate(code, locale);
+        return translationService.translate(
+                category.getStringField("pluginIdentifier") + ".menu." + category.getStringField("name"),
+                "core.menu." + category.getStringField("name"), locale);
     }
 
     /**
@@ -48,11 +45,10 @@ public class TranslationUtilsService {
      */
     public String getItemTranslation(final Entity item, final Locale locale) {
         Entity categoryEntity = item.getBelongsToField("category");
-        List<String> code = new LinkedList<String>();
-        code.add(item.getStringField("pluginIdentifier") + ".menu." + categoryEntity.getStringField("name") + "."
-                + item.getStringField("name"));
-        code.add("core.menu." + categoryEntity.getStringField("name") + "." + item.getStringField("name"));
-        return translationService.translate(code, locale);
+        return translationService.translate(
+                item.getStringField("pluginIdentifier") + ".menu." + categoryEntity.getStringField("name") + "."
+                        + item.getStringField("name"),
+                "core.menu." + categoryEntity.getStringField("name") + "." + item.getStringField("name"), locale);
     }
 
 }

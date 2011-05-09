@@ -43,6 +43,8 @@ import org.springframework.context.MessageSource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
+import com.google.common.collect.Lists;
+
 @Service
 public final class TranslationServiceImpl implements InternalTranslationService {
 
@@ -98,6 +100,11 @@ public final class TranslationServiceImpl implements InternalTranslationService 
         } else {
             return messageCodes.toString();
         }
+    }
+
+    @Override
+    public String translate(String primaryMessageCode, String secondarryMessageCode, Locale locale, Object... args) {
+        return translate(Lists.newArrayList(primaryMessageCode, secondarryMessageCode), locale, args);
     }
 
     private String translateWithError(final String messageCode, final Locale locale, final Object[] args) {

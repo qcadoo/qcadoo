@@ -83,9 +83,10 @@ public abstract class FieldComponentPattern extends AbstractComponentPattern {
 
         if (isHasDescription()) {
             translations.put("description", getTranslationService().translate(getTranslationPath() + ".description", locale));
-            List<String> headerCodes = Lists.newArrayList(getTranslationPath() + "." + getPath() + ".descriptionHeader",
-                    "core.form.descriptionHeader");
-            translations.put("descriptionHeader", getTranslationService().translate(headerCodes, locale));
+            translations.put(
+                    "descriptionHeader",
+                    getTranslationService().translate(getTranslationPath() + "." + getPath() + ".descriptionHeader",
+                            "core.form.descriptionHeader", locale));
         }
 
         options.put("translations", translations);

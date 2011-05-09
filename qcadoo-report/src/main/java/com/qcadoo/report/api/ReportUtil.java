@@ -14,7 +14,7 @@ import org.apache.commons.io.IOUtils;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.report.api.pdf.PdfUtil;
 
-public class ReportUtil {
+public final class ReportUtil {
 
     public static final String XLS_CONTENT_TYPE = "application/vnd.ms-excel";
 

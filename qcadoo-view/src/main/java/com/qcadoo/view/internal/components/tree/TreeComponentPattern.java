@@ -24,9 +24,7 @@
 
 package com.qcadoo.view.internal.components.tree;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -131,8 +129,7 @@ public final class TreeComponentPattern extends FieldComponentPattern {
     }
 
     private String getTranslation(final String key, final Locale locale) throws JSONException {
-        List<String> codes = Arrays.asList(new String[] { getTranslationPath() + "." + key, "core.tree." + key });
-        return getTranslationService().translate(codes, locale);
+        return getTranslationService().translate(getTranslationPath() + "." + key, "core.tree." + key, locale);
     }
 
     private FieldDefinition getBelongsToFieldDefinition() {

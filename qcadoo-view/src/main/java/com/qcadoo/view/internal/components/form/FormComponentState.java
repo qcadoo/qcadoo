@@ -24,7 +24,6 @@
 
 package com.qcadoo.view.internal.components.form;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -213,8 +212,7 @@ public class FormComponentState extends AbstractContainerState implements FormCo
     }
 
     private String translateMessage(final String key) {
-        List<String> codes = Arrays.asList(new String[] { getTranslationPath() + "." + key, "core.message." + key });
-        return getTranslationService().translate(codes, getLocale());
+        return getTranslationService().translate(getTranslationPath() + "." + key, "core.message." + key, getLocale());
     }
 
     private Map<String, FieldComponentState> getFieldComponents() {

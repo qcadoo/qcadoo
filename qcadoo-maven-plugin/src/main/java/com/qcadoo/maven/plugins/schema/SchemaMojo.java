@@ -148,12 +148,12 @@ public class SchemaMojo extends AbstractMojo {
     }
 
     private void prepareWorkingDirectory() throws IOException {
-        workingDirectory.mkdirs();
+        FileUtils.forceMkdir(workingDirectory);
 
         FileUtils.cleanDirectory(workingDirectory);
 
-        modulesWorkingDirectory.mkdirs();
-        commonWorkingDirectory.mkdirs();
+        FileUtils.forceMkdir(modulesWorkingDirectory);
+        FileUtils.forceMkdir(commonWorkingDirectory);
     }
 
 }
