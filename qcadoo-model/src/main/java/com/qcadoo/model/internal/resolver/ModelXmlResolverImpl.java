@@ -83,15 +83,15 @@ public final class ModelXmlResolverImpl implements ModelXmlResolver, ModelXmlHol
         for (Map.Entry<String, Set<Element>> modelFields : fields.entrySet()) {
             Document document = documents.get(modelFields.getKey());
             checkNotNull(document, "Cannot find model for " + modelFields.getKey());
-            Element fields = (Element) document.getRootElement().getChildren().get(0);
+            Element fieldsElement = (Element) document.getRootElement().getChildren().get(0);
 
-            if (!"fields".equals(fields.getName())) {
-                throw new IllegalStateException("Expected element fields, found " + fields.getName());
+            if (!"fields".equals(fieldsElement.getName())) {
+                throw new IllegalStateException("Expected element fields, found " + fieldsElement.getName());
             }
 
             for (Element field : modelFields.getValue()) {
                 field = JdomUtils.replaceNamespace(field, document.getRootElement().getNamespace());
-                fields.addContent(field.detach());
+                fieldsElement.addContent(field.detach());
             }
         }
     }
@@ -100,15 +100,15 @@ public final class ModelXmlResolverImpl implements ModelXmlResolver, ModelXmlHol
         for (Map.Entry<String, Set<Element>> modelHooks : hooks.entrySet()) {
             Document document = documents.get(modelHooks.getKey());
             checkNotNull(document, "Cannot find model for " + modelHooks.getKey());
-            Element hooks = (Element) document.getRootElement().getChildren().get(1);
+            Element hooksElement = (Element) document.getRootElement().getChildren().get(1);
 
-            if (!"hooks".equals(hooks.getName())) {
-                throw new IllegalStateException("Expected element hooks, found " + hooks.getName());
+            if (!"hooks".equals(hooksElement.getName())) {
+                throw new IllegalStateException("Expected element hooks, found " + hooksElement.getName());
             }
 
             for (Element hook : modelHooks.getValue()) {
                 hook = JdomUtils.replaceNamespace(hook, document.getRootElement().getNamespace());
-                hooks.addContent(hook.detach());
+                hooksElement.addContent(hook.detach());
             }
         }
     }

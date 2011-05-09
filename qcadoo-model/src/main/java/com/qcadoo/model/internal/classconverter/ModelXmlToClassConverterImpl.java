@@ -339,7 +339,7 @@ public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverte
                 break;
             case HASMANY:
             case TREE:
-                createHasManyField(ctClass, pluginIdentifier, reader);
+                createHasManyField(ctClass, reader);
                 break;
             default:
                 break;
@@ -352,7 +352,7 @@ public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverte
         }
     }
 
-    private void createHasManyField(final CtClass ctClass, final String pluginIdentifier, final XMLStreamReader reader) {
+    private void createHasManyField(final CtClass ctClass, final XMLStreamReader reader) {
         createField(ctClass, getStringAttribute(reader, "name"), "java.util.Set");
     }
 

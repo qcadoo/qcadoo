@@ -107,7 +107,7 @@ public class JettyMojo extends JettyRunMojo {
      * @parameter expression="${project.build.directory}/tmp"
      * @readonly
      */
-    protected File _tmpDirectory;
+    private File _tmpDirectory;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {

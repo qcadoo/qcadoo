@@ -21,13 +21,14 @@ public class QcadooGlobalPermissionEvaluator implements PermissionEvaluator {
     }
 
     @Override
-    public boolean hasPermission(Authentication authentication, Object domainObject, Object permission) {
-        // TODO implement
+    public boolean hasPermission(final Authentication authentication, final Object domainObject, final Object permission) {
+        // TODO mina implement
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public boolean hasPermission(Authentication authentication, Serializable targetId, String targetType, Object permission) {
+    public boolean hasPermission(final Authentication authentication, final Serializable targetId, final String targetType,
+            final Object permission) {
 
         QcadooPermisionEvaluator evaluator = evaluators.get(targetType);
         if (evaluator == null) {

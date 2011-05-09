@@ -29,21 +29,21 @@ public class MenuAdministrationService {
     @Autowired
     private TranslationUtilsService translationUtilsService;
 
-    private static final List<Pair<String, String>> disabledCategories;
+    private static final List<Pair<String, String>> DISABLED_CATEGORIES;
 
     static {
-        disabledCategories = new LinkedList<Pair<String, String>>();
-        disabledCategories.add(Pair.of("qcadooView", "home"));
-        disabledCategories.add(Pair.of("qcadooView", "administration"));
+        DISABLED_CATEGORIES = new LinkedList<Pair<String, String>>();
+        DISABLED_CATEGORIES.add(Pair.of("qcadooView", "home"));
+        DISABLED_CATEGORIES.add(Pair.of("qcadooView", "administration"));
     }
 
     public void addRestrictionToCategoriesGrid(final ViewDefinitionState viewDefinitionState) {
 
         GridComponent categoriesGrid = (GridComponent) viewDefinitionState.getComponentByReference("grid");
 
-        Restriction[] categoryRestrictions = new Restriction[disabledCategories.size()];
+        Restriction[] categoryRestrictions = new Restriction[DISABLED_CATEGORIES.size()];
         int index = 0;
-        for (Pair<String, String> category : disabledCategories) {
+        for (Pair<String, String> category : DISABLED_CATEGORIES) {
             Restriction pluginEquals = Restrictions.eq("pluginIdentifier", category.getKey());
             Restriction nameEquals = Restrictions.eq("name", category.getValue());
             Restriction sameCategory = Restrictions.and(pluginEquals, nameEquals);
