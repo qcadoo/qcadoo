@@ -109,8 +109,6 @@ public class DataAccessServiceImpl implements DataAccessService {
                 for (Entity e : newlySavedEntities) {
                     e.setId(null);
                 }
-
-                // FIXME no rollback after transaction - why?
             }
         } catch (NoTransactionException e) {
             // nothing - test purpose only
