@@ -57,7 +57,7 @@ public final class TranslationServiceImpl implements InternalTranslationService 
     @Value("${ignoreMissingTranslations}")
     private boolean ignoreMissingTranslations;
 
-    private Map<String, String> locales = new HashMap<String, String>();
+    private final Map<String, String> locales = new HashMap<String, String>();
 
     @Autowired
     private MessageSource messageSource;
@@ -105,12 +105,14 @@ public final class TranslationServiceImpl implements InternalTranslationService 
     }
 
     @Override
-    public Map<String, String> getMessagesGroup(final String prefix, final Locale locale) {
-        if (!PREFIX_MESSAGES.containsKey(prefix)) {
+    public Map<String, String> getMessagesGroup(final String group, final Locale locale) {
+        if (!PREFIX_MESSAGES.containsKey(group)) {
             return Collections.emptyMap();
         }
 
         Map<String, String> commonsTranslations = new HashMap<String, String>();
+
+        String prefix = group;
 
         for (String commonMessage : PREFIX_MESSAGES.get(prefix)) {
             commonsTranslations.put(commonMessage, translate(commonMessage, locale));
@@ -119,7 +121,7 @@ public final class TranslationServiceImpl implements InternalTranslationService 
     }
 
     @Override
-    public void prepareMessagesForPrefix(final String prefix) {
+    public void prepareMessagesGroup(final String group, final String prefix) {
         Set<String> messages = new HashSet<String>();
         PREFIX_MESSAGES.put(prefix, messages);
         getMessagesByPrefix(prefix, messages);

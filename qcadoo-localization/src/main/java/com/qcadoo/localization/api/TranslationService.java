@@ -39,7 +39,7 @@ public interface TranslationService {
      * Returns all messages (key and translation) for given group name.
      * 
      * @param group
-     *            prefix
+     *            group
      * @param locale
      *            prefix
      * @return messages
@@ -57,7 +57,7 @@ public interface TranslationService {
      *            message's args
      * @return the translation
      */
-    String translate(String messageCode, Locale locale, Object... args);
+    String translate(String code, Locale locale, Object... args);
 
     /**
      * Translates given codes into the locale using the args. First translated code will be returned.
@@ -70,7 +70,7 @@ public interface TranslationService {
      *            message's args
      * @return the translation
      */
-    String translate(List<String> messageCodes, Locale locale, Object... args);
+    String translate(List<String> code, Locale locale, Object... args);
 
     /**
      * Returns a map of available locales, defined in basic's plugin qcadoo-plugin
