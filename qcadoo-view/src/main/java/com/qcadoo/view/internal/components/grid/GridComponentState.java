@@ -25,7 +25,6 @@
 package com.qcadoo.view.internal.components.grid;
 
 import java.text.ParseException;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -358,8 +357,7 @@ public final class GridComponentState extends AbstractComponentState implements 
     }
 
     private String translateMessage(final String key) {
-        List<String> codes = Arrays.asList(new String[] { getTranslationPath() + "." + key, "core.message." + key });
-        return getTranslationService().translate(codes, getLocale());
+        return getTranslationService().translate(getTranslationPath() + "." + key, "core.message." + key, getLocale());
     }
 
     @Override

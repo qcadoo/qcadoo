@@ -35,9 +35,7 @@ import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import java.util.Locale;
 
 import org.json.JSONObject;
@@ -175,8 +173,8 @@ public class FormComponentStateTest extends AbstractStateTest {
     public void shouldHaveMessageIfEntityIsNotExistsAndEntityIdIsNotNull() throws Exception {
         // given
         form.setFieldValue(12L);
-        List<String> codes = Arrays.asList(new String[] { "null.entityNotFound", "core.message.entityNotFound" });
-        given(translationService.translate(eq(codes), any(Locale.class))).willReturn("translated entityNotFound");
+        given(translationService.translate(eq("null.entityNotFound"), eq("core.message.entityNotFound"), any(Locale.class)))
+                .willReturn("translated entityNotFound");
 
         // when
         form.performEvent(viewDefinitionState, "initialize", new String[0]);

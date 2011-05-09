@@ -48,6 +48,11 @@ public class MockTranslationService implements TranslationService {
     }
 
     @Override
+    public String translate(String primaryMessageCode, String secondarryMessageCode, Locale locale, Object... args) {
+        return primaryMessageCode;
+    }
+
+    @Override
     public Map<String, String> getLocales() {
         return null;
     }

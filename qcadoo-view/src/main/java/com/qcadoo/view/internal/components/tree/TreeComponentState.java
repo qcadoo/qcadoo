@@ -25,7 +25,6 @@
 package com.qcadoo.view.internal.components.tree;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -218,7 +217,8 @@ public final class TreeComponentState extends FieldComponentState implements Tre
         requestUpdateState();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
      * @see com.qcadoo.view.components.tree.ITreeComponentState#getSelectedEntityId()
      */
     @Override
@@ -240,8 +240,7 @@ public final class TreeComponentState extends FieldComponentState implements Tre
     }
 
     private String translateMessage(final String key) {
-        List<String> codes = Arrays.asList(new String[] { getTranslationPath() + "." + key, "core.message." + key });
-        return getTranslationService().translate(codes, getLocale());
+        return getTranslationService().translate(getTranslationPath() + "." + key, "core.message." + key, getLocale());
     }
 
     private Long parseSelectedIdForListeners(final Long selectedEntityId) {

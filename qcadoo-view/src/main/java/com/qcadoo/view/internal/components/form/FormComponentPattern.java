@@ -24,8 +24,6 @@
 
 package com.qcadoo.view.internal.components.form;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Locale;
 
 import org.json.JSONException;
@@ -86,8 +84,7 @@ public final class FormComponentPattern extends AbstractContainerPattern {
     }
 
     private void addTranslation(final JSONObject translation, final String key, final Locale locale) throws JSONException {
-        List<String> codes = Arrays.asList(new String[] { getTranslationPath() + "." + key, "core.form." + key });
-        translation.put(key, getTranslationService().translate(codes, locale));
+        translation.put(key, getTranslationService().translate(getTranslationPath() + "." + key, "core.form." + key, locale));
     }
 
     @Override

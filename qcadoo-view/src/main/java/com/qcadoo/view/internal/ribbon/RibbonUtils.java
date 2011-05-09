@@ -1,7 +1,5 @@
 package com.qcadoo.view.internal.ribbon;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -57,8 +55,11 @@ public final class RibbonUtils {
 
         for (int i = 0; i < json.getJSONArray("groups").length(); i++) {
             JSONObject group = json.getJSONArray("groups").getJSONObject(i);
-            group.put("label",
-                    pattern.getTranslationService().translate(getTranslationCodes(group.getString("name"), pattern), locale));
+            group.put(
+                    "label",
+                    pattern.getTranslationService().translate(
+                            pattern.getTranslationPath() + ".ribbon." + group.getString("name"),
+                            "core.ribbon." + group.getString("name"), locale));
             translateRibbonItems(group, group.getString("name") + ".", locale, pattern);
         }
 
@@ -72,7 +73,8 @@ public final class RibbonUtils {
                 JSONObject item = owner.getJSONArray("items").getJSONObject(j);
 
                 String label = pattern.getTranslationService().translate(
-                        getTranslationCodes(prefix + item.getString("name"), pattern), locale);
+                        pattern.getTranslationPath() + ".ribbon." + prefix + item.getString("name"),
+                        "core.ribbon." + prefix + item.getString("name"), locale);
                 item.put("label", label);
 
                 if (item.has("script")) {
@@ -95,10 +97,6 @@ public final class RibbonUtils {
                 translateRibbonItems(item, prefix + item.getString("name") + ".", locale, pattern);
             }
         }
-    }
-
-    private List<String> getTranslationCodes(final String key, final AbstractComponentPattern pattern) {
-        return Arrays.asList(new String[] { pattern.getTranslationPath() + ".ribbon." + key, "core.ribbon." + key });
     }
 
     public InternalRibbonGroup parseRibbonGroup(final Node groupNode, final ViewDefinitionParser parser,

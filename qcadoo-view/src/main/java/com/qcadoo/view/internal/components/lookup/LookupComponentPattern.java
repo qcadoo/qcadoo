@@ -27,7 +27,6 @@ package com.qcadoo.view.internal.components.lookup;
 import static com.google.common.base.Preconditions.checkState;
 import static org.springframework.util.StringUtils.hasText;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -182,26 +181,18 @@ public final class LookupComponentPattern extends FieldComponentPattern {
 
         translations.put("labelOnFocus", getTranslationService().translate(codes, locale));
 
-        translations.put(
-                "noMatchError",
-                getTranslationService().translate(
-                        Arrays.asList(new String[] { getTranslationPath() + ".noMatchError", "core.lookup.noMatchError" }),
-                        locale));
+        translations.put("noMatchError",
+                getTranslationService().translate(getTranslationPath() + ".noMatchError", "core.lookup.noMatchError", locale));
         translations.put(
                 "moreTahnOneMatchError",
-                getTranslationService().translate(
-                        Arrays.asList(new String[] { getTranslationPath() + ".moreTahnOneMatchError",
-                                "core.lookup.moreTahnOneMatchError" }), locale));
-        translations.put(
-                "noResultsInfo",
-                getTranslationService().translate(
-                        Arrays.asList(new String[] { getTranslationPath() + ".noResultsInfo", "core.lookup.noResultsInfo" }),
-                        locale));
+                getTranslationService().translate(getTranslationPath() + ".moreTahnOneMatchError",
+                        "core.lookup.moreTahnOneMatchError", locale));
+        translations.put("noResultsInfo",
+                getTranslationService().translate(getTranslationPath() + ".noResultsInfo", "core.lookup.noResultsInfo", locale));
         translations.put(
                 "tooManyResultsInfo",
-                getTranslationService().translate(
-                        Arrays.asList(new String[] { getTranslationPath() + ".tooManyResultsInfo",
-                                "core.lookup.tooManyResultsInfo" }), locale));
+                getTranslationService().translate(getTranslationPath() + ".tooManyResultsInfo", "core.lookup.tooManyResultsInfo",
+                        locale));
 
         json.put("translations", translations);
 

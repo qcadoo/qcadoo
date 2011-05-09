@@ -62,6 +62,21 @@ public interface TranslationService {
     /**
      * Translates given codes into the locale using the args. First translated code will be returned.
      * 
+     * @param primaryMessageCode
+     *            first message's code
+     * @param secondarryMessageCode
+     *            second message's code
+     * @param locale
+     *            locale
+     * @param args
+     *            message's args
+     * @return the translation
+     */
+    String translate(String primaryMessageCode, String secondarryMessageCode, Locale locale, Object... args);
+
+    /**
+     * Translates given codes into the locale using the args. First translated code will be returned.
+     * 
      * @param messageCodes
      *            message's codes
      * @param locale
