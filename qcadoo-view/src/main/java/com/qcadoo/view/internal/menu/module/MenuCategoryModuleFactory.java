@@ -13,11 +13,7 @@ public class MenuCategoryModuleFactory extends ModuleFactory<MenuCategoryModule>
 
     @Override
     public MenuCategoryModule parse(final String pluginIdentifier, final Element element) {
-        String menuCategoryName = element.getAttributeValue("name");
-
-        if (menuCategoryName == null) {
-            throw new IllegalStateException("Missing name attribute of menu-category module");
-        }
+        String menuCategoryName = getRequiredAttribute(element, "name");
 
         return new MenuCategoryModule(menuService, pluginIdentifier, menuCategoryName);
     }

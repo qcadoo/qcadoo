@@ -94,7 +94,7 @@
 	<bean id="globalDefinitionPermissionEvaluator" class="com.qcadoo.security.internal.QcadooGlobalPermissionEvaluator">
 		<property name="qcadooEvaluators">
 			<set>
-				<bean class="com.qcadoo.security.internal.permissionEvaluators.implementations.ViewDefinitionPermissionEvaluator" />
+				<bean class="com.qcadoo.view.internal.security.ViewDefinitionPermissionEvaluator" />
 			</set>
 		</property>
 	</bean>

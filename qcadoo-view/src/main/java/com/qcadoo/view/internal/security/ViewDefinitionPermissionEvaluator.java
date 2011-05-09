@@ -1,11 +1,10 @@
-package com.qcadoo.security.internal.permissionEvaluators.implementations;
+package com.qcadoo.view.internal.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.core.Authentication;
 
 import com.qcadoo.security.api.SecurityRole;
-import com.qcadoo.security.api.SecurityViewDefinitionRoleResolver;
 import com.qcadoo.security.internal.permissionEvaluators.QcadooPermisionEvaluator;
 import com.qcadoo.security.internal.role.InternalSecurityRolesService;
 

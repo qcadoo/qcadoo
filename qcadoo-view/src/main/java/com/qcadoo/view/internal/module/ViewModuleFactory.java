@@ -18,16 +18,10 @@ public class ViewModuleFactory extends ModuleFactory<ViewModule> {
 
     @Override
     public ViewModule parse(final String pluginIdentifier, final Element element) {
-
-        String resource = element.getAttributeValue("resource");
-
-        if (resource == null) {
-            throw new IllegalStateException("Missing resource attribute of view module");
-        }
+        String resource = getRequiredAttribute(element, "resource");
 
         return new ViewModule(pluginIdentifier, new ClassPathResource(pluginIdentifier + "/" + resource), viewDefinitionParser,
                 viewDefinitionService);
-
     }
 
     @Override

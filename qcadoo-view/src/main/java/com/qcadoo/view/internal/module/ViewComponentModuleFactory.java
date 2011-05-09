@@ -24,16 +24,8 @@ public class ViewComponentModuleFactory extends ModuleFactory<Module> implements
     @Override
     @SuppressWarnings("unchecked")
     public Module parse(final String pluginIdentifier, final Element element) {
-        String name = element.getAttributeValue("name");
-        String clazzName = element.getAttributeValue("class");
-
-        if (name == null) {
-            throw new IllegalStateException("Missing name attribute of component module");
-        }
-
-        if (clazzName == null) {
-            throw new IllegalStateException("Missing class attribute of component module");
-        }
+        String name = getRequiredAttribute(element, "name");
+        String clazzName = getRequiredAttribute(element, "class");
 
         try {
             viewComponentsResolver.register(name, (Class<? extends ComponentPattern>) classLoader.loadClass(clazzName));

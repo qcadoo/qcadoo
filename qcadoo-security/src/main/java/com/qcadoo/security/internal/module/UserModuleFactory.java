@@ -19,12 +19,12 @@ public class UserModuleFactory extends ModuleFactory<UserModule> {
 
     @Override
     public UserModule parse(final String pluginIdentifier, final Element element) {
-        String login = element.getAttributeValue("login");
-        String email = element.getAttributeValue("email");
-        String firstName = element.getAttributeValue("firstName");
-        String lastName = element.getAttributeValue("lastName");
-        String password = element.getAttributeValue("password");
-        String groupName = element.getAttributeValue("groupName");
+        String login = getRequiredAttribute(element, "login");
+        String email = getAttribute(element, "email");
+        String firstName = getAttribute(element, "firstName");
+        String lastName = getAttribute(element, "lastName");
+        String password = getRequiredAttribute(element, "password");
+        String groupName = getRequiredAttribute(element, "groupName");
 
         checkNotNull(login, "Missing login attribute of " + getIdentifier() + " module");
         checkNotNull(password, "Missing password attribute of " + getIdentifier() + " module");

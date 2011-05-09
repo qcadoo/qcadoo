@@ -1,4 +1,6 @@
-package com.qcadoo.security.api;
+package com.qcadoo.view.internal.security;
+
+import com.qcadoo.security.api.SecurityRole;
 
 /**
  * Interface for service that will provide information about access role of view definitions.

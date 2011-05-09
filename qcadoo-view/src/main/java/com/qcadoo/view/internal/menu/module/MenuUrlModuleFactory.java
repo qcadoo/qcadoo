@@ -13,21 +13,9 @@ public class MenuUrlModuleFactory extends ModuleFactory<MenuModule> {
 
     @Override
     public MenuModule parse(final String pluginIdentifier, final Element element) {
-        String menuName = element.getAttributeValue("name");
-        String menuCategory = element.getAttributeValue("category");
-        String menuUrl = element.getAttributeValue("url");
-
-        if (menuName == null) {
-            throw new IllegalStateException("Missing name attribute of menu-item-url module");
-        }
-
-        if (menuCategory == null) {
-            throw new IllegalStateException("Missing category attribute of menu-item-url module");
-        }
-
-        if (menuUrl == null) {
-            throw new IllegalStateException("Missing url attribute of menu-item-url module");
-        }
+        String menuName = getRequiredAttribute(element, "name");
+        String menuCategory = getRequiredAttribute(element, "category");
+        String menuUrl = getRequiredAttribute(element, "url");
 
         return new MenuModule(menuService, pluginIdentifier, menuName, menuCategory, null, null, menuUrl);
     }
