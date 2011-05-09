@@ -154,7 +154,7 @@ public class GridComponentStateTest extends AbstractStateTest {
         given(translationService.translate(Mockito.anyString(), Mockito.any(Locale.class))).willReturn("i18n");
         given(translationService.translate(Mockito.anyString(), Mockito.anyString(), Mockito.any(Locale.class))).willReturn(
                 "i18n");
-        given(translationService.translate(Mockito.anyList(), Mockito.any(Locale.class))).willReturn("i18n");
+        given(translationService.translate(Mockito.anyString(), Mockito.any(Locale.class))).willReturn("i18n");
 
         grid = new GridComponentState(substitutesFieldDefinition, columns, null, null);
         grid.setDataDefinition(substituteDataDefinition);

@@ -31,7 +31,7 @@ import com.qcadoo.localization.api.TranslationService;
  */
 public interface InternalTranslationService extends TranslationService {
 
-    void prepareMessagesForPrefix(String prefix);
+    void prepareMessagesGroup(String group, String prefix);
 
     void addLocaleToList(String locale, String label);
 

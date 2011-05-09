@@ -1,6 +1,6 @@
 package com.qcadoo.model.internal.api;
 
-public class ValueAndError {
+public final class ValueAndError {
 
     private final Object value;
 

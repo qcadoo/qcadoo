@@ -24,9 +24,10 @@
 
 package com.qcadoo.localization.api;
 
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import com.qcadoo.localization.internal.module.LocaleModuleFactory;
 
 /**
  * Service for getting translations.
@@ -39,7 +40,7 @@ public interface TranslationService {
      * Returns all messages (key and translation) for given group name.
      * 
      * @param group
-     *            prefix
+     *            group
      * @param locale
      *            prefix
      * @return messages
@@ -49,7 +50,7 @@ public interface TranslationService {
     /**
      * Translates given code into the locale using the args.
      * 
-     * @param messageCode
+     * @param code
      *            message's code
      * @param locale
      *            locale
@@ -57,40 +58,45 @@ public interface TranslationService {
      *            message's args
      * @return the translation
      */
-    String translate(String messageCode, Locale locale, Object... args);
+    String translate(String code, Locale locale, Object... args);
 
     /**
      * Translates given codes into the locale using the args. First translated code will be returned.
      * 
-     * @param primaryMessageCode
-     *            first message's code
-     * @param secondarryMessageCode
-     *            second message's code
+     * @param code
+     *            message's code
+     * @param secondCode
+     *            message's code
      * @param locale
      *            locale
      * @param args
      *            message's args
      * @return the translation
      */
-    String translate(String primaryMessageCode, String secondarryMessageCode, Locale locale, Object... args);
+    String translate(String code, String secondCode, Locale locale, Object... args);
 
     /**
      * Translates given codes into the locale using the args. First translated code will be returned.
      * 
-     * @param messageCodes
-     *            message's codes
+     * @param code
+     *            message's code
+     * @param secondCode
+     *            message's code
+     * @param thirdCode
+     *            message's code
      * @param locale
      *            locale
      * @param args
      *            message's args
      * @return the translation
      */
-    String translate(List<String> messageCodes, Locale locale, Object... args);
+    String translate(String code, String secondCode, String thirdCode, Locale locale, Object... args);
 
     /**
-     * Returns a map of available locales, defined in basic's plugin qcadoo-plugin
+     * Returns a map of available locales.
      * 
      * @return a map with a locale value and its name
+     * @see LocaleModuleFactory
      */
     Map<String, String> getLocales();
 }

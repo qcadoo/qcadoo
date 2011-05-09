@@ -24,7 +24,6 @@
 
 package com.qcadoo.model.integration;
 
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -43,13 +42,14 @@ public class MockTranslationService implements TranslationService {
     }
 
     @Override
-    public String translate(final List<String> messageCodes, final Locale locale, final Object... args) {
-        return messageCodes.isEmpty() ? null : messageCodes.get(0);
+    public String translate(final String code, final String secondCode, final Locale locale, final Object... args) {
+        return code;
     }
 
     @Override
-    public String translate(String primaryMessageCode, String secondarryMessageCode, Locale locale, Object... args) {
-        return primaryMessageCode;
+    public String translate(final String code, final String secondCode, final String thirdCode, final Locale locale,
+            final Object... args) {
+        return code;
     }
 
     @Override
