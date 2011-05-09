@@ -286,22 +286,19 @@ public class TomcatMojo extends AbstractMojo {
     }
 
     private void prepareWorkingDirectory() throws IOException {
-        workingDirectory.mkdirs();
+        FileUtils.forceMkdir(workingDirectory);
 
         FileUtils.cleanDirectory(workingDirectory);
 
-        webappDirectory.mkdirs();
-        libDirectory.mkdirs();
-        configurationDirectory.mkdirs();
-        binDirectory.mkdirs();
+        FileUtils.forceMkdir(webappDirectory);
+        FileUtils.forceMkdir(libDirectory);
+        FileUtils.forceMkdir(configurationDirectory);
+        FileUtils.forceMkdir(binDirectory);
     }
 
     private void copyClassPathResource(final String resourceName) throws IOException {
         InputStreamFacade resource = new RawInputStreamFacade(new ClassPathResource("/tomcat/" + resourceName).getInputStream());
-        File target = new File(rootDirectory, resourceName);
-        target.getParentFile().mkdirs();
-        FileUtils.copyStreamToFile(resource, target);
-
+        FileUtils.copyStreamToFile(resource, new File(rootDirectory, resourceName));
     }
 
     private void copyDependency(final File target, final String groupId, final String artifactId, final String version,

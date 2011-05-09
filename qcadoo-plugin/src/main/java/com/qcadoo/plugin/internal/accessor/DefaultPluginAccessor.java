@@ -192,7 +192,7 @@ public class DefaultPluginAccessor implements InternalPluginAccessor, Applicatio
         // has parent 'Root WebApplicationContext'
         // So I return immediately when event parent is present
         // Probably it should be done better way - so check this out
-        if (event != null && event.getSource() != null && event.getSource() instanceof XmlWebApplicationContext) {
+        if (event != null && event.getSource() instanceof XmlWebApplicationContext) {
             XmlWebApplicationContext eventSource = (XmlWebApplicationContext) event.getSource();
             if (eventSource.getParent() != null) {
                 return;

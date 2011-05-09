@@ -5,6 +5,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
@@ -121,9 +122,13 @@ public class JettyMojo extends JettyRunMojo {
         setField("tmpDirectory", _tmpDirectory);
         setField("scanIntervalSeconds", 0);
 
-        logs.mkdirs();
-        temporaryPlugins.mkdirs();
-        plugins.mkdirs();
+        try {
+            FileUtils.forceMkdir(logs);
+            FileUtils.forceMkdir(temporaryPlugins);
+            FileUtils.forceMkdir(plugins);
+        } catch (Exception e) {
+            throw new MojoExecutionException(e.getMessage(), e);
+        }
 
         SystemProperties systemProperties = new SystemProperties();
         systemProperties.setSystemProperty(getSystemProperty("spring.profiles.default", profile));

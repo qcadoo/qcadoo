@@ -29,24 +29,31 @@ public final class EnumTypeKey {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
+    public boolean equals(final Object obj) {
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         EnumTypeKey other = (EnumTypeKey) obj;
         if (originPluginIdentifier == null) {
-            if (other.originPluginIdentifier != null)
+            if (other.originPluginIdentifier != null) {
                 return false;
-        } else if (!originPluginIdentifier.equals(other.originPluginIdentifier))
+            }
+        } else if (!originPluginIdentifier.equals(other.originPluginIdentifier)) {
             return false;
+        }
         if (value == null) {
-            if (other.value != null)
+            if (other.value != null) {
                 return false;
-        } else if (!value.equals(other.value))
+            }
+        } else if (!value.equals(other.value)) {
             return false;
+        }
         return true;
     }
 

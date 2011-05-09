@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,7 +61,7 @@ public class JspResourceResolver implements ApplicationListener<ContextRefreshed
             File file = new File(webappPath + "/WEB-INF/jsp/" + path);
 
             if (resource.getInputStream().available() == 0) {
-                file.mkdirs();
+                FileUtils.forceMkdir(file);
             } else {
                 if (LOG.isDebugEnabled()) {
                     LOG.debug("Copying " + path + " to " + file.getAbsolutePath());
