@@ -35,19 +35,19 @@ public interface InternalRibbon extends Ribbon {
      * 
      * @return JSON ribbon definition
      */
-    public JSONObject getAsJson();
+    JSONObject getAsJson();
 
     /**
      * Gets copy of this robbon - internal usage only
      * 
      * @return copy of this ribbon
      */
-    public InternalRibbon getCopy();
+    InternalRibbon getCopy();
 
     /**
      * Gets ribbon with only updated fields - internal usage only
      * 
      * @return ribon with only updated fields
      */
-    public InternalRibbon getUpdate();
+    InternalRibbon getUpdate();
 }

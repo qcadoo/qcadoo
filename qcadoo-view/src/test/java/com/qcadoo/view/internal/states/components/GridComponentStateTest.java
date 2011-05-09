@@ -95,7 +95,6 @@ public class GridComponentStateTest extends AbstractStateTest {
 
     private SearchCriteriaBuilder substituteCriteria;
 
-    @SuppressWarnings("unchecked")
     @Before
     public void init() throws Exception {
         JSONObject jsonContent = new JSONObject();

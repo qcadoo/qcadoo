@@ -352,6 +352,6 @@ public class PluginIntegrationTest {
         assertEquals(new Version("1.2.4"), pluginAccessor.getPlugin("plugin4").getVersion());
     }
 
-    // TODO plugin masz test all update cases
+    // TODO masz plugin test all update cases
 
 }

@@ -85,7 +85,7 @@ public final class DictionaryServiceImpl implements InternalDictionaryService {
 
         Map<String, String> values = new LinkedHashMap<String, String>();
 
-        // TODO translate dictionary values
+        // TODO mady translate dictionary values
 
         for (Entity item : items) {
             values.put(item.getStringField("name"), item.getStringField("name"));
@@ -152,7 +152,7 @@ public final class DictionaryServiceImpl implements InternalDictionaryService {
     @Transactional
     @Monitorable
     public void disable(final String pluginIdentifier, final String name) {
-        // TODO disable
+        // TODO masz disable
         SearchResult serachResult = dataDefinitionService.get("qcadooModel", "dictionary").find()
                 .addRestriction(Restrictions.eq("name", name)).list();
         if (serachResult.getTotalNumberOfEntities() > 0) {

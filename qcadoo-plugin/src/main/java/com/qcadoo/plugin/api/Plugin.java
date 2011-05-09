@@ -2,8 +2,6 @@ package com.qcadoo.plugin.api;
 
 import java.util.Set;
 
-import org.jdom.Element;
-
 /**
  * Plugin represents information from plugin's descriptor and holds all its modules.
  * 
