@@ -52,7 +52,7 @@ public final class TranslationServiceImpl implements InternalTranslationService 
 
     private static final Logger TRANSLATION_LOG = LoggerFactory.getLogger("TRANSLATION");
 
-    private static final Map<String, Set<String>> PREFIX_MESSAGES = new HashMap<String, Set<String>>();
+    private static final Map<String, Set<String>> GROUP_MESSAGES = new HashMap<String, Set<String>>();
 
     private static final String DEFAULT_MISSING_MESSAGE = "-";
 
@@ -68,24 +68,23 @@ public final class TranslationServiceImpl implements InternalTranslationService 
     private TranslationModuleService translationModuleService;
 
     @Override
-    public String translate(final String messageCode, final Locale locale, final Object... args) {
-        String message = translateWithError(messageCode, locale, args);
+    public String translate(final String code, final Locale locale, final Object... args) {
+        String message = translateWithError(code, locale, args);
 
         if (message != null) {
             return message.trim();
         }
 
-        TRANSLATION_LOG.warn("Missing translation " + messageCode + " for locale " + locale);
+        TRANSLATION_LOG.warn("Missing translation " + code + " for locale " + locale);
 
         if (ignoreMissingTranslations) {
             return DEFAULT_MISSING_MESSAGE;
         } else {
-            return messageCode;
+            return code;
         }
     }
 
-    @Override
-    public String translate(final List<String> messageCodes, final Locale locale, final Object... args) {
+    private String translate(final List<String> messageCodes, final Locale locale, final Object... args) {
         for (String messageCode : messageCodes) {
             String message = translateWithError(messageCode, locale, args);
             if (message != null) {
@@ -103,8 +102,14 @@ public final class TranslationServiceImpl implements InternalTranslationService 
     }
 
     @Override
-    public String translate(String primaryMessageCode, String secondarryMessageCode, Locale locale, Object... args) {
-        return translate(Lists.newArrayList(primaryMessageCode, secondarryMessageCode), locale, args);
+    public String translate(final String code, final String secondCode, final Locale locale, final Object... args) {
+        return translate(Lists.newArrayList(code, secondCode), locale, args);
+    }
+
+    @Override
+    public String translate(final String code, final String secondCode, final String thirdCode, final Locale locale,
+            final Object... args) {
+        return translate(Lists.newArrayList(code, secondCode, thirdCode), locale, args);
     }
 
     private String translateWithError(final String messageCode, final Locale locale, final Object[] args) {
@@ -113,24 +118,23 @@ public final class TranslationServiceImpl implements InternalTranslationService 
 
     @Override
     public Map<String, String> getMessagesGroup(final String group, final Locale locale) {
-        if (!PREFIX_MESSAGES.containsKey(group)) {
+        if (!GROUP_MESSAGES.containsKey(group)) {
             return Collections.emptyMap();
         }
 
         Map<String, String> commonsTranslations = new HashMap<String, String>();
 
-        String prefix = group;
-
-        for (String commonMessage : PREFIX_MESSAGES.get(prefix)) {
+        for (String commonMessage : GROUP_MESSAGES.get(group)) {
             commonsTranslations.put(commonMessage, translate(commonMessage, locale));
         }
+
         return commonsTranslations;
     }
 
     @Override
     public void prepareMessagesGroup(final String group, final String prefix) {
         Set<String> messages = new HashSet<String>();
-        PREFIX_MESSAGES.put(prefix, messages);
+        GROUP_MESSAGES.put(group, messages);
         getMessagesByPrefix(prefix, messages);
     }
 

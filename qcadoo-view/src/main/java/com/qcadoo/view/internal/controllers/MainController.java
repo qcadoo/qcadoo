@@ -75,7 +75,7 @@ public final class MainController {
         ModelAndView mav = new ModelAndView();
         mav.setViewName("qcadooView/noDashboard");
         mav.addObject("userLogin", securityService.getCurrentUserName());
-        mav.addObject("translationsMap", translationService.getMessagesGroup("qcadooView.noDashboardPage", locale));
+        mav.addObject("translationsMap", translationService.getMessagesGroup("noDashboard", locale));
         mav.addObject("useCompressedStaticResources", useCompressedStaticResources);
         return mav;
     }

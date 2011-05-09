@@ -28,8 +28,6 @@ import static com.google.common.base.Preconditions.checkState;
 import static org.springframework.util.StringUtils.hasText;
 
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -171,15 +169,14 @@ public final class LookupComponentPattern extends FieldComponentPattern {
 
         JSONObject translations = new JSONObject();
 
-        List<String> codes = new LinkedList<String>();
-        codes.add(getTranslationPath() + ".label.focus");
-
-        if (getFieldDefinition() != null) {
-            codes.add(getFieldDefinition().getDataDefinition().getPluginIdentifier() + "."
-                    + getFieldDefinition().getDataDefinition().getName() + "." + getFieldDefinition().getName() + ".label.focus");
+        if (getFieldDefinition() == null) {
+            translations.put("labelOnFocus", getTranslationService().translate(getTranslationPath() + ".label.focus", locale));
+        } else {
+            String code = getFieldDefinition().getDataDefinition().getPluginIdentifier() + "."
+                    + getFieldDefinition().getDataDefinition().getName() + "." + getFieldDefinition().getName() + ".label.focus";
+            translations.put("labelOnFocus",
+                    getTranslationService().translate(getTranslationPath() + ".label.focus", code, locale));
         }
-
-        translations.put("labelOnFocus", getTranslationService().translate(codes, locale));
 
         translations.put("noMatchError",
                 getTranslationService().translate(getTranslationPath() + ".noMatchError", "core.lookup.noMatchError", locale));
