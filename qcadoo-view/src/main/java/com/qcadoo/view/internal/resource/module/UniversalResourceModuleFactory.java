@@ -4,7 +4,6 @@ import org.jdom.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
-import com.google.common.base.Preconditions;
 import com.qcadoo.plugin.api.ModuleFactory;
 import com.qcadoo.view.internal.resource.ResourceService;
 
@@ -18,8 +17,7 @@ public class UniversalResourceModuleFactory extends ModuleFactory<UniversalResou
 
     @Override
     public UniversalResourceModule parse(final String pluginIdentifier, final Element element) {
-        String uri = element.getAttributeValue("uri");
-        Preconditions.checkNotNull(uri, "Resource module error: uri not defined");
+        String uri = getRequiredAttribute(element, "uri");
         return new UniversalResourceModule(resourceService, applicationContext, pluginIdentifier, uri);
     }
 

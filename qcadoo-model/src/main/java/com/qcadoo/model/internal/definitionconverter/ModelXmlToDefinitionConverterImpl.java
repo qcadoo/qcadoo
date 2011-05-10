@@ -184,7 +184,7 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
                         continue;
                     }
 
-                    addFieldElement(reader, pluginIdentifier, dataDefinition, tag);
+                    addFieldElement(reader, dataDefinition, tag);
                 }
             }
 
@@ -200,7 +200,7 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
                         continue;
                     }
 
-                    addHookElement(reader, pluginIdentifier, dataDefinition, tag);
+                    addHookElement(reader, dataDefinition, tag);
                 }
             }
 
@@ -210,7 +210,7 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
                 continue;
             }
 
-            addOtherElement(reader, pluginIdentifier, dataDefinition, tag);
+            addOtherElement(reader, dataDefinition, tag);
         }
 
         for (EntityHookDefinition hook : dataDefinition.getViewHooks()) {
@@ -248,8 +248,8 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
         return dataDefinition;
     }
 
-    private void addHookElement(final XMLStreamReader reader, final String pluginIdentifier,
-            final DataDefinitionImpl dataDefinition, final String tag) throws XMLStreamException {
+    private void addHookElement(final XMLStreamReader reader, final DataDefinitionImpl dataDefinition, final String tag)
+            throws XMLStreamException {
         HooksTag hooksTag = HooksTag.valueOf(tag.toUpperCase(Locale.ENGLISH));
 
         switch (hooksTag) {
@@ -276,8 +276,8 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
         }
     }
 
-    private void addOtherElement(final XMLStreamReader reader, final String pluginIdentifier,
-            final DataDefinitionImpl dataDefinition, final String tag) throws XMLStreamException {
+    private void addOtherElement(final XMLStreamReader reader, final DataDefinitionImpl dataDefinition, final String tag)
+            throws XMLStreamException {
         OtherTag otherTag = OtherTag.valueOf(tag.toUpperCase(Locale.ENGLISH));
 
         switch (otherTag) {
@@ -289,15 +289,15 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
         }
     }
 
-    private void addFieldElement(final XMLStreamReader reader, final String pluginIdentifier,
-            final DataDefinitionImpl dataDefinition, final String tag) throws XMLStreamException {
+    private void addFieldElement(final XMLStreamReader reader, final DataDefinitionImpl dataDefinition, final String tag)
+            throws XMLStreamException {
         FieldsTag fieldTag = FieldsTag.valueOf(tag.toUpperCase(Locale.ENGLISH));
         switch (fieldTag) {
             case PRIORITY:
                 dataDefinition.addPriorityField(getPriorityFieldDefinition(reader, dataDefinition));
                 break;
             default:
-                dataDefinition.withField(getFieldDefinition(reader, pluginIdentifier, dataDefinition, fieldTag));
+                dataDefinition.withField(getFieldDefinition(reader, dataDefinition, fieldTag));
                 break;
         }
     }
@@ -358,8 +358,8 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
         }
     }
 
-    private FieldDefinition getFieldDefinition(final XMLStreamReader reader, final String pluginIdentifier,
-            final DataDefinitionImpl dataDefinition, final FieldsTag fieldTag) throws XMLStreamException {
+    private FieldDefinition getFieldDefinition(final XMLStreamReader reader, final DataDefinitionImpl dataDefinition,
+            final FieldsTag fieldTag) throws XMLStreamException {
         String fieldType = reader.getLocalName();
         String name = getStringAttribute(reader, "name");
         FieldDefinitionImpl fieldDefinition = new FieldDefinitionImpl(dataDefinition, name);

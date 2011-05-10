@@ -40,11 +40,11 @@ import com.qcadoo.model.api.search.Restrictions;
 import com.qcadoo.plugin.api.PluginUtils;
 import com.qcadoo.security.api.SecurityRole;
 import com.qcadoo.security.api.SecurityRolesService;
-import com.qcadoo.security.api.SecurityViewDefinitionRoleResolver;
 import com.qcadoo.view.api.utils.TranslationUtilsService;
 import com.qcadoo.view.internal.api.InternalMenuService;
 import com.qcadoo.view.internal.menu.items.UrlMenuItem;
 import com.qcadoo.view.internal.menu.items.ViewDefinitionMenuItemItem;
+import com.qcadoo.view.internal.security.SecurityViewDefinitionRoleResolver;
 
 @Service
 public final class MenuServiceImpl implements InternalMenuService {

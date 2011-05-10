@@ -10,7 +10,7 @@ import org.springframework.core.io.InputStreamResource;
 
 import com.google.common.base.Preconditions;
 
-public class JarEntryResource extends InputStreamResource {
+public final class JarEntryResource extends InputStreamResource {
 
     /**
      * Original URL, used for actual access.
@@ -29,6 +29,16 @@ public class JarEntryResource extends InputStreamResource {
     @Override
     public URL getURL() throws IOException {
         return this.url;
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        return super.equals(obj);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 
 }

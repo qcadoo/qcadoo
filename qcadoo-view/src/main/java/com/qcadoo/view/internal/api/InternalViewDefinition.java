@@ -73,8 +73,8 @@ public interface InternalViewDefinition extends ViewDefinition {
 
     ComponentPattern getComponentByReference(String reference);
 
-    public abstract void addComponentPattern(final ComponentPattern componentPattern);
+    abstract void addComponentPattern(final ComponentPattern componentPattern);
 
-    public abstract void initialize();
+    abstract void initialize();
 
 }

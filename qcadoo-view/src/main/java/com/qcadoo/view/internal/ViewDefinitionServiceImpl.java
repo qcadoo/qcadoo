@@ -35,10 +35,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.qcadoo.model.api.aop.Monitorable;
 import com.qcadoo.plugin.api.PluginUtils;
 import com.qcadoo.security.api.SecurityRole;
-import com.qcadoo.security.api.SecurityViewDefinitionRoleResolver;
 import com.qcadoo.view.internal.api.InternalViewDefinition;
 import com.qcadoo.view.internal.api.InternalViewDefinitionService;
 import com.qcadoo.view.internal.api.ViewDefinition;
+import com.qcadoo.view.internal.security.SecurityViewDefinitionRoleResolver;
 
 @Service
 public class ViewDefinitionServiceImpl implements InternalViewDefinitionService, SecurityViewDefinitionRoleResolver {

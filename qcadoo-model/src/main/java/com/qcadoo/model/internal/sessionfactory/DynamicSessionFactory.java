@@ -36,9 +36,7 @@ import javax.transaction.TransactionManager;
 
 import org.hibernate.Cache;
 import org.hibernate.ConnectionReleaseMode;
-import org.hibernate.HibernateException;
 import org.hibernate.Interceptor;
-import org.hibernate.MappingException;
 import org.hibernate.SessionFactory;
 import org.hibernate.SessionFactoryObserver;
 import org.hibernate.StatelessSession;
@@ -268,17 +266,17 @@ public class DynamicSessionFactory implements SessionFactory, SessionFactoryImpl
     }
 
     @Override
-    public Type getIdentifierType(final String className) throws MappingException {
+    public Type getIdentifierType(final String className) {
         return ((SessionFactoryImplementor) getSessionFactory(false)).getIdentifierType(className);
     }
 
     @Override
-    public String getIdentifierPropertyName(final String className) throws MappingException {
+    public String getIdentifierPropertyName(final String className) {
         return ((SessionFactoryImplementor) getSessionFactory(false)).getIdentifierPropertyName(className);
     }
 
     @Override
-    public Type getReferencedPropertyType(final String className, final String propertyName) throws MappingException {
+    public Type getReferencedPropertyType(final String className, final String propertyName) {
         return ((SessionFactoryImplementor) getSessionFactory(false)).getReferencedPropertyType(className, propertyName);
     }
 
@@ -293,12 +291,12 @@ public class DynamicSessionFactory implements SessionFactory, SessionFactoryImpl
     }
 
     @Override
-    public EntityPersister getEntityPersister(final String entityName) throws MappingException {
+    public EntityPersister getEntityPersister(final String entityName) {
         return ((SessionFactoryImplementor) getSessionFactory(false)).getEntityPersister(entityName);
     }
 
     @Override
-    public CollectionPersister getCollectionPersister(final String role) throws MappingException {
+    public CollectionPersister getCollectionPersister(final String role) {
         return ((SessionFactoryImplementor) getSessionFactory(false)).getCollectionPersister(role);
     }
 
@@ -318,12 +316,12 @@ public class DynamicSessionFactory implements SessionFactory, SessionFactoryImpl
     }
 
     @Override
-    public Type[] getReturnTypes(final String queryString) throws HibernateException {
+    public Type[] getReturnTypes(final String queryString) {
         return ((SessionFactoryImplementor) getSessionFactory(false)).getReturnTypes(queryString);
     }
 
     @Override
-    public String[] getReturnAliases(final String queryString) throws HibernateException {
+    public String[] getReturnAliases(final String queryString) {
         return ((SessionFactoryImplementor) getSessionFactory(false)).getReturnAliases(queryString);
     }
 
@@ -333,7 +331,7 @@ public class DynamicSessionFactory implements SessionFactory, SessionFactoryImpl
     }
 
     @Override
-    public String[] getImplementors(final String className) throws MappingException {
+    public String[] getImplementors(final String className) {
         return ((SessionFactoryImplementor) getSessionFactory(false)).getImplementors(className);
     }
 
@@ -353,7 +351,7 @@ public class DynamicSessionFactory implements SessionFactory, SessionFactoryImpl
     }
 
     @Override
-    public QueryCache getQueryCache(final String regionName) throws HibernateException {
+    public QueryCache getQueryCache(final String regionName) {
         return ((SessionFactoryImplementor) getSessionFactory(false)).getQueryCache(regionName);
     }
 
@@ -409,13 +407,13 @@ public class DynamicSessionFactory implements SessionFactory, SessionFactoryImpl
     }
 
     @Override
-    public Session openTemporarySession() throws HibernateException {
+    public Session openTemporarySession() {
         return ((SessionFactoryImplementor) getSessionFactory(false)).openTemporarySession();
     }
 
     @Override
     public Session openSession(final Connection connection, final boolean flushBeforeCompletionEnabled,
-            final boolean autoCloseSessionEnabled, final ConnectionReleaseMode connectionReleaseMode) throws HibernateException {
+            final boolean autoCloseSessionEnabled, final ConnectionReleaseMode connectionReleaseMode) {
         return ((SessionFactoryImplementor) getSessionFactory(false)).openTemporarySession();
     }
 
