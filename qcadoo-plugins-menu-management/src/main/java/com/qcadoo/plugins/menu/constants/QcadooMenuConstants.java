@@ -1,4 +1,4 @@
-package com.qcadoo.menu;
+package com.qcadoo.plugins.menu.constants;
 
 public interface QcadooMenuConstants {
 

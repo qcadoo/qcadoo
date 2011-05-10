@@ -36,7 +36,7 @@
 
 		<model:model-hook plugin="qcadooPlugin" model="plugin">
 			<model:onView
-				class="com.qcadoo.plugins.controller.PluginManagmentDataHook"
+				class="com.qcadoo.plugins.plugins.internal.PluginManagmentDataHook"
 				method="updatePluginData" />
 		</model:model-hook>
 

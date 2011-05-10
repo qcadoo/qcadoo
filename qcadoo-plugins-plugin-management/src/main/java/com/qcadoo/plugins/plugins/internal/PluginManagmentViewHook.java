@@ -1,4 +1,4 @@
-package com.qcadoo.plugins.controller;
+package com.qcadoo.plugins.plugins.internal;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -10,7 +10,7 @@ import com.google.common.base.Preconditions;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.Entity;
-import com.qcadoo.plugin.QcadooPluginConstants;
+import com.qcadoo.plugin.constants.QcadooPluginConstants;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.api.components.GridComponent;

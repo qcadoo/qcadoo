@@ -1,4 +1,4 @@
-package com.qcadoo.view;
+package com.qcadoo.view.constants;
 
 public interface QcadooViewConstants {
 

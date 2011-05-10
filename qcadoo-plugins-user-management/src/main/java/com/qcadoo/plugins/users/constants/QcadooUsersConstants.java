@@ -1,4 +1,4 @@
-package com.qcadoo.users;
+package com.qcadoo.plugins.users.constants;
 
 public interface QcadooUsersConstants {
 

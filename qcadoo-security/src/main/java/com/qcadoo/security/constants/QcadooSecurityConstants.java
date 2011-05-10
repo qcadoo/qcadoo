@@ -1,4 +1,4 @@
-package com.qcadoo.security;
+package com.qcadoo.security.constants;
 
 public interface QcadooSecurityConstants {
 

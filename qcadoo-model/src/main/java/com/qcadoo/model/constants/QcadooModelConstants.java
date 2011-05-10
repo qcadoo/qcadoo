@@ -1,4 +1,4 @@
-package com.qcadoo.model;
+package com.qcadoo.model.constants;
 
 public interface QcadooModelConstants {
 

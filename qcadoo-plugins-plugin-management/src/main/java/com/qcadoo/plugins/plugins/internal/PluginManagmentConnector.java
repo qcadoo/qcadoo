@@ -1,4 +1,4 @@
-package com.qcadoo.plugins.controller;
+package com.qcadoo.plugins.plugins.internal;
 
 import java.util.List;
 

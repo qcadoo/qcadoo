@@ -22,7 +22,7 @@
  * ***************************************************************************
  */
 
-package com.qcadoo.users;
+package com.qcadoo.plugins.users.internal;
 
 import java.util.Locale;
 import java.util.Map;
@@ -35,6 +35,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.google.common.collect.ImmutableMap;
+import com.qcadoo.plugins.users.constants.QcadooUsersConstants;
 import com.qcadoo.security.api.SecurityService;
 import com.qcadoo.view.api.crud.CrudService;
 

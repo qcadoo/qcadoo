@@ -34,7 +34,7 @@
 		]]></script>
 	</component>
 	<hooks>
-		<beforeRender class="com.qcadoo.menu.MenuAdministrationService" method="addRestrictionToCategoriesGrid" />
-		<beforeRender class="com.qcadoo.menu.MenuAdministrationService" method="translateCategoriesGrid" />
+		<beforeRender class="com.qcadoo.plugins.menu.internal.MenuAdministrationService" method="addRestrictionToCategoriesGrid" />
+		<beforeRender class="com.qcadoo.plugins.menu.internal.MenuAdministrationService" method="translateCategoriesGrid" />
 	</hooks>
 </view>
