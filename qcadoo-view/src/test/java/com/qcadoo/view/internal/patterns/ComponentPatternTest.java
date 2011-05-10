@@ -43,7 +43,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.qcadoo.localization.api.TranslationService;
-import com.qcadoo.mes.beans.sample.CustomEntityService;
+import com.qcadoo.model.beans.sample.CustomEntityService;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.components.FormComponent;
 import com.qcadoo.view.internal.ComponentDefinition;

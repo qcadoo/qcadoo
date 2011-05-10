@@ -62,7 +62,6 @@ import com.qcadoo.model.api.ExpressionService;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.aop.Monitorable;
 import com.qcadoo.model.api.search.Order;
-import com.qcadoo.model.api.search.Restrictions;
 import com.qcadoo.model.api.search.SearchCriteria;
 import com.qcadoo.model.api.search.SearchResult;
 import com.qcadoo.model.api.types.HasManyType;
@@ -413,8 +412,8 @@ public class DataAccessServiceImpl implements DataAccessService {
         while (true) {
             String newValue = oldValue + "(" + (index++) + ")";
 
-            int matches = dataDefinition.find().setMaxResults(1).addRestriction(Restrictions.eq(fieldDefinition, newValue))
-                    .list().getTotalNumberOfEntities();
+            int matches = dataDefinition.find().setMaxResults(1).isEq(fieldDefinition.getName(), newValue).list()
+                    .getTotalNumberOfEntities();
 
             if (matches == 0) {
                 return newValue;
