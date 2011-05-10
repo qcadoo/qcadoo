@@ -39,7 +39,7 @@ import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.internal.api.InternalDataDefinitionService;
 import com.qcadoo.plugin.api.PluginManager;
 import com.qcadoo.plugin.api.PluginStateResolver;
-import com.qcadoo.plugin.api.PluginUtils;
+import com.qcadoo.plugin.internal.PluginUtilsService;
 import com.qcadoo.tenant.api.MultiTenantUtil;
 import com.qcadoo.tenant.internal.DefaultMultiTenantService;
 
@@ -78,7 +78,7 @@ public abstract class IntegrationTest {
         PluginStateResolver mockPluginStateResolver = mock(PluginStateResolver.class);
         given(mockPluginStateResolver.isEnabled(Mockito.anyString())).willReturn(true);
 
-        PluginUtils pluginUtil = new PluginUtils();
+        PluginUtilsService pluginUtil = new PluginUtilsService();
         ReflectionTestUtils.setField(pluginUtil, "pluginStateResolver", mockPluginStateResolver);
         pluginUtil.init();
 

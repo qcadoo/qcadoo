@@ -43,7 +43,7 @@ import com.qcadoo.plugin.api.ModuleFactory;
 import com.qcadoo.plugin.api.Plugin;
 import com.qcadoo.plugin.api.PluginState;
 import com.qcadoo.plugin.api.PluginStateResolver;
-import com.qcadoo.plugin.api.PluginUtils;
+import com.qcadoo.plugin.internal.PluginUtilsService;
 import com.qcadoo.plugin.internal.api.InternalPlugin;
 import com.qcadoo.tenant.api.MultiTenantUtil;
 import com.qcadoo.tenant.internal.DefaultMultiTenantService;
@@ -61,7 +61,7 @@ public class ModuleFactoryAccessorTest {
         given(mockPluginStateResolver.isEnabled("plugin1")).willReturn(false);
         given(mockPluginStateResolver.isEnabled("plugin2")).willReturn(true);
 
-        PluginUtils pluginUtil = new PluginUtils();
+        PluginUtilsService pluginUtil = new PluginUtilsService();
         ReflectionTestUtils.setField(pluginUtil, "pluginStateResolver", mockPluginStateResolver);
         pluginUtil.init();
 

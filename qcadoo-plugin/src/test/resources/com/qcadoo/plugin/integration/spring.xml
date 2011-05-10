@@ -46,8 +46,6 @@
 		<property name="username" value="sa" />
 		<property name="password" value="" />
 	</bean>
-	
-	<!--<bean id="pluginStateResolver" class="com.qcadoo.plugin.internal.stateresolver.DefaultPluginStateResolver" />-->
 
 	<bean id="pluginSessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
 		<qualifier value="plugin"/>
