@@ -334,6 +334,10 @@ public final class SearchCriteriaImpl implements SearchCriteriaBuilder, SearchCr
 
     @Override
     public SearchCriteriaBuilder belongsTo(final String fieldName, final Object entityOrId) {
+        if (entityOrId == null) {
+            return addRestriction(new IsNullRestriction(fieldName));
+        }
+
         if (entityOrId instanceof Long) {
             return addRestriction(new BelongsToRestriction(fieldName, (Long) entityOrId));
         } else {
