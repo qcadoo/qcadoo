@@ -27,6 +27,7 @@ package com.qcadoo.view.internal.controllers;
 import java.io.UnsupportedEncodingException;
 import java.util.Locale;
 
+import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -46,10 +47,22 @@ public final class MenuController {
     @RequestMapping(value = "menu", method = RequestMethod.GET)
     public ResponseEntity<String> getMenu(final Locale locale) {
 
+        System.out.println("------------------------- getMenu - begin");
+        try {
+            System.out.println(menuService.getMenu(locale).getAdministrationCategory().getAsJson());
+        } catch (JSONException e1) {
+            e1.printStackTrace();
+        }
+        System.out.println("------------------------- getMenu - end");
         String responseBody = menuService.getMenu(locale).getAsJson();
 
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.add("Content-Type", "text/plain; charset=utf-8");
+        // disable cache
+        responseHeaders.add("Expires", "Tue, 03 Jul 2001 06:00:00 GMT");
+        responseHeaders.add("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
+        responseHeaders.add("Cache-Control", "post-check=0, pre-check=0");
+        responseHeaders.add("Pragma", "no-cache");
         try {
             responseHeaders.add("Content-Length", "" + responseBody.getBytes("utf-8").length);
         } catch (UnsupportedEncodingException e) {
@@ -58,5 +71,4 @@ public final class MenuController {
 
         return new ResponseEntity<String>(responseBody, responseHeaders, HttpStatus.OK);
     }
-
 }

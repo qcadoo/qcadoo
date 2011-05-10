@@ -29,6 +29,7 @@ QCD.ActionEvaluator = function(_pageController) {
 	var pageController = _pageController;
 	
 	this.performJsAction = function(jsBody, scope) {
+//		alert(jsBody);
 		
 		jsBody = " "+Encoder.htmlDecode(jsBody)+" ";
 		
@@ -81,7 +82,9 @@ QCD.ActionEvaluator = function(_pageController) {
 		}
 		
 		try {
+//			alert("1");
 			eval(jsBody);
+//			alert("2");
 		} catch (e) {
 			printError(e);
 		}
