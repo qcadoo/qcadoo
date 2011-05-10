@@ -34,6 +34,6 @@
        http://www.springframework.org/schema/context 
        http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
-	<context:component-scan base-package="com.qcadoo.plugins" />
+	<context:component-scan base-package="com.qcadoo.plugins.plugins" />
 
 </beans>

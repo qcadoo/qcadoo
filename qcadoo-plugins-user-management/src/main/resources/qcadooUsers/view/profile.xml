@@ -48,7 +48,7 @@
 		</component>
 	</component>
 	<hooks>
-		<beforeRender class="com.qcadoo.users.UserService"
+		<beforeRender class="com.qcadoo.plugins.users.internal.UserService"
 			method="removeChangePasswordButtonWhenNotAllowed" />
 	</hooks>
 </view>

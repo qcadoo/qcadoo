@@ -75,16 +75,16 @@
 			<option type="fullscreen" value="true" />
 			<option type="multiselect" value="true" />
 			<listener event="downloadPlugin"
-				class="com.qcadoo.plugins.controller.PluginManagmentViewHook"
+				class="com.qcadoo.plugins.plugins.internal.PluginManagmentViewHook"
 				method="onDownloadButtonClick" />
 			<listener event="enablePlugin"
-				class="com.qcadoo.plugins.controller.PluginManagmentViewHook"
+				class="com.qcadoo.plugins.plugins.internal.PluginManagmentViewHook"
 				method="onEnableButtonClick" />
 			<listener event="disablePlugin"
-				class="com.qcadoo.plugins.controller.PluginManagmentViewHook"
+				class="com.qcadoo.plugins.plugins.internal.PluginManagmentViewHook"
 				method="onDisableButtonClick" />
 			<listener event="removePlugin"
-				class="com.qcadoo.plugins.controller.PluginManagmentViewHook"
+				class="com.qcadoo.plugins.plugins.internal.PluginManagmentViewHook"
 				method="onRemoveButtonClick" />
 			<script>
 				<![CDATA[

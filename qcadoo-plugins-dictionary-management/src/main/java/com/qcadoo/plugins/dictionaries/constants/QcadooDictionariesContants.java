@@ -1,4 +1,4 @@
-package com.qcadoo.dictionaries;
+package com.qcadoo.plugins.dictionaries.constants;
 
 public interface QcadooDictionariesContants {
 

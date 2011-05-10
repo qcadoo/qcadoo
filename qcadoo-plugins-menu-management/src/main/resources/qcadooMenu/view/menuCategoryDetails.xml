@@ -53,6 +53,6 @@
 		]]></script>
 	</component>
 	<hooks>
-		<beforeRender class="com.qcadoo.menu.MenuAdministrationService" method="translateCategoryForm" />
+		<beforeRender class="com.qcadoo.plugins.menu.internal.MenuAdministrationService" method="translateCategoryForm" />
 	</hooks>
 </view>

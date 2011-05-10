@@ -1,4 +1,4 @@
-package com.qcadoo.plugin;
+package com.qcadoo.plugin.constants;
 
 public interface QcadooPluginConstants {
 

@@ -1,4 +1,4 @@
-package com.qcadoo.menu;
+package com.qcadoo.plugins.menu.internal;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +10,6 @@ import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.search.CustomRestriction;
 import com.qcadoo.model.api.search.SearchCriteriaBuilder;
-import com.qcadoo.view.QcadooViewConstants;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.api.components.FormComponent;
@@ -18,6 +17,7 @@ import com.qcadoo.view.api.components.GridComponent;
 import com.qcadoo.view.api.components.WindowComponent;
 import com.qcadoo.view.api.ribbon.Ribbon;
 import com.qcadoo.view.api.utils.TranslationUtilsService;
+import com.qcadoo.view.constants.QcadooViewConstants;
 
 @Service
 public class MenuAdministrationService {

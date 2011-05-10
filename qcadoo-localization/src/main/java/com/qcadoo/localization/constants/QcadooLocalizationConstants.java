@@ -1,4 +1,4 @@
-package com.qcadoo.localization;
+package com.qcadoo.localization.constants;
 
 public interface QcadooLocalizationConstants {
 

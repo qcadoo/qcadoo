@@ -28,7 +28,7 @@ package com.qcadoo.view.internal.api;
 /**
  * Service for manipulating view definitions.
  * 
- * @see com.qcadoo.view.internal.xml.ViewDefinitionParserImpl.ViewDefinitionParser
+ * @see com.qcadoo.view.constants.internal.xml.ViewDefinitionParserImpl.ViewDefinitionParser
  */
 public interface InternalViewDefinitionService extends ViewDefinitionService {
 

@@ -1,4 +1,4 @@
-package com.qcadoo.plugins.controller;
+package com.qcadoo.plugins.plugins.internal;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -19,7 +19,7 @@ import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.plugin.api.VersionOfDependency;
 import com.qcadoo.plugin.api.artifact.InputStreamPluginArtifact;
 import com.qcadoo.plugin.api.artifact.PluginArtifact;
-import com.qcadoo.plugins.QcadooPluginsConstants;
+import com.qcadoo.plugins.plugins.constants.QcadooPluginsConstants;
 import com.qcadoo.view.api.crud.CrudService;
 
 @Controller

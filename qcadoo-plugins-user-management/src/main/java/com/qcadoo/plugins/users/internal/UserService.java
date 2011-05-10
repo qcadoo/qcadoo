@@ -22,7 +22,7 @@
  * ***************************************************************************
  */
 
-package com.qcadoo.users;
+package com.qcadoo.plugins.users.internal;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
