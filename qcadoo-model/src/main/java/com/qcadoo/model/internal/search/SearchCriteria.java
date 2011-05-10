@@ -22,12 +22,12 @@
  * ***************************************************************************
  */
 
-package com.qcadoo.model.api.search;
+package com.qcadoo.model.internal.search;
 
 import java.util.List;
 
 import com.qcadoo.model.api.DataDefinition;
-import com.qcadoo.model.internal.search.Restriction;
+import com.qcadoo.model.api.search.SearchCriteriaBuilder;
 
 /**
  * Object represents the criteria for finding entities. It is used for building SQL query.

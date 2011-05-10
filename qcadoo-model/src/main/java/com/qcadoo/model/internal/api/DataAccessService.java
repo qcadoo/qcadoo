@@ -27,8 +27,8 @@ package com.qcadoo.model.internal.api;
 import java.util.List;
 
 import com.qcadoo.model.api.Entity;
-import com.qcadoo.model.api.search.SearchCriteria;
 import com.qcadoo.model.api.search.SearchResult;
+import com.qcadoo.model.internal.search.SearchCriteria;
 
 public interface DataAccessService {
 

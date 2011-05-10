@@ -25,12 +25,10 @@
 package com.qcadoo.model.api.search;
 
 import com.qcadoo.model.api.Entity;
-import com.qcadoo.model.internal.search.Restriction;
 
 /**
- * Object represents the criteria builer for finding entities.
+ * Object represents the criteria builder for finding entities.
  * 
- * @see com.qcadoo.model.api.search.SearchCriteria
  * @since 0.4.0
  */
 public interface SearchCriteriaBuilder {
@@ -38,7 +36,6 @@ public interface SearchCriteriaBuilder {
     /**
      * Finds entities using this criteria.
      * 
-     * @see com.qcadoo.model.internal.api.DataAccessService#find(SearchCriteria)
      * @return search result
      */
     SearchResult list();
@@ -46,7 +43,6 @@ public interface SearchCriteriaBuilder {
     /**
      * Finds unique entity.
      * 
-     * @see com.qcadoo.model.internal.api.DataAccessService#find(SearchCriteria)
      * @return entity
      */
     Entity uniqueResult();
@@ -54,8 +50,6 @@ public interface SearchCriteriaBuilder {
     /**
      * Sets the ascending order by given field, by default there is an order by id.
      * 
-     * @see SearchCriteria#getOrder()
-     * @see Order#asc(String)
      * @return this search builder
      */
     SearchCriteriaBuilder orderAscBy(String fieldName);
@@ -63,8 +57,6 @@ public interface SearchCriteriaBuilder {
     /**
      * Sets the descending order by given field, by default there is an order by id.
      * 
-     * @see SearchCriteria#getOrder()
-     * @see Order#desc(String)
      * @return this search builder
      */
     SearchCriteriaBuilder orderDescBy(String fieldName);
@@ -74,7 +66,6 @@ public interface SearchCriteriaBuilder {
      * 
      * @param maxResults
      *            max results
-     * @see SearchCriteria#getMaxResults()
      * @return this search builder
      */
     SearchCriteriaBuilder setMaxResults(int maxResults);
@@ -84,25 +75,25 @@ public interface SearchCriteriaBuilder {
      * 
      * @param firstResult
      *            first result
-     * @see SearchCriteria#getFirstResult()
      * @return this search builder
      */
     SearchCriteriaBuilder setFirstResult(int firstResult);
 
     /**
-     * Adds the "equals" restriction.
+     * Adds the "equals to" restriction. If field has string type and value contains "%", "*", "_" or "?" the "like" restriction
+     * will be used.
      * 
-     * @param restriction
-     *            restriction
-     * @see SearchCriteria#getRestrictions()
+     * @param fieldName
+     *            field's name
+     * @param value
+     *            expected value
+     * @see #like(String, String)
      * @return this search builder
-     * @deprecated
      */
-    @Deprecated
-    SearchCriteriaBuilder addRestriction(Restriction restriction);
+    SearchCriteriaBuilder isEq(String fieldName, Object value);
 
     /**
-     * Adds the "equals" restriction.
+     * Adds the "like" restriction.
      * 
      * @param fieldName
      *            field's name
@@ -110,48 +101,200 @@ public interface SearchCriteriaBuilder {
      *            expected value
      * @return this search builder
      */
-    SearchCriteriaBuilder isEq(String fieldName, Object value);
-
     SearchCriteriaBuilder like(String fieldName, String value);
 
+    /**
+     * Adds the "less than or equals to" restriction.
+     * 
+     * @param fieldName
+     *            field's name
+     * @param value
+     *            expected value
+     * @return this search builder
+     */
     SearchCriteriaBuilder isLe(String fieldName, Object value);
 
+    /**
+     * Adds the "less than" restriction.
+     * 
+     * @param fieldName
+     *            field's name
+     * @param value
+     *            expected value
+     * @return this search builder
+     */
     SearchCriteriaBuilder isLt(String fieldName, Object value);
 
+    /**
+     * Adds the "greater than or equals to" restriction.
+     * 
+     * @param fieldName
+     *            field's name
+     * @param value
+     *            expected value
+     * @return this search builder
+     */
     SearchCriteriaBuilder isGe(String fieldName, Object value);
 
+    /**
+     * Adds the "greater than" restriction.
+     * 
+     * @param fieldName
+     *            field's name
+     * @param value
+     *            expected value
+     * @return this search builder
+     */
     SearchCriteriaBuilder isGt(String fieldName, Object value);
 
+    /**
+     * Adds the "not equals to" restriction. If field has string type and value contains "%", "*", "_" or "?" the "not like"
+     * restriction will be used.
+     * 
+     * @param fieldName
+     *            field's name
+     * @param value
+     *            expected value
+     * @see #like(String, String)
+     * @return this search builder
+     */
     SearchCriteriaBuilder isNe(String fieldName, Object value);
 
+    /**
+     * Adds the "not null" restriction.
+     * 
+     * @param fieldName
+     *            field's name
+     * @return this search builder
+     */
     SearchCriteriaBuilder isNotNull(String fieldName);
 
+    /**
+     * Adds the "null" restriction.
+     * 
+     * @param fieldName
+     *            field's name
+     * @return this search builder
+     */
     SearchCriteriaBuilder isNull(String fieldName);
 
+    /**
+     * Open "not" section. The next restriction will be negated.
+     * 
+     * @see #closeNot()
+     * @return this search builder
+     */
     SearchCriteriaBuilder openNot();
 
+    /**
+     * Close "not" section.
+     * 
+     * @see #openNot()
+     * @return this search builder
+     */
     SearchCriteriaBuilder closeNot();
 
+    /**
+     * Open "or" section. Only one restriction in this section must be met.
+     * 
+     * @see #closeOr()
+     * @return this search builder
+     */
     SearchCriteriaBuilder openOr();
 
+    /**
+     * Close "or" section.
+     * 
+     * @see #openOr()
+     * @return this search builder
+     */
     SearchCriteriaBuilder closeOr();
 
+    /**
+     * Open "and" section. All restrictions in this section must be met. This is section is opened by default.
+     * 
+     * @see #closeAnd()
+     * @return this search builder
+     */
     SearchCriteriaBuilder openAnd();
 
+    /**
+     * Close "and" section.
+     * 
+     * @see #openAnd()
+     * @return this search builder
+     */
     SearchCriteriaBuilder closeAnd();
 
+    /**
+     * Adds the "belongs to" restriction. It is equivalent for the "equals" restriction for field "fieldName.id".
+     * 
+     * @param fieldName
+     *            field's name
+     * @param entityOrId
+     *            entity or its id
+     * @return this search builder
+     */
     SearchCriteriaBuilder belongsTo(String fieldName, Object entityOrId);
 
+    /**
+     * Adds the "equals to" restriction for id field.
+     * 
+     * @param id
+     *            expected id
+     * 
+     * @return this search builder
+     */
     SearchCriteriaBuilder isIdEq(Long id);
 
+    /**
+     * Adds the "less than or equals to" restriction for id field.
+     * 
+     * @param id
+     *            expected id
+     * 
+     * @return this search builder
+     */
     SearchCriteriaBuilder isIdLe(Long id);
 
+    /**
+     * Adds the "less than" restriction for id field.
+     * 
+     * @param id
+     *            expected id
+     * 
+     * @return this search builder
+     */
     SearchCriteriaBuilder isIdLt(Long id);
 
+    /**
+     * Adds the "greater than or equals to" restriction for id field.
+     * 
+     * @param id
+     *            expected id
+     * 
+     * @return this search builder
+     */
     SearchCriteriaBuilder isIdGe(Long id);
 
+    /**
+     * Adds the "greater than" restriction for id field.
+     * 
+     * @param id
+     *            expected id
+     * 
+     * @return this search builder
+     */
     SearchCriteriaBuilder isIdGt(Long id);
 
+    /**
+     * Adds the "not equals to" restriction for id field.
+     * 
+     * @param id
+     *            expected id
+     * 
+     * @return this search builder
+     */
     SearchCriteriaBuilder isIdNe(Long id);
 
 }

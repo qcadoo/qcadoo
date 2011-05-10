@@ -22,14 +22,13 @@
  * ***************************************************************************
  */
 
-package com.qcadoo.model.search;
+package com.qcadoo.model.internal.search;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import com.qcadoo.model.api.search.SearchCriteria;
 import com.qcadoo.model.internal.DataAccessTest;
 
 public final class SearchCriteriaBuilderTest extends DataAccessTest {

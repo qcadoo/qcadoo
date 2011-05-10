@@ -22,7 +22,7 @@
  * ***************************************************************************
  */
 
-package com.qcadoo.model.search;
+package com.qcadoo.model.internal.search;
 
 import static org.junit.Assert.assertEquals;
 

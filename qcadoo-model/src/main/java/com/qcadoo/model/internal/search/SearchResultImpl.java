@@ -27,12 +27,9 @@ package com.qcadoo.model.internal.search;
 import java.util.List;
 
 import com.qcadoo.model.api.Entity;
-import com.qcadoo.model.api.search.SearchCriteria;
 import com.qcadoo.model.api.search.SearchResult;
 
 public final class SearchResultImpl implements SearchResult {
-
-    private SearchCriteria searchCriteria;
 
     private List<Entity> results;
 
@@ -45,15 +42,6 @@ public final class SearchResultImpl implements SearchResult {
 
     public void setResults(final List<Entity> results) {
         this.results = results;
-    }
-
-    @Override
-    public SearchCriteria getCriteria() {
-        return searchCriteria;
-    }
-
-    public void setCriteria(final SearchCriteria searchCriteria) {
-        this.searchCriteria = searchCriteria;
     }
 
     @Override

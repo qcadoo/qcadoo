@@ -38,8 +38,6 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.FieldDefinition;
-import com.qcadoo.model.api.search.Order;
-import com.qcadoo.model.api.search.SearchCriteria;
 import com.qcadoo.model.api.search.SearchCriteriaBuilder;
 import com.qcadoo.model.api.search.SearchResult;
 import com.qcadoo.model.api.types.BelongsToType;
@@ -52,7 +50,7 @@ import com.qcadoo.model.internal.search.restrictions.LikeRestriction;
 import com.qcadoo.model.internal.search.restrictions.LogicalOperatorRestriction;
 import com.qcadoo.model.internal.search.restrictions.SimpleRestriction;
 
-public final class SearchCriteriaImpl implements SearchCriteria, SearchCriteriaBuilder {
+public final class SearchCriteriaImpl implements SearchCriteriaBuilder, SearchCriteria {
 
     private static final int DEFAULT_MAX_RESULTS = Integer.MAX_VALUE;
 
@@ -124,8 +122,7 @@ public final class SearchCriteriaImpl implements SearchCriteria, SearchCriteriaB
         }
     }
 
-    @Override
-    public SearchCriteriaBuilder addRestriction(final Restriction restriction) {
+    private SearchCriteriaBuilder addRestriction(final Restriction restriction) {
         this.restrictions.element().add(restriction);
         return this;
     }

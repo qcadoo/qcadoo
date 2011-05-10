@@ -22,7 +22,7 @@
  * ***************************************************************************
  */
 
-package com.qcadoo.model.api.search;
+package com.qcadoo.model.internal.search;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
