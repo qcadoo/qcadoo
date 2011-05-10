@@ -43,7 +43,6 @@ import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.aop.Monitorable;
-import com.qcadoo.model.api.search.Restrictions;
 import com.qcadoo.model.api.search.SearchResult;
 import com.qcadoo.model.internal.api.InternalDictionaryService;
 
@@ -63,7 +62,7 @@ public final class DictionaryServiceImpl implements InternalDictionaryService {
         checkArgument(hasText(dictionary), "dictionary name must be given");
 
         List<Entity> items = dataDefinitionService.get("qcadooModel", "dictionaryItem").find()
-                .addRestriction(Restrictions.eq("dictionary.name", dictionary)).orderAscBy("name").list().getEntities();
+                .isEq("dictionary.name", dictionary).orderAscBy("name").list().getEntities();
 
         List<String> keys = new ArrayList<String>();
 
@@ -81,7 +80,7 @@ public final class DictionaryServiceImpl implements InternalDictionaryService {
         checkArgument(hasText(dictionary), "dictionary name must be given");
 
         List<Entity> items = dataDefinitionService.get("qcadooModel", "dictionaryItem").find()
-                .addRestriction(Restrictions.eq("dictionary.name", dictionary)).orderAscBy("name").list().getEntities();
+                .isEq("dictionary.name", dictionary).orderAscBy("name").list().getEntities();
 
         Map<String, String> values = new LinkedHashMap<String, String>();
 
@@ -116,8 +115,7 @@ public final class DictionaryServiceImpl implements InternalDictionaryService {
     @Transactional
     @Monitorable
     public void createIfNotExists(final String pluginIdentifier, final String name, final String... values) {
-        SearchResult serachResult = dataDefinitionService.get("qcadooModel", "dictionary").find()
-                .addRestriction(Restrictions.eq("name", name)).list();
+        SearchResult serachResult = dataDefinitionService.get("qcadooModel", "dictionary").find().isEq("name", name).list();
         if (serachResult.getTotalNumberOfEntities() > 0) {
             Entity dictionaryEntity = serachResult.getEntities().get(0);
             dictionaryEntity.setField("active", true);
@@ -142,8 +140,8 @@ public final class DictionaryServiceImpl implements InternalDictionaryService {
 
     @Override
     public String getName(final String dictionaryName, final Locale locale) {
-        Entity dictionary = dataDefinitionService.get("qcadooModel", "dictionary").find()
-                .addRestriction(Restrictions.eq("name", dictionaryName)).setMaxResults(1).uniqueResult();
+        Entity dictionary = dataDefinitionService.get("qcadooModel", "dictionary").find().isEq("name", dictionaryName)
+                .setMaxResults(1).uniqueResult();
         return translationService.translate(dictionary.getStringField("pluginIdentifier") + "." + dictionaryName + ".dictionary",
                 locale);
     }
@@ -152,9 +150,7 @@ public final class DictionaryServiceImpl implements InternalDictionaryService {
     @Transactional
     @Monitorable
     public void disable(final String pluginIdentifier, final String name) {
-        // TODO masz disable
-        SearchResult serachResult = dataDefinitionService.get("qcadooModel", "dictionary").find()
-                .addRestriction(Restrictions.eq("name", name)).list();
+        SearchResult serachResult = dataDefinitionService.get("qcadooModel", "dictionary").find().isEq("name", name).list();
         if (serachResult.getTotalNumberOfEntities() > 0) {
             Entity dictionaryEntity = serachResult.getEntities().get(0);
             dictionaryEntity.setField("active", false);

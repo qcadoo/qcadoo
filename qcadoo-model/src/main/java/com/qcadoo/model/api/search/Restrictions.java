@@ -68,22 +68,6 @@ public final class Restrictions {
         return createEqRestriction(fieldDefinition.getName(), value.getValue());
     }
 
-    /**
-     * Create "equals" restriction for given field's name. If expected value contains "%", "*", "?" or "_" sql "like" restriction
-     * will be used.
-     * 
-     * @param fieldName
-     *            field's name
-     * @param expectedValue
-     *            expected value
-     * @return restriction
-     * @deprecated
-     */
-    @Deprecated
-    public static Restriction eq(final String fieldName, final Object expectedValue) {
-        return createEqRestriction(fieldName, expectedValue);
-    }
-
     private static Restriction createEqRestriction(final String fieldName, final Object expectedValue) {
         if (expectedValue instanceof String && ((String) expectedValue).matches(".*[\\*%\\?_].*")) {
             String preperadValue = ((String) expectedValue).replace('*', '%').replace('?', '_');
