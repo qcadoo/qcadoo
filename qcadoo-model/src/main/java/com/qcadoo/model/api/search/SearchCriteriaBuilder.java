@@ -227,7 +227,7 @@ public interface SearchCriteriaBuilder {
     SearchCriteriaBuilder closeAnd();
 
     /**
-     * Adds the "belongs to" restriction. It is equivalent for the "equals" restriction for field "fieldName.id".
+     * Adds the "belongs to" restriction.
      * 
      * @param fieldName
      *            field's name

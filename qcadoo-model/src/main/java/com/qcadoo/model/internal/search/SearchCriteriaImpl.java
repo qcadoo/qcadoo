@@ -384,7 +384,7 @@ public final class SearchCriteriaImpl implements SearchCriteriaBuilder, SearchCr
         for (int i = 0; i < path.length; i++) {
 
             if (tmpDataDefinition.getField(path[i]) == null) {
-                return null;
+                throw new IllegalStateException("Cannot resolve field " + field + " of " + dataDefinition);
             }
 
             FieldDefinition fieldDefinition = tmpDataDefinition.getField(path[i]);
@@ -394,14 +394,14 @@ public final class SearchCriteriaImpl implements SearchCriteriaBuilder, SearchCr
                     tmpDataDefinition = ((BelongsToType) fieldDefinition.getType()).getDataDefinition();
                     continue;
                 } else {
-                    return null;
+                    throw new IllegalStateException("Cannot resolve field " + field + " of " + dataDefinition);
                 }
             }
 
             return fieldDefinition;
         }
 
-        return null;
+        throw new IllegalStateException("Cannot resolve field " + field + " of " + dataDefinition);
     }
 
     private ValueAndError validateValue(final FieldDefinition fieldDefinition, final Object value) {
