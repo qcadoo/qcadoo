@@ -35,7 +35,7 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 
-import com.qcadoo.model.api.search.Restriction;
+import com.qcadoo.model.internal.search.Restriction;
 import com.qcadoo.model.internal.search.RestrictionLogicalOperator;
 
 public class LogicalOperatorRestriction implements Restriction {
@@ -114,6 +114,11 @@ public class LogicalOperatorRestriction implements Restriction {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return operator.getValue() + "(" + Arrays.toString(restrictions) + ")";
     }
 
 }

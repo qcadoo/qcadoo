@@ -30,7 +30,6 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import com.qcadoo.mes.internal.DataAccessTest;
-import com.qcadoo.model.api.search.Restrictions;
 import com.qcadoo.model.api.search.SearchCriteria;
 
 public final class SearchCriteriaBuilderTest extends DataAccessTest {
@@ -49,21 +48,10 @@ public final class SearchCriteriaBuilderTest extends DataAccessTest {
         assertTrue(searchCriteria.getRestrictions().isEmpty());
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void shouldThrownAnExceptionIfThereIsTooManyRestrictions() throws Exception {
-        // when
-        dataDefinition.find().addRestriction(Restrictions.eq(fieldDefinitionAge, 5))
-                .addRestriction(Restrictions.eq(fieldDefinitionName, "asb%"))
-                .addRestriction(Restrictions.eq(fieldDefinitionName, "asd%"))
-                .addRestriction(Restrictions.eq(fieldDefinitionName, "asw%"))
-                .addRestriction(Restrictions.eq(fieldDefinitionName, "asg%"))
-                .addRestriction(Restrictions.eq(fieldDefinitionName, "asu%"));
-    }
-
     @Test(expected = NullPointerException.class)
     public void shouldThrownAnExceptionIfOrderIsNull() throws Exception {
         // when
-        dataDefinition.find().setOrderAscBy(null);
+        dataDefinition.find().orderAscBy(null);
     }
 
 }

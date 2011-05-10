@@ -26,32 +26,22 @@ package com.qcadoo.view.internal.components.grid;
 
 import java.text.ParseException;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.springframework.util.StringUtils;
 
-import com.qcadoo.localization.api.utils.DateUtils;
-import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.search.CustomRestriction;
-import com.qcadoo.model.api.search.Restriction;
-import com.qcadoo.model.api.search.RestrictionOperator;
-import com.qcadoo.model.api.search.Restrictions;
 import com.qcadoo.model.api.search.SearchCriteriaBuilder;
 import com.qcadoo.model.api.search.SearchResult;
-import com.qcadoo.model.api.types.BelongsToType;
 import com.qcadoo.view.api.components.GridComponent;
 import com.qcadoo.view.internal.states.AbstractComponentState;
 
@@ -415,12 +405,12 @@ public final class GridComponentState extends AbstractComponentState implements 
             if (belongsToFieldDefinition == null || belongsToEntityId != null) {
                 SearchCriteriaBuilder criteria = getDataDefinition().find();
                 if (belongsToFieldDefinition != null) {
-                    criteria.addRestriction(Restrictions.belongsTo(belongsToFieldDefinition, belongsToEntityId));
+                    criteria.belongsTo(belongsToFieldDefinition.getName(), belongsToEntityId);
                 }
 
                 try {
                     if (filtersEnabled) {
-                        addFilters(criteria);
+                        GridComponentFilterUtils.addFilters(filters, columns, getDataDefinition(), criteria);
                     }
 
                     if (customRestriction != null) {
@@ -454,182 +444,18 @@ public final class GridComponentState extends AbstractComponentState implements 
             criteria.setMaxResults(maxResults);
         }
 
-        private void addFilters(final SearchCriteriaBuilder criteria) throws ParseException {
-            for (Map.Entry<String, String> filter : filters.entrySet()) {
-                String field = getFieldNameByColumnName(filter.getKey());
-
-                if (field != null) {
-                    FieldDefinition fieldDefinition = getFieldDefinition(field);
-
-                    Map.Entry<RestrictionOperator, String> parsedFilterValue = parseFilterValue(filter.getValue());
-
-                    if ("".equals(parsedFilterValue.getValue())) {
-                        continue;
-                    }
-
-                    if (fieldDefinition != null && String.class.isAssignableFrom(fieldDefinition.getType().getType())) {
-
-                        criteria.addRestriction(getRestrictionsToString(parsedFilterValue, fieldDefinition));
-
-                    } else if (fieldDefinition != null && Boolean.class.isAssignableFrom(fieldDefinition.getType().getType())) {
-                        criteria.addRestriction(Restrictions.forOperator(parsedFilterValue.getKey(), fieldDefinition,
-                                "1".equals(parsedFilterValue.getValue())));
-                    } else if (fieldDefinition != null && Date.class.isAssignableFrom(fieldDefinition.getType().getType())) {
-
-                        criteria.addRestriction(getRestrictionsToDate(parsedFilterValue, fieldDefinition));
-
-                    } else {
-                        criteria.addRestriction(Restrictions.forOperator(parsedFilterValue.getKey(), fieldDefinition,
-                                parsedFilterValue.getValue()));
-                    }
-                }
-            }
-        }
-
-        private Restriction getRestrictionsToString(final Map.Entry<RestrictionOperator, String> parsedFilterValue,
-                final FieldDefinition fieldDefinition) {
-            if (parsedFilterValue.getKey().equals(RestrictionOperator.EQ)) {
-                return Restrictions.eq(fieldDefinition, parsedFilterValue.getValue() + "*");
-            } else if (parsedFilterValue.getKey().equals(RestrictionOperator.NE)) {
-                return Restrictions.not(Restrictions.eq(fieldDefinition, parsedFilterValue.getValue() + "*"));
-            } else if (parsedFilterValue.getKey().equals(RestrictionOperator.GT)) {
-                return Restrictions.and(Restrictions.gt(fieldDefinition, parsedFilterValue.getValue()),
-                        Restrictions.not(Restrictions.eq(fieldDefinition, parsedFilterValue.getValue() + "*")));
-            } else if (parsedFilterValue.getKey().equals(RestrictionOperator.GE)) {
-                return Restrictions.ge(fieldDefinition, parsedFilterValue.getValue());
-            } else if (parsedFilterValue.getKey().equals(RestrictionOperator.LT)) {
-                return Restrictions.lt(fieldDefinition, parsedFilterValue.getValue());
-            } else if (parsedFilterValue.getKey().equals(RestrictionOperator.LE)) {
-                return Restrictions.or(Restrictions.le(fieldDefinition, parsedFilterValue.getValue()),
-                        Restrictions.eq(fieldDefinition, parsedFilterValue.getValue() + "*"));
-            }
-            throw new IllegalStateException("unknown operator");
-        }
-
-        private Restriction getRestrictionsToDate(final Map.Entry<RestrictionOperator, String> parsedFilterValue,
-                final FieldDefinition fieldDefinition) throws ParseException {
-            Date minDate = DateUtils.parseAndComplete(parsedFilterValue.getValue(), false);
-            Date maxDate = DateUtils.parseAndComplete(parsedFilterValue.getValue(), true);
-            if (minDate == null || maxDate == null) {
-                throw new ParseException("wrong date", 1);
-            }
-            if (parsedFilterValue.getKey().equals(RestrictionOperator.EQ)) {
-                return Restrictions.and(Restrictions.ge(fieldDefinition, minDate), Restrictions.le(fieldDefinition, maxDate));
-            } else if (parsedFilterValue.getKey().equals(RestrictionOperator.NE)) {
-                return Restrictions.or(Restrictions.lt(fieldDefinition, minDate), Restrictions.gt(fieldDefinition, maxDate));
-            } else if (parsedFilterValue.getKey().equals(RestrictionOperator.GT)) {
-                return Restrictions.gt(fieldDefinition, maxDate);
-            } else if (parsedFilterValue.getKey().equals(RestrictionOperator.GE)) {
-                return Restrictions.ge(fieldDefinition, minDate);
-            } else if (parsedFilterValue.getKey().equals(RestrictionOperator.LT)) {
-                return Restrictions.lt(fieldDefinition, minDate);
-            } else if (parsedFilterValue.getKey().equals(RestrictionOperator.LE)) {
-                return Restrictions.le(fieldDefinition, maxDate);
-            }
-            throw new IllegalStateException("unknown operator");
-        }
-
-        private Map.Entry<RestrictionOperator, String> parseFilterValue(final String filterValue) {
-            RestrictionOperator operator = RestrictionOperator.EQ;
-            String value;
-            if (filterValue.charAt(0) == '>') {
-                if (filterValue.length() > 1 && filterValue.charAt(1) == '=') {
-                    operator = RestrictionOperator.GE;
-                    value = filterValue.substring(2);
-                } else if (filterValue.length() > 1 && filterValue.charAt(1) == '<') {
-                    operator = RestrictionOperator.NE;
-                    value = filterValue.substring(2);
-                } else {
-                    operator = RestrictionOperator.GT;
-                    value = filterValue.substring(1);
-                }
-            } else if (filterValue.charAt(0) == '<') {
-                if (filterValue.length() > 1 && filterValue.charAt(1) == '=') {
-                    operator = RestrictionOperator.LE;
-                    value = filterValue.substring(2);
-                } else if (filterValue.length() > 1 && filterValue.charAt(1) == '>') {
-                    operator = RestrictionOperator.NE;
-                    value = filterValue.substring(2);
-                } else {
-                    operator = RestrictionOperator.LT;
-                    value = filterValue.substring(1);
-                }
-            } else if (filterValue.charAt(0) == '=') {
-                if (filterValue.length() > 1 && filterValue.charAt(1) == '<') {
-                    operator = RestrictionOperator.LE;
-                    value = filterValue.substring(2);
-                } else if (filterValue.length() > 1 && filterValue.charAt(1) == '>') {
-                    operator = RestrictionOperator.GE;
-                    value = filterValue.substring(2);
-                } else if (filterValue.length() > 1 && filterValue.charAt(1) == '=') {
-                    value = filterValue.substring(2);
-                } else {
-                    value = filterValue.substring(1);
-                }
-            } else {
-                value = filterValue;
-            }
-            return Collections.singletonMap(operator, value.trim()).entrySet().iterator().next();
-        }
-
-        private FieldDefinition getFieldDefinition(final String field) {
-            String[] path = field.split("\\.");
-
-            DataDefinition dataDefinition = getDataDefinition();
-
-            for (int i = 0; i < path.length; i++) {
-                if (dataDefinition.getField(path[i]) == null) {
-                    return null;
-                }
-
-                FieldDefinition fieldDefinition = dataDefinition.getField(path[i]);
-
-                if (i < path.length - 1) {
-                    if (fieldDefinition.getType() instanceof BelongsToType) {
-                        dataDefinition = ((BelongsToType) fieldDefinition.getType()).getDataDefinition();
-                        continue;
-                    } else {
-                        return null;
-                    }
-                }
-
-                return fieldDefinition;
-            }
-
-            return null;
-        }
-
         private void addOrder(final SearchCriteriaBuilder criteria) {
             if (orderColumn != null) {
-                String field = getFieldNameByColumnName(orderColumn);
+                String field = GridComponentFilterUtils.getFieldNameByColumnName(columns, orderColumn);
 
                 if (field != null) {
                     if ("asc".equals(orderDirection)) {
-                        criteria.setOrderAscBy(field);
+                        criteria.orderAscBy(field);
                     } else {
-                        criteria.setOrderDescBy(field);
+                        criteria.orderDescBy(field);
                     }
                 }
             }
-        }
-
-        private String getFieldNameByColumnName(final String columnName) {
-            GridComponentColumn column = columns.get(columnName);
-
-            if (column == null) {
-                return null;
-            }
-
-            if (StringUtils.hasText(column.getExpression())) {
-                Matcher matcher = Pattern.compile("#(\\w+)\\['(\\w+)'\\]").matcher(column.getExpression());
-                if (matcher.matches()) {
-                    return matcher.group(1) + "." + matcher.group(2);
-                }
-            } else if (column.getFields().size() == 1) {
-                return column.getFields().get(0).getName();
-            }
-
-            return null;
         }
 
         private boolean repeatWithFixedFirstResult(final SearchResult result) {

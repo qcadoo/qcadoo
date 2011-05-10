@@ -70,7 +70,7 @@ public class EntityTreeImplTest {
         DataDefinition dataDefinition = mock(DataDefinition.class, RETURNS_DEEP_STUBS);
         given(dataDefinition.getField("tree")).willReturn(fieldDefinition);
         given(
-                dataDefinition.find().addRestriction(Restrictions.belongsTo(fieldDefinition, 1L)).setOrderAscBy("priority").list()
+                dataDefinition.find().addRestriction(Restrictions.belongsTo(fieldDefinition, 1L)).orderAscBy("priority").list()
                         .getEntities()).willReturn(entities);
 
         EntityTreeImpl tree = new EntityTreeImpl(dataDefinition, "tree", 1L);
@@ -105,7 +105,7 @@ public class EntityTreeImplTest {
         DataDefinition dataDefinition = mock(DataDefinition.class, RETURNS_DEEP_STUBS);
         given(dataDefinition.getField("tree")).willReturn(fieldDefinition);
         given(
-                dataDefinition.find().addRestriction(Restrictions.belongsTo(fieldDefinition, 1L)).setOrderAscBy("priority").list()
+                dataDefinition.find().addRestriction(Restrictions.belongsTo(fieldDefinition, 1L)).orderAscBy("priority").list()
                         .getEntities()).willReturn(entities);
 
         EntityTreeImpl tree = new EntityTreeImpl(dataDefinition, "tree", 1L);
@@ -134,7 +134,7 @@ public class EntityTreeImplTest {
         DataDefinition dataDefinition = mock(DataDefinition.class, RETURNS_DEEP_STUBS);
         given(dataDefinition.getField("tree")).willReturn(fieldDefinition);
         given(
-                dataDefinition.find().addRestriction(Restrictions.belongsTo(fieldDefinition, 1L)).setOrderAscBy("priority").list()
+                dataDefinition.find().addRestriction(Restrictions.belongsTo(fieldDefinition, 1L)).orderAscBy("priority").list()
                         .getEntities()).willReturn(entities);
 
         EntityTreeImpl tree = new EntityTreeImpl(dataDefinition, "tree", 1L);
@@ -154,7 +154,7 @@ public class EntityTreeImplTest {
         DataDefinition dataDefinition = mock(DataDefinition.class, RETURNS_DEEP_STUBS);
         given(dataDefinition.getField("tree")).willReturn(fieldDefinition);
         given(
-                dataDefinition.find().addRestriction(Restrictions.belongsTo(fieldDefinition, 1L)).setOrderAscBy("priority").list()
+                dataDefinition.find().addRestriction(Restrictions.belongsTo(fieldDefinition, 1L)).orderAscBy("priority").list()
                         .getEntities()).willReturn(entities);
 
         EntityTreeImpl tree = new EntityTreeImpl(dataDefinition, "tree", 1L);

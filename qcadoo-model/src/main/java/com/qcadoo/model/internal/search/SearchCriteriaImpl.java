@@ -25,28 +25,35 @@
 package com.qcadoo.model.internal.search;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.LinkedList;
+import java.util.List;
 
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
+import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.search.Order;
-import com.qcadoo.model.api.search.Restriction;
 import com.qcadoo.model.api.search.SearchCriteria;
 import com.qcadoo.model.api.search.SearchCriteriaBuilder;
 import com.qcadoo.model.api.search.SearchResult;
 import com.qcadoo.model.internal.api.InternalDataDefinition;
+import com.qcadoo.model.internal.api.ValueAndError;
+import com.qcadoo.model.internal.search.restrictions.BelongsToRestriction;
+import com.qcadoo.model.internal.search.restrictions.IsNotNullRestriction;
+import com.qcadoo.model.internal.search.restrictions.IsNullRestriction;
+import com.qcadoo.model.internal.search.restrictions.LikeRestriction;
+import com.qcadoo.model.internal.search.restrictions.LogicalOperatorRestriction;
+import com.qcadoo.model.internal.search.restrictions.SimpleRestriction;
 
 public final class SearchCriteriaImpl implements SearchCriteria, SearchCriteriaBuilder {
 
     private static final int DEFAULT_MAX_RESULTS = Integer.MAX_VALUE;
-
-    private static final int MAX_RESTRICTIONS = 5;
 
     private int maxResults = DEFAULT_MAX_RESULTS;
 
@@ -54,7 +61,7 @@ public final class SearchCriteriaImpl implements SearchCriteria, SearchCriteriaB
 
     private Order order;
 
-    private final Set<Restriction> restrictions = new HashSet<Restriction>();
+    private final Deque<List<Restriction>> restrictions = new LinkedList<List<Restriction>>();
 
     private final DataDefinition dataDefinition;
 
@@ -66,6 +73,7 @@ public final class SearchCriteriaImpl implements SearchCriteria, SearchCriteriaB
         } else {
             order = Order.asc();
         }
+        restrictions.offerFirst(new ArrayList<Restriction>());
     }
 
     @Override
@@ -89,8 +97,12 @@ public final class SearchCriteriaImpl implements SearchCriteria, SearchCriteriaB
     }
 
     @Override
-    public Set<Restriction> getRestrictions() {
-        return restrictions;
+    public List<Restriction> getRestrictions() {
+        if (restrictions.size() == 1) {
+            return restrictions.element();
+        } else {
+            throw new IllegalStateException("Restrictions stack must have exactly one element, found " + restrictions.size());
+        }
     }
 
     @Override
@@ -113,20 +125,19 @@ public final class SearchCriteriaImpl implements SearchCriteria, SearchCriteriaB
 
     @Override
     public SearchCriteriaBuilder addRestriction(final Restriction restriction) {
-        checkState(restrictions.size() < MAX_RESTRICTIONS, "too many restriction, max is %s", MAX_RESTRICTIONS);
-        this.restrictions.add(restriction);
+        this.restrictions.element().add(restriction);
         return this;
     }
 
     @Override
-    public SearchCriteriaBuilder setOrderAscBy(final String fieldName) {
+    public SearchCriteriaBuilder orderAscBy(final String fieldName) {
         checkNotNull(fieldName);
         this.order = Order.asc(fieldName);
         return this;
     }
 
     @Override
-    public SearchCriteriaBuilder setOrderDescBy(final String fieldName) {
+    public SearchCriteriaBuilder orderDescBy(final String fieldName) {
         checkNotNull(fieldName);
         this.order = Order.desc(fieldName);
         return this;
@@ -159,5 +170,223 @@ public final class SearchCriteriaImpl implements SearchCriteria, SearchCriteriaB
         return "SearchCriteria[dataDefinition=" + dataDefinition.getPluginIdentifier() + "." + dataDefinition.getName()
                 + ", maxResults=" + maxResults + ", firstResult=" + firstResult + ", order=" + order + ", restrictions="
                 + restrictions + "]";
+    }
+
+    @Override
+    public SearchCriteriaBuilder like(final String fieldName, final String value) {
+        return addRestriction(new LikeRestriction(fieldName, value.replace('*', '%').replace('?', '_')));
+    }
+
+    @Override
+    public SearchCriteriaBuilder isEq(final String fieldName, final Object value) {
+        if (isLikeRestriction(value)) {
+            return like(fieldName, (String) value);
+        }
+
+        ValueAndError valueAndError = validateValue(dataDefinition.getField(fieldName), value);
+
+        if (!valueAndError.isValid()) {
+            return this;
+        }
+
+        return addRestriction(new SimpleRestriction(fieldName, valueAndError.getValue(), RestrictionOperator.EQ));
+    }
+
+    private boolean isLikeRestriction(final Object value) {
+        return value instanceof String && ((String) value).matches(".*[\\*%\\?_].*");
+    }
+
+    @Override
+    public SearchCriteriaBuilder isLe(final String fieldName, final Object value) {
+        ValueAndError valueAndError = validateValue(dataDefinition.getField(fieldName), value);
+
+        if (!valueAndError.isValid()) {
+            return this;
+        }
+
+        return addRestriction(new SimpleRestriction(fieldName, valueAndError.getValue(), RestrictionOperator.LE));
+    }
+
+    @Override
+    public SearchCriteriaBuilder isLt(final String fieldName, final Object value) {
+        ValueAndError valueAndError = validateValue(dataDefinition.getField(fieldName), value);
+
+        if (!valueAndError.isValid()) {
+            return this;
+        }
+
+        return addRestriction(new SimpleRestriction(fieldName, valueAndError.getValue(), RestrictionOperator.LT));
+    }
+
+    @Override
+    public SearchCriteriaBuilder isGe(final String fieldName, final Object value) {
+        ValueAndError valueAndError = validateValue(dataDefinition.getField(fieldName), value);
+
+        if (!valueAndError.isValid()) {
+            return this;
+        }
+
+        return addRestriction(new SimpleRestriction(fieldName, valueAndError.getValue(), RestrictionOperator.GE));
+    }
+
+    @Override
+    public SearchCriteriaBuilder isGt(final String fieldName, final Object value) {
+        ValueAndError valueAndError = validateValue(dataDefinition.getField(fieldName), value);
+
+        if (!valueAndError.isValid()) {
+            return this;
+        }
+
+        return addRestriction(new SimpleRestriction(fieldName, valueAndError.getValue(), RestrictionOperator.GT));
+    }
+
+    @Override
+    public SearchCriteriaBuilder isNe(final String fieldName, final Object value) {
+        if (isLikeRestriction(value)) {
+            return openNot().like(fieldName, (String) value).closeNot();
+        }
+
+        ValueAndError valueAndError = validateValue(dataDefinition.getField(fieldName), value);
+
+        if (!valueAndError.isValid()) {
+            return this;
+        }
+
+        return addRestriction(new SimpleRestriction(fieldName, valueAndError.getValue(), RestrictionOperator.NE));
+    }
+
+    @Override
+    public SearchCriteriaBuilder isNotNull(final String fieldName) {
+        return addRestriction(new IsNotNullRestriction(fieldName));
+    }
+
+    @Override
+    public SearchCriteriaBuilder isNull(final String fieldName) {
+        return addRestriction(new IsNullRestriction(fieldName));
+    }
+
+    @Override
+    public SearchCriteriaBuilder openNot() {
+        restrictions.offerFirst(new ArrayList<Restriction>());
+        return this;
+    }
+
+    @Override
+    public SearchCriteriaBuilder closeNot() {
+        List<Restriction> notRestrictions = restrictions.remove();
+
+        if (restrictions.size() < 1) {
+            throw new IllegalStateException("Restrictions stack is empty : " + notRestrictions);
+        }
+
+        if (notRestrictions.size() > 1) {
+            return addRestriction(new LogicalOperatorRestriction(RestrictionLogicalOperator.NOT, new LogicalOperatorRestriction(
+                    RestrictionLogicalOperator.AND, notRestrictions.toArray(new Restriction[notRestrictions.size()]))));
+        } else if (notRestrictions.size() > 0) {
+            return addRestriction(new LogicalOperatorRestriction(RestrictionLogicalOperator.NOT,
+                    notRestrictions.toArray(new Restriction[notRestrictions.size()])));
+        } else {
+            return this;
+        }
+    }
+
+    @Override
+    public SearchCriteriaBuilder openOr() {
+        restrictions.offerFirst(new ArrayList<Restriction>());
+        return this;
+    }
+
+    @Override
+    public SearchCriteriaBuilder closeOr() {
+        List<Restriction> orRestrictions = restrictions.remove();
+
+        if (restrictions.size() < 1) {
+            throw new IllegalStateException("Restrictions stack is empty : " + orRestrictions);
+        }
+
+        if (orRestrictions.size() > 0) {
+            return addRestriction(new LogicalOperatorRestriction(RestrictionLogicalOperator.OR,
+                    orRestrictions.toArray(new Restriction[orRestrictions.size()])));
+        } else {
+            return this;
+        }
+    }
+
+    @Override
+    public SearchCriteriaBuilder openAnd() {
+        restrictions.offerFirst(new ArrayList<Restriction>());
+        return this;
+    }
+
+    @Override
+    public SearchCriteriaBuilder closeAnd() {
+        List<Restriction> andRestrictions = restrictions.remove();
+
+        if (restrictions.size() < 1) {
+            throw new IllegalStateException("Restrictions stack is empty : " + andRestrictions);
+        }
+
+        if (andRestrictions.size() > 0) {
+            return addRestriction(new LogicalOperatorRestriction(RestrictionLogicalOperator.AND,
+                    andRestrictions.toArray(new Restriction[andRestrictions.size()])));
+        } else {
+            return this;
+        }
+    }
+
+    @Override
+    public SearchCriteriaBuilder belongsTo(final String fieldName, final Object entityOrId) {
+        if (entityOrId instanceof Long) {
+            return addRestriction(new BelongsToRestriction(fieldName, (Long) entityOrId));
+        } else {
+            try {
+                return addRestriction(new BelongsToRestriction(fieldName, (Long) PropertyUtils.getProperty(entityOrId, "id")));
+            } catch (Exception e) {
+                throw new IllegalStateException("cannot get value of the property: " + entityOrId.getClass().getSimpleName()
+                        + ", id", e);
+            }
+        }
+    }
+
+    @Override
+    public SearchCriteriaBuilder isIdEq(final Long id) {
+        return addRestriction(new SimpleRestriction("id", id, RestrictionOperator.EQ));
+    }
+
+    @Override
+    public SearchCriteriaBuilder isIdLe(final Long id) {
+        return addRestriction(new SimpleRestriction("id", id, RestrictionOperator.LE));
+    }
+
+    @Override
+    public SearchCriteriaBuilder isIdLt(final Long id) {
+        return addRestriction(new SimpleRestriction("id", id, RestrictionOperator.LT));
+    }
+
+    @Override
+    public SearchCriteriaBuilder isIdGe(final Long id) {
+        return addRestriction(new SimpleRestriction("id", id, RestrictionOperator.GE));
+    }
+
+    @Override
+    public SearchCriteriaBuilder isIdGt(final Long id) {
+        return addRestriction(new SimpleRestriction("id", id, RestrictionOperator.GT));
+    }
+
+    @Override
+    public SearchCriteriaBuilder isIdNe(final Long id) {
+        return addRestriction(new SimpleRestriction("id", id, RestrictionOperator.NE));
+    }
+
+    private ValueAndError validateValue(final FieldDefinition fieldDefinition, final Object value) {
+        Object fieldValue = value;
+        if (fieldValue != null && !fieldDefinition.getType().getType().isInstance(fieldValue)) {
+            if (fieldValue instanceof String) {
+                return fieldDefinition.getType().toObject(fieldDefinition, fieldValue);
+            } else {
+                return ValueAndError.empty();
+            }
+        }
+        return ValueAndError.withoutError(fieldValue);
     }
 }

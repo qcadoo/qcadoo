@@ -68,7 +68,7 @@ public final class MenuServiceImpl implements InternalMenuService {
 
         MenuDefinition menuDefinition = new MenuDefinition();
 
-        List<Entity> menuCategories = getDataDefinition("category").find().setOrderAscBy("succession").list().getEntities();
+        List<Entity> menuCategories = getDataDefinition("category").find().orderAscBy("succession").list().getEntities();
 
         for (Entity menuCategory : menuCategories) {
             String label = menuCategory.getStringField("name");
@@ -81,7 +81,7 @@ public final class MenuServiceImpl implements InternalMenuService {
 
             List<Entity> menuItems = getDataDefinition("item").find()
                     .addRestriction(Restrictions.belongsTo(getDataDefinition("item").getField("category"), menuCategory))
-                    .setOrderAscBy("succession").list().getEntities();
+                    .orderAscBy("succession").list().getEntities();
 
             for (Entity menuItem : menuItems) {
                 if (!(Boolean) menuItem.getField("active")) {

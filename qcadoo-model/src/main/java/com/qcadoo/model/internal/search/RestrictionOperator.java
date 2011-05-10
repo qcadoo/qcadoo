@@ -22,56 +22,58 @@
  * ***************************************************************************
  */
 
-package com.qcadoo.model.api.search;
-
-import java.util.List;
-
-import com.qcadoo.model.api.DataDefinition;
-import com.qcadoo.model.internal.search.Restriction;
+package com.qcadoo.model.internal.search;
 
 /**
- * Object represents the criteria for finding entities. It is used for building SQL query.
+ * Restriction comparison operator.
  * 
  * @since 0.4.0
  */
-public interface SearchCriteria {
+public enum RestrictionOperator {
 
     /**
-     * Returns max results.
-     * 
-     * @return max results
-     * @see SearchCriteriaBuilder#setMaxResults(int)
+     * Equals.
      */
-    int getMaxResults();
+    EQ("="),
 
     /**
-     * Returns first result.
-     * 
-     * @return first result
-     * @see SearchCriteriaBuilder#setFirstResult(int)
+     * Greaten than or equals.
      */
-    int getFirstResult();
+    GE(">="),
 
     /**
-     * Returns search order.
-     * 
-     * @return order
+     * Greaten than.
      */
-    Order getOrder();
+    GT(">"),
 
     /**
-     * Returns list of search restrictions.
-     * 
-     * @return restrictions
-     * @see SearchCriteriaBuilder#addRestriction(Restriction)
+     * Less than or equals.
      */
-    List<Restriction> getRestrictions();
+    LE("<="),
 
     /**
-     * Returns data definition for searching entities.
-     * 
-     * @return data definition
+     * Less than.
      */
-    DataDefinition getDataDefinition();
+    LT("<"),
+
+    /**
+     * Not equals.
+     */
+    NE("<>");
+
+    private String value;
+
+    private RestrictionOperator(final String value) {
+        this.value = value;
+    }
+
+    /**
+     * HQL representation of operator.
+     * 
+     * @return representation of operator
+     */
+    public String getValue() {
+        return value;
+    }
 
 }

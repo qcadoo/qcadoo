@@ -25,6 +25,7 @@
 package com.qcadoo.model.api.search;
 
 import com.qcadoo.model.api.Entity;
+import com.qcadoo.model.internal.search.Restriction;
 
 /**
  * Object represents the criteria builer for finding entities.
@@ -51,23 +52,13 @@ public interface SearchCriteriaBuilder {
     Entity uniqueResult();
 
     /**
-     * Adds the restriction.
-     * 
-     * @param restriction
-     *            restriction
-     * @see SearchCriteria#getRestrictions()
-     * @return this search builder
-     */
-    SearchCriteriaBuilder addRestriction(Restriction restriction);
-
-    /**
      * Sets the ascending order by given field, by default there is an order by id.
      * 
      * @see SearchCriteria#getOrder()
      * @see Order#asc(String)
      * @return this search builder
      */
-    SearchCriteriaBuilder setOrderAscBy(String fieldName);
+    SearchCriteriaBuilder orderAscBy(String fieldName);
 
     /**
      * Sets the descending order by given field, by default there is an order by id.
@@ -76,7 +67,7 @@ public interface SearchCriteriaBuilder {
      * @see Order#desc(String)
      * @return this search builder
      */
-    SearchCriteriaBuilder setOrderDescBy(String fieldName);
+    SearchCriteriaBuilder orderDescBy(String fieldName);
 
     /**
      * Sets the max results, by default there is no limit.
@@ -97,5 +88,70 @@ public interface SearchCriteriaBuilder {
      * @return this search builder
      */
     SearchCriteriaBuilder setFirstResult(int firstResult);
+
+    /**
+     * Adds the "equals" restriction.
+     * 
+     * @param restriction
+     *            restriction
+     * @see SearchCriteria#getRestrictions()
+     * @return this search builder
+     * @deprecated
+     */
+    @Deprecated
+    SearchCriteriaBuilder addRestriction(Restriction restriction);
+
+    /**
+     * Adds the "equals" restriction.
+     * 
+     * @param fieldName
+     *            field's name
+     * @param value
+     *            expected value
+     * @return this search builder
+     */
+    SearchCriteriaBuilder isEq(String fieldName, Object value);
+
+    SearchCriteriaBuilder like(String fieldName, String value);
+
+    SearchCriteriaBuilder isLe(String fieldName, Object value);
+
+    SearchCriteriaBuilder isLt(String fieldName, Object value);
+
+    SearchCriteriaBuilder isGe(String fieldName, Object value);
+
+    SearchCriteriaBuilder isGt(String fieldName, Object value);
+
+    SearchCriteriaBuilder isNe(String fieldName, Object value);
+
+    SearchCriteriaBuilder isNotNull(String fieldName);
+
+    SearchCriteriaBuilder isNull(String fieldName);
+
+    SearchCriteriaBuilder openNot();
+
+    SearchCriteriaBuilder closeNot();
+
+    SearchCriteriaBuilder openOr();
+
+    SearchCriteriaBuilder closeOr();
+
+    SearchCriteriaBuilder openAnd();
+
+    SearchCriteriaBuilder closeAnd();
+
+    SearchCriteriaBuilder belongsTo(String fieldName, Object entityOrId);
+
+    SearchCriteriaBuilder isIdEq(Long id);
+
+    SearchCriteriaBuilder isIdLe(Long id);
+
+    SearchCriteriaBuilder isIdLt(Long id);
+
+    SearchCriteriaBuilder isIdGe(Long id);
+
+    SearchCriteriaBuilder isIdGt(Long id);
+
+    SearchCriteriaBuilder isIdNe(Long id);
 
 }

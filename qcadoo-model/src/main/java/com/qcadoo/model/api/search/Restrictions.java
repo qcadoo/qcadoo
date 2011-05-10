@@ -28,7 +28,9 @@ import org.apache.commons.beanutils.PropertyUtils;
 
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.internal.api.ValueAndError;
+import com.qcadoo.model.internal.search.Restriction;
 import com.qcadoo.model.internal.search.RestrictionLogicalOperator;
+import com.qcadoo.model.internal.search.RestrictionOperator;
 import com.qcadoo.model.internal.search.restrictions.BelongsToRestriction;
 import com.qcadoo.model.internal.search.restrictions.IsNotNullRestriction;
 import com.qcadoo.model.internal.search.restrictions.IsNullRestriction;
@@ -40,7 +42,9 @@ import com.qcadoo.model.internal.search.restrictions.SimpleRestriction;
  * Class creates restrictions for search criteria.
  * 
  * @since 0.4.0
+ * @deprecated
  */
+@Deprecated
 public final class Restrictions {
 
     private Restrictions() {
@@ -73,7 +77,9 @@ public final class Restrictions {
      * @param expectedValue
      *            expected value
      * @return restriction
+     * @deprecated
      */
+    @Deprecated
     public static Restriction eq(final String fieldName, final Object expectedValue) {
         return createEqRestriction(fieldName, expectedValue);
     }
@@ -283,30 +289,6 @@ public final class Restrictions {
                 return null;
             }
             return new SimpleRestriction(fieldDefinition.getName(), value.getValue(), RestrictionOperator.NE);
-        }
-    }
-
-    public static Restriction forOperator(final RestrictionOperator operator, final FieldDefinition fieldDefinition,
-            final Object expectedValue) {
-        switch (operator) {
-            case EQ:
-                String fieldName = null;
-                if (fieldDefinition != null) {
-                    fieldName = fieldDefinition.getName();
-                }
-                return eq(fieldName, expectedValue);
-            case NE:
-                return ne(fieldDefinition, expectedValue);
-            case GT:
-                return gt(fieldDefinition, expectedValue);
-            case GE:
-                return ge(fieldDefinition, expectedValue);
-            case LT:
-                return lt(fieldDefinition, expectedValue);
-            case LE:
-                return le(fieldDefinition, expectedValue);
-            default:
-                throw new IllegalStateException("Unknown operator");
         }
     }
 

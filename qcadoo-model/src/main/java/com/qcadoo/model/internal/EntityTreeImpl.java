@@ -61,7 +61,7 @@ public final class EntityTreeImpl extends AbstractList<Entity> implements Entity
 
     private void loadEntities() {
         if (entities == null) {
-            entities = find().setOrderAscBy("priority").list().getEntities();
+            entities = find().orderAscBy("priority").list().getEntities();
 
             Map<Long, EntityTreeNodeImpl> entitiesById = new LinkedHashMap<Long, EntityTreeNodeImpl>();
 

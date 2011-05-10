@@ -235,7 +235,7 @@ public class CrudIntegrationTest extends IntegrationTest {
         Entity machine2 = machineDataDefinition.save(createMachine("def"));
 
         // when
-        List<Entity> machines = machineDataDefinition.find().setOrderDescBy("name").list().getEntities();
+        List<Entity> machines = machineDataDefinition.find().orderDescBy("name").list().getEntities();
 
         // then
         assertNotNull(machines);
@@ -253,7 +253,7 @@ public class CrudIntegrationTest extends IntegrationTest {
         Entity machine2 = machineDataDefinition.save(createMachine("def"));
 
         // when
-        List<Entity> machines = machineDataDefinition.find().setOrderAscBy("name").list().getEntities();
+        List<Entity> machines = machineDataDefinition.find().orderAscBy("name").list().getEntities();
 
         // then
         assertNotNull(machines);
@@ -272,7 +272,7 @@ public class CrudIntegrationTest extends IntegrationTest {
         Entity product3 = productDataDefinition.save(createProduct("def", "def"));
 
         // when
-        List<Entity> products = productDataDefinition.find().setOrderDescBy("name").setOrderAscBy("number").list().getEntities();
+        List<Entity> products = productDataDefinition.find().orderDescBy("name").orderAscBy("number").list().getEntities();
 
         // then
         assertNotNull(products);

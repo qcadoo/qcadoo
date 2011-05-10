@@ -224,7 +224,7 @@ public final class LookupComponentState extends FieldComponentState {
                     searchCriteriaBuilder.addRestriction(Restrictions.belongsTo(belongsToFieldDefinition, belongsToEntityId));
                 }
 
-                searchCriteriaBuilder.setOrderAscBy(fieldCode);
+                searchCriteriaBuilder.orderAscBy(fieldCode);
 
                 SearchResult results = searchCriteriaBuilder.list();
 

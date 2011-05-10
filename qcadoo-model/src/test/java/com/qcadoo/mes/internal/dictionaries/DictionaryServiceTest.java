@@ -44,9 +44,9 @@ import org.springframework.test.util.ReflectionTestUtils;
 import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.DictionaryService;
 import com.qcadoo.model.api.Entity;
-import com.qcadoo.model.api.search.Restriction;
 import com.qcadoo.model.internal.DefaultEntity;
 import com.qcadoo.model.internal.dictionaries.DictionaryServiceImpl;
+import com.qcadoo.model.internal.search.Restriction;
 
 public class DictionaryServiceTest {
 
@@ -73,7 +73,7 @@ public class DictionaryServiceTest {
         dict3.setField("name", "Dict3");
         dict3.setField("active", true);
 
-        given(dataDefinitionService.get("qcadooModel", "dictionary").find().setOrderAscBy("name").list().getEntities())
+        given(dataDefinitionService.get("qcadooModel", "dictionary").find().orderAscBy("name").list().getEntities())
                 .willReturn(newArrayList(dict1, dict2, dict3));
 
         // when
@@ -96,7 +96,7 @@ public class DictionaryServiceTest {
 
         given(
                 dataDefinitionService.get("qcadooModel", "dictionaryItem").find().addRestriction(Mockito.any(Restriction.class))
-                        .setOrderAscBy("name").list().getEntities()).willReturn(newArrayList(item1, item3, item2));
+                        .orderAscBy("name").list().getEntities()).willReturn(newArrayList(item1, item3, item2));
 
         // when
         Map<String, String> values = dictionaryService.getValues("dict", Locale.ENGLISH);

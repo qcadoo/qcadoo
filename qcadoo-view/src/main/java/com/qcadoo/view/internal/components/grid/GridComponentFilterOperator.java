@@ -22,25 +22,58 @@
  * ***************************************************************************
  */
 
-package com.qcadoo.model.api.search;
-
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Criterion;
+package com.qcadoo.view.internal.components.grid;
 
 /**
- * Restriction represents the part of WHERE clause in SQL query.
+ * Restriction comparison operator.
  * 
  * @since 0.4.0
  */
-public interface Restriction {
+public enum GridComponentFilterOperator {
 
     /**
-     * Add this restriction to Hibernate criteria.
-     * 
-     * @param criteria
-     *            Hibernate criteria
-     * @return Hibernate criteria
+     * Equals.
      */
-    Criterion addToHibernateCriteria(Criteria criteria);
+    EQ("="),
+
+    /**
+     * Greaten than or equals.
+     */
+    GE(">="),
+
+    /**
+     * Greaten than.
+     */
+    GT(">"),
+
+    /**
+     * Less than or equals.
+     */
+    LE("<="),
+
+    /**
+     * Less than.
+     */
+    LT("<"),
+
+    /**
+     * Not equals.
+     */
+    NE("<>");
+
+    private String value;
+
+    private GridComponentFilterOperator(final String value) {
+        this.value = value;
+    }
+
+    /**
+     * HQL representation of operator.
+     * 
+     * @return representation of operator
+     */
+    public String getValue() {
+        return value;
+    }
 
 }

@@ -26,6 +26,16 @@ package com.qcadoo.model.internal.search;
 
 public enum RestrictionLogicalOperator {
 
-    NOT, AND, OR;
+    NOT("not"), AND("and"), OR("or");
+
+    private String value;
+
+    private RestrictionLogicalOperator(final String value) {
+        this.value = value;
+    }
+
+    public String getValue() {
+        return value;
+    }
 
 }

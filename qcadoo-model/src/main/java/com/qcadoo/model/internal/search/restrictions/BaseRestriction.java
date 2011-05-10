@@ -27,7 +27,7 @@ package com.qcadoo.model.internal.search.restrictions;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Criterion;
 
-import com.qcadoo.model.api.search.Restriction;
+import com.qcadoo.model.internal.search.Restriction;
 
 public abstract class BaseRestriction implements Restriction {
 

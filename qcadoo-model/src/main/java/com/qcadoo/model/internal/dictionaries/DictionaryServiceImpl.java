@@ -63,7 +63,7 @@ public final class DictionaryServiceImpl implements InternalDictionaryService {
         checkArgument(hasText(dictionary), "dictionary name must be given");
 
         List<Entity> items = dataDefinitionService.get("qcadooModel", "dictionaryItem").find()
-                .addRestriction(Restrictions.eq("dictionary.name", dictionary)).setOrderAscBy("name").list().getEntities();
+                .addRestriction(Restrictions.eq("dictionary.name", dictionary)).orderAscBy("name").list().getEntities();
 
         List<String> keys = new ArrayList<String>();
 
@@ -81,7 +81,7 @@ public final class DictionaryServiceImpl implements InternalDictionaryService {
         checkArgument(hasText(dictionary), "dictionary name must be given");
 
         List<Entity> items = dataDefinitionService.get("qcadooModel", "dictionaryItem").find()
-                .addRestriction(Restrictions.eq("dictionary.name", dictionary)).setOrderAscBy("name").list().getEntities();
+                .addRestriction(Restrictions.eq("dictionary.name", dictionary)).orderAscBy("name").list().getEntities();
 
         Map<String, String> values = new LinkedHashMap<String, String>();
 
@@ -98,7 +98,7 @@ public final class DictionaryServiceImpl implements InternalDictionaryService {
     @Transactional(readOnly = true)
     @Monitorable
     public Set<String> getDictionaries() {
-        List<Entity> dictionaries = dataDefinitionService.get("qcadooModel", "dictionary").find().setOrderAscBy("name").list()
+        List<Entity> dictionaries = dataDefinitionService.get("qcadooModel", "dictionary").find().orderAscBy("name").list()
                 .getEntities();
 
         Set<String> names = new HashSet<String>();
