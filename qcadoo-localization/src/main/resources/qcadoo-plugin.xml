@@ -24,12 +24,10 @@
 	</information>
 
 	<modules>
+	
 		<localization:translation-locale locale="en" label="English" />
 		<localization:translation-locale locale="pl" label="Polski" />
 
-		<localization:translation-group name="commons" prefix="commons" />
-		<localization:translation-group name="security" prefix="security" />
-	
 	</modules>
 
 
