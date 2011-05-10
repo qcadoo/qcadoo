@@ -42,6 +42,7 @@ import com.qcadoo.model.api.search.Order;
 import com.qcadoo.model.api.search.SearchCriteria;
 import com.qcadoo.model.api.search.SearchCriteriaBuilder;
 import com.qcadoo.model.api.search.SearchResult;
+import com.qcadoo.model.api.types.BelongsToType;
 import com.qcadoo.model.internal.api.InternalDataDefinition;
 import com.qcadoo.model.internal.api.ValueAndError;
 import com.qcadoo.model.internal.search.restrictions.BelongsToRestriction;
@@ -183,7 +184,7 @@ public final class SearchCriteriaImpl implements SearchCriteria, SearchCriteriaB
             return like(fieldName, (String) value);
         }
 
-        ValueAndError valueAndError = validateValue(dataDefinition.getField(fieldName), value);
+        ValueAndError valueAndError = validateValue(getFieldDefinition(fieldName), value);
 
         if (!valueAndError.isValid()) {
             return this;
@@ -198,7 +199,7 @@ public final class SearchCriteriaImpl implements SearchCriteria, SearchCriteriaB
 
     @Override
     public SearchCriteriaBuilder isLe(final String fieldName, final Object value) {
-        ValueAndError valueAndError = validateValue(dataDefinition.getField(fieldName), value);
+        ValueAndError valueAndError = validateValue(getFieldDefinition(fieldName), value);
 
         if (!valueAndError.isValid()) {
             return this;
@@ -209,7 +210,7 @@ public final class SearchCriteriaImpl implements SearchCriteria, SearchCriteriaB
 
     @Override
     public SearchCriteriaBuilder isLt(final String fieldName, final Object value) {
-        ValueAndError valueAndError = validateValue(dataDefinition.getField(fieldName), value);
+        ValueAndError valueAndError = validateValue(getFieldDefinition(fieldName), value);
 
         if (!valueAndError.isValid()) {
             return this;
@@ -220,7 +221,7 @@ public final class SearchCriteriaImpl implements SearchCriteria, SearchCriteriaB
 
     @Override
     public SearchCriteriaBuilder isGe(final String fieldName, final Object value) {
-        ValueAndError valueAndError = validateValue(dataDefinition.getField(fieldName), value);
+        ValueAndError valueAndError = validateValue(getFieldDefinition(fieldName), value);
 
         if (!valueAndError.isValid()) {
             return this;
@@ -231,7 +232,7 @@ public final class SearchCriteriaImpl implements SearchCriteria, SearchCriteriaB
 
     @Override
     public SearchCriteriaBuilder isGt(final String fieldName, final Object value) {
-        ValueAndError valueAndError = validateValue(dataDefinition.getField(fieldName), value);
+        ValueAndError valueAndError = validateValue(getFieldDefinition(fieldName), value);
 
         if (!valueAndError.isValid()) {
             return this;
@@ -246,7 +247,7 @@ public final class SearchCriteriaImpl implements SearchCriteria, SearchCriteriaB
             return openNot().like(fieldName, (String) value).closeNot();
         }
 
-        ValueAndError valueAndError = validateValue(dataDefinition.getField(fieldName), value);
+        ValueAndError valueAndError = validateValue(getFieldDefinition(fieldName), value);
 
         if (!valueAndError.isValid()) {
             return this;
@@ -376,6 +377,34 @@ public final class SearchCriteriaImpl implements SearchCriteria, SearchCriteriaB
     @Override
     public SearchCriteriaBuilder isIdNe(final Long id) {
         return addRestriction(new SimpleRestriction("id", id, RestrictionOperator.NE));
+    }
+
+    private FieldDefinition getFieldDefinition(final String field) {
+        String[] path = field.split("\\.");
+
+        DataDefinition tmpDataDefinition = dataDefinition;
+
+        for (int i = 0; i < path.length; i++) {
+
+            if (tmpDataDefinition.getField(path[i]) == null) {
+                return null;
+            }
+
+            FieldDefinition fieldDefinition = tmpDataDefinition.getField(path[i]);
+
+            if (i < path.length - 1) {
+                if (fieldDefinition.getType() instanceof BelongsToType) {
+                    tmpDataDefinition = ((BelongsToType) fieldDefinition.getType()).getDataDefinition();
+                    continue;
+                } else {
+                    return null;
+                }
+            }
+
+            return fieldDefinition;
+        }
+
+        return null;
     }
 
     private ValueAndError validateValue(final FieldDefinition fieldDefinition, final Object value) {
