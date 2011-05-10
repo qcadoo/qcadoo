@@ -347,7 +347,7 @@ public final class GridComponentState extends AbstractComponentState implements 
     }
 
     private String translateMessage(final String key) {
-        return getTranslationService().translate(getTranslationPath() + "." + key, "core.message." + key, getLocale());
+        return getTranslationService().translate(getTranslationPath() + "." + key, "qcadooView.message." + key, getLocale());
     }
 
     @Override

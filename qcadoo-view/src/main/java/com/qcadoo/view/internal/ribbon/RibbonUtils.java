@@ -59,7 +59,7 @@ public final class RibbonUtils {
                     "label",
                     pattern.getTranslationService().translate(
                             pattern.getTranslationPath() + ".ribbon." + group.getString("name"),
-                            "core.ribbon." + group.getString("name"), locale));
+                            "qcadooView.ribbon." + group.getString("name"), locale));
             translateRibbonItems(group, group.getString("name") + ".", locale, pattern);
         }
 
@@ -74,7 +74,7 @@ public final class RibbonUtils {
 
                 String label = pattern.getTranslationService().translate(
                         pattern.getTranslationPath() + ".ribbon." + prefix + item.getString("name"),
-                        "core.ribbon." + prefix + item.getString("name"), locale);
+                        "qcadooView.ribbon." + prefix + item.getString("name"), locale);
                 item.put("label", label);
 
                 if (item.has("script")) {
@@ -89,7 +89,7 @@ public final class RibbonUtils {
                     if (message.contains(".")) {
                         message = pattern.getTranslationService().translate(message, locale);
                     } else {
-                        message = pattern.getTranslationService().translate("core.message." + message, locale);
+                        message = pattern.getTranslationService().translate("qcadooView.message." + message, locale);
                     }
                     item.put("message", pattern.prepareScript(message, locale));
                 }

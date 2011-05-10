@@ -87,8 +87,8 @@ public abstract class ReportPdfView extends AbstractPdfView {
     protected void prepareWriter(final Map<String, Object> model, final PdfWriter writer, final HttpServletRequest request)
             throws DocumentException {
         super.prepareWriter(model, writer, request);
-        writer.setPageEvent(new PdfPageNumbering(getTranslationService().translate("core.report.page",
-                LocaleContextHolder.getLocale()), getTranslationService().translate("core.report.in",
+        writer.setPageEvent(new PdfPageNumbering(getTranslationService().translate("qcadooView.report.page",
+                LocaleContextHolder.getLocale()), getTranslationService().translate("qcadooView.report.in",
                 LocaleContextHolder.getLocale()), PdfUtil.getFontsPath(getWindowsFontsPath(), getMacosFontsPath(),
                 getLinuxFontsPath())));
     }

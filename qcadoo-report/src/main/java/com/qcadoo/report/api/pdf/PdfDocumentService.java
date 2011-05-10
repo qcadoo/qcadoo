@@ -63,15 +63,15 @@ public abstract class PdfDocumentService extends DocumentService {
             FileOutputStream fileOutputStream = new FileOutputStream((String) entity.getField("fileName") + getSuffix()
                     + PdfUtil.PDF_EXTENSION);
             PdfWriter writer = PdfWriter.getInstance(document, fileOutputStream);
-            writer.setPageEvent(new PdfPageNumbering(getTranslationService().translate("core.report.page", locale),
-                    getTranslationService().translate("core.report.in", locale), PdfUtil.getFontsPath(windowsFontsPath,
+            writer.setPageEvent(new PdfPageNumbering(getTranslationService().translate("qcadooView.report.page", locale),
+                    getTranslationService().translate("qcadooView.report.in", locale), PdfUtil.getFontsPath(windowsFontsPath,
                             macosFontsPath, linuxFontsPath)));
             document.setMargins(40, 40, 60, 60);
             buildPdfMetadata(document, locale);
             writer.createXmpMetadata();
             document.open();
             buildPdfContent(document, entity, locale);
-            PdfUtil.addEndOfDocument(document, writer, getTranslationService().translate("core.report.endOfReport", locale));
+            PdfUtil.addEndOfDocument(document, writer, getTranslationService().translate("qcadooView.report.endOfReport", locale));
             document.close();
         } catch (DocumentException e) {
             LOG.error("Problem with generating document - " + e.getMessage());

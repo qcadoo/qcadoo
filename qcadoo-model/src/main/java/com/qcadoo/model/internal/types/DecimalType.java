@@ -51,7 +51,7 @@ public final class DecimalType implements FieldType {
             try {
                 decimal = new BigDecimal(String.valueOf(value));
             } catch (NumberFormatException e) {
-                return ValueAndError.withError("core.validate.field.error.invalidNumericFormat");
+                return ValueAndError.withError("qcadooView.validate.field.error.invalidNumericFormat");
             }
         }
         return ValueAndError.withoutError(decimal);

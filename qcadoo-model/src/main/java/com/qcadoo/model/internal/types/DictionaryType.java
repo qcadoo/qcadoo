@@ -59,7 +59,7 @@ public final class DictionaryType implements EnumeratedType {
         String stringValue = String.valueOf(value);
         List<String> keys = dictionaryService.getKeys(dictionary);
         if (!keys.contains(stringValue)) {
-            return ValueAndError.withError("core.validate.field.error.invalidDictionaryItem", String.valueOf(keys));
+            return ValueAndError.withError("qcadooView.validate.field.error.invalidDictionaryItem", String.valueOf(keys));
         }
         return ValueAndError.withoutError(stringValue);
     }

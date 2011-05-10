@@ -43,7 +43,7 @@ public final class StringType implements FieldType {
     public ValueAndError toObject(final FieldDefinition fieldDefinition, final Object value) {
         String stringValue = String.valueOf(value);
         if (StringUtils.length(stringValue) > 255) {
-            return ValueAndError.withError("core.validate.field.error.invalidLength", String.valueOf(255));
+            return ValueAndError.withError("qcadooView.validate.field.error.invalidLength", String.valueOf(255));
         }
         return ValueAndError.withoutError(stringValue);
     }

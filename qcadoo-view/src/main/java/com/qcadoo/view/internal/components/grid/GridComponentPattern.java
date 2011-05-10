@@ -196,7 +196,7 @@ public final class GridComponentPattern extends AbstractComponentPattern {
             addTranslation(translations, "filter." + filter.getName(), locale);
         }
 
-        translations.put("loading", getTranslationService().translate("commons.loading", locale));
+        translations.put("loading", getTranslationService().translate("qcadooView.loading", locale));
 
         json.put("translations", translations);
 
@@ -204,7 +204,7 @@ public final class GridComponentPattern extends AbstractComponentPattern {
     }
 
     private void addTranslation(final JSONObject translation, final String key, final Locale locale) throws JSONException {
-        translation.put(key, getTranslationService().translate(getTranslationPath() + "." + key, "core.grid." + key, locale));
+        translation.put(key, getTranslationService().translate(getTranslationPath() + "." + key, "qcadooView.grid." + key, locale));
     }
 
     private JSONArray getColumnsForJsOptions(final Locale locale) throws JSONException {
@@ -247,8 +247,8 @@ public final class GridComponentPattern extends AbstractComponentPattern {
                 json.put(value.getKey(), value.getValue());
             }
         } else if (column.getFields().get(0).getType().getType().equals(Boolean.class)) {
-            json.put("1", getTranslationService().translate("commons.true", locale));
-            json.put("0", getTranslationService().translate("commons.false", locale));
+            json.put("1", getTranslationService().translate("qcadooView.true", locale));
+            json.put("0", getTranslationService().translate("qcadooView.false", locale));
         }
 
         if (json.length() > 0) {

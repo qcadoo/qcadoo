@@ -385,7 +385,7 @@ public class DataAccessServiceImpl implements DataAccessService {
             if (fieldDefinition.getType().getType().equals(String.class)) {
                 return getCopyValueOfUniqueField(dataDefinition, fieldDefinition, sourceEntity.getStringField(fieldName));
             } else {
-                sourceEntity.addError(fieldDefinition, "core.validate.field.error.invalidUniqueType");
+                sourceEntity.addError(fieldDefinition, "qcadooView.validate.field.error.invalidUniqueType");
                 throw new CopyException(sourceEntity);
             }
         } else if (fieldDefinition.getType() instanceof HasManyType) {

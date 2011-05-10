@@ -78,7 +78,7 @@ public final class EnumType implements EnumeratedType {
         if (toStringList().contains(stringValue)) {
             return ValueAndError.withoutError(stringValue);
         }
-        return ValueAndError.withError("core.validate.field.error.invalidDictionaryItem", String.valueOf(toStringList()));
+        return ValueAndError.withError("qcadooView.validate.field.error.invalidDictionaryItem", String.valueOf(toStringList()));
     }
 
     private List<String> toStringList() {

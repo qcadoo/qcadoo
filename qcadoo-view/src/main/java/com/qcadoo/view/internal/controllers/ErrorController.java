@@ -63,28 +63,28 @@ public class ErrorController {
             String errorExplanation = null;
             switch (code) {
                 case 400: // Bad request
-                    errorHeader = "core.errorPage.error.badRequest.header";
-                    errorExplanation = "core.errorPage.error.badRequest.explanation";
+                    errorHeader = "qcadooView.errorPage.error.badRequest.header";
+                    errorExplanation = "qcadooView.errorPage.error.badRequest.explanation";
                     break;
                 case 403: // Forbidden
-                    errorHeader = "core.errorPage.error.forbidden.header";
-                    errorExplanation = "core.errorPage.error.forbidden.explanation";
+                    errorHeader = "qcadooView.errorPage.error.forbidden.header";
+                    errorExplanation = "qcadooView.errorPage.error.forbidden.explanation";
                     break;
                 case 404: // Not found
-                    errorHeader = "core.errorPage.error.notFound.header";
-                    errorExplanation = "core.errorPage.error.notFound.explanation";
+                    errorHeader = "qcadooView.errorPage.error.notFound.header";
+                    errorExplanation = "qcadooView.errorPage.error.notFound.explanation";
                     break;
                 case 500: // Internal Error
-                    errorHeader = "core.errorPage.error.internalError.header";
-                    errorExplanation = "core.errorPage.error.internalError.explanation";
+                    errorHeader = "qcadooView.errorPage.error.internalError.header";
+                    errorExplanation = "qcadooView.errorPage.error.internalError.explanation";
                     break;
                 case 503: // Gateway timeout
-                    errorHeader = "core.errorPage.error.gatewayTimeout.header";
-                    errorExplanation = "core.errorPage.error.gatewayTimeout.explanation";
+                    errorHeader = "qcadooView.errorPage.error.gatewayTimeout.header";
+                    errorExplanation = "qcadooView.errorPage.error.gatewayTimeout.explanation";
                     break;
                 default:
-                    errorHeader = "core.errorPage.error.defaultError.header";
-                    errorExplanation = "core.errorPage.error.defaultError.explanation";
+                    errorHeader = "qcadooView.errorPage.error.defaultError.header";
+                    errorExplanation = "qcadooView.errorPage.error.defaultError.explanation";
                     break;
             }
             mav.addObject("errorHeader", translationService.translate(errorHeader, locale));
@@ -92,8 +92,8 @@ public class ErrorController {
 
         }
 
-        mav.addObject("showDetailsText", translationService.translate("core.errorPage.showDetails", locale));
-        mav.addObject("hideDetailsText", translationService.translate("core.errorPage.hideDetails", locale));
+        mav.addObject("showDetailsText", translationService.translate("qcadooView.errorPage.showDetails", locale));
+        mav.addObject("hideDetailsText", translationService.translate("qcadooView.errorPage.hideDetails", locale));
 
         if (exception != null) {
             mav.addObject("showDetails", true);
@@ -101,8 +101,8 @@ public class ErrorController {
             mav.addObject("exceptionHeader", exception.getMessage());
             mav.addObject("exceptionClass", exception.getClass().getCanonicalName());
 
-            mav.addObject("exceptionMessageText", translationService.translate("core.errorPage.details.messageText", locale));
-            mav.addObject("exceptionClassText", translationService.translate("core.errorPage.details.classText", locale));
+            mav.addObject("exceptionMessageText", translationService.translate("qcadooView.errorPage.details.messageText", locale));
+            mav.addObject("exceptionClassText", translationService.translate("qcadooView.errorPage.details.classText", locale));
         } else {
             mav.addObject("showDetails", false);
         }

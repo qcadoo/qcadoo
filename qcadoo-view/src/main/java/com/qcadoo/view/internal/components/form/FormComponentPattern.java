@@ -76,7 +76,7 @@ public final class FormComponentPattern extends AbstractContainerPattern {
         addTranslation(translations, "confirmDeleteMessage", locale);
         addTranslation(translations, "entityWithoutIdentifier", locale);
 
-        translations.put("loading", getTranslationService().translate("commons.loading", locale));
+        translations.put("loading", getTranslationService().translate("qcadooView.loading", locale));
 
         json.put("translations", translations);
 
@@ -84,7 +84,7 @@ public final class FormComponentPattern extends AbstractContainerPattern {
     }
 
     private void addTranslation(final JSONObject translation, final String key, final Locale locale) throws JSONException {
-        translation.put(key, getTranslationService().translate(getTranslationPath() + "." + key, "core.form." + key, locale));
+        translation.put(key, getTranslationService().translate(getTranslationPath() + "." + key, "qcadooView.form." + key, locale));
     }
 
     @Override

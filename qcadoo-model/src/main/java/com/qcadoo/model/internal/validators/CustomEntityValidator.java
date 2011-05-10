@@ -31,7 +31,7 @@ import com.qcadoo.model.internal.api.ErrorMessageDefinition;
 
 public final class CustomEntityValidator implements EntityHookDefinition, ErrorMessageDefinition {
 
-    private static final String CUSTOM_ERROR = "core.validate.global.error.custom";
+    private static final String CUSTOM_ERROR = "qcadooView.validate.global.error.custom";
 
     private final EntityHookDefinition entityHook;
 

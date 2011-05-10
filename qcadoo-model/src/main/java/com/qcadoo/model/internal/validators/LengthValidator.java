@@ -34,7 +34,7 @@ import com.qcadoo.model.internal.api.FieldHookDefinition;
 
 public final class LengthValidator implements FieldHookDefinition, ErrorMessageDefinition {
 
-    private static final String INVALID_LENGTH_ERROR = "core.validate.field.error.invalidLength";
+    private static final String INVALID_LENGTH_ERROR = "qcadooView.validate.field.error.invalidLength";
 
     private final Integer max;
 

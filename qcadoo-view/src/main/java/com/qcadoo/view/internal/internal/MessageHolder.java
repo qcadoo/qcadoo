@@ -61,7 +61,7 @@ public final class MessageHolder {
         if (title != null) {
             return title;
         } else {
-            return translationService.translate("commons.notification." + type.toString().toLowerCase(locale), locale);
+            return translationService.translate("qcadooView.notification." + type.toString().toLowerCase(locale), locale);
         }
     }
 

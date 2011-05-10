@@ -43,7 +43,7 @@ public final class TextType implements FieldType {
     public ValueAndError toObject(final FieldDefinition fieldDefinition, final Object value) {
         String stringValue = String.valueOf(value);
         if (StringUtils.length(stringValue) > 2048) {
-            return ValueAndError.withError("core.validate.field.error.invalidLength", String.valueOf(2048));
+            return ValueAndError.withError("qcadooView.validate.field.error.invalidLength", String.valueOf(2048));
         }
         return ValueAndError.withoutError(stringValue);
     }

@@ -74,19 +74,19 @@ public final class SystemInfoController {
         ModelAndView mav = crudController.prepareView("qcadooView", "systemInfo", arguments, locale);
 
         Map<String, String> translationsMap = new HashMap<String, String>();
-        translationsMap.put("core.systemInfo.header", translationService.translate("core.systemInfo.header", locale));
-        translationsMap.put("core.systemInfo.buildApplicationName.label",
-                translationService.translate("core.systemInfo.buildApplicationName.label", locale));
-        translationsMap.put("core.systemInfo.buildApplicationVersion.label",
-                translationService.translate("core.systemInfo.buildApplicationVersion.label", locale));
-        translationsMap.put("core.systemInfo.buildFrameworkVersion.label",
-                translationService.translate("core.systemInfo.buildFrameworkVersion.label", locale));
-        translationsMap.put("core.systemInfo.buildNumber.label",
-                translationService.translate("core.systemInfo.buildNumber.label", locale));
-        translationsMap.put("core.systemInfo.buildRevision.label",
-                translationService.translate("core.systemInfo.buildRevision.label", locale));
-        translationsMap.put("core.systemInfo.buildTime.label",
-                translationService.translate("core.systemInfo.buildTime.label", locale));
+        translationsMap.put("qcadooView.systemInfo.header", translationService.translate("qcadooView.systemInfo.header", locale));
+        translationsMap.put("qcadooView.systemInfo.buildApplicationName.label",
+                translationService.translate("qcadooView.systemInfo.buildApplicationName.label", locale));
+        translationsMap.put("qcadooView.systemInfo.buildApplicationVersion.label",
+                translationService.translate("qcadooView.systemInfo.buildApplicationVersion.label", locale));
+        translationsMap.put("qcadooView.systemInfo.buildFrameworkVersion.label",
+                translationService.translate("qcadooView.systemInfo.buildFrameworkVersion.label", locale));
+        translationsMap.put("qcadooView.systemInfo.buildNumber.label",
+                translationService.translate("qcadooView.systemInfo.buildNumber.label", locale));
+        translationsMap.put("qcadooView.systemInfo.buildRevision.label",
+                translationService.translate("qcadooView.systemInfo.buildRevision.label", locale));
+        translationsMap.put("qcadooView.systemInfo.buildTime.label",
+                translationService.translate("qcadooView.systemInfo.buildTime.label", locale));
         mav.addObject("translationsMap", translationsMap);
 
         mav.addObject("buildApplicationName", buildApplicationName);

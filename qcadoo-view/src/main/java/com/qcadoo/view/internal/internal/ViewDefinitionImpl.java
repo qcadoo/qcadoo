@@ -151,7 +151,7 @@ public final class ViewDefinitionImpl implements InternalViewDefinition {
             JSONObject json = new JSONObject();
             JSONObject translations = new JSONObject();
             translations.put("backWithChangesConfirmation",
-                    translationService.translate("commons.backWithChangesConfirmation", locale));
+                    translationService.translate("qcadooView.backWithChangesConfirmation", locale));
             json.put("translations", translations);
             if (windowWidth != null) {
                 json.put("windowWidth", windowWidth);

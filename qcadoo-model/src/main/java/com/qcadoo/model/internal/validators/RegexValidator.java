@@ -32,7 +32,7 @@ import com.qcadoo.model.internal.api.FieldHookDefinition;
 
 public final class RegexValidator implements FieldHookDefinition, ErrorMessageDefinition {
 
-    private static final String REGEX_ERROR = "core.validate.field.error.regex";
+    private static final String REGEX_ERROR = "qcadooView.validate.field.error.regex";
 
     private String errorMessage = REGEX_ERROR;
 

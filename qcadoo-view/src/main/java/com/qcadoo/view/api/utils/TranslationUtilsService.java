@@ -31,7 +31,7 @@ public class TranslationUtilsService {
     public String getCategoryTranslation(final Entity category, final Locale locale) {
         return translationService.translate(
                 category.getStringField("pluginIdentifier") + ".menu." + category.getStringField("name"),
-                "core.menu." + category.getStringField("name"), locale);
+                "qcadooView.menu." + category.getStringField("name"), locale);
     }
 
     /**
@@ -48,7 +48,7 @@ public class TranslationUtilsService {
         return translationService.translate(
                 item.getStringField("pluginIdentifier") + ".menu." + categoryEntity.getStringField("name") + "."
                         + item.getStringField("name"),
-                "core.menu." + categoryEntity.getStringField("name") + "." + item.getStringField("name"), locale);
+                "qcadooView.menu." + categoryEntity.getStringField("name") + "." + item.getStringField("name"), locale);
     }
 
 }
