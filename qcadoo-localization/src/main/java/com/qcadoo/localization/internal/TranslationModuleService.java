@@ -8,8 +8,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import javax.annotation.PostConstruct;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,11 +28,6 @@ public class TranslationModuleService {
     private ApplicationContext applicationContext;
 
     private Set<String> basenames = new LinkedHashSet<String>();
-
-    @PostConstruct
-    public void init() {
-        basenames.add("WEB-INF/locales/messages");
-    }
 
     public void addTranslationModule(final Collection<? extends String> moduleBasenames) {
         basenames.addAll(moduleBasenames);
