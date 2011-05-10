@@ -212,7 +212,7 @@ public class FormComponentState extends AbstractContainerState implements FormCo
     }
 
     private String translateMessage(final String key) {
-        return getTranslationService().translate(getTranslationPath() + "." + key, "core.message." + key, getLocale());
+        return getTranslationService().translate(getTranslationPath() + "." + key, "qcadooView.message." + key, getLocale());
     }
 
     private Map<String, FieldComponentState> getFieldComponents() {

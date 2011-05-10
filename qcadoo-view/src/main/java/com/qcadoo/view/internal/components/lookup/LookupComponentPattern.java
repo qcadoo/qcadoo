@@ -179,16 +179,16 @@ public final class LookupComponentPattern extends FieldComponentPattern {
         }
 
         translations.put("noMatchError",
-                getTranslationService().translate(getTranslationPath() + ".noMatchError", "core.lookup.noMatchError", locale));
+                getTranslationService().translate(getTranslationPath() + ".noMatchError", "qcadooView.lookup.noMatchError", locale));
         translations.put(
                 "moreTahnOneMatchError",
                 getTranslationService().translate(getTranslationPath() + ".moreTahnOneMatchError",
-                        "core.lookup.moreTahnOneMatchError", locale));
+                        "qcadooView.lookup.moreTahnOneMatchError", locale));
         translations.put("noResultsInfo",
-                getTranslationService().translate(getTranslationPath() + ".noResultsInfo", "core.lookup.noResultsInfo", locale));
+                getTranslationService().translate(getTranslationPath() + ".noResultsInfo", "qcadooView.lookup.noResultsInfo", locale));
         translations.put(
                 "tooManyResultsInfo",
-                getTranslationService().translate(getTranslationPath() + ".tooManyResultsInfo", "core.lookup.tooManyResultsInfo",
+                getTranslationService().translate(getTranslationPath() + ".tooManyResultsInfo", "qcadooView.lookup.tooManyResultsInfo",
                         locale));
 
         json.put("translations", translations);

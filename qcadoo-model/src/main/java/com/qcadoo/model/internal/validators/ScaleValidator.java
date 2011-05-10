@@ -34,7 +34,7 @@ import com.qcadoo.model.internal.api.FieldHookDefinition;
 
 public final class ScaleValidator implements FieldHookDefinition, ErrorMessageDefinition {
 
-    private static final String INVALID_SCALE_ERROR = "core.validate.field.error.invalidScale";
+    private static final String INVALID_SCALE_ERROR = "qcadooView.validate.field.error.invalidScale";
 
     private final Integer max;
 

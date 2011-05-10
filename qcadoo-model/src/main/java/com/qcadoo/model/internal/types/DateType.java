@@ -56,7 +56,7 @@ public final class DateType implements FieldType {
 
             int year = dt.getYear();
             if (year < 1500 || year > 2500) {
-                return ValueAndError.withoutError("core.validate.field.error.invalidDateFormat.range");
+                return ValueAndError.withoutError("qcadooView.validate.field.error.invalidDateFormat.range");
             }
 
             Date date = dt.toDate();
@@ -75,7 +75,7 @@ public final class DateType implements FieldType {
 
             return ValueAndError.withoutError(date);
         } catch (IllegalArgumentException e) {
-            return ValueAndError.withError("core.validate.field.error.invalidDateFormat");
+            return ValueAndError.withError("qcadooView.validate.field.error.invalidDateFormat");
         }
     }
 

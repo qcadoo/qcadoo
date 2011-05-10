@@ -169,7 +169,7 @@ public final class TreeComponentState extends FieldComponentState implements Tre
         }
 
         if (treeStructure.length() > 1) {
-            addMessage(getTranslationService().translate("core.validate.field.error.multipleRoots", getLocale()),
+            addMessage(getTranslationService().translate("qcadooView.validate.field.error.multipleRoots", getLocale()),
                     MessageType.FAILURE);
             return null;
         }
@@ -240,7 +240,7 @@ public final class TreeComponentState extends FieldComponentState implements Tre
     }
 
     private String translateMessage(final String key) {
-        return getTranslationService().translate(getTranslationPath() + "." + key, "core.message." + key, getLocale());
+        return getTranslationService().translate(getTranslationPath() + "." + key, "qcadooView.message." + key, getLocale());
     }
 
     private Long parseSelectedIdForListeners(final Long selectedEntityId) {
@@ -327,7 +327,7 @@ public final class TreeComponentState extends FieldComponentState implements Tre
             if (afterSaveEntity.isValid()) {
                 requestRender();
                 requestUpdateState();
-                addMessage(getTranslationService().translate("core.message.saveMessage", getLocale()), MessageType.SUCCESS);
+                addMessage(getTranslationService().translate("qcadooView.message.saveMessage", getLocale()), MessageType.SUCCESS);
             }
         }
 

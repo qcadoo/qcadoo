@@ -121,7 +121,7 @@ public final class TreeComponentPattern extends FieldComponentPattern {
         translations.put("moveModeInfoHeader", getTranslation("moveModeInfoHeader", locale));
         translations.put("moveModeInfoContent", getTranslation("moveModeInfoContent", locale));
 
-        translations.put("loading", getTranslationService().translate("commons.loading", locale));
+        translations.put("loading", getTranslationService().translate("qcadooView.loading", locale));
 
         json.put("translations", translations);
 
@@ -129,7 +129,7 @@ public final class TreeComponentPattern extends FieldComponentPattern {
     }
 
     private String getTranslation(final String key, final Locale locale) throws JSONException {
-        return getTranslationService().translate(getTranslationPath() + "." + key, "core.tree." + key, locale);
+        return getTranslationService().translate(getTranslationPath() + "." + key, "qcadooView.tree." + key, locale);
     }
 
     private FieldDefinition getBelongsToFieldDefinition() {

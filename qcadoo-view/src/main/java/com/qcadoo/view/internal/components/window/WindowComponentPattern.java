@@ -159,7 +159,7 @@ public class WindowComponentPattern extends AbstractContainerPattern {
             translations.put(
                     "tab." + childName,
                     getTranslationService().translate(getTranslationPath() + "." + childName + ".tabLabel",
-                            "core.tabs." + childName + ".tabLabel", locale));
+                            "qcadooView.tabs." + childName + ".tabLabel", locale));
         }
         json.put("translations", translations);
         return json;

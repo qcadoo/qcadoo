@@ -96,7 +96,7 @@ public class FieldTypeFactoryTest extends DataAccessTest {
         assertFalse(valueAndError2.isValid());
         assertNotNull(valueAndError1.getValue());
         assertNull(valueAndError2.getValue());
-        assertEquals("core.validate.field.error.invalidDictionaryItem", valueAndError2.getMessage());
+        assertEquals("qcadooView.validate.field.error.invalidDictionaryItem", valueAndError2.getMessage());
         assertEquals("[val1, val2, val3]", valueAndError2.getArgs()[0]);
     }
 
@@ -121,7 +121,7 @@ public class FieldTypeFactoryTest extends DataAccessTest {
         ValueAndError valueAndError2 = fieldType.toObject(fieldDefinition, "val4");
         assertNotNull(valueAndError1.getValue());
         assertNull(valueAndError2.getValue());
-        assertEquals("core.validate.field.error.invalidDictionaryItem", valueAndError2.getMessage());
+        assertEquals("qcadooView.validate.field.error.invalidDictionaryItem", valueAndError2.getMessage());
         assertEquals("[val1, val2, val3]", valueAndError2.getArgs()[0]);
     }
 
@@ -198,7 +198,7 @@ public class FieldTypeFactoryTest extends DataAccessTest {
         ValueAndError valueAndError = fieldType.toObject(fieldDefinition, StringUtils.repeat("a", 256));
 
         assertFalse(valueAndError.isValid());
-        assertEquals("core.validate.field.error.invalidLength", valueAndError.getMessage());
+        assertEquals("qcadooView.validate.field.error.invalidLength", valueAndError.getMessage());
         assertEquals("255", valueAndError.getArgs()[0]);
     }
 
@@ -216,7 +216,7 @@ public class FieldTypeFactoryTest extends DataAccessTest {
         ValueAndError valueAndError = fieldType.toObject(fieldDefinition, StringUtils.repeat("a", 2049));
 
         assertFalse(valueAndError.isValid());
-        assertEquals("core.validate.field.error.invalidLength", valueAndError.getMessage());
+        assertEquals("qcadooView.validate.field.error.invalidLength", valueAndError.getMessage());
         assertEquals("2048", valueAndError.getArgs()[0]);
     }
 

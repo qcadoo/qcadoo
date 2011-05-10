@@ -94,14 +94,14 @@ public final class DefaultExceptionResolver extends SimpleMappingExceptionResolv
 
             if (customExceptionMessage != null) {
                 customExceptionMessageHeader = translationService.translate(
-                        "core.errorPage.error." + customExceptionMessage.getMessage() + ".header",
+                        "qcadooView.errorPage.error." + customExceptionMessage.getMessage() + ".header",
                         LocaleContextHolder.getLocale());
                 if (customExceptionMessage.getEntityIdentifier() != null) {
-                    customExceptionMessageExplanation = translationService.translate("core.errorPage.error."
+                    customExceptionMessageExplanation = translationService.translate("qcadooView.errorPage.error."
                             + customExceptionMessage.getMessage() + ".explanation", LocaleContextHolder.getLocale(),
                             customExceptionMessage.getEntityIdentifier());
                 } else {
-                    customExceptionMessageExplanation = translationService.translate("core.errorPage.error."
+                    customExceptionMessageExplanation = translationService.translate("qcadooView.errorPage.error."
                             + customExceptionMessage.getMessage() + ".explanation", LocaleContextHolder.getLocale());
                 }
                 Throwable rootException = getRootException(exception);

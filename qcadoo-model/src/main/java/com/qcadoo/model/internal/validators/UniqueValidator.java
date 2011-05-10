@@ -34,7 +34,7 @@ import com.qcadoo.model.internal.api.FieldHookDefinition;
 
 public final class UniqueValidator implements FieldHookDefinition, ErrorMessageDefinition {
 
-    private static final String UNIQUE_ERROR = "core.validate.field.error.duplicated";
+    private static final String UNIQUE_ERROR = "qcadooView.validate.field.error.duplicated";
 
     private String errorMessage = UNIQUE_ERROR;
 

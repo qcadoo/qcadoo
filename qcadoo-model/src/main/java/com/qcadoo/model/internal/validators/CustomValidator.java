@@ -32,7 +32,7 @@ import com.qcadoo.model.internal.api.FieldHookDefinition;
 
 public final class CustomValidator implements FieldHookDefinition, ErrorMessageDefinition {
 
-    private static final String CUSTOM_ERROR = "core.validate.field.error.custom";
+    private static final String CUSTOM_ERROR = "qcadooView.validate.field.error.custom";
 
     private final FieldHookDefinition fieldHook;
 

@@ -57,9 +57,9 @@ public final class SelectComponentPattern extends FieldComponentPattern {
         Map<String, String> values = new LinkedHashMap<String, String>();
 
         if (!isRequired() || getFieldDefinition().getDefaultValue() == null) {
-            String coreBlankTranslationKey = "core.form.blankComboBoxValue";
+            String coreBlankTranslationKey = "qcadooView.form.blankComboBoxValue";
             if (isRequired()) {
-                coreBlankTranslationKey = "core.form.requiredBlankComboBoxValue";
+                coreBlankTranslationKey = "qcadooView.form.requiredBlankComboBoxValue";
             }
             values.put("",
                     getTranslationService().translate(getTranslationPath() + ".blankValue", coreBlankTranslationKey, locale));

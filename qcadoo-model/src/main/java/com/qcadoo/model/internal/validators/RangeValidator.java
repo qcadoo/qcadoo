@@ -35,9 +35,9 @@ import com.qcadoo.model.internal.api.FieldHookDefinition;
 
 public final class RangeValidator implements FieldHookDefinition, ErrorMessageDefinition {
 
-    private static final String OUT_OF_RANGE_ERROR_SMALL = "core.validate.field.error.outOfRange.toSmall";
+    private static final String OUT_OF_RANGE_ERROR_SMALL = "qcadooView.validate.field.error.outOfRange.toSmall";
 
-    private static final String OUT_OF_RANGE_ERROR_LARGE = "core.validate.field.error.outOfRange.toLarge";
+    private static final String OUT_OF_RANGE_ERROR_LARGE = "qcadooView.validate.field.error.outOfRange.toLarge";
 
     private String errorMessageSmall = OUT_OF_RANGE_ERROR_SMALL;
 

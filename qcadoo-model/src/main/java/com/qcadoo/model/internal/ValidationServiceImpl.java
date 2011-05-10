@@ -128,7 +128,7 @@ public final class ValidationServiceImpl implements ValidationService {
                 try {
                     referencedEntityId = Long.valueOf((String) value);
                 } catch (NumberFormatException e) {
-                    validatedEntity.addError(fieldDefinition, "core.validate.field.error.wrongType", value.getClass()
+                    validatedEntity.addError(fieldDefinition, "qcadooView.validate.field.error.wrongType", value.getClass()
                             .getSimpleName(), fieldDefinition.getType().getType().getSimpleName());
                 }
             } else if (value instanceof Long) {
@@ -138,7 +138,7 @@ public final class ValidationServiceImpl implements ValidationService {
             } else if (value instanceof Entity) {
                 referencedEntityId = ((Entity) value).getId();
             } else {
-                validatedEntity.addError(fieldDefinition, "core.validate.field.error.wrongType",
+                validatedEntity.addError(fieldDefinition, "qcadooView.validate.field.error.wrongType",
                         value.getClass().getSimpleName(), fieldDefinition.getType().getType().getSimpleName());
             }
             if (referencedEntityId == null) {

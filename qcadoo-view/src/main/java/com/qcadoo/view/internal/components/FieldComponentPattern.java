@@ -86,7 +86,7 @@ public abstract class FieldComponentPattern extends AbstractComponentPattern {
             translations.put(
                     "descriptionHeader",
                     getTranslationService().translate(getTranslationPath() + "." + getPath() + ".descriptionHeader",
-                            "core.form.descriptionHeader", locale));
+                            "qcadooView.form.descriptionHeader", locale));
         }
 
         options.put("translations", translations);

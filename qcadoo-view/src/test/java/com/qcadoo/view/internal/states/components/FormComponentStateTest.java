@@ -173,7 +173,7 @@ public class FormComponentStateTest extends AbstractStateTest {
     public void shouldHaveMessageIfEntityIsNotExistsAndEntityIdIsNotNull() throws Exception {
         // given
         form.setFieldValue(12L);
-        given(translationService.translate(eq("null.entityNotFound"), eq("core.message.entityNotFound"), any(Locale.class)))
+        given(translationService.translate(eq("null.entityNotFound"), eq("qcadooView.message.entityNotFound"), any(Locale.class)))
                 .willReturn("translated entityNotFound");
 
         // when

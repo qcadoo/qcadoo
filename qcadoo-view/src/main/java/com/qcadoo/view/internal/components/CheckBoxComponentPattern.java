@@ -79,8 +79,8 @@ public final class CheckBoxComponentPattern extends FieldComponentPattern {
     protected JSONObject getJsOptions(final Locale locale) throws JSONException {
         JSONObject json = new JSONObject();
         JSONObject jsonTranslations = new JSONObject();
-        jsonTranslations.put("true", getTranslationService().translate("commons.true", locale));
-        jsonTranslations.put("false", getTranslationService().translate("commons.false", locale));
+        jsonTranslations.put("true", getTranslationService().translate("qcadooView.true", locale));
+        jsonTranslations.put("false", getTranslationService().translate("qcadooView.false", locale));
         json.put("translations", jsonTranslations);
         return json;
     }
