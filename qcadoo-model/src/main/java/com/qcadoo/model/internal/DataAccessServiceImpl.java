@@ -61,10 +61,6 @@ import com.qcadoo.model.api.EntityTree;
 import com.qcadoo.model.api.ExpressionService;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.aop.Monitorable;
-import com.qcadoo.model.api.search.Order;
-import com.qcadoo.model.api.search.Restriction;
-import com.qcadoo.model.api.search.Restrictions;
-import com.qcadoo.model.api.search.SearchCriteria;
 import com.qcadoo.model.api.search.SearchResult;
 import com.qcadoo.model.api.types.HasManyType;
 import com.qcadoo.model.api.types.TreeType;
@@ -74,6 +70,9 @@ import com.qcadoo.model.internal.api.EntityService;
 import com.qcadoo.model.internal.api.InternalDataDefinition;
 import com.qcadoo.model.internal.api.PriorityService;
 import com.qcadoo.model.internal.api.ValidationService;
+import com.qcadoo.model.internal.search.Order;
+import com.qcadoo.model.internal.search.Restriction;
+import com.qcadoo.model.internal.search.SearchCriteria;
 import com.qcadoo.model.internal.search.SearchResultImpl;
 import com.qcadoo.tenant.api.Standalone;
 
@@ -413,8 +412,8 @@ public class DataAccessServiceImpl implements DataAccessService {
         while (true) {
             String newValue = oldValue + "(" + (index++) + ")";
 
-            int matches = dataDefinition.find().setMaxResults(1).addRestriction(Restrictions.eq(fieldDefinition, newValue))
-                    .list().getTotalNumberOfEntities();
+            int matches = dataDefinition.find().setMaxResults(1).isEq(fieldDefinition.getName(), newValue).list()
+                    .getTotalNumberOfEntities();
 
             if (matches == 0) {
                 return newValue;
@@ -635,7 +634,6 @@ public class DataAccessServiceImpl implements DataAccessService {
 
         SearchResultImpl resultSet = new SearchResultImpl();
         resultSet.setResults(genericResults);
-        resultSet.setCriteria(searchCriteria);
         resultSet.setTotalNumberOfEntities(totalNumberOfEntities);
 
         return resultSet;

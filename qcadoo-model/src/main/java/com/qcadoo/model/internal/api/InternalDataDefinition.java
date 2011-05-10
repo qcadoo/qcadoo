@@ -26,8 +26,8 @@ package com.qcadoo.model.internal.api;
 
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
-import com.qcadoo.model.api.search.SearchCriteria;
 import com.qcadoo.model.api.search.SearchResult;
+import com.qcadoo.model.internal.search.SearchCriteria;
 
 /**
  * Object defines database structure. This is {@link DataDefinition} extension for internal usage.

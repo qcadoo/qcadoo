@@ -48,12 +48,12 @@ import org.springframework.core.io.ClassPathResource;
 
 import com.google.common.collect.ImmutableMap;
 import com.qcadoo.localization.api.TranslationService;
-import com.qcadoo.mes.beans.sample.CustomEntityService;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.types.BelongsToType;
 import com.qcadoo.model.api.types.HasManyType;
+import com.qcadoo.model.beans.sample.CustomEntityService;
 import com.qcadoo.model.internal.types.StringType;
 import com.qcadoo.view.api.ribbon.RibbonActionItem;
 import com.qcadoo.view.internal.HookDefinition;

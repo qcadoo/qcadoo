@@ -43,13 +43,6 @@ public interface SearchResult {
     List<Entity> getEntities();
 
     /**
-     * Returns search criteria used for produce this search result.
-     * 
-     * @return criteria used for produce this result
-     */
-    SearchCriteria getCriteria();
-
-    /**
      * Returns total number of matching entities.
      * 
      * @return total number of matching entities

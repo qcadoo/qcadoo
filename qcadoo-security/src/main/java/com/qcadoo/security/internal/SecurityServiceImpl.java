@@ -46,7 +46,6 @@ import org.springframework.stereotype.Service;
 import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.aop.Monitorable;
-import com.qcadoo.model.api.search.Restrictions;
 import com.qcadoo.security.api.SecurityRole;
 import com.qcadoo.security.api.SecurityRolesService;
 import com.qcadoo.security.api.SecurityService;
@@ -74,8 +73,8 @@ public class SecurityServiceImpl implements SecurityService, UserDetailsService,
     }
 
     protected Entity getUserEntity(final String login) {
-        List<Entity> users = dataDefinitionService.get("qcadooSecurity", "user").find()
-                .addRestriction(Restrictions.eq("userName", login)).setMaxResults(1).list().getEntities();
+        List<Entity> users = dataDefinitionService.get("qcadooSecurity", "user").find().isEq("userName", login).setMaxResults(1)
+                .list().getEntities();
         if (users.size() == 1) {
             return users.get(0);
         } else {
@@ -152,8 +151,8 @@ public class SecurityServiceImpl implements SecurityService, UserDetailsService,
 
     @Override
     public void removeUserTokens(final String username) {
-        List<Entity> entities = dataDefinitionService.get("qcadooSecurity", "persistentToken").find()
-                .addRestriction(Restrictions.eq("userName", username)).list().getEntities();
+        List<Entity> entities = dataDefinitionService.get("qcadooSecurity", "persistentToken").find().isEq("userName", username)
+                .list().getEntities();
 
         for (Entity entity : entities) {
             dataDefinitionService.get("qcadooSecurity", "persistentToken").delete(entity.getId());
@@ -161,8 +160,8 @@ public class SecurityServiceImpl implements SecurityService, UserDetailsService,
     }
 
     private Entity getPersistentToken(final String series) {
-        List<Entity> entities = dataDefinitionService.get("qcadooSecurity", "persistentToken").find()
-                .addRestriction(Restrictions.eq("series", series)).list().getEntities();
+        List<Entity> entities = dataDefinitionService.get("qcadooSecurity", "persistentToken").find().isEq("series", series)
+                .list().getEntities();
 
         if (entities.size() == 1) {
             return entities.get(0);

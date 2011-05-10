@@ -2,7 +2,6 @@ package com.qcadoo.security.internal.module;
 
 import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.Entity;
-import com.qcadoo.model.api.search.Restrictions;
 import com.qcadoo.plugin.api.Module;
 
 public class UserModule extends Module {
@@ -34,8 +33,7 @@ public class UserModule extends Module {
 
     @Override
     public void multiTenantEnable() {
-        if (dataDefinitionService.get("qcadooSecurity", "user").find().addRestriction(Restrictions.eq("userName", login)).list()
-                .getTotalNumberOfEntities() > 0) {
+        if (dataDefinitionService.get("qcadooSecurity", "user").find().isEq("userName", login).list().getTotalNumberOfEntities() > 0) {
             return;
         }
 

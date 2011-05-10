@@ -100,7 +100,7 @@ public class NumberGeneratorService {
      */
     public String generateNumber(final String plugin, final String entityName, final int digitsNumber) {
 
-        SearchResult results = dataDefinitionService.get(plugin, entityName).find().setMaxResults(1).setOrderDescBy("id").list();
+        SearchResult results = dataDefinitionService.get(plugin, entityName).find().setMaxResults(1).orderDescBy("id").list();
 
         long longValue = 0;
 

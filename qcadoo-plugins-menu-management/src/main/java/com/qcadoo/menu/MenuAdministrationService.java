@@ -1,6 +1,6 @@
 package com.qcadoo.menu;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,10 +8,8 @@ import org.springframework.stereotype.Service;
 
 import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.Entity;
-import com.qcadoo.model.api.search.Restriction;
-import com.qcadoo.model.api.search.Restrictions;
-import com.qcadoo.model.api.search.SimpleCustomRestriction;
-import com.qcadoo.report.api.Pair;
+import com.qcadoo.model.api.search.CustomRestriction;
+import com.qcadoo.model.api.search.SearchCriteriaBuilder;
 import com.qcadoo.view.QcadooViewConstants;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.ViewDefinitionState;
@@ -30,30 +28,31 @@ public class MenuAdministrationService {
     @Autowired
     private TranslationUtilsService translationUtilsService;
 
-    private static final List<Pair<String, String>> DISABLED_CATEGORIES;
+    private static final List<String[]> hiddenCategories = new ArrayList<String[]>();
 
     static {
-        DISABLED_CATEGORIES = new LinkedList<Pair<String, String>>();
-        DISABLED_CATEGORIES.add(Pair.of("qcadooView", "home"));
-        DISABLED_CATEGORIES.add(Pair.of("qcadooView", "administration"));
+        hiddenCategories.add(new String[] { "qcadooView", "home" });
+        hiddenCategories.add(new String[] { "qcadooView", "administration" });
     }
 
     public void addRestrictionToCategoriesGrid(final ViewDefinitionState viewDefinitionState) {
-
         GridComponent categoriesGrid = (GridComponent) viewDefinitionState.getComponentByReference("grid");
 
-        Restriction[] categoryRestrictions = new Restriction[DISABLED_CATEGORIES.size()];
-        int index = 0;
-        for (Pair<String, String> category : DISABLED_CATEGORIES) {
-            Restriction pluginEquals = Restrictions.eq("pluginIdentifier", category.getKey());
-            Restriction nameEquals = Restrictions.eq("name", category.getValue());
-            Restriction sameCategory = Restrictions.and(pluginEquals, nameEquals);
-            categoryRestrictions[index++] = Restrictions.not(sameCategory);
-        }
+        categoriesGrid.setCustomRestriction(new CustomRestriction() {
 
-        Restriction restriction = Restrictions.and(categoryRestrictions);
+            @Override
+            public void addRestriction(final SearchCriteriaBuilder searchCriteriaBuilder) {
+                searchCriteriaBuilder.openAnd();
 
-        categoriesGrid.setCustomRestriction(new SimpleCustomRestriction(restriction));
+                for (String[] category : hiddenCategories) {
+                    searchCriteriaBuilder.openNot().openAnd().isEq("pluginIdentifier", category[0]).isEq("name", category[1])
+                            .closeAnd().closeNot();
+                }
+
+                searchCriteriaBuilder.closeAnd();
+            }
+
+        });
     }
 
     public void translateCategoriesGrid(final ViewDefinitionState viewDefinitionState) {

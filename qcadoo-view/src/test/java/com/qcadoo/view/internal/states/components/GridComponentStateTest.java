@@ -56,9 +56,6 @@ import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.FieldDefinition;
-import com.qcadoo.model.api.search.Restriction;
-import com.qcadoo.model.api.search.RestrictionOperator;
-import com.qcadoo.model.api.search.Restrictions;
 import com.qcadoo.model.api.search.SearchCriteriaBuilder;
 import com.qcadoo.model.api.search.SearchResult;
 import com.qcadoo.model.api.types.BelongsToType;
@@ -126,7 +123,7 @@ public class GridComponentStateTest extends AbstractStateTest {
         viewDefinitionState = mock(ViewDefinitionState.class);
 
         productDataDefinition = mock(DataDefinition.class, RETURNS_DEEP_STUBS);
-        substituteDataDefinition = mock(DataDefinition.class);
+        substituteDataDefinition = mock(DataDefinition.class, "substituteDataDefinition");
 
         HasManyType substitutesFieldType = mock(HasManyType.class);
         given(substitutesFieldType.getDataDefinition()).willReturn(substituteDataDefinition);
@@ -274,10 +271,13 @@ public class GridComponentStateTest extends AbstractStateTest {
         given(substituteCriteria.list()).willReturn(result);
         given(result.getTotalNumberOfEntities()).willReturn(0);
         given(result.getEntities()).willReturn(Collections.<Entity> emptyList());
-        grid.initialize(json, Locale.ENGLISH);
-
         FieldDefinition field = mock(FieldDefinition.class);
         given(field.getName()).willReturn("asdName");
+        given(field.getType()).willReturn(new StringType());
+
+        given(substituteDataDefinition.getField("asdName")).willReturn(field);
+
+        grid.initialize(json, Locale.ENGLISH);
 
         GridComponentColumn column = new GridComponentColumn("asd");
         column.addField(field);
@@ -288,7 +288,7 @@ public class GridComponentStateTest extends AbstractStateTest {
         grid.render();
 
         // then
-        verify(substituteCriteria).setOrderAscBy("asdName");
+        verify(substituteCriteria).orderAscBy("asdName");
     }
 
     @Test
@@ -302,6 +302,9 @@ public class GridComponentStateTest extends AbstractStateTest {
 
         FieldDefinition field = mock(FieldDefinition.class);
         given(field.getName()).willReturn("asdName");
+        given(field.getType()).willReturn(new StringType());
+
+        given(substituteDataDefinition.getField("asdName")).willReturn(field);
 
         GridComponentColumn column = new GridComponentColumn("asd");
         column.addField(field);
@@ -312,7 +315,7 @@ public class GridComponentStateTest extends AbstractStateTest {
         grid.render();
 
         // then
-        verify(substituteCriteria).addRestriction(Restrictions.forOperator(RestrictionOperator.EQ, null, "test"));
+        verify(substituteCriteria).isEq("asdName", "test*");
     }
 
     @Test
@@ -338,34 +341,7 @@ public class GridComponentStateTest extends AbstractStateTest {
         grid.render();
 
         // then
-        verify(substituteCriteria).setOrderDescBy("product.name");
-    }
-
-    @Test
-    public void shouldRestrictResultsUsingExpression() throws Exception {
-        // given
-        SearchResult result = mock(SearchResult.class);
-        given(substituteCriteria.list()).willReturn(result);
-        given(result.getTotalNumberOfEntities()).willReturn(0);
-        given(result.getEntities()).willReturn(Collections.<Entity> emptyList());
-
-        JSONObject jsonOrder = new JSONObject(ImmutableMap.of("column", "asd", "direction", "desc"));
-
-        json.getJSONObject(AbstractComponentState.JSON_CONTENT).put(GridComponentState.JSON_ORDER, jsonOrder);
-
-        grid.initialize(json, Locale.ENGLISH);
-
-        GridComponentColumn column = new GridComponentColumn("asd");
-        column.setExpression("#product['name']");
-
-        columns.put("asd", column);
-
-        // when
-        grid.render();
-
-        // then
-        // verify(substituteCriteria).restrictedWith(Restrictions.eq("product.name", "test"));
-        verify(substituteCriteria).addRestriction(Restrictions.forOperator(RestrictionOperator.EQ, null, "test"));
+        verify(substituteCriteria).orderDescBy("product.name");
     }
 
     @Test
@@ -387,6 +363,7 @@ public class GridComponentStateTest extends AbstractStateTest {
 
         given(substituteDataDefinition.getField("product")).willReturn(productFieldDefinition);
         given(substituteDataDefinition.getField("name")).willReturn(nameFieldDefinition);
+        given(nameFieldDefinition.getName()).willReturn("name");
 
         JSONObject jsonOrder = new JSONObject(ImmutableMap.of("column", "asd", "direction", "desc"));
 
@@ -403,7 +380,7 @@ public class GridComponentStateTest extends AbstractStateTest {
         grid.render();
 
         // then
-        verify(substituteCriteria).addRestriction(Restrictions.forOperator(RestrictionOperator.EQ, null, "test*"));
+        verify(substituteCriteria).isEq("product.name", "test*");
     }
 
     @Test
@@ -431,8 +408,8 @@ public class GridComponentStateTest extends AbstractStateTest {
         grid.render();
 
         // then
-        verify(substituteCriteria, never()).setOrderAscBy(anyString());
-        verify(substituteCriteria, never()).setOrderDescBy(anyString());
+        verify(substituteCriteria, never()).orderAscBy(anyString());
+        verify(substituteCriteria, never()).orderDescBy(anyString());
     }
 
     @Test
@@ -450,17 +427,29 @@ public class GridComponentStateTest extends AbstractStateTest {
         FieldDefinition field2 = mock(FieldDefinition.class);
         given(field2.getName()).willReturn("asdName");
 
-        GridComponentColumn column = new GridComponentColumn("asd");
-        column.addField(field1);
-        column.addField(field2);
+        FieldDefinition field3 = mock(FieldDefinition.class);
+        given(field3.getName()).willReturn("qweName");
+        given(field3.getType()).willReturn(new StringType());
 
-        columns.put("asd", column);
+        given(substituteDataDefinition.getField("asdName")).willReturn(field1);
+        given(substituteDataDefinition.getField("qweName")).willReturn(field3);
+
+        GridComponentColumn column1 = new GridComponentColumn("asd");
+        column1.addField(field1);
+        column1.addField(field2);
+
+        GridComponentColumn column2 = new GridComponentColumn("qwe");
+        column2.addField(field3);
+
+        columns.put("asd", column1);
+        columns.put("qwe", column2);
 
         // when
         grid.render();
 
         // then
-        verify(substituteCriteria, times(1)).addRestriction(any(Restriction.class));
+        verify(substituteCriteria).isEq("qweName", "test2*");
+        verify(substituteCriteria, never()).isEq("asdName", "test*");
     }
 
     @Test

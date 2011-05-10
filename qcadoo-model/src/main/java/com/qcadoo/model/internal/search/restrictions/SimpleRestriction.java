@@ -29,7 +29,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 
-import com.qcadoo.model.api.search.RestrictionOperator;
+import com.qcadoo.model.internal.search.RestrictionOperator;
 
 public final class SimpleRestriction extends BaseRestriction {
 

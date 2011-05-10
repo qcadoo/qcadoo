@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import com.qcadoo.model.api.DictionaryService;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.search.CustomRestriction;
-import com.qcadoo.model.api.search.Restrictions;
 import com.qcadoo.model.api.search.SearchCriteriaBuilder;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.api.components.GridComponent;
@@ -35,7 +34,7 @@ public class ViewDictionaryService {
 
             @Override
             public void addRestriction(final SearchCriteriaBuilder searchCriteriaBuilder) {
-                searchCriteriaBuilder.addRestriction(Restrictions.eq("active", true));
+                searchCriteriaBuilder.isEq("active", true);
             }
         });
     }

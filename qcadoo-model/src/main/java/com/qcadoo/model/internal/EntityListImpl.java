@@ -32,7 +32,6 @@ import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.EntityList;
 import com.qcadoo.model.api.FieldDefinition;
-import com.qcadoo.model.api.search.Restrictions;
 import com.qcadoo.model.api.search.SearchCriteriaBuilder;
 
 public final class EntityListImpl extends AbstractList<Entity> implements EntityList {
@@ -63,7 +62,7 @@ public final class EntityListImpl extends AbstractList<Entity> implements Entity
 
     @Override
     public SearchCriteriaBuilder find() {
-        return dataDefinition.find().addRestriction(Restrictions.belongsTo(joinFieldDefinition, parentId));
+        return dataDefinition.find().belongsTo(joinFieldDefinition.getName(), parentId);
     }
 
     @Override

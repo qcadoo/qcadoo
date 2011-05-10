@@ -34,7 +34,6 @@ import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.EntityTree;
 import com.qcadoo.model.api.FieldDefinition;
-import com.qcadoo.model.api.search.Restrictions;
 import com.qcadoo.model.api.search.SearchCriteriaBuilder;
 
 public final class EntityTreeImpl extends AbstractList<Entity> implements EntityTree {
@@ -61,7 +60,7 @@ public final class EntityTreeImpl extends AbstractList<Entity> implements Entity
 
     private void loadEntities() {
         if (entities == null) {
-            entities = find().setOrderAscBy("priority").list().getEntities();
+            entities = find().orderAscBy("priority").list().getEntities();
 
             Map<Long, EntityTreeNodeImpl> entitiesById = new LinkedHashMap<Long, EntityTreeNodeImpl>();
 
@@ -93,12 +92,13 @@ public final class EntityTreeImpl extends AbstractList<Entity> implements Entity
         }
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
      * @see com.qcadoo.mes.model.EntityTree#find()
      */
     @Override
     public SearchCriteriaBuilder find() {
-        return dataDefinition.find().addRestriction(Restrictions.belongsTo(joinFieldDefinition, belongsToId));
+        return dataDefinition.find().belongsTo(joinFieldDefinition.getName(), belongsToId);
     }
 
     @Override
@@ -117,7 +117,8 @@ public final class EntityTreeImpl extends AbstractList<Entity> implements Entity
         return entities.size();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
      * @see com.qcadoo.mes.model.EntityTree#getRoot()
      */
     @Override
