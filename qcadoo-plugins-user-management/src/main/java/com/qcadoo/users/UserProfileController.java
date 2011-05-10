@@ -51,6 +51,7 @@ public class UserProfileController {
     public ModelAndView getAccessDeniedPageView(final Locale locale) {
         JSONObject json = new JSONObject(ImmutableMap.of("form.id", securityService.getCurrentUserId().toString()));
         Map<String, String> arguments = ImmutableMap.of("context", json.toString());
-        return crudController.prepareView("qcadooUsers", "profile", arguments, locale);
+        return crudController.prepareView(QcadooUsersConstants.PLUGIN_IDENTIFIER, QcadooUsersConstants.VIEW_PROFILE, arguments,
+                locale);
     }
 }

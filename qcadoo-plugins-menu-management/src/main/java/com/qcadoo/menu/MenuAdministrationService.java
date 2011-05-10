@@ -10,6 +10,7 @@ import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.search.CustomRestriction;
 import com.qcadoo.model.api.search.SearchCriteriaBuilder;
+import com.qcadoo.view.QcadooViewConstants;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.api.components.FormComponent;
@@ -68,7 +69,8 @@ public class MenuAdministrationService {
         FormComponent categoryForm = (FormComponent) viewDefinitionState.getComponentByReference("form");
         Entity categoryEntity = null;
         if (categoryForm.getEntity() != null) {
-            categoryEntity = dataDefinitionService.get("qcadooView", "category").get(categoryForm.getEntity().getId());
+            categoryEntity = dataDefinitionService.get(QcadooViewConstants.PLUGIN_IDENTIFIER, QcadooViewConstants.MODEL_CATEGORY)
+                    .get(categoryForm.getEntity().getId());
         }
 
         if (categoryEntity != null && categoryEntity.getStringField("pluginIdentifier") != null) {
@@ -93,7 +95,8 @@ public class MenuAdministrationService {
         FormComponent itemForm = (FormComponent) viewDefinitionState.getComponentByReference("form");
         Entity itemEntity = null;
         if (itemForm.getEntity() != null) {
-            itemEntity = dataDefinitionService.get("qcadooView", "item").get(itemForm.getEntity().getId());
+            itemEntity = dataDefinitionService.get(QcadooViewConstants.PLUGIN_IDENTIFIER, QcadooViewConstants.MODEL_ITEM).get(
+                    itemForm.getEntity().getId());
         }
         if (itemEntity != null && itemEntity.getStringField("pluginIdentifier") != null) {
             ComponentState itemNameField = viewDefinitionState.getComponentByReference("itemName");

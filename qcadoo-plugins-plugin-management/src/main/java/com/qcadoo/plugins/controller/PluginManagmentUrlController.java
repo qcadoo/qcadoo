@@ -19,6 +19,7 @@ import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.plugin.api.VersionOfDependency;
 import com.qcadoo.plugin.api.artifact.InputStreamPluginArtifact;
 import com.qcadoo.plugin.api.artifact.PluginArtifact;
+import com.qcadoo.plugins.QcadooPluginsConstants;
 import com.qcadoo.view.api.crud.CrudService;
 
 @Controller
@@ -35,7 +36,7 @@ public class PluginManagmentUrlController {
 
     @RequestMapping(value = "pluginPages/downloadPage", method = RequestMethod.GET)
     public ModelAndView getDownloadPageView(final Locale locale) {
-        ModelAndView mav = getCrudPopupView("pluginDownload", locale);
+        ModelAndView mav = getCrudPopupView(QcadooPluginsConstants.VIEW_PLUGIN_DOWNLOAD, locale);
 
         mav.addObject("headerLabel", translationService.translate("qcadooPlugins.downloadView.header", locale));
         mav.addObject("buttonLabel", translationService.translate("qcadooPlugins.downloadView.button", locale));
@@ -57,7 +58,7 @@ public class PluginManagmentUrlController {
 
     @RequestMapping(value = "pluginPages/infoPage", method = RequestMethod.GET)
     public ModelAndView getInfoPageView(@RequestParam final Map<String, String> arguments, final Locale locale) {
-        ModelAndView mav = getCrudPopupView("pluginInfo", locale);
+        ModelAndView mav = getCrudPopupView(QcadooPluginsConstants.VIEW_PLUGIN_INFO, locale);
 
         if ("success".equals(arguments.get("type"))) {
             mav.addObject("headerClass", "successHeader");
@@ -88,7 +89,7 @@ public class PluginManagmentUrlController {
 
     @RequestMapping(value = "pluginPages/restartPage", method = RequestMethod.GET)
     public ModelAndView getRestartPageView(@RequestParam final Map<String, String> arguments, final Locale locale) {
-        ModelAndView mav = getCrudPopupView("restartView", locale);
+        ModelAndView mav = getCrudPopupView(QcadooPluginsConstants.VIEW_RESTART_VIEW, locale);
 
         mav.addObject("headerLabel", translationService.translate("qcadooPlugins.restartView.header", locale));
         mav.addObject("restartMessage", translationService.translate("qcadooPlugins.restartView.message", locale));
@@ -123,7 +124,7 @@ public class PluginManagmentUrlController {
     private ModelAndView getCrudPopupView(final String viewName, final Locale locale) {
         Map<String, String> crudArgs = new HashMap<String, String>();
         crudArgs.put("popup", "true");
-        return crudController.prepareView("qcadooPlugins", viewName, crudArgs, locale);
+        return crudController.prepareView(QcadooPluginsConstants.PLUGIN_IDENTIFIER, viewName, crudArgs, locale);
     }
 
     private Map<String, String> createDependenciesMap(final Map<String, String> arguments, final Locale locale) {
