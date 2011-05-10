@@ -10,6 +10,7 @@ import com.google.common.base.Preconditions;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.Entity;
+import com.qcadoo.plugin.QcadooPluginConstants;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.api.components.GridComponent;
@@ -50,7 +51,8 @@ public class PluginManagmentViewHook {
 
         Preconditions.checkState(grid.getSelectedEntitiesIds().size() > 0, "No record selected");
 
-        DataDefinition pluginDataDefinition = dataDefinitionService.get("qcadooPlugin", "plugin");
+        DataDefinition pluginDataDefinition = dataDefinitionService.get(QcadooPluginConstants.PLUGIN_IDENTIFIER,
+                QcadooPluginConstants.MODEL_PLUGIN);
         for (Long entityId : grid.getSelectedEntitiesIds()) {
             Entity pluginEntity = pluginDataDefinition.get(entityId);
             pluginIdentifiers.add(pluginEntity.getStringField("identifier"));
