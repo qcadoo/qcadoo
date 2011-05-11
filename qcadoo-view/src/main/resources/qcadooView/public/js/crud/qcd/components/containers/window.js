@@ -39,7 +39,7 @@ QCD.components.containers.Window = function(_element, _mainController) {
 		tabs =  _this.getChildren();
 		var tabsElement = $("#"+_this.elementSearchName+"_windowTabs > div");
 		for (var tabName in tabs) {
-			var tabElement = $("<a href='#'>").html(_this.options.translations["tab."+tabName]).bind('click', {tabName: tabName}, function(e) {
+			var tabElement = $("<a>").attr("href","#").html(_this.options.translations["tab."+tabName]).bind('click', {tabName: tabName}, function(e) {
 				e.target.blur();
 				showTab(e.data.tabName);
 			});
