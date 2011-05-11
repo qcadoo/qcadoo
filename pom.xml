@@ -382,9 +382,21 @@
 				<updatePolicy>never</updatePolicy>
 			</snapshots>
 		</repository>
-		<repository>
+		<!--<repository>
 			<id>spring-repository</id>
 			<url>http://maven.alfresco.com/nexus/content/repositories/public/</url>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+				<updatePolicy>never</updatePolicy>
+			</snapshots>
+		</repository>
+		--><repository>
+			<id>tanesha-repository</id>
+			<url>http://tanesha.net/maven2/</url>
 			<releases>
 				<enabled>true</enabled>
 				<updatePolicy>never</updatePolicy>

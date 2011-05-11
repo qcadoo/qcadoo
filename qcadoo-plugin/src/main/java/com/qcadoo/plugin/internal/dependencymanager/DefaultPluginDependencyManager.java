@@ -34,6 +34,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.jgrapht.DirectedGraph;
+import org.jgrapht.alg.CycleDetector;
+import org.jgrapht.graph.DefaultDirectedGraph;
+import org.jgrapht.graph.DefaultEdge;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -47,47 +53,58 @@ import com.qcadoo.plugin.internal.api.PluginDependencyResultImpl;
 @Service
 public final class DefaultPluginDependencyManager implements PluginDependencyManager {
 
+    private static final Logger LOG = LoggerFactory.getLogger(DefaultPluginDependencyManager.class);
+
     @Autowired
     private PluginAccessor pluginAccessor;
 
     @Override
     public PluginDependencyResult getDependenciesToEnable(final List<Plugin> plugins,
             final PluginStatusResolver pluginStatusResolver) {
-        return getDependenciesToEnable(plugins, new HashSet<String>(), pluginStatusResolver);
+
+        Set<String> marked = new HashSet<String>();
+        DirectedGraph<String, DefaultEdge> graph = new DefaultDirectedGraph<String, DefaultEdge>(DefaultEdge.class);
+
+        PluginDependencyResult pluginDependencyResult = getDependenciesToEnable(plugins, marked, graph, pluginStatusResolver);
+
+        CycleDetector<String, DefaultEdge> cycleDetector = new CycleDetector<String, DefaultEdge>(graph);
+
+        if (cycleDetector.detectCycles()) {
+            LOG.warn("Dependency cycle detected: " + cycleDetector.findCycles());
+            return PluginDependencyResultImpl.cyclicDependencies();
+        } else {
+            return pluginDependencyResult;
+        }
     }
 
-    private PluginDependencyResult getDependenciesToEnable(final List<Plugin> plugins, final Set<String> markedNodes,
-            final PluginStatusResolver pluginStatusResolver) {
+    private PluginDependencyResult getDependenciesToEnable(final List<Plugin> plugins, final Set<String> marked,
+            final DirectedGraph<String, DefaultEdge> graph, final PluginStatusResolver pluginStatusResolver) {
 
         Set<PluginDependencyInformation> disabledDependencies = new HashSet<PluginDependencyInformation>();
         Set<PluginDependencyInformation> unsatisfiedDependencies = new HashSet<PluginDependencyInformation>();
 
         Set<String> argumentPluginIdentifiersSet = getArgumentIdentifiersSet(plugins);
 
-        boolean isCyclic = false;
-
         for (Plugin plugin : plugins) {
 
-            if (markedNodes.contains(plugin.getIdentifier())) {
+            if (marked.contains(plugin.getIdentifier())) {
                 continue;
             }
 
-            markedNodes.add(plugin.getIdentifier());
+            marked.add(plugin.getIdentifier());
+            graph.addVertex(plugin.getIdentifier());
 
             for (PluginDependencyInformation dependencyInfo : plugin.getRequiredPlugins()) {
-                if (markedNodes.contains(dependencyInfo.getIdentifier())) {
-                    isCyclic = true;
-                    continue;
-                }
-
                 Plugin requiredPlugin = pluginAccessor.getPlugin(dependencyInfo.getIdentifier());
-
                 if (requiredPlugin == null) {
                     if (!argumentPluginIdentifiersSet.contains(dependencyInfo.getIdentifier())) {
                         unsatisfiedDependencies.add(dependencyInfo);
                     }
                     continue;
                 }
+
+                graph.addVertex(dependencyInfo.getIdentifier());
+                graph.addEdge(plugin.getIdentifier(), dependencyInfo.getIdentifier());
 
                 if (!isPluginDisabled(requiredPlugin, pluginStatusResolver)) {
                     continue;
@@ -99,7 +116,7 @@ public final class DefaultPluginDependencyManager implements PluginDependencyMan
                     disabledDependencies.add(dependencyInfo);
 
                     PluginDependencyResult nextLevelDependencioesResult = getDependenciesToEnable(
-                            Collections.singletonList(requiredPlugin), markedNodes, pluginStatusResolver);
+                            Collections.singletonList(requiredPlugin), marked, graph, pluginStatusResolver);
 
                     if (!nextLevelDependencioesResult.getUnsatisfiedDependencies().isEmpty()
                             || nextLevelDependencioesResult.isCyclic()) {
@@ -110,10 +127,6 @@ public final class DefaultPluginDependencyManager implements PluginDependencyMan
                 }
 
             }
-        }
-
-        if (isCyclic) {
-            return PluginDependencyResultImpl.cyclicDependencies();
         }
 
         if (!unsatisfiedDependencies.isEmpty()) {

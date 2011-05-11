@@ -102,6 +102,10 @@ public class DefaultPluginManager implements PluginManager {
         PluginDependencyResult pluginDependencyResult = pluginDependencyManager.getDependenciesToEnable(plugins,
                 pluginStatusResolver);
 
+        if (pluginDependencyResult.isCyclic()) {
+            return PluginOperationResultImpl.dependenciesCyclesExists();
+        }
+
         if (!pluginDependencyResult.isDependenciesSatisfied()) {
             if (!pluginDependencyResult.getUnsatisfiedDependencies().isEmpty()) {
                 return PluginOperationResultImpl.unsatisfiedDependencies(pluginDependencyResult);

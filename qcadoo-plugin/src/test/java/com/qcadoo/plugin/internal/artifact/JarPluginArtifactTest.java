@@ -68,7 +68,6 @@ public class JarPluginArtifactTest {
 
     @Test(expected = IllegalStateException.class)
     @Ignore
-    // TODO krna problem with hudson
     public void shouldThrowAnExceptionIfFileIsNotReadable() throws Exception {
         // given
         File file = folder.newFile("plugin.jar");

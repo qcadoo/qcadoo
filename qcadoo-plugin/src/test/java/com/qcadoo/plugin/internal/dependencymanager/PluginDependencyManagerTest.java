@@ -73,7 +73,7 @@ public class PluginDependencyManagerTest {
 
     private DefaultPluginDependencyManager manager = null;
 
-    private SimplePluginStatusResolver pluginStatusResolver = new SimplePluginStatusResolver();
+    private final SimplePluginStatusResolver pluginStatusResolver = new SimplePluginStatusResolver();
 
     @Before
     public void init() {
@@ -140,8 +140,11 @@ public class PluginDependencyManagerTest {
     public void shouldReturnMultipleDisabledDependencyForOnePlugin() throws Exception {
         // given
         given(plugin1.getState()).willReturn(PluginState.DISABLED);
+        given(plugin1.getIdentifier()).willReturn("testPlugin1");
         given(plugin2.getState()).willReturn(PluginState.TEMPORARY);
+        given(plugin2.getIdentifier()).willReturn("testPlugin2");
         given(plugin3.getState()).willReturn(PluginState.ENABLED);
+        given(plugin3.getIdentifier()).willReturn("testPlugin3");
 
         given(pluginAccessor.getPlugin("testPlugin1")).willReturn(plugin1);
         given(pluginAccessor.getPlugin("testPlugin2")).willReturn(plugin2);
@@ -153,6 +156,7 @@ public class PluginDependencyManagerTest {
         disabledRequiredPlugins.add(dependencyInfo2);
         disabledRequiredPlugins.add(dependencyInfo3);
         given(pluginToEnable.getRequiredPlugins()).willReturn(disabledRequiredPlugins);
+        given(pluginToEnable.getIdentifier()).willReturn("plugin");
 
         // when
         PluginDependencyResult result = manager.getDependenciesToEnable(singletonList((Plugin) pluginToEnable),
@@ -171,8 +175,11 @@ public class PluginDependencyManagerTest {
     public void shouldReturnUnsatisfiedDependenciesForOnePluginWhenNoDependencyPluginFoundOrVersionIsNotMet() throws Exception {
         // given
         given(plugin1.getState()).willReturn(PluginState.DISABLED);
+        given(plugin1.getIdentifier()).willReturn("testPlugin1");
         given(plugin2.getState()).willReturn(PluginState.TEMPORARY);
+        given(plugin2.getIdentifier()).willReturn("testPlugin2");
         given(plugin3.getState()).willReturn(PluginState.TEMPORARY);
+        given(plugin3.getIdentifier()).willReturn("testPlugin3");
 
         given(pluginAccessor.getPlugin("testPlugin1")).willReturn(plugin1);
         given(pluginAccessor.getPlugin("testPlugin2")).willReturn(plugin2);
@@ -188,6 +195,7 @@ public class PluginDependencyManagerTest {
         disabledRequiredPlugins.add(dependencyInfo3);
         disabledRequiredPlugins.add(dependencyInfo4);
         given(pluginToEnable.getRequiredPlugins()).willReturn(disabledRequiredPlugins);
+        given(pluginToEnable.getIdentifier()).willReturn("plugin");
 
         // when
         PluginDependencyResult result = manager.getDependenciesToEnable(singletonList((Plugin) pluginToEnable),
@@ -348,6 +356,11 @@ public class PluginDependencyManagerTest {
         disabledRequiredPlugins3.add(dependencyInfo1);
         given(plugin3.getRequiredPlugins()).willReturn(disabledRequiredPlugins3);
 
+        given(pluginAccessor.getPlugin("testPlugin1")).willReturn(plugin1);
+        given(pluginAccessor.getPlugin("testPlugin2")).willReturn(plugin2);
+        given(pluginAccessor.getPlugin("testPlugin3")).willReturn(plugin3);
+        given(pluginAccessor.getPlugin("testPlugin4")).willReturn(plugin4);
+
         List<Plugin> plugins = new ArrayList<Plugin>();
         plugins.add(plugin1);
         plugins.add(plugin2);
@@ -380,8 +393,10 @@ public class PluginDependencyManagerTest {
         given(plugin3.getState()).willReturn(PluginState.TEMPORARY);
         given(plugin3.getRequiredPlugins()).willReturn(disabledRequiredPlugins3);
 
+        given(pluginAccessor.getPlugin("testPlugin1")).willReturn(plugin1);
         given(pluginAccessor.getPlugin("testPlugin2")).willReturn(plugin2);
         given(pluginAccessor.getPlugin("testPlugin3")).willReturn(plugin3);
+        given(pluginAccessor.getPlugin("testPlugin4")).willReturn(plugin4);
 
         // when
         PluginDependencyResult result = manager.getDependenciesToEnable(singletonList((Plugin) plugin1), pluginStatusResolver);
