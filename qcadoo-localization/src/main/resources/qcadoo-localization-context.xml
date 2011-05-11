@@ -51,6 +51,11 @@
 		<property name="paramName" value="lang" />
 	</bean>
 	
-	<bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver"/>
+	<!--<bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver"/>-->
+	<bean id="localeResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver">
+		<property name="cookieMaxAge">
+			<util:constant static-field="java.lang.Integer.MAX_VALUE"/>
+		</property>
+	</bean>
 
 </beans>
