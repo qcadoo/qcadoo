@@ -47,7 +47,7 @@ QCD.components.Component = function(_element, _mainController) {
 	var onChangeListeners;
 	
 	function constructor(_this) {
-		var optionsElement = $("#"+elementSearchName+" > .element_options");
+		var optionsElement = element.children(".element_options");
 		if (!optionsElement.html() || $.trim(optionsElement.html()) == "") {
 			_this.options = new Object();
 		} else {
