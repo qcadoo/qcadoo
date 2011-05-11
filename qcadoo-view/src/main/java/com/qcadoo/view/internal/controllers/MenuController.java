@@ -47,6 +47,7 @@ public final class MenuController {
     @RequestMapping(value = "menu", method = RequestMethod.GET)
     public ResponseEntity<String> getMenu(final Locale locale) {
 
+        // TODO mina remove sysout
         System.out.println("------------------------- getMenu - begin");
         try {
             System.out.println(menuService.getMenu(locale).getAdministrationCategory().getAsJson());
