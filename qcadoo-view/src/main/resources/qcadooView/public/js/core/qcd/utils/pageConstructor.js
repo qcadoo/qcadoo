@@ -31,12 +31,11 @@ QCDPageConstructor.getChildrenComponents = function(elements, mainController) {
 		if (element.hasClass("component")) {
 			var component = null;
 			
-			
 			var elementFullName = element.attr('id');
 			var elementSearchName = elementFullName.replace(/\./g,"\\.");
 			var elementName = elementFullName.split(".")[elementFullName.split(".").length - 1];
 			
-			var jsObjectElement = $("#"+elementSearchName+" > .element_js_object");
+			var jsObjectElement = element.children(".element_js_object");
 			var jsObjectClassName = $.trim(jsObjectElement.html());
 			jsObjectElement.remove();
 			

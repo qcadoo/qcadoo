@@ -24,12 +24,11 @@
 
 var QCD = QCD || {};
 
-QCD.PageController = function(_viewName, _pluginIdentifier, _hasDataDefinition, _isPopup) {
-	
-	var viewName = _viewName;
-	var pluginIdentifier = _pluginIdentifier;
-	var hasDataDefinition = _hasDataDefinition;
-	var isPopup = _isPopup;
+QCD.PageController = function() {
+	var viewName;
+	var pluginIdentifier;
+	var hasDataDefinition;
+	var isPopup;
 	
 	var pageComponents;
 	
@@ -51,19 +50,25 @@ QCD.PageController = function(_viewName, _pluginIdentifier, _hasDataDefinition, 
 	
 	var serializationObjectToInsert;
 	
-	function constructor(_this) {
+	this.constructor = function(_viewName, _pluginIdentifier, _hasDataDefinition, _isPopup) {
+		viewName = _viewName;
+		pluginIdentifier = _pluginIdentifier;
+		hasDataDefinition = _hasDataDefinition;
+		isPopup = _isPopup;
 		
 		QCD.components.elements.utils.LoadingIndicator.blockElement($("body"));
 		
 		QCDConnector.windowName = "/page/"+pluginIdentifier+"/"+viewName;
-		QCDConnector.mainController = _this;
-		
+		QCDConnector.mainController = this;
+
 		var pageOptionsElement = $("#pageOptions");
+		var pageOptionsElement = $("body").children("#pageOptions");
 		pageOptions = JSON.parse($.trim(pageOptionsElement.html()));
 		pageOptionsElement.remove();
+
 		
 		var contentElement = $("body");
-		pageComponents = QCDPageConstructor.getChildrenComponents(contentElement.children(), _this);
+		pageComponents = QCDPageConstructor.getChildrenComponents(contentElement.children(), this);
 		QCD.debug(pageComponents);
 		
 		tabController.updateTabObjects()
@@ -78,7 +83,6 @@ QCD.PageController = function(_viewName, _pluginIdentifier, _hasDataDefinition, 
 		} else {
 			$(window).focus(onWindowClick);
 		}
-		
 	}
 	
 	this.init = function(serializationObject) {
@@ -371,7 +375,13 @@ QCD.PageController = function(_viewName, _pluginIdentifier, _hasDataDefinition, 
 	}
 	
 	this.getLastPageController = function() {
-		return window.parent.getLastPageController();
+		var lastPageController =  window.parent.getLastPageController();
+		try {
+			lastPageController.getViewName()
+		} catch(e) {
+			return null;
+		}
+		return lastPageController;
 	}
 	
 	function canClose() {
@@ -418,5 +428,5 @@ QCD.PageController = function(_viewName, _pluginIdentifier, _hasDataDefinition, 
 	}
 	this.updateSize = updateSize;
 	
-	constructor(this);
+	//constructor(this);
 }
