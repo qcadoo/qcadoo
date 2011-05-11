@@ -72,10 +72,11 @@ public class JarPluginArtifactTest {
         File file = folder.newFile("plugin.jar");
 
         System.out.println(" ********************************* ");
+        System.out.println(" 0 " + file.getAbsolutePath());
         System.out.println(" 1 " + file.canRead());
         System.out.println(" 2 " + file.canWrite());
         System.out.println(" 3 " + file.canExecute());
-        System.out.println(" 4 " + file.setReadable(false));
+        System.out.println(" 4 " + file.setReadable(false, false));
         System.out.println(" 5 " + file.canRead());
         System.out.println(" 6 " + file.getAbsolutePath());
         System.out.println(" ********************************* ");
