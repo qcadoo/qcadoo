@@ -45,7 +45,6 @@ public final class SessionExpirationFilter implements Filter {
 
     private final Pattern logoutPattern = Pattern.compile("login\\.html\\?logout=true$");
 
-    // private final Pattern basicLoginPattern = Pattern.compile("login\\.html$");
     private final Pattern basicLoginPattern = Pattern.compile("login\\.html");
 
     @Override
@@ -72,13 +71,6 @@ public final class SessionExpirationFilter implements Filter {
             Matcher logoutMatcher = logoutPattern.matcher(redirectResponseWrapper.getRedirect());
             Matcher basicLoginMatcher = basicLoginPattern.matcher(redirectResponseWrapper.getRedirect());
 
-            // TODO mina test it!
-            // if (logoutMatcher.find() || basicLoginMatcher.find()) {
-            // httpResponse.sendRedirect(redirectResponseWrapper.getRedirect());
-            // } else {
-            // HttpServletRequest httpRequest = (HttpServletRequest) request;
-            // redirectToLoginPage(httpRequest, httpResponse);
-            // }
             if (basicLoginMatcher.find() && !logoutMatcher.find()) {
                 HttpServletRequest httpRequest = (HttpServletRequest) request;
                 redirectToLoginPage(httpRequest, httpResponse);

@@ -24,7 +24,7 @@
 
 package com.qcadoo.model.api;
 
-// TODO masz move it to internal
+@Deprecated
 @SuppressWarnings("serial")
 public final class CopyException extends RuntimeException {
 

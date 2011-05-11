@@ -92,10 +92,6 @@ public final class EntityTreeImpl extends AbstractList<Entity> implements Entity
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * @see com.qcadoo.mes.model.EntityTree#find()
-     */
     @Override
     public SearchCriteriaBuilder find() {
         return dataDefinition.find().belongsTo(joinFieldDefinition.getName(), belongsToId);
@@ -117,10 +113,6 @@ public final class EntityTreeImpl extends AbstractList<Entity> implements Entity
         return entities.size();
     }
 
-    /*
-     * (non-Javadoc)
-     * @see com.qcadoo.mes.model.EntityTree#getRoot()
-     */
     @Override
     public EntityTreeNodeImpl getRoot() {
         if (entities == null) {

@@ -69,10 +69,6 @@ public final class ValidationServiceImpl implements ValidationService {
             if (field.getValue().isReadOnly()) {
                 genericEntity.setField(field.getKey(), value);
             }
-            // TODO masz check it
-            // if (field.getValue().isReadOnlyOnUpdate() && genericEntity.getId() != null) {
-            // genericEntity.setField(field.getKey(), value);
-            // }
             if (!genericEntity.getFields().containsKey(field.getKey()) && genericEntity.getId() != null) {
                 genericEntity.setField(field.getKey(), value);
             }
@@ -138,8 +134,8 @@ public final class ValidationServiceImpl implements ValidationService {
             } else if (value instanceof Entity) {
                 referencedEntityId = ((Entity) value).getId();
             } else {
-                validatedEntity.addError(fieldDefinition, "qcadooView.validate.field.error.wrongType",
-                        value.getClass().getSimpleName(), fieldDefinition.getType().getType().getSimpleName());
+                validatedEntity.addError(fieldDefinition, "qcadooView.validate.field.error.wrongType", value.getClass()
+                        .getSimpleName(), fieldDefinition.getType().getType().getSimpleName());
             }
             if (referencedEntityId == null) {
                 referencedEntity = null;

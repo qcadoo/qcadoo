@@ -84,7 +84,7 @@ public final class DictionaryServiceImpl implements InternalDictionaryService {
 
         Map<String, String> values = new LinkedHashMap<String, String>();
 
-        // TODO mady translate dictionary values
+        // TODO masz translate dictionary values
 
         for (Entity item : items) {
             values.put(item.getStringField("name"), item.getStringField("name"));

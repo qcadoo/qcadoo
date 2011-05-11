@@ -129,8 +129,6 @@ public class ModelXmlToClassConverterTest {
         // when
         String string = entity.toString();
 
-        System.out.println(string);
-
         // then
         assertTrue(string.contains("fieldInteger=13"));
         assertTrue(string.contains("fieldString=Xxx"));
