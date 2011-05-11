@@ -83,6 +83,7 @@ public class PluginFileManagerTest {
     // TODO krna problem with hudson
     public void shouldFailureInstallPluginFileWhenDestinationCannotWrite() throws Exception {
         // given
+        destination.setWritable(false, false);
         destination.setWritable(false);
 
         // when
