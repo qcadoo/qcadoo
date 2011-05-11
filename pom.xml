@@ -302,7 +302,7 @@
 					<failOnError>false</failOnError>
 					<use>false</use>
 					<notree>true</notree>
-					<excludePackageNames>*.internal.*:com.qcadoo.*.constants:com.qcadoo.plugins.*:com.qcadoo.maven.plugins:com.qcadoo.maven.plugins.*:com.qcadoo.tenant.*:com.qcadoo.model.beans.*:*.api.errorhandler.*:com.qcadoo.report.*</excludePackageNames>
+					<excludePackageNames>*.internal.*:*.constants:com.qcadoo.plugins.*:com.qcadoo.maven.plugins:com.qcadoo.maven.plugins.*:com.qcadoo.tenant.*:com.qcadoo.model.beans.*:*.api.errorhandler.*:com.qcadoo.report.*</excludePackageNames>
 					<reportSets>
 						<reportSet>
 							<id>aggregate</id>
