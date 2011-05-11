@@ -70,22 +70,6 @@ public class JarPluginArtifactTest {
     public void shouldThrowAnExceptionIfFileIsNotReadable() throws Exception {
         // given
         File file = folder.newFile("plugin.jar");
-
-        // System.out.println(" ********************************* ");
-        // System.out.println(System.getProperty("java.io.tmpdir"));
-        // System.out.println(" 0 " + file.getAbsolutePath());
-        // System.out.println(" 1 " + file.canRead());
-        // System.out.println(" 2 " + file.canWrite());
-        // System.out.println(" 3 " + file.canExecute());
-        // System.out.println(" 4 " + file.setReadable(false, false));
-        // System.out.println(" 5 " + file.setReadable(false));
-        // System.out.println(" 6 " + file.canRead());
-        // System.out.println(" 7 " + file.getAbsolutePath());
-        // System.out.println(" 8 " + file.delete());
-        // System.out.println(" 9 " + file.exists());
-        // System.out.println(" ********************************* ");
-
-        file.setReadable(false, false);
         file.setReadable(false);
 
         // when

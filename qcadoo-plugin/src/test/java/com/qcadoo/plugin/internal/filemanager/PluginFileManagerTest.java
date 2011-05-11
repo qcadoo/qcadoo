@@ -83,8 +83,20 @@ public class PluginFileManagerTest {
     // TODO krna problem with hudson
     public void shouldFailureInstallPluginFileWhenDestinationCannotWrite() throws Exception {
         // given
-        destination.setWritable(false, false);
-        destination.setWritable(false);
+
+        System.out.println(" ********************************* ");
+        System.out.println(System.getProperty("java.io.tmpdir"));
+        System.out.println(" 0 " + destination.getAbsolutePath());
+        System.out.println(" 1 " + destination.canRead());
+        System.out.println(" 2 " + destination.canWrite());
+        System.out.println(" 3 " + destination.canExecute());
+        System.out.println(" 4 " + destination.setWritable(false, false));
+        System.out.println(" 5 " + destination.setWritable(false));
+        System.out.println(" 6 " + destination.canRead());
+        System.out.println(" 7 " + destination.getAbsolutePath());
+        System.out.println(" 8 " + destination.delete());
+        System.out.println(" 9 " + destination.exists());
+        System.out.println(" ********************************* ");
 
         // when
         boolean result = defaultPluginFileManager.installPlugin("pluginname.jar");
