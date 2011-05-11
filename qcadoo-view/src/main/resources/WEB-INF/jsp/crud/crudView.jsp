@@ -133,17 +133,6 @@
 	var controller = null;
 
 	window.init = function(serializationObject) {
-		controller = new QCD.PageController();
-		controller.constructor(viewName, pluginIdentifier, hasDataDefinition, popup);
-		context = $.trim(context);
-		if (context && context != "") {
-			controller.setContext(context);
-		}
-		if (popup && window.opener) {
-			window.opener.onPopupInit();
-		}
-
-		window.mainController = controller;
 		controller.init(serializationObject);
 	}
 
@@ -158,6 +147,20 @@
 	window.onPopupInit = function() {
 		return controller.onPopupInit();
 	}
+
+	jQuery(document).ready(function(){
+		controller = new QCD.PageController();
+		controller.constructor(viewName, pluginIdentifier, hasDataDefinition, popup);
+		context = $.trim(context);
+		if (context && context != "") {
+			controller.setContext(context);
+		}
+		if (popup && window.opener) {
+			window.opener.onPopupInit();
+		}
+
+		window.mainController = controller;
+	});
 
 	//--><!]]>
 	</script>
