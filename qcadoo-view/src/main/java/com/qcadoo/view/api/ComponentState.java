@@ -27,8 +27,7 @@ package com.qcadoo.view.api;
 import java.util.Locale;
 
 /**
- * ComponentState is instance of single view element. It is created by {@link com.qcadoo.view.internal.api.ComponentPattern} in
- * request scope.
+ * ComponentState is instance of single view element. It is created by ComponentPattern in request scope.
  * <p>
  * ComponentState contains all informations about state of this component. Changing this data will also change state displayed to
  * system user.
