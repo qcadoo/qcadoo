@@ -4,4 +4,5 @@
 .DS_Store
 target
 pom.xml.releaseBackup
+pom.xml.next
 release.properties
