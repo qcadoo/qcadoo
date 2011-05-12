@@ -22,7 +22,6 @@ public class QcadooGlobalPermissionEvaluator implements PermissionEvaluator {
 
     @Override
     public boolean hasPermission(final Authentication authentication, final Object domainObject, final Object permission) {
-        // TODO mina implement
         throw new UnsupportedOperationException();
     }
 

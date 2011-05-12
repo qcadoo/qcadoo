@@ -27,7 +27,6 @@ package com.qcadoo.view.internal.controllers;
 import java.io.UnsupportedEncodingException;
 import java.util.Locale;
 
-import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -47,14 +46,6 @@ public final class MenuController {
     @RequestMapping(value = "menu", method = RequestMethod.GET)
     public ResponseEntity<String> getMenu(final Locale locale) {
 
-        // TODO mina remove sysout
-        System.out.println("------------------------- getMenu - begin");
-        try {
-            System.out.println(menuService.getMenu(locale).getAdministrationCategory().getAsJson());
-        } catch (JSONException e1) {
-            e1.printStackTrace();
-        }
-        System.out.println("------------------------- getMenu - end");
         String responseBody = menuService.getMenu(locale).getAsJson();
 
         HttpHeaders responseHeaders = new HttpHeaders();

@@ -83,20 +83,6 @@ public class DefaultPluginDescriptorResolver implements PluginDescriptorResolver
 
             return new JarEntryResource(file, jarFile.getInputStream(descriptorEntry));
 
-            // TODO mina test and delete
-            // JarFile jar = new JarFile(file);
-            //
-            // JarEntry entry = jar.getJarEntry(descriptor);
-            //
-            // if (entry == null) {
-            // entry = jar.getJarEntry(descriptor.split("/")[descriptor.split("/").length - 1]);
-            //
-            // if (entry == null) {
-            // throw new IllegalStateException("Plugin descriptor " + descriptor + " not found in " + file.getAbsolutePath());
-            // }
-            // }
-            // return new JarEntryResource(file, jar.getInputStream(entry));
-
         } catch (IOException e) {
             throw new IllegalStateException("Plugin descriptor " + descriptor + " not found in " + file.getAbsolutePath(), e);
         }
