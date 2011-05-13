@@ -27,8 +27,10 @@ package com.qcadoo.model.internal.hooks;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.Arrays;
 
 import org.springframework.context.ApplicationContext;
+import org.springframework.util.StringUtils;
 
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.FieldDefinition;
@@ -39,11 +41,27 @@ public abstract class HookDefinitionImpl {
 
     private final Method method;
 
+    private final String className;
+
+    private final String methodName;
+
     private DataDefinition dataDefinition;
 
     private FieldDefinition fieldDefinition;
 
-    public HookDefinitionImpl(final String className, final String methodName, final ApplicationContext applicationContext) {
+    public HookDefinitionImpl(final String className, final String methodName, final ApplicationContext applicationContext)
+            throws HookInitializationException {
+        this.className = className;
+        this.methodName = methodName;
+
+        if (!StringUtils.hasText(className)) {
+            throw new HookInitializationException(className, methodName, "Class name cannot be empty");
+        }
+
+        if (!StringUtils.hasText(methodName)) {
+            throw new HookInitializationException(className, methodName, "Method name cannot be empty");
+        }
+
         Class<?> clazz = getHookClass(className);
 
         bean = getHookBean(clazz, applicationContext);
@@ -89,36 +107,48 @@ public abstract class HookDefinitionImpl {
         return bean;
     }
 
-    private Class<?> getHookClass(final String hookClassName) {
+    private Class<?> getHookClass(final String hookClassName) throws HookInitializationException {
         try {
             return HookDefinitionImpl.class.getClassLoader().loadClass(hookClassName);
         } catch (ClassNotFoundException e) {
-            throw new IllegalStateException("Failed to find hook class", e);
+            throw new HookInitializationException(className, methodName, "Failed to find class '" + hookClassName
+                    + "', please make sure that there is no typo");
         }
     }
 
-    private Object getHookBean(final Class<?> clazz, final ApplicationContext applicationContext) {
+    private Object getHookBean(final Class<?> clazz, final ApplicationContext applicationContext)
+            throws HookInitializationException {
         Object hookBean = applicationContext.getBean(clazz);
         if (hookBean == null) {
-            throw new IllegalStateException("Failed to find bean for class " + clazz.getCanonicalName());
+            throw new HookInitializationException(
+                    className,
+                    methodName,
+                    "Failed to find bean for class '"
+                            + clazz.getCanonicalName()
+                            + "', please make sure that there is no typo, class have @Service or @Component annotation and its package is registered in the Spring component-scan feature");
         }
         return hookBean;
     }
 
-    private void checkHookMethodModifiers() {
+    private void checkHookMethodModifiers() throws HookInitializationException {
         if (!Modifier.isPublic(method.getModifiers())) {
-            throw new IllegalStateException("Hook method " + method.getDeclaringClass().getCanonicalName() + "."
-                    + method.getName() + " must be public");
+            throw new HookInitializationException(className, methodName, "Hook method '"
+                    + method.getDeclaringClass().getCanonicalName() + "#" + method.getName()
+                    + "' has invalid visibility, must be public");
         }
     }
 
-    private Method getMethod(final Class<?> clazz, final String methodName) {
+    private Method getMethod(final Class<?> clazz, final String methodName) throws HookInitializationException {
         try {
             return clazz.getMethod(methodName, getParameterTypes());
         } catch (SecurityException e) {
-            throw new IllegalStateException("Failed to find hook method " + clazz.getCanonicalName() + "." + methodName, e);
+            throw new HookInitializationException(className, methodName, "Failed to access hook method '"
+                    + clazz.getCanonicalName() + "#" + methodName + "'", e);
         } catch (NoSuchMethodException e) {
-            throw new IllegalStateException("Failed to find hook method " + clazz.getCanonicalName() + "." + methodName, e);
+            throw new HookInitializationException(className, methodName, "Failed to find hook method '"
+                    + clazz.getCanonicalName() + "#" + methodName
+                    + "', please make sure that there is no typo and parameters' types are valid ("
+                    + Arrays.toString(getParameterTypes()) + ")", e);
         }
     }
 

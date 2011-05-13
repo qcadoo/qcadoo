@@ -34,7 +34,8 @@ public final class EntityHookDefinitionImpl extends HookDefinitionImpl implement
 
     private boolean enabled = true;
 
-    public EntityHookDefinitionImpl(final String className, final String methodName, final ApplicationContext applicationContext) {
+    public EntityHookDefinitionImpl(final String className, final String methodName, final ApplicationContext applicationContext)
+            throws HookInitializationException {
         super(className, methodName, applicationContext);
     }
 

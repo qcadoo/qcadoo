@@ -37,7 +37,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
-import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -71,6 +70,7 @@ import com.qcadoo.model.internal.api.InternalDataDefinitionService;
 import com.qcadoo.model.internal.api.ModelXmlToDefinitionConverter;
 import com.qcadoo.model.internal.hooks.EntityHookDefinitionImpl;
 import com.qcadoo.model.internal.hooks.FieldHookDefinitionImpl;
+import com.qcadoo.model.internal.hooks.HookInitializationException;
 import com.qcadoo.model.internal.types.BelongsToEntityType;
 import com.qcadoo.model.internal.types.BooleanType;
 import com.qcadoo.model.internal.types.DateTimeType;
@@ -122,47 +122,50 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
     @Transactional
     @Override
     public Collection<DataDefinition> convert(final Resource... resources) {
-        try {
-            List<DataDefinition> dataDefinitions = new ArrayList<DataDefinition>();
+        List<DataDefinition> dataDefinitions = new ArrayList<DataDefinition>();
 
-            for (Resource resource : resources) {
-                if (resource.isReadable()) {
-                    LOG.info("Creating dataDefinition from " + resource);
+        for (Resource resource : resources) {
+            if (resource.isReadable()) {
+                LOG.info("Creating dataDefinition from " + resource);
 
+                try {
                     dataDefinitions.add(parse(resource.getInputStream()));
+                } catch (HookInitializationException e) {
+                    throw new IllegalStateException("Error while parsing model.xml: " + e.getMessage(), e);
+                } catch (IOException e) {
+                    throw new IllegalStateException("Error while parsing model.xml: " + e.getMessage(), e);
+                } catch (ModelXmlParsingException e) {
+                    throw new IllegalStateException("Error while parsing model.xml: " + e.getMessage(), e);
+                } catch (XMLStreamException e) {
+                    throw new IllegalStateException("Error while parsing model.xml: " + e.getMessage(), e);
+                } catch (javax.xml.stream.FactoryConfigurationError e) {
+                    throw new IllegalStateException("Error while parsing model.xml: " + e.getMessage(), e);
                 }
             }
-
-            return dataDefinitions;
-        } catch (IOException e) {
-            throw new IllegalStateException("Failed to convert model.xml to dataDefinitions", e);
         }
+
+        return dataDefinitions;
     }
 
-    private DataDefinition parse(final InputStream stream) {
-        try {
-            XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(stream);
-            DataDefinition dataDefinition = null;
+    private DataDefinition parse(final InputStream stream) throws HookInitializationException, ModelXmlParsingException,
+            XMLStreamException, javax.xml.stream.FactoryConfigurationError {
+        XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(stream);
+        DataDefinition dataDefinition = null;
 
-            while (reader.hasNext() && reader.next() > 0) {
-                if (isTagStarted(reader, TAG_MODEL)) {
-                    dataDefinition = getDataDefinition(reader, getPluginIdentifier(reader));
-                    break;
-                }
+        while (reader.hasNext() && reader.next() > 0) {
+            if (isTagStarted(reader, TAG_MODEL)) {
+                dataDefinition = getDataDefinition(reader, getPluginIdentifier(reader));
+                break;
             }
-
-            reader.close();
-
-            return dataDefinition;
-        } catch (XMLStreamException e) {
-            throw new IllegalStateException(e.getMessage(), e);
-        } catch (FactoryConfigurationError e) {
-            throw new IllegalStateException(e.getMessage(), e);
         }
+
+        reader.close();
+
+        return dataDefinition;
     }
 
     private DataDefinition getDataDefinition(final XMLStreamReader reader, final String pluginIdentifier)
-            throws XMLStreamException {
+            throws XMLStreamException, HookInitializationException, ModelXmlParsingException {
         DataDefinitionImpl dataDefinition = getModelDefinition(reader, pluginIdentifier);
 
         LOG.info("Creating dataDefinition " + dataDefinition);
@@ -249,7 +252,7 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
     }
 
     private void addHookElement(final XMLStreamReader reader, final DataDefinitionImpl dataDefinition, final String tag)
-            throws XMLStreamException {
+            throws XMLStreamException, HookInitializationException, ModelXmlParsingException {
         HooksTag hooksTag = HooksTag.valueOf(tag.toUpperCase(Locale.ENGLISH));
 
         switch (hooksTag) {
@@ -272,7 +275,7 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
                 dataDefinition.addValidatorHook(new CustomEntityValidator(getHookDefinition(reader)));
                 break;
             default:
-                break;
+                throw new ModelXmlParsingException("Illegal type of model's hook '" + hooksTag + "'");
         }
     }
 
@@ -290,7 +293,7 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
     }
 
     private void addFieldElement(final XMLStreamReader reader, final DataDefinitionImpl dataDefinition, final String tag)
-            throws XMLStreamException {
+            throws XMLStreamException, HookInitializationException, ModelXmlParsingException {
         FieldsTag fieldTag = FieldsTag.valueOf(tag.toUpperCase(Locale.ENGLISH));
         switch (fieldTag) {
             case PRIORITY:
@@ -359,7 +362,7 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
     }
 
     private FieldDefinition getFieldDefinition(final XMLStreamReader reader, final DataDefinitionImpl dataDefinition,
-            final FieldsTag fieldTag) throws XMLStreamException {
+            final FieldsTag fieldTag) throws XMLStreamException, HookInitializationException, ModelXmlParsingException {
         String fieldType = reader.getLocalName();
         String name = getStringAttribute(reader, "name");
         FieldDefinitionImpl fieldDefinition = new FieldDefinitionImpl(dataDefinition, name);
@@ -396,7 +399,7 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
     }
 
     private void addFieldElement(final XMLStreamReader reader, final FieldDefinitionImpl fieldDefinition, final FieldType type,
-            final String tag) {
+            final String tag) throws HookInitializationException, ModelXmlParsingException {
         switch (FieldTag.valueOf(tag.toUpperCase(Locale.ENGLISH))) {
             case VALIDATESLENGTH:
                 fieldDefinition.withValidator(getValidatorDefinition(reader,
@@ -428,12 +431,12 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
                         new RegexValidator(getStringAttribute(reader, "pattern"))));
                 break;
             default:
-                throw new IllegalStateException("Illegal validator type " + tag);
+                throw new ModelXmlParsingException("Illegal type of field's validator '" + tag + "'");
         }
     }
 
     private FieldType getFieldType(final XMLStreamReader reader, final DataDefinition dataDefinition, final String fieldName,
-            final FieldsTag fieldTag, final String fieldType) throws XMLStreamException {
+            final FieldsTag fieldTag, final String fieldType) throws XMLStreamException, ModelXmlParsingException {
         switch (fieldTag) {
             case INTEGER:
                 return new IntegerType();
@@ -463,29 +466,33 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
             case PASSWORD:
                 return new PasswordType(passwordEncoder);
             default:
-                throw new IllegalStateException("Illegal field type " + fieldType);
+                throw new ModelXmlParsingException("Illegal type of field '" + fieldType + "'");
         }
     }
 
-    private Object getRangeForType(final String range, final FieldType type) {
-        try {
-            if (range == null) {
-                return null;
-            } else if (type instanceof DateTimeType) {
+    private Object getRangeForType(final String range, final FieldType type) throws ModelXmlParsingException {
+        if (range == null) {
+            return null;
+        } else if (type instanceof DateTimeType) {
+            try {
                 return new SimpleDateFormat(DateUtils.DATE_TIME_FORMAT).parse(range);
-            } else if (type instanceof DateType) {
-                return new SimpleDateFormat(DateUtils.DATE_FORMAT).parse(range);
-            } else if (type instanceof DecimalType) {
-                return new BigDecimal(range);
-            } else if (type instanceof IntegerType) {
-                return Integer.parseInt(range);
-            } else {
-                return range;
+            } catch (ParseException e) {
+                throw new ModelXmlParsingException("Range '" + range + "' has invalid datetime format, should match "
+                        + DateUtils.DATE_TIME_FORMAT, e);
             }
-        } catch (ParseException e) {
-            throw new IllegalStateException("Cannot parse data definition", e);
-        } catch (NumberFormatException e) {
-            throw new IllegalStateException("Cannot parse data definition", e);
+        } else if (type instanceof DateType) {
+            try {
+                return new SimpleDateFormat(DateUtils.DATE_FORMAT).parse(range);
+            } catch (ParseException e) {
+                throw new ModelXmlParsingException("Range '" + range + "' has invalid date format, should match "
+                        + DateUtils.DATE_FORMAT, e);
+            }
+        } else if (type instanceof DecimalType) {
+            return new BigDecimal(range);
+        } else if (type instanceof IntegerType) {
+            return Integer.parseInt(range);
+        } else {
+            return range;
         }
     }
 
@@ -497,13 +504,13 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
         return validator;
     }
 
-    private EntityHookDefinition getHookDefinition(final XMLStreamReader reader) {
+    private EntityHookDefinition getHookDefinition(final XMLStreamReader reader) throws HookInitializationException {
         String className = getStringAttribute(reader, "class");
         String methodName = getStringAttribute(reader, "method");
         return new EntityHookDefinitionImpl(className, methodName, applicationContext);
     }
 
-    private FieldHookDefinition getFieldHookDefinition(final XMLStreamReader reader) {
+    private FieldHookDefinition getFieldHookDefinition(final XMLStreamReader reader) throws HookInitializationException {
         String className = getStringAttribute(reader, "class");
         String methodName = getStringAttribute(reader, "method");
         return new FieldHookDefinitionImpl(className, methodName, applicationContext);
