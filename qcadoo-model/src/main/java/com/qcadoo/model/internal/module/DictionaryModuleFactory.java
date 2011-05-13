@@ -36,7 +36,7 @@ public class DictionaryModuleFactory extends ModuleFactory<DictionaryModule> {
     private InternalDictionaryService dictionaryService;
 
     @Override
-    public DictionaryModule parse(final String pluginIdentifier, final Element element) {
+    protected DictionaryModule parseElement(final String pluginIdentifier, final Element element) {
         return new DictionaryModule(pluginIdentifier, getRequiredAttribute(element, "name"), dictionaryService);
     }
 

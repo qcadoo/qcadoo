@@ -39,7 +39,7 @@ public final class CustomModuleFactory extends ModuleFactory<Module> {
     private ApplicationContext applicationContext;
 
     @Override
-    public Module parse(final String pluginIdentifier, final Element element) {
+    protected Module parseElement(final String pluginIdentifier, final Element element) {
         String className = getRequiredAttribute(element, "class");
 
         Class<?> clazz = null;

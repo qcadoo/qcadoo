@@ -12,7 +12,7 @@ public class EnumValueModuleFactory extends ModuleFactory<EnumValueModule> {
     private DataDefinitionService dataDefinitionService;
 
     @Override
-    public EnumValueModule parse(final String pluginIdentifier, final Element element) {
+    protected EnumValueModule parseElement(final String pluginIdentifier, final Element element) {
         String targetPluginIdentifier = getRequiredAttribute(element, "plugin");
         String targetModelName = getRequiredAttribute(element, "model");
         String targetEnumFieldName = getRequiredAttribute(element, "enum");

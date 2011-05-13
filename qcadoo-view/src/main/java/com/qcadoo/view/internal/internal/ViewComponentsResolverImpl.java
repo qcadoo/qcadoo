@@ -82,7 +82,7 @@ public final class ViewComponentsResolverImpl implements ViewComponentsResolver 
         } catch (IllegalAccessException e) {
             throw new IllegalStateException(e.getMessage(), e);
         } catch (InvocationTargetException e) {
-            throw new IllegalStateException(e.getMessage(), e);
+            throw new IllegalStateException(e.getTargetException().getMessage(), e.getTargetException());
         }
     }
 

@@ -17,7 +17,7 @@ public class TranslationModuleFactory extends ModuleFactory<Module> {
     private TranslationModuleService translationModuleService;
 
     @Override
-    public Module parse(final String pluginIdentifier, final Element element) {
+    protected Module parseElement(final String pluginIdentifier, final Element element) {
         String path = getRequiredAttribute(element, "path");
         String basename = getAttribute(element, "basename");
 

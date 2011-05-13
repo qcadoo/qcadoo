@@ -16,7 +16,7 @@ public class UniversalResourceModuleFactory extends ModuleFactory<UniversalResou
     private ApplicationContext applicationContext;
 
     @Override
-    public UniversalResourceModule parse(final String pluginIdentifier, final Element element) {
+    protected UniversalResourceModule parseElement(final String pluginIdentifier, final Element element) {
         String uri = getRequiredAttribute(element, "uri");
         return new UniversalResourceModule(resourceService, applicationContext, pluginIdentifier, uri);
     }

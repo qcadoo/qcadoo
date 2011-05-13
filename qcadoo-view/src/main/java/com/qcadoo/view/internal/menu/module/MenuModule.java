@@ -1,6 +1,7 @@
 package com.qcadoo.view.internal.menu.module;
 
 import com.qcadoo.plugin.api.Module;
+import com.qcadoo.plugin.api.ModuleException;
 import com.qcadoo.view.internal.api.InternalMenuService;
 
 public class MenuModule extends Module {
@@ -19,8 +20,12 @@ public class MenuModule extends Module {
 
     private final String menuViewName;
 
-    public MenuModule(final InternalMenuService menuService, final String pluginIdentifier, final String menuName,
-            final String menuCategory, final String menuViewPluginIdentifier, final String menuViewName, final String menuUrl) {
+    private final String factoryIdentifier;
+
+    public MenuModule(final String factoryIdentifier, final InternalMenuService menuService, final String pluginIdentifier,
+            final String menuName, final String menuCategory, final String menuViewPluginIdentifier, final String menuViewName,
+            final String menuUrl) {
+        this.factoryIdentifier = factoryIdentifier;
         this.menuService = menuService;
         this.pluginIdentifier = pluginIdentifier;
         this.menuName = menuName;
@@ -32,12 +37,16 @@ public class MenuModule extends Module {
 
     @Override
     public void multiTenantEnable() {
-        if (menuUrl != null) {
-            menuService.addView(pluginIdentifier, menuName, null, menuUrl);
-            menuService.createItem(pluginIdentifier, menuName, menuCategory, pluginIdentifier, menuName);
-        } else {
-            menuService.addView(menuViewPluginIdentifier, menuViewName, menuViewName, null);
-            menuService.createItem(pluginIdentifier, menuName, menuCategory, menuViewPluginIdentifier, menuViewName);
+        try {
+            if (menuUrl != null) {
+                menuService.addView(pluginIdentifier, menuName, null, menuUrl);
+                menuService.createItem(pluginIdentifier, menuName, menuCategory, pluginIdentifier, menuName);
+            } else {
+                menuService.addView(menuViewPluginIdentifier, menuViewName, menuViewName, null);
+                menuService.createItem(pluginIdentifier, menuName, menuCategory, menuViewPluginIdentifier, menuViewName);
+            }
+        } catch (Exception e) {
+            throw new ModuleException(pluginIdentifier, factoryIdentifier, e);
         }
     }
 

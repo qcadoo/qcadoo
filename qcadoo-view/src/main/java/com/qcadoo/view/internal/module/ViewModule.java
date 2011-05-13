@@ -3,6 +3,7 @@ package com.qcadoo.view.internal.module;
 import org.springframework.core.io.Resource;
 
 import com.qcadoo.plugin.api.Module;
+import com.qcadoo.plugin.api.ModuleException;
 import com.qcadoo.view.internal.api.InternalViewDefinition;
 import com.qcadoo.view.internal.api.InternalViewDefinitionService;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
@@ -32,8 +33,12 @@ public class ViewModule extends Module {
 
     @Override
     public void enable() {
-        InternalViewDefinition viewDefinition = viewDefinitionParser.parseViewXml(xmlFile, pluginIdentifier);
-        viewDefinitionService.save(viewDefinition);
+        try {
+            InternalViewDefinition viewDefinition = viewDefinitionParser.parseViewXml(xmlFile, pluginIdentifier);
+            viewDefinitionService.save(viewDefinition);
+        } catch (Exception e) {
+            throw new ModuleException(pluginIdentifier, "view", e);
+        }
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.qcadoo.view.internal.module;
 
 import com.google.common.base.Preconditions;
 import com.qcadoo.plugin.api.Module;
+import com.qcadoo.plugin.api.ModuleException;
 import com.qcadoo.view.internal.api.ComponentCustomEvent;
 import com.qcadoo.view.internal.api.ComponentPattern;
 import com.qcadoo.view.internal.api.InternalViewDefinition;
@@ -19,8 +20,12 @@ public class ViewListenerModule extends Module {
 
     private final ComponentCustomEvent event;
 
-    public ViewListenerModule(final InternalViewDefinitionService viewDefinitionService, final String extendsViewPlugin,
-            final String extendsViewName, final String extendsComponentName, final ComponentCustomEvent event) {
+    private final String pluginIdentifier;
+
+    public ViewListenerModule(final String pluginIdentifier, final InternalViewDefinitionService viewDefinitionService,
+            final String extendsViewPlugin, final String extendsViewName, final String extendsComponentName,
+            final ComponentCustomEvent event) {
+        this.pluginIdentifier = pluginIdentifier;
         this.viewDefinitionService = viewDefinitionService;
         this.extendsViewPlugin = extendsViewPlugin;
         this.extendsViewName = extendsViewName;
@@ -35,7 +40,11 @@ public class ViewListenerModule extends Module {
 
     @Override
     public void enable() {
-        getComponent().addCustomEvent(event);
+        try {
+            getComponent().addCustomEvent(event);
+        } catch (Exception e) {
+            throw new ModuleException(pluginIdentifier, "view-listener", e);
+        }
     }
 
     @Override
@@ -46,12 +55,11 @@ public class ViewListenerModule extends Module {
     private ComponentPattern getComponent() {
         InternalViewDefinition extendsView = (InternalViewDefinition) viewDefinitionService.getWithoutSession(extendsViewPlugin,
                 extendsViewName);
-        Preconditions.checkNotNull(extendsView,
-                "View Listener extension error: View listener extension referes to view which not exists (" + extendsViewPlugin
-                        + " - " + extendsViewName + ")");
+        Preconditions.checkNotNull(extendsView, "extension referes to view which not exists (" + extendsViewPlugin + " - "
+                + extendsViewName + ")");
         ComponentPattern component = extendsView.getComponentByReference(extendsComponentName);
-        Preconditions.checkNotNull(component, "View Listener extension error: Component '" + extendsComponentName
-                + "' not exists in view " + extendsViewPlugin + " - " + extendsViewName + ")");
+        Preconditions.checkNotNull(component, "component '" + extendsComponentName + "' not exists in view " + extendsViewPlugin
+                + " - " + extendsViewName + ")");
         return component;
     }
 

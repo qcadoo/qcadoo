@@ -36,7 +36,7 @@ import com.qcadoo.view.internal.components.window.WindowComponentPattern;
 public interface InternalViewDefinition extends ViewDefinition {
 
     enum HookType {
-        POST_INITIALIZE, PRE_RENDER, PRE_INITIALIZE, POST_CONSTRUCT
+        AFTER_INITIALIZE, BEFORE_RENDER, BEFORE_INITIALIZE, POST_CONSTRUCT
     }
 
     String JSON_EVENT = "event";

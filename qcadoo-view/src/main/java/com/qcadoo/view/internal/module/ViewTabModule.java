@@ -7,8 +7,8 @@ import java.util.Map;
 import org.springframework.core.io.Resource;
 import org.w3c.dom.Node;
 
-import com.google.common.base.Preconditions;
 import com.qcadoo.plugin.api.Module;
+import com.qcadoo.plugin.api.ModuleException;
 import com.qcadoo.view.internal.ComponentDefinition;
 import com.qcadoo.view.internal.api.ComponentPattern;
 import com.qcadoo.view.internal.api.InternalViewDefinition;
@@ -16,6 +16,8 @@ import com.qcadoo.view.internal.api.InternalViewDefinitionService;
 import com.qcadoo.view.internal.components.window.WindowComponentPattern;
 import com.qcadoo.view.internal.components.window.WindowTabComponentPattern;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
+import com.qcadoo.view.internal.xml.ViewDefinitionParserException;
+import com.qcadoo.view.internal.xml.ViewDefinitionParserNodeException;
 import com.qcadoo.view.internal.xml.ViewExtension;
 
 public class ViewTabModule extends Module {
@@ -28,6 +30,8 @@ public class ViewTabModule extends Module {
 
     private final ViewExtension viewExtension;
 
+    private final String fileName;
+
     private Map<WindowComponentPattern, ComponentPattern> addedTabs;
 
     public ViewTabModule(final String pluginIdentifier, final Resource xmlFile,
@@ -35,10 +39,13 @@ public class ViewTabModule extends Module {
         this.pluginIdentifier = pluginIdentifier;
         this.viewDefinitionService = viewDefinitionService;
         this.viewDefinitionParser = viewDefinitionParser;
+        fileName = xmlFile.getFilename();
         try {
             viewExtension = viewDefinitionParser.getViewExtensionNode(xmlFile.getInputStream(), "windowTabExtension");
         } catch (IOException e) {
-            throw new IllegalStateException(e.getMessage(), e);
+            throw ViewDefinitionParserException.forFile(fileName, e);
+        } catch (ViewDefinitionParserNodeException e) {
+            throw ViewDefinitionParserException.forFileAndNode(fileName, e);
         }
     }
 
@@ -53,24 +60,34 @@ public class ViewTabModule extends Module {
 
         InternalViewDefinition viewDefinition = viewDefinitionService.getWithoutSession(viewExtension.getPluginName(),
                 viewExtension.getViewName());
-        Preconditions.checkNotNull(viewDefinition, getErrorMessage("reference to view which not exists", viewExtension));
+        if (viewDefinition == null) {
+            throw new ModuleException(pluginIdentifier, "view", "reference to view which not exists");
+        }
 
-        for (Node tabNode : viewDefinitionParser.geElementChildren(viewExtension.getExtesionNode())) {
+        try {
+            for (Node tabNode : viewDefinitionParser.geElementChildren(viewExtension.getExtesionNode())) {
 
-            WindowComponentPattern window = viewDefinition.getRootWindow();
-            Preconditions.checkNotNull(window, getErrorMessage("cannot add ribbon element to view", viewExtension));
+                WindowComponentPattern window = viewDefinition.getRootWindow();
 
-            ComponentDefinition tabDefinition = viewDefinitionParser.getComponentDefinition(tabNode, window, viewDefinition);
-            tabDefinition.setExtensionPluginIdentifier(pluginIdentifier);
+                ComponentDefinition tabDefinition = viewDefinitionParser.getComponentDefinition(tabNode, window, viewDefinition);
+                tabDefinition.setExtensionPluginIdentifier(pluginIdentifier);
 
-            ComponentPattern tabPattern = new WindowTabComponentPattern(tabDefinition);
-            tabPattern.parse(tabNode, viewDefinitionParser);
+                ComponentPattern tabPattern = new WindowTabComponentPattern(tabDefinition);
 
-            window.addChild(tabPattern);
-            addedTabs.put(window, tabPattern);
+                try {
+                    tabPattern.parse(tabNode, viewDefinitionParser);
+                } catch (ViewDefinitionParserNodeException e) {
+                    throw ViewDefinitionParserException.forFileAndNode(fileName, e);
+                }
 
-            tabPattern.initializeAll();
-            tabPattern.registerViews(viewDefinitionService);
+                window.addChild(tabPattern);
+                addedTabs.put(window, tabPattern);
+
+                tabPattern.initializeAll();
+                tabPattern.registerViews(viewDefinitionService);
+            }
+        } catch (Exception e) {
+            throw new ModuleException(pluginIdentifier, "view-tab", e);
         }
     }
 
@@ -80,11 +97,6 @@ public class ViewTabModule extends Module {
             addedGroupEntry.getValue().unregisterComponent(viewDefinitionService);
             addedGroupEntry.getKey().removeChild(addedGroupEntry.getValue().getName());
         }
-    }
-
-    private String getErrorMessage(final String msg, final ViewExtension viewExtension) {
-        return "View window tab extension error [to " + viewExtension.getPluginName() + "-" + viewExtension.getViewName() + "]: "
-                + msg;
     }
 
 }

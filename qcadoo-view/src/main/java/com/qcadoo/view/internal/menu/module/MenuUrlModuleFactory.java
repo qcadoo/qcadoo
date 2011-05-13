@@ -12,12 +12,12 @@ public class MenuUrlModuleFactory extends ModuleFactory<MenuModule> {
     private InternalMenuService menuService;
 
     @Override
-    public MenuModule parse(final String pluginIdentifier, final Element element) {
+    protected MenuModule parseElement(final String pluginIdentifier, final Element element) {
         String menuName = getRequiredAttribute(element, "name");
         String menuCategory = getRequiredAttribute(element, "category");
         String menuUrl = getRequiredAttribute(element, "url");
 
-        return new MenuModule(menuService, pluginIdentifier, menuName, menuCategory, null, null, menuUrl);
+        return new MenuModule(getIdentifier(), menuService, pluginIdentifier, menuName, menuCategory, null, null, menuUrl);
     }
 
     @Override

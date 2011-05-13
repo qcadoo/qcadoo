@@ -17,7 +17,7 @@ public class ViewRibbonModuleFactory extends ModuleFactory<ViewRibbonModule> {
     private ViewDefinitionParser viewDefinitionParser;
 
     @Override
-    public ViewRibbonModule parse(final String pluginIdentifier, final Element element) {
+    protected ViewRibbonModule parseElement(final String pluginIdentifier, final Element element) {
         String resource = getRequiredAttribute(element, "resource");
 
         return new ViewRibbonModule(pluginIdentifier, new ClassPathResource(pluginIdentifier + "/" + resource),

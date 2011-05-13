@@ -43,6 +43,7 @@ import com.qcadoo.view.internal.components.FieldComponentPattern;
 import com.qcadoo.view.internal.components.form.FormComponentPattern;
 import com.qcadoo.view.internal.components.layout.FlowLayoutPattern;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
+import com.qcadoo.view.internal.xml.ViewDefinitionParserNodeException;
 
 public class AwesomeDynamicListPattern extends FieldComponentPattern {
 
@@ -106,7 +107,7 @@ public class AwesomeDynamicListPattern extends FieldComponentPattern {
     }
 
     @Override
-    public void parse(final Node componentNode, final ViewDefinitionParser parser) {
+    public void parse(final Node componentNode, final ViewDefinitionParser parser) throws ViewDefinitionParserNodeException {
         super.parse(componentNode, parser);
         NodeList childNodes = componentNode.getChildNodes();
         for (int i = 0; i < childNodes.getLength(); i++) {

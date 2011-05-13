@@ -41,6 +41,7 @@ import com.qcadoo.view.internal.api.InternalComponentState;
 import com.qcadoo.view.internal.api.InternalViewDefinitionService;
 import com.qcadoo.view.internal.api.InternalViewDefinitionState;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
+import com.qcadoo.view.internal.xml.ViewDefinitionParserNodeException;
 
 public abstract class AbstractContainerPattern extends AbstractComponentPattern implements ContainerPattern {
 
@@ -139,7 +140,7 @@ public abstract class AbstractContainerPattern extends AbstractComponentPattern 
     }
 
     @Override
-    public void parse(final Node componentNode, final ViewDefinitionParser parser) {
+    public void parse(final Node componentNode, final ViewDefinitionParser parser) throws ViewDefinitionParserNodeException {
         super.parse(componentNode, parser);
         NodeList childNodes = componentNode.getChildNodes();
 
@@ -162,7 +163,8 @@ public abstract class AbstractContainerPattern extends AbstractComponentPattern 
         }
     }
 
-    public void parseWithoutChildren(final Node componentNode, final ViewDefinitionParser parser) {
+    public void parseWithoutChildren(final Node componentNode, final ViewDefinitionParser parser)
+            throws ViewDefinitionParserNodeException {
         super.parse(componentNode, parser);
     }
 

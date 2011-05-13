@@ -15,6 +15,7 @@ import com.qcadoo.view.internal.patterns.AbstractContainerPattern;
 import com.qcadoo.view.internal.ribbon.InternalRibbon;
 import com.qcadoo.view.internal.ribbon.RibbonUtils;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
+import com.qcadoo.view.internal.xml.ViewDefinitionParserNodeException;
 
 public class WindowComponentPattern extends AbstractContainerPattern {
 
@@ -44,7 +45,7 @@ public class WindowComponentPattern extends AbstractContainerPattern {
     }
 
     @Override
-    public void parse(final Node componentNode, final ViewDefinitionParser parser) {
+    public void parse(final Node componentNode, final ViewDefinitionParser parser) throws ViewDefinitionParserNodeException {
         super.parseWithoutChildren(componentNode, parser);
 
         Node ribbonNode = null;
@@ -61,14 +62,14 @@ public class WindowComponentPattern extends AbstractContainerPattern {
 
             if ("ribbon".equals(child.getNodeName())) {
                 if (ribbonNode != null) {
-                    throw new IllegalStateException("Window can contain only one ribbon");
+                    throw new ViewDefinitionParserNodeException(child, "Window can contain only one ribbon");
                 }
                 ribbonNode = child;
 
             } else if ("windowTab".equals(child.getNodeName())) {
 
                 if (tabMode != null && !tabMode) {
-                    throw new IllegalStateException("Window cannot have both 'windowTab' and 'component' tags");
+                    throw new ViewDefinitionParserNodeException(child, "Window cannot have both 'windowTab' and 'component' tags");
                 }
                 tabMode = true;
 
@@ -83,7 +84,7 @@ public class WindowComponentPattern extends AbstractContainerPattern {
             } else if ("component".equals(child.getNodeName())) {
 
                 if (tabMode != null && tabMode) {
-                    throw new IllegalStateException("Window cannot have both 'windowTab' and 'component' tags");
+                    throw new ViewDefinitionParserNodeException(child, "Window cannot have both 'windowTab' and 'component' tags");
                 }
                 tabMode = false;
 
@@ -111,11 +112,11 @@ public class WindowComponentPattern extends AbstractContainerPattern {
                 } else if ("fixedHeight".equals(type)) {
                     fixedHeight = Boolean.parseBoolean(value);
                 } else {
-                    throw new IllegalStateException("Unknown option for window: " + type);
+                    throw new ViewDefinitionParserNodeException(child, "Unknown option for window: " + type);
                 }
 
             } else if (!"listener".equals(child.getNodeName()) && !"script".equals(child.getNodeName())) {
-                throw new IllegalStateException("Unknown tag for window: " + child.getNodeName());
+                throw new ViewDefinitionParserNodeException(child, "Unknown tag for window: " + child.getNodeName());
             }
         }
 

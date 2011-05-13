@@ -309,9 +309,9 @@ public class ViewDefinitionParserImplTest {
         ViewDefinition viewDefinition = parseAndGetViewDefinition();
 
         // then
-        testHookDefinition(viewDefinition, "preInitializeHooks", 0, CustomEntityService.class, "onView");
-        testHookDefinition(viewDefinition, "postInitializeHooks", 0, CustomEntityService.class, "onView");
-        testHookDefinition(viewDefinition, "preRenderHooks", 0, CustomEntityService.class, "onView");
+        testHookDefinition(viewDefinition, "beforeInitializeHooks", 0, CustomEntityService.class, "onView");
+        testHookDefinition(viewDefinition, "afterInitializeHooks", 0, CustomEntityService.class, "onView");
+        testHookDefinition(viewDefinition, "beforeRenderHooks", 0, CustomEntityService.class, "onView");
     }
 
     private void testHookDefinition(final Object object, final String hookFieldName, final int hookPosition,

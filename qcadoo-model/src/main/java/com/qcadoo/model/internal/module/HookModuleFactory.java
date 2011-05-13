@@ -39,7 +39,7 @@ public class HookModuleFactory extends ModuleFactory<HookModule> {
     private InternalDataDefinitionService dataDefinitionService;
 
     @Override
-    public HookModule parse(final String pluginIdentifier, final Element element) {
+    protected HookModule parseElement(final String pluginIdentifier, final Element element) {
         String targetPluginIdentifier = getRequiredAttribute(element, "plugin");
         String targetModelName = getRequiredAttribute(element, "model");
 

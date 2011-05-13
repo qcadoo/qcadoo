@@ -70,11 +70,11 @@ public final class ViewDefinitionImpl implements InternalViewDefinition {
 
     private final List<HookDefinition> postConstructHooks = new ArrayList<HookDefinition>();
 
-    private final List<HookDefinition> postInitializeHooks = new ArrayList<HookDefinition>();
+    private final List<HookDefinition> afterInitializeHooks = new ArrayList<HookDefinition>();
 
-    private final List<HookDefinition> preInitializeHooks = new ArrayList<HookDefinition>();
+    private final List<HookDefinition> beforeInitializeHooks = new ArrayList<HookDefinition>();
 
-    private final List<HookDefinition> preRenderHooks = new ArrayList<HookDefinition>();
+    private final List<HookDefinition> beforeRenderHooks = new ArrayList<HookDefinition>();
 
     private final Set<String> jsFilePaths = new HashSet<String>();
 
@@ -177,7 +177,7 @@ public final class ViewDefinitionImpl implements InternalViewDefinition {
             viewDefinitionState.addChild(cp.createComponentState(viewDefinitionState));
         }
 
-        callHooks(preInitializeHooks, viewDefinitionState);
+        callHooks(beforeInitializeHooks, viewDefinitionState);
 
         viewDefinitionState.initialize(jsonObject, locale);
 
@@ -185,7 +185,7 @@ public final class ViewDefinitionImpl implements InternalViewDefinition {
             ((AbstractComponentPattern) cp).updateComponentStateListeners(viewDefinitionState);
         }
 
-        callHooks(postInitializeHooks, viewDefinitionState);
+        callHooks(afterInitializeHooks, viewDefinitionState);
 
         JSONObject eventJson = jsonObject.getJSONObject(JSON_EVENT);
         String eventName = eventJson.getString(JSON_EVENT_NAME);
@@ -198,7 +198,7 @@ public final class ViewDefinitionImpl implements InternalViewDefinition {
 
         viewDefinitionState.performEvent(eventComponent, eventName, eventArgs);
 
-        callHooks(preRenderHooks, viewDefinitionState);
+        callHooks(beforeRenderHooks, viewDefinitionState);
 
         return viewDefinitionState.render();
     }
@@ -222,7 +222,7 @@ public final class ViewDefinitionImpl implements InternalViewDefinition {
     @Override
     public void registerComponent(final String reference, final String path, final ComponentPattern pattern) {
         if (registry.containsKey(reference)) {
-            throw new IllegalStateException("Duplicated pattern reference : " + reference);
+            throw new IllegalStateException("Duplicated pattern reference '" + reference + "'");
         }
         registry.put(reference, pattern);
     }
@@ -264,14 +264,14 @@ public final class ViewDefinitionImpl implements InternalViewDefinition {
     @Override
     public void addHook(final HookType type, final HookDefinition hookDefinition) {
         switch (type) {
-            case PRE_INITIALIZE:
-                addPreInitializeHook(hookDefinition);
+            case BEFORE_INITIALIZE:
+                addBeforeInitializeHook(hookDefinition);
                 break;
-            case PRE_RENDER:
-                addPreRenderHook(hookDefinition);
+            case BEFORE_RENDER:
+                addBeforeRenderHook(hookDefinition);
                 break;
-            case POST_INITIALIZE:
-                addPostInitializeHook(hookDefinition);
+            case AFTER_INITIALIZE:
+                addAfterInitializeHook(hookDefinition);
                 break;
             case POST_CONSTRUCT:
                 addPostConstructHook(hookDefinition);
@@ -284,14 +284,14 @@ public final class ViewDefinitionImpl implements InternalViewDefinition {
     @Override
     public void removeHook(final HookType type, final HookDefinition hookDefinition) {
         switch (type) {
-            case PRE_INITIALIZE:
-                preInitializeHooks.remove(hookDefinition);
+            case BEFORE_INITIALIZE:
+                beforeInitializeHooks.remove(hookDefinition);
                 break;
-            case PRE_RENDER:
-                preRenderHooks.remove(hookDefinition);
+            case BEFORE_RENDER:
+                beforeRenderHooks.remove(hookDefinition);
                 break;
-            case POST_INITIALIZE:
-                postInitializeHooks.remove(hookDefinition);
+            case AFTER_INITIALIZE:
+                afterInitializeHooks.remove(hookDefinition);
                 break;
             case POST_CONSTRUCT:
                 postConstructHooks.remove(hookDefinition);
@@ -301,16 +301,16 @@ public final class ViewDefinitionImpl implements InternalViewDefinition {
         }
     }
 
-    public void addPostInitializeHook(final HookDefinition hookDefinition) {
-        postInitializeHooks.add(hookDefinition);
+    public void addAfterInitializeHook(final HookDefinition hookDefinition) {
+        afterInitializeHooks.add(hookDefinition);
     }
 
-    public void addPreRenderHook(final HookDefinition hookDefinition) {
-        preRenderHooks.add(hookDefinition);
+    public void addBeforeRenderHook(final HookDefinition hookDefinition) {
+        beforeRenderHooks.add(hookDefinition);
     }
 
-    public void addPreInitializeHook(final HookDefinition hookDefinition) {
-        preInitializeHooks.add(hookDefinition);
+    public void addBeforeInitializeHook(final HookDefinition hookDefinition) {
+        beforeInitializeHooks.add(hookDefinition);
     }
 
     public void addPostConstructHook(final HookDefinition hookDefinition) {

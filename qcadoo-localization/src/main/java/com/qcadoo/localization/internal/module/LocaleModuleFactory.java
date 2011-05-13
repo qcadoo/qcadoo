@@ -12,7 +12,7 @@ public class LocaleModuleFactory extends ModuleFactory<LocaleModule> {
     private InternalTranslationService translationService;
 
     @Override
-    public LocaleModule parse(final String pluginIdentifier, final Element element) {
+    protected LocaleModule parseElement(final String pluginIdentifier, final Element element) {
         String locale = getRequiredAttribute(element, "locale");
         String label = getRequiredAttribute(element, "label");
 

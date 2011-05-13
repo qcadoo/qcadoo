@@ -12,7 +12,7 @@ public class TranslationGroupModuleFactory extends ModuleFactory<TranslationGrou
     private InternalTranslationService translationService;
 
     @Override
-    public TranslationGroupModule parse(final String pluginIdentifier, final Element element) {
+    protected TranslationGroupModule parseElement(final String pluginIdentifier, final Element element) {
         String prefix = getRequiredAttribute(element, "prefix");
         String name = getRequiredAttribute(element, "name");
 

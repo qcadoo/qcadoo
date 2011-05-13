@@ -17,6 +17,7 @@ import com.qcadoo.view.internal.api.InternalViewDefinition;
 import com.qcadoo.view.internal.api.ViewDefinition;
 import com.qcadoo.view.internal.patterns.AbstractComponentPattern;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
+import com.qcadoo.view.internal.xml.ViewDefinitionParserNodeException;
 
 public final class RibbonUtils {
 
@@ -33,16 +34,20 @@ public final class RibbonUtils {
     }
 
     public InternalRibbon parseRibbon(final Node ribbonNode, final ViewDefinitionParser parser,
-            final ViewDefinition viewDefinition) {
+            final ViewDefinition viewDefinition) throws ViewDefinitionParserNodeException {
         InternalRibbon ribbon = new RibbonImpl();
 
         NodeList childNodes = ribbonNode.getChildNodes();
 
         for (int i = 0; i < childNodes.getLength(); i++) {
             Node child = childNodes.item(i);
-
+            if (Node.ELEMENT_NODE != child.getNodeType()) {
+                continue;
+            }
             if ("group".equals(child.getNodeName())) {
                 ribbon.addGroup(parseRibbonGroup(child, parser, viewDefinition));
+            } else {
+                throw new ViewDefinitionParserNodeException(child, "Wrong node type - 'group' expected");
             }
         }
 
@@ -100,13 +105,21 @@ public final class RibbonUtils {
     }
 
     public InternalRibbonGroup parseRibbonGroup(final Node groupNode, final ViewDefinitionParser parser,
-            final ViewDefinition viewDefinition) {
+            final ViewDefinition viewDefinition) throws ViewDefinitionParserNodeException {
         String template = parser.getStringAttribute(groupNode, "template");
 
         if (template != null) {
-            return ribbonTemplates.getGroupTemplate(template, viewDefinition);
+            try {
+                return ribbonTemplates.getGroupTemplate(template, viewDefinition);
+            } catch (IllegalStateException e) {
+                throw new ViewDefinitionParserNodeException(groupNode, e);
+            }
         } else {
-            InternalRibbonGroup ribbonGroup = new RibbonGroupImpl(parser.getStringAttribute(groupNode, "name"));
+            String groupName = parser.getStringAttribute(groupNode, "name");
+            if (groupName == null) {
+                throw new ViewDefinitionParserNodeException(groupNode, "Name attribute cannot be empty");
+            }
+            InternalRibbonGroup ribbonGroup = new RibbonGroupImpl(groupName);
 
             NodeList childNodes = groupNode.getChildNodes();
 
@@ -123,7 +136,7 @@ public final class RibbonUtils {
     }
 
     private InternalRibbonActionItem parseRibbonItem(final Node itemNode, final ViewDefinitionParser parser,
-            final ViewDefinition viewDefinition) {
+            final ViewDefinition viewDefinition) throws ViewDefinitionParserNodeException {
         String stringType = itemNode.getNodeName();
 
         RibbonActionItem.Type type = null;
@@ -135,6 +148,8 @@ public final class RibbonUtils {
             type = RibbonActionItem.Type.COMBOBOX;
         } else if ("smallEmptySpace".equals(stringType)) {
             type = RibbonActionItem.Type.SMALL_EMPTY_SPACE;
+        } else {
+            throw new ViewDefinitionParserNodeException(itemNode, "Unsupported ribbon item type '" + stringType + "'");
         }
 
         InternalRibbonActionItem item = null;
@@ -157,7 +172,7 @@ public final class RibbonUtils {
             } else if ("disabled".equals(state)) {
                 item.setEnabled(false);
             } else {
-                throw new IllegalStateException("Unsupported ribbon item state : " + state);
+                throw new ViewDefinitionParserNodeException(itemNode, "Unsupported ribbon item state : " + state);
             }
         } else {
             item.setEnabled(true);
@@ -187,7 +202,7 @@ public final class RibbonUtils {
                 Node child = childNodes.item(i);
                 if (child.getNodeType() == Node.ELEMENT_NODE && !"script".equals(child.getNodeName())) {
                     if (!"option".equals(child.getNodeName())) {
-                        throw new IllegalStateException("ribbon combobox can only have 'option' elements");
+                        throw new ViewDefinitionParserNodeException(child, "ribbon combobox can only have 'option' elements");
                     }
                     ((RibbonComboBox) item).addOption(parser.getStringAttribute(child, "name"));
                 }
@@ -214,7 +229,7 @@ public final class RibbonUtils {
                     .group(1));
 
             if (actionComponentPattern == null) {
-                throw new IllegalStateException("Cannot find action component for: " + action + " [" + m.group(1) + "]");
+                throw new IllegalStateException("Cannot find component '" + m.group(1) + "' for action: " + action);
             }
 
             translateAction = translateAction.replace("#{" + m.group(1) + "}", "#{" + actionComponentPattern.getPath() + "}");

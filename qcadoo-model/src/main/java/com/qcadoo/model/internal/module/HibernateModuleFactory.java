@@ -64,7 +64,7 @@ public class HibernateModuleFactory extends ModuleFactory<ModelModule> {
     }
 
     @Override
-    public ModelModule parse(final String pluginIdentifier, final Element element) {
+    protected ModelModule parseElement(final String pluginIdentifier, final Element element) {
         throw new IllegalStateException("Cannot create hibernate module");
 
     }

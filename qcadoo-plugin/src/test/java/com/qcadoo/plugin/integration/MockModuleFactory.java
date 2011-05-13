@@ -31,7 +31,7 @@ import com.qcadoo.plugin.api.ModuleFactory;
 public class MockModuleFactory extends ModuleFactory<MockModule> {
 
     @Override
-    public MockModule parse(final String pluginIdentifier, final Element element) {
+    protected MockModule parseElement(final String pluginIdentifier, final Element element) {
         return new MockModule();
     }
 
