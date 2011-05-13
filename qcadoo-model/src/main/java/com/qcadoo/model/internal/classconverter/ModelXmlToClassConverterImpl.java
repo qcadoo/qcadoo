@@ -41,7 +41,6 @@ import javassist.CtClass;
 import javassist.CtField;
 import javassist.CtNewMethod;
 
-import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -75,49 +74,63 @@ public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverte
     @Override
     @SuppressWarnings("deprecation")
     public Collection<Class<?>> convert(final Resource... resources) {
-        try {
-            Map<String, CtClass> ctClasses = new HashMap<String, CtClass>();
-            Map<String, Class<?>> existingClasses = new HashMap<String, Class<?>>();
+        Map<String, CtClass> ctClasses = new HashMap<String, CtClass>();
+        Map<String, Class<?>> existingClasses = new HashMap<String, Class<?>>();
 
-            for (Resource resource : resources) {
-                if (resource.isReadable()) {
-                    LOG.info("Getting existing classes from " + resource);
+        for (Resource resource : resources) {
+            if (resource.isReadable()) {
+                LOG.info("Getting existing classes from " + resource);
+                try {
                     existingClasses.putAll(findExistingClasses(resource.getInputStream()));
+                } catch (XMLStreamException e) {
+                    throw new IllegalStateException("Error while parsing model.xml: " + e.getMessage(), e);
+                } catch (IOException e) {
+                    throw new IllegalStateException("Error while parsing model.xml: " + e.getMessage(), e);
                 }
             }
-
-            for (Resource resource : resources) {
-                if (resource.isReadable()) {
-                    LOG.info("Creating classes from " + resource);
-                    ctClasses.putAll(createClasses(existingClasses, resource.getInputStream()));
-                }
-            }
-
-            for (Resource resource : resources) {
-                if (resource.isReadable()) {
-                    LOG.info("Defining classes from " + resource + " to classes");
-                    defineClasses(ctClasses, resource.getInputStream());
-                }
-            }
-
-            List<Class<?>> classes = new ArrayList<Class<?>>();
-
-            for (CtClass ctClass : ctClasses.values()) {
-                classes.add(ctClass.toClass(classLoader));
-            }
-
-            classes.addAll(existingClasses.values());
-
-            return classes;
-        } catch (IOException e) {
-            throw new IllegalStateException("Failed to convert model.xml to classes", e);
-        } catch (CannotCompileException e) {
-            throw new IllegalStateException("Failed to convert model.xml to classes", e);
-        } catch (XMLStreamException e) {
-            throw new IllegalStateException(e.getMessage(), e);
-        } catch (FactoryConfigurationError e) {
-            throw new IllegalStateException(e.getMessage(), e);
         }
+
+        for (Resource resource : resources) {
+            if (resource.isReadable()) {
+                LOG.info("Creating classes from " + resource);
+                try {
+                    ctClasses.putAll(createClasses(existingClasses, resource.getInputStream()));
+                } catch (XMLStreamException e) {
+                    throw new IllegalStateException("Error while parsing model.xml: " + e.getMessage(), e);
+                } catch (IOException e) {
+                    throw new IllegalStateException("Error while parsing model.xml: " + e.getMessage(), e);
+                }
+            }
+        }
+
+        for (Resource resource : resources) {
+            if (resource.isReadable()) {
+                LOG.info("Defining classes from " + resource + " to classes");
+                try {
+                    defineClasses(ctClasses, resource.getInputStream());
+                } catch (XMLStreamException e) {
+                    throw new IllegalStateException("Error while parsing model.xml: " + e.getMessage(), e);
+                } catch (ModelXmlCompilingException e) {
+                    throw new IllegalStateException("Error while parsing model.xml: " + e.getMessage(), e);
+                } catch (IOException e) {
+                    throw new IllegalStateException("Error while parsing model.xml: " + e.getMessage(), e);
+                }
+            }
+        }
+
+        List<Class<?>> classes = new ArrayList<Class<?>>();
+
+        for (CtClass ctClass : ctClasses.values()) {
+            try {
+                classes.add(ctClass.toClass(classLoader));
+            } catch (CannotCompileException e) {
+                throw new IllegalStateException("Error while parsing model.xml: " + e.getMessage(), e);
+            }
+        }
+
+        classes.addAll(existingClasses.values());
+
+        return classes;
     }
 
     private Map<String, Class<?>> findExistingClasses(final InputStream stream) throws XMLStreamException {
@@ -173,7 +186,8 @@ public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverte
         return ctClasses;
     }
 
-    private void defineClasses(final Map<String, CtClass> ctClasses, final InputStream stream) throws XMLStreamException {
+    private void defineClasses(final Map<String, CtClass> ctClasses, final InputStream stream) throws XMLStreamException,
+            ModelXmlCompilingException {
         XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(stream);
 
         while (reader.hasNext() && reader.next() > 0) {
@@ -192,7 +206,7 @@ public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverte
     }
 
     private void parse(final XMLStreamReader reader, final CtClass ctClass, final String pluginIdentifier)
-            throws XMLStreamException {
+            throws XMLStreamException, ModelXmlCompilingException {
         LOG.info("Defining class " + ctClass.getName());
 
         createField(ctClass, "id", Long.class.getCanonicalName());
@@ -228,7 +242,7 @@ public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverte
         buildEquals(ctClass, fields);
     }
 
-    private void buildToString(final CtClass ctClass, final List<String> fields) {
+    private void buildToString(final CtClass ctClass, final List<String> fields) throws ModelXmlCompilingException {
         try {
             StringBuilder sb = new StringBuilder();
             sb.append("return new java.lang.StringBuilder().append(\"" + ctClass.getName() + "[\").");
@@ -248,11 +262,11 @@ public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverte
 
             ctClass.addMethod(CtNewMethod.make("public String toString() { " + sb.toString() + " }", ctClass));
         } catch (CannotCompileException e) {
-            throw new IllegalStateException("Failed to compile class " + ctClass.getName(), e);
+            throw new ModelXmlCompilingException("Failed to compile class " + ctClass.getName(), e);
         }
     }
 
-    private void buildHashCode(final CtClass ctClass, final List<String> fields) {
+    private void buildHashCode(final CtClass ctClass, final List<String> fields) throws ModelXmlCompilingException {
         try {
             StringBuilder sb = new StringBuilder();
             sb.append("final int prime = 31;");
@@ -267,11 +281,11 @@ public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverte
 
             ctClass.addMethod(CtNewMethod.make("public int hashCode() { " + sb.toString() + " }", ctClass));
         } catch (CannotCompileException e) {
-            throw new IllegalStateException("Failed to compile class " + ctClass.getName(), e);
+            throw new ModelXmlCompilingException("Failed to compile class " + ctClass.getName(), e);
         }
     }
 
-    private void buildEquals(final CtClass ctClass, final List<String> fields) {
+    private void buildEquals(final CtClass ctClass, final List<String> fields) throws ModelXmlCompilingException {
         try {
             StringBuilder sb = new StringBuilder();
             sb.append("if (obj == null) { return false; }");
@@ -290,12 +304,12 @@ public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverte
 
             ctClass.addMethod(CtNewMethod.make("public boolean equals(Object obj) { " + sb.toString() + " }", ctClass));
         } catch (CannotCompileException e) {
-            throw new IllegalStateException("Failed to compile class " + ctClass.getName(), e);
+            throw new ModelXmlCompilingException("Failed to compile class " + ctClass.getName(), e);
         }
     }
 
     private void parseField(final XMLStreamReader reader, final String pluginIdentifier, final CtClass ctClass, final String tag,
-            final List<String> fields) throws XMLStreamException {
+            final List<String> fields) throws XMLStreamException, ModelXmlCompilingException {
         FieldsTag modelTag = FieldsTag.valueOf(tag.toUpperCase(Locale.ENGLISH));
 
         if (!getBooleanAttribute(reader, "persistent", true)) {
@@ -352,11 +366,12 @@ public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverte
         }
     }
 
-    private void createHasManyField(final CtClass ctClass, final XMLStreamReader reader) {
+    private void createHasManyField(final CtClass ctClass, final XMLStreamReader reader) throws ModelXmlCompilingException {
         createField(ctClass, getStringAttribute(reader, "name"), "java.util.Set");
     }
 
-    private void createBelongsField(final CtClass ctClass, final String pluginIdentifier, final XMLStreamReader reader) {
+    private void createBelongsField(final CtClass ctClass, final String pluginIdentifier, final XMLStreamReader reader)
+            throws ModelXmlCompilingException {
         String plugin = getStringAttribute(reader, "plugin");
 
         if (plugin == null) {
@@ -368,7 +383,7 @@ public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverte
         createField(ctClass, getStringAttribute(reader, "name"), ClassNameUtils.getFullyQualifiedClassName(plugin, model));
     }
 
-    private void createField(final CtClass ctClass, final String name, final String clazz) {
+    private void createField(final CtClass ctClass, final String name, final String clazz) throws ModelXmlCompilingException {
         try {
             ctClass.addField(CtField.make("private " + clazz + " " + name + ";", ctClass));
             ctClass.addMethod(CtNewMethod.make("public " + clazz + " get" + StringUtils.capitalize(name) + "() { return " + name
@@ -376,7 +391,7 @@ public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverte
             ctClass.addMethod(CtNewMethod.make("public void set" + StringUtils.capitalize(name) + "(" + clazz + " " + name
                     + ") { this." + name + " = " + name + "; }", ctClass));
         } catch (CannotCompileException e) {
-            throw new IllegalStateException("Failed to compile class " + ctClass.getName(), e);
+            throw new ModelXmlCompilingException("Failed to compile class " + ctClass.getName(), e);
         }
     }
 

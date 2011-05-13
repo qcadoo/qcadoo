@@ -71,30 +71,30 @@ public final class ModelXmlToHbmConverterImpl implements ModelXmlToHbmConverter 
 
     @Override
     public Resource[] convert(final Resource... resources) {
-        try {
-            List<Resource> hbms = new ArrayList<Resource>();
+        List<Resource> hbms = new ArrayList<Resource>();
 
-            for (Resource resource : resources) {
-                if (resource.isReadable()) {
-                    LOG.info("Converting " + resource + " to hbm.xml");
+        for (Resource resource : resources) {
+            if (resource.isReadable()) {
+                LOG.info("Converting " + resource + " to hbm.xml");
 
-                    ByteArrayOutputStream hbm = new ByteArrayOutputStream();
+                ByteArrayOutputStream hbm = new ByteArrayOutputStream();
 
+                try {
                     transformer.transform(new StreamSource(resource.getInputStream()), new StreamResult(hbm));
-
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug(new String(hbm.toByteArray()));
-                    }
-
-                    hbms.add(new InputStreamResource(new ByteArrayInputStream(hbm.toByteArray())));
+                } catch (TransformerException e) {
+                    throw new IllegalStateException("Error while parsing model.xml: " + e.getMessage(), e);
+                } catch (IOException e) {
+                    throw new IllegalStateException("Error while parsing model.xml: " + e.getMessage(), e);
                 }
-            }
 
-            return hbms.toArray(new Resource[hbms.size()]);
-        } catch (IOException e) {
-            throw new IllegalStateException("Failed to convert model.xml to hbm.xml", e);
-        } catch (TransformerException e) {
-            throw new IllegalStateException("Failed to convert model.xml to hbm.xml", e);
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(new String(hbm.toByteArray()));
+                }
+
+                hbms.add(new InputStreamResource(new ByteArrayInputStream(hbm.toByteArray())));
+            }
         }
+
+        return hbms.toArray(new Resource[hbms.size()]);
     }
 }
