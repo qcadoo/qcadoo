@@ -644,8 +644,10 @@ QCD.components.elements.Tree = function(_element, _mainController) {
 	
 	function cancelClicked() {
 		if (buttons.cancelButton.hasClass("headerButtonEnabled")) {
-			block();
-			mainController.callEvent("clear", elementPath, null);
+			if (confirm(translations.moveModeCancelButtonConfirm)) {
+				block();
+				mainController.callEvent("clear", elementPath, null);
+			}
 		}
 	}
 	

@@ -115,6 +115,7 @@ public final class TreeComponentPattern extends FieldComponentPattern {
         translations.put("moveModeButton", getTranslation("moveModeButton", locale));
         translations.put("moveModeSaveButton", getTranslation("moveModeSaveButton", locale));
         translations.put("moveModeCancelButton", getTranslation("moveModeCancelButton", locale));
+        translations.put("moveModeCancelButtonConfirm", getTranslation("moveModeCancelButtonConfirm", locale));
 
         translations.put("header", getTranslationService().translate(getTranslationPath() + ".header", locale));
 
