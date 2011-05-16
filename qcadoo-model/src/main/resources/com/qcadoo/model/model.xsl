@@ -179,6 +179,14 @@
 			<xsl:call-template name="property" />
 		</property>
 	</xsl:template>
+	
+	<xsl:template
+		match="//qcd:model/qcd:fields/qcd:file[not(@persistent='false')]">
+		<property>
+			<xsl:attribute name="type">string</xsl:attribute>
+			<xsl:call-template name="property" />
+		</property>
+	</xsl:template>
 
 	<xsl:template
 		match="//qcd:model/qcd:fields/qcd:text[not(@persistent='false')]">

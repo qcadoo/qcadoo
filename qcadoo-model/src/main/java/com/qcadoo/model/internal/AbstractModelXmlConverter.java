@@ -30,7 +30,7 @@ import javax.xml.stream.XMLStreamReader;
 public abstract class AbstractModelXmlConverter {
 
     public static enum FieldsTag {
-        PRIORITY, INTEGER, STRING, TEXT, DECIMAL, DATETIME, DATE, BOOLEAN, BELONGSTO, HASMANY, TREE, ENUM, DICTIONARY, PASSWORD
+        PRIORITY, INTEGER, STRING, TEXT, DECIMAL, DATETIME, DATE, BOOLEAN, BELONGSTO, HASMANY, TREE, ENUM, DICTIONARY, PASSWORD, FILE
     }
 
     public static enum HooksTag {

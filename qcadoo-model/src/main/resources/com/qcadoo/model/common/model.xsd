@@ -56,6 +56,7 @@
 			<xs:element name="dictionary" type="dictionaryFieldType" />
 			<xs:element name="password" type="fieldType" />
 			<xs:element name="priority" type="priorityFieldType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="file" type="fieldType" />
 		</xs:choice>
 	</xs:group>
 

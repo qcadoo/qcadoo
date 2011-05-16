@@ -327,6 +327,7 @@ public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverte
                 fields.add(getStringAttribute(reader, "name"));
                 break;
             case STRING:
+            case FILE:
             case TEXT:
             case ENUM:
             case DICTIONARY:

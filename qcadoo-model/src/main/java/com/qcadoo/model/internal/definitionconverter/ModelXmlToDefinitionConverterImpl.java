@@ -78,6 +78,7 @@ import com.qcadoo.model.internal.types.DateType;
 import com.qcadoo.model.internal.types.DecimalType;
 import com.qcadoo.model.internal.types.DictionaryType;
 import com.qcadoo.model.internal.types.EnumType;
+import com.qcadoo.model.internal.types.FileType;
 import com.qcadoo.model.internal.types.HasManyEntitiesType;
 import com.qcadoo.model.internal.types.IntegerType;
 import com.qcadoo.model.internal.types.PasswordType;
@@ -442,6 +443,8 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
                 return new IntegerType();
             case STRING:
                 return new StringType();
+            case FILE:
+                return new FileType();
             case TEXT:
                 return new TextType();
             case DECIMAL:
