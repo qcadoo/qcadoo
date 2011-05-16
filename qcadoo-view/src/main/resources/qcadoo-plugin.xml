@@ -74,6 +74,7 @@
 		<view:view-component name="separatorLine" class="com.qcadoo.view.internal.components.SeparatorLinePattern" />
 		<view:view-component name="textarea" class="com.qcadoo.view.internal.components.TextAreaComponentPattern" />
 		<view:view-component name="input" class="com.qcadoo.view.internal.components.TextInputComponentPattern" />
+		<view:view-component name="file" class="com.qcadoo.view.internal.components.file.FileInputComponentPattern" />
 		<view:view-component name="awesomeDynamicList" class="com.qcadoo.view.internal.components.awesomeDynamicList.AwesomeDynamicListPattern" />
 		<view:view-component name="staticPage" class="com.qcadoo.view.internal.components.StaticPageComponentPattern" />
 		<view:view-component name="window" class="com.qcadoo.view.internal.components.window.WindowComponentPattern" />
