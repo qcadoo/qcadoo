@@ -28,7 +28,7 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
 	targetNamespace="http://schema.qcadoo.org/model" xmlns="http://schema.qcadoo.org/model" elementFormDefault="qualified">
 
-	<xs:include schemaLocation="file:///Users/masz/Documents/workspace/qcadoo/qcadoo-model/src/main/resources/com/qcadoo/model/common/model.xsd" />
+	<xs:include schemaLocation="http://schema.qcadoo.org/common/model.xsd" />
 
 	<xs:element name="model">
 		<xs:complexType>
