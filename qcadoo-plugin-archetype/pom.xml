@@ -17,7 +17,25 @@
         <version>2.0</version>
       </extension>
     </extensions>
-
+<plugins>
+			<plugin>
+				<groupId>com.mycila.maven-license-plugin</groupId>
+				<artifactId>maven-license-plugin</artifactId>
+				<version>1.9.0</version>
+				<configuration>
+					<header>../licence.txt</header>
+					<strictCheck>true</strictCheck>
+					<aggregate>true</aggregate>
+					<keywords>
+						<keyword>copyright</keyword>
+						<keyword>qcadoo</keyword>
+					</keywords>
+					<excludes>
+						<exclude>src/**</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+		</plugins>
     <pluginManagement>
       <plugins>
         <plugin>

@@ -1,8 +1,8 @@
 /**
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
- * Project: Qcadoo MES
- * Version: 0.3.0
+ * Project: Qcadoo Framework
+ * Version: 0.4.0
  *
  * This file is part of Qcadoo.
  *
@@ -21,7 +21,6 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * ***************************************************************************
  */
-
 package com.qcadoo.view.internal.states;
 
 import java.util.Locale;
