@@ -10,6 +10,7 @@
 	<packaging>pom</packaging>
 
 	<modules>
+		<module>qcadoo-maven-plugin</module>
 		<module>qcadoo-tenant</module>
 		<module>qcadoo-plugin</module>
 		<module>qcadoo-localization</module>
@@ -19,7 +20,6 @@
 		<module>qcadoo-report</module>
 		<module>qcadoo-plugin-archetype</module>
 		<module>qcadoo-webapp-archetype</module>
-		<module>qcadoo-maven-plugin</module>
 		<module>qcadoo-schema</module>
 		<module>qcadoo-javadoc</module>
 		<module>qcadoo-plugins-plugin-management</module>
