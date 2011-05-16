@@ -69,40 +69,6 @@
 		<profile>
 			<id>ignoreWithoutVersion</id>
 		</profile>
-		<!--<profile>
-			<id>generateXstDoc</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>xml-maven-plugin</artifactId>
-						<version>1.0</version>
-						<executions>
-							<execution>
-								<phase>install</phase>
-								<goals>
-									<goal>transform</goal>
-								</goals>
-								<configuration>
-									<transformationSets>
-            							<transformationSet>
-            								<dir>${basedir}/target/schema/</dir>
-              								<stylesheet>${basedir}/src/main/resources/xs3p.xsl</stylesheet>
-              								<fileMappers>
-												<fileMapper implementation="org.codehaus.plexus.components.io.filemappers.RegExpFileMapper">
-													<pattern>\.xsd$</pattern>
-													<replacement>-xsd.html</replacement>
-												</fileMapper>
-											</fileMappers>
-            							</transformationSet>
-            						</transformationSets>
-								</configuration>
-							</execution>
-				        </executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>-->
 	</profiles>
 
 </project>

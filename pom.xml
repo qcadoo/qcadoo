@@ -17,7 +17,6 @@
 		<module>qcadoo-view</module>
 		<module>qcadoo-report</module>
 		<module>qcadoo-plugin-archetype</module>
-		<module>qcadoo-webapp-archetype</module>
 		<module>qcadoo-schema</module>
 		<module>qcadoo-javadoc</module>
 		<module>qcadoo-plugins-plugin-management</module>
@@ -45,7 +44,6 @@
 			<url>https://github.com/qcadoo/qcadoo/raw/master/licence.txt</url>
 		</license>
 	</licenses>
-
 
 	<properties>
 		<qcadoo.maven.plugin.version>0.4.1-SNAPSHOT</qcadoo.maven.plugin.version>

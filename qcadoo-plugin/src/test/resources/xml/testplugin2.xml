@@ -4,7 +4,7 @@
     ***************************************************************************
     Copyright (c) 2010 Qcadoo Limited
     Project: Qcadoo Framework
-    Version: 0.4.0
+    Version: 0.4.1
 
     This file is part of Qcadoo.
 
@@ -24,8 +24,6 @@
     ***************************************************************************
 
 -->
-
-
 <plugin plugin="testPlugin2" version="2.3.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schema.qcadoo.org/plugin"
 	xmlns:testModel="http://schema.qcadoo.org/modules/testModel" xmlns:view="http://schema.qcadoo.org/modules/view"
 	xmlns:localization="http://schema.qcadoo.org/modules/localization"

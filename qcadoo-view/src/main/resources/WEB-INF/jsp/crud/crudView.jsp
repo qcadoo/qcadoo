@@ -2,8 +2,8 @@
 
     ***************************************************************************
     Copyright (c) 2010 Qcadoo Limited
-    Project: Qcadoo MES
-    Version: 0.3.0
+    Project: Qcadoo Framework
+    Version: 0.4.1
 
     This file is part of Qcadoo.
 
