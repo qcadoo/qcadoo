@@ -17,7 +17,7 @@ public class ViewModuleFactory extends ModuleFactory<ViewModule> {
     private InternalViewDefinitionService viewDefinitionService;
 
     @Override
-    public ViewModule parse(final String pluginIdentifier, final Element element) {
+    protected ViewModule parseElement(final String pluginIdentifier, final Element element) {
         String resource = getRequiredAttribute(element, "resource");
 
         return new ViewModule(pluginIdentifier, new ClassPathResource(pluginIdentifier + "/" + resource), viewDefinitionParser,

@@ -43,11 +43,11 @@ public interface ViewDefinitionParser {
 
     ComponentOption parseOption(Node option);
 
-    ComponentPattern parseComponent(Node componentNode, ContainerPattern parent);
+    ComponentPattern parseComponent(Node componentNode, ContainerPattern parent) throws ViewDefinitionParserNodeException;
 
     ComponentDefinition getComponentDefinition(Node componentNode, ContainerPattern parent, ViewDefinition viewDefinition);
 
-    ComponentCustomEvent parseCustomEvent(Node listenerNode);
+    ComponentCustomEvent parseCustomEvent(Node listenerNode) throws ViewDefinitionParserNodeException;
 
     String getStringAttribute(Node groupNode, String string);
 
@@ -59,8 +59,10 @@ public interface ViewDefinitionParser {
 
     InternalViewDefinition parseViewXml(Resource viewXml, String pluginIdentifier);
 
-    ViewExtension getViewExtensionNode(InputStream resource, String tagType);
+    ViewExtension getViewExtensionNode(InputStream resource, String tagType) throws ViewDefinitionParserNodeException;
 
-    InternalRibbonGroup parseRibbonGroup(Node groupNode, ViewDefinition viewDefinition);
+    InternalRibbonGroup parseRibbonGroup(Node groupNode, ViewDefinition viewDefinition) throws ViewDefinitionParserNodeException;
+
+    void checkState(boolean state, Node node, String message) throws ViewDefinitionParserNodeException;
 
 }

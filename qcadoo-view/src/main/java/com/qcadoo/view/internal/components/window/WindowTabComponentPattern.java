@@ -13,6 +13,7 @@ import com.qcadoo.view.internal.patterns.AbstractContainerPattern;
 import com.qcadoo.view.internal.ribbon.InternalRibbon;
 import com.qcadoo.view.internal.ribbon.RibbonUtils;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
+import com.qcadoo.view.internal.xml.ViewDefinitionParserNodeException;
 
 public class WindowTabComponentPattern extends AbstractContainerPattern {
 
@@ -32,7 +33,7 @@ public class WindowTabComponentPattern extends AbstractContainerPattern {
     }
 
     @Override
-    public void parse(final Node componentNode, final ViewDefinitionParser parser) {
+    public void parse(final Node componentNode, final ViewDefinitionParser parser) throws ViewDefinitionParserNodeException {
         super.parse(componentNode, parser);
 
         NodeList childNodes = componentNode.getChildNodes();

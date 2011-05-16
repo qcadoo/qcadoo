@@ -30,6 +30,7 @@ import java.util.Map;
 import org.w3c.dom.Node;
 
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
+import com.qcadoo.view.internal.xml.ViewDefinitionParserNodeException;
 
 /**
  * ComponentPattern is a definition of single view element. It can be described as 'class' witch main responsibility is to create
@@ -137,7 +138,7 @@ public interface ComponentPattern {
      * @param parser
      *            parser
      */
-    void parse(Node componentNode, ViewDefinitionParser parser);
+    void parse(Node componentNode, ViewDefinitionParser parser) throws ViewDefinitionParserNodeException;
 
     /**
      * Adds custom event to this component

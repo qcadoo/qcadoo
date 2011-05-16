@@ -221,16 +221,16 @@ public class ViewDefinitionTest extends AbstractPatternTest {
         ViewDefinitionImpl viewDefinition = new ViewDefinitionImpl("name", "plugin", mock(DataDefinition.class), true, null);
 
         HookDefinition preInitializeHook = mock(HookDefinition.class);
-        viewDefinition.addPreInitializeHook(preInitializeHook);
+        viewDefinition.addBeforeInitializeHook(preInitializeHook);
 
         HookDefinition postInitializeHook1 = mock(HookDefinition.class);
-        viewDefinition.addPostInitializeHook(postInitializeHook1);
+        viewDefinition.addAfterInitializeHook(postInitializeHook1);
 
         HookDefinition postInitializeHook2 = mock(HookDefinition.class);
-        viewDefinition.addPostInitializeHook(postInitializeHook2);
+        viewDefinition.addAfterInitializeHook(postInitializeHook2);
 
         HookDefinition preRenderHook = mock(HookDefinition.class);
-        viewDefinition.addPreRenderHook(preRenderHook);
+        viewDefinition.addBeforeRenderHook(preRenderHook);
 
         JSONObject eventJson = new JSONObject();
         eventJson.put(InternalViewDefinition.JSON_EVENT_NAME, "eventName");

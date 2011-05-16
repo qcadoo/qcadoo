@@ -16,7 +16,7 @@ public class UserGroupModuleFactory extends ModuleFactory<UserGroupModule> {
     private InternalSecurityRolesService securityRolesService;
 
     @Override
-    public UserGroupModule parse(final String pluginIdentifier, final Element element) {
+    protected UserGroupModule parseElement(final String pluginIdentifier, final Element element) {
         String name = getRequiredAttribute(element, "name");
         String role = getRequiredAttribute(element, "role");
 

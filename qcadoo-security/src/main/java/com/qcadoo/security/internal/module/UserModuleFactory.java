@@ -14,7 +14,7 @@ public class UserModuleFactory extends ModuleFactory<UserModule> {
     private DataDefinitionService dataDefinitionService;
 
     @Override
-    public UserModule parse(final String pluginIdentifier, final Element element) {
+    protected UserModule parseElement(final String pluginIdentifier, final Element element) {
         String login = getRequiredAttribute(element, "login");
         String email = getAttribute(element, "email");
         String firstName = getAttribute(element, "firstName");

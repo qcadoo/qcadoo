@@ -17,7 +17,7 @@ public class ViewTabModuleFactory extends ModuleFactory<ViewTabModule> {
     private ViewDefinitionParser viewDefinitionParser;
 
     @Override
-    public ViewTabModule parse(final String pluginIdentifier, final Element element) {
+    protected ViewTabModule parseElement(final String pluginIdentifier, final Element element) {
         String resource = getRequiredAttribute(element, "resource");
 
         return new ViewTabModule(pluginIdentifier, new ClassPathResource(pluginIdentifier + "/" + resource),

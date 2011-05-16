@@ -65,6 +65,7 @@ import com.qcadoo.view.internal.api.ViewDefinition;
 import com.qcadoo.view.internal.states.AbstractComponentState;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
 import com.qcadoo.view.internal.xml.ViewDefinitionParserImpl;
+import com.qcadoo.view.internal.xml.ViewDefinitionParserNodeException;
 
 public abstract class AbstractComponentPattern implements ComponentPattern {
 
@@ -576,7 +577,7 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
     }
 
     @Override
-    public void parse(final Node componentNode, final ViewDefinitionParser parser) {
+    public void parse(final Node componentNode, final ViewDefinitionParser parser) throws ViewDefinitionParserNodeException {
         indexOrder = ((ViewDefinitionParserImpl) parser).getCurrentIndexOrder();
 
         NodeList childNodes = componentNode.getChildNodes();

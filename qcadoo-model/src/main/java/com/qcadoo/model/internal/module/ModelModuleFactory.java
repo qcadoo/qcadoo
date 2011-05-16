@@ -39,7 +39,7 @@ public class ModelModuleFactory extends ModuleFactory<ModelModule> {
     private InternalDataDefinitionService dataDefinitionService;
 
     @Override
-    public ModelModule parse(final String pluginIdentifier, final Element element) {
+    protected ModelModule parseElement(final String pluginIdentifier, final Element element) {
         String modelName = getRequiredAttribute(element, "model");
         String resource = getRequiredAttribute(element, "resource");
 

@@ -33,11 +33,11 @@ import java.util.Map;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.google.common.base.Preconditions;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.internal.ComponentDefinition;
 import com.qcadoo.view.internal.api.ComponentPattern;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
+import com.qcadoo.view.internal.xml.ViewDefinitionParserNodeException;
 
 public class SmallTabLayoutPattern extends AbstractLayoutPattern {
 
@@ -55,7 +55,7 @@ public class SmallTabLayoutPattern extends AbstractLayoutPattern {
     }
 
     @Override
-    public void parse(final Node componentNode, final ViewDefinitionParser parser) {
+    public void parse(final Node componentNode, final ViewDefinitionParser parser) throws ViewDefinitionParserNodeException {
         super.parse(componentNode, parser);
 
         NodeList childNodes = componentNode.getChildNodes();
@@ -64,7 +64,7 @@ public class SmallTabLayoutPattern extends AbstractLayoutPattern {
             if (child.getNodeType() != Node.ELEMENT_NODE) {
                 continue;
             }
-            Preconditions.checkState("tabElement".equals(child.getNodeName()), "gridlayout can contains only tabElements");
+            parser.checkState("tabElement".equals(child.getNodeName()), child, "gridlayout can contains only tabElements");
             String tabName = parser.getStringAttribute(child, "name");
 
             SmallTabLayoutPatternTab tab = new SmallTabLayoutPatternTab(tabName);
@@ -75,7 +75,7 @@ public class SmallTabLayoutPattern extends AbstractLayoutPattern {
                 if (elementComponentNode.getNodeType() != Node.ELEMENT_NODE) {
                     continue;
                 }
-                Preconditions.checkState("component".equals(elementComponentNode.getNodeName()),
+                parser.checkState("component".equals(elementComponentNode.getNodeName()), elementComponentNode,
                         "layoutElement can contains only components");
                 ComponentPattern elementComponent = parser.parseComponent(elementComponentNode, this);
                 this.addChild(elementComponent);

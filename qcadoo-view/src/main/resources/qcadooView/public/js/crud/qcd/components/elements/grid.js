@@ -571,7 +571,6 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 			rowClicked(rowId, iCol);
         }
 		
-		
 		gridParameters.ondblClickRow = function(id){
 			linkClicked(id);
         }

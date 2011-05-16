@@ -18,18 +18,17 @@ public class ViewListenerModuleFactory extends ModuleFactory<ViewListenerModule>
     private InternalViewDefinitionService viewDefinitionService;
 
     @Override
-    public ViewListenerModule parse(final String pluginIdentifier, final Element element) {
+    protected ViewListenerModule parseElement(final String pluginIdentifier, final Element element) {
         String plugin = getRequiredAttribute(element, "plugin");
         String view = getRequiredAttribute(element, "view");
         String component = getRequiredAttribute(element, "component");
         String eventName = getRequiredAttribute(element, "event");
         String className = getRequiredAttribute(element, "class");
         String method = getRequiredAttribute(element, "method");
-
         HookDefinitionImpl hook = (HookDefinitionImpl) hookFactory.getHook(className, method, pluginIdentifier);
         ComponentCustomEvent event = new ComponentCustomEvent(eventName, hook.getObject(), method, pluginIdentifier);
 
-        return new ViewListenerModule(viewDefinitionService, plugin, view, component, event);
+        return new ViewListenerModule(pluginIdentifier, viewDefinitionService, plugin, view, component, event);
     }
 
     @Override

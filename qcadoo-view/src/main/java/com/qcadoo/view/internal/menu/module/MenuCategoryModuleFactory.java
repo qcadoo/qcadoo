@@ -12,7 +12,7 @@ public class MenuCategoryModuleFactory extends ModuleFactory<MenuCategoryModule>
     private InternalMenuService menuService;
 
     @Override
-    public MenuCategoryModule parse(final String pluginIdentifier, final Element element) {
+    protected MenuCategoryModule parseElement(final String pluginIdentifier, final Element element) {
         String menuCategoryName = getRequiredAttribute(element, "name");
 
         return new MenuCategoryModule(menuService, pluginIdentifier, menuCategoryName);

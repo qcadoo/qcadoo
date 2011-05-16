@@ -39,6 +39,7 @@ import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.internal.ComponentDefinition;
 import com.qcadoo.view.internal.components.FieldComponentPattern;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
+import com.qcadoo.view.internal.xml.ViewDefinitionParserNodeException;
 
 public final class TreeComponentPattern extends FieldComponentPattern {
 
@@ -58,7 +59,7 @@ public final class TreeComponentPattern extends FieldComponentPattern {
     }
 
     @Override
-    public void parse(final Node componentNode, final ViewDefinitionParser parser) {
+    public void parse(final Node componentNode, final ViewDefinitionParser parser) throws ViewDefinitionParserNodeException {
         super.parse(componentNode, parser);
         NodeList childNodes = componentNode.getChildNodes();
         for (int i = 0; i < childNodes.getLength(); i++) {
@@ -76,18 +77,23 @@ public final class TreeComponentPattern extends FieldComponentPattern {
                         continue;
                     }
                     if (!"option".equals(dataTypeOptionNode.getNodeName())) {
-                        throw new IllegalStateException("Tree 'dataType' node can only contains 'option' nodes");
+                        throw new ViewDefinitionParserNodeException(dataTypeOptionNode,
+                                "Tree 'dataType' node can only contains 'option' nodes");
                     }
                     String optionType = parser.getStringAttribute(dataTypeOptionNode, "type");
                     String optionValue = parser.getStringAttribute(dataTypeOptionNode, "value");
                     dataType.setOption(optionType, optionValue);
                 }
-                dataType.validate();
+                try {
+                    dataType.validate();
+                } catch (IllegalStateException e) {
+                    throw new ViewDefinitionParserNodeException(child, e);
+                }
                 dataTypes.put(dataTypeName, dataType);
             }
         }
         if (dataTypes.size() == 0) {
-            throw new IllegalStateException("Tree must contains at least one 'dataType' node");
+            throw new ViewDefinitionParserNodeException(componentNode, "Tree must contains at least one 'dataType' node");
         }
     }
 

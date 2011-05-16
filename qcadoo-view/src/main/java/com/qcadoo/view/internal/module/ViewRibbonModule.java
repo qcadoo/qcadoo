@@ -7,18 +7,22 @@ import java.util.Map;
 import org.springframework.core.io.Resource;
 import org.w3c.dom.Node;
 
-import com.google.common.base.Preconditions;
 import com.qcadoo.plugin.api.Module;
+import com.qcadoo.plugin.api.ModuleException;
 import com.qcadoo.view.internal.api.InternalViewDefinition;
 import com.qcadoo.view.internal.api.InternalViewDefinitionService;
 import com.qcadoo.view.internal.components.window.WindowComponentPattern;
 import com.qcadoo.view.internal.ribbon.InternalRibbonGroup;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
+import com.qcadoo.view.internal.xml.ViewDefinitionParserException;
+import com.qcadoo.view.internal.xml.ViewDefinitionParserNodeException;
 import com.qcadoo.view.internal.xml.ViewExtension;
 
 public class ViewRibbonModule extends Module {
 
     private final String pluginIdentifier;
+
+    private final String fileName;
 
     private final InternalViewDefinitionService viewDefinitionService;
 
@@ -33,10 +37,13 @@ public class ViewRibbonModule extends Module {
         this.pluginIdentifier = pluginIdentifier;
         this.viewDefinitionService = viewDefinitionService;
         this.viewDefinitionParser = viewDefinitionParser;
+        fileName = xmlFile.getFilename();
         try {
             viewExtension = viewDefinitionParser.getViewExtensionNode(xmlFile.getInputStream(), "ribbonExtension");
         } catch (IOException e) {
-            throw new IllegalStateException(e.getMessage(), e);
+            throw ViewDefinitionParserException.forFile(fileName, e);
+        } catch (ViewDefinitionParserNodeException e) {
+            throw ViewDefinitionParserException.forFileAndNode(fileName, e);
         }
     }
 
@@ -51,18 +58,30 @@ public class ViewRibbonModule extends Module {
 
         InternalViewDefinition viewDefinition = viewDefinitionService.getWithoutSession(viewExtension.getPluginName(),
                 viewExtension.getViewName());
-        Preconditions.checkNotNull(viewDefinition, getErrorMessage("reference to view which not exists", viewExtension));
+        if (viewDefinition == null) {
+            throw new ModuleException(pluginIdentifier, "view", "reference to view which not exists");
+        }
 
-        for (Node groupNode : viewDefinitionParser.geElementChildren(viewExtension.getExtesionNode())) {
+        try {
 
-            InternalRibbonGroup group = viewDefinitionParser.parseRibbonGroup(groupNode, viewDefinition);
-            group.setExtensionPluginIdentifier(pluginIdentifier);
+            for (Node groupNode : viewDefinitionParser.geElementChildren(viewExtension.getExtesionNode())) {
 
-            WindowComponentPattern window = viewDefinition.getRootWindow();
-            Preconditions.checkNotNull(window, getErrorMessage("cannot add ribbon element to view", viewExtension));
+                InternalRibbonGroup group;
+                try {
+                    group = viewDefinitionParser.parseRibbonGroup(groupNode, viewDefinition);
 
-            window.getRibbon().addGroup(group);
-            addedGroups.put(window, group);
+                    group.setExtensionPluginIdentifier(pluginIdentifier);
+
+                    WindowComponentPattern window = viewDefinition.getRootWindow();
+
+                    window.getRibbon().addGroup(group);
+                    addedGroups.put(window, group);
+                } catch (ViewDefinitionParserNodeException e) {
+                    throw ViewDefinitionParserException.forFileAndNode(fileName, e);
+                }
+            }
+        } catch (Exception e) {
+            throw new ModuleException(pluginIdentifier, "view-ribbon-group", e);
         }
     }
 
@@ -73,8 +92,4 @@ public class ViewRibbonModule extends Module {
         }
     }
 
-    private String getErrorMessage(final String msg, final ViewExtension viewExtension) {
-        return "View ribbon extension error [to " + viewExtension.getPluginName() + "-" + viewExtension.getViewName() + "]: "
-                + msg;
-    }
 }

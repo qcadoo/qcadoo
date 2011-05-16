@@ -18,7 +18,7 @@ public class ViewHookModuleFactory extends ModuleFactory<ViewHookModule> {
     private InternalViewDefinitionService viewDefinitionService;
 
     @Override
-    public ViewHookModule parse(final String pluginIdentifier, final Element element) {
+    protected ViewHookModule parseElement(final String pluginIdentifier, final Element element) {
         String plugin = getRequiredAttribute(element, "plugin");
         String view = getRequiredAttribute(element, "view");
         String hookTypeStr = getRequiredAttribute(element, "type");
@@ -29,16 +29,16 @@ public class ViewHookModuleFactory extends ModuleFactory<ViewHookModule> {
 
         InternalViewDefinition.HookType hookType;
         if ("afterInitialize".equals(hookTypeStr)) {
-            hookType = InternalViewDefinition.HookType.POST_INITIALIZE;
+            hookType = InternalViewDefinition.HookType.AFTER_INITIALIZE;
         } else if ("beforeInitalize".equals(hookTypeStr)) {
-            hookType = InternalViewDefinition.HookType.PRE_INITIALIZE;
+            hookType = InternalViewDefinition.HookType.BEFORE_INITIALIZE;
         } else if ("beforeRender".equals(hookTypeStr)) {
-            hookType = InternalViewDefinition.HookType.PRE_RENDER;
+            hookType = InternalViewDefinition.HookType.BEFORE_RENDER;
         } else {
             throw new IllegalStateException("Unknow view extension hook type: " + hookTypeStr);
         }
 
-        return new ViewHookModule(viewDefinitionService, plugin, view, hookType, hook);
+        return new ViewHookModule(pluginIdentifier, viewDefinitionService, plugin, view, hookType, hook);
     }
 
     @Override

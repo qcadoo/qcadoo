@@ -23,7 +23,7 @@ public class ViewComponentModuleFactory extends ModuleFactory<Module> implements
 
     @Override
     @SuppressWarnings("unchecked")
-    public Module parse(final String pluginIdentifier, final Element element) {
+    protected Module parseElement(final String pluginIdentifier, final Element element) {
         String name = getRequiredAttribute(element, "name");
         String clazzName = getRequiredAttribute(element, "class");
 

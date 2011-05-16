@@ -100,18 +100,23 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
         try {
             return parse(viewXml.getInputStream(), pluginIdentifier);
         } catch (IOException e) {
-            throw new IllegalStateException("Error while reading view resource", e);
+            throw ViewDefinitionParserException.forFile(viewXml.getFilename(), "Error while reading view resource", e);
+        } catch (ViewDefinitionParserNodeException e) {
+            throw ViewDefinitionParserException.forFileAndNode(viewXml.getFilename(), e);
+        } catch (Exception e) {
+            throw ViewDefinitionParserException.forFile(viewXml.getFilename(), e);
         }
     }
 
-    private InternalViewDefinition parse(final InputStream dataDefinitionInputStream, final String pluginIdentifier) {
+    private InternalViewDefinition parse(final InputStream dataDefinitionInputStream, final String pluginIdentifier)
+            throws ViewDefinitionParserNodeException {
         try {
             DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             Document document = documentBuilder.parse(dataDefinitionInputStream);
 
             Node root = document.getDocumentElement();
 
-            Preconditions.checkState("view".equals(root.getNodeName()), "Wrong root node '" + root.getNodeName() + "'");
+            checkState("view".equals(root.getNodeName()), root, "Wrong root node '" + root.getNodeName() + "'");
 
             return parseViewDefinition(root, pluginIdentifier);
 
@@ -124,7 +129,8 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
         }
     }
 
-    private InternalViewDefinition parseViewDefinition(final Node viewNode, final String pluginIdentifier) {
+    private InternalViewDefinition parseViewDefinition(final Node viewNode, final String pluginIdentifier)
+            throws ViewDefinitionParserNodeException {
         currentIndexOrder = 1;
         String name = getStringAttribute(viewNode, "name");
         Preconditions.checkState(name != null && !"".equals(name.trim()), "Name attribute cannot be empty");
@@ -149,7 +155,7 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
         if (authorizationRole != null) {
             role = securityRolesService.getRoleByIdentifier(authorizationRole);
             if (role == null) {
-                throw new IllegalStateException("no such role: '" + authorizationRole + "'");
+                throw new ViewDefinitionParserNodeException(viewNode, "no such role: '" + authorizationRole + "'");
             }
         }
 
@@ -180,7 +186,7 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
             } else if ("hooks".equals(child.getNodeName())) {
                 parseViewHooks(child, viewDefinition);
             } else {
-                throw new IllegalStateException("Unknown node: " + child.getNodeName());
+                throw new ViewDefinitionParserNodeException(child, "Unknown node: " + child.getNodeName());
             }
         }
 
@@ -247,19 +253,21 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
     }
 
     public ComponentPattern parseComponent(final Node componentNode, final ViewDefinition viewDefinition,
-            final ContainerPattern parent, final String pluginIdentifier) {
+            final ContainerPattern parent, final String pluginIdentifier) throws ViewDefinitionParserNodeException {
         String type = getStringAttribute(componentNode, "type");
 
         if (parent == null && !("window".equals(type) || "tabWindow".equals(type))) {
-            throw new IllegalStateException("Unsupported component: " + type);
+            throw new ViewDefinitionParserNodeException(componentNode, "Unsupported component: " + type);
         }
 
-        ComponentPattern component = viewComponentsResolver.getComponentInstance(type,
-                getComponentDefinition(componentNode, parent, viewDefinition));
-
-        component.parse(componentNode, this);
-
-        return component;
+        try {
+            ComponentPattern component = viewComponentsResolver.getComponentInstance(type,
+                    getComponentDefinition(componentNode, parent, viewDefinition));
+            component.parse(componentNode, this);
+            return component;
+        } catch (IllegalStateException e) {
+            throw new ViewDefinitionParserNodeException(componentNode, e);
+        }
     }
 
     @Override
@@ -296,19 +304,21 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
     }
 
     @Override
-    public ComponentPattern parseComponent(final Node componentNode, final ContainerPattern parent) {
+    public ComponentPattern parseComponent(final Node componentNode, final ContainerPattern parent)
+            throws ViewDefinitionParserNodeException {
         return parseComponent(componentNode, ((AbstractComponentPattern) parent).getViewDefinition(), parent,
                 ((AbstractComponentPattern) parent).getViewDefinition().getPluginIdentifier());
     }
 
     @Override
-    public ComponentCustomEvent parseCustomEvent(final Node listenerNode) {
+    public ComponentCustomEvent parseCustomEvent(final Node listenerNode) throws ViewDefinitionParserNodeException {
         HookDefinitionImpl hookDefinition = (HookDefinitionImpl) parseHook(listenerNode);
         return new ComponentCustomEvent(getStringAttribute(listenerNode, "event"), hookDefinition.getObject(),
                 hookDefinition.getMethod(), null);
     }
 
-    private void parseViewHooks(final Node hookNode, final ViewDefinitionImpl viewDefinition) {
+    private void parseViewHooks(final Node hookNode, final ViewDefinitionImpl viewDefinition)
+            throws ViewDefinitionParserNodeException {
         NodeList childNodes = hookNode.getChildNodes();
         for (int i = 0; i < childNodes.getLength(); i++) {
             Node child = childNodes.item(i);
@@ -316,23 +326,27 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
                 continue;
             }
             if ("beforeInitalize".equals(child.getNodeName())) {
-                viewDefinition.addPreInitializeHook(parseHook(child));
+                viewDefinition.addBeforeInitializeHook(parseHook(child));
             } else if ("afterInitialize".equals(child.getNodeName())) {
-                viewDefinition.addPostInitializeHook(parseHook(child));
+                viewDefinition.addAfterInitializeHook(parseHook(child));
             } else if ("beforeRender".equals(child.getNodeName())) {
-                viewDefinition.addPreRenderHook(parseHook(child));
+                viewDefinition.addBeforeRenderHook(parseHook(child));
             } else {
-                throw new IllegalStateException("Unknown hook type: " + child.getNodeName());
+                throw new ViewDefinitionParserNodeException(hookNode, "Unknown hook type: " + child.getNodeName());
             }
         }
     }
 
-    public HookDefinition parseHook(final Node hookNode) {
+    public HookDefinition parseHook(final Node hookNode) throws ViewDefinitionParserNodeException {
         String fullyQualifiedClassName = getStringAttribute(hookNode, "class");
         String methodName = getStringAttribute(hookNode, "method");
-        Preconditions.checkState(StringUtils.hasText(fullyQualifiedClassName), "Hook class name is required");
-        Preconditions.checkState(StringUtils.hasText(methodName), "Hook method name is required");
-        return hookFactory.getHook(fullyQualifiedClassName, methodName, null);
+        checkState(StringUtils.hasText(fullyQualifiedClassName), hookNode, "Hook class name is required");
+        checkState(StringUtils.hasText(methodName), hookNode, "Hook method name is required");
+        try {
+            return hookFactory.getHook(fullyQualifiedClassName, methodName, null);
+        } catch (IllegalStateException e) {
+            throw new ViewDefinitionParserNodeException(hookNode, e);
+        }
     }
 
     public int getCurrentIndexOrder() {
@@ -353,20 +367,21 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
     }
 
     @Override
-    public ViewExtension getViewExtensionNode(final InputStream resource, final String tagType) {
+    public ViewExtension getViewExtensionNode(final InputStream resource, final String tagType)
+            throws ViewDefinitionParserNodeException {
         try {
             DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             Document document = documentBuilder.parse(resource);
 
             Node root = document.getDocumentElement();
 
-            Preconditions.checkState(root.getNodeName().equals(tagType), "Wrong root node name: " + root.getNodeName());
+            checkState(root.getNodeName().equals(tagType), root, "Wrong root node name '" + root.getNodeName() + "'");
 
             String plugin = getStringAttribute(root, "plugin");
             String view = getStringAttribute(root, "view");
 
-            Preconditions.checkNotNull(plugin, "View extension error: plugin not defined");
-            Preconditions.checkNotNull(view, "View extension error: view not defined");
+            checkState(plugin != null, root, "View extension error: plugin not defined");
+            checkState(view != null, root, "View extension error: view not defined");
 
             return new ViewExtension(plugin, view, root);
 
@@ -380,7 +395,15 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
     }
 
     @Override
-    public InternalRibbonGroup parseRibbonGroup(final Node groupNode, final ViewDefinition viewDefinition) {
+    public InternalRibbonGroup parseRibbonGroup(final Node groupNode, final ViewDefinition viewDefinition)
+            throws ViewDefinitionParserNodeException {
         return RibbonUtils.getInstance().parseRibbonGroup(groupNode, this, viewDefinition);
+    }
+
+    @Override
+    public void checkState(final boolean state, final Node node, final String message) throws ViewDefinitionParserNodeException {
+        if (!state) {
+            throw new ViewDefinitionParserNodeException(node, message);
+        }
     }
 }

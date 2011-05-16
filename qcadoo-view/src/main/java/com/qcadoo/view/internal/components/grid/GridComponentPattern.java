@@ -46,6 +46,7 @@ import com.qcadoo.view.internal.ComponentDefinition;
 import com.qcadoo.view.internal.ComponentOption;
 import com.qcadoo.view.internal.patterns.AbstractComponentPattern;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
+import com.qcadoo.view.internal.xml.ViewDefinitionParserNodeException;
 
 public final class GridComponentPattern extends AbstractComponentPattern {
 
@@ -204,7 +205,8 @@ public final class GridComponentPattern extends AbstractComponentPattern {
     }
 
     private void addTranslation(final JSONObject translation, final String key, final Locale locale) throws JSONException {
-        translation.put(key, getTranslationService().translate(getTranslationPath() + "." + key, "qcadooView.grid." + key, locale));
+        translation.put(key, getTranslationService()
+                .translate(getTranslationPath() + "." + key, "qcadooView.grid." + key, locale));
     }
 
     private JSONArray getColumnsForJsOptions(final Locale locale) throws JSONException {
@@ -260,7 +262,7 @@ public final class GridComponentPattern extends AbstractComponentPattern {
     }
 
     @Override
-    public void parse(final Node componentNode, final ViewDefinitionParser parser) {
+    public void parse(final Node componentNode, final ViewDefinitionParser parser) throws ViewDefinitionParserNodeException {
         super.parse(componentNode, parser);
         NodeList childNodes = componentNode.getChildNodes();
         for (int i = 0; i < childNodes.getLength(); i++) {
@@ -273,7 +275,8 @@ public final class GridComponentPattern extends AbstractComponentPattern {
         }
     }
 
-    private void parsePredefinedFilterChildNodes(final NodeList componentNodes, final ViewDefinitionParser parser) {
+    private void parsePredefinedFilterChildNodes(final NodeList componentNodes, final ViewDefinitionParser parser)
+            throws ViewDefinitionParserNodeException {
         for (int i = 0; i < componentNodes.getLength(); i++) {
             Node child = componentNodes.item(i);
             if (child.getNodeType() == Node.ELEMENT_NODE) {
@@ -292,19 +295,22 @@ public final class GridComponentPattern extends AbstractComponentPattern {
                                 String column = parser.getStringAttribute(restrictionNode, "column");
                                 String direction = parser.getStringAttribute(restrictionNode, "direction");
                                 if (column == null) {
-                                    throwIllegalStateException("'filterOrder' tag must contain 'collumn' attribute");
+                                    throw new ViewDefinitionParserNodeException(restrictionNode,
+                                            "'filterOrder' tag must contain 'collumn' attribute");
                                 }
                                 if (direction == null) {
                                     direction = "asc";
                                 } else {
                                     if (!("asc".equals(direction) || "desc".equals(direction))) {
-                                        throwIllegalStateException("unknown order direction: " + direction);
+                                        throw new ViewDefinitionParserNodeException(restrictionNode, "unknown order direction: "
+                                                + direction);
                                     }
                                 }
                                 predefinedFilter.setOrderColumn(column);
                                 predefinedFilter.setOrderDirection(direction);
                             } else {
-                                throwIllegalStateException("predefinedFilter can only contain 'filterRestriction' or 'filterOrder' tag");
+                                throw new ViewDefinitionParserNodeException(restrictionNode,
+                                        "predefinedFilter can only contain 'filterRestriction' or 'filterOrder' tag");
                             }
                         }
                     }
@@ -317,6 +323,8 @@ public final class GridComponentPattern extends AbstractComponentPattern {
                     predefinedFilters.add(predefinedFilter);
                 } else {
                     throwIllegalStateException("predefinedFilters can only contain 'predefinedFilter' tag");
+                    throw new ViewDefinitionParserNodeException(child,
+                            "predefinedFilters can only contain 'predefinedFilter' tag");
                 }
             }
         }

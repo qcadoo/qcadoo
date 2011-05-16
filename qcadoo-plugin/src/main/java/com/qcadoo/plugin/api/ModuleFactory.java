@@ -61,8 +61,18 @@ public abstract class ModuleFactory<T extends Module> {
      * @param element
      *            xml element describing module
      * @return module instance
+     * @throws ModuleException
+     *             when some exception occured
      */
-    public abstract T parse(String pluginIdentifier, Element element);
+    public final T parse(String pluginIdentifier, Element element) {
+        try {
+            return parseElement(pluginIdentifier, element);
+        } catch (Exception e) {
+            throw new ModuleException(pluginIdentifier, getIdentifier(), element, e);
+        }
+    }
+
+    protected abstract T parseElement(String pluginIdentifier, Element element);
 
     /**
      * Identifier is used to distinguish the type of the module. It is equal to the name of the tag in section "modules" in plugin

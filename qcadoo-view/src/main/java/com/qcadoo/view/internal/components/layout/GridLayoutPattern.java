@@ -36,6 +36,7 @@ import com.google.common.base.Preconditions;
 import com.qcadoo.view.internal.ComponentDefinition;
 import com.qcadoo.view.internal.api.ComponentPattern;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
+import com.qcadoo.view.internal.xml.ViewDefinitionParserNodeException;
 
 public class GridLayoutPattern extends AbstractLayoutPattern {
 
@@ -54,7 +55,7 @@ public class GridLayoutPattern extends AbstractLayoutPattern {
     }
 
     @Override
-    public void parse(final Node componentNode, final ViewDefinitionParser parser) {
+    public void parse(final Node componentNode, final ViewDefinitionParser parser) throws ViewDefinitionParserNodeException {
         super.parse(componentNode, parser);
 
         Integer columns = getIntAttribute(componentNode, "columns", parser);
@@ -62,8 +63,8 @@ public class GridLayoutPattern extends AbstractLayoutPattern {
 
         fixedRowHeight = parser.getBooleanAttribute(componentNode, "fixedRowHeight", true);
 
-        Preconditions.checkNotNull(columns, "columns nod definied");
-        Preconditions.checkNotNull(rows, "rows nod definied");
+        parser.checkState(columns != null, componentNode, "columns nod definied");
+        parser.checkState(rows != null, componentNode, "rows nod definied");
 
         cells = new GridLayoutCell[rows][];
         for (int row = 0; row < cells.length; row++) {
@@ -80,13 +81,17 @@ public class GridLayoutPattern extends AbstractLayoutPattern {
             if (child.getNodeType() != Node.ELEMENT_NODE) {
                 continue;
             }
-            Preconditions.checkState("layoutElement".equals(child.getNodeName()), "gridlayout can contains only layoutElements");
+            parser.checkState("layoutElement".equals(child.getNodeName()), child, "gridlayout can contains only layoutElements");
             Integer column = getIntAttribute(child, "column", parser);
             Integer row = getIntAttribute(child, "row", parser);
 
             GridLayoutCell cell = createGridLayoutCell(child, parser);
 
-            insertCell(cell, column, row);
+            try {
+                insertCell(cell, column, row);
+            } catch (IllegalStateException e) {
+                throw new ViewDefinitionParserNodeException(child, e);
+            }
         }
 
         if (parser.getBooleanAttribute(componentNode, "hasBorders", true)) {
@@ -126,7 +131,8 @@ public class GridLayoutPattern extends AbstractLayoutPattern {
         }
     }
 
-    private GridLayoutCell createGridLayoutCell(final Node child, final ViewDefinitionParser parser) {
+    private GridLayoutCell createGridLayoutCell(final Node child, final ViewDefinitionParser parser)
+            throws ViewDefinitionParserNodeException {
 
         Integer colspan = getIntAttribute(child, "width", parser);
         Integer rowspan = getIntAttribute(child, "height", parser);
@@ -139,7 +145,7 @@ public class GridLayoutPattern extends AbstractLayoutPattern {
             if (elementComponentNode.getNodeType() != Node.ELEMENT_NODE) {
                 continue;
             }
-            Preconditions.checkState("component".equals(elementComponentNode.getNodeName()),
+            parser.checkState("component".equals(elementComponentNode.getNodeName()), elementComponentNode,
                     "layoutElement can contains only components");
             elementComponent = parser.parseComponent(elementComponentNode, this);
             this.addChild(elementComponent);
@@ -173,12 +179,17 @@ public class GridLayoutPattern extends AbstractLayoutPattern {
         cells[row - 1][column - 1] = cell;
     }
 
-    private Integer getIntAttribute(final Node node, final String attribute, final ViewDefinitionParser parser) {
+    private Integer getIntAttribute(final Node node, final String attribute, final ViewDefinitionParser parser)
+            throws ViewDefinitionParserNodeException {
         String valueStr = parser.getStringAttribute(node, attribute);
         if (valueStr == null) {
             return null;
         }
-        return Integer.parseInt(valueStr);
+        try {
+            return Integer.parseInt(valueStr);
+        } catch (NumberFormatException e) {
+            throw new ViewDefinitionParserNodeException(node, "value of attribute '" + attribute + "' is not a number");
+        }
     }
 
     @Override
