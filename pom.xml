@@ -10,7 +10,6 @@
 	<packaging>pom</packaging>
 
 	<modules>
-		<module>qcadoo-maven-plugin</module>
 		<module>qcadoo-tenant</module>
 		<module>qcadoo-plugin</module>
 		<module>qcadoo-localization</module>
