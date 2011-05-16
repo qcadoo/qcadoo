@@ -388,10 +388,6 @@
 			<url>http://emhyr.local/nexus/content/repositories/snapshots</url>
 			<uniqueVersion>false</uniqueVersion>
 		</snapshotRepository>
-		<site>
-			<id>local-site-repository</id>
-			<url>file:///${basedir}/target</url>
-		</site>
 	</distributionManagement>
 
 	<scm>
