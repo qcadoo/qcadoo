@@ -103,7 +103,7 @@ QCD.components.elements.File = function(_element, _mainController) {
 			return;
 		}
 
-		fileWindow = mainController.openPopup("/fileUpload.html", _this, "file", 400, 200);
+		fileWindow = mainController.openPopup("/fileUpload.html", _this, "file");
 	}
 	
 	this.onPopupInit = function() {
