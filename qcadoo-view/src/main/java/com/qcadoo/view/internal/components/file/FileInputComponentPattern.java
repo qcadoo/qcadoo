@@ -23,6 +23,11 @@
  */
 package com.qcadoo.view.internal.components.file;
 
+import java.util.Locale;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.internal.ComponentDefinition;
 import com.qcadoo.view.internal.components.FieldComponentPattern;
@@ -35,6 +40,20 @@ public final class FileInputComponentPattern extends FieldComponentPattern {
 
     public FileInputComponentPattern(final ComponentDefinition componentDefinition) {
         super(componentDefinition);
+    }
+
+    @Override
+    protected JSONObject getJsOptions(final Locale locale) throws JSONException {
+        JSONObject json = new JSONObject();
+
+        JSONObject translations = new JSONObject();
+        translations.put("uploadSuccessHeader", getTranslation("uploadSuccessHeader", locale));
+        translations.put("uploadSuccessContent", getTranslation("uploadSuccessContent", locale));
+        translations.put("uploadErrorHeader", getTranslation("uploadErrorHeader", locale));
+        translations.put("uploadErrorContent", getTranslation("uploadErrorContent", locale));
+        json.put("translations", translations);
+
+        return json;
     }
 
     @Override
@@ -55,5 +74,9 @@ public final class FileInputComponentPattern extends FieldComponentPattern {
     @Override
     public String getJsObjectName() {
         return JS_OBJECT;
+    }
+
+    private String getTranslation(final String key, final Locale locale) {
+        return getTranslationService().translate(getTranslationPath() + "." + key, "qcadooView.fileUpload." + key, locale);
     }
 }

@@ -355,8 +355,13 @@ QCD.PageController = function() {
 	}
 	var goToPage = this.goToPage;
 	
-	function openModal(id, url) {
-		window.parent.openModal(id, url, getSerializationObject());
+	function openModal(id, url, shouldSerialize, onCloseListener) {
+		shouldSerialize = (shouldSerialize == undefined) ? true : shouldSerialize;
+		var serializationObject = null;
+		if (shouldSerialize) {
+			serializationObject = getSerializationObject();	
+		}
+		window.parent.openModal(id, url, serializationObject, onCloseListener);
 	}
 	this.openModal = openModal
 	
@@ -400,6 +405,10 @@ QCD.PageController = function() {
 	
 	this.closeWindow = function() {
 		window.close();
+	}
+	
+	this.closeThisModalWindow = function(actionsPerformer, status) {
+		window.parent.closeThisModalWindow(status);
 	}
 	
 	this.onSessionExpired = function() {

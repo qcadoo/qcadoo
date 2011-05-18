@@ -37,4 +37,6 @@ public interface QcadooViewConstants {
     // VIEW
     public static final String VIEW_SYSTEM_INFO = "systemInfo";
 
+    public static final String VIEW_FILE_UPLOAD = "fileUpload";
+
 }

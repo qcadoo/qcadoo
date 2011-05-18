@@ -24,17 +24,24 @@
 package com.qcadoo.view.internal.controllers;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.qcadoo.localization.api.TranslationService;
+import com.qcadoo.view.api.crud.CrudService;
+import com.qcadoo.view.constants.QcadooViewConstants;
 import com.qcadoo.view.internal.components.file.FileUtils;
 
 @Controller
@@ -43,21 +50,29 @@ public class FileUploadController {
     @Autowired
     private TranslationService translationService;
 
+    @Autowired
+    private CrudService crudController;
+
     @RequestMapping(value = "fileUpload", method = RequestMethod.GET)
     public ModelAndView upload(final Locale locale) {
-        ModelAndView mav = new ModelAndView();
-        mav.setViewName("qcadooView/fileUpload");
-        mav.addObject("translation", translationService.getMessagesGroup("fileUpload", locale));
-        mav.addObject("fileLastModificationDate", "");
-        mav.addObject("fileUrl", "");
-        mav.addObject("fileName", "");
-        mav.addObject("filePath", "");
-        mav.addObject("fileUploadError", "");
+        ModelAndView mav = getCrudPopupView(QcadooViewConstants.VIEW_FILE_UPLOAD, locale);
+
+        mav.addObject("headerLabel", translationService.translate("qcadooView.fileUpload.header", locale));
+        mav.addObject("buttonLabel", translationService.translate("qcadooView.fileUpload.button", locale));
+        mav.addObject("chooseFileLabel", translationService.translate("qcadooView.fileUpload.chooseFileLabel", locale));
+
         return mav;
     }
 
+    private ModelAndView getCrudPopupView(final String viewName, final Locale locale) {
+        Map<String, String> crudArgs = new HashMap<String, String>();
+        crudArgs.put("popup", "true");
+        return crudController.prepareView(QcadooViewConstants.PLUGIN_IDENTIFIER, viewName, crudArgs, locale);
+    }
+
     @RequestMapping(value = "fileUpload", method = RequestMethod.POST)
-    public ModelAndView upload(@RequestParam("Filedata") final MultipartFile file, final Locale locale) {
+    @ResponseBody
+    public String upload(@RequestParam("file") final MultipartFile file, final Locale locale) {
         String error = null;
         String path = null;
 
@@ -67,23 +82,23 @@ public class FileUploadController {
             error = e.getMessage();
         }
 
-        ModelAndView mav = new ModelAndView();
-        mav.setViewName("qcadooView/fileUpload");
-        mav.addObject("translation", translationService.getMessagesGroup("fileUpload", locale));
-
-        if (path != null) {
-            mav.addObject("fileLastModificationDate", FileUtils.getLastModificationDate(path));
-            mav.addObject("fileUrl", FileUtils.getUrl(path));
-            mav.addObject("fileName", FileUtils.getName(path));
-            mav.addObject("filePath", path);
-        } else {
-            mav.addObject("fileLastModificationDate", "");
-            mav.addObject("fileUrl", "");
-            mav.addObject("fileName", "");
-            mav.addObject("filePath", "");
+        JSONObject response = new JSONObject();
+        try {
+            if (path != null) {
+                response.put("fileLastModificationDate", FileUtils.getLastModificationDate(path));
+                response.put("fileUrl", FileUtils.getUrl(path));
+                response.put("fileName", FileUtils.getName(path));
+                response.put("filePath", path);
+            } else {
+                response.put("fileLastModificationDate", "");
+                response.put("fileUrl", "");
+                response.put("fileName", "");
+                response.put("filePath", "");
+            }
+            response.put("fileUploadError", error);
+        } catch (JSONException e) {
+            throw new IllegalStateException(e.getMessage(), e);
         }
-
-        mav.addObject("fileUploadError", error);
-        return mav;
+        return response.toString();
     }
 }

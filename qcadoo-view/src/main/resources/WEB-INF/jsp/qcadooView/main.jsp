@@ -90,8 +90,8 @@
 			windowController.goToPage(url, serializationObject, isPage);
 		}
 
-		window.openModal = function(id, url, serializationObject) {
-			windowController.openModal(id, url, serializationObject);
+		window.openModal = function(id, url, serializationObject, onCloseListener) {
+			windowController.openModal(id, url, serializationObject, onCloseListener);
 		}
 
 		window.changeModalSize = function(width, height) {
@@ -100,6 +100,10 @@
 
 		window.goBack = function(pageController) {
 			windowController.goBack(pageController);
+		}
+
+		window.closeThisModalWindow = function(status) {
+			windowController.closeThisModalWindow(status);
 		}
 
 		window.getLastPageController = function() {

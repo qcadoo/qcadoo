@@ -80,13 +80,17 @@ QCD.WindowController = function(_menuStructure) {
 		performGoToPage(currentPage);
 	}
 	
-	window.openModal = function(id, url, serializationObject) {
-		statesStack.push(serializationObject);
+	window.openModal = function(id, url, serializationObject, onCloseListener) {
+		if (serializationObject != null) {
+			statesStack.push(serializationObject);
+		}
 		
 		if (! modalObjects[id]) {
 			modalObjects[id] = QCD.utils.Modal.createModal();
 		}
-		
+		if (onCloseListener) {
+			modalObjects[id].onCloseListener = onCloseListener;
+		}
 		modalsStack.push(modalObjects[id]);
 		
 		if (url.indexOf("?") != -1) {
@@ -118,7 +122,7 @@ QCD.WindowController = function(_menuStructure) {
 	}
 	
 	this.onLoginSuccess = function() {
-			this.goToLastPage();
+		this.goToLastPage();
 	}
 	
 	this.goBack = function(pageController) {
@@ -132,6 +136,14 @@ QCD.WindowController = function(_menuStructure) {
 			modal = modalsStack.pop();
 			modal.hide();
 			onIframeLoad();
+		}
+	}
+	
+	this.closeThisModalWindow = function(status) {
+		modal = modalsStack.pop();
+		modal.hide();
+		if (modal.onCloseListener) {
+			modal.onCloseListener(status);
 		}
 	}
 	

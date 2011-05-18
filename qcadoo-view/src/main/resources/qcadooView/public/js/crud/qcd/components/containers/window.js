@@ -284,6 +284,10 @@ QCD.components.containers.Window = function(_element, _mainController) {
 		}
 	}
 	
+	this.closeThisModalWindow = function(actionsPerformer, status) {
+		mainController.closeThisModalWindow(actionsPerformer, status);
+	}
+	
 	this.performComponentScript = function() {
 		if (ribbon) {
 			ribbon.performScripts();

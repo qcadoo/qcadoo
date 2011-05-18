@@ -40,11 +40,9 @@ QCD.components.elements.File = function(_element, _mainController) {
 	
 	var hasListeners = (this.options.listeners.length > 0) ? true : false;
 	
-	var fileWindow;
-	
-	var uploder;
-	
 	var _this = this;
+	
+	var translations = this.options.translations;
 	
 	function constructor(_this) {
 		input.change(function() {
@@ -72,15 +70,9 @@ QCD.components.elements.File = function(_element, _mainController) {
 	
 	this.setComponentData = function(data) {
 		if (data.value) {
-			this.input.val(data.value);
-			modificationDate.text("(" + data.fileLastModificationDate + ")");
-			link.attr("href", data.fileUrl);
-			link.text(data.fileName);
+			setData(data.value, data.fileLastModificationDate, data.fileUrl, data.fileName);
 		} else {
-			this.input.val("");
-			modificationDate.val("");
-			link.attr("href", "#");
-			link.val("");
+			setData("", "", "#", "");
 		}
 	}
 	
@@ -102,16 +94,42 @@ QCD.components.elements.File = function(_element, _mainController) {
 		if (! fileButton.hasClass("enabled")) {
 			return;
 		}
-
-		fileWindow = mainController.openPopup("/fileUpload.html", _this, "file");
+		mainController.openModal(elementPath+"_fileUploadWindow", "../fileUpload.html", false, onModalClose);
 	}
 	
-	this.onPopupInit = function() {
-		// var file = fileWindow.getComponent("file");
+	function onModalClose(response) {
+		if (!response) {
+			return;
+		}
+		var status = JSON.parse(response);
+		if (status.fileUploadError) {
+			showMessage("error", translations.uploadErrorHeader, translations.uploadErrorContent);
+			return;
+		}
+		if (status.fileName && status.fileName != "") {
+			showMessage("success", translations.uploadSuccessHeader, translations.uploadSuccessContent + " '" + status.fileName + "'");
+		}
+		setData(status.filePath, status.fileLastModificationDate, status.fileUrl, status.fileName);
 	}
 	
-	this.onPopupClose = function() {
-		fileWindow = null;
+	function showMessage(type, title, content) {
+		mainController.showMessage({
+			type: type,
+			title: title,
+			content: content
+		});
+	}
+	
+	
+	function setData(filePath, fileLastModificationDate, fileUrl, fileName) {
+		input.val(filePath);
+		if (fileLastModificationDate && fileLastModificationDate != "") {
+			modificationDate.text("(" + fileLastModificationDate + ")");
+		} else {
+			modificationDate.text("");
+		}
+		link.attr("href", fileUrl);
+		link.text(fileName);
 	}
 	
 	constructor(this);

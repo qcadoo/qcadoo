@@ -59,6 +59,7 @@
 		<model:model model="view" resource="model/view.xml" />
 
 		<view:view resource="view/systemInfo.xml" />
+		<view:view resource="view/fileUpload.xml" />
 
 		<menu:menu-category name="home" />
 		<menu:menu-category name="administration" />
