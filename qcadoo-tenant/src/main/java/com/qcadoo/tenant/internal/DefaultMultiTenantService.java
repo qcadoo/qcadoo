@@ -43,4 +43,9 @@ public class DefaultMultiTenantService implements MultiTenantService {
         doInMultiTenantContext(callback);
     }
 
+    @Override
+    public int getCurrentTenantId() {
+        return 0;
+    }
+
 }

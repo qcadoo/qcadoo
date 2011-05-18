@@ -53,4 +53,8 @@ public class MultiTenantUtil {
         MultiTenantUtil.instance.multiTenantService.doInMultiTenantContext(tenantId, callback);
     }
 
+    public static int getCurrentTenantId() {
+        return MultiTenantUtil.instance.multiTenantService.getCurrentTenantId();
+    }
+
 }
