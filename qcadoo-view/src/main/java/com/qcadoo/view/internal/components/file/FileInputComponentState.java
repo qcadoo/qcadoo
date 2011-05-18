@@ -20,15 +20,8 @@ public class FileInputComponentState extends FieldComponentState {
     }
 
     @Override
-    public Object getFieldValue() {
-        return "/tmp/files/1/2/342_filename_2010-04-01.pdf"; // TODO please remove me
-    }
-
-    @Override
     protected JSONObject renderContent() throws JSONException {
         JSONObject json = super.renderContent();
-
-        json.put(JSON_VALUE, getFieldValue()); // TODO please remove me
 
         if (getFieldValue() != null && StringUtils.hasText((String) getFieldValue())) {
             json.put(JSON_FILE_NAME, FileUtils.getName((String) getFieldValue()));
