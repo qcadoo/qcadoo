@@ -1,29 +1,61 @@
 package com.qcadoo.view.internal.components.file;
 
 import java.io.IOException;
+import java.io.InputStream;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+@Service
 public class FileUtils {
 
-    private static final Logger LOG = LoggerFactory.getLogger(FileUtils.class);
+    @Autowired
+    private FileService fileService;
+
+    private static FileUtils instance;
+
+    @PostConstruct
+    public void init() {
+        initialise(this);
+    }
+
+    private static void initialise(final FileUtils fileUtils) {
+        FileUtils.instance = fileUtils;
+    }
 
     public static String getName(final String path) {
-        return "filename.pdf";
+        return FileUtils.instance.fileService.getName(path);
     }
 
     public static String getLastModificationDate(final String path) {
-        return "2010-04-01";
+        return FileUtils.instance.fileService.getLastModificationDate(path);
     }
 
     public static String getUrl(final String path) {
-        return "http://127.0.0.1:8080/files/1/2/342_filename_2010-04-01.pdf";
+        return FileUtils.instance.fileService.getUrl(path);
     }
 
-    public static String upload(final MultipartFile file) throws IOException {
-        return "/tmp/1/2/3/432_Fwefwefew.pdf";
+    public static String getPathFromUrl(final String url) {
+        return FileUtils.instance.fileService.getPathFromUrl(url);
+    }
+
+    public static InputStream getInputStream(final String path) {
+        return FileUtils.instance.fileService.getInputStream(path);
+    }
+
+    public static String upload(final MultipartFile multipartFile) throws IOException {
+        return FileUtils.instance.fileService.upload(multipartFile);
+    }
+
+    public static String getContentType(final String path) {
+        return FileUtils.instance.fileService.getContentType(path);
+    }
+
+    public static int getTenantId(final String path) {
+        return FileUtils.instance.fileService.getTenantId(path);
     }
 
 }

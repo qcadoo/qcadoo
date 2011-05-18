@@ -100,7 +100,8 @@ public class ErrorController {
             mav.addObject("exceptionHeader", exception.getMessage());
             mav.addObject("exceptionClass", exception.getClass().getCanonicalName());
 
-            mav.addObject("exceptionMessageText", translationService.translate("qcadooView.errorPage.details.messageText", locale));
+            mav.addObject("exceptionMessageText",
+                    translationService.translate("qcadooView.errorPage.details.messageText", locale));
             mav.addObject("exceptionClassText", translationService.translate("qcadooView.errorPage.details.classText", locale));
         } else {
             mav.addObject("showDetails", false);
