@@ -508,23 +508,34 @@
 	background-position: -60px -40px;
 }
 
+.fileInputWrapper {
+	margin-right: 80px;
+}
+
 .fileInputWrapper a {
 	padding-left: 6px;
 	padding-top: 3px;
-	line-height: 20px;
 	color: #005EC5;
 	font-size: 11px;
 	font-family: "Lucida Grande", Arial;
 	text-decoration: none;
+	overflow: hidden;
+	width: 100%;
+	display: inline-block;
 }
 
 .fileInputWrapper span {
 	padding-left: 3px;
 	padding-top: 3px;
-	line-height: 20px;
 	color: #464646;
 	font-size: 9px;
 	font-family: "Lucida Grande", Arial;
+	display: inline-block;
+	right: 0px;
+	position: relative;
+	background: white;
+	width: 70px;
+	text-align: center;
 }
 
 /** calendar **/
