@@ -54,8 +54,4 @@ public class FileUtils {
         return FileUtils.instance.fileService.getContentType(path);
     }
 
-    public static int getTenantId(final String path) {
-        return FileUtils.instance.fileService.getTenantId(path);
-    }
-
 }

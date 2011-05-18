@@ -32,6 +32,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -41,14 +42,12 @@ import com.qcadoo.view.internal.components.file.FileUtils;
 @Controller
 public class FileResolverController {
 
-    @RequestMapping(value = "files/*", method = RequestMethod.GET)
-    public void resolve(final HttpServletRequest request, final HttpServletResponse response) {
-
+    @RequestMapping(value = "{tenantId:\\d+}/{firstLevel:\\d+}/{secondLevel:\\d+}/{fileName}", method = RequestMethod.GET)
+    public void resolve(final HttpServletRequest request, final HttpServletResponse response,
+            @PathVariable("tenantId") final String tenantId) {
         String path = FileUtils.getPathFromUrl(request.getRequestURI());
 
-        int tenantId = FileUtils.getTenantId(path);
-
-        if (tenantId != MultiTenantUtil.getCurrentTenantId()) {
+        if (Integer.valueOf(tenantId) != MultiTenantUtil.getCurrentTenantId()) {
             try {
                 response.sendRedirect("/error.html?code=404");
             } catch (IOException e) {

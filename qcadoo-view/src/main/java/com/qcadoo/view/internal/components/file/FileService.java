@@ -107,9 +107,4 @@ public class FileService {
         return new MimetypesFileTypeMap().getContentType(new File(path));
     }
 
-    public int getTenantId(final String path) {
-        String part = path.substring(uploadDirectory.getAbsolutePath().length() + 1);
-        return Integer.valueOf(part.substring(0, part.indexOf("/")));
-    }
-
 }

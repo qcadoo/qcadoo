@@ -56,10 +56,8 @@ public final class ResourceFilter implements Filter {
         String ext = arr[arr.length - 1];
 
         if (!NOT_STATIC_EXTENSIONS.contains(ext) && useJarStaticResources) {
-            System.out.println(" --------------------- staticResourcesFilter " + httpRequest.getRequestURI());
             resourceService.serveResource(httpRequest, (HttpServletResponse) response);
         } else {
-            System.out.println(" --------------------- staticResourcesFilter -> chain " + httpRequest.getRequestURI());
             chain.doFilter(request, response);
         }
     }
