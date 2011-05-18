@@ -43,6 +43,7 @@ public class FileResolverController {
 
     @RequestMapping(value = "files/*", method = RequestMethod.GET)
     public void resolve(final HttpServletRequest request, final HttpServletResponse response) {
+
         String path = FileUtils.getPathFromUrl(request.getRequestURI());
 
         int tenantId = FileUtils.getTenantId(path);
