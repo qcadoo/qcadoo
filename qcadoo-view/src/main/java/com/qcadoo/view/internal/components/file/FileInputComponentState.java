@@ -31,9 +31,9 @@ public class FileInputComponentState extends FieldComponentState {
         json.put(JSON_VALUE, getFieldValue()); // TODO please remove me
 
         if (getFieldValue() != null && StringUtils.hasText((String) getFieldValue())) {
-            json.put(JSON_FILE_NAME, FielUtils.getName((String) getFieldValue()));
-            json.put(JSON_FILE_URL, FielUtils.getUrl((String) getFieldValue()));
-            json.put(JSON_FILE_LAST_MODIFICATION_DATE, FielUtils.getLastModificationDate((String) getFieldValue()));
+            json.put(JSON_FILE_NAME, FileUtils.getName((String) getFieldValue()));
+            json.put(JSON_FILE_URL, FileUtils.getUrl((String) getFieldValue()));
+            json.put(JSON_FILE_LAST_MODIFICATION_DATE, FileUtils.getLastModificationDate((String) getFieldValue()));
         } else {
             json.put(JSON_FILE_NAME, "");
             json.put(JSON_FILE_URL, "");

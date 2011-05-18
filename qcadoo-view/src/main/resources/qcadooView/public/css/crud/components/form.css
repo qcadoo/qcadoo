@@ -424,21 +424,16 @@
 	background: url(/qcadooView/public/css/crud/images/form/input_icon_2.png) no-repeat -20px 0;
 	vertical-align: middle;
 }
- .lookupValueWrapper .lookupButton.enabled,
- .fileValueWrapper .fileButton.enabled {
+ .lookupValueWrapper .lookupButton.enabled {
 	background-position: 0px 0;
 	cursor: pointer;
 }
  .lookupValueWrapper:hover .lookupButton.enabled,
- .fileValueWrapper:hover .fileButton.enabled,
- .lookupValueWrapper .lookupButton.enabled.lightHover,
- .fileValueWrapper .fileButton.enabled.lightHover {
+ .lookupValueWrapper .lookupButton.enabled.lightHover {
 	background-position: -40px 0;
 }
  .lookupValueWrapper .lookupButton.enabled:hover,
- .fileValueWrapper .fileButton.enabled:hover,
- .lookupValueWrapper .lookupButton.enabled.lightHover:hover,
- .fileValueWrapper .fileButton.enabled.lightHover:hover {
+ .lookupValueWrapper .lookupButton.enabled.lightHover:hover {
 	background-position: -60px 0;
 }
 
@@ -496,7 +491,21 @@
 /** file **/
 
 .fileValueWrapper .fileButton {
-	// background: url(/qcadooView/public/css/crud/images/form/file_icon.png) no-repeat -20px 0;
+	background-position: -20px -40px;
+}
+
+ .fileValueWrapper .fileButton.enabled {
+	background-position: 0px -40px;
+	cursor: pointer;
+}
+
+ .fileValueWrapper:hover .fileButton.enabled,
+ .fileValueWrapper .fileButton.enabled.lightHover {
+	background-position: -40px -40px;
+}
+ .fileValueWrapper .fileButton.enabled:hover,
+ .fileValueWrapper .fileButton.enabled.lightHover:hover {
+	background-position: -60px -40px;
 }
 
 .fileInputWrapper a {

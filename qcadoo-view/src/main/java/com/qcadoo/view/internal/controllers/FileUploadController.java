@@ -24,38 +24,66 @@
 package com.qcadoo.view.internal.controllers;
 
 import java.io.IOException;
-import java.io.Writer;
+import java.util.Locale;
 
-import javax.servlet.http.HttpServletResponse;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.qcadoo.localization.api.TranslationService;
+import com.qcadoo.view.internal.components.file.FileUtils;
 
 @Controller
 public class FileUploadController {
 
-    private static final Logger LOG = LoggerFactory.getLogger(FileUploadController.class);
+    @Autowired
+    private TranslationService translationService;
 
-    @RequestMapping(value = "fileUpload", method = RequestMethod.POST)
-    public void upload(@RequestParam("Filedata") final MultipartFile file, final Writer writer, final HttpServletResponse response) {
-
-        LOG.info(" --------> " + file.getContentType());
-        LOG.info(" --------> " + file.getName());
-        LOG.info(" --------> " + file.getOriginalFilename());
-        LOG.info(" --------> " + file.getSize());
-
-        response.setStatus(HttpServletResponse.SC_OK);
-
-        try {
-            writer.write("File: " + file.getName());
-        } catch (IOException e) {
-            throw new IllegalStateException(e.getMessage(), e);
-        }
+    @RequestMapping(value = "fileUpload", method = RequestMethod.GET)
+    public ModelAndView upload(final Locale locale) {
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("qcadooView/fileUpload");
+        mav.addObject("translation", translationService.getMessagesGroup("fileUpload", locale));
+        mav.addObject("fileLastModificationDate", "");
+        mav.addObject("fileUrl", "");
+        mav.addObject("fileName", "");
+        mav.addObject("filePath", "");
+        mav.addObject("fileUploadError", "");
+        return mav;
     }
 
+    @RequestMapping(value = "fileUpload", method = RequestMethod.POST)
+    public ModelAndView upload(@RequestParam("Filedata") final MultipartFile file, final Locale locale) {
+        String error = null;
+        String path = null;
+
+        try {
+            path = FileUtils.upload(file);
+        } catch (IOException e) {
+            error = e.getMessage();
+        }
+
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("qcadooView/fileUpload");
+        mav.addObject("translation", translationService.getMessagesGroup("fileUpload", locale));
+
+        if (path != null) {
+            mav.addObject("fileLastModificationDate", FileUtils.getLastModificationDate(path));
+            mav.addObject("fileUrl", FileUtils.getUrl(path));
+            mav.addObject("fileName", FileUtils.getName(path));
+            mav.addObject("filePath", path);
+        } else {
+            mav.addObject("fileLastModificationDate", "");
+            mav.addObject("fileUrl", "");
+            mav.addObject("fileName", "");
+            mav.addObject("filePath", "");
+        }
+
+        mav.addObject("fileUploadError", error);
+        return mav;
+    }
 }
