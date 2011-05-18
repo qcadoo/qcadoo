@@ -30,14 +30,28 @@ QCD.components.elements.File = function(_element, _mainController) {
 	
 	var input = this.input;
 	
+	var link = $("#"+this.elementSearchName+"_fileList");
+	
+	var modificationDate = $("#"+this.elementSearchName+"_fileLastModificationDate");
+	
+	var fileButton = $("#"+this.elementSearchName+"_fileButton");
+	
 	var elementPath = this.elementPath;
 	
 	var hasListeners = (this.options.listeners.length > 0) ? true : false;
+	
+	var fileWindow;
+	
+	var uploder;
+	
+	var _this = this;
 	
 	function constructor(_this) {
 		input.change(function() {
 			inputDataChanged();
 		});
+		
+		fileButton.click(openFileWindow);
 	}
 	
 	function inputDataChanged() {
@@ -59,19 +73,45 @@ QCD.components.elements.File = function(_element, _mainController) {
 	this.setComponentData = function(data) {
 		if (data.value) {
 			this.input.val(data.value);
+			modificationDate.text("(" + data.fileLastModificationDate + ")");
+			link.attr("href", data.fileUrl);
+			link.text(data.fileName);
 		} else {
 			this.input.val("");
+			modificationDate.val("");
+			link.attr("href", "#");
+			link.val("");
 		}
 	}
 	
 	this.setFormComponentEnabled = function(isEnabled) {
-		// 
+		if (isEnabled) {
+			fileButton.addClass("enabled")
+		} else {
+			fileButton.removeClass("enabled")
+		}
 	}
 	
 	this.updateSize = function(_width, _height) {
 		var height = _height ? _height-10 : 40;
 		this.input.parent().parent().parent().height(height);
 		this.input.parent().parent().height(height);
+	}
+	
+	function openFileWindow() {
+		if (! fileButton.hasClass("enabled")) {
+			return;
+		}
+
+		fileWindow = mainController.openPopup("/fileUpload.html", _this, "file");
+	}
+	
+	this.onPopupInit = function() {
+		// var file = fileWindow.getComponent("file");
+	}
+	
+	this.onPopupClose = function() {
+		fileWindow = null;
 	}
 	
 	constructor(this);

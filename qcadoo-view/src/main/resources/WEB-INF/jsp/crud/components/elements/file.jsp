@@ -35,8 +35,15 @@
 
 <tiles:insertTemplate template="formComponent.jsp">
 	<tiles:putAttribute name="component" value="${component}" />
-	<tiles:putAttribute name="componentType" value="input" />
+	<tiles:putAttribute name="componentType" value="file" />
 	<tiles:putAttribute name="componentBody">
-		<input type="text" id="${component['path']}_input" tabindex="${component['indexOrder']}" />
+		<div class="fileValueWrapper">
+			<div class="fileInputWrapper">
+				<a href="#" id="${component['path']}_fileList" target="_blank"></a>
+				<span id="${component['path']}_fileLastModificationDate"></span>
+			</div>		
+			<div class="fileButton" id="${component['path']}_fileButton"></div>
+		</div>
+		<input type="text" id="${component['path']}_input" tabindex="${component['indexOrder']}" style="display:none" />
 	</tiles:putAttribute>
 </tiles:insertTemplate>

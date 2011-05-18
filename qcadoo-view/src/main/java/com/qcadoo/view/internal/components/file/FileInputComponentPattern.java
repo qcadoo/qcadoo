@@ -26,7 +26,6 @@ package com.qcadoo.view.internal.components.file;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.internal.ComponentDefinition;
 import com.qcadoo.view.internal.components.FieldComponentPattern;
-import com.qcadoo.view.internal.components.FieldComponentState;
 
 public final class FileInputComponentPattern extends FieldComponentPattern {
 
@@ -40,7 +39,7 @@ public final class FileInputComponentPattern extends FieldComponentPattern {
 
     @Override
     public ComponentState getComponentStateInstance() {
-        return new FieldComponentState(this);
+        return new FileInputComponentState(this);
     }
 
     @Override

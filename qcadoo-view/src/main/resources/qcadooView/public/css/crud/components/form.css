@@ -148,7 +148,7 @@
 	bottom: 0;
 }
 
-.component_container_form_inner input[type='text'], .component_container_form_inner input[type='password'], .component_container_form_inner textarea, .component_container_form_inner select {
+.component_container_form_inner input[type='text'], .component_container_form_inner input[type='password'], .component_container_form_inner textarea, .component_container_form_inner select, .component_container_form_inner .fileValueWrapper {
 	border-spacing: 0;
   	margin: 0;
   	space: 0;
@@ -167,7 +167,6 @@
 	padding-left: 6px;
 	padding-top: 3px;
 	width: 100%;
-	
 	color: #464646; /*EDISONDA NEW*/
 	font-size: 11px; /*EDISONDA NEW*/
 	font-family: "Lucida Grande", Arial;
@@ -213,7 +212,9 @@
  .required input[type='password'],
  .required textarea,
  .required .lookupValueWrapper,
- .required .component_container_form_w .lookupValueWrapper {
+ .required .fileValueWrapper,
+ .required .component_container_form_w .lookupValueWrapper,
+ .required .component_container_form_w .fileValueWrapper {
 	//border: 1px solid #464646; /*EDISONDA NEW*/	
 	border: 1px solid #464646;
 	border-bottom: 1px solid #d7d7d7;
@@ -223,7 +224,9 @@
  .error input[type='password'], 
  .error textarea,
  .error .lookupValueWrapper,
- .required.error .component_container_form_w .lookupValueWrapper {
+ .error .fileValueWrapper,
+ .required.error .component_container_form_w .lookupValueWrapper,
+ .required.error .component_container_form_w .fileValueWrapper {
 	//border: 1px solid #ec1c24;
 	border: 1px solid #ff0000; /*EDISONDA NEW*/
 	border-bottom: 1px solid #d7d7d7; /*EDISONDA NEW*/
@@ -359,7 +362,8 @@
 
 /** lookup **/
 
- .lookupValueWrapper {
+ .lookupValueWrapper,
+ .fileValueWrapper {
 	margin: 0;
 	padding: 0;
 	display: block;
@@ -372,36 +376,45 @@
 	-moz-border-radius: 2px; /*EDISONDA NEW*/
 	-webkit-boder-radius: 2px; /*EDISONDA NEW*/
 }
- .error .component_container_form_w .lookupValueWrapper {
+ .error .component_container_form_w .lookupValueWrapper,
+ .error .component_container_form_w .fileValueWrapper {
 	border: 1px solid #ec1c24;
 }
- .required .component_container_form_w .lookupValueWrapper {
+ .required .component_container_form_w .lookupValueWrapper,
+ .required .component_container_form_w .fileValueWrapper {
 	border: 1px solid #464646;
 	border-bottom: 1px solid #d7d7d7;
 }
  .disabled .component_container_form_w .lookupValueWrapper,
- .disabled.required .component_container_form_w .lookupValueWrapper {
+ .disabled .component_container_form_w .fileValueWrapper,
+ .disabled.required .component_container_form_w .lookupValueWrapper,
+ .disabled.required .component_container_form_w .fileValueWrapper {
 	border: solid #cccccc 1px; /*EDISONDA NEW*/
 	border-bottom: solid #e8e8e8 1px; /*EDISONDA NEW*/
 }
 
 .disabled .component_container_form_inner .lookupValueWrapper input[type='text'],
-.disabled.required .component_container_form_inner .lookupValueWrapper input[type='text'] {
+.disabled .component_container_form_inner .fileValueWrapper input[type='text'],
+.disabled.required .component_container_form_inner .lookupValueWrapper input[type='text'],
+.disabled.required .component_container_form_inner .fileValueWrapper input[type='text'] {
 	border: none;
 }
 
- .lookupValueWrapper .lookupInputWrapper {
+ .lookupValueWrapper .lookupInputWrapper,
+ .fileValueWrapper .fileInputWrapper {
 	position: absolute;
 	display: block;
 	top: 0px; left: 0px; right: 21px;
 }
 
- .lookupValueWrapper .lookupInputWrapper input{
+ .lookupValueWrapper .lookupInputWrapper input,
+ .fileValueWrapper .fileInputWrapper input {
 	border: none;
 	height: 20px;
 }
 
- .lookupValueWrapper .lookupButton {
+ .lookupValueWrapper .lookupButton,
+ .fileValueWrapper .fileButton {
 	height: 20px;
 	width: 20px;
 	display: inline-block;
@@ -411,16 +424,21 @@
 	background: url(/qcadooView/public/css/crud/images/form/input_icon.png) no-repeat -20px 0;
 	vertical-align: middle;
 }
- .lookupValueWrapper .lookupButton.enabled {
+ .lookupValueWrapper .lookupButton.enabled,
+ .fileValueWrapper .fileButton.enabled {
 	background-position: 0px 0;
 	cursor: pointer;
 }
  .lookupValueWrapper:hover .lookupButton.enabled,
- .lookupValueWrapper .lookupButton.enabled.lightHover {
+ .fileValueWrapper:hover .fileButton.enabled,
+ .lookupValueWrapper .lookupButton.enabled.lightHover,
+ .fileValueWrapper .fileButton.enabled.lightHover {
 	background-position: -40px 0;
 }
  .lookupValueWrapper .lookupButton.enabled:hover,
- .lookupValueWrapper .lookupButton.enabled.lightHover:hover {
+ .fileValueWrapper .fileButton.enabled:hover,
+ .lookupValueWrapper .lookupButton.enabled.lightHover:hover,
+ .fileValueWrapper .fileButton.enabled.lightHover:hover {
 	background-position: -60px 0;
 }
 
@@ -473,6 +491,31 @@
 	padding: 5px;
 	text-align: center;
 	color: grey;
+}
+
+/** file **/
+
+.fileValueWrapper .fileButton {
+	// background: url(/qcadooView/public/css/crud/images/form/file_icon.png) no-repeat -20px 0;
+}
+
+.fileInputWrapper a {
+	padding-left: 6px;
+	padding-top: 3px;
+	line-height: 20px;
+	color: #005EC5;
+	font-size: 11px;
+	font-family: "Lucida Grande", Arial;
+	text-decoration: none;
+}
+
+.fileInputWrapper span {
+	padding-left: 3px;
+	padding-top: 3px;
+	line-height: 20px;
+	color: #464646;
+	font-size: 9px;
+	font-family: "Lucida Grande", Arial;
 }
 
 /** calendar **/
