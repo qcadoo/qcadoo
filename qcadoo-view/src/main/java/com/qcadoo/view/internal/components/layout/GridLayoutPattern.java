@@ -64,8 +64,10 @@ public class GridLayoutPattern extends AbstractLayoutPattern {
 
         parser.checkState(columns != null, componentNode, "columns not definied");
         parser.checkState(rows != null, componentNode, "rows not definied");
+
+        // check again - because sonar is stupid
         if (rows == null) {
-            throw new IllegalStateException("TEST");
+            throw new IllegalStateException("rows not definied");
         }
 
         cells = new GridLayoutCell[rows][];

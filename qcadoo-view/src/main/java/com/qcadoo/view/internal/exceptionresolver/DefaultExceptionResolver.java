@@ -39,6 +39,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 
@@ -66,6 +67,7 @@ public final class DefaultExceptionResolver extends SimpleMappingExceptionResolv
     @PostConstruct
     public void init() {
         exceptionTranslations.put(DataIntegrityViolationException.class, "dataIntegrityViolationException.objectInUse");
+        exceptionTranslations.put(MaxUploadSizeExceededException.class, "uploadException.maxSizeExceeded");
         exceptionTranslations.put(CopyException.class, "copyException");
         messageTranslations.put("Entity.* is in use", "dataIntegrityViolationException.objectInUse");
         messageTranslations.put("Entity.* cannot be found", "illegalStateException.entityNotFound");
@@ -92,9 +94,8 @@ public final class DefaultExceptionResolver extends SimpleMappingExceptionResolv
             String customExceptionMessageExplanation = null;
 
             if (customExceptionMessage != null) {
-                customExceptionMessageHeader = translationService.translate(
-                        "qcadooView.errorPage.error." + customExceptionMessage.getMessage() + ".header",
-                        LocaleContextHolder.getLocale());
+                customExceptionMessageHeader = translationService.translate("qcadooView.errorPage.error."
+                        + customExceptionMessage.getMessage() + ".header", LocaleContextHolder.getLocale());
                 if (customExceptionMessage.getEntityIdentifier() != null) {
                     customExceptionMessageExplanation = translationService.translate("qcadooView.errorPage.error."
                             + customExceptionMessage.getMessage() + ".explanation", LocaleContextHolder.getLocale(),
