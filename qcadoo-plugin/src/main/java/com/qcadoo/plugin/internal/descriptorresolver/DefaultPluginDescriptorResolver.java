@@ -38,6 +38,7 @@ import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
 
 import com.qcadoo.plugin.internal.JarEntryResource;
+import com.qcadoo.plugin.internal.PluginException;
 import com.qcadoo.plugin.internal.api.PluginDescriptorResolver;
 
 @Service
@@ -61,7 +62,7 @@ public class DefaultPluginDescriptorResolver implements PluginDescriptorResolver
     }
 
     @Override
-    public Resource getDescriptor(final File file) {
+    public Resource getDescriptor(final File file) throws PluginException {
         try {
 
             JarFile jarFile = new JarFile(file);
@@ -77,13 +78,13 @@ public class DefaultPluginDescriptorResolver implements PluginDescriptorResolver
             }
 
             if (descriptorEntry == null) {
-                throw new IllegalStateException("Plugin descriptor " + descriptor + " not found in " + file.getAbsolutePath());
+                throw new PluginException("Plugin descriptor " + descriptor + " not found in " + file.getAbsolutePath());
             }
 
             return new JarEntryResource(file, jarFile.getInputStream(descriptorEntry));
 
         } catch (IOException e) {
-            throw new IllegalStateException("Plugin descriptor " + descriptor + " not found in " + file.getAbsolutePath(), e);
+            throw new PluginException("Plugin descriptor " + descriptor + " not found in " + file.getAbsolutePath(), e);
         }
     }
 
