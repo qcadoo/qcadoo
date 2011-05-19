@@ -275,11 +275,11 @@
 								<div class="component_container_form_x"></div>
 								<div class="component_container_form_y"></div>
 				 				<input type='text' id="usernameInput" name='j_username' value='<c:if test="${not empty param.login_error}"><c:out value="${SPRING_SECURITY_LAST_USERNAME}"/></c:if>'/>
-				 			</div>
-					 			<div id="loginErrorMessagePanel" style="display: none;">
+					 			<div id="loginErrorMessagePanel" class="errorMessagePanel" style="display: none;">
 					 				<div class="login_failed"></div>
 					 				<span id="loginMessage" class="login_failed_message">${translation["security.message.wrongLogin"]}</span>
 					 			</div>
+				 			</div>
 						</div>
 						</div>
 			 		</div>
@@ -291,7 +291,7 @@
 								<div class="component_container_form_x"></div>
 								<div class="component_container_form_y"></div>
 								<input type='password' id="passwordInput" name='j_password'>
-								<div id="passwordErrorMessagePanel" style="display: none;">
+								<div id="passwordErrorMessagePanel" class="errorMessagePanel" style="display: none;">
 				 					<div class="login_failed"></div>
 				 					<span id="passwordMessage" class="login_failed_message">${translation["security.message.wrongPassword"]}</span>								
 								</div>
