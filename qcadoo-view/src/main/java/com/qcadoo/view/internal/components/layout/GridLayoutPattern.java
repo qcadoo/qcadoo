@@ -62,8 +62,11 @@ public class GridLayoutPattern extends AbstractLayoutPattern {
 
         fixedRowHeight = parser.getBooleanAttribute(componentNode, "fixedRowHeight", true);
 
-        parser.checkState(columns != null, componentNode, "columns nod definied");
-        parser.checkState(rows != null, componentNode, "rows nod definied");
+        parser.checkState(columns != null, componentNode, "columns not definied");
+        parser.checkState(rows != null, componentNode, "rows not definied");
+        if (rows == null) {
+            throw new IllegalStateException("TEST");
+        }
 
         cells = new GridLayoutCell[rows][];
         for (int row = 0; row < cells.length; row++) {
