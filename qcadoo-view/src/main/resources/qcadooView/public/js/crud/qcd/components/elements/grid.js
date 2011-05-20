@@ -981,7 +981,7 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 		}	
 	}
 	var performDelete = this.performDelete;
-
+	
 	this.performCopy = function(actionsPerformer) {
 		if (currentState.selectedEntityId || getSelectedRowsCount() > 0) {
 			blockGrid();
@@ -993,6 +993,20 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 		}	
 	}
 	var performCopy = this.performCopy;
+	
+	this.generateReportForEntity = function(actionsPerformer, templateName, additionalArgs) {
+		var selectedItems = new Array();
+		for (var i in currentState.selectedEntities) {
+			if (currentState.selectedEntities[i]) {
+				selectedItems.push(i);
+			}
+		}
+		if (selectedItems.length > 0) {
+			mainController.generateReportForEntity(actionsPerformer, templateName, additionalArgs, selectedItems);
+		} else {
+			mainController.showMessage({type: "error", content: translations.noRowSelectedError});
+		}	
+	}
 	
 	this.performEvent = function(eventName, args) {
 		this.fireEvent(null, eventName, args);

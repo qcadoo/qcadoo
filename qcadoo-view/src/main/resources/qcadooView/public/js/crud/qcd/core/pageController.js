@@ -158,6 +158,51 @@ QCD.PageController = function() {
 		performEvent(initParameters, eventCompleteFunction, actionsPerformer);
 	}
 	
+	this.generateReportForEntity = function(actionsPerformer, templateName, additionalArgs, ids) {
+		var reportType = additionalArgs[0];
+		if (!reportType || reportType == "") {
+			QCD.error("generateReportForEntity - no report type defined");
+			return;
+		}
+		if (!templateName || templateName == "") {
+			QCD.error("generateReportForEntity - no template name defined");
+			return;
+		}
+		var userArgs = {};
+		for (var i = 1; i < additionalArgs.length; i++) {
+			var arg = trim(additionalArgs[i]);
+			argParts = arg.split("=");
+			if (argParts.length != 2) {
+				QCD.error("wrong argument '"+arg+"'");
+				return;
+			}
+			var key = trim(argParts[0]);
+			var value = trim(argParts[1]);
+			userArgs[key] = value;
+		}
+		var url = "/generateReportForEntity.html?templateName="+templateName+"&type="+reportType+"&additionalArgs="+JSON.stringify(userArgs);
+		for (var i=0; i<ids.length; i++) {
+			url += "&id="+ids[i];
+		}
+		window.open(url);
+		if (actionsPerformer) {
+			actionsPerformer.performNext();
+		}
+	}
+	
+	function trim(arg) {
+		if (arg[0] == "\"" || arg[0] == "\'") {
+			if (arg[arg.length-1] == arg[0]) {
+				arg = arg.substring(1, arg.length-1);
+			} else {
+				QCD.error("wrong argument '"+arg+"'");
+				return;
+			}
+		}
+		return arg;
+	}
+	
+	
 	function performEvent(parameters, completeFunction, actionsPerformer) {
 		var parametersJson = JSON.stringify(parameters);
 		QCDConnector.sendPost(parametersJson, function(response) {
@@ -181,7 +226,6 @@ QCD.PageController = function() {
 				setValueData(response);
 			}
 			if (actionsPerformer && ! (response.content && response.content.status && response.content.status != "ok")) {
-				QCD.info(actionsPerformer);
 				actionsPerformer.performNext();
 			}
 		}, function() {
