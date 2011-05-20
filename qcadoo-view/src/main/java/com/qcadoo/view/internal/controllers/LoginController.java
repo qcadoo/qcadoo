@@ -98,4 +98,16 @@ public final class LoginController {
 
         return mav;
     }
+
+    @RequestMapping(value = "browserNotSupported", method = RequestMethod.GET)
+    public ModelAndView getBrowserNotSupportedView(final Locale locale) {
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("qcadooView/browserNotSupported");
+
+        mav.addObject("locales", translationService.getLocales());
+        mav.addObject("currentLanguage", locale.getLanguage());
+        mav.addObject("translation", translationService.getMessagesGroup("browserNotSupported", locale));
+
+        return mav;
+    }
 }
