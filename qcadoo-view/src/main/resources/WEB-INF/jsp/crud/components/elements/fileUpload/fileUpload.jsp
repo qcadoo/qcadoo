@@ -12,7 +12,18 @@ String ctx = request.getContextPath();
 
 	jQuery(document).ready(function(){
 		window.mainController.setWindowHeader("${headerLabel}");
-		$('#form').ajaxForm(function(response) {
+		$('#form').ajaxForm(function(responseText, statusText, xhr) {
+			if (xhr.errorText) {
+				if (xhr.errorText == "LoginPage") {
+					QCDConnector.mainController.onSessionExpired();
+					return;
+				}
+					
+				QCDConnector.showErrorMessage(xhr.errorText);
+				QCD.components.elements.utils.LoadingIndicator.unblockElement($("body"));
+				return;
+			}
+			var response = $.trim(responseText); 
 			window.mainController.getComponentByReferenceName("window").closeThisModalWindow(null, response);
 	    }); 
 	});

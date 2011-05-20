@@ -342,7 +342,6 @@ $.fn.ajaxSubmit = function(options) {
 			if (xhr.aborted) {
 				return;
 			}
-			
 			var doc = io.contentWindow ? io.contentWindow.document : io.contentDocument ? io.contentDocument : io.document;
 			if (!doc || doc.location.href == s.iframeSrc) {
 				// response not received yet
@@ -372,7 +371,19 @@ $.fn.ajaxSubmit = function(options) {
 				}
 
 				//log('response detected');
-				xhr.responseText = doc.body ? doc.body.innerHTML : doc.documentElement ? doc.documentElement.innerHTML : null; 
+				
+				xhr.responseText = doc.body ? doc.body.innerHTML : doc.documentElement ? doc.documentElement.innerHTML : null;
+				
+				// QCADOO error parsing - begin
+				if (doc.childNodes && doc.childNodes[0] && doc.childNodes[0].data) {
+					var errorText = doc.childNodes[0].data;
+					if (errorText.substring(0, 18) == "[CDATA[ERROR PAGE:") {
+						var messageBody = errorText.substring(18, errorText.search("]]"));
+						xhr.errorText = messageBody;
+					}
+				}
+				// QCADOO error parsing - end
+				
 				xhr.responseXML = doc.XMLDocument ? doc.XMLDocument : doc;
 				xhr.getResponseHeader = function(header){
 					var headers = {'content-type': s.dataType};
@@ -401,7 +412,6 @@ $.fn.ajaxSubmit = function(options) {
 				else if (s.dataType == 'xml' && !xhr.responseXML && xhr.responseText != null) {
 					xhr.responseXML = toXml(xhr.responseText);
 				}
-				
 				data = httpData(xhr, s.dataType, s);
 			}
 			catch(e){
