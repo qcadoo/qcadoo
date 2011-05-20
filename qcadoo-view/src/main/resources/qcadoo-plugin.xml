@@ -53,6 +53,7 @@
 		<localization:translation-group name="noDashboard" prefix="qcadooView.noDashboardPage" />
 		<localization:translation-group name="commons" prefix="qcadooView" />
 		<localization:translation-group name="fileUpload" prefix="qcadooView.fileUpload" />
+		<localization:translation-group name="browserNotSupported" prefix="qcadooView.browserNotSupported" />
 		
 		<model:model model="category" resource="model/category.xml" />
 		<model:model model="item" resource="model/item.xml" />

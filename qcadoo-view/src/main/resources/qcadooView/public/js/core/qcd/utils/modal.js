@@ -45,6 +45,12 @@ QCD.utils.Modal.createModal = function() {
 		container: container,
 		iframe: iframe,
 		
+		showStatic: function(src) {
+//			this.iframe.hide();
+			this.dialog.jqmShow();
+			this.iframe.attr("src", src);
+		},
+		
 		show: function(src, onLoadFunction) {
 			this.iframe.hide();
 			this.dialog.jqmShow();
