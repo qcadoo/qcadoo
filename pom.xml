@@ -375,6 +375,18 @@
 			<id>SpringSource Enterprise Bundle Repository – External Bundle Milestones</id>
 			<url>http://maven.springframework.org/milestone</url>
 		</repository>
+		<repository>
+			<id>Maven Central Beta repository</id>
+			<url>http://repo2.maven.org/maven2/net/sf/</url>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+				<updatePolicy>never</updatePolicy>
+			</snapshots>
+		</repository>
 	</repositories>
 	
 	<pluginRepositories>
