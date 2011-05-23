@@ -98,6 +98,7 @@ public interface DataDefinition {
      * @param queryString
      *            query string
      * @return new search query builder
+     * @see SearchQueryBuilder
      * @since 0.4.1
      */
     SearchQueryBuilder find(String queryString);
