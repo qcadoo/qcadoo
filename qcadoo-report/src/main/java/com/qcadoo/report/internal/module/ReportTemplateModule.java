@@ -7,7 +7,7 @@ import org.springframework.core.io.Resource;
 
 import com.qcadoo.plugin.api.Module;
 import com.qcadoo.plugin.api.ModuleException;
-import com.qcadoo.report.internal.templates.InternalReportTemplateService;
+import com.qcadoo.report.internal.templates.ReportTemplateService;
 
 public class ReportTemplateModule extends Module {
 
@@ -17,10 +17,10 @@ public class ReportTemplateModule extends Module {
 
     private final Resource templateFile;
 
-    private final InternalReportTemplateService reportTemplateService;
+    private final ReportTemplateService reportTemplateService;
 
     public ReportTemplateModule(final String pluginIdentifier, final String templateName, final Resource templateFile,
-            final InternalReportTemplateService reportTemplateService) {
+            final ReportTemplateService reportTemplateService) {
         this.pluginIdentifier = pluginIdentifier;
         this.templateFullName = pluginIdentifier + "." + templateName;
         this.templateFile = templateFile;

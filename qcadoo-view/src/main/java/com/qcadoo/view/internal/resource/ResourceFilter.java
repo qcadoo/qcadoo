@@ -42,7 +42,7 @@ public final class ResourceFilter implements Filter {
 
     private boolean useJarStaticResources;
 
-    private static final List<String> NOT_STATIC_EXTENSIONS = Arrays.asList(new String[] { "html", "pdf", "xls", "/" });
+    private static final List<String> NOT_STATIC_EXTENSIONS = Arrays.asList(new String[] { "html", "pdf", "xls", "" });
 
     @Autowired
     private ResourceService resourceService;

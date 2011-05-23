@@ -5,7 +5,10 @@ import java.util.Map;
 
 import net.sf.jasperreports.engine.JasperReport;
 
-public class ReportTemplateServiceImpl implements InternalReportTemplateService {
+import org.springframework.stereotype.Service;
+
+@Service
+public class ReportTemplateServiceImpl implements ReportTemplateService {
 
     final Map<String, JasperReport> teplates = new HashMap<String, JasperReport>();
 

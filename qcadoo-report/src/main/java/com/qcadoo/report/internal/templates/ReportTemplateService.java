@@ -2,9 +2,9 @@ package com.qcadoo.report.internal.templates;
 
 import net.sf.jasperreports.engine.JasperReport;
 
-import com.qcadoo.report.api.ReportTemplateService;
+public interface ReportTemplateService {
 
-public interface InternalReportTemplateService extends ReportTemplateService {
+    JasperReport getTemplate(String name);
 
     void addTemplate(String name, JasperReport reportTemplate);
 

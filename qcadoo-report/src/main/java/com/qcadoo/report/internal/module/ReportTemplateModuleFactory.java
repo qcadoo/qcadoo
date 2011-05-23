@@ -5,12 +5,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 
 import com.qcadoo.plugin.api.ModuleFactory;
-import com.qcadoo.report.internal.templates.InternalReportTemplateService;
+import com.qcadoo.report.internal.templates.ReportTemplateService;
 
 public class ReportTemplateModuleFactory extends ModuleFactory<ReportTemplateModule> {
 
     @Autowired
-    private InternalReportTemplateService reportTemplateService;
+    private ReportTemplateService reportTemplateService;
 
     @Override
     protected ReportTemplateModule parseElement(String pluginIdentifier, Element element) {
