@@ -34,7 +34,7 @@ import org.springframework.orm.hibernate3.LocalSessionFactoryBean;
 
 import com.qcadoo.model.internal.api.DynamicSessionFactoryBean;
 
-public final class DynamicSessionFactoryBeanImpl implements DynamicSessionFactoryBean {
+public class DynamicSessionFactoryBeanImpl implements DynamicSessionFactoryBean {
 
     private final LocalSessionFactoryBean factoryBean = new LocalSessionFactoryBean();
 
@@ -59,70 +59,8 @@ public final class DynamicSessionFactoryBeanImpl implements DynamicSessionFactor
         factoryBean.setBeanClassLoader(classLoader);
     }
 
-    // TODO masz hql security for saas
-    // @SuppressWarnings("serial")
-    // public static class Listener implements PreDeleteEventListener, PreUpdateEventListener, PreInsertEventListener,
-    // PreLoadEventListener {
-    //
-    // @Override
-    // public void onPreLoad(final PreLoadEvent event) {
-    // try {
-    // Object o = PropertyUtils.getProperty(event.getEntity(), "tenantId");
-    //
-    // System.out.println(event.getEntity());
-    //
-    // if (o == null) {
-    // return;
-    // }
-    //
-    // System.out.println(o.toString());
-    //
-    // int i = Integer.valueOf(o.toString());
-    // if (i == -1) {
-    // throw new SecurityException("Do not touch that!");
-    // }
-    // } catch (IllegalAccessException e) {
-    // e.printStackTrace();
-    // } catch (InvocationTargetException e) {
-    // e.printStackTrace();
-    // } catch (NoSuchMethodException e) {
-    // e.printStackTrace();
-    // }
-    // }
-    //
-    // @Override
-    // public boolean onPreInsert(final PreInsertEvent event) {
-    // // TODO Auto-generated method stub
-    // return false;
-    // }
-    //
-    // @Override
-    // public boolean onPreUpdate(final PreUpdateEvent event) {
-    // // TODO Auto-generated method stub
-    // return false;
-    // }
-    //
-    // @Override
-    // public boolean onPreDelete(final PreDeleteEvent event) {
-    // // TODO Auto-generated method stub
-    // return false;
-    // }
-    //
-    // }
-
     @Override
     public SessionFactory getObject() {
-        //
-        // Listener listener = new Listener();
-        //
-        // Map<String, Object> eventListeners = new HashMap<String, Object>();
-        // eventListeners.put("pre-delete", listener);
-        // eventListeners.put("pre-update", listener);
-        // eventListeners.put("pre-insert", listener);
-        // eventListeners.put("pre-load", listener);
-        //
-        // factoryBean.setEventListeners(eventListeners);
-
         return new DynamicSessionFactory(factoryBean);
     }
 
@@ -152,6 +90,10 @@ public final class DynamicSessionFactoryBeanImpl implements DynamicSessionFactor
 
     public void setHibernateProperties(final Properties hibernateProperties) {
         factoryBean.setHibernateProperties(hibernateProperties);
+    }
+
+    protected LocalSessionFactoryBean getFactoryBean() {
+        return factoryBean;
     }
 
 }

@@ -16,4 +16,6 @@ public interface SearchQuery extends SearchQueryBuilder {
 
     void addFirstAndMaxResults(Query query);
 
+    boolean hasFirstAndMaxResults();
+
 }

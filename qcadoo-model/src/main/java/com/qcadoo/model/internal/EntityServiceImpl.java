@@ -118,7 +118,7 @@ public final class EntityServiceImpl implements EntityService {
         Entity genericEntity = null;
 
         if (databaseEntity instanceof Object[]) {
-            genericEntity = new DefaultEntity(dataDefinition);
+            genericEntity = dataDefinition.create();
             Object[] databaseArray = (Object[]) databaseEntity;
 
             List<String> fields = new ArrayList<String>(dataDefinition.getFields().keySet());

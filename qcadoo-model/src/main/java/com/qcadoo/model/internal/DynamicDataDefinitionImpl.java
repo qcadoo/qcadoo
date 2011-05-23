@@ -106,14 +106,12 @@ public class DynamicDataDefinitionImpl implements InternalDataDefinition {
 
     @Override
     public Entity create(final Long id) {
-        // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException("Cannot create entity with id for dynamic data definition");
     }
 
     @Override
     public Entity create() {
-        // TODO Auto-generated method stub
-        return null;
+        return new DefaultEntity(this);
     }
 
     @Override
