@@ -994,7 +994,7 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 	}
 	var performCopy = this.performCopy;
 	
-	this.generateReportForEntity = function(actionsPerformer, templateName, additionalArgs) {
+	this.generateReportForEntity = function(actionsPerformer, arg1, args) {
 		var selectedItems = new Array();
 		for (var i in currentState.selectedEntities) {
 			if (currentState.selectedEntities[i]) {
@@ -1002,7 +1002,7 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 			}
 		}
 		if (selectedItems.length > 0) {
-			mainController.generateReportForEntity(actionsPerformer, templateName, additionalArgs, selectedItems);
+			mainController.generateReportForEntity(actionsPerformer, arg1, args, selectedItems);
 		} else {
 			mainController.showMessage({type: "error", content: translations.noRowSelectedError});
 		}	
