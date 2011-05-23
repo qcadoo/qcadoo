@@ -141,9 +141,9 @@ QCD.components.containers.Form = function(_element, _mainController) {
 		}
 	}
 	
-	this.generateReportForEntity = function(actionsPerformer, templateName, additionalArgs) {
+	this.generateReportForEntity = function(actionsPerformer, arg1, args) {
 		if (formValue) {
-			mainController.generateReportForEntity(actionsPerformer, templateName, additionalArgs, [formValue]);
+			mainController.generateReportForEntity(actionsPerformer, arg1, args, [formValue]);
 		} else {
 			mainController.showMessage({type: "error", content: translations.noEntity});
 		}	
