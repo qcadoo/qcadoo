@@ -163,6 +163,64 @@ public class HqlIntegrationTest extends IntegrationTest {
     }
 
     @Test
+    public void shouldFindByQueryWithSubqueriesOnCollection() throws Exception {
+        // given
+        DataDefinition productDao = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PRODUCT);
+        DataDefinition partDao = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PART);
+
+        productDao.save(createProduct("qwe", "qwe"));
+        Entity expectedProduct = productDao.save(createProduct("asd", "asd"));
+        partDao.save(createPart("name", expectedProduct));
+
+        // when
+        Entity product = productDao.find("from #products_product as p where exists(from p.parts)").uniqueResult();
+
+        // then
+        assertEquals(expectedProduct.getId(), product.getId());
+        assertEquals(expectedProduct.getDataDefinition(), product.getDataDefinition());
+    }
+
+    @Test
+    public void shouldFindByQueryWithSubqueries() throws Exception {
+        // given
+        DataDefinition productDao = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PRODUCT);
+        DataDefinition partDao = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PART);
+
+        productDao.save(createProduct("qwe", "qwe"));
+        Entity expectedProduct = productDao.save(createProduct("asd", "asd"));
+        partDao.save(createPart("name", expectedProduct));
+
+        // when
+        Entity product = productDao.find("from #products_product as p where exists(from #products_part x where x.product = p)")
+                .uniqueResult();
+
+        // then
+        assertEquals(expectedProduct.getId(), product.getId());
+        assertEquals(expectedProduct.getDataDefinition(), product.getDataDefinition());
+    }
+
+    @Test
+    public void shouldFindByQueryWithSubqueriesInSelect() throws Exception {
+        // given
+        DataDefinition productDao = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PRODUCT);
+        DataDefinition partDao = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PART);
+
+        productDao.save(createProduct("qwe", "qwe"));
+        Entity expectedProduct = productDao.save(createProduct("asd", "asd"));
+        partDao.save(createPart("name", expectedProduct));
+
+        // when
+        Entity row = productDao
+                .find("select p, (select max(x.name) from #products_part x where x.product = p) from #products_product as p where exists(from #products_part x where x.product = p)")
+                .uniqueResult();
+
+        // then
+        assertEquals(expectedProduct.getId(), row.getBelongsToField("0").getId());
+        assertEquals(expectedProduct.getDataDefinition(), row.getBelongsToField("0").getDataDefinition());
+        assertEquals("name", row.getStringField("1"));
+    }
+
+    @Test
     public void shouldFindByQueryWithEntityIdParameters() throws Exception {
         // given
         DataDefinition productDao = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PRODUCT);

@@ -52,6 +52,7 @@ import com.qcadoo.plugin.internal.api.PluginDao;
 import com.qcadoo.plugin.internal.api.PluginDependencyManager;
 import com.qcadoo.plugin.internal.api.PluginDescriptorParser;
 import com.qcadoo.plugin.internal.stateresolver.InternalPluginStateResolver;
+import com.qcadoo.tenant.api.MultiTenantUtil;
 
 @Service
 public class DefaultPluginAccessor implements InternalPluginAccessor, ApplicationListener<ContextRefreshedEvent> {
@@ -76,6 +77,10 @@ public class DefaultPluginAccessor implements InternalPluginAccessor, Applicatio
     @Autowired
     @SuppressWarnings("unused")
     private PluginUtilsService pluginUtilsService;
+
+    @Autowired
+    @SuppressWarnings("unused")
+    private MultiTenantUtil multiTenantUtil;
 
     private final Map<String, Plugin> plugins = new HashMap<String, Plugin>();
 
