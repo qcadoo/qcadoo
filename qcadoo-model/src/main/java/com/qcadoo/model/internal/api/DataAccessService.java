@@ -28,8 +28,11 @@ import java.util.List;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.search.SearchResult;
 import com.qcadoo.model.internal.search.SearchCriteria;
+import com.qcadoo.model.internal.search.SearchQuery;
 
 public interface DataAccessService {
+
+    InternalDataDefinition getDataDefinition(String pluginIdentifier, String name);
 
     Entity save(InternalDataDefinition dataDefinition, Entity entity);
 
@@ -41,7 +44,11 @@ public interface DataAccessService {
 
     SearchResult find(SearchCriteria searchCriteria);
 
+    SearchResult find(SearchQuery searchQuery);
+
     void moveTo(InternalDataDefinition dataDefinition, Long entityId, int position);
 
     void move(InternalDataDefinition dataDefinition, Long entityId, int offset);
+
+    Object convertToDatabaseEntity(Entity entity);
 }
