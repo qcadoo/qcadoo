@@ -23,6 +23,8 @@
  */
 package com.qcadoo.view.internal.controllers;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -97,16 +99,32 @@ public class ErrorController {
         if (exception != null) {
             mav.addObject("showDetails", true);
 
-            mav.addObject("exceptionHeader", exception.getMessage());
-            mav.addObject("exceptionClass", exception.getClass().getCanonicalName());
+            mav.addObject("rootException", getRootException(exception));
+            mav.addObject("stackTrace", getStackTrace(exception));
 
-            mav.addObject("exceptionMessageText",
-                    translationService.translate("qcadooView.errorPage.details.messageText", locale));
-            mav.addObject("exceptionClassText", translationService.translate("qcadooView.errorPage.details.classText", locale));
+            mav.addObject("exceptionCauseText", translationService.translate("qcadooView.errorPage.details.causeText", locale));
+            mav.addObject("exceptionStackTraceText",
+                    translationService.translate("qcadooView.errorPage.details.stackTraceText", locale));
         } else {
             mav.addObject("showDetails", false);
         }
 
         return mav;
+    }
+
+    private Throwable getRootException(final Exception exception) {
+        Throwable rootException = exception;
+        while (rootException.getCause() != null) {
+            rootException = rootException.getCause();
+        }
+        return rootException;
+    }
+
+    private String getStackTrace(final Throwable exception) {
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        exception.printStackTrace(pw);
+        String stackTrace = sw.toString();
+        return stackTrace.replace(System.getProperty("line.separator"), "<br/>\n").replace("\t", "&nbsp;&nbsp;&nbsp;&nbsp;");
     }
 }

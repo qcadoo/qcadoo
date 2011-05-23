@@ -175,13 +175,13 @@
 	        		<div id="errorDetailsContent" style="display: none;">
 	        		
 	        			<div class="errorDetailsContentItem">
-	        				<div class="errorDetailsContentItemHeader">${exceptionMessageText}</div>
-	        				<div class="errorDetailsContentItemContent">${exceptionHeader}</div>
+	        				<div class="errorDetailsContentItemHeader">${exceptionCauseText}</div>
+	        				<div class="errorDetailsContentItemContent">${rootException}</div>
 	        			</div>
 	        			
 	        			<div class="errorDetailsContentItem">
-	        				<div class="errorDetailsContentItemHeader">${exceptionClassText}</div>
-	        				<div class="errorDetailsContentItemContent">${exceptionClass}</div>
+	        				<div class="errorDetailsContentItemHeader">${exceptionStackTraceText}</div>
+	        				<div class="errorDetailsContentItemContent">${stackTrace}</div>
 	        			</div>
 	        		
 	        		</div>
