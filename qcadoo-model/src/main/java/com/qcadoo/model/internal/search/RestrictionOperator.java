@@ -27,6 +27,7 @@ package com.qcadoo.model.internal.search;
  * Restriction comparison operator.
  * 
  * @since 0.4.0
+ * @deprecated
  */
 public enum RestrictionOperator {
 

@@ -55,6 +55,9 @@
 				<xsl:attribute name="table">
 				    <xsl:value-of select="$table_name" />
 				</xsl:attribute>
+				<!-- TODO masz hql where for saas<xsl:attribute name="where">
+				    <xsl:text>tenantId = -1</xsl:text>
+				</xsl:attribute>-->
 				<xsl:attribute name="name">
 					<xsl:value-of
 					select="concat('com.qcadoo.model.beans.', @plugin, '.', translate(substring(@plugin, 1, 1),  $smallcase, $uppercase), substring(@plugin, 2), translate(substring(@name, 1, 1),  $smallcase, $uppercase), substring(@name, 2))" />

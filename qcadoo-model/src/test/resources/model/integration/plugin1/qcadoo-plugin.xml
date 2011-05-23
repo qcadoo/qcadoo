@@ -39,6 +39,7 @@
 	<modules>
 		<model:model model="product" resource="model/product.xml" />
 		<model:model model="component" resource="model/component.xml" />
+		<model:model model="part" resource="model/part.xml" />
 	</modules>
 	
 </plugin>
