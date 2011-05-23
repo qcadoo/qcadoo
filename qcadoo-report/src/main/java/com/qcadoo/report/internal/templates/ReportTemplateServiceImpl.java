@@ -13,18 +13,22 @@ public class ReportTemplateServiceImpl implements ReportTemplateService {
     final Map<String, JasperReport> teplates = new HashMap<String, JasperReport>();
 
     @Override
-    public JasperReport getTemplate(final String name) {
-        return teplates.get(name);
+    public JasperReport getTemplate(final String plugin, final String name) {
+        return teplates.get(generateKey(plugin, name));
     }
 
     @Override
-    public void addTemplate(final String name, final JasperReport reportTemplate) {
-        teplates.put(name, reportTemplate);
+    public void addTemplate(final String plugin, final String name, final JasperReport reportTemplate) {
+        teplates.put(generateKey(plugin, name), reportTemplate);
     }
 
     @Override
-    public void removeTemplate(final String name) {
-        teplates.remove(name);
+    public void removeTemplate(final String plugin, final String name) {
+        teplates.remove(generateKey(plugin, name));
+    }
+
+    private String generateKey(final String plugin, final String name) {
+        return plugin + "." + name;
     }
 
 }

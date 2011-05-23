@@ -7,12 +7,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,27 +27,29 @@ public class ReportController {
     @Autowired
     private ReportService reportService;
 
-    @RequestMapping(value = "generateReportForEntity", method = RequestMethod.GET)
-    public void generateReportForEntity(@RequestParam("templateName") final String requestTemplateName,
-            @RequestParam("type") final String requestType, @RequestParam("id") final List<Long> id,
-            @RequestParam("additionalArgs") final String requestAdditionalArgs, final HttpServletResponse response,
-            final Locale locale) {
+    @RequestMapping(value = "generateReportForEntity/{templatePlugin}/{templateName}", method = RequestMethod.GET)
+    public void generateReportForEntity(@PathVariable("templatePlugin") final String templatePlugin,
+            @PathVariable("templateName") final String templateName, @RequestParam("id") final List<Long> entityIds,
+            @RequestParam("additionalArgs") final String requestAdditionalArgs, final HttpServletRequest request,
+            final HttpServletResponse response, final Locale locale) {
 
-        String type = trimRequestArgument(requestType.toUpperCase());
-        ReportService.ReportType reportType = ReportService.ReportType.valueOf(type);
-
-        String templateName = trimRequestArgument(requestTemplateName);
-
+        ReportService.ReportType reportType = getReportType(request);
         Map<String, String> additionalArgs = convertJsonStringToMap(requestAdditionalArgs);
 
         try {
-            reportService.generateReportForEntity(response.getOutputStream(), templateName, reportType, id, additionalArgs,
-                    locale);
+            reportService.generateReportForEntity(response.getOutputStream(), templatePlugin, templateName, reportType,
+                    entityIds, additionalArgs, locale);
             response.setContentType(reportType.getMimeType());
             disableCache(response);
         } catch (IOException e) {
             throw new IllegalStateException(e.getMessage(), e);
         }
+    }
+
+    private ReportService.ReportType getReportType(final HttpServletRequest request) {
+        String uri = request.getRequestURI();
+        String type = uri.substring(uri.lastIndexOf(".") + 1).toUpperCase();
+        return ReportService.ReportType.valueOf(type);
     }
 
     private Map<String, String> convertJsonStringToMap(final String jsonText) {
@@ -71,11 +75,4 @@ public class ReportController {
         response.addHeader("Pragma", "no-cache");
     }
 
-    private String trimRequestArgument(final String argument) {
-        String trimmedArgument = argument.trim();
-        if (trimmedArgument.charAt(0) == '\'' || trimmedArgument.charAt(0) == '\"') {
-            trimmedArgument = trimmedArgument.substring(1, trimmedArgument.length() - 1);
-        }
-        return trimmedArgument;
-    }
 }

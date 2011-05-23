@@ -21,10 +21,10 @@ public interface ReportService {
         }
     }
 
-    void generateReportForEntity(OutputStream outputStream, String templateName, ReportType type, List<Long> id,
-            Map<String, String> userArgs, Locale locale);
+    void generateReportForEntity(OutputStream outputStream, String templatePlugin, String templateName, ReportType type,
+            List<Long> entityIds, Map<String, String> userArgs, Locale locale);
 
-    void generateReport(OutputStream outputStream, String templateName, ReportType type, Map<String, Object> parameters,
-            Locale locale);
+    void generateReport(OutputStream outputStream, String templatePlugin, String templateName, ReportType type,
+            Map<String, Object> parameters, Locale locale);
 
 }
