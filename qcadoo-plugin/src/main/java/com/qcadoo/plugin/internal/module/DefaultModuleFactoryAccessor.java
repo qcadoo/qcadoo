@@ -29,8 +29,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.qcadoo.plugin.api.Module;
 import com.qcadoo.plugin.api.ModuleFactory;
 import com.qcadoo.plugin.api.Plugin;
@@ -39,14 +37,11 @@ import com.qcadoo.plugin.api.PluginUtils;
 import com.qcadoo.plugin.internal.api.InternalPlugin;
 import com.qcadoo.plugin.internal.api.ModuleFactoryAccessor;
 import com.qcadoo.tenant.api.MultiTenantCallback;
-import com.qcadoo.tenant.api.MultiTenantService;
+import com.qcadoo.tenant.api.MultiTenantUtil;
 
 public final class DefaultModuleFactoryAccessor implements ModuleFactoryAccessor {
 
     private final Map<String, ModuleFactory<?>> moduleFactoryRegistry = new LinkedHashMap<String, ModuleFactory<?>>();
-
-    @Autowired
-    private MultiTenantService multiTenantService;
 
     @Override
     public void init(final List<Plugin> pluginsToInitialize) {
@@ -73,7 +68,7 @@ public final class DefaultModuleFactoryAccessor implements ModuleFactoryAccessor
                     if (plugin.hasState(PluginState.ENABLED) || plugin.hasState(PluginState.ENABLING)) {
                         module.enableOnStartup();
 
-                        multiTenantService.doInMultiTenantContext(new MultiTenantCallback() {
+                        MultiTenantUtil.doInMultiTenantContext(new MultiTenantCallback() {
 
                             @Override
                             public void invoke() {
@@ -99,7 +94,7 @@ public final class DefaultModuleFactoryAccessor implements ModuleFactoryAccessor
                     if (!plugin.hasState(PluginState.ENABLED) && !plugin.hasState(PluginState.ENABLING)) {
                         module.disableOnStartup();
 
-                        multiTenantService.doInMultiTenantContext(new MultiTenantCallback() {
+                        MultiTenantUtil.doInMultiTenantContext(new MultiTenantCallback() {
 
                             @Override
                             public void invoke() {
@@ -121,7 +116,7 @@ public final class DefaultModuleFactoryAccessor implements ModuleFactoryAccessor
             List<Module> modules = ((InternalPlugin) plugin).getModules(moduleFactory);
 
             for (final Module module : modules) {
-                multiTenantService.doInMultiTenantContext(tenantId, new MultiTenantCallback() {
+                MultiTenantUtil.doInMultiTenantContext(tenantId, new MultiTenantCallback() {
 
                     @Override
                     public void invoke() {
@@ -145,7 +140,7 @@ public final class DefaultModuleFactoryAccessor implements ModuleFactoryAccessor
             Collections.reverse(modules);
 
             for (final Module module : modules) {
-                multiTenantService.doInMultiTenantContext(tenantId, new MultiTenantCallback() {
+                MultiTenantUtil.doInMultiTenantContext(tenantId, new MultiTenantCallback() {
 
                     @Override
                     public void invoke() {
