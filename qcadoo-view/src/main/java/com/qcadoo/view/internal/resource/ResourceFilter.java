@@ -42,7 +42,7 @@ public final class ResourceFilter implements Filter {
 
     private boolean useJarStaticResources;
 
-    private static final List<String> NOT_STATIC_EXTENSIONS = Arrays.asList(new String[] { "html", "pdf", "xls", "/" });
+    private static final List<String> NOT_STATIC_EXTENSIONS = Arrays.asList(new String[] { "html", "pdf", "xls", "" });
 
     @Autowired
     private ResourceService resourceService;
@@ -52,9 +52,19 @@ public final class ResourceFilter implements Filter {
             throws IOException, ServletException {
 
         HttpServletRequest httpRequest = (HttpServletRequest) request;
-        String[] arr = httpRequest.getRequestURI().split("\\.");
-        String ext = arr[arr.length - 1];
+        String uri = httpRequest.getRequestURI();
+        if (uri.charAt(0) == '/') {
+            uri = uri.substring(1);
+        }
 
+        String[] uriParts = uri.split("/");
+        if ("files".equals(uriParts[0])) {
+            chain.doFilter(request, response);
+            return;
+        }
+
+        String[] arr = uri.split("\\.");
+        String ext = arr[arr.length - 1];
         if (!NOT_STATIC_EXTENSIONS.contains(ext) && useJarStaticResources) {
             resourceService.serveResource(httpRequest, (HttpServletResponse) response);
         } else {

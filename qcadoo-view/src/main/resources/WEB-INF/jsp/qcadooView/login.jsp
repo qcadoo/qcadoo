@@ -23,6 +23,8 @@
     ***************************************************************************
 
 --%>
+<![CDATA[ERROR PAGE:LoginPage]]>
+
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -41,10 +43,13 @@
 		<c:otherwise>
 			<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/core/login.css" type="text/css" />
 			<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/crud/components/form.css" type="text/css" />
+			<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/core/jqModal.css" type="text/css" />
 			
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/_jquery-1.4.2.min.js"></script>
+			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/jqModal.js"></script>
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/qcd/utils/serializator.js"></script>
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/qcd/utils/logger.js"></script>
+			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/qcd/utils/modal.js"></script>
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/qcd/utils/snow.js"></script>
 		</c:otherwise>
 	</c:choose>
@@ -89,7 +94,13 @@
 		</c:if>
 
 		jQuery(document).ready(function(){
-
+			if (!isSupportedBrowser()) {
+				var modal = QCD.utils.Modal.createModal();
+				modal.changeSize(400,300);
+				modal.showStatic("browserNotSupported.html");
+				return;
+			}
+			
 			messagePanel = $("#messagePanel");
 			messagePanelHeader = $("#messageHeader");
 			messagePanelContent = $("#messageContent");
@@ -147,6 +158,25 @@
 				}
 			});
 		});
+
+		isSupportedBrowser = function() {
+			if (jQuery.browser.mozilla) { // firefox
+				var parts = jQuery.browser.version.split(".");
+				var firstPart = parseInt(parts[0]);
+				var secondPart = parseInt(parts[1]);
+				if (firstPart >=2 || (firstPart == 1 && secondPart==9) ) { // larger than 1.9
+					return true;
+				}
+			} else if (jQuery.browser.webkit) { // chrome, safari
+				return true;
+			} else if (jQuery.browser.msie) { // ie
+				var parts = jQuery.browser.version.split(".");
+				if (parseInt(parts[0]) >= 8) {
+					return true;
+				}
+			}
+			return false;
+		}
 	
 		changeLanguage = function(language) {
 			window.location = "login.html?lang="+language;
@@ -273,11 +303,11 @@
 								<div class="component_container_form_x"></div>
 								<div class="component_container_form_y"></div>
 				 				<input type='text' id="usernameInput" name='j_username' value='<c:if test="${not empty param.login_error}"><c:out value="${SPRING_SECURITY_LAST_USERNAME}"/></c:if>'/>
-				 			</div>
-					 			<div id="loginErrorMessagePanel" style="display: none;">
+					 			<div id="loginErrorMessagePanel" class="errorMessagePanel" style="display: none;">
 					 				<div class="login_failed"></div>
 					 				<span id="loginMessage" class="login_failed_message">${translation["security.message.wrongLogin"]}</span>
 					 			</div>
+				 			</div>
 						</div>
 						</div>
 			 		</div>
@@ -289,7 +319,7 @@
 								<div class="component_container_form_x"></div>
 								<div class="component_container_form_y"></div>
 								<input type='password' id="passwordInput" name='j_password'>
-								<div id="passwordErrorMessagePanel" style="display: none;">
+								<div id="passwordErrorMessagePanel" class="errorMessagePanel" style="display: none;">
 				 					<div class="login_failed"></div>
 				 					<span id="passwordMessage" class="login_failed_message">${translation["security.message.wrongPassword"]}</span>								
 								</div>

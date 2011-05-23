@@ -27,10 +27,12 @@ import java.io.File;
 
 import org.springframework.core.io.Resource;
 
+import com.qcadoo.plugin.internal.PluginException;
+
 public interface PluginDescriptorResolver {
 
     Resource[] getDescriptors();
 
-    Resource getDescriptor(File file);
+    Resource getDescriptor(File file) throws PluginException;
 
 }

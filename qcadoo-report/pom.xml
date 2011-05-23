@@ -29,6 +29,12 @@
 			<artifactId>poi</artifactId>
 			<version>3.6</version>
 		</dependency>
+		<dependency>
+			<groupId>jasperreports</groupId>
+			<artifactId>jasperreports</artifactId>
+			<version>4.0.1</version>
+		</dependency>
+		
 		<!--
 		
 		Note: there is a problem with xerces implementation - null in DefaultPluginDescriptorParser() - setSchema(...)

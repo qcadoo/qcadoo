@@ -53,6 +53,8 @@
 			filters="none" requires-channel="any" />
 		<security:intercept-url pattern="/js/**"
 			filters="none" requires-channel="any" />
+		<security:intercept-url pattern="/browserNotSupported.html"
+			filters="none" requires-channel="any" />
 		<security:intercept-url pattern="/**"
 			access="isAuthenticated()" /> <!-- requires-channel="https" -->
 			
