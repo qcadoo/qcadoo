@@ -25,6 +25,8 @@ var QCD = QCD || {};
 QCD.utils = QCD.utils || {};
 QCD.utils.Modal = {};
 
+QCD.utils.Modal.zIndex = 3000;
+
 QCD.utils.Modal.createModal = function() {
 	
 	var dialog = $("<div>").addClass("jqmWindow").width(600);
@@ -37,7 +39,7 @@ QCD.utils.Modal.createModal = function() {
 	
 	$("body").append(dialog);
 	dialog.jqm({
-		modal: true
+		modal: true,
 	});
 	
 	return {
@@ -54,6 +56,7 @@ QCD.utils.Modal.createModal = function() {
 		show: function(src, onLoadFunction) {
 			this.iframe.hide();
 			this.dialog.jqmShow();
+			this.dialog.css("z-index", QCD.utils.Modal.zIndex++);
 			QCD.components.elements.utils.LoadingIndicator.blockElement(this.dialog);
 			this.iframe.load(function() {
 				iframe.show();

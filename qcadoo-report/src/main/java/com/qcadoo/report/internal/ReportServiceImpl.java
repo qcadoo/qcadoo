@@ -48,6 +48,9 @@ public class ReportServiceImpl implements ReportService {
             throw new IllegalStateException("No template found: " + templateName);
         }
 
+        // template.
+        // JasperPrint jasperPrint = JasperFillManager.fillReport(template, new HashMap(), new JREmptyDataSource());
+
         // TODO implement it
 
         PrintStream p = new PrintStream(outputStream);
