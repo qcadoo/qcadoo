@@ -4,10 +4,10 @@ import net.sf.jasperreports.engine.JasperReport;
 
 public interface ReportTemplateService {
 
-    JasperReport getTemplate(String name);
+    JasperReport getTemplate(String plugin, String name);
 
-    void addTemplate(String name, JasperReport reportTemplate);
+    void addTemplate(String plugin, String name, JasperReport reportTemplate);
 
-    void removeTemplate(String name);
+    void removeTemplate(String plugin, String name);
 
 }

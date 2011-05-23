@@ -13,7 +13,7 @@ public class ReportTemplateModule extends Module {
 
     private final String pluginIdentifier;
 
-    private final String templateFullName;
+    private final String templateName;
 
     private final Resource templateFile;
 
@@ -22,7 +22,7 @@ public class ReportTemplateModule extends Module {
     public ReportTemplateModule(final String pluginIdentifier, final String templateName, final Resource templateFile,
             final ReportTemplateService reportTemplateService) {
         this.pluginIdentifier = pluginIdentifier;
-        this.templateFullName = pluginIdentifier + "." + templateName;
+        this.templateName = templateName;
         this.templateFile = templateFile;
         this.reportTemplateService = reportTemplateService;
     }
@@ -36,7 +36,7 @@ public class ReportTemplateModule extends Module {
     public void enable() {
         try {
             JasperReport reportTemplate = JasperCompileManager.compileReport(templateFile.getInputStream());
-            reportTemplateService.addTemplate(templateFullName, reportTemplate);
+            reportTemplateService.addTemplate(pluginIdentifier, templateName, reportTemplate);
         } catch (Exception e) {
             throw new ModuleException(pluginIdentifier, "report-template", e);
         }
@@ -44,7 +44,7 @@ public class ReportTemplateModule extends Module {
 
     @Override
     public void disable() {
-        reportTemplateService.removeTemplate(templateFullName);
+        reportTemplateService.removeTemplate(pluginIdentifier, templateName);
     }
 
 }

@@ -1,13 +1,22 @@
 package com.qcadoo.report.internal;
 
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import net.sf.jasperreports.engine.JREmptyDataSource;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRExporter;
+import net.sf.jasperreports.engine.JRExporterParameter;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.export.JRCsvExporter;
+import net.sf.jasperreports.engine.export.JRHtmlExporter;
+import net.sf.jasperreports.engine.export.JRPdfExporter;
+import net.sf.jasperreports.engine.export.JRXlsExporter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,35 +35,60 @@ public class ReportServiceImpl implements ReportService {
     private ReportTemplateService reportTemplateService;
 
     @Override
-    public void generateReportForEntity(OutputStream outputStream, String templateName, ReportType type, List<Long> id,
-            final Map<String, String> userArgs, Locale locale) {
+    public void generateReportForEntity(final OutputStream outputStream, final String templatePlugin, final String templateName,
+            final ReportType type, final List<Long> entityIds, final Map<String, String> userArgs, final Locale locale) {
 
         Map<String, Object> parameters = new HashMap<String, Object>(userArgs);
-        parameters.put("EntityIds", id);
+        parameters.put("EntityIds", entityIds);
 
-        generateReport(outputStream, templateName, type, parameters, locale);
+        generateReport(outputStream, templatePlugin, templateName, type, parameters, locale);
     }
 
     @Override
-    public void generateReport(OutputStream outputStream, String templateName, ReportType type, Map<String, Object> parameters,
-            Locale locale) {
+    public void generateReport(final OutputStream outputStream, final String templatePlugin, final String templateName,
+            final ReportType type, final Map<String, Object> parameters, final Locale locale) {
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug("Try to generate report [" + type + ", " + templateName + ", " + parameters + "]");
+            LOG.debug("Try to generate report [" + type + ", " + templatePlugin + "." + templateName + ", " + parameters + "]");
         }
 
-        JasperReport template = reportTemplateService.getTemplate(templateName);
+        JasperReport template = reportTemplateService.getTemplate(templatePlugin, templateName);
         if (template == null) {
             throw new IllegalStateException("No template found: " + templateName);
         }
 
-        // template.
-        // JasperPrint jasperPrint = JasperFillManager.fillReport(template, new HashMap(), new JREmptyDataSource());
+        try {
+            JasperPrint jasperPrint = JasperFillManager.fillReport(template, parameters, new JREmptyDataSource());
 
-        // TODO implement it
+            JRExporter exporter = getExporter(type);
+            exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
+            exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, outputStream);
 
-        PrintStream p = new PrintStream(outputStream);
-        p.println("Hello");
+            exporter.exportReport();
 
+        } catch (JRException e) {
+            throw new IllegalStateException(e.getMessage(), e);
+        }
+    }
+
+    private JRExporter getExporter(final ReportType type) {
+        JRExporter exporter = null;
+        switch (type) {
+            case PDF:
+                exporter = new JRPdfExporter();
+                break;
+            case XLS:
+                exporter = new JRXlsExporter();
+                break;
+            case CSV:
+                exporter = new JRCsvExporter();
+                break;
+            case HTML:
+                exporter = new JRHtmlExporter();
+                break;
+            default:
+                throw new IllegalStateException("unknown report type");
+        }
+        return exporter;
     }
 }
