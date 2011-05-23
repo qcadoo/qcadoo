@@ -67,7 +67,7 @@ public final class TranslationServiceImpl implements InternalTranslationService 
     private TranslationModuleService translationModuleService;
 
     @Override
-    public String translate(final String code, final Locale locale, final Object... args) {
+    public String translate(final String code, final Locale locale, final String... args) {
         String message = translateWithError(code, locale, args);
 
         if (message != null) {
@@ -83,7 +83,7 @@ public final class TranslationServiceImpl implements InternalTranslationService 
         }
     }
 
-    private String translate(final List<String> messageCodes, final Locale locale, final Object... args) {
+    private String translate(final List<String> messageCodes, final Locale locale, final String... args) {
         for (String messageCode : messageCodes) {
             String message = translateWithError(messageCode, locale, args);
             if (message != null) {
@@ -101,17 +101,17 @@ public final class TranslationServiceImpl implements InternalTranslationService 
     }
 
     @Override
-    public String translate(final String code, final String secondCode, final Locale locale, final Object... args) {
+    public String translate(final String code, final String secondCode, final Locale locale, final String... args) {
         return translate(Lists.newArrayList(code, secondCode), locale, args);
     }
 
     @Override
     public String translate(final String code, final String secondCode, final String thirdCode, final Locale locale,
-            final Object... args) {
+            final String... args) {
         return translate(Lists.newArrayList(code, secondCode, thirdCode), locale, args);
     }
 
-    private String translateWithError(final String messageCode, final Locale locale, final Object[] args) {
+    private String translateWithError(final String messageCode, final Locale locale, final String[] args) {
         return messageSource.getMessage(messageCode, args, null, locale);
     }
 
