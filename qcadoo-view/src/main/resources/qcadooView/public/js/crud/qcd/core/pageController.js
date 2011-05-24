@@ -365,10 +365,6 @@ QCD.PageController = function() {
 	}
 	
 	this.openPopup = function(url, parentComponent, title) {
-		if (popup) {
-			
-		}
-		
 		if (url.indexOf("?") != -1) {
 			url+="&";
 		} else {
@@ -398,12 +394,21 @@ QCD.PageController = function() {
 	}
 	
 	this.goToPage = function(url, isPage, serialize) {
+		QCD.components.elements.utils.LoadingIndicator.blockElement($("body"));
 		if (isPage == undefined || isPage == null) {
 			isPage = true;
 		}
 		var serializationObject = null;
 		if (serialize == true || serialize == undefined || serialize == null) {
 			serializationObject = getSerializationObject();
+		}
+		if (isPopup) {
+			if (url.indexOf("?") != -1) {
+				url+="&";
+			} else {
+				url+="?";
+			}
+			url+="popup=true";
 		}
 		window.parent.goToPage(url, serializationObject, isPage);
 	}
@@ -421,6 +426,7 @@ QCD.PageController = function() {
 	
 	this.goBack = function() {
 		if(canClose()) {
+			QCD.components.elements.utils.LoadingIndicator.blockElement($("body"));
 			window.parent.goBack(this);
 		}
 	}
