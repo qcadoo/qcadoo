@@ -63,14 +63,12 @@ public class ReportServiceImpl implements ReportService {
         if (template == null) {
             throw new ReportException(ReportException.Type.NO_TEMPLATE_FOUND, templatePlugin + "." + templateName);
         }
-
+        Session session = null;
         try {
-            Session session = sessionFactory.openSession();
+            session = sessionFactory.openSession();
             parameters.put(JRHibernateQueryExecuterFactory.PARAMETER_HIBERNATE_SESSION, session);
 
             JasperPrint jasperPrint = JasperFillManager.fillReport(template, parameters);
-
-            session.close();
 
             JRExporter exporter = getExporter(type);
 
@@ -84,6 +82,8 @@ public class ReportServiceImpl implements ReportService {
 
         } catch (JRException e) {
             throw new ReportException(ReportException.Type.GENERATE_REPORT_EXCEPTION, e);
+        } finally {
+            session.close();
         }
     }
 
