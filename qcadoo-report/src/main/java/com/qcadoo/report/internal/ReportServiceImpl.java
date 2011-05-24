@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRExporter;
 import net.sf.jasperreports.engine.JRExporterParameter;
@@ -17,11 +16,15 @@ import net.sf.jasperreports.engine.export.JRCsvExporter;
 import net.sf.jasperreports.engine.export.JRHtmlExporter;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
 import net.sf.jasperreports.engine.export.JRXlsExporter;
+import net.sf.jasperreports.engine.query.JRHibernateQueryExecuterFactory;
 
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.qcadoo.report.api.ReportService;
 import com.qcadoo.report.internal.templates.ReportTemplateService;
@@ -34,6 +37,9 @@ public class ReportServiceImpl implements ReportService {
     @Autowired
     private ReportTemplateService reportTemplateService;
 
+    @Autowired
+    private SessionFactory sessionFactory;
+
     @Override
     public void generateReportForEntity(final OutputStream outputStream, final String templatePlugin, final String templateName,
             final ReportType type, final List<Long> entityIds, final Map<String, String> userArgs, final Locale locale) {
@@ -45,6 +51,7 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public void generateReport(final OutputStream outputStream, final String templatePlugin, final String templateName,
             final ReportType type, final Map<String, Object> parameters, final Locale locale) {
 
@@ -58,7 +65,12 @@ public class ReportServiceImpl implements ReportService {
         }
 
         try {
-            JasperPrint jasperPrint = JasperFillManager.fillReport(template, parameters, new JREmptyDataSource());
+            Session session = sessionFactory.openSession();
+            parameters.put(JRHibernateQueryExecuterFactory.PARAMETER_HIBERNATE_SESSION, session);
+
+            JasperPrint jasperPrint = JasperFillManager.fillReport(template, parameters);
+
+            session.close();
 
             JRExporter exporter = getExporter(type);
             exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
