@@ -158,19 +158,29 @@ QCD.PageController = function() {
 		performEvent(initParameters, eventCompleteFunction, actionsPerformer);
 	}
 	
-	this.generateReportForEntity = function(actionsPerformer, templateName, additionalArgs, ids) {
-		var reportType = additionalArgs[0];
+	this.generateReportForEntity = function(actionsPerformer, arg1, args, ids) {
+		if (args.length < 2) {
+			QCD.error("generateReportForEntity - wrong arguments number");
+			return;
+		}
+		var reportPlugin = trim(arg1);
+		var reportName = trim(args[0]);
+		var reportType = trim(args[1]);
 		if (!reportType || reportType == "") {
 			QCD.error("generateReportForEntity - no report type defined");
 			return;
 		}
-		if (!templateName || templateName == "") {
+		if (!reportPlugin || reportPlugin == "") {
+			QCD.error("generateReportForEntity - no report plugin defined");
+			return;
+		}
+		if (!reportName || reportName == "") {
 			QCD.error("generateReportForEntity - no template name defined");
 			return;
 		}
 		var userArgs = {};
-		for (var i = 1; i < additionalArgs.length; i++) {
-			var arg = trim(additionalArgs[i]);
+		for (var i = 2; i < args.length; i++) {
+			var arg = trim(args[i]);
 			argParts = arg.split("=");
 			if (argParts.length != 2) {
 				QCD.error("wrong argument '"+arg+"'");
@@ -180,7 +190,7 @@ QCD.PageController = function() {
 			var value = trim(argParts[1]);
 			userArgs[key] = value;
 		}
-		var url = "/generateReportForEntity.html?templateName="+templateName+"&type="+reportType+"&additionalArgs="+JSON.stringify(userArgs);
+		var url = "/generateReportForEntity/"+reportPlugin+"/"+reportName+"."+reportType+"?additionalArgs="+JSON.stringify(userArgs);
 		for (var i=0; i<ids.length; i++) {
 			url += "&id="+ids[i];
 		}
@@ -388,6 +398,7 @@ QCD.PageController = function() {
 	}
 	
 	this.goToPage = function(url, isPage, serialize) {
+		QCD.components.elements.utils.LoadingIndicator.blockElement($("body"));
 		if (isPage == undefined || isPage == null) {
 			isPage = true;
 		}
@@ -411,6 +422,7 @@ QCD.PageController = function() {
 	
 	this.goBack = function() {
 		if(canClose()) {
+			QCD.components.elements.utils.LoadingIndicator.blockElement($("body"));
 			window.parent.goBack(this);
 		}
 	}

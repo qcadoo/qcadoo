@@ -36,6 +36,8 @@
 		<prop key="descriptors">com/qcadoo/plugin/integration/*/plugin.xml</prop>
 	</util:properties>
 
+	<context:component-scan base-package="com.qcadoo.tenant" />
+
 	<context:component-scan base-package="com.qcadoo.plugin" />
 	
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"

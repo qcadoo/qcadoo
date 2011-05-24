@@ -34,7 +34,7 @@ import org.springframework.orm.hibernate3.LocalSessionFactoryBean;
 
 import com.qcadoo.model.internal.api.DynamicSessionFactoryBean;
 
-public final class DynamicSessionFactoryBeanImpl implements DynamicSessionFactoryBean {
+public class DynamicSessionFactoryBeanImpl implements DynamicSessionFactoryBean {
 
     private final LocalSessionFactoryBean factoryBean = new LocalSessionFactoryBean();
 
@@ -90,6 +90,10 @@ public final class DynamicSessionFactoryBeanImpl implements DynamicSessionFactor
 
     public void setHibernateProperties(final Properties hibernateProperties) {
         factoryBean.setHibernateProperties(hibernateProperties);
+    }
+
+    protected LocalSessionFactoryBean getFactoryBean() {
+        return factoryBean;
     }
 
 }

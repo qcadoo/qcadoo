@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.qcadoo.model.api.search.SearchCriteriaBuilder;
+import com.qcadoo.model.api.search.SearchQueryBuilder;
 
 /**
  * Object defines database structure. The {@link #getPluginIdentifier()} and {@link #getName()} are used to calculate table name.
@@ -90,6 +91,17 @@ public interface DataDefinition {
      * @return new search criteria builder
      */
     SearchCriteriaBuilder find();
+
+    /**
+     * Create search query builder for given HQL query string.
+     * 
+     * @param queryString
+     *            query string
+     * @return new search query builder
+     * @see SearchQueryBuilder
+     * @since 0.4.1
+     */
+    SearchQueryBuilder find(String queryString);
 
     /**
      * Move the prioritizable entity by offset.

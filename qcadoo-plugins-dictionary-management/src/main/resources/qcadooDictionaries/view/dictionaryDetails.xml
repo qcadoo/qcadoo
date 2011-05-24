@@ -54,7 +54,6 @@
 			<option type="height" value="250" />
 			<option type="correspondingView" value="qcadooDictionaries/dictionaryItemDetails" />
 			<option type="correspondingComponent" value="form" />
-			<option type="correspondingViewInModal" value="true" />
 			<option type="deletable" value="false" />
 			<option type="creatable" value="false" />
 			<option type="multiselect" value="true" />

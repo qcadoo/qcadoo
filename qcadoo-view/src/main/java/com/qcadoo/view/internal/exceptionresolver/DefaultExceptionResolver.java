@@ -46,9 +46,12 @@ import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.api.CopyException;
 import com.qcadoo.model.api.validators.ErrorMessage;
+import com.qcadoo.view.api.exception.ClassDrivenExceptionResolver;
+import com.qcadoo.view.api.exception.ExceptionInfo;
+import com.qcadoo.view.api.exception.ExceptionInfoResolver;
 import com.qcadoo.view.internal.controllers.ErrorController;
 
-public final class DefaultExceptionResolver extends SimpleMappingExceptionResolver {
+public final class DefaultExceptionResolver extends SimpleMappingExceptionResolver implements ClassDrivenExceptionResolver {
 
     private static final Logger LOG = LoggerFactory.getLogger(DefaultExceptionResolver.class);
 
@@ -63,6 +66,8 @@ public final class DefaultExceptionResolver extends SimpleMappingExceptionResolv
 
     @Autowired
     private TranslationService translationService;
+
+    private Map<Class<? extends Exception>, ExceptionInfoResolver<? extends Exception>> classResolversMap = new HashMap<Class<? extends Exception>, ExceptionInfoResolver<? extends Exception>>();
 
     @PostConstruct
     public void init() {
@@ -93,7 +98,19 @@ public final class DefaultExceptionResolver extends SimpleMappingExceptionResolv
             String customExceptionMessageHeader = null;
             String customExceptionMessageExplanation = null;
 
-            if (customExceptionMessage != null) {
+            @SuppressWarnings("rawtypes")
+            ExceptionInfoResolver exceptionInfoResolver = classResolversMap.get(exception.getClass());
+            if (exceptionInfoResolver != null) {
+
+                @SuppressWarnings("unchecked")
+                ExceptionInfo info = exceptionInfoResolver.getExceptionInfo(exception);
+                customExceptionMessageHeader = translationService.translate(info.getMessageHeader(),
+                        LocaleContextHolder.getLocale());
+                customExceptionMessageExplanation = translationService.translate(info.getMessageExplanation(),
+                        LocaleContextHolder.getLocale(), info.getMessageExplanationArgs());
+
+            } else if (customExceptionMessage != null) {
+
                 customExceptionMessageHeader = translationService.translate("qcadooView.errorPage.error."
                         + customExceptionMessage.getMessage() + ".header", LocaleContextHolder.getLocale());
                 if (customExceptionMessage.getEntityIdentifier() != null) {
@@ -214,5 +231,16 @@ public final class DefaultExceptionResolver extends SimpleMappingExceptionResolv
         public String getEntityIdentifier() {
             return entityIdentifier;
         }
+    }
+
+    @Override
+    public <T extends Exception> void addExceptionInfoResolver(Class<T> exceptionClass,
+            ExceptionInfoResolver<T> exceptionInfoResolver) {
+        classResolversMap.put(exceptionClass, exceptionInfoResolver);
+    }
+
+    @Override
+    public <T extends Exception> void removeExceptionInfoResolver(Class<T> exceptionClass) {
+        classResolversMap.remove(exceptionClass);
     }
 }

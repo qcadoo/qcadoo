@@ -52,7 +52,6 @@
 		<model:model model="user" resource="model/user.xml" />
 		<model:model model="persistentToken" resource="model/persistentToken.xml" />
 		
-		
 		<security:user-group name="01admins" role="ROLE_ADMIN"/>
 		<security:user-group name="02supervisors" role="ROLE_SUPERVISOR"/>
 		<security:user-group name="03users" role="ROLE_USER"/>

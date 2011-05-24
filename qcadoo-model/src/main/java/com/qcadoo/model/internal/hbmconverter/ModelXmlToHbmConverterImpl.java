@@ -45,9 +45,11 @@ import org.springframework.stereotype.Component;
 
 import com.qcadoo.model.internal.api.Constants;
 import com.qcadoo.model.internal.api.ModelXmlToHbmConverter;
+import com.qcadoo.tenant.api.Standalone;
 
 @Component
-public final class ModelXmlToHbmConverterImpl implements ModelXmlToHbmConverter {
+@Standalone
+public class ModelXmlToHbmConverterImpl implements ModelXmlToHbmConverter {
 
     private static final Logger LOG = LoggerFactory.getLogger(ModelXmlToHbmConverterImpl.class);
 
@@ -76,10 +78,10 @@ public final class ModelXmlToHbmConverterImpl implements ModelXmlToHbmConverter 
             if (resource.isReadable()) {
                 LOG.info("Converting " + resource + " to hbm.xml");
 
-                ByteArrayOutputStream hbm = new ByteArrayOutputStream();
+                byte[] hbm = null;
 
                 try {
-                    transformer.transform(new StreamSource(resource.getInputStream()), new StreamResult(hbm));
+                    hbm = transform(resource);
                 } catch (TransformerException e) {
                     throw new IllegalStateException("Error while parsing model.xml: " + e.getMessage(), e);
                 } catch (IOException e) {
@@ -87,13 +89,19 @@ public final class ModelXmlToHbmConverterImpl implements ModelXmlToHbmConverter 
                 }
 
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(new String(hbm.toByteArray()));
+                    LOG.debug(new String(hbm));
                 }
 
-                hbms.add(new InputStreamResource(new ByteArrayInputStream(hbm.toByteArray())));
+                hbms.add(new InputStreamResource(new ByteArrayInputStream(hbm)));
             }
         }
 
         return hbms.toArray(new Resource[hbms.size()]);
+    }
+
+    protected byte[] transform(final Resource resource) throws TransformerException, IOException {
+        ByteArrayOutputStream hbm = new ByteArrayOutputStream();
+        transformer.transform(new StreamSource(resource.getInputStream()), new StreamResult(hbm));
+        return hbm.toByteArray();
     }
 }

@@ -24,22 +24,13 @@
     ***************************************************************************
 
 -->
-<model name="product" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<model name="part" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns="http://schema.qcadoo.org/model"
 	xsi:schemaLocation="http://schema.qcadoo.org/model http://schema.qcadoo.org/model.xsd">
 	<fields>
-		<string name="number" required="true" unique="true" />
 		<string name="name" required="true" />
-		<string name="changeableName" />
-		<enum name="enum" values="one,two" />
-		<integer name="quantity">
-			<validatesRange from="0" exclusively="true" />
-		</integer>
-		<dictionary name="category" dictionary="categories" />
-		<hasMany name="components" model="component" joinField="product"
-			cascade="none" />
-		<hasMany name="parts" model="part" joinField="product"
-			cascade="none" />
+		<belongsTo name="product" model="product" required="false"
+			lazy="false" />
 	</fields>
 	<hooks />
 </model>

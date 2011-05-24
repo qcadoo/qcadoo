@@ -23,9 +23,12 @@
  */
 package com.qcadoo.view.internal.controllers;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -39,6 +42,9 @@ public class ErrorController {
 
     @Autowired
     private TranslationService translationService;
+
+    @Value("${showExceptionDetails}")
+    private boolean showExceptionDetails;
 
     @RequestMapping(value = "error", method = RequestMethod.GET)
     public ModelAndView getAccessDeniedPageView(@RequestParam final int code, final Locale locale) {
@@ -94,19 +100,35 @@ public class ErrorController {
         mav.addObject("showDetailsText", translationService.translate("qcadooView.errorPage.showDetails", locale));
         mav.addObject("hideDetailsText", translationService.translate("qcadooView.errorPage.hideDetails", locale));
 
-        if (exception != null) {
+        if (exception != null && showExceptionDetails) {
             mav.addObject("showDetails", true);
 
-            mav.addObject("exceptionHeader", exception.getMessage());
-            mav.addObject("exceptionClass", exception.getClass().getCanonicalName());
+            mav.addObject("rootException", getRootException(exception));
+            mav.addObject("stackTrace", getStackTrace(exception));
 
-            mav.addObject("exceptionMessageText",
-                    translationService.translate("qcadooView.errorPage.details.messageText", locale));
-            mav.addObject("exceptionClassText", translationService.translate("qcadooView.errorPage.details.classText", locale));
+            mav.addObject("exceptionCauseText", translationService.translate("qcadooView.errorPage.details.causeText", locale));
+            mav.addObject("exceptionStackTraceText",
+                    translationService.translate("qcadooView.errorPage.details.stackTraceText", locale));
         } else {
             mav.addObject("showDetails", false);
         }
 
         return mav;
+    }
+
+    private Throwable getRootException(final Exception exception) {
+        Throwable rootException = exception;
+        while (rootException.getCause() != null) {
+            rootException = rootException.getCause();
+        }
+        return rootException;
+    }
+
+    private String getStackTrace(final Throwable exception) {
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        exception.printStackTrace(pw);
+        String stackTrace = sw.toString();
+        return stackTrace.replace(System.getProperty("line.separator"), "<br/>\n").replace("\t", "&nbsp;&nbsp;&nbsp;&nbsp;");
     }
 }

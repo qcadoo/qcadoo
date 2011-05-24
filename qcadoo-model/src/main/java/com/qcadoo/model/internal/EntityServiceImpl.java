@@ -23,6 +23,8 @@
  */
 package com.qcadoo.model.internal;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map.Entry;
 
@@ -113,29 +115,52 @@ public final class EntityServiceImpl implements EntityService {
 
     @Override
     public Entity convertToGenericEntity(final InternalDataDefinition dataDefinition, final Object databaseEntity) {
-        Entity genericEntity = dataDefinition.create(getId(databaseEntity));
+        Entity genericEntity = null;
 
-        for (Entry<String, FieldDefinition> fieldDefinitionEntry : dataDefinition.getFields().entrySet()) {
-            if (fieldDefinitionEntry.getValue().isPersistent()
-                    && ((InternalFieldDefinition) fieldDefinitionEntry.getValue()).isEnabled()) {
-                genericEntity.setField(fieldDefinitionEntry.getKey(), getField(databaseEntity, fieldDefinitionEntry.getValue()));
+        if (databaseEntity instanceof Object[]) {
+            genericEntity = dataDefinition.create();
+            Object[] databaseArray = (Object[]) databaseEntity;
+
+            List<String> fields = new ArrayList<String>(dataDefinition.getFields().keySet());
+
+            for (int i = 0; i < fields.size(); i++) {
+                if (dataDefinition.getField(fields.get(i)).getType() instanceof BelongsToType) {
+                    InternalDataDefinition referencedDataDefinition = (InternalDataDefinition) ((BelongsToType) dataDefinition
+                            .getField(fields.get(i)).getType()).getDataDefinition();
+                    genericEntity.setField(fields.get(i), convertToGenericEntity(referencedDataDefinition, databaseArray[i]));
+                } else {
+                    genericEntity.setField(fields.get(i), databaseArray[i]);
+                }
             }
-        }
+        } else if (!(databaseEntity.getClass().getName().startsWith("com.qcadoo.model.beans"))) {
+            genericEntity = new DefaultEntity(dataDefinition);
+            genericEntity.setField(dataDefinition.getFields().keySet().iterator().next(), databaseEntity);
+        } else {
+            genericEntity = dataDefinition.create(getId(databaseEntity));
 
-        if (dataDefinition.isPrioritizable()) {
-            genericEntity.setField(dataDefinition.getPriorityField().getName(),
-                    getField(databaseEntity, dataDefinition.getPriorityField()));
-        }
-
-        for (Entry<String, FieldDefinition> fieldDefinitionEntry : dataDefinition.getFields().entrySet()) {
-            if (fieldDefinitionEntry.getValue().getExpression() != null
-                    && ((InternalFieldDefinition) fieldDefinitionEntry.getValue()).isEnabled()) {
-                genericEntity.setField(fieldDefinitionEntry.getKey(), expressionService.getValue(genericEntity,
-                        fieldDefinitionEntry.getValue().getExpression(), Locale.ENGLISH));
+            for (Entry<String, FieldDefinition> fieldDefinitionEntry : dataDefinition.getFields().entrySet()) {
+                if (fieldDefinitionEntry.getValue().isPersistent()
+                        && ((InternalFieldDefinition) fieldDefinitionEntry.getValue()).isEnabled()) {
+                    genericEntity.setField(fieldDefinitionEntry.getKey(),
+                            getField(databaseEntity, fieldDefinitionEntry.getValue()));
+                }
             }
-        }
 
-        dataDefinition.callViewHook(genericEntity);
+            if (dataDefinition.isPrioritizable()) {
+                genericEntity.setField(dataDefinition.getPriorityField().getName(),
+                        getField(databaseEntity, dataDefinition.getPriorityField()));
+            }
+
+            for (Entry<String, FieldDefinition> fieldDefinitionEntry : dataDefinition.getFields().entrySet()) {
+                if (fieldDefinitionEntry.getValue().getExpression() != null
+                        && ((InternalFieldDefinition) fieldDefinitionEntry.getValue()).isEnabled()) {
+                    genericEntity.setField(fieldDefinitionEntry.getKey(), expressionService.getValue(genericEntity,
+                            fieldDefinitionEntry.getValue().getExpression(), Locale.ENGLISH));
+                }
+            }
+
+            dataDefinition.callViewHook(genericEntity);
+        }
 
         return genericEntity;
     }

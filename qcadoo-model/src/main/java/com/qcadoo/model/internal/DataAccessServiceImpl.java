@@ -39,11 +39,27 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.hibernate.classic.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Projections;
 import org.hibernate.exception.ConstraintViolationException;
+import org.hibernate.type.BigDecimalType;
+import org.hibernate.type.BigIntegerType;
+import org.hibernate.type.BooleanType;
+import org.hibernate.type.CharacterType;
+import org.hibernate.type.DateType;
+import org.hibernate.type.DoubleType;
+import org.hibernate.type.EntityType;
+import org.hibernate.type.FloatType;
+import org.hibernate.type.IntegerType;
+import org.hibernate.type.LongType;
+import org.hibernate.type.ShortType;
+import org.hibernate.type.TextType;
+import org.hibernate.type.TimeType;
+import org.hibernate.type.TimestampType;
+import org.hibernate.type.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +70,7 @@ import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import com.qcadoo.model.api.CopyException;
 import com.qcadoo.model.api.DataDefinition;
+import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.EntityList;
 import com.qcadoo.model.api.EntityTree;
@@ -61,6 +78,7 @@ import com.qcadoo.model.api.ExpressionService;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.aop.Monitorable;
 import com.qcadoo.model.api.search.SearchResult;
+import com.qcadoo.model.api.types.FieldType;
 import com.qcadoo.model.api.types.HasManyType;
 import com.qcadoo.model.api.types.TreeType;
 import com.qcadoo.model.api.validators.ErrorMessage;
@@ -72,12 +90,20 @@ import com.qcadoo.model.internal.api.ValidationService;
 import com.qcadoo.model.internal.search.Order;
 import com.qcadoo.model.internal.search.Restriction;
 import com.qcadoo.model.internal.search.SearchCriteria;
+import com.qcadoo.model.internal.search.SearchQuery;
 import com.qcadoo.model.internal.search.SearchResultImpl;
+import com.qcadoo.model.internal.types.BelongsToEntityType;
+import com.qcadoo.model.internal.types.DateTimeType;
+import com.qcadoo.model.internal.types.DecimalType;
+import com.qcadoo.model.internal.types.StringType;
 import com.qcadoo.tenant.api.Standalone;
 
 @Service
 @Standalone
 public class DataAccessServiceImpl implements DataAccessService {
+
+    @Autowired
+    private DataDefinitionService dataDefinitionService;
 
     @Autowired
     private SessionFactory sessionFactory;
@@ -215,6 +241,11 @@ public class DataAccessServiceImpl implements DataAccessService {
         }
 
         return savedEntity;
+    }
+
+    @Override
+    public Object convertToDatabaseEntity(final Entity entity) {
+        return entityService.convertToDatabaseEntity((InternalDataDefinition) entity.getDataDefinition(), entity, null);
     }
 
     private List<Entity> saveHasManyEntities(final Set<Entity> alreadySavedEntities, final Set<Entity> newlySavedEntities,
@@ -445,7 +476,6 @@ public class DataAccessServiceImpl implements DataAccessService {
 
     @Override
     @Transactional
-    // @Check(constraints = "flag = true")
     @Monitorable
     public void delete(final InternalDataDefinition dataDefinition, final Long... entityIds) {
         checkNotNull(dataDefinition, "DataDefinition must be given");
@@ -456,6 +486,122 @@ public class DataAccessServiceImpl implements DataAccessService {
         for (Long entityId : entityIds) {
             deleteEntity(dataDefinition, entityId);
         }
+    }
+
+    @Override
+    public InternalDataDefinition getDataDefinition(final String pluginIdentifier, final String name) {
+        InternalDataDefinition dataDefinition = (InternalDataDefinition) dataDefinitionService.get(pluginIdentifier, name);
+
+        if (dataDefinition == null) {
+            throw new IllegalStateException("DataDefinition " + pluginIdentifier + "_" + name + " cannot be found");
+        } else if (!dataDefinition.isEnabled()) {
+            throw new IllegalStateException("DataDefinition " + dataDefinition + " belongs to disabled plugin");
+        }
+
+        return dataDefinition;
+    }
+
+    @Override
+    @Transactional
+    public SearchResult find(final SearchQuery searchQuery) {
+        checkArgument(searchQuery != null, "SearchCriteria must be given");
+
+        Query query = searchQuery.createQuery(sessionFactory.getCurrentSession());
+
+        searchQuery.addParameters(query);
+
+        int totalNumberOfEntities = -1;
+
+        if (searchQuery.hasFirstAndMaxResults()) {
+            totalNumberOfEntities = query.list().size();
+            searchQuery.addFirstAndMaxResults(query);
+        }
+
+        if (totalNumberOfEntities == 0) {
+            LOG.info("There is no entity matching criteria " + searchQuery);
+            return getResultSet(null, totalNumberOfEntities, Collections.emptyList());
+        }
+
+        List<?> results = query.list();
+
+        if (totalNumberOfEntities == -1) {
+            totalNumberOfEntities = results.size();
+
+            if (totalNumberOfEntities == 0) {
+                LOG.info("There is no entity matching criteria " + searchQuery);
+                return getResultSet(null, totalNumberOfEntities, Collections.emptyList());
+            }
+        }
+
+        LOG.info("There are " + totalNumberOfEntities + " entities matching criteria " + searchQuery);
+
+        InternalDataDefinition searchQueryDataDefinition = (InternalDataDefinition) searchQuery.getDataDefinition();
+
+        if (searchQueryDataDefinition == null) {
+            searchQueryDataDefinition = resolveDataDefinition(query);
+        }
+
+        return getResultSet(searchQueryDataDefinition, totalNumberOfEntities, results);
+    }
+
+    private InternalDataDefinition resolveDataDefinition(final Query query) {
+        if (query.getReturnTypes().length == 1 && query.getReturnTypes()[0] instanceof EntityType) {
+            return resolveDataDefinitionFromEntityType((EntityType) query.getReturnTypes()[0]);
+        } else {
+            DynamicDataDefinitionImpl dataDefinition = new DynamicDataDefinitionImpl();
+
+            for (int i = 0; i < query.getReturnTypes().length; i++) {
+                dataDefinition.addField(query.getReturnAliases()[i], convertHibernateType(query.getReturnTypes()[i]));
+            }
+
+            return dataDefinition;
+        }
+    }
+
+    private InternalDataDefinition resolveDataDefinitionFromEntityType(final EntityType entityType) {
+        String[] tmp = entityType.getName().replaceAll("com.qcadoo.model.beans.", "").split("\\.");
+        String model = tmp[1].replaceAll(tmp[0].substring(0, 1).toUpperCase() + tmp[0].substring(1), "");
+        model = model.substring(0, 1).toLowerCase() + model.substring(1);
+        return (InternalDataDefinition) dataDefinitionService.get(tmp[0], model);
+    }
+
+    private FieldType convertHibernateType(final Type type) {
+        if (type instanceof BigDecimalType || type instanceof DoubleType || type instanceof FloatType) {
+            return new DecimalType();
+        }
+        if (type instanceof FloatType || type instanceof BigIntegerType || type instanceof IntegerType
+                || type instanceof ShortType || type instanceof LongType) {
+            return new com.qcadoo.model.internal.types.IntegerType();
+        }
+        if (type instanceof BooleanType) {
+            return new com.qcadoo.model.internal.types.BooleanType();
+        }
+        if (type instanceof DateType) {
+            return new com.qcadoo.model.internal.types.DateType();
+        }
+        if (type instanceof TimestampType || type instanceof TimeType) {
+            return new DateTimeType();
+        }
+        if (type instanceof org.hibernate.type.StringType || type instanceof CharacterType) {
+            return new StringType();
+        }
+        if (type instanceof TextType) {
+            return new com.qcadoo.model.internal.types.TextType();
+        }
+        if (type instanceof EntityType) {
+            DataDefinition dataDefinition = resolveDataDefinitionFromEntityType((EntityType) type);
+
+            if (dataDefinition != null) {
+                return new BelongsToEntityType(dataDefinition.getPluginIdentifier(), dataDefinition.getName(),
+                        dataDefinitionService, false);
+            } else {
+                LOG.warn("Cannot find dataDefinition for class " + ((EntityType) type).getName());
+            }
+        }
+
+        LOG.warn("Cannot map hibernate's type " + type.getClass().getCanonicalName() + ", using string type");
+
+        return new StringType();
     }
 
     @Override
@@ -472,7 +618,7 @@ public class DataAccessServiceImpl implements DataAccessService {
 
         if (totalNumberOfEntities == 0 || searchCriteria.getRestrictions().contains(null)) {
             LOG.info("There is no entity matching criteria " + searchCriteria);
-            return getResultSet(searchCriteria, dataDefinition, totalNumberOfEntities, Collections.emptyList());
+            return getResultSet(dataDefinition, totalNumberOfEntities, Collections.emptyList());
         }
 
         Criteria criteria = getCriteria(searchCriteria).setFirstResult(searchCriteria.getFirstResult()).setMaxResults(
@@ -484,7 +630,7 @@ public class DataAccessServiceImpl implements DataAccessService {
 
         LOG.info("There are " + totalNumberOfEntities + " entities matching criteria " + searchCriteria);
 
-        return getResultSet(searchCriteria, dataDefinition, totalNumberOfEntities, results);
+        return getResultSet(dataDefinition, totalNumberOfEntities, results);
     }
 
     @Override
@@ -623,8 +769,8 @@ public class DataAccessServiceImpl implements DataAccessService {
         return Integer.valueOf(criteria.setProjection(Projections.rowCount()).uniqueResult().toString());
     }
 
-    private SearchResultImpl getResultSet(final SearchCriteria searchCriteria, final InternalDataDefinition dataDefinition,
-            final int totalNumberOfEntities, final List<?> results) {
+    private SearchResultImpl getResultSet(final InternalDataDefinition dataDefinition, final int totalNumberOfEntities,
+            final List<?> results) {
         List<Entity> genericResults = new ArrayList<Entity>();
 
         for (Object databaseEntity : results) {

@@ -50,6 +50,8 @@ public abstract class IntegrationTest {
 
     protected static String ENTITY_NAME_PRODUCT = "product";
 
+    protected static String ENTITY_NAME_PART = "part";
+
     protected static String ENTITY_NAME_MACHINE = "machine";
 
     protected static String ENTITY_NAME_COMPONENT = "component";
@@ -59,6 +61,8 @@ public abstract class IntegrationTest {
     protected static String TABLE_NAME_MACHINE = PLUGIN_MACHINES_NAME + "_" + ENTITY_NAME_MACHINE;
 
     protected static String TABLE_NAME_COMPONENT = PLUGIN_PRODUCTS_NAME + "_" + ENTITY_NAME_COMPONENT;
+
+    protected static String TABLE_NAME_PART = PLUGIN_PRODUCTS_NAME + "_" + ENTITY_NAME_PART;
 
     protected static InternalDataDefinitionService dataDefinitionService;
 
@@ -92,6 +96,7 @@ public abstract class IntegrationTest {
 
     @Before
     public void init() throws Exception {
+        jdbcTemplate.execute("delete from " + TABLE_NAME_PART);
         jdbcTemplate.execute("delete from " + TABLE_NAME_COMPONENT);
         jdbcTemplate.execute("delete from " + TABLE_NAME_MACHINE);
         jdbcTemplate.execute("delete from " + TABLE_NAME_PRODUCT);
@@ -103,6 +108,13 @@ public abstract class IntegrationTest {
         entity.setField("name", name);
         entity.setField("product", product);
         entity.setField("machine", machine);
+        return entity;
+    }
+
+    protected Entity createPart(final String name, final Object product) {
+        Entity entity = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PART).create();
+        entity.setField("name", name);
+        entity.setField("product", product);
         return entity;
     }
 

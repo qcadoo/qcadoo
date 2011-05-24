@@ -23,6 +23,7 @@
  */
 package com.qcadoo.model.internal;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
@@ -39,12 +40,14 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.search.SearchCriteriaBuilder;
+import com.qcadoo.model.api.search.SearchQueryBuilder;
 import com.qcadoo.model.api.search.SearchResult;
 import com.qcadoo.model.internal.api.DataAccessService;
 import com.qcadoo.model.internal.api.EntityHookDefinition;
 import com.qcadoo.model.internal.api.InternalDataDefinition;
 import com.qcadoo.model.internal.search.SearchCriteria;
 import com.qcadoo.model.internal.search.SearchCriteriaImpl;
+import com.qcadoo.model.internal.search.SearchQueryImpl;
 import com.qcadoo.model.internal.types.PriorityType;
 
 public final class DataDefinitionImpl implements InternalDataDefinition {
@@ -114,6 +117,12 @@ public final class DataDefinitionImpl implements InternalDataDefinition {
             throw new IllegalStateException("Incompatible types");
         }
         return dataAccessService.save(this, entity);
+    }
+
+    @Override
+    public SearchQueryBuilder find(final String queryString) {
+        checkArgument(queryString != null, "HQL query string must be given");
+        return new SearchQueryImpl(this, dataAccessService, queryString);
     }
 
     @Override
