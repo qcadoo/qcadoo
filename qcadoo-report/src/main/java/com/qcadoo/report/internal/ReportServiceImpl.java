@@ -8,6 +8,7 @@ import java.util.Map;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRExporter;
 import net.sf.jasperreports.engine.JRExporterParameter;
+import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
@@ -28,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.qcadoo.report.api.ReportException;
 import com.qcadoo.report.api.ReportService;
 import com.qcadoo.report.internal.templates.ReportTemplateService;
+import com.qcadoo.security.api.SecurityService;
 
 @Service
 public class ReportServiceImpl implements ReportService {
@@ -39,6 +41,9 @@ public class ReportServiceImpl implements ReportService {
 
     @Autowired
     private SessionFactory sessionFactory;
+
+    @Autowired
+    private SecurityService securityService;
 
     @Override
     public byte[] generateReportForEntity(final String templatePlugin, final String templateName, final ReportType type,
@@ -66,6 +71,8 @@ public class ReportServiceImpl implements ReportService {
         Session session = null;
         try {
             session = sessionFactory.openSession();
+            parameters.put(JRParameter.REPORT_LOCALE, locale);
+            parameters.put("Author", securityService.getCurrentUserName());
             parameters.put(JRHibernateQueryExecuterFactory.PARAMETER_HIBERNATE_SESSION, session);
 
             JasperPrint jasperPrint = JasperFillManager.fillReport(template, parameters);
