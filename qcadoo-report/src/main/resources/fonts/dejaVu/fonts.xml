@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<fontFamilies>
+
+	<fontFamily name="DejaVu">
+		<normal>fonts/dejaVu/DejaVuSans.ttf</normal>
+		<bold>fonts/dejaVu/DejaVuSans-Bold.ttf</bold>
+		<italic>fonts/dejaVu/DejaVuSans-Bold.ttf</italic>
+		<boldItalic>fonts/dejaVu/DejaVuSans-BoldOblique.ttf</boldItalic>
+		<pdfEncoding>Identity-H</pdfEncoding>
+		<pdfEmbedded>true</pdfEmbedded>
+		<exportFonts>
+			<export key="net.sf.jasperreports.html">DejaVu, Arial, Helvetica, sans-serif</export>
+			<export key="net.sf.jasperreports.xhtml">DejaVu, Arial, Helvetica, sans-serif</export>
+		</exportFonts>
+	</fontFamily>
+	
+</fontFamilies>

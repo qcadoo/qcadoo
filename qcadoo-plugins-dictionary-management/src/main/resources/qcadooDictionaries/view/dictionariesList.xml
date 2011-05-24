@@ -42,7 +42,6 @@
 			<option type="paginable" value="true" />
 			<option type="correspondingView" value="qcadooDictionaries/dictionaryDetails" />
 			<option type="correspondingComponent" value="form" />
-			<option type="correspondingViewInModal" value="true" />
 			<option type="deletable" value="false" />
 			<option type="creatable" value="false" />
 			<option type="fullscreen" value="true" />
