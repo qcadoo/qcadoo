@@ -28,6 +28,8 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +37,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -71,8 +72,7 @@ public class FileUploadController {
     }
 
     @RequestMapping(value = "fileUpload", method = RequestMethod.POST)
-    @ResponseBody
-    public String upload(@RequestParam("file") final MultipartFile file, final Locale locale) {
+    public void upload(@RequestParam("file") final MultipartFile file, final HttpServletResponse httpResponse, final Locale locale) {
         String error = null;
         String path = null;
 
@@ -99,6 +99,11 @@ public class FileUploadController {
         } catch (JSONException e) {
             throw new IllegalStateException(e.getMessage(), e);
         }
-        return response.toString();
+        try {
+            httpResponse.setContentType("text/plain");
+            httpResponse.getWriter().print(response.toString());
+        } catch (IOException e) {
+            throw new IllegalStateException(e.getMessage(), e);
+        }
     }
 }

@@ -412,6 +412,14 @@ $.fn.ajaxSubmit = function(options) {
 				else if (s.dataType == 'xml' && !xhr.responseXML && xhr.responseText != null) {
 					xhr.responseXML = toXml(xhr.responseText);
 				}
+				
+				// QCADOO remove <pre> tags - begin
+				var hasPre = /^<pre[^>]*>.*<\/pre>$/.test(xhr.responseText);
+				if (hasPre) {
+					xhr.responseText = xhr.responseText.replace(/^<pre[^>]*>/,"").replace(/<\/pre>$/,"");
+				}
+				// QCADOO remove <pre> tags - end
+				
 				data = httpData(xhr, s.dataType, s);
 			}
 			catch(e){
