@@ -398,6 +398,7 @@ QCD.PageController = function() {
 	}
 	
 	this.goToPage = function(url, isPage, serialize) {
+		QCD.components.elements.utils.LoadingIndicator.blockElement($("body"));
 		if (isPage == undefined || isPage == null) {
 			isPage = true;
 		}
@@ -421,6 +422,7 @@ QCD.PageController = function() {
 	
 	this.goBack = function() {
 		if(canClose()) {
+			QCD.components.elements.utils.LoadingIndicator.blockElement($("body"));
 			window.parent.goBack(this);
 		}
 	}
