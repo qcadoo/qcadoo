@@ -31,7 +31,7 @@ import com.qcadoo.localization.api.TranslationService;
 public class MockTranslationService implements TranslationService {
 
     @Override
-    public String translate(final String code, final Locale locale, final Object... args) {
+    public String translate(final String code, final Locale locale, final String... args) {
         return code;
     }
 
@@ -41,13 +41,13 @@ public class MockTranslationService implements TranslationService {
     }
 
     @Override
-    public String translate(final String code, final String secondCode, final Locale locale, final Object... args) {
+    public String translate(final String code, final String secondCode, final Locale locale, final String... args) {
         return code;
     }
 
     @Override
     public String translate(final String code, final String secondCode, final String thirdCode, final Locale locale,
-            final Object... args) {
+            final String... args) {
         return code;
     }
 

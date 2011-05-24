@@ -72,9 +72,7 @@ public class SearchQueryImpl implements SearchQuery {
     private String prepareDataDefinitions(String queryString) {
         boolean hasSelectSection = !queryString.startsWith("from");
 
-        String tmp = queryString.replaceAll("\\swhere[\\W\\w]*", "").replaceAll("[\\W\\w]*from\\s", "").trim();
-
-        Matcher matcher = pattern.matcher(tmp);
+        Matcher matcher = pattern.matcher(queryString);
 
         while (matcher.find()) {
             InternalDataDefinition dataDefinition = dataAccessService.getDataDefinition(matcher.group(1), matcher.group(2));
@@ -83,7 +81,6 @@ public class SearchQueryImpl implements SearchQuery {
                     dataDefinition.getFullyQualifiedClassName());
 
             if (!hasSelectSection && mainDataDefinition == null) {
-                System.out.println("????");
                 mainDataDefinition = dataDefinition;
             }
         }
@@ -297,6 +294,11 @@ public class SearchQueryImpl implements SearchQuery {
         if (maxResults > 0) {
             query.setMaxResults(maxResults);
         }
+    }
+
+    @Override
+    public boolean hasFirstAndMaxResults() {
+        return firstResult > 0 || maxResults > 0;
     }
 
 }

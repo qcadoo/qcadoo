@@ -508,24 +508,30 @@ public class DataAccessServiceImpl implements DataAccessService {
 
         Query query = searchQuery.createQuery(sessionFactory.getCurrentSession());
 
-        // ??? checkState(dataDefinition.isEnabled(), "DataDefinition belongs to disabled plugin");
-
         searchQuery.addParameters(query);
 
-        // map parameters
+        int totalNumberOfEntities = -1;
 
-        int totalNumberOfEntities = query.list().size(); // it is no neccessary if there is no first and max results
+        if (searchQuery.hasFirstAndMaxResults()) {
+            totalNumberOfEntities = query.list().size();
+            searchQuery.addFirstAndMaxResults(query);
+        }
 
         if (totalNumberOfEntities == 0) {
             LOG.info("There is no entity matching criteria " + searchQuery);
             return getResultSet(null, totalNumberOfEntities, Collections.emptyList());
         }
 
-        searchQuery.addFirstAndMaxResults(query);
-
         List<?> results = query.list();
 
-        System.out.println(" --> " + results.get(0).getClass());
+        if (totalNumberOfEntities == -1) {
+            totalNumberOfEntities = results.size();
+
+            if (totalNumberOfEntities == 0) {
+                LOG.info("There is no entity matching criteria " + searchQuery);
+                return getResultSet(null, totalNumberOfEntities, Collections.emptyList());
+            }
+        }
 
         LOG.info("There are " + totalNumberOfEntities + " entities matching criteria " + searchQuery);
 

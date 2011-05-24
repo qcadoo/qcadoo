@@ -38,6 +38,8 @@
 		<prop key="descriptors">model/integration/*/qcadoo-plugin.xml</prop>
 	</util:properties>
 
+	<context:component-scan base-package="com.qcadoo.tenant" />
+	
 	<context:component-scan base-package="com.qcadoo.plugin" />
 
 	<context:component-scan base-package="com.qcadoo.model" />

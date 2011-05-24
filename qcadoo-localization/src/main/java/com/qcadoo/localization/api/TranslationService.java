@@ -57,7 +57,7 @@ public interface TranslationService {
      *            message's args
      * @return the translation
      */
-    String translate(String code, Locale locale, Object... args);
+    String translate(String code, Locale locale, String... args);
 
     /**
      * Translates given codes into the locale using the args. First translated code will be returned.
@@ -72,7 +72,7 @@ public interface TranslationService {
      *            message's args
      * @return the translation
      */
-    String translate(String code, String secondCode, Locale locale, Object... args);
+    String translate(String code, String secondCode, Locale locale, String... args);
 
     /**
      * Translates given codes into the locale using the args. First translated code will be returned.
@@ -89,7 +89,7 @@ public interface TranslationService {
      *            message's args
      * @return the translation
      */
-    String translate(String code, String secondCode, String thirdCode, Locale locale, Object... args);
+    String translate(String code, String secondCode, String thirdCode, Locale locale, String... args);
 
     /**
      * Returns a map of available locales.
