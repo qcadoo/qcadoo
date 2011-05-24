@@ -365,10 +365,6 @@ QCD.PageController = function() {
 	}
 	
 	this.openPopup = function(url, parentComponent, title) {
-		if (popup) {
-			
-		}
-		
 		if (url.indexOf("?") != -1) {
 			url+="&";
 		} else {
@@ -405,6 +401,14 @@ QCD.PageController = function() {
 		var serializationObject = null;
 		if (serialize == true || serialize == undefined || serialize == null) {
 			serializationObject = getSerializationObject();
+		}
+		if (isPopup) {
+			if (url.indexOf("?") != -1) {
+				url+="&";
+			} else {
+				url+="?";
+			}
+			url+="popup=true";
 		}
 		window.parent.goToPage(url, serializationObject, isPage);
 	}
