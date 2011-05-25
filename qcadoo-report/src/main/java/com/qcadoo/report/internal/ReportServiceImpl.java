@@ -32,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.qcadoo.report.api.ReportException;
 import com.qcadoo.report.api.ReportService;
 import com.qcadoo.report.internal.templates.ReportTemplateService;
+import com.qcadoo.report.internal.util.ReportFormatFactory;
 import com.qcadoo.security.api.SecurityService;
 
 @Service
@@ -83,6 +84,8 @@ public class ReportServiceImpl implements ReportService {
 
             ResourceBundle resourceBundle = new MessageSourceResourceBundle(messageSource, locale);
             parameters.put(JRParameter.REPORT_RESOURCE_BUNDLE, resourceBundle);
+
+            parameters.put(JRParameter.REPORT_FORMAT_FACTORY, new ReportFormatFactory());
 
             JasperPrint jasperPrint = JasperFillManager.fillReport(template, parameters);
 
