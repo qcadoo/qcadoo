@@ -28,6 +28,7 @@ import java.io.StringWriter;
 import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -41,6 +42,9 @@ public class ErrorController {
 
     @Autowired
     private TranslationService translationService;
+
+    @Value("${showExceptionDetails}")
+    private boolean showExceptionDetails;
 
     @RequestMapping(value = "error", method = RequestMethod.GET)
     public ModelAndView getAccessDeniedPageView(@RequestParam final int code, final Locale locale) {
@@ -96,7 +100,7 @@ public class ErrorController {
         mav.addObject("showDetailsText", translationService.translate("qcadooView.errorPage.showDetails", locale));
         mav.addObject("hideDetailsText", translationService.translate("qcadooView.errorPage.hideDetails", locale));
 
-        if (exception != null) {
+        if (exception != null && showExceptionDetails) {
             mav.addObject("showDetails", true);
 
             mav.addObject("rootException", getRootException(exception));

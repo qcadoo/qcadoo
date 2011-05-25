@@ -1,50 +1,30 @@
 #set( $symbol_pound = '#' )
 #set( $symbol_dollar = '$' )
 #set( $symbol_escape = '\' )
-<views plugin="${identifier}" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<view name="${identifier}" modelName="${identifier}" menuAccessible="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns="http://schema.qcadoo.org/view" xsi:schemaLocation="http://schema.qcadoo.org/view http://schema.qcadoo.org/view.xsd">
-	<view name="${identifier}" model="${identifier}" menuAccessible="true">
-		<component type="window" name="window">
-			<ribbon>
-				<group template="gridNewCopyAndRemoveAction" />
-			</ribbon>
-			<component type="grid" name="${identifier}" reference="grid">
-				<option type="column" name="number" fields="number" link="true"
-					width="150" />
-				<option type="column" name="name" fields="name" link="true"
-					width="300" />
-				<option type="order" column="name" direction="asc" />
-				<option type="correspondingView" value="${identifier}/${identifier}Details" />
-				<option type="correspondingComponent" value="form" />
-				<option type="searchable" value="name,number" />
-				<option type="orderable" value="name,number" />
-				<option type="fullscreen" value="true" />
-				<option type="multiselect" value="true" />
-			</component>
-			<option type="fixedHeight" value="true" />
-			<option type="header" value="false" />
+	<component type="window" name="window">
+		<ribbon>
+			<group template="gridNewCopyAndRemoveAction" />
+			<group name="report">
+				<bigButton name="print" icon="pdfIcon16.png"
+					action="#{grid}.generateReportForEntity('${identifier}','sample','pdf',ReportTitle='Sample')" state="enabled" />
+			</group>
+		</ribbon>
+		<component type="grid" name="${identifier}" reference="grid">
+			<option type="column" name="number" fields="number" link="true"
+				width="150" />
+			<option type="column" name="name" fields="name" link="true"
+				width="300" />
+			<option type="order" column="name" direction="asc" />
+			<option type="correspondingView" value="${identifier}/${identifier}Details" />
+			<option type="correspondingComponent" value="form" />
+			<option type="searchable" value="name,number" />
+			<option type="orderable" value="name,number" />
+			<option type="fullscreen" value="true" />
+			<option type="multiselect" value="true" />
 		</component>
-	</view>
-	<view name="${identifier}Details" model="${identifier}">
-		<component type="window" name="window">
-			<ribbon>
-				<group template="navigation" />
-				<group template="formSaveCopyAndRemoveActions" />
-			</ribbon>
-			<windowTab name="mainTab">
-				<component type="form" name="${identifier}Details" reference="form">
-					<component type="gridLayout" name="gridLayout" columns="1" rows="2">
-						<layoutElement column="1" row="1">
-							<component type="input" name="number" field="number" reference="number" />
-						</layoutElement>
-						<layoutElement column="1" row="2">
-							<component type="textarea" name="name" field="name" hasDescription="true" />
-						</layoutElement>				
-					</component>
-					<option type="header" value="true"/>
-					<option type="expression" value="${symbol_pound}name" />
-				</component>
-			</windowTab>
-		</component>
-	</view>
-</views>
+		<option type="fixedHeight" value="true" />
+		<option type="header" value="false" />
+	</component>
+</view>

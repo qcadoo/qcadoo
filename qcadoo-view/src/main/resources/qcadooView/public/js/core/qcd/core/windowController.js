@@ -82,6 +82,7 @@ QCD.WindowController = function(_menuStructure) {
 	
 	window.openModal = function(id, url, serializationObject, onCloseListener) {
 		if (serializationObject != null) {
+			serializationObject.openedModal = true;
 			statesStack.push(serializationObject);
 		}
 		
@@ -129,13 +130,17 @@ QCD.WindowController = function(_menuStructure) {
 		lastPageController = pageController;
 		var stateObject = statesStack.pop();
 		serializationObjectToInsert = stateObject;
-		if (modalsStack.length == 0) {
-			currentPage = stateObject.url;
-			performGoToPage(currentPage);
-		} else {
+		if (stateObject.openedModal) {
 			modal = modalsStack.pop();
 			modal.hide();
-			onIframeLoad();
+			if (modalsStack.length == 0) {
+				onIframeLoad();
+			} else {
+				onIframeLoad(modalsStack[modalsStack.length - 1]);
+			}
+		} else {
+			currentPage = stateObject.url;
+			performGoToPage(currentPage);
 		}
 	}
 	
@@ -221,13 +226,22 @@ QCD.WindowController = function(_menuStructure) {
 				}
 			}
 		}
-		iframe.attr('src', url);
+		// TODO mina
+		if (modalsStack.length > 0) { // isModal
+			var modal = modalsStack[modalsStack.length - 1] // opened modal
+			modal.iframe.attr('src', url);
+		} else {
+			iframe.attr('src', url);
+		}
 	}
 	
-	function onIframeLoad() {
+	function onIframeLoad(iframeToInit) {
+		if (! iframeToInit) {
+			iframeToInit = iframe[0];
+		}
 		try {
-			if (iframe[0].contentWindow.init) {
-				iframe[0].contentWindow.init(serializationObjectToInsert);
+			if (iframeToInit.contentWindow.init) {
+				iframeToInit.contentWindow.init(serializationObjectToInsert);
 				serializationObjectToInsert = null;
 			}
 		} catch (e) {

@@ -4,27 +4,35 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.ResourceBundle;
 
-import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRExporter;
 import net.sf.jasperreports.engine.JRExporterParameter;
+import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.export.JRCsvExporter;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
 import net.sf.jasperreports.engine.export.JRXlsExporter;
+import net.sf.jasperreports.engine.query.JRHibernateQueryExecuterFactory;
 
 import org.apache.commons.io.output.ByteArrayOutputStream;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.support.MessageSourceResourceBundle;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.qcadoo.report.api.ReportException;
 import com.qcadoo.report.api.ReportService;
 import com.qcadoo.report.internal.templates.ReportTemplateService;
+import com.qcadoo.security.api.SecurityService;
 
 @Service
 public class ReportServiceImpl implements ReportService {
@@ -33,6 +41,15 @@ public class ReportServiceImpl implements ReportService {
 
     @Autowired
     private ReportTemplateService reportTemplateService;
+
+    @Autowired
+    private SessionFactory sessionFactory;
+
+    @Autowired
+    private SecurityService securityService;
+
+    @Autowired
+    private MessageSource messageSource;
 
     @Override
     public byte[] generateReportForEntity(final String templatePlugin, final String templateName, final ReportType type,
@@ -44,6 +61,7 @@ public class ReportServiceImpl implements ReportService {
         return generateReport(templatePlugin, templateName, type, parameters, locale);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public byte[] generateReport(final String templatePlugin, final String templateName, final ReportType type,
             final Map<String, Object> parameters, final Locale locale) throws ReportException {
@@ -56,9 +74,17 @@ public class ReportServiceImpl implements ReportService {
         if (template == null) {
             throw new ReportException(ReportException.Type.NO_TEMPLATE_FOUND, templatePlugin + "." + templateName);
         }
-
+        Session session = null;
         try {
-            JasperPrint jasperPrint = JasperFillManager.fillReport(template, parameters, new JREmptyDataSource());
+            session = sessionFactory.openSession();
+            parameters.put(JRParameter.REPORT_LOCALE, locale);
+            parameters.put("Author", securityService.getCurrentUserName());
+            parameters.put(JRHibernateQueryExecuterFactory.PARAMETER_HIBERNATE_SESSION, session);
+
+            ResourceBundle resourceBundle = new MessageSourceResourceBundle(messageSource, locale);
+            parameters.put(JRParameter.REPORT_RESOURCE_BUNDLE, resourceBundle);
+
+            JasperPrint jasperPrint = JasperFillManager.fillReport(template, parameters);
 
             JRExporter exporter = getExporter(type);
 
@@ -72,6 +98,8 @@ public class ReportServiceImpl implements ReportService {
 
         } catch (JRException e) {
             throw new ReportException(ReportException.Type.GENERATE_REPORT_EXCEPTION, e);
+        } finally {
+            session.close();
         }
     }
 
