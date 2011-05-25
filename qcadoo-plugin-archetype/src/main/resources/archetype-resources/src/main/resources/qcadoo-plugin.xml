@@ -38,6 +38,8 @@
 		<view:view resource="view/${identifier}.xml" />
 		
 		<view:resource uri="public/**/*" />
+		
+		<report:report-template name="sample" resource="report/sample.jrxml" />
 
 	</modules>
 

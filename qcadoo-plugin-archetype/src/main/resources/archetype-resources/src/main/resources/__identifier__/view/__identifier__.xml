@@ -7,6 +7,10 @@
 		<component type="window" name="window">
 			<ribbon>
 				<group template="gridNewCopyAndRemoveAction" />
+				<group name="report">
+					<bigButton name="print" icon="pdfIcon16.png"
+						action="#{grid}.generateReportForEntity('${identifier}','sample','pdf',ReportTitle='Sample')" state="enabled" />
+				</group>
 			</ribbon>
 			<component type="grid" name="${identifier}" reference="grid">
 				<option type="column" name="number" fields="number" link="true"
