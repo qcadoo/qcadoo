@@ -16,9 +16,7 @@ public class ReportFormatFactory implements FormatFactory {
 
     @Override
     public NumberFormat createNumberFormat(String pattern, Locale locale) {
-        NumberFormat decimalNumberFormat = NumberFormat.getNumberInstance(locale);
-        decimalNumberFormat.setMinimumFractionDigits(3);
-        return decimalNumberFormat;
+        return ReportNumberFormat.getInstance(locale);
     }
 
 }
