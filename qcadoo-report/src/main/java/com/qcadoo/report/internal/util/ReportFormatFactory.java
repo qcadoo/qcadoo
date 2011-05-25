@@ -11,7 +11,7 @@ public class ReportFormatFactory implements FormatFactory {
 
     @Override
     public DateFormat createDateFormat(String pattern, Locale locale, TimeZone timezone) {
-        return DateFormat.getDateInstance(DateFormat.MEDIUM, locale);
+        return DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale);
     }
 
     @Override
