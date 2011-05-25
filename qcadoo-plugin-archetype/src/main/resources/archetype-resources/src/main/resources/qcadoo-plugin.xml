@@ -5,7 +5,8 @@
 <plugin plugin="${identifier}" version="${version}"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schema.qcadoo.org/plugin"
 	xmlns:model="http://schema.qcadoo.org/modules/model" xmlns:view="http://schema.qcadoo.org/modules/view"
-	xmlns:localization="http://schema.qcadoo.org/modules/localization"
+	xmlns:menu="http://schema.qcadoo.org/modules/menu" xmlns:localization="http://schema.qcadoo.org/modules/localization"
+	xmlns:report="http://schema.qcadoo.org/modules/report"
 	xsi:schemaLocation="
        http://schema.qcadoo.org/plugin
        http://schema.qcadoo.org/plugin.xsd
@@ -14,7 +15,11 @@
        http://schema.qcadoo.org/modules/view
        http://schema.qcadoo.org/modules/view.xsd
        http://schema.qcadoo.org/modules/localization
-       http://schema.qcadoo.org/modules/localization.xsd">
+       http://schema.qcadoo.org/modules/localization.xsd
+       http://schema.qcadoo.org/modules/report
+       http://schema.qcadoo.org/modules/report.xsd
+       http://schema.qcadoo.org/modules/menu
+       http://schema.qcadoo.org/modules/menu.xsd">
 
 	<information>
 		<name>${name}</name>
@@ -30,12 +35,13 @@
 		
 		<model:model model="${identifier}" resource="model/${identifier}.xml" />
 		
-		<view:menu-category name="${identifier}" />
+		<menu:menu-category name="${identifier}" />
 
-		<view:menu-item name="${identifier}" category="${identifier}"
+		<menu:menu-item name="${identifier}" category="${identifier}"
 			view="${identifier}" />
 
 		<view:view resource="view/${identifier}.xml" />
+		<view:view resource="view/${identifier}Details.xml" />
 		
 		<view:resource uri="public/**/*" />
 		
