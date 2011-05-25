@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRExporter;
@@ -23,6 +24,8 @@ import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.support.MessageSourceResourceBundle;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,6 +47,9 @@ public class ReportServiceImpl implements ReportService {
 
     @Autowired
     private SecurityService securityService;
+
+    @Autowired
+    private MessageSource messageSource;
 
     @Override
     public byte[] generateReportForEntity(final String templatePlugin, final String templateName, final ReportType type,
@@ -74,6 +80,9 @@ public class ReportServiceImpl implements ReportService {
             parameters.put(JRParameter.REPORT_LOCALE, locale);
             parameters.put("Author", securityService.getCurrentUserName());
             parameters.put(JRHibernateQueryExecuterFactory.PARAMETER_HIBERNATE_SESSION, session);
+
+            ResourceBundle resourceBundle = new MessageSourceResourceBundle(messageSource, locale);
+            parameters.put(JRParameter.REPORT_RESOURCE_BUNDLE, resourceBundle);
 
             JasperPrint jasperPrint = JasperFillManager.fillReport(template, parameters);
 
