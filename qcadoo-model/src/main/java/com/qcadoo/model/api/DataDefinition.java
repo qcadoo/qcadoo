@@ -93,6 +93,15 @@ public interface DataDefinition {
     SearchCriteriaBuilder find();
 
     /**
+     * Create search criteria builder for this data definition.
+     * 
+     * @param alias
+     *            alias
+     * @return new search criteria builder
+     */
+    SearchCriteriaBuilder findWithAlias(String alias);
+
+    /**
      * Create search query builder for given HQL query string.
      * 
      * @param queryString

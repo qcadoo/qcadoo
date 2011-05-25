@@ -26,7 +26,6 @@ package com.qcadoo.model.internal;
 import java.util.List;
 
 import org.hibernate.Criteria;
-import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +34,7 @@ import org.springframework.stereotype.Service;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.internal.api.EntityService;
+import com.qcadoo.model.internal.api.HibernateService;
 import com.qcadoo.model.internal.api.InternalDataDefinition;
 import com.qcadoo.model.internal.api.PriorityService;
 import com.qcadoo.model.internal.types.PriorityType;
@@ -43,7 +43,7 @@ import com.qcadoo.model.internal.types.PriorityType;
 public final class PriorityServiceImpl implements PriorityService {
 
     @Autowired
-    private SessionFactory sessionFactory;
+    private HibernateService hibernateService;
 
     @Autowired
     private EntityService entityService;
@@ -101,7 +101,7 @@ public final class PriorityServiceImpl implements PriorityService {
 
         entityService.setField(databaseEntity, fieldDefinition, targetPriority);
 
-        getCurrentSession().update(databaseEntity);
+        hibernateService.getCurrentSession().update(databaseEntity);
     }
 
     private int getIfTargetPriorityIsNotTooHigh(final InternalDataDefinition dataDefinition, final Object databaseEntity,
@@ -146,12 +146,8 @@ public final class PriorityServiceImpl implements PriorityService {
         for (Object entity : entitiesToDecrement) {
             int priority = (Integer) entityService.getField(entity, fieldDefinition);
             entityService.setField(entity, fieldDefinition, priority + diff);
-            getCurrentSession().update(entity);
+            hibernateService.getCurrentSession().update(entity);
         }
-    }
-
-    private org.hibernate.classic.Session getCurrentSession() {
-        return sessionFactory.getCurrentSession();
     }
 
     private int getTotalNumberOfEntities(final InternalDataDefinition dataDefinition, final FieldDefinition fieldDefinition,
@@ -164,7 +160,7 @@ public final class PriorityServiceImpl implements PriorityService {
     private Criteria getCriteria(final InternalDataDefinition dataDefinition, final FieldDefinition fieldDefinition,
             final Object databaseEntity) {
 
-        Criteria criteria = getCurrentSession().createCriteria(dataDefinition.getClassForEntity());
+        Criteria criteria = hibernateService.getCurrentSession().createCriteria(dataDefinition.getClassForEntity());
 
         FieldDefinition scopeFieldDefinition = getScopeForPriority(fieldDefinition);
 

@@ -87,7 +87,7 @@ public class HookTest extends DataAccessTest {
 
         SampleSimpleDatabaseObject databaseObject = new SampleSimpleDatabaseObject(1L);
 
-        given(sessionFactory.getCurrentSession().get(any(Class.class), Matchers.anyInt())).willReturn(databaseObject);
+        given(session.get(any(Class.class), Matchers.anyInt())).willReturn(databaseObject);
 
         dataDefinition.addUpdateHook(new EntityHookDefinitionImpl(CustomEntityService.class.getName(), "onUpdate",
                 applicationContext));
@@ -129,7 +129,7 @@ public class HookTest extends DataAccessTest {
 
         SampleSimpleDatabaseObject databaseObject = new SampleSimpleDatabaseObject(1L);
 
-        given(sessionFactory.getCurrentSession().get(any(Class.class), Matchers.anyInt())).willReturn(databaseObject);
+        given(session.get(any(Class.class), Matchers.anyInt())).willReturn(databaseObject);
 
         dataDefinition
                 .addSaveHook(new EntityHookDefinitionImpl(CustomEntityService.class.getName(), "onSave", applicationContext));
@@ -151,7 +151,7 @@ public class HookTest extends DataAccessTest {
 
         SampleSimpleDatabaseObject databaseObject = new SampleSimpleDatabaseObject(1L);
 
-        given(sessionFactory.getCurrentSession().get(any(Class.class), Matchers.anyInt())).willReturn(databaseObject);
+        given(session.get(any(Class.class), Matchers.anyInt())).willReturn(databaseObject);
 
         dataDefinition.addUpdateHook(new EntityHookDefinitionImpl(CustomEntityService.class.getName(), "onUpdate",
                 applicationContext));

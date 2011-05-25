@@ -30,30 +30,27 @@ import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
 
 import org.hibernate.Criteria;
-import org.hibernate.SessionFactory;
 import org.hibernate.classic.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projection;
+import org.hibernate.engine.SessionImplementor;
 import org.junit.Before;
+import org.mockito.Mockito;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.DictionaryService;
+import com.qcadoo.model.api.search.SearchRestrictions;
 import com.qcadoo.model.api.types.HasManyType;
 import com.qcadoo.model.api.types.TreeType;
 import com.qcadoo.model.beans.sample.SampleParentDatabaseObject;
 import com.qcadoo.model.beans.sample.SampleSimpleDatabaseObject;
 import com.qcadoo.model.beans.sample.SampleTreeDatabaseObject;
-import com.qcadoo.model.internal.DataAccessServiceImpl;
-import com.qcadoo.model.internal.DataDefinitionImpl;
-import com.qcadoo.model.internal.EntityServiceImpl;
-import com.qcadoo.model.internal.FieldDefinitionImpl;
-import com.qcadoo.model.internal.PriorityServiceImpl;
-import com.qcadoo.model.internal.ValidationServiceImpl;
 import com.qcadoo.model.internal.api.DataAccessService;
 import com.qcadoo.model.internal.api.EntityService;
+import com.qcadoo.model.internal.api.HibernateService;
 import com.qcadoo.model.internal.api.PriorityService;
 import com.qcadoo.model.internal.api.ValidationService;
 import com.qcadoo.model.internal.types.BelongsToEntityType;
@@ -70,9 +67,9 @@ public abstract class DataAccessTest {
 
     protected final DataDefinitionService dataDefinitionService = mock(DataDefinitionService.class);
 
-    protected final SessionFactory sessionFactory = mock(SessionFactory.class);
+    protected final HibernateService hibernateService = mock(HibernateService.class);
 
-    protected final Session session = mock(Session.class);
+    protected final Session session = mock(Session.class, Mockito.withSettings().extraInterfaces(SessionImplementor.class));
 
     protected final Criteria criteria = mock(Criteria.class, RETURNS_DEEP_STUBS);
 
@@ -131,17 +128,19 @@ public abstract class DataAccessTest {
         validationService = new ValidationServiceImpl();
 
         entityService = new EntityServiceImpl();
-        ReflectionTestUtils.setField(entityService, "sessionFactory", sessionFactory);
+        ReflectionTestUtils.setField(entityService, "hibernateService", hibernateService);
 
         priorityService = new PriorityServiceImpl();
         ReflectionTestUtils.setField(priorityService, "entityService", entityService);
-        ReflectionTestUtils.setField(priorityService, "sessionFactory", sessionFactory);
+        ReflectionTestUtils.setField(priorityService, "hibernateService", hibernateService);
 
         dataAccessService = new DataAccessServiceImpl();
         ReflectionTestUtils.setField(dataAccessService, "entityService", entityService);
-        ReflectionTestUtils.setField(dataAccessService, "sessionFactory", sessionFactory);
         ReflectionTestUtils.setField(dataAccessService, "priorityService", priorityService);
         ReflectionTestUtils.setField(dataAccessService, "validationService", validationService);
+        ReflectionTestUtils.setField(dataAccessService, "hibernateService", hibernateService);
+
+        new SearchRestrictions(dataAccessService);
 
         treeDataDefinition = new DataDefinitionImpl("tree", "tree.entity", dataAccessService);
         given(dataDefinitionService.get("tree", "entity")).willReturn(treeDataDefinition);
@@ -221,7 +220,7 @@ public abstract class DataAccessTest {
         dataDefinition.withField(fieldDefinitionLazyBelongsTo);
         dataDefinition.setFullyQualifiedClassName(SampleSimpleDatabaseObject.class.getCanonicalName());
 
-        given(sessionFactory.getCurrentSession()).willReturn(session);
+        given(hibernateService.getCurrentSession()).willReturn(session);
 
         given(session.createCriteria(any(Class.class))).willReturn(criteria);
 

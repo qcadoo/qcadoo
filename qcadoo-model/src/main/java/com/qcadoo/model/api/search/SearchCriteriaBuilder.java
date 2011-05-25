@@ -23,6 +23,8 @@
  */
 package com.qcadoo.model.api.search;
 
+import org.hibernate.criterion.DetachedCriteria;
+
 import com.qcadoo.model.api.Entity;
 
 /**
@@ -50,14 +52,18 @@ public interface SearchCriteriaBuilder {
      * Sets the ascending order by given field, by default there is an order by id.
      * 
      * @return this search builder
+     * @deprecated
      */
+    @Deprecated
     SearchCriteriaBuilder orderAscBy(String fieldName);
 
     /**
      * Sets the descending order by given field, by default there is an order by id.
      * 
      * @return this search builder
+     * @deprecated
      */
+    @Deprecated
     SearchCriteriaBuilder orderDescBy(String fieldName);
 
     /**
@@ -88,7 +94,9 @@ public interface SearchCriteriaBuilder {
      *            expected value
      * @see #like(String, String)
      * @return this search builder
+     * @deprecated
      */
+    @Deprecated
     SearchCriteriaBuilder isEq(String fieldName, Object value);
 
     /**
@@ -99,7 +107,9 @@ public interface SearchCriteriaBuilder {
      * @param value
      *            expected value
      * @return this search builder
+     * @deprecated
      */
+    @Deprecated
     SearchCriteriaBuilder like(String fieldName, String value);
 
     /**
@@ -110,7 +120,9 @@ public interface SearchCriteriaBuilder {
      * @param value
      *            expected value
      * @return this search builder
+     * @deprecated
      */
+    @Deprecated
     SearchCriteriaBuilder isLe(String fieldName, Object value);
 
     /**
@@ -121,7 +133,9 @@ public interface SearchCriteriaBuilder {
      * @param value
      *            expected value
      * @return this search builder
+     * @deprecated
      */
+    @Deprecated
     SearchCriteriaBuilder isLt(String fieldName, Object value);
 
     /**
@@ -132,7 +146,9 @@ public interface SearchCriteriaBuilder {
      * @param value
      *            expected value
      * @return this search builder
+     * @deprecated
      */
+    @Deprecated
     SearchCriteriaBuilder isGe(String fieldName, Object value);
 
     /**
@@ -143,7 +159,9 @@ public interface SearchCriteriaBuilder {
      * @param value
      *            expected value
      * @return this search builder
+     * @deprecated
      */
+    @Deprecated
     SearchCriteriaBuilder isGt(String fieldName, Object value);
 
     /**
@@ -156,7 +174,9 @@ public interface SearchCriteriaBuilder {
      *            expected value
      * @see #like(String, String)
      * @return this search builder
+     * @deprecated
      */
+    @Deprecated
     SearchCriteriaBuilder isNe(String fieldName, Object value);
 
     /**
@@ -165,7 +185,9 @@ public interface SearchCriteriaBuilder {
      * @param fieldName
      *            field's name
      * @return this search builder
+     * @deprecated
      */
+    @Deprecated
     SearchCriteriaBuilder isNotNull(String fieldName);
 
     /**
@@ -174,7 +196,9 @@ public interface SearchCriteriaBuilder {
      * @param fieldName
      *            field's name
      * @return this search builder
+     * @deprecated
      */
+    @Deprecated
     SearchCriteriaBuilder isNull(String fieldName);
 
     /**
@@ -182,7 +206,9 @@ public interface SearchCriteriaBuilder {
      * 
      * @see #closeNot()
      * @return this search builder
+     * @deprecated
      */
+    @Deprecated
     SearchCriteriaBuilder openNot();
 
     /**
@@ -190,7 +216,9 @@ public interface SearchCriteriaBuilder {
      * 
      * @see #openNot()
      * @return this search builder
+     * @deprecated
      */
+    @Deprecated
     SearchCriteriaBuilder closeNot();
 
     /**
@@ -198,7 +226,9 @@ public interface SearchCriteriaBuilder {
      * 
      * @see #closeOr()
      * @return this search builder
+     * @deprecated
      */
+    @Deprecated
     SearchCriteriaBuilder openOr();
 
     /**
@@ -206,7 +236,9 @@ public interface SearchCriteriaBuilder {
      * 
      * @see #openOr()
      * @return this search builder
+     * @deprecated
      */
+    @Deprecated
     SearchCriteriaBuilder closeOr();
 
     /**
@@ -214,7 +246,9 @@ public interface SearchCriteriaBuilder {
      * 
      * @see #closeAnd()
      * @return this search builder
+     * @deprecated
      */
+    @Deprecated
     SearchCriteriaBuilder openAnd();
 
     /**
@@ -222,7 +256,9 @@ public interface SearchCriteriaBuilder {
      * 
      * @see #openAnd()
      * @return this search builder
+     * @deprecated
      */
+    @Deprecated
     SearchCriteriaBuilder closeAnd();
 
     /**
@@ -233,7 +269,9 @@ public interface SearchCriteriaBuilder {
      * @param entityOrId
      *            entity or its id
      * @return this search builder
+     * @deprecated
      */
+    @Deprecated
     SearchCriteriaBuilder belongsTo(String fieldName, Object entityOrId);
 
     /**
@@ -243,7 +281,9 @@ public interface SearchCriteriaBuilder {
      *            expected id
      * 
      * @return this search builder
+     * @deprecated
      */
+    @Deprecated
     SearchCriteriaBuilder isIdEq(Long id);
 
     /**
@@ -253,7 +293,9 @@ public interface SearchCriteriaBuilder {
      *            expected id
      * 
      * @return this search builder
+     * @deprecated
      */
+    @Deprecated
     SearchCriteriaBuilder isIdLe(Long id);
 
     /**
@@ -263,7 +305,9 @@ public interface SearchCriteriaBuilder {
      *            expected id
      * 
      * @return this search builder
+     * @deprecated
      */
+    @Deprecated
     SearchCriteriaBuilder isIdLt(Long id);
 
     /**
@@ -273,7 +317,9 @@ public interface SearchCriteriaBuilder {
      *            expected id
      * 
      * @return this search builder
+     * @deprecated
      */
+    @Deprecated
     SearchCriteriaBuilder isIdGe(Long id);
 
     /**
@@ -283,7 +329,9 @@ public interface SearchCriteriaBuilder {
      *            expected id
      * 
      * @return this search builder
+     * @deprecated
      */
+    @Deprecated
     SearchCriteriaBuilder isIdGt(Long id);
 
     /**
@@ -293,7 +341,41 @@ public interface SearchCriteriaBuilder {
      *            expected id
      * 
      * @return this search builder
+     * @deprecated
      */
+    @Deprecated
     SearchCriteriaBuilder isIdNe(Long id);
+
+    /**
+     * @since 0.4.1
+     */
+    public SearchCriteriaBuilder setProjection(SearchProjection projection);
+
+    /**
+     * @since 0.4.1
+     */
+    public SearchCriteriaBuilder add(SearchCriterion criterion);
+
+    /**
+     * @since 0.4.1
+     */
+    public SearchCriteriaBuilder addOrder(SearchOrder order);
+
+    /**
+     * @since 0.4.1
+     */
+    public SearchCriteriaBuilder createAlias(String associationPath, String alias);
+
+    /**
+     * @since 0.4.1
+     */
+    public SearchCriteriaBuilder createCriteria(String associationPath, String alias);
+
+    /**
+     * Internal use only.
+     * 
+     * @since 0.4.1
+     */
+    DetachedCriteria getHibernateDetachedCriteria();
 
 }

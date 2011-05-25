@@ -61,6 +61,11 @@ public class DynamicDataDefinitionImpl implements InternalDataDefinition {
     }
 
     @Override
+    public SearchCriteriaBuilder findWithAlias(final String alias) {
+        throw new UnsupportedOperationException("Cannot find entity for dynamic data definition");
+    }
+
+    @Override
     public SearchQueryBuilder find(final String queryString) {
         throw new UnsupportedOperationException("Cannot find entity for dynamic data definition");
     }

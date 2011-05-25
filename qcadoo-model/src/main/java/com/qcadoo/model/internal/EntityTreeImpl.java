@@ -34,6 +34,9 @@ import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.EntityTree;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.search.SearchCriteriaBuilder;
+import com.qcadoo.model.api.search.SearchOrders;
+import com.qcadoo.model.api.search.SearchRestrictions;
+import com.qcadoo.model.internal.types.BelongsToEntityType;
 
 public final class EntityTreeImpl extends AbstractList<Entity> implements EntityTree {
 
@@ -59,7 +62,7 @@ public final class EntityTreeImpl extends AbstractList<Entity> implements Entity
 
     private void loadEntities() {
         if (entities == null) {
-            entities = find().orderAscBy("priority").list().getEntities();
+            entities = find().addOrder(SearchOrders.asc("priority")).list().getEntities();
 
             Map<Long, EntityTreeNodeImpl> entitiesById = new LinkedHashMap<Long, EntityTreeNodeImpl>();
 
@@ -93,7 +96,9 @@ public final class EntityTreeImpl extends AbstractList<Entity> implements Entity
 
     @Override
     public SearchCriteriaBuilder find() {
-        return dataDefinition.find().belongsTo(joinFieldDefinition.getName(), belongsToId);
+        return dataDefinition.find().add(
+                SearchRestrictions.belongsTo(joinFieldDefinition.getName(),
+                        ((BelongsToEntityType) joinFieldDefinition.getType()).getDataDefinition(), belongsToId));
     }
 
     @Override

@@ -29,7 +29,6 @@ import java.util.Locale;
 import java.util.Map.Entry;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.hibernate.SessionFactory;
 import org.hibernate.proxy.HibernateProxy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,6 +40,7 @@ import com.qcadoo.model.api.types.BelongsToType;
 import com.qcadoo.model.api.types.HasManyType;
 import com.qcadoo.model.api.types.TreeType;
 import com.qcadoo.model.internal.api.EntityService;
+import com.qcadoo.model.internal.api.HibernateService;
 import com.qcadoo.model.internal.api.InternalDataDefinition;
 import com.qcadoo.model.internal.api.InternalFieldDefinition;
 import com.qcadoo.model.internal.types.PasswordType;
@@ -49,7 +49,7 @@ import com.qcadoo.model.internal.types.PasswordType;
 public final class EntityServiceImpl implements EntityService {
 
     @Autowired
-    private SessionFactory sessionFactory;
+    private HibernateService hibernateService;
 
     @Autowired
     private ExpressionService expressionService;
@@ -95,7 +95,7 @@ public final class EntityServiceImpl implements EntityService {
         }
 
         Class<?> referencedClass = dataDefinition.getClassForEntity();
-        return sessionFactory.getCurrentSession().load(referencedClass, id);
+        return hibernateService.getCurrentSession().load(referencedClass, id);
     }
 
     @Override

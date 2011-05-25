@@ -36,6 +36,8 @@ import org.junit.Test;
 
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
+import com.qcadoo.model.api.search.SearchOrders;
+import com.qcadoo.model.api.search.SearchRestrictions;
 
 public class CrudIntegrationTest extends IntegrationTest {
 
@@ -233,7 +235,7 @@ public class CrudIntegrationTest extends IntegrationTest {
         Entity machine2 = machineDataDefinition.save(createMachine("def"));
 
         // when
-        List<Entity> machines = machineDataDefinition.find().orderDescBy("name").list().getEntities();
+        List<Entity> machines = machineDataDefinition.find().addOrder(SearchOrders.desc("name")).list().getEntities();
 
         // then
         assertNotNull(machines);
@@ -251,7 +253,7 @@ public class CrudIntegrationTest extends IntegrationTest {
         Entity machine2 = machineDataDefinition.save(createMachine("def"));
 
         // when
-        List<Entity> machines = machineDataDefinition.find().orderAscBy("name").list().getEntities();
+        List<Entity> machines = machineDataDefinition.find().addOrder(SearchOrders.asc("name")).list().getEntities();
 
         // then
         assertNotNull(machines);
@@ -270,14 +272,17 @@ public class CrudIntegrationTest extends IntegrationTest {
         Entity product3 = productDataDefinition.save(createProduct("def", "def"));
 
         // when
-        List<Entity> products = productDataDefinition.find().orderDescBy("name").orderAscBy("number").list().getEntities();
+        List<Entity> products = productDataDefinition.find().addOrder(SearchOrders.desc("name"))
+                .addOrder(SearchOrders.asc("number")).list().getEntities();
+
+        System.out.println(products);
 
         // then
         assertNotNull(products);
         assertEquals(2, products.size());
         assertFalse(product2.isValid());
-        assertEquals(product1.getId(), products.get(0).getId());
-        assertEquals(product3.getId(), products.get(1).getId());
+        assertEquals(product3.getId(), products.get(0).getId());
+        assertEquals(product1.getId(), products.get(1).getId());
     }
 
     @Test
@@ -289,7 +294,7 @@ public class CrudIntegrationTest extends IntegrationTest {
         Entity machine2 = machineDataDefinition.save(createMachine("def"));
 
         // when
-        List<Entity> machines = machineDataDefinition.find().isEq("name", "def").list().getEntities();
+        List<Entity> machines = machineDataDefinition.find().add(SearchRestrictions.eq("name", "def")).list().getEntities();
 
         // then
         assertNotNull(machines);
@@ -306,7 +311,8 @@ public class CrudIntegrationTest extends IntegrationTest {
         machineDataDefinition.save(createMachine("def"));
 
         // when
-        List<Entity> entities = machineDataDefinition.find().openOr().isEq("name", "def").isEq("name", "asd").closeOr().list()
+        List<Entity> entities = machineDataDefinition.find()
+                .add(SearchRestrictions.or(SearchRestrictions.eq("name", "def"), SearchRestrictions.eq("name", "asd"))).list()
                 .getEntities();
 
         // then

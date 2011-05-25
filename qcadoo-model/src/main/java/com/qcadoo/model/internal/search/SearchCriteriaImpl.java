@@ -26,86 +26,75 @@ package com.qcadoo.model.internal.search;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.ArrayList;
-import java.util.Deque;
-import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.hibernate.Criteria;
+import org.hibernate.classic.Session;
+import org.hibernate.criterion.DetachedCriteria;
 
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
-import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.search.SearchCriteriaBuilder;
+import com.qcadoo.model.api.search.SearchCriterion;
+import com.qcadoo.model.api.search.SearchOrder;
+import com.qcadoo.model.api.search.SearchOrders;
+import com.qcadoo.model.api.search.SearchProjection;
+import com.qcadoo.model.api.search.SearchRestrictions;
 import com.qcadoo.model.api.search.SearchResult;
-import com.qcadoo.model.api.types.BelongsToType;
 import com.qcadoo.model.internal.api.InternalDataDefinition;
-import com.qcadoo.model.internal.api.ValueAndError;
-import com.qcadoo.model.internal.search.restrictions.BelongsToRestriction;
-import com.qcadoo.model.internal.search.restrictions.IsNotNullRestriction;
-import com.qcadoo.model.internal.search.restrictions.IsNullRestriction;
-import com.qcadoo.model.internal.search.restrictions.LikeRestriction;
-import com.qcadoo.model.internal.search.restrictions.LogicalOperatorRestriction;
-import com.qcadoo.model.internal.search.restrictions.SimpleRestriction;
 
 public final class SearchCriteriaImpl implements SearchCriteriaBuilder, SearchCriteria {
 
     private static final int DEFAULT_MAX_RESULTS = Integer.MAX_VALUE;
 
+    private final DataDefinition sourceDataDefinition;
+
+    private final DetachedCriteria criteria;
+
     private int maxResults = DEFAULT_MAX_RESULTS;
 
-    private int firstResult = 0;
+    private int firstResult;
 
-    private Order order;
+    private final List<SearchOrder> orders = new ArrayList<SearchOrder>();
 
-    private final Deque<List<Restriction>> restrictions = new LinkedList<List<Restriction>>();
-
-    private final DataDefinition dataDefinition;
+    private boolean hasProjection;
 
     public SearchCriteriaImpl(final DataDefinition dataDefinition) {
         checkNotNull(dataDefinition);
-        this.dataDefinition = dataDefinition;
-        if (dataDefinition.getPriorityField() != null) {
-            order = Order.asc(dataDefinition.getPriorityField().getName());
-        } else {
-            order = Order.asc();
-        }
-        restrictions.offerFirst(new ArrayList<Restriction>());
+        sourceDataDefinition = dataDefinition;
+        criteria = DetachedCriteria.forEntityName(((InternalDataDefinition) dataDefinition).getFullyQualifiedClassName());
+    }
+
+    public SearchCriteriaImpl(final DataDefinition dataDefinition, final String alias) {
+        checkNotNull(dataDefinition);
+        sourceDataDefinition = dataDefinition;
+        criteria = DetachedCriteria.forEntityName(((InternalDataDefinition) dataDefinition).getFullyQualifiedClassName(), alias);
+    }
+
+    private SearchCriteriaImpl(final DetachedCriteria subcriteria) {
+        sourceDataDefinition = null;
+        criteria = subcriteria;
     }
 
     @Override
     public DataDefinition getDataDefinition() {
-        return dataDefinition;
-    }
-
-    @Override
-    public int getMaxResults() {
-        return maxResults;
-    }
-
-    @Override
-    public int getFirstResult() {
-        return firstResult;
-    }
-
-    @Override
-    public Order getOrder() {
-        return order;
-    }
-
-    @Override
-    public List<Restriction> getRestrictions() {
-        if (restrictions.size() == 1) {
-            return restrictions.element();
+        if (!hasProjection) {
+            return sourceDataDefinition;
         } else {
-            throw new IllegalStateException("Restrictions stack must have exactly one element, found " + restrictions.size());
+            return null;
         }
     }
 
     @Override
+    public DetachedCriteria getHibernateDetachedCriteria() {
+        return criteria;
+    }
+
+    @Override
     public SearchResult list() {
-        return ((InternalDataDefinition) dataDefinition).find(this);
+        return ((InternalDataDefinition) sourceDataDefinition).find(this);
     }
 
     @Override
@@ -121,23 +110,27 @@ public final class SearchCriteriaImpl implements SearchCriteriaBuilder, SearchCr
         }
     }
 
-    private SearchCriteriaBuilder addRestriction(final Restriction restriction) {
-        this.restrictions.element().add(restriction);
-        return this;
+    @Override
+    public Criteria createCriteria(final Session session) {
+        Criteria executableCriteria = criteria.getExecutableCriteria(session);
+
+        return executableCriteria;
     }
 
     @Override
-    public SearchCriteriaBuilder orderAscBy(final String fieldName) {
-        checkNotNull(fieldName);
-        this.order = Order.asc(fieldName);
-        return this;
+    public void addFirstAndMaxResults(final Criteria criteria) {
+        criteria.setMaxResults(maxResults).setFirstResult(firstResult);
     }
 
     @Override
-    public SearchCriteriaBuilder orderDescBy(final String fieldName) {
-        checkNotNull(fieldName);
-        this.order = Order.desc(fieldName);
-        return this;
+    public void addOrders(final Criteria criteria) {
+        if (orders.size() == 0) {
+            criteria.addOrder(org.hibernate.criterion.Order.asc("id"));
+        } else {
+            for (SearchOrder order : orders) {
+                criteria.addOrder(order.getHibernateOrder());
+            }
+        }
     }
 
     @Override
@@ -153,6 +146,37 @@ public final class SearchCriteriaImpl implements SearchCriteriaBuilder, SearchCr
     }
 
     @Override
+    public SearchCriteriaBuilder setProjection(final SearchProjection projection) {
+        criteria.setProjection(projection.getHibernateProjection());
+        hasProjection = true;
+        return this;
+    }
+
+    @Override
+    public SearchCriteriaBuilder add(final SearchCriterion criterion) {
+        criteria.add(criterion.getHibernateCriterion());
+        return this;
+    }
+
+    @Override
+    public SearchCriteriaBuilder addOrder(final SearchOrder order) {
+        orders.add(order);
+        return this;
+    }
+
+    @Override
+    public SearchCriteriaBuilder createAlias(final String associationPath, final String alias) {
+        criteria.createAlias(associationPath, alias);
+        return this;
+    }
+
+    @Override
+    public SearchCriteriaBuilder createCriteria(final String associationPath, final String alias) {
+        DetachedCriteria subcriteria = criteria.createCriteria(associationPath, alias);
+        return new SearchCriteriaImpl(subcriteria);
+    }
+
+    @Override
     public int hashCode() {
         return HashCodeBuilder.reflectionHashCode(this);
     }
@@ -164,29 +188,23 @@ public final class SearchCriteriaImpl implements SearchCriteriaBuilder, SearchCr
 
     @Override
     public String toString() {
-        return "SearchCriteria[dataDefinition=" + dataDefinition.getPluginIdentifier() + "." + dataDefinition.getName()
-                + ", maxResults=" + maxResults + ", firstResult=" + firstResult + ", order=" + order + ", restrictions="
-                + restrictions + "]";
+        return "SearchCriteria[criteria=" + criteria + ", maxResults=" + maxResults + ", firstResult=" + firstResult + "]";
     }
+
+    // depreceted
 
     @Override
     public SearchCriteriaBuilder like(final String fieldName, final String value) {
-        return addRestriction(new LikeRestriction(fieldName, value.replace('*', '%').replace('?', '_')));
+        return add(SearchRestrictions.like(fieldName, value));
     }
 
     @Override
     public SearchCriteriaBuilder isEq(final String fieldName, final Object value) {
         if (isLikeRestriction(value)) {
-            return like(fieldName, (String) value);
+            return add(SearchRestrictions.like(fieldName, (String) value));
         }
 
-        ValueAndError valueAndError = validateValue(getFieldDefinition(fieldName), value);
-
-        if (!valueAndError.isValid()) {
-            return this;
-        }
-
-        return addRestriction(new SimpleRestriction(fieldName, valueAndError.getValue(), RestrictionOperator.EQ));
+        return add(SearchRestrictions.eq(fieldName, value));
     }
 
     private boolean isLikeRestriction(final Object value) {
@@ -195,227 +213,163 @@ public final class SearchCriteriaImpl implements SearchCriteriaBuilder, SearchCr
 
     @Override
     public SearchCriteriaBuilder isLe(final String fieldName, final Object value) {
-        ValueAndError valueAndError = validateValue(getFieldDefinition(fieldName), value);
-
-        if (!valueAndError.isValid()) {
-            return this;
-        }
-
-        return addRestriction(new SimpleRestriction(fieldName, valueAndError.getValue(), RestrictionOperator.LE));
+        return add(SearchRestrictions.le(fieldName, value));
     }
 
     @Override
     public SearchCriteriaBuilder isLt(final String fieldName, final Object value) {
-        ValueAndError valueAndError = validateValue(getFieldDefinition(fieldName), value);
-
-        if (!valueAndError.isValid()) {
-            return this;
-        }
-
-        return addRestriction(new SimpleRestriction(fieldName, valueAndError.getValue(), RestrictionOperator.LT));
+        return add(SearchRestrictions.lt(fieldName, value));
     }
 
     @Override
     public SearchCriteriaBuilder isGe(final String fieldName, final Object value) {
-        ValueAndError valueAndError = validateValue(getFieldDefinition(fieldName), value);
-
-        if (!valueAndError.isValid()) {
-            return this;
-        }
-
-        return addRestriction(new SimpleRestriction(fieldName, valueAndError.getValue(), RestrictionOperator.GE));
+        return add(SearchRestrictions.ge(fieldName, value));
     }
 
     @Override
     public SearchCriteriaBuilder isGt(final String fieldName, final Object value) {
-        ValueAndError valueAndError = validateValue(getFieldDefinition(fieldName), value);
-
-        if (!valueAndError.isValid()) {
-            return this;
-        }
-
-        return addRestriction(new SimpleRestriction(fieldName, valueAndError.getValue(), RestrictionOperator.GT));
+        return add(SearchRestrictions.gt(fieldName, value));
     }
 
     @Override
     public SearchCriteriaBuilder isNe(final String fieldName, final Object value) {
         if (isLikeRestriction(value)) {
-            return openNot().like(fieldName, (String) value).closeNot();
+            return add(SearchRestrictions.not(SearchRestrictions.like(fieldName, (String) value)));
         }
 
-        ValueAndError valueAndError = validateValue(getFieldDefinition(fieldName), value);
-
-        if (!valueAndError.isValid()) {
-            return this;
-        }
-
-        return addRestriction(new SimpleRestriction(fieldName, valueAndError.getValue(), RestrictionOperator.NE));
+        return add(SearchRestrictions.ne(fieldName, value));
     }
 
     @Override
     public SearchCriteriaBuilder isNotNull(final String fieldName) {
-        return addRestriction(new IsNotNullRestriction(fieldName));
+        return add(SearchRestrictions.isNotNull(fieldName));
     }
 
     @Override
     public SearchCriteriaBuilder isNull(final String fieldName) {
-        return addRestriction(new IsNullRestriction(fieldName));
+        return add(SearchRestrictions.isNull(fieldName));
     }
 
     @Override
     public SearchCriteriaBuilder openNot() {
-        restrictions.offerFirst(new ArrayList<Restriction>());
+        // TODO restrictions.offerFirst(new ArrayList<Restriction>());
         return this;
     }
 
     @Override
     public SearchCriteriaBuilder closeNot() {
-        List<Restriction> notRestrictions = restrictions.remove();
-
-        if (restrictions.size() < 1) {
-            throw new IllegalStateException("Restrictions stack is empty : " + notRestrictions);
-        }
-
-        if (notRestrictions.size() > 1) {
-            return addRestriction(new LogicalOperatorRestriction(RestrictionLogicalOperator.NOT, new LogicalOperatorRestriction(
-                    RestrictionLogicalOperator.AND, notRestrictions.toArray(new Restriction[notRestrictions.size()]))));
-        } else if (notRestrictions.size() > 0) {
-            return addRestriction(new LogicalOperatorRestriction(RestrictionLogicalOperator.NOT,
-                    notRestrictions.toArray(new Restriction[notRestrictions.size()])));
-        } else {
-            return this;
-        }
+        // TODO List<Restriction> notRestrictions = restrictions.remove();
+        //
+        // if (restrictions.size() < 1) {
+        // throw new IllegalStateException("Restrictions stack is empty : " + notRestrictions);
+        // }
+        //
+        // if (notRestrictions.size() > 1) {
+        // return addRestriction(new LogicalOperatorRestriction(RestrictionLogicalOperator.NOT, new LogicalOperatorRestriction(
+        // RestrictionLogicalOperator.AND, notRestrictions.toArray(new Restriction[notRestrictions.size()]))));
+        // } else if (notRestrictions.size() > 0) {
+        // return addRestriction(new LogicalOperatorRestriction(RestrictionLogicalOperator.NOT,
+        // notRestrictions.toArray(new Restriction[notRestrictions.size()])));
+        // } else {
+        // return this;
+        // }
+        return this;
     }
 
     @Override
     public SearchCriteriaBuilder openOr() {
-        restrictions.offerFirst(new ArrayList<Restriction>());
+        // TODO restrictions.offerFirst(new ArrayList<Restriction>());
         return this;
     }
 
     @Override
     public SearchCriteriaBuilder closeOr() {
-        List<Restriction> orRestrictions = restrictions.remove();
-
-        if (restrictions.size() < 1) {
-            throw new IllegalStateException("Restrictions stack is empty : " + orRestrictions);
-        }
-
-        if (orRestrictions.size() > 0) {
-            return addRestriction(new LogicalOperatorRestriction(RestrictionLogicalOperator.OR,
-                    orRestrictions.toArray(new Restriction[orRestrictions.size()])));
-        } else {
-            return this;
-        }
+        // List<Restriction> orRestrictions = restrictions.remove();
+        //
+        // if (restrictions.size() < 1) {
+        // throw new IllegalStateException("Restrictions stack is empty : " + orRestrictions);
+        // }
+        //
+        // if (orRestrictions.size() > 0) {
+        // return addRestriction(new LogicalOperatorRestriction(RestrictionLogicalOperator.OR,
+        // orRestrictions.toArray(new Restriction[orRestrictions.size()])));
+        // } else {
+        // return this;
+        // }
+        return this;
     }
 
     @Override
     public SearchCriteriaBuilder openAnd() {
-        restrictions.offerFirst(new ArrayList<Restriction>());
+        // TODO restrictions.offerFirst(new ArrayList<Restriction>());
         return this;
     }
 
     @Override
     public SearchCriteriaBuilder closeAnd() {
-        List<Restriction> andRestrictions = restrictions.remove();
+        // TODO List<Restriction> andRestrictions = restrictions.remove();
+        //
+        // if (restrictions.size() < 1) {
+        // throw new IllegalStateException("Restrictions stack is empty : " + andRestrictions);
+        // }
+        //
+        // if (andRestrictions.size() > 0) {
+        // return addRestriction(new LogicalOperatorRestriction(RestrictionLogicalOperator.AND,
+        // andRestrictions.toArray(new Restriction[andRestrictions.size()])));
+        // } else {
+        // return this;
+        // }
+        return this;
+    }
 
-        if (restrictions.size() < 1) {
-            throw new IllegalStateException("Restrictions stack is empty : " + andRestrictions);
-        }
-
-        if (andRestrictions.size() > 0) {
-            return addRestriction(new LogicalOperatorRestriction(RestrictionLogicalOperator.AND,
-                    andRestrictions.toArray(new Restriction[andRestrictions.size()])));
+    @Override
+    public SearchCriteriaBuilder belongsTo(final String fieldName, final Object entityOrId) {
+        if (entityOrId instanceof Entity) {
+            return add(SearchRestrictions.belongsTo(fieldName, (Entity) entityOrId));
         } else {
+            // TODO
             return this;
         }
     }
 
     @Override
-    public SearchCriteriaBuilder belongsTo(final String fieldName, final Object entityOrId) {
-        if (entityOrId == null) {
-            return addRestriction(new IsNullRestriction(fieldName));
-        }
-
-        if (entityOrId instanceof Long) {
-            return addRestriction(new BelongsToRestriction(fieldName, (Long) entityOrId));
-        } else {
-            try {
-                return addRestriction(new BelongsToRestriction(fieldName, (Long) PropertyUtils.getProperty(entityOrId, "id")));
-            } catch (Exception e) {
-                throw new IllegalStateException("cannot get value of the property: " + entityOrId.getClass().getSimpleName()
-                        + ", id", e);
-            }
-        }
-    }
-
-    @Override
     public SearchCriteriaBuilder isIdEq(final Long id) {
-        return addRestriction(new SimpleRestriction("id", id, RestrictionOperator.EQ));
+        return add(SearchRestrictions.eq("id", id));
     }
 
     @Override
     public SearchCriteriaBuilder isIdLe(final Long id) {
-        return addRestriction(new SimpleRestriction("id", id, RestrictionOperator.LE));
+        return add(SearchRestrictions.le("id", id));
     }
 
     @Override
     public SearchCriteriaBuilder isIdLt(final Long id) {
-        return addRestriction(new SimpleRestriction("id", id, RestrictionOperator.LT));
+        return add(SearchRestrictions.lt("id", id));
     }
 
     @Override
     public SearchCriteriaBuilder isIdGe(final Long id) {
-        return addRestriction(new SimpleRestriction("id", id, RestrictionOperator.GE));
+        return add(SearchRestrictions.ge("id", id));
     }
 
     @Override
     public SearchCriteriaBuilder isIdGt(final Long id) {
-        return addRestriction(new SimpleRestriction("id", id, RestrictionOperator.GT));
+        return add(SearchRestrictions.gt("id", id));
     }
 
     @Override
     public SearchCriteriaBuilder isIdNe(final Long id) {
-        return addRestriction(new SimpleRestriction("id", id, RestrictionOperator.NE));
+        return add(SearchRestrictions.ne("id", id));
     }
 
-    private FieldDefinition getFieldDefinition(final String field) {
-        String[] path = field.split("\\.");
-
-        DataDefinition tmpDataDefinition = dataDefinition;
-
-        for (int i = 0; i < path.length; i++) {
-
-            if (tmpDataDefinition.getField(path[i]) == null) {
-                throw new IllegalStateException("Cannot resolve field " + field + " of " + dataDefinition);
-            }
-
-            FieldDefinition fieldDefinition = tmpDataDefinition.getField(path[i]);
-
-            if (i < path.length - 1) {
-                if (fieldDefinition.getType() instanceof BelongsToType) {
-                    tmpDataDefinition = ((BelongsToType) fieldDefinition.getType()).getDataDefinition();
-                    continue;
-                } else {
-                    throw new IllegalStateException("Cannot resolve field " + field + " of " + dataDefinition);
-                }
-            }
-
-            return fieldDefinition;
-        }
-
-        throw new IllegalStateException("Cannot resolve field " + field + " of " + dataDefinition);
+    @Override
+    public SearchCriteriaBuilder orderAscBy(final String fieldName) {
+        return addOrder(SearchOrders.asc(fieldName));
     }
 
-    private ValueAndError validateValue(final FieldDefinition fieldDefinition, final Object value) {
-        Object fieldValue = value;
-        if (fieldValue != null && !fieldDefinition.getType().getType().isInstance(fieldValue)) {
-            if (fieldValue instanceof String) {
-                return fieldDefinition.getType().toObject(fieldDefinition, fieldValue);
-            } else {
-                return ValueAndError.empty();
-            }
-        }
-        return ValueAndError.withoutError(fieldValue);
+    @Override
+    public SearchCriteriaBuilder orderDescBy(final String fieldName) {
+        return addOrder(SearchOrders.desc(fieldName));
     }
+
 }
