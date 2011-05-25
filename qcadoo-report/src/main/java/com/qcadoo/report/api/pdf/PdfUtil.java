@@ -31,7 +31,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.lang.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,23 +59,23 @@ public final class PdfUtil {
 
     public static final String PDF_EXTENSION = ".pdf";
 
-    private static Font arialBold19Light;
+    private static Font dejavuBold19Light;
 
-    private static Font arialBold19Dark;
+    private static Font dejavuBold19Dark;
 
-    private static Font arialBold11Dark;
+    private static Font dejavuBold11Dark;
 
-    private static Font arialBold11Light;
+    private static Font dejavuBold11Light;
 
-    private static Font arialRegular9Light;
+    private static Font dejavuRegular9Light;
 
-    private static Font arialRegular9Dark;
+    private static Font dejavuRegular9Dark;
 
-    private static Font arialBold9Dark;
+    private static Font dejavuBold9Dark;
 
-    private static Font arialRegular10Dark;
+    private static Font dejavuRegular10Dark;
 
-    private static Font arialBold10Dark;
+    private static Font dejavuBold10Dark;
 
     private static Color lineLightColor;
 
@@ -86,7 +85,7 @@ public final class PdfUtil {
 
     private static Color lightColor;
 
-    private static BaseFont arial;
+    private static BaseFont dejavu;
 
     private static boolean initialized = false;
 
@@ -98,18 +97,17 @@ public final class PdfUtil {
         if (!initialized) {
             if (LOG.isDebugEnabled()) {
                 LOG.debug("Pdf fonts and color initialization");
-                LOG.debug("Fonts path: " + fontsPath);
             }
             if (fontsPath == null) {
                 LOG.warn("Fonts path is null, using embedded font helvetica");
-                arial = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.EMBEDDED);
+                dejavu = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.EMBEDDED);
             } else {
                 try {
                     FontFactory.register(fontsPath);
-                    arial = BaseFont.createFont(fontsPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+                    dejavu = BaseFont.createFont(fontsPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
                 } catch (ExceptionConverter e) {
                     LOG.warn("Font not found, using embedded font helvetica");
-                    arial = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.EMBEDDED);
+                    dejavu = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.EMBEDDED);
                 }
             }
             lightColor = new Color(77, 77, 77);
@@ -117,30 +115,30 @@ public final class PdfUtil {
             lineDarkColor = new Color(102, 102, 102);
             lineLightColor = new Color(153, 153, 153);
             backgroundColor = new Color(230, 230, 230);
-            arialBold19Light = new Font(arial, 19);
-            arialBold19Light.setStyle(Font.BOLD);
-            arialBold19Light.setColor(lightColor);
-            arialBold19Dark = new Font(arial, 19);
-            arialBold19Dark.setStyle(Font.BOLD);
-            arialBold19Dark.setColor(darkColor);
-            arialRegular9Light = new Font(arial, 9);
-            arialRegular9Light.setColor(lightColor);
-            arialRegular9Dark = new Font(arial, 9);
-            arialRegular9Dark.setColor(darkColor);
-            arialBold9Dark = new Font(arial, 9);
-            arialBold9Dark.setColor(darkColor);
-            arialBold9Dark.setStyle(Font.BOLD);
-            arialBold11Dark = new Font(arial, 11);
-            arialBold11Dark.setColor(darkColor);
-            arialBold11Dark.setStyle(Font.BOLD);
-            arialBold11Light = new Font(arial, 11);
-            arialBold11Light.setColor(lightColor);
-            arialBold11Light.setStyle(Font.BOLD);
-            arialRegular10Dark = new Font(arial, 10);
-            arialRegular10Dark.setColor(darkColor);
-            arialBold10Dark = new Font(arial, 10);
-            arialBold10Dark.setColor(darkColor);
-            arialBold10Dark.setStyle(Font.BOLD);
+            dejavuBold19Light = new Font(dejavu, 19);
+            dejavuBold19Light.setStyle(Font.BOLD);
+            dejavuBold19Light.setColor(lightColor);
+            dejavuBold19Dark = new Font(dejavu, 19);
+            dejavuBold19Dark.setStyle(Font.BOLD);
+            dejavuBold19Dark.setColor(darkColor);
+            dejavuRegular9Light = new Font(dejavu, 9);
+            dejavuRegular9Light.setColor(lightColor);
+            dejavuRegular9Dark = new Font(dejavu, 9);
+            dejavuRegular9Dark.setColor(darkColor);
+            dejavuBold9Dark = new Font(dejavu, 9);
+            dejavuBold9Dark.setColor(darkColor);
+            dejavuBold9Dark.setStyle(Font.BOLD);
+            dejavuBold11Dark = new Font(dejavu, 11);
+            dejavuBold11Dark.setColor(darkColor);
+            dejavuBold11Dark.setStyle(Font.BOLD);
+            dejavuBold11Light = new Font(dejavu, 11);
+            dejavuBold11Light.setColor(lightColor);
+            dejavuBold11Light.setStyle(Font.BOLD);
+            dejavuRegular10Dark = new Font(dejavu, 10);
+            dejavuRegular10Dark.setColor(darkColor);
+            dejavuBold10Dark = new Font(dejavu, 10);
+            dejavuBold10Dark.setColor(darkColor);
+            dejavuBold10Dark.setStyle(Font.BOLD);
             initialized = true;
         }
     }
@@ -150,39 +148,39 @@ public final class PdfUtil {
     }
 
     public static Font getArialBold19Light() {
-        return arialBold19Light;
+        return dejavuBold19Light;
     }
 
     public static Font getArialBold19Dark() {
-        return arialBold19Dark;
+        return dejavuBold19Dark;
     }
 
     public static Font getArialBold11Dark() {
-        return arialBold11Dark;
+        return dejavuBold11Dark;
     }
 
     public static Font getArialBold11Light() {
-        return arialBold11Light;
+        return dejavuBold11Light;
     }
 
     public static Font getArialRegular9Light() {
-        return arialRegular9Light;
+        return dejavuRegular9Light;
     }
 
     public static Font getArialRegular9Dark() {
-        return arialRegular9Dark;
+        return dejavuRegular9Dark;
     }
 
     public static Font getArialBold9Dark() {
-        return arialBold9Dark;
+        return dejavuBold9Dark;
     }
 
     public static Font getArialRegular10Dark() {
-        return arialRegular10Dark;
+        return dejavuRegular10Dark;
     }
 
     public static Font getArialBold10Dark() {
-        return arialBold10Dark;
+        return dejavuBold10Dark;
     }
 
     public static Color getLineLightColor() {
@@ -198,7 +196,7 @@ public final class PdfUtil {
     }
 
     public static BaseFont getArial() {
-        return arial;
+        return dejavu;
     }
 
     public static void addEndOfDocument(final Document document, final PdfWriter writer, final String text) {
@@ -206,9 +204,9 @@ public final class PdfUtil {
         cb.saveState();
         cb.setColorFill(lightColor);
         float textBase = document.bottom() - 35;
-        float textSize = arial.getWidthPoint(text, 7);
+        float textSize = dejavu.getWidthPoint(text, 7);
         cb.beginText();
-        cb.setFontAndSize(arial, 7);
+        cb.setFontAndSize(dejavu, 7);
         cb.setTextMatrix(document.right() - textSize, textBase);
         cb.showText(text);
         cb.endText();
@@ -258,7 +256,7 @@ public final class PdfUtil {
             if (i == header.size()) {
                 table.getDefaultCell().enableBorderSide(Rectangle.RIGHT);
             }
-            table.addCell(new Phrase(element, arialRegular9Dark));
+            table.addCell(new Phrase(element, dejavuRegular9Dark));
             if (i == 1) {
                 table.getDefaultCell().disableBorderSide(Rectangle.LEFT);
             }
@@ -277,8 +275,8 @@ public final class PdfUtil {
         SimpleDateFormat df = new SimpleDateFormat(DateUtils.DATE_TIME_FORMAT);
         LineSeparator line = new LineSeparator(3, 100f, lineDarkColor, Element.ALIGN_LEFT, 0);
         document.add(Chunk.NEWLINE);
-        Paragraph title = new Paragraph(new Phrase(documenTitle, arialBold19Light));
-        title.add(new Phrase(" " + name, arialBold19Dark));
+        Paragraph title = new Paragraph(new Phrase(documenTitle, dejavuBold19Light));
+        title.add(new Phrase(" " + name, dejavuBold19Dark));
         title.setSpacingAfter(7f);
         document.add(title);
         document.add(line);
@@ -286,9 +284,9 @@ public final class PdfUtil {
         userAndDate.setWidthPercentage(100f);
         userAndDate.setHorizontalAlignment(Element.ALIGN_LEFT);
         userAndDate.getDefaultCell().setBorderWidth(0);
-        Paragraph userParagraph = new Paragraph(new Phrase(documentAuthor, arialRegular9Light));
-        userParagraph.add(new Phrase(" " + username, arialRegular9Dark));
-        Paragraph dateParagraph = new Paragraph(df.format(date), arialRegular9Light);
+        Paragraph userParagraph = new Paragraph(new Phrase(documentAuthor, dejavuRegular9Light));
+        userParagraph.add(new Phrase(" " + username, dejavuRegular9Dark));
+        Paragraph dateParagraph = new Paragraph(df.format(date), dejavuRegular9Light);
         userAndDate.addCell(userParagraph);
         userAndDate.getDefaultCell().setHorizontalAlignment(Element.ALIGN_RIGHT);
         userAndDate.addCell(dateParagraph);
@@ -316,17 +314,6 @@ public final class PdfUtil {
     public static void addTableCellAsTable(final PdfPTable table, final String label, final Object fieldValue,
             final String nullValue, final Font headerFont, final Font valueFont) {
         addTableCellAsTable(table, label, fieldValue, nullValue, headerFont, valueFont, null);
-    }
-
-    public static String getFontsPath(final String windowsFontsPath, final String macosFontsPath, final String linuxFontsPath) {
-        if (SystemUtils.IS_OS_WINDOWS) {
-            return windowsFontsPath;
-        } else if (SystemUtils.IS_OS_MAC_OSX) {
-            return macosFontsPath;
-        } else if (SystemUtils.IS_OS_LINUX) {
-            return linuxFontsPath;
-        }
-        return null;
     }
 
     public static PdfPTable createPanelTable(final int column) {
