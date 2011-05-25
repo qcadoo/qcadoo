@@ -78,7 +78,7 @@ public abstract class ReportPdfView extends AbstractPdfView {
         super.prepareWriter(model, writer, request);
         writer.setPageEvent(new PdfPageNumbering(getTranslationService().translate("qcadooReport.commons.page.label",
                 LocaleContextHolder.getLocale()), getTranslationService().translate("qcadooReport.commons.of.label",
-                LocaleContextHolder.getLocale()), "fonts/dejaVu/DejaVuSans.ttf"));
+                LocaleContextHolder.getLocale())));
     }
 
     @Override

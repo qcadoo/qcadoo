@@ -93,22 +93,17 @@ public final class PdfUtil {
 
     }
 
-    public static void prepareFontsAndColors(final String fontsPath) throws DocumentException, IOException {
+    public static void prepareFontsAndColors() throws DocumentException, IOException {
         if (!initialized) {
             if (LOG.isDebugEnabled()) {
                 LOG.debug("Pdf fonts and color initialization");
             }
-            if (fontsPath == null) {
-                LOG.warn("Fonts path is null, using embedded font helvetica");
+            try {
+                FontFactory.register("/fonts/dejaVu/DejaVuSans.ttf");
+                dejavu = BaseFont.createFont("/fonts/dejaVu/DejaVuSans.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            } catch (ExceptionConverter e) {
+                LOG.warn("Font not found, using embedded font helvetica");
                 dejavu = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.EMBEDDED);
-            } else {
-                try {
-                    FontFactory.register(fontsPath);
-                    dejavu = BaseFont.createFont(fontsPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
-                } catch (ExceptionConverter e) {
-                    LOG.warn("Font not found, using embedded font helvetica");
-                    dejavu = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.EMBEDDED);
-                }
             }
             lightColor = new Color(77, 77, 77);
             Color darkColor = new Color(26, 26, 26);

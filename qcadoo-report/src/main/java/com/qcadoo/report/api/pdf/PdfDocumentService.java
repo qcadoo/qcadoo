@@ -54,7 +54,7 @@ public abstract class PdfDocumentService extends DocumentService {
             PdfWriter writer = PdfWriter.getInstance(document, fileOutputStream);
             writer.setPageEvent(new PdfPageNumbering(
                     getTranslationService().translate("qcadooReport.commons.page.label", locale), getTranslationService()
-                            .translate("qcadooReport.commons.of.label", locale), "fonts/dejaVu/DejaVuSans.ttf"));
+                            .translate("qcadooReport.commons.of.label", locale)));
             document.setMargins(40, 40, 60, 60);
             buildPdfMetadata(document, locale);
             writer.createXmpMetadata();
