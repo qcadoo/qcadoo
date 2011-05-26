@@ -1,15 +1,7 @@
 package com.qcadoo.view.internal.ribbon.templates.module;
 
-import java.io.IOException;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.springframework.core.io.Resource;
-import org.w3c.dom.Document;
 import org.w3c.dom.Node;
-import org.xml.sax.SAXException;
 
 import com.qcadoo.plugin.api.Module;
 import com.qcadoo.view.internal.ribbon.templates.RibbonTemplatesService;
@@ -32,10 +24,7 @@ public class RibbonTemplateModule extends Module {
         String fileName = xmlFile.getFilename();
         try {
 
-            DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            Document document = documentBuilder.parse(xmlFile.getInputStream());
-
-            Node root = document.getDocumentElement();
+            Node root = parser.getRootOfXmlDocument(xmlFile);
             parser.checkState("ribbonTemplate".equals(root.getNodeName()), root, "Wrong root node name '" + root.getNodeName()
                     + "'");
 
@@ -56,14 +45,10 @@ public class RibbonTemplateModule extends Module {
                 template.addTemplateGroup(templateGroup);
             }
 
-        } catch (ParserConfigurationException e) {
-            throw ViewDefinitionParserException.forFile(fileName, e);
-        } catch (SAXException e) {
-            throw ViewDefinitionParserException.forFile(fileName, e);
-        } catch (IOException e) {
-            throw ViewDefinitionParserException.forFile(fileName, e);
         } catch (ViewDefinitionParserNodeException e) {
             throw ViewDefinitionParserException.forFileAndNode(fileName, e);
+        } catch (Exception e) {
+            throw ViewDefinitionParserException.forFile(fileName, e);
         }
     }
 

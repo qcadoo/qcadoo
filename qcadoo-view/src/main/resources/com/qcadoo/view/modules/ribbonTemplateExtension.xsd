@@ -1,12 +1,13 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-	targetNamespace="http://schema.qcadoo.org/modules/ribbonTemplate" xmlns="http://schema.qcadoo.org/modules/ribbonTemplate" elementFormDefault="qualified">
+	targetNamespace="http://schema.qcadoo.org/modules/ribbonTemplateExtension" xmlns="http://schema.qcadoo.org/modules/ribbonTemplateExtension" elementFormDefault="qualified">
 	
-	<xs:element name="ribbonTemplate">
+	<xs:element name="ribbonTemplateExtension">
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element name="group" type="ribbonTemplateGroupType" minOccurs="1" maxOccurs="unbounded"/>
 			</xs:sequence>
-			<xs:attribute name="name" type="xs:string" use="required" />
+			<xs:attribute name="templatePlugin" type="xs:string" use="required" />
+			<xs:attribute name="templateName" type="xs:string" use="optional" />
 		</xs:complexType>
 	</xs:element>
 	
@@ -17,4 +18,5 @@
 		<xs:attribute name="name" type="xs:string" use="required" />
 	</xs:complexType>
 	
+
 </xs:schema>

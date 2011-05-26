@@ -58,6 +58,8 @@ public interface ViewDefinitionParser {
 
     List<Node> geElementChildren(Node node);
 
+    Node getRootOfXmlDocument(Resource xmlFile);
+
     InternalViewDefinition parseViewXml(Resource viewXml, String pluginIdentifier);
 
     ViewExtension getViewExtensionNode(InputStream resource, String tagType) throws ViewDefinitionParserNodeException;

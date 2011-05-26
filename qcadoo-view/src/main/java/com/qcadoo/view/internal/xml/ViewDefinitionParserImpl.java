@@ -236,6 +236,21 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
         return contentSB.toString().trim();
     }
 
+    @Override
+    public Node getRootOfXmlDocument(Resource xmlFile) {
+        try {
+            DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            Document document = documentBuilder.parse(xmlFile.getInputStream());
+            return document.getDocumentElement();
+        } catch (ParserConfigurationException e) {
+            throw new IllegalStateException(e.getMessage(), e);
+        } catch (SAXException e) {
+            throw new IllegalStateException(e.getMessage(), e);
+        } catch (IOException e) {
+            throw new IllegalStateException(e.getMessage(), e);
+        }
+    }
+
     private Node getAttribute(final Node node, final String name) {
         if (node != null && node.getAttributes() != null) {
             return node.getAttributes().getNamedItem(name);
