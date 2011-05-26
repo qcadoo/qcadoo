@@ -30,7 +30,6 @@ import java.util.Locale;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -43,15 +42,6 @@ public abstract class PdfDocumentService extends DocumentService {
 
     private static final Logger LOG = LoggerFactory.getLogger(PdfDocumentService.class);
 
-    @Value("${windowsFonts}")
-    private String windowsFontsPath;
-
-    @Value("${macosFonts}")
-    private String macosFontsPath;
-
-    @Value("${linuxFonts}")
-    private String linuxFontsPath;
-
     @Override
     public void generateDocument(final Entity entity, final Locale locale) throws IOException, DocumentException {
         Document document = new Document(PageSize.A4);
@@ -62,15 +52,16 @@ public abstract class PdfDocumentService extends DocumentService {
             FileOutputStream fileOutputStream = new FileOutputStream((String) entity.getField("fileName") + getSuffix()
                     + PdfUtil.PDF_EXTENSION);
             PdfWriter writer = PdfWriter.getInstance(document, fileOutputStream);
-            writer.setPageEvent(new PdfPageNumbering(getTranslationService().translate("qcadooView.report.page", locale),
-                    getTranslationService().translate("qcadooView.report.in", locale), PdfUtil.getFontsPath(windowsFontsPath,
-                            macosFontsPath, linuxFontsPath)));
+            writer.setPageEvent(new PdfPageNumbering(
+                    getTranslationService().translate("qcadooReport.commons.page.label", locale), getTranslationService()
+                            .translate("qcadooReport.commons.of.label", locale)));
             document.setMargins(40, 40, 60, 60);
             buildPdfMetadata(document, locale);
             writer.createXmpMetadata();
             document.open();
             buildPdfContent(document, entity, locale);
-            PdfUtil.addEndOfDocument(document, writer, getTranslationService().translate("qcadooView.report.endOfReport", locale));
+            PdfUtil.addEndOfDocument(document, writer,
+                    getTranslationService().translate("qcadooReport.commons.endOfPrint.label", locale));
             document.close();
         } catch (DocumentException e) {
             LOG.error("Problem with generating document - " + e.getMessage());

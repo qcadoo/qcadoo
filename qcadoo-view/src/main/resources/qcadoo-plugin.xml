@@ -66,7 +66,7 @@
 		<menu:menu-category name="administration" />
 		
 		<menu:menu-item-url name="systemInfo" category="administration" url="/systemInfo.html" />
-
+		
 		<view:view-component name="button" class="com.qcadoo.view.internal.components.ButtonComponentPattern" />
 		<view:view-component name="label" class="com.qcadoo.view.internal.components.LabelComponentPattern" />
 		<view:view-component name="checkbox" class="com.qcadoo.view.internal.components.CheckBoxComponentPattern" />
@@ -89,6 +89,9 @@
 		<view:view-component name="borderLayout" class="com.qcadoo.view.internal.components.layout.BorderLayoutPattern" />
 		<view:view-component name="flowLayout" class="com.qcadoo.view.internal.components.layout.FlowLayoutPattern" />
 		<view:view-component name="smallTabLayout" class="com.qcadoo.view.internal.components.layout.SmallTabLayoutPattern" />
+		
+		<view:view-ribbon-template resource="view/ribbonTemplates/standardGridTemplate.xml"/>
+		<view:view-ribbon-template resource="view/ribbonTemplates/standardFormTemplate.xml"/>
 
 		<view:resource uri="public/**/*" />
 	</modules>

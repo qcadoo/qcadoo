@@ -11,14 +11,12 @@ public class ReportFormatFactory implements FormatFactory {
 
     @Override
     public DateFormat createDateFormat(String pattern, Locale locale, TimeZone timezone) {
-        return DateFormat.getDateInstance(DateFormat.MEDIUM, locale);
+        return DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale);
     }
 
     @Override
     public NumberFormat createNumberFormat(String pattern, Locale locale) {
-        NumberFormat decimalNumberFormat = NumberFormat.getNumberInstance(locale);
-        decimalNumberFormat.setMinimumFractionDigits(3);
-        return decimalNumberFormat;
+        return ReportNumberFormat.getInstance(locale);
     }
 
 }

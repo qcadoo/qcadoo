@@ -35,7 +35,7 @@
 	
 	<component type="window" name="window">
 		<ribbon>
-			<group template="gridNewAndRemoveAction" />
+			<template name="standardGridTemplate" excludeItems="actions.copy"/>
 		</ribbon>
 		<component type="grid" name="users" reference="grid">
 			<option type="column" name="login" fields="userName" link="true" />

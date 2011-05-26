@@ -66,8 +66,10 @@ import com.qcadoo.view.internal.hooks.HookFactory;
 import com.qcadoo.view.internal.internal.ViewComponentsResolverImpl;
 import com.qcadoo.view.internal.internal.ViewDefinitionImpl;
 import com.qcadoo.view.internal.patterns.AbstractComponentPattern;
-import com.qcadoo.view.internal.ribbon.InternalRibbonGroup;
-import com.qcadoo.view.internal.ribbon.RibbonUtils;
+import com.qcadoo.view.internal.ribbon.RibbonParserService;
+import com.qcadoo.view.internal.ribbon.model.InternalRibbon;
+import com.qcadoo.view.internal.ribbon.model.InternalRibbonActionItem;
+import com.qcadoo.view.internal.ribbon.model.InternalRibbonGroup;
 
 @Service
 public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
@@ -91,6 +93,9 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
 
     @Autowired
     private HookFactory hookFactory;
+
+    @Autowired
+    private RibbonParserService ribbonService;
 
     private int currentIndexOrder;
 
@@ -229,6 +234,21 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
             }
         }
         return contentSB.toString().trim();
+    }
+
+    @Override
+    public Node getRootOfXmlDocument(Resource xmlFile) {
+        try {
+            DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            Document document = documentBuilder.parse(xmlFile.getInputStream());
+            return document.getDocumentElement();
+        } catch (ParserConfigurationException e) {
+            throw new IllegalStateException(e.getMessage(), e);
+        } catch (SAXException e) {
+            throw new IllegalStateException(e.getMessage(), e);
+        } catch (IOException e) {
+            throw new IllegalStateException(e.getMessage(), e);
+        }
     }
 
     private Node getAttribute(final Node node, final String name) {
@@ -394,9 +414,21 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
     }
 
     @Override
+    public InternalRibbon parseRibbon(final Node groupNode, final ViewDefinition viewDefinition)
+            throws ViewDefinitionParserNodeException {
+        return ribbonService.parseRibbon(groupNode, this, viewDefinition);
+    }
+
+    @Override
     public InternalRibbonGroup parseRibbonGroup(final Node groupNode, final ViewDefinition viewDefinition)
             throws ViewDefinitionParserNodeException {
-        return RibbonUtils.getInstance().parseRibbonGroup(groupNode, this, viewDefinition);
+        return ribbonService.parseRibbonGroup(groupNode, this, viewDefinition);
+    }
+
+    @Override
+    public InternalRibbonActionItem parseRibbonItem(final Node itemNode, final ViewDefinition viewDefinition)
+            throws ViewDefinitionParserNodeException {
+        return ribbonService.parseRibbonItem(itemNode, this, viewDefinition);
     }
 
     @Override

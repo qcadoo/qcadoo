@@ -31,7 +31,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.web.servlet.view.document.AbstractExcelView;
 
@@ -41,15 +40,6 @@ public abstract class ReportXlsView extends AbstractExcelView {
 
     @Autowired
     private TranslationService translationService;
-
-    @Value("${windowsFonts}")
-    private String windowsFontsPath;
-
-    @Value("${macosFonts}")
-    private String macosFontsPath;
-
-    @Value("${linuxFonts}")
-    private String linuxFontsPath;
 
     @Override
     protected void buildExcelDocument(final Map<String, Object> model, final HSSFWorkbook workbook,
@@ -62,18 +52,6 @@ public abstract class ReportXlsView extends AbstractExcelView {
 
     protected final TranslationService getTranslationService() {
         return translationService;
-    }
-
-    public final String getWindowsFontsPath() {
-        return windowsFontsPath;
-    }
-
-    public final String getMacosFontsPath() {
-        return macosFontsPath;
-    }
-
-    public final String getLinuxFontsPath() {
-        return linuxFontsPath;
     }
 
 }

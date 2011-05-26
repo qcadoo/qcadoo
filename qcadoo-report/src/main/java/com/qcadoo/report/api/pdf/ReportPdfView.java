@@ -32,7 +32,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.web.servlet.view.document.AbstractPdfView;
 
@@ -47,15 +46,6 @@ public abstract class ReportPdfView extends AbstractPdfView {
     private TranslationService translationService;
 
     private DecimalFormat decimalFormat;
-
-    @Value("${windowsFonts}")
-    private String windowsFontsPath;
-
-    @Value("${macosFonts}")
-    private String macosFontsPath;
-
-    @Value("${linuxFonts}")
-    private String linuxFontsPath;
 
     @Override
     protected final void buildPdfDocument(final Map<String, Object> model, final Document document, final PdfWriter writer,
@@ -86,10 +76,9 @@ public abstract class ReportPdfView extends AbstractPdfView {
     protected void prepareWriter(final Map<String, Object> model, final PdfWriter writer, final HttpServletRequest request)
             throws DocumentException {
         super.prepareWriter(model, writer, request);
-        writer.setPageEvent(new PdfPageNumbering(getTranslationService().translate("qcadooView.report.page",
-                LocaleContextHolder.getLocale()), getTranslationService().translate("qcadooView.report.in",
-                LocaleContextHolder.getLocale()), PdfUtil.getFontsPath(getWindowsFontsPath(), getMacosFontsPath(),
-                getLinuxFontsPath())));
+        writer.setPageEvent(new PdfPageNumbering(getTranslationService().translate("qcadooReport.commons.page.label",
+                LocaleContextHolder.getLocale()), getTranslationService().translate("qcadooReport.commons.of.label",
+                LocaleContextHolder.getLocale())));
     }
 
     @Override
@@ -110,18 +99,6 @@ public abstract class ReportPdfView extends AbstractPdfView {
 
     public final DecimalFormat getDecimalFormat() {
         return decimalFormat;
-    }
-
-    public final String getWindowsFontsPath() {
-        return windowsFontsPath;
-    }
-
-    public final String getMacosFontsPath() {
-        return macosFontsPath;
-    }
-
-    public final String getLinuxFontsPath() {
-        return linuxFontsPath;
     }
 
 }

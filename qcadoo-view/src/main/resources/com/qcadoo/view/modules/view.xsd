@@ -42,6 +42,18 @@
 		</xs:complexType>
 	</xs:element>
 	
+	<xs:element name="view-ribbon-template" >
+		<xs:complexType>
+			<xs:attribute name="resource" type="xs:string" use="required" />
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="view-ribbon-template-extension" >
+		<xs:complexType>
+			<xs:attribute name="resource" type="xs:string" use="required" />
+		</xs:complexType>
+	</xs:element>
+	
 	<xs:element name="view-tab">
 		<xs:complexType>
 			<xs:sequence>
