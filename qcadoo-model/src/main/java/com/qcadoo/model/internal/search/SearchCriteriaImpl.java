@@ -132,7 +132,11 @@ public final class SearchCriteriaImpl implements SearchCriteriaBuilder, SearchCr
     @Override
     public void addOrders(final Criteria criteria) {
         if (orders.size() == 0) {
-            criteria.addOrder(org.hibernate.criterion.Order.asc("id"));
+            if (sourceDataDefinition != null && sourceDataDefinition.isPrioritizable()) {
+                criteria.addOrder(org.hibernate.criterion.Order.asc(sourceDataDefinition.getPriorityField().getName()));
+            } else {
+                criteria.addOrder(org.hibernate.criterion.Order.asc("id"));
+            }
         } else {
             for (SearchOrder order : orders) {
                 criteria.addOrder(order.getHibernateOrder());
