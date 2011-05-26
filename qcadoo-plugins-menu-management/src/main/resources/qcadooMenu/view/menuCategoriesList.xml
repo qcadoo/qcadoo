@@ -35,7 +35,7 @@
 	
 	<component type="window" name="window" reference="window">
 		<ribbon>
-			<group template="gridNewAndRemoveAction" />
+			<template name="standardGridTemplate" excludeItems="actions.copy"/>
 		</ribbon>
 		<component type="grid" name="menuCategories" reference="grid">
 			<option type="column" name="name" fields="name" link="true"

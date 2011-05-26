@@ -2,7 +2,6 @@ package com.qcadoo.view.internal.ribbon.templates.model;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import com.qcadoo.view.api.ribbon.RibbonActionItem;
 import com.qcadoo.view.api.ribbon.RibbonComboItem;
@@ -47,7 +46,7 @@ public class TemplateRibbonGroup {
 
     private void translateRibbonAction(final RibbonActionItem item, final ViewDefinition viewDefinition) {
         InternalRibbonActionItem internalItem = (InternalRibbonActionItem) item;
-        String translatedAction = RibbonUtils.getInstance().translateRibbonAction(internalItem.getAction(), viewDefinition);
+        String translatedAction = RibbonUtils.translateRibbonAction(internalItem.getAction(), viewDefinition);
         internalItem.setAction(translatedAction);
 
         if (internalItem instanceof RibbonComboItem) {
@@ -61,14 +60,12 @@ public class TemplateRibbonGroup {
     private List<InternalRibbonActionItem> getFilteredList(final RibbonTemplateParameters parameters) {
         List<InternalRibbonActionItem> filteredList = new LinkedList<InternalRibbonActionItem>();
         if (parameters.getExcludeItems() != null) {
-            parseItemNames(parameters.getExcludeItems());
             for (InternalRibbonActionItem item : items) {
                 if (!parameters.getExcludeItems().contains(name + "." + item.getName())) {
                     filteredList.add(item);
                 }
             }
         } else if (parameters.getIncludeItems() != null) {
-            parseItemNames(parameters.getIncludeItems());
             for (InternalRibbonActionItem item : items) {
                 if (parameters.getIncludeItems().contains(name + "." + item.getName())) {
                     filteredList.add(item);
@@ -80,18 +77,13 @@ public class TemplateRibbonGroup {
         return filteredList;
     }
 
-    private void parseItemNames(final Set<String> itemNames) {
-        for (String itemName : itemNames) {
-            boolean itemFound = false;
-            for (InternalRibbonActionItem item : items) {
-                if (itemName.equals(name + "." + item.getName())) {
-                    itemFound = true;
-                }
-            }
-            if (!itemFound) {
-                throw new IllegalStateException("item '" + itemName + "' not found in template group '" + name + "'");
+    public boolean containItem(String itemName) {
+        for (InternalRibbonActionItem item : items) {
+            if (itemName.equals(name + "." + item.getName())) {
+                return true;
             }
         }
+        return false;
     }
 
     @Override

@@ -34,8 +34,7 @@
 	
 	<component type="window" name="window">
 		<ribbon>
-			<group template="navigation" />
-			<group template="formSaveCopyAndRemoveActions" />
+			<template name="standardFormTemplate" />
 		</ribbon>
 		<component type="form" name="dictionaryItem" reference="form">
 			<component type="gridLayout" name="gridLayout" columns="3"

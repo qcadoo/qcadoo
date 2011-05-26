@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ribbonTemplate xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schema.qcadoo.org/modules/ribbonTemplate" 
+	xsi:schemaLocation="http://schema.qcadoo.org/modules/ribbonTemplate http://schema.qcadoo.org/modules/ribbonTemplate.xsd" 
+	name="standardGridTemplate">
+	
+	<group name="actions">
+		<bigButton name="new" icon="newIcon24.png" state="enabled" action="#{grid}.performNew;" />
+		<smallButton name="copy" icon="copyIcon16.png" state="disabled" action="#{grid}.performCopy;">
+			<script><![CDATA[
+                #{grid}.addOnChangeListener({
+                	onChange: function(selectedArray) {
+                		if (selectedArray.length == 0) {
+                			this.disable();
+                		} else {
+                			this.enable();
+                		}
+                	}
+                });
+			]]></script>
+		</smallButton>
+		<smallButton name="delete" icon="deleteIcon16.png" state="disabled" action="#{grid}.performDelete;">
+			<script><![CDATA[
+                #{grid}.addOnChangeListener({
+                	onChange: function(selectedArray) {
+                		if (selectedArray.length == 0) {
+                			this.disable();
+                		} else {
+                			this.enable();
+                		}
+                	}
+                });
+			]]></script>
+		</smallButton>
+	</group>
+	
+</ribbonTemplate>

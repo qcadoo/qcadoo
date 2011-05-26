@@ -153,7 +153,7 @@ public class WindowComponentPattern extends AbstractContainerPattern {
         hasRibbon = parser.getBooleanAttribute(componentNode, "ribbon", true);
 
         if (ribbonNode != null) {
-            setRibbon(RibbonUtils.getInstance().parseRibbon(ribbonNode, parser, getViewDefinition()));
+            setRibbon(parser.parseRibbon(ribbonNode, getViewDefinition()));
         }
 
     }
@@ -175,7 +175,7 @@ public class WindowComponentPattern extends AbstractContainerPattern {
         json.put("oneTab", this.getChildren().size() < 2);
         json.put("hasRibbon", hasRibbon);
         if (ribbon != null) {
-            json.put("ribbon", RibbonUtils.getInstance().translateRibbon(ribbon, locale, this));
+            json.put("ribbon", RibbonUtils.translateRibbon(ribbon, locale, this));
         }
         json.put("firstTabName", firstTabName);
         JSONObject translations = new JSONObject();

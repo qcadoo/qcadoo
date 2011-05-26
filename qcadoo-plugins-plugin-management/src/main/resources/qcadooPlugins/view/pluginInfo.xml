@@ -32,7 +32,7 @@
 	
 	<component type="window" name="window">
 		<ribbon>
-			<group template="navigation" />
+			<template name="standardFormTemplate" includeItems="navigation.back"/>
 		</ribbon>
 		<component type="gridLayout" name="gridLayout" columns="1"
 			rows="1" fixedRowHeight="false">

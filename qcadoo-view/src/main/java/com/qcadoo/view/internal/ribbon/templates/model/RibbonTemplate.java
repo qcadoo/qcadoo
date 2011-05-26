@@ -44,6 +44,7 @@ public class RibbonTemplate {
 
     public void applyTemplate(final InternalRibbon ribbon, final RibbonTemplateParameters parameters,
             final ViewDefinition viewDefinition) {
+        parseParameters(parameters);
         List<TemplateRibbonGroup> groupsToApply = getFilteredList(parameters);
         for (TemplateRibbonGroup group : groupsToApply) {
             InternalRibbonGroup groupInstance = group.getRibbonGroup(parameters, viewDefinition);
@@ -56,14 +57,12 @@ public class RibbonTemplate {
     private List<TemplateRibbonGroup> getFilteredList(final RibbonTemplateParameters parameters) {
         List<TemplateRibbonGroup> filteredList = new LinkedList<TemplateRibbonGroup>();
         if (parameters.getExcludeGroups() != null) {
-            parseGroupNames(parameters.getExcludeGroups());
             for (TemplateRibbonGroup group : groups) {
                 if (!parameters.getExcludeGroups().contains(group.getName())) {
                     filteredList.add(group);
                 }
             }
         } else if (parameters.getIncludeGroups() != null) {
-            parseGroupNames(parameters.getIncludeGroups());
             for (TemplateRibbonGroup group : groups) {
                 if (parameters.getIncludeGroups().contains(group.getName())) {
                     filteredList.add(group);
@@ -75,7 +74,17 @@ public class RibbonTemplate {
         return filteredList;
     }
 
+    private void parseParameters(final RibbonTemplateParameters parameters) {
+        parseGroupNames(parameters.getIncludeGroups());
+        parseGroupNames(parameters.getExcludeGroups());
+        parseItemNames(parameters.getIncludeItems());
+        parseItemNames(parameters.getExcludeItems());
+    }
+
     private void parseGroupNames(final Set<String> groupNames) {
+        if (groupNames == null) {
+            return;
+        }
         for (String groupName : groupNames) {
             boolean groupFound = false;
             for (TemplateRibbonGroup group : groups) {
@@ -87,5 +96,34 @@ public class RibbonTemplate {
                 throw new IllegalStateException("group '" + groupName + "' not found in template '" + name + "'");
             }
         }
+    }
+
+    private void parseItemNames(final Set<String> itemNames) {
+        if (itemNames == null) {
+            return;
+        }
+        for (String itemName : itemNames) {
+            String[] itemNameParts = itemName.split("\\.");
+            if (itemNameParts.length != 2) {
+                throw new IllegalStateException("item name '" + itemName + "' is not correct");
+            }
+            TemplateRibbonGroup group = getGroupByName(itemNameParts[0]);
+            if (group == null) {
+                throw new IllegalStateException("group '" + itemNameParts[0] + "' of item '" + itemName + "' not found");
+            }
+            if (!group.containItem(itemName)) {
+                throw new IllegalStateException("item element '" + itemNameParts[1] + "' of item '" + itemName
+                        + "' not found in template group '" + itemNameParts[0] + "'");
+            }
+        }
+    }
+
+    private TemplateRibbonGroup getGroupByName(final String groupName) {
+        for (TemplateRibbonGroup group : groups) {
+            if (groupName.equals(group.getName())) {
+                return group;
+            }
+        }
+        return null;
     }
 }

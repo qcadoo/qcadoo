@@ -5,7 +5,7 @@
 	xmlns="http://schema.qcadoo.org/view" xsi:schemaLocation="http://schema.qcadoo.org/view http://schema.qcadoo.org/view.xsd">
 	<component type="window" name="window">
 		<ribbon>
-			<group template="gridNewCopyAndRemoveAction" />
+			<template name="standardGridTemplate" />
 			<group name="report">
 				<bigButton name="print" icon="pdfIcon16.png"
 					action="#{grid}.generateReportForEntity('${identifier}','sample','pdf',ReportTitle='Sample')" state="enabled" />

@@ -35,7 +35,7 @@
 	
 	<component type="window" name="window">
 		<ribbon>
-			<group template="navigation" />
+			<template name="standardFormTemplate" includeItems="navigation.back"/>
 		</ribbon>
 		<component type="form" name="plugin" reference="form">
 			<component type="gridLayout" name="gridLayout" columns="2"

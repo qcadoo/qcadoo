@@ -10,7 +10,7 @@
 		</xs:complexType>
 	</xs:element>
 	
-	<xs:complexType name="ribbonTemplateGroupType">
+	<xs:complexType name="ribbonTemplateGroupType" >
 		<xs:sequence>
 			<xs:any minOccurs="1" maxOccurs="unbounded" processContents="skip"/>
 		</xs:sequence>

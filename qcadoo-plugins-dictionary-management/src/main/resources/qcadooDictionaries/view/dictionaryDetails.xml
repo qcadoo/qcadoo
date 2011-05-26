@@ -34,8 +34,8 @@
 	
 	<component type="window" name="window">
 		<ribbon>
-			<group template="navigation" />
-			<group template="gridNewCopyAndRemoveAction" />
+			<template name="standardFormTemplate" includeItems="navigation.back"/>
+			<template name="standardGridTemplate" />
 		</ribbon>
 		<component type="form" reference="form" name="dictionary">
 			<option type="header" value="true" />

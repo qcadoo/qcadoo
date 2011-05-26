@@ -1,6 +1,5 @@
 package com.qcadoo.view.internal.ribbon.templates;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,7 +19,12 @@ public class RibbonTemplateParameters {
 
     private RibbonTemplateParameters(final String templatePlugin, final String templateName, final Set<String> includeGroups,
             final Set<String> includeItems, final Set<String> excludeGroups, final Set<String> excludeItems) {
-        super();
+        if (includeGroups != null && excludeGroups != null) {
+            throw new IllegalStateException("template usage error: cannot define both includeGroups and excludeGroups");
+        }
+        if (includeItems != null && excludeItems != null) {
+            throw new IllegalStateException("template usage error: cannot define both includeItems and excludeItems");
+        }
         if (templatePlugin == null) {
             this.templatePlugin = "qcadooView";
         } else {
@@ -78,13 +82,24 @@ public class RibbonTemplateParameters {
         }
 
         private Set<String> parseNames(final String names) {
-            return new HashSet<String>(Arrays.asList(names.split(",")));
+            if (names == null) {
+                return null;
+            }
+            Set<String> parsedNames = new HashSet<String>();
+            for (String name : names.split(",")) {
+                parsedNames.add(name.trim());
+            }
+            return parsedNames;
         }
 
     }
 
     public static RibbonTemplateParametersBuilder getBuilder(final String templatePlugin, final String templateName) {
         return new RibbonTemplateParametersBuilder(templatePlugin, templateName);
+    }
+
+    public static RibbonTemplateParametersBuilder getBuilder(final String templateName) {
+        return new RibbonTemplateParametersBuilder(null, templateName);
     }
 
     public String getTemplatePlugin() {

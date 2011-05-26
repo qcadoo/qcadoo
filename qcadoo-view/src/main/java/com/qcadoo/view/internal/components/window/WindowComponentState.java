@@ -73,7 +73,7 @@ public class WindowComponentState extends AbstractContainerState implements Wind
         if (ribbon != null) {
             InternalRibbon diffrenceRibbon = ribbon.getUpdate();
             if (diffrenceRibbon != null) {
-                json.put("ribbon", RibbonUtils.getInstance().translateRibbon(diffrenceRibbon, getLocale(), pattern));
+                json.put("ribbon", RibbonUtils.translateRibbon(diffrenceRibbon, getLocale(), pattern));
             }
         }
 

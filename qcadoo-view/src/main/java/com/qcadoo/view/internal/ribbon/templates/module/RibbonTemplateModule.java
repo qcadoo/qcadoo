@@ -21,17 +21,12 @@ import com.qcadoo.view.internal.xml.ViewDefinitionParserNodeException;
 
 public class RibbonTemplateModule extends Module {
 
-    final String pluginIdentifier;
-
-    final String templateName;
-
     final RibbonTemplate template;
 
     final RibbonTemplatesService ribbonTemplatesService;
 
     public RibbonTemplateModule(final String pluginIdentifier, final Resource xmlFile, final ViewDefinitionParser parser,
             final RibbonTemplatesService ribbonTemplatesService) {
-        this.pluginIdentifier = pluginIdentifier;
         this.ribbonTemplatesService = ribbonTemplatesService;
 
         String fileName = xmlFile.getFilename();
@@ -44,7 +39,7 @@ public class RibbonTemplateModule extends Module {
             parser.checkState("ribbonTemplate".equals(root.getNodeName()), root, "Wrong root node name '" + root.getNodeName()
                     + "'");
 
-            templateName = parser.getStringAttribute(root, "name");
+            String templateName = parser.getStringAttribute(root, "name");
             parser.checkState(templateName != null, root, "Ribbon template error: name not defined");
 
             template = new RibbonTemplate(pluginIdentifier, templateName);
@@ -70,5 +65,20 @@ public class RibbonTemplateModule extends Module {
         } catch (ViewDefinitionParserNodeException e) {
             throw ViewDefinitionParserException.forFileAndNode(fileName, e);
         }
+    }
+
+    @Override
+    public void enableOnStartup() {
+        enable();
+    }
+
+    @Override
+    public void enable() {
+        ribbonTemplatesService.addRibbonTemplate(template);
+    }
+
+    @Override
+    public void disable() {
+        ribbonTemplatesService.removeRibbonTemplate(template);
     }
 }

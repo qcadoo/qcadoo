@@ -71,6 +71,7 @@ import com.qcadoo.view.internal.components.grid.GridComponentPattern;
 import com.qcadoo.view.internal.components.window.WindowComponentPattern;
 import com.qcadoo.view.internal.hooks.HookFactory;
 import com.qcadoo.view.internal.internal.ViewComponentsResolverImpl;
+import com.qcadoo.view.internal.ribbon.RibbonParserService;
 
 public class ViewDefinitionParserImplTest {
 
@@ -114,6 +115,7 @@ public class ViewDefinitionParserImplTest {
         dataDefinitionService = mock(DataDefinitionService.class);
 
         translationService = mock(TranslationService.class);
+        RibbonParserService ribbonService = new RibbonParserService();
 
         viewDefinitionService = new ViewDefinitionServiceImpl();
 
@@ -126,6 +128,7 @@ public class ViewDefinitionParserImplTest {
         setField(viewDefinitionParser, "hookFactory", hookFactory);
         setField(viewDefinitionParser, "translationService", translationService);
         setField(viewDefinitionParser, "viewComponentsResolver", viewComponentsResolver);
+        setField(viewDefinitionParser, "ribbonService", ribbonService);
 
         xml1 = "view/test1.xml";
         xml2 = "view/test2.xml";

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ribbonTemplate xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schema.qcadoo.org/modules/ribbonTemplate" 
+	xsi:schemaLocation="http://schema.qcadoo.org/modules/ribbonTemplate http://schema.qcadoo.org/modules/ribbonTemplate.xsd" 
+	name="standardFormTemplate">
+	
+	<group name="navigation">
+		<bigButton name="back" icon="backIcon24.png" state="enabled" action="#{window}.performBack" />
+	</group>
+	
+	<group name="actions">
+		<bigButton name="save" icon="saveIcon24.png" state="enabled" action="#{form}.performSave;" />
+		<bigButton name="saveBack" icon="saveBackIcon24.png" state="enabled" action="#{form}.performSave; #{window}.performBack;" />
+		<smallButton name="saveNew" icon="saveNewIcon16.png" state="enabled" action="#{form}.performSaveAndClear;" />
+		<smallButton name="copy" icon="copyIcon16.png" state="disabled" action="#{form}.performCopy;">
+			<script><![CDATA[
+				#{form}.addOnChangeListener({
+					onSetValue: function(value) {
+						if (!value || !value.content)
+							return; 
+						if (value.content.entityId) {
+							this.enable();
+						} else {
+							this.disable();
+						}
+					}
+				});
+			]]></script>
+		</smallButton>
+		<smallButton name="cancel" icon="cancelIcon16.png" state="enabled" action="#{form}.performCancel;" />
+		<smallButton name="delete" icon="deleteIcon16.png" state="disabled" action="#{form}.performDelete; #{window}.performBack">
+			<script><![CDATA[
+                #{form}.addOnChangeListener({
+					onSetValue: function(value) {
+						if (!value || !value.content)
+							return; 
+						if (value.content.entityId) {
+							this.enable();
+						} else {
+							this.disable();
+						}
+					}
+				});
+			]]></script>
+		</smallButton>
+	</group>
+	
+</ribbonTemplate>
