@@ -530,7 +530,7 @@ public class DataAccessServiceImpl implements DataAccessService {
 
         Criteria criteria = searchCriteria.createCriteria(hibernateService.getCurrentSession());
 
-        int totalNumberOfEntities = hibernateService.getTotalNumberOfEntities(criteria);
+        int totalNumberOfEntities = criteria.list().size(); // hibernateService.getTotalNumberOfEntities(criteria);
 
         if (totalNumberOfEntities == 0) {
             LOG.info("There is no entity matching criteria " + searchCriteria);

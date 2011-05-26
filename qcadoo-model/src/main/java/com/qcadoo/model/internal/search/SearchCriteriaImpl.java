@@ -26,7 +26,9 @@ package com.qcadoo.model.internal.search;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -43,6 +45,7 @@ import com.qcadoo.model.api.search.SearchOrders;
 import com.qcadoo.model.api.search.SearchProjection;
 import com.qcadoo.model.api.search.SearchRestrictions;
 import com.qcadoo.model.api.search.SearchResult;
+import com.qcadoo.model.api.types.BelongsToType;
 import com.qcadoo.model.internal.api.InternalDataDefinition;
 
 public final class SearchCriteriaImpl implements SearchCriteriaBuilder, SearchCriteria {
@@ -60,6 +63,10 @@ public final class SearchCriteriaImpl implements SearchCriteriaBuilder, SearchCr
     private final List<SearchOrder> orders = new ArrayList<SearchOrder>();
 
     private boolean hasProjection;
+
+    private final Map<String, String> aliases = new HashMap<String, String>();
+
+    private Criteria restrictions;
 
     public SearchCriteriaImpl(final DataDefinition dataDefinition) {
         checkNotNull(dataDefinition);
@@ -166,7 +173,15 @@ public final class SearchCriteriaImpl implements SearchCriteriaBuilder, SearchCr
 
     @Override
     public SearchCriteriaBuilder createAlias(final String associationPath, final String alias) {
-        criteria.createAlias(associationPath, alias);
+        if (aliases.containsKey(alias)) {
+            if (!associationPath.equals(aliases.get(alias))) {
+                throw new IllegalStateException("Cannot register alias " + alias + " for " + associationPath
+                        + ", already exists for " + aliases.get(alias));
+            }
+        } else {
+            criteria.createAlias(associationPath, alias);
+            aliases.put(alias, associationPath);
+        }
         return this;
     }
 
@@ -186,25 +201,25 @@ public final class SearchCriteriaImpl implements SearchCriteriaBuilder, SearchCr
         return EqualsBuilder.reflectionEquals(this, obj);
     }
 
-    @Override
-    public String toString() {
-        return "SearchCriteria[criteria=" + criteria + ", maxResults=" + maxResults + ", firstResult=" + firstResult + "]";
-    }
+    // @Override
+    // public String toString() {
+    // return "SearchCriteria[criteria=" + criteria + ", maxResults=" + maxResults + ", firstResult=" + firstResult + "]";
+    // }
 
     // depreceted
 
     @Override
     public SearchCriteriaBuilder like(final String fieldName, final String value) {
-        return add(SearchRestrictions.like(fieldName, value));
+        return add(SearchRestrictions.like(addAliasIfNessecary(fieldName), value));
     }
 
     @Override
     public SearchCriteriaBuilder isEq(final String fieldName, final Object value) {
         if (isLikeRestriction(value)) {
-            return add(SearchRestrictions.like(fieldName, (String) value));
+            return add(SearchRestrictions.like(addAliasIfNessecary(fieldName), (String) value));
         }
 
-        return add(SearchRestrictions.eq(fieldName, value));
+        return add(SearchRestrictions.eq(addAliasIfNessecary(fieldName), value));
     }
 
     private boolean isLikeRestriction(final Object value) {
@@ -213,47 +228,47 @@ public final class SearchCriteriaImpl implements SearchCriteriaBuilder, SearchCr
 
     @Override
     public SearchCriteriaBuilder isLe(final String fieldName, final Object value) {
-        return add(SearchRestrictions.le(fieldName, value));
+        return add(SearchRestrictions.le(addAliasIfNessecary(fieldName), value));
     }
 
     @Override
     public SearchCriteriaBuilder isLt(final String fieldName, final Object value) {
-        return add(SearchRestrictions.lt(fieldName, value));
+        return add(SearchRestrictions.lt(addAliasIfNessecary(fieldName), value));
     }
 
     @Override
     public SearchCriteriaBuilder isGe(final String fieldName, final Object value) {
-        return add(SearchRestrictions.ge(fieldName, value));
+        return add(SearchRestrictions.ge(addAliasIfNessecary(fieldName), value));
     }
 
     @Override
     public SearchCriteriaBuilder isGt(final String fieldName, final Object value) {
-        return add(SearchRestrictions.gt(fieldName, value));
+        return add(SearchRestrictions.gt(addAliasIfNessecary(fieldName), value));
     }
 
     @Override
     public SearchCriteriaBuilder isNe(final String fieldName, final Object value) {
         if (isLikeRestriction(value)) {
-            return add(SearchRestrictions.not(SearchRestrictions.like(fieldName, (String) value)));
+            return add(SearchRestrictions.not(SearchRestrictions.like(addAliasIfNessecary(fieldName), (String) value)));
         }
 
-        return add(SearchRestrictions.ne(fieldName, value));
+        return add(SearchRestrictions.ne(addAliasIfNessecary(fieldName), value));
     }
 
     @Override
     public SearchCriteriaBuilder isNotNull(final String fieldName) {
-        return add(SearchRestrictions.isNotNull(fieldName));
+        return add(SearchRestrictions.isNotNull(addAliasIfNessecary(fieldName)));
     }
 
     @Override
     public SearchCriteriaBuilder isNull(final String fieldName) {
-        return add(SearchRestrictions.isNull(fieldName));
+        return add(SearchRestrictions.isNull(addAliasIfNessecary(fieldName)));
     }
 
     @Override
     public SearchCriteriaBuilder openNot() {
         // TODO restrictions.offerFirst(new ArrayList<Restriction>());
-        return this;
+        throw new IllegalStateException();
     }
 
     @Override
@@ -273,13 +288,13 @@ public final class SearchCriteriaImpl implements SearchCriteriaBuilder, SearchCr
         // } else {
         // return this;
         // }
-        return this;
+        throw new IllegalStateException();
     }
 
     @Override
     public SearchCriteriaBuilder openOr() {
         // TODO restrictions.offerFirst(new ArrayList<Restriction>());
-        return this;
+        throw new IllegalStateException();
     }
 
     @Override
@@ -296,13 +311,13 @@ public final class SearchCriteriaImpl implements SearchCriteriaBuilder, SearchCr
         // } else {
         // return this;
         // }
-        return this;
+        throw new IllegalStateException();
     }
 
     @Override
     public SearchCriteriaBuilder openAnd() {
         // TODO restrictions.offerFirst(new ArrayList<Restriction>());
-        return this;
+        throw new IllegalStateException();
     }
 
     @Override
@@ -319,16 +334,18 @@ public final class SearchCriteriaImpl implements SearchCriteriaBuilder, SearchCr
         // } else {
         // return this;
         // }
-        return this;
+        throw new IllegalStateException();
     }
 
     @Override
     public SearchCriteriaBuilder belongsTo(final String fieldName, final Object entityOrId) {
         if (entityOrId instanceof Entity) {
-            return add(SearchRestrictions.belongsTo(fieldName, (Entity) entityOrId));
+            return add(SearchRestrictions.belongsTo(addAliasIfNessecary(fieldName), (Entity) entityOrId));
+        } else if (entityOrId == null) {
+            return add(SearchRestrictions.isNull(addAliasIfNessecary(fieldName)));
         } else {
-            // TODO
-            return this;
+            return add(SearchRestrictions.belongsTo(addAliasIfNessecary(fieldName),
+                    getDataDefinitionBelongsToForField(fieldName), (Long) entityOrId));
         }
     }
 
@@ -364,12 +381,44 @@ public final class SearchCriteriaImpl implements SearchCriteriaBuilder, SearchCr
 
     @Override
     public SearchCriteriaBuilder orderAscBy(final String fieldName) {
-        return addOrder(SearchOrders.asc(fieldName));
+        return addOrder(SearchOrders.asc(addAliasIfNessecary(fieldName)));
     }
 
     @Override
     public SearchCriteriaBuilder orderDescBy(final String fieldName) {
-        return addOrder(SearchOrders.desc(fieldName));
+        return addOrder(SearchOrders.desc(addAliasIfNessecary(fieldName)));
+    }
+
+    private DataDefinition getDataDefinitionBelongsToForField(final String field) {
+        String[] path = field.split("\\.");
+
+        DataDefinition parentDataDefinition = sourceDataDefinition;
+
+        for (int i = 0; i < path.length; i++) {
+            parentDataDefinition = ((BelongsToType) parentDataDefinition.getField(path[i]).getType()).getDataDefinition();
+        }
+
+        return parentDataDefinition;
+    }
+
+    private int aliasIndex = 1;
+
+    private String addAliasIfNessecary(final String field) {
+        String[] path = field.split("\\.");
+
+        if (path.length == 1) {
+            return field;
+        } else {
+            String lastAlias = "";
+
+            for (int i = 0; i < path.length - 1; i++) {
+                createAlias(lastAlias + path[i], path[i] + "_a" + aliasIndex);
+                lastAlias = path[i] + "_a" + aliasIndex + ".";
+                aliasIndex++;
+            }
+
+            return lastAlias + path[path.length - 1];
+        }
     }
 
 }

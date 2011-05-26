@@ -21,7 +21,6 @@ import org.hibernate.type.FloatType;
 import org.hibernate.type.IntegerType;
 import org.hibernate.type.LongType;
 import org.hibernate.type.ShortType;
-import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.type.TextType;
 import org.hibernate.type.TimeType;
 import org.hibernate.type.TimestampType;
@@ -71,11 +70,12 @@ public class HibernateServiceImpl implements HibernateService {
 
         String sql = "select count(*) as cnt from (" + walker.getSQLString() + ") as sq";
 
-        return (Integer) getCurrentSession()
+        getCurrentSession().flush(); // is this safe?
+
+        return ((Number) getCurrentSession()
                 .createSQLQuery(sql)
-                .addScalar("cnt", StandardBasicTypes.INTEGER)
                 .setParameters(translator.getQueryParameters().getPositionalParameterValues(),
-                        translator.getQueryParameters().getPositionalParameterTypes()).uniqueResult();
+                        translator.getQueryParameters().getPositionalParameterTypes()).uniqueResult()).intValue();
     }
 
     @Override

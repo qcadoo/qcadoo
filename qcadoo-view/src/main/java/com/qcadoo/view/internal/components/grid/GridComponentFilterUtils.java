@@ -57,6 +57,8 @@ public class GridComponentFilterUtils {
                     continue;
                 }
 
+                field = addAliases(criteria, field);
+
                 if (fieldDefinition != null && String.class.isAssignableFrom(fieldDefinition.getType().getType())) {
                     addStringFilter(criteria, filterValue, field);
                 } else if (fieldDefinition != null && Boolean.class.isAssignableFrom(fieldDefinition.getType().getType())) {
@@ -70,11 +72,36 @@ public class GridComponentFilterUtils {
         }
     }
 
+    public static String addAliases(final SearchCriteriaBuilder criteria, final String field) {
+        if (field == null) {
+            return null;
+        }
+
+        String[] path = field.split("\\.");
+
+        if (path.length == 1) {
+            return field;
+        }
+
+        String lastAlias = "";
+
+        for (int i = 0; i < path.length - 1; i++) {
+            criteria.createAlias(lastAlias + path[i], path[i] + "_a");
+            lastAlias = path[i] + "_a.";
+        }
+
+        return lastAlias + path[path.length - 1];
+    }
+
     private static void addSimpleFilter(final SearchCriteriaBuilder criteria,
             final Entry<GridComponentFilterOperator, String> filterValue, final String field, final Object value) {
         switch (filterValue.getKey()) {
             case EQ:
-                criteria.add(SearchRestrictions.eq(field, value));
+                if (value instanceof String) {
+                    criteria.add(SearchRestrictions.like(field, (String) value));
+                } else {
+                    criteria.add(SearchRestrictions.eq(field, value));
+                }
                 break;
             case NE:
                 criteria.add(SearchRestrictions.ne(field, value));

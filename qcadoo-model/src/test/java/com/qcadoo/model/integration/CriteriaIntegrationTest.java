@@ -369,4 +369,5 @@ public class CriteriaIntegrationTest extends IntegrationTest {
         assertEquals("bsd", result.getEntities().get(0).getField("0"));
         assertEquals("asd", result.getEntities().get(1).getField("0"));
     }
+
 }

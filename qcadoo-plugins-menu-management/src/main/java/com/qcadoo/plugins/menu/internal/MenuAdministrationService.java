@@ -32,8 +32,8 @@ import org.springframework.stereotype.Service;
 import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.search.CustomRestriction;
+import com.qcadoo.model.api.search.SearchConjunction;
 import com.qcadoo.model.api.search.SearchCriteriaBuilder;
-import com.qcadoo.model.api.search.SearchDisjunction;
 import com.qcadoo.model.api.search.SearchRestrictions;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.ViewDefinitionState;
@@ -67,14 +67,14 @@ public class MenuAdministrationService {
 
             @Override
             public void addRestriction(final SearchCriteriaBuilder searchCriteriaBuilder) {
-                SearchDisjunction disjunction = SearchRestrictions.disjunction();
+                SearchConjunction conjunction = SearchRestrictions.conjunction();
 
                 for (String[] category : hiddenCategories) {
-                    disjunction.add(SearchRestrictions.not(SearchRestrictions.and(
+                    conjunction.add(SearchRestrictions.not(SearchRestrictions.and(
                             SearchRestrictions.eq("pluginIdentifier", category[0]), SearchRestrictions.eq("name", category[1]))));
                 }
 
-                searchCriteriaBuilder.add(disjunction);
+                searchCriteriaBuilder.add(conjunction);
             }
 
         });

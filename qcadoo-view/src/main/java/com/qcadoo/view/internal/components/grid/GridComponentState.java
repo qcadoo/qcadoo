@@ -43,6 +43,7 @@ import com.qcadoo.model.api.search.SearchCriteriaBuilder;
 import com.qcadoo.model.api.search.SearchOrders;
 import com.qcadoo.model.api.search.SearchRestrictions;
 import com.qcadoo.model.api.search.SearchResult;
+import com.qcadoo.model.api.types.BelongsToType;
 import com.qcadoo.view.api.components.GridComponent;
 import com.qcadoo.view.internal.states.AbstractComponentState;
 
@@ -407,7 +408,7 @@ public final class GridComponentState extends AbstractComponentState implements 
                 SearchCriteriaBuilder criteria = getDataDefinition().find();
                 if (belongsToFieldDefinition != null) {
                     criteria.add(SearchRestrictions.belongsTo(belongsToFieldDefinition.getName(),
-                            belongsToFieldDefinition.getDataDefinition(), belongsToEntityId));
+                            ((BelongsToType) belongsToFieldDefinition.getType()).getDataDefinition(), belongsToEntityId));
                 }
 
                 try {
@@ -449,6 +450,8 @@ public final class GridComponentState extends AbstractComponentState implements 
         private void addOrder(final SearchCriteriaBuilder criteria) {
             if (orderColumn != null) {
                 String field = GridComponentFilterUtils.getFieldNameByColumnName(columns, orderColumn);
+
+                field = GridComponentFilterUtils.addAliases(criteria, field);
 
                 if (field != null) {
                     if ("asc".equals(orderDirection)) {
