@@ -34,8 +34,8 @@ import org.json.JSONObject;
 import com.qcadoo.view.api.components.WindowComponent;
 import com.qcadoo.view.api.ribbon.Ribbon;
 import com.qcadoo.view.internal.api.InternalComponentState;
-import com.qcadoo.view.internal.ribbon.InternalRibbon;
 import com.qcadoo.view.internal.ribbon.RibbonUtils;
+import com.qcadoo.view.internal.ribbon.model.InternalRibbon;
 import com.qcadoo.view.internal.states.AbstractContainerState;
 
 public class WindowComponentState extends AbstractContainerState implements WindowComponent {

@@ -66,8 +66,9 @@ import com.qcadoo.view.internal.hooks.HookFactory;
 import com.qcadoo.view.internal.internal.ViewComponentsResolverImpl;
 import com.qcadoo.view.internal.internal.ViewDefinitionImpl;
 import com.qcadoo.view.internal.patterns.AbstractComponentPattern;
-import com.qcadoo.view.internal.ribbon.InternalRibbonGroup;
 import com.qcadoo.view.internal.ribbon.RibbonUtils;
+import com.qcadoo.view.internal.ribbon.model.InternalRibbonActionItem;
+import com.qcadoo.view.internal.ribbon.model.InternalRibbonGroup;
 
 @Service
 public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
@@ -397,6 +398,12 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
     public InternalRibbonGroup parseRibbonGroup(final Node groupNode, final ViewDefinition viewDefinition)
             throws ViewDefinitionParserNodeException {
         return RibbonUtils.getInstance().parseRibbonGroup(groupNode, this, viewDefinition);
+    }
+
+    @Override
+    public InternalRibbonActionItem parseRibbonItem(final Node itemNode, final ViewDefinition viewDefinition)
+            throws ViewDefinitionParserNodeException {
+        return RibbonUtils.getInstance().parseRibbonItem(itemNode, this, viewDefinition);
     }
 
     @Override

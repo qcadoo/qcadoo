@@ -35,7 +35,7 @@ import com.qcadoo.plugin.api.ModuleException;
 import com.qcadoo.view.internal.api.InternalViewDefinition;
 import com.qcadoo.view.internal.api.InternalViewDefinitionService;
 import com.qcadoo.view.internal.components.window.WindowComponentPattern;
-import com.qcadoo.view.internal.ribbon.InternalRibbonGroup;
+import com.qcadoo.view.internal.ribbon.model.InternalRibbonGroup;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
 import com.qcadoo.view.internal.xml.ViewDefinitionParserException;
 import com.qcadoo.view.internal.xml.ViewDefinitionParserNodeException;

@@ -35,8 +35,8 @@ import org.w3c.dom.NodeList;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.internal.ComponentDefinition;
 import com.qcadoo.view.internal.patterns.AbstractContainerPattern;
-import com.qcadoo.view.internal.ribbon.InternalRibbon;
 import com.qcadoo.view.internal.ribbon.RibbonUtils;
+import com.qcadoo.view.internal.ribbon.model.InternalRibbon;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
 import com.qcadoo.view.internal.xml.ViewDefinitionParserNodeException;
 

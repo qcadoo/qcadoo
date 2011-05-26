@@ -25,6 +25,10 @@ package com.qcadoo.view.internal.ribbon;
 
 import com.qcadoo.view.api.ribbon.RibbonActionItem;
 import com.qcadoo.view.internal.api.ViewDefinition;
+import com.qcadoo.view.internal.ribbon.model.InternalRibbonActionItem;
+import com.qcadoo.view.internal.ribbon.model.InternalRibbonGroup;
+import com.qcadoo.view.internal.ribbon.model.RibbonActionItemImpl;
+import com.qcadoo.view.internal.ribbon.model.RibbonGroupImpl;
 
 public class RibbonTemplates {
 

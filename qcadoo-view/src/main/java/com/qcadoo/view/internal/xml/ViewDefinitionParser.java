@@ -36,7 +36,8 @@ import com.qcadoo.view.internal.api.ComponentPattern;
 import com.qcadoo.view.internal.api.ContainerPattern;
 import com.qcadoo.view.internal.api.InternalViewDefinition;
 import com.qcadoo.view.internal.api.ViewDefinition;
-import com.qcadoo.view.internal.ribbon.InternalRibbonGroup;
+import com.qcadoo.view.internal.ribbon.model.InternalRibbonActionItem;
+import com.qcadoo.view.internal.ribbon.model.InternalRibbonGroup;
 
 public interface ViewDefinitionParser {
 
@@ -61,6 +62,9 @@ public interface ViewDefinitionParser {
     ViewExtension getViewExtensionNode(InputStream resource, String tagType) throws ViewDefinitionParserNodeException;
 
     InternalRibbonGroup parseRibbonGroup(Node groupNode, ViewDefinition viewDefinition) throws ViewDefinitionParserNodeException;
+
+    InternalRibbonActionItem parseRibbonItem(Node itemNode, ViewDefinition viewDefinition)
+            throws ViewDefinitionParserNodeException;
 
     void checkState(boolean state, Node node, String message) throws ViewDefinitionParserNodeException;
 

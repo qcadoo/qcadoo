@@ -39,6 +39,15 @@ import com.qcadoo.view.internal.api.ComponentPattern;
 import com.qcadoo.view.internal.api.InternalViewDefinition;
 import com.qcadoo.view.internal.api.ViewDefinition;
 import com.qcadoo.view.internal.patterns.AbstractComponentPattern;
+import com.qcadoo.view.internal.ribbon.model.InternalRibbon;
+import com.qcadoo.view.internal.ribbon.model.InternalRibbonActionItem;
+import com.qcadoo.view.internal.ribbon.model.InternalRibbonComboItem;
+import com.qcadoo.view.internal.ribbon.model.InternalRibbonGroup;
+import com.qcadoo.view.internal.ribbon.model.RibbonActionItemImpl;
+import com.qcadoo.view.internal.ribbon.model.RibbonComboBoxImpl;
+import com.qcadoo.view.internal.ribbon.model.RibbonComboItemImpl;
+import com.qcadoo.view.internal.ribbon.model.RibbonGroupImpl;
+import com.qcadoo.view.internal.ribbon.model.RibbonImpl;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
 import com.qcadoo.view.internal.xml.ViewDefinitionParserNodeException;
 
@@ -158,7 +167,7 @@ public final class RibbonUtils {
         }
     }
 
-    private InternalRibbonActionItem parseRibbonItem(final Node itemNode, final ViewDefinitionParser parser,
+    public InternalRibbonActionItem parseRibbonItem(final Node itemNode, final ViewDefinitionParser parser,
             final ViewDefinition viewDefinition) throws ViewDefinitionParserNodeException {
         String stringType = itemNode.getNodeName();
 
@@ -240,6 +249,9 @@ public final class RibbonUtils {
     public String translateRibbonAction(final String action, final ViewDefinition viewDefinition) {
         if (action == null) {
             return null;
+        }
+        if (viewDefinition == null) {
+            return action;
         }
 
         Pattern p = Pattern.compile("#\\{([^\\}]+)\\}");

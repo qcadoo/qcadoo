@@ -48,12 +48,12 @@ import com.qcadoo.view.internal.components.FieldComponentPattern;
 import com.qcadoo.view.internal.components.grid.GridComponentPattern;
 import com.qcadoo.view.internal.components.window.WindowComponentPattern;
 import com.qcadoo.view.internal.internal.ViewDefinitionImpl;
-import com.qcadoo.view.internal.ribbon.InternalRibbon;
-import com.qcadoo.view.internal.ribbon.InternalRibbonActionItem;
-import com.qcadoo.view.internal.ribbon.InternalRibbonGroup;
-import com.qcadoo.view.internal.ribbon.RibbonActionItemImpl;
-import com.qcadoo.view.internal.ribbon.RibbonGroupImpl;
-import com.qcadoo.view.internal.ribbon.RibbonImpl;
+import com.qcadoo.view.internal.ribbon.model.InternalRibbon;
+import com.qcadoo.view.internal.ribbon.model.InternalRibbonActionItem;
+import com.qcadoo.view.internal.ribbon.model.InternalRibbonGroup;
+import com.qcadoo.view.internal.ribbon.model.RibbonActionItemImpl;
+import com.qcadoo.view.internal.ribbon.model.RibbonGroupImpl;
+import com.qcadoo.view.internal.ribbon.model.RibbonImpl;
 
 public final class LookupComponentPattern extends FieldComponentPattern {
 
