@@ -271,74 +271,32 @@ public final class SearchCriteriaImpl implements SearchCriteriaBuilder, SearchCr
 
     @Override
     public SearchCriteriaBuilder openNot() {
-        // TODO restrictions.offerFirst(new ArrayList<Restriction>());
-        throw new IllegalStateException();
+        throw new UnsupportedOperationException("Please use new criteria API");
     }
 
     @Override
     public SearchCriteriaBuilder closeNot() {
-        // TODO List<Restriction> notRestrictions = restrictions.remove();
-        //
-        // if (restrictions.size() < 1) {
-        // throw new IllegalStateException("Restrictions stack is empty : " + notRestrictions);
-        // }
-        //
-        // if (notRestrictions.size() > 1) {
-        // return addRestriction(new LogicalOperatorRestriction(RestrictionLogicalOperator.NOT, new LogicalOperatorRestriction(
-        // RestrictionLogicalOperator.AND, notRestrictions.toArray(new Restriction[notRestrictions.size()]))));
-        // } else if (notRestrictions.size() > 0) {
-        // return addRestriction(new LogicalOperatorRestriction(RestrictionLogicalOperator.NOT,
-        // notRestrictions.toArray(new Restriction[notRestrictions.size()])));
-        // } else {
-        // return this;
-        // }
-        throw new IllegalStateException();
+        throw new UnsupportedOperationException("Please use new criteria API");
     }
 
     @Override
     public SearchCriteriaBuilder openOr() {
-        // TODO restrictions.offerFirst(new ArrayList<Restriction>());
-        throw new IllegalStateException();
+        throw new UnsupportedOperationException("Please use new criteria API");
     }
 
     @Override
     public SearchCriteriaBuilder closeOr() {
-        // List<Restriction> orRestrictions = restrictions.remove();
-        //
-        // if (restrictions.size() < 1) {
-        // throw new IllegalStateException("Restrictions stack is empty : " + orRestrictions);
-        // }
-        //
-        // if (orRestrictions.size() > 0) {
-        // return addRestriction(new LogicalOperatorRestriction(RestrictionLogicalOperator.OR,
-        // orRestrictions.toArray(new Restriction[orRestrictions.size()])));
-        // } else {
-        // return this;
-        // }
-        throw new IllegalStateException();
+        throw new UnsupportedOperationException("Please use new criteria API");
     }
 
     @Override
     public SearchCriteriaBuilder openAnd() {
-        // TODO restrictions.offerFirst(new ArrayList<Restriction>());
-        throw new IllegalStateException();
+        throw new UnsupportedOperationException("Please use new criteria API");
     }
 
     @Override
     public SearchCriteriaBuilder closeAnd() {
-        // TODO List<Restriction> andRestrictions = restrictions.remove();
-        //
-        // if (restrictions.size() < 1) {
-        // throw new IllegalStateException("Restrictions stack is empty : " + andRestrictions);
-        // }
-        //
-        // if (andRestrictions.size() > 0) {
-        // return addRestriction(new LogicalOperatorRestriction(RestrictionLogicalOperator.AND,
-        // andRestrictions.toArray(new Restriction[andRestrictions.size()])));
-        // } else {
-        // return this;
-        // }
-        throw new IllegalStateException();
+        throw new UnsupportedOperationException("Please use new criteria API");
     }
 
     @Override
