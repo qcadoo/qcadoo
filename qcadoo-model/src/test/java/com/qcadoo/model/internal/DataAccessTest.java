@@ -42,6 +42,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.DictionaryService;
+import com.qcadoo.model.api.search.SearchRestrictions;
 import com.qcadoo.model.api.types.HasManyType;
 import com.qcadoo.model.api.types.TreeType;
 import com.qcadoo.model.beans.sample.SampleParentDatabaseObject;
@@ -138,6 +139,9 @@ public abstract class DataAccessTest {
         ReflectionTestUtils.setField(dataAccessService, "priorityService", priorityService);
         ReflectionTestUtils.setField(dataAccessService, "validationService", validationService);
         ReflectionTestUtils.setField(dataAccessService, "hibernateService", hibernateService);
+
+        SearchRestrictions restrictions = new SearchRestrictions();
+        ReflectionTestUtils.setField(restrictions, "dataAccessService", dataAccessService);
 
         treeDataDefinition = new DataDefinitionImpl("tree", "tree.entity", dataAccessService);
         given(dataDefinitionService.get("tree", "entity")).willReturn(treeDataDefinition);

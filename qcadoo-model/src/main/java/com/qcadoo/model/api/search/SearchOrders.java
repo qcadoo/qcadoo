@@ -9,7 +9,10 @@ import com.qcadoo.model.internal.search.SearchOrderImpl;
  * 
  * @since 0.4.1
  */
-public class SearchOrders {
+public final class SearchOrders {
+
+    private SearchOrders() {
+    }
 
     /**
      * Creates ascending order using given field.

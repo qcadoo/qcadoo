@@ -66,8 +66,6 @@ public final class SearchCriteriaImpl implements SearchCriteriaBuilder, SearchCr
 
     private final Map<String, String> aliases = new HashMap<String, String>();
 
-    private Criteria restrictions;
-
     public SearchCriteriaImpl(final DataDefinition dataDefinition) {
         checkNotNull(dataDefinition);
         sourceDataDefinition = dataDefinition;

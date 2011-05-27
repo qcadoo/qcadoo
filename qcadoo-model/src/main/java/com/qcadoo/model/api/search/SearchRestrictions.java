@@ -24,7 +24,7 @@ import com.qcadoo.model.internal.search.SearchDisjunctionImpl;
  * @since 0.4.1
  */
 @Component
-public class SearchRestrictions {
+public final class SearchRestrictions {
 
     private static DataAccessService dataAccessService;
 

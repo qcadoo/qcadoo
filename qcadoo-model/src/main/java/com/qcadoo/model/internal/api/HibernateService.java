@@ -1,18 +1,23 @@
 package com.qcadoo.model.internal.api;
 
+import java.util.List;
+
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.classic.Session;
 
-
 public interface HibernateService {
 
-    public abstract Session getCurrentSession();
+    Session getCurrentSession();
 
-    public abstract int getTotalNumberOfEntities(final Criteria criteria);
+    int getTotalNumberOfEntities(Criteria criteria);
 
-    public abstract InternalDataDefinition resolveDataDefinition(final Criteria criteria);
+    InternalDataDefinition resolveDataDefinition(Criteria criteria);
 
-    public abstract InternalDataDefinition resolveDataDefinition(final Query query);
+    InternalDataDefinition resolveDataDefinition(Query query);
+
+    List<?> list(Query query);
+
+    List<?> list(Criteria criteria);
 
 }

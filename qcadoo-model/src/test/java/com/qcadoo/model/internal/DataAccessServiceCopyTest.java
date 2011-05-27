@@ -34,9 +34,9 @@ import static org.mockito.Mockito.verify;
 
 import java.util.List;
 
+import org.hibernate.Criteria;
 import org.hibernate.criterion.Projections;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
@@ -104,8 +104,6 @@ public final class DataAccessServiceCopyTest extends DataAccessTest {
     }
 
     @Test
-    @Ignore
-    // TODO masz fix tests
     public void shouldCopyEntityWithUniqueField2() throws Exception {
         // given
         FieldHookDefinition fieldHook = new UniqueValidator();
@@ -118,7 +116,7 @@ public final class DataAccessServiceCopyTest extends DataAccessTest {
         simpleDatabaseObject.setName("Mr T(1)");
         simpleDatabaseObject.setAge(66);
 
-        given(criteria.setProjection(Projections.rowCount()).uniqueResult()).willReturn(1, 0);
+        given(hibernateService.getTotalNumberOfEntities(Mockito.any(Criteria.class))).willReturn(1, 0);
         given(session.get(any(Class.class), Matchers.anyInt())).willReturn(simpleDatabaseObject);
 
         // when
@@ -161,9 +159,8 @@ public final class DataAccessServiceCopyTest extends DataAccessTest {
         verify(session, never()).get(Mockito.eq(SampleSimpleDatabaseObject.class), anyInt());
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Test
-    @Ignore
-    // TODO masz fix tests
     public void shouldCopyEntityWithHasManyField() throws Exception {
         // given
         parentFieldDefinitionHasMany.withType(new HasManyEntitiesType("simple", "entity", "belongsTo",
@@ -178,10 +175,10 @@ public final class DataAccessServiceCopyTest extends DataAccessTest {
         parentDatabaseObject.setId(13L);
         parentDatabaseObject.setName("Mr T");
 
-        given(criteria.setProjection(Projections.rowCount()).uniqueResult()).willReturn(1, 0);
+        given(hibernateService.getTotalNumberOfEntities(Mockito.any(Criteria.class))).willReturn(1, 0);
         given(session.get(Mockito.eq(SampleSimpleDatabaseObject.class), Mockito.eq(12L))).willReturn(simpleDatabaseObject);
         given(session.get(Mockito.eq(SampleParentDatabaseObject.class), Mockito.eq(13L))).willReturn(parentDatabaseObject);
-        given(criteria.list()).willReturn(Lists.newArrayList(simpleDatabaseObject));
+        given(hibernateService.list(Mockito.any(Criteria.class))).willReturn((List) Lists.newArrayList(simpleDatabaseObject));
 
         // when
         List<Entity> entities = parentDataDefinition.copy(new Long[] { 13L });
@@ -221,9 +218,8 @@ public final class DataAccessServiceCopyTest extends DataAccessTest {
         verify(session, never()).get(Mockito.eq(SampleSimpleDatabaseObject.class), anyInt());
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Test
-    @Ignore
-    // TODO masz fix tests
     public void shouldCopyEntityWithTreeField() throws Exception {
         // given
         parentFieldDefinitionTree.withType(new TreeEntitiesType("tree", "entity", "owner", TreeType.Cascade.DELETE, true,
@@ -237,10 +233,10 @@ public final class DataAccessServiceCopyTest extends DataAccessTest {
         parentDatabaseObject.setId(13L);
         parentDatabaseObject.setName("Mr T");
 
-        given(criteria.setProjection(Projections.rowCount()).uniqueResult()).willReturn(1, 0);
+        given(hibernateService.getTotalNumberOfEntities(Mockito.any(Criteria.class))).willReturn(1, 0);
         given(session.get(Mockito.eq(SampleSimpleDatabaseObject.class), Mockito.eq(12L))).willReturn(treeDatabaseObject);
         given(session.get(Mockito.eq(SampleParentDatabaseObject.class), Mockito.eq(13L))).willReturn(parentDatabaseObject);
-        given(criteria.list()).willReturn(Lists.newArrayList(treeDatabaseObject));
+        given(hibernateService.list(Mockito.any(Criteria.class))).willReturn((List) Lists.newArrayList(treeDatabaseObject));
 
         // when
         List<Entity> entities = parentDataDefinition.copy(new Long[] { 13L });

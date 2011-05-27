@@ -26,9 +26,29 @@ package com.qcadoo.model.api.search;
 import com.qcadoo.model.api.Entity;
 
 /**
- * Object represents the criteria builder for finding entities.
+ * Object represents the criteria builder for finding entities.<br/>
+ * <br/>
+ * The criteria is based on the Hibernate's criteria. Please see more on <a
+ * href="http://docs.jboss.org/hibernate/core/3.6/reference/en-US/html/querycriteria.html">the official reference</a>.<br/>
+ * <br/>
+ * Examples:<br/>
  * 
- * @since 0.4.0
+ * <ul>
+ * <li>dataDefinition.find().list() - select all entities from current data definition</li>
+ * <li>dataDefinition.find().setMaxResults(1).uniqueResult() - select first entity from current data definition</li>
+ * <li>dataDefinition.find().add(SerchResrictions.eq("name", "xxx")).list() - select all entities from current with given name</li>
+ * <li>dataDefinition.find().createAlias("vendor", "vendor").add(SerchResrictions.eq("vendor.name", "xxx").list() - select all
+ * entities with given vendor.name</li>
+ * <li>dataDefinition.find().add(SerchResrictions.isNotEmpty("components").list() - select all entities which have components</li>
+ * <li>dataDefinition.find().createAlias("vendor",
+ * "vendor").setProjections(SearchProjections.list().add(SearchProjections.id()).add(SearchProjections.field("vendor.name"))).list
+ * () - select all entities return its id and vendor's name</li>
+ * <li>dataDefinition.find().addOrder(SearchOrders.asc("name").list() - select all entities ordered ascending by name</li>
+ * <li>dataDefinition.find().setProjection(SearchProjections.distinct(SearchProjections.field("name"))).list() - select unique
+ * entities' names</li>
+ * <li>dataDefinition.find().add(SerchResrictions.or(SerchResrictions.eq("name", "xxx"), SerchResrictions.eq("name",
+ * "yyy"))).list() - select all entities from current with one of the given names</li>
+ * </ul>
  */
 public interface SearchCriteriaBuilder {
 
@@ -90,7 +110,7 @@ public interface SearchCriteriaBuilder {
      * @return this search builder
      * @since 0.4.1
      */
-    public SearchCriteriaBuilder setProjection(SearchProjection projection);
+    SearchCriteriaBuilder setProjection(SearchProjection projection);
 
     /**
      * Adds restriction to the criteria.
@@ -100,7 +120,7 @@ public interface SearchCriteriaBuilder {
      * @return this search builder
      * @since 0.4.1
      */
-    public SearchCriteriaBuilder add(SearchCriterion criterion);
+    SearchCriteriaBuilder add(SearchCriterion criterion);
 
     /**
      * Adds order to the criteria.
@@ -110,7 +130,7 @@ public interface SearchCriteriaBuilder {
      * @return this search builder
      * @since 0.4.1
      */
-    public SearchCriteriaBuilder addOrder(SearchOrder order);
+    SearchCriteriaBuilder addOrder(SearchOrder order);
 
     /**
      * Create alias for the association to the criteria.
@@ -122,7 +142,7 @@ public interface SearchCriteriaBuilder {
      * @return this search builder
      * @since 0.4.1
      */
-    public SearchCriteriaBuilder createAlias(String association, String alias);
+    SearchCriteriaBuilder createAlias(String association, String alias);
 
     /**
      * Create create for the association to the criteria.
@@ -134,7 +154,7 @@ public interface SearchCriteriaBuilder {
      * @return search builder for the subcriteria
      * @since 0.4.1
      */
-    public SearchCriteriaBuilder createCriteria(String association, String alias);
+    SearchCriteriaBuilder createCriteria(String association, String alias);
 
     /**
      * Adds the "equals to" restriction. If field has string type and value contains "%", "*", "_" or "?" the "like" restriction

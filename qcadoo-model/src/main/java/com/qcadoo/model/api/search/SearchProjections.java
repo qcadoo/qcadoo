@@ -10,14 +10,17 @@ import com.qcadoo.model.internal.search.SearchProjectonListImpl;
  * 
  * @since 0.4.1
  */
-public class SearchProjections {
+public final class SearchProjections {
+
+    private SearchProjections() {
+    }
 
     /**
      * Creates projection's list.
      * 
      * @return projection's list
      */
-    public static SearchProjectionList projectionList() {
+    public static SearchProjectionList list() {
         return new SearchProjectonListImpl();
     }
 

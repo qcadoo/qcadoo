@@ -8,14 +8,15 @@ import com.qcadoo.model.api.Entity;
 /**
  * Object represents the query builder for finding entities.<br/>
  * <br/>
- * The query is based on HQL - the Hibernate query language. The only difference is the way to name the entities. You must use
+ * The query is based on HQL - the Hibernate's query language. The only difference is the way to name the entities. You must use
  * hash, plugin's name, underscore and model's name. For example "#plugin_model".<br/>
  * <br/>
  * If You start the query from "where" keyword, the "from" section will be automatically taken from current dataDefinition object.<br/>
  * <br/>
  * Parameters are binded to the query using placeholders - colon with parameter's name.<br/>
  * <br/>
- * Please see more on the official reference: {@link http://docs.jboss.org/hibernate/core/3.6/reference/en-US/html/queryhql.html}.<br/>
+ * Please see more on <a href="http://docs.jboss.org/hibernate/core/3.6/reference/en-US/html/queryhql.html">the official
+ * reference</a>.<br/>
  * <br/>
  * Examples:<br/>
  * 
