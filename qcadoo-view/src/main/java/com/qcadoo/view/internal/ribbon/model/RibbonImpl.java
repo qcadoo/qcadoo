@@ -37,7 +37,7 @@ public class RibbonImpl implements InternalRibbon {
 
     private String name;
 
-    private final List<InternalRibbonGroup> groups = new LinkedList<InternalRibbonGroup>();
+    private final List<RibbonGroupsPack> groupPacks = new LinkedList<RibbonGroupsPack>();
 
     @Override
     public String getName() {
@@ -51,13 +51,14 @@ public class RibbonImpl implements InternalRibbon {
 
     @Override
     public List<RibbonGroup> getGroups() {
-        return new LinkedList<RibbonGroup>(groups);
+        return getAllCastedGroups();
     }
 
     @Override
     public RibbonGroup getGroupByName(String groupName) {
-        for (RibbonGroup group : groups) {
-            if (group.getName().equals(groupName)) {
+        for (RibbonGroupsPack groupPack : groupPacks) {
+            RibbonGroup group = groupPack.getGroupByName(groupName);
+            if (group != null) {
                 return group;
             }
         }
@@ -65,13 +66,13 @@ public class RibbonImpl implements InternalRibbon {
     }
 
     @Override
-    public void addGroup(final InternalRibbonGroup group) {
-        this.groups.add(group);
+    public void addGroupsPack(final RibbonGroupsPack groupPack) {
+        groupPacks.add(groupPack);
     }
 
     @Override
-    public void removeGroup(final InternalRibbonGroup group) {
-        this.groups.remove(group);
+    public void removeGroupsPack(final RibbonGroupsPack groupPack) {
+        groupPacks.remove(groupPack);
     }
 
     @Override
@@ -80,7 +81,7 @@ public class RibbonImpl implements InternalRibbon {
         try {
             ribbonJson.put("name", name);
             JSONArray groupsArray = new JSONArray();
-            for (InternalRibbonGroup group : groups) {
+            for (InternalRibbonGroup group : getAllGroups()) {
                 if (group.getExtensionPluginIdentifier() == null || PluginUtils.isEnabled(group.getExtensionPluginIdentifier())) {
                     groupsArray.put(group.getAsJson());
                 }
@@ -96,8 +97,8 @@ public class RibbonImpl implements InternalRibbon {
     public InternalRibbon getCopy() {
         InternalRibbon copy = new RibbonImpl();
         copy.setName(name);
-        for (InternalRibbonGroup group : groups) {
-            copy.addGroup(group.getCopy());
+        for (RibbonGroupsPack groupPack : groupPacks) {
+            copy.addGroupsPack(groupPack.getCopy());
         }
         return copy;
     }
@@ -108,10 +109,10 @@ public class RibbonImpl implements InternalRibbon {
         boolean isDiffrence = false;
         diff.setName(name);
 
-        for (InternalRibbonGroup group : groups) {
-            InternalRibbonGroup diffGroup = group.getUpdate();
-            if (diffGroup != null) {
-                diff.addGroup(diffGroup);
+        for (RibbonGroupsPack groupPack : groupPacks) {
+            RibbonGroupsPack diffGroupPack = groupPack.getUpdate();
+            if (diffGroupPack != null) {
+                diff.addGroupsPack(diffGroupPack);
                 isDiffrence = true;
             }
 
@@ -120,5 +121,21 @@ public class RibbonImpl implements InternalRibbon {
             return diff;
         }
         return null;
+    }
+
+    private List<InternalRibbonGroup> getAllGroups() {
+        List<InternalRibbonGroup> allGroups = new LinkedList<InternalRibbonGroup>();
+        for (RibbonGroupsPack groupPack : groupPacks) {
+            allGroups.addAll(groupPack.getGroups());
+        }
+        return allGroups;
+    }
+
+    private List<RibbonGroup> getAllCastedGroups() {
+        List<RibbonGroup> allGroups = new LinkedList<RibbonGroup>();
+        for (RibbonGroupsPack groupPack : groupPacks) {
+            allGroups.addAll(groupPack.getGroups());
+        }
+        return allGroups;
     }
 }

@@ -5,6 +5,8 @@ import java.util.Set;
 
 public class RibbonTemplateParameters {
 
+    public static final String DEFAULT_TEMPLATE_PLUGIN = "qcadooView";
+
     private final String templatePlugin;
 
     private final String templateName;
@@ -26,7 +28,7 @@ public class RibbonTemplateParameters {
             throw new IllegalStateException("template usage error: cannot define both includeItems and excludeItems");
         }
         if (templatePlugin == null) {
-            this.templatePlugin = "qcadooView";
+            this.templatePlugin = DEFAULT_TEMPLATE_PLUGIN;
         } else {
             this.templatePlugin = templatePlugin;
         }

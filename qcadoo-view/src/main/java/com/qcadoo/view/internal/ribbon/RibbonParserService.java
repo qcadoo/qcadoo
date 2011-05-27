@@ -41,6 +41,7 @@ import com.qcadoo.view.internal.ribbon.model.RibbonComboBoxImpl;
 import com.qcadoo.view.internal.ribbon.model.RibbonComboItemImpl;
 import com.qcadoo.view.internal.ribbon.model.RibbonGroupImpl;
 import com.qcadoo.view.internal.ribbon.model.RibbonImpl;
+import com.qcadoo.view.internal.ribbon.model.SingleRibbonGroupPack;
 import com.qcadoo.view.internal.ribbon.templates.RibbonTemplateParameters;
 import com.qcadoo.view.internal.ribbon.templates.RibbonTemplateParameters.RibbonTemplateParametersBuilder;
 import com.qcadoo.view.internal.ribbon.templates.RibbonTemplatesService;
@@ -67,7 +68,7 @@ public class RibbonParserService {
                 continue;
             }
             if ("group".equals(child.getNodeName())) {
-                ribbon.addGroup(parseRibbonGroup(child, parser, viewDefinition));
+                ribbon.addGroupsPack(new SingleRibbonGroupPack(parseRibbonGroup(child, parser, viewDefinition)));
             } else if ("template".equals(child.getNodeName())) {
                 applyTemplate(child, ribbon, parser, viewDefinition);
             } else {

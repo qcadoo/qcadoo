@@ -117,4 +117,9 @@ public class RibbonGroupImpl implements InternalRibbonGroup {
     public void setExtensionPluginIdentifier(String extensionPluginIdentifier) {
         this.extensionPluginIdentifier = extensionPluginIdentifier;
     }
+
+    @Override
+    public String toString() {
+        return "RibbonGroupImpl [name=" + name + ", extensionPluginIdentifier=" + extensionPluginIdentifier + "]";
+    }
 }

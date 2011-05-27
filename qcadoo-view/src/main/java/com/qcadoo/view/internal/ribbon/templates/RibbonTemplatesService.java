@@ -8,9 +8,11 @@ public interface RibbonTemplatesService {
 
     void applyTemplate(InternalRibbon ribbon, RibbonTemplateParameters parameters, ViewDefinition viewDefinition);
 
-    void addRibbonTemplate(RibbonTemplate ribbonTemplate);
+    RibbonTemplate getTemplate(String templatePlugin, String templateName);
 
-    void removeRibbonTemplate(String templatePlugin, String templateName);
+    void addTemplate(RibbonTemplate ribbonTemplate);
 
-    void removeRibbonTemplate(RibbonTemplate ribbonTemplate);
+    void removeTemplate(String templatePlugin, String templateName);
+
+    void removeTemplate(RibbonTemplate ribbonTemplate);
 }

@@ -36,6 +36,8 @@ import com.qcadoo.view.internal.api.InternalViewDefinition;
 import com.qcadoo.view.internal.api.InternalViewDefinitionService;
 import com.qcadoo.view.internal.components.window.WindowComponentPattern;
 import com.qcadoo.view.internal.ribbon.model.InternalRibbonGroup;
+import com.qcadoo.view.internal.ribbon.model.RibbonGroupsPack;
+import com.qcadoo.view.internal.ribbon.model.SingleRibbonGroupPack;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
 import com.qcadoo.view.internal.xml.ViewDefinitionParserException;
 import com.qcadoo.view.internal.xml.ViewDefinitionParserNodeException;
@@ -53,7 +55,7 @@ public class ViewRibbonModule extends Module {
 
     private final ViewExtension viewExtension;
 
-    private Map<WindowComponentPattern, InternalRibbonGroup> addedGroups;
+    private Map<WindowComponentPattern, RibbonGroupsPack> addedGroups;
 
     public ViewRibbonModule(final String pluginIdentifier, final Resource xmlFile,
             final InternalViewDefinitionService viewDefinitionService, final ViewDefinitionParser viewDefinitionParser) {
@@ -77,7 +79,7 @@ public class ViewRibbonModule extends Module {
 
     @Override
     public void enable() {
-        addedGroups = new HashMap<WindowComponentPattern, InternalRibbonGroup>();
+        addedGroups = new HashMap<WindowComponentPattern, RibbonGroupsPack>();
 
         InternalViewDefinition viewDefinition = viewDefinitionService.getWithoutSession(viewExtension.getPluginName(),
                 viewExtension.getViewName());
@@ -89,16 +91,16 @@ public class ViewRibbonModule extends Module {
 
             for (Node groupNode : viewDefinitionParser.geElementChildren(viewExtension.getExtesionNode())) {
 
-                InternalRibbonGroup group;
                 try {
-                    group = viewDefinitionParser.parseRibbonGroup(groupNode, viewDefinition);
-
+                    InternalRibbonGroup group = viewDefinitionParser.parseRibbonGroup(groupNode, viewDefinition);
                     group.setExtensionPluginIdentifier(pluginIdentifier);
+
+                    RibbonGroupsPack groupsPack = new SingleRibbonGroupPack(group);
 
                     WindowComponentPattern window = viewDefinition.getRootWindow();
 
-                    window.getRibbon().addGroup(group);
-                    addedGroups.put(window, group);
+                    window.getRibbon().addGroupsPack(groupsPack);
+                    addedGroups.put(window, groupsPack);
                 } catch (ViewDefinitionParserNodeException e) {
                     throw ViewDefinitionParserException.forFileAndNode(fileName, e);
                 }
@@ -110,8 +112,8 @@ public class ViewRibbonModule extends Module {
 
     @Override
     public void disable() {
-        for (Map.Entry<WindowComponentPattern, InternalRibbonGroup> addedGroupEntry : addedGroups.entrySet()) {
-            addedGroupEntry.getKey().getRibbon().removeGroup(addedGroupEntry.getValue());
+        for (Map.Entry<WindowComponentPattern, RibbonGroupsPack> addedGroupEntry : addedGroups.entrySet()) {
+            addedGroupEntry.getKey().getRibbon().removeGroupsPack(addedGroupEntry.getValue());
         }
     }
 
