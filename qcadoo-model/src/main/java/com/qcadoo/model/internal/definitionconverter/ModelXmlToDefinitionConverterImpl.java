@@ -148,7 +148,7 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
     }
 
     private DataDefinition parse(final InputStream stream) throws HookInitializationException, ModelXmlParsingException,
-            XMLStreamException, javax.xml.stream.FactoryConfigurationError {
+            XMLStreamException {
         XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(stream);
         DataDefinition dataDefinition = null;
 

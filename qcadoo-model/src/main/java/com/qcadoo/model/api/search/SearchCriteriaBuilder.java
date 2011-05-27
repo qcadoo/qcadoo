@@ -26,9 +26,42 @@ package com.qcadoo.model.api.search;
 import com.qcadoo.model.api.Entity;
 
 /**
- * Object represents the criteria builder for finding entities.
+ * Object represents the criteria builder for finding entities.<br/>
+ * <br/>
+ * The criteria is based on the Hibernate's criteria. Please see more on the official reference: {@link http
+ * ://docs.jboss.org/hibernate/core/3.6/reference/en-US/html/querycriteria.html}.<br/>
+ * <br/>
+ * Examples:<br/>
  * 
- * @since 0.4.0
+ * <ul>
+ * <li>dataDefinition.find().list() - select all entities from current data definition
+ * <li>dataDefinition.find().setMaxResults(1).uniqueResult() - select first entity from current data definition
+ * 
+ * <li>where name = :name - select all entities from current data definition with given name, list of "products_product" entities
+ * will be returned</li>
+ * <li>from #products_product where name = :name - select all "products_product" entities with given name, list of
+ * "products_product" entities will be returned</li>
+ * <li>from #products_product as p where p.name = :name - select all "products_product" entities with given name, list of
+ * "products_product" entities will be returned</li>
+ * <li>from #products_product as p where p.vendor.name = :name - select all "products_product" entities with belongs to field
+ * "vendor" with given name, list of "products_product" entities will be returned</li>
+ * <li>from #products_product as p where size(p.components) > 0 - select all "products_product" entities which have components,
+ * list of "products_product" entities will be returned</li>
+ * <li>select p from #products_product as p where p.name = :name - select all "products_product" entities with given name, list of
+ * "products_product" entities will be returned</li>
+ * <li>select p, upper(p.name) from #products_product as p where p.name = :name - select all "products_product" entities with
+ * given name, list of dynamic entities will be returned, field "0" will contain "products_product" entity, field "1" will contain
+ * uppercased name</li>
+ * <li>select p as product, upper(p.name) as name from #products_product as p where p.name = :name - select all "products_product"
+ * entities with given name, list of dynamic entities will be returned, field "product" will contain "products_product" entity,
+ * field "name" will contain uppercased name</li>
+ * <li>from #products_product order by name asc- select all "products_product" ordered by name, list of "products_product"
+ * entities will be returned</li>
+ * <li>select distinct p.name as name from #products_product as p where lower(p.name) like 'a%' - select all unique names started
+ * with letter "a", list of dynamic entities will be returned, field "name" will contain name</li>
+ * </ul>
+ * 
+ * @since 0.4.1
  */
 public interface SearchCriteriaBuilder {
 
@@ -90,7 +123,7 @@ public interface SearchCriteriaBuilder {
      * @return this search builder
      * @since 0.4.1
      */
-    public SearchCriteriaBuilder setProjection(SearchProjection projection);
+    SearchCriteriaBuilder setProjection(SearchProjection projection);
 
     /**
      * Adds restriction to the criteria.
@@ -100,7 +133,7 @@ public interface SearchCriteriaBuilder {
      * @return this search builder
      * @since 0.4.1
      */
-    public SearchCriteriaBuilder add(SearchCriterion criterion);
+    SearchCriteriaBuilder add(SearchCriterion criterion);
 
     /**
      * Adds order to the criteria.
@@ -110,7 +143,7 @@ public interface SearchCriteriaBuilder {
      * @return this search builder
      * @since 0.4.1
      */
-    public SearchCriteriaBuilder addOrder(SearchOrder order);
+    SearchCriteriaBuilder addOrder(SearchOrder order);
 
     /**
      * Create alias for the association to the criteria.
@@ -122,7 +155,7 @@ public interface SearchCriteriaBuilder {
      * @return this search builder
      * @since 0.4.1
      */
-    public SearchCriteriaBuilder createAlias(String association, String alias);
+    SearchCriteriaBuilder createAlias(String association, String alias);
 
     /**
      * Create create for the association to the criteria.
@@ -134,7 +167,7 @@ public interface SearchCriteriaBuilder {
      * @return search builder for the subcriteria
      * @since 0.4.1
      */
-    public SearchCriteriaBuilder createCriteria(String association, String alias);
+    SearchCriteriaBuilder createCriteria(String association, String alias);
 
     /**
      * Adds the "equals to" restriction. If field has string type and value contains "%", "*", "_" or "?" the "like" restriction

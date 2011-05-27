@@ -1,5 +1,8 @@
 package com.qcadoo.model.internal;
 
+import java.util.List;
+import java.util.Locale;
+
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
@@ -117,8 +120,8 @@ public class HibernateServiceImpl implements HibernateService {
 
     private InternalDataDefinition resolveDataDefinitionFromClassType(final String classType) {
         String[] tmp = classType.replaceAll("com.qcadoo.model.beans.", "").split("\\.");
-        String model = tmp[1].replaceAll(tmp[0].substring(0, 1).toUpperCase() + tmp[0].substring(1), "");
-        model = model.substring(0, 1).toLowerCase() + model.substring(1);
+        String model = tmp[1].replaceAll(tmp[0].substring(0, 1).toUpperCase(Locale.ENGLISH) + tmp[0].substring(1), "");
+        model = model.substring(0, 1).toLowerCase(Locale.ENGLISH) + model.substring(1);
         return (InternalDataDefinition) dataDefinitionService.get(tmp[0], model);
     }
 
@@ -167,6 +170,16 @@ public class HibernateServiceImpl implements HibernateService {
 
     protected void setSessionFactory(final SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
+    }
+
+    @Override
+    public List<?> list(final Query query) {
+        return query.list();
+    }
+
+    @Override
+    public List<?> list(final Criteria criteria) {
+        return criteria.list();
     }
 
 }

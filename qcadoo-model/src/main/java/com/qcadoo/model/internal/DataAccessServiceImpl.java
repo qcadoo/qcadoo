@@ -491,7 +491,7 @@ public class DataAccessServiceImpl implements DataAccessService {
         int totalNumberOfEntities = -1;
 
         if (searchQuery.hasFirstAndMaxResults()) {
-            totalNumberOfEntities = query.list().size();
+            totalNumberOfEntities = hibernateService.list(query).size();
             searchQuery.addFirstAndMaxResults(query);
         }
 
@@ -500,7 +500,7 @@ public class DataAccessServiceImpl implements DataAccessService {
             return getResultSet(null, totalNumberOfEntities, Collections.emptyList());
         }
 
-        List<?> results = query.list();
+        List<?> results = hibernateService.list(query);
 
         if (totalNumberOfEntities == -1) {
             totalNumberOfEntities = results.size();
@@ -530,7 +530,7 @@ public class DataAccessServiceImpl implements DataAccessService {
 
         Criteria criteria = searchCriteria.createCriteria(hibernateService.getCurrentSession());
 
-        int totalNumberOfEntities = criteria.list().size(); // hibernateService.getTotalNumberOfEntities(criteria);
+        int totalNumberOfEntities = hibernateService.getTotalNumberOfEntities(criteria);
 
         if (totalNumberOfEntities == 0) {
             LOG.info("There is no entity matching criteria " + searchCriteria);
@@ -540,7 +540,7 @@ public class DataAccessServiceImpl implements DataAccessService {
         searchCriteria.addFirstAndMaxResults(criteria);
         searchCriteria.addOrders(criteria);
 
-        List<?> results = criteria.list();
+        List<?> results = hibernateService.list(criteria);
 
         LOG.info("There are " + totalNumberOfEntities + " entities matching criteria " + searchCriteria);
 

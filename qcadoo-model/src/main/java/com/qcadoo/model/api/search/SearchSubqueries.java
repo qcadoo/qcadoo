@@ -10,7 +10,10 @@ import com.qcadoo.model.internal.search.SearchCriterionImpl;
  * 
  * @since 0.4.1
  */
-public class SearchSubqueries {
+public final class SearchSubqueries {
+
+    private SearchSubqueries() {
+    }
 
     /**
      * Creates criterion which checks if none row exists in given subquery.

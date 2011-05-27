@@ -22,7 +22,11 @@
  * ***************************************************************************
  */
 /**
- * Search criteria and result.
+ * Objects used for searching database entities. Basically there are two to different ways to do a search:<br/>
+ * <ul>
+ * <li>using {@link com.qcadoo.model.api.search.SearchQueryBuilder} and {@link com.qcadoo.model.api.DataDefinition#find(String)}</li>
+ * <li>using {@link com.qcadoo.model.api.search.SearchCriteriaBuilder} and {@link com.qcadoo.model.api.DataDefinition#find()}</li>
+ * </ul>
  * 
  * @since 0.4.0
  */
