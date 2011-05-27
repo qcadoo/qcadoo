@@ -89,8 +89,19 @@ public interface DataDefinition {
      * Create search criteria builder for this data definition.
      * 
      * @return new search criteria builder
+     * @see #findWithAlias(String)
      */
     SearchCriteriaBuilder find();
+
+    /**
+     * Create search criteria builder for this data definition. Root data definition will use given alias. This is usable for
+     * subqueries.
+     * 
+     * @param alias
+     *            alias
+     * @return new search criteria builder
+     */
+    SearchCriteriaBuilder findWithAlias(String alias);
 
     /**
      * Create search query builder for given HQL query string.

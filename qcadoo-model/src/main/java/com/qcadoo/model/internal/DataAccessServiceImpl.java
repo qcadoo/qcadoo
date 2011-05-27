@@ -40,26 +40,7 @@ import java.util.regex.Pattern;
 
 import org.hibernate.Criteria;
 import org.hibernate.Query;
-import org.hibernate.SessionFactory;
-import org.hibernate.classic.Session;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Projections;
 import org.hibernate.exception.ConstraintViolationException;
-import org.hibernate.type.BigDecimalType;
-import org.hibernate.type.BigIntegerType;
-import org.hibernate.type.BooleanType;
-import org.hibernate.type.CharacterType;
-import org.hibernate.type.DateType;
-import org.hibernate.type.DoubleType;
-import org.hibernate.type.EntityType;
-import org.hibernate.type.FloatType;
-import org.hibernate.type.IntegerType;
-import org.hibernate.type.LongType;
-import org.hibernate.type.ShortType;
-import org.hibernate.type.TextType;
-import org.hibernate.type.TimeType;
-import org.hibernate.type.TimestampType;
-import org.hibernate.type.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,25 +58,20 @@ import com.qcadoo.model.api.EntityTree;
 import com.qcadoo.model.api.ExpressionService;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.aop.Monitorable;
+import com.qcadoo.model.api.search.SearchRestrictions;
 import com.qcadoo.model.api.search.SearchResult;
-import com.qcadoo.model.api.types.FieldType;
 import com.qcadoo.model.api.types.HasManyType;
 import com.qcadoo.model.api.types.TreeType;
 import com.qcadoo.model.api.validators.ErrorMessage;
 import com.qcadoo.model.internal.api.DataAccessService;
 import com.qcadoo.model.internal.api.EntityService;
+import com.qcadoo.model.internal.api.HibernateService;
 import com.qcadoo.model.internal.api.InternalDataDefinition;
 import com.qcadoo.model.internal.api.PriorityService;
 import com.qcadoo.model.internal.api.ValidationService;
-import com.qcadoo.model.internal.search.Order;
-import com.qcadoo.model.internal.search.Restriction;
 import com.qcadoo.model.internal.search.SearchCriteria;
 import com.qcadoo.model.internal.search.SearchQuery;
 import com.qcadoo.model.internal.search.SearchResultImpl;
-import com.qcadoo.model.internal.types.BelongsToEntityType;
-import com.qcadoo.model.internal.types.DateTimeType;
-import com.qcadoo.model.internal.types.DecimalType;
-import com.qcadoo.model.internal.types.StringType;
 import com.qcadoo.tenant.api.Standalone;
 
 @Service
@@ -104,9 +80,6 @@ public class DataAccessServiceImpl implements DataAccessService {
 
     @Autowired
     private DataDefinitionService dataDefinitionService;
-
-    @Autowired
-    private SessionFactory sessionFactory;
 
     @Autowired
     private EntityService entityService;
@@ -119,6 +92,9 @@ public class DataAccessServiceImpl implements DataAccessService {
 
     @Autowired
     private ExpressionService expressionService;
+
+    @Autowired
+    private HibernateService hibernateService;
 
     private static final Logger LOG = LoggerFactory.getLogger(DataAccessServiceImpl.class);
 
@@ -244,6 +220,7 @@ public class DataAccessServiceImpl implements DataAccessService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Object convertToDatabaseEntity(final Entity entity) {
         return entityService.convertToDatabaseEntity((InternalDataDefinition) entity.getDataDefinition(), entity, null);
     }
@@ -442,8 +419,8 @@ public class DataAccessServiceImpl implements DataAccessService {
         while (true) {
             String newValue = oldValue + "(" + (index++) + ")";
 
-            int matches = dataDefinition.find().setMaxResults(1).isEq(fieldDefinition.getName(), newValue).list()
-                    .getTotalNumberOfEntities();
+            int matches = dataDefinition.find().setMaxResults(1).add(SearchRestrictions.eq(fieldDefinition.getName(), newValue))
+                    .list().getTotalNumberOfEntities();
 
             if (matches == 0) {
                 return newValue;
@@ -502,18 +479,19 @@ public class DataAccessServiceImpl implements DataAccessService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
+    @Monitorable
     public SearchResult find(final SearchQuery searchQuery) {
         checkArgument(searchQuery != null, "SearchCriteria must be given");
 
-        Query query = searchQuery.createQuery(sessionFactory.getCurrentSession());
+        Query query = searchQuery.createQuery(hibernateService.getCurrentSession());
 
         searchQuery.addParameters(query);
 
         int totalNumberOfEntities = -1;
 
         if (searchQuery.hasFirstAndMaxResults()) {
-            totalNumberOfEntities = query.list().size();
+            totalNumberOfEntities = hibernateService.list(query).size();
             searchQuery.addFirstAndMaxResults(query);
         }
 
@@ -522,7 +500,7 @@ public class DataAccessServiceImpl implements DataAccessService {
             return getResultSet(null, totalNumberOfEntities, Collections.emptyList());
         }
 
-        List<?> results = query.list();
+        List<?> results = hibernateService.list(query);
 
         if (totalNumberOfEntities == -1) {
             totalNumberOfEntities = results.size();
@@ -538,70 +516,10 @@ public class DataAccessServiceImpl implements DataAccessService {
         InternalDataDefinition searchQueryDataDefinition = (InternalDataDefinition) searchQuery.getDataDefinition();
 
         if (searchQueryDataDefinition == null) {
-            searchQueryDataDefinition = resolveDataDefinition(query);
+            searchQueryDataDefinition = hibernateService.resolveDataDefinition(query);
         }
 
         return getResultSet(searchQueryDataDefinition, totalNumberOfEntities, results);
-    }
-
-    private InternalDataDefinition resolveDataDefinition(final Query query) {
-        if (query.getReturnTypes().length == 1 && query.getReturnTypes()[0] instanceof EntityType) {
-            return resolveDataDefinitionFromEntityType((EntityType) query.getReturnTypes()[0]);
-        } else {
-            DynamicDataDefinitionImpl dataDefinition = new DynamicDataDefinitionImpl();
-
-            for (int i = 0; i < query.getReturnTypes().length; i++) {
-                dataDefinition.addField(query.getReturnAliases()[i], convertHibernateType(query.getReturnTypes()[i]));
-            }
-
-            return dataDefinition;
-        }
-    }
-
-    private InternalDataDefinition resolveDataDefinitionFromEntityType(final EntityType entityType) {
-        String[] tmp = entityType.getName().replaceAll("com.qcadoo.model.beans.", "").split("\\.");
-        String model = tmp[1].replaceAll(tmp[0].substring(0, 1).toUpperCase() + tmp[0].substring(1), "");
-        model = model.substring(0, 1).toLowerCase() + model.substring(1);
-        return (InternalDataDefinition) dataDefinitionService.get(tmp[0], model);
-    }
-
-    private FieldType convertHibernateType(final Type type) {
-        if (type instanceof BigDecimalType || type instanceof DoubleType || type instanceof FloatType) {
-            return new DecimalType();
-        }
-        if (type instanceof FloatType || type instanceof BigIntegerType || type instanceof IntegerType
-                || type instanceof ShortType || type instanceof LongType) {
-            return new com.qcadoo.model.internal.types.IntegerType();
-        }
-        if (type instanceof BooleanType) {
-            return new com.qcadoo.model.internal.types.BooleanType();
-        }
-        if (type instanceof DateType) {
-            return new com.qcadoo.model.internal.types.DateType();
-        }
-        if (type instanceof TimestampType || type instanceof TimeType) {
-            return new DateTimeType();
-        }
-        if (type instanceof org.hibernate.type.StringType || type instanceof CharacterType) {
-            return new StringType();
-        }
-        if (type instanceof TextType) {
-            return new com.qcadoo.model.internal.types.TextType();
-        }
-        if (type instanceof EntityType) {
-            DataDefinition dataDefinition = resolveDataDefinitionFromEntityType((EntityType) type);
-
-            if (dataDefinition != null) {
-                return new BelongsToEntityType(dataDefinition.getPluginIdentifier(), dataDefinition.getName(),
-                        dataDefinitionService, false);
-            } else {
-                LOG.warn("Cannot find dataDefinition for class " + ((EntityType) type).getName());
-            }
-        }
-
-        LOG.warn("Cannot map hibernate's type " + type.getClass().getCanonicalName() + ", using string type");
-
-        return new StringType();
     }
 
     @Override
@@ -610,27 +528,29 @@ public class DataAccessServiceImpl implements DataAccessService {
     public SearchResult find(final SearchCriteria searchCriteria) {
         checkArgument(searchCriteria != null, "SearchCriteria must be given");
 
-        InternalDataDefinition dataDefinition = (InternalDataDefinition) searchCriteria.getDataDefinition();
+        Criteria criteria = searchCriteria.createCriteria(hibernateService.getCurrentSession());
 
-        checkState(dataDefinition.isEnabled(), "DataDefinition belongs to disabled plugin");
+        int totalNumberOfEntities = hibernateService.getTotalNumberOfEntities(criteria);
 
-        int totalNumberOfEntities = getTotalNumberOfEntities(getCriteria(searchCriteria));
-
-        if (totalNumberOfEntities == 0 || searchCriteria.getRestrictions().contains(null)) {
+        if (totalNumberOfEntities == 0) {
             LOG.info("There is no entity matching criteria " + searchCriteria);
-            return getResultSet(dataDefinition, totalNumberOfEntities, Collections.emptyList());
+            return getResultSet(null, totalNumberOfEntities, Collections.emptyList());
         }
 
-        Criteria criteria = getCriteria(searchCriteria).setFirstResult(searchCriteria.getFirstResult()).setMaxResults(
-                searchCriteria.getMaxResults());
+        searchCriteria.addFirstAndMaxResults(criteria);
+        searchCriteria.addOrders(criteria);
 
-        addOrderToCriteria(searchCriteria.getOrder(), criteria);
-
-        List<?> results = criteria.list();
+        List<?> results = hibernateService.list(criteria);
 
         LOG.info("There are " + totalNumberOfEntities + " entities matching criteria " + searchCriteria);
 
-        return getResultSet(dataDefinition, totalNumberOfEntities, results);
+        InternalDataDefinition searchQueryDataDefinition = (InternalDataDefinition) searchCriteria.getDataDefinition();
+
+        if (searchQueryDataDefinition == null) {
+            searchQueryDataDefinition = hibernateService.resolveDataDefinition(criteria);
+        }
+
+        return getResultSet(searchQueryDataDefinition, totalNumberOfEntities, results);
     }
 
     @Override
@@ -739,8 +659,8 @@ public class DataAccessServiceImpl implements DataAccessService {
             }
         }
         try {
-            getCurrentSession().delete(databaseEntity);
-            getCurrentSession().flush();
+            hibernateService.getCurrentSession().delete(databaseEntity);
+            hibernateService.getCurrentSession().flush();
         } catch (ConstraintViolationException e) {
             throw new IllegalStateException(String.format("Entity [ENTITY.%s] is in use",
                     expressionService.getValue(entity, dataDefinition.getIdentifierExpression(), Locale.ENGLISH)), e);
@@ -748,25 +668,6 @@ public class DataAccessServiceImpl implements DataAccessService {
 
         LOG.info("Entity[" + dataDefinition.getPluginIdentifier() + "." + dataDefinition.getName() + "][id=" + entityId
                 + "] has been deleted");
-    }
-
-    protected Session getCurrentSession() {
-        return sessionFactory.getCurrentSession();
-    }
-
-    protected Criteria getCriteria(final SearchCriteria searchCriteria) {
-        InternalDataDefinition dataDefinition = (InternalDataDefinition) searchCriteria.getDataDefinition();
-        Criteria criteria = getCurrentSession().createCriteria(dataDefinition.getClassForEntity());
-
-        for (Restriction restriction : searchCriteria.getRestrictions()) {
-            criteria.add(addRestrictionToCriteria(restriction, criteria));
-        }
-
-        return criteria;
-    }
-
-    private int getTotalNumberOfEntities(final Criteria criteria) {
-        return Integer.valueOf(criteria.setProjection(Projections.rowCount()).uniqueResult().toString());
     }
 
     private SearchResultImpl getResultSet(final InternalDataDefinition dataDefinition, final int totalNumberOfEntities,
@@ -784,32 +685,12 @@ public class DataAccessServiceImpl implements DataAccessService {
         return resultSet;
     }
 
-    private Criterion addRestrictionToCriteria(final Restriction restriction, final Criteria criteria) {
-        return restriction.addToHibernateCriteria(criteria);
-    }
-
-    private Criteria addOrderToCriteria(final Order order, final Criteria criteria) {
-        String[] path = order.getFieldName().split("\\.");
-
-        if (path.length > 2) {
-            throw new IllegalStateException("Cannot order using multiple assosiations - " + order.getFieldName());
-        } else if (path.length == 2 && !criteria.toString().matches(".*Subcriteria\\(" + path[0] + ":" + path[0] + "\\).*")) {
-            criteria.createAlias(path[0], path[0]);
-        }
-
-        if (order.isAsc()) {
-            return criteria.addOrder(org.hibernate.criterion.Order.asc(order.getFieldName()).ignoreCase());
-        } else {
-            return criteria.addOrder(org.hibernate.criterion.Order.desc(order.getFieldName()).ignoreCase());
-        }
-    }
-
     protected Object getDatabaseEntity(final InternalDataDefinition dataDefinition, final Long entityId) {
-        return getCurrentSession().get(dataDefinition.getClassForEntity(), entityId);
+        return hibernateService.getCurrentSession().get(dataDefinition.getClassForEntity(), entityId);
     }
 
     protected void saveDatabaseEntity(final InternalDataDefinition dataDefinition, final Object databaseEntity) {
-        getCurrentSession().save(databaseEntity);
+        hibernateService.getCurrentSession().save(databaseEntity);
     }
 
     private void copyMissingFields(final Entity genericEntityToSave, final Entity existingGenericEntity) {
@@ -843,12 +724,12 @@ public class DataAccessServiceImpl implements DataAccessService {
         this.priorityService = priorityService;
     }
 
-    protected void setSessionFactory(final SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
-    }
-
     protected void setValidationService(final ValidationService validationService) {
         this.validationService = validationService;
+    }
+
+    protected void setHibernateService(final HibernateService hibernateService) {
+        this.hibernateService = hibernateService;
     }
 
 }

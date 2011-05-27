@@ -49,13 +49,11 @@ import com.google.common.collect.Lists;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.FieldDefinition;
+import com.qcadoo.model.api.search.SearchRestrictions;
+import com.qcadoo.model.api.types.BelongsToType;
 import com.qcadoo.model.beans.sample.SampleParentDatabaseObject;
 import com.qcadoo.model.beans.sample.SampleSimpleDatabaseObject;
-import com.qcadoo.model.internal.DataDefinitionImpl;
-import com.qcadoo.model.internal.DefaultEntity;
-import com.qcadoo.model.internal.EntityListImpl;
-import com.qcadoo.model.internal.FieldDefinitionImpl;
-import com.qcadoo.model.internal.ProxyEntity;
+import com.qcadoo.model.internal.api.InternalDataDefinition;
 import com.qcadoo.model.internal.types.IntegerType;
 import com.qcadoo.model.internal.types.StringType;
 
@@ -381,16 +379,20 @@ public class EntityServiceImplTest extends DataAccessTest {
     @Test
     public void shouldLazyLoadEntitiesUsingProxy() throws Exception {
         // given
-        DataDefinition dataDefinition = mock(DataDefinition.class, RETURNS_DEEP_STUBS);
+        InternalDataDefinition dataDefinition = mock(InternalDataDefinition.class, RETURNS_DEEP_STUBS);
         FieldDefinition fieldDefinition = mock(FieldDefinition.class);
+        BelongsToType fieldType = mock(BelongsToType.class);
 
         Entity entity1 = new DefaultEntity(dataDefinition, 1L);
         Entity entity2 = new DefaultEntity(dataDefinition, 2L);
 
         given(fieldDefinition.getName()).willReturn("joinField");
+        given(fieldDefinition.getType()).willReturn(fieldType);
+        given(fieldType.getDataDefinition()).willReturn(dataDefinition);
+        given(dataDefinition.isEnabled()).willReturn(true);
         given(dataDefinition.getField("joinField")).willReturn(fieldDefinition);
-        given(dataDefinition.find().belongsTo("joinField", 5L).list().getEntities()).willReturn(
-                Lists.newArrayList(entity1, entity2));
+        given(dataDefinition.find().add(SearchRestrictions.belongsTo("joinField", dataDefinition, 5L)).list().getEntities())
+                .willReturn(Lists.newArrayList(entity1, entity2));
 
         List<Entity> entityList = new EntityListImpl(dataDefinition, "joinField", 5L);
 

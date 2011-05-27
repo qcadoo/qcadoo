@@ -36,6 +36,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.hibernate.Criteria;
 import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
@@ -46,9 +47,6 @@ import com.qcadoo.model.api.EntityTree;
 import com.qcadoo.model.beans.sample.SampleParentDatabaseObject;
 import com.qcadoo.model.beans.sample.SampleSimpleDatabaseObject;
 import com.qcadoo.model.beans.sample.SampleTreeDatabaseObject;
-import com.qcadoo.model.internal.DefaultEntity;
-import com.qcadoo.model.internal.EntityListImpl;
-import com.qcadoo.model.internal.EntityTreeImpl;
 
 public final class DataAccessServiceSaveTest extends DataAccessTest {
 
@@ -132,7 +130,7 @@ public final class DataAccessServiceSaveTest extends DataAccessTest {
         assertTrue(entity.isValid());
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Test
     public void shouldSaveHasManyField() throws Exception {
         // given
@@ -157,9 +155,9 @@ public final class DataAccessServiceSaveTest extends DataAccessTest {
         given(session.get(any(Class.class), Matchers.eq(2L))).willReturn(existingChild);
         given(session.get(any(Class.class), Matchers.eq(13L))).willReturn(existingChildToDelete);
         given(session.load(any(Class.class), Matchers.eq(1L))).willReturn(existingParent);
-        given(criteria.uniqueResult()).willReturn(1L);
-        given(criteria.list()).willReturn(
-                Arrays.asList(new SampleSimpleDatabaseObject[] { existingChild, existingChildToDelete }));
+        given(hibernateService.getTotalNumberOfEntities(Mockito.any(Criteria.class))).willReturn(1);
+        given(hibernateService.list(Mockito.any(Criteria.class))).willReturn(
+                (List) Arrays.asList(new SampleSimpleDatabaseObject[] { existingChild, existingChildToDelete }));
 
         // when
         Entity entity = parentDataDefinition.save(parent);

@@ -34,7 +34,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
@@ -42,8 +44,22 @@ import com.qcadoo.model.api.EntityList;
 import com.qcadoo.model.api.EntityTreeNode;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.search.SearchCriteriaBuilder;
+import com.qcadoo.model.api.search.SearchOrders;
+import com.qcadoo.model.api.search.SearchRestrictions;
+import com.qcadoo.model.api.types.BelongsToType;
+import com.qcadoo.model.internal.api.DataAccessService;
+import com.qcadoo.model.internal.api.InternalDataDefinition;
 
 public class EntityTreeImplTest {
+
+    private DataAccessService dataAccessService;
+
+    @Before
+    public void init() {
+        dataAccessService = mock(DataAccessService.class);
+        SearchRestrictions restrictions = new SearchRestrictions();
+        ReflectionTestUtils.setField(restrictions, "dataAccessService", dataAccessService);
+    }
 
     @Test
     public void shouldBeEmptyIfParentIdIsNull() throws Exception {
@@ -61,11 +77,16 @@ public class EntityTreeImplTest {
         Entity entity = mock(Entity.class);
         List<Entity> entities = Collections.singletonList(entity);
 
+        BelongsToType fieldType = mock(BelongsToType.class);
+        InternalDataDefinition dataDefinition = mock(InternalDataDefinition.class, RETURNS_DEEP_STUBS);
+        given(fieldType.getDataDefinition()).willReturn(dataDefinition);
         FieldDefinition fieldDefinition = mock(FieldDefinition.class);
+        given(fieldDefinition.getType()).willReturn(fieldType);
         given(fieldDefinition.getName()).willReturn("field");
-        DataDefinition dataDefinition = mock(DataDefinition.class, RETURNS_DEEP_STUBS);
         given(dataDefinition.getField("tree")).willReturn(fieldDefinition);
-        given(dataDefinition.find().belongsTo("field", 1L).orderAscBy("priority").list().getEntities()).willReturn(entities);
+        given(
+                dataDefinition.find().add(SearchRestrictions.belongsTo("field", dataDefinition, 1L))
+                        .addOrder(SearchOrders.asc("priority")).list().getEntities()).willReturn(entities);
 
         EntityTreeImpl tree = new EntityTreeImpl(dataDefinition, "tree", 1L);
 
@@ -95,11 +116,16 @@ public class EntityTreeImplTest {
 
         List<Entity> entities = Arrays.asList(new Entity[] { entity1, entity2, entity3, entity4 });
 
+        BelongsToType fieldType = mock(BelongsToType.class);
+        InternalDataDefinition dataDefinition = mock(InternalDataDefinition.class, RETURNS_DEEP_STUBS);
+        given(fieldType.getDataDefinition()).willReturn(dataDefinition);
         FieldDefinition fieldDefinition = mock(FieldDefinition.class);
+        given(fieldDefinition.getType()).willReturn(fieldType);
         given(fieldDefinition.getName()).willReturn("field");
-        DataDefinition dataDefinition = mock(DataDefinition.class, RETURNS_DEEP_STUBS);
         given(dataDefinition.getField("tree")).willReturn(fieldDefinition);
-        given(dataDefinition.find().belongsTo("field", 1L).orderAscBy("priority").list().getEntities()).willReturn(entities);
+        given(
+                dataDefinition.find().add(SearchRestrictions.belongsTo("field", dataDefinition, 1L))
+                        .addOrder(SearchOrders.asc("priority")).list().getEntities()).willReturn(entities);
 
         EntityTreeImpl tree = new EntityTreeImpl(dataDefinition, "tree", 1L);
 
@@ -123,11 +149,16 @@ public class EntityTreeImplTest {
         given(entity2.getId()).willReturn(2L);
         List<Entity> entities = Arrays.asList(new Entity[] { entity1, entity2 });
 
+        BelongsToType fieldType = mock(BelongsToType.class);
+        InternalDataDefinition dataDefinition = mock(InternalDataDefinition.class, RETURNS_DEEP_STUBS);
+        given(fieldType.getDataDefinition()).willReturn(dataDefinition);
         FieldDefinition fieldDefinition = mock(FieldDefinition.class);
+        given(fieldDefinition.getType()).willReturn(fieldType);
         given(fieldDefinition.getName()).willReturn("field");
-        DataDefinition dataDefinition = mock(DataDefinition.class, RETURNS_DEEP_STUBS);
         given(dataDefinition.getField("tree")).willReturn(fieldDefinition);
-        given(dataDefinition.find().belongsTo("field", 1L).orderAscBy("priority").list().getEntities()).willReturn(entities);
+        given(
+                dataDefinition.find().add(SearchRestrictions.belongsTo("field", dataDefinition, 1L))
+                        .addOrder(SearchOrders.asc("priority")).list().getEntities()).willReturn(entities);
 
         EntityTreeImpl tree = new EntityTreeImpl(dataDefinition, "tree", 1L);
 
@@ -142,11 +173,16 @@ public class EntityTreeImplTest {
         given(entity.getBelongsToField("parent")).willReturn(entity);
         List<Entity> entities = Collections.singletonList(entity);
 
+        BelongsToType fieldType = mock(BelongsToType.class);
+        InternalDataDefinition dataDefinition = mock(InternalDataDefinition.class, RETURNS_DEEP_STUBS);
+        given(fieldType.getDataDefinition()).willReturn(dataDefinition);
         FieldDefinition fieldDefinition = mock(FieldDefinition.class);
+        given(fieldDefinition.getType()).willReturn(fieldType);
         given(fieldDefinition.getName()).willReturn("field");
-        DataDefinition dataDefinition = mock(DataDefinition.class, RETURNS_DEEP_STUBS);
         given(dataDefinition.getField("tree")).willReturn(fieldDefinition);
-        given(dataDefinition.find().belongsTo("field", 1L).orderAscBy("priority").list().getEntities()).willReturn(entities);
+        given(
+                dataDefinition.find().add(SearchRestrictions.belongsTo("field", dataDefinition, 1L))
+                        .addOrder(SearchOrders.asc("priority")).list().getEntities()).willReturn(entities);
 
         EntityTreeImpl tree = new EntityTreeImpl(dataDefinition, "tree", 1L);
 
@@ -157,12 +193,16 @@ public class EntityTreeImplTest {
     @Test
     public void shouldReturnCriteriaBuilder() throws Exception {
         // given
+        BelongsToType fieldType = mock(BelongsToType.class);
+        InternalDataDefinition dataDefinition = mock(InternalDataDefinition.class, RETURNS_DEEP_STUBS);
+        given(fieldType.getDataDefinition()).willReturn(dataDefinition);
         FieldDefinition fieldDefinition = mock(FieldDefinition.class);
+        given(fieldDefinition.getType()).willReturn(fieldType);
         given(fieldDefinition.getName()).willReturn("field");
-        DataDefinition dataDefinition = mock(DataDefinition.class, RETURNS_DEEP_STUBS);
         given(dataDefinition.getField("tree")).willReturn(fieldDefinition);
         SearchCriteriaBuilder searchCriteriaBuilder = mock(SearchCriteriaBuilder.class);
-        given(dataDefinition.find().belongsTo("field", 1L)).willReturn(searchCriteriaBuilder);
+        given(dataDefinition.find().add(SearchRestrictions.belongsTo("field", dataDefinition, 1L))).willReturn(
+                searchCriteriaBuilder);
 
         EntityList list = new EntityListImpl(dataDefinition, "tree", 1L);
 

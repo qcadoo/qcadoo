@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.qcadoo.model.api.DataDefinitionService;
+import com.qcadoo.model.api.search.SearchOrders;
 import com.qcadoo.model.api.search.SearchResult;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.api.components.FieldComponent;
@@ -123,7 +124,8 @@ public class NumberGeneratorService {
      */
     public String generateNumber(final String plugin, final String entityName, final int digitsNumber) {
 
-        SearchResult results = dataDefinitionService.get(plugin, entityName).find().setMaxResults(1).orderDescBy("id").list();
+        SearchResult results = dataDefinitionService.get(plugin, entityName).find().setMaxResults(1)
+                .addOrder(SearchOrders.desc("id")).list();
 
         long longValue = 0;
 

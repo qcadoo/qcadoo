@@ -23,10 +23,11 @@
  */
 package com.qcadoo.model.internal.search;
 
-import java.util.List;
+import org.hibernate.Criteria;
+import org.hibernate.classic.Session;
+import org.hibernate.criterion.DetachedCriteria;
 
 import com.qcadoo.model.api.DataDefinition;
-import com.qcadoo.model.api.search.SearchCriteriaBuilder;
 
 /**
  * Object represents the criteria for finding entities. It is used for building SQL query.
@@ -36,41 +37,18 @@ import com.qcadoo.model.api.search.SearchCriteriaBuilder;
 public interface SearchCriteria {
 
     /**
-     * Returns max results.
-     * 
-     * @return max results
-     * @see SearchCriteriaBuilder#setMaxResults(int)
-     */
-    int getMaxResults();
-
-    /**
-     * Returns first result.
-     * 
-     * @return first result
-     * @see SearchCriteriaBuilder#setFirstResult(int)
-     */
-    int getFirstResult();
-
-    /**
-     * Returns search order.
-     * 
-     * @return order
-     */
-    Order getOrder();
-
-    /**
-     * Returns list of search restrictions.
-     * 
-     * @return restrictions
-     * @see SearchCriteriaBuilder#addRestriction(Restriction)
-     */
-    List<Restriction> getRestrictions();
-
-    /**
      * Returns data definition for searching entities.
      * 
      * @return data definition
      */
     DataDefinition getDataDefinition();
+
+    Criteria createCriteria(Session session);
+
+    void addFirstAndMaxResults(Criteria criteria);
+
+    void addOrders(Criteria criteria);
+
+    DetachedCriteria getHibernateDetachedCriteria();
 
 }

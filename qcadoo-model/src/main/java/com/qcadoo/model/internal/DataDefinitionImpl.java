@@ -131,6 +131,11 @@ public final class DataDefinitionImpl implements InternalDataDefinition {
     }
 
     @Override
+    public SearchCriteriaBuilder findWithAlias(final String alias) {
+        return new SearchCriteriaImpl(this, alias);
+    }
+
+    @Override
     public SearchResult find(final SearchCriteria searchCriteria) {
         return dataAccessService.find(searchCriteria);
     }

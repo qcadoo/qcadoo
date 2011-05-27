@@ -42,8 +42,9 @@ import org.springframework.test.util.ReflectionTestUtils;
 import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.DictionaryService;
 import com.qcadoo.model.api.Entity;
+import com.qcadoo.model.api.search.SearchOrders;
+import com.qcadoo.model.api.search.SearchRestrictions;
 import com.qcadoo.model.internal.DefaultEntity;
-import com.qcadoo.model.internal.dictionaries.DictionaryServiceImpl;
 
 public class DictionaryServiceTest {
 
@@ -70,8 +71,9 @@ public class DictionaryServiceTest {
         dict3.setField("name", "Dict3");
         dict3.setField("active", true);
 
-        given(dataDefinitionService.get("qcadooModel", "dictionary").find().orderAscBy("name").list().getEntities()).willReturn(
-                newArrayList(dict1, dict2, dict3));
+        given(
+                dataDefinitionService.get("qcadooModel", "dictionary").find().addOrder(SearchOrders.asc("name")).list()
+                        .getEntities()).willReturn(newArrayList(dict1, dict2, dict3));
 
         // when
         Set<String> dictionaries = dictionaryService.getDictionaries();
@@ -92,8 +94,9 @@ public class DictionaryServiceTest {
         item3.setField("name", "bbb");
 
         given(
-                dataDefinitionService.get("qcadooModel", "dictionaryItem").find().isEq("dictionary.name", "dict")
-                        .orderAscBy("name").list().getEntities()).willReturn(newArrayList(item1, item3, item2));
+                dataDefinitionService.get("qcadooModel", "dictionaryItem").find().createAlias("dictionary", "dictionary")
+                        .add(SearchRestrictions.eq("dictionary.name", "dict")).addOrder(SearchOrders.asc("name")).list()
+                        .getEntities()).willReturn(newArrayList(item1, item3, item2));
 
         // when
         Map<String, String> values = dictionaryService.getValues("dict", Locale.ENGLISH);

@@ -37,6 +37,7 @@ import com.qcadoo.localization.api.utils.DateUtils;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.search.SearchCriteriaBuilder;
+import com.qcadoo.model.api.search.SearchRestrictions;
 import com.qcadoo.model.api.types.BelongsToType;
 
 public class GridComponentFilterUtils {
@@ -56,6 +57,8 @@ public class GridComponentFilterUtils {
                     continue;
                 }
 
+                field = addAliases(criteria, field);
+
                 if (fieldDefinition != null && String.class.isAssignableFrom(fieldDefinition.getType().getType())) {
                     addStringFilter(criteria, filterValue, field);
                 } else if (fieldDefinition != null && Boolean.class.isAssignableFrom(fieldDefinition.getType().getType())) {
@@ -69,26 +72,51 @@ public class GridComponentFilterUtils {
         }
     }
 
+    public static String addAliases(final SearchCriteriaBuilder criteria, final String field) {
+        if (field == null) {
+            return null;
+        }
+
+        String[] path = field.split("\\.");
+
+        if (path.length == 1) {
+            return field;
+        }
+
+        String lastAlias = "";
+
+        for (int i = 0; i < path.length - 1; i++) {
+            criteria.createAlias(lastAlias + path[i], path[i] + "_a");
+            lastAlias = path[i] + "_a.";
+        }
+
+        return lastAlias + path[path.length - 1];
+    }
+
     private static void addSimpleFilter(final SearchCriteriaBuilder criteria,
             final Entry<GridComponentFilterOperator, String> filterValue, final String field, final Object value) {
         switch (filterValue.getKey()) {
             case EQ:
-                criteria.isEq(field, value);
+                if (value instanceof String) {
+                    criteria.add(SearchRestrictions.like(field, (String) value));
+                } else {
+                    criteria.add(SearchRestrictions.eq(field, value));
+                }
                 break;
             case NE:
-                criteria.isNe(field, value);
+                criteria.add(SearchRestrictions.ne(field, value));
                 break;
             case GT:
-                criteria.isGt(field, value);
+                criteria.add(SearchRestrictions.gt(field, value));
                 break;
             case GE:
-                criteria.isGe(field, value);
+                criteria.add(SearchRestrictions.ge(field, value));
                 break;
             case LT:
-                criteria.isLt(field, value);
+                criteria.add(SearchRestrictions.lt(field, value));
                 break;
             case LE:
-                criteria.isLe(field, value);
+                criteria.add(SearchRestrictions.le(field, value));
                 break;
             default:
                 throw new IllegalStateException("Unknown filter operator");
@@ -131,22 +159,22 @@ public class GridComponentFilterUtils {
 
         switch (filterValue.getKey()) {
             case EQ:
-                criteria.openAnd().isGe(field, minDate).isLe(field, maxDate).closeAnd();
+                criteria.add(SearchRestrictions.or(SearchRestrictions.ge(field, minDate), SearchRestrictions.le(field, maxDate)));
                 break;
             case NE:
-                criteria.openOr().isLt(field, minDate).isGt(field, maxDate).closeOr();
+                criteria.add(SearchRestrictions.or(SearchRestrictions.le(field, minDate), SearchRestrictions.gt(field, maxDate)));
                 break;
             case GT:
-                criteria.isGt(field, maxDate);
+                criteria.add(SearchRestrictions.gt(field, maxDate));
                 break;
             case GE:
-                criteria.isGe(field, minDate);
+                criteria.add(SearchRestrictions.ge(field, minDate));
                 break;
             case LT:
-                criteria.isLt(field, minDate);
+                criteria.add(SearchRestrictions.lt(field, minDate));
                 break;
             case LE:
-                criteria.isLe(field, maxDate);
+                criteria.add(SearchRestrictions.le(field, maxDate));
                 break;
             default:
                 throw new IllegalStateException("Unknown filter operator");

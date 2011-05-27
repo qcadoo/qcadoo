@@ -32,8 +32,11 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
+import org.hibernate.Criteria;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -557,12 +560,14 @@ public class ValidatorTest extends DataAccessTest {
     }
 
     @Test
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public void shouldHasErrorsIfFieldIsDuplicated() throws Exception {
         // given
         Entity entity = new DefaultEntity(dataDefinition);
         entity.setField("name", "existed");
 
-        given(criteria.uniqueResult()).willReturn(1);
+        given(hibernateService.getTotalNumberOfEntities(any(Criteria.class))).willReturn(1);
+        given(hibernateService.list(any(Criteria.class))).willReturn((List) Collections.singletonList(entity));
 
         fieldDefinitionName.withValidator(initializeValidator(new UniqueValidator(), fieldDefinitionName));
 

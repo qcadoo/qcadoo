@@ -35,6 +35,8 @@ import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.aop.Monitorable;
+import com.qcadoo.model.api.search.SearchOrders;
+import com.qcadoo.model.api.search.SearchRestrictions;
 import com.qcadoo.plugin.api.PluginUtils;
 import com.qcadoo.security.api.SecurityRole;
 import com.qcadoo.security.api.SecurityRolesService;
@@ -66,7 +68,8 @@ public final class MenuServiceImpl implements InternalMenuService {
 
         MenuDefinition menuDefinition = new MenuDefinition();
 
-        List<Entity> menuCategories = getDataDefinition("category").find().orderAscBy("succession").list().getEntities();
+        List<Entity> menuCategories = getDataDefinition("category").find().addOrder(SearchOrders.asc("succession")).list()
+                .getEntities();
 
         for (Entity menuCategory : menuCategories) {
             String label = menuCategory.getStringField("name");
@@ -77,8 +80,8 @@ public final class MenuServiceImpl implements InternalMenuService {
 
             MenuItemsGroup category = new MenuItemsGroup(menuCategory.getStringField("name"), label);
 
-            List<Entity> menuItems = getDataDefinition("item").find().belongsTo("category", menuCategory)
-                    .orderAscBy("succession").list().getEntities();
+            List<Entity> menuItems = getDataDefinition("item").find().add(SearchRestrictions.belongsTo("category", menuCategory))
+                    .addOrder(SearchOrders.asc("succession")).list().getEntities();
 
             for (Entity menuItem : menuItems) {
                 if (!(Boolean) menuItem.getField("active")) {
@@ -243,7 +246,8 @@ public final class MenuServiceImpl implements InternalMenuService {
     }
 
     private int getTotalNumberOfItems(final Entity category) {
-        return getDataDefinition("item").find().belongsTo("category", category).list().getTotalNumberOfEntities() + 1;
+        return getDataDefinition("item").find().add(SearchRestrictions.belongsTo("category", category)).list()
+                .getTotalNumberOfEntities() + 1;
     }
 
     private int getTotalNumberOfCategories() {
@@ -251,26 +255,27 @@ public final class MenuServiceImpl implements InternalMenuService {
     }
 
     private Entity getCategory(final String pluginIdentifier, final String categoryName) {
-        return getDataDefinition("category").find().isEq("name", categoryName).isEq("pluginIdentifier", pluginIdentifier)
-                .setMaxResults(1).uniqueResult();
+        return getDataDefinition("category").find().add(SearchRestrictions.eq("name", categoryName))
+                .add(SearchRestrictions.eq("pluginIdentifier", pluginIdentifier)).setMaxResults(1).uniqueResult();
     }
 
     private Entity getCategory(final String categoryName) {
-        return getDataDefinition("category").find().isEq("name", categoryName).setMaxResults(1).uniqueResult();
+        return getDataDefinition("category").find().add(SearchRestrictions.eq("name", categoryName)).setMaxResults(1)
+                .uniqueResult();
     }
 
     private Entity getItem(final String pluginIdentifier, final String itemName) {
-        return getDataDefinition("item").find().isEq("name", itemName).isEq("pluginIdentifier", pluginIdentifier)
-                .setMaxResults(1).uniqueResult();
+        return getDataDefinition("item").find().add(SearchRestrictions.eq("name", itemName))
+                .add(SearchRestrictions.eq("pluginIdentifier", pluginIdentifier)).setMaxResults(1).uniqueResult();
     }
 
     private Collection<Entity> getItemsToView(final Entity view) {
-        return getDataDefinition("item").find().belongsTo("view", view).list().getEntities();
+        return getDataDefinition("item").find().add(SearchRestrictions.belongsTo("view", view)).list().getEntities();
     }
 
     private Entity getView(final String pluginIdentifier, final String viewName) {
-        return getDataDefinition("view").find().isEq("name", viewName).isEq("pluginIdentifier", pluginIdentifier)
-                .setMaxResults(1).uniqueResult();
+        return getDataDefinition("view").find().add(SearchRestrictions.eq("name", viewName))
+                .add(SearchRestrictions.eq("pluginIdentifier", pluginIdentifier)).setMaxResults(1).uniqueResult();
     }
 
 }

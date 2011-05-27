@@ -27,6 +27,7 @@ import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.search.SearchCriteriaBuilder;
+import com.qcadoo.model.api.search.SearchRestrictions;
 import com.qcadoo.model.api.search.SearchResult;
 import com.qcadoo.model.internal.api.ErrorMessageDefinition;
 import com.qcadoo.model.internal.api.FieldHookDefinition;
@@ -50,9 +51,10 @@ public final class UniqueValidator implements FieldHookDefinition, ErrorMessageD
     @Override
     public boolean call(final Entity entity, final Object oldValue, final Object newValue) {
         SearchCriteriaBuilder searchCriteriaBuilder = dataDefinition.find()
-                .isEq(fieldDefinition.getName(), entity.getField(fieldDefinition.getName())).setMaxResults(1);
+                .add(SearchRestrictions.eq(fieldDefinition.getName(), entity.getField(fieldDefinition.getName())))
+                .setMaxResults(1);
         if (entity.getId() != null) {
-            searchCriteriaBuilder.isIdNe(entity.getId());
+            searchCriteriaBuilder.add(SearchRestrictions.idNe(entity.getId()));
         }
 
         SearchResult results = searchCriteriaBuilder.list();

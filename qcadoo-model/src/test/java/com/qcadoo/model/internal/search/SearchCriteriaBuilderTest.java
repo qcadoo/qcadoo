@@ -24,7 +24,6 @@
 package com.qcadoo.model.internal.search;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -38,18 +37,7 @@ public final class SearchCriteriaBuilderTest extends DataAccessTest {
         SearchCriteria searchCriteria = (SearchCriteria) dataDefinition.find();
 
         // then
-        assertEquals(0, searchCriteria.getFirstResult());
-        assertEquals(Integer.MAX_VALUE, searchCriteria.getMaxResults());
         assertEquals(dataDefinition, searchCriteria.getDataDefinition());
-        assertEquals("id", searchCriteria.getOrder().getFieldName());
-        assertTrue(searchCriteria.getOrder().isAsc());
-        assertTrue(searchCriteria.getRestrictions().isEmpty());
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void shouldThrownAnExceptionIfOrderIsNull() throws Exception {
-        // when
-        dataDefinition.find().orderAscBy(null);
     }
 
 }

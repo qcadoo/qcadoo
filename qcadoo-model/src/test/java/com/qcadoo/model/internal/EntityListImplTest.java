@@ -32,16 +32,30 @@ import static org.mockito.Mockito.mock;
 import java.util.Collections;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.EntityList;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.search.SearchCriteriaBuilder;
-import com.qcadoo.model.internal.EntityListImpl;
+import com.qcadoo.model.api.search.SearchRestrictions;
+import com.qcadoo.model.api.types.BelongsToType;
+import com.qcadoo.model.internal.api.DataAccessService;
+import com.qcadoo.model.internal.api.InternalDataDefinition;
 
 public class EntityListImplTest {
+
+    private DataAccessService dataAccessService;
+
+    @Before
+    public void init() {
+        dataAccessService = mock(DataAccessService.class);
+        SearchRestrictions restrictions = new SearchRestrictions();
+        ReflectionTestUtils.setField(restrictions, "dataAccessService", dataAccessService);
+    }
 
     @Test
     public void shouldBeEmptyIfParentIdIsNull() throws Exception {
@@ -59,11 +73,16 @@ public class EntityListImplTest {
         Entity entity = mock(Entity.class);
         List<Entity> entities = Collections.singletonList(entity);
 
+        BelongsToType fieldType = mock(BelongsToType.class);
+        InternalDataDefinition dataDefinition = mock(InternalDataDefinition.class, RETURNS_DEEP_STUBS);
+        given(fieldType.getDataDefinition()).willReturn(dataDefinition);
         FieldDefinition fieldDefinition = mock(FieldDefinition.class);
         given(fieldDefinition.getName()).willReturn("field");
-        DataDefinition dataDefinition = mock(DataDefinition.class, RETURNS_DEEP_STUBS);
+        given(fieldDefinition.getType()).willReturn(fieldType);
         given(dataDefinition.getField("hasMany")).willReturn(fieldDefinition);
-        given(dataDefinition.find().belongsTo("field", 1L).list().getEntities()).willReturn(entities);
+        given(dataDefinition.find().add(SearchRestrictions.belongsTo("field", dataDefinition, 1L)).list().getEntities())
+                .willReturn(entities);
+        given(dataAccessService.get(dataDefinition, 1L)).willReturn(entity);
 
         EntityListImpl list = new EntityListImpl(dataDefinition, "hasMany", 1L);
 
@@ -75,12 +94,16 @@ public class EntityListImplTest {
     @Test
     public void shouldReturnCriteriaBuilder() throws Exception {
         // given
+        BelongsToType fieldType = mock(BelongsToType.class);
+        InternalDataDefinition dataDefinition = mock(InternalDataDefinition.class, RETURNS_DEEP_STUBS);
+        given(fieldType.getDataDefinition()).willReturn(dataDefinition);
         FieldDefinition fieldDefinition = mock(FieldDefinition.class);
+        given(fieldDefinition.getType()).willReturn(fieldType);
         given(fieldDefinition.getName()).willReturn("field");
-        DataDefinition dataDefinition = mock(DataDefinition.class, RETURNS_DEEP_STUBS);
         given(dataDefinition.getField("hasMany")).willReturn(fieldDefinition);
         SearchCriteriaBuilder searchCriteriaBuilder = mock(SearchCriteriaBuilder.class);
-        given(dataDefinition.find().belongsTo("field", 1L)).willReturn(searchCriteriaBuilder);
+        given(dataDefinition.find().add(SearchRestrictions.belongsTo("field", dataDefinition, 1L))).willReturn(
+                searchCriteriaBuilder);
 
         EntityList list = new EntityListImpl(dataDefinition, "hasMany", 1L);
 

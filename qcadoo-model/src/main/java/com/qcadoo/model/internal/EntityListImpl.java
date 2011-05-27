@@ -32,6 +32,8 @@ import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.EntityList;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.search.SearchCriteriaBuilder;
+import com.qcadoo.model.api.search.SearchRestrictions;
+import com.qcadoo.model.api.types.BelongsToType;
 
 public final class EntityListImpl extends AbstractList<Entity> implements EntityList {
 
@@ -61,7 +63,9 @@ public final class EntityListImpl extends AbstractList<Entity> implements Entity
 
     @Override
     public SearchCriteriaBuilder find() {
-        return dataDefinition.find().belongsTo(joinFieldDefinition.getName(), parentId);
+        return dataDefinition.find().add(
+                SearchRestrictions.belongsTo(joinFieldDefinition.getName(),
+                        ((BelongsToType) joinFieldDefinition.getType()).getDataDefinition(), parentId));
     }
 
     @Override

@@ -35,6 +35,9 @@ import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.expression.ExpressionUtils;
 import com.qcadoo.model.api.search.SearchCriteriaBuilder;
+import com.qcadoo.model.api.search.SearchOrders;
+import com.qcadoo.model.api.search.SearchRestrictions;
+import com.qcadoo.model.api.search.SearchRestrictions.SearchMatchMode;
 import com.qcadoo.model.api.search.SearchResult;
 import com.qcadoo.view.internal.components.FieldComponentState;
 
@@ -214,14 +217,15 @@ public final class LookupComponentState extends FieldComponentState {
                 SearchCriteriaBuilder searchCriteriaBuilder = getDataDefinition().find();
 
                 if (StringUtils.hasText(currentCode)) {
-                    searchCriteriaBuilder.isEq(fieldCode, currentCode + "*");
+                    searchCriteriaBuilder.add(SearchRestrictions.like(fieldCode, currentCode, SearchMatchMode.START));
                 }
 
                 if (belongsToFieldDefinition != null && belongsToEntityId != null) {
-                    searchCriteriaBuilder.belongsTo(belongsToFieldDefinition.getName(), belongsToEntityId);
+                    searchCriteriaBuilder.add(SearchRestrictions.belongsTo(belongsToFieldDefinition.getName(),
+                            belongsToFieldDefinition.getDataDefinition(), belongsToEntityId));
                 }
 
-                searchCriteriaBuilder.orderAscBy(fieldCode);
+                searchCriteriaBuilder.addOrder(SearchOrders.asc(fieldCode));
 
                 SearchResult results = searchCriteriaBuilder.list();
 

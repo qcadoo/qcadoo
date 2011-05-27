@@ -24,20 +24,14 @@
 package com.qcadoo.model.internal;
 
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Criteria;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projection;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import com.qcadoo.model.api.types.HasManyType;
 import com.qcadoo.model.beans.sample.SampleParentDatabaseObject;
@@ -72,6 +66,7 @@ public class DataAccessServiceDeleteTest extends DataAccessTest {
         dataDefinition.delete(1L);
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Test
     public void shouldProperlyDeleteAndNullifyChildren() throws Exception {
         // given
@@ -87,15 +82,9 @@ public class DataAccessServiceDeleteTest extends DataAccessTest {
                 HasManyType.Cascade.NULLIFY, false, dataDefinitionService));
         parentDataDefinition.withField(parentFieldDefinitionHasMany);
 
-        Criteria databaseCriteria = mock(Criteria.class, RETURNS_DEEP_STUBS);
         given(session.get(SampleParentDatabaseObject.class, 1L)).willReturn(parentDatabaseEntity);
-        given(session.createCriteria(SampleSimpleDatabaseObject.class)).willReturn(databaseCriteria);
-        given(databaseCriteria.add(any(Criterion.class))).willReturn(databaseCriteria);
-        given(databaseCriteria.setFirstResult(anyInt())).willReturn(databaseCriteria);
-        given(databaseCriteria.setMaxResults(anyInt())).willReturn(databaseCriteria);
-        given(databaseCriteria.addOrder(any(Order.class))).willReturn(databaseCriteria);
-        given(databaseCriteria.setProjection(any(Projection.class)).uniqueResult()).willReturn(4);
-        given(databaseCriteria.list()).willReturn(entities);
+        given(hibernateService.getTotalNumberOfEntities(Mockito.any(Criteria.class))).willReturn(1);
+        given(hibernateService.list(Mockito.any(Criteria.class))).willReturn((List) entities);
         given(session.get(SampleSimpleDatabaseObject.class, 1L)).willReturn(simpleDatabaseObject);
 
         // when

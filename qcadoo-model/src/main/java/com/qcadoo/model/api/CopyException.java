@@ -23,8 +23,8 @@
  */
 package com.qcadoo.model.api;
 
-@Deprecated
 @SuppressWarnings("serial")
+// TODO masz remove me from API
 public final class CopyException extends RuntimeException {
 
     private final Entity entity;

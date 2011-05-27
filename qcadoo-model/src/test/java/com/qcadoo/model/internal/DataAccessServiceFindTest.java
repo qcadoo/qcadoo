@@ -29,7 +29,9 @@ import static org.mockito.BDDMockito.given;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.Criteria;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import com.qcadoo.model.api.search.SearchCriteriaBuilder;
 import com.qcadoo.model.api.search.SearchResult;
@@ -38,6 +40,7 @@ import com.qcadoo.model.beans.sample.SampleSimpleDatabaseObject;
 public class DataAccessServiceFindTest extends DataAccessTest {
 
     @Test
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public void shouldReturnValidEntities() throws Exception {
         // given
         List<SampleSimpleDatabaseObject> databaseObjects = new ArrayList<SampleSimpleDatabaseObject>();
@@ -48,8 +51,8 @@ public class DataAccessServiceFindTest extends DataAccessTest {
 
         SearchCriteriaBuilder searchCriteriaBuilder = dataDefinition.find().setFirstResult(0).setMaxResults(4);
 
-        given(criteria.uniqueResult()).willReturn(4);
-        given(criteria.list()).willReturn(databaseObjects);
+        given(hibernateService.getTotalNumberOfEntities(Mockito.any(Criteria.class))).willReturn(4);
+        given(hibernateService.list(Mockito.any(Criteria.class))).willReturn((List) databaseObjects);
 
         // when
         SearchResult resultSet = searchCriteriaBuilder.list();
