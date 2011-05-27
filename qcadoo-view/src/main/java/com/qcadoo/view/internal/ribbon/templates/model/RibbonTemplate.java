@@ -32,9 +32,7 @@ public class RibbonTemplate {
 
     public void addTemplateGroup(final TemplateRibbonGroup group) {
         if (groups.contains(group)) {
-            // TODO mina
-            // throw new IllegalStateException("group '" + group.getName() + "' already exists in template '" + name + "'");
-            return;
+            throw new IllegalStateException("group '" + group.getName() + "' already exists in template '" + name + "'");
         }
         groups.add(group);
     }

@@ -65,7 +65,9 @@ public final class DefaultModuleFactoryAccessor implements ModuleFactoryAccessor
                 List<Module> modules = ((InternalPlugin) plugin).getModules(moduleFactory);
 
                 for (final Module module : modules) {
-                    if (plugin.hasState(PluginState.ENABLED) || plugin.hasState(PluginState.ENABLING)) {
+                    // TODO mina plugin change
+                    // if (plugin.hasState(PluginState.ENABLED) || plugin.hasState(PluginState.ENABLING)) {
+                    if (plugin.hasState(PluginState.ENABLED)) {
                         module.enableOnStartup();
 
                         MultiTenantUtil.doInMultiTenantContext(new MultiTenantCallback() {
