@@ -29,7 +29,8 @@ public class SearchRestrictions {
     private static DataAccessService dataAccessService;
 
     @Autowired
-    public SearchRestrictions(final DataAccessService dataAccessService) {
+    @SuppressWarnings("unused")
+    private void setDataAccessService(final DataAccessService dataAccessService) {
         SearchRestrictions.dataAccessService = dataAccessService;
     }
 
