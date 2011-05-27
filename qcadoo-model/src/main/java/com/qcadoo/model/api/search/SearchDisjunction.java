@@ -1,25 +1,18 @@
 package com.qcadoo.model.api.search;
 
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Disjunction;
-import org.hibernate.criterion.Restrictions;
+/**
+ * A sequence of {@link SearchCriterion} linked using disjunction - (... OR ... OR ...).
+ * 
+ * @version 0.4.1
+ */
+public interface SearchDisjunction extends SearchCriterion {
 
-public class SearchDisjunction implements SearchCriterion {
-
-    private final Disjunction disjunction;
-
-    public SearchDisjunction() {
-        disjunction = Restrictions.disjunction();
-    }
-
-    @Override
-    public Criterion getHibernateCriterion() {
-        return disjunction;
-    }
-
-    public void add(final SearchCriterion criterion) {
-        disjunction.add(criterion.getHibernateCriterion());
-
-    }
+    /**
+     * Adds criterion to this disjunction.
+     * 
+     * @param criterion
+     *            criterion
+     */
+    void add(final SearchCriterion criterion);
 
 }

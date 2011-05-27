@@ -25,6 +25,7 @@ package com.qcadoo.model.internal.search;
 
 import org.hibernate.Criteria;
 import org.hibernate.classic.Session;
+import org.hibernate.criterion.DetachedCriteria;
 
 import com.qcadoo.model.api.DataDefinition;
 
@@ -47,5 +48,7 @@ public interface SearchCriteria {
     void addFirstAndMaxResults(Criteria criteria);
 
     void addOrders(Criteria criteria);
+
+    DetachedCriteria getHibernateDetachedCriteria();
 
 }

@@ -33,8 +33,8 @@ import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.search.CustomRestriction;
 import com.qcadoo.model.api.search.SearchCriteriaBuilder;
-import com.qcadoo.model.api.search.SearchDisjunction;
 import com.qcadoo.model.api.search.SearchRestrictions;
+import com.qcadoo.model.internal.search.SearchDisjunctionImpl;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.api.components.FormComponent;
@@ -67,7 +67,7 @@ public class MenuAdministrationService {
 
             @Override
             public void addRestriction(final SearchCriteriaBuilder searchCriteriaBuilder) {
-                SearchDisjunction disjunction = SearchRestrictions.disjunction();
+                SearchDisjunctionImpl disjunction = SearchRestrictions.disjunction();
 
                 for (String[] category : hiddenCategories) {
                     disjunction.add(SearchRestrictions.and(SearchRestrictions.eq("pluginIdentifier", category[0]),

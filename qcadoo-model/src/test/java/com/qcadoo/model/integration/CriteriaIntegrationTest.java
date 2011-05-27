@@ -131,7 +131,7 @@ public class CriteriaIntegrationTest extends IntegrationTest {
                 .find()
                 .add(SearchRestrictions.or(SearchRestrictions.like("name", "b%"), SearchRestrictions.like("name", "c%")))
                 .setProjection(
-                        SearchProjections.projectionList().add(SearchProjections.groupProperty("name"))
+                        SearchProjections.projectionList().add(SearchProjections.groupField("name"))
                                 .add(SearchProjections.alias(SearchProjections.sum("quantity"), "quantity"))
                                 .add(SearchProjections.alias(SearchProjections.rowCount(), "products"))).setFirstResult(0)
                 .setMaxResults(2).addOrder(SearchOrders.asc("name")).list();
@@ -316,8 +316,8 @@ public class CriteriaIntegrationTest extends IntegrationTest {
                 .add(SearchRestrictions.like("product.name", "asd"))
                 .createAlias("product", "product")
                 .setProjection(
-                        SearchProjections.projectionList().add(SearchProjections.property("product.quantity"))
-                                .add(SearchProjections.property("name")).add(SearchProjections.property("product")))
+                        SearchProjections.projectionList().add(SearchProjections.field("product.quantity"))
+                                .add(SearchProjections.field("name")).add(SearchProjections.field("product")))
                 .uniqueResult();
 
         System.out.println(result);
@@ -342,7 +342,7 @@ public class CriteriaIntegrationTest extends IntegrationTest {
 
         // when
         SearchResult result = productDao.find().addOrder(SearchOrders.desc("name"))
-                .setProjection(SearchProjections.property("name")).list();
+                .setProjection(SearchProjections.field("name")).list();
 
         // then
         assertEquals(3, result.getTotalNumberOfEntities());
@@ -362,7 +362,7 @@ public class CriteriaIntegrationTest extends IntegrationTest {
 
         // when
         SearchResult result = productDao.find().addOrder(SearchOrders.desc("name"))
-                .setProjection(SearchProjections.distinct(SearchProjections.property("name"))).list();
+                .setProjection(SearchProjections.distinct(SearchProjections.field("name"))).list();
 
         // then
         assertEquals(2, result.getTotalNumberOfEntities());

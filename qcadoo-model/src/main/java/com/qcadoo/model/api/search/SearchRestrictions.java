@@ -14,8 +14,13 @@ import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.internal.api.DataAccessService;
 import com.qcadoo.model.internal.api.InternalDataDefinition;
+import com.qcadoo.model.internal.search.SearchConjunctionImpl;
+import com.qcadoo.model.internal.search.SearchCriterionImpl;
+import com.qcadoo.model.internal.search.SearchDisjunctionImpl;
 
 /**
+ * Utility with factory methods for {@link SearchCriterion}.
+ * 
  * @since 0.4.1
  */
 @Component
@@ -28,9 +33,30 @@ public class SearchRestrictions {
         SearchRestrictions.dataAccessService = dataAccessService;
     }
 
+    /**
+     * Match mode for "like" criterion.
+     */
     public static enum SearchMatchMode {
 
-        ANYWHERE(MatchMode.ANYWHERE), END(MatchMode.END), EXACT(MatchMode.EXACT), START(MatchMode.START);
+        /**
+         * Match anywhere.
+         */
+        ANYWHERE(MatchMode.ANYWHERE),
+
+        /**
+         * Match at the end.
+         */
+        END(MatchMode.END),
+
+        /**
+         * Match exact value.
+         */
+        EXACT(MatchMode.EXACT),
+
+        /**
+         * Match at the beginning.
+         */
+        START(MatchMode.START);
 
         private final MatchMode matchMode;
 
@@ -44,175 +70,517 @@ public class SearchRestrictions {
 
     }
 
+    /**
+     * Creates restriction which join given restrictions with "OR" operator.
+     * 
+     * @param firstCriterion
+     *            first criterion
+     * @param secondCriterion
+     *            second criterion
+     * @param otherCriteria
+     *            other criteria
+     * @return criterion
+     */
     public static SearchCriterion or(final SearchCriterion firstCriterion, final SearchCriterion secondCriterion,
-            final SearchCriterion... otherCriterions) {
+            final SearchCriterion... otherCriteria) {
         Disjunction disjunction = Restrictions.disjunction();
         disjunction.add(firstCriterion.getHibernateCriterion());
         disjunction.add(secondCriterion.getHibernateCriterion());
 
-        for (SearchCriterion criterion : otherCriterions) {
+        for (SearchCriterion criterion : otherCriteria) {
             disjunction.add(criterion.getHibernateCriterion());
         }
 
         return new SearchCriterionImpl(disjunction);
     }
 
+    /**
+     * Creates restriction which join given restrictions with "AND" operator.
+     * 
+     * @param firstCriterion
+     *            first criterion
+     * @param secondCriterion
+     *            second criterion
+     * @param otherCriteria
+     *            other criteria
+     * @return criterion
+     */
     public static SearchCriterion and(final SearchCriterion firstCriterion, final SearchCriterion secondCriterion,
-            final SearchCriterion... otherCriterions) {
+            final SearchCriterion... otherCriteria) {
         Conjunction conjunction = Restrictions.conjunction();
         conjunction.add(firstCriterion.getHibernateCriterion());
         conjunction.add(secondCriterion.getHibernateCriterion());
 
-        for (SearchCriterion criterion : otherCriterions) {
+        for (SearchCriterion criterion : otherCriteria) {
             conjunction.add(criterion.getHibernateCriterion());
         }
 
         return new SearchCriterionImpl(conjunction);
     }
 
+    /**
+     * Wraps given criterion with "not" criterion.
+     * 
+     * @param criterion
+     *            criterion
+     * @return negated criterion
+     */
     public static SearchCriterion not(final SearchCriterion criterion) {
         return new SearchCriterionImpl(Restrictions.not(criterion.getHibernateCriterion()));
     }
 
+    /**
+     * Creates criterion which checks if id is equal to given value.
+     * 
+     * @param value
+     *            value
+     * @return criterion
+     */
     public static SearchCriterion idEq(final long value) {
         return new SearchCriterionImpl(Restrictions.idEq(value));
     }
 
+    /**
+     * Creates criterion which checks if id isn't equal to given value.
+     * 
+     * @param value
+     *            value
+     * @return criterion
+     */
     public static SearchCriterion idNe(final long value) {
         return new SearchCriterionImpl(Restrictions.not(Restrictions.idEq(value)));
     }
 
+    /**
+     * Creates criterion which checks if all given fields match given values.
+     * 
+     * @param values
+     *            map where key is a field's name and value is the expected value
+     * @return criterion
+     */
     public static SearchCriterion allEq(final Map<String, Object> values) {
         return new SearchCriterionImpl(Restrictions.allEq(values));
     }
 
+    /**
+     * Creates criterion which checks if field is equal (using "like" operator) to given value.
+     * 
+     * @param field
+     *            field
+     * @param value
+     *            value
+     * @return criterion
+     */
     public static SearchCriterion like(final String field, final String value) {
         return new SearchCriterionImpl(Restrictions.like(field, value.replace('*', '%').replace('?', '_')));
     }
 
-    public static SearchCriterion like(final String field, final String value, final SearchMatchMode matchMode) {
+    /**
+     * Creates criterion which checks if field is equal (using "like" operator) to given value.
+     * 
+     * @param field
+     *            field
+     * @param mode
+     *            match mode
+     * @param value
+     *            value
+     * @return criterion
+     */
+    public static SearchCriterion like(final String field, final String value, final SearchMatchMode mode) {
         return new SearchCriterionImpl(Restrictions.like(field, value.replace('*', '%').replace('?', '_'),
-                matchMode.getHibernateMatchMode()));
+                mode.getHibernateMatchMode()));
     }
 
+    /**
+     * Creates criterion which checks if field is equal (using case-insensitive "like" operator) to given value.
+     * 
+     * @param field
+     *            field
+     * @param value
+     *            value
+     * @return criterion
+     */
     public static SearchCriterion ilike(final String field, final String value) {
         return new SearchCriterionImpl(Restrictions.ilike(field, value.replace('*', '%').replace('?', '_')));
     }
 
-    public static SearchCriterion ilike(final String field, final String value, final SearchMatchMode matchMode) {
+    /**
+     * Creates criterion which checks if field is equal (using case-insensitive "like" operator) to given value.
+     * 
+     * @param field
+     *            field
+     * @param mode
+     *            match mode
+     * @param value
+     *            value
+     * @return criterion
+     */
+    public static SearchCriterion ilike(final String field, final String value, final SearchMatchMode mode) {
         return new SearchCriterionImpl(Restrictions.ilike(field, value.replace('*', '%').replace('?', '_'),
-                matchMode.getHibernateMatchMode()));
+                mode.getHibernateMatchMode()));
     }
 
+    /**
+     * Creates criterion which checks if field is less than or equal to given value.
+     * 
+     * @param field
+     *            field
+     * @param value
+     *            value
+     * @return criterion
+     */
     public static SearchCriterion le(final String field, final Object value) {
         return new SearchCriterionImpl(Restrictions.le(field, value));
     }
 
+    /**
+     * Creates criterion which checks if field is less than given value.
+     * 
+     * @param field
+     *            field
+     * @param value
+     *            value
+     * @return criterion
+     */
     public static SearchCriterion lt(final String field, final Object value) {
         return new SearchCriterionImpl(Restrictions.lt(field, value));
     }
 
+    /**
+     * Creates criterion which checks if field is greater than or equal to given value.
+     * 
+     * @param field
+     *            field
+     * @param value
+     *            value
+     * @return criterion
+     */
     public static SearchCriterion ge(final String field, final Object value) {
         return new SearchCriterionImpl(Restrictions.ge(field, value));
     }
 
+    /**
+     * Creates criterion which checks if field is greater than given value.
+     * 
+     * @param field
+     *            field
+     * @param value
+     *            value
+     * @return criterion
+     */
     public static SearchCriterion gt(final String field, final Object value) {
         return new SearchCriterionImpl(Restrictions.gt(field, value));
     }
 
+    /**
+     * Creates criterion which checks if field isn't equal to given value.
+     * 
+     * @param field
+     *            field
+     * @param value
+     *            value
+     * @return criterion
+     */
     public static SearchCriterion ne(final String field, final Object value) {
         return new SearchCriterionImpl(Restrictions.ne(field, value));
     }
 
+    /**
+     * Creates criterion which checks if field is equal to given value.
+     * 
+     * @param field
+     *            field
+     * @param value
+     *            value
+     * @return criterion
+     */
     public static SearchCriterion eq(final String field, final Object value) {
         return new SearchCriterionImpl(Restrictions.eq(field, value));
     }
 
+    /**
+     * Creates criterion which checks if field is less than or equal to other field.
+     * 
+     * @param field
+     *            field
+     * @param otherField
+     *            other field
+     * @return criterion
+     */
     public static SearchCriterion leField(final String field, final String otherField) {
         return new SearchCriterionImpl(Restrictions.leProperty(field, otherField));
     }
 
+    /**
+     * Creates criterion which checks if field is less than other field.
+     * 
+     * @param field
+     *            field
+     * @param otherField
+     *            other field
+     * @return criterion
+     */
     public static SearchCriterion ltField(final String field, final String otherField) {
         return new SearchCriterionImpl(Restrictions.ltProperty(field, otherField));
     }
 
+    /**
+     * Creates criterion which checks if field is greater than or equal to other field.
+     * 
+     * @param field
+     *            field
+     * @param otherField
+     *            other field
+     * @return criterion
+     */
     public static SearchCriterion geField(final String field, final String otherField) {
         return new SearchCriterionImpl(Restrictions.geProperty(field, otherField));
     }
 
+    /**
+     * Creates criterion which checks if field is greater than other field.
+     * 
+     * @param field
+     *            field
+     * @param otherField
+     *            other field
+     * @return criterion
+     */
     public static SearchCriterion gtField(final String field, final String otherField) {
         return new SearchCriterionImpl(Restrictions.gtProperty(field, otherField));
     }
 
+    /**
+     * Creates criterion which checks if field isn't equal to other field.
+     * 
+     * @param field
+     *            field
+     * @param otherField
+     *            other field
+     * @return criterion
+     */
     public static SearchCriterion neField(final String field, final String otherField) {
         return new SearchCriterionImpl(Restrictions.neProperty(field, otherField));
     }
 
+    /**
+     * Creates criterion which checks if field is equal to other field.
+     * 
+     * @param field
+     *            field
+     * @param otherField
+     *            other field
+     * @return criterion
+     */
     public static SearchCriterion eqField(final String field, final String otherField) {
         return new SearchCriterionImpl(Restrictions.eqProperty(field, otherField));
     }
 
+    /**
+     * Creates criterion which checks if field is not null.
+     * 
+     * @param field
+     *            field
+     * @return criterion
+     */
     public static SearchCriterion isNotNull(final String field) {
         return new SearchCriterionImpl(Restrictions.isNotNull(field));
     }
 
+    /**
+     * Creates criterion which checks if field is null.
+     * 
+     * @param field
+     *            field
+     * @return criterion
+     */
     public static SearchCriterion isNull(final String field) {
         return new SearchCriterionImpl(Restrictions.isNull(field));
     }
 
+    /**
+     * Creates criterion which checks if "collection" field's size is equal to given size.
+     * 
+     * @param field
+     *            field
+     * @param size
+     *            size
+     * @return criterion
+     */
     public static SearchCriterion sizeEq(final String field, final int size) {
         return new SearchCriterionImpl(Restrictions.sizeEq(field, size));
     }
 
+    /**
+     * Creates criterion which checks if "collection" field's size is less than or equal to given size.
+     * 
+     * @param field
+     *            field
+     * @param size
+     *            size
+     * @return criterion
+     */
     public static SearchCriterion sizeLe(final String field, final int size) {
         return new SearchCriterionImpl(Restrictions.sizeLe(field, size));
     }
 
+    /**
+     * Creates criterion which checks if "collection" field's size is less than given size.
+     * 
+     * @param field
+     *            field
+     * @param size
+     *            size
+     * @return criterion
+     */
     public static SearchCriterion sizeLt(final String field, final int size) {
         return new SearchCriterionImpl(Restrictions.sizeLt(field, size));
     }
 
+    /**
+     * Creates criterion which checks if "collection" field's size is greater than or equal to given size.
+     * 
+     * @param field
+     *            field
+     * @param size
+     *            size
+     * @return criterion
+     */
     public static SearchCriterion sizeGe(final String field, final int size) {
         return new SearchCriterionImpl(Restrictions.sizeGe(field, size));
     }
 
+    /**
+     * Creates criterion which checks if "collection" field's size is greater than given size.
+     * 
+     * @param field
+     *            field
+     * @param size
+     *            size
+     * @return criterion
+     */
     public static SearchCriterion sizeGt(final String field, final int size) {
         return new SearchCriterionImpl(Restrictions.sizeGt(field, size));
     }
 
+    /**
+     * Creates criterion which checks if "collection" field's size isn't equal to given size.
+     * 
+     * @param field
+     *            field
+     * @param size
+     *            size
+     * @return criterion
+     */
     public static SearchCriterion sizeNe(final String field, final int size) {
         return new SearchCriterionImpl(Restrictions.sizeNe(field, size));
     }
 
+    /**
+     * Creates criterion which checks if "collection" field's size is empty.
+     * 
+     * @param field
+     *            field
+     * @return criterion
+     */
     public static SearchCriterion isEmpty(final String field) {
         return new SearchCriterionImpl(Restrictions.isEmpty(field));
     }
 
+    /**
+     * Creates criterion which checks if "collection" field's size isn't empty.
+     * 
+     * @param field
+     *            field
+     * @return criterion
+     */
     public static SearchCriterion isNotEmpty(final String field) {
         return new SearchCriterionImpl(Restrictions.isNotEmpty(field));
     }
 
+    /**
+     * Creates criterion which checks if field is between given values.
+     * 
+     * @param field
+     *            field
+     * @param lo
+     *            low value
+     * @param hi
+     *            high value
+     * @return criterion
+     */
     public static SearchCriterion between(final String field, final Object lo, final Object hi) {
         return new SearchCriterionImpl(Restrictions.between(field, lo, hi));
     }
 
-    public static SearchCriterion in(final String field, final Collection<?> collection) {
-        return new SearchCriterionImpl(Restrictions.in(field, collection));
+    /**
+     * Creates criterion which checks if field is in given values.
+     * 
+     * @param field
+     *            field
+     * @param values
+     *            values
+     * @return criterion
+     */
+    public static SearchCriterion in(final String field, final Collection<?> values) {
+        return new SearchCriterionImpl(Restrictions.in(field, values));
     }
 
+    /**
+     * Creates criterion which checks if field is in given values.
+     * 
+     * @param field
+     *            field
+     * @param values
+     *            values
+     * @return criterion
+     */
     public static SearchCriterion in(final String field, final Object... values) {
         return new SearchCriterionImpl(Restrictions.in(field, values));
     }
 
+    /**
+     * Creates criterion which checks if "belongsTo" field is equal to given entity.
+     * 
+     * @param field
+     *            field
+     * @param pluginIdentifier
+     *            plugin's identifier
+     * @param modelName
+     *            model's name
+     * @param id
+     *            id
+     * @return criterion
+     */
     public static SearchCriterion belongsTo(final String field, final String pluginIdentifier, final String modelName,
-            final long entityId) {
-        return belongsTo(field, dataAccessService.getDataDefinition(pluginIdentifier, modelName), entityId);
+            final long id) {
+        return belongsTo(field, dataAccessService.getDataDefinition(pluginIdentifier, modelName), id);
     }
 
-    public static SearchCriterion belongsTo(final String field, final DataDefinition dataDefinition, final long entityId) {
-        return belongsTo(field, dataAccessService.get((InternalDataDefinition) dataDefinition, entityId));
+    /**
+     * Creates criterion which checks if "belongsTo" field is equal to given entity.
+     * 
+     * @param field
+     *            field
+     * @param dataDefinition
+     *            data's definition
+     * @param id
+     *            id
+     * @return criterion
+     */
+    public static SearchCriterion belongsTo(final String field, final DataDefinition dataDefinition, final long id) {
+        return belongsTo(field, dataAccessService.get((InternalDataDefinition) dataDefinition, id));
     }
 
+    /**
+     * Creates criterion which checks if "belongsTo" field is equal to given entity.
+     * 
+     * @param field
+     *            field
+     * @param entity
+     *            entity
+     * @return criterion
+     */
     public static SearchCriterion belongsTo(final String field, final Entity entity) {
         Object databaseEntity = null;
 
@@ -227,12 +595,22 @@ public class SearchRestrictions {
         }
     }
 
+    /**
+     * Creates disjunction - (... OR ... OR ...).
+     * 
+     * @return disjunction
+     */
     public static SearchDisjunction disjunction() {
-        return new SearchDisjunction();
+        return new SearchDisjunctionImpl();
     }
 
+    /**
+     * Creates conjunction - (... AND ... AND ...).
+     * 
+     * @return conjunction
+     */
     public static SearchConjunction conjunction() {
-        return new SearchConjunction();
+        return new SearchConjunctionImpl();
     }
 
 }

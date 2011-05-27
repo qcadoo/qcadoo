@@ -1,6 +1,8 @@
-package com.qcadoo.model.api.search;
+package com.qcadoo.model.internal.search;
 
 import org.hibernate.criterion.Criterion;
+
+import com.qcadoo.model.api.search.SearchCriterion;
 
 public class SearchCriterionImpl implements SearchCriterion {
 

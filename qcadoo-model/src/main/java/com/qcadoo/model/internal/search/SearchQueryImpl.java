@@ -69,15 +69,18 @@ public class SearchQueryImpl implements SearchQuery {
         this.queryString = prepareDataDefinitions(prepareQuery(queryString));
     }
 
-    private String prepareDataDefinitions(String queryString) {
+    private String prepareDataDefinitions(final String queryString) {
         boolean hasSelectSection = !queryString.startsWith("from");
 
         Matcher matcher = pattern.matcher(queryString);
 
+        String newQueryString = queryString;
+
         while (matcher.find()) {
             InternalDataDefinition dataDefinition = dataAccessService.getDataDefinition(matcher.group(1), matcher.group(2));
 
-            queryString = queryString.replaceAll("#" + dataDefinition.getPluginIdentifier() + "_" + dataDefinition.getName(),
+            newQueryString = newQueryString.replaceAll(
+                    "#" + dataDefinition.getPluginIdentifier() + "_" + dataDefinition.getName(),
                     dataDefinition.getFullyQualifiedClassName());
 
             if (!hasSelectSection && mainDataDefinition == null) {
@@ -85,7 +88,7 @@ public class SearchQueryImpl implements SearchQuery {
             }
         }
 
-        return queryString;
+        return newQueryString;
     }
 
     private String prepareQuery(final String queryString) {

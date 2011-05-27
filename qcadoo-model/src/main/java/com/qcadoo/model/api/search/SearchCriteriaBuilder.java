@@ -23,8 +23,6 @@
  */
 package com.qcadoo.model.api.search;
 
-import org.hibernate.criterion.DetachedCriteria;
-
 import com.qcadoo.model.api.Entity;
 
 /**
@@ -83,6 +81,60 @@ public interface SearchCriteriaBuilder {
      * @return this search builder
      */
     SearchCriteriaBuilder setFirstResult(int firstResult);
+
+    /**
+     * Adds projection to the criteria.
+     * 
+     * @param projection
+     *            projection
+     * @return this search builder
+     * @since 0.4.1
+     */
+    public SearchCriteriaBuilder setProjection(SearchProjection projection);
+
+    /**
+     * Adds restriction to the criteria.
+     * 
+     * @param criterion
+     *            criterion
+     * @return this search builder
+     * @since 0.4.1
+     */
+    public SearchCriteriaBuilder add(SearchCriterion criterion);
+
+    /**
+     * Adds order to the criteria.
+     * 
+     * @param order
+     *            order
+     * @return this search builder
+     * @since 0.4.1
+     */
+    public SearchCriteriaBuilder addOrder(SearchOrder order);
+
+    /**
+     * Create alias for the association to the criteria.
+     * 
+     * @param association
+     *            association
+     * @param alias
+     *            alias
+     * @return this search builder
+     * @since 0.4.1
+     */
+    public SearchCriteriaBuilder createAlias(String association, String alias);
+
+    /**
+     * Create create for the association to the criteria.
+     * 
+     * @param association
+     *            association
+     * @param alias
+     *            alias
+     * @return search builder for the subcriteria
+     * @since 0.4.1
+     */
+    public SearchCriteriaBuilder createCriteria(String association, String alias);
 
     /**
      * Adds the "equals to" restriction. If field has string type and value contains "%", "*", "_" or "?" the "like" restriction
@@ -345,37 +397,5 @@ public interface SearchCriteriaBuilder {
      */
     @Deprecated
     SearchCriteriaBuilder isIdNe(Long id);
-
-    /**
-     * @since 0.4.1
-     */
-    public SearchCriteriaBuilder setProjection(SearchProjection projection);
-
-    /**
-     * @since 0.4.1
-     */
-    public SearchCriteriaBuilder add(SearchCriterion criterion);
-
-    /**
-     * @since 0.4.1
-     */
-    public SearchCriteriaBuilder addOrder(SearchOrder order);
-
-    /**
-     * @since 0.4.1
-     */
-    public SearchCriteriaBuilder createAlias(String associationPath, String alias);
-
-    /**
-     * @since 0.4.1
-     */
-    public SearchCriteriaBuilder createCriteria(String associationPath, String alias);
-
-    /**
-     * Internal use only.
-     * 
-     * @since 0.4.1
-     */
-    DetachedCriteria getHibernateDetachedCriteria();
 
 }
