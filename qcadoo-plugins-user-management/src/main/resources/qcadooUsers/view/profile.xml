@@ -45,7 +45,7 @@
 						defaultEnabled="false" />
 				</layoutElement>
 				<layoutElement column="1" row="2">
-					<component type="input" name="role" field="role" defaultEnabled="false" />
+					<component type="select" name="role" field="role" defaultEnabled="false" />
 				</layoutElement>
 				<layoutElement column="1" row="3">
 					<component type="input" name="email" field="email" />
