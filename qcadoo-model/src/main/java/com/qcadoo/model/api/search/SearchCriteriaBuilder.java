@@ -28,8 +28,8 @@ import com.qcadoo.model.api.Entity;
 /**
  * Object represents the criteria builder for finding entities.<br/>
  * <br/>
- * The criteria is based on the Hibernate's criteria. Please see more on the official reference: {@link http
- * ://docs.jboss.org/hibernate/core/3.6/reference/en-US/html/querycriteria.html}.<br/>
+ * The criteria is based on the Hibernate's criteria. Please see more on <a
+ * href="http://docs.jboss.org/hibernate/core/3.6/reference/en-US/html/querycriteria.html">the official reference</a>.<br/>
  * <br/>
  * Examples:<br/>
  * 

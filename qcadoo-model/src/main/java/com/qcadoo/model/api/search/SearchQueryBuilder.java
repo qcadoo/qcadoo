@@ -15,7 +15,8 @@ import com.qcadoo.model.api.Entity;
  * <br/>
  * Parameters are binded to the query using placeholders - colon with parameter's name.<br/>
  * <br/>
- * Please see more on the official reference: {@link http://docs.jboss.org/hibernate/core/3.6/reference/en-US/html/queryhql.html}.<br/>
+ * Please see more on <a href="http://docs.jboss.org/hibernate/core/3.6/reference/en-US/html/queryhql.html">the official
+ * reference</a>.<br/>
  * <br/>
  * Examples:<br/>
  * 
