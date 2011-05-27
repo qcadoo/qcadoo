@@ -20,7 +20,7 @@ public final class SearchProjections {
      * 
      * @return projection's list
      */
-    public static SearchProjectionList projectionList() {
+    public static SearchProjectionList list() {
         return new SearchProjectonListImpl();
     }
 

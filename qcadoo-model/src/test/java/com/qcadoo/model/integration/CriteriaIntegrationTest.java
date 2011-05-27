@@ -131,7 +131,7 @@ public class CriteriaIntegrationTest extends IntegrationTest {
                 .find()
                 .add(SearchRestrictions.or(SearchRestrictions.like("name", "b%"), SearchRestrictions.like("name", "c%")))
                 .setProjection(
-                        SearchProjections.projectionList().add(SearchProjections.groupField("name"))
+                        SearchProjections.list().add(SearchProjections.groupField("name"))
                                 .add(SearchProjections.alias(SearchProjections.sum("quantity"), "quantity"))
                                 .add(SearchProjections.alias(SearchProjections.rowCount(), "products"))).setFirstResult(0)
                 .setMaxResults(2).addOrder(SearchOrders.asc("name")).list();
@@ -316,9 +316,8 @@ public class CriteriaIntegrationTest extends IntegrationTest {
                 .add(SearchRestrictions.like("product.name", "asd"))
                 .createAlias("product", "product")
                 .setProjection(
-                        SearchProjections.projectionList().add(SearchProjections.field("product.quantity"))
-                                .add(SearchProjections.field("name")).add(SearchProjections.field("product")))
-                .uniqueResult();
+                        SearchProjections.list().add(SearchProjections.field("product.quantity"))
+                                .add(SearchProjections.field("name")).add(SearchProjections.field("product"))).uniqueResult();
 
         System.out.println(result);
 
