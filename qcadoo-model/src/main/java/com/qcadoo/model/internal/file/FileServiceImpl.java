@@ -107,7 +107,7 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public String create(final String filename) {
-        return getFileFromFilename(filename).getAbsoluteFile();
+        return getFileFromFilename(filename).getAbsolutePath();
     }
 
     private File getFileFromFilename(final String filename) {
