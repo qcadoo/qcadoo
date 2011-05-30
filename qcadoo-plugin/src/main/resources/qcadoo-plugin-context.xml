@@ -96,6 +96,7 @@
 					<bean class="com.qcadoo.localization.internal.module.TranslationGroupModuleFactory" />
 					<bean class="com.qcadoo.report.internal.module.ReportTemplateModuleFactory" />
 					<bean class="com.qcadoo.view.internal.ribbon.templates.module.RibbonTemplateModuleFactory" />
+					<bean class="com.qcadoo.view.internal.ribbon.templates.module.RibbonTemplateExtensionModuleFactory" />
 					<bean class="com.qcadoo.view.internal.module.ViewComponentModuleFactory" />
 					<bean class="com.qcadoo.view.internal.module.ViewModuleFactory" />
 					<bean class="com.qcadoo.view.internal.module.ViewHookModuleFactory" />

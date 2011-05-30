@@ -40,8 +40,7 @@ public class Module {
     }
 
     /**
-     * Callback invoke once on application startup, if plugin is or will be enabled - either {@link PluginState#ENABLED} or
-     * {@link PluginState#ENABLING}.
+     * Callback invoke once on application startup, if plugin is enabled - in state {@link PluginState#ENABLED}.
      */
     public void enableOnStartup() {
         // empty

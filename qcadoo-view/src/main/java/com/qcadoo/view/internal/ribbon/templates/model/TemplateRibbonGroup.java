@@ -3,6 +3,7 @@ package com.qcadoo.view.internal.ribbon.templates.model;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.qcadoo.plugin.api.PluginUtils;
 import com.qcadoo.view.api.ribbon.RibbonActionItem;
 import com.qcadoo.view.api.ribbon.RibbonComboItem;
 import com.qcadoo.view.internal.api.ViewDefinition;
@@ -16,10 +17,13 @@ public class TemplateRibbonGroup {
 
     private final String name;
 
+    private final String pluginIdentifier;
+
     private final List<InternalRibbonActionItem> items = new LinkedList<InternalRibbonActionItem>();
 
-    public TemplateRibbonGroup(final String name) {
+    public TemplateRibbonGroup(final String name, final String pluginIdentifier) {
         this.name = name;
+        this.pluginIdentifier = pluginIdentifier;
     }
 
     public String getName() {
@@ -31,6 +35,9 @@ public class TemplateRibbonGroup {
     }
 
     public InternalRibbonGroup getRibbonGroup(final RibbonTemplateParameters parameters, final ViewDefinition viewDefinition) {
+        if (!PluginUtils.isEnabled(pluginIdentifier)) {
+            return null;
+        }
         List<InternalRibbonActionItem> itemsToApply = getFilteredList(parameters);
         if (itemsToApply.size() == 0) {
             return null;
@@ -110,4 +117,10 @@ public class TemplateRibbonGroup {
             return false;
         return true;
     }
+
+    @Override
+    public String toString() {
+        return "TemplateRibbonGroup [name=" + name + "]";
+    }
+
 }

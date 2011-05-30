@@ -43,7 +43,7 @@ public interface InternalRibbon extends Ribbon {
      * @param group
      *            group to add
      */
-    void addGroup(InternalRibbonGroup group);
+    void addGroupsPack(RibbonGroupsPack groupPack);
 
     /**
      * Removes group from this ribbon
@@ -51,7 +51,7 @@ public interface InternalRibbon extends Ribbon {
      * @param group
      *            group to remove
      */
-    void removeGroup(InternalRibbonGroup group);
+    void removeGroupsPack(RibbonGroupsPack groupPack);
 
     /**
      * generates JSON string that contains all ribbon definition

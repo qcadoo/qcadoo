@@ -36,7 +36,7 @@ public class RibbonTemplateModule extends Module {
             for (Node groupNode : parser.geElementChildren(root)) {
                 String groupName = parser.getStringAttribute(groupNode, "name");
                 parser.checkState(groupName != null, groupNode, "Ribbon template error: group name not defined");
-                TemplateRibbonGroup templateGroup = new TemplateRibbonGroup(groupName);
+                TemplateRibbonGroup templateGroup = new TemplateRibbonGroup(groupName, pluginIdentifier);
 
                 for (Node itemNode : parser.geElementChildren(groupNode)) {
                     templateGroup.addActionItem(parser.parseRibbonItem(itemNode, null));
@@ -59,11 +59,11 @@ public class RibbonTemplateModule extends Module {
 
     @Override
     public void enable() {
-        ribbonTemplatesService.addRibbonTemplate(template);
+        ribbonTemplatesService.addTemplate(template);
     }
 
     @Override
     public void disable() {
-        ribbonTemplatesService.removeRibbonTemplate(template);
+        ribbonTemplatesService.removeTemplate(template);
     }
 }

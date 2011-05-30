@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Set;
 
 import com.qcadoo.view.internal.api.ViewDefinition;
-import com.qcadoo.view.internal.ribbon.model.InternalRibbon;
 import com.qcadoo.view.internal.ribbon.model.InternalRibbonGroup;
 import com.qcadoo.view.internal.ribbon.templates.RibbonTemplateParameters;
 
@@ -42,16 +41,16 @@ public class RibbonTemplate {
         groups.remove(group);
     }
 
-    public void applyTemplate(final InternalRibbon ribbon, final RibbonTemplateParameters parameters,
+    public List<InternalRibbonGroup> getRibbonGroups(final RibbonTemplateParameters parameters,
             final ViewDefinition viewDefinition) {
-        parseParameters(parameters);
-        List<TemplateRibbonGroup> groupsToApply = getFilteredList(parameters);
-        for (TemplateRibbonGroup group : groupsToApply) {
-            InternalRibbonGroup groupInstance = group.getRibbonGroup(parameters, viewDefinition);
+        List<InternalRibbonGroup> groups = new LinkedList<InternalRibbonGroup>();
+        for (TemplateRibbonGroup templateGroup : getFilteredList(parameters)) {
+            InternalRibbonGroup groupInstance = templateGroup.getRibbonGroup(parameters, viewDefinition);
             if (groupInstance != null) {
-                ribbon.addGroup(groupInstance);
+                groups.add(groupInstance);
             }
         }
+        return groups;
     }
 
     private List<TemplateRibbonGroup> getFilteredList(final RibbonTemplateParameters parameters) {
@@ -74,7 +73,7 @@ public class RibbonTemplate {
         return filteredList;
     }
 
-    private void parseParameters(final RibbonTemplateParameters parameters) {
+    public void parseParameters(final RibbonTemplateParameters parameters) {
         parseGroupNames(parameters.getIncludeGroups());
         parseGroupNames(parameters.getExcludeGroups());
         parseItemNames(parameters.getIncludeItems());

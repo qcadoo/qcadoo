@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.qcadoo.view.internal.api.ViewDefinition;
 import com.qcadoo.view.internal.ribbon.model.InternalRibbon;
 import com.qcadoo.view.internal.ribbon.templates.model.RibbonTemplate;
+import com.qcadoo.view.internal.ribbon.templates.model.TemplateRibbonGroupsPack;
 
 @Service
 public class RibbonTemplatesServiceImpl implements RibbonTemplatesService {
@@ -25,25 +26,34 @@ public class RibbonTemplatesServiceImpl implements RibbonTemplatesService {
                     + parameters.getTemplateName() + "' not found");
         }
 
-        template.applyTemplate(ribbon, parameters, viewDefinition);
+        template.parseParameters(parameters);
+        ribbon.addGroupsPack(new TemplateRibbonGroupsPack(template, parameters, viewDefinition));
     }
 
     @Override
-    public void addRibbonTemplate(RibbonTemplate ribbonTemplate) {
+    public RibbonTemplate getTemplate(final String templatePlugin, final String templateName) {
+        return templates.get(getTemplateFullName(templatePlugin, templateName));
+    }
+
+    @Override
+    public void addTemplate(final RibbonTemplate ribbonTemplate) {
         templates.put(getTemplateFullName(ribbonTemplate), ribbonTemplate);
     }
 
     @Override
-    public void removeRibbonTemplate(String templatePlugin, String templateName) {
+    public void removeTemplate(final String templatePlugin, final String templateName) {
         templates.remove(getTemplateFullName(templatePlugin, templateName));
     }
 
     @Override
-    public void removeRibbonTemplate(RibbonTemplate ribbonTemplate) {
+    public void removeTemplate(final RibbonTemplate ribbonTemplate) {
         templates.remove(getTemplateFullName(ribbonTemplate));
     }
 
     private String getTemplateFullName(final String templatePlugin, final String templateName) {
+        if (templatePlugin == null) {
+            return RibbonTemplateParameters.DEFAULT_TEMPLATE_PLUGIN + "." + templateName;
+        }
         return templatePlugin + "." + templateName;
     }
 

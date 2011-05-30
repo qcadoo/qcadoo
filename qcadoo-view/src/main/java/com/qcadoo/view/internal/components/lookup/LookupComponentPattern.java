@@ -54,6 +54,7 @@ import com.qcadoo.view.internal.ribbon.model.InternalRibbonGroup;
 import com.qcadoo.view.internal.ribbon.model.RibbonActionItemImpl;
 import com.qcadoo.view.internal.ribbon.model.RibbonGroupImpl;
 import com.qcadoo.view.internal.ribbon.model.RibbonImpl;
+import com.qcadoo.view.internal.ribbon.model.SingleRibbonGroupPack;
 
 public final class LookupComponentPattern extends FieldComponentPattern {
 
@@ -177,18 +178,22 @@ public final class LookupComponentPattern extends FieldComponentPattern {
                     getTranslationService().translate(getTranslationPath() + ".label.focus", code, locale));
         }
 
-        translations.put("noMatchError",
-                getTranslationService().translate(getTranslationPath() + ".noMatchError", "qcadooView.lookup.noMatchError", locale));
+        translations.put(
+                "noMatchError",
+                getTranslationService().translate(getTranslationPath() + ".noMatchError", "qcadooView.lookup.noMatchError",
+                        locale));
         translations.put(
                 "moreTahnOneMatchError",
                 getTranslationService().translate(getTranslationPath() + ".moreTahnOneMatchError",
                         "qcadooView.lookup.moreTahnOneMatchError", locale));
-        translations.put("noResultsInfo",
-                getTranslationService().translate(getTranslationPath() + ".noResultsInfo", "qcadooView.lookup.noResultsInfo", locale));
+        translations.put(
+                "noResultsInfo",
+                getTranslationService().translate(getTranslationPath() + ".noResultsInfo", "qcadooView.lookup.noResultsInfo",
+                        locale));
         translations.put(
                 "tooManyResultsInfo",
-                getTranslationService().translate(getTranslationPath() + ".tooManyResultsInfo", "qcadooView.lookup.tooManyResultsInfo",
-                        locale));
+                getTranslationService().translate(getTranslationPath() + ".tooManyResultsInfo",
+                        "qcadooView.lookup.tooManyResultsInfo", locale));
 
         json.put("translations", translations);
 
@@ -292,7 +297,7 @@ public final class LookupComponentPattern extends FieldComponentPattern {
         ribbonGroup.addItem(ribbonCancelActionItem);
 
         InternalRibbon ribbon = new RibbonImpl();
-        ribbon.addGroup(ribbonGroup);
+        ribbon.addGroupsPack(new SingleRibbonGroupPack(ribbonGroup));
 
         return ribbon;
     }
