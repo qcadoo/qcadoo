@@ -51,10 +51,7 @@
 
 	<modules>
 		<localization:translation path="locales" />
-		
 		<view:view-ribbon-template-extension resource="view/ribbonTemplateExtensions/exportToCsv.xml" />
-		
-		<view:view-listener plugin="orders" view="ordersList" component="grid" event="exportToCsv" class="com.qcadoo.plugins.exporttocsv.internal.ExportToCsvService" method="exportToCsv" />
 	</modules>
 
 </plugin>
