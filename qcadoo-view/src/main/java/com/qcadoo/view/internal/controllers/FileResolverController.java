@@ -47,6 +47,8 @@ public class FileResolverController {
             @PathVariable("tenantId") final String tenantId) {
         String path = FileUtils.getPathFromUrl(request.getRequestURI());
 
+        System.out.println("FILERESOLVER: " + request.getParameterMap().containsKey("clean"));
+
         if (Integer.valueOf(tenantId) != MultiTenantUtil.getCurrentTenantId()) {
             try {
                 response.sendRedirect("/error.html?code=404");

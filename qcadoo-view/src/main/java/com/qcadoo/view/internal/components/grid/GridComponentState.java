@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -36,6 +37,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.search.CustomRestriction;
@@ -473,6 +476,19 @@ public final class GridComponentState extends AbstractComponentState implements 
                 return false;
             }
         }
+    }
+
+    @Override
+    public Map<String, String> getColumnNames(final Locale locale) {
+        // TODO
+        return ImmutableMap.of("x", "numer", "y", "nazwa");
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<Map<String, String>> getColumnValues(final Locale locale) {
+        // TODO
+        return Lists.newArrayList((Map<String, String>) ImmutableMap.of("x", "x", "y", "y"), ImmutableMap.of("x", "1", "y", "2"));
     }
 
 }

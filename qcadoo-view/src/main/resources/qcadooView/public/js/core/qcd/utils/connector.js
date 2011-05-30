@@ -30,6 +30,7 @@ QCDConnector.sendGet = function(type, parameters, responseFunction, errorFunctio
 	if (!QCDConnector.windowName) {
 		throw("no window name defined in conector");
 	}
+	
 	var url = QCDConnector.windowName+"/"+type+".html";
 	
 	if (parameters) {
@@ -82,11 +83,16 @@ QCDConnector.sendGet = function(type, parameters, responseFunction, errorFunctio
 	});
 }
 
-QCDConnector.sendPost = function(parameters, responseFunction, errorFunction) {
+QCDConnector.sendPost = function(parameters, responseFunction, errorFunction, type) {
 	if (!QCDConnector.windowName) {
 		throw("no window name defined in conector");
 	}
+	
 	var url = QCDConnector.windowName+".html";
+	
+	if(type !== undefined) {
+		url = "/" + type + url;
+	}
 	
 	$.ajax({
 		url: url,

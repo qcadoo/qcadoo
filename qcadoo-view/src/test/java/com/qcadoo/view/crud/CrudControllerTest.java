@@ -34,11 +34,14 @@ import java.util.Map;
 
 import org.json.JSONObject;
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.qcadoo.view.api.crud.CrudService;
+import com.qcadoo.view.internal.api.InternalComponentState;
 import com.qcadoo.view.internal.api.InternalViewDefinition;
+import com.qcadoo.view.internal.api.InternalViewDefinitionState;
 import com.qcadoo.view.internal.api.ViewDefinitionService;
 import com.qcadoo.view.internal.crud.CrudServiceImpl;
 
@@ -101,6 +104,8 @@ public class CrudControllerTest {
     @Test
     public void shouldPerformEvent() throws Exception {
         // given
+        InternalViewDefinitionState state = mock(InternalViewDefinitionState.class,
+                Mockito.withSettings().extraInterfaces(InternalComponentState.class));
         InternalViewDefinition viewDefinition = mock(InternalViewDefinition.class);
 
         ViewDefinitionService viewDefinitionService = mock(ViewDefinitionService.class);
@@ -114,10 +119,11 @@ public class CrudControllerTest {
         CrudService crud = new CrudServiceImpl();
         ReflectionTestUtils.setField(crud, "viewDefinitionService", viewDefinitionService);
 
-        given(viewDefinition.performEvent(jsonBody, Locale.ENGLISH)).willReturn(jsonResult);
+        given(viewDefinition.performEvent(jsonBody, Locale.ENGLISH)).willReturn(state);
+        given(((InternalComponentState) state).render()).willReturn(jsonResult);
 
         // when
-        Object result = crud.performEvent("testPlugin", "testView", jsonBody, Locale.ENGLISH);
+        Object result = crud.invokeEventAndRenderView("testPlugin", "testView", jsonBody, Locale.ENGLISH);
 
         // then
         assertEquals(jsonResult, result);

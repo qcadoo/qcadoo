@@ -125,7 +125,7 @@ QCD.PageController = function() {
 	}
 	
 	
-	this.callEvent = function(eventName, component, completeFunction, args, actionsPerformer) {
+	this.callEvent = function(eventName, component, completeFunction, args, actionsPerformer, type) {
 		var initParameters = new Object();
 		var eventCompleteFunction = completeFunction;
 		initParameters.event = {
@@ -155,7 +155,7 @@ QCD.PageController = function() {
 			initParameters.event.args = args;
 		}
 		initParameters.components = getValueData();
-		performEvent(initParameters, eventCompleteFunction, actionsPerformer);
+		performEvent(initParameters, eventCompleteFunction, actionsPerformer, type);
 	}
 	
 	this.generateReportForEntity = function(actionsPerformer, arg1, args, ids) {
@@ -213,7 +213,7 @@ QCD.PageController = function() {
 	}
 	
 	
-	function performEvent(parameters, completeFunction, actionsPerformer) {
+	function performEvent(parameters, completeFunction, actionsPerformer, type) {
 		var parametersJson = JSON.stringify(parameters);
 		QCDConnector.sendPost(parametersJson, function(response) {
 			if (completeFunction) {
@@ -242,7 +242,7 @@ QCD.PageController = function() {
 			if (completeFunction) {
 				completeFunction();
 			}
-		});
+		}, type);
 	}
 	
 	// TODO mina

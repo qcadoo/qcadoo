@@ -29,6 +29,7 @@ import java.util.Map;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.internal.HookDefinition;
 import com.qcadoo.view.internal.components.window.WindowComponentPattern;
 
@@ -52,7 +53,7 @@ public interface InternalViewDefinition extends ViewDefinition {
 
     Map<String, Object> prepareView(JSONObject jsonObject, Locale locale);
 
-    JSONObject performEvent(JSONObject jsonObject, Locale locale) throws JSONException;
+    ViewDefinitionState performEvent(JSONObject jsonObject, Locale locale) throws JSONException;
 
     boolean isMenuAccessible();
 

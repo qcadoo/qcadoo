@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ribbonTemplateExtension xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schema.qcadoo.org/modules/ribbonTemplateExtension" 
+	xsi:schemaLocation="http://schema.qcadoo.org/modules/ribbonTemplateExtension http://schema.qcadoo.org/modules/ribbonTemplateExtension.xsd"
+	templatePlugin="qcadooView" 
+	templateName="standardGridTemplate">
+	
+	<group name="csv">
+		<bigButton name="csv" state="enabled" action="#{grid}.fireEvent(exportToCsv);" />
+	</group>
+	
+</ribbonTemplateExtension>
