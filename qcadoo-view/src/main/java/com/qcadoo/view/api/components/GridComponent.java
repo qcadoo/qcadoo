@@ -24,7 +24,6 @@
 package com.qcadoo.view.api.components;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -72,9 +71,19 @@ public interface GridComponent extends ComponentState {
      */
     List<Entity> getEntities();
 
-    Map<String, String> getColumnNames(Locale locale);
+    /**
+     * Returns column names of the current grid
+     * 
+     * @return column names
+     */
+    Map<String, String> getColumnNames();
 
-    List<Map<String, String>> getColumnValues(Locale locale);
+    /**
+     * Returns column values of the current grid
+     * 
+     * @return column values
+     */
+    List<Map<String, String>> getColumnValues();
 
     /**
      * Adds restriction to this grid

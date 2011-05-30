@@ -91,7 +91,7 @@ QCDConnector.sendPost = function(parameters, responseFunction, errorFunction, ty
 	var url = QCDConnector.windowName+".html";
 	
 	if(type !== undefined) {
-		url = "/" + type + url;
+		url = url.replace("/page/", "/" + type + "/")
 	}
 	
 	$.ajax({

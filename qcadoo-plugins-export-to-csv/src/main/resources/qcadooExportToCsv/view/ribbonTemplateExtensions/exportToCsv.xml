@@ -6,7 +6,17 @@
 	templateName="standardGridTemplate">
 	
 	<group name="csv">
-		<bigButton name="csv" state="enabled" action="#{grid}.fireEvent(exportToCsv);" />
+		<bigButton name="csv" state="enabled" icon="csvIcon24.png">
+			<script>
+				<![CDATA[
+					this.addOnChangeListener({
+						onClick: function() {
+							#{grid}.performEvent('exportToCsv', [], 'exportToCsv');
+						}
+					});
+				]]>
+			</script>
+		</bigButton>
 	</group>
 	
 </ribbonTemplateExtension>
