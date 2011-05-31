@@ -24,6 +24,7 @@
 package com.qcadoo.view.api.components;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.qcadoo.model.api.Entity;
@@ -69,6 +70,20 @@ public interface GridComponent extends ComponentState {
      * @return all content entities of this grid
      */
     List<Entity> getEntities();
+
+    /**
+     * Returns column names of the current grid
+     * 
+     * @return column names
+     */
+    Map<String, String> getColumnNames();
+
+    /**
+     * Returns column values of the current grid
+     * 
+     * @return column values
+     */
+    List<Map<String, String>> getColumnValues();
 
     /**
      * Adds restriction to this grid

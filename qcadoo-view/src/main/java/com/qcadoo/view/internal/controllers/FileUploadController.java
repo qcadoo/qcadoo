@@ -41,9 +41,9 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.qcadoo.localization.api.TranslationService;
+import com.qcadoo.model.api.file.FileUtils;
 import com.qcadoo.view.api.crud.CrudService;
 import com.qcadoo.view.constants.QcadooViewConstants;
-import com.qcadoo.view.internal.components.file.FileUtils;
 
 @Controller
 public class FileUploadController {
@@ -77,7 +77,7 @@ public class FileUploadController {
         String path = null;
 
         try {
-            path = FileUtils.upload(file);
+            path = FileUtils.getInstance().upload(file);
         } catch (IOException e) {
             error = e.getMessage();
         }
@@ -85,9 +85,9 @@ public class FileUploadController {
         JSONObject response = new JSONObject();
         try {
             if (path != null) {
-                response.put("fileLastModificationDate", FileUtils.getLastModificationDate(path));
-                response.put("fileUrl", FileUtils.getUrl(path));
-                response.put("fileName", FileUtils.getName(path));
+                response.put("fileLastModificationDate", FileUtils.getInstance().getLastModificationDate(path));
+                response.put("fileUrl", FileUtils.getInstance().getUrl(path));
+                response.put("fileName", FileUtils.getInstance().getName(path));
                 response.put("filePath", path);
             } else {
                 response.put("fileLastModificationDate", "");

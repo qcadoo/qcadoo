@@ -66,8 +66,7 @@ public class CrudController {
     @ResponseBody
     public Object performEvent(@PathVariable(PLUGIN_IDENTIFIER_VARIABLE) final String pluginIdentifier,
             @PathVariable(VIEW_NAME_VARIABLE) final String viewName, @RequestBody final JSONObject body, final Locale locale) {
-
-        return crudService.performEvent(pluginIdentifier, viewName, body, locale);
+        return crudService.invokeEventAndRenderView(pluginIdentifier, viewName, body, locale);
     }
 
 }

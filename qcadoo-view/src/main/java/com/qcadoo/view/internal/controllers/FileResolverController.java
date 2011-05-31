@@ -31,21 +31,27 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.qcadoo.model.api.file.FileService;
 import com.qcadoo.tenant.api.MultiTenantUtil;
-import com.qcadoo.view.internal.components.file.FileUtils;
 
 @Controller
 public class FileResolverController {
 
+    @Autowired
+    private FileService fileService;
+
     @RequestMapping(value = "{tenantId:\\d+}/{firstLevel:\\d+}/{secondLevel:\\d+}/{fileName}", method = RequestMethod.GET)
     public void resolve(final HttpServletRequest request, final HttpServletResponse response,
             @PathVariable("tenantId") final String tenantId) {
-        String path = FileUtils.getPathFromUrl(request.getRequestURI());
+        String path = fileService.getPathFromUrl(request.getRequestURI());
+
+        boolean removeFileAfterProcessing = request.getParameterMap().containsKey("clean");
 
         if (Integer.valueOf(tenantId) != MultiTenantUtil.getCurrentTenantId()) {
             try {
@@ -58,7 +64,7 @@ public class FileResolverController {
         InputStream input = null;
 
         try {
-            input = FileUtils.getInputStream(path);
+            input = fileService.getInputStream(path);
 
             if (input == null) {
                 response.sendRedirect("/error.html?code=404");
@@ -67,8 +73,8 @@ public class FileResolverController {
 
                 int bytes = IOUtils.copy(input, output);
 
-                response.setHeader("Content-disposition", "attachment; filename=" + FileUtils.getName(path));
-                response.setContentType(FileUtils.getContentType(path));
+                response.setHeader("Content-disposition", "attachment; filename=" + fileService.getName(path));
+                response.setContentType(fileService.getContentType(path));
                 response.setContentLength(bytes);
 
                 output.flush();
@@ -76,6 +82,10 @@ public class FileResolverController {
         } catch (IOException e) {
             IOUtils.closeQuietly(input);
             throw new IllegalStateException(e.getMessage(), e);
+        }
+
+        if (removeFileAfterProcessing) {
+            fileService.remove(path);
         }
     }
 

@@ -33,7 +33,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.api.crud.CrudService;
+import com.qcadoo.view.internal.api.InternalComponentState;
 import com.qcadoo.view.internal.api.InternalViewDefinition;
 import com.qcadoo.view.internal.api.ViewDefinitionService;
 
@@ -80,9 +82,8 @@ public class CrudServiceImpl implements CrudService {
     }
 
     @Override
-    public JSONObject performEvent(final String pluginIdentifier, final String viewName, final JSONObject body,
+    public ViewDefinitionState invokeEvent(final String pluginIdentifier, final String viewName, final JSONObject body,
             final Locale locale) {
-
         InternalViewDefinition viewDefinition = (InternalViewDefinition) viewDefinitionService.get(pluginIdentifier, viewName);
 
         try {
@@ -90,5 +91,27 @@ public class CrudServiceImpl implements CrudService {
         } catch (JSONException e) {
             throw new IllegalStateException(e.getMessage(), e);
         }
+    }
+
+    @Override
+    public JSONObject invokeEventAndRenderView(final String pluginIdentifier, final String viewName, final JSONObject body,
+            final Locale locale) {
+        ViewDefinitionState state = invokeEvent(pluginIdentifier, viewName, body, locale);
+        return renderView(state);
+    }
+
+    @Override
+    public JSONObject renderView(final ViewDefinitionState state) {
+        try {
+            return ((InternalComponentState) state).render();
+        } catch (JSONException e) {
+            throw new IllegalStateException(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public JSONObject performEvent(final String pluginIdentifier, final String viewName, final JSONObject body,
+            final Locale locale) {
+        return invokeEventAndRenderView(pluginIdentifier, viewName, body, locale);
     }
 }

@@ -1008,15 +1008,15 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 		}	
 	}
 	
-	this.performEvent = function(eventName, args) {
-		this.fireEvent(null, eventName, args);
+	this.performEvent = function(eventName, args, type) {
+		this.fireEvent(null, eventName, args, type);
 	}
 	
-	this.fireEvent = function(actionsPerformer, eventName, args) {
+	this.fireEvent = function(actionsPerformer, eventName, args, type) {
 		blockGrid();
 		mainController.callEvent(eventName, elementPath, function() {
 			unblockGrid();
-		}, args, actionsPerformer);
+		}, args, actionsPerformer, type);
 	}
 	
 	this.performLinkClicked = function(actionsPerformer) {

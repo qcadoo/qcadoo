@@ -24,10 +24,12 @@
 package com.qcadoo.view.internal.components.grid;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -473,6 +475,54 @@ public final class GridComponentState extends AbstractComponentState implements 
                 return false;
             }
         }
+    }
+
+    @Override
+    public Map<String, String> getColumnNames() {
+        Map<String, String> names = new LinkedHashMap<String, String>();
+
+        for (GridComponentColumn column : columns.values()) {
+            if (column.getFields().size() == 1) {
+                String fieldCode = getDataDefinition().getPluginIdentifier() + "." + getDataDefinition().getName() + "."
+                        + column.getFields().get(0).getName();
+                names.put(
+                        column.getName(),
+                        getTranslationService().translate(getTranslationPath() + ".column." + column.getName(),
+                                fieldCode + ".label", getLocale()));
+            } else {
+                names.put(column.getName(),
+                        getTranslationService().translate(getTranslationPath() + ".column." + column.getName(), getLocale()));
+            }
+        }
+
+        return names;
+    }
+
+    @Override
+    public List<Map<String, String>> getColumnValues() {
+        if (entities == null) {
+            eventPerformer.reload();
+        }
+
+        if (entities == null) {
+            throw new IllegalStateException("Cannot load entities for grid component");
+        }
+
+        List<Map<String, String>> values = new ArrayList<Map<String, String>>();
+
+        for (Entity entity : entities) {
+            values.add(convertEntityToMap(entity));
+        }
+
+        return values;
+    }
+
+    private Map<String, String> convertEntityToMap(final Entity entity) {
+        Map<String, String> values = new LinkedHashMap<String, String>();
+        for (GridComponentColumn column : columns.values()) {
+            values.put(column.getName(), column.getValue(entity, getLocale()));
+        }
+        return values;
     }
 
 }

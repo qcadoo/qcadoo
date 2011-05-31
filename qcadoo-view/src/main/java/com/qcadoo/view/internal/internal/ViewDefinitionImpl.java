@@ -167,7 +167,7 @@ public final class ViewDefinitionImpl implements InternalViewDefinition {
     }
 
     @Override
-    public JSONObject performEvent(final JSONObject jsonObject, final Locale locale) throws JSONException {
+    public ViewDefinitionState performEvent(final JSONObject jsonObject, final Locale locale) throws JSONException {
         callHooks(postConstructHooks, jsonObject, locale);
 
         ViewDefinitionStateImpl viewDefinitionState = new ViewDefinitionStateImpl();
@@ -199,7 +199,7 @@ public final class ViewDefinitionImpl implements InternalViewDefinition {
 
         callHooks(beforeRenderHooks, viewDefinitionState);
 
-        return viewDefinitionState.render();
+        return viewDefinitionState;
     }
 
     public void registerViews(final InternalViewDefinitionService viewDefinitionService) {
@@ -384,6 +384,7 @@ public final class ViewDefinitionImpl implements InternalViewDefinition {
         }
     }
 
+    @Override
     public SecurityRole getAuthorizationRole() {
         return authorizationRole;
     }
