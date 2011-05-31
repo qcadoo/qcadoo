@@ -1,18 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<fontFamilies>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+       http://www.springframework.org/schema/beans 
+       http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+       http://www.springframework.org/schema/security 
+       http://www.springframework.org/schema/security/spring-security-3.0.xsd
+       http://www.springframework.org/schema/context 
+       http://www.springframework.org/schema/context/spring-context-3.1.xsd">
+       
+	<bean id="dejaVuFontFamily" class="net.sf.jasperreports.engine.fonts.SimpleFontFamily">
+		<property name="name" value="DejaVu"/>
+		<!--<property name="normal" value="@CLASSES@/fonts/dejaVu/DejaVuSans.ttf"/>
+		<property name="bold" value="@CLASSES@/fonts/dejaVu/DejaVuSans-Bold.ttf"/>
+		<property name="italic" value="@CLASSES@/fonts/dejaVu/DejaVuSans-Oblique.ttf"/>
+		<property name="boldItalic" value="@CLASSES@/dejaVu/DejaVuSans-BoldOblique.ttf"/>-->
+		<property name="normal" value="fonts/dejaVu/DejaVuSans.ttf"/>
+		<property name="bold" value="fonts/dejaVu/DejaVuSans-Bold.ttf"/>
+		<property name="italic" value="fonts/dejaVu/DejaVuSans-Oblique.ttf"/>
+		<property name="boldItalic" value="fonts/dejaVu/DejaVuSans-BoldOblique.ttf"/>
+		<property name="pdfEncoding" value="Identity-H"/>
+		<property name="pdfEmbedded" value="true"/>
+		<property name="exportFonts">
+			<map>
+				<entry key="net.sf.jasperreports.html">
+					<value>DejaVu, Arial, Helvetica, sans-serif</value>
+				</entry>
+				<entry key="net.sf.jasperreports.xhtml">
+					<value>DejaVu, Arial, Helvetica, sans-serif</value>
+				</entry>
+			</map>
+		</property>
+	</bean>
 
-	<fontFamily name="DejaVu">
-		<normal>fonts/dejaVu/DejaVuSans.ttf</normal>
-		<bold>fonts/dejaVu/DejaVuSans-Bold.ttf</bold>
-		<italic>fonts/dejaVu/DejaVuSans-Bold.ttf</italic>
-		<boldItalic>fonts/dejaVu/DejaVuSans-BoldOblique.ttf</boldItalic>
-		<pdfEncoding>Identity-H</pdfEncoding>
-		<pdfEmbedded>true</pdfEmbedded>
-		<exportFonts>
-			<export key="net.sf.jasperreports.html">DejaVu, Arial, Helvetica, sans-serif</export>
-			<export key="net.sf.jasperreports.xhtml">DejaVu, Arial, Helvetica, sans-serif</export>
-		</exportFonts>
-	</fontFamily>
-	
-</fontFamilies>
+</beans>
