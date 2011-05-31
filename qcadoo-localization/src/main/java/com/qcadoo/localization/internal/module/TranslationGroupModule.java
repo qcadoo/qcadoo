@@ -45,4 +45,9 @@ public class TranslationGroupModule extends Module {
         translationService.prepareMessagesGroup(name, prefix);
     }
 
+    @Override
+    public void enable() {
+        enableOnStartup();
+    }
+
 }

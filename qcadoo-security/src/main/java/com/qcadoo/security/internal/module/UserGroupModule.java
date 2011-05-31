@@ -59,4 +59,10 @@ public class UserGroupModule extends Module {
 
         securityRolesService.addRole(new SimpleSecurityRole(name, role, true));
     }
+
+    @Override
+    public void enable() {
+        enableOnStartup();
+    }
+
 }

@@ -6,7 +6,7 @@
 	templateName="standardGridTemplate">
 	
 	<group name="csv">
-		<bigButton name="csv" state="enabled" icon="csvIcon24.png">
+		<bigButton name="csv" state="enabled" icon="exportToCsvIcon24.png">
 			<script>
 				<![CDATA[
 					this.addOnChangeListener({
