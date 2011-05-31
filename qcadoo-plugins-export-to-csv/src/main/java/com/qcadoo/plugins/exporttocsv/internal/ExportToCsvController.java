@@ -32,6 +32,8 @@ public class ExportToCsvController {
 
     private static final String CONTROLLER_PATH = "exportToCsv/{" + PLUGIN_IDENTIFIER_VARIABLE + "}/{" + VIEW_NAME_VARIABLE + "}";
 
+    private static final String EXPORTED_DOCUMENT_SEPARATOR = ",";
+
     @Autowired
     private FileService fileService;
 
@@ -60,7 +62,7 @@ public class ExportToCsvController {
                 if (firstName) {
                     firstName = false;
                 } else {
-                    output.append(";");
+                    output.append(EXPORTED_DOCUMENT_SEPARATOR);
                 }
                 output.append("\"").append(name).append("\"");
             }
@@ -74,7 +76,7 @@ public class ExportToCsvController {
                     if (firstValue) {
                         firstValue = false;
                     } else {
-                        output.append(";");
+                        output.append(EXPORTED_DOCUMENT_SEPARATOR);
                     }
                     output.append("\"").append(value).append("\"");
                 }
