@@ -44,7 +44,6 @@ QCD.components.elements.File = function(_element, _mainController) {
 	var _this = this;
 	
 	var translations = this.options.translations;
-	QCD.info(translations);
 	
 	var isEnabled = false;
 	var fileNameValue = null;
