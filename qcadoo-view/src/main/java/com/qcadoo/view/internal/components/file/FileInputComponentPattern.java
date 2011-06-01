@@ -51,6 +51,9 @@ public final class FileInputComponentPattern extends FieldComponentPattern {
         translations.put("uploadSuccessContent", getTranslation("uploadSuccessContent", locale));
         translations.put("uploadErrorHeader", getTranslation("uploadErrorHeader", locale));
         translations.put("uploadErrorContent", getTranslation("uploadErrorContent", locale));
+        translations.put("uploadButton", getTranslation("uploadButton", locale));
+        translations.put("deleteButton", getTranslation("deleteButton", locale));
+        translations.put("deleteConfirm", getTranslation("deleteConfirm", locale));
         json.put("translations", translations);
 
         return json;

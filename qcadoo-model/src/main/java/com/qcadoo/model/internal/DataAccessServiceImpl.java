@@ -485,7 +485,6 @@ public class DataAccessServiceImpl implements DataAccessService {
         checkArgument(searchQuery != null, "SearchCriteria must be given");
 
         Query query = searchQuery.createQuery(hibernateService.getCurrentSession());
-
         searchQuery.addParameters(query);
 
         int totalNumberOfEntities = -1;
