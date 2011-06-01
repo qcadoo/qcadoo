@@ -39,9 +39,12 @@
 	<tiles:putAttribute name="componentBody">
 		<div class="fileValueWrapper">
 			<div class="fileInputWrapper">
-				<a href="#" id="${component['path']}_fileList" target="_blank"></a>
-				<span id="${component['path']}_fileLastModificationDate"></span>
+				<span class="fileInputLink">
+					<a href="#" id="${component['path']}_fileList" target="_blank"></a>
+				</span>
+				<span id="${component['path']}_fileLastModificationDate" class="fileInputDate"></span>
 			</div>		
+			<div class="fileDeleteButton" id="${component['path']}_deleteButton"></div>
 			<div class="fileButton" id="${component['path']}_fileButton"></div>
 		</div>
 		<input type="text" id="${component['path']}_input" tabindex="${component['indexOrder']}" style="display:none" />

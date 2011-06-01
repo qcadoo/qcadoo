@@ -35,6 +35,7 @@ QCD.components.elements.File = function(_element, _mainController) {
 	var modificationDate = $("#"+this.elementSearchName+"_fileLastModificationDate");
 	
 	var fileButton = $("#"+this.elementSearchName+"_fileButton");
+	var fileDeleteButton = $("#"+this.elementSearchName+"_deleteButton");
 	
 	var elementPath = this.elementPath;
 	
@@ -43,6 +44,10 @@ QCD.components.elements.File = function(_element, _mainController) {
 	var _this = this;
 	
 	var translations = this.options.translations;
+	QCD.info(translations);
+	
+	var isEnabled = false;
+	var fileNameValue = null;
 	
 	function constructor(_this) {
 		input.change(function() {
@@ -50,6 +55,7 @@ QCD.components.elements.File = function(_element, _mainController) {
 		});
 		
 		fileButton.click(openFileWindow);
+		fileDeleteButton.click(deleteLink);
 	}
 	
 	function inputDataChanged() {
@@ -76,11 +82,18 @@ QCD.components.elements.File = function(_element, _mainController) {
 		}
 	}
 	
-	this.setFormComponentEnabled = function(isEnabled) {
-		if (isEnabled) {
-			fileButton.addClass("enabled")
-		} else {
-			fileButton.removeClass("enabled")
+	this.setFormComponentEnabled = function(_isEnabled) {
+		isEnabled = _isEnabled;
+		updateButtons();
+	}
+	
+	function deleteLink() {
+		if (! fileDeleteButton.hasClass("enabled")) {
+			return;
+		}
+		var confirmText = translations.deleteConfirm + " '" + fileNameValue + "'?";
+		if (confirm(confirmText)) {
+			setData("", "", "#", "");
 		}
 	}
 	
@@ -107,6 +120,7 @@ QCD.components.elements.File = function(_element, _mainController) {
 			return;
 		}
 		if (status.fileName && status.fileName != "") {
+			fileNameValue = status.fileName;
 			showMessage("success", translations.uploadSuccessHeader, translations.uploadSuccessContent + " '" + status.fileName + "'");
 		}
 		setData(status.filePath, status.fileLastModificationDate, status.fileUrl, status.fileName);
@@ -120,7 +134,6 @@ QCD.components.elements.File = function(_element, _mainController) {
 		});
 	}
 	
-	
 	function setData(filePath, fileLastModificationDate, fileUrl, fileName) {
 		input.val(filePath);
 		if (fileLastModificationDate && fileLastModificationDate != "") {
@@ -128,8 +141,35 @@ QCD.components.elements.File = function(_element, _mainController) {
 		} else {
 			modificationDate.text("");
 		}
+		if (filePath && filePath != null) {
+			fileNameValue = fileName;
+			link.attr("title", fileName);
+		} else {
+			fileNameValue = null;
+			link.attr("title", "");
+		}
 		link.attr("href", fileUrl);
 		link.text(fileName);
+		updateButtons();
+	}
+	
+	function updateButtons() {
+		if (isEnabled) {
+			fileButton.addClass("enabled");
+			fileButton.attr("title", translations.uploadButton);
+			if (fileNameValue != null) {
+				fileDeleteButton.addClass("enabled");
+				fileDeleteButton.attr("title", translations.deleteButton);
+			} else {
+				fileDeleteButton.removeClass("enabled");
+				fileDeleteButton.attr("title", "");
+			}
+		} else {
+			fileButton.removeClass("enabled");
+			fileButton.attr("title", "");
+			fileDeleteButton.removeClass("enabled");
+			fileDeleteButton.attr("title", "");
+		}
 	}
 	
 	constructor(this);

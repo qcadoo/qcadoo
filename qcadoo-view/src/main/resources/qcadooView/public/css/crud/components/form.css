@@ -472,7 +472,7 @@
 	background-position: -20px -40px;
 }
 
- .fileValueWrapper .fileButton.enabled {
+.fileValueWrapper .fileButton.enabled {
 	background-position: 0px -40px;
 	cursor: pointer;
 }
@@ -486,11 +486,35 @@
 	background-position: -60px -40px;
 }
 
-.fileInputWrapper {
-	margin-right: 80px;
+.fileValueWrapper .fileDeleteButton {
+	height: 20px;
+	width: 20px;
+	display: inline-block;
+	position: absolute;
+	top: 0px;
+	right: 20px;
+	background-position: -20px -60px;
+	background: url(/qcadooView/public/css/crud/images/form/input_icon_3.png) no-repeat -20px -60px;
+	vertical-align: middle;
+}
+.fileValueWrapper .fileDeleteButton.enabled {
+	background-position: 0px -60px;
+	cursor: pointer;
+}
+ .fileValueWrapper:hover .fileDeleteButton.enabled,
+ .fileValueWrapper .fileDeleteButton.enabled.lightHover {
+	background-position: -40px -60px;
+}
+ .fileValueWrapper .fileDeleteButton.enabled:hover,
+ .fileValueWrapper .fileDeleteButton.enabled.lightHover:hover {
+	background-position: -60px -60px;
 }
 
-.fileInputWrapper a {
+.fileInputWrapper {
+	margin-right: 100px;
+}
+
+.fileInputWrapper .fileInputLink {
 	padding-left: 6px;
 	padding-top: 3px;
 	color: #005EC5;
@@ -502,7 +526,7 @@
 	display: inline-block;
 }
 
-.fileInputWrapper span {
+.fileInputWrapper .fileInputDate {
 	padding-left: 3px;
 	padding-top: 3px;
 	color: #464646;
