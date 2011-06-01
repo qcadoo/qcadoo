@@ -42,9 +42,11 @@ import java.util.Set;
 
 import com.qcadoo.plugin.api.Module;
 import com.qcadoo.plugin.api.ModuleFactory;
+import com.qcadoo.plugin.api.Plugin;
 import com.qcadoo.plugin.api.PluginDependencyInformation;
 import com.qcadoo.plugin.api.PluginInformation;
 import com.qcadoo.plugin.api.PluginState;
+import com.qcadoo.plugin.api.PluginUtils;
 import com.qcadoo.plugin.api.Version;
 import com.qcadoo.plugin.api.VersionOfDependency;
 import com.qcadoo.plugin.internal.api.InternalPlugin;
@@ -114,11 +116,13 @@ public final class DefaultPlugin implements InternalPlugin {
         if (hasState(UNKNOWN)) {
             state = targetState;
             return;
-        } else {
-            state = targetState;
         }
 
-        if (hasState(ENABLED)) {
+        final Plugin thisPlugin = this;
+
+        if (ENABLED.equals(targetState)) {
+
+            state = targetState;
             for (final ModuleFactory<?> factory : factories) {
                 List<Module> modules = modulesByFactories.get(factory);
 
@@ -129,13 +133,17 @@ public final class DefaultPlugin implements InternalPlugin {
 
                         @Override
                         public void invoke() {
-                            module.multiTenantEnable();
+                            if (PluginUtils.isEnabled(thisPlugin)) {
+                                module.multiTenantEnable();
+                            }
                         }
 
                     });
                 }
             }
-        } else if (hasState(DISABLED)) {
+
+        } else if (DISABLED.equals(targetState)) {
+
             for (final ModuleFactory<?> factory : reversedFactories) {
                 List<Module> modules = modulesByFactories.get(factory);
                 Collections.reverse(modules);
@@ -147,13 +155,22 @@ public final class DefaultPlugin implements InternalPlugin {
 
                         @Override
                         public void invoke() {
-                            module.multiTenantDisable();
+                            if (PluginUtils.isEnabled(thisPlugin)) {
+                                module.multiTenantDisable();
+                            }
                         }
 
                     });
                 }
             }
+            state = targetState;
+
+        } else {
+
+            state = targetState;
+
         }
+
     }
 
     private boolean isTransitionPossible(final PluginState from, final PluginState to) {
