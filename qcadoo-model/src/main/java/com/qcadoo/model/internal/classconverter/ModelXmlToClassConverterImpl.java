@@ -146,7 +146,7 @@ public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverte
                     existingClasses.put(className, classLoader.loadClass(className));
                     LOG.info("Class " + className + " already exists, skipping");
                 } catch (ClassNotFoundException e) {
-                    // ignoring
+                    LOG.info("Class " + className + " not found, will be generated");
                 }
 
                 break;

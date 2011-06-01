@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,47 +78,56 @@ public class ExportToCsvController {
 
             File file = new File(fileService.create("export.csv"));
 
-            BufferedWriter output = new BufferedWriter(new FileWriter(file));
+            BufferedWriter output = null;
 
-            boolean firstName = true;
+            try {
+                output = new BufferedWriter(new FileWriter(file));
 
-            for (String name : grid.getColumnNames().values()) {
-                if (firstName) {
-                    firstName = false;
-                } else {
-                    output.append(EXPORTED_DOCUMENT_SEPARATOR);
-                }
-                output.append("\"").append(name).append("\"");
-            }
+                boolean firstName = true;
 
-            output.append("\n");
-
-            for (Map<String, String> row : grid.getColumnValues()) {
-                boolean firstValue = true;
-
-                for (String value : row.values()) {
-                    if (firstValue) {
-                        firstValue = false;
+                for (String name : grid.getColumnNames().values()) {
+                    if (firstName) {
+                        firstName = false;
                     } else {
                         output.append(EXPORTED_DOCUMENT_SEPARATOR);
                     }
-                    output.append("\"").append(value).append("\"");
+                    output.append("\"").append(normalizeString(name)).append("\"");
                 }
 
                 output.append("\n");
-            }
 
-            output.flush();
-            output.close();
+                for (Map<String, String> row : grid.getColumnValues()) {
+                    boolean firstValue = true;
+
+                    for (String value : row.values()) {
+                        if (firstValue) {
+                            firstValue = false;
+                        } else {
+                            output.append(EXPORTED_DOCUMENT_SEPARATOR);
+                        }
+                        output.append("\"").append(normalizeString(value)).append("\"");
+                    }
+
+                    output.append("\n");
+                }
+
+                output.flush();
+            } catch (IOException e) {
+                throw new IllegalStateException(e.getMessage(), e);
+            } finally {
+                IOUtils.closeQuietly(output);
+            }
 
             state.redirectTo(fileService.getUrl(file.getAbsolutePath()) + "?clean", true, false);
 
             return crudService.renderView(state);
-        } catch (IOException e) {
-            throw new IllegalStateException(e.getMessage(), e);
         } catch (JSONException e) {
             throw new IllegalStateException(e.getMessage(), e);
         }
+    }
+
+    private String normalizeString(final String string) {
+        return string.replaceAll("\"", "\\\"").replaceAll("\n", " ");
     }
 
     private void changeMaxResults(final JSONObject json) throws JSONException {

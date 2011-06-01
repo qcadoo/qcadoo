@@ -108,7 +108,7 @@ public abstract class HookDefinitionImpl {
 
     private Class<?> getHookClass(final String hookClassName) throws HookInitializationException {
         try {
-            return HookDefinitionImpl.class.getClassLoader().loadClass(hookClassName);
+            return Thread.currentThread().getContextClassLoader().loadClass(hookClassName);
         } catch (ClassNotFoundException e) {
             throw new HookInitializationException(className, methodName, "Failed to find class '" + hookClassName
                     + "', please make sure that there is no typo", e);

@@ -383,7 +383,7 @@ public final class DataDefinitionImpl implements InternalDataDefinition {
 
     private Class<?> loadClassForEntity() {
         try {
-            return getClass().getClassLoader().loadClass(getFullyQualifiedClassName());
+            return Thread.currentThread().getContextClassLoader().loadClass(getFullyQualifiedClassName());
         } catch (ClassNotFoundException e) {
             throw new IllegalStateException("cannot find mapping class for definition: " + getFullyQualifiedClassName(), e);
         }
