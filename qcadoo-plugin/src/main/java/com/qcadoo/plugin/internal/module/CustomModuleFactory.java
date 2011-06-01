@@ -44,7 +44,7 @@ public final class CustomModuleFactory extends ModuleFactory<Module> {
         Class<?> clazz = null;
 
         try {
-            clazz = CustomModuleFactory.class.getClassLoader().loadClass(className);
+            clazz = Thread.currentThread().getContextClassLoader().loadClass(className);
         } catch (ClassNotFoundException e) {
             throw new IllegalStateException("Missing class " + className + " of " + getIdentifier() + " module", e);
         }

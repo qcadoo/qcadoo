@@ -111,7 +111,7 @@ public class DataAccessServiceImpl implements DataAccessService {
                 }
             }
         } catch (NoTransactionException e) {
-            // nothing - test purpose only
+            LOG.error(e.getMessage(), e);
         }
         return resultEntity;
     }

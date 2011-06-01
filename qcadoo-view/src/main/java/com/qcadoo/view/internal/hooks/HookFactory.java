@@ -38,7 +38,7 @@ public final class HookFactory {
     public HookDefinition getHook(final String fullyQualifiedClassName, final String methodName, final String pluginIdentifier) {
         Class<?> beanClass;
         try {
-            beanClass = HookFactory.class.getClassLoader().loadClass(fullyQualifiedClassName);
+            beanClass = Thread.currentThread().getContextClassLoader().loadClass(fullyQualifiedClassName);
             Object bean = applicationContext.getBean(beanClass);
             if (bean != null) {
                 return new HookDefinitionImpl(bean, methodName, pluginIdentifier);

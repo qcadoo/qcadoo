@@ -60,7 +60,7 @@ public class FileServiceImpl implements FileService {
     private File uploadDirectory;
 
     public FileServiceImpl() {
-        FileServiceImpl.instance = this;
+        FileServiceImpl.setInstance(this);
     }
 
     @Value("${reportPath}")
@@ -157,6 +157,10 @@ public class FileServiceImpl implements FileService {
 
     public static FileService getInstance() {
         return instance;
+    }
+
+    private static void setInstance(final FileService instance) {
+        FileServiceImpl.instance = instance;
     }
 
 }
