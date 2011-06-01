@@ -44,7 +44,6 @@ public final class FileInputComponentPattern extends FieldComponentPattern {
 
     @Override
     protected JSONObject getJsOptions(final Locale locale) throws JSONException {
-        System.out.println("--------------------\n\n\nHELLO\n\n\n-----------------");
         JSONObject json = new JSONObject();
 
         JSONObject translations = new JSONObject();
