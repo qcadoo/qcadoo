@@ -314,6 +314,7 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
         dataDefinition.setDeletable(getBooleanAttribute(reader, "deletable", true));
         dataDefinition.setInsertable(getBooleanAttribute(reader, "insertable", true));
         dataDefinition.setUpdatable(getBooleanAttribute(reader, "updatable", true));
+        dataDefinition.setActivable(getBooleanAttribute(reader, "activable", false));
         dataDefinition.setFullyQualifiedClassName(ClassNameUtils.getFullyQualifiedClassName(pluginIdentifier, modelName));
         return dataDefinition;
     }

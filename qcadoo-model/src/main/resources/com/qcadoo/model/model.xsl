@@ -63,6 +63,17 @@
 					<generator class="increment" />
 				</id>
 				<xsl:apply-templates />
+				<xsl:if test="@activable='true'">
+					<property>
+						<xsl:attribute name="type">boolean</xsl:attribute>
+						<xsl:attribute name="name">active</xsl:attribute>
+						<xsl:attribute name="not-null">true</xsl:attribute>
+						<column>
+							<xsl:attribute name="name">active</xsl:attribute>
+							<xsl:attribute name="default">true</xsl:attribute>
+						</column>
+					</property>
+				</xsl:if>
 				<xsl:if test="@insertable='false'">
 					<sql-insert>
 						<xsl:value-of

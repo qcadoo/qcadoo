@@ -146,7 +146,7 @@ public class ModelXmlToHbmConverterTest {
 
     @Test
     public void shouldDefineProperties() throws Exception {
-        assertNodeCount(12, "/hibernate-mapping/class[1]/property", hbmFirstEntity);
+        assertNodeCount(13, "/hibernate-mapping/class[1]/property", hbmFirstEntity);
         assertNodeCount(0, "/hibernate-mapping/class[1]/property", hbmSecondEntity);
         assertNodeCount(0, "/hibernate-mapping/class[1]/property", hbmThirdEntity);
         assertNodeExists("/hibernate-mapping/class[1]/property[@name='fieldInteger' and @type='integer']", hbmFirstEntity);
@@ -160,6 +160,12 @@ public class ModelXmlToHbmConverterTest {
         assertNodeExists("/hibernate-mapping/class[1]/property[@name='fieldOtherDictionary' and @type='string']", hbmFirstEntity);
         assertNodeExists("/hibernate-mapping/class[1]/property[@name='fieldEnum' and @type='string']", hbmFirstEntity);
         assertNodeExists("/hibernate-mapping/class[1]/property[@name='fieldPassword' and @type='string']", hbmFirstEntity);
+    }
+
+    @Test
+    public void shouldDefineActivableProperty() throws Exception {
+        assertNodeExists("/hibernate-mapping/class[1]/property[@name='active' and @type='boolean']", hbmFirstEntity);
+        assertNodeNotExists("/hibernate-mapping/class[1]/property[@name='fieldString' and @type='string']", hbmSecondEntity);
     }
 
     @Test
@@ -189,7 +195,7 @@ public class ModelXmlToHbmConverterTest {
         assertNodeExists("/hibernate-mapping/class[1]/property[@name='fieldInteger' and @not-null='true']", hbmFirstEntity);
         assertNodeExists("/hibernate-mapping/class[1]/property[@name='fieldString' and @not-null='true']", hbmFirstEntity);
         assertNodeExists("/hibernate-mapping/class[1]/property[@name='fieldPriority' and @not-null='true']", hbmFirstEntity);
-        assertNodeCount(3, "/hibernate-mapping/class/property[@not-null='true']", hbmFirstEntity);
+        assertNodeCount(4, "/hibernate-mapping/class/property[@not-null='true']", hbmFirstEntity);
     }
 
     @Test

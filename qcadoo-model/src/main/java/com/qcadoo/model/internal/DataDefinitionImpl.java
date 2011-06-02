@@ -86,6 +86,8 @@ public final class DataDefinitionImpl implements InternalDataDefinition {
 
     private boolean enabled = true;
 
+    private boolean activable = false;
+
     private String identifierExpression = "#id";
 
     private Class<?> classForEntity;
@@ -437,6 +439,15 @@ public final class DataDefinitionImpl implements InternalDataDefinition {
     @Override
     public void disable() {
         enabled = false;
+    }
+
+    @Override
+    public boolean isActivable() {
+        return activable;
+    }
+
+    public void setActivable(final boolean activable) {
+        this.activable = activable;
     }
 
 }

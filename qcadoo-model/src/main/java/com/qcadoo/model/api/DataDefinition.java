@@ -165,6 +165,14 @@ public interface DataDefinition {
     boolean isPrioritizable();
 
     /**
+     * Return true if entity is activable.
+     * 
+     * @return true if entity is activable
+     * @since 0.4.2
+     */
+    boolean isActivable();
+
+    /**
      * Create entity with given id.
      * 
      * @param id

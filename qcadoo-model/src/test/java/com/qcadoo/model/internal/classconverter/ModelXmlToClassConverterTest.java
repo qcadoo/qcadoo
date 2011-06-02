@@ -104,6 +104,11 @@ public class ModelXmlToClassConverterTest {
     }
 
     @Test
+    public void shouldDefineActivableField() throws Exception {
+        verifyField(propertyDescriptors.get("active"), Boolean.class);
+    }
+
+    @Test
     public void shouldDefineBelongsToFields() throws Exception {
         verifyField(propertyDescriptors.get("fieldSecondEntity"),
                 classes.get(ClassNameUtils.getFullyQualifiedClassName("other", "secondEntity")));

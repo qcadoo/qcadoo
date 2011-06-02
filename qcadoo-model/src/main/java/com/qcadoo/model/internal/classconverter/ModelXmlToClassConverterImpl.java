@@ -213,6 +213,10 @@ public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverte
         List<String> fields = new ArrayList<String>();
         fields.add("id");
 
+        if (getBooleanAttribute(reader, "activable", false)) {
+            createField(ctClass, "active", Boolean.class.getCanonicalName());
+        }
+
         while (reader.hasNext() && reader.next() > 0) {
             if (isTagEnded(reader, TAG_MODEL)) {
                 break;

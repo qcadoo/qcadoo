@@ -228,6 +228,11 @@ public class ModelXmlToDefinitionConverterTest {
     }
 
     @Test
+    public void shouldBeActivable() throws Exception {
+        assertTrue(dataDefinition.isActivable());
+    }
+
+    @Test
     public void shouldDefineIdentifierExpression() throws Exception {
         assertEquals("#fieldString", dataDefinition.getIdentifierExpression());
     }
