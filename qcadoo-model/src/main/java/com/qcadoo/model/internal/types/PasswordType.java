@@ -24,6 +24,7 @@
 package com.qcadoo.model.internal.types;
 
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 import org.springframework.security.authentication.encoding.PasswordEncoder;
 
@@ -46,7 +47,11 @@ public final class PasswordType implements FieldType {
 
     @Override
     public ValueAndError toObject(final FieldDefinition fieldDefinition, final Object value) {
-        return ValueAndError.withoutError(passwordEncoder.encodePassword(String.valueOf(value), null));
+        if (isHashedPassword((String) value)) {
+            return ValueAndError.withoutError(value);
+        } else {
+            return ValueAndError.withoutError(passwordEncoder.encodePassword(String.valueOf(value), null));
+        }
     }
 
     @Override
@@ -57,6 +62,10 @@ public final class PasswordType implements FieldType {
     @Override
     public Object fromString(final String value, final Locale locale) {
         return value;
+    }
+
+    private boolean isHashedPassword(final String value) {
+        return Pattern.matches("[0-9a-f]{64}", value);
     }
 
 }

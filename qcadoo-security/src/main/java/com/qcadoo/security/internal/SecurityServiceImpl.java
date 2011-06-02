@@ -31,6 +31,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationListener;
+import org.springframework.security.access.event.AuthorizedEvent;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.GrantedAuthorityImpl;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -51,13 +53,23 @@ import com.qcadoo.security.api.SecurityRolesService;
 import com.qcadoo.security.api.SecurityService;
 
 @Service("userDetailsService")
-public class SecurityServiceImpl implements SecurityService, UserDetailsService, PersistentTokenRepository {
+public class SecurityServiceImpl implements SecurityService, UserDetailsService, PersistentTokenRepository,
+        ApplicationListener<AuthorizedEvent> {
 
     @Autowired
     private DataDefinitionService dataDefinitionService;
 
     @Autowired
     private SecurityRolesService securityRolesService;
+
+    @Override
+    public void onApplicationEvent(final AuthorizedEvent event) {
+        UserDetails userDetails = (UserDetails) event.getAuthentication().getPrincipal();
+        Entity entity = dataDefinitionService.get("qcadooSecurity", "user").find()
+                .add(SearchRestrictions.eq("userName", userDetails.getUsername())).uniqueResult();
+        entity.setField("lastActivity", new Date());
+        dataDefinitionService.get("qcadooSecurity", "user").save(entity);
+    }
 
     @Override
     @Monitorable

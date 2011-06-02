@@ -46,6 +46,7 @@
 			<!--<option type="column" name="userGroup" fields="userGroup"
 				expression="#userGroup['name']" />-->
 			<option type="column" name="role" fields="role" />
+			<option type="column" name="lastActivity" fields="lastActivity" />
 			<option type="order" column="login" direction="asc" />
 			<option type="orderable" value="login,email,firstName,lastName,role" />
 			<option type="searchable" value="login,email,firstName,lastName,role" />

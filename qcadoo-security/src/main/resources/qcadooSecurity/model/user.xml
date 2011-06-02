@@ -45,6 +45,7 @@
 			TODO validatesPresenceOnCreate -->
 		<password name="oldPassword" persistent="false" />
 		<string name="viewIdentifier" persistent="false" />
+		<datetime name="lastActivity" />
 	</fields>
 	<hooks>
 		<validatesWith class="com.qcadoo.security.internal.validators.PasswordValidationService"
