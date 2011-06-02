@@ -227,4 +227,9 @@ public class DynamicDataDefinitionImpl implements InternalDataDefinition {
         // empty
     }
 
+    @Override
+    public boolean isActivable() {
+        return false;
+    }
+
 }
