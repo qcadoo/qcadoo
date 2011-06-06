@@ -188,4 +188,24 @@ public interface DataDefinition {
      */
     Entity create();
 
+    /**
+     * Deactivate given entities.
+     * 
+     * @param ids
+     *            ids
+     * @return deactivated entities
+     * @since 0.4.2
+     */
+    List<Entity> deactivate(Long... ids);
+
+    /**
+     * Activate given entities.
+     * 
+     * @param ids
+     *            ids
+     * @return activated entities
+     * @since 0.4.2
+     */
+    List<Entity> activate(Long... ids);
+
 }

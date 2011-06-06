@@ -463,7 +463,7 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
         return scopeFieldDefinition;
     }
 
-    protected final DataDefinition getDataDefinition() {
+    public final DataDefinition getDataDefinition() {
         return dataDefinition;
     }
 

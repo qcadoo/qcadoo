@@ -68,6 +68,16 @@ public class DynamicDataDefinitionImpl implements InternalDataDefinition {
     }
 
     @Override
+    public List<Entity> activate(final Long... id) {
+        throw new UnsupportedOperationException("Cannot activate entity for dynamic data definition");
+    }
+
+    @Override
+    public List<Entity> deactivate(final Long... id) {
+        throw new UnsupportedOperationException("Cannot deactivate entity for dynamic data definition");
+    }
+
+    @Override
     public void delete(final Long... id) {
         throw new UnsupportedOperationException("Cannot delete entity for dynamic data definition");
 

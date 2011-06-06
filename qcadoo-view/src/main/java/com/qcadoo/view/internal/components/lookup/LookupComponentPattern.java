@@ -26,6 +26,7 @@ package com.qcadoo.view.internal.components.lookup;
 import static com.google.common.base.Preconditions.checkState;
 import static org.springframework.util.StringUtils.hasText;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -155,6 +156,8 @@ public final class LookupComponentPattern extends FieldComponentPattern {
                 grid.addOption(option);
             }
         }
+
+        grid.addOption(new ComponentOption("lookup", Collections.singletonMap("value", "true")));
 
         window.addChild(grid);
 

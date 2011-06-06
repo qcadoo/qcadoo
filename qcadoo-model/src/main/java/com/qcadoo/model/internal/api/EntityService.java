@@ -30,6 +30,8 @@ public interface EntityService {
 
     String FIELD_ID = "id";
 
+    String FIELD_ACTIVE = "active";
+
     Long getId(Object databaseEntity);
 
     void setId(Object databaseEntity, Long id);

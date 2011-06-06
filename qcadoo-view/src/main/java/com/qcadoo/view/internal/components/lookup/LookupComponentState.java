@@ -45,9 +45,13 @@ public final class LookupComponentState extends FieldComponentState {
 
     public static final String JSON_REQUIRED = "required";
 
+    public static final String JSON_OLD_SELECTED_ENTITY_ID = "oldValue";
+
     public static final String JSON_TEXT = "selectedEntityValue";
 
     public static final String JSON_CODE = "selectedEntityCode";
+
+    public static final String JSON_ACTIVE = "selectedEntityActive";
 
     public static final String JSON_CURRENT_CODE = "currentCode";
 
@@ -67,9 +71,13 @@ public final class LookupComponentState extends FieldComponentState {
 
     private Long belongsToEntityId;
 
+    private Long oldSelectedEntityId;
+
     private String currentCode;
 
     private boolean clearCurrentCodeCode = false;
+
+    private boolean selectedEntityActive = true;
 
     private String selectedEntityCode;
 
@@ -109,6 +117,9 @@ public final class LookupComponentState extends FieldComponentState {
         if (json.has(JSON_BELONGS_TO_ENTITY_ID) && !json.isNull(JSON_BELONGS_TO_ENTITY_ID)) {
             belongsToEntityId = json.getLong(JSON_BELONGS_TO_ENTITY_ID);
         }
+        if (json.has(JSON_OLD_SELECTED_ENTITY_ID) && !json.isNull(JSON_OLD_SELECTED_ENTITY_ID)) {
+            oldSelectedEntityId = json.getLong(JSON_OLD_SELECTED_ENTITY_ID);
+        }
 
         if (json.has(JSON_CURRENT_CODE) && !json.isNull(JSON_CURRENT_CODE)) {
             currentCode = json.getString(JSON_CURRENT_CODE);
@@ -128,6 +139,7 @@ public final class LookupComponentState extends FieldComponentState {
         JSONObject json = super.renderContent();
         json.put(JSON_TEXT, selectedEntityValue);
         json.put(JSON_CODE, selectedEntityCode);
+        json.put(JSON_ACTIVE, selectedEntityActive);
         json.put(JSON_BELONGS_TO_ENTITY_ID, belongsToEntityId);
 
         if (clearCurrentCodeCode) {
@@ -141,6 +153,7 @@ public final class LookupComponentState extends FieldComponentState {
                 matchEntity.put("id", entity.getId());
                 matchEntity.put("value", ExpressionUtils.getValue(entity, expression, getLocale()));
                 matchEntity.put("code", String.valueOf(entity.getField(fieldCode)));
+                matchEntity.put("active", entity.isActive());
                 matches.put(matchEntity);
             }
             json.put(JSON_AUTOCOMPLETE_MATCHES, matches);
@@ -154,14 +167,7 @@ public final class LookupComponentState extends FieldComponentState {
 
     @Override
     public Long getFieldValue() {
-        Long entityId = getFieldValueWithoutSearching();
-
-        // if (entityId == null && StringUtils.hasText(code)) {
-        // eventPerformer.search(new String[0]);
-        // return getFieldValueWithoutSearching();
-        // } else {
-        return entityId;
-        // }
+        return getFieldValueWithoutSearching();
     }
 
     public Long getFieldValueWithoutSearching() {
@@ -225,6 +231,15 @@ public final class LookupComponentState extends FieldComponentState {
                             belongsToFieldDefinition.getDataDefinition(), belongsToEntityId));
                 }
 
+                if (getDataDefinition().isActivable()) {
+                    if (oldSelectedEntityId != null) {
+                        searchCriteriaBuilder.add(SearchRestrictions.or(SearchRestrictions.eq("active", true),
+                                SearchRestrictions.idEq(oldSelectedEntityId)));
+                    } else {
+                        searchCriteriaBuilder.add(SearchRestrictions.eq("active", true));
+                    }
+                }
+
                 searchCriteriaBuilder.addOrder(SearchOrders.asc(fieldCode));
 
                 SearchResult results = searchCriteriaBuilder.list();
@@ -258,15 +273,18 @@ public final class LookupComponentState extends FieldComponentState {
                 if (entity != null) {
                     selectedEntityCode = String.valueOf(entity.getField(fieldCode));
                     selectedEntityValue = ExpressionUtils.getValue(entity, expression, getLocale());
+                    selectedEntityActive = entity.isActive();
                 } else {
                     setFieldValueWithoutRefreshing(null);
                     selectedEntityCode = "";
                     selectedEntityValue = "";
+                    selectedEntityActive = true;
                 }
 
             } else {
                 selectedEntityCode = "";
                 selectedEntityValue = "";
+                selectedEntityActive = true;
             }
         }
 

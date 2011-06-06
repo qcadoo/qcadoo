@@ -193,4 +193,21 @@ public interface Entity {
      */
     Entity copy();
 
+    /**
+     * Set if entity is active.
+     * 
+     * @param active
+     *            is active
+     * @since 0.4.2
+     */
+    void setActive(boolean active);
+
+    /**
+     * Returns true if entity is active.
+     * 
+     * @return true if active
+     * @since 0.4.2
+     */
+    boolean isActive();
+
 }

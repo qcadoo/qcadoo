@@ -51,4 +51,8 @@ public interface DataAccessService {
     void move(InternalDataDefinition dataDefinition, Long entityId, int offset);
 
     Object convertToDatabaseEntity(Entity entity);
+
+    List<Entity> deactivate(InternalDataDefinition dataDefinition, Long... entityId);
+
+    List<Entity> activate(InternalDataDefinition dataDefinition, Long... entityId);
 }

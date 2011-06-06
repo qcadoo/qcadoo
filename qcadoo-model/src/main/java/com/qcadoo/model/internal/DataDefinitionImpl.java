@@ -28,6 +28,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -151,6 +152,24 @@ public final class DataDefinitionImpl implements InternalDataDefinition {
     @Override
     public void moveTo(final Long id, final int position) {
         dataAccessService.moveTo(this, id, position);
+    }
+
+    @Override
+    public List<Entity> activate(final Long... ids) {
+        if (activable) {
+            return dataAccessService.activate(this, ids);
+        } else {
+            return Collections.emptyList();
+        }
+    }
+
+    @Override
+    public List<Entity> deactivate(final Long... ids) {
+        if (activable) {
+            return dataAccessService.deactivate(this, ids);
+        } else {
+            return Collections.emptyList();
+        }
     }
 
     @Override

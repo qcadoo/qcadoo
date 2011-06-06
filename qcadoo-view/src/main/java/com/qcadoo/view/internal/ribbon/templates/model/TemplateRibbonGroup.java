@@ -26,6 +26,12 @@ package com.qcadoo.view.internal.ribbon.templates.model;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.springframework.expression.EvaluationContext;
+import org.springframework.expression.Expression;
+import org.springframework.expression.ExpressionParser;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.expression.spel.support.StandardEvaluationContext;
+
 import com.qcadoo.plugin.api.PluginUtils;
 import com.qcadoo.view.api.ribbon.RibbonActionItem;
 import com.qcadoo.view.api.ribbon.RibbonComboItem;
@@ -40,13 +46,16 @@ public class TemplateRibbonGroup {
 
     private final String name;
 
+    private final String condition;
+
     private final String pluginIdentifier;
 
     private final List<InternalRibbonActionItem> items = new LinkedList<InternalRibbonActionItem>();
 
-    public TemplateRibbonGroup(final String name, final String pluginIdentifier) {
+    public TemplateRibbonGroup(final String name, final String pluginIdentifier, final String condition) {
         this.name = name;
         this.pluginIdentifier = pluginIdentifier;
+        this.condition = condition;
     }
 
     public String getName() {
@@ -65,6 +74,9 @@ public class TemplateRibbonGroup {
         if (itemsToApply.size() == 0) {
             return null;
         }
+        if (!checkCondition(condition, viewDefinition)) {
+            return null;
+        }
         InternalRibbonGroup group = new RibbonGroupImpl(name);
         for (InternalRibbonActionItem item : itemsToApply) {
             InternalRibbonActionItem itemCopy = item.getCopy();
@@ -72,6 +84,18 @@ public class TemplateRibbonGroup {
             group.addItem(itemCopy);
         }
         return group;
+    }
+
+    private boolean checkCondition(final String condition, final ViewDefinition viewDefinition) {
+        if (condition == null) {
+            return true;
+        }
+
+        ExpressionParser parser = new SpelExpressionParser();
+        Expression exp = parser.parseExpression(condition);
+        EvaluationContext context = new StandardEvaluationContext();
+        context.setVariable("view", viewDefinition);
+        return exp.getValue(context, Boolean.class);
     }
 
     private void translateRibbonAction(final RibbonActionItem item, final ViewDefinition viewDefinition) {
@@ -107,7 +131,7 @@ public class TemplateRibbonGroup {
         return filteredList;
     }
 
-    public boolean containItem(String itemName) {
+    public boolean containItem(final String itemName) {
         for (InternalRibbonActionItem item : items) {
             if (itemName.equals(name + "." + item.getName())) {
                 return true;
@@ -125,7 +149,7 @@ public class TemplateRibbonGroup {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (this == obj)
             return true;
         if (obj == null)

@@ -123,6 +123,14 @@ QCD.components.containers.Form = function(_element, _mainController) {
 		callEvent("saveAndClear", actionsPerformer);
 	}
 	
+	this.performDeactivate = function(actionsPerformer) {
+		callEvent("deactivate", actionsPerformer);
+	}
+	
+	this.performActivate = function(actionsPerformer) {
+		callEvent("activate", actionsPerformer);
+	}
+	
 	this.performCopy = function(actionsPerformer) {
 		if(mainController.canClose()) {
 			callEvent("copy", actionsPerformer);

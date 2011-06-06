@@ -40,6 +40,7 @@
 			<xs:any minOccurs="1" maxOccurs="unbounded" processContents="skip"/>
 		</xs:sequence>
 		<xs:attribute name="name" type="xs:string" use="required" />
+		<xs:attribute name="if" type="xs:string" use="optional" />
 	</xs:complexType>
 	
 </xs:schema>

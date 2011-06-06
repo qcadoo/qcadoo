@@ -187,6 +187,21 @@ QCD.components.elements.grid.GridHeaderController = function(_gridController, _m
 		entitiesNumberSpan = $("<span>").html("(0)").addClass('grid_header_totalNumberOfEntities').addClass('elementHeaderTitle');
 		headerElement.append(entitiesNumberSpan);
 		
+		if (gridParameters.activable && !gridParameters.lookup) {
+			headerElements.onlyActiveButton = QCD.components.elements.utils.HeaderUtils.createHeaderButton("", function(e) {
+				onlyActiveButtonClicked();
+			}, "unactiveNotVisibleIcon.png");
+			headerElements.onlyActiveButton.attr("title", translations.unactiveNotVisibleButton);
+			headerElements.allButton = QCD.components.elements.utils.HeaderUtils.createHeaderButton("", function(e) {
+				allButtonClicked();
+			}, "unactiveVisibleIcon.png");
+			headerElements.allButton.attr("title", translations.unactiveVisibleButton);
+			headerElement.append(headerElements.onlyActiveButton);
+			headerElement.append(headerElements.allButton);
+			setEnabledButton(headerElements.onlyActiveButton, true);
+			setEnabledButton(headerElements.allButton, true);
+			headerElements.allButton.hide();
+		}
 		if (gridParameters.hasPredefinedFilters) { // TODO mina add option
 			var options = new Array();
 			for (var i in gridParameters.predefinedFilters) {
@@ -373,6 +388,18 @@ QCD.components.elements.grid.GridHeaderController = function(_gridController, _m
 			}
 		}
 		
+	}
+	
+	function allButtonClicked() {
+		headerElements.allButton.hide();
+		headerElements.onlyActiveButton.show();
+		gridController.setOnlyActive(true);
+	}
+	
+	function onlyActiveButtonClicked() {
+		headerElements.onlyActiveButton.hide();
+		headerElements.allButton.show();
+		gridController.setOnlyActive(false);
 	}
 	
 	function filterClicked() {

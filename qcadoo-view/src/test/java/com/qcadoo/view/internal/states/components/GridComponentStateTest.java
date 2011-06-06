@@ -152,7 +152,7 @@ public class GridComponentStateTest extends AbstractStateTest {
                 "i18n");
         given(translationService.translate(Mockito.anyString(), Mockito.any(Locale.class))).willReturn("i18n");
 
-        grid = new GridComponentState(substitutesFieldDefinition, columns, null, null);
+        grid = new GridComponentState(substitutesFieldDefinition, columns, null, null, false);
         grid.setDataDefinition(substituteDataDefinition);
         grid.setTranslationService(translationService);
 
@@ -189,7 +189,7 @@ public class GridComponentStateTest extends AbstractStateTest {
     @SuppressWarnings("unchecked")
     public void shouldInitializeWithoutData() throws Exception {
         // given
-        grid = new GridComponentState(null, columns, null, null);
+        grid = new GridComponentState(null, columns, null, null, false);
         grid.setDataDefinition(substituteDataDefinition);
 
         JSONObject json = new JSONObject(Collections.singletonMap(AbstractComponentState.JSON_CONTENT, new JSONObject()));

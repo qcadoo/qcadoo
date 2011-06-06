@@ -155,6 +155,16 @@ public final class EntityTreeNodeImpl implements EntityTreeNode {
     }
 
     @Override
+    public boolean isActive() {
+        return entity.isActive();
+    }
+
+    @Override
+    public void setActive(final boolean active) {
+        entity.setActive(active);
+    }
+
+    @Override
     public EntityTreeNodeImpl copy() {
         return new EntityTreeNodeImpl(entity.copy());
     }

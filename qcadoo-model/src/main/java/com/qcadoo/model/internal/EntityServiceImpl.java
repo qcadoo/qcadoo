@@ -59,6 +59,14 @@ public final class EntityServiceImpl implements EntityService {
         return (Long) getField(databaseEntity, FIELD_ID);
     }
 
+    public Boolean getActive(final Object databaseEntity) {
+        return (Boolean) getField(databaseEntity, FIELD_ACTIVE);
+    }
+
+    public void setActive(final Object databaseEntity, final boolean active) {
+        setField(databaseEntity, FIELD_ACTIVE, active);
+    }
+
     @Override
     public void setId(final Object databaseEntity, final Long id) {
         setField(databaseEntity, FIELD_ID, id);
@@ -138,6 +146,10 @@ public final class EntityServiceImpl implements EntityService {
         } else {
             genericEntity = dataDefinition.create(getId(databaseEntity));
 
+            if (dataDefinition.isActivable()) {
+                genericEntity.setActive(getActive(databaseEntity));
+            }
+
             for (Entry<String, FieldDefinition> fieldDefinitionEntry : dataDefinition.getFields().entrySet()) {
                 if (fieldDefinitionEntry.getValue().isPersistent()
                         && ((InternalFieldDefinition) fieldDefinitionEntry.getValue()).isEnabled()) {
@@ -180,6 +192,10 @@ public final class EntityServiceImpl implements EntityService {
         if (dataDefinition.isPrioritizable() && genericEntity.getField(dataDefinition.getPriorityField().getName()) != null) {
             setField(databaseEntity, dataDefinition.getPriorityField(),
                     genericEntity.getField(dataDefinition.getPriorityField().getName()));
+        }
+
+        if (dataDefinition.isActivable()) {
+            setActive(databaseEntity, genericEntity.isActive());
         }
 
         return databaseEntity;

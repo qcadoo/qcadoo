@@ -288,6 +288,74 @@ public class DataAccessServiceImpl implements DataAccessService {
     @Override
     @Transactional
     @Monitorable
+    public List<Entity> activate(final InternalDataDefinition dataDefinition, final Long... entityIds) {
+        if (!dataDefinition.isActivable()) {
+            return Collections.emptyList();
+        }
+
+        List<Entity> activatedEntities = new ArrayList<Entity>();
+
+        for (Long entityId : entityIds) {
+            Entity entity = get(dataDefinition, entityId);
+
+            if (entity == null) {
+                throw new IllegalStateException("Cannot activate " + entity);
+            }
+
+            if (!entity.isActive()) {
+                entity.setActive(true);
+                entity = save(dataDefinition, entity);
+
+                if (!entity.isValid()) {
+                    throw new IllegalStateException("Cannot activate " + entity);
+                }
+
+                LOG.info(entity + " has been activated");
+
+                activatedEntities.add(entity);
+            }
+        }
+
+        return activatedEntities;
+    }
+
+    @Override
+    @Transactional
+    @Monitorable
+    public List<Entity> deactivate(final InternalDataDefinition dataDefinition, final Long... entityIds) {
+        if (!dataDefinition.isActivable()) {
+            return Collections.emptyList();
+        }
+
+        List<Entity> deactivatedEntities = new ArrayList<Entity>();
+
+        for (Long entityId : entityIds) {
+            Entity entity = get(dataDefinition, entityId);
+
+            if (entity == null) {
+                throw new IllegalStateException("Cannot deactivate " + entity);
+            }
+
+            if (entity.isActive()) {
+                entity.setActive(false);
+                entity = save(dataDefinition, entity);
+
+                if (!entity.isValid()) {
+                    throw new IllegalStateException("Cannot deactivate " + entity);
+                }
+
+                LOG.info(entity + " has been deactivated");
+
+                deactivatedEntities.add(entity);
+            }
+        }
+
+        return deactivatedEntities;
+    }
+
+    @Override
+    @Transactional
+    @Monitorable
     public List<Entity> copy(final InternalDataDefinition dataDefinition, final Long... entityIds) {
         List<Entity> copiedEntities = new ArrayList<Entity>();
         for (Long entityId : entityIds) {

@@ -70,4 +70,37 @@
 		</smallButton>
 	</group>
 	
+	<group name="statuses" if="#view.getComponentByReference('form').dataDefinition.activable">
+		<smallButton name="activate" icon="activateIcon16.png" state="disabled" action="#{form}.performActivate;">
+			<script><![CDATA[
+				#{form}.addOnChangeListener({
+					onSetValue: function(value) {
+						if (!value || !value.content)
+							return; 
+						if (value.content.entityId && !value.content.isActive) {
+							this.enable();
+						} else {
+							this.disable();
+						}
+					}
+				});
+			]]></script>
+		</smallButton>
+		<smallButton name="deactivate" icon="deactivateIcon16.png" state="disabled" action="#{form}.performDeactivate;">
+			<script><![CDATA[
+                #{form}.addOnChangeListener({
+					onSetValue: function(value) {
+						if (!value || !value.content)
+							return; 
+						if (value.content.entityId && value.content.isActive) {
+							this.enable();
+						} else {
+							this.disable();
+						}
+					}
+				});
+			]]></script>
+		</smallButton>
+	</group>
+	
 </ribbonTemplate>

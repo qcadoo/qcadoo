@@ -59,4 +59,33 @@
 		</smallButton>
 	</group>
 	
+	<group name="statuses" if="#view.getComponentByReference('grid').dataDefinition.activable">
+		<smallButton name="activate" icon="activateIcon16.png" state="disabled" action="#{grid}.performActivate;">
+			<script><![CDATA[
+                #{grid}.addOnChangeListener({
+                	onChange: function(selectedArray) {
+                		if (selectedArray.length == 0) {
+                			this.disable();
+                		} else {
+                			this.enable();
+                		}
+                	}
+                });
+			]]></script>
+		</smallButton>
+		<smallButton name="deactivate" icon="deactivateIcon16.png" state="disabled" action="#{grid}.performDeactivate;">
+			<script><![CDATA[
+                #{grid}.addOnChangeListener({
+                	onChange: function(selectedArray) {
+                		if (selectedArray.length == 0) {
+                			this.disable();
+                		} else {
+                			this.enable();
+                		}
+                	}
+                });
+			]]></script>
+		</smallButton>
+	</group>
+	
 </ribbonTemplate>

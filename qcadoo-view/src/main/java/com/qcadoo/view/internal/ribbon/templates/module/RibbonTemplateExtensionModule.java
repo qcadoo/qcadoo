@@ -65,8 +65,9 @@ public class RibbonTemplateExtensionModule extends Module {
 
             for (Node groupNode : parser.geElementChildren(root)) {
                 String groupName = parser.getStringAttribute(groupNode, "name");
+                String groupCondition = parser.getStringAttribute(groupNode, "if");
                 parser.checkState(groupName != null, groupNode, "Ribbon template error: group name not defined");
-                TemplateRibbonGroup templateGroup = new TemplateRibbonGroup(groupName, pluginIdentifier);
+                TemplateRibbonGroup templateGroup = new TemplateRibbonGroup(groupName, pluginIdentifier, groupCondition);
 
                 for (Node itemNode : parser.geElementChildren(groupNode)) {
                     templateGroup.addActionItem(parser.parseRibbonItem(itemNode, null));

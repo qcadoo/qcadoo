@@ -164,6 +164,22 @@ public final class ProxyEntity implements Entity {
     }
 
     @Override
+    public boolean isActive() {
+        if (entity == null) {
+            loadEntity();
+        }
+        return entity.isActive();
+    }
+
+    @Override
+    public void setActive(final boolean active) {
+        if (entity == null) {
+            loadEntity();
+        }
+        entity.setActive(active);
+    }
+
+    @Override
     public Entity copy() {
         if (entity == null) {
             loadEntity();

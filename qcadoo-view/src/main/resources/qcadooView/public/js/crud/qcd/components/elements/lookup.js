@@ -133,11 +133,13 @@ QCD.components.elements.Lookup = function(_element, _mainController) {
 				performSelectEntity(entity);
 				dataState.currentCode = dataState.selectedEntity.code;
 				elements.input.val(dataState.currentCode);
+				elements.input.removeClass('inactive');
 				lookupDropdown.hide();
 				
 			} else if (key == keyboard.ESCAPE) {
 				preventEvent(e);
 				elements.input.val(dataState.currentCode);
+				elements.input.removeClass('inactive');
 				lookupDropdown.hide();
 			} else {
 				var inputVal = elements.input.val();
@@ -170,8 +172,10 @@ QCD.components.elements.Lookup = function(_element, _mainController) {
 	this.getComponentData = function() {
 		return {
 			value: dataState.selectedEntity.id,
+			oldValue: (baseValue ? baseValue.selectedEntityId : null),
 			selectedEntityValue: dataState.selectedEntity.value,
 			selectedEntityCode: dataState.selectedEntity.code,
+			selectedEntityActive: dataState.selectedEntity.active,
 			currentCode: dataState.currentCode,
 			autocompleteCode: dataState.autocomplete.code,
 			contextEntityId: dataState.contextEntityId
@@ -187,6 +191,7 @@ QCD.components.elements.Lookup = function(_element, _mainController) {
 		dataState.selectedEntity.id = data.value ? data.value : null;
 		dataState.selectedEntity.value = data.selectedEntityValue;
 		dataState.selectedEntity.code = data.selectedEntityCode;
+		dataState.selectedEntity.active = data.selectedEntityActive;
 		dataState.autocomplete.matches = data.autocompleteMatches ? data.autocompleteMatches : [];
 		dataState.autocomplete.code = data.autocompleteCode ? data.autocompleteCode : "";
 		dataState.autocomplete.entitiesNumber = data.autocompleteEntitiesNumber;
@@ -199,21 +204,23 @@ QCD.components.elements.Lookup = function(_element, _mainController) {
 		if (! dataState.currentCode) {
 			dataState.currentCode = dataState.selectedEntity.id ? dataState.selectedEntity.code : "";
 		}
-		
+
 		onDataStateChange();
 	}
 	
 	this.setComponentBaseValue = function(state) {
 		if (state.currentCode != undefined) {
 			baseValue = {
-				currentCode: state.currentCode
+				currentCode: state.currentCode,
+				selectedEntityId: state.selectedEntity.id
 			};
 		}
 	}
 	
 	this.performUpdateState = function() {
 		baseValue = {
-			currentCode: dataState.currentCode
+			currentCode: dataState.currentCode,
+			selectedEntityId: dataState.selectedEntity.id
 		};
 	}
 	
@@ -226,6 +233,7 @@ QCD.components.elements.Lookup = function(_element, _mainController) {
 			elements.openLookupButton.addClass("lightHover");
 			elements.label.html(labels.focus);
 			elements.input.val(dataState.currentCode);
+			elements.input.removeClass('inactive');
 		} else {
 			elements.openLookupButton.removeClass("lightHover");
 			lookupDropdown.hide();
@@ -260,6 +268,11 @@ QCD.components.elements.Lookup = function(_element, _mainController) {
 				}
 				elements.input.val(stripHTML(dataState.selectedEntity.value));
 				elements.text.html(dataState.selectedEntity.value);
+				if(!dataState.selectedEntity.active) {
+					elements.input.addClass('inactive');
+				} else {
+					elements.input.removeClass('inactive');
+				}
 			} else {
 				_this.addMessage({
 					title: "",
@@ -291,6 +304,12 @@ QCD.components.elements.Lookup = function(_element, _mainController) {
 				elements.input.val(dataState.currentCode);
 			}
 			elements.text.html(dataState.selectedEntity.value);
+			if(!dataState.selectedEntity.active) {
+				elements.input.addClass('inactive');
+			} else {
+				elements.input.removeClass('inactive');
+			}
+			
 		}
 	}
 	
@@ -320,10 +339,12 @@ QCD.components.elements.Lookup = function(_element, _mainController) {
 			dataState.selectedEntity.id = entity.id;
 			dataState.selectedEntity.code = entity.code;
 			dataState.selectedEntity.value = entity.value;	
+			dataState.selectedEntity.active = entity.active;	
 		} else {
 			dataState.selectedEntity.id = null;
 			dataState.selectedEntity.code = null;
 			dataState.selectedEntity.value = null;
+			dataState.selectedEntity.active = true;
 		}
 		if (hasListeners && callEvent) {
 			mainController.callEvent("onSelectedEntityChange", elementPath, null, null, null);

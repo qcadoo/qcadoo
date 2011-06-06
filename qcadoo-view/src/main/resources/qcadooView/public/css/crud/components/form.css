@@ -340,6 +340,10 @@
 
 /** lookup **/
 
+.lookupValueWrapper input.inactive {
+	color: #8A8A8A;		
+}
+
  .lookupValueWrapper,
  .fileValueWrapper {
 	margin: 0;

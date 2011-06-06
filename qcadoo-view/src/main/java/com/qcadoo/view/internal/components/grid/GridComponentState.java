@@ -63,6 +63,8 @@ public final class GridComponentState extends AbstractComponentState implements 
 
     public static final String JSON_ORDER = "order";
 
+    public static final String JSON_ONLY_ACTIVE = "onlyActive";
+
     public static final String JSON_ORDER_COLUMN = "column";
 
     public static final String JSON_ORDER_DIRECTION = "direction";
@@ -117,18 +119,25 @@ public final class GridComponentState extends AbstractComponentState implements 
 
     private final Map<String, String> filters = new HashMap<String, String>();
 
+    private boolean onlyActive = true;
+
+    private final boolean activable;
+
     public GridComponentState(final FieldDefinition scopeField, final Map<String, GridComponentColumn> columns,
-            final String orderColumn, final String orderDirection) {
+            final String orderColumn, final String orderDirection, final boolean activable) {
         this.belongsToFieldDefinition = scopeField;
         this.columns = columns;
         this.orderColumn = orderColumn;
         this.orderDirection = orderDirection;
+        this.activable = activable;
         registerEvent("refresh", eventPerformer, "refresh");
         registerEvent("select", eventPerformer, "selectEntity");
         registerEvent("remove", eventPerformer, "removeSelectedEntity");
         registerEvent("moveUp", eventPerformer, "moveUpSelectedEntity");
         registerEvent("moveDown", eventPerformer, "moveDownSelectedEntity");
         registerEvent("copy", eventPerformer, "copySelectedEntity");
+        registerEvent("activate", eventPerformer, "activateSelectedEntity");
+        registerEvent("deactivate", eventPerformer, "deactivateSelectedEntity");
     }
 
     @Override
@@ -179,6 +188,9 @@ public final class GridComponentState extends AbstractComponentState implements 
         }
         if (json.has(JSON_FILTERS_ENABLED) && !json.isNull(JSON_FILTERS_ENABLED)) {
             filtersEnabled = json.getBoolean(JSON_FILTERS_ENABLED);
+        }
+        if (json.has(JSON_ONLY_ACTIVE) && !json.isNull(JSON_ONLY_ACTIVE) && activable) {
+            onlyActive = json.getBoolean(JSON_ONLY_ACTIVE);
         }
         if (json.has(JSON_ORDER) && !json.isNull(JSON_ORDER)) {
             JSONObject orderJson = json.getJSONObject(JSON_ORDER);
@@ -241,6 +253,7 @@ public final class GridComponentState extends AbstractComponentState implements 
         json.put(JSON_MAX_ENTITIES, maxResults);
         json.put(JSON_FILTERS_ENABLED, filtersEnabled);
         json.put(JSON_TOTAL_ENTITIES, totalEntities);
+        json.put(JSON_ONLY_ACTIVE, onlyActive);
 
         json.put(JSON_MULTISELECT_MODE, multiselectMode);
         JSONObject selectedEntitiesJson = new JSONObject();
@@ -288,6 +301,11 @@ public final class GridComponentState extends AbstractComponentState implements 
     private JSONObject convertEntityToJson(final Entity entity) throws JSONException {
         JSONObject json = new JSONObject();
         json.put("id", entity.getId());
+        if (activable) {
+            json.put("active", entity.isActive());
+        } else {
+            json.put("active", true);
+        }
         JSONObject fields = new JSONObject();
         for (GridComponentColumn column : columns.values()) {
             fields.put(column.getName(), column.getValue(entity, getLocale()));
@@ -386,6 +404,38 @@ public final class GridComponentState extends AbstractComponentState implements 
             addMessage(translateMessage("moveMessage"), MessageType.SUCCESS);
         }
 
+        public void deactivateSelectedEntity(final String[] args) {
+            List<Entity> deactivatedEntities = getDataDefinition().deactivate(
+                    selectedEntities.toArray(new Long[selectedEntities.size()]));
+
+            entitiesToMarkAsNew = new HashSet<Long>();
+            for (Entity entity : deactivatedEntities) {
+                entitiesToMarkAsNew.add(entity.getId());
+            }
+
+            if (selectedEntities.size() == 1) {
+                addMessage(translateMessage("deactivateMessage"), MessageType.SUCCESS);
+            } else {
+                addMessage(selectedEntities.size() + " " + translateMessage("deactivateMessages"), MessageType.SUCCESS);
+            }
+        }
+
+        public void activateSelectedEntity(final String[] args) {
+            List<Entity> activatedEntities = getDataDefinition().activate(
+                    selectedEntities.toArray(new Long[selectedEntities.size()]));
+
+            entitiesToMarkAsNew = new HashSet<Long>();
+            for (Entity entity : activatedEntities) {
+                entitiesToMarkAsNew.add(entity.getId());
+            }
+
+            if (selectedEntities.size() == 1) {
+                addMessage(translateMessage("activateMessage"), MessageType.SUCCESS);
+            } else {
+                addMessage(selectedEntities.size() + " " + translateMessage("activateMessages"), MessageType.SUCCESS);
+            }
+        }
+
         public void copySelectedEntity(final String[] args) {
             List<Entity> copiedEntities = getDataDefinition().copy(selectedEntities.toArray(new Long[selectedEntities.size()]));
             entitiesToMarkAsNew = new HashSet<Long>();
@@ -420,6 +470,10 @@ public final class GridComponentState extends AbstractComponentState implements 
 
                     if (customRestriction != null) {
                         customRestriction.addRestriction(criteria);
+                    }
+
+                    if (activable && onlyActive) {
+                        criteria.add(SearchRestrictions.eq("active", true));
                     }
 
                     addOrder(criteria);

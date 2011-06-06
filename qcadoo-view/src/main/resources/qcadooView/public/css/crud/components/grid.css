@@ -331,3 +331,29 @@ div.filterButton {
 .gridContainer .ui-search-toolbar th:hover {
 }
 
+.gridContainer .inactive, .gridContainer .inactive a, .gridContainer .inactive a:hover {
+	color: #8A8A8A;
+}
+
+/*.gridContainer .inactive, .gridContainer .inactive.lastAdded {
+	//background: #BABABA;	
+}
+
+.gridContainer .inactive.lastAdded.ui-state-hover,
+.gridContainer .inactive.ui-state-hover {
+	//background: #ADADAD;
+}
+
+.multiselectMode .gridContainer .inactive.lastAdded.ui-state-highlight,
+.multiselectMode .gridContainer .inactive.ui-state-highlight,
+.gridContainer .inactive.lastAdded.ui-state-highlight,
+.gridContainer .inactive.ui-state-highlight {
+	//background: #8A8A8A;
+}
+
+.multiselectMode .gridContainer .inactive.lastAdded.ui-state-highlight.ui-state-hover,
+.multiselectMode .gridContainer .inactive.ui-state-highlight.ui-state-hover,
+.gridContainer .inactive.lastAdded.ui-state-highlight.ui-state-hover,
+.gridContainer .inactive.ui-state-highlight.ui-state-hover {
+	//background: #7A7A7A;
+}*/

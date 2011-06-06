@@ -48,6 +48,8 @@ public class FormComponentState extends AbstractContainerState implements FormCo
 
     public static final String JSON_ENTITY_ID = "entityId";
 
+    public static final String JSON_IS_ACTIVE = "isActive";
+
     public static final String JSON_VALID = "valid";
 
     public static final String JSON_HEADER = "header";
@@ -57,6 +59,8 @@ public class FormComponentState extends AbstractContainerState implements FormCo
     private Long entityId;
 
     private Long contextEntityId;
+
+    private boolean active;
 
     private boolean valid = true;
 
@@ -80,6 +84,8 @@ public class FormComponentState extends AbstractContainerState implements FormCo
         registerEvent("reset", eventPerformer, "initialize");
         registerEvent("delete", eventPerformer, "delete");
         registerEvent("copy", eventPerformer, "copy");
+        registerEvent("activate", eventPerformer, "activate");
+        registerEvent("deactivate", eventPerformer, "deactivate");
     }
 
     @Override
@@ -187,10 +193,12 @@ public class FormComponentState extends AbstractContainerState implements FormCo
         json.put(JSON_VALID, isValid());
         if (entityId != null) {
             json.put(JSON_ENTITY_ID, entityId);
+            json.put(JSON_IS_ACTIVE, active);
             json.put(JSON_HEADER, getTranslationService().translate(getTranslationPath() + ".headerEdit", getLocale()));
             json.put(JSON_HEADER_ENTITY_IDENTIFIER, getHeaderEdit());
         } else {
             json.put(JSON_ENTITY_ID, JSONObject.NULL);
+            json.put(JSON_IS_ACTIVE, active);
             json.put(JSON_HEADER, getTranslationService().translate(getTranslationPath() + ".headerNew", getLocale()));
             json.put(JSON_HEADER_ENTITY_IDENTIFIER, getHeaderNew());
         }
@@ -399,6 +407,36 @@ public class FormComponentState extends AbstractContainerState implements FormCo
             }
         }
 
+        public void activate(final String[] args) {
+            if (entityId == null) {
+                addMessage(translateMessage("activateFailedMessage"), MessageType.FAILURE);
+                return;
+            }
+
+            List<Entity> activatedEntities = getDataDefinition().activate(entityId);
+
+            if (activatedEntities.size() > 0) {
+                active = true;
+                addMessage(translateMessage("activateMessage"), MessageType.SUCCESS);
+                setEntity(activatedEntities.get(0));
+            }
+        }
+
+        public void deactivate(final String[] args) {
+            if (entityId == null) {
+                addMessage(translateMessage("deactivateFailedMessage"), MessageType.FAILURE);
+                return;
+            }
+
+            List<Entity> deactivatedEntities = getDataDefinition().deactivate(entityId);
+
+            if (deactivatedEntities.size() > 0) {
+                active = false;
+                addMessage(translateMessage("deactivateMessage"), MessageType.SUCCESS);
+                setEntity(deactivatedEntities.get(0));
+            }
+        }
+
         public void delete(final String[] args) {
             Entity entity = getFormEntity();
             if (entity == null) {
@@ -417,11 +455,13 @@ public class FormComponentState extends AbstractContainerState implements FormCo
             }
             Entity entity = getFormEntity();
             if (entity != null) {
+                active = entity.isActive();
                 copyEntityToFields(entity, true);
                 setFieldValue(entity.getId());
                 setFieldsRequiredAndDisables();
             } else if (entityId != null) {
                 setFormEnabled(false);
+                active = false;
                 valid = false;
                 addMessage(translateMessage("entityNotFound"), MessageType.FAILURE);
             } else {
@@ -430,6 +470,7 @@ public class FormComponentState extends AbstractContainerState implements FormCo
         }
 
         public void clear(final String[] args) {
+            active = false;
             clearFields();
             setFieldValue(null);
             copyDefaultValuesToFields();

@@ -91,7 +91,9 @@ public final class GridComponentPattern extends AbstractComponentPattern {
 
     private String defaultOrderDirection;
 
-    private boolean lookup;
+    private boolean lookup = false;
+
+    private boolean activable = false;
 
     public GridComponentPattern(final ComponentDefinition componentDefinition) {
         super(componentDefinition);
@@ -99,7 +101,7 @@ public final class GridComponentPattern extends AbstractComponentPattern {
 
     @Override
     public ComponentState getComponentStateInstance() {
-        return new GridComponentState(belongsToFieldDefinition, columns, defaultOrderColumn, defaultOrderDirection);
+        return new GridComponentState(belongsToFieldDefinition, columns, defaultOrderColumn, defaultOrderDirection, activable);
     }
 
     @Override
@@ -121,6 +123,8 @@ public final class GridComponentPattern extends AbstractComponentPattern {
     protected void initializeComponent() throws JSONException {
         getBelongsToFieldDefinition();
         parseOptions();
+
+        activable = getDataDefinition().isActivable();
 
         if (correspondingView != null && correspondingComponent == null) {
             throwIllegalStateException("Missing correspondingComponent for grid");
@@ -145,6 +149,7 @@ public final class GridComponentPattern extends AbstractComponentPattern {
         json.put("deletable", deletable);
         json.put("creatable", creatable);
         json.put("multiselect", multiselect);
+        json.put("activable", activable);
 
         json.put("hasPredefinedFilters", hasPredefinedFilters);
 
@@ -174,6 +179,8 @@ public final class GridComponentPattern extends AbstractComponentPattern {
 
         JSONObject translations = new JSONObject();
 
+        addTranslation(translations, "unactiveVisibleButton", locale);
+        addTranslation(translations, "unactiveNotVisibleButton", locale);
         addTranslation(translations, "addFilterButton", locale);
         addTranslation(translations, "clearFilterButton", locale);
         addTranslation(translations, "noResults", locale);

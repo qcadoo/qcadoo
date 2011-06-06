@@ -51,6 +51,8 @@ public final class DefaultEntity implements Entity {
 
     private boolean notValidFlag = false;
 
+    private boolean active = true;
+
     public DefaultEntity(final DataDefinition dataDefinition, final Long id, final Map<String, Object> fields) {
         this.dataDefinition = dataDefinition;
         this.id = id;
@@ -73,6 +75,11 @@ public final class DefaultEntity implements Entity {
     @Override
     public Long getId() {
         return id;
+    }
+
+    @Override
+    public void setActive(final boolean active) {
+        this.active = active;
     }
 
     @Override
@@ -202,13 +209,18 @@ public final class DefaultEntity implements Entity {
     }
 
     @Override
+    public boolean isActive() {
+        return active;
+    }
+
+    @Override
     public DataDefinition getDataDefinition() {
         return dataDefinition;
     }
 
     @Override
     public String toString() {
-        StringBuilder entity = new StringBuilder("Entity[" + dataDefinition + "][id=" + id);
+        StringBuilder entity = new StringBuilder("Entity[" + dataDefinition + "][id=" + id + ",active=" + active);
         for (Map.Entry<String, Object> field : fields.entrySet()) {
 
             entity.append(",").append(field.getKey()).append("=");
