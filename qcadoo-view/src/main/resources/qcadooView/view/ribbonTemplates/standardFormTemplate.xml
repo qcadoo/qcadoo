@@ -71,7 +71,7 @@
 	</group>
 	
 	<group name="statuses" if="#view.getComponentByReference('form').dataDefinition.activable">
-		<smallButton name="activate" icon="activateIcon16.png" state="disabled" action="#{form}.performActivate;">
+		<smallButton name="activate" icon="unactiveVisibleIcon.png" state="disabled" action="#{form}.performActivate;">
 			<script><![CDATA[
 				#{form}.addOnChangeListener({
 					onSetValue: function(value) {
@@ -86,7 +86,7 @@
 				});
 			]]></script>
 		</smallButton>
-		<smallButton name="deactivate" icon="deactivateIcon16.png" state="disabled" action="#{form}.performDeactivate;">
+		<smallButton name="deactivate" icon="unactiveNotVisibleIcon.png" state="disabled" action="#{form}.performDeactivate;">
 			<script><![CDATA[
                 #{form}.addOnChangeListener({
 					onSetValue: function(value) {
