@@ -23,8 +23,14 @@
  */
 package com.qcadoo.view.internal.components;
 
+import java.util.Locale;
+import java.util.Map;
+
+import org.json.JSONException;
+
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.internal.ComponentDefinition;
+import com.qcadoo.view.internal.ComponentOption;
 
 public final class CalendarComponentPattern extends FieldComponentPattern {
 
@@ -32,8 +38,28 @@ public final class CalendarComponentPattern extends FieldComponentPattern {
 
     private static final String JS_OBJECT = "QCD.components.elements.Calendar";
 
+    private boolean withTimePicker;
+
     public CalendarComponentPattern(final ComponentDefinition componentDefinition) {
         super(componentDefinition);
+    }
+
+    @Override
+    protected void initializeComponent() throws JSONException {
+        super.initializeComponent();
+        for (ComponentOption option : getOptions()) {
+            if ("withTimePicker".equals(option.getType())) {
+                withTimePicker = Boolean.parseBoolean(option.getValue());
+                break;
+            }
+        }
+    }
+
+    @Override
+    protected Map<String, Object> getJspOptions(final Locale locale) {
+        Map<String, Object> options = super.getJspOptions(locale);
+        options.put("withTimePicker", withTimePicker);
+        return options;
     }
 
     @Override

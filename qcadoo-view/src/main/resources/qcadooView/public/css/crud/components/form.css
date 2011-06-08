@@ -546,6 +546,16 @@
 
 /** calendar **/
 
+.lookupValueWrapper.shortDate {
+	width: 60%;
+	float: left;
+}
+
+.lookupValueWrapper.shortTime {
+	width: 30%;
+	float: right;
+}
+
 .ui-widget {
 	font-size: 0.7em;
 }

@@ -35,6 +35,7 @@
 <tiles:useAttribute name="componentType" />
 <tiles:useAttribute name="componentBody" />
 <tiles:useAttribute name="componentAlign" ignore="true" />
+<tiles:useAttribute name="componentIgnoreBorder" ignore="true" />
 
 <div class="component_element component_form_element component_element_${componentType}">
 
@@ -58,6 +59,11 @@
 				<div id="${component['path']}_error_messages" class="error_messages" style="display: none"></div></div></div></div>
 	
 	<c:choose>
+		<c:when test="${componentIgnoreBorder == 'true'}">
+			<div class="component_container_form_w ${labelboxClass}" style="left: ${labelWidth}%; text-align: ${componentAlign}">
+				${componentBody}
+			</div>
+		</c:when>
 		<c:when test="${isInputBox && !component['jspOptions']['textRepresentationOnDisabled']}">
 			<div class="component_container_form_w ${labelboxClass}" style="left: ${labelWidth}%; text-align: ${componentAlign}"><div class="component_container_form_inner_h"></div><div class="component_container_form_inner">
 					${componentBody}

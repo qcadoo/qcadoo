@@ -34,7 +34,11 @@ QCD.components.elements.Calendar = function(_element, _mainController) {
 	
 	var calendar = $("#"+this.elementSearchName+"_calendar");
 	
+	var timeInput = $("#"+this.elementSearchName+"_timeInput");
+
 	var input = this.input;
+	
+	var withTimePicker = timeInput.length > 0;
 	
 	var datepicker;
 	var datepickerElement;
@@ -61,6 +65,16 @@ QCD.components.elements.Calendar = function(_element, _mainController) {
 	}
 	
 	var constructor = function(_this) {
+		$.mask.definitions['1']='[0-1]';
+		$.mask.definitions['2']='[0-2]';
+		$.mask.definitions['3']='[0-3]';
+		$.mask.definitions['6']='[0-5]';
+		input.mask("2999-19-39");
+		
+		if(withTimePicker) {
+			timeInput.mask("29:69");
+		}
+		
 		options = $.datepicker.regional[locale];
 		
 		if(!options) {
@@ -96,6 +110,7 @@ QCD.components.elements.Calendar = function(_element, _mainController) {
 		datepickerElement.datepicker(options);
 		
 		input.val("");
+		timeInput.val("");
 		
 		$(document).mousedown(function(event) {
 			if(!opened) {
@@ -162,6 +177,56 @@ QCD.components.elements.Calendar = function(_element, _mainController) {
 		});
 	}
 	
+	this.setComponentData = function(data) {
+		if (data.value) {
+			this.input.val(getNormalizedDate(data.value));
+			if(withTimePicker) {
+				timeInput.val(getNormalizedTime(data.value));
+			}
+		} else {
+			this.input.val("");
+			if(withTimePicker) {
+				timeInput.val("");
+			}
+		}
+	}
+	
+	this.getComponentData = function() {
+		if(withTimePicker) {
+			return {
+				value : this.input.val() ? (this.input.val() + ' ' + (timeInput.val() ? timeInput.val() : '00:00')) : '' 
+			}
+		} else {
+			return {
+				value : this.input.val()
+			}
+		}
+	}
+	
+	function getNormalizedDate(date) {
+		var date = date.trim();
+		if(date.length == 10) {
+			return date;
+		} else if(date.length == 16 || date.length == 19) {
+			return date.substring(0,10);
+		} else {
+			return '';
+		}
+	}
+	
+	function getNormalizedTime(date) {
+		var date = date.trim();
+		if(withTimePicker) {
+			if(date.length == 10) {
+				return '00:00';
+			} else if(date.length == 16 || date.length == 19) {
+				return date.substring(11,16);
+			} else {
+				return '00:00';
+			}
+		}
+	}
+		
 	function inputDataChanged() {
 		var date = getDate();
 		if (!isValidationError) {

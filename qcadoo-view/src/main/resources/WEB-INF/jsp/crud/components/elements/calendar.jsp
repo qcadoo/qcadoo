@@ -40,12 +40,38 @@
 <tiles:insertTemplate template="formComponent.jsp">
 	<tiles:putAttribute name="component" value="${component}" />
 	<tiles:putAttribute name="componentType" value="calendar" />
+	<tiles:putAttribute name="componentIgnoreBorder" value="true" />
 	<tiles:putAttribute name="componentBody">
-		<div class=lookupValueWrapper>
-			<div class="lookupInputWrapper">
-				<input type="text" id="${component['path']}_input" tabindex="${component['indexOrder']}"/>
+		<c:if test="${component['jspOptions']['withTimePicker']}">
+			<div style="width:65%;float:left">
+		</c:if>
+		<c:if test="${!component['jspOptions']['withTimePicker']}">
+			<div>
+		</c:if>
+			<div class="component_container_form_inner_h"></div><div class="component_container_form_inner">
+				<div class="lookupValueWrapper">
+					<div class="lookupInputWrapper">
+						<input type="text" id="${component['path']}_input" tabindex="${component['indexOrder']}" />
+					</div>
+					<div class="lookupButton calendarButton" id="${component['path']}_calendar"></div>
+					<br/>
+				</div>
+				<div class="component_container_form_x"></div>
+				<div class="component_container_form_y"></div>
 			</div>
-			<div class="lookupButton calendarButton" id="${component['path']}_calendar"></div>
 		</div>
+		<c:if test="${component['jspOptions']['withTimePicker']}">
+			<div style="width:33%;float:right">
+				<div class="component_container_form_inner_h"></div><div class="component_container_form_inner">
+					<div class="lookupValueWrapper">
+						<div class="lookupInputWrapper" style="width:100%">
+							<input type="text" id="${component['path']}_timeInput" tabindex="${component['indexOrder']}"/>
+						</div>
+					</div>
+					<div class="component_container_form_x"></div>
+					<div class="component_container_form_y"></div>
+				</div>
+			</div>
+		</c:if>
 	</tiles:putAttribute>
 </tiles:insertTemplate>
