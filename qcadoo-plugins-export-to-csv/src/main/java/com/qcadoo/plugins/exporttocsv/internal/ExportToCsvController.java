@@ -25,8 +25,10 @@ package com.qcadoo.plugins.exporttocsv.internal;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
 import java.util.Locale;
 import java.util.Map;
 
@@ -81,7 +83,7 @@ public class ExportToCsvController {
             BufferedWriter output = null;
 
             try {
-                output = new BufferedWriter(new FileWriter(file));
+                output = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), Charset.forName("UTF-8")));
 
                 boolean firstName = true;
 

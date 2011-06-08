@@ -85,7 +85,7 @@ public class FileResolverController {
         }
 
         if (removeFileAfterProcessing) {
-            // fileService.remove(path);
+            fileService.remove(path);
         }
     }
 
