@@ -25,6 +25,7 @@ package com.qcadoo.report.internal.controller;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -40,6 +41,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.JDOMException;
+import org.jdom.Namespace;
+import org.jdom.input.SAXBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +58,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
-import com.google.common.collect.Lists;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.Entity;
@@ -178,9 +183,32 @@ public class ReportDevelopmentController {
         }
     }
 
-    private List<ReportParameter> getReportParameters(final String path) {
-        List<ReportParameter> params = Lists.newArrayList(new ReportParameter("EntityIds", "java.util.List", ""),
-                new ReportParameter("Author", "java.lang.String", "Default author"));
+    private final List<String> ignoredParameters = Arrays.asList("Author");
+
+    @SuppressWarnings("unchecked")
+    private List<ReportParameter> getReportParameters(final String template) throws JDOMException, IOException {
+        Document document = new SAXBuilder().build(new ByteArrayInputStream(template.getBytes()));
+
+        Namespace namespace = Namespace.getNamespace("http://jasperreports.sourceforge.net/jasperreports");
+
+        List<Element> parameters = document.getRootElement().getChildren("parameter", namespace);
+
+        List<ReportParameter> params = new ArrayList<ReportParameter>();
+
+        for (Element parameter : parameters) {
+            String value = null;
+
+            if (ignoredParameters.contains(parameter.getAttributeValue("name"))) {
+                continue;
+            }
+
+            if (parameter.getChild("defaultValueExpression", namespace) != null) {
+                value = parameter.getChild("defaultValueExpression", namespace).getTextNormalize().replaceAll("\\\"", "");
+            }
+
+            params.add(new ReportParameter(parameter.getAttributeValue("name"), parameter.getAttributeValue("class"), value));
+        }
+
         return params;
     }
 
@@ -215,19 +243,24 @@ public class ReportDevelopmentController {
 
             byte[] report = reportService.generateReport(template, reportType, parameters, reportLocale);
 
+            response.setContentLength(report.length);
+            response.setContentType(reportType.getMimeType());
+            response.setHeader("Content-disposition", "attachment; filename=report." + type);
+            response.addHeader("Expires", "Tue, 03 Jul 2001 06:00:00 GMT");
+            response.addHeader("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
+            response.addHeader("Cache-Control", "post-check=0, pre-check=0");
+            response.addHeader("Pragma", "no-cache");
+
+            OutputStream out = response.getOutputStream();
+
             try {
-                IOUtils.copy(new ByteArrayInputStream(report), response.getOutputStream());
+                IOUtils.copy(new ByteArrayInputStream(report), out);
             } catch (IOException e) {
                 LOG.error(e.getMessage(), e);
                 throw new ReportException(ReportException.Type.ERROR_WHILE_COPYING_REPORT_TO_RESPONSE, e);
             }
 
-            response.setContentLength(report.length);
-            response.setContentType(reportType.getMimeType());
-            response.addHeader("Expires", "Tue, 03 Jul 2001 06:00:00 GMT");
-            response.addHeader("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
-            response.addHeader("Cache-Control", "post-check=0, pre-check=0");
-            response.addHeader("Pragma", "no-cache");
+            out.flush();
 
             return null;
         } catch (Exception e) {
