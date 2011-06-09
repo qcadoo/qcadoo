@@ -39,14 +39,10 @@
        
 	<bean id="dejaVuFontFamily" class="net.sf.jasperreports.engine.fonts.SimpleFontFamily">
 		<property name="name" value="DejaVu"/>
-		<property name="normal" value="@CLASSES@/fonts/dejaVu/DejaVuSans.ttf"/>
-		<property name="bold" value="@CLASSES@/fonts/dejaVu/DejaVuSans-Bold.ttf"/>
-		<property name="italic" value="@CLASSES@/fonts/dejaVu/DejaVuSans-Oblique.ttf"/>
-		<property name="boldItalic" value="@CLASSES@/fonts/dejaVu/DejaVuSans-BoldOblique.ttf"/>
-		<!--<property name="normal" value="fonts/dejaVu/DejaVuSans.ttf"/>
+		<property name="normal" value="fonts/dejaVu/DejaVuSans.ttf"/>
 		<property name="bold" value="fonts/dejaVu/DejaVuSans-Bold.ttf"/>
 		<property name="italic" value="fonts/dejaVu/DejaVuSans-Oblique.ttf"/>
-		<property name="boldItalic" value="fonts/dejaVu/DejaVuSans-BoldOblique.ttf"/>-->
+		<property name="boldItalic" value="fonts/dejaVu/DejaVuSans-BoldOblique.ttf"/>
 		<property name="pdfEncoding" value="Identity-H"/>
 		<property name="pdfEmbedded" value="true"/>
 		<property name="exportFonts">
