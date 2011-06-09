@@ -32,51 +32,10 @@ QCD.components.elements.GanttChart = function(_element, _mainController) {
 	
 	var header;
 	
-	var items = [
-		{
-			row: "row 1",
-			from: 4,
-			to: 10,
-			info: {
-				name: "Zlecenie produkcyjne o bardzo dlugiej nazwie",
-				dateFrom: "10-11-2010 12:11",
-				dateTo: "10-11-2010 13:23"
-			}
-		},
-		{
-			row: "row 1",
-			from: 13,
-			to: 24,
-			type: 'disabled',
-			info: {
-				name: "element2",
-				dateFrom: "10-11-2010",
-				dateTo: "10-11-2010"
-			}
-		},
-		{
-			row: "row 2",
-			from: 6.5,
-			to: 12.5,
-			info: {
-				name: "element2",
-				dateFrom: "10-11-2010",
-				dateTo: "10-11-2010"
-			}
-		}
-	];
-	
 	function constructor() {
-		
 		createGrantt();
 		QCD.components.elements.utils.LoadingIndicator.blockElement(element);
 		header.init();
-		
-		//for (var itemIndex in items) {
-		//	var item = items[itemIndex];
-		//	addItem(item);
-		//}
-		
 	}
 	
 	this.getComponentValue = function() {
@@ -85,9 +44,6 @@ QCD.components.elements.GanttChart = function(_element, _mainController) {
 	}
 	
 	this.setComponentValue = function(value) {
-		// TODO mina
-		QCD.info("----");
-		QCD.info(value);
 		applySettings(value);
 		header.enableButtons();
 		header.setDateFromValue(value.dateFrom, value.dateFromErrorMessage);
@@ -134,6 +90,7 @@ QCD.components.elements.GanttChart = function(_element, _mainController) {
 			return;
 		}
 		if (currentCellSettings && hasSameScaleAndRows(currentCellSettings, cellSettings)) {
+			updateItems(cellSettings.items);
 			return;
 		}
 		updateHeader(cellSettings);
@@ -151,7 +108,17 @@ QCD.components.elements.GanttChart = function(_element, _mainController) {
 		htmlElements.scrollElement.height(cellSettings.rows.length * constants.CELL_HEIGHT);
 		updateScroll();
 		
+		updateItems(cellSettings.items);
+		
 		currentCellSettings = cellSettings;
+	}
+	
+	function updateItems(items) {
+		// TODO mina remove old items when scale or rows wasn't changed 
+		for (var itemIndex in items) {
+			var item = items[itemIndex];
+			addItem(item);
+		}
 	}
 	
 	function hasSameScaleAndRows(cellSettings1, cellSettings2) {
@@ -288,10 +255,6 @@ QCD.components.elements.GanttChart = function(_element, _mainController) {
 		}
 	}
 	
-	function updateRows(cellSettings) {
-		
-	}
-	
 	function getCategoryCellsNumber(cellSettings, i) {
 		if (cellSettings.scale.elementsInCategory instanceof Array) {
 			return cellSettings.scale.elementsInCategory[i];
@@ -360,10 +323,10 @@ QCD.components.elements.GanttChart = function(_element, _mainController) {
 			
 		var description = "<div class='ganttItemDescriptionName'>"+item.info.name+"</div>";
 		description += "<div class='ganttItemDescriptionInfo'>";
-		description += "<div class='ganttItemDescriptionLabel'>Data rozpoczscia:</div>";
+		description += "<div class='ganttItemDescriptionLabel'>"+_this.options.translations["description.dateFrom"]+"</div>";
 		description += "<div class='ganttItemDescriptionValue'>"+item.info.dateFrom+"</div></div>";
 		description += "<div class='ganttItemDescriptionInfo'>";
-		description += "<div class='ganttItemDescriptionLabel'>Data zakonczenia:</div>";
+		description += "<div class='ganttItemDescriptionLabel'>"+_this.options.translations["description.dateTo"]+"</div>";
 		description += "<div class='ganttItemDescriptionValue'>"+item.info.dateTo+"</div></div>";
 		
 		itemElement.CreateBubblePopup({ innerHtml: description, themePath: "/qcadooView/public/css/core/lib/jquerybubblepopup-theme" });

@@ -2,6 +2,7 @@ package com.qcadoo.view.internal.components.ganttChart;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.joda.time.DateTime;
@@ -42,6 +43,10 @@ public class GanttChartComponentState extends AbstractComponentState {
     private String dateToErrorMessage;
 
     private String globalErrorMessage;
+
+    private List<String> rows;
+
+    private List<GanttChartItem> items;
 
     private static final DateType dateType = new DateType();
 
@@ -109,11 +114,17 @@ public class GanttChartComponentState extends AbstractComponentState {
         if (globalErrorMessage == null) {
             json.put("scale", calculateScale());
 
-            JSONArray rows = new JSONArray();
-            for (int i = 1; i < 10; i++) {
-                rows.put("row" + i);
+            JSONArray rowsArray = new JSONArray();
+            for (String row : rows) {
+                rowsArray.put(row);
             }
-            json.put("rows", rows);
+            json.put("rows", rowsArray);
+
+            JSONArray itemsArray = new JSONArray();
+            for (GanttChartItem item : items) {
+                itemsArray.put(item.getAsJson());
+            }
+            json.put("items", itemsArray);
         }
 
         return json;
@@ -236,9 +247,9 @@ public class GanttChartComponentState extends AbstractComponentState {
 
         public void initialize(final String[] args) {
             currentZoomLevel = ZoomLevel.H3;
-            DateTime dt = new DateTime();
-            dateFrom = dt.toDate();
-            dateTo = dt.plusDays(21).toDate();
+            DateTime now = new DateTime();
+            dateFrom = now.toDate();
+            dateTo = now.plusDays(21).toDate();
             dateFromErrorMessage = null;
             dateToErrorMessage = null;
             globalErrorMessage = null;
@@ -246,15 +257,20 @@ public class GanttChartComponentState extends AbstractComponentState {
         }
 
         public void refresh(final String[] args) {
-            System.out.println("---------- refresh");
             if (globalErrorMessage != null) {
-                System.out.println("error: " + globalErrorMessage);
                 return;
             }
             // TODO set elements
+            rows = new LinkedList<String>();
+            for (int i = 1; i < 10; i++) {
+                rows.add("row" + i);
+            }
+            items = new LinkedList<GanttChartItem>();
+            items.add(new GanttChartItem("row1", 5, 10.5));
+            items.add(new GanttChartItem("row3", 4, 5.5));
+            items.add(new GanttChartItem("row2", 1, 5.5));
+            items.add(new GanttChartItem("row2", 5.5, 10));
 
-            System.out.println(currentZoomLevel.toString());
-            System.out.println("---------- refresh");
         }
     }
 

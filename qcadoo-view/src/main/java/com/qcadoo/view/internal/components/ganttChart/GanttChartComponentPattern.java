@@ -35,6 +35,9 @@ public class GanttChartComponentPattern extends AbstractComponentPattern {
         addTranslation(translations, "header.zoom6h", locale);
         addTranslation(translations, "header.zoom1d", locale);
 
+        addTranslation(translations, "description.dateFrom", locale);
+        addTranslation(translations, "description.dateTo", locale);
+
         JSONObject json = super.getJsOptions(locale);
         json.put("translations", translations);
         return json;
