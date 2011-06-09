@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-
 public interface ReportService {
 
     enum ReportType {
@@ -50,5 +49,8 @@ public interface ReportService {
 
     byte[] generateReport(String templatePlugin, String templateName, ReportType type, Map<String, Object> parameters,
             Locale locale) throws ReportException;
+
+    byte[] generateReport(String templateContent, ReportType type, Map<String, Object> parameters, Locale locale)
+            throws ReportException;
 
 }

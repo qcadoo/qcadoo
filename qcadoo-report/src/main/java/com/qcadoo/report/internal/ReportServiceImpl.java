@@ -23,6 +23,9 @@
  */
 package com.qcadoo.report.internal;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -33,6 +36,7 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRExporter;
 import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JRParameter;
+import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
@@ -41,6 +45,7 @@ import net.sf.jasperreports.engine.export.JRPdfExporter;
 import net.sf.jasperreports.engine.export.JRXlsExporter;
 import net.sf.jasperreports.engine.query.JRHibernateQueryExecuterFactory;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -89,15 +94,42 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public byte[] generateReport(final String templatePlugin, final String templateName, final ReportType type,
             final Map<String, Object> parameters, final Locale locale) throws ReportException {
-
         if (LOG.isDebugEnabled()) {
             LOG.debug("Try to generate report [" + type + ", " + templatePlugin + "." + templateName + ", " + parameters + "]");
         }
 
         JasperReport template = reportTemplateService.getTemplate(templatePlugin, templateName);
+
         if (template == null) {
             throw new ReportException(ReportException.Type.NO_TEMPLATE_FOUND, templatePlugin + "." + templateName);
         }
+
+        return generateReport(template, type, parameters, locale);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public byte[] generateReport(final String templateContent, final ReportType type, final Map<String, Object> parameters,
+            final Locale locale) throws ReportException {
+        InputStream in = null;
+
+        try {
+            in = new ByteArrayInputStream(templateContent.getBytes("UTF-8"));
+
+            JasperReport template = JasperCompileManager.compileReport(in);
+
+            return generateReport(template, type, parameters, locale);
+        } catch (JRException e) {
+            throw new ReportException(ReportException.Type.NO_TEMPLATE_FOUND, e);
+        } catch (UnsupportedEncodingException e) {
+            throw new ReportException(ReportException.Type.NO_TEMPLATE_FOUND, e);
+        } finally {
+            IOUtils.closeQuietly(in);
+        }
+    }
+
+    private byte[] generateReport(final JasperReport template, final ReportType type, final Map<String, Object> parameters,
+            final Locale locale) throws ReportException {
         Session session = null;
         try {
             session = sessionFactory.openSession();

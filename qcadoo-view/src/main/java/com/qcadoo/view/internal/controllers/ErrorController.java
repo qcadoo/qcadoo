@@ -31,7 +31,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -46,7 +45,7 @@ public class ErrorController {
     @Value("${showExceptionDetails}")
     private boolean showExceptionDetails;
 
-    @RequestMapping(value = "error", method = RequestMethod.GET)
+    @RequestMapping(value = "error")
     public ModelAndView getAccessDeniedPageView(@RequestParam final int code, final Locale locale) {
         return getAccessDeniedPageView(code, null, null, null, locale);
     }

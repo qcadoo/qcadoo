@@ -44,7 +44,7 @@ public class DynamicDataDefinitionImpl implements InternalDataDefinition {
     private final Map<String, FieldDefinition> fields = new LinkedHashMap<String, FieldDefinition>();
 
     public DynamicDataDefinitionImpl() {
-        name = "dynamin" + Long.valueOf(System.nanoTime());
+        name = "dynamic" + Long.valueOf(System.nanoTime());
     }
 
     @Override

@@ -37,6 +37,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -129,7 +130,11 @@ public class ExportToCsvController {
     }
 
     private String normalizeString(final String string) {
-        return string.replaceAll("\"", "\\\"").replaceAll("\n", " ");
+        if (StringUtils.hasText(string)) {
+            return string.replaceAll("\"", "\\\"").replaceAll("\n", " ");
+        } else {
+            return "";
+        }
     }
 
     private void changeMaxResults(final JSONObject json) throws JSONException {
