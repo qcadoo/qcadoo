@@ -89,6 +89,7 @@
 		<view:view-component name="borderLayout" class="com.qcadoo.view.internal.components.layout.BorderLayoutPattern" />
 		<view:view-component name="flowLayout" class="com.qcadoo.view.internal.components.layout.FlowLayoutPattern" />
 		<view:view-component name="smallTabLayout" class="com.qcadoo.view.internal.components.layout.SmallTabLayoutPattern" />
+		<view:view-component name="ganttChart" class="com.qcadoo.view.internal.components.ganttChart.GanttChartComponentPattern" />
 		
 		<view:view-ribbon-template resource="view/ribbonTemplates/standardGridTemplate.xml"/>
 		<view:view-ribbon-template resource="view/ribbonTemplates/standardFormTemplate.xml"/>

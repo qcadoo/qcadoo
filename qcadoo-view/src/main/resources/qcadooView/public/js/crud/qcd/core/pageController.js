@@ -108,6 +108,9 @@ QCD.PageController = function() {
 			if (hasDataDefinition) {
 				this.callEvent("initialize", null, function() {QCD.components.elements.utils.LoadingIndicator.unblockElement($("body"))});
 			} else {
+				for (var i in pageComponents) {
+					pageComponents[i].performInitialize();
+				}
 				QCD.components.elements.utils.LoadingIndicator.unblockElement($("body"));
 			}
 		}

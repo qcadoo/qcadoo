@@ -52,7 +52,7 @@ QCD.components.elements.Calendar = function(_element, _mainController) {
 	
 	var isTriggerBootonHovered = false;
 	
-	var hasListeners = (this.options.listeners.length > 0) ? true : false;
+	var hasListeners = (this.options.listeners && this.options.listeners.length > 0) ? true : false;
 	
 	var fireOnChangeListeners = this.fireOnChangeListeners;
 	
@@ -99,11 +99,9 @@ QCD.components.elements.Calendar = function(_element, _mainController) {
 			inputDataChanged();
 		}
 		
-		datepickerElement = $("<div>").css("position", "absolute").css("zIndex", 100).css("right", "15px");
+		datepickerElement = $("<div>").css("position", "absolute").css("zIndex", 100).css("right", "15px").css("line-height", "14px");
 		containerElement.css("position", "relative");
 		datepickerElement.hide();
-		
-		$("#ui-datepicker-div").hide();
 		
 		containerElement.append(datepickerElement);
 		
@@ -175,6 +173,8 @@ QCD.components.elements.Calendar = function(_element, _mainController) {
 		input.change(function() {
 			inputDataChanged();
 		});
+		
+		$("#ui-datepicker-div").hide();
 	}
 	
 	this.setComponentData = function(data) {

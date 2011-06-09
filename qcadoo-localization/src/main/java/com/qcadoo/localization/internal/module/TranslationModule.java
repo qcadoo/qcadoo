@@ -78,13 +78,13 @@ public class TranslationModule extends Module {
 
     @Override
     public void disable() {
-        if (basename == null || "*".equals(basename)) {
-            basenames.removeAll(getAllFilesFromPath());
-        } else {
-            basenames.remove("classpath:" + pluginIdentifier + "/" + path + "/" + basename);
-        }
+        // if (basename == null || "*".equals(basename)) {
+        // basenames.removeAll(getAllFilesFromPath());
+        // } else {
+        // basenames.remove("classpath:" + pluginIdentifier + "/" + path + "/" + basename);
+        // }
 
-        translationModuleService.removeTranslationModul(basenames);
+        translationModuleService.removeTranslationModule(basenames);
     }
 
     private Collection<? extends String> getAllFilesFromPath() {

@@ -100,6 +100,10 @@ QCD.components.Component = function(_element, _mainController) {
 	this.performUpdateState = function() {
 	}
 	
+	this.performInitialize = function() {
+		
+	}
+	
 	this.addContext = function(contextField, contextValue) {
 		if (! this.contextObject) {
 			this.contextObject = new Object;

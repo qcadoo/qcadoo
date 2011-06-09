@@ -55,6 +55,7 @@
 			<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/core/qcd.css" type="text/css" />
 			<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/core/menu/style.css" type="text/css" />
 			<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/core/notification.css" type="text/css" />
+			<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/core/lib/jquery.bubblepopup.v2.3.1.css" type="text/css" />
 			<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/crud/components/window.css" type="text/css" />
 			<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/crud/components/grid.css" type="text/css" />
 			<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/crud/components/form.css" type="text/css" />
@@ -62,6 +63,7 @@
 			<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/crud/components/tree.css" type="text/css" />
 			<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/crud/components/elementHeader.css" type="text/css" />
 			<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/crud/components/awesomeDynamicList.css" type="text/css" />
+			<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/crud/components/gantt.css" type="text/css" />
 			
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/_jquery-1.4.2.min.js"></script>
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/json_sans_eval.js"></script>
@@ -76,6 +78,8 @@
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/jquery.form.js"></script>
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/jquery.maskedinput-1.3.min.js"></script>
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/encoder.js"></script>
+			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/jquery.shorten.min.js"></script>
+			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/jquery.bubblepopup.v2.3.1.min.js"></script>
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/qcd/utils/logger.js"></script>
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/qcd/utils/serializator.js"></script>
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/qcd/utils/connector.js"></script>
@@ -112,6 +116,8 @@
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/crud/qcd/components/elements/staticComponent.js"></script>
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/crud/qcd/components/elements/awesomeDynamicList.js"></script>
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/crud/qcd/components/ribbon.js"></script>
+			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/crud/qcd/components/elements/gantt/ganttChart.js"></script>
+			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/crud/qcd/components/elements/gantt/ganttChartHeader.js"></script>
 			
 			<c:forEach items="${model['jsFilePaths']}" var="jsFilePath">
 				<c:if test="${jsFilePath != null }">

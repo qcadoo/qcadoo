@@ -1,0 +1,50 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.qcadoo</groupId>
+		<artifactId>qcadoo</artifactId>
+		<version>0.4.2-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>qcadoo-model</artifactId>
+	<packaging>jar</packaging>
+
+	<name>Qcadoo Framework :: Model</name>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.qcadoo</groupId>
+			<artifactId>qcadoo-localization</artifactId>
+			<version>0.4.2-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>joda-time</groupId>
+			<artifactId>joda-time</artifactId>
+			<version>1.6.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjrt</artifactId>
+			<version>1.6.8</version>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.16</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>com.qcadoo</groupId>
+				<artifactId>qcadoo-maven-plugin</artifactId>
+				<version>${qcadoo.maven.plugin.version}</version>
+				<extensions>true</extensions>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
