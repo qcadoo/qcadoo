@@ -319,8 +319,6 @@ public class CriteriaIntegrationTest extends IntegrationTest {
                         SearchProjections.list().add(SearchProjections.field("product.quantity"))
                                 .add(SearchProjections.field("name")).add(SearchProjections.field("product"))).uniqueResult();
 
-        System.out.println(result);
-
         // then
         assertEquals(IntegerType.class, result.getDataDefinition().getField("0").getType().getClass());
         assertEquals(StringType.class, result.getDataDefinition().getField("1").getType().getClass());

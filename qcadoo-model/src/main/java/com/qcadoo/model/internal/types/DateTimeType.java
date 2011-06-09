@@ -53,11 +53,11 @@ public final class DateTimeType implements FieldType {
             DateTime dt = fmt.parseDateTime(String.valueOf(value));
             int year = dt.getYear();
             if (year < 1500 || year > 2500) {
-                return ValueAndError.withError("qcadooView.validate.field.error.invalidDateFormat");
+                return ValueAndError.withError("qcadooView.validate.field.error.invalidDateTimeFormat");
             }
             return ValueAndError.withoutError(dt.toDate());
         } catch (IllegalArgumentException e) {
-            return ValueAndError.withError("qcadooView.validate.field.error.invalidDateFormat");
+            return ValueAndError.withError("qcadooView.validate.field.error.invalidDateTimeFormat");
         }
     }
 

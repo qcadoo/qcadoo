@@ -275,8 +275,6 @@ public class CrudIntegrationTest extends IntegrationTest {
         List<Entity> products = productDataDefinition.find().addOrder(SearchOrders.desc("name"))
                 .addOrder(SearchOrders.asc("number")).list().getEntities();
 
-        System.out.println(products);
-
         // then
         assertNotNull(products);
         assertEquals(2, products.size());
