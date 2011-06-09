@@ -58,7 +58,7 @@ public class TranslationModuleService {
         messageSource.setBasenames(basenames.toArray(new String[basenames.size()]));
     }
 
-    public void removeTranslationModul(final Collection<? extends String> moduleBasenames) {
+    public void removeTranslationModule(final Collection<? extends String> moduleBasenames) {
         basenames.removeAll(moduleBasenames);
         messageSource.clearCache();
         messageSource.setBasenames(basenames.toArray(new String[basenames.size()]));
