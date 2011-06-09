@@ -115,3 +115,32 @@ QCD.components.elements.utils.HeaderUtils.createHeaderComboBox = function(option
 	
 	return select;
 }
+
+QCD.components.elements.utils.HeaderUtils.createDatePicker = function(elementId, labelvalue) {
+	var container = $("<div>").addClass("component_container_form_w").css("position", "relative").css("width", "100px").css("line-height", "20px");
+	container.append($("<div>").addClass("component_container_form_inner_h"));
+	var inner = $("<div>").addClass("component_container_form_inner").addClass("required");
+		var lookupValueWrapper = $("<div>").addClass("lookupValueWrapper").css("height", "20px").css("line-height", "10px").css("background-color", "white");
+			var input = $("<input type='text' />").attr("id", elementId+"_input").css("line-height", "10px");;
+			lookupValueWrapper.append($("<div>").addClass("lookupInputWrapper").append(input));
+			var button = $("<div>").addClass("lookupButton").addClass("calendarButton").attr("id", elementId+"_calendar");
+			lookupValueWrapper.append(button);
+		inner.append(lookupValueWrapper);
+		inner.append($("<div>").addClass("component_container_form_x"));
+		inner.append($("<div>").addClass("component_container_form_y"));
+	container.append(inner);
+	
+	var labelBox = $("<div>").addClass("labelbox").css("width", "100px").css("position", "relative").css("text-align", "right").css("padding-right","10px");
+	labelBox.append($("<div>").addClass("label_h"));
+	var label = $("<div>").addClass("label");
+		label.append($("<span>").attr("id",elementId+"_labelDiv").css("display","inline").html(labelvalue));
+	labelBox.append(label);
+	
+	var component = $("<div>").addClass("component").css("display", "inline-block").attr("id",elementId);
+	component.append("<div class='element_options' style='display: none'>{listeners:[]}</div>");
+	var formElement = $("<div>").addClass("component_element").addClass("component_form_element").addClass("omponent_element_calendar");
+	formElement.append(labelBox);
+	formElement.append(container);
+	component.append(formElement);
+	return component;
+}

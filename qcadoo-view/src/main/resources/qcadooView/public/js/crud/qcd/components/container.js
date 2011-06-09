@@ -61,6 +61,13 @@ QCD.components.Container = function(_element, _mainController, childrenElements)
 		}
 	}
 	
+	this.performInitialize = function() {
+		for (var i in components) {
+			components[i].performInitialize();
+		}
+	}
+
+	
 	this.performScript = function() {
 		if (this.performComponentScript) {
 			this.performComponentScript();

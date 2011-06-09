@@ -1,0 +1,152 @@
+.ganttContainer {
+	border: solid #666666 1px;
+	background: #f3f3f3;
+	position: relative;
+	margin: 0px 10px 10px 10px;
+	font-family:"Lucida Grande", Tahoma, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+}
+
+.ganttContainer .ganttRowNamesWrapper {
+	display: inline-block;
+	overflow: hidden;
+	position: absolute;
+	top: 0;
+	left: 0;
+	border-right: solid #666666 1px;
+}
+
+.ganttContainer .ganttRowNamesWrapper .ganttRowNamesConteiner {
+	overflow: hidden;
+	border-bottom: solid #666666 1px;
+	border-top: solid #666666 1px;
+}
+
+.ganttContainer .ganttCenterConteiner {
+	display: inline-block;
+	overflow: auto;
+	position: absolute;
+	top: 0;
+	border-right: solid #666666 1px;
+	z-index: 30;
+}
+
+.ganttContainer .ganttCenterConteiner .ganttCenterContentWrapper {
+}
+
+.ganttContainer .ganttCenterConteiner .ganttCenterContentWrapper .ganttTopRow {
+	border-bottom: solid #666666 1px;
+}
+.ganttTopRow .ganttTopRow1 {
+	border-bottom: solid #999999 1px;
+}
+.ganttTopRow .ganttTopRowElement {
+	border-right: solid #999999 1px;
+	display: inline-block;
+	text-align: center;
+}
+.ganttTopRow .ganttTopRowElement.ganttTopRowElementEnd,
+.ganttRowElement .ganttCellElement.ganttTopRowElementEnd {
+	border-color: #666666;
+}
+
+.ganttContainer .ganttCenterConteiner .ganttCenterContentWrapper .rowsContainerWrapper {
+	overflow: hidden;
+}	
+
+.ganttContainer .ganttCenterConteiner .ganttCenterContentWrapper .rowsContainerWrapper .rowsContainer {
+	background: white;
+}
+
+.ganttContainer .ganttCenterConteiner .ganttCenterContentWrapper .rowsContainerWrapper .rowsContainer .ganttRowElement {
+	border-bottom: solid #999999 1px;
+	position: relative;
+}
+.ganttRowElement .ganttCellElement {
+	border-right: solid #dddddd 1px;
+	display: inline-block;
+}
+
+.ganttContainer .ganttRowNamesConteiner .ganttRowNameElement {
+	border-bottom: solid #999999 1px;
+	text-align: center;
+}
+.ganttContainer .ganttCenterConteiner .ganttCenterContentWrapper .rowsContainerWrapper .rowsContainer .ganttRowElement.ganttFirstRow,
+.ganttContainer .ganttRowNamesConteiner .ganttRowNameElement.ganttFirstRow {
+	border-bottom: none;
+}
+
+.ganttContainer .ganttScrollWrapper {
+	display: inline-block;
+	position: absolute;
+	top: 0;
+	right: 0;
+	z-index: 20;
+}
+
+.ganttContainer .ganttScrollWrapper .ganttScrollConteiner {
+	overflow: auto;
+}
+
+.ganttItem {
+	position: absolute;
+	background-color: #FC9B2B;
+	border: 1px solid #c0c0c0;
+	padding-left: 5px;
+	padding-right: 5px;
+	cursor: default;
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	filter: alpha(opacity=70);
+	opacity: 0.7;
+	-moz-opacity: 0.7;
+	overflow:hidden;
+	visibility: hidden;
+}
+.ganttItem.ganttItemHovered {
+	filter: alpha(opacity=100);
+	opacity: 1;
+	-moz-opacity:1;
+	z-index: 200;
+}
+.ganttItem.ganttItemType_disabled {
+	background-color: #888888;
+}
+
+.ganttItemDescriptionName {
+	font-size: 14px;
+}
+.ganttItemDescriptionInfo {
+	text-align: left;
+}
+.ganttItemDescriptionInfo .ganttItemDescriptionLabel {
+	font-weight: bold;
+	display: inline-block;
+	width: 100px;
+}
+.ganttItemDescriptionInfo .ganttItemDescriptionValue {
+	display: inline-block;
+}
+
+.ganttHeaderContainer {
+	border-left: solid #666666 1px;
+	border-right: solid #666666 1px;
+	border-top: solid #666666 1px;
+	background: #eeeeee;
+	margin: 10px 10px 0px 10px;
+	height: 30px;
+	line-height: 30px;
+	padding-left: 10px;
+	color: #555555;
+	font-family:"Lucida Grande", Tahoma, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+}
+.ganttHeaderContainer .ganttHeaderContainerLabel {
+	display: inline-block;
+	font-weight: bold;
+}
+.ganttHeaderContainer .ganttHeaderZoomButtons {
+	display: inline-block;
+	margin-left: 30px;
+}
