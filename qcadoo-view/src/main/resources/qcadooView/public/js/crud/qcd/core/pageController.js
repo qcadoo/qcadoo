@@ -49,6 +49,8 @@ QCD.PageController = function() {
 	
 	var serializationObjectToInsert;
 	
+	var isScriptsPerformed = false;
+	
 	this.constructor = function(_viewName, _pluginIdentifier, _hasDataDefinition, _isPopup) {
 		viewName = _viewName;
 		pluginIdentifier = _pluginIdentifier;
@@ -85,7 +87,6 @@ QCD.PageController = function() {
 	}
 	
 	this.init = function(serializationObject) {
-		QCD.info("INIT");
 		if (isPopup) {
 			if (isPopup && window.parent.changeModalSize) {
 				var modalWidth = pageOptions.windowWidth ? pageOptions.windowWidth : 600;
@@ -95,8 +96,11 @@ QCD.PageController = function() {
 			updateSize();
 		}
 		QCD.components.elements.utils.LoadingIndicator.blockElement($("body"));
-		for (var i in pageComponents) {
-			pageComponents[i].performScript();
+		if (! isScriptsPerformed) {
+			for (var i in pageComponents) {
+				pageComponents[i].performScript();
+			}
+			isScriptsPerformed = true;
 		}
 		if (serializationObject) {
 			setComponentState(serializationObject);

@@ -199,7 +199,6 @@ QCD.components.elements.Lookup = function(_element, _mainController) {
 			dataState.contextEntityId = data.contextEntityId;
 			dataState.currentCode = "";
 		}
-		
 		// initialaize current code on first load
 		if (! dataState.currentCode) {
 			dataState.currentCode = dataState.selectedEntity.id ? dataState.selectedEntity.code : "";
@@ -209,7 +208,7 @@ QCD.components.elements.Lookup = function(_element, _mainController) {
 	}
 	
 	this.setComponentBaseValue = function(state) {
-		if (state.currentCode != undefined) {
+		if (state.currentCode != undefined && state.selectedEntity != undefined) {
 			baseValue = {
 				currentCode: state.currentCode,
 				selectedEntityId: state.selectedEntity.id
