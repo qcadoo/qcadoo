@@ -345,7 +345,8 @@ ul.q_row2 li.activ:hover a span  {
 .ribbonMenu {
 	display:block;
 	width:auto;
-	margin-right:10px;
+	/*margin-right:10px;*/
+	margin-right:5px;
 	float:left;
 	background-image:url('/qcadooView/public/css/core/menu/images/ribbon_down.png');
 	background-position:bottom;
@@ -360,7 +361,8 @@ ul.q_row2 li.activ:hover a span  {
 }
 .ribbonMenu_right {
 	height:61px;
-	padding: 0px 10px;
+	/*padding: 0px 10px;*/
+	padding: 0px 2px;
 	background-image:url('/qcadooView/public/css/core/menu/images/ribbon_right.png');
 	background-position:right;
 	background-repeat:no-repeat;
