@@ -169,7 +169,7 @@ QCD.components.elements.grid.GridHeaderController = function(_gridController, _m
 	}
 	
 	this.updatePagingParameters = function(_first, _max, _totalNumberOfEntities) {
-		if (_first > _totalNumberOfEntities) {
+		if (_first >= _totalNumberOfEntities) {
 			pagingVars.first = 0;
 			gridController.onPagingParametersChange();
 		} else {
