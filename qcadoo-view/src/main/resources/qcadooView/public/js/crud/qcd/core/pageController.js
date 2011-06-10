@@ -85,6 +85,7 @@ QCD.PageController = function() {
 	}
 	
 	this.init = function(serializationObject) {
+		QCD.info("INIT");
 		if (isPopup) {
 			if (isPopup && window.parent.changeModalSize) {
 				var modalWidth = pageOptions.windowWidth ? pageOptions.windowWidth : 600;
