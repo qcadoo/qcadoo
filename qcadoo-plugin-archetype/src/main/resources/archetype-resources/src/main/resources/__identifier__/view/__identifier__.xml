@@ -1,6 +1,8 @@
 #set( $symbol_pound = '#' )
 #set( $symbol_dollar = '$' )
 #set( $symbol_escape = '\' )
+#set( $qcadooHash = "#{" )
+#set( $qcadooEnd = "}" )
 <view name="${identifier}" modelName="${identifier}" menuAccessible="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns="http://schema.qcadoo.org/view" xsi:schemaLocation="http://schema.qcadoo.org/view http://schema.qcadoo.org/view.xsd">
 	<component type="window" name="window">
@@ -8,7 +10,7 @@
 			<template name="standardGridTemplate" />
 			<group name="report">
 				<bigButton name="print" icon="pdfIcon16.png"
-					action="#{grid}.generateReportForEntity('${identifier}','sample','pdf',ReportTitle='Sample')" state="enabled" />
+					action="${qcadooHash}grid${qcadooEnd}.generateReportForEntity('${identifier}','sample','pdf',ReportTitle='Sample')" state="enabled" />
 			</group>
 		</ribbon>
 		<component type="grid" name="${identifier}" reference="grid">

@@ -11,7 +11,7 @@
 	<version>${version}</version>
 
 	<properties>
-		<qcadoo.version>0.4.0-SNAPSHOT</qcadoo.version>
+		<qcadoo.version>0.4.2-SNAPSHOT</qcadoo.version>
 	</properties>
 
 	<build>
@@ -64,6 +64,29 @@
 			</snapshots>
 		</repository>
 	</repositories>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.qcadoo</groupId>
+			<artifactId>qcadoo-localization</artifactId>
+			<version>${qcadoo.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.qcadoo</groupId>
+			<artifactId>qcadoo-security</artifactId>
+			<version>${qcadoo.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.qcadoo</groupId>
+			<artifactId>qcadoo-model</artifactId>
+			<version>${qcadoo.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.qcadoo</groupId>
+			<artifactId>qcadoo-view</artifactId>
+			<version>${qcadoo.version}</version>
+		</dependency>
+	</dependencies>
 
 </project>
 
