@@ -15,9 +15,9 @@
 	
 	<style name="qcadooValue" isDefault="false" fontSize="12" />
 	
-	<style name="qcadooLabelSmall" isDefault="false" fontSize="11" isBold="true" />
+	<style name="qcadooLabelSmall" isDefault="false" fontSize="9" isBold="false" />
 	
-	<style name="qcadooValueSmall" isDefault="false" fontSize="11" />
+	<style name="qcadooValueSmall" isDefault="false" fontSize="9" />
 	
 	<style name="qcadooPageNumber" isDefault="false" fontSize="8" forecolor="#464646" />
 	
