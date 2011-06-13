@@ -49,8 +49,15 @@ String ctx = request.getContextPath();
 
 		var dots = fileName.split(".")
 		var fileType = dots[dots.length-1];
+
+		var contains = false;
+		for (var i = 0; i < fileTypes.length; i++) {
+			if (fileTypes[i] === fileType) {
+				contains = true;
+			}
+		}
       
-		if (fileTypes.indexOf(fileType) != -1) {
+		if (contains) {
 			buttonActive = true;
 			$("#submit").addClass("activeButton");
 			return true;

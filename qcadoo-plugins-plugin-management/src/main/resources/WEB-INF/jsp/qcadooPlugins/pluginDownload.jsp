@@ -78,7 +78,7 @@ String ctx = request.getContextPath();
 	</div>
 	
 	<div style="margin-top: 5px; margin-bottom: 20px; margin-left: 10px;">
-		<input type="file" name="file" size="50" onChange="checkExtension(this.value, this.form.upload, ['jar']);"/>
+		<input type="file" name="file" size="40" onChange="checkExtension(this.value, this.form.upload, ['jar']);"/>
 	</div>
 		            
 	<div class="linkButton" style="width: 200px; margin-left: 10px; margin-bottom: 5px;" id="submit">
