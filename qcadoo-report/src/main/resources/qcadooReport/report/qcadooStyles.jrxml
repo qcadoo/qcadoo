@@ -15,18 +15,22 @@
 	
 	<style name="qcadooValue" isDefault="false" fontSize="12" />
 	
-	<style name="qcadooPageNumber" isDefault="false" fontSize="10" forecolor="#464646" />
+	<style name="qcadooLabelSmall" isDefault="false" fontSize="11" isBold="true" />
+	
+	<style name="qcadooValueSmall" isDefault="false" fontSize="11" />
+	
+	<style name="qcadooPageNumber" isDefault="false" fontSize="8" forecolor="#464646" />
 	
 	<style name="qcadooPageNumberLine" isDefault="false" forecolor="#4D4D4D">
 		<pen lineStyle="Dashed" />
 	</style>
 	
-	<style name="qcadooHeaderTitle" isDefault="false" fontSize="24" markup="html" />
+	<style name="qcadooHeaderTitle" isDefault="false" fontSize="18" markup="html" />
 	
 	<style name="qcadooHeaderLine" isDefault="false" forecolor="#464646">
 		<pen lineWidth="2.0"/>
 	</style>
 	
-	<style name="qcadooHeaderDetails" isDefault="false" fontSize="10" markup="html" />
+	<style name="qcadooHeaderDetails" isDefault="false" fontSize="9" markup="html" />
 	
 </jasperTemplate>
