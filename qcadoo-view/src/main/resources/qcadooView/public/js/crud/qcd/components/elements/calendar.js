@@ -72,7 +72,7 @@ QCD.components.elements.Calendar = function(_element, _mainController) {
 		input.mask("2999-19-39");
 		
 		if(withTimePicker) {
-			timeInput.mask("29:69");
+			timeInput.mask("29:69:69");
 		}
 		
 		options = $.datepicker.regional[locale];
@@ -194,7 +194,7 @@ QCD.components.elements.Calendar = function(_element, _mainController) {
 	this.getComponentData = function() {
 		if(withTimePicker) {
 			return {
-				value : this.input.val() ? (this.input.val() + ' ' + (timeInput.val() ? timeInput.val() : '00:00')) : '' 
+				value : this.input.val() ? (this.input.val() + ' ' + (timeInput.val() ? timeInput.val() : '00:00:00')) : '' 
 			}
 		} else {
 			return {
@@ -218,11 +218,13 @@ QCD.components.elements.Calendar = function(_element, _mainController) {
 		var date = date.trim();
 		if(withTimePicker) {
 			if(date.length == 10) {
-				return '00:00';
-			} else if(date.length == 16 || date.length == 19) {
-				return date.substring(11,16);
+				return '00:00:00';
+			} else if(date.length == 16) {
+				return date.substring(11,16) + ':00';
+			} else if(date.length == 19) {
+				return date.substring(11,19);
 			} else {
-				return '00:00';
+				return '00:00:00';
 			}
 		}
 	}

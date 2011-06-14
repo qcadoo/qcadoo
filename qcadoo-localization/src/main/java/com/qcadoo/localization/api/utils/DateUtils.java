@@ -45,7 +45,7 @@ public final class DateUtils {
     /**
      * Date-time format.
      */
-    public static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm";
+    public static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
     /**
      * Date-time format for filenames.
