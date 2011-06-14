@@ -15,7 +15,7 @@
 	<style name="qcadooPageNumberLine" forecolor="#4D4D4D">
 		<pen lineStyle="Dashed"/>
 	</style>
-	<style name="qcadooHeaderTitle" markup="html" fontName="" fontSize="18" isBold="true"/>
+	<style name="qcadooHeaderTitle" markup="html" fontSize="18" isBold="true"/>
 	<style name="qcadooHeaderLine" forecolor="#464646">
 		<pen lineWidth="2.0"/>
 	</style>
