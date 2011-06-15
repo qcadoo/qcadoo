@@ -262,14 +262,45 @@ public class GanttChartComponentState extends AbstractComponentState {
             }
             // TODO set elements
             rows = new LinkedList<String>();
-            for (int i = 1; i < 10; i++) {
+            for (int i = 1; i < 30; i++) {
                 rows.add("row" + i);
             }
             items = new LinkedList<GanttChartItem>();
-            items.add(new GanttChartItem("row1", 5, 10.5));
-            items.add(new GanttChartItem("row3", 4, 5.5));
-            items.add(new GanttChartItem("row2", 1, 5.5));
-            items.add(new GanttChartItem("row2", 5.5, 10));
+            GanttChartItem gi1 = new GanttChartItem("row3", 5, 10.5);
+            gi1.setName("test name 1");
+            gi1.setDateFrom("10-20-2011");
+            gi1.setDateTo("15-20-2011");
+            items.add(gi1);
+
+            GanttChartItem gi2 = new GanttChartItem("row4", 4, 5.5);
+            gi2.setName("test name 2");
+            gi2.setDateFrom("10-20-2011");
+            gi2.setDateTo("15-20-2011");
+            items.add(gi2);
+
+            GanttChartItem gi3 = new GanttChartItem("row5", 1, 5.5);
+            gi3.setName("test name 3");
+            gi3.setDateFrom("10-20-2011");
+            gi3.setDateTo("15-20-2011");
+            items.add(gi3);
+
+            GanttChartItem gi4 = new GanttChartItem("row5", 6.5, 11);
+            gi4.setName("very very long test name number 4");
+            gi4.setDateFrom("10-20-2011");
+            gi4.setDateTo("15-20-2011");
+            items.add(gi4);
+
+            GanttChartItem gi5 = new GanttChartItem("row7", 6.5, 31);
+            gi5.setName("very very long test name number 5");
+            gi5.setDateFrom("10-20-2011");
+            gi5.setDateTo("15-20-2011");
+            items.add(gi5);
+
+            GanttChartItem gi6 = new GanttChartItem("row9", 16, 29.5);
+            gi6.setName("very very long test name number 6");
+            gi6.setDateFrom("10-20-2011");
+            gi6.setDateTo("15-20-2011");
+            items.add(gi6);
 
         }
     }

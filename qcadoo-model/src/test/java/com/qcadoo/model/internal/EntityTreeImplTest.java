@@ -201,8 +201,9 @@ public class EntityTreeImplTest {
         given(fieldDefinition.getName()).willReturn("field");
         given(dataDefinition.getField("tree")).willReturn(fieldDefinition);
         SearchCriteriaBuilder searchCriteriaBuilder = mock(SearchCriteriaBuilder.class);
-        given(dataDefinition.find().add(SearchRestrictions.belongsTo("field", dataDefinition, 1L))).willReturn(
-                searchCriteriaBuilder);
+        given(
+                dataDefinition.find().createAlias(fieldDefinition.getName(), fieldDefinition.getName())
+                        .add(SearchRestrictions.eq(fieldDefinition.getName() + ".id", 1L))).willReturn(searchCriteriaBuilder);
 
         EntityList list = new EntityListImpl(dataDefinition, "tree", 1L);
 

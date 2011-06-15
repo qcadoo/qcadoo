@@ -80,8 +80,10 @@ public class EntityListImplTest {
         given(fieldDefinition.getName()).willReturn("field");
         given(fieldDefinition.getType()).willReturn(fieldType);
         given(dataDefinition.getField("hasMany")).willReturn(fieldDefinition);
-        given(dataDefinition.find().add(SearchRestrictions.belongsTo("field", dataDefinition, 1L)).list().getEntities())
-                .willReturn(entities);
+        given(
+                dataDefinition.find().createAlias(fieldDefinition.getName(), fieldDefinition.getName())
+                        .add(SearchRestrictions.eq(fieldDefinition.getName() + ".id", 1L)).list().getEntities()).willReturn(
+                entities);
         given(dataAccessService.get(dataDefinition, 1L)).willReturn(entity);
 
         EntityListImpl list = new EntityListImpl(dataDefinition, "hasMany", 1L);
@@ -102,8 +104,9 @@ public class EntityListImplTest {
         given(fieldDefinition.getName()).willReturn("field");
         given(dataDefinition.getField("hasMany")).willReturn(fieldDefinition);
         SearchCriteriaBuilder searchCriteriaBuilder = mock(SearchCriteriaBuilder.class);
-        given(dataDefinition.find().add(SearchRestrictions.belongsTo("field", dataDefinition, 1L))).willReturn(
-                searchCriteriaBuilder);
+        given(
+                dataDefinition.find().createAlias(fieldDefinition.getName(), fieldDefinition.getName())
+                        .add(SearchRestrictions.eq(fieldDefinition.getName() + ".id", 1L))).willReturn(searchCriteriaBuilder);
 
         EntityList list = new EntityListImpl(dataDefinition, "hasMany", 1L);
 
