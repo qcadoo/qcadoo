@@ -33,11 +33,26 @@ QCD.components.elements.CheckBox = function(_element, _mainController) {
 	var currentValue;
 	
 	var element = this.element;
+	var elementPath = this.elementPath;
 	
 	var translations = this.options.translations; 
 	
+	var hasListeners = (this.options.listeners && this.options.listeners.length > 0) ? true : false;
+	var fireOnChangeListeners = this.fireOnChangeListeners;
+	
+	var input = this.input;
+	
 	if (this.options.referenceName) {
 		mainController.registerReferenceName(this.options.referenceName, this);
+	}
+	
+	var constructor = function(_this) {
+		input.change(function() {
+			fireOnChangeListeners("onChange", [input.attr('checked')]);
+			if (hasListeners) {
+				mainController.callEvent("onChange", elementPath, null, null, null);
+			}
+		});
 	}
 	
 	this.getComponentData = function() {
@@ -99,5 +114,7 @@ QCD.components.elements.CheckBox = function(_element, _mainController) {
 		var height = _height ? _height-10 : 40;
 		this.input.parent().parent().height(height);
 	}
+	
+	constructor(this);
 	
 }
