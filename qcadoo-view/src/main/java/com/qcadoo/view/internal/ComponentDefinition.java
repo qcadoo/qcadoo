@@ -23,6 +23,8 @@
  */
 package com.qcadoo.view.internal;
 
+import org.springframework.context.ApplicationContext;
+
 import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.view.internal.api.ComponentPattern;
@@ -49,6 +51,8 @@ public final class ComponentDefinition {
     private boolean hasLabel;
 
     private TranslationService translationService;
+
+    private ApplicationContext applicationContext;
 
     private ViewDefinition viewDefinition;
 
@@ -156,8 +160,16 @@ public final class ComponentDefinition {
         return extensionPluginIdentifier;
     }
 
-    public void setExtensionPluginIdentifier(String extensionPluginIdentifier) {
+    public void setExtensionPluginIdentifier(final String extensionPluginIdentifier) {
         this.extensionPluginIdentifier = extensionPluginIdentifier;
+    }
+
+    public ApplicationContext getApplicationContext() {
+        return applicationContext;
+    }
+
+    public void setApplicationContext(final ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
     }
 
 }

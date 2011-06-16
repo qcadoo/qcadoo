@@ -38,6 +38,7 @@ import java.util.regex.Pattern;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.context.ApplicationContext;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -96,6 +97,8 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
 
     private final TranslationService translationService;
 
+    private final ApplicationContext applicationContext;
+
     private final InternalViewDefinition viewDefinition;
 
     private final Map<String, ComponentPattern> fieldEntityIdChangeListeners = new HashMap<String, ComponentPattern>();
@@ -136,6 +139,7 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
         this.defaultVisible = componentDefinition.isDefaultVisible();
         this.translationService = componentDefinition.getTranslationService();
         this.dataDefinition = componentDefinition.getDataDefinition();
+        this.applicationContext = componentDefinition.getApplicationContext();
         this.viewDefinition = (InternalViewDefinition) componentDefinition.getViewDefinition();
         this.viewDefinition.registerComponent(getReference(), getPath(), this);
     }
@@ -469,6 +473,10 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
 
     public final TranslationService getTranslationService() {
         return translationService;
+    }
+
+    public final ApplicationContext getApplicationContext() {
+        return applicationContext;
     }
 
     public final ViewDefinition getViewDefinition() {

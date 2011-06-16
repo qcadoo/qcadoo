@@ -27,9 +27,13 @@ import java.util.Locale;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.beans.BeansException;
 
 import com.qcadoo.view.api.ComponentState;
+import com.qcadoo.view.api.components.ganttChart.GanttChartItemResolver;
 import com.qcadoo.view.internal.ComponentDefinition;
+import com.qcadoo.view.internal.ComponentOption;
+import com.qcadoo.view.internal.components.ganttChart.GanttChartScaleImpl.ZoomLevel;
 import com.qcadoo.view.internal.patterns.AbstractComponentPattern;
 
 public class GanttChartComponentPattern extends AbstractComponentPattern {
@@ -38,17 +42,50 @@ public class GanttChartComponentPattern extends AbstractComponentPattern {
 
     private static final String JSP_PATH = "elements/ganttChart.jsp";
 
-    public GanttChartComponentPattern(ComponentDefinition componentDefinition) {
+    private GanttChartItemResolver resolver;
+
+    private int defaultStartDay = 0;
+
+    private int defaultEndDay = 21;
+
+    private ZoomLevel defaultZoomLevel = ZoomLevel.H3;
+
+    public GanttChartComponentPattern(final ComponentDefinition componentDefinition) {
         super(componentDefinition);
     }
 
     @Override
     protected ComponentState getComponentStateInstance() {
-        return new GanttChartComponentState();
+        return new GanttChartComponentState(resolver, defaultZoomLevel, defaultStartDay, defaultEndDay);
     }
 
     @Override
-    protected JSONObject getJsOptions(Locale locale) throws JSONException {
+    protected void initializeComponent() throws JSONException {
+        for (ComponentOption option : getOptions()) {
+            if ("resolver".equals(option.getType())) {
+                try {
+                    resolver = (GanttChartItemResolver) getApplicationContext().getBean(
+                            Thread.currentThread().getContextClassLoader().loadClass(option.getType()));
+                } catch (BeansException e) {
+                    throw new IllegalStateException("Gantt can't find resolver " + option.getType(), e);
+                } catch (ClassNotFoundException e) {
+                    throw new IllegalStateException("Gantt can't find resolver " + option.getType(), e);
+                }
+            } else if ("defaultZoomLevel".equals(option.getType())) {
+                defaultZoomLevel = ZoomLevel.valueOf(option.getValue());
+            } else if ("defaultStartDay".equals(option.getType())) {
+                defaultStartDay = Integer.valueOf(option.getValue());
+            } else if ("defaultEndDay".equals(option.getType())) {
+                defaultEndDay = Integer.valueOf(option.getValue());
+            }
+        }
+        if (resolver == null) {
+            throw new IllegalStateException("Gantt must contain 'resolver' option");
+        }
+    }
+
+    @Override
+    protected JSONObject getJsOptions(final Locale locale) throws JSONException {
         JSONObject translations = new JSONObject();
         addTranslation(translations, "header.label", locale);
         addTranslation(translations, "header.dateFrom", locale);

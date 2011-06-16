@@ -37,6 +37,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -93,6 +94,9 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
 
     @Autowired
     private HookFactory hookFactory;
+
+    @Autowired
+    private ApplicationContext applicationContext;
 
     @Autowired
     private RibbonParserService ribbonService;
@@ -237,7 +241,7 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
     }
 
     @Override
-    public Node getRootOfXmlDocument(Resource xmlFile) {
+    public Node getRootOfXmlDocument(final Resource xmlFile) {
         try {
             DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             Document document = documentBuilder.parse(xmlFile.getInputStream());
@@ -318,6 +322,7 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
         componentDefinition.setHasLabel(getBooleanAttribute(componentNode, "hasLabel", true));
         componentDefinition.setHasDescription(getBooleanAttribute(componentNode, "hasDescription", false));
         componentDefinition.setDataDefinition(customDataDefinition);
+        componentDefinition.setApplicationContext(applicationContext);
 
         return componentDefinition;
     }
