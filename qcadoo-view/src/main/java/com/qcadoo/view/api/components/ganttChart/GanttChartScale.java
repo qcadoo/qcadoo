@@ -2,7 +2,9 @@ package com.qcadoo.view.api.components.ganttChart;
 
 import java.util.Date;
 
-
+/**
+ * @since 0.4.3
+ */
 public interface GanttChartScale {
 
     Date getDateTo();

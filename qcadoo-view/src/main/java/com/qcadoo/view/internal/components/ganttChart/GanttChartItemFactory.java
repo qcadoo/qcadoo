@@ -8,6 +8,8 @@ import com.qcadoo.view.api.components.ganttChart.GanttChartItem;
 
 public class GanttChartItemFactory {
 
+    private final int precision = 10;
+
     private final int interval;
 
     private final SimpleDateFormat format = new SimpleDateFormat(DateUtils.DATE_TIME_FORMAT);
@@ -48,7 +50,7 @@ public class GanttChartItemFactory {
 
         long tmRegion = tmFrom + (tmInterval * region);
 
-        return region + ((double) (tmItem - tmRegion)) / tmInterval;
+        return ((int) ((region + ((double) (tmItem - tmRegion)) / tmInterval) * precision)) / (double) precision;
     }
 
 }

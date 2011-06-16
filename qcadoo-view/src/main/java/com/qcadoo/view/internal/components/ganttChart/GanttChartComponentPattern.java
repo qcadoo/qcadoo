@@ -27,7 +27,6 @@ import java.util.Locale;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.springframework.beans.BeansException;
 
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.components.ganttChart.GanttChartItemResolver;
@@ -42,7 +41,7 @@ public class GanttChartComponentPattern extends AbstractComponentPattern {
 
     private static final String JSP_PATH = "elements/ganttChart.jsp";
 
-    private GanttChartItemResolver resolver;
+    private String resolver;
 
     private int defaultStartDay = 0;
 
@@ -56,21 +55,15 @@ public class GanttChartComponentPattern extends AbstractComponentPattern {
 
     @Override
     protected ComponentState getComponentStateInstance() {
-        return new GanttChartComponentState(resolver, defaultZoomLevel, defaultStartDay, defaultEndDay);
+        return new GanttChartComponentState((GanttChartItemResolver) getApplicationContext().getBean(resolver), defaultZoomLevel,
+                defaultStartDay, defaultEndDay);
     }
 
     @Override
     protected void initializeComponent() throws JSONException {
         for (ComponentOption option : getOptions()) {
             if ("resolver".equals(option.getType())) {
-                try {
-                    resolver = (GanttChartItemResolver) getApplicationContext().getBean(
-                            Thread.currentThread().getContextClassLoader().loadClass(option.getType()));
-                } catch (BeansException e) {
-                    throw new IllegalStateException("Gantt can't find resolver " + option.getType(), e);
-                } catch (ClassNotFoundException e) {
-                    throw new IllegalStateException("Gantt can't find resolver " + option.getType(), e);
-                }
+                resolver = option.getValue();
             } else if ("defaultZoomLevel".equals(option.getType())) {
                 defaultZoomLevel = ZoomLevel.valueOf(option.getValue());
             } else if ("defaultStartDay".equals(option.getType())) {

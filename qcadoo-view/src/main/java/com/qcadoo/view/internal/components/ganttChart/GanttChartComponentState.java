@@ -145,7 +145,9 @@ public class GanttChartComponentState extends AbstractComponentState {
             for (Map.Entry<String, List<GanttChartItem>> entry : items.entrySet()) {
                 rowsArray.put(entry.getKey());
                 for (GanttChartItem item : entry.getValue()) {
-                    itemsArray.put(convertItemToJson(item));
+                    if (item != null) {
+                        itemsArray.put(convertItemToJson(item));
+                    }
                 }
             }
 
