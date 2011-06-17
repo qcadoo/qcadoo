@@ -80,8 +80,11 @@ public class GanttChartComponentState extends AbstractComponentState {
 
         String dateFromString = json.getString("dateFrom");
         String dateToString = json.getString("dateTo");
-        Date dateFrom = null;
-        Date dateTo = null;
+
+        DateTime now = new DateTime().withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0);
+
+        Date dateFrom = now.plusDays(defaultStartDay).toDate();
+        Date dateTo = now.plusDays(defaultEndDay).toDate();
 
         if (dateFromString == null || "".equals(dateFromString)) {
             dateFromErrorMessage = translate("errorMessage.emptyDate");
@@ -95,7 +98,6 @@ public class GanttChartComponentState extends AbstractComponentState {
         }
 
         if (dateToString == null || "".equals(dateToString)) {
-            dateTo = null;
             dateToErrorMessage = translate("errorMessage.emptyDate");
         } else {
             ValueAndError dateToVaE = dateType.toObject(null, dateToString);
@@ -183,7 +185,7 @@ public class GanttChartComponentState extends AbstractComponentState {
     protected class GanttChartComponentEventPerformer {
 
         public void initialize(final String[] args) {
-            DateTime now = new DateTime();
+            DateTime now = new DateTime().withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0);
             scale = new GanttChartScaleImpl(GanttChartComponentState.this, defaultZoomLevel, now.plusDays(defaultStartDay)
                     .toDate(), now.plusDays(defaultEndDay).toDate());
             dateFromErrorMessage = null;

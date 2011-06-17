@@ -24,7 +24,7 @@ public class GanttChartItemFactory {
         double from = getPosition(dateFrom, dateTo, itemDateFrom);
         double to = getPosition(dateFrom, dateTo, itemDateTo);
 
-        if (from == to) {
+        if (Math.abs(from - to) < (0.1 / precision)) {
             return null;
         }
 
@@ -42,8 +42,8 @@ public class GanttChartItemFactory {
             return 0;
         }
 
-        if (tmItem >= tmTo) {
-            return (tmTo - tmFrom) / tmInterval;
+        if (tmItem >= tmTo + 86400000L) {
+            return (double) (tmTo - tmFrom) / tmInterval;
         }
 
         int region = (int) (tmItem - tmFrom) / tmInterval;

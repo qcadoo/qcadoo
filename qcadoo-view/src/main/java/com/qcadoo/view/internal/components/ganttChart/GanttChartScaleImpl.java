@@ -50,6 +50,8 @@ public class GanttChartScaleImpl implements GanttChartScale {
 
     public GanttChartScaleImpl(final GanttChartComponentState ganttChartComponentState, final ZoomLevel zoomLevel,
             final Date dateFrom, final Date dateTo) {
+        System.out.println(" -------> " + dateFrom + " - " + dateTo);
+        System.out.println(" -------> " + dateFrom.getTime() + " - " + dateTo.getTime());
         this.ganttChartComponentState = ganttChartComponentState;
         this.zoomLevel = zoomLevel;
         this.dateFrom = dateFrom;
