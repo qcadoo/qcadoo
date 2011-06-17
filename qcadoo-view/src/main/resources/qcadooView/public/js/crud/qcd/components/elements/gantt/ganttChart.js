@@ -112,10 +112,11 @@ QCD.components.elements.GanttChart = function(_element, _mainController) {
 		if (! cellSettings.scale) {
 			return;
 		}
-		if (currentCellSettings && hasSameScaleAndRows(currentCellSettings, cellSettings)) {
-			updateItems(cellSettings.items);
-			return;
-		}
+		// TODO mina remove old items when scale or rows wasn't changed 
+		//if (currentCellSettings && hasSameScaleAndRows(currentCellSettings, cellSettings)) {
+		//	updateItems(cellSettings.items);
+		//	return;
+		//}
 		updateHeader(cellSettings);
 		
 		htmlElements.rowNamesConteiner.children().remove();
@@ -137,7 +138,6 @@ QCD.components.elements.GanttChart = function(_element, _mainController) {
 	}
 	
 	function updateItems(items) {
-		// TODO mina remove old items when scale or rows wasn't changed 
 		for (var itemIndex in items) {
 			var item = items[itemIndex];
 			addItem(item);
