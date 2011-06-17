@@ -248,6 +248,7 @@ QCD.components.elements.GanttChart = function(_element, _mainController) {
 	}
 	
 	function updateHeader(cellSettings) {
+		header.setCurrentScale(cellSettings.zoomLevel);
 		htmlElements.topRow1.children().remove();
 		htmlElements.topRow2.children().remove();
 		for (var i=0; i<cellSettings.scale.categories.length; i++) {
