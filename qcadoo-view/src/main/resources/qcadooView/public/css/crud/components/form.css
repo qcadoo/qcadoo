@@ -259,6 +259,20 @@
 	vertical-align: baseline;
 }
 
+.noLabel .label {
+	position: absolute;
+	top: 10px;
+	left: -7px;
+	width: 13px;
+	height: 8px;
+	z-index: 20;
+}
+.noLabel .label .error_box {
+	position: relative;
+	width: 13px;
+	height: 8px;
+}
+
 /** error messages **/
 
  .error_messages {

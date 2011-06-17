@@ -125,7 +125,7 @@
 	opacity: 0.7;
 	-moz-opacity: 0.7;
 	overflow:hidden;
-	visibility: hidden;
+	//visibility: hidden;
 }
 .ganttItem.ganttItemHovered {
 	filter: alpha(opacity=100);

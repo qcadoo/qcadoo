@@ -341,8 +341,10 @@ QCD.components.elements.GanttChart = function(_element, _mainController) {
 			itemElement.addClass("ganttItemType_"+item.type);
 		}	
 
-		itemElement.html(item.info.name);
-		itemElement.shorten({width: width, tail: "...", tooltip: false});
+		if (width > 30) {
+			itemElement.html(item.info.name);
+			itemElement.shorten({width: width, tail: "...", tooltip: false});
+		}
 			
 		var description = "<div class='ganttItemDescriptionName'>"+item.info.name+"</div>";
 		description += "<div class='ganttItemDescriptionInfo'>";
