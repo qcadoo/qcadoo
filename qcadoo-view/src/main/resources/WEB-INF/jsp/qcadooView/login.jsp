@@ -118,10 +118,14 @@
 			}
 
 			var currentLogin = null;
-			if (window.parent && window.parent.getCurrentUserLogin) {
-				currentLogin = window.parent.getCurrentUserLogin();
-			} else if (window.opener && window.opener.controller && window.opener.controller.getCurrentUserLogin) {
-				currentLogin = window.opener.controller.getCurrentUserLogin();
+			try {
+				if (window.parent && window.parent.getCurrentUserLogin) {
+					currentLogin = window.parent.getCurrentUserLogin();
+				} else if (window.opener && window.opener.controller && window.opener.controller.getCurrentUserLogin) {
+					currentLogin = window.opener.controller.getCurrentUserLogin();
+				}
+			} catch (err) {
+				// ignore
 			}
 			
 			if (currentLogin) {
