@@ -23,9 +23,14 @@
  */
 package com.qcadoo.view.internal.components.ganttChart;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.joda.time.DateTime;
 import org.json.JSONArray;
@@ -52,6 +57,8 @@ public class GanttChartComponentState extends AbstractComponentState {
     private String globalErrorMessage;
 
     Map<String, List<GanttChartItem>> items;
+
+    Map<String, List<GanttChartItem>> collisionItems;
 
     protected static final DateType dateType = new DateType();
 
@@ -155,6 +162,16 @@ public class GanttChartComponentState extends AbstractComponentState {
 
             json.put("rows", rowsArray);
             json.put("items", itemsArray);
+
+            JSONArray collisionItemsArray = new JSONArray();
+            for (Map.Entry<String, List<GanttChartItem>> entry : collisionItems.entrySet()) {
+                for (GanttChartItem item : entry.getValue()) {
+                    if (item != null) {
+                        collisionItemsArray.put(convertItemToJson(item));
+                    }
+                }
+            }
+            json.put("collisions", collisionItemsArray);
         }
 
         return json;
@@ -198,8 +215,80 @@ public class GanttChartComponentState extends AbstractComponentState {
             if (globalErrorMessage != null) {
                 return;
             }
-
             items = itemResolver.resolve(scale);
+            updateCollisionItems();
+        }
+
+        private void updateCollisionItems() {
+            collisionItems = new HashMap<String, List<GanttChartItem>>();
+            for (Entry<String, List<GanttChartItem>> rowEntry : items.entrySet()) {
+
+                List<GanttChartItem> sortedItems = new ArrayList<GanttChartItem>(rowEntry.getValue());
+                Collections.sort(sortedItems, new Comparator<GanttChartItem>() {
+
+                    @Override
+                    public int compare(GanttChartItem arg0, GanttChartItem arg1) {
+                        return Double.valueOf(arg0.getFrom()).compareTo(Double.valueOf(arg1.getFrom()));
+                    }
+                });
+
+                List<GanttChartItem> collisionRow = getCollisionsList(sortedItems, rowEntry.getKey());
+                if (!collisionRow.isEmpty()) {
+                    collisionItems.put(rowEntry.getKey(), collisionRow);
+                }
+
+            }
+        }
+
+        private List<GanttChartItem> getCollisionsList(final List<GanttChartItem> sortedItems, final String row) {
+
+            List<GanttChartItem> collisionRow = new ArrayList<GanttChartItem>();
+
+            GanttChartModifiableItem collisionItem = null;
+            GanttChartItem previousItem = null;
+
+            for (GanttChartItem item : sortedItems) {
+
+                if (previousItem != null && item.getFrom() < previousItem.getTo()) {
+
+                    if (collisionItem != null && item.getFrom() < collisionItem.getTo()) { // same collision
+
+                        if (item.getTo() > collisionItem.getTo()) { // not entirely included in existing collision
+                            collisionItem.setTo(item.getTo());
+                            collisionItem.setDateTo(item.getDateTo());
+                        }
+
+                        collisionItem.setName(collisionItem.getName() + "<div>- " + item.getName() + "</div>");
+
+                    } else { // different collision
+
+                        if (collisionItem != null) {
+                            collisionRow.add(collisionItem);
+                        }
+
+                        String collisionName = translate("collisionItemHeader") + "<div>- " + previousItem.getName()
+                                + "</div><div>- " + item.getName() + "</div>";
+
+                        if (item.getTo() < previousItem.getTo()) { // entirely included in previous item
+                            collisionItem = new GanttChartItemImpl(row, collisionName, item.getDateFrom(), item.getDateTo(),
+                                    item.getFrom(), item.getTo());
+                        } else {
+                            collisionItem = new GanttChartItemImpl(row, collisionName, item.getDateFrom(),
+                                    previousItem.getDateTo(), item.getFrom(), previousItem.getTo());
+                        }
+
+                    }
+
+                }
+
+                previousItem = item;
+            }
+
+            if (collisionItem != null) {
+                collisionRow.add(collisionItem);
+            }
+
+            return collisionRow;
         }
     }
 

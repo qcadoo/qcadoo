@@ -133,12 +133,29 @@
 	-moz-opacity:1;
 	z-index: 200;
 }
+.ganttItem.ganttCollisionItem {
+	background-color: red;
+	background-repeat: no-repeat;
+	background-position: 4px 1px;
+	z-index: 210;
+	filter: alpha(opacity=100);
+	opacity: 1;
+	-moz-opacity:1;
+}
+.ganttItem.ganttCollisionItem.withIcon {
+	background-image: url('/qcadooView/public/img/core/icons/warningIcon24.png');
+	padding-left: 32px;
+}
 .ganttItem.ganttItemType_disabled {
 	background-color: #888888;
 }
 
 .ganttItemDescriptionName {
 	font-size: 14px;
+}
+.ganttItemDescriptionName div {
+	color: #333;
+	text-align: left;
 }
 .ganttItemDescriptionInfo {
 	text-align: left;
