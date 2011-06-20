@@ -39,7 +39,7 @@ String ctx = request.getContextPath();
 
 		window.mainController.setWindowHeader("${headerLabel}");
 
-		setTimeout('errorTimePassed = true;', 60000);
+		setTimeout('errorTimePassed = true;', 120000);
 		checkStatusTimer = setTimeout('checkStatus();', 5000);
 		
 		$.ajax({
