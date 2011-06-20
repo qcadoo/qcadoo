@@ -35,7 +35,7 @@
 
 <tiles:insertTemplate template="formComponent.jsp">
 	<tiles:putAttribute name="component" value="${component}" />
-	<tiles:putAttribute name="componentType" value="time" />
+	<tiles:putAttribute name="componentType" value="input" />
 	<tiles:putAttribute name="componentBody">
 		<input type="text" id="${component['path']}_input" tabindex="${component['indexOrder']}" />
 	</tiles:putAttribute>
