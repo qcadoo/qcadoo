@@ -67,6 +67,7 @@ QCD.components.elements.GanttChart = function(_element, _mainController) {
 	}
 	
 	this.setComponentValue = function(value) {
+		QCD.info(value);
 		applySettings(value);
 		header.enableButtons();
 		header.setDateFromValue(value.dateFrom, value.dateFromErrorMessage);
@@ -132,15 +133,19 @@ QCD.components.elements.GanttChart = function(_element, _mainController) {
 		htmlElements.scrollElement.height(cellSettings.rows.length * constants.CELL_HEIGHT);
 		updateScroll();
 		
-		updateItems(cellSettings.items);
+		updateItems(cellSettings.items, cellSettings.collisions);
 		
 		currentCellSettings = cellSettings;
 	}
 	
-	function updateItems(items) {
+	function updateItems(items, collisions) {
 		for (var itemIndex in items) {
 			var item = items[itemIndex];
-			addItem(item);
+			addItem(item, false);
+		}
+		for (var itemIndex in collisions) {
+			var item = collisions[itemIndex];
+			addItem(item, true);
 		}
 	}
 	
@@ -326,7 +331,7 @@ QCD.components.elements.GanttChart = function(_element, _mainController) {
 		return rowElement;
 	}
 	
-	function addItem(item) {
+	function addItem(item, isCollision) {
 		var row = rowsByName[item.row];
 		var itemElement = $("<div>").addClass("ganttItem");
 		itemElement.css("line-height", (constants.CELL_HEIGHT - 5)+"px");
@@ -341,12 +346,23 @@ QCD.components.elements.GanttChart = function(_element, _mainController) {
 		if (item.type) {
 			itemElement.addClass("ganttItemType_"+item.type);
 		}	
-
-		if (width > 30) {
-			itemElement.html(item.info.name);
-			itemElement.shorten({width: width, tail: "...", tooltip: false});
+		
+		if (isCollision) {
+			itemElement.addClass("ganttCollisionItem");
+			if (width > 30) {
+				itemElement.addClass("withIcon");
+				itemElement.html(item.info.name);
+				itemElement.shorten({width: width, tail: "...", tooltip: false});
+			} else if (width > 15) {
+				itemElement.addClass("withIcon");
+			}
+		} else {
+			if (width > 30) {
+				itemElement.html(item.info.name);
+				itemElement.shorten({width: width, tail: "...", tooltip: false});
+			}			
 		}
-			
+
 		var description = "<div class='ganttItemDescriptionName'>"+item.info.name+"</div>";
 		description += "<div class='ganttItemDescriptionInfo'>";
 		description += "<div class='ganttItemDescriptionLabel'>"+_this.options.translations["description.dateFrom"]+"</div>";

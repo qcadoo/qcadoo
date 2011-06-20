@@ -23,21 +23,19 @@
  */
 package com.qcadoo.view.internal.components.ganttChart;
 
-import com.qcadoo.view.api.components.ganttChart.GanttChartItem;
-
-public class GanttChartItemImpl implements GanttChartItem {
+public class GanttChartItemImpl implements GanttChartModifiableItem {
 
     private final String rowName;
 
-    private final double from;
+    private double from;
 
-    private final double to;
+    private double to;
 
-    private final String name;
+    private String name;
 
-    private final String dateFrom;
+    private String dateFrom;
 
-    private final String dateTo;
+    private String dateTo;
 
     public GanttChartItemImpl(final String row, final String name, final String dateFrom, final String dateTo, final double from,
             final double to) {
@@ -77,6 +75,31 @@ public class GanttChartItemImpl implements GanttChartItem {
     @Override
     public double getTo() {
         return to;
+    }
+
+    @Override
+    public void setFrom(double from) {
+        this.from = from;
+    }
+
+    @Override
+    public void setTo(double to) {
+        this.to = to;
+    }
+
+    @Override
+    public void setDateFrom(String dateFrom) {
+        this.dateFrom = dateFrom;
+    }
+
+    @Override
+    public void setDateTo(String dateTo) {
+        this.dateTo = dateTo;
+    }
+
+    @Override
+    public void setName(String name) {
+        this.name = name;
     }
 
 }
