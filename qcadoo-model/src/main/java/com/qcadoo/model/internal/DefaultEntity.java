@@ -140,7 +140,13 @@ public final class DefaultEntity implements Entity {
             if (field.getValue() instanceof Collection) {
                 continue;
             }
-            hcb.append(field.getKey()).append(field.getValue());
+            if (field.getValue() instanceof Entity) {
+                Entity entity = (Entity) field.getValue();
+                hcb.append(field.getKey()).append(entity.getDataDefinition().getPluginIdentifier())
+                        .append(entity.getDataDefinition().getName()).append(entity.getId());
+            } else {
+                hcb.append(field.getKey()).append(field.getValue());
+            }
         }
 
         return hcb.toHashCode();
