@@ -82,11 +82,23 @@ QCD.components.elements.GanttChart = function(_element, _mainController) {
 		header.setDateToValue(value.dateTo, value.dateToErrorMessage);
 		header.setDateToValue(value.dateTo, value.dateToErrorMessage);
 		header.setGlobalErrorMessage(value.globalErrorMessage);
+		if (value.selectedEntityId) {
+			if (selectedItem) {
+				selectedItem.removeClass("ganttItemSelected");	
+			}
+			var newSelectedItem = $("#"+_this.elementSearchName+"_item_"+value.selectedEntityId);
+			selectedItem = newSelectedItem;
+			newSelectedItem.addClass("ganttItemSelected");
+		}
 		QCD.components.elements.utils.LoadingIndicator.unblockElement(element);
 	}
 	
 	this.performInitialize = function() {
 		refreshContent();
+	}
+	
+	function(setSelected) {
+		
 	}
 	
 	this.setComponentLoading = function(isLoadingVisible) {
@@ -385,9 +397,12 @@ QCD.components.elements.GanttChart = function(_element, _mainController) {
 		description += "<div class='ganttItemDescriptionLabel'>"+_this.options.translations["description.dateTo"]+"</div>";
 		description += "<div class='ganttItemDescriptionValue'>"+item.info.dateTo+"</div></div>";
 		
-		itemElement.CreateBubblePopup({ innerHtml: description, themePath: "/qcadooView/public/css/core/lib/jquerybubblepopup-theme" });
+		if (_this.options.hasPopupInfo) {
+			itemElement.CreateBubblePopup({ innerHtml: description, themePath: "/qcadooView/public/css/core/lib/jquerybubblepopup-theme" });
+		}
 		
 		if (item.id) {
+			itemElement.attr("id", _this.elementPath+"_item_"+item.id);
 			itemElement[0].entityId = item.id; // add entityId to DOM element
 			itemElement.css("cursor", "pointer");
 			itemElement.click(function() {

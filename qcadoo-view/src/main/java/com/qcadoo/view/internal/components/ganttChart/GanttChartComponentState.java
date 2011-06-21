@@ -186,6 +186,8 @@ public class GanttChartComponentState extends AbstractComponentState {
                 }
             }
             json.put("collisions", collisionItemsArray);
+
+            json.put("selectedEntityId", selectedEntityId);
         }
 
         return json;
