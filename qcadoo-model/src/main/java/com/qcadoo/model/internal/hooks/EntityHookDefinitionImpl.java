@@ -40,7 +40,7 @@ public final class EntityHookDefinitionImpl extends HookDefinitionImpl implement
 
     @Override
     public String getName() {
-        return getBean().getClass().getCanonicalName() + "." + getMethod().getName();
+        return getBean().getClass().getCanonicalName().split("\\$\\$")[0] + "." + getMethod().getName();
     }
 
     @Override
