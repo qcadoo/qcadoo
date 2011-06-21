@@ -70,6 +70,8 @@ public class GanttChartComponentState extends AbstractComponentState {
 
     private final ZoomLevel defaultZoomLevel;
 
+    private Long selectedEntityId;
+
     public GanttChartComponentState(final GanttChartItemResolver itemResolver, final ZoomLevel defaultZoomLevel,
             final int defaultStartDay, final int defaultEndDay) {
         this.itemResolver = itemResolver;
@@ -78,15 +80,23 @@ public class GanttChartComponentState extends AbstractComponentState {
         this.defaultEndDay = defaultEndDay;
         registerEvent("refresh", eventPerformer, "refresh");
         registerEvent("initialize", eventPerformer, "initialize");
+        registerEvent("select", eventPerformer, "selectEntity");
+    }
+
+    @Override
+    public Object getFieldValue() {
+        return selectedEntityId;
     }
 
     @Override
     protected void initializeContent(final JSONObject json) throws JSONException {
 
-        ZoomLevel zoomLevel = ZoomLevel.valueOf(json.getString("scale"));
+        JSONObject headerDataObject = json.getJSONObject("headerParameters");
 
-        String dateFromString = json.getString("dateFrom");
-        String dateToString = json.getString("dateTo");
+        ZoomLevel zoomLevel = ZoomLevel.valueOf(headerDataObject.getString("scale"));
+
+        String dateFromString = headerDataObject.getString("dateFrom");
+        String dateToString = headerDataObject.getString("dateTo");
 
         DateTime now = new DateTime().withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0);
 
@@ -125,13 +135,17 @@ public class GanttChartComponentState extends AbstractComponentState {
             }
         }
 
-        requestRender();
-        requestUpdateState();
+        if (json.has("selectedEntityId")) {
+            selectedEntityId = json.getLong("selectedEntityId");
+        }
+
     }
 
     @Override
     protected JSONObject renderContent() throws JSONException {
+
         JSONObject json = new JSONObject();
+
         json.put("zoomLevel", scale.getZoomLevel().toString());
 
         json.put("dateFromErrorMessage", dateFromErrorMessage);
@@ -180,6 +194,7 @@ public class GanttChartComponentState extends AbstractComponentState {
     private JSONObject convertItemToJson(final GanttChartItem item) throws JSONException {
         JSONObject json = new JSONObject();
         json.put("row", item.getRowName());
+        json.put("id", item.getEntityId());
         json.put("from", item.getFrom());
         json.put("to", item.getTo());
 
@@ -217,6 +232,12 @@ public class GanttChartComponentState extends AbstractComponentState {
             }
             items = itemResolver.resolve(scale);
             updateCollisionItems();
+            requestRender();
+            requestUpdateState();
+        }
+
+        public void selectEntity(final String[] args) {
+            notifyEntityIdChangeListeners(selectedEntityId);
         }
 
         private void updateCollisionItems() {
@@ -270,10 +291,10 @@ public class GanttChartComponentState extends AbstractComponentState {
                                 + "</div><div>- " + item.getName() + "</div>";
 
                         if (item.getTo() < previousItem.getTo()) { // entirely included in previous item
-                            collisionItem = new GanttChartItemImpl(row, collisionName, item.getDateFrom(), item.getDateTo(),
-                                    item.getFrom(), item.getTo());
+                            collisionItem = new GanttChartItemImpl(row, collisionName, null, item.getDateFrom(),
+                                    item.getDateTo(), item.getFrom(), item.getTo());
                         } else {
-                            collisionItem = new GanttChartItemImpl(row, collisionName, item.getDateFrom(),
+                            collisionItem = new GanttChartItemImpl(row, collisionName, null, item.getDateFrom(),
                                     previousItem.getDateTo(), item.getFrom(), previousItem.getTo());
                         }
 

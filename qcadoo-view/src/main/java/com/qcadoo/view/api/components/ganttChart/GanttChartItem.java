@@ -9,6 +9,8 @@ public interface GanttChartItem {
 
     String getName();
 
+    Long getEntityId();
+
     String getDateFrom();
 
     String getDateTo();

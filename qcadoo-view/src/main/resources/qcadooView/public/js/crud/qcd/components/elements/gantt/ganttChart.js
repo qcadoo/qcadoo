@@ -55,6 +55,8 @@ QCD.components.elements.GanttChart = function(_element, _mainController) {
 	
 	var header;
 	
+	var selectedItem;
+	
 	function constructor() {
 		createGrantt();
 		QCD.components.elements.utils.LoadingIndicator.blockElement(element);
@@ -63,7 +65,13 @@ QCD.components.elements.GanttChart = function(_element, _mainController) {
 	
 	this.getComponentValue = function() {
 		var headerParameters = header.getCurrentParameters();
-		return headerParameters;
+		var data = {
+			headerParameters: headerParameters
+		};
+		if (selectedItem && selectedItem[0].entityId) {
+			data.selectedEntityId = selectedItem[0].entityId;
+		}
+		return data;
 	}
 	
 	this.setComponentValue = function(value) {
@@ -98,6 +106,12 @@ QCD.components.elements.GanttChart = function(_element, _mainController) {
 	
 	this.onDateChanged = function() {
 		refreshContent();
+	}
+	
+	function onSelectChange() {
+		if (_this.options.listeners.length > 0) {
+			mainController.callEvent("select", _this.elementPath, null);
+		}
 	}
 	
 	function refreshContent() {
@@ -372,6 +386,20 @@ QCD.components.elements.GanttChart = function(_element, _mainController) {
 		description += "<div class='ganttItemDescriptionValue'>"+item.info.dateTo+"</div></div>";
 		
 		itemElement.CreateBubblePopup({ innerHtml: description, themePath: "/qcadooView/public/css/core/lib/jquerybubblepopup-theme" });
+		
+		if (item.id) {
+			itemElement[0].entityId = item.id; // add entityId to DOM element
+			itemElement.css("cursor", "pointer");
+			itemElement.click(function() {
+				var itemElement = $(this)
+				if (selectedItem) {
+					selectedItem.removeClass("ganttItemSelected");	
+				}
+				selectedItem = itemElement;
+				itemElement.addClass("ganttItemSelected");
+				onSelectChange();
+			});
+		}
 		
 		itemElement.mouseover(function() {
 			$(this).addClass("ganttItemHovered");

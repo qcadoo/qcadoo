@@ -177,9 +177,9 @@ public class GanttChartScaleImpl implements GanttChartScale {
     }
 
     @Override
-    public GanttChartItem createGanttChartItem(final String rowName, final String name, final Date itemDateFrom,
-            final Date itemDateTo) {
-        return ganttChartItemFactory.createGanttChartItem(rowName, name, dateFrom, dateTo, itemDateFrom, itemDateTo);
+    public GanttChartItem createGanttChartItem(final String rowName, final String name, final Long entityId,
+            final Date itemDateFrom, final Date itemDateTo) {
+        return ganttChartItemFactory.createGanttChartItem(rowName, name, entityId, dateFrom, dateTo, itemDateFrom, itemDateTo);
     }
 
 }

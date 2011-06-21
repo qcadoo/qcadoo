@@ -27,6 +27,8 @@ public class GanttChartItemImpl implements GanttChartModifiableItem {
 
     private final String rowName;
 
+    private final Long entityId;
+
     private double from;
 
     private double to;
@@ -37,10 +39,11 @@ public class GanttChartItemImpl implements GanttChartModifiableItem {
 
     private String dateTo;
 
-    public GanttChartItemImpl(final String row, final String name, final String dateFrom, final String dateTo, final double from,
-            final double to) {
+    public GanttChartItemImpl(final String row, final String name, final Long entityId, final String dateFrom,
+            final String dateTo, final double from, final double to) {
         this.rowName = row;
         this.name = name;
+        this.entityId = entityId;
         this.dateFrom = dateFrom;
         this.dateTo = dateTo;
         this.from = from;
@@ -100,6 +103,11 @@ public class GanttChartItemImpl implements GanttChartModifiableItem {
     @Override
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public Long getEntityId() {
+        return entityId;
     }
 
 }

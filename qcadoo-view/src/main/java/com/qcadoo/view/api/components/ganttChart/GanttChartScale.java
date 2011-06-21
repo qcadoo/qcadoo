@@ -11,6 +11,7 @@ public interface GanttChartScale {
 
     Date getDateFrom();
 
-    GanttChartItem createGanttChartItem(final String rowName, final String name, final Date dateFrom, final Date dateTo);
+    GanttChartItem createGanttChartItem(final String rowName, final String name, final Long entityId, final Date dateFrom,
+            final Date dateTo);
 
 }
