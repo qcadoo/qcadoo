@@ -69,11 +69,6 @@ QCD.components.elements.Calendar = function(_element, _mainController) {
 		$.mask.definitions['2']='[0-2]';
 		$.mask.definitions['3']='[0-3]';
 		$.mask.definitions['6']='[0-5]';
-		input.mask("2999-19-39");
-		
-		if(withTimePicker) {
-			timeInput.mask("29:69:69");
-		}
 		
 		options = $.datepicker.regional[locale];
 		
@@ -261,9 +256,17 @@ QCD.components.elements.Calendar = function(_element, _mainController) {
 		if (isEnabled) {
 			calendar.addClass("enabled");
 			input.datepicker("enable");
+			input.mask("2999-19-39");
+			if(withTimePicker) {
+				timeInput.mask("29:69:69");
+			}
 		} else {
 			calendar.removeClass("enabled");
-			input.datepicker("disable")
+			input.datepicker("disable");
+			input.unmask();
+			if(withTimePicker) {
+				timeInput.unmask();
+			}
 		}
 	}
 	

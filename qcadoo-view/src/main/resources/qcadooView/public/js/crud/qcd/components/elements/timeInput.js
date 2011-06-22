@@ -36,7 +36,6 @@ QCD.components.elements.TimeInput = function(_element, _mainController) {
 	
 	function constructor(_this) {
 		$.mask.definitions['6']='[0-5]';
-		input.mask("99:69:69");
 		input.change(function() {
 			inputDataChanged();
 		});
@@ -101,6 +100,13 @@ QCD.components.elements.TimeInput = function(_element, _mainController) {
 		var height = _height ? _height-10 : 40;
 		this.input.parent().parent().parent().height(height);
 		this.input.parent().parent().height(height);
+	}
+	this.setFormComponentEnabled = function(isEnabled) {
+		if (isEnabled) {
+			input.mask("99:69:69");
+		} else {
+			input.unmask();
+		}
 	}
 	
 	constructor(this);
