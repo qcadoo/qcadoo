@@ -57,8 +57,16 @@ public class GanttChartComponentPattern extends AbstractComponentPattern {
 
     @Override
     protected ComponentState getComponentStateInstance() {
-        return new GanttChartComponentState((GanttChartItemResolver) getApplicationContext().getBean(resolver), defaultZoomLevel,
-                defaultStartDay, defaultEndDay);
+        return new GanttChartComponentState(getResolver(resolver), defaultZoomLevel, defaultStartDay, defaultEndDay);
+    }
+
+    private GanttChartItemResolver getResolver(final String resolver) {
+        try {
+            return (GanttChartItemResolver) getApplicationContext().getBean(
+                    Thread.currentThread().getContextClassLoader().loadClass(resolver));
+        } catch (ClassNotFoundException e) {
+            throw new IllegalStateException(e.getMessage(), e);
+        }
     }
 
     @Override
