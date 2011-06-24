@@ -94,7 +94,7 @@ QCD.components.elements.Calendar = function(_element, _mainController) {
 			inputDataChanged();
 		}
 		
-		datepickerElement = $("<div>").css("position", "absolute").css("zIndex", 100).css("right", "15px").css("line-height", "14px");
+		datepickerElement = $("<div>").css("position", "absolute").css("zIndex", 300).css("right", "15px").css("line-height", "14px");
 		containerElement.css("position", "relative");
 		datepickerElement.hide();
 		

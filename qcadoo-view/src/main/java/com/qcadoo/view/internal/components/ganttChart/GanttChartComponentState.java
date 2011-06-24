@@ -169,7 +169,7 @@ public class GanttChartComponentState extends AbstractComponentState {
                 rowsArray.put(entry.getKey());
                 for (GanttChartItem item : entry.getValue()) {
                     if (item != null) {
-                        itemsArray.put(convertItemToJson(item));
+                        itemsArray.put(item.getAsJson());
                     }
                 }
             }
@@ -181,7 +181,7 @@ public class GanttChartComponentState extends AbstractComponentState {
             for (Map.Entry<String, List<GanttChartItem>> entry : collisionItems.entrySet()) {
                 for (GanttChartItem item : entry.getValue()) {
                     if (item != null) {
-                        collisionItemsArray.put(convertItemToJson(item));
+                        collisionItemsArray.put(item.getAsJson());
                     }
                 }
             }
@@ -189,24 +189,6 @@ public class GanttChartComponentState extends AbstractComponentState {
 
             json.put("selectedEntityId", selectedEntityId);
         }
-
-        return json;
-    }
-
-    private JSONObject convertItemToJson(final GanttChartItem item) throws JSONException {
-        JSONObject json = new JSONObject();
-        json.put("row", item.getRowName());
-        json.put("id", item.getEntityId());
-        json.put("from", item.getFrom());
-        json.put("to", item.getTo());
-
-        // type: 'disabled',
-
-        JSONObject info = new JSONObject();
-        info.put("name", item.getName());
-        info.put("dateFrom", item.getDateFrom());
-        info.put("dateTo", item.getDateTo());
-        json.put("info", info);
 
         return json;
     }
@@ -267,7 +249,7 @@ public class GanttChartComponentState extends AbstractComponentState {
 
             List<GanttChartItem> collisionRow = new ArrayList<GanttChartItem>();
 
-            GanttChartModifiableItem collisionItem = null;
+            GanttChartConflictItem collisionItem = null;
             GanttChartItem previousItem = null;
 
             for (GanttChartItem item : sortedItems) {
@@ -281,27 +263,24 @@ public class GanttChartComponentState extends AbstractComponentState {
                             collisionItem.setDateTo(item.getDateTo());
                         }
 
-                        collisionItem.setName(collisionItem.getName() + "<div>- " + item.getName() + "</div>");
-
                     } else { // different collision
 
                         if (collisionItem != null) {
                             collisionRow.add(collisionItem);
                         }
 
-                        String collisionName = translate("collisionItemHeader") + "<div>- " + previousItem.getName()
-                                + "</div><div>- " + item.getName() + "</div>";
-
                         if (item.getTo() < previousItem.getTo()) { // entirely included in previous item
-                            collisionItem = new GanttChartItemImpl(row, collisionName, null, item.getDateFrom(),
-                                    item.getDateTo(), item.getFrom(), item.getTo());
+                            collisionItem = new GanttChartConflictItem(row, item.getDateFrom(), item.getDateTo(), item.getFrom(),
+                                    item.getTo());
                         } else {
-                            collisionItem = new GanttChartItemImpl(row, collisionName, null, item.getDateFrom(),
-                                    previousItem.getDateTo(), item.getFrom(), previousItem.getTo());
+                            collisionItem = new GanttChartConflictItem(row, item.getDateFrom(), previousItem.getDateTo(),
+                                    item.getFrom(), previousItem.getTo());
                         }
+                        collisionItem.addItem(previousItem);
 
                     }
 
+                    collisionItem.addItem(item);
                 }
 
                 previousItem = item;

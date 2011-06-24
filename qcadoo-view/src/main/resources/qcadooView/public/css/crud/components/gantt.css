@@ -134,7 +134,6 @@
 	z-index: 200;
 }
 .ganttItem.ganttItemSelected {
-	//background-color: #FFDB67;
 	background-color: #FC9B2B;
 }
 .ganttItem.ganttCollisionItem {
@@ -145,6 +144,38 @@
 	filter: alpha(opacity=100);
 	opacity: 1;
 	-moz-opacity:1;
+	overflow: visible;
+}
+.collisionInfoBoxOverlay {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+	z-index: 210;
+	background: blue;
+	display: none;
+}
+.collisionInfoBoxOverlay .collisionInfoBoxWrapper {
+	position: absolute;
+	top: 10px;
+	bottom: 10px;
+	left: 200px;
+	right: 200px;
+	background: green;
+	overflow: auto;
+}
+.collisionInfoBoxOverlay .collisionInfoBoxWrapper .collisionInfoBox {
+	border: solid black 1px;
+	background: red;
+}
+.collisionInfoBoxOverlay .collisionInfoBoxWrapper .collisionInfoBox .collisionInfoBoxItem {
+	border: solid black 1px;
+	background: pink;
+	cursor: pointer;
+}
+.collisionInfoBoxOverlay .collisionInfoBoxWrapper .collisionInfoBox .collisionInfoBoxItem.ganttItemSelected {
+	background: brown;
 }
 .ganttItem.ganttCollisionItem.withIcon {
 	background-image: url('/qcadooView/public/img/core/icons/warningIcon24.png');

@@ -57,9 +57,22 @@ QCD.components.elements.GanttChart = function(_element, _mainController) {
 	
 	var selectedItem;
 	
+	var collisionInfoBox;
+	var collisionInfoBoxOverlay;
+	
 	function constructor() {
 		createGrantt();
 		QCD.components.elements.utils.LoadingIndicator.blockElement(element);
+		
+		collisionInfoBox = $("<div>").addClass("collisionInfoBox").click(function(){return false;});
+		var collisionInfoBoxWrapper = $("<div>").addClass("collisionInfoBoxWrapper");
+		collisionInfoBoxOverlay = $("<div>").addClass("collisionInfoBoxOverlay").click(function(){$(this).hide()});
+		collisionInfoBoxOverlay.append(collisionInfoBoxWrapper);
+		collisionInfoBoxWrapper.append(collisionInfoBox);
+		element.css("position", "relative");
+		element.append(collisionInfoBoxOverlay);
+		//var collisionCloseButton = $("<div>").addClass("collisionInfoBoxCloseButton");
+		
 		header.init();
 	}
 	
@@ -75,7 +88,6 @@ QCD.components.elements.GanttChart = function(_element, _mainController) {
 	}
 	
 	this.setComponentValue = function(value) {
-		QCD.info(value);
 		applySettings(value);
 		header.enableButtons();
 		header.setDateFromValue(value.dateFrom, value.dateFromErrorMessage);
@@ -90,6 +102,7 @@ QCD.components.elements.GanttChart = function(_element, _mainController) {
 			selectedItem = newSelectedItem;
 			newSelectedItem.addClass("ganttItemSelected");
 		}
+		collisionInfoBoxOverlay.hide();
 		QCD.components.elements.utils.LoadingIndicator.unblockElement(element);
 	}
 	
@@ -198,6 +211,38 @@ QCD.components.elements.GanttChart = function(_element, _mainController) {
 		return true;
 	}
 	
+	function showCollisionBox(ganttItem) {
+		collisionInfoBox.children().remove();
+		collisionInfoBox.append($("<div>").html("CONFLICT:"));
+		for (var i in ganttItem.items) {
+			var collisionItem = ganttItem.items[i];
+			
+			var collisionItemElement = $("<div>").addClass("collisionInfoBoxItem").html(collisionItem.info.name);
+			collisionItemElement.attr("id", _this.elementPath+"_collisionItem_"+collisionItem.id);
+			collisionItemElement[0].entityId = collisionItem.id;
+			
+			collisionItemElement.click(function() {
+				var itemElement = $(this);
+				var itemId = this.entityId;
+				if (selectedItem) {
+					selectedItem.removeClass("ganttItemSelected");
+					$("#"+_this.elementSearchName+"_collisionItem_"+selectedItem[0].entityId).removeClass("ganttItemSelected");
+				}
+				var ganttElement = $("#"+_this.elementSearchName+"_item_"+itemId);
+				selectedItem = ganttElement;
+				itemElement.addClass("ganttItemSelected");
+				ganttElement.addClass("ganttItemSelected");
+				onSelectChange();
+			});
+			
+			collisionInfoBox.append(collisionItemElement);
+		}
+		collisionInfoBoxOverlay.show();
+		if (selectedItem) {
+			$("#"+_this.elementSearchName+"_collisionItem_"+selectedItem[0].entityId).addClass("ganttItemSelected");
+		}
+	}
+	
 	function createGrantt() {
 		header = new QCD.components.elements.GanttChartHeader(_this, _this.elementPath+"_header", _this.options.translations);
 		element.append(header.getHeaderElement());
@@ -261,8 +306,8 @@ QCD.components.elements.GanttChart = function(_element, _mainController) {
 		
 		htmlElements.scrollContainer.scroll(function(eventObject) {
 			var scrollTop = htmlElements.scrollContainer.scrollTop();
-			htmlElements.rowsContainerWrapper.scrollTop(scrollTop)
-			htmlElements.rowNamesConteiner.scrollTop(scrollTop)
+			htmlElements.rowsContainerWrapper.scrollTop(scrollTop);
+			htmlElements.rowNamesConteiner.scrollTop(scrollTop);
 		});
 	}
 	
@@ -377,11 +422,13 @@ QCD.components.elements.GanttChart = function(_element, _mainController) {
 			itemElement.addClass("ganttCollisionItem");
 			if (width > 30) {
 				itemElement.addClass("withIcon");
-				itemElement.html(item.info.name);
+				itemElement.html("COLLISION");
 				itemElement.shorten({width: width, tail: "...", tooltip: false});
 			} else if (width > 15) {
 				itemElement.addClass("withIcon");
 			}
+			itemElement[0].isCollision = true; // add isCollision to DOM element
+			itemElement[0].ganttItem = item; // add item element to DOM
 		} else {
 			if (width > 30) {
 				itemElement.html(item.info.name);
@@ -389,23 +436,26 @@ QCD.components.elements.GanttChart = function(_element, _mainController) {
 			}			
 		}
 
-		var description = "<div class='ganttItemDescriptionName'>"+item.info.name+"</div>";
-		description += "<div class='ganttItemDescriptionInfo'>";
-		description += "<div class='ganttItemDescriptionLabel'>"+_this.options.translations["description.dateFrom"]+"</div>";
-		description += "<div class='ganttItemDescriptionValue'>"+item.info.dateFrom+"</div></div>";
-		description += "<div class='ganttItemDescriptionInfo'>";
-		description += "<div class='ganttItemDescriptionLabel'>"+_this.options.translations["description.dateTo"]+"</div>";
-		description += "<div class='ganttItemDescriptionValue'>"+item.info.dateTo+"</div></div>";
-		
 		if (_this.options.hasPopupInfo) {
+			var description = "<div class='ganttItemDescriptionName'>"+item.info.name+"</div>";
+			description += "<div class='ganttItemDescriptionInfo'>";
+			description += "<div class='ganttItemDescriptionLabel'>"+_this.options.translations["description.dateFrom"]+"</div>";
+			description += "<div class='ganttItemDescriptionValue'>"+item.info.dateFrom+"</div></div>";
+			description += "<div class='ganttItemDescriptionInfo'>";
+			description += "<div class='ganttItemDescriptionLabel'>"+_this.options.translations["description.dateTo"]+"</div>";
+			description += "<div class='ganttItemDescriptionValue'>"+item.info.dateTo+"</div></div>";
 			itemElement.CreateBubblePopup({ innerHtml: description, themePath: "/qcadooView/public/css/core/lib/jquerybubblepopup-theme" });
 		}
 		
-		if (item.id) {
+		if (item.id || isCollision) {
 			itemElement.attr("id", _this.elementPath+"_item_"+item.id);
 			itemElement[0].entityId = item.id; // add entityId to DOM element
 			itemElement.css("cursor", "pointer");
 			itemElement.click(function() {
+				if (this.isCollision) {
+					showCollisionBox(this.ganttItem);
+					return;
+				}
 				var itemElement = $(this)
 				if (selectedItem) {
 					selectedItem.removeClass("ganttItemSelected");	

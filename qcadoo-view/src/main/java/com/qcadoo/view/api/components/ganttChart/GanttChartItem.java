@@ -1,5 +1,8 @@
 package com.qcadoo.view.api.components.ganttChart;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * @since 0.4.3
  */
@@ -18,5 +21,7 @@ public interface GanttChartItem {
     double getFrom();
 
     double getTo();
+
+    JSONObject getAsJson() throws JSONException;
 
 }

@@ -23,6 +23,9 @@
  */
 package com.qcadoo.view.internal.components.ganttChart;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class GanttChartItemImpl implements GanttChartModifiableItem {
 
     private final String rowName;
@@ -108,6 +111,23 @@ public class GanttChartItemImpl implements GanttChartModifiableItem {
     @Override
     public Long getEntityId() {
         return entityId;
+    }
+
+    @Override
+    public JSONObject getAsJson() throws JSONException {
+        JSONObject json = new JSONObject();
+        json.put("row", getRowName());
+        json.put("id", getEntityId());
+        json.put("from", getFrom());
+        json.put("to", getTo());
+
+        JSONObject info = new JSONObject();
+        info.put("name", getName());
+        info.put("dateFrom", getDateFrom());
+        info.put("dateTo", getDateTo());
+        json.put("info", info);
+
+        return json;
     }
 
 }
