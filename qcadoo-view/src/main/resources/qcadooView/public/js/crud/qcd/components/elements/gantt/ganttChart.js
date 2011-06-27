@@ -57,22 +57,12 @@ QCD.components.elements.GanttChart = function(_element, _mainController) {
 	
 	var selectedItem;
 	
-	var collisionInfoBox;
+	var collisionInfoBoxContent;
 	var collisionInfoBoxOverlay;
 	
 	function constructor() {
 		createGrantt();
 		QCD.components.elements.utils.LoadingIndicator.blockElement(element);
-		
-		collisionInfoBox = $("<div>").addClass("collisionInfoBox").click(function(){return false;});
-		var collisionInfoBoxWrapper = $("<div>").addClass("collisionInfoBoxWrapper");
-		collisionInfoBoxOverlay = $("<div>").addClass("collisionInfoBoxOverlay").click(function(){$(this).hide()});
-		collisionInfoBoxOverlay.append(collisionInfoBoxWrapper);
-		collisionInfoBoxWrapper.append(collisionInfoBox);
-		element.css("position", "relative");
-		element.append(collisionInfoBoxOverlay);
-		//var collisionCloseButton = $("<div>").addClass("collisionInfoBoxCloseButton");
-		
 		header.init();
 	}
 	
@@ -108,10 +98,6 @@ QCD.components.elements.GanttChart = function(_element, _mainController) {
 	
 	this.performInitialize = function() {
 		refreshContent();
-	}
-	
-	function(setSelected) {
-		
 	}
 	
 	this.setComponentLoading = function(isLoadingVisible) {
@@ -212,9 +198,8 @@ QCD.components.elements.GanttChart = function(_element, _mainController) {
 	}
 	
 	function showCollisionBox(ganttItem) {
-		collisionInfoBox.children().remove();
-		collisionInfoBox.append($("<div>").html("CONFLICT:"));
-		for (var i in ganttItem.items) {
+		collisionInfoBoxContent.children().remove();
+		for (var i=0; i<ganttItem.items.length; i++) {
 			var collisionItem = ganttItem.items[i];
 			
 			var collisionItemElement = $("<div>").addClass("collisionInfoBoxItem").html(collisionItem.info.name);
@@ -235,7 +220,7 @@ QCD.components.elements.GanttChart = function(_element, _mainController) {
 				onSelectChange();
 			});
 			
-			collisionInfoBox.append(collisionItemElement);
+			collisionInfoBoxContent.append(collisionItemElement);
 		}
 		collisionInfoBoxOverlay.show();
 		if (selectedItem) {
@@ -309,6 +294,25 @@ QCD.components.elements.GanttChart = function(_element, _mainController) {
 			htmlElements.rowsContainerWrapper.scrollTop(scrollTop);
 			htmlElements.rowNamesConteiner.scrollTop(scrollTop);
 		});
+		
+		var collisionInfoBox = $("<div>").addClass("collisionInfoBox").click(function(){return false;});
+		var collisionInfoBoxWrapper = $("<div>").addClass("collisionInfoBoxWrapper");
+		collisionInfoBoxOverlay = $("<div>").addClass("collisionInfoBoxOverlay").click(function(){$(this).hide()});
+		collisionInfoBoxOverlay.append(collisionInfoBoxWrapper);
+		collisionInfoBoxWrapper.append(collisionInfoBox);
+		element.css("position", "relative");
+		element.append(collisionInfoBoxOverlay);
+		
+		var collisionInfoBoxHeader = $("<div>").addClass("collisionInfoBoxHeader").html(_this.options.translations["colisionBox.header"]);
+		var closeButton = $("<div>").addClass("collisionInfoBoxHeaderCloseButton").attr("title", _this.options.translations["colisionBox.closeButton"]);
+		closeButton.click(function() {
+			collisionInfoBoxOverlay.hide();
+		});
+		collisionInfoBoxHeader.append(closeButton);
+		
+		collisionInfoBoxContent = $("<div>").addClass("collisionInfoBoxContent");
+		collisionInfoBox.append(collisionInfoBoxHeader);
+		collisionInfoBox.append(collisionInfoBoxContent);
 	}
 	
 	function showLeftScroll() {
@@ -422,7 +426,7 @@ QCD.components.elements.GanttChart = function(_element, _mainController) {
 			itemElement.addClass("ganttCollisionItem");
 			if (width > 30) {
 				itemElement.addClass("withIcon");
-				itemElement.html("COLLISION");
+				itemElement.html(_this.options.translations["colisionElementName"]);
 				itemElement.shorten({width: width, tail: "...", tooltip: false});
 			} else if (width > 15) {
 				itemElement.addClass("withIcon");

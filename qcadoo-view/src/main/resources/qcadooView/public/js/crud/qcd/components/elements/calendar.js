@@ -199,7 +199,7 @@ QCD.components.elements.Calendar = function(_element, _mainController) {
 	}
 	
 	function getNormalizedDate(date) {
-		var date = date.trim();
+		var date = $.trim(date);
 		if(date.length == 10) {
 			return date;
 		} else if(date.length == 16 || date.length == 19) {
@@ -210,7 +210,7 @@ QCD.components.elements.Calendar = function(_element, _mainController) {
 	}
 	
 	function getNormalizedTime(date) {
-		var date = date.trim();
+		var date = $.trim(date);
 		if(withTimePicker) {
 			if(date.length == 10) {
 				return '00:00:00';

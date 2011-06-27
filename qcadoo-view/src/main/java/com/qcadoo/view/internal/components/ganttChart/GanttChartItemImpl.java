@@ -130,4 +130,10 @@ public class GanttChartItemImpl implements GanttChartModifiableItem {
         return json;
     }
 
+    @Override
+    public String toString() {
+        return "GanttChartItemImpl [rowName=" + rowName + ", entityId=" + entityId + ", from=" + from + ", to=" + to + ", name="
+                + name + ", dateFrom=" + dateFrom + ", dateTo=" + dateTo + "]";
+    }
+
 }

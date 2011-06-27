@@ -103,6 +103,10 @@ public class GanttChartComponentPattern extends AbstractComponentPattern {
         addTranslation(translations, "description.dateFrom", locale);
         addTranslation(translations, "description.dateTo", locale);
 
+        addTranslation(translations, "colisionElementName", locale);
+        addTranslation(translations, "colisionBox.header", locale);
+        addTranslation(translations, "colisionBox.closeButton", locale);
+
         JSONObject json = super.getJsOptions(locale);
         json.put("translations", translations);
 

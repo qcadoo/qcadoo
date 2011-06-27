@@ -283,7 +283,9 @@ public class GanttChartComponentState extends AbstractComponentState {
                     collisionItem.addItem(item);
                 }
 
-                previousItem = item;
+                if (previousItem == null || item.getTo() > previousItem.getTo()) {
+                    previousItem = item;
+                }
             }
 
             if (collisionItem != null) {
