@@ -161,7 +161,9 @@ QCD.components.containers.Window = function(_element, _mainController) {
 	}
 	
 	this.getComponentValue = function() {
-		return {};
+		return {
+			selectedTab: currentTabName
+		};
 	}
 	this.setComponentValue = function(value) {
 		for (var tabName in tabs) {
@@ -176,6 +178,7 @@ QCD.components.containers.Window = function(_element, _mainController) {
 	}
 	
 	this.setComponentState = function(state) {
+		showTab(state.selectedTab);
 	}
 	
 	this.setMessages = function(messages) {

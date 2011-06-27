@@ -208,10 +208,10 @@ QCD.components.elements.Lookup = function(_element, _mainController) {
 	}
 	
 	this.setComponentBaseValue = function(state) {
-		if (state.currentCode != undefined && state.selectedEntity != undefined) {
+		if (state.currentCode != undefined && state.value != undefined) {
 			baseValue = {
 				currentCode: state.currentCode,
-				selectedEntityId: state.selectedEntity.id
+				selectedEntityId: state.value
 			};
 		}
 	}
