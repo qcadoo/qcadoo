@@ -36,6 +36,7 @@ import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.types.TreeType;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.internal.ComponentDefinition;
+import com.qcadoo.view.internal.ComponentOption;
 import com.qcadoo.view.internal.components.FieldComponentPattern;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
 import com.qcadoo.view.internal.xml.ViewDefinitionParserNodeException;
@@ -47,6 +48,14 @@ public final class TreeComponentPattern extends FieldComponentPattern {
     private static final String JS_OBJECT = "QCD.components.elements.Tree";
 
     private final Map<String, TreeDataType> dataTypes = new HashMap<String, TreeDataType>();
+
+    private boolean hasNewButtons = true;
+
+    private boolean hasDeleteButton = true;
+
+    private boolean hasEditButton = true;
+
+    private boolean hasMoveButton = true;
 
     public TreeComponentPattern(final ComponentDefinition componentDefinition) {
         super(componentDefinition);
@@ -97,6 +106,21 @@ public final class TreeComponentPattern extends FieldComponentPattern {
     }
 
     @Override
+    protected void initializeComponent() throws JSONException {
+        for (ComponentOption option : getOptions()) {
+            if ("hasNewButtons".equals(option.getType())) {
+                hasNewButtons = Boolean.parseBoolean(option.getValue());
+            } else if ("hasDeleteButton".equals(option.getType())) {
+                hasDeleteButton = Boolean.parseBoolean(option.getValue());
+            } else if ("hasEditButton".equals(option.getType())) {
+                hasEditButton = Boolean.parseBoolean(option.getValue());
+            } else if ("hasMoveButton".equals(option.getType())) {
+                hasMoveButton = Boolean.parseBoolean(option.getValue());
+            }
+        }
+    }
+
+    @Override
     protected JSONObject getJsOptions(final Locale locale) throws JSONException {
         JSONObject json = new JSONObject();
         JSONObject dataTypesObject = new JSONObject();
@@ -106,6 +130,13 @@ public final class TreeComponentPattern extends FieldComponentPattern {
         json.put("dataTypes", dataTypesObject);
 
         json.put("belongsToFieldName", getBelongsToFieldDefinition().getName());
+
+        JSONObject buttonsOptions = new JSONObject();
+        buttonsOptions.put("hasNewButtons", hasNewButtons);
+        buttonsOptions.put("hasDeleteButton", hasDeleteButton);
+        buttonsOptions.put("hasEditButton", hasEditButton);
+        buttonsOptions.put("hasMoveButton", hasMoveButton);
+        json.put("buttonsOptions", buttonsOptions);
 
         JSONObject translations = new JSONObject();
         for (String dataTypeName : dataTypes.keySet()) {

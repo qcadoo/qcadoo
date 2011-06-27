@@ -224,6 +224,9 @@ QCD.components.elements.Lookup = function(_element, _mainController) {
 	}
 	
 	this.isComponentChanged = function() {
+		if (!baseValue) {
+			return false;
+		}
 		return ! (dataState.currentCode == baseValue.currentCode);
 	}
 	

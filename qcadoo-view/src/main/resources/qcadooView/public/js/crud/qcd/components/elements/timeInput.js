@@ -59,7 +59,7 @@ QCD.components.elements.TimeInput = function(_element, _mainController) {
 	
 	this.setComponentData = function(data) {
 		if (data.value) {
-			this.input.val(convertToString(data.value));
+			this.input.val(convertToString(data.value+""));
 		} else {
 			this.input.val("");
 		}
