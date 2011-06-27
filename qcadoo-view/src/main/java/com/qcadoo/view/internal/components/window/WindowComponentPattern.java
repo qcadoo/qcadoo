@@ -67,6 +67,14 @@ public class WindowComponentPattern extends AbstractContainerPattern {
         return new WindowComponentState(this);
     }
 
+    public void setHeader(Boolean header) {
+        this.header = header;
+    }
+
+    public void setFixedHeight(Boolean fixedHeight) {
+        this.fixedHeight = fixedHeight;
+    }
+
     @Override
     public void parse(final Node componentNode, final ViewDefinitionParser parser) throws ViewDefinitionParserNodeException {
         super.parseWithoutChildren(componentNode, parser);

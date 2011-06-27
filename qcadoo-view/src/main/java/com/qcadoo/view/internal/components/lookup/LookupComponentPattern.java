@@ -269,8 +269,8 @@ public final class LookupComponentPattern extends FieldComponentPattern {
         windowComponentDefinition.setViewDefinition(lookupViewDefinition);
 
         WindowComponentPattern window = new WindowComponentPattern(windowComponentDefinition);
-        window.addOption(new ComponentOption("fixedHeight", ImmutableMap.of("value", "true")));
-        window.addOption(new ComponentOption("header", ImmutableMap.of("value", "false")));
+        window.setFixedHeight(true);
+        window.setHeader(false);
         window.setRibbon(createRibbon());
 
         return window;

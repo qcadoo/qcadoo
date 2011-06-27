@@ -401,7 +401,7 @@ QCD.components.elements.Lookup = function(_element, _mainController) {
 		var grid = lookupWindow.getComponent("window.grid");
 		grid.setLinkListener(this);
 		if (dataState.currentCode) {
-			grid.setFilterState("lookupCode", dataState.currentCode);	
+			grid.setFilterState("lookupCode", dataState.currentCode);
 		}
 		lookupWindow.init();
 	}

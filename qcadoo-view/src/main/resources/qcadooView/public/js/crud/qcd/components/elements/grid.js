@@ -778,7 +778,9 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 			currentState.filtersEnabled = true;
 			headerController.setFilterActive();
 			currentGridHeight -= 21;
-			grid.setGridHeight(currentGridHeight);
+			if (currentGridHeight) {
+				grid.setGridHeight(currentGridHeight);
+			}
 		}
 		currentState.filters = new Object();
 		currentState.filters[column] = filterText;
