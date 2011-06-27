@@ -73,7 +73,7 @@ public class FileServiceImpl implements FileService {
         if (!StringUtils.hasText(path)) {
             return null;
         }
-        return path.substring(path.lastIndexOf('/') + 15);
+        return path.substring(path.lastIndexOf(File.separatorChar) + 15);
     }
 
     @Override
@@ -81,7 +81,8 @@ public class FileServiceImpl implements FileService {
         if (!StringUtils.hasText(path)) {
             return null;
         }
-        Date date = new Date(Long.valueOf(path.substring(path.lastIndexOf('/') + 1, path.lastIndexOf('/') + 14)));
+        Date date = new Date(Long.valueOf(path.substring(path.lastIndexOf(File.separatorChar) + 1,
+                path.lastIndexOf(File.separatorChar) + 14)));
         return new SimpleDateFormat(DateUtils.DATE_FORMAT).format(date);
     }
 
@@ -90,12 +91,30 @@ public class FileServiceImpl implements FileService {
         if (!StringUtils.hasText(path)) {
             return null;
         }
-        return fileUrlPrefix + path.substring(uploadDirectory.getAbsolutePath().length() + 1);
+        return fileUrlPrefix + normalizeSeparators(path.substring(uploadDirectory.getAbsolutePath().length() + 1));
+    }
+
+    private String normalizeSeparators(final String string) {
+        if ("\\".equals(File.separator)) {
+            return string.replaceAll("\\\\", "/");
+        } else {
+            return string;
+        }
+    }
+
+    private String denormalizeSeparators(final String string) {
+        if ("\\".equals(File.separator)) {
+            return string.replaceAll("/", "\\\\");
+        } else {
+            return string;
+        }
     }
 
     @Override
     public String getPathFromUrl(final String url) {
-        return uploadDirectory.getAbsolutePath() + "/" + url.substring(url.indexOf('/') + fileUrlPrefix.length() - 1);
+        String denormalizedUrl = denormalizeSeparators(url);
+        return uploadDirectory.getAbsolutePath() + File.separator
+                + denormalizedUrl.substring(denormalizedUrl.indexOf(File.separatorChar) + fileUrlPrefix.length() - 1);
     }
 
     @Override
@@ -135,8 +154,8 @@ public class FileServiceImpl implements FileService {
 
     private File getFileFromFilename(final String filename) {
         String date = Long.toString(System.currentTimeMillis());
-        File directory = new File(uploadDirectory, MultiTenantUtil.getCurrentTenantId() + "/" + date.charAt(date.length() - 1)
-                + "/" + date.charAt(date.length() - 2) + "/");
+        File directory = new File(uploadDirectory, MultiTenantUtil.getCurrentTenantId() + File.separator
+                + date.charAt(date.length() - 1) + File.separator + date.charAt(date.length() - 2) + File.separator);
         directory.mkdirs();
         return new File(directory, date + "_" + getNormalizedFileName(filename));
     }
