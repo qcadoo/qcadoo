@@ -61,6 +61,8 @@ public class FileUploadController {
         mav.addObject("headerLabel", translationService.translate("qcadooView.fileUpload.header", locale));
         mav.addObject("buttonLabel", translationService.translate("qcadooView.fileUpload.button", locale));
         mav.addObject("chooseFileLabel", translationService.translate("qcadooView.fileUpload.chooseFileLabel", locale));
+        mav.addObject("maxUploadSizeExceeded",
+                translationService.translate("qcadooView.errorPage.error.uploadException.maxSizeExceeded.explanation", locale));
 
         return mav;
     }

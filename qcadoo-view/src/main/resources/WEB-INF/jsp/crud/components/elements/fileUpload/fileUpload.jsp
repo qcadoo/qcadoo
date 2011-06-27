@@ -38,6 +38,7 @@ String ctx = request.getContextPath();
 	jQuery(document).ready(function(){
 		window.mainController.setWindowHeader("${headerLabel}");
 		$('#form').ajaxForm(function(responseText, statusText, xhr) {
+
 			if (xhr.errorText) {
 				if (xhr.errorText == "LoginPage") {
 					QCDConnector.mainController.onSessionExpired();
@@ -48,7 +49,14 @@ String ctx = request.getContextPath();
 				QCD.components.elements.utils.LoadingIndicator.unblockElement($("body"));
 				return;
 			}
-			var response = $.trim(responseText); 
+
+			if (responseText.search(/upload size exceeded/) >= 0) {
+				QCDConnector.showErrorMessage("${maxUploadSizeExceeded}");
+				QCD.components.elements.utils.LoadingIndicator.unblockElement($("body"));
+				return;
+			}
+
+			var response  = $.trim(responseText).replace(/<PRE>/,'').replace(/<\/PRE>/,'');
 			window.mainController.getComponentByReferenceName("window").closeThisModalWindow(null, response);
 	    }); 
 	});
