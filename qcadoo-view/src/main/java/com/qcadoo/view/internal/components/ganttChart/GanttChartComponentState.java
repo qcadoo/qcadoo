@@ -211,13 +211,13 @@ public class GanttChartComponentState extends AbstractComponentState {
         }
 
         public void refresh(final String[] args) {
+            requestRender();
+            requestUpdateState();
             if (globalErrorMessage != null) {
                 return;
             }
             items = itemResolver.resolve(scale);
             updateCollisionItems();
-            requestRender();
-            requestUpdateState();
         }
 
         public void selectEntity(final String[] args) {

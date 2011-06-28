@@ -377,7 +377,8 @@ ul.q_row2 li.activ:hover a span  {
 	padding: 0px 4px;
 	margin:auto;
 	font-size:10px;
-	color:#b7b7b7;
+	/*color:#b7b7b7;*/
+	color:#777;
 	background-color:#f5f5f5;
 	text-align:center;
 }
