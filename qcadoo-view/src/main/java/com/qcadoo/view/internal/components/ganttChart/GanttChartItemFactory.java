@@ -24,9 +24,9 @@ public class GanttChartItemFactory {
         double from = getPosition(dateFrom, dateTo, itemDateFrom);
         double to = getPosition(dateFrom, dateTo, itemDateTo);
 
-        if (Math.abs(from - to) < (0.1 / precision)) {
-            return null;
-        }
+        // if (Math.abs(from - to) < (0.1 / precision)) {
+        // return null;
+        // }
 
         return new GanttChartItemImpl(rowName, name, entityId, format.format(itemDateFrom), format.format(itemDateTo), from, to);
     }

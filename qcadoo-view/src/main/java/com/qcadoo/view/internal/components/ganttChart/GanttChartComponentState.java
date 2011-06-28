@@ -72,6 +72,8 @@ public class GanttChartComponentState extends AbstractComponentState {
 
     private Long selectedEntityId;
 
+    private JSONObject context;
+
     public GanttChartComponentState(final GanttChartItemResolver itemResolver, final ZoomLevel defaultZoomLevel,
             final int defaultStartDay, final int defaultEndDay) {
         this.itemResolver = itemResolver;
@@ -81,6 +83,11 @@ public class GanttChartComponentState extends AbstractComponentState {
         registerEvent("refresh", eventPerformer, "refresh");
         registerEvent("initialize", eventPerformer, "initialize");
         registerEvent("select", eventPerformer, "selectEntity");
+    }
+
+    @Override
+    protected void initializeContext(final JSONObject json) throws JSONException {
+        this.context = json;
     }
 
     @Override
@@ -216,7 +223,7 @@ public class GanttChartComponentState extends AbstractComponentState {
             if (globalErrorMessage != null) {
                 return;
             }
-            items = itemResolver.resolve(scale);
+            items = itemResolver.resolve(scale, context, getLocale());
             updateCollisionItems();
         }
 
@@ -232,7 +239,7 @@ public class GanttChartComponentState extends AbstractComponentState {
                 Collections.sort(sortedItems, new Comparator<GanttChartItem>() {
 
                     @Override
-                    public int compare(GanttChartItem arg0, GanttChartItem arg1) {
+                    public int compare(final GanttChartItem arg0, final GanttChartItem arg1) {
                         return Double.valueOf(arg0.getFrom()).compareTo(Double.valueOf(arg1.getFrom()));
                     }
                 });

@@ -47,6 +47,8 @@ public class GanttChartComponentPattern extends AbstractComponentPattern {
 
     private int defaultEndDay = 21;
 
+    private boolean allowDateSelection = true;
+
     private boolean hasPopupInfo = true;
 
     private ZoomLevel defaultZoomLevel = ZoomLevel.H3;
@@ -82,6 +84,8 @@ public class GanttChartComponentPattern extends AbstractComponentPattern {
                 defaultEndDay = Integer.valueOf(option.getValue());
             } else if ("hasPopupInfo".equals(option.getType())) {
                 hasPopupInfo = Boolean.valueOf(option.getValue());
+            } else if ("allowDateSelection".equals(option.getType())) {
+                allowDateSelection = Boolean.valueOf(option.getValue());
             }
         }
         if (resolver == null) {
@@ -111,6 +115,7 @@ public class GanttChartComponentPattern extends AbstractComponentPattern {
         json.put("translations", translations);
 
         json.put("hasPopupInfo", hasPopupInfo);
+        json.put("allowDateSelection", allowDateSelection);
 
         return json;
     }

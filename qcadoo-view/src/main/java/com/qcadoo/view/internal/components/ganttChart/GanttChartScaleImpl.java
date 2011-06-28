@@ -21,11 +21,11 @@ public class GanttChartScaleImpl implements GanttChartScale {
 
     private static final DateType dateType = new DateType();
 
-    private final Date dateFrom;
-
     private final ZoomLevel zoomLevel;
 
-    private final Date dateTo;
+    private Date dateFrom;
+
+    private Date dateTo;
 
     public enum ZoomLevel {
         H1(1, 1), H3(3, 3), H6(6, 6), D1(24, 24);
@@ -174,6 +174,18 @@ public class GanttChartScaleImpl implements GanttChartScale {
     @Override
     public Date getDateFrom() {
         return dateFrom;
+    }
+
+    @Override
+    public void setDateFrom(final Date dateFrom) {
+        this.dateFrom = new DateTime(dateFrom).withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0)
+                .toDate();
+    }
+
+    @Override
+    public void setDateTo(final Date dateTo) {
+        this.dateTo = new DateTime(dateTo).withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0)
+                .toDate();
     }
 
     @Override
