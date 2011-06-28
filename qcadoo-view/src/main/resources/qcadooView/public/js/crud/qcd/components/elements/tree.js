@@ -156,24 +156,32 @@ QCD.components.elements.Tree = function(_element, _mainController) {
 			buttons.saveButton.hide();
 			buttons.cancelButton.hide();
 			
-			for (var i in newButtons) {
-				header.append(newButtons[i]);
+			QCD.info(_this.options);
+			
+			if (_this.options.buttonsOptions.hasNewButtons) {
+				for (var i in newButtons) {
+					header.append(newButtons[i]);
+				}
+			}
+			if (_this.options.buttonsOptions.hasEditButton) {
+				header.append(buttons.editButton);
+			}
+			if (_this.options.buttonsOptions.hasDeleteButton) {
+				header.append(buttons.deleteButton);
 			}
 			
-			header.append(buttons.editButton);
-			header.append(buttons.deleteButton);
-			
-			header.append(buttons.moveButton);
-			buttons.moveButton.addClass("headerButtonEnabled");
-			header.append(buttons.saveButton);
-			buttons.saveButton.addClass("headerButtonEnabled");
-			header.append(buttons.cancelButton);
-			buttons.cancelButton.addClass("headerButtonEnabled");
-			
-			header.append(buttons.moveUpButton);
-			header.append(buttons.moveDownButton);
-			header.append(buttons.moveLeftButton);
-			header.append(buttons.moveRightButton);
+			if (_this.options.buttonsOptions.hasMoveButton) {
+				header.append(buttons.moveButton);
+				buttons.moveButton.addClass("headerButtonEnabled");
+				header.append(buttons.saveButton);
+				buttons.saveButton.addClass("headerButtonEnabled");
+				header.append(buttons.cancelButton);
+				buttons.cancelButton.addClass("headerButtonEnabled");
+				header.append(buttons.moveUpButton);
+				header.append(buttons.moveDownButton);
+				header.append(buttons.moveLeftButton);
+				header.append(buttons.moveRightButton);
+			}
 		
 		contentElement = $("<div>").addClass('tree_content');
 		
