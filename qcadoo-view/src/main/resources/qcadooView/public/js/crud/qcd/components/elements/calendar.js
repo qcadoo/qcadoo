@@ -260,10 +260,12 @@ QCD.components.elements.Calendar = function(_element, _mainController) {
 			if(withTimePicker) {
 				timeInput.mask("29:69:69");
 			}
+			input.removeAttr("disabled");
 		} else {
 			calendar.removeClass("enabled");
 			input.datepicker("disable");
 			input.unmask();
+			input.attr("disabled", "disabled");
 			if(withTimePicker) {
 				timeInput.unmask();
 			}

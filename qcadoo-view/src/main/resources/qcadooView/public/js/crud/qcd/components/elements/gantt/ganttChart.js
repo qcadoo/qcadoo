@@ -229,7 +229,7 @@ QCD.components.elements.GanttChart = function(_element, _mainController) {
 	}
 	
 	function createGrantt() {
-		header = new QCD.components.elements.GanttChartHeader(_this, _this.elementPath+"_header", _this.options.translations);
+		header = new QCD.components.elements.GanttChartHeader(_this, _this.elementPath+"_header", _this.options.translations, _this.options);
 		element.append(header.getHeaderElement());
 		
 		htmlElements.wrapper = $("<div>").addClass("ganttContainer");

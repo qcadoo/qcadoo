@@ -25,11 +25,13 @@ var QCD = QCD || {};
 QCD.components = QCD.components || {};
 QCD.components.elements = QCD.components.elements || {};
 
-QCD.components.elements.GanttChartHeader = function(_listener, _elementId, _translations) {
+QCD.components.elements.GanttChartHeader = function(_listener, _elementId, _translations, _options) {
 	
 	var listener = _listener;
 	
 	var elementId = _elementId;
+	
+	var options = _options;
 
 	var headerElement;
 	
@@ -98,6 +100,7 @@ QCD.components.elements.GanttChartHeader = function(_listener, _elementId, _tran
 		dateFromElement.append(globalErrorBox);
 		
 		buttons.zoom[currentScale].addClass("headerButtonActive");
+		
 	}
 	
 	function getErrorBox() {
@@ -121,8 +124,13 @@ QCD.components.elements.GanttChartHeader = function(_listener, _elementId, _tran
 			onChange: onCalendarSelect
 		});
 		
-		dateFromCalendar.setFormComponentEnabled(true);
-		dateToCalendar.setFormComponentEnabled(true);
+		if (options.allowDateSelection == false) {
+			dateFromCalendar.setFormComponentEnabled(false);
+			dateToCalendar.setFormComponentEnabled(false);
+		} else {
+			dateFromCalendar.setFormComponentEnabled(true);
+			dateToCalendar.setFormComponentEnabled(true);
+		}
 	}
 	
 	function onCalendarSelect() {
