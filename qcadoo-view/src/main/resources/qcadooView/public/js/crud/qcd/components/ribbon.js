@@ -52,6 +52,7 @@ QCD.components.Ribbon = function(_model, _elementName, _mainController, _transla
 	
 	this.constructElementContent = function() {
 		var content = $("<div>"); 
+		var lastGroupMenu = null;
 		if (ribbonModel.groups) {
 			for (var groupIter in ribbonModel.groups) {
 				var groupModel = ribbonModel.groups[groupIter];
@@ -128,8 +129,16 @@ QCD.components.Ribbon = function(_model, _elementName, _mainController, _transla
 					
 				}
 				content.append(groupElement);
+				lastGroupMenu = groupElement;
 			}
 		}
+		if (lastGroupMenu) {
+			lastGroupMenu.addClass("lastRibbonMenu")
+		}
+		
+		var contentDropdownButton = $("<div>").addClass("ribbonGroupsDropdown");
+		content.append(contentDropdownButton);
+		
 		return content;
 	}
 	

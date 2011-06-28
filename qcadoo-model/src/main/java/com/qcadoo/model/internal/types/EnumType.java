@@ -24,7 +24,9 @@
 package com.qcadoo.model.internal.types;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -50,6 +52,13 @@ public final class EnumType implements EnumeratedType {
         for (String key : keys) {
             this.keys.add(new EnumTypeKey(key, null));
         }
+        Collections.sort(this.keys, new Comparator<EnumTypeKey>() {
+
+            @Override
+            public int compare(EnumTypeKey arg0, EnumTypeKey arg1) {
+                return arg0.getValue().compareTo(arg1.getValue());
+            }
+        });
     }
 
     public List<EnumTypeKey> getKeys() {
@@ -58,11 +67,10 @@ public final class EnumType implements EnumeratedType {
 
     @Override
     public Map<String, String> values(final Locale locale) {
-        Map<String, String> values = new HashMap<String, String>();
+        LinkedHashMap<String, String> values = new LinkedHashMap<String, String>();
         for (String key : toStringList()) {
             values.put(key, translationService.translate(translationPath + ".value." + key, locale));
         }
-
         return values;
     }
 

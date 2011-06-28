@@ -346,7 +346,8 @@ ul.q_row2 li.activ:hover a span  {
 	display:block;
 	width:auto;
 	/*margin-right:10px;*/
-	margin-right:5px;
+	/*margin-right:5px;*/
+	margin-right: 0px;
 	float:left;
 	background-image:url('/qcadooView/public/css/core/menu/images/ribbon_down.png');
 	background-position:bottom;
@@ -363,10 +364,13 @@ ul.q_row2 li.activ:hover a span  {
 	height:61px;
 	/*padding: 0px 10px;*/
 	padding: 0px 2px;
-	background-image:url('/qcadooView/public/css/core/menu/images/ribbon_right.png');
+	/*background-image:url('/qcadooView/public/css/core/menu/images/ribbon_right.png');*/
 	background-position:right;
 	background-repeat:no-repeat;
 	text-align:center;
+}
+.lastRibbonMenu .ribbonMenu_right {
+	background-image:url('/qcadooView/public/css/core/menu/images/ribbon_right.png');
 }
 .ribbon_title {
 	display:inline;
@@ -1012,4 +1016,15 @@ ul.ribbon_list li.twoB.enabled ul li a.twoB_down:hover {
 .ribbon_content .ribbonListElement .description_message p a {
 	color: #464646;
 	height: auto;
+}
+
+.ribbonGroupsDropdown {
+	float: left;
+	width: 48px;
+	height: 60px;
+	margin-top: 5px;
+	margin-left: 3px;
+	background-image: url('/qcadooView/public/img/core/icons/dropdownIcon48.png');
+	background-color: red;
+	display: none;
 }
