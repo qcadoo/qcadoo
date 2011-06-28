@@ -65,8 +65,6 @@ public final class DefaultModuleFactoryAccessor implements ModuleFactoryAccessor
                 List<Module> modules = ((InternalPlugin) plugin).getModules(moduleFactory);
 
                 for (final Module module : modules) {
-                    // TODO mina plugin change
-                    // if (plugin.hasState(PluginState.ENABLED) || plugin.hasState(PluginState.ENABLING)) {
                     if (plugin.hasState(PluginState.ENABLED)) {
                         module.enableOnStartup();
 

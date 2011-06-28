@@ -200,7 +200,7 @@ public final class SearchRestrictions {
      * @return criterion
      */
     public static SearchCriterion like(final String field, final String value) {
-        return new SearchCriterionImpl(Restrictions.like(field, value.replace('*', '%').replace('?', '_')));
+        return new SearchCriterionImpl(Restrictions.like(field, value.replace('*', '%').replace('?', '_')).ignoreCase());
     }
 
     /**
@@ -216,7 +216,7 @@ public final class SearchRestrictions {
      */
     public static SearchCriterion like(final String field, final String value, final SearchMatchMode mode) {
         return new SearchCriterionImpl(Restrictions.like(field, value.replace('*', '%').replace('?', '_'),
-                mode.getHibernateMatchMode()));
+                mode.getHibernateMatchMode()).ignoreCase());
     }
 
     /**
