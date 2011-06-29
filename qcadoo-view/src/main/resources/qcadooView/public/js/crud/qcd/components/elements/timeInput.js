@@ -94,7 +94,7 @@ QCD.components.elements.TimeInput = function(_element, _mainController) {
 		if(s < 10) {
 			s = "0" + s;
 		}
-
+		
 		return h + ":" + m + ":" + s;
 	}
 	
@@ -106,7 +106,7 @@ QCD.components.elements.TimeInput = function(_element, _mainController) {
 	
 	this.setFormComponentEnabled = function(isEnabled) {
 		if (isEnabled) {
-			input.mask((new Array(noHours + 1)).join("9") + ":69:69");
+			input.mask((new Array(noHours * 1 + 1)).join("9") + ":69:69");
 		} else {
 			input.unmask();
 		}
