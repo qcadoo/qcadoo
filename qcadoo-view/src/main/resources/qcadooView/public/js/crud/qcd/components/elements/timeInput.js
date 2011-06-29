@@ -32,6 +32,8 @@ QCD.components.elements.TimeInput = function(_element, _mainController) {
 	
 	var elementPath = this.elementPath;
 	
+	var noHours = this.options.noHours;
+	
 	var hasListeners = (this.options.listeners.length > 0) ? true : false;
 	
 	function constructor(_this) {
@@ -78,11 +80,11 @@ QCD.components.elements.TimeInput = function(_element, _mainController) {
 	function convertToString(value) {
 		value = value.replace(/\s/g, "").split(",")[0];
 		
-		h = Math.floor(value / 3600);
-		if(h < 10) {
+		h = Math.floor(value / 3600) + "";
+		while(h.length < noHours) {
 			h = "0" + h;
 		}
-		
+
 		m = Math.floor((value % 3600) / 60);
 		if(m < 10) {
 			m = "0" + m;
@@ -101,9 +103,10 @@ QCD.components.elements.TimeInput = function(_element, _mainController) {
 		this.input.parent().parent().parent().height(height);
 		this.input.parent().parent().height(height);
 	}
+	
 	this.setFormComponentEnabled = function(isEnabled) {
 		if (isEnabled) {
-			input.mask("99:69:69");
+			input.mask((new Array(noHours + 1)).join("9") + ":69:69");
 		} else {
 			input.unmask();
 		}

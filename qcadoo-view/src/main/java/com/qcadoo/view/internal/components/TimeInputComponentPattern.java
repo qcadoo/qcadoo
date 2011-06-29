@@ -23,8 +23,14 @@
  */
 package com.qcadoo.view.internal.components;
 
+import java.util.Locale;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.internal.ComponentDefinition;
+import com.qcadoo.view.internal.ComponentOption;
 
 public final class TimeInputComponentPattern extends FieldComponentPattern {
 
@@ -32,8 +38,26 @@ public final class TimeInputComponentPattern extends FieldComponentPattern {
 
     private static final String JS_OBJECT = "QCD.components.elements.TimeInput";
 
+    private int noHours = 2;
+
     public TimeInputComponentPattern(final ComponentDefinition componentDefinition) {
         super(componentDefinition);
+    }
+
+    @Override
+    protected void initializeComponent() throws JSONException {
+        for (ComponentOption option : getOptions()) {
+            if ("noHours".equals(option.getType())) {
+                noHours = Integer.parseInt(option.getValue());
+            }
+        }
+    }
+
+    @Override
+    protected JSONObject getJsOptions(final Locale locale) throws JSONException {
+        JSONObject json = super.getJsOptions(locale);
+        json.append("noHours", noHours);
+        return json;
     }
 
     @Override
