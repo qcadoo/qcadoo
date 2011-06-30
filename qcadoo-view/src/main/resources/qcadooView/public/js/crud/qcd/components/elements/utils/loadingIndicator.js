@@ -42,7 +42,8 @@ QCD.components.elements.utils.LoadingIndicator.blockElement = function(element) 
         },
         overlayCSS:  { 
             backgroundColor: '#000', 
-            opacity:         0.1 
+            opacity:         0.1,
+            zIndex: 30
         }, 
 	});
 };

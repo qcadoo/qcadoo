@@ -35,6 +35,16 @@ QCD.components.Ribbon = function(_model, _elementName, _mainController, _transla
 	
 	var jsObjects = new Object();
 	
+	var ribbonContent;
+	
+	var contentDropdownButton;
+	var contentDropdown;
+	var dropdownVisible = false;
+	
+	var groupsArray = new Array();
+	
+	var currentWidth;
+	
 	this.constructElement = function() {
 		
 		element = $("<div>");
@@ -51,7 +61,7 @@ QCD.components.Ribbon = function(_model, _elementName, _mainController, _transla
 	}
 	
 	this.constructElementContent = function() {
-		var content = $("<div>"); 
+		var content = $("<div>").attr("id",elementName+"_ribbonContentWrapper"); 
 		var lastGroupMenu = null;
 		if (ribbonModel.groups) {
 			for (var groupIter in ribbonModel.groups) {
@@ -130,16 +140,43 @@ QCD.components.Ribbon = function(_model, _elementName, _mainController, _transla
 				}
 				content.append(groupElement);
 				lastGroupMenu = groupElement;
+				groupsArray.push({item:groupElement, model:groupModel});
 			}
 		}
 		if (lastGroupMenu) {
 			lastGroupMenu.addClass("lastRibbonMenu")
 		}
 		
-		var contentDropdownButton = $("<div>").addClass("ribbonGroupsDropdown");
+		contentDropdownButton = $("<div>").addClass("ribbonGroupsDropdownButton");
+		contentDropdownButton.hide();
 		content.append(contentDropdownButton);
-		
+		contentDropdown = $("<div>").addClass("ribbonGroupsDropdown").attr("id",elementName+"_ribbonDropdownContentWrapper");
+		content.append(contentDropdown);
+		contentDropdownButton.click(function() {
+			dropdownVisible ? hideDropdown() : showDropdown();
+			return false;
+		});
+		$(document).click(function() {
+			if (dropdownVisible) {
+				hideDropdown();
+			}
+		});
+		contentDropdown.click(function() { return false; });
+		ribbonContent = content;
 		return content;
+	}
+	
+	function showDropdown() {
+		contentDropdownButton.addClass("ribbonGroupsDropdownButtonActive");
+		contentDropdown.show();
+		//contentDropdown.css("right", (currentWidth-contentDropdownButton.offset().left)+"px")
+		dropdownVisible = true;
+	}
+	
+	function hideDropdown() {
+		contentDropdownButton.removeClass("ribbonGroupsDropdownButtonActive");
+		contentDropdown.hide();
+		dropdownVisible = false;
 	}
 	
 	function createBigButton(path, itemModel) {
@@ -463,9 +500,67 @@ QCD.components.Ribbon = function(_model, _elementName, _mainController, _transla
 		return createJsObject(item);
 	}
 
-	this.updateSize = function(margin, innerWidth) {
-		$("#q_menu_row3").css("margin-left", (margin)+"px");
-		$("#q_row4_out").width(innerWidth);
+	this.updateSize = function(innerWidth) {
+		currentWidth = innerWidth;
+			
+		calculateGroupItemsWidth();
+		
+		innerWidth = innerWidth - 5;
+		
+		var lenghtSum = 0;
+		for (var i=0; i<groupsArray.length; i++) {
+			lenghtSum += groupsArray[i].width;
+		}
+		
+		var lastGroupMenu;
+		if (lenghtSum > innerWidth) {
+			contentDropdownButton.css("display", "inline-block");
+			lenghtSum = 0;
+			for (var i=0; i<groupsArray.length; i++) {
+				var groupItem = groupsArray[i];
+				lenghtSum += groupItem.width;
+				if (lenghtSum < innerWidth - 55) {
+					 
+					groupItem.item.show();
+					
+					if (groupItem.item.parent().attr("id") !== ribbonContent.attr("id")) {
+						groupItem.item.insertBefore(contentDropdownButton);
+					}
+					
+					groupItem.item.removeClass("lastRibbonMenu");
+					lastGroupMenu = groupItem.item;
+					
+				} else {
+					groupsArray[i].item.appendTo(contentDropdown);
+				}
+			}
+		} else {
+			contentDropdownButton.hide();
+			for (var i=0; i<groupsArray.length; i++) {
+				var groupItem = groupsArray[i];
+				
+				if (groupItem.item.parent().attr("id") !== ribbonContent.attr("id")) {
+					groupItem.item.insertBefore(contentDropdownButton);
+				}
+				
+				groupItem.item.removeClass("lastRibbonMenu");
+				lastGroupMenu = groupItem.item;
+			}
+		}
+		
+		if (lastGroupMenu) {
+			lastGroupMenu.addClass("lastRibbonMenu");
+		}
+	}
+	
+	function calculateGroupItemsWidth() {
+		if (groupsArray && groupsArray.length > 0) {
+			if (! groupsArray[0].width) {
+				for (var i=0; i<groupsArray.length; i++) {
+					groupsArray[i].width = groupsArray[i].item.width();
+				}		
+			}
+		}
 	}
 	
 }

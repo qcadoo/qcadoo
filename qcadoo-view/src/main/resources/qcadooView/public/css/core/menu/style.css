@@ -343,12 +343,14 @@ ul.q_row2 li.activ:hover a span  {
 }
 /* ribbon [group] */
 .ribbonMenu {
-	display:block;
+	/*display:block;*/
+	display:inline-block;
+	vertical-align: top;
 	width:auto;
 	/*margin-right:10px;*/
 	/*margin-right:5px;*/
 	margin-right: 0px;
-	float:left;
+	/*float:left;*/
 	background-image:url('/qcadooView/public/css/core/menu/images/ribbon_down.png');
 	background-position:bottom;
 	background-repeat:repeat-x;
@@ -1018,13 +1020,57 @@ ul.ribbon_list li.twoB.enabled ul li a.twoB_down:hover {
 	height: auto;
 }
 
-.ribbonGroupsDropdown {
-	float: left;
+.ribbonGroupsDropdownButton {
+	display: inline-block;
+	float: right;
 	width: 48px;
-	height: 60px;
-	margin-top: 5px;
-	margin-left: 3px;
-	background-image: url('/qcadooView/public/img/core/icons/dropdownIcon48.png');
-	background-color: red;
+	height: 46px;
+	margin-top: 12px;
+	margin-left: 5px;
+	background-image: url('/qcadooView/public/img/core/icons/dropdownIcon46.png');
+	background-repeat: no-repeat;
+	background-position: 0px 0px;
+	position: relative;
+	cursor: pointer;
+}
+.ribbonGroupsDropdownButton:hover {
+	background-position: 0px -46px;
+}
+.ribbonGroupsDropdownButton.ribbonGroupsDropdownButtonActive {
+	background-position: 0px -92px;
+}
+.ribbonGroupsDropdownButton.ribbonGroupsDropdownButtonActive:hover {
+	background-position: 0px -138px;
+}
+.ribbonGroupsDropdown {
+	width: 200px;
+	background-color: #F5F5F5;
+	position: absolute;
+	top: 70px;
+	right: 20px;
+	border-left: solid #707070 1px;
+	border-right: solid #707070 1px;
+	border-bottom: solid #707070 1px;
 	display: none;
+}
+.ribbonGroupsDropdown .ribbonMenu {
+	display: block;
+	background-position: center top;
+	margin-top: 3px;
+}
+.ribbonGroupsDropdown .ribbonMenu .ribbonMenu_left,
+.ribbonGroupsDropdown .ribbonMenu .ribbonMenu_right {
+	background: transparent;
+}
+
+.ribbonGroupsDropdown .ribbonMenu .ribbonMenu_right .ribbon_title {
+	top: -5px;
+}
+.ribbonGroupsDropdown .ribbonMenu_right {
+	height: auto;
+}
+.ribbonGroupsDropdown .ribbonBigElement,
+.ribbonGroupsDropdown .ribbon_list {
+	float: none;
+	display: inline-block;
 }

@@ -31,6 +31,7 @@ QCD.components.containers.Window = function(_element, _mainController) {
 	var mainController = _mainController;
 	
 	var ribbon;
+	var row3Element;
 	var ribbonLeftElement
 	var tabsLeftElement;
 	var ribbonMainElement;
@@ -77,7 +78,7 @@ QCD.components.containers.Window = function(_element, _mainController) {
 				
 			element = $("<div>");
 			
-			var row3Element =  $("<div>").attr("id", "q_row3_out_container");
+			row3Element =  $("<div>").attr("id", "q_row3_out_container");
 			element.append(row3Element);
 			
 			ribbonLeftElement = $("<div>").attr("id", "q_row3_out_left");
@@ -212,11 +213,6 @@ QCD.components.containers.Window = function(_element, _mainController) {
 		var ribbonWidth = _width - margin;
 		width = Math.round(_width - 2 * margin);
 		
-		var innerWidth = innerWidthMarker.innerWidth();
-		if (innerWidth != $(window).width()) { // IS VERTICAL SCROLLBAR
-			width -= 15;
-		}
-		
 		if (width < 960 && isMinWidth) {
 			width = 960;
 			childrenElement.css("marginLeft", margin+"px");
@@ -225,13 +221,17 @@ QCD.components.containers.Window = function(_element, _mainController) {
 			childrenElement.css("marginLeft", "auto");
 			childrenElement.css("marginRight", "auto");
 		}
+		childrenElement.css("overflow", "hidden");
 		childrenElement.width(width);
 		childrenElement.css("marginTop", margin+"px");
 		if (! this.options.fixedHeight) {
 			childrenElement.css("marginBottom", margin+"px");
 		}
-		
-		
+		var windowWidth = width +2*margin
+		var innerWidth = innerWidthMarker.innerWidth();
+		if (innerWidth != $(window).width()) { // IS VERTICAL SCROLLBAR
+			width -= 15;
+		}
 		
 		height = null;
 		if (this.options.fixedHeight) {
@@ -259,14 +259,21 @@ QCD.components.containers.Window = function(_element, _mainController) {
 			}
 		}
 		
+		this.element.width(windowWidth);
+		
 		if (this.options.hasRibbon) {
 			ribbonLeftElement.width(margin);
-			ribbonShadowElement.width(innerWidth);
+			ribbonShadowElement.width(innerWidth > windowWidth ? windowWidth : innerWidth);
 			if (tabRibbonDiv) {
 				var tabRibbonWidth = width - ribbonMainElement.width() - 16; // TODO
 				tabRibbonDiv.width(tabRibbonWidth);
 			}
+			ribbonMainElement.width(width);
+			if (ribbon) {
+				ribbon.updateSize(width);
+			}
 		}
+		
 	}
 	
 	this.performBack = function(actionsPerformer) {
