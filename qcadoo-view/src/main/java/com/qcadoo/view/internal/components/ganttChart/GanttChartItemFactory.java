@@ -32,6 +32,7 @@ public class GanttChartItemFactory {
     }
 
     private double getPosition(final Date dateFrom, final Date dateTo, final Date date) {
+
         long tmFrom = dateFrom.getTime();
         long tmItem = date.getTime();
         long tmTo = dateTo.getTime();
