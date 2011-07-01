@@ -43,7 +43,7 @@
 	top: 0;
 	left: 0;
 	right: 0;
-	z-index: 10;
+	z-index: 40;
 }
 
 .windowContainer .windowContainerContentBody {
@@ -220,6 +220,7 @@
 #q_row3_out_container #q_row3_out_main {
 	display: inline-block;
 	height: 100%;
+	vertical-align: top;
 }
 
 #q_row3_out_container #q_row3_out_tabs_left {
@@ -276,4 +277,5 @@
 	background-position: top;
 	background-repeat: repeat-x;
 	height: 20px;
+	width: 0px;
 }

@@ -496,8 +496,8 @@ QCD.PageController = function() {
 	}
 	
 	function updateSize() {
-		var width = $(document).width();
-		var height = $(document).height();
+		var width = $(window).width();
+		var height = $(window).height();
 		for (var i in pageComponents) {
 			pageComponents[i].updateSize(width, height);
 		}
