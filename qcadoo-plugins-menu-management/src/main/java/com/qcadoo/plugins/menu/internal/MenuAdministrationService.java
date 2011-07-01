@@ -28,6 +28,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.Entity;
@@ -41,6 +42,8 @@ import com.qcadoo.view.api.components.FormComponent;
 import com.qcadoo.view.api.components.GridComponent;
 import com.qcadoo.view.api.components.WindowComponent;
 import com.qcadoo.view.api.ribbon.Ribbon;
+import com.qcadoo.view.api.ribbon.RibbonActionItem;
+import com.qcadoo.view.api.ribbon.RibbonGroup;
 import com.qcadoo.view.api.utils.TranslationUtilsService;
 import com.qcadoo.view.constants.QcadooViewConstants;
 
@@ -90,6 +93,61 @@ public class MenuAdministrationService {
         }
     }
 
+    public void disableCategoryEditForPluginMenu(final ViewDefinitionState viewDefinitionState) {
+        FormComponent form = (FormComponent) viewDefinitionState.getComponentByReference("form");
+
+        if (form.getEntityId() == null) {
+            return;
+        }
+
+        boolean isPluginMenu = StringUtils.hasText(dataDefinitionService.get("qcadooView", "category").get(form.getEntityId())
+                .getStringField("pluginIdentifier"));
+
+        disableRibbonButtons(viewDefinitionState, isPluginMenu);
+    }
+
+    private void disableRibbonButtons(final ViewDefinitionState viewDefinitionState, final boolean isPluginMenu) {
+        WindowComponent window = (WindowComponent) viewDefinitionState.getComponentByReference("window");
+        Ribbon ribbon = window.getRibbon();
+        RibbonGroup ribbonGroup = ribbon.getGroupByName("actions");
+
+        RibbonActionItem delete = ribbonGroup.getItemByName("delete");
+        RibbonActionItem save = ribbonGroup.getItemByName("save");
+        RibbonActionItem saveBack = ribbonGroup.getItemByName("saveBack");
+        RibbonActionItem cancel = ribbonGroup.getItemByName("cancel");
+
+        if (isPluginMenu) {
+            delete.setEnabled(false);
+            save.setEnabled(false);
+            saveBack.setEnabled(false);
+            cancel.setEnabled(false);
+        } else {
+            delete.setEnabled(true);
+            save.setEnabled(true);
+            saveBack.setEnabled(true);
+            cancel.setEnabled(true);
+        }
+
+        delete.requestUpdate(true);
+        save.requestUpdate(true);
+        saveBack.requestUpdate(true);
+        cancel.requestUpdate(true);
+        window.requestRibbonRender();
+    }
+
+    public void disableItemEditForPluginMenu(final ViewDefinitionState viewDefinitionState) {
+        FormComponent form = (FormComponent) viewDefinitionState.getComponentByReference("form");
+
+        if (form.getEntityId() == null) {
+            return;
+        }
+
+        boolean isPluginMenu = StringUtils.hasText(dataDefinitionService.get("qcadooView", "item").get(form.getEntityId())
+                .getStringField("pluginIdentifier"));
+
+        disableRibbonButtons(viewDefinitionState, isPluginMenu);
+    }
+
     public void translateCategoryForm(final ViewDefinitionState viewDefinitionState) {
         FormComponent categoryForm = (FormComponent) viewDefinitionState.getComponentByReference("form");
         Entity categoryEntity = null;
@@ -103,8 +161,6 @@ public class MenuAdministrationService {
             categoryNameField.setEnabled(false);
             categoryNameField.setFieldValue(translationUtilsService.getCategoryTranslation(categoryEntity,
                     viewDefinitionState.getLocale()));
-
-            disableWinfowButtons(viewDefinitionState);
         }
 
         GridComponent categoryItemsGrid = (GridComponent) viewDefinitionState.getComponentByReference("itemsGrid");
@@ -131,20 +187,7 @@ public class MenuAdministrationService {
             viewDefinitionState.getComponentByReference("itemView").setEnabled(false);
 
             viewDefinitionState.getComponentByReference("itemActive").setEnabled(false);
-
-            disableWinfowButtons(viewDefinitionState);
         }
     }
 
-    private void disableWinfowButtons(final ViewDefinitionState viewDefinitionState) {
-        WindowComponent window = (WindowComponent) viewDefinitionState.getComponentByReference("window");
-        Ribbon ribbon = window.getRibbon();
-        ribbon.getGroupByName("actions").getItemByName("save").setEnabled(false);
-        ribbon.getGroupByName("actions").getItemByName("save").requestUpdate(true);
-        ribbon.getGroupByName("actions").getItemByName("saveBack").setEnabled(false);
-        ribbon.getGroupByName("actions").getItemByName("saveBack").requestUpdate(true);
-        ribbon.getGroupByName("actions").getItemByName("cancel").setEnabled(false);
-        ribbon.getGroupByName("actions").getItemByName("cancel").requestUpdate(true);
-        window.requestRibbonRender();
-    }
 }

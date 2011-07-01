@@ -63,5 +63,6 @@
 	</component>
 	<hooks>
 		<beforeRender class="com.qcadoo.plugins.menu.internal.MenuAdministrationService" method="translateItemForm" />
+		<beforeRender class="com.qcadoo.plugins.menu.internal.MenuAdministrationService" method="disableItemEditForPluginMenu" />
 	</hooks>
 </view>

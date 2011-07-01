@@ -64,6 +64,17 @@
 					<option type="width" value="400" />
 					<option type="creatable" value="true" />
 					<option type="deletable" value="true" />
+					<script><![CDATA[
+						this.addOnChangeListener({
+							onChange: function(selectedEntitiesArray) { 
+								if(selectedEntitiesArray.length == 0 || (selectedEntitiesArray[0].fields.pluginIdentifier && selectedEntitiesArray[0].fields.pluginIdentifier != '')) {
+									this.setDeleteEnabled(false);
+								} else {
+									this.setDeleteEnabled(true);
+								}
+							}
+						});
+					]]></script>
 				</component>
 			</layoutElement>
 		</component>
@@ -77,5 +88,6 @@
 	</component>
 	<hooks>
 		<beforeRender class="com.qcadoo.plugins.menu.internal.MenuAdministrationService" method="translateCategoryForm" />
+		<beforeRender class="com.qcadoo.plugins.menu.internal.MenuAdministrationService" method="disableCategoryEditForPluginMenu" />
 	</hooks>
 </view>
