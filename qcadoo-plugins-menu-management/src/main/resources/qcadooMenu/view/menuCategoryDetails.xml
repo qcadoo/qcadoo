@@ -41,10 +41,38 @@
 				<layoutElement column="1" row="1">
 					<component type="input" name="name" field="name"
 						hasDescription="false" reference="categoryName"/>
+					<component type="input" name="pluginIdentifier" field="pluginIdentifier"
+						hasDescription="false" reference="pluginIdentifier" defaultVisible="false"/>
 				</layoutElement>
 			</component>
 			<option type="header" value="true" />
 			<option type="expression" value="#name" />
+			<script><![CDATA[
+				var save = #{window}.getRibbonItem("actions.save");
+				var saveBack = #{window}.getRibbonItem("actions.saveBack");
+				var cancel = #{window}.getRibbonItem("actions.cancel");
+				var del = #{window}.getRibbonItem("actions.delete");
+				
+				this.addOnChangeListener({
+					onSetValue: function(value) {
+						if (! value || ! value.content) {
+							return;
+						}
+						var pluginIdentifier =  #{pluginIdentifier}.getComponentData().value;
+						if (pluginIdentifier && pluginIdentifier != "") {
+							save.disable();
+							saveBack.disable();
+							cancel.disable();
+							del.disable();
+						} else {
+							save.enable();
+							saveBack.enable();
+							cancel.enable();
+							del.enable();
+						}
+					}
+				});
+				]]></script>
 		</component>
 		<component type="gridLayout" name="gridLayout" columns="3"
 			rows="5">
@@ -88,6 +116,5 @@
 	</component>
 	<hooks>
 		<beforeRender class="com.qcadoo.plugins.menu.internal.MenuAdministrationService" method="translateCategoryForm" />
-		<beforeRender class="com.qcadoo.plugins.menu.internal.MenuAdministrationService" method="disableCategoryEditForPluginMenu" />
 	</hooks>
 </view>
