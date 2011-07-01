@@ -1048,10 +1048,9 @@ ul.ribbon_list li.twoB.enabled ul li a.twoB_down:hover {
 	position: absolute;
 	top: 70px;
 	right: 20px;
-	border-left: solid #707070 1px;
-	border-right: solid #707070 1px;
-	border-bottom: solid #707070 1px;
+	border: solid #707070 1px;
 	display: none;
+	padding-top: 5px;
 }
 .ribbonGroupsDropdown .ribbonMenu {
 	display: block;
