@@ -81,6 +81,7 @@ public class FormComponentState extends AbstractContainerState implements FormCo
         registerEvent("save", eventPerformer, "save");
         registerEvent("saveAndClear", eventPerformer, "saveAndClear");
         registerEvent("initialize", eventPerformer, "initialize");
+        registerEvent("initializeAfterBack", eventPerformer, "initialize");
         registerEvent("reset", eventPerformer, "initialize");
         registerEvent("delete", eventPerformer, "delete");
         registerEvent("copy", eventPerformer, "copy");
