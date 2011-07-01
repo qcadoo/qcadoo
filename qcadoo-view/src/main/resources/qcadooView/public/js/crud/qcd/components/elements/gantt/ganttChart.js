@@ -478,7 +478,6 @@ QCD.components.elements.GanttChart = function(_element, _mainController) {
 	}
 	
 	this.updateSize = function(_width, _height) {
-		_width = _width - 22;
 		_height = _height - 50;
 		currentWidth = _width;
 		htmlElements.wrapper.width(_width);
