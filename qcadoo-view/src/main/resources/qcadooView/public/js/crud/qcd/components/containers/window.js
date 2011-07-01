@@ -46,6 +46,7 @@ QCD.components.containers.Window = function(_element, _mainController) {
 	
 	var tabs;
 	var tabHeaders = new Object();
+	var tabRibbonExists = false;
 	
 	var oneTab = this.options.oneTab;
 	
@@ -68,6 +69,9 @@ QCD.components.containers.Window = function(_element, _mainController) {
 			});
 			tabHeaders[tabName] = tabElement;
 			tabsElement.append(tabElement);
+			if (tabs[tabName].getRibbonElement()) {
+				tabRibbonExists = true;
+			}
 		}
 		
 		if (_this.options.hasRibbon) {
@@ -265,12 +269,14 @@ QCD.components.containers.Window = function(_element, _mainController) {
 			ribbonLeftElement.width(margin);
 			ribbonShadowElement.width(innerWidth > windowWidth ? windowWidth : innerWidth);
 			if (tabRibbonDiv) {
-				var tabRibbonWidth = width - ribbonMainElement.width() - 16; // TODO
+				var tabRibbonWidth = width - ribbonMainElement.width(); // TODO
 				tabRibbonDiv.width(tabRibbonWidth);
 			}
-			ribbonMainElement.width(width);
-			if (ribbon) {
-				ribbon.updateSize(width);
+			if (! tabRibbonExists) {
+				ribbonMainElement.width(width);
+				if (ribbon) {
+					ribbon.updateSize(width);
+				}
 			}
 		}
 		

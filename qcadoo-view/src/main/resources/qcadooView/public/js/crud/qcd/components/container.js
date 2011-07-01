@@ -87,7 +87,6 @@ QCD.components.Container = function(_element, _mainController, childrenElements)
 		}
 		for (var i in components) {
 			if(components[i].isChanged()) {
-				QCD.info("changed in element "+i);
 				changed = true;
 				break;
 			}
