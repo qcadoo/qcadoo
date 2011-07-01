@@ -36,6 +36,8 @@ QCD.components.elements.TextInput = function(_element, _mainController) {
 	
 	var hasListeners = (this.options.listeners.length > 0) ? true : false;
 	
+	var fireOnChangeListeners = this.fireOnChangeListeners;
+	
 	function constructor(_this) {
 		input.change(function() {
 			inputDataChanged();
