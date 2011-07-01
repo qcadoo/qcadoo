@@ -266,8 +266,13 @@ public class GanttChartComponentState extends AbstractComponentState {
                     if (collisionItem != null && item.getFrom() < collisionItem.getTo()) { // same collision
 
                         if (item.getTo() > collisionItem.getTo()) { // not entirely included in existing collision
-                            collisionItem.setTo(item.getTo());
-                            collisionItem.setDateTo(item.getDateTo());
+                            if (item.getTo() < previousItem.getTo()) { // entirely included in previous item
+                                collisionItem.setTo(item.getTo());
+                                collisionItem.setDateTo(item.getDateTo());
+                            } else {
+                                collisionItem.setTo(previousItem.getTo());
+                                collisionItem.setDateTo(previousItem.getDateTo());
+                            }
                         }
 
                     } else { // different collision

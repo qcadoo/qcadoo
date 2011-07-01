@@ -274,7 +274,7 @@ QCD.components.elements.Calendar = function(_element, _mainController) {
 	
 	this.updateSize = function(_width, _height) {
 		var height = _height ? _height-10 : 40;
-		this.input.parent().parent().parent().parent().parent().height(height);
+		this.input.parent().parent().parent().parent().parent().parent().height(height);
 	}
 	
 	function getDate() {

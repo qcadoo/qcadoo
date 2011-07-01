@@ -67,6 +67,16 @@
 	border-right: solid #999999 1px;
 	display: inline-block;
 	text-align: center;
+	position: relative;
+}
+.ganttTopRow .ganttTopRowElement > div {
+	position: absolute;
+	top: 8px;
+	left: -10px;
+	width: 20px;
+	height: 12px;
+	line-height: 12px;
+	background: #F3F3F3;
 }
 .ganttTopRow .ganttTopRowElement.ganttTopRowElementEnd,
 .ganttRowElement .ganttCellElement.ganttTopRowElementEnd {
@@ -238,6 +248,7 @@
 	height: 30px;
 	line-height: 30px;
 	padding-left: 10px;
+	text-align: left;
 	color: #555555;
 	font-family:"Lucida Grande", Tahoma, Arial, Helvetica, sans-serif;
 	font-size: 12px;

@@ -43,10 +43,10 @@
 	<tiles:putAttribute name="componentIgnoreBorder" value="true" />
 	<tiles:putAttribute name="componentBody">
 		<c:if test="${component['jspOptions']['withTimePicker']}">
-			<div style="width:58%;float:left">
+			<div style="width:58%;float:left;margin-top:9px;">
 		</c:if>
 		<c:if test="${!component['jspOptions']['withTimePicker']}">
-			<div>
+			<div style="margin-top:9px;">
 		</c:if>
 			<div class="component_container_form_inner_h"></div><div class="component_container_form_inner">
 				<div class="lookupValueWrapper">
@@ -61,7 +61,7 @@
 			</div>
 		</div>
 		<c:if test="${component['jspOptions']['withTimePicker']}">
-			<div style="width:40%;float:right">
+			<div style="width:40%;float:right;margin-top:9px;">
 				<div class="component_container_form_inner_h"></div><div class="component_container_form_inner">
 					<div class="lookupValueWrapper">
 						<div class="lookupInputWrapper" style="width:100%">

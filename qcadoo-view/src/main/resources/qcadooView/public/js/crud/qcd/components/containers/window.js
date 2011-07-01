@@ -69,7 +69,7 @@ QCD.components.containers.Window = function(_element, _mainController) {
 			});
 			tabHeaders[tabName] = tabElement;
 			tabsElement.append(tabElement);
-			if (tabs[tabName].getRibbonElement()) {
+			if (tabs[tabName].getRibbonElement && tabs[tabName].getRibbonElement()) {
 				tabRibbonExists = true;
 			}
 		}
@@ -225,7 +225,6 @@ QCD.components.containers.Window = function(_element, _mainController) {
 			childrenElement.css("marginLeft", "auto");
 			childrenElement.css("marginRight", "auto");
 		}
-		childrenElement.css("overflow", "hidden");
 		childrenElement.width(width);
 		childrenElement.css("marginTop", margin+"px");
 		if (! this.options.fixedHeight) {
