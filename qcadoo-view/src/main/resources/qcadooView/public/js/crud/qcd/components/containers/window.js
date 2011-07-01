@@ -225,7 +225,6 @@ QCD.components.containers.Window = function(_element, _mainController) {
 			childrenElement.css("marginLeft", "auto");
 			childrenElement.css("marginRight", "auto");
 		}
-		childrenElement.css("overflow", "hidden");
 		childrenElement.width(width);
 		childrenElement.css("marginTop", margin+"px");
 		if (! this.options.fixedHeight) {
