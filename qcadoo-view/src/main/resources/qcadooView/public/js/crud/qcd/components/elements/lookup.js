@@ -336,7 +336,6 @@ QCD.components.elements.Lookup = function(_element, _mainController) {
 		if (callEvent == undefined) {
 			callEvent = true;
 		}
-		fireOnChangeListeners("onChange", [entity]);
 		if (entity) {
 			dataState.selectedEntity.id = entity.id;
 			dataState.selectedEntity.code = entity.code;
@@ -348,6 +347,7 @@ QCD.components.elements.Lookup = function(_element, _mainController) {
 			dataState.selectedEntity.value = null;
 			dataState.selectedEntity.active = true;
 		}
+		fireOnChangeListeners("onChange", [entity]);
 		if (hasListeners && callEvent) {
 			mainController.callEvent("onSelectedEntityChange", elementPath, null, null, null);
 		}
