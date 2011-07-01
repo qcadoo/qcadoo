@@ -37,7 +37,7 @@
 /** labels **/
 
 .component_form_element .labelbox {
-	height: 100%;
+	height: 40px;
 	display: inline-block;
 	vertical-align: middle;
 	text-align: left;

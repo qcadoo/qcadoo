@@ -343,14 +343,22 @@ QCD.components.elements.GanttChart = function(_element, _mainController) {
 			var bottomElement = null;
 			for (var bottomI=0; bottomI < categoryCellsNumber; bottomI++) {
 				bottomElement = $("<div>").height(htmlElements.topRow2.height()-1).width(constants.CELL_WIDTH-1).addClass("ganttTopRowElement");
+				var bottomElementContent = null;
+				var moveLabelLeft = false;
 				if (cellSettings.scale.elementLabelsValues) {
 					if (i==0 && cellSettings.scale.firstCategoryFirstElement) {
-						bottomElement.html(cellSettings.scale.elementLabelsValues[bottomI + cellSettings.scale.firstCategoryFirstElement - 1]);
+						bottomElementContent = cellSettings.scale.elementLabelsValues[bottomI + cellSettings.scale.firstCategoryFirstElement - 1];
 					} else {
-						bottomElement.html(cellSettings.scale.elementLabelsValues[bottomI]);
+						bottomElementContent = cellSettings.scale.elementLabelsValues[bottomI];
 					}
 				} else {
-					bottomElement.html(labelNumber);
+					bottomElementContent = labelNumber;
+					moveLabelLeft = true;
+				}
+				if (moveLabelLeft) {
+					bottomElement.html("<div>"+bottomElementContent+"</div>");
+				} else {
+					bottomElement.html(bottomElementContent);
 				}
 				htmlElements.topRow2.append(bottomElement);
 				labelNumber += cellSettings.scale.elementLabelsInterval;

@@ -69,7 +69,7 @@ QCD.components.containers.Window = function(_element, _mainController) {
 			});
 			tabHeaders[tabName] = tabElement;
 			tabsElement.append(tabElement);
-			if (tabs[tabName].getRibbonElement()) {
+			if (tabs[tabName].getRibbonElement && tabs[tabName].getRibbonElement()) {
 				tabRibbonExists = true;
 			}
 		}

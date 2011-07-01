@@ -66,22 +66,22 @@ QCD.components.elements.GanttChartHeader = function(_listener, _elementId, _tran
 			if (buttons.zoom.H1.hasClass("headerButtonEnabled")) {
 				listener.onScaleChanged("H1");
 			}
-		}, "zoom1hIcon.png").attr("title", translations["header.zoom1h"]);
+		}, "zoom1hIcon2.png").attr("title", translations["header.zoom1h"]);
 		buttons.zoom.H3 = QCD.components.elements.utils.HeaderUtils.createHeaderButton("",function(e) {
 			if (buttons.zoom.H3.hasClass("headerButtonEnabled")) {
 				listener.onScaleChanged("H3");
 			}
-		}, "zoom3hIcon.png").attr("title", translations["header.zoom3h"]);
+		}, "zoom3hIcon2.png").attr("title", translations["header.zoom3h"]);
 		buttons.zoom.H6 = QCD.components.elements.utils.HeaderUtils.createHeaderButton("",function(e) {
 			if (buttons.zoom.H6.hasClass("headerButtonEnabled")) {
 				listener.onScaleChanged("H6");
 			}
-		}, "zoom6hIcon.png").attr("title", translations["header.zoom6h"]);
+		}, "zoom6hIcon2.png").attr("title", translations["header.zoom6h"]);
 		buttons.zoom.D1 = QCD.components.elements.utils.HeaderUtils.createHeaderButton("",function(e) {
 			if (buttons.zoom.D1.hasClass("headerButtonEnabled")) {
 				listener.onScaleChanged("D1");
 			}
-		}, "zoom1dIcon.png").attr("title", translations["header.zoom1d"]);
+		}, "zoom1dIcon2.png").attr("title", translations["header.zoom1d"]);
 		zoomButtonsElement.append(buttons.zoom.H1);
 		zoomButtonsElement.append(buttons.zoom.H3);
 		zoomButtonsElement.append(buttons.zoom.H6);
