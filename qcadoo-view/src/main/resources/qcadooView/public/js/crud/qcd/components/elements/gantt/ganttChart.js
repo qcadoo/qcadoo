@@ -50,7 +50,7 @@ QCD.components.elements.GanttChart = function(_element, _mainController) {
 	var rowsByName = {};
 	var rowsByIndex = [];
 	
-	var currentWidth = 0;
+	var currentWidth;
 	var isScrollVisible = false;
 	
 	var header;
@@ -486,6 +486,10 @@ QCD.components.elements.GanttChart = function(_element, _mainController) {
 	}
 	
 	this.updateSize = function(_width, _height) {
+		QCD.info("--------- "+_width);
+		if (currentWidth == null) {
+			_width = _width - 22; // TODO mina WHY????
+		}
 		_height = _height - 50;
 		currentWidth = _width;
 		htmlElements.wrapper.width(_width);
