@@ -261,3 +261,6 @@
 	display: inline-block;
 	margin-left: 30px;
 }
+.ganttHeaderContainer .labelbox {
+	height: auto;	
+}

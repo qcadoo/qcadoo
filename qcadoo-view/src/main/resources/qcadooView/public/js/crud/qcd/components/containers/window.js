@@ -216,7 +216,6 @@ QCD.components.containers.Window = function(_element, _mainController) {
 		}
 		var ribbonWidth = _width - margin;
 		width = Math.round(_width - 2 * margin);
-		
 		if (width < 960 && isMinWidth) {
 			width = 960;
 			childrenElement.css("marginLeft", margin+"px");
@@ -232,9 +231,9 @@ QCD.components.containers.Window = function(_element, _mainController) {
 		}
 		var windowWidth = width +2*margin
 		var innerWidth = innerWidthMarker.innerWidth();
-		if (innerWidth != $(window).width()) { // IS VERTICAL SCROLLBAR
-			width -= 15;
-		}
+		//if (innerWidth != $(window).width()) { // IS VERTICAL SCROLLBAR
+			//width -= 15;
+		//}
 		
 		height = null;
 		if (this.options.fixedHeight) {
@@ -246,7 +245,6 @@ QCD.components.containers.Window = function(_element, _mainController) {
 			}
 			childrenElement.height(containerHeight);
 		}
-		
 		if (! oneTab) {
 			//var componentsHeight = height ? height-30 : null;
 			var componentsHeight = height ? height-35 : null;
