@@ -197,13 +197,11 @@ public class HibernateServiceImpl implements HibernateService {
 
     @Override
     public List<?> list(final Query query) {
-        LOG.debug("Running query " + query);
         return query.list();
     }
 
     @Override
     public List<?> list(final Criteria criteria) {
-        LOG.debug("Running criteria " + criteria);
         return criteria.list();
     }
 
