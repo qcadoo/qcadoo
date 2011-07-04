@@ -45,11 +45,44 @@
 			</plugins>
 		</pluginManagement>
 	</build>
-
+	
+	<pluginRepositories>
+		<pluginRepository>
+			<id>qcadoo-releases-plugin-repository</id>
+			<url>http://nexus.qcadoo.org/content/repositories/releases</url>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+				<updatePolicy>never</updatePolicy>
+			</snapshots>
+		</pluginRepository>
+		<pluginRepository>
+			<id>qcadoo-snapshots-plugin-repository</id>
+			<url>http://emhyr.local/nexus/content/repositories/snapshots</url>
+			<releases>
+				<enabled>false</enabled>
+				<updatePolicy>never</updatePolicy>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>interval:5</updatePolicy>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
+	
 	<distributionManagement>
 		<repository>
-			<id>qcadoo</id>
-			<url>file://target</url>
+			<id>qcadoo-releases-repository</id>
+			<url>http://nexus.qcadoo.org/content/repositories/releases</url>
 		</repository>
+		<snapshotRepository>
+			<id>qcadoo-snapshots-repository</id>
+			<url>http://emhyr.local/nexus/content/repositories/snapshots</url>
+			<uniqueVersion>false</uniqueVersion>
+		</snapshotRepository>
 	</distributionManagement>
+
 </project>
