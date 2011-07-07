@@ -209,6 +209,16 @@
 			<artifactId>javassist</artifactId>
 			<version>3.14.0-GA</version>
 		</dependency>
+		<dependency>
+			<groupId>joda-time</groupId>
+			<artifactId>joda-time</artifactId>
+			<version>1.6.2</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.quartz-scheduler</groupId>
+		    <artifactId>quartz</artifactId>
+		    <version>1.8.5</version>
+		</dependency>
 	</dependencies>
 
 	<build>
