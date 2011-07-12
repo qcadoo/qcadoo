@@ -6,7 +6,7 @@
 
 	<groupId>com.qcadoo</groupId>
 	<artifactId>qcadoo</artifactId>
-	<version>0.4.3-SNAPSHOT</version>
+	<version>0.4.4-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<modules>
@@ -48,7 +48,7 @@
 	</licenses>
 
 	<properties>
-		<qcadoo.maven.plugin.version>0.4.3-SNAPSHOT</qcadoo.maven.plugin.version>
+		<qcadoo.maven.plugin.version>0.4.4-SNAPSHOT</qcadoo.maven.plugin.version>
 		<spring.version>3.1.0.M1</spring.version>
 		<spring.security.version>3.0.5.RELEASE</spring.security.version>
 		<slf4j.version>1.6.1</slf4j.version>
@@ -295,39 +295,6 @@
 				<version>2.4</version>
 			</plugin>
 		</plugins>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.eclipse.m2e</groupId>
-					<artifactId>lifecycle-mapping</artifactId>
-					<version>1.0.0</version>
-					<configuration>
-						<lifecycleMappingMetadata>
-							<pluginExecutions>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>com.qcadoo</groupId>
-										<artifactId>
-											qcadoo-maven-plugin
-										</artifactId>
-										<versionRange>
-											[0.4.3-SNAPSHOT,)
-										</versionRange>
-										<goals>
-											<goal>version-replace</goal>
-											<goal>validate</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore></ignore>
-									</action>
-								</pluginExecution>
-							</pluginExecutions>
-						</lifecycleMappingMetadata>
-					</configuration>
-				</plugin>
-			</plugins>
-		</pluginManagement>
 	</build>
 
 	<repositories>
