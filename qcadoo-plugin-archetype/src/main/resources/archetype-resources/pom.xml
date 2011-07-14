@@ -11,7 +11,7 @@
 	<version>${version}</version>
 
 	<properties>
-		<qcadoo.version>0.4.2-SNAPSHOT</qcadoo.version>
+		<qcadoo.version>0.4.3</qcadoo.version>
 	</properties>
 
 	<build>
