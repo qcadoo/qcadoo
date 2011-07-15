@@ -38,9 +38,9 @@
 		<menu:menu-category name="${identifier}" />
 
 		<menu:menu-item name="${identifier}" category="${identifier}"
-			view="${identifier}" />
+			view="${identifier}List" />
 
-		<view:view resource="view/${identifier}.xml" />
+		<view:view resource="view/${identifier}List.xml" />
 		<view:view resource="view/${identifier}Details.xml" />
 		
 		<view:resource uri="public/**/*" />
