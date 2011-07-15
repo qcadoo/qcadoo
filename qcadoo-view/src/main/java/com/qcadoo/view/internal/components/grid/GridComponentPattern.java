@@ -210,6 +210,28 @@ public final class GridComponentPattern extends AbstractComponentPattern {
         return json;
     }
 
+    public void addColumn(final String name, final String fields, final String expression, final Boolean isLink,
+            final Integer width, final boolean isOrderable, boolean isSearchable) {
+        GridComponentColumn column = new GridComponentColumn(name);
+        for (FieldDefinition field : parseFields(fields)) {
+            column.addField(field);
+        }
+        column.setExpression(expression);
+        if (isLink != null) {
+            column.setLink(isLink);
+        }
+        if (width != null) {
+            column.setWidth(width);
+        }
+        columns.put(name, column);
+        if (isOrderable) {
+            orderableColumns.add(name);
+        }
+        if (isSearchable) {
+            searchableColumns.add(name);
+        }
+    }
+
     private void addTranslation(final JSONObject translation, final String key, final Locale locale) throws JSONException {
         translation.put(key, getTranslationService()
                 .translate(getTranslationPath() + "." + key, "qcadooView.grid." + key, locale));
