@@ -232,6 +232,12 @@ public final class GridComponentPattern extends AbstractComponentPattern {
         }
     }
 
+    public void removeColumn(final String name) {
+        columns.remove(name);
+        orderableColumns.remove(name);
+        searchableColumns.remove(name);
+    }
+
     private void addTranslation(final JSONObject translation, final String key, final Locale locale) throws JSONException {
         translation.put(key, getTranslationService()
                 .translate(getTranslationPath() + "." + key, "qcadooView.grid." + key, locale));

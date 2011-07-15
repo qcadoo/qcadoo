@@ -42,6 +42,22 @@ public class ViewGridColumnModule extends Module {
 
     @Override
     public void enable() {
+        GridComponentPattern grid = getGrid();
+        for (ViewGridColumnModuleColumnModel columnModel : columns) {
+            grid.addColumn(columnModel.getName(), columnModel.getFields(), columnModel.getExpression(), columnModel.getLink(),
+                    columnModel.getWidth(), columnModel.getOrderable(), columnModel.getSearchable());
+        }
+    }
+
+    @Override
+    public void disable() {
+        GridComponentPattern grid = getGrid();
+        for (ViewGridColumnModuleColumnModel columnModel : columns) {
+            grid.removeColumn(columnModel.getName());
+        }
+    }
+
+    private GridComponentPattern getGrid() {
         InternalViewDefinition viewDefinition = viewDefinitionService.getWithoutSession(extendsViewPlugin, extendsViewName);
         if (viewDefinition == null) {
             throw new ModuleException(pluginIdentifier, "view", "reference to view which not exists");
@@ -56,16 +72,6 @@ public class ViewGridColumnModule extends Module {
             throw new ModuleException(pluginIdentifier, "view", "component '" + extendsComponentName + "' in "
                     + extendsViewPlugin + "/" + extendsViewName + " is not a grid");
         }
-        GridComponentPattern grid = (GridComponentPattern) component;
-        for (ViewGridColumnModuleColumnModel columnModel : columns) {
-            grid.addColumn(columnModel.getName(), columnModel.getFields(), columnModel.getExpression(), columnModel.getLink(),
-                    columnModel.getWidth(), columnModel.getOrderable(), columnModel.getSearchable());
-        }
+        return (GridComponentPattern) component;
     }
-
-    @Override
-    public void disable() {
-
-    }
-
 }
