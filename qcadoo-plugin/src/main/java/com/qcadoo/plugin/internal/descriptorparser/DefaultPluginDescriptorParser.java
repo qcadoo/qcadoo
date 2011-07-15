@@ -26,7 +26,6 @@ package com.qcadoo.plugin.internal.descriptorparser;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.HashMap;
@@ -81,17 +80,15 @@ public class DefaultPluginDescriptorParser implements PluginDescriptorParser {
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             try {
-                URL url = new URL("http://www.google.com");
-                HttpURLConnection urlConnect = (HttpURLConnection) url.openConnection();
-
-                Object objData = urlConnect.getContent();
+                URL url = new URL("http://www.qcadoo.com");
+                url.openConnection();
                 factory.setValidating(true);
             } catch (UnknownHostException e) {
                 factory.setValidating(false);
-
             } catch (IOException e) {
                 factory.setValidating(false);
             }
+            factory.setValidating(false);
             factory.setNamespaceAware(true);
             factory.setAttribute("http://java.sun.com/xml/jaxp/properties/schemaLanguage", "http://www.w3.org/2001/XMLSchema");
 

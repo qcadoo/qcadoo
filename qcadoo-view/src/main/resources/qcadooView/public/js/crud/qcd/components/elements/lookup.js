@@ -101,11 +101,9 @@ QCD.components.elements.Lookup = function(_element, _mainController) {
 		elements.openLookupButton.click(openLookup);
 		
 		elements.input.focus(function() {
-			QCD.info("focus");
 			viewState.isFocused = true;
 			onViewStateChange();
 		}).blur(function() {
-			QCD.info("blur");
 			viewState.isFocused = false;
 			onViewStateChange();
 		});
@@ -133,7 +131,6 @@ QCD.components.elements.Lookup = function(_element, _mainController) {
 					return;
 				}
 				performSelectEntity(entity);
-				QCD.info("4");
 				dataState.currentCode = dataState.selectedEntity.code;
 				elements.input.val(dataState.currentCode);
 				elements.input.removeClass('inactive');
@@ -148,7 +145,6 @@ QCD.components.elements.Lookup = function(_element, _mainController) {
 				var inputVal = elements.input.val();
 				if (dataState.currentCode != inputVal) {
 					dataState.currentCode = inputVal;
-					QCD.info("5 -"+dataState.currentCode+"-");
 					performSelectEntity(null);
 					onInputValueChange();
 				} 
@@ -174,7 +170,6 @@ QCD.components.elements.Lookup = function(_element, _mainController) {
 	
 	
 	this.getComponentData = function() {
-		QCD.info("TEST - GCD -"+dataState.currentCode+"-");
 		return {
 			value: dataState.selectedEntity.id,
 			oldValue: (baseValue ? baseValue.selectedEntityId : null),
@@ -188,17 +183,9 @@ QCD.components.elements.Lookup = function(_element, _mainController) {
 	}
 	
 	this.setComponentData = function(data) {
-		QCD.info(this.element);
-		QCD.info("TEST - SCD -"+dataState.currentCode+"-");
-		QCD.info(data);
-		QCD.info(dataState);
 		if (data.clearCurrentCodeCode) {
-			QCD.info("data");
-			QCD.info("6");
 			dataState.currentCode = "";
 		} else {
-			QCD.info("data - "+ data.currentCode + " - " + dataState.currentCode);
-			QCD.info("7");
 			dataState.currentCode = data.currentCode ? data.currentCode : dataState.currentCode;
 		}
 		dataState.selectedEntity.id = data.value ? data.value : null;
@@ -210,16 +197,12 @@ QCD.components.elements.Lookup = function(_element, _mainController) {
 		dataState.autocomplete.entitiesNumber = data.autocompleteEntitiesNumber;
 		if (dataState.contextEntityId != data.contextEntityId) {
 			dataState.contextEntityId = data.contextEntityId;
-			QCD.info("8");
 			dataState.currentCode = "";
 		}
 		// initialaize current code on first load
 		if (! dataState.currentCode) {
-			QCD.info("NO - "+dataState.selectedEntity.id + " - " +dataState.selectedEntity.code);
 			dataState.currentCode = dataState.selectedEntity.id ? dataState.selectedEntity.code : "";
-			QCD.info("-"+dataState.currentCode+"-");
 		}
-		QCD.info(dataState);
 		onDataStateChange();
 	}
 	
@@ -247,16 +230,12 @@ QCD.components.elements.Lookup = function(_element, _mainController) {
 	}
 	
 	function onViewStateChange() {
-		QCD.info("TEST - 1 -"+dataState.currentCode+"-");
 		if (viewState.isFocused && !elements.input.attr("readonly")) {
-			QCD.info("TEST - 2 -"+dataState.currentCode+"-");
 			elements.openLookupButton.addClass("lightHover");
 			elements.label.html(labels.focus);
 			elements.input.val(dataState.currentCode);
 			elements.input.removeClass('inactive');
-			QCD.info("TEST - 3 -"+dataState.currentCode+"-");
 		} else {
-			QCD.info("TEST - 4 -"+dataState.currentCode+"-");
 			elements.openLookupButton.removeClass("lightHover");
 			lookupDropdown.hide();
 			
@@ -283,11 +262,9 @@ QCD.components.elements.Lookup = function(_element, _mainController) {
 					
 				} else if (lookupDropdown.getMouseSelected()) {
 					performSelectEntity(lookupDropdown.getMouseSelected());
-					QCD.info("1");
 					dataState.currentCode = lookupDropdown.getMouseSelected().code;
 				} else if (lookupDropdown.getSelected()) {
 					performSelectEntity(lookupDropdown.getSelected());
-					QCD.info("2");
 					dataState.currentCode = lookupDropdown.getSelected().code;
 				}
 				elements.input.val(stripHTML(dataState.selectedEntity.value));
@@ -304,16 +281,13 @@ QCD.components.elements.Lookup = function(_element, _mainController) {
 				});
 				element.addClass("error");
 			}
-			QCD.info("TEST - 5 -"+dataState.currentCode+"-");
 		}
 	}
 	
 	function onDataStateChange() {
-		QCD.info("TEST - 6 -"+dataState.currentCode+"-");
 		if (dataState.autocomplete.code == dataState.currentCode) {
 			elements.loading.hide();	
 		}
-		QCD.info("TEST - 7 -"+dataState.currentCode+"-");
 		if (blurAfterLoad) {
 			blurAfterLoad = false;
 			viewState.isFocused = false;
@@ -321,7 +295,6 @@ QCD.components.elements.Lookup = function(_element, _mainController) {
 			onViewStateChange();
 			return;
 		}
-		QCD.info("TEST - 8 -"+dataState.currentCode+"-");
 		if (viewState.isFocused) {
 			lookupDropdown.updateAutocomplete(dataState.autocomplete.matches, dataState.autocomplete.entitiesNumber);
 			lookupDropdown.show();
@@ -339,7 +312,6 @@ QCD.components.elements.Lookup = function(_element, _mainController) {
 			}
 			
 		}
-		QCD.info("TEST - 9 -"+dataState.currentCode+"-");
 	}
 	
 	function onInputValueChange(immidiateRefresh) {
@@ -448,7 +420,6 @@ QCD.components.elements.Lookup = function(_element, _mainController) {
 			code: lookupData.lookupCode,
 			value: lookupData.lookupValue
 		});
-		QCD.info("3");
 		dataState.currentCode = lookupData.lookupCode;
 		onDataStateChange();
 		onViewStateChange();
