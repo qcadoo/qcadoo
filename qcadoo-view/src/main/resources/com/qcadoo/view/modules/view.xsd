@@ -118,9 +118,15 @@
 	<xs:element name="view-grid-column">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="column">
+				<xs:element name="column" maxOccurs="unbounded" minOccurs="1">
 					<xs:complexType>
 						<xs:attribute name="name" type="xs:string" use="required" />
+						<xs:attribute name="fields" type="xs:string" use="required" />
+						<xs:attribute name="expression" type="xs:string" use="optional" />
+						<xs:attribute name="link" type="xs:boolean" use="optional" />
+						<xs:attribute name="width" type="xs:integer" use="optional" />
+						<xs:attribute name="searchable" type="xs:boolean" use="optional" />
+						<xs:attribute name="filterable" type="xs:boolean" use="optional" />
 					</xs:complexType>
 				</xs:element>
 			</xs:sequence>
