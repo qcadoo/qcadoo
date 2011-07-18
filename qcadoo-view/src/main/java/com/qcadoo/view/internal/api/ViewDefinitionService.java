@@ -27,8 +27,6 @@ import java.util.List;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 
-
-
 /**
  * Service for manipulating view definitions.
  * 
@@ -55,5 +53,12 @@ public interface ViewDefinitionService {
      * @return the data definitions
      */
     List<ViewDefinition> list();
+
+    /**
+     * Check if view exists.
+     * 
+     * @return true if view exists, false otherwise
+     */
+    boolean viewExists(String pluginIdentifier, String viewName);
 
 }

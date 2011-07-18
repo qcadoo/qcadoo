@@ -102,4 +102,9 @@ public class ViewDefinitionServiceImpl implements InternalViewDefinitionService,
         return view.getAuthorizationRole();
     }
 
+    @Override
+    public boolean viewExists(String pluginIdentifier, String viewName) {
+        return getWithoutSession(pluginIdentifier, viewName) != null;
+    }
+
 }

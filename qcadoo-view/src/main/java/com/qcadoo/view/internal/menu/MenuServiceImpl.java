@@ -42,6 +42,7 @@ import com.qcadoo.security.api.SecurityRole;
 import com.qcadoo.security.api.SecurityRolesService;
 import com.qcadoo.view.api.utils.TranslationUtilsService;
 import com.qcadoo.view.internal.api.InternalMenuService;
+import com.qcadoo.view.internal.api.ViewDefinitionService;
 import com.qcadoo.view.internal.menu.items.UrlMenuItem;
 import com.qcadoo.view.internal.menu.items.ViewDefinitionMenuItemItem;
 import com.qcadoo.view.internal.security.SecurityViewDefinitionRoleResolver;
@@ -60,6 +61,9 @@ public final class MenuServiceImpl implements InternalMenuService {
 
     @Autowired
     private TranslationUtilsService translationUtilsService;
+
+    @Autowired
+    private ViewDefinitionService viewDefinitionService;
 
     @Override
     @Transactional(readOnly = true)
@@ -141,6 +145,12 @@ public final class MenuServiceImpl implements InternalMenuService {
 
         if (menuView != null) {
             return;
+        }
+
+        if (url == null) {
+            if (!viewDefinitionService.viewExists(pluginIdentifier, viewName)) {
+                throw new IllegalStateException("View " + pluginIdentifier + "/" + view + " does not exist.");
+            }
         }
 
         menuView = getDataDefinition("view").create();
