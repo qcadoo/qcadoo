@@ -418,6 +418,13 @@ $.fn.ajaxSubmit = function(options) {
 				if (hasPre) {
 					xhr.responseText = xhr.responseText.replace(/^<pre[^>]*>/,"").replace(/<\/pre>$/,"");
 				}
+				var hasPre2 = /.3CPRE*.<\/pre>$/.test(xhr.responseText);
+				//http://localhost:8080/pluginPages/%3CPRE%3E../pluginPages/infoPage.html?type=success&status=install.success</PRE>
+				
+				if(hasPre2){
+					xhr.responseText = xhr.responseText.replace(/pluginPages\/.3CPRE*/,"").replace(/<\/pre>$/,"");
+				}
+				
 				// QCADOO remove <pre> tags - end
 				
 				data = httpData(xhr, s.dataType, s);
