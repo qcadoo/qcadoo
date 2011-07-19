@@ -40,21 +40,34 @@ import org.springframework.util.PathMatcher;
 import com.qcadoo.plugin.internal.JarEntryResource;
 import com.qcadoo.plugin.internal.PluginException;
 import com.qcadoo.plugin.internal.api.PluginDescriptorResolver;
+import java.io.FilenameFilter;
+import java.util.Arrays;
+import java.util.HashSet;
+import org.apache.commons.io.filefilter.WildcardFileFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class DefaultPluginDescriptorResolver implements PluginDescriptorResolver {
+
+    private static final Logger LOG = LoggerFactory.getLogger(DefaultPluginDescriptorResolver.class);
 
     private final ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
 
     @Value("#{plugin.descriptors}")
     private String descriptor;
 
+    @Value("#{plugin.pluginsTmpPath}")
+    private String pluginsTmpPath;
+
     private final PathMatcher matcher = new AntPathMatcher();
 
     @Override
     public Resource[] getDescriptors() {
         try {
-            return resolver.getResources(ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX + descriptor);
+            Resource[] descriptors = resolver.getResources(ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX + descriptor);
+            HashSet<Resource> uniqueDescriptors = new HashSet<Resource>(Arrays.asList(descriptors));
+            return uniqueDescriptors.toArray(new Resource[0]);
         } catch (IOException e) {
             throw new IllegalStateException("Failed to find classpath resources for "
                     + ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX + descriptor, e);
@@ -62,7 +75,35 @@ public class DefaultPluginDescriptorResolver implements PluginDescriptorResolver
     }
 
     @Override
-    public Resource getDescriptor(final File file) throws PluginException {
+    public JarEntryResource[] getTemporaryDescriptors() {
+        if(pluginsTmpPath == null || pluginsTmpPath.trim().isEmpty()) {
+            return new JarEntryResource[0];
+        }
+        File pluginsTmpFile = new File(pluginsTmpPath);
+        if(!pluginsTmpFile.exists()) {
+            LOG.warn("Plugins temporary directory does not exist: " + pluginsTmpPath);
+            return new JarEntryResource[0];
+        }
+        try {
+            FilenameFilter jarsFilter = new WildcardFileFilter("*.jar");
+            if(!pluginsTmpFile.exists()) {
+                throw new IOException();
+            }
+            File[] pluginJars = pluginsTmpFile.listFiles(jarsFilter);
+            JarEntryResource[] pluginDescriptors = new JarEntryResource[pluginJars.length];
+            for(int i = 0; i < pluginJars.length; ++i) {
+                File jarRes = pluginJars[i];
+                JarEntryResource descriptorResource = getDescriptor(jarRes);
+                pluginDescriptors[i] = descriptorResource;
+            }
+            return pluginDescriptors;
+        } catch (IOException e) {
+            throw new IllegalStateException("Failed to reading plugins from " + pluginsTmpPath, e);
+        }
+    }
+
+    @Override
+    public JarEntryResource getDescriptor(final File file) throws PluginException {
         try {
 
             JarFile jarFile = new JarFile(file);
