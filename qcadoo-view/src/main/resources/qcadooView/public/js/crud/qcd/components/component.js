@@ -78,7 +78,6 @@ QCD.components.Component = function(_element, _mainController) {
 	}
 	
 	this.setValue = function(value) {
-		
 		this.setEnabled(value.enabled);
 		this.setVisible(value.visible);
 		this.setMessages(value.messages);

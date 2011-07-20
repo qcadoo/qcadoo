@@ -63,6 +63,7 @@ public class ValidatorTest extends DataAccessTest {
 
     @Before
     public void init() {
+
         given(applicationContext.getBean(CustomEntityService.class)).willReturn(new CustomEntityService());
     }
 

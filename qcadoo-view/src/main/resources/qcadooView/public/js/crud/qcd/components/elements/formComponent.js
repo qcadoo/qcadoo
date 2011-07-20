@@ -76,6 +76,7 @@ QCD.components.elements.FormComponent = function(_element, _mainController) {
 	}
 
 	this.getComponentValue = function() {
+		
 		var value = this.getComponentData();
 		value.required = element.hasClass("required");		
 		value.baseValue = baseValue;

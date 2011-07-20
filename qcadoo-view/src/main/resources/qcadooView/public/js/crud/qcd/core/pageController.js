@@ -378,8 +378,10 @@ QCD.PageController = function() {
 		} else {
 			url+="?";
 		}
+		if(window.location.href.indexOf("page/") == -1){
+				url = "page/"+pluginIdentifier+"/"+url;
+			}
 		url+="popup=true";
-		
 		popup = new Object();
 		popup.pageController = this;
 		popup.parentComponent = parentComponent;

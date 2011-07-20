@@ -23,16 +23,31 @@
  */
 package com.qcadoo.plugin.internal.api;
 
+import com.qcadoo.plugin.internal.JarEntryResource;
 import java.io.File;
 
+import com.qcadoo.plugin.internal.PluginException;
 import org.springframework.core.io.Resource;
 
-import com.qcadoo.plugin.internal.PluginException;
-
 public interface PluginDescriptorResolver {
-
+    
+    /**
+     * Descriptors of enabled plugins
+     */
     Resource[] getDescriptors();
 
-    Resource getDescriptor(File file) throws PluginException;
+    /**
+     * Descriptors for temporary plugins waiting for install
+     */
+    JarEntryResource[] getTemporaryDescriptors();
+
+    /**
+     * Extracts the plugin descriptos as a resource from a jar file
+     *
+     * @param file jar file with qcadoo plugin
+     * @return the plugins descriptor as a resource
+     * @throws PluginException
+     */
+    JarEntryResource getDescriptor(File file) throws PluginException;
 
 }

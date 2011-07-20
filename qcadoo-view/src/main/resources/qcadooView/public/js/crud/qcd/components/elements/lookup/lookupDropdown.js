@@ -51,7 +51,6 @@ QCD.components.elements.lookup.Dropdown = function(_lookupDropdownElement, _cont
 	}
 	
 	this.updateAutocomplete = function(_autocompleteMatches, _autocompleteEntitiesNumber) {
-		
 		autocompleteMatches = _autocompleteMatches;
 		
 		selectedElement = null;

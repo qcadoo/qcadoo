@@ -30,7 +30,7 @@
 <%
 String ctx = request.getContextPath();
 %>
-<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooPlugins/public/js/jquery.form.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/jquery.form.js"></script>
 
 <script type="text/JavaScript">
 	var buttonActive = false;
