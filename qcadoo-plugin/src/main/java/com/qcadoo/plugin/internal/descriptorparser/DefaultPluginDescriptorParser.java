@@ -56,12 +56,15 @@ import org.xml.sax.SAXException;
 import com.google.common.base.Preconditions;
 import com.qcadoo.plugin.api.Module;
 import com.qcadoo.plugin.api.ModuleFactory;
+import com.qcadoo.plugin.api.PluginState;
 import com.qcadoo.plugin.internal.DefaultPlugin.Builder;
+import com.qcadoo.plugin.internal.JarEntryResource;
 import com.qcadoo.plugin.internal.PluginException;
 import com.qcadoo.plugin.internal.api.InternalPlugin;
 import com.qcadoo.plugin.internal.api.ModuleFactoryAccessor;
 import com.qcadoo.plugin.internal.api.PluginDescriptorParser;
 import com.qcadoo.plugin.internal.api.PluginDescriptorResolver;
+import org.springframework.core.io.InputStreamSource;
 
 @Service
 public class DefaultPluginDescriptorParser implements PluginDescriptorParser {
@@ -104,7 +107,17 @@ public class DefaultPluginDescriptorParser implements PluginDescriptorParser {
     @Override
     public InternalPlugin parse(final Resource resource, final boolean ignoreModules) {
         try {
-            LOG.info("Parsing: " + resource);
+            return parse(new JarEntryResource(resource), ignoreModules);
+
+        } catch (IOException e) {
+            throw new PluginException(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public InternalPlugin parse(JarEntryResource resource, final boolean ignoreModules) {
+        try {
+            LOG.info("Parsing descriptor for:" + resource);
 
             Document document = documentBuilder.parse(resource.getInputStream());
 
@@ -112,8 +125,7 @@ public class DefaultPluginDescriptorParser implements PluginDescriptorParser {
 
             Builder pluginBuilder = parsePluginNode(root, ignoreModules);
 
-            InternalPlugin plugin = pluginBuilder.withFileName(
-                    FilenameUtils.getName(ResourceUtils.extractJarFileURL(resource.getURL()).toString())).build();
+            InternalPlugin plugin = pluginBuilder.withFileName(resource.getJarFileName()).build();
 
             LOG.info("Parse complete");
 
@@ -131,7 +143,8 @@ public class DefaultPluginDescriptorParser implements PluginDescriptorParser {
     @Override
     public Set<InternalPlugin> loadPlugins() {
         Map<String, InternalPlugin> loadedplugins = new HashMap<String, InternalPlugin>();
-        for (Resource resource : pluginDescriptorResolver.getDescriptors()) {
+        Resource[] resources = pluginDescriptorResolver.getDescriptors();
+        for (Resource resource : resources) {
             InternalPlugin plugin = parse(resource, false);
 
             if (loadedplugins.containsKey(plugin.getIdentifier())) {
@@ -141,6 +154,18 @@ public class DefaultPluginDescriptorParser implements PluginDescriptorParser {
             loadedplugins.put(plugin.getIdentifier(), plugin);
         }
         return new HashSet<InternalPlugin>(loadedplugins.values());
+    }
+
+    @Override
+    public Set<InternalPlugin> getTemporaryPlugins() {
+        JarEntryResource[] resources = pluginDescriptorResolver.getTemporaryDescriptors();
+        Set<InternalPlugin> plugins = new HashSet<InternalPlugin>();
+        for(JarEntryResource resource : resources) {
+            InternalPlugin plugin = parse(resource, true);
+            plugin.changeStateTo(PluginState.TEMPORARY);
+            plugins.add(plugin);
+        }
+        return plugins;
     }
 
     private Builder parsePluginNode(final Node pluginNode, final boolean ignoreModules) {
