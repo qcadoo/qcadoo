@@ -78,6 +78,8 @@ public class PluginManagmentViewHook {
                 QcadooPluginConstants.MODEL_PLUGIN);
         for (Long entityId : grid.getSelectedEntitiesIds()) {
             Entity pluginEntity = pluginDataDefinition.get(entityId);
+
+            System.out.println("***ala" + pluginEntity.getStringField("identifier"));
             pluginIdentifiers.add(pluginEntity.getStringField("identifier"));
         }
 
