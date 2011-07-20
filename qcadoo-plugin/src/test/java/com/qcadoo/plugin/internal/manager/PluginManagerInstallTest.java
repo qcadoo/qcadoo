@@ -42,7 +42,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
-import org.springframework.core.io.Resource;
 
 import com.qcadoo.plugin.api.Plugin;
 import com.qcadoo.plugin.api.PluginDependencyInformation;
@@ -53,6 +52,7 @@ import com.qcadoo.plugin.api.PluginState;
 import com.qcadoo.plugin.api.Version;
 import com.qcadoo.plugin.api.VersionOfDependency;
 import com.qcadoo.plugin.api.artifact.PluginArtifact;
+import com.qcadoo.plugin.internal.JarEntryResource;
 import com.qcadoo.plugin.internal.PluginException;
 import com.qcadoo.plugin.internal.api.InternalPlugin;
 import com.qcadoo.plugin.internal.api.InternalPluginAccessor;
@@ -88,7 +88,7 @@ public class PluginManagerInstallTest {
 
     private final File file = mock(File.class, RETURNS_DEEP_STUBS);
 
-    private final Resource resource = mock(Resource.class, RETURNS_DEEP_STUBS);
+    private final JarEntryResource resource = mock(JarEntryResource.class, RETURNS_DEEP_STUBS);
 
     @Before
     public void init() {
