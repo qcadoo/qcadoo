@@ -484,7 +484,12 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 		currentState.selectedEntities = value.selectedEntities;
 		for (var i in currentState.selectedEntities) {
 			if (currentState.selectedEntities[i]) {
-				grid.setSelection(i, false);
+				var row = grid.getRowData(i)
+				if (!row || jQuery.isEmptyObject(row)) {
+					currentState.selectedEntities[i] = false;
+				} else {
+					grid.setSelection(i, false);
+				}
 			}
 		}
 		aferSelectionUpdate();

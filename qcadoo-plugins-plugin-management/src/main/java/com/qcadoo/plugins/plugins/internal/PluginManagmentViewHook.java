@@ -23,6 +23,7 @@
  */
 package com.qcadoo.plugins.plugins.internal;
 
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -64,7 +65,16 @@ public class PluginManagmentViewHook {
 
     public void onRemoveButtonClick(final ViewDefinitionState viewDefinitionState, final ComponentState triggerState,
             final String[] args) {
-        viewDefinitionState.openModal(pluginManagmentPerformer.performRemove(getPluginIdentifiersFromView(viewDefinitionState)));
+        String url = pluginManagmentPerformer.performRemove(getPluginIdentifiersFromView(viewDefinitionState));
+
+        System.out.println("======================== REMOVE BUTTON");
+
+        if (url.contains("type=success")) {
+            System.out.println("=============== was success");
+            GridComponent grid = (GridComponent) viewDefinitionState.getComponentByReference("grid");
+            grid.setSelectedEntitiesIds(new HashSet<Long>());
+        }
+        viewDefinitionState.openModal(url);
     }
 
     private List<String> getPluginIdentifiersFromView(final ViewDefinitionState viewDefinitionState) {
@@ -79,7 +89,6 @@ public class PluginManagmentViewHook {
         for (Long entityId : grid.getSelectedEntitiesIds()) {
             Entity pluginEntity = pluginDataDefinition.get(entityId);
 
-            System.out.println("***ala" + pluginEntity.getStringField("identifier"));
             pluginIdentifiers.add(pluginEntity.getStringField("identifier"));
         }
 
