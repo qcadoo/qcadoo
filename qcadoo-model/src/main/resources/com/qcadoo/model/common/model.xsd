@@ -4,7 +4,7 @@
     ***************************************************************************
     Copyright (c) 2010 Qcadoo Limited
     Project: Qcadoo Framework
-    Version: 0.4.4
+    Version: 0.4.5
 
     This file is part of Qcadoo.
 
