@@ -197,7 +197,7 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
             fieldComponent.removeFieldEntityIdChangeListener(fieldDefinition.getName());
         }
 
-        if (scopeFieldComponent != null) {
+        if (scopeFieldComponent != null && scopeFieldDefinition != null) {
             scopeFieldComponent.removeScopeEntityIdChangeListener(scopeFieldDefinition.getName());
         }
     }
