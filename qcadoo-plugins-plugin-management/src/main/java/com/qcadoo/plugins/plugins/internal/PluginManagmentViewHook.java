@@ -67,10 +67,7 @@ public class PluginManagmentViewHook {
             final String[] args) {
         String url = pluginManagmentPerformer.performRemove(getPluginIdentifiersFromView(viewDefinitionState));
 
-        System.out.println("======================== REMOVE BUTTON");
-
         if (url.contains("type=success")) {
-            System.out.println("=============== was success");
             GridComponent grid = (GridComponent) viewDefinitionState.getComponentByReference("grid");
             grid.setSelectedEntitiesIds(new HashSet<Long>());
         }
