@@ -6,7 +6,7 @@
 
 	<groupId>com.qcadoo</groupId>
 	<artifactId>qcadoo</artifactId>
-	<version>0.4.5-SNAPSHOT</version>
+	<version>0.4.6-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<modules>
