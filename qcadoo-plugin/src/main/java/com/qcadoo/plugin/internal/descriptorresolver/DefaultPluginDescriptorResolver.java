@@ -67,7 +67,7 @@ public class DefaultPluginDescriptorResolver implements PluginDescriptorResolver
         try {
             Resource[] descriptors = resolver.getResources(ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX + descriptor);
             HashSet<Resource> uniqueDescriptors = new HashSet<Resource>(Arrays.asList(descriptors));
-            return uniqueDescriptors.toArray(new Resource[0]);
+            return uniqueDescriptors.toArray(new Resource[uniqueDescriptors.size()]);
         } catch (IOException e) {
             throw new IllegalStateException("Failed to find classpath resources for "
                     + ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX + descriptor, e);
