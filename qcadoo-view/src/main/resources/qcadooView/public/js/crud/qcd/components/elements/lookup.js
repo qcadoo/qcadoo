@@ -187,7 +187,6 @@ QCD.components.elements.Lookup = function(_element, _mainController) {
 		if (data.clearCurrentCodeCode) {
 			dataState.currentCode = "";
 		} else {
-			
 			dataState.currentCode = data.currentCode ? data.currentCode
 					: dataState.currentCode;
 		}
@@ -293,6 +292,7 @@ QCD.components.elements.Lookup = function(_element, _mainController) {
 	}
 
 	function onDataStateChange() {
+		
 		if (dataState.autocomplete.code == dataState.currentCode) {
 			elements.loading.hide();
 		}

@@ -125,10 +125,14 @@
 		window.onLoginSuccess = function() {
 			windowController.onLoginSuccess();
 		}
-
+		
 		window.goToMenuPosition = function(position) {
 			windowController.goToMenuPosition(position);
 		}
+
+		window.activateMenuPosition = function(position) {
+ 			windowController.activateMenuPosition(position);
+ 		}
 
 		window.hasMenuPosition = function(position) {
 			return windowController.hasMenuPosition(position);

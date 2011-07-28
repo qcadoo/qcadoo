@@ -160,6 +160,10 @@ QCD.WindowController = function(_menuStructure) {
 		performGoToPage(currentPage);
 	}
 	
+	this.activateMenuPosition = function(position) {
+		menuController.activateMenuPosition(position);
+	}
+	
 	this.goToMenuPosition = function(position) {
 		menuController.goToMenuPosition(position);
 	}
