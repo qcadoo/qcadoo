@@ -134,7 +134,9 @@ public final class ExpressionServiceImpl implements ExpressionService {
             }
         } catch (SpelEvaluationException e) {
             LOG.error("Error while calculating value of expression \"" + expression + "\" for " + entity, e);
-            value = "!!!";
+            // albr
+            // value = "!!!";
+            value = "";
         }
 
         if (StringUtils.isEmpty(value) || "null".equals(value)) {
