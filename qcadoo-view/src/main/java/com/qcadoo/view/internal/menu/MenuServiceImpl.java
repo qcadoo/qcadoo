@@ -214,10 +214,6 @@ public final class MenuServiceImpl implements InternalMenuService {
             final String viewPluginIdentifier, final String viewName) {
         Entity menuItem = getItem(pluginIdentifier, name);
 
-        if (menuItem != null) {
-            return;
-        }
-
         Entity menuCategory = getCategory(category);
         Entity menuView = getView(viewPluginIdentifier, viewName);
 
@@ -231,14 +227,19 @@ public final class MenuServiceImpl implements InternalMenuService {
                     + pluginIdentifier + "." + name);
         }
 
-        menuItem = getDataDefinition("item").create();
-        menuItem.setField("pluginIdentifier", pluginIdentifier);
-        menuItem.setField("name", name);
-        menuItem.setField("active", true);
-        menuItem.setField("category", menuCategory);
-        menuItem.setField("view", menuView);
-        menuItem.setField("succession", getTotalNumberOfItems(menuCategory));
-        getDataDefinition("item").save(menuItem);
+        if (menuItem == null) {
+            menuItem = getDataDefinition("item").create();
+            menuItem.setField("pluginIdentifier", pluginIdentifier);
+            menuItem.setField("name", name);
+            menuItem.setField("active", true);
+        }
+
+        if (menuItem == null || !menuView.equals(menuItem.getField("view"))) {
+            menuItem.setField("view", menuView);
+            menuItem.setField("category", menuCategory);
+            menuItem.setField("succession", getTotalNumberOfItems(menuCategory));
+            getDataDefinition("item").save(menuItem);
+        }
     }
 
     @Override
