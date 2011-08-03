@@ -165,11 +165,25 @@ QCD.components.elements.Calendar = function(_element, _mainController) {
 			calendar.removeClass("lightHover");
 		});
 		
+		timeInput.focus(function() {
+		}).blur(function() {
+			checkTimeFormat(timeInput.val());
+		});
+		
 		input.change(function() {
 			inputDataChanged();
 		});
 		
 		$("#ui-datepicker-div").hide();
+	}
+	
+	function checkTimeFormat(value){
+		var intIndexOfMatch = value.indexOf( "_" )
+		while (intIndexOfMatch!=-1){
+			value = value.replace( "_", "0" )
+			intIndexOfMatch = value.indexOf( "_" );
+			}
+		timeInput.val(value);
 	}
 	
 	this.setComponentData = function(data) {
