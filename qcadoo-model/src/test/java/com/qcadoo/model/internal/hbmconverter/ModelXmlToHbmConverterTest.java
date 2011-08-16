@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.3
+ * Version: 0.4.5
  *
  * This file is part of Qcadoo.
  *
@@ -59,6 +59,7 @@ public class ModelXmlToHbmConverterTest {
 
     @BeforeClass
     public static void init() throws Exception {
+
         hbmInputStream = modelXmlToHbmConverter.convert(Utils.FULL_FIRST_ENTITY_XML_RESOURCE)[0].getInputStream();
         hbmInputSource = new InputSource(modelXmlToHbmConverter.convert(Utils.FULL_FIRST_ENTITY_XML_RESOURCE)[0].getInputStream());
         hbmFirstEntity = buildControlDocument(new InputSource(

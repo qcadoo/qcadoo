@@ -414,10 +414,11 @@ $.fn.ajaxSubmit = function(options) {
 				}
 				
 				// QCADOO remove <pre> tags - begin
-				var hasPre = /^<pre[^>]*>.*<\/pre>$/.test(xhr.responseText);
+				var hasPre = /^<(pre|PRE)[^>]*>.*<\/(pre|PRE)>$/.test(xhr.responseText);
 				if (hasPre) {
-					xhr.responseText = xhr.responseText.replace(/^<pre[^>]*>/,"").replace(/<\/pre>$/,"");
+					xhr.responseText = xhr.responseText.replace(/^<(pre|PRE)[^>]*>/,"").replace(/<\/(pre|PRE)>$/,"");
 				}
+				
 				// QCADOO remove <pre> tags - end
 				
 				data = httpData(xhr, s.dataType, s);

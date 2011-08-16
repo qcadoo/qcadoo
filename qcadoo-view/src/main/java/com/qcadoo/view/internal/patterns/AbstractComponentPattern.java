@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.3
+ * Version: 0.4.5
  *
  * This file is part of Qcadoo.
  *
@@ -197,7 +197,7 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
             fieldComponent.removeFieldEntityIdChangeListener(fieldDefinition.getName());
         }
 
-        if (scopeFieldComponent != null) {
+        if (scopeFieldComponent != null && scopeFieldDefinition != null) {
             scopeFieldComponent.removeScopeEntityIdChangeListener(scopeFieldDefinition.getName());
         }
     }

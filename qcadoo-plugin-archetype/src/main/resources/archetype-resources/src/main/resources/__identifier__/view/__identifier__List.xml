@@ -3,7 +3,7 @@
 #set( $symbol_escape = '\' )
 #set( $qcadooHash = "#{" )
 #set( $qcadooEnd = "}" )
-<view name="${identifier}" modelName="${identifier}" menuAccessible="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<view name="${identifier}List" modelName="${identifier}" menuAccessible="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns="http://schema.qcadoo.org/view" xsi:schemaLocation="http://schema.qcadoo.org/view http://schema.qcadoo.org/view.xsd">
 	<component type="window" name="window">
 		<ribbon>
@@ -13,7 +13,7 @@
 					action="${qcadooHash}grid${qcadooEnd}.generateReportForEntity('${identifier}','sample','pdf',ReportTitle='Sample')" state="enabled" />
 			</group>
 		</ribbon>
-		<component type="grid" name="${identifier}" reference="grid">
+		<component type="grid" name="${identifier}List" reference="grid">
 			<option type="column" name="number" fields="number" link="true"
 				width="150" />
 			<option type="column" name="name" fields="name" link="true"

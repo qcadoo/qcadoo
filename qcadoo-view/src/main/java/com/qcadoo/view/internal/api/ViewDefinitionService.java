@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.3
+ * Version: 0.4.5
  *
  * This file is part of Qcadoo.
  *
@@ -26,8 +26,6 @@ package com.qcadoo.view.internal.api;
 import java.util.List;
 
 import org.springframework.security.access.prepost.PreAuthorize;
-
-
 
 /**
  * Service for manipulating view definitions.
@@ -55,5 +53,12 @@ public interface ViewDefinitionService {
      * @return the data definitions
      */
     List<ViewDefinition> list();
+
+    /**
+     * Check if view exists.
+     * 
+     * @return true if view exists, false otherwise
+     */
+    boolean viewExists(String pluginIdentifier, String viewName);
 
 }

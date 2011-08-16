@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.3
+ * Version: 0.4.5
  *
  * This file is part of Qcadoo.
  *
@@ -51,7 +51,6 @@ QCD.components.elements.lookup.Dropdown = function(_lookupDropdownElement, _cont
 	}
 	
 	this.updateAutocomplete = function(_autocompleteMatches, _autocompleteEntitiesNumber) {
-		
 		autocompleteMatches = _autocompleteMatches;
 		
 		selectedElement = null;

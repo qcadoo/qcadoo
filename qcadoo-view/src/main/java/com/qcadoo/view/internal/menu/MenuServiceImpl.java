@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.3
+ * Version: 0.4.5
  *
  * This file is part of Qcadoo.
  *
@@ -42,6 +42,7 @@ import com.qcadoo.security.api.SecurityRole;
 import com.qcadoo.security.api.SecurityRolesService;
 import com.qcadoo.view.api.utils.TranslationUtilsService;
 import com.qcadoo.view.internal.api.InternalMenuService;
+import com.qcadoo.view.internal.api.ViewDefinitionService;
 import com.qcadoo.view.internal.menu.items.UrlMenuItem;
 import com.qcadoo.view.internal.menu.items.ViewDefinitionMenuItemItem;
 import com.qcadoo.view.internal.security.SecurityViewDefinitionRoleResolver;
@@ -60,6 +61,9 @@ public final class MenuServiceImpl implements InternalMenuService {
 
     @Autowired
     private TranslationUtilsService translationUtilsService;
+
+    @Autowired
+    private ViewDefinitionService viewDefinitionService;
 
     @Override
     @Transactional(readOnly = true)
@@ -143,6 +147,12 @@ public final class MenuServiceImpl implements InternalMenuService {
             return;
         }
 
+        if (url == null) {
+            if (!viewDefinitionService.viewExists(pluginIdentifier, viewName)) {
+                throw new IllegalStateException("View " + pluginIdentifier + "/" + view + " does not exist.");
+            }
+        }
+
         menuView = getDataDefinition("view").create();
         menuView.setField("pluginIdentifier", pluginIdentifier);
         menuView.setField("name", viewName);
@@ -204,10 +214,6 @@ public final class MenuServiceImpl implements InternalMenuService {
             final String viewPluginIdentifier, final String viewName) {
         Entity menuItem = getItem(pluginIdentifier, name);
 
-        if (menuItem != null) {
-            return;
-        }
-
         Entity menuCategory = getCategory(category);
         Entity menuView = getView(viewPluginIdentifier, viewName);
 
@@ -221,14 +227,19 @@ public final class MenuServiceImpl implements InternalMenuService {
                     + pluginIdentifier + "." + name);
         }
 
-        menuItem = getDataDefinition("item").create();
-        menuItem.setField("pluginIdentifier", pluginIdentifier);
-        menuItem.setField("name", name);
-        menuItem.setField("active", true);
-        menuItem.setField("category", menuCategory);
-        menuItem.setField("view", menuView);
-        menuItem.setField("succession", getTotalNumberOfItems(menuCategory));
-        getDataDefinition("item").save(menuItem);
+        if (menuItem == null) {
+            menuItem = getDataDefinition("item").create();
+            menuItem.setField("pluginIdentifier", pluginIdentifier);
+            menuItem.setField("name", name);
+            menuItem.setField("active", true);
+        }
+
+        if (menuItem == null || !menuView.equals(menuItem.getField("view"))) {
+            menuItem.setField("view", menuView);
+            menuItem.setField("category", menuCategory);
+            menuItem.setField("succession", getTotalNumberOfItems(menuCategory));
+            getDataDefinition("item").save(menuItem);
+        }
     }
 
     @Override

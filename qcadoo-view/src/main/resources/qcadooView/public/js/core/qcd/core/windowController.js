@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.3
+ * Version: 0.4.5
  *
  * This file is part of Qcadoo.
  *
@@ -158,6 +158,10 @@ QCD.WindowController = function(_menuStructure) {
 	
 	this.goToLastPage = function() {
 		performGoToPage(currentPage);
+	}
+	
+	this.activateMenuPosition = function(position) {
+		menuController.activateMenuPosition(position);
 	}
 	
 	this.goToMenuPosition = function(position) {

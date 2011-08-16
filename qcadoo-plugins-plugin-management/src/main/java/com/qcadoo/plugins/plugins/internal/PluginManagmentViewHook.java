@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.3
+ * Version: 0.4.5
  *
  * This file is part of Qcadoo.
  *
@@ -23,6 +23,7 @@
  */
 package com.qcadoo.plugins.plugins.internal;
 
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -64,7 +65,13 @@ public class PluginManagmentViewHook {
 
     public void onRemoveButtonClick(final ViewDefinitionState viewDefinitionState, final ComponentState triggerState,
             final String[] args) {
-        viewDefinitionState.openModal(pluginManagmentPerformer.performRemove(getPluginIdentifiersFromView(viewDefinitionState)));
+        String url = pluginManagmentPerformer.performRemove(getPluginIdentifiersFromView(viewDefinitionState));
+
+        if (url.contains("type=success")) {
+            GridComponent grid = (GridComponent) viewDefinitionState.getComponentByReference("grid");
+            grid.setSelectedEntitiesIds(new HashSet<Long>());
+        }
+        viewDefinitionState.openModal(url);
     }
 
     private List<String> getPluginIdentifiersFromView(final ViewDefinitionState viewDefinitionState) {
@@ -78,6 +85,7 @@ public class PluginManagmentViewHook {
                 QcadooPluginConstants.MODEL_PLUGIN);
         for (Long entityId : grid.getSelectedEntitiesIds()) {
             Entity pluginEntity = pluginDataDefinition.get(entityId);
+
             pluginIdentifiers.add(pluginEntity.getStringField("identifier"));
         }
 

@@ -4,7 +4,7 @@
     ***************************************************************************
     Copyright (c) 2010 Qcadoo Limited
     Project: Qcadoo Framework
-    Version: 0.4.3
+    Version: 0.4.5
 
     This file is part of Qcadoo.
 
@@ -103,6 +103,7 @@
 					<bean class="com.qcadoo.view.internal.module.ViewListenerModuleFactory" />
 					<bean class="com.qcadoo.view.internal.module.ViewRibbonModuleFactory" />
 					<bean class="com.qcadoo.view.internal.module.ViewTabModuleFactory" />
+					<bean class="com.qcadoo.view.internal.module.gridColumn.ViewGridColumnModuleFactory" />
 					<bean class="com.qcadoo.view.internal.resource.module.UniversalResourceModuleFactory" />
 					<bean class="com.qcadoo.view.internal.menu.module.MenuCategoryModuleFactory" />
 					<bean class="com.qcadoo.view.internal.menu.module.MenuViewModuleFactory" />

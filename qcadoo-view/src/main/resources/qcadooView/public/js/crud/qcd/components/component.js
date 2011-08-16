@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.3
+ * Version: 0.4.5
  *
  * This file is part of Qcadoo.
  *
@@ -78,7 +78,6 @@ QCD.components.Component = function(_element, _mainController) {
 	}
 	
 	this.setValue = function(value) {
-		
 		this.setEnabled(value.enabled);
 		this.setVisible(value.visible);
 		this.setMessages(value.messages);

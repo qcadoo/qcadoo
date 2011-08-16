@@ -4,7 +4,7 @@
     ***************************************************************************
     Copyright (c) 2010 Qcadoo Limited
     Project: Qcadoo Framework
-    Version: 0.4.3
+    Version: 0.4.5
 
     This file is part of Qcadoo.
 
@@ -26,6 +26,8 @@
 -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
 	targetNamespace="http://schema.qcadoo.org/modules/view" xmlns="http://schema.qcadoo.org/modules/view" elementFormDefault="qualified">
+	
+	<xs:include schemaLocation="http://schema.qcadoo.org/common/plugin.xsd" />
 
 	<xs:element name="view" >
 		<xs:complexType>
@@ -112,6 +114,27 @@
 		<xs:complexType>
 			<xs:attribute name="name" type="xs:string" use="required" />
 			<xs:attribute name="class" type="xs:string" use="required" />
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="view-grid-column">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="column" maxOccurs="unbounded" minOccurs="1">
+					<xs:complexType>
+						<xs:attribute name="name" type="notEmptyString" use="required" />
+						<xs:attribute name="fields" type="notEmptyString" use="required" />
+						<xs:attribute name="expression" type="xs:string" use="optional" />
+						<xs:attribute name="link" type="xs:boolean" use="optional" />
+						<xs:attribute name="width" type="xs:integer" use="optional" />
+						<xs:attribute name="searchable" type="xs:boolean" use="optional" />
+						<xs:attribute name="orderable" type="xs:boolean" use="optional" />
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="plugin" type="notEmptyString" use="required" />
+			<xs:attribute name="view" type="notEmptyString" use="required" />
+			<xs:attribute name="component" type="notEmptyString" use="required" />
 		</xs:complexType>
 	</xs:element>
 	

@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.3
+ * Version: 0.4.5
  *
  * This file is part of Qcadoo.
  *
@@ -208,6 +208,34 @@ public final class GridComponentPattern extends AbstractComponentPattern {
         json.put("translations", translations);
 
         return json;
+    }
+
+    public void addColumn(final String name, final String fields, final String expression, final Boolean isLink,
+            final Integer width, final boolean isOrderable, boolean isSearchable) {
+        GridComponentColumn column = new GridComponentColumn(name);
+        for (FieldDefinition field : parseFields(fields)) {
+            column.addField(field);
+        }
+        column.setExpression(expression);
+        if (isLink != null) {
+            column.setLink(isLink);
+        }
+        if (width != null) {
+            column.setWidth(width);
+        }
+        columns.put(name, column);
+        if (isOrderable) {
+            orderableColumns.add(name);
+        }
+        if (isSearchable) {
+            searchableColumns.add(name);
+        }
+    }
+
+    public void removeColumn(final String name) {
+        columns.remove(name);
+        orderableColumns.remove(name);
+        searchableColumns.remove(name);
     }
 
     private void addTranslation(final JSONObject translation, final String key, final Locale locale) throws JSONException {

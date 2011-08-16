@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.3
+ * Version: 0.4.5
  *
  * This file is part of Qcadoo.
  *
@@ -24,11 +24,17 @@
 package com.qcadoo.plugin.internal.descriptorresolver;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import org.apache.commons.io.filefilter.WildcardFileFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
@@ -44,17 +50,24 @@ import com.qcadoo.plugin.internal.api.PluginDescriptorResolver;
 @Service
 public class DefaultPluginDescriptorResolver implements PluginDescriptorResolver {
 
+    private static final Logger LOG = LoggerFactory.getLogger(DefaultPluginDescriptorResolver.class);
+
     private final ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
 
     @Value("#{plugin.descriptors}")
     private String descriptor;
+
+    @Value("#{plugin.pluginsTmpPath}")
+    private String pluginsTmpPath;
 
     private final PathMatcher matcher = new AntPathMatcher();
 
     @Override
     public Resource[] getDescriptors() {
         try {
-            return resolver.getResources(ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX + descriptor);
+            Resource[] descriptors = resolver.getResources(ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX + descriptor);
+            HashSet<Resource> uniqueDescriptors = new HashSet<Resource>(Arrays.asList(descriptors));
+            return uniqueDescriptors.toArray(new Resource[uniqueDescriptors.size()]);
         } catch (IOException e) {
             throw new IllegalStateException("Failed to find classpath resources for "
                     + ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX + descriptor, e);
@@ -62,7 +75,35 @@ public class DefaultPluginDescriptorResolver implements PluginDescriptorResolver
     }
 
     @Override
-    public Resource getDescriptor(final File file) throws PluginException {
+    public JarEntryResource[] getTemporaryDescriptors() {
+        if (pluginsTmpPath == null || pluginsTmpPath.trim().isEmpty()) {
+            return new JarEntryResource[0];
+        }
+        File pluginsTmpFile = new File(pluginsTmpPath);
+        if (!pluginsTmpFile.exists()) {
+            LOG.warn("Plugins temporary directory does not exist: " + pluginsTmpPath);
+            return new JarEntryResource[0];
+        }
+        try {
+            FilenameFilter jarsFilter = new WildcardFileFilter("*.jar");
+            if (!pluginsTmpFile.exists()) {
+                throw new IOException();
+            }
+            File[] pluginJars = pluginsTmpFile.listFiles(jarsFilter);
+            JarEntryResource[] pluginDescriptors = new JarEntryResource[pluginJars.length];
+            for (int i = 0; i < pluginJars.length; ++i) {
+                File jarRes = pluginJars[i];
+                JarEntryResource descriptorResource = getDescriptor(jarRes);
+                pluginDescriptors[i] = descriptorResource;
+            }
+            return pluginDescriptors;
+        } catch (IOException e) {
+            throw new IllegalStateException("Failed to reading plugins from " + pluginsTmpPath, e);
+        }
+    }
+
+    @Override
+    public JarEntryResource getDescriptor(final File file) throws PluginException {
         try {
 
             JarFile jarFile = new JarFile(file);

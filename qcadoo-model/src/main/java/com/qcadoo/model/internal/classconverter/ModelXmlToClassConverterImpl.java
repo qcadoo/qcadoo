@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.3
+ * Version: 0.4.5
  *
  * This file is part of Qcadoo.
  *
@@ -315,52 +315,46 @@ public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverte
             final List<String> fields) throws XMLStreamException, ModelXmlCompilingException {
         FieldsTag modelTag = FieldsTag.valueOf(tag.toUpperCase(Locale.ENGLISH));
 
-        if (!getBooleanAttribute(reader, "persistent", true)) {
-            return;
-        }
-
-        if (getStringAttribute(reader, "expression") != null) {
-            return;
-        }
-
-        switch (modelTag) {
-            case PRIORITY:
-            case INTEGER:
-                createField(ctClass, getStringAttribute(reader, "name"), Integer.class.getCanonicalName());
-                fields.add(getStringAttribute(reader, "name"));
-                break;
-            case STRING:
-            case FILE:
-            case TEXT:
-            case ENUM:
-            case DICTIONARY:
-            case PASSWORD:
-                createField(ctClass, getStringAttribute(reader, "name"), String.class.getCanonicalName());
-                fields.add(getStringAttribute(reader, "name"));
-                break;
-            case DECIMAL:
-                createField(ctClass, getStringAttribute(reader, "name"), BigDecimal.class.getCanonicalName());
-                fields.add(getStringAttribute(reader, "name"));
-                break;
-            case DATETIME:
-            case DATE:
-                createField(ctClass, getStringAttribute(reader, "name"), Date.class.getCanonicalName());
-                fields.add(getStringAttribute(reader, "name"));
-                break;
-            case BOOLEAN:
-                createField(ctClass, getStringAttribute(reader, "name"), Boolean.class.getCanonicalName());
-                fields.add(getStringAttribute(reader, "name"));
-                break;
-            case BELONGSTO:
-                createBelongsField(ctClass, pluginIdentifier, reader);
-                fields.add(getStringAttribute(reader, "name"));
-                break;
-            case HASMANY:
-            case TREE:
-                createHasManyField(ctClass, reader);
-                break;
-            default:
-                break;
+        if (getBooleanAttribute(reader, "persistent", true) || getStringAttribute(reader, "expression") == null) {
+            switch (modelTag) {
+                case PRIORITY:
+                case INTEGER:
+                    createField(ctClass, getStringAttribute(reader, "name"), Integer.class.getCanonicalName());
+                    fields.add(getStringAttribute(reader, "name"));
+                    break;
+                case STRING:
+                case FILE:
+                case TEXT:
+                case ENUM:
+                case DICTIONARY:
+                case PASSWORD:
+                    createField(ctClass, getStringAttribute(reader, "name"), String.class.getCanonicalName());
+                    fields.add(getStringAttribute(reader, "name"));
+                    break;
+                case DECIMAL:
+                    createField(ctClass, getStringAttribute(reader, "name"), BigDecimal.class.getCanonicalName());
+                    fields.add(getStringAttribute(reader, "name"));
+                    break;
+                case DATETIME:
+                case DATE:
+                    createField(ctClass, getStringAttribute(reader, "name"), Date.class.getCanonicalName());
+                    fields.add(getStringAttribute(reader, "name"));
+                    break;
+                case BOOLEAN:
+                    createField(ctClass, getStringAttribute(reader, "name"), Boolean.class.getCanonicalName());
+                    fields.add(getStringAttribute(reader, "name"));
+                    break;
+                case BELONGSTO:
+                    createBelongsField(ctClass, pluginIdentifier, reader);
+                    fields.add(getStringAttribute(reader, "name"));
+                    break;
+                case HASMANY:
+                case TREE:
+                    createHasManyField(ctClass, reader);
+                    break;
+                default:
+                    break;
+            }
         }
 
         while (reader.hasNext() && reader.next() > 0) {

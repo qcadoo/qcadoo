@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.3
+ * Version: 0.4.5
  *
  * This file is part of Qcadoo.
  *
@@ -43,6 +43,7 @@ import com.qcadoo.plugin.api.PluginManager;
 import com.qcadoo.plugin.api.PluginOperationResult;
 import com.qcadoo.plugin.api.PluginState;
 import com.qcadoo.plugin.api.artifact.PluginArtifact;
+import com.qcadoo.plugin.internal.JarEntryResource;
 import com.qcadoo.plugin.internal.PluginException;
 import com.qcadoo.plugin.internal.api.InternalPlugin;
 import com.qcadoo.plugin.internal.api.InternalPluginAccessor;
@@ -55,6 +56,7 @@ import com.qcadoo.plugin.internal.api.PluginOperationResultImpl;
 import com.qcadoo.plugin.internal.dependencymanager.PluginStatusResolver;
 import com.qcadoo.plugin.internal.dependencymanager.SimplePluginStatusResolver;
 import com.qcadoo.tenant.api.Standalone;
+import org.springframework.core.io.InputStreamSource;
 
 @Service
 @Standalone
@@ -247,7 +249,7 @@ public class DefaultPluginManager implements PluginManager {
         }
         Plugin plugin = null;
         try {
-            Resource descriptor = pluginDescriptorResolver.getDescriptor(pluginFile);
+            JarEntryResource descriptor = pluginDescriptorResolver.getDescriptor(pluginFile);
             plugin = pluginDescriptorParser.parse(descriptor, true);
         } catch (PluginException e) {
             LOG.error(e.getMessage());

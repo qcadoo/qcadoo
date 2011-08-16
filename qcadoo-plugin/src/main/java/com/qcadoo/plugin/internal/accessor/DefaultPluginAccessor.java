@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.3
+ * Version: 0.4.5
  *
  * This file is part of Qcadoo.
  *
@@ -139,10 +139,10 @@ public class DefaultPluginAccessor implements InternalPluginAccessor, Applicatio
 
         pluginStateResolver.setPluginAccessor(this);
 
-        Set<InternalPlugin> pluginsFromDescriptor = pluginDescriptorParser.loadPlugins();
+        Set<InternalPlugin> enabledPluginsFromDescriptor = pluginDescriptorParser.loadPlugins();
         Set<QcadooPluginPlugin> pluginsFromDatabase = pluginDao.list();
 
-        for (InternalPlugin plugin : pluginsFromDescriptor) {
+        for (InternalPlugin plugin : enabledPluginsFromDescriptor) {
             QcadooPluginPlugin existingPlugin = null;
             for (QcadooPluginPlugin databasePlugin : pluginsFromDatabase) {
                 if (plugin.getIdentifier().equals(databasePlugin.getIdentifier())) {
@@ -172,7 +172,7 @@ public class DefaultPluginAccessor implements InternalPluginAccessor, Applicatio
             }
 
             Plugin existingPlugin = null;
-            for (Plugin plugin : pluginsFromDescriptor) {
+            for (Plugin plugin : enabledPluginsFromDescriptor) {
                 if (databasePlugin.getIdentifier().equals(plugin.getIdentifier())) {
                     existingPlugin = plugin;
                     break;
@@ -181,6 +181,10 @@ public class DefaultPluginAccessor implements InternalPluginAccessor, Applicatio
             if (existingPlugin == null) {
                 pluginDao.delete(databasePlugin);
             }
+        }
+        Set<InternalPlugin> temporaryPlugins = pluginDescriptorParser.getTemporaryPlugins();
+        for(InternalPlugin plugin : temporaryPlugins) {
+            plugins.put(plugin.getIdentifier(), plugin);
         }
 
         LOG.info("Plugin Framework initialized in " + (System.currentTimeMillis() - time) + "ms");

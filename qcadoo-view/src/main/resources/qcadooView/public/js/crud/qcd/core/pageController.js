@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.3
+ * Version: 0.4.5
  *
  * This file is part of Qcadoo.
  *
@@ -378,8 +378,10 @@ QCD.PageController = function() {
 		} else {
 			url+="?";
 		}
+		if(window.location.href.indexOf("page/") == -1){
+				url = "page/"+pluginIdentifier+"/"+url;
+			}
 		url+="popup=true";
-		
 		popup = new Object();
 		popup.pageController = this;
 		popup.parentComponent = parentComponent;

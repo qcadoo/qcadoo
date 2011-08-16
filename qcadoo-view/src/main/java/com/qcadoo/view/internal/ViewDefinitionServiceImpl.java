@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.3
+ * Version: 0.4.5
  *
  * This file is part of Qcadoo.
  *
@@ -100,6 +100,11 @@ public class ViewDefinitionServiceImpl implements InternalViewDefinitionService,
             return null;
         }
         return view.getAuthorizationRole();
+    }
+
+    @Override
+    public boolean viewExists(String pluginIdentifier, String viewName) {
+        return getWithoutSession(pluginIdentifier, viewName) != null;
     }
 
 }

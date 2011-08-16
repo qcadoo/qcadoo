@@ -3,7 +3,7 @@
     ***************************************************************************
     Copyright (c) 2010 Qcadoo Limited
     Project: Qcadoo Framework
-    Version: 0.4.3
+    Version: 0.4.5
 
     This file is part of Qcadoo.
 
@@ -125,10 +125,14 @@
 		window.onLoginSuccess = function() {
 			windowController.onLoginSuccess();
 		}
-
+		
 		window.goToMenuPosition = function(position) {
 			windowController.goToMenuPosition(position);
 		}
+
+		window.activateMenuPosition = function(position) {
+ 			windowController.activateMenuPosition(position);
+ 		}
 
 		window.hasMenuPosition = function(position) {
 			return windowController.hasMenuPosition(position);
