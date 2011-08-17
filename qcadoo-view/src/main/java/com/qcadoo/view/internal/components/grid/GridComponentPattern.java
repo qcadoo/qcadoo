@@ -211,9 +211,9 @@ public final class GridComponentPattern extends AbstractComponentPattern {
     }
 
     public void addColumn(final String name, final String fields, final String expression, final Boolean isLink,
-            final Integer width, final boolean isOrderable, boolean isSearchable) {
+            final Integer width, final boolean isOrderable, final boolean isSearchable) {
         GridComponentColumn column = new GridComponentColumn(name);
-        for (FieldDefinition field : parseFields(fields)) {
+        for (FieldDefinition field : parseFields(fields, column)) {
             column.addField(field);
         }
         column.setExpression(expression);
@@ -330,7 +330,7 @@ public final class GridComponentPattern extends AbstractComponentPattern {
                                 String direction = parser.getStringAttribute(restrictionNode, "direction");
                                 if (column == null) {
                                     throw new ViewDefinitionParserNodeException(restrictionNode,
-                                            "'filterOrder' tag must contain 'collumn' attribute");
+                                            "'filterOrder' tag must contain 'column' attribute");
                                 }
                                 if (direction == null) {
                                     direction = "asc";
@@ -419,7 +419,7 @@ public final class GridComponentPattern extends AbstractComponentPattern {
         GridComponentColumn column = new GridComponentColumn(option.getAtrributeValue("name"));
         String fields = option.getAtrributeValue("fields");
         if (fields != null) {
-            for (FieldDefinition field : parseFields(fields)) {
+            for (FieldDefinition field : parseFields(fields, column)) {
                 column.addField(field);
             }
         }
@@ -445,10 +445,15 @@ public final class GridComponentPattern extends AbstractComponentPattern {
         return set;
     }
 
-    private Set<FieldDefinition> parseFields(final String fields) {
+    private Set<FieldDefinition> parseFields(final String fields, final GridComponentColumn column) {
         Set<FieldDefinition> set = new HashSet<FieldDefinition>();
         for (String field : fields.split("\\s*,\\s*")) {
-            set.add(getDataDefinition().getField(field));
+            FieldDefinition fieldDefiniton = getDataDefinition().getField(field);
+            if (fieldDefiniton != null) {
+                set.add(fieldDefiniton);
+            } else {
+                throwIllegalStateException("field = " + field + " in option column = " + column.getName() + " doesn't exists");
+            }
         }
         return set;
     }
