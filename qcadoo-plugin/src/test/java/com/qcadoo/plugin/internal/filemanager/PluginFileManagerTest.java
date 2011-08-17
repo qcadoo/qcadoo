@@ -35,7 +35,6 @@ import java.io.IOException;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -71,19 +70,6 @@ public class PluginFileManagerTest {
     public void shouldFailureInstallPluginFileWhenDestinationNotExist() throws Exception {
         // given
         defaultPluginFileManager.setPluginsPath("notExistingFolder");
-
-        // when
-        boolean result = defaultPluginFileManager.installPlugin("pluginname.jar");
-
-        // then
-        assertFalse(result);
-    }
-
-    @Test
-    @Ignore
-    public void shouldFailureInstallPluginFileWhenDestinationCannotWrite() throws Exception {
-        // given
-        destination.setWritable(false);
 
         // when
         boolean result = defaultPluginFileManager.installPlugin("pluginname.jar");
