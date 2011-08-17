@@ -54,63 +54,72 @@ public final class PdfPageNumbering extends PdfPageEventHelper {
 
         String temp = new String();
 
-        String company_tax = company.getStringField("companyFullName");
-        temp = company.getStringField("tax");
-        if (temp != null) {
-            company_tax = company_tax.concat(", ");
-            company_tax = company_tax.concat(tax);
-            company_tax = company_tax.concat(": ");
-            company_tax = company_tax.concat(temp);
-        }
+        if (company != null) {
+            String company_tax = company.getStringField("companyFullName");
 
-        String address = new String();
-        if (company.getStringField("street") != null && company.getStringField("house") != null
-                && company.getStringField("zipCode") != null && company.getStringField("city") != null) {
-            address = address.concat(company.getStringField("street"));
-            address = address.concat(" ");
-            address = address.concat(company.getStringField("house"));
-            temp = company.getStringField("flat");
+            temp = company.getStringField("tax");
             if (temp != null) {
-                address = address.concat("/");
-                address = address.concat(temp);
+                company_tax = company_tax.concat(", ");
+                company_tax = company_tax.concat(tax);
+                company_tax = company_tax.concat(": ");
+                company_tax = company_tax.concat(temp);
             }
-            address = address.concat(", ");
-            address = address.concat(company.getStringField("zipCode"));
-            address = address.concat(" ");
-            address = address.concat(company.getStringField("city"));
-            temp = company.getStringField("country");
-            if (temp != null) {
+
+            String address = new String();
+            if (company.getStringField("street") != null && company.getStringField("house") != null
+                    && company.getStringField("zipCode") != null && company.getStringField("city") != null) {
+                address = address.concat(company.getStringField("street"));
+                address = address.concat(" ");
+                address = address.concat(company.getStringField("house"));
+                temp = company.getStringField("flat");
+                if (temp != null) {
+                    address = address.concat("/");
+                    address = address.concat(temp);
+                }
                 address = address.concat(", ");
-                address = address.concat(temp);
-            }
-        } else
-            address = null;
-
-        String email_phone = new String();
-        temp = company.getStringField("email");
-        if (temp != null) {
-            email_phone = email_phone.concat("E-mail: ");
-            email_phone = email_phone.concat(temp);
-            temp = company.getStringField("phone");
-            if (temp != null) {
-                email_phone = email_phone.concat(", ");
-                email_phone = email_phone.concat(phone);
-                email_phone = email_phone.concat(": ");
-                email_phone = email_phone.concat(temp);
-            }
-        } else {
-            temp = company.getStringField("phone");
-            if (temp != null) {
-                email_phone = email_phone.concat(phone);
-                email_phone = email_phone.concat(": ");
-                email_phone = email_phone.concat(temp);
+                address = address.concat(company.getStringField("zipCode"));
+                address = address.concat(" ");
+                address = address.concat(company.getStringField("city"));
+                temp = company.getStringField("country");
+                if (temp != null) {
+                    address = address.concat(", ");
+                    address = address.concat(temp);
+                }
             } else
-                email_phone = null;
+                address = null;
+
+            String email_phone = new String();
+            temp = company.getStringField("email");
+            if (temp != null) {
+                email_phone = email_phone.concat("E-mail: ");
+                email_phone = email_phone.concat(temp);
+                temp = company.getStringField("phone");
+                if (temp != null) {
+                    email_phone = email_phone.concat(", ");
+                    email_phone = email_phone.concat(phone);
+                    email_phone = email_phone.concat(": ");
+                    email_phone = email_phone.concat(temp);
+                }
+            } else {
+                temp = company.getStringField("phone");
+                if (temp != null) {
+                    email_phone = email_phone.concat(phone);
+                    email_phone = email_phone.concat(": ");
+                    email_phone = email_phone.concat(temp);
+                } else
+                    email_phone = null;
+            }
+            this.company_tax = company_tax;
+            this.address = address;
+            this.email_phone = email_phone;
+
+        } else {
+            this.company_tax = "";
+            this.address = "";
+            this.email_phone = "";
+
         }
 
-        this.company_tax = company_tax;
-        this.address = address;
-        this.email_phone = email_phone;
     }
 
     /**
