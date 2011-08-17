@@ -40,7 +40,8 @@ public abstract class DocumentService {
     @Autowired
     private TranslationService translationService;
 
-    public abstract void generateDocument(final Entity entity, final Locale locale) throws IOException, DocumentException;
+    public abstract void generateDocument(final Entity entity, final Entity company, final Locale locale) throws IOException,
+            DocumentException;
 
     protected abstract String getSuffix();
 
