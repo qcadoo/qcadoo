@@ -95,7 +95,7 @@ public final class DateUtils {
                 throw new ParseException("wrong date", 1);
             }
             if (year < 1500) {
-                return null;
+                throw new ParseException("wrong date", 1);
             }
             cal.set(Calendar.YEAR, year);
 

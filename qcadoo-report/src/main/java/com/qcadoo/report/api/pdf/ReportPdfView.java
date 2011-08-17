@@ -39,6 +39,7 @@ import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.pdf.PdfWriter;
 import com.qcadoo.localization.api.TranslationService;
+import com.qcadoo.model.api.Entity;
 
 public abstract class ReportPdfView extends AbstractPdfView {
 
@@ -78,7 +79,9 @@ public abstract class ReportPdfView extends AbstractPdfView {
         super.prepareWriter(model, writer, request);
         writer.setPageEvent(new PdfPageNumbering(getTranslationService().translate("qcadooReport.commons.page.label",
                 LocaleContextHolder.getLocale()), getTranslationService().translate("qcadooReport.commons.of.label",
-                LocaleContextHolder.getLocale())));
+                LocaleContextHolder.getLocale()), getTranslationService().translate("basic.company.tax.label",
+                LocaleContextHolder.getLocale()), getTranslationService().translate("basic.company.phone.label",
+                LocaleContextHolder.getLocale()), (Entity) model.get("company")));
     }
 
     @Override

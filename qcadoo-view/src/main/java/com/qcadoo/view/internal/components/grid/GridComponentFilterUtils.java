@@ -142,20 +142,9 @@ public class GridComponentFilterUtils {
     }
 
     private static void addDateFilter(final SearchCriteriaBuilder criteria,
-            final Entry<GridComponentFilterOperator, String> filterValue, final String field) {
-        Date minDate = null;
-        Date maxDate = null;
-
-        try {
-            minDate = DateUtils.parseAndComplete(filterValue.getValue(), false);
-            maxDate = DateUtils.parseAndComplete(filterValue.getValue(), true);
-        } catch (ParseException e) {
-            throw new IllegalStateException("Invalid filter date " + filterValue.getValue(), e);
-        }
-
-        if (minDate == null || maxDate == null) {
-            throw new IllegalStateException("Invalid filter date " + filterValue.getValue());
-        }
+            final Entry<GridComponentFilterOperator, String> filterValue, final String field) throws ParseException {
+        Date minDate = DateUtils.parseAndComplete(filterValue.getValue(), false);
+        Date maxDate = DateUtils.parseAndComplete(filterValue.getValue(), true);
 
         switch (filterValue.getKey()) {
             case EQ:
