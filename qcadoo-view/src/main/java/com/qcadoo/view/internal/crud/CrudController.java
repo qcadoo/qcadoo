@@ -28,6 +28,7 @@ import java.util.Map;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -52,13 +53,18 @@ public class CrudController {
     @Autowired
     private CrudService crudService;
 
+    @Value("${useCompressedStaticResources}")
+    private boolean useCompressedStaticResources;
+
     @Monitorable(threshold = 500)
     @RequestMapping(value = CONTROLLER_PATH, method = RequestMethod.GET)
     public ModelAndView prepareView(@PathVariable(PLUGIN_IDENTIFIER_VARIABLE) final String pluginIdentifier,
             @PathVariable(VIEW_NAME_VARIABLE) final String viewName, @RequestParam final Map<String, String> arguments,
             final Locale locale) {
 
-        return crudService.prepareView(pluginIdentifier, viewName, arguments, locale);
+        ModelAndView mav = crudService.prepareView(pluginIdentifier, viewName, arguments, locale);
+        mav.addObject("useCompressedStaticResources", useCompressedStaticResources);
+        return mav;
     }
 
     @Monitorable(threshold = 500)
