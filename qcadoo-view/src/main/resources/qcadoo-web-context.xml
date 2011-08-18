@@ -89,9 +89,8 @@
 		<property name="messageConverters">
 			<list>
 				<bean id="stringHttpMessageConverter" class="org.springframework.http.converter.StringHttpMessageConverter" />
-				<bean id="jsonConverter" class="com.qcadoo.view.internal.JsonHttpMessageConverter">
-					<property name="supportedMediaTypes" value="application/json" />
-				</bean>
+				<bean id="jsonConverter" class="com.qcadoo.view.internal.JsonHttpMessageConverter" />
+				<bean id="jsonMapperConverter" class="com.qcadoo.view.internal.JsonMapperHttpMessageConverter" />
 			</list>
 		</property>
 	</bean>

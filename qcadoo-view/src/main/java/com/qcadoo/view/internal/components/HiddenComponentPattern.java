@@ -23,20 +23,36 @@
  */
 package com.qcadoo.view.internal.components;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.qcadoo.view.api.ComponentState;
+import com.qcadoo.view.internal.ComponentDefinition;
 
-public class PasswordComponentState extends FieldComponentState {
+public final class HiddenComponentPattern extends FieldComponentPattern {
 
-    public PasswordComponentState(final PasswordComponentPattern pattern) {
-        super(pattern);
+    private static final String JSP_PATH = "elements/hidden.jsp";
+
+    private static final String JS_OBJECT = "QCD.components.elements.HiddenInput";
+
+    public HiddenComponentPattern(final ComponentDefinition componentDefinition) {
+        super(componentDefinition);
     }
 
     @Override
-    protected JSONObject renderContent() throws JSONException {
-        JSONObject json = super.renderContent();
-        json.put(JSON_VALUE, "");
-        return json;
+    public ComponentState getComponentStateInstance() {
+        return new TranslatedFieldComponentState(this);
     }
 
+    @Override
+    public String getJspFilePath() {
+        return JSP_PATH;
+    }
+
+    @Override
+    public String getJsFilePath() {
+        return JS_PATH;
+    }
+
+    @Override
+    public String getJsObjectName() {
+        return JS_OBJECT;
+    }
 }

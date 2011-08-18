@@ -28,16 +28,22 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.DictionaryService;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.search.CustomRestriction;
 import com.qcadoo.model.api.search.SearchCriteriaBuilder;
 import com.qcadoo.model.api.search.SearchRestrictions;
+import com.qcadoo.model.constants.QcadooModelConstants;
 import com.qcadoo.view.api.ViewDefinitionState;
+import com.qcadoo.view.api.components.FormComponent;
 import com.qcadoo.view.api.components.GridComponent;
 
 @Service
 public class ViewDictionaryService {
+
+    @Autowired
+    private DataDefinitionService dataDefinitionService;
 
     @Autowired
     private DictionaryService dictionaryService;
@@ -61,6 +67,27 @@ public class ViewDictionaryService {
                 searchCriteriaBuilder.add(SearchRestrictions.eq("active", true));
             }
         });
+    }
+
+    public void disableDictionaryItemFormForExternalItems(final ViewDefinitionState state) {
+        FormComponent form = (FormComponent) state.getComponentByReference("form");
+
+        if (form.getEntityId() == null) {
+            return;
+        }
+
+        Entity entity = dataDefinitionService.get(QcadooModelConstants.PLUGIN_IDENTIFIER,
+                QcadooModelConstants.MODEL_DICTIONARY_ITEM).get(form.getEntityId());
+
+        if (entity == null) {
+            return;
+        }
+
+        String externalNumber = entity.getStringField("externalNumber");
+
+        if (externalNumber != null) {
+            form.setFormEnabled(false);
+        }
     }
 
 }
