@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.5
+ * Version: 0.4.6
  *
  * This file is part of Qcadoo.
  *
@@ -25,17 +25,13 @@ package com.qcadoo.view.internal.states.components;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.util.ReflectionTestUtils.getField;
 
@@ -46,23 +42,19 @@ import java.util.Map;
 
 import org.json.JSONObject;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
 import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.search.SearchCriteriaBuilder;
 import com.qcadoo.model.api.search.SearchResult;
-import com.qcadoo.model.api.types.BelongsToType;
 import com.qcadoo.model.api.types.HasManyType;
 import com.qcadoo.model.internal.DefaultEntity;
 import com.qcadoo.model.internal.ExpressionServiceImpl;
-import com.qcadoo.model.internal.types.StringType;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.internal.FieldEntityIdChangeListener;
 import com.qcadoo.view.internal.components.grid.GridComponentColumn;
@@ -216,259 +208,6 @@ public class GridComponentStateTest extends AbstractStateTest {
     }
 
     @Test
-    @Ignore
-    // TODO masz fix tests
-    public void shouldRender() throws Exception {
-        // given
-        SearchResult result = mock(SearchResult.class);
-        given(substituteCriteria.list()).willReturn(result);
-        given(result.getTotalNumberOfEntities()).willReturn(0);
-        given(result.getEntities()).willReturn(Collections.<Entity> emptyList());
-        grid.initialize(json, Locale.ENGLISH);
-
-        // then
-        JSONObject json = grid.render().getJSONObject(AbstractComponentState.JSON_CONTENT);
-
-        // then
-        assertEquals(13L, json.getLong(GridComponentState.JSON_SELECTED_ENTITY_ID));
-        assertEquals(1L, json.getLong(GridComponentState.JSON_BELONGS_TO_ENTITY_ID));
-        assertEquals(60, json.getInt(GridComponentState.JSON_FIRST_ENTITY));
-        assertEquals(30, json.getInt(GridComponentState.JSON_MAX_ENTITIES));
-        assertTrue(json.getBoolean(GridComponentState.JSON_FILTERS_ENABLED));
-        assertEquals("asd", json.getJSONObject(GridComponentState.JSON_ORDER).getString("column"));
-        assertEquals("asc", json.getJSONObject(GridComponentState.JSON_ORDER).getString("direction"));
-        assertEquals("test", json.getJSONObject(GridComponentState.JSON_FILTERS).getString("asd"));
-        assertEquals("test2", json.getJSONObject(GridComponentState.JSON_FILTERS).getString("qwe"));
-        assertEquals(0, json.getInt(GridComponentState.JSON_TOTAL_ENTITIES));
-        assertEquals(0, json.getJSONArray(GridComponentState.JSON_ENTITIES).length());
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    @Ignore
-    // TODO masz fix tests
-    public void shouldPaginateResults() throws Exception {
-        // given
-        Entity entity = mock(Entity.class);
-        SearchResult result = mock(SearchResult.class);
-        given(substituteCriteria.list()).willReturn(result);
-        given(result.getTotalNumberOfEntities()).willReturn(31);
-        given(result.getEntities()).willReturn(Collections.<Entity> emptyList(), Lists.newArrayList(entity));
-        grid.initialize(json, Locale.ENGLISH);
-
-        // when
-        JSONObject json = grid.render().getJSONObject(AbstractComponentState.JSON_CONTENT);
-
-        // then
-        assertEquals(30, json.getInt(GridComponentState.JSON_FIRST_ENTITY));
-        assertEquals(30, json.getInt(GridComponentState.JSON_MAX_ENTITIES));
-        verify(substituteCriteria, times(1)).setFirstResult(60);
-        verify(substituteCriteria, times(1)).setFirstResult(30);
-        verify(substituteCriteria, times(2)).setMaxResults(30);
-        verify(substituteCriteria, times(2)).list();
-    }
-
-    @Test
-    @Ignore
-    // TODO masz fix tests
-    public void shouldOrderResults() throws Exception {
-        // given
-        SearchResult result = mock(SearchResult.class);
-        given(substituteCriteria.list()).willReturn(result);
-        given(result.getTotalNumberOfEntities()).willReturn(0);
-        given(result.getEntities()).willReturn(Collections.<Entity> emptyList());
-        FieldDefinition field = mock(FieldDefinition.class);
-        given(field.getName()).willReturn("asdName");
-        given(field.getType()).willReturn(new StringType());
-
-        given(substituteDataDefinition.getField("asdName")).willReturn(field);
-
-        grid.initialize(json, Locale.ENGLISH);
-
-        GridComponentColumn column = new GridComponentColumn("asd");
-        column.addField(field);
-
-        columns.put("asd", column);
-
-        // when
-        grid.render();
-
-        // then
-        verify(substituteCriteria).orderAscBy("asdName");
-    }
-
-    @Test
-    @Ignore
-    // TODO masz fix tests
-    public void shouldRestrictResults() throws Exception {
-        // given
-        SearchResult result = mock(SearchResult.class);
-        given(substituteCriteria.list()).willReturn(result);
-        given(result.getTotalNumberOfEntities()).willReturn(0);
-        given(result.getEntities()).willReturn(Collections.<Entity> emptyList());
-        grid.initialize(json, Locale.ENGLISH);
-
-        FieldDefinition field = mock(FieldDefinition.class);
-        given(field.getName()).willReturn("asdName");
-        given(field.getType()).willReturn(new StringType());
-
-        given(substituteDataDefinition.getField("asdName")).willReturn(field);
-
-        GridComponentColumn column = new GridComponentColumn("asd");
-        column.addField(field);
-
-        columns.put("asd", column);
-
-        // when
-        grid.render();
-
-        // then
-        verify(substituteCriteria).isEq("asdName", "test*");
-    }
-
-    @Test
-    @Ignore
-    // TODO masz fix tests
-    public void shouldOrderResultsUsingExpression() throws Exception {
-        // given
-        SearchResult result = mock(SearchResult.class);
-        given(substituteCriteria.list()).willReturn(result);
-        given(result.getTotalNumberOfEntities()).willReturn(0);
-        given(result.getEntities()).willReturn(Collections.<Entity> emptyList());
-
-        JSONObject jsonOrder = new JSONObject(ImmutableMap.of("column", "asd", "direction", "desc"));
-
-        json.getJSONObject(AbstractComponentState.JSON_CONTENT).put(GridComponentState.JSON_ORDER, jsonOrder);
-
-        grid.initialize(json, Locale.ENGLISH);
-
-        GridComponentColumn column = new GridComponentColumn("asd");
-        column.setExpression("#product['name']");
-
-        columns.put("asd", column);
-
-        // when
-        grid.render();
-
-        // then
-        verify(substituteCriteria).orderDescBy("product.name");
-    }
-
-    @Test
-    @Ignore
-    // TODO masz fix tests
-    public void shouldRestrictResultsUsingLike() throws Exception {
-        // given
-        SearchResult result = mock(SearchResult.class);
-        given(substituteCriteria.list()).willReturn(result);
-        given(result.getTotalNumberOfEntities()).willReturn(0);
-        given(result.getEntities()).willReturn(Collections.<Entity> emptyList());
-
-        BelongsToType productFieldType = mock(BelongsToType.class);
-        given(productFieldType.getDataDefinition()).willReturn(substituteDataDefinition);
-
-        FieldDefinition productFieldDefinition = mock(FieldDefinition.class);
-        given(productFieldDefinition.getType()).willReturn(productFieldType);
-
-        FieldDefinition nameFieldDefinition = mock(FieldDefinition.class);
-        given(nameFieldDefinition.getType()).willReturn(new StringType());
-
-        given(substituteDataDefinition.getField("product")).willReturn(productFieldDefinition);
-        given(substituteDataDefinition.getField("name")).willReturn(nameFieldDefinition);
-        given(nameFieldDefinition.getName()).willReturn("name");
-
-        JSONObject jsonOrder = new JSONObject(ImmutableMap.of("column", "asd", "direction", "desc"));
-
-        json.getJSONObject(AbstractComponentState.JSON_CONTENT).put(GridComponentState.JSON_ORDER, jsonOrder);
-
-        grid.initialize(json, Locale.ENGLISH);
-
-        GridComponentColumn column = new GridComponentColumn("asd");
-        column.setExpression("#product['name']");
-
-        columns.put("asd", column);
-
-        // when
-        grid.render();
-
-        // then
-        verify(substituteCriteria).isEq("product.name", "test*");
-    }
-
-    @Test
-    @Ignore
-    // TODO masz fix tests
-    public void shouldIgnoreOrderWhenColumnHasMultipleFields() throws Exception {
-        // given
-        SearchResult result = mock(SearchResult.class);
-        given(substituteCriteria.list()).willReturn(result);
-        given(result.getTotalNumberOfEntities()).willReturn(0);
-        given(result.getEntities()).willReturn(Collections.<Entity> emptyList());
-        grid.initialize(json, Locale.ENGLISH);
-
-        FieldDefinition field1 = mock(FieldDefinition.class);
-        given(field1.getName()).willReturn("asdName");
-
-        FieldDefinition field2 = mock(FieldDefinition.class);
-        given(field2.getName()).willReturn("asdName");
-
-        GridComponentColumn column = new GridComponentColumn("asd");
-        column.addField(field1);
-        column.addField(field2);
-
-        columns.put("asd", column);
-
-        // when
-        grid.render();
-
-        // then
-        verify(substituteCriteria, never()).orderAscBy(anyString());
-        verify(substituteCriteria, never()).orderDescBy(anyString());
-    }
-
-    @Test
-    @Ignore
-    // TODO masz fix tests
-    public void shouldIgnoreRestrictionWhenColumnHasMultipleFields() throws Exception {
-        // given
-        SearchResult result = mock(SearchResult.class);
-        given(substituteCriteria.list()).willReturn(result);
-        given(result.getTotalNumberOfEntities()).willReturn(0);
-        given(result.getEntities()).willReturn(Collections.<Entity> emptyList());
-        grid.initialize(json, Locale.ENGLISH);
-
-        FieldDefinition field1 = mock(FieldDefinition.class);
-        given(field1.getName()).willReturn("asdName");
-
-        FieldDefinition field2 = mock(FieldDefinition.class);
-        given(field2.getName()).willReturn("asdName");
-
-        FieldDefinition field3 = mock(FieldDefinition.class);
-        given(field3.getName()).willReturn("qweName");
-        given(field3.getType()).willReturn(new StringType());
-
-        given(substituteDataDefinition.getField("asdName")).willReturn(field1);
-        given(substituteDataDefinition.getField("qweName")).willReturn(field3);
-
-        GridComponentColumn column1 = new GridComponentColumn("asd");
-        column1.addField(field1);
-        column1.addField(field2);
-
-        GridComponentColumn column2 = new GridComponentColumn("qwe");
-        column2.addField(field3);
-
-        columns.put("asd", column1);
-        columns.put("qwe", column2);
-
-        // when
-        grid.render();
-
-        // then
-        verify(substituteCriteria).isEq("qweName", "test2*");
-        verify(substituteCriteria, never()).isEq("asdName", "test*");
-    }
-
-    @Test
     public void shouldSelectEntity() throws Exception {
         // given
         FieldEntityIdChangeListener listener = mock(FieldEntityIdChangeListener.class);
@@ -501,124 +240,6 @@ public class GridComponentStateTest extends AbstractStateTest {
         grid.performEvent(viewDefinitionState, "refresh", new String[0]);
     }
 
-    @Test
-    @Ignore
-    // TODO masz fix tests
-    public void shouldRemoveSelectedEntity() throws Exception {
-        // given
-        FieldEntityIdChangeListener listener = mock(FieldEntityIdChangeListener.class);
-        SearchResult result = mock(SearchResult.class);
-        given(substituteCriteria.list()).willReturn(result);
-        given(result.getTotalNumberOfEntities()).willReturn(0);
-        given(result.getEntities()).willReturn(Collections.<Entity> emptyList());
-        given(substituteDataDefinition.get(anyLong())).willReturn(entity);
-        grid.initialize(json, Locale.ENGLISH);
-        grid.addFieldEntityIdChangeListener("field", listener);
-
-        // when
-        grid.performEvent(viewDefinitionState, "remove", new String[0]);
-
-        // then
-        verify(substituteDataDefinition).delete(13L);
-
-        JSONObject json = grid.render();
-
-        assertFalse(json.getJSONObject(AbstractComponentState.JSON_CONTENT).has(GridComponentState.JSON_SELECTED_ENTITY_ID));
-        assertEquals(
-                "SUCCESS",
-                json.getJSONArray(AbstractComponentState.JSON_MESSAGES).getJSONObject(0)
-                        .getString(AbstractComponentState.JSON_MESSAGE_TYPE));
-        assertEquals(
-                "i18n",
-                json.getJSONArray(AbstractComponentState.JSON_MESSAGES).getJSONObject(0)
-                        .getString(AbstractComponentState.JSON_MESSAGE_BODY));
-        verify(listener).onFieldEntityIdChange(null);
-    }
-
-    // @Test(expected = IllegalStateException.class)
-    // public void shouldNotRemoveSelectedEntityOnFail() throws Exception {
-    // // given
-    // FieldEntityIdChangeListener listener = mock(FieldEntityIdChangeListener.class);
-    // SearchResult result = mock(SearchResult.class);
-    // given(substituteCriteria.list()).willReturn(result);
-    // given(result.getTotalNumberOfEntities()).willReturn(0);
-    // given(result.getEntities()).willReturn(Collections.<Entity> emptyList());
-    // given(substituteDataDefinition.get(anyLong())).willReturn(entity);
-    // willThrow(new IllegalStateException()).given(substituteDataDefinition).delete(13L);
-    // grid.initialize(json, Locale.ENGLISH);
-    // grid.addFieldEntityIdChangeListener("field", listener);
-    //
-    // // when
-    // grid.performEvent(viewDefinitionState, "remove", new String[0]);
-    // }
-
-    @Test
-    @Ignore
-    // TODO masz fix tests
-    public void shouldCopySelectedEntity() throws Exception {
-        // given
-        FieldEntityIdChangeListener listener = mock(FieldEntityIdChangeListener.class);
-        SearchResult result = mock(SearchResult.class);
-        given(substituteCriteria.list()).willReturn(result);
-        given(result.getTotalNumberOfEntities()).willReturn(0);
-        given(result.getEntities()).willReturn(Collections.<Entity> emptyList());
-        grid.initialize(json, Locale.ENGLISH);
-        grid.addFieldEntityIdChangeListener("field", listener);
-        Entity copiedEntity = new DefaultEntity(substituteDataDefinition, 14L, Collections.singletonMap("name",
-                (Object) "text(1)"));
-        given(substituteDataDefinition.copy(13L)).willReturn(Collections.singletonList(copiedEntity));
-
-        // when
-        grid.performEvent(viewDefinitionState, "copy", new String[0]);
-
-        // then
-        verify(substituteDataDefinition).copy(13L);
-
-        JSONObject json = grid.render();
-
-        assertEquals(
-                "SUCCESS",
-                json.getJSONArray(AbstractComponentState.JSON_MESSAGES).getJSONObject(0)
-                        .getString(AbstractComponentState.JSON_MESSAGE_TYPE));
-        assertEquals(
-                "i18n",
-                json.getJSONArray(AbstractComponentState.JSON_MESSAGES).getJSONObject(0)
-                        .getString(AbstractComponentState.JSON_MESSAGE_BODY));
-        verify(listener, never()).onFieldEntityIdChange(13L);
-    }
-
-    @Test
-    @Ignore
-    // TODO masz fix tests
-    public void shouldModeUpSelectedEntity() throws Exception {
-        // given
-        FieldEntityIdChangeListener listener = mock(FieldEntityIdChangeListener.class);
-        SearchResult result = mock(SearchResult.class);
-        given(substituteCriteria.list()).willReturn(result);
-        given(result.getTotalNumberOfEntities()).willReturn(0);
-        given(result.getEntities()).willReturn(Collections.<Entity> emptyList());
-        grid.initialize(json, Locale.ENGLISH);
-        grid.addFieldEntityIdChangeListener("field", listener);
-
-        // when
-        grid.performEvent(viewDefinitionState, "moveUp", new String[0]);
-
-        // then
-        verify(substituteDataDefinition).move(13L, -1);
-
-        JSONObject json = grid.render();
-
-        assertEquals(
-                "SUCCESS",
-                json.getJSONArray(AbstractComponentState.JSON_MESSAGES).getJSONObject(0)
-                        .getString(AbstractComponentState.JSON_MESSAGE_TYPE));
-        assertEquals(
-                "i18n",
-                json.getJSONArray(AbstractComponentState.JSON_MESSAGES).getJSONObject(0)
-                        .getString(AbstractComponentState.JSON_MESSAGE_BODY));
-        verify(listener, never()).onFieldEntityIdChange(13L);
-    }
-
     @Test(expected = IllegalStateException.class)
     public void shouldNotModeUpSelectedEntityOnFail() throws Exception {
         // given
@@ -633,38 +254,6 @@ public class GridComponentStateTest extends AbstractStateTest {
 
         // when
         grid.performEvent(viewDefinitionState, "moveUp", new String[0]);
-    }
-
-    @Test
-    @Ignore
-    // TODO masz fix tests
-    public void shouldModeDownSelectedEntity() throws Exception {
-        // given
-        FieldEntityIdChangeListener listener = mock(FieldEntityIdChangeListener.class);
-        SearchResult result = mock(SearchResult.class);
-        given(substituteCriteria.list()).willReturn(result);
-        given(result.getTotalNumberOfEntities()).willReturn(0);
-        given(result.getEntities()).willReturn(Collections.<Entity> emptyList());
-        grid.initialize(json, Locale.ENGLISH);
-        grid.addFieldEntityIdChangeListener("field", listener);
-
-        // when
-        grid.performEvent(viewDefinitionState, "moveDown", new String[0]);
-
-        // then
-        verify(substituteDataDefinition).move(13L, 1);
-
-        JSONObject json = grid.render();
-
-        assertEquals(
-                "SUCCESS",
-                json.getJSONArray(AbstractComponentState.JSON_MESSAGES).getJSONObject(0)
-                        .getString(AbstractComponentState.JSON_MESSAGE_TYPE));
-        assertEquals(
-                "i18n",
-                json.getJSONArray(AbstractComponentState.JSON_MESSAGES).getJSONObject(0)
-                        .getString(AbstractComponentState.JSON_MESSAGE_BODY));
-        verify(listener, never()).onFieldEntityIdChange(13L);
     }
 
     @Test(expected = IllegalStateException.class)

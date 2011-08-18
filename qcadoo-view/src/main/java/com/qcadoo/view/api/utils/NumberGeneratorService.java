@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.5
+ * Version: 0.4.6
  *
  * This file is part of Qcadoo.
  *
@@ -123,7 +123,6 @@ public class NumberGeneratorService {
      * @return new number of entity
      */
     public String generateNumber(final String plugin, final String entityName, final int digitsNumber) {
-
         SearchResult results = dataDefinitionService.get(plugin, entityName).find().setMaxResults(1)
                 .addOrder(SearchOrders.desc("id")).list();
 
@@ -137,5 +136,15 @@ public class NumberGeneratorService {
 
         return String.format("%0" + digitsNumber + "d", longValue);
     }
+
+    /**
+     * Generate new 6-digits number of entity
+     * 
+     * @param plugin
+     *            plugin identifier of entity
+     * @param entityName
+     *            name of entity
+     * @return new number of entity
+     */
 
 }

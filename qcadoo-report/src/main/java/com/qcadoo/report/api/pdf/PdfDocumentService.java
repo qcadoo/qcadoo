@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.5
+ * Version: 0.4.6
  *
  * This file is part of Qcadoo.
  *
@@ -43,7 +43,8 @@ public abstract class PdfDocumentService extends DocumentService {
     private static final Logger LOG = LoggerFactory.getLogger(PdfDocumentService.class);
 
     @Override
-    public void generateDocument(final Entity entity, final Locale locale) throws IOException, DocumentException {
+    public void generateDocument(final Entity entity, final Entity company, final Locale locale) throws IOException,
+            DocumentException {
         Document document = new Document(PageSize.A4);
         try {
             setDecimalFormat((DecimalFormat) DecimalFormat.getInstance(locale));
@@ -54,7 +55,9 @@ public abstract class PdfDocumentService extends DocumentService {
             PdfWriter writer = PdfWriter.getInstance(document, fileOutputStream);
             writer.setPageEvent(new PdfPageNumbering(
                     getTranslationService().translate("qcadooReport.commons.page.label", locale), getTranslationService()
-                            .translate("qcadooReport.commons.of.label", locale)));
+                            .translate("qcadooReport.commons.of.label", locale), getTranslationService().translate(
+                            "basic.company.tax.label", locale), getTranslationService().translate("basic.company.phone.label",
+                            locale), company));
             document.setMargins(40, 40, 60, 60);
             buildPdfMetadata(document, locale);
             writer.createXmpMetadata();

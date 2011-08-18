@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.5
+ * Version: 0.4.6
  *
  * This file is part of Qcadoo.
  *
@@ -31,7 +31,6 @@ import java.io.File;
 import java.io.FileInputStream;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -60,17 +59,6 @@ public class JarPluginArtifactTest {
     public void shouldThrowAnExceptionIfFileNotExist() throws Exception {
         // given
         File file = new File("xxxx");
-
-        // when
-        new JarPluginArtifact(file);
-    }
-
-    @Test(expected = IllegalStateException.class)
-    @Ignore
-    public void shouldThrowAnExceptionIfFileIsNotReadable() throws Exception {
-        // given
-        File file = folder.newFile("plugin.jar");
-        file.setReadable(false);
 
         // when
         new JarPluginArtifact(file);

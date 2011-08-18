@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.5
+ * Version: 0.4.6
  *
  * This file is part of Qcadoo.
  *
@@ -43,7 +43,7 @@ public abstract class XlsDocumentService extends DocumentService {
     private static final Logger LOG = LoggerFactory.getLogger(XlsDocumentService.class);
 
     @Override
-    public final void generateDocument(final Entity entity, final Locale locale) throws IOException {
+    public final void generateDocument(final Entity entity, final Entity company, final Locale locale) throws IOException {
         setDecimalFormat((DecimalFormat) DecimalFormat.getInstance(locale));
         getDecimalFormat().setMaximumFractionDigits(3);
         getDecimalFormat().setMinimumFractionDigits(3);

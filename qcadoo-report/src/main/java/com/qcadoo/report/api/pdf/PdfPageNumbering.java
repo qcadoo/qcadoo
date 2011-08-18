@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.5
+ * Version: 0.4.6
  *
  * This file is part of Qcadoo.
  *
@@ -30,6 +30,7 @@ import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfPageEventHelper;
 import com.lowagie.text.pdf.PdfTemplate;
 import com.lowagie.text.pdf.PdfWriter;
+import com.qcadoo.model.api.Entity;
 
 public final class PdfPageNumbering extends PdfPageEventHelper {
 
@@ -40,10 +41,85 @@ public final class PdfPageNumbering extends PdfPageEventHelper {
 
     private final String in;
 
-    public PdfPageNumbering(final String page, final String in) {
+    private final String company_tax;
+
+    private final String address;
+
+    private final String email_phone;
+
+    public PdfPageNumbering(final String page, final String in, final String tax, final String phone, final Entity company) {
         super();
         this.page = page;
         this.in = in;
+
+        String temp = new String();
+
+        if (company != null) {
+            String company_tax = company.getStringField("companyFullName");
+
+            temp = company.getStringField("tax");
+            if (temp != null) {
+                company_tax = company_tax.concat(", ");
+                company_tax = company_tax.concat(tax);
+                company_tax = company_tax.concat(": ");
+                company_tax = company_tax.concat(temp);
+            }
+
+            String address = new String();
+            if (company.getStringField("street") != null && company.getStringField("house") != null
+                    && company.getStringField("zipCode") != null && company.getStringField("city") != null) {
+                address = address.concat(company.getStringField("street"));
+                address = address.concat(" ");
+                address = address.concat(company.getStringField("house"));
+                temp = company.getStringField("flat");
+                if (temp != null) {
+                    address = address.concat("/");
+                    address = address.concat(temp);
+                }
+                address = address.concat(", ");
+                address = address.concat(company.getStringField("zipCode"));
+                address = address.concat(" ");
+                address = address.concat(company.getStringField("city"));
+                temp = company.getStringField("country");
+                if (temp != null) {
+                    address = address.concat(", ");
+                    address = address.concat(temp);
+                }
+            } else
+                address = null;
+
+            String email_phone = new String();
+            temp = company.getStringField("email");
+            if (temp != null) {
+                email_phone = email_phone.concat("E-mail: ");
+                email_phone = email_phone.concat(temp);
+                temp = company.getStringField("phone");
+                if (temp != null) {
+                    email_phone = email_phone.concat(", ");
+                    email_phone = email_phone.concat(phone);
+                    email_phone = email_phone.concat(": ");
+                    email_phone = email_phone.concat(temp);
+                }
+            } else {
+                temp = company.getStringField("phone");
+                if (temp != null) {
+                    email_phone = email_phone.concat(phone);
+                    email_phone = email_phone.concat(": ");
+                    email_phone = email_phone.concat(temp);
+                } else
+                    email_phone = null;
+            }
+            this.company_tax = company_tax;
+            this.address = address;
+            this.email_phone = email_phone;
+
+        } else {
+            this.company_tax = "";
+            this.address = "";
+            this.email_phone = "";
+
+        }
+
     }
 
     /**
@@ -109,6 +185,18 @@ public final class PdfPageNumbering extends PdfPageEventHelper {
         float adjust = PdfUtil.getArial().getWidthPoint("0", 7);
         cb.setTextMatrix(document.right() - textSize - adjust, textBase);
         cb.showText(text);
+        cb.setTextMatrix(document.left(), textBase);
+        cb.showText(company_tax);
+        float companyFooterLine = 10;
+        if (address != null) {
+            cb.setTextMatrix(document.left(), textBase - companyFooterLine);
+            cb.showText(address);
+            companyFooterLine += 10;
+        }
+        if (email_phone != null) {
+            cb.setTextMatrix(document.left(), textBase - companyFooterLine);
+            cb.showText(email_phone);
+        }
         cb.endText();
         cb.addTemplate(total, document.right() - adjust, textBase);
         cb.restoreState();
