@@ -64,6 +64,8 @@ public class ExportToPDFController {
             File file = new File(fileService.create("export.pdf"));
             FileOutputStream fileOutputStream = new FileOutputStream(file);
             PdfWriter writer = PdfWriter.getInstance(document, fileOutputStream);
+            writer.setPageEvent(new ExportToPdfPageNumbering(translationService.translate("qcadooReport.commons.page.label",
+                    locale), translationService.translate("qcadooReport.commons.of.label", locale)));
             document.setMargins(40, 40, 60, 60);
             document.addTitle("export.pdf");
             PdfUtil.addMetaData(document);
