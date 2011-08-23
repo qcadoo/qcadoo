@@ -24,11 +24,12 @@
 		<module>qcadoo-plugins-dictionary-management</module>
 		<module>qcadoo-plugins-menu-management</module>
 		<module>qcadoo-plugins-export-to-csv</module>
-	</modules>
+		<module>qcadoo-plugins-export-to-pdf</module>
+  </modules>
 
 	<name>Qcadoo Framework</name>
 
-	<description />
+	<description/>
 
 	<url>https://github.com/qcadoo/qcadoo</url>
 
@@ -370,7 +371,7 @@
 			</snapshots>
 		</repository>
 		<repository>
-			<id>SpringSource Enterprise Bundle Repository â€“ External Bundle Milestones</id>
+			<id>SpringSource Enterprise Bundle Repository – External Bundle Milestones</id>
 			<url>http://maven.springframework.org/milestone</url>
 		</repository>
 	</repositories>
