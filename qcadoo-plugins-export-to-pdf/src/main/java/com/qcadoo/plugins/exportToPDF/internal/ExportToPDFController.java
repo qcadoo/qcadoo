@@ -25,11 +25,8 @@ import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 import com.qcadoo.localization.api.TranslationService;
-import com.qcadoo.mes.basic.constants.BasicConstants;
-import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.aop.Monitorable;
 import com.qcadoo.model.api.file.FileService;
-import com.qcadoo.report.api.pdf.PdfPageNumbering;
 import com.qcadoo.report.api.pdf.PdfUtil;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.api.components.GridComponent;
@@ -51,9 +48,6 @@ public class ExportToPDFController {
     private FileService fileService;
 
     @Autowired
-    private DataDefinitionService dataDefinitionService;
-
-    @Autowired
     private TranslationService translationService;
 
     @Monitorable(threshold = 500)
@@ -70,11 +64,6 @@ public class ExportToPDFController {
             File file = new File(fileService.create("export.pdf"));
             FileOutputStream fileOutputStream = new FileOutputStream(file);
             PdfWriter writer = PdfWriter.getInstance(document, fileOutputStream);
-            writer.setPageEvent(new PdfPageNumbering(translationService.translate("qcadooReport.commons.page.label", locale),
-                    translationService.translate("qcadooReport.commons.of.label", locale), translationService.translate(
-                            "basic.company.tax.label", locale),
-                    translationService.translate("basic.company.phone.label", locale), dataDefinitionService
-                            .get(BasicConstants.PLUGIN_IDENTIFIER, BasicConstants.MODEL_COMPANY).find().uniqueResult()));
             document.setMargins(40, 40, 60, 60);
             document.addTitle("export.pdf");
             PdfUtil.addMetaData(document);
