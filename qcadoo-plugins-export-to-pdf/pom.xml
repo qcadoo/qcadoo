@@ -16,11 +16,6 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.qcadoo</groupId>
-			<artifactId>qcadoo-view</artifactId>
-			<version>0.4.7-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>com.qcadoo</groupId>
 			<artifactId>qcadoo-report</artifactId>
 			<version>0.4.7-SNAPSHOT</version>
 		</dependency>
