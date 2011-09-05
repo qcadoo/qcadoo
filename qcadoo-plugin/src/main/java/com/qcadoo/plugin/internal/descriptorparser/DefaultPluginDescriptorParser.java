@@ -39,7 +39,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.commons.io.FilenameUtils;
 import org.jdom.Element;
 import org.jdom.input.DOMBuilder;
 import org.slf4j.Logger;
@@ -47,7 +46,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ResourceUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -64,7 +62,6 @@ import com.qcadoo.plugin.internal.api.InternalPlugin;
 import com.qcadoo.plugin.internal.api.ModuleFactoryAccessor;
 import com.qcadoo.plugin.internal.api.PluginDescriptorParser;
 import com.qcadoo.plugin.internal.api.PluginDescriptorResolver;
-import org.springframework.core.io.InputStreamSource;
 
 @Service
 public class DefaultPluginDescriptorParser implements PluginDescriptorParser {
@@ -160,7 +157,7 @@ public class DefaultPluginDescriptorParser implements PluginDescriptorParser {
     public Set<InternalPlugin> getTemporaryPlugins() {
         JarEntryResource[] resources = pluginDescriptorResolver.getTemporaryDescriptors();
         Set<InternalPlugin> plugins = new HashSet<InternalPlugin>();
-        for(JarEntryResource resource : resources) {
+        for (JarEntryResource resource : resources) {
             InternalPlugin plugin = parse(resource, true);
             plugin.changeStateTo(PluginState.TEMPORARY);
             plugins.add(plugin);

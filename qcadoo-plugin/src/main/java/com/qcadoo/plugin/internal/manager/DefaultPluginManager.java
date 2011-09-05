@@ -33,7 +33,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
 import com.qcadoo.plugin.api.Plugin;
@@ -56,7 +55,6 @@ import com.qcadoo.plugin.internal.api.PluginOperationResultImpl;
 import com.qcadoo.plugin.internal.dependencymanager.PluginStatusResolver;
 import com.qcadoo.plugin.internal.dependencymanager.SimplePluginStatusResolver;
 import com.qcadoo.tenant.api.Standalone;
-import org.springframework.core.io.InputStreamSource;
 
 @Service
 @Standalone

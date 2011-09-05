@@ -684,9 +684,9 @@
 	font-style: normal;
 }
 .component_label.normal {
-	font-size: 11px;
+	font-size: 12px;
 	font-weight: bold;
-	line-height: 20px;
+	line-height: 30px;
 }
 .component_label.text {
 	font-size: 13px;
@@ -695,5 +695,5 @@
 	width: 100%;
 	text-align: left;
 	padding-left: 17px;
-	padding-top: 5px;
+	padding-top: 20px;
 }
