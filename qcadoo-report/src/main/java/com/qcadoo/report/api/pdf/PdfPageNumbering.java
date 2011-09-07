@@ -23,6 +23,9 @@
  */
 package com.qcadoo.report.api.pdf;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import com.lowagie.text.Document;
 import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.Rectangle;
@@ -30,6 +33,7 @@ import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfPageEventHelper;
 import com.lowagie.text.pdf.PdfTemplate;
 import com.lowagie.text.pdf.PdfWriter;
+import com.qcadoo.localization.api.utils.DateUtils;
 import com.qcadoo.model.api.Entity;
 
 public final class PdfPageNumbering extends PdfPageEventHelper {
@@ -47,10 +51,23 @@ public final class PdfPageNumbering extends PdfPageEventHelper {
 
     private final String phone_email;
 
-    public PdfPageNumbering(final String page, final String in, final String tax, final String phone, final Entity company) {
+    private final String generatedBy;
+
+    private final String generationDate;
+
+    public PdfPageNumbering(final String page, final String in, final String tax, final String phone, final Entity company,
+            final String generatedBy, final String username) {
         super();
         this.page = page;
         this.in = in;
+
+        StringBuilder footerData = new StringBuilder();
+        footerData = footerData.append(generatedBy);
+        footerData = footerData.append(" ");
+        footerData = footerData.append(username);
+        this.generatedBy = footerData.toString();
+
+        this.generationDate = new SimpleDateFormat(DateUtils.DATE_TIME_FORMAT).format(new Date());
 
         if (company != null) {
             StringBuilder companyData = new StringBuilder();
@@ -170,6 +187,15 @@ public final class PdfPageNumbering extends PdfPageEventHelper {
         float adjust = PdfUtil.getArial().getWidthPoint("0", 7);
         cb.setTextMatrix(document.right() - textSize - adjust, textBase);
         cb.showText(text);
+
+        textSize = PdfUtil.getArial().getWidthPoint(generatedBy, 7);
+        cb.setTextMatrix(document.right() - textSize, textBase - 10);
+        cb.showText(generatedBy);
+
+        textSize = PdfUtil.getArial().getWidthPoint(generationDate, 7);
+        cb.setTextMatrix(document.right() - textSize, textBase - 20);
+        cb.showText(generationDate);
+
         cb.setTextMatrix(document.left(), textBase);
         cb.showText(company_name);
         float companyFooterLine = 10;

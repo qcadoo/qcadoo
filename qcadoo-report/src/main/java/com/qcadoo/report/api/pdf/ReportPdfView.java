@@ -40,11 +40,15 @@ import com.lowagie.text.DocumentException;
 import com.lowagie.text.pdf.PdfWriter;
 import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.api.Entity;
+import com.qcadoo.security.api.SecurityService;
 
 public abstract class ReportPdfView extends AbstractPdfView {
 
     @Autowired
     private TranslationService translationService;
+
+    @Autowired
+    private SecurityService securityService;
 
     private DecimalFormat decimalFormat;
 
@@ -81,7 +85,8 @@ public abstract class ReportPdfView extends AbstractPdfView {
                 LocaleContextHolder.getLocale()), getTranslationService().translate("qcadooReport.commons.of.label",
                 LocaleContextHolder.getLocale()), getTranslationService().translate("basic.company.tax.label",
                 LocaleContextHolder.getLocale()), getTranslationService().translate("basic.company.phone.label",
-                LocaleContextHolder.getLocale()), (Entity) model.get("company")));
+                LocaleContextHolder.getLocale()), (Entity) model.get("company"), getTranslationService().translate(
+                "qcadooReport.commons.generatedBy.label", LocaleContextHolder.getLocale()), securityService.getCurrentUserName()));
     }
 
     @Override
