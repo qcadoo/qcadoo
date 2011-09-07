@@ -41,11 +41,11 @@ public final class PdfPageNumbering extends PdfPageEventHelper {
 
     private final String in;
 
-    private final String company_tax;
+    private final String company_name;
 
     private final String address;
 
-    private final String email_phone;
+    private final String phone_email;
 
     public PdfPageNumbering(final String page, final String in, final String tax, final String phone, final Entity company) {
         super();
@@ -56,13 +56,7 @@ public final class PdfPageNumbering extends PdfPageEventHelper {
             StringBuilder companyData = new StringBuilder();
 
             companyData = companyData.append(company.getStringField("companyFullName"));
-            if (company.getStringField("tax") != null) {
-                companyData = companyData.append(", ");
-                companyData = companyData.append(tax);
-                companyData = companyData.append(": ");
-                companyData = companyData.append(company.getStringField("tax"));
-            }
-            this.company_tax = companyData.toString();
+            this.company_name = companyData.toString();
 
             if (company.getStringField("street") != null && company.getStringField("house") != null
                     && company.getStringField("zipCode") != null && company.getStringField("city") != null) {
@@ -86,31 +80,30 @@ public final class PdfPageNumbering extends PdfPageEventHelper {
             } else
                 this.address = "";
 
-            if (company.getStringField("email") != null) {
+            if (company.getStringField("phone") != null) {
                 companyData.setLength(0);
-                companyData = companyData.append("E-mail: ");
-                companyData = companyData.append(company.getStringField("email"));
-                if (company.getStringField("phone") != null) {
+                companyData = companyData.append(phone);
+                companyData = companyData.append(": ");
+                companyData = companyData.append(company.getStringField("phone"));
+                if (company.getStringField("email") != null) {
                     companyData = companyData.append(", ");
-                    companyData = companyData.append(phone);
-                    companyData = companyData.append(": ");
-                    companyData = companyData.append(company.getStringField("phone"));
+                    companyData = companyData.append("E-mail: ");
+                    companyData = companyData.append(company.getStringField("email"));
                 }
-                this.email_phone = companyData.toString();
+                this.phone_email = companyData.toString();
             } else {
-                if (company.getStringField("phone") != null) {
+                if (company.getStringField("email") != null) {
                     companyData.setLength(0);
-                    companyData = companyData.append(phone);
-                    companyData = companyData.append(": ");
-                    companyData = companyData.append(company.getStringField("phone"));
-                    this.email_phone = companyData.toString();
+                    companyData = companyData.append("E-mail: ");
+                    companyData = companyData.append(company.getStringField("email"));
+                    this.phone_email = companyData.toString();
                 } else
-                    this.email_phone = "";
+                    this.phone_email = "";
             }
         } else {
-            this.company_tax = "";
+            this.company_name = "";
             this.address = "";
-            this.email_phone = "";
+            this.phone_email = "";
         }
     }
 
@@ -178,16 +171,16 @@ public final class PdfPageNumbering extends PdfPageEventHelper {
         cb.setTextMatrix(document.right() - textSize - adjust, textBase);
         cb.showText(text);
         cb.setTextMatrix(document.left(), textBase);
-        cb.showText(company_tax);
+        cb.showText(company_name);
         float companyFooterLine = 10;
         if (address != "") {
             cb.setTextMatrix(document.left(), textBase - companyFooterLine);
             cb.showText(address);
             companyFooterLine += 10;
         }
-        if (email_phone != "") {
+        if (phone_email != "") {
             cb.setTextMatrix(document.left(), textBase - companyFooterLine);
-            cb.showText(email_phone);
+            cb.showText(phone_email);
         }
         cb.endText();
         cb.addTemplate(total, document.right() - adjust, textBase);
