@@ -29,7 +29,7 @@
 	xsi:schemaLocation="http://schema.qcadoo.org/model http://schema.qcadoo.org/model.xsd">
 	<fields>
 		<string name="pluginIdentifier" />
-		<string name="name" required="true" unique="true" />
+		<string name="name" required="true" />
 		<boolean name="active" readonly="false" default="true" />
 		<belongsTo name="category" model="category" lazy="false"
 			required="true" />

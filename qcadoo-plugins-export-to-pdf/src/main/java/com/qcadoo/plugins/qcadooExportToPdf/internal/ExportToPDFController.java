@@ -1,4 +1,4 @@
-package com.qcadoo.plugins.exportToPDF.internal;
+package com.qcadoo.plugins.qcadooExportToPdf.internal;
 
 import java.io.File;
 import java.io.FileNotFoundException;

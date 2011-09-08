@@ -1,4 +1,4 @@
-package com.qcadoo.plugins.exportToPDF.internal;
+package com.qcadoo.plugins.qcadooExportToPdf.internal;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.ExceptionConverter;
