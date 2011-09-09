@@ -38,6 +38,7 @@ import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.search.SearchCriteriaBuilder;
 import com.qcadoo.model.api.search.SearchRestrictions;
+import com.qcadoo.model.api.search.SearchRestrictions.SearchMatchMode;
 import com.qcadoo.model.api.types.BelongsToType;
 
 public class GridComponentFilterUtils {
@@ -97,11 +98,7 @@ public class GridComponentFilterUtils {
             final Entry<GridComponentFilterOperator, String> filterValue, final String field, final Object value) {
         switch (filterValue.getKey()) {
             case EQ:
-                if (value instanceof String) {
-                    criteria.add(SearchRestrictions.like(field, (String) value));
-                } else {
-                    criteria.add(SearchRestrictions.eq(field, value));
-                }
+                criteria.add(SearchRestrictions.eq(field, value));
                 break;
             case NE:
                 criteria.add(SearchRestrictions.ne(field, value));
@@ -129,16 +126,21 @@ public class GridComponentFilterUtils {
 
         switch (filterValue.getKey()) {
             case EQ:
+                criteria.add(SearchRestrictions.like(field, (String) value, SearchMatchMode.ANYWHERE));
+                break;
             case NE:
+                criteria.add(SearchRestrictions.ne(field, value += "*"));
+                break;
             case GT:
+                criteria.add(SearchRestrictions.ne(field, value += "*"));
+                break;
             case LE:
-                value += "*";
+                criteria.add(SearchRestrictions.ne(field, value += "*"));
                 break;
             default:
-                break;
+                throw new IllegalStateException("Unknown filter operator");
         }
 
-        addSimpleFilter(criteria, filterValue, field, value);
     }
 
     private static void addDateFilter(final SearchCriteriaBuilder criteria,

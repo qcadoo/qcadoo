@@ -223,7 +223,7 @@ public final class LookupComponentState extends FieldComponentState {
                 SearchCriteriaBuilder searchCriteriaBuilder = getDataDefinition().find();
 
                 if (StringUtils.hasText(currentCode)) {
-                    searchCriteriaBuilder.add(SearchRestrictions.like(fieldCode, currentCode, SearchMatchMode.START));
+                    searchCriteriaBuilder.add(SearchRestrictions.like(fieldCode, currentCode, SearchMatchMode.ANYWHERE));
                 }
 
                 if (belongsToFieldDefinition != null && belongsToEntityId != null) {
