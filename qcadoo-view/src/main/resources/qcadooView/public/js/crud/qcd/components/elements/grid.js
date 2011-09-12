@@ -761,7 +761,7 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 				} else {
 					columnElement.keyup(function(e) {
 						var key = e.keyCode || e.which;
-						if (key != 13) { // TODO place 1
+						if (key != 13) {
 							return;
 						}
 						
