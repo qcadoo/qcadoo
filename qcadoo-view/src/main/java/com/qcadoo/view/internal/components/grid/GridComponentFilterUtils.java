@@ -129,11 +129,7 @@ public class GridComponentFilterUtils {
                 criteria.add(SearchRestrictions.like(field, (String) value, SearchMatchMode.ANYWHERE));
                 break;
             case NE:
-                criteria.add(SearchRestrictions.ne(field, value += "*"));
-                break;
             case GT:
-                criteria.add(SearchRestrictions.ne(field, value += "*"));
-                break;
             case LE:
                 criteria.add(SearchRestrictions.ne(field, value += "*"));
                 break;
