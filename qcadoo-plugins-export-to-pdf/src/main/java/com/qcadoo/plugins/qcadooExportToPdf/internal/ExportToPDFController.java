@@ -28,6 +28,7 @@ import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.api.aop.Monitorable;
 import com.qcadoo.model.api.file.FileService;
 import com.qcadoo.report.api.pdf.PdfUtil;
+import com.qcadoo.security.api.SecurityService;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.api.components.GridComponent;
 import com.qcadoo.view.api.crud.CrudService;
@@ -50,6 +51,9 @@ public class ExportToPDFController {
     @Autowired
     private TranslationService translationService;
 
+    @Autowired
+    private SecurityService securityService;
+
     @Monitorable(threshold = 500)
     @RequestMapping(value = { CONTROLLER_PATH }, method = RequestMethod.POST)
     @ResponseBody
@@ -65,7 +69,8 @@ public class ExportToPDFController {
             FileOutputStream fileOutputStream = new FileOutputStream(file);
             PdfWriter writer = PdfWriter.getInstance(document, fileOutputStream);
             writer.setPageEvent(new ExportToPdfPageNumbering(translationService.translate("qcadooReport.commons.page.label",
-                    locale), translationService.translate("qcadooReport.commons.of.label", locale)));
+                    locale), translationService.translate("qcadooReport.commons.of.label", locale), translationService.translate(
+                    "qcadooReport.commons.generatedBy.label", locale), securityService.getCurrentUserName()));
             document.setMargins(40, 40, 60, 60);
             document.addTitle("export.pdf");
             PdfUtil.addMetaData(document);
