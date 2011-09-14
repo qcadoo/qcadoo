@@ -77,7 +77,19 @@
 				<xsl:if test="@auditable='true'">
 					<property>
 						<xsl:attribute name="type">date</xsl:attribute>
-						<xsl:attribute name="name">lastUpdateDate</xsl:attribute>
+						<xsl:attribute name="name">createDate</xsl:attribute>
+					</property>
+					<property>
+						<xsl:attribute name="type">date</xsl:attribute>
+						<xsl:attribute name="name">updateDate</xsl:attribute>
+					</property>
+					<property>
+						<xsl:attribute name="type">string</xsl:attribute>
+						<xsl:attribute name="name">createUser</xsl:attribute>
+					</property>
+					<property>
+						<xsl:attribute name="type">string</xsl:attribute>
+						<xsl:attribute name="name">updateUser</xsl:attribute>
 					</property>
 				</xsl:if>
 				<xsl:if test="@insertable='false'">

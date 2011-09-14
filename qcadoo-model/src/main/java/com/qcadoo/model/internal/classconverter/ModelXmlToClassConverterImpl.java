@@ -217,7 +217,10 @@ public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverte
             createField(ctClass, "active", Boolean.class.getCanonicalName());
         }
         if (getBooleanAttribute(reader, "auditable", false)) {
-            createField(ctClass, "lastUpdateDate", Date.class.getCanonicalName());
+            createField(ctClass, "createDate", Date.class.getCanonicalName());
+            createField(ctClass, "updateDate", Date.class.getCanonicalName());
+            createField(ctClass, "createUser", String.class.getCanonicalName());
+            createField(ctClass, "updateUser", String.class.getCanonicalName());
         }
 
         while (reader.hasNext() && reader.next() > 0) {

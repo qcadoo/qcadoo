@@ -2,7 +2,6 @@ package com.qcadoo.model.internal.aop;
 
 import java.util.Date;
 
-import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,19 +18,14 @@ public class AuditAdvice {
     @Autowired
     DataDefinitionService dataDefinitionService;
 
-    @AfterReturning(pointcut = "execution(@com.qcadoo.model.api.aop.Audit * *(..))", returning = "resultEntity")
-    public void auditEntity(Entity resultEntity) {
-
-        if (resultEntity.getDataDefinition().isAuditable()) {
-            // entityToAudit.setField("lastUpdateDate", new Date());
-        }
-    }
-
-    @Before("execution(@com.qcadoo.model.api.aop.Audit * *(..)) &&" + "args(dataDefinition,genericEntity,..)")
-    public void auditEntity2(InternalDataDefinition dataDefinition, Entity genericEntity) {
+    @Before("execution(@com.qcadoo.model.api.aop.Auditable * *(..)) &&" + "args(dataDefinition,genericEntity,..)")
+    public void auditEntity(final InternalDataDefinition dataDefinition, final Entity genericEntity) {
 
         if (genericEntity.getDataDefinition().isAuditable()) {
-            genericEntity.setField("lastUpdateDate", new Date());
+            if (genericEntity.getField("createDate") == null) {
+                genericEntity.setField("createDate", new Date());
+            }
+            genericEntity.setField("updateDate", new Date());
         }
     }
 }

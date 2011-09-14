@@ -33,7 +33,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -192,9 +191,13 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
                 }
             }
 
-            if (dataDefinition.isAuditable()) {
-                dataDefinition.withField(setAuditFieldDefinition(dataDefinition));
-            }
+            /*
+             * if (dataDefinition.isAuditable()) { dataDefinition.withField(getAuditFieldDefinition(dataDefinition, "createDate",
+             * new DateTimeType())); dataDefinition.withField(getAuditFieldDefinition(dataDefinition, "updateDate", new
+             * DateTimeType())); dataDefinition.withField(getAuditFieldDefinition(dataDefinition, "createUser", new
+             * StringType())); dataDefinition.withField(getAuditFieldDefinition(dataDefinition, "updateUser", new StringType()));
+             * }
+             */
 
             if (TAG_HOOKS.equals(getTagStarted(reader))) {
                 while (reader.hasNext() && reader.next() > 0) {
@@ -368,15 +371,13 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
         }
     }
 
-    private FieldDefinition setAuditFieldDefinition(final DataDefinitionImpl dataDefinition) {
-        FieldDefinitionImpl fieldDefinition = new FieldDefinitionImpl(dataDefinition, "lastUpdateDate");
+    private FieldDefinition getAuditFieldDefinition(final DataDefinitionImpl dataDefinition, final String name,
+            final FieldType type) {
+        FieldDefinitionImpl fieldDefinition = new FieldDefinitionImpl(dataDefinition, name);
         fieldDefinition.withReadOnly(false);
-        fieldDefinition.withDefaultValue(new Date());
         fieldDefinition.setPersistent(true);
         fieldDefinition.setExpression("");
-        FieldType type = new DateTimeType();
         fieldDefinition.withType(type);
-
         return fieldDefinition;
     }
 
