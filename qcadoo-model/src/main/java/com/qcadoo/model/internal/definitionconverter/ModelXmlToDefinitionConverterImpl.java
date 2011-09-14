@@ -33,6 +33,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -191,6 +192,10 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
                 }
             }
 
+            if (dataDefinition.isAuditable()) {
+                dataDefinition.withField(setAuditFieldDefinition(dataDefinition));
+            }
+
             if (TAG_HOOKS.equals(getTagStarted(reader))) {
                 while (reader.hasNext() && reader.next() > 0) {
                     if (isTagEnded(reader, TAG_HOOKS)) {
@@ -315,6 +320,7 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
         dataDefinition.setInsertable(getBooleanAttribute(reader, "insertable", true));
         dataDefinition.setUpdatable(getBooleanAttribute(reader, "updatable", true));
         dataDefinition.setActivable(getBooleanAttribute(reader, "activable", false));
+        dataDefinition.setAuditable(getBooleanAttribute(reader, "auditable", false));
         dataDefinition.setFullyQualifiedClassName(ClassNameUtils.getFullyQualifiedClassName(pluginIdentifier, modelName));
         return dataDefinition;
     }
@@ -360,6 +366,18 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
         } else {
             return new BelongsToEntityType(plugin != null ? plugin : pluginIdentifier, modelName, dataDefinitionService, false);
         }
+    }
+
+    private FieldDefinition setAuditFieldDefinition(final DataDefinitionImpl dataDefinition) {
+        FieldDefinitionImpl fieldDefinition = new FieldDefinitionImpl(dataDefinition, "lastUpdateDate");
+        fieldDefinition.withReadOnly(false);
+        fieldDefinition.withDefaultValue(new Date());
+        fieldDefinition.setPersistent(true);
+        fieldDefinition.setExpression("");
+        FieldType type = new DateTimeType();
+        fieldDefinition.withType(type);
+
+        return fieldDefinition;
     }
 
     private FieldDefinition getFieldDefinition(final XMLStreamReader reader, final DataDefinitionImpl dataDefinition,

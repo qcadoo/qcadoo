@@ -203,6 +203,11 @@ public class DynamicDataDefinitionImpl implements InternalDataDefinition {
     }
 
     @Override
+    public boolean isAuditable() {
+        return false;
+    }
+
+    @Override
     public boolean callCopyHook(final Entity targetEntity) {
         return true;
     }

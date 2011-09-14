@@ -173,6 +173,13 @@ public interface DataDefinition {
     boolean isActivable();
 
     /**
+     * Return true if entity is auditable.
+     * 
+     * @return true if entity is auditable
+     */
+    boolean isAuditable();
+
+    /**
      * Create entity with given id.
      * 
      * @param id

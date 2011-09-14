@@ -111,6 +111,13 @@ public interface InternalDataDefinition extends DataDefinition {
     boolean isUpdatable();
 
     /**
+     * Return true if entity of given data definition can be audited.
+     * 
+     * @return is auditable
+     */
+    boolean isAuditable();
+
+    /**
      * Call copy hooks on given entity.
      * 
      * @param entity

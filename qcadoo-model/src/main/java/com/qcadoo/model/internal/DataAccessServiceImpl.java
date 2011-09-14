@@ -57,6 +57,7 @@ import com.qcadoo.model.api.EntityList;
 import com.qcadoo.model.api.EntityTree;
 import com.qcadoo.model.api.ExpressionService;
 import com.qcadoo.model.api.FieldDefinition;
+import com.qcadoo.model.api.aop.Audit;
 import com.qcadoo.model.api.aop.Monitorable;
 import com.qcadoo.model.api.search.SearchRestrictions;
 import com.qcadoo.model.api.search.SearchResult;
@@ -98,10 +99,12 @@ public class DataAccessServiceImpl implements DataAccessService {
 
     private static final Logger LOG = LoggerFactory.getLogger(DataAccessServiceImpl.class);
 
+    @Audit
     @Override
     @Transactional
     public Entity save(final InternalDataDefinition dataDefinition, final Entity genericEntity) {
         Set<Entity> newlySavedEntities = new HashSet<Entity>();
+
         Entity resultEntity = performSave(dataDefinition, genericEntity, new HashSet<Entity>(), newlySavedEntities);
         try {
             if (TransactionAspectSupport.currentTransactionStatus().isRollbackOnly()) {
@@ -159,7 +162,6 @@ public class DataAccessServiceImpl implements DataAccessService {
 
             return genericEntityToSave;
         }
-
         Object databaseEntity = entityService.convertToDatabaseEntity(dataDefinition, genericEntity, existingDatabaseEntity);
 
         if (genericEntity.getId() == null) {

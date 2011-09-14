@@ -216,6 +216,9 @@ public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverte
         if (getBooleanAttribute(reader, "activable", false)) {
             createField(ctClass, "active", Boolean.class.getCanonicalName());
         }
+        if (getBooleanAttribute(reader, "auditable", false)) {
+            createField(ctClass, "lastUpdateDate", Date.class.getCanonicalName());
+        }
 
         while (reader.hasNext() && reader.next() > 0) {
             if (isTagEnded(reader, TAG_MODEL)) {
@@ -238,6 +241,7 @@ public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverte
                 }
                 break;
             }
+
         }
 
         buildToString(ctClass, fields);
