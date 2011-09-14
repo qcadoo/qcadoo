@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.6
+ * Version: 0.4.7
  *
  * This file is part of Qcadoo.
  *
@@ -693,14 +693,15 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 	}
 	
 	function onFilterChange() {
-		if (filterRefreshTimeout) {
-			window.clearTimeout(filterRefreshTimeout);
-			filterRefreshTimeout = null;
-		}
-		filterRefreshTimeout = window.setTimeout(function() {
-			filterRefreshTimeout = null;
-			performFilter();
-		}, FILTER_TIMEOUT);	
+//		if (filterRefreshTimeout) {
+//			window.clearTimeout(filterRefreshTimeout);
+//			filterRefreshTimeout = null;
+//		}
+//		filterRefreshTimeout = window.setTimeout(function() {
+//			filterRefreshTimeout = null;
+//			performFilter();
+//		}, FILTER_TIMEOUT);	
+		performFilter();
 	}
 	
 	function performFilter() {
@@ -759,6 +760,11 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 					columnElement.change(onFilterChange);
 				} else {
 					columnElement.keyup(function(e) {
+						var key = e.keyCode || e.which;
+						if (key != 13) {
+							return;
+						}
+						
 						var val = $(this).val();
 						var columnName = $(this).attr("id").substring(3);
 						var currentFilter = "";

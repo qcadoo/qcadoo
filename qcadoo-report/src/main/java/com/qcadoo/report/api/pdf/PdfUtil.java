@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.6
+ * Version: 0.4.7
  *
  * This file is part of Qcadoo.
  *
@@ -198,7 +198,7 @@ public final class PdfUtil {
         PdfContentByte cb = writer.getDirectContent();
         cb.saveState();
         cb.setColorFill(lightColor);
-        float textBase = document.bottom() - 35;
+        float textBase = document.bottom() - 55;
         float textSize = dejavu.getWidthPoint(text, 7);
         cb.beginText();
         cb.setFontAndSize(dejavu, 7);

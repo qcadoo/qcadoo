@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.6
+ * Version: 0.4.7
  *
  * This file is part of Qcadoo.
  *
@@ -23,6 +23,9 @@
  */
 package com.qcadoo.report.api.pdf;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import com.lowagie.text.Document;
 import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.Rectangle;
@@ -30,6 +33,7 @@ import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfPageEventHelper;
 import com.lowagie.text.pdf.PdfTemplate;
 import com.lowagie.text.pdf.PdfWriter;
+import com.qcadoo.localization.api.utils.DateUtils;
 import com.qcadoo.model.api.Entity;
 
 public final class PdfPageNumbering extends PdfPageEventHelper {
@@ -41,28 +45,35 @@ public final class PdfPageNumbering extends PdfPageEventHelper {
 
     private final String in;
 
-    private final String company_tax;
+    private final String company_name;
 
     private final String address;
 
-    private final String email_phone;
+    private final String phone_email;
 
-    public PdfPageNumbering(final String page, final String in, final String tax, final String phone, final Entity company) {
+    private final String generatedBy;
+
+    private final String generationDate;
+
+    public PdfPageNumbering(final String page, final String in, final String tax, final String phone, final Entity company,
+            final String generatedBy, final String username) {
         super();
         this.page = page;
         this.in = in;
+
+        StringBuilder footerData = new StringBuilder();
+        footerData = footerData.append(generatedBy);
+        footerData = footerData.append(" ");
+        footerData = footerData.append(username);
+        this.generatedBy = footerData.toString();
+
+        this.generationDate = new SimpleDateFormat(DateUtils.DATE_TIME_FORMAT).format(new Date());
 
         if (company != null) {
             StringBuilder companyData = new StringBuilder();
 
             companyData = companyData.append(company.getStringField("companyFullName"));
-            if (company.getStringField("tax") != null) {
-                companyData = companyData.append(", ");
-                companyData = companyData.append(tax);
-                companyData = companyData.append(": ");
-                companyData = companyData.append(company.getStringField("tax"));
-            }
-            this.company_tax = companyData.toString();
+            this.company_name = companyData.toString();
 
             if (company.getStringField("street") != null && company.getStringField("house") != null
                     && company.getStringField("zipCode") != null && company.getStringField("city") != null) {
@@ -86,31 +97,30 @@ public final class PdfPageNumbering extends PdfPageEventHelper {
             } else
                 this.address = "";
 
-            if (company.getStringField("email") != null) {
+            if (company.getStringField("phone") != null) {
                 companyData.setLength(0);
-                companyData = companyData.append("E-mail: ");
-                companyData = companyData.append(company.getStringField("email"));
-                if (company.getStringField("phone") != null) {
+                companyData = companyData.append(phone);
+                companyData = companyData.append(": ");
+                companyData = companyData.append(company.getStringField("phone"));
+                if (company.getStringField("email") != null) {
                     companyData = companyData.append(", ");
-                    companyData = companyData.append(phone);
-                    companyData = companyData.append(": ");
-                    companyData = companyData.append(company.getStringField("phone"));
+                    companyData = companyData.append("E-mail: ");
+                    companyData = companyData.append(company.getStringField("email"));
                 }
-                this.email_phone = companyData.toString();
+                this.phone_email = companyData.toString();
             } else {
-                if (company.getStringField("phone") != null) {
+                if (company.getStringField("email") != null) {
                     companyData.setLength(0);
-                    companyData = companyData.append(phone);
-                    companyData = companyData.append(": ");
-                    companyData = companyData.append(company.getStringField("phone"));
-                    this.email_phone = companyData.toString();
+                    companyData = companyData.append("E-mail: ");
+                    companyData = companyData.append(company.getStringField("email"));
+                    this.phone_email = companyData.toString();
                 } else
-                    this.email_phone = "";
+                    this.phone_email = "";
             }
         } else {
-            this.company_tax = "";
+            this.company_name = "";
             this.address = "";
-            this.email_phone = "";
+            this.phone_email = "";
         }
     }
 
@@ -177,17 +187,26 @@ public final class PdfPageNumbering extends PdfPageEventHelper {
         float adjust = PdfUtil.getArial().getWidthPoint("0", 7);
         cb.setTextMatrix(document.right() - textSize - adjust, textBase);
         cb.showText(text);
+
+        textSize = PdfUtil.getArial().getWidthPoint(generatedBy, 7);
+        cb.setTextMatrix(document.right() - textSize, textBase - 10);
+        cb.showText(generatedBy);
+
+        textSize = PdfUtil.getArial().getWidthPoint(generationDate, 7);
+        cb.setTextMatrix(document.right() - textSize, textBase - 20);
+        cb.showText(generationDate);
+
         cb.setTextMatrix(document.left(), textBase);
-        cb.showText(company_tax);
+        cb.showText(company_name);
         float companyFooterLine = 10;
         if (address != "") {
             cb.setTextMatrix(document.left(), textBase - companyFooterLine);
             cb.showText(address);
             companyFooterLine += 10;
         }
-        if (email_phone != "") {
+        if (phone_email != "") {
             cb.setTextMatrix(document.left(), textBase - companyFooterLine);
-            cb.showText(email_phone);
+            cb.showText(phone_email);
         }
         cb.endText();
         cb.addTemplate(total, document.right() - adjust, textBase);

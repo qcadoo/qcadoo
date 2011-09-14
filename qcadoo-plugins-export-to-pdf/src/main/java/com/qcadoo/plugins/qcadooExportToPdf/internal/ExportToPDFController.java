@@ -1,4 +1,27 @@
-package com.qcadoo.plugins.exportToPDF.internal;
+/**
+ * ***************************************************************************
+ * Copyright (c) 2010 Qcadoo Limited
+ * Project: Qcadoo Framework
+ * Version: 0.4.7
+ *
+ * This file is part of Qcadoo.
+ *
+ * Qcadoo is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation; either version 3 of the License,
+ * or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ * ***************************************************************************
+ */
+package com.qcadoo.plugins.qcadooExportToPdf.internal;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -28,6 +51,7 @@ import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.api.aop.Monitorable;
 import com.qcadoo.model.api.file.FileService;
 import com.qcadoo.report.api.pdf.PdfUtil;
+import com.qcadoo.security.api.SecurityService;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.api.components.GridComponent;
 import com.qcadoo.view.api.crud.CrudService;
@@ -50,6 +74,9 @@ public class ExportToPDFController {
     @Autowired
     private TranslationService translationService;
 
+    @Autowired
+    private SecurityService securityService;
+
     @Monitorable(threshold = 500)
     @RequestMapping(value = { CONTROLLER_PATH }, method = RequestMethod.POST)
     @ResponseBody
@@ -65,7 +92,8 @@ public class ExportToPDFController {
             FileOutputStream fileOutputStream = new FileOutputStream(file);
             PdfWriter writer = PdfWriter.getInstance(document, fileOutputStream);
             writer.setPageEvent(new ExportToPdfPageNumbering(translationService.translate("qcadooReport.commons.page.label",
-                    locale), translationService.translate("qcadooReport.commons.of.label", locale)));
+                    locale), translationService.translate("qcadooReport.commons.of.label", locale), translationService.translate(
+                    "qcadooReport.commons.generatedBy.label", locale), securityService.getCurrentUserName()));
             document.setMargins(40, 40, 60, 60);
             document.addTitle("export.pdf");
             PdfUtil.addMetaData(document);
