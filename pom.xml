@@ -48,7 +48,7 @@
 	</licenses>
 
 	<properties>
-		<qcadoo.maven.plugin.version>0.4.7-SNAPSHOT</qcadoo.maven.plugin.version>
+		<qcadoo.maven.plugin.version>0.4.7</qcadoo.maven.plugin.version>
 		<spring.version>3.1.0.M1</spring.version>
 		<spring.security.version>3.0.5.RELEASE</spring.security.version>
 		<slf4j.version>1.6.1</slf4j.version>
@@ -371,7 +371,7 @@
 			</snapshots>
 		</repository>
 		<repository>
-			<id>SpringSource Enterprise Bundle Repository – External Bundle Milestones</id>
+			<id>SpringSource Enterprise Bundle Repository ï¿½ External Bundle Milestones</id>
 			<url>http://maven.springframework.org/milestone</url>
 		</repository>
 	</repositories>
