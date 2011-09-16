@@ -32,14 +32,6 @@ public interface EntityService {
 
     String FIELD_ACTIVE = "active";
 
-    String FIELD_CREATE_DATE = "createDate";
-
-    String FIELD_UPDATE_DATE = "updateDate";
-
-    String FIELD_CREATE_USER = "createUser";
-
-    String FIELD_UPDATE_USER = "updateUser";
-
     Long getId(Object databaseEntity);
 
     void setId(Object databaseEntity, Long id);
