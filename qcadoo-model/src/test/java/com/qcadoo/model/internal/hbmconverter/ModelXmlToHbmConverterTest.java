@@ -201,22 +201,22 @@ public class ModelXmlToHbmConverterTest {
 
     @Test
     public void shouldDefineLengthProperty() throws Exception {
-        assertNodeEquals("3", "/hibernate-mapping/class[1]/property[@name='fieldInteger']/@length", hbmFirstEntity);
-        assertNodeEquals("2", "/hibernate-mapping/class[1]/property[@name='fieldString']/@length", hbmFirstEntity);
-        assertNodeCount(2, "/hibernate-mapping/class/property/@length", hbmFirstEntity);
+        assertNodeEquals("3", "/hibernate-mapping/class[1]/property/column[@name='fieldInteger']/@length", hbmFirstEntity);
+        assertNodeEquals("2", "/hibernate-mapping/class[1]/property/column[@name='fieldString']/@length", hbmFirstEntity);
+        assertNodeCount(2, "/hibernate-mapping/class/property/column/@length", hbmFirstEntity);
     }
 
     @Test
     public void shouldDefineScaleProperty() throws Exception {
-        assertNodeEquals("4", "/hibernate-mapping/class[1]/property[@name='fieldDecimal']/@scale", hbmFirstEntity);
-        assertNodeCount(1, "/hibernate-mapping/class/property/@scale", hbmFirstEntity);
+        assertNodeEquals("4", "/hibernate-mapping/class[1]/property/column[@name='fieldDecimal']/@scale", hbmFirstEntity);
+        assertNodeCount(1, "/hibernate-mapping/class/property/column/@scale", hbmFirstEntity);
     }
 
     @Test
     public void shouldDefinePrecisionProperty() throws Exception {
-        assertNodeEquals("4", "/hibernate-mapping/class[1]/property[@name='fieldInteger']/@precision", hbmFirstEntity);
-        assertNodeEquals("2", "/hibernate-mapping/class[1]/property[@name='fieldDecimal']/@precision", hbmFirstEntity);
-        assertNodeCount(2, "/hibernate-mapping/class/property/@precision", hbmFirstEntity);
+        assertNodeEquals("4", "/hibernate-mapping/class[1]/property/column[@name='fieldInteger']/@precision", hbmFirstEntity);
+        assertNodeEquals("2", "/hibernate-mapping/class[1]/property/column[@name='fieldDecimal']/@precision", hbmFirstEntity);
+        assertNodeCount(2, "/hibernate-mapping/class/property/column/@precision", hbmFirstEntity);
     }
 
     @Test
