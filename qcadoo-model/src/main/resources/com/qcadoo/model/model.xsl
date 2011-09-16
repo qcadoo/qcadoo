@@ -134,42 +134,6 @@
 		<xsl:if test="@unique='true'">
 			<xsl:attribute name="unique">true</xsl:attribute>
 		</xsl:if>
-		<xsl:choose>
-			<xsl:when test="./qcd:validatesLength[@is]">
-				<xsl:attribute name="length">
-						<xsl:value-of select="./qcd:validatesLength/@is" />	
-					</xsl:attribute>
-			</xsl:when>
-			<xsl:when test="./qcd:validatesLength[@max]">
-				<xsl:attribute name="length">
-						<xsl:value-of select="./qcd:validatesLength/@max" />	
-					</xsl:attribute>
-			</xsl:when>
-		</xsl:choose>
-		<xsl:choose>
-			<xsl:when test="./qcd:validatesPrecision[@is]">
-				<xsl:attribute name="precision">
-						<xsl:value-of select="./qcd:validatesPrecision/@is" />	
-					</xsl:attribute>
-			</xsl:when>
-			<xsl:when test="./qcd:validatesPrecision[@max]">
-				<xsl:attribute name="precision">
-						<xsl:value-of select="./qcd:validatesPrecision/@max" />	
-					</xsl:attribute>
-			</xsl:when>
-		</xsl:choose>
-		<xsl:choose>
-			<xsl:when test="./qcd:validatesScale[@is]">
-				<xsl:attribute name="scale">
-						<xsl:value-of select="./qcd:validatesScale/@is" />	
-					</xsl:attribute>
-			</xsl:when>
-			<xsl:when test="./qcd:validatesScale[@max]">
-				<xsl:attribute name="scale">
-						<xsl:value-of select="./qcd:validatesScale/@max" />	
-					</xsl:attribute>
-			</xsl:when>
-		</xsl:choose>
 		<column>
 			<xsl:attribute name="name">
 				<xsl:choose>
@@ -181,6 +145,42 @@
 			    </xsl:otherwise>
 			    </xsl:choose>
 			</xsl:attribute>
+			<xsl:choose>
+				<xsl:when test="./qcd:validatesLength[@is]">
+					<xsl:attribute name="length">
+							<xsl:value-of select="./qcd:validatesLength/@is" />	
+						</xsl:attribute>
+				</xsl:when>
+				<xsl:when test="./qcd:validatesLength[@max]">
+					<xsl:attribute name="length">
+							<xsl:value-of select="./qcd:validatesLength/@max" />	
+						</xsl:attribute>
+				</xsl:when>
+			</xsl:choose>
+			<xsl:choose>
+				<xsl:when test="./qcd:validatesPrecision[@is]">
+					<xsl:attribute name="precision">
+							<xsl:value-of select="./qcd:validatesPrecision/@is" />	
+						</xsl:attribute>
+				</xsl:when>
+				<xsl:when test="./qcd:validatesPrecision[@max]">
+					<xsl:attribute name="precision">
+							<xsl:value-of select="./qcd:validatesPrecision/@max" />	
+						</xsl:attribute>
+				</xsl:when>
+			</xsl:choose>
+			<xsl:choose>
+				<xsl:when test="./qcd:validatesScale[@is]">
+					<xsl:attribute name="scale">
+							<xsl:value-of select="./qcd:validatesScale/@is" />	
+						</xsl:attribute>
+				</xsl:when>
+				<xsl:when test="./qcd:validatesScale[@max]">
+					<xsl:attribute name="scale">
+							<xsl:value-of select="./qcd:validatesScale/@max" />	
+						</xsl:attribute>
+				</xsl:when>
+			</xsl:choose>
 			<xsl:if test="@default">
 				<xsl:attribute name="default">
 				    	<xsl:value-of select="concat(&quot;'&quot;, @default, &quot;'&quot;)" />
