@@ -76,11 +76,11 @@
 				</xsl:if>
 				<xsl:if test="@auditable='true'">
 					<property>
-						<xsl:attribute name="type">date</xsl:attribute>
+						<xsl:attribute name="type">timestamp</xsl:attribute>
 						<xsl:attribute name="name">createDate</xsl:attribute>
 					</property>
 					<property>
-						<xsl:attribute name="type">date</xsl:attribute>
+						<xsl:attribute name="type">timestamp</xsl:attribute>
 						<xsl:attribute name="name">updateDate</xsl:attribute>
 					</property>
 					<property>
