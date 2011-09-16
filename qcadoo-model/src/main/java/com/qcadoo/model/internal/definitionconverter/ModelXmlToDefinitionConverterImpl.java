@@ -191,13 +191,12 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
                 }
             }
 
-            /*
-             * if (dataDefinition.isAuditable()) { dataDefinition.withField(getAuditFieldDefinition(dataDefinition, "createDate",
-             * new DateTimeType())); dataDefinition.withField(getAuditFieldDefinition(dataDefinition, "updateDate", new
-             * DateTimeType())); dataDefinition.withField(getAuditFieldDefinition(dataDefinition, "createUser", new
-             * StringType())); dataDefinition.withField(getAuditFieldDefinition(dataDefinition, "updateUser", new StringType()));
-             * }
-             */
+            if (dataDefinition.isAuditable()) {
+                dataDefinition.withField(getAuditFieldDefinition(dataDefinition, "createDate", new DateTimeType()));
+                dataDefinition.withField(getAuditFieldDefinition(dataDefinition, "updateDate", new DateTimeType()));
+                dataDefinition.withField(getAuditFieldDefinition(dataDefinition, "createUser", new StringType()));
+                dataDefinition.withField(getAuditFieldDefinition(dataDefinition, "updateUser", new StringType()));
+            }
 
             if (TAG_HOOKS.equals(getTagStarted(reader))) {
                 while (reader.hasNext() && reader.next() > 0) {
