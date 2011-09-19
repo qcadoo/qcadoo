@@ -4,7 +4,7 @@
     ***************************************************************************
     Copyright (c) 2010 Qcadoo Limited
     Project: Qcadoo Framework
-    Version: 0.4.6
+    Version: 0.4.7
 
     This file is part of Qcadoo.
 
@@ -76,7 +76,7 @@
 			<option type="order" column="name" direction="asc" />
 			<option type="searchable" value="name,description" />
 			<option type="orderable" value="name,description" />
-			<option type="paginable" value="false" />
+			<option type="paginable" value="true" />
 			<option type="height" value="250" />
 			<option type="correspondingView" value="qcadooDictionaries/dictionaryItemDetails" />
 			<option type="correspondingComponent" value="form" />

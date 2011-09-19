@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.6
+ * Version: 0.4.7
  *
  * This file is part of Qcadoo.
  *
@@ -109,6 +109,13 @@ public interface InternalDataDefinition extends DataDefinition {
      * @return is updatable
      */
     boolean isUpdatable();
+
+    /**
+     * Return true if entity of given data definition can be audited.
+     * 
+     * @return is auditable
+     */
+    boolean isAuditable();
 
     /**
      * Call copy hooks on given entity.

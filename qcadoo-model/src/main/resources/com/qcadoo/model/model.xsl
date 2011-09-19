@@ -4,7 +4,7 @@
     ***************************************************************************
     Copyright (c) 2010 Qcadoo Limited
     Project: Qcadoo Framework
-    Version: 0.4.6
+    Version: 0.4.7
 
     This file is part of Qcadoo.
 
@@ -66,12 +66,30 @@
 				<xsl:if test="@activable='true'">
 					<property>
 						<xsl:attribute name="type">boolean</xsl:attribute>
-						<xsl:attribute name="name">active</xsl:attribute>
+						<xsl:attribute name="name">active</xsl:attribute>						
 						<xsl:attribute name="not-null">true</xsl:attribute>
 						<column>
 							<xsl:attribute name="name">active</xsl:attribute>
 							<xsl:attribute name="default">true</xsl:attribute>
 						</column>
+					</property>
+				</xsl:if>
+				<xsl:if test="@auditable='true'">
+					<property>
+						<xsl:attribute name="type">timestamp</xsl:attribute>
+						<xsl:attribute name="name">createDate</xsl:attribute>
+					</property>
+					<property>
+						<xsl:attribute name="type">timestamp</xsl:attribute>
+						<xsl:attribute name="name">updateDate</xsl:attribute>
+					</property>
+					<property>
+						<xsl:attribute name="type">string</xsl:attribute>
+						<xsl:attribute name="name">createUser</xsl:attribute>
+					</property>
+					<property>
+						<xsl:attribute name="type">string</xsl:attribute>
+						<xsl:attribute name="name">updateUser</xsl:attribute>
 					</property>
 				</xsl:if>
 				<xsl:if test="@insertable='false'">
@@ -116,42 +134,6 @@
 		<xsl:if test="@unique='true'">
 			<xsl:attribute name="unique">true</xsl:attribute>
 		</xsl:if>
-		<xsl:choose>
-			<xsl:when test="./qcd:validatesLength[@is]">
-				<xsl:attribute name="length">
-						<xsl:value-of select="./qcd:validatesLength/@is" />	
-					</xsl:attribute>
-			</xsl:when>
-			<xsl:when test="./qcd:validatesLength[@max]">
-				<xsl:attribute name="length">
-						<xsl:value-of select="./qcd:validatesLength/@max" />	
-					</xsl:attribute>
-			</xsl:when>
-		</xsl:choose>
-		<xsl:choose>
-			<xsl:when test="./qcd:validatesPrecision[@is]">
-				<xsl:attribute name="precision">
-						<xsl:value-of select="./qcd:validatesPrecision/@is" />	
-					</xsl:attribute>
-			</xsl:when>
-			<xsl:when test="./qcd:validatesPrecision[@max]">
-				<xsl:attribute name="precision">
-						<xsl:value-of select="./qcd:validatesPrecision/@max" />	
-					</xsl:attribute>
-			</xsl:when>
-		</xsl:choose>
-		<xsl:choose>
-			<xsl:when test="./qcd:validatesScale[@is]">
-				<xsl:attribute name="scale">
-						<xsl:value-of select="./qcd:validatesScale/@is" />	
-					</xsl:attribute>
-			</xsl:when>
-			<xsl:when test="./qcd:validatesScale[@max]">
-				<xsl:attribute name="scale">
-						<xsl:value-of select="./qcd:validatesScale/@max" />	
-					</xsl:attribute>
-			</xsl:when>
-		</xsl:choose>
 		<column>
 			<xsl:attribute name="name">
 				<xsl:choose>
@@ -163,6 +145,42 @@
 			    </xsl:otherwise>
 			    </xsl:choose>
 			</xsl:attribute>
+			<xsl:choose>
+				<xsl:when test="./qcd:validatesLength[@is]">
+					<xsl:attribute name="length">
+							<xsl:value-of select="./qcd:validatesLength/@is" />	
+						</xsl:attribute>
+				</xsl:when>
+				<xsl:when test="./qcd:validatesLength[@max]">
+					<xsl:attribute name="length">
+							<xsl:value-of select="./qcd:validatesLength/@max" />	
+						</xsl:attribute>
+				</xsl:when>
+			</xsl:choose>
+			<xsl:choose>
+				<xsl:when test="./qcd:validatesPrecision[@is]">
+					<xsl:attribute name="precision">
+							<xsl:value-of select="./qcd:validatesPrecision/@is" />	
+						</xsl:attribute>
+				</xsl:when>
+				<xsl:when test="./qcd:validatesPrecision[@max]">
+					<xsl:attribute name="precision">
+							<xsl:value-of select="./qcd:validatesPrecision/@max" />	
+						</xsl:attribute>
+				</xsl:when>
+			</xsl:choose>
+			<xsl:choose>
+				<xsl:when test="./qcd:validatesScale[@is]">
+					<xsl:attribute name="scale">
+							<xsl:value-of select="./qcd:validatesScale/@is" />	
+						</xsl:attribute>
+				</xsl:when>
+				<xsl:when test="./qcd:validatesScale[@max]">
+					<xsl:attribute name="scale">
+							<xsl:value-of select="./qcd:validatesScale/@max" />	
+						</xsl:attribute>
+				</xsl:when>
+			</xsl:choose>
 			<xsl:if test="@default">
 				<xsl:attribute name="default">
 				    	<xsl:value-of select="concat(&quot;'&quot;, @default, &quot;'&quot;)" />

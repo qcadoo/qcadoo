@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.6
+ * Version: 0.4.7
  *
  * This file is part of Qcadoo.
  *
@@ -216,6 +216,12 @@ public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverte
         if (getBooleanAttribute(reader, "activable", false)) {
             createField(ctClass, "active", Boolean.class.getCanonicalName());
         }
+        if (getBooleanAttribute(reader, "auditable", false)) {
+            createField(ctClass, "createDate", Date.class.getCanonicalName());
+            createField(ctClass, "updateDate", Date.class.getCanonicalName());
+            createField(ctClass, "createUser", String.class.getCanonicalName());
+            createField(ctClass, "updateUser", String.class.getCanonicalName());
+        }
 
         while (reader.hasNext() && reader.next() > 0) {
             if (isTagEnded(reader, TAG_MODEL)) {
@@ -238,6 +244,7 @@ public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverte
                 }
                 break;
             }
+
         }
 
         buildToString(ctClass, fields);

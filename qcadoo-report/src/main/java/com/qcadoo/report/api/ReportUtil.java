@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.6
+ * Version: 0.4.7
  *
  * This file is part of Qcadoo.
  *
@@ -34,7 +34,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 
-import com.qcadoo.model.api.Entity;
 import com.qcadoo.report.api.pdf.PdfUtil;
 
 public final class ReportUtil {
@@ -67,11 +66,9 @@ public final class ReportUtil {
         }
     }
 
-    public static void sentTranslatedFileName(final Entity entity, final String fileName, final String suffix,
+    public static void sentTranslatedFileName(final Date date, final String fileName, final String suffix,
             final String extension, final HttpServletResponse response) {
-        Object date = entity.getField("date");
-        String translatedFileName = fileName + "_" + PdfUtil.D_T_F.format((Date) date) + "_" + suffix + extension;
+        String translatedFileName = fileName + "_" + PdfUtil.D_T_F.format(date) + "_" + suffix + extension;
         response.setHeader("Content-disposition", "attachment; filename=" + translatedFileName);
     }
-
 }

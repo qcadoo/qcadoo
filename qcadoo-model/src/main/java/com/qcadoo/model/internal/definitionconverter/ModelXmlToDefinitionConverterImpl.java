@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.6
+ * Version: 0.4.7
  *
  * This file is part of Qcadoo.
  *
@@ -191,6 +191,13 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
                 }
             }
 
+            if (dataDefinition.isAuditable()) {
+                dataDefinition.withField(getAuditFieldDefinition(dataDefinition, "createDate", new DateTimeType()));
+                dataDefinition.withField(getAuditFieldDefinition(dataDefinition, "updateDate", new DateTimeType()));
+                dataDefinition.withField(getAuditFieldDefinition(dataDefinition, "createUser", new StringType()));
+                dataDefinition.withField(getAuditFieldDefinition(dataDefinition, "updateUser", new StringType()));
+            }
+
             if (TAG_HOOKS.equals(getTagStarted(reader))) {
                 while (reader.hasNext() && reader.next() > 0) {
                     if (isTagEnded(reader, TAG_HOOKS)) {
@@ -315,6 +322,7 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
         dataDefinition.setInsertable(getBooleanAttribute(reader, "insertable", true));
         dataDefinition.setUpdatable(getBooleanAttribute(reader, "updatable", true));
         dataDefinition.setActivable(getBooleanAttribute(reader, "activable", false));
+        dataDefinition.setAuditable(getBooleanAttribute(reader, "auditable", false));
         dataDefinition.setFullyQualifiedClassName(ClassNameUtils.getFullyQualifiedClassName(pluginIdentifier, modelName));
         return dataDefinition;
     }
@@ -360,6 +368,15 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
         } else {
             return new BelongsToEntityType(plugin != null ? plugin : pluginIdentifier, modelName, dataDefinitionService, false);
         }
+    }
+
+    private FieldDefinition getAuditFieldDefinition(final DataDefinitionImpl dataDefinition, final String name,
+            final FieldType type) {
+        FieldDefinitionImpl fieldDefinition = new FieldDefinitionImpl(dataDefinition, name);
+        fieldDefinition.withReadOnly(false);
+        fieldDefinition.setPersistent(true);
+        fieldDefinition.withType(type);
+        return fieldDefinition;
     }
 
     private FieldDefinition getFieldDefinition(final XMLStreamReader reader, final DataDefinitionImpl dataDefinition,

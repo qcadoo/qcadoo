@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.6
+ * Version: 0.4.7
  *
  * This file is part of Qcadoo.
  *
@@ -23,6 +23,9 @@
  */
 package com.qcadoo.report.api.pdf;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import com.lowagie.text.Document;
 import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.Rectangle;
@@ -30,6 +33,7 @@ import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfPageEventHelper;
 import com.lowagie.text.pdf.PdfTemplate;
 import com.lowagie.text.pdf.PdfWriter;
+import com.qcadoo.localization.api.utils.DateUtils;
 import com.qcadoo.model.api.Entity;
 
 public final class PdfPageNumbering extends PdfPageEventHelper {
@@ -41,85 +45,83 @@ public final class PdfPageNumbering extends PdfPageEventHelper {
 
     private final String in;
 
-    private final String company_tax;
+    private final String company_name;
 
     private final String address;
 
-    private final String email_phone;
+    private final String phone_email;
 
-    public PdfPageNumbering(final String page, final String in, final String tax, final String phone, final Entity company) {
+    private final String generatedBy;
+
+    private final String generationDate;
+
+    public PdfPageNumbering(final String page, final String in, final String tax, final String phone, final Entity company,
+            final String generatedBy, final String username) {
         super();
         this.page = page;
         this.in = in;
 
-        String temp = new String();
+        StringBuilder footerData = new StringBuilder();
+        footerData = footerData.append(generatedBy);
+        footerData = footerData.append(" ");
+        footerData = footerData.append(username);
+        this.generatedBy = footerData.toString();
+
+        this.generationDate = new SimpleDateFormat(DateUtils.DATE_TIME_FORMAT).format(new Date());
 
         if (company != null) {
-            String company_tax = company.getStringField("companyFullName");
+            StringBuilder companyData = new StringBuilder();
 
-            temp = company.getStringField("tax");
-            if (temp != null) {
-                company_tax = company_tax.concat(", ");
-                company_tax = company_tax.concat(tax);
-                company_tax = company_tax.concat(": ");
-                company_tax = company_tax.concat(temp);
-            }
+            companyData = companyData.append(company.getStringField("companyFullName"));
+            this.company_name = companyData.toString();
 
-            String address = new String();
             if (company.getStringField("street") != null && company.getStringField("house") != null
                     && company.getStringField("zipCode") != null && company.getStringField("city") != null) {
-                address = address.concat(company.getStringField("street"));
-                address = address.concat(" ");
-                address = address.concat(company.getStringField("house"));
-                temp = company.getStringField("flat");
-                if (temp != null) {
-                    address = address.concat("/");
-                    address = address.concat(temp);
+                companyData.setLength(0);
+                companyData = companyData.append(company.getStringField("street"));
+                companyData = companyData.append(" ");
+                companyData = companyData.append(company.getStringField("house"));
+                if (company.getStringField("flat") != null) {
+                    companyData = companyData.append("/");
+                    companyData = companyData.append(company.getStringField("flat"));
                 }
-                address = address.concat(", ");
-                address = address.concat(company.getStringField("zipCode"));
-                address = address.concat(" ");
-                address = address.concat(company.getStringField("city"));
-                temp = company.getStringField("country");
-                if (temp != null) {
-                    address = address.concat(", ");
-                    address = address.concat(temp);
+                companyData = companyData.append(", ");
+                companyData = companyData.append(company.getStringField("zipCode"));
+                companyData = companyData.append(" ");
+                companyData = companyData.append(company.getStringField("city"));
+                if (company.getStringField("country") != null) {
+                    companyData = companyData.append(", ");
+                    companyData = companyData.append(company.getStringField("country"));
                 }
+                this.address = companyData.toString();
             } else
-                address = null;
+                this.address = "";
 
-            String email_phone = new String();
-            temp = company.getStringField("email");
-            if (temp != null) {
-                email_phone = email_phone.concat("E-mail: ");
-                email_phone = email_phone.concat(temp);
-                temp = company.getStringField("phone");
-                if (temp != null) {
-                    email_phone = email_phone.concat(", ");
-                    email_phone = email_phone.concat(phone);
-                    email_phone = email_phone.concat(": ");
-                    email_phone = email_phone.concat(temp);
+            if (company.getStringField("phone") != null) {
+                companyData.setLength(0);
+                companyData = companyData.append(phone);
+                companyData = companyData.append(": ");
+                companyData = companyData.append(company.getStringField("phone"));
+                if (company.getStringField("email") != null) {
+                    companyData = companyData.append(", ");
+                    companyData = companyData.append("E-mail: ");
+                    companyData = companyData.append(company.getStringField("email"));
                 }
+                this.phone_email = companyData.toString();
             } else {
-                temp = company.getStringField("phone");
-                if (temp != null) {
-                    email_phone = email_phone.concat(phone);
-                    email_phone = email_phone.concat(": ");
-                    email_phone = email_phone.concat(temp);
+                if (company.getStringField("email") != null) {
+                    companyData.setLength(0);
+                    companyData = companyData.append("E-mail: ");
+                    companyData = companyData.append(company.getStringField("email"));
+                    this.phone_email = companyData.toString();
                 } else
-                    email_phone = null;
+                    this.phone_email = "";
             }
-            this.company_tax = company_tax;
-            this.address = address;
-            this.email_phone = email_phone;
-
         } else {
-            this.company_tax = "";
+            this.company_name = "";
             this.address = "";
-            this.email_phone = "";
-
+            this.phone_email = "";
         }
-
     }
 
     /**
@@ -185,17 +187,26 @@ public final class PdfPageNumbering extends PdfPageEventHelper {
         float adjust = PdfUtil.getArial().getWidthPoint("0", 7);
         cb.setTextMatrix(document.right() - textSize - adjust, textBase);
         cb.showText(text);
+
+        textSize = PdfUtil.getArial().getWidthPoint(generatedBy, 7);
+        cb.setTextMatrix(document.right() - textSize, textBase - 10);
+        cb.showText(generatedBy);
+
+        textSize = PdfUtil.getArial().getWidthPoint(generationDate, 7);
+        cb.setTextMatrix(document.right() - textSize, textBase - 20);
+        cb.showText(generationDate);
+
         cb.setTextMatrix(document.left(), textBase);
-        cb.showText(company_tax);
+        cb.showText(company_name);
         float companyFooterLine = 10;
-        if (address != null) {
+        if (address != "") {
             cb.setTextMatrix(document.left(), textBase - companyFooterLine);
             cb.showText(address);
             companyFooterLine += 10;
         }
-        if (email_phone != null) {
+        if (phone_email != "") {
             cb.setTextMatrix(document.left(), textBase - companyFooterLine);
-            cb.showText(email_phone);
+            cb.showText(phone_email);
         }
         cb.endText();
         cb.addTemplate(total, document.right() - adjust, textBase);

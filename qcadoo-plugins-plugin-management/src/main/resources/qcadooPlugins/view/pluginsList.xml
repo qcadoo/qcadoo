@@ -4,7 +4,7 @@
     ***************************************************************************
     Copyright (c) 2010 Qcadoo Limited
     Project: Qcadoo Framework
-    Version: 0.4.6
+    Version: 0.4.7
 
     This file is part of Qcadoo.
 
@@ -93,7 +93,7 @@
 			<option type="correspondingViewInModal" value="true" />
 			<option type="searchable" value="identifier,version,state,isSystem" />
 			<option type="orderable" value="identifier,version,state,isSystem" />
-			<option type="paginable" value="false" />
+			<option type="paginable" value="true" />
 			<option type="deletable" value="false" />
 			<option type="creatable" value="false" />
 			<option type="fullscreen" value="true" />

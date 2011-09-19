@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.6
+ * Version: 0.4.7
  *
  * This file is part of Qcadoo.
  *
@@ -86,6 +86,8 @@ public final class DataDefinitionImpl implements InternalDataDefinition {
     private boolean updatable = true;
 
     private boolean enabled = true;
+
+    private boolean auditable = false;
 
     private boolean activable = false;
 
@@ -390,6 +392,11 @@ public final class DataDefinitionImpl implements InternalDataDefinition {
     }
 
     @Override
+    public boolean isAuditable() {
+        return auditable;
+    }
+
+    @Override
     public boolean isInstertable() {
         return creatable;
     }
@@ -400,6 +407,10 @@ public final class DataDefinitionImpl implements InternalDataDefinition {
 
     public void setUpdatable(final boolean updatable) {
         this.updatable = updatable;
+    }
+
+    public void setAuditable(final boolean auditable) {
+        this.auditable = auditable;
     }
 
     private Class<?> loadClassForEntity() {

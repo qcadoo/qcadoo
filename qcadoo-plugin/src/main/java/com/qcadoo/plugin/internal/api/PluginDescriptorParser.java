@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.6
+ * Version: 0.4.7
  *
  * This file is part of Qcadoo.
  *
@@ -23,25 +23,27 @@
  */
 package com.qcadoo.plugin.internal.api;
 
-import com.qcadoo.plugin.internal.JarEntryResource;
 import java.util.Set;
-import org.springframework.core.io.InputStreamSource;
+
 import org.springframework.core.io.Resource;
 
+import com.qcadoo.plugin.internal.JarEntryResource;
 
 public interface PluginDescriptorParser {
 
     /**
      * Parse a plugin from the classpath
-     *
-     * @param resource plugins descriptor in the classpath
+     * 
+     * @param resource
+     *            plugins descriptor in the classpath
      */
     InternalPlugin parse(final Resource resource, final boolean ignoreModules);
 
     /**
      * Parse a plugin from outside the classpath
-     *
-     * @param resource jar entry with the plugin descriptor
+     * 
+     * @param resource
+     *            jar entry with the plugin descriptor
      */
     InternalPlugin parse(JarEntryResource resource, final boolean ignoreModules);
 

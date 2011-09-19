@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.6
+ * Version: 0.4.7
  *
  * This file is part of Qcadoo.
  *
@@ -416,7 +416,7 @@ QCD.components.elements.Lookup = function(_element, _mainController) {
 		var grid = lookupWindow.getComponent("window.grid");
 		grid.setLinkListener(this);
 		if (dataState.currentCode) {
-			grid.setFilterState("lookupCode", dataState.currentCode);
+//			grid.setFilterState("lookupCode", dataState.currentCode);
 		}
 		lookupWindow.init();
 	}

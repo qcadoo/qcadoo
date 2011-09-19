@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.6
+ * Version: 0.4.7
  *
  * This file is part of Qcadoo.
  *
@@ -40,6 +40,7 @@ import org.w3c.dom.NodeList;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.types.EnumeratedType;
 import com.qcadoo.model.api.types.HasManyType;
+import com.qcadoo.model.api.types.TreeType;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.internal.ComponentDefinition;
 import com.qcadoo.view.internal.ComponentOption;
@@ -136,6 +137,9 @@ public final class GridComponentPattern extends AbstractComponentPattern {
             if (HasManyType.class.isAssignableFrom(getScopeFieldDefinition().getType().getClass())) {
                 HasManyType hasManyType = (HasManyType) getScopeFieldDefinition().getType();
                 belongsToFieldDefinition = hasManyType.getDataDefinition().getField(hasManyType.getJoinFieldName());
+            } else if (TreeType.class.isAssignableFrom(getScopeFieldDefinition().getType().getClass())) {
+                TreeType treeType = (TreeType) getScopeFieldDefinition().getType();
+                belongsToFieldDefinition = treeType.getDataDefinition().getField(treeType.getJoinFieldName());
             } else {
                 throwIllegalStateException("Scope field for grid be a hasMany one");
             }

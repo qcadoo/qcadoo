@@ -4,7 +4,7 @@
     ***************************************************************************
     Copyright (c) 2010 Qcadoo Limited
     Project: Qcadoo Framework
-    Version: 0.4.6
+    Version: 0.4.7
 
     This file is part of Qcadoo.
 
@@ -31,19 +31,17 @@
 			<generator class="increment" />
 		</id>
 		<property type="integer" name="fieldInteger" not-null="true"
-			unique="true" length="3" precision="4">
-			<column name="fieldInteger" />
+			unique="true">
+			<column name="fieldInteger" length="3" precision="4" />
 		</property>
-		<property type="string" name="fieldString" not-null="true"
-			length="2">
-			<column name="fieldString" default="'ala'" />
+		<property type="string" name="fieldString" not-null="true">
+			<column name="fieldString" length="2" default="'ala'" />
 		</property>
 		<property type="text" name="fieldText" not-null="false">
 			<column name="fieldText" />
 		</property>
-		<property type="big_decimal" name="fieldDecimal" not-null="false"
-			precision="2" scale="4">
-			<column name="fieldDecimal" />
+		<property type="big_decimal" name="fieldDecimal" not-null="false">
+			<column name="fieldDecimal" precision="2" scale="4" />
 		</property>
 		<property type="timestamp" name="fieldDatetime" not-null="false">
 			<column name="fieldDatetime" />

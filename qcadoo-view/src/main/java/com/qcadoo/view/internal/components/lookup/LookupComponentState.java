@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.6
+ * Version: 0.4.7
  *
  * This file is part of Qcadoo.
  *
@@ -223,7 +223,7 @@ public final class LookupComponentState extends FieldComponentState {
                 SearchCriteriaBuilder searchCriteriaBuilder = getDataDefinition().find();
 
                 if (StringUtils.hasText(currentCode)) {
-                    searchCriteriaBuilder.add(SearchRestrictions.like(fieldCode, currentCode, SearchMatchMode.START));
+                    searchCriteriaBuilder.add(SearchRestrictions.like(fieldCode, currentCode, SearchMatchMode.ANYWHERE));
                 }
 
                 if (belongsToFieldDefinition != null && belongsToEntityId != null) {

@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.6
+ * Version: 0.4.7
  *
  * This file is part of Qcadoo.
  *
@@ -171,6 +171,13 @@ public interface DataDefinition {
      * @since 0.4.2
      */
     boolean isActivable();
+
+    /**
+     * Return true if entity is auditable.
+     * 
+     * @return true if entity is auditable
+     */
+    boolean isAuditable();
 
     /**
      * Create entity with given id.

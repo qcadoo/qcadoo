@@ -4,7 +4,7 @@
     ***************************************************************************
     Copyright (c) 2010 Qcadoo Limited
     Project: Qcadoo Framework
-    Version: 0.4.6
+    Version: 0.4.7
 
     This file is part of Qcadoo.
 
@@ -47,6 +47,14 @@
 			<url>http://www.qcadoo.com/</url>
 		</vendor>
 	</information>
+	
+	<dependencies>
+        <dependency>
+            <plugin>qcadooView</plugin>
+            <version>[0.4.1</version>
+        </dependency>
+    </dependencies>
+	
 
 
 	<modules>

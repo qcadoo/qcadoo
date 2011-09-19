@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.6
+ * Version: 0.4.7
  *
  * This file is part of Qcadoo.
  *
@@ -30,6 +30,7 @@ import java.util.Locale;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -37,8 +38,12 @@ import com.lowagie.text.PageSize;
 import com.lowagie.text.pdf.PdfWriter;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.report.api.DocumentService;
+import com.qcadoo.security.api.SecurityService;
 
 public abstract class PdfDocumentService extends DocumentService {
+
+    @Autowired
+    SecurityService securityService;
 
     private static final Logger LOG = LoggerFactory.getLogger(PdfDocumentService.class);
 
@@ -50,6 +55,7 @@ public abstract class PdfDocumentService extends DocumentService {
             setDecimalFormat((DecimalFormat) DecimalFormat.getInstance(locale));
             getDecimalFormat().setMaximumFractionDigits(3);
             getDecimalFormat().setMinimumFractionDigits(3);
+            ensureReportDirectoryExist();
             FileOutputStream fileOutputStream = new FileOutputStream((String) entity.getField("fileName") + getSuffix()
                     + PdfUtil.PDF_EXTENSION);
             PdfWriter writer = PdfWriter.getInstance(document, fileOutputStream);
@@ -57,7 +63,9 @@ public abstract class PdfDocumentService extends DocumentService {
                     getTranslationService().translate("qcadooReport.commons.page.label", locale), getTranslationService()
                             .translate("qcadooReport.commons.of.label", locale), getTranslationService().translate(
                             "basic.company.tax.label", locale), getTranslationService().translate("basic.company.phone.label",
-                            locale), company));
+                            locale), company,
+                    getTranslationService().translate("qcadooReport.commons.generatedBy.label", locale), securityService
+                            .getCurrentUserName()));
             document.setMargins(40, 40, 60, 60);
             buildPdfMetadata(document, locale);
             writer.createXmpMetadata();

@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.6
+ * Version: 0.4.7
  *
  * This file is part of Qcadoo.
  *
@@ -54,6 +54,7 @@ public abstract class XlsDocumentService extends DocumentService {
         sheet.setZoom(4, 3);
         FileOutputStream outputStream = null;
         try {
+            ensureReportDirectoryExist();
             outputStream = new FileOutputStream((String) entity.getField("fileName") + getSuffix() + XlsUtil.XLS_EXTENSION);
             workbook.write(outputStream);
         } catch (IOException e) {
