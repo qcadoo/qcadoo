@@ -54,6 +54,7 @@ public abstract class XlsDocumentService extends DocumentService {
         sheet.setZoom(4, 3);
         FileOutputStream outputStream = null;
         try {
+            ensureReportDirectoryExist();
             outputStream = new FileOutputStream((String) entity.getField("fileName") + getSuffix() + XlsUtil.XLS_EXTENSION);
             workbook.write(outputStream);
         } catch (IOException e) {
