@@ -23,11 +23,13 @@
  */
 package com.qcadoo.report.api;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 import com.lowagie.text.DocumentException;
 import com.qcadoo.localization.api.TranslationService;
@@ -36,6 +38,9 @@ import com.qcadoo.model.api.Entity;
 public abstract class DocumentService {
 
     private DecimalFormat decimalFormat;
+
+    @Value("${reportPath}")
+    private String path;
 
     @Autowired
     private TranslationService translationService;
@@ -57,6 +62,13 @@ public abstract class DocumentService {
 
     protected void setDecimalFormat(final DecimalFormat decimalFormat) {
         this.decimalFormat = decimalFormat;
+    }
+
+    protected void ensureReportDirectoryExist() {
+        File file = new File(path);
+        if (!file.exists()) {
+            file.mkdirs();
+        }
     }
 
 }
