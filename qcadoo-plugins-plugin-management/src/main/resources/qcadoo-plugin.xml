@@ -50,7 +50,7 @@
 
 	<dependencies>
 		<dependency>
-			<plugin>qcadooPlugin</plugin>
+			<plugin>qcadooView</plugin>
 			<version>[0.4.0</version>
 		</dependency>
 	</dependencies>

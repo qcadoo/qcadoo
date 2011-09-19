@@ -47,6 +47,14 @@
 			<url>http://www.qcadoo.com/</url>
 		</vendor>
 	</information>
+	
+	<dependencies>
+        <dependency>
+            <plugin>qcadooView</plugin>
+            <version>[0.4.1</version>
+        </dependency>
+    </dependencies>
+	
 
 
 	<modules>
