@@ -44,6 +44,13 @@
 			<url>http://www.qcadoo.com/</url>
 		</vendor>
 	</information>
+	
+	<dependencies>
+        <dependency>
+            <plugin>qcadooLocalization</plugin>
+            <version>[0.4.1</version>
+        </dependency>
+    </dependencies>
 
 	<modules>
 		<model:model model="dictionary" resource="model/dictionary.xml" />
