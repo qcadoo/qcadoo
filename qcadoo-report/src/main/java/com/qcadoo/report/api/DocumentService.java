@@ -26,6 +26,8 @@ package com.qcadoo.report.api;
 import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +35,7 @@ import org.springframework.beans.factory.annotation.Value;
 
 import com.lowagie.text.DocumentException;
 import com.qcadoo.localization.api.TranslationService;
+import com.qcadoo.localization.api.utils.DateUtils;
 import com.qcadoo.model.api.Entity;
 
 public abstract class DocumentService {
@@ -71,4 +74,26 @@ public abstract class DocumentService {
         }
     }
 
+    public Entity updateFileName(final Entity entity) {
+        entity.setField("fileName", getFullFileName((Date) entity.getField("date"), entity.getStringField("name")));
+        return entity.getDataDefinition().save(entity);
+    }
+
+    public Entity updateFileName(final Entity entity, final String name) {
+        entity.setField("fileName", getFullFileName((Date) entity.getField("date"), name));
+        return entity.getDataDefinition().save(entity);
+    }
+
+    public Entity updateFileName(final Entity entity, final String dateFieldName, final String name) {
+        entity.setField("fileName", getFullFileName((Date) entity.getField(dateFieldName), name));
+        return entity.getDataDefinition().save(entity);
+    }
+
+    private String getFullFileName(final Date date, final String name) {
+        return getProperReportPath() + name + "_" + new SimpleDateFormat(DateUtils.REPORT_DATE_TIME_FORMAT).format(date);
+    }
+
+    private String getProperReportPath() {
+        return (path.endsWith("/") ? path : path + "/");
+    }
 }
