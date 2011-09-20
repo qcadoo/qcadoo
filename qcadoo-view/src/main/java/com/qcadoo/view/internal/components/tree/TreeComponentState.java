@@ -187,9 +187,10 @@ public final class TreeComponentState extends FieldComponentState implements Tre
 
         try {
             Entity parent = nodes.get(treeStructure.getJSONObject(0).getLong("id"));
+            parent.setField("nodeNumber", "1.");
 
             if (treeStructure.getJSONObject(0).has("children")) {
-                reorganize(nodes, parent, treeStructure.getJSONObject(0).getJSONArray("children"));
+                reorganize(nodes, parent, treeStructure.getJSONObject(0).getJSONArray("children"), "1.");
             }
 
             return Collections.singletonList(parent);
@@ -199,12 +200,14 @@ public final class TreeComponentState extends FieldComponentState implements Tre
     }
 
     @SuppressWarnings("unchecked")
-    private void reorganize(final Map<Long, Entity> nodes, final Entity parent, final JSONArray children) throws JSONException {
+    private void reorganize(final Map<Long, Entity> nodes, final Entity parent, final JSONArray children,
+            final String numberPrefix) throws JSONException {
         for (int i = 0; i < children.length(); i++) {
             Entity entity = nodes.get(children.getJSONObject(i).getLong("id"));
+            entity.setField("nodeNumber", numberPrefix + (i + 1) + '.');
             ((List<Entity>) parent.getField("children")).add(entity);
             if (children.getJSONObject(i).has("children")) {
-                reorganize(nodes, entity, children.getJSONObject(i).getJSONArray("children"));
+                reorganize(nodes, entity, children.getJSONObject(i).getJSONArray("children"), numberPrefix + (i + 1) + '.');
             }
         }
     }
