@@ -50,14 +50,6 @@
 	
 	<dependencies>
         <dependency>
-            <plugin>qcadooLocalization</plugin>
-            <version>[0.4.1</version>
-        </dependency>
-        <dependency>
-            <plugin>qcadooModel</plugin>
-            <version>[0.4.1</version>
-        </dependency>
-        <dependency>
             <plugin>qcadooSecurity</plugin>
             <version>[0.4.1</version>
         </dependency>
