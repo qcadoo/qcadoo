@@ -30,6 +30,7 @@ import java.nio.charset.Charset;
 
 import org.apache.commons.io.IOUtils;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.SerializationConfig;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.MediaType;
@@ -45,6 +46,7 @@ public final class JsonMapperHttpMessageConverter extends AbstractHttpMessageCon
 
     public JsonMapperHttpMessageConverter() {
         super(MEDIA_TYPE);
+        mapper.getSerializationConfig().set(SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS, false);
     }
 
     @Override
