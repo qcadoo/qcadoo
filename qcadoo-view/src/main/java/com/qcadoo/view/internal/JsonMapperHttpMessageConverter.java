@@ -62,9 +62,14 @@ public final class JsonMapperHttpMessageConverter extends AbstractHttpMessageCon
 
     @Override
     protected void writeInternal(final Object value, final HttpOutputMessage outputMessage) throws IOException {
-        Writer writer = new OutputStreamWriter(outputMessage.getBody(), CHARSET);
-        writer.append(mapper.writeValueAsString(value));
-        writer.flush();
+        Writer writer = null;
+        try {
+            writer = new OutputStreamWriter(outputMessage.getBody(), CHARSET);
+            writer.append(mapper.writeValueAsString(value));
+            writer.flush();
+        } finally {
+            IOUtils.closeQuietly(writer);
+        }
     }
 
 }
