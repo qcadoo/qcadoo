@@ -191,7 +191,7 @@ public final class TreeComponentState extends FieldComponentState implements Tre
             Entity parent = nodes.get(treeStructure.getJSONObject(0).getLong("id"));
             
             if (treeStructure.getJSONObject(0).has("children")) {
-                reorganize(nodes, parent, treeStructure.getJSONObject(0).getJSONArray("children"));
+                reorganize(nodes, parent, treeStructure.getJSONObject(0).getJSONArray("children"), "1.");
             }
 
             return Collections.singletonList(parent);
@@ -201,12 +201,15 @@ public final class TreeComponentState extends FieldComponentState implements Tre
     }
 
     @SuppressWarnings("unchecked")
-    private void reorganize(final Map<Long, Entity> nodes, final Entity parent, final JSONArray children) throws JSONException {
+    private void reorganize(final Map<Long, Entity> nodes, final Entity parent, final JSONArray children, final String nodeNumber) throws JSONException {
+        parent.setField(NODE_NUMBER_FIELD, nodeNumber);
         for (int i = 0; i < children.length(); i++) {
+            String newNodeNumber = nodeNumber + (i+1) + '.';
             Entity nodeEntity = nodes.get(children.getJSONObject(i).getLong("id"));
+            nodeEntity.setField(NODE_NUMBER_FIELD, newNodeNumber);
             ((List<Entity>) parent.getField("children")).add(nodeEntity);
             if (children.getJSONObject(i).has("children")) {
-                reorganize(nodes, nodeEntity, children.getJSONObject(i).getJSONArray("children"));
+                reorganize(nodes, nodeEntity, children.getJSONObject(i).getJSONArray("children"), newNodeNumber);
             }
         }
     }
@@ -268,11 +271,8 @@ public final class TreeComponentState extends FieldComponentState implements Tre
     }
 
     private TreeNode createNode(final EntityTreeNode entityTreeNode, final String nodeNumberPrefix) {
+        entityTreeNode.setField(NODE_NUMBER_FIELD, nodeNumberPrefix);
         TreeDataType entityType = dataTypes.get(entityTreeNode.getEntityNoteType());
-        // FIXME MAKU node number field will be required, we shouldn't check fields in future
-        if (entityTreeNode.getFields().containsKey(NODE_NUMBER_FIELD)) {
-            entityTreeNode.setField(NODE_NUMBER_FIELD, nodeNumberPrefix);
-        }
         String nodeLabel = ExpressionUtils.getValue(entityTreeNode, entityType.getNodeLabelExpression(), getLocale());
         TreeNode node = new TreeNode(entityTreeNode.getId(), nodeLabel, entityType);
         int childNumber = 1;
