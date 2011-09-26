@@ -22,7 +22,6 @@ import com.qcadoo.model.internal.EntityTreeImpl;
 @Service
 public class TreeNumberingService {
     
-    private static TreeNodesNumberComparator treeNodesNumberComparator = null;
     /**
      * Generate new numbers for all nodes of the tree
      * 
@@ -73,10 +72,7 @@ public class TreeNumberingService {
      * @return instance of TreeNodesNumberComparator 
      */
     public Comparator<Entity> getTreeNodesNumberComparator() {
-        if (treeNodesNumberComparator == null) {
-            treeNodesNumberComparator = new TreeNodesNumberComparator();
-        }
-        return treeNodesNumberComparator;
+        return new TreeNodesNumberComparator();
     }
     
     private void assignNumberToTreeNode(final EntityTreeNode treeNode, final String prefix) {
