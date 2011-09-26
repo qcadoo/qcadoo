@@ -58,7 +58,7 @@
 			lazy="true" required="true" />
 		<tree name="fieldTree" model="secondEntity" cascade="delete"
 			joinField="fieldFirstEntity" />
-		<hasMany name="fieldHasMany" model="thirdEntity" cascade="none"
+		<hasMany name="fieldHasMany" model="thirdEntity" cascade="nullify"
 			joinField="fieldFirstEntity" />
 		<dictionary name="fieldDictionary" dictionary="categories" />
 		<dictionary name="fieldOtherDictionary"

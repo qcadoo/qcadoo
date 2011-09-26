@@ -142,7 +142,7 @@
 				<xs:attribute name="plugin" type="identifier" />
 				<xs:attribute name="joinField" type="identifier"
 					use="required" />
-				<xs:attribute name="cascade" type="cascadeType" default="none" />
+				<xs:attribute name="cascade" type="cascadeType" default="nullify" />
 				<xs:attribute name="copyable" type="xs:boolean" default="false" />
 			</xs:extension>
 		</xs:complexContent>
@@ -155,7 +155,7 @@
 				<xs:attribute name="plugin" type="identifier" />
 				<xs:attribute name="joinField" type="identifier"
 					use="required" />
-				<xs:attribute name="cascade" type="cascadeType" default="none" />
+				<xs:attribute name="cascade" type="cascadeType" default="nullify" />
 				<xs:attribute name="copyable" type="xs:boolean" default="false" />
 			</xs:extension>
 		</xs:complexContent>
@@ -192,7 +192,7 @@
 	<xs:simpleType name="cascadeType">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="delete" />
-			<xs:enumeration value="none" />
+			<xs:enumeration value="nullify" />
 		</xs:restriction>
 	</xs:simpleType>
 	

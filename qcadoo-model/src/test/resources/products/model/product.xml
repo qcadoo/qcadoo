@@ -37,9 +37,9 @@
 		</integer>
 		<dictionary name="category" dictionary="categories" />
 		<hasMany name="components" model="component" joinField="product"
-			cascade="none" />
+			cascade="nullify" />
 		<hasMany name="parts" model="part" joinField="product"
-			cascade="none" />
+			cascade="nullify" />
 	</fields>
 	<hooks />
 </model>

@@ -52,11 +52,11 @@
 		<property type="boolean" name="fieldBoolean" not-null="false">
 			<column name="fieldBoolean" />
 		</property>
-		<many-to-one entity-name="com.qcadoo.model.beans.other.OtherSecondEntity" cascade="none"
+		<many-to-one entity-name="com.qcadoo.model.beans.other.OtherSecondEntity" cascade="nullify"
 			lazy="false" name="fieldSecondEntity" not-null="false">
 			<column name="fieldSecondEntity" />
 		</many-to-one>
-		<many-to-one entity-name="com.qcadoo.model.beans.other.OtherSecondEntity" cascade="none"
+		<many-to-one entity-name="com.qcadoo.model.beans.other.OtherSecondEntity" cascade="nullify"
 			lazy="proxy" name="fieldSecondEntity2" not-null="true">
 			<column name="fieldSecondEntity2" />
 		</many-to-one>
@@ -64,7 +64,7 @@
 			<key column="fieldFirstEntity" />
 			<one-to-many entity-name="com.qcadoo.model.beans.full.FullSecondEntity" />
 		</set>
-		<set cascade="none" lazy="true" name="fieldHasMany">
+		<set cascade="nullify" lazy="true" name="fieldHasMany">
 			<key column="fieldFirstEntity" />
 			<one-to-many entity-name="com.qcadoo.model.beans.full.FullThirdEntity" />
 		</set>
@@ -90,15 +90,15 @@
 		<id column="id" name="id" type="long">
 			<generator class="increment" />
 		</id>
-		<many-to-one entity-name="com.qcadoo.model.beans.full.FullFirstEntity" cascade="none"
+		<many-to-one entity-name="com.qcadoo.model.beans.full.FullFirstEntity" cascade="nullify"
 			lazy="proxy" name="fieldFirstEntity" not-null="false">
 			<column name="fieldFirstEntity" />
 		</many-to-one>
-		<many-to-one entity-name="com.qcadoo.model.beans.full.FullSecondEntity" cascade="none"
+		<many-to-one entity-name="com.qcadoo.model.beans.full.FullSecondEntity" cascade="nullify"
 			lazy="proxy" name="parent" not-null="false">
 			<column name="parent" />
 		</many-to-one>
-		<set cascade="none" lazy="true" name="children">
+		<set cascade="nullify" lazy="true" name="children">
 			<key column="parent" />
 			<one-to-many entity-name="com.qcadoo.model.beans.full.FullSecondEntity" />
 		</set>
@@ -108,7 +108,7 @@
 		<id column="id" name="id" type="long">
 			<generator class="increment" />
 		</id>
-		<many-to-one entity-name="com.qcadoo.model.beans.full.FullFirstEntity" cascade="none"
+		<many-to-one entity-name="com.qcadoo.model.beans.full.FullFirstEntity" cascade="nullify"
 			lazy="proxy" name="fieldFirstEntity" not-null="false">
 			<column name="fieldFirstEntity" />
 		</many-to-one>

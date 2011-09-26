@@ -307,7 +307,7 @@
 			<xsl:attribute name="cascade">
 			<xsl:choose>
 				<xsl:when test="@cascade='delete'">delete</xsl:when>
-				<xsl:otherwise>none</xsl:otherwise>
+				<xsl:otherwise>nullify</xsl:otherwise>
 			</xsl:choose>
 		</xsl:attribute>
 			<xsl:attribute name="lazy">true</xsl:attribute>
@@ -358,7 +358,7 @@
 			<xsl:attribute name="cascade">
 			<xsl:choose>
 				<xsl:when test="@cascade='delete'">delete</xsl:when>
-				<xsl:otherwise>none</xsl:otherwise>
+				<xsl:otherwise>nullify</xsl:otherwise>
 			</xsl:choose>
 		</xsl:attribute>
 			<xsl:attribute name="lazy">
