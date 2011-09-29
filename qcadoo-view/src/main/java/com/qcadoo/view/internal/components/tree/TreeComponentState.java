@@ -39,6 +39,8 @@ import com.qcadoo.model.api.EntityTree;
 import com.qcadoo.model.api.EntityTreeNode;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.expression.ExpressionUtils;
+import com.qcadoo.model.api.search.SearchCriteriaBuilder;
+import com.qcadoo.model.api.search.SearchRestrictions;
 import com.qcadoo.view.api.components.TreeComponent;
 import com.qcadoo.view.internal.components.FieldComponentState;
 
@@ -189,7 +191,7 @@ public final class TreeComponentState extends FieldComponentState implements Tre
 
         try {
             Entity parent = nodes.get(treeStructure.getJSONObject(0).getLong("id"));
-            
+
             if (treeStructure.getJSONObject(0).has("children")) {
                 reorganize(nodes, parent, treeStructure.getJSONObject(0).getJSONArray("children"), "1.");
             }
@@ -201,10 +203,11 @@ public final class TreeComponentState extends FieldComponentState implements Tre
     }
 
     @SuppressWarnings("unchecked")
-    private void reorganize(final Map<Long, Entity> nodes, final Entity parent, final JSONArray children, final String nodeNumber) throws JSONException {
+    private void reorganize(final Map<Long, Entity> nodes, final Entity parent, final JSONArray children, final String nodeNumber)
+            throws JSONException {
         parent.setField(NODE_NUMBER_FIELD, nodeNumber);
         for (int i = 0; i < children.length(); i++) {
-            String newNodeNumber = nodeNumber + (i+1) + '.';
+            String newNodeNumber = nodeNumber + (i + 1) + '.';
             Entity nodeEntity = nodes.get(children.getJSONObject(i).getLong("id"));
             nodeEntity.setField(NODE_NUMBER_FIELD, newNodeNumber);
             ((List<Entity>) parent.getField("children")).add(nodeEntity);
@@ -213,12 +216,22 @@ public final class TreeComponentState extends FieldComponentState implements Tre
             }
         }
     }
-    
+
     @Override
     public void setFieldValue(final Object value) {
-        setSelectedEntityId(null);
+        if (!(value instanceof EntityTree) || !checkIfTreeContainsEntity((EntityTree) value, selectedEntityId)) {
+            setSelectedEntityId(null);
+        }
         requestRender();
         requestUpdateState();
+    }
+
+    private boolean checkIfTreeContainsEntity(final EntityTree tree, final Long entityId) {
+        if (entityId == null) {
+            return false;
+        }
+        SearchCriteriaBuilder searchBuilder = tree.find().add(SearchRestrictions.idEq(entityId));
+        return searchBuilder.list().getTotalNumberOfEntities() > 0;
     }
 
     /*
