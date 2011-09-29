@@ -39,6 +39,7 @@ import com.qcadoo.model.api.search.SearchOrders;
 import com.qcadoo.model.api.search.SearchRestrictions;
 import com.qcadoo.model.api.search.SearchRestrictions.SearchMatchMode;
 import com.qcadoo.model.api.search.SearchResult;
+import com.qcadoo.model.api.types.BelongsToType;
 import com.qcadoo.view.internal.components.FieldComponentState;
 
 public final class LookupComponentState extends FieldComponentState {
@@ -226,9 +227,10 @@ public final class LookupComponentState extends FieldComponentState {
                     searchCriteriaBuilder.add(SearchRestrictions.like(fieldCode, currentCode, SearchMatchMode.ANYWHERE));
                 }
 
-                if (belongsToFieldDefinition != null && belongsToEntityId != null) {
+                if (belongsToFieldDefinition != null && belongsToEntityId != null && belongsToFieldDefinition.getType() instanceof BelongsToType) {
+                    BelongsToType type = (BelongsToType) belongsToFieldDefinition.getType();
                     searchCriteriaBuilder.add(SearchRestrictions.belongsTo(belongsToFieldDefinition.getName(),
-                            belongsToFieldDefinition.getDataDefinition(), belongsToEntityId));
+                            type.getDataDefinition().get(belongsToEntityId)));
                 }
 
                 if (getDataDefinition().isActivable()) {
