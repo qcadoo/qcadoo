@@ -377,14 +377,15 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 		if (state.maxEntities) {
 			currentState.maxEntities = state.maxEntities;
 		}
-		if (state.filtersEnabled) {
+		if (currentState.filtersEnabled != state.filtersEnabled) {
 			currentState.filtersEnabled = state.filtersEnabled;
-			headerController.setFilterActive();
 			grid[0].toggleToolbar();
 			updateSearchFields();
 			if (currentState.filtersEnabled) {
+				headerController.setFilterActive();
 				currentGridHeight -= 21;
 			} else {
+				headerController.setFilterNotActive();
 				currentGridHeight += 21;
 			}
 			grid.setGridHeight(currentGridHeight);
