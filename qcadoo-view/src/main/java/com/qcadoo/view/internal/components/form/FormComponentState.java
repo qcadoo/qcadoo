@@ -160,6 +160,8 @@ public class FormComponentState extends AbstractContainerState implements FormCo
             valid = false;
             requestRender();
             copyMessages(entity.getGlobalErrors());
+        } else {
+            active = entity.isActive();
         }
 
         copyEntityToFields(entity, entity.isValid());
