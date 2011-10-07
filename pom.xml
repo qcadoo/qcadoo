@@ -23,8 +23,7 @@
 		<module>qcadoo-plugins-user-management</module>
 		<module>qcadoo-plugins-dictionary-management</module>
 		<module>qcadoo-plugins-menu-management</module>
-		<module>qcadoo-plugins-export-to-csv</module>
-		<module>qcadoo-plugins-export-to-pdf</module>
+		<module>qcadoo-plugins-export</module>
   </modules>
 
 	<name>Qcadoo Framework</name>
