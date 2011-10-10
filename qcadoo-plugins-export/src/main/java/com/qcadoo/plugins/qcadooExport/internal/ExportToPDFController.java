@@ -108,8 +108,17 @@ public class ExportToPDFController {
             }
             PdfPTable table = PdfUtil.createTableWithHeader(columns, exportToPDFTableHeader, false);
 
+            Outer:
             for (Map<String, String> row : grid.getColumnValues()) {
+            	boolean firstValue = true;
                 for (String value : row.values()) {
+                	if (firstValue) {
+                		if (!grid.getSelectedEntitiesIds().isEmpty() &&
+                				!grid.getSelectedEntitiesIds().contains(Long.valueOf(value))) {
+                    		continue Outer;
+                    	}
+                		firstValue = false;
+                	}
                     table.addCell(new Phrase(value, PdfUtil.getArialRegular9Dark()));
                 }
             }

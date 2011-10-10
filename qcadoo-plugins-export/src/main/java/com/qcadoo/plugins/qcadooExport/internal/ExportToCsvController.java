@@ -99,10 +99,17 @@ public class ExportToCsvController {
 
                 output.append("\n");
 
+                Outer:
                 for (Map<String, String> row : grid.getColumnValues()) {
                     boolean firstValue = true;
-
                     for (String value : row.values()) {
+                    	if (firstValue && !grid.getSelectedEntitiesIds().isEmpty() &&
+                    			!grid.getSelectedEntitiesIds().contains(Long.valueOf(value))) {
+                    		continue Outer;
+                    	}
+                    	
+                    	output.append(value + " ");
+                    	
                         if (firstValue) {
                             firstValue = false;
                         } else {
