@@ -55,7 +55,7 @@ public final class PdfPageNumbering extends PdfPageEventHelper {
 
     private final String generationDate;
 
-    public PdfPageNumbering(final String page, final String in, final String tax, final String phone, final Entity company,
+    public PdfPageNumbering(final String page, final String in, final String phone, final Entity company,
             final String generatedBy, final String username) {
         super();
         this.page = page;

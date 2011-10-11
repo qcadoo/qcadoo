@@ -51,6 +51,8 @@ import com.qcadoo.view.internal.states.AbstractComponentState;
 
 public final class GridComponentState extends AbstractComponentState implements GridComponent {
 
+	enum ExportMode {ALL, SELECTED};
+	
     public static final String JSON_SELECTED_ENTITY_ID = "selectedEntityId";
 
     public static final String JSON_BELONGS_TO_ENTITY_ID = "belongsToEntityId";
@@ -536,6 +538,9 @@ public final class GridComponentState extends AbstractComponentState implements 
         Map<String, String> names = new LinkedHashMap<String, String>();
 
         for (GridComponentColumn column : columns.values()) {
+        	if (column.isHidden()) {
+        		continue;
+        	}
             if (column.getFields().size() == 1) {
                 String fieldCode = getDataDefinition().getPluginIdentifier() + "." + getDataDefinition().getName() + "."
                         + column.getFields().get(0).getName();
@@ -553,27 +558,42 @@ public final class GridComponentState extends AbstractComponentState implements 
     }
 
     @Override
-    public List<Map<String, String>> getColumnValues() {
-        if (entities == null) {
-            eventPerformer.reload();
-        }
-
-        if (entities == null) {
-            throw new IllegalStateException("Cannot load entities for grid component");
-        }
-
-        List<Map<String, String>> values = new ArrayList<Map<String, String>>();
-
-        for (Entity entity : entities) {
-            values.add(convertEntityToMap(entity));
-        }
-
-        return values;
+    public List<Map<String, String>> getColumnValuesOfAllRecords() {
+    	return getColumnValues(ExportMode.ALL);
     }
-
+    
+    @Override
+    public List<Map<String, String>> getColumnValuesOfSelectedRecords() {
+    	return getColumnValues(ExportMode.SELECTED);
+    }
+    
+    private List<Map<String, String>> getColumnValues(ExportMode mode) {
+    	if (entities == null) {
+    		eventPerformer.reload();
+    	}
+    	
+    	if (entities == null) {
+    		throw new IllegalStateException("Cannot load entities for grid component");
+    	}
+    	
+    	List<Map<String, String>> values = new ArrayList<Map<String, String>>();
+    	
+    	for (Entity entity : entities) {
+    		if (mode == ExportMode.ALL ||
+    				(mode == ExportMode.SELECTED && getSelectedEntitiesIds().contains(entity.getId()))) {
+    			values.add(convertEntityToMap(entity));
+    		}
+    	}
+    	
+    	return values;
+    }
+    
     private Map<String, String> convertEntityToMap(final Entity entity) {
         Map<String, String> values = new LinkedHashMap<String, String>();
         for (GridComponentColumn column : columns.values()) {
+        	if (column.isHidden()) {
+        		continue;
+        	}
             values.put(column.getName(), column.getValue(entity, getLocale()));
         }
         return values;

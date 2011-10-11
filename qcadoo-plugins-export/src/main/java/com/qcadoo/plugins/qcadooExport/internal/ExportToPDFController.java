@@ -26,7 +26,9 @@ package com.qcadoo.plugins.qcadooExport.internal;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -48,6 +50,9 @@ import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 import com.qcadoo.localization.api.TranslationService;
+import com.qcadoo.localization.api.utils.DateUtils;
+import com.qcadoo.model.api.DataDefinitionService;
+import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.aop.Monitorable;
 import com.qcadoo.model.api.file.FileService;
 import com.qcadoo.report.api.pdf.PdfUtil;
@@ -55,6 +60,7 @@ import com.qcadoo.security.api.SecurityService;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.api.components.GridComponent;
 import com.qcadoo.view.api.crud.CrudService;
+import com.qcadoo.report.api.pdf.PdfPageNumbering;
 
 @Controller
 public class ExportToPDFController {
@@ -77,6 +83,9 @@ public class ExportToPDFController {
     @Autowired
     private SecurityService securityService;
 
+    @Autowired
+    private DataDefinitionService dataDefinitionService;
+    
     @Monitorable(threshold = 500)
     @RequestMapping(value = { CONTROLLER_PATH }, method = RequestMethod.POST)
     @ResponseBody
@@ -86,20 +95,37 @@ public class ExportToPDFController {
             changeMaxResults(body);
             ViewDefinitionState state = crudService.invokeEvent(pluginIdentifier, viewName, body, locale);
             GridComponent grid = (GridComponent) state.getComponentByReference("grid");
-
             Document document = new Document(PageSize.A4.rotate());
             File file = new File(fileService.create("export.pdf"));
             FileOutputStream fileOutputStream = new FileOutputStream(file);
             PdfWriter writer = PdfWriter.getInstance(document, fileOutputStream);
-            writer.setPageEvent(new ExportToPdfPageNumbering(translationService.translate("qcadooReport.commons.page.label",
-                    locale), translationService.translate("qcadooReport.commons.of.label", locale), translationService.translate(
-                    "qcadooReport.commons.generatedBy.label", locale), securityService.getCurrentUserName()));
+
+            Entity company = dataDefinitionService.get("basic", "company").find().uniqueResult();
+
+            writer.setPageEvent(new PdfPageNumbering(
+            		translationService.translate("qcadooReport.commons.page.label", locale),
+            		translationService.translate("qcadooReport.commons.of.label", locale),
+            		"phone",
+            		company,
+            		translationService.translate("qcadooReport.commons.generatedBy.label", locale),
+            		securityService.getCurrentUserName()
+            		));
+            
             document.setMargins(40, 40, 60, 60);
+
             document.addTitle("export.pdf");
             PdfUtil.addMetaData(document);
             writer.createXmpMetadata();
             document.open();
 
+            String title = translationService.translate(pluginIdentifier + "." + viewName + ".window.mainTab." +
+            				grid.getName() + ".header", locale);
+            
+            Date generationDate = new Date();
+            
+            PdfUtil.addDocumentHeader(document, "", title,
+            		translationService.translate("qcadooReport.commons.generatedBy.label", locale), generationDate, securityService.getCurrentUserName());
+            
             int columns = 0;
             List<String> exportToPDFTableHeader = new ArrayList<String>();
             for (String name : grid.getColumnNames().values()) {
@@ -108,17 +134,15 @@ public class ExportToPDFController {
             }
             PdfPTable table = PdfUtil.createTableWithHeader(columns, exportToPDFTableHeader, false);
 
-            Outer:
-            for (Map<String, String> row : grid.getColumnValues()) {
-            	boolean firstValue = true;
+            List<Map<String, String>> rows;
+            if (grid.getSelectedEntitiesIds().isEmpty()) {
+            	rows = grid.getColumnValuesOfAllRecords();
+            } else {
+            	rows = grid.getColumnValuesOfSelectedRecords();
+            }
+            
+            for (Map<String, String> row : rows) {
                 for (String value : row.values()) {
-                	if (firstValue) {
-                		if (!grid.getSelectedEntitiesIds().isEmpty() &&
-                				!grid.getSelectedEntitiesIds().contains(Long.valueOf(value))) {
-                    		continue Outer;
-                    	}
-                		firstValue = false;
-                	}
                     table.addCell(new Phrase(value, PdfUtil.getArialRegular9Dark()));
                 }
             }

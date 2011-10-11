@@ -29,6 +29,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -99,15 +100,16 @@ public class ExportToCsvController {
 
                 output.append("\n");
 
-                Outer:
-                for (Map<String, String> row : grid.getColumnValues()) {
+                List<Map<String, String>> rows;
+                if (grid.getSelectedEntitiesIds().isEmpty()) {
+                	rows = grid.getColumnValuesOfAllRecords();
+                } else {
+                	rows = grid.getColumnValuesOfSelectedRecords();
+                }
+                
+                for (Map<String, String> row : rows) {
                     boolean firstValue = true;
                     for (String value : row.values()) {
-                    	if (firstValue && !grid.getSelectedEntitiesIds().isEmpty() &&
-                    			!grid.getSelectedEntitiesIds().contains(Long.valueOf(value))) {
-                    		continue Outer;
-                    	}
-                    	
                     	output.append(value + " ");
                     	
                         if (firstValue) {

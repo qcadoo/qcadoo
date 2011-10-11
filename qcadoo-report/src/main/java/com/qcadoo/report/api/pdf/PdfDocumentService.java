@@ -61,8 +61,7 @@ public abstract class PdfDocumentService extends DocumentService {
             PdfWriter writer = PdfWriter.getInstance(document, fileOutputStream);
             writer.setPageEvent(new PdfPageNumbering(
                     getTranslationService().translate("qcadooReport.commons.page.label", locale), getTranslationService()
-                            .translate("qcadooReport.commons.of.label", locale), getTranslationService().translate(
-                            "basic.company.tax.label", locale), getTranslationService().translate("basic.company.phone.label",
+                            .translate("qcadooReport.commons.of.label", locale), getTranslationService().translate("basic.company.phone.label",
                             locale), company,
                     getTranslationService().translate("qcadooReport.commons.generatedBy.label", locale), securityService
                             .getCurrentUserName()));

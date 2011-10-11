@@ -83,7 +83,6 @@ public abstract class ReportPdfView extends AbstractPdfView {
         super.prepareWriter(model, writer, request);
         writer.setPageEvent(new PdfPageNumbering(getTranslationService().translate("qcadooReport.commons.page.label",
                 LocaleContextHolder.getLocale()), getTranslationService().translate("qcadooReport.commons.of.label",
-                LocaleContextHolder.getLocale()), getTranslationService().translate("basic.company.tax.label",
                 LocaleContextHolder.getLocale()), getTranslationService().translate("basic.company.phone.label",
                 LocaleContextHolder.getLocale()), (Entity) model.get("company"), getTranslationService().translate(
                 "qcadooReport.commons.generatedBy.label", LocaleContextHolder.getLocale()), securityService.getCurrentUserName()));

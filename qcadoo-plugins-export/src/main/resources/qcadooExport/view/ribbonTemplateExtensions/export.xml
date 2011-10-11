@@ -29,7 +29,7 @@
 	templatePlugin="qcadooView" 
 	templateName="standardGridTemplate">
 	
-	<group name="export">
+	<group name="genericExport">
 		<smallButton name="csv" state="enabled" icon="exportToCsvIcon16.png">
 			<script>
 				<![CDATA[
