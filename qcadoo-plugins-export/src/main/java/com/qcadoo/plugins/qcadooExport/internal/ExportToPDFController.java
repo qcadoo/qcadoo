@@ -51,6 +51,8 @@ import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.localization.api.utils.DateUtils;
+import com.qcadoo.model.api.DataDefinitionService;
+import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.aop.Monitorable;
 import com.qcadoo.model.api.file.FileService;
 import com.qcadoo.report.api.pdf.PdfUtil;
@@ -58,6 +60,7 @@ import com.qcadoo.security.api.SecurityService;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.api.components.GridComponent;
 import com.qcadoo.view.api.crud.CrudService;
+import com.qcadoo.report.api.pdf.PdfPageNumbering;
 
 @Controller
 public class ExportToPDFController {
@@ -80,6 +83,9 @@ public class ExportToPDFController {
     @Autowired
     private SecurityService securityService;
 
+    @Autowired
+    private DataDefinitionService dataDefinitionService;
+    
     @Monitorable(threshold = 500)
     @RequestMapping(value = { CONTROLLER_PATH }, method = RequestMethod.POST)
     @ResponseBody
@@ -95,14 +101,26 @@ public class ExportToPDFController {
             PdfWriter writer = PdfWriter.getInstance(document, fileOutputStream);
             
             Date generationDate = new Date();
-            writer.setPageEvent(new ExportToPdfPageNumbering(
+//            writer.setPageEvent(new ExportToPdfPageNumbering(
+//            		translationService.translate("qcadooReport.commons.page.label", locale),
+//            		translationService.translate("qcadooReport.commons.of.label", locale),
+//            		translationService.translate("qcadooReport.commons.generatedBy.label", locale),
+//            		securityService.getCurrentUserName(), generationDate,
+//                    translationService.translate("qcadooReport.commons.companyName.label", locale),
+//                    translationService.translate("qcadooReport.commons.companyAddress.label", locale),
+//                    translationService.translate("qcadooReport.commons.companyContact.label", locale)));
+            
+            Entity company = dataDefinitionService.get("basic", "company").find().uniqueResult();
+
+            writer.setPageEvent(new PdfPageNumbering(
             		translationService.translate("qcadooReport.commons.page.label", locale),
             		translationService.translate("qcadooReport.commons.of.label", locale),
+            		"phone",
+            		company,
             		translationService.translate("qcadooReport.commons.generatedBy.label", locale),
-            		securityService.getCurrentUserName(), generationDate,
-                    translationService.translate("qcadooReport.commons.companyName.label", locale),
-                    translationService.translate("qcadooReport.commons.companyAddress.label", locale),
-                    translationService.translate("qcadooReport.commons.companyContact.label", locale)));
+            		securityService.getCurrentUserName()
+            		));
+            
             document.setMargins(40, 40, 60, 60);
 
             document.addTitle("export.pdf");
