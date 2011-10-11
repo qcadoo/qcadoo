@@ -49,7 +49,14 @@ public final class ExportToPdfPageNumbering extends PdfPageEventHelper {
 
     private final String generationDate;
 
-    public ExportToPdfPageNumbering(final String page, final String in, final String generatedBy, final String username) {
+    private final String companyName;
+    
+    private final String companyAddress;
+    
+    private final String companyContact;
+    
+    public ExportToPdfPageNumbering(final String page, final String in, final String generatedBy,
+    		final String username, Date date, String companyName, String companyAddress, String companyContact) {
         super();
         this.page = page;
         this.in = in;
@@ -60,7 +67,11 @@ public final class ExportToPdfPageNumbering extends PdfPageEventHelper {
         footerData = footerData.append(username);
         this.generatedBy = footerData.toString();
 
-        this.generationDate = new SimpleDateFormat(DateUtils.DATE_TIME_FORMAT).format(new Date());
+        this.generationDate = new SimpleDateFormat(DateUtils.DATE_TIME_FORMAT).format(date);
+    
+        this.companyName = companyName;
+        this.companyAddress = companyAddress;
+        this.companyContact = companyContact;
     }
 
     /**
@@ -135,6 +146,15 @@ public final class ExportToPdfPageNumbering extends PdfPageEventHelper {
         cb.setTextMatrix(document.right() - textSize, textBase - 20);
         cb.showText(generationDate);
 
+        cb.setTextMatrix(document.left(), textBase);
+        cb.showText(companyName);
+        
+        cb.setTextMatrix(document.left(), textBase - 10);
+        cb.showText(companyAddress);
+
+        cb.setTextMatrix(document.left(), textBase - 20);
+        cb.showText(companyContact);
+        
         cb.endText();
         cb.addTemplate(total, document.right() - adjust, textBase);
         cb.restoreState();

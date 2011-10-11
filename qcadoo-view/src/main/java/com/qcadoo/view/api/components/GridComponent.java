@@ -79,12 +79,19 @@ public interface GridComponent extends ComponentState {
     Map<String, String> getColumnNames();
 
     /**
-     * Returns column values of the current grid
+     * Returns column values of the current grid of all records
      * 
      * @return column values
      */
-    List<Map<String, String>> getColumnValues();
+    List<Map<String, String>> getColumnValuesOfAllRecords();
 
+    /**
+     * Returns column values of the current grid of selected records
+     * 
+     * @return column values
+     */
+    List<Map<String, String>> getColumnValuesOfSelectedRecords();
+    
     /**
      * Adds restriction to this grid
      * 
