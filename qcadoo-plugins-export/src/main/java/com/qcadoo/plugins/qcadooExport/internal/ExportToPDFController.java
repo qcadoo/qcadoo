@@ -99,17 +99,7 @@ public class ExportToPDFController {
             File file = new File(fileService.create("export.pdf"));
             FileOutputStream fileOutputStream = new FileOutputStream(file);
             PdfWriter writer = PdfWriter.getInstance(document, fileOutputStream);
-            
-            Date generationDate = new Date();
-//            writer.setPageEvent(new ExportToPdfPageNumbering(
-//            		translationService.translate("qcadooReport.commons.page.label", locale),
-//            		translationService.translate("qcadooReport.commons.of.label", locale),
-//            		translationService.translate("qcadooReport.commons.generatedBy.label", locale),
-//            		securityService.getCurrentUserName(), generationDate,
-//                    translationService.translate("qcadooReport.commons.companyName.label", locale),
-//                    translationService.translate("qcadooReport.commons.companyAddress.label", locale),
-//                    translationService.translate("qcadooReport.commons.companyContact.label", locale)));
-            
+
             Entity company = dataDefinitionService.get("basic", "company").find().uniqueResult();
 
             writer.setPageEvent(new PdfPageNumbering(
@@ -130,6 +120,9 @@ public class ExportToPDFController {
 
             String title = translationService.translate(pluginIdentifier + "." + viewName + ".window.mainTab." +
             				grid.getName() + ".header", locale);
+            
+            Date generationDate = new Date();
+            
             PdfUtil.addDocumentHeader(document, "", title,
             		translationService.translate("qcadooReport.commons.generatedBy.label", locale), generationDate, securityService.getCurrentUserName());
             
