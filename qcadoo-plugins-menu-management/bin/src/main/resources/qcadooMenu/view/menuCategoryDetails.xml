@@ -41,7 +41,7 @@
 				rows="2">
 				<layoutElement column="1" row="1">
 					<component type="input" name="name" field="name"
-						hasDescription="false" reference="categoryName"/>
+						hasDescription="false" reference="categoryName" />
 				</layoutElement>
 			</component>
 			<option type="header" value="true" />

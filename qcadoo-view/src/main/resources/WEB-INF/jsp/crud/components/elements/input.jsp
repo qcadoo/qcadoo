@@ -37,10 +37,13 @@
 	<tiles:putAttribute name="component" value="${component}" />
 	<tiles:putAttribute name="componentType" value="input" />
 	<tiles:putAttribute name="componentBody">
-		<c:if test="${component['jspOptions']['textRepresentationOnDisabled']}">
-			<c:set var="displayHiddenIfTextRepresentationOnDisabled" value="display: none" />
+		<c:if test="${component['jspOptions']['alignment']=='right'}">
+			<c:set var="alignment" value="text-align: right;" />
 		</c:if>
-		<input type="text" id="${component['path']}_input" style="${displayHiddenIfTextRepresentationOnDisabled}" tabindex="${component['indexOrder']}" />
+		<c:if test="${component['jspOptions']['textRepresentationOnDisabled']}">
+			<c:set var="displayHiddenIfTextRepresentationOnDisabled" value="display: none;" />
+		</c:if>
+		<input type="text" id="${component['path']}_input" style="${alignment}${displayHiddenIfTextRepresentationOnDisabled}" tabindex="${component['indexOrder']}" />
 		<c:if test="${component['jspOptions']['textRepresentationOnDisabled']}">
 			<span id="${component['path']}_text" class="component_container_form_textRepresentation">-</span>
 			<span id="${componentFullName}_textHeight" style="display: inline-block; height: 100%; vertical-align: middle;">&nbsp;</span>

@@ -40,6 +40,8 @@ public final class TextInputComponentPattern extends FieldComponentPattern {
 
     private boolean textRepresentationOnDisabled;
 
+    private String alignment;
+    
     public TextInputComponentPattern(final ComponentDefinition componentDefinition) {
         super(componentDefinition);
     }
@@ -50,9 +52,17 @@ public final class TextInputComponentPattern extends FieldComponentPattern {
         for (ComponentOption option : getOptions()) {
             if ("textRepresentationOnDisabled".equals(option.getType())) {
                 textRepresentationOnDisabled = Boolean.parseBoolean(option.getValue());
-            } else if (!"labelWidth".equals(option.getType())) {
+            } else if ("alignment".equals(option.getType())) {
+            	alignment = option.getValue();
+            } else if ("labelWidth".equals(option.getType())) {
+            } else {
                 throw new IllegalStateException("Unknown option for input: " + option.getType());
             }
+//            if ("textRepresentationOnDisabled".equals(option.getType())) {
+//            	textRepresentationOnDisabled = Boolean.parseBoolean(option.getValue());
+//            } else if (!"labelWidth".equals(option.getType())) {
+//            	throw new IllegalStateException("Unknown option for input: " + option.getType());
+//            }
         }
     }
 
@@ -60,6 +70,7 @@ public final class TextInputComponentPattern extends FieldComponentPattern {
     protected Map<String, Object> getJspOptions(final Locale locale) {
         Map<String, Object> options = super.getJspOptions(locale);
         options.put("textRepresentationOnDisabled", textRepresentationOnDisabled);
+        options.put("alignment", alignment);
         return options;
     }
 
