@@ -6,17 +6,21 @@ import com.qcadoo.model.api.Entity;
 
 public class QcadooUser {
 
-    private final String login;
+    private String login;
 
-    private final String email;
+    private String email;
 
-    private final String firstName;
+    private String firstName;
 
-    private final String lastName;
+    private String lastName;
 
-    private final String groupName;
+    private String groupName;
 
-    private final Date lastActivity;
+    private Date lastActivity;
+
+    public QcadooUser() {
+        // nothing
+    }
 
     public QcadooUser(final String login, final String email, final String firstName, final String lastName,
             final String groupName, final Date lastActivity) {
@@ -59,6 +63,30 @@ public class QcadooUser {
 
     public Date getLastActivity() {
         return lastActivity;
+    }
+
+    public void setLogin(final String login) {
+        this.login = login;
+    }
+
+    public void setEmail(final String email) {
+        this.email = email;
+    }
+
+    public void setFirstName(final String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(final String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setGroupName(final String groupName) {
+        this.groupName = groupName;
+    }
+
+    public void setLastActivity(final Date lastActivity) {
+        this.lastActivity = lastActivity;
     }
 
 }
