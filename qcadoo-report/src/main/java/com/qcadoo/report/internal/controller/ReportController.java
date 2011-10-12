@@ -23,6 +23,8 @@
  */
 package com.qcadoo.report.internal.controller;
 
+import static org.apache.commons.io.IOUtils.copy;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.HashMap;
@@ -78,14 +80,14 @@ public class ReportController {
                 additionalArgs, locale);
 
         try {
-            IOUtils.copy(new ByteArrayInputStream(reportContent), response.getOutputStream());
+            copy(new ByteArrayInputStream(reportContent), response.getOutputStream());
         } catch (IOException e) {
             throw new ReportException(ReportException.Type.ERROR_WHILE_COPYING_REPORT_TO_RESPONSE, e);
         }
+        
         response.setContentLength(reportContent.length);
         response.setContentType(reportType.getMimeType());
         disableCache(response);
-
     }
 
     private ReportService.ReportType getReportType(final HttpServletRequest request) throws ReportException {
