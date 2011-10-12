@@ -28,6 +28,7 @@ import static com.google.common.base.Preconditions.checkState;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,13 +48,15 @@ import org.springframework.stereotype.Service;
 import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.aop.Monitorable;
+import com.qcadoo.model.api.search.SearchOrders;
 import com.qcadoo.model.api.search.SearchRestrictions;
 import com.qcadoo.security.api.SecurityRole;
 import com.qcadoo.security.api.SecurityRolesService;
-import com.qcadoo.security.api.SecurityService;
+import com.qcadoo.security.internal.api.InternalSecurityService;
+import com.qcadoo.security.internal.api.QcadooUser;
 
 @Service("userDetailsService")
-public class SecurityServiceImpl implements SecurityService, UserDetailsService, PersistentTokenRepository,
+public class SecurityServiceImpl implements InternalSecurityService, UserDetailsService, PersistentTokenRepository,
         ApplicationListener<AuthorizedEvent> {
 
     @Autowired
@@ -82,6 +85,17 @@ public class SecurityServiceImpl implements SecurityService, UserDetailsService,
         Entity entity = getUserEntity(SecurityContextHolder.getContext().getAuthentication().getName());
         checkNotNull(entity, "Current user with login %s cannot be found", login);
         return entity.getStringField("userName");
+    }
+
+    @Override
+    public List<QcadooUser> getUsers() {
+        List<Entity> userEntities = dataDefinitionService.get("qcadooSecurity", "user").find()
+                .addOrder(SearchOrders.asc("userName")).list().getEntities();
+        List<QcadooUser> users = new LinkedList<QcadooUser>();
+        for (Entity userEntity : userEntities) {
+            users.add(new QcadooUser(userEntity));
+        }
+        return users;
     }
 
     protected Entity getUserEntity(final String login) {
