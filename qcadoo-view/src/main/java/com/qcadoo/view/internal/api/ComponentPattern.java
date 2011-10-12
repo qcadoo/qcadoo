@@ -32,7 +32,7 @@ import com.qcadoo.view.internal.xml.ViewDefinitionParser;
 import com.qcadoo.view.internal.xml.ViewDefinitionParserNodeException;
 
 /**
- * ComponentPattern is a definition of single view element. It can be described as 'class' witch main responsibility is to create
+ * ComponentPattern is a definition of single view element. It can be described as 'class' which main responsibility is to create
  * {@link com.qcadoo.view.api.ComponentState} which can be understood as 'instance' created in request scope.
  * <p>
  * Component pattern contains informations about static data (name, path, reference name), relations to other components and
