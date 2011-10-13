@@ -41,7 +41,7 @@ public final class TextInputComponentPattern extends FieldComponentPattern {
     private boolean textRepresentationOnDisabled;
 
     private String alignment;
-    
+
     public TextInputComponentPattern(final ComponentDefinition componentDefinition) {
         super(componentDefinition);
     }
@@ -53,16 +53,15 @@ public final class TextInputComponentPattern extends FieldComponentPattern {
             if ("textRepresentationOnDisabled".equals(option.getType())) {
                 textRepresentationOnDisabled = Boolean.parseBoolean(option.getValue());
             } else if ("alignment".equals(option.getType())) {
-            	alignment = option.getValue();
-            } else if ("labelWidth".equals(option.getType())) {
-            } else {
+                alignment = option.getValue();
+            } else if (!"labelWidth".equals(option.getType())) {
                 throw new IllegalStateException("Unknown option for input: " + option.getType());
             }
-//            if ("textRepresentationOnDisabled".equals(option.getType())) {
-//            	textRepresentationOnDisabled = Boolean.parseBoolean(option.getValue());
-//            } else if (!"labelWidth".equals(option.getType())) {
-//            	throw new IllegalStateException("Unknown option for input: " + option.getType());
-//            }
+            // if ("textRepresentationOnDisabled".equals(option.getType())) {
+            // textRepresentationOnDisabled = Boolean.parseBoolean(option.getValue());
+            // } else if (!"labelWidth".equals(option.getType())) {
+            // throw new IllegalStateException("Unknown option for input: " + option.getType());
+            // }
         }
     }
 
