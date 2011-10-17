@@ -28,7 +28,7 @@ import com.qcadoo.model.api.DataDefinition;
 /**
  * Object represents "many to many" field type.
  * 
- * @since 0.4.0
+ * @since 0.4.9
  */
 public interface ManyToManyType extends FieldType {
 
