@@ -197,6 +197,8 @@
 
 .component_element_checkbox .component_container_form_w {
 	text-align: left;
+	z-index: 25;
+	margin-right: 16px;
 }
 
 .component_container_form_w select {

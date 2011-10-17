@@ -582,7 +582,7 @@ QCD.components.elements.Grid = function(_element, _mainController) {
         }
 		
 		gridParameters.ondblClickRow = function(id){
-			linkClicked(id);
+			//linkClicked(id);
         }
 		gridParameters.onSortCol = onSortColumnChange;
 		
