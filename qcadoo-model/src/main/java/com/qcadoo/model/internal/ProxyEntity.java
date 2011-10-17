@@ -51,19 +51,17 @@ public final class ProxyEntity implements Entity {
         this.id = id;
     }
 
-    private void loadEntity() {
+    private Entity getEntity() {
         if (entity == null) {
             entity = dataDefinition.get(id);
             checkNotNull(entity, "Proxy can't load entity");
         }
+        return entity;
     }
 
     @Override
     public void setId(final Long id) {
-        if (entity == null) {
-            loadEntity();
-        }
-        entity.setId(id);
+        getEntity().setId(id);
     }
 
     @Override
@@ -77,146 +75,97 @@ public final class ProxyEntity implements Entity {
 
     @Override
     public Object getField(final String fieldName) {
-        if (entity == null) {
-            loadEntity();
-        }
-        return entity.getField(fieldName);
+        return getEntity().getField(fieldName);
     }
 
     @Override
     public void setField(final String fieldName, final Object fieldValue) {
-        if (entity == null) {
-            loadEntity();
-        }
-        entity.setField(fieldName, fieldValue);
+        getEntity().setField(fieldName, fieldValue);
     }
 
     @Override
     public Map<String, Object> getFields() {
-        if (entity == null) {
-            loadEntity();
-        }
-        return entity.getFields();
+        return getEntity().getFields();
     }
 
     @Override
     public void addGlobalError(final String message, final String... vars) {
-        if (entity == null) {
-            loadEntity();
-        }
-        entity.addGlobalError(message, vars);
+        getEntity().addGlobalError(message, vars);
     }
 
     @Override
     public void addError(final FieldDefinition fieldDefinition, final String message, final String... vars) {
-        if (entity == null) {
-            loadEntity();
-        }
-        entity.addError(fieldDefinition, message, vars);
+        getEntity().addError(fieldDefinition, message, vars);
     }
 
     @Override
     public List<ErrorMessage> getGlobalErrors() {
-        if (entity == null) {
-            loadEntity();
-        }
-        return entity.getGlobalErrors();
+        return getEntity().getGlobalErrors();
     }
 
     @Override
     public Map<String, ErrorMessage> getErrors() {
-        if (entity == null) {
-            loadEntity();
-        }
-        return entity.getErrors();
+        return getEntity().getErrors();
     }
 
     @Override
     public ErrorMessage getError(final String fieldName) {
-        if (entity == null) {
-            loadEntity();
-        }
-        return entity.getError(fieldName);
+        return getEntity().getError(fieldName);
     }
 
     @Override
     public boolean isValid() {
-        if (entity == null) {
-            loadEntity();
-        }
-        return entity.isValid();
+        return getEntity().isValid();
     }
 
     @Override
     public void setNotValid() {
-        if (entity == null) {
-            loadEntity();
-        }
-        entity.setNotValid();
+        getEntity().setNotValid();
     }
 
     @Override
     public boolean isFieldValid(final String fieldName) {
-        if (entity == null) {
-            loadEntity();
-        }
-        return entity.isFieldValid(fieldName);
+        return getEntity().isFieldValid(fieldName);
     }
 
     @Override
     public boolean isActive() {
-        if (entity == null) {
-            loadEntity();
-        }
-        return entity.isActive();
+        return getEntity().isActive();
     }
 
     @Override
     public void setActive(final boolean active) {
-        if (entity == null) {
-            loadEntity();
-        }
-        entity.setActive(active);
+        getEntity().setActive(active);
     }
 
     @Override
     public Entity copy() {
-        if (entity == null) {
-            loadEntity();
-        }
-        return entity.copy();
+        return getEntity().copy();
     }
 
     @Override
     public String getStringField(final String fieldName) {
-        if (entity == null) {
-            loadEntity();
-        }
-        return entity.getStringField(fieldName);
+        return getEntity().getStringField(fieldName);
     }
 
     @Override
     public Entity getBelongsToField(final String fieldName) {
-        if (entity == null) {
-            loadEntity();
-        }
-        return entity.getBelongsToField(fieldName);
+        return getEntity().getBelongsToField(fieldName);
     }
 
     @Override
     public EntityList getHasManyField(final String fieldName) {
-        if (entity == null) {
-            loadEntity();
-        }
-        return entity.getHasManyField(fieldName);
+        return getEntity().getHasManyField(fieldName);
     }
 
     @Override
+    public List<Entity> getManyToManyField(final String fieldName) {
+        return getEntity().getManyToManyField(fieldName);
+    }
+    
+    @Override
     public EntityTree getTreeField(final String fieldName) {
-        if (entity == null) {
-            loadEntity();
-        }
-        return entity.getTreeField(fieldName);
+        return getEntity().getTreeField(fieldName);
     }
 
     @Override

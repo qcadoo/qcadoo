@@ -46,6 +46,23 @@
 		</xsl:attribute>
 	</xsl:template>
 
+	<xsl:template name="joinTableAttribute">
+		<xsl:param name="firstModel" />
+		<xsl:param name="secondModel" />
+		<xsl:choose>
+			<xsl:when test="compare($firstModel, $secondModel) &lt; 0">
+				<xsl:attribute name="table">
+					<xsl:value-of select="concat('joinTable_', $firstModel, '_', $secondModel)" />
+				</xsl:attribute>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:attribute name="table">
+					<xsl:value-of select="concat('joinTable_', $secondModel, '_', $firstModel)" />
+				</xsl:attribute>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+
 	<xsl:template match="//qcd:model">
 		<hibernate-mapping>
 			<class>
@@ -323,11 +340,11 @@
 				<xsl:text>true</xsl:text>
 			</xsl:attribute>
 			<xsl:attribute name="cascade">
-			<xsl:choose>
-				<xsl:when test="@cascade='delete'">delete</xsl:when>
-				<xsl:otherwise>none</xsl:otherwise>
-			</xsl:choose>
-		</xsl:attribute>
+				<xsl:choose>
+					<xsl:when test="@cascade='delete'">delete</xsl:when>
+					<xsl:otherwise>none</xsl:otherwise>
+				</xsl:choose>
+			</xsl:attribute>
 			<xsl:attribute name="lazy">true</xsl:attribute>
 			<xsl:attribute name="name">
 			    <xsl:value-of select="@name" />
@@ -353,6 +370,50 @@
 					</xsl:otherwise>
 				</xsl:choose>
 			</one-to-many>
+		</set>
+	</xsl:template>
+
+	<xsl:template
+		match="//qcd:model/qcd:fields/qcd:manyToMany[not(@persistent='false')]">
+		<set>
+			<xsl:attribute name="cascade">
+				<xsl:choose>
+					<xsl:when test="@cascade='delete'">delete</xsl:when>
+					<xsl:otherwise>none</xsl:otherwise>
+				</xsl:choose>
+			</xsl:attribute>
+			<xsl:attribute name="lazy">true</xsl:attribute>
+			<xsl:attribute name="name">
+			    <xsl:value-of select="@name" />
+			</xsl:attribute>
+			<xsl:call-template name="joinTableAttribute">
+				<xsl:with-param name="firstModel" select="/qcd:model/@name" />
+				<xsl:with-param name="secondModel" select="@model" />
+			</xsl:call-template>
+			<key>
+				<xsl:attribute name="column">
+            		<xsl:value-of select="concat(/qcd:model/@name, '_id')" />
+            	</xsl:attribute>
+			</key>
+			<many-to-many>
+				<xsl:attribute name="column">
+					<xsl:value-of select="concat(@model, '_id')" />
+				</xsl:attribute>
+				<xsl:choose>
+					<xsl:when test="@plugin">
+						<xsl:call-template name="entityName">
+							<xsl:with-param name="modelName" select="@model" />
+							<xsl:with-param name="pluginName" select="@plugin" />
+						</xsl:call-template>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:call-template name="entityName">
+							<xsl:with-param name="modelName" select="@model" />
+							<xsl:with-param name="pluginName" select="/qcd:model/@plugin" />
+						</xsl:call-template>
+					</xsl:otherwise>
+				</xsl:choose>
+			</many-to-many>
 		</set>
 	</xsl:template>
 

@@ -34,7 +34,7 @@ import org.junit.Test;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 
-public class HasManyToIntegrationTest extends IntegrationTest {
+public class HasManyIntegrationTest extends IntegrationTest {
 
     // http://docs.jboss.org/hibernate/core/3.3/reference/en/html/performance.html#performance-collections
 

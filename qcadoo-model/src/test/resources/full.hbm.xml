@@ -30,6 +30,7 @@
 		<id column="id" name="id" type="long">
 			<generator class="increment" />
 		</id>
+		
 		<property type="integer" name="fieldInteger" not-null="true"
 			unique="true">
 			<column name="fieldInteger" length="3" precision="4" />
@@ -52,11 +53,11 @@
 		<property type="boolean" name="fieldBoolean" not-null="false">
 			<column name="fieldBoolean" />
 		</property>
-		<many-to-one entity-name="com.qcadoo.model.beans.other.OtherSecondEntity" cascade="nullify"
+		<many-to-one entity-name="com.qcadoo.model.beans.other.OtherSecondEntity" cascade="none"
 			lazy="false" name="fieldSecondEntity" not-null="false">
 			<column name="fieldSecondEntity" />
 		</many-to-one>
-		<many-to-one entity-name="com.qcadoo.model.beans.other.OtherSecondEntity" cascade="nullify"
+		<many-to-one entity-name="com.qcadoo.model.beans.other.OtherSecondEntity" cascade="none"
 			lazy="proxy" name="fieldSecondEntity2" not-null="true">
 			<column name="fieldSecondEntity2" />
 		</many-to-one>
@@ -64,9 +65,15 @@
 			<key column="fieldFirstEntity" />
 			<one-to-many entity-name="com.qcadoo.model.beans.full.FullSecondEntity" />
 		</set>
-		<set cascade="nullify" lazy="true" name="fieldHasMany">
+		<set cascade="none" lazy="true" name="fieldHasMany">
 			<key column="fieldFirstEntity" />
 			<one-to-many entity-name="com.qcadoo.model.beans.full.FullThirdEntity" />
+		</set>
+		<set cascade="none" lazy="true" name="fieldManyToMany"
+				table="joinTable_firstEntity_thirdEntity">
+			<key column="firstEntity_id" />
+			<many-to-many column="thirdEntity_id"
+				entity-name="com.qcadoo.model.beans.full.FullThirdEntity" />
 		</set>
 		<property type="string" name="fieldDictionary" not-null="false">
 			<column name="fieldDictionary" />
@@ -90,15 +97,15 @@
 		<id column="id" name="id" type="long">
 			<generator class="increment" />
 		</id>
-		<many-to-one entity-name="com.qcadoo.model.beans.full.FullFirstEntity" cascade="nullify"
+		<many-to-one entity-name="com.qcadoo.model.beans.full.FullFirstEntity" cascade="none"
 			lazy="proxy" name="fieldFirstEntity" not-null="false">
 			<column name="fieldFirstEntity" />
 		</many-to-one>
-		<many-to-one entity-name="com.qcadoo.model.beans.full.FullSecondEntity" cascade="nullify"
+		<many-to-one entity-name="com.qcadoo.model.beans.full.FullSecondEntity" cascade="none"
 			lazy="proxy" name="parent" not-null="false">
 			<column name="parent" />
 		</many-to-one>
-		<set cascade="nullify" lazy="true" name="children">
+		<set cascade="none" lazy="true" name="children">
 			<key column="parent" />
 			<one-to-many entity-name="com.qcadoo.model.beans.full.FullSecondEntity" />
 		</set>
@@ -108,9 +115,15 @@
 		<id column="id" name="id" type="long">
 			<generator class="increment" />
 		</id>
-		<many-to-one entity-name="com.qcadoo.model.beans.full.FullFirstEntity" cascade="nullify"
+		<many-to-one entity-name="com.qcadoo.model.beans.full.FullFirstEntity" cascade="none"
 			lazy="proxy" name="fieldFirstEntity" not-null="false">
 			<column name="fieldFirstEntity" />
 		</many-to-one>
+		<set cascade="none" lazy="true" name="fieldManyToMany"
+				table="joinTable_firstEntity_thirdEntity">
+			<key column="thirdEntity_id" />
+			<many-to-many column="firstEntity_id"
+				entity-name="com.qcadoo.model.beans.full.FullFirstEntity" />
+		</set>
 	</class>
 </hibernate-mapping>

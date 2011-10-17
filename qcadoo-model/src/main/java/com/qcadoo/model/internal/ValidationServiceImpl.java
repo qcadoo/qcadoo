@@ -32,7 +32,9 @@ import org.springframework.util.StringUtils;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.types.BelongsToType;
+import com.qcadoo.model.api.types.FieldType;
 import com.qcadoo.model.api.types.HasManyType;
+import com.qcadoo.model.api.types.ManyToManyType;
 import com.qcadoo.model.api.types.TreeType;
 import com.qcadoo.model.internal.api.InternalDataDefinition;
 import com.qcadoo.model.internal.api.InternalFieldDefinition;
@@ -151,11 +153,10 @@ public final class ValidationServiceImpl implements ValidationService {
 
     private Object parseAndValidateField(final InternalFieldDefinition fieldDefinition, final Object value,
             final Entity validatedEntity) {
-        if (fieldDefinition.getType() instanceof BelongsToType) {
+        FieldType fieldType = fieldDefinition.getType();
+        if (fieldType instanceof BelongsToType) {
             return parseAndValidateBelongsToField(fieldDefinition, trimAndNullIfEmpty(value), validatedEntity);
-        } else if (fieldDefinition.getType() instanceof HasManyType) {
-            return value;
-        } else if (fieldDefinition.getType() instanceof TreeType) {
+        } else if (fieldType instanceof HasManyType || fieldType instanceof TreeType || fieldType instanceof ManyToManyType) {
             return value;
         } else {
             return parseAndValidateValue(fieldDefinition, trimAndNullIfEmpty(value), validatedEntity);

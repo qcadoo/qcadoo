@@ -31,6 +31,7 @@
 		<string name="name" required="true" />
 		<belongsTo name="product" model="product" required="false"
 			lazy="false" />
+		<manyToMany name="products" model="product" plugin="products" />
 	</fields>
 	<hooks />
 </model>

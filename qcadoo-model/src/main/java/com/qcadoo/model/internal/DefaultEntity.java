@@ -28,10 +28,12 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
+import com.google.common.collect.Lists;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.FieldDefinition;
@@ -204,6 +206,15 @@ public final class DefaultEntity implements Entity {
         return (EntityListImpl) getField(fieldName);
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<Entity> getManyToManyField(final String fieldName) {
+        if (getField(fieldName) == null) {
+            return Lists.newArrayList();
+        }
+        return Lists.newArrayList((Set<Entity>) getField(fieldName));
+    }
+    
     @Override
     public EntityTreeImpl getTreeField(final String fieldName) {
         return (EntityTreeImpl) getField(fieldName);

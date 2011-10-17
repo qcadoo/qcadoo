@@ -147,7 +147,7 @@ public class ModelXmlToHbmConverterTest {
 
     @Test
     public void shouldDefineProperties() throws Exception {
-        assertNodeCount(13, "/hibernate-mapping/class[1]/property", hbmFirstEntity);
+        assertNodeCount(17, "/hibernate-mapping/class[1]/property", hbmFirstEntity);
         assertNodeCount(0, "/hibernate-mapping/class[1]/property", hbmSecondEntity);
         assertNodeCount(0, "/hibernate-mapping/class[1]/property", hbmThirdEntity);
         assertNodeExists("/hibernate-mapping/class[1]/property[@name='fieldInteger' and @type='integer']", hbmFirstEntity);
@@ -161,6 +161,10 @@ public class ModelXmlToHbmConverterTest {
         assertNodeExists("/hibernate-mapping/class[1]/property[@name='fieldOtherDictionary' and @type='string']", hbmFirstEntity);
         assertNodeExists("/hibernate-mapping/class[1]/property[@name='fieldEnum' and @type='string']", hbmFirstEntity);
         assertNodeExists("/hibernate-mapping/class[1]/property[@name='fieldPassword' and @type='string']", hbmFirstEntity);
+        assertNodeExists("/hibernate-mapping/class[1]/property[@name='createDate' and @type='timestamp']", hbmFirstEntity);
+        assertNodeExists("/hibernate-mapping/class[1]/property[@name='updateDate' and @type='timestamp']", hbmFirstEntity);
+        assertNodeExists("/hibernate-mapping/class[1]/property[@name='createUser' and @type='string']", hbmFirstEntity);
+        assertNodeExists("/hibernate-mapping/class[1]/property[@name='updateUser' and @type='string']", hbmFirstEntity);
     }
 
     @Test
@@ -244,9 +248,9 @@ public class ModelXmlToHbmConverterTest {
 
     @Test
     public void shouldDefineHasManyRelation() throws Exception {
-        assertNodeCount(2, "/hibernate-mapping/class[1]/set", hbmFirstEntity);
+        assertNodeCount(3, "/hibernate-mapping/class[1]/set", hbmFirstEntity);
         assertNodeCount(1, "/hibernate-mapping/class[1]/set", hbmSecondEntity);
-        assertNodeCount(0, "/hibernate-mapping/class[1]/set", hbmThirdEntity);
+        assertNodeCount(1, "/hibernate-mapping/class[1]/set", hbmThirdEntity);
         assertNodeExists("/hibernate-mapping/class[1]/set[@name='fieldTree']", hbmFirstEntity);
         assertNodeExists("/hibernate-mapping/class[1]/set[@name='fieldHasMany']", hbmFirstEntity);
         assertNodeExists("/hibernate-mapping/class[1]/set[@inverse='true']", hbmFirstEntity);

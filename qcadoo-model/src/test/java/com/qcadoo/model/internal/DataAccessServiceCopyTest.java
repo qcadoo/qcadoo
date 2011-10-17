@@ -191,6 +191,35 @@ public final class DataAccessServiceCopyTest extends DataAccessTest {
         verify(session, never()).get(Mockito.eq(SampleSimpleDatabaseObject.class), anyInt());
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @Test
+    public void shouldCopyEntityWithManyToManyField() throws Exception {
+        // given
+        SampleSimpleDatabaseObject simpleDatabaseObject = new SampleSimpleDatabaseObject();
+        simpleDatabaseObject.setId(12L);
+        simpleDatabaseObject.setName("Mr T");
+        simpleDatabaseObject.setAge(30);
+        
+        SampleParentDatabaseObject parentDatabaseObject = new SampleParentDatabaseObject();
+        parentDatabaseObject.setId(13L);
+        parentDatabaseObject.setName("Mr T");
+        
+        given(hibernateService.getTotalNumberOfEntities(Mockito.any(Criteria.class))).willReturn(1, 0);
+        given(session.get(Mockito.eq(SampleSimpleDatabaseObject.class), Mockito.eq(12L))).willReturn(simpleDatabaseObject);
+        given(session.get(Mockito.eq(SampleParentDatabaseObject.class), Mockito.eq(13L))).willReturn(parentDatabaseObject);
+        given(hibernateService.list(Mockito.any(Criteria.class))).willReturn((List) Lists.newArrayList(simpleDatabaseObject));
+        
+        // when
+        List<Entity> entities = parentDataDefinition.copy(new Long[] { 13L });
+        
+        // then
+        assertEquals(1, entities.size());
+        assertTrue(entities.get(0).isValid());
+        Assert.assertEquals("Mr T", entities.get(0).getField("name"));
+        verify(session).save(Mockito.any());
+        verify(session, never()).get(Mockito.eq(SampleSimpleDatabaseObject.class), anyInt());
+    }
+    
     @Test
     public void shouldCopyEntityWithoutTreeField() throws Exception {
         // given

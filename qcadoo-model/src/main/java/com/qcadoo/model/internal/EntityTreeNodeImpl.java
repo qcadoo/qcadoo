@@ -95,6 +95,12 @@ public final class EntityTreeNodeImpl implements EntityTreeNode {
     }
 
     @Override
+    public List<Entity> getManyToManyField(final String fieldName) {
+        return entity.getManyToManyField(fieldName);
+    }
+
+    
+    @Override
     public EntityTree getTreeField(final String fieldName) {
         return entity.getTreeField(fieldName);
     }

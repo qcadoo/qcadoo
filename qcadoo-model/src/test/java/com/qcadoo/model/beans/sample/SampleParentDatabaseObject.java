@@ -45,6 +45,8 @@ public class SampleParentDatabaseObject implements HibernateProxy {
     private List<SampleSimpleDatabaseObject> entities;
 
     private List<SampleTreeDatabaseObject> tree;
+    
+    private List<SampleSimpleDatabaseObject> manyToMany;
 
     public SampleParentDatabaseObject() {
     }
@@ -98,6 +100,14 @@ public class SampleParentDatabaseObject implements HibernateProxy {
 
     public void setTree(final List<SampleTreeDatabaseObject> tree) {
         this.tree = tree;
+    }
+
+    public List<SampleSimpleDatabaseObject> getManyToMany() {
+        return manyToMany;
+    }
+
+    public void setManyToMany(List<SampleSimpleDatabaseObject> manyToMany) {
+        this.manyToMany = manyToMany;
     }
 
     @Override

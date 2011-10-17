@@ -157,5 +157,4 @@ public final class DataAccessServiceGetTest extends DataAccessTest {
         assertEquals("belongsTo", ((FieldDefinition) getField(entities, "joinFieldDefinition")).getName());
         assertEquals("simple.entity", ((DataDefinition) getField(entities, "dataDefinition")).getName());
     }
-
 }

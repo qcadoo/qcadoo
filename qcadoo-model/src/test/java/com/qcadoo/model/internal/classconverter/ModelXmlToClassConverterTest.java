@@ -117,11 +117,24 @@ public class ModelXmlToClassConverterTest {
     }
 
     @Test
+    public void shouldDefineManyToManyFields() throws Exception {
+        verifyField(propertyDescriptors.get("fieldManyToMany"), Set.class);
+    }
+    
+    @Test
     public void shouldDefineHasManyFields() throws Exception {
         verifyField(propertyDescriptors.get("fieldTree"), Set.class);
         verifyField(propertyDescriptors.get("fieldHasMany"), Set.class);
     }
 
+    @Test
+    public void shouldHaveAuditableFields() throws Exception {
+        verifyField(propertyDescriptors.get("createDate"), Date.class);
+        verifyField(propertyDescriptors.get("updateDate"), Date.class);
+        verifyField(propertyDescriptors.get("createUser"), String.class);
+        verifyField(propertyDescriptors.get("updateUser"), String.class);
+    }
+    
     @Test
     public void shouldHaveToStringMethod() throws Exception {
         // given

@@ -24,7 +24,7 @@
     ***************************************************************************
 
 -->
-<model plugin="full" name="firstEntity" insertable="false" activable="true"
+<model plugin="full" name="firstEntity" insertable="false" activable="true" auditable="true"
 	deletable="false" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns="http://schema.qcadoo.org/model"
 	xsi:schemaLocation="http://schema.qcadoo.org/model http://schema.qcadoo.org/model.xsd">
@@ -60,6 +60,7 @@
 			joinField="fieldFirstEntity" />
 		<hasMany name="fieldHasMany" model="thirdEntity" cascade="nullify"
 			joinField="fieldFirstEntity" />
+		<manyToMany name="fieldManyToMany" model="thirdEntity" cascade="nullify" />
 		<dictionary name="fieldDictionary" dictionary="categories" />
 		<dictionary name="fieldOtherDictionary"
 			dictionary="categories" />

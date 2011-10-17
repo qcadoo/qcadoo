@@ -29,6 +29,7 @@ import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.types.HasManyType;
+import com.qcadoo.model.api.types.ManyToManyType;
 import com.qcadoo.model.api.types.TreeType;
 import com.qcadoo.model.internal.api.ErrorMessageDefinition;
 import com.qcadoo.model.internal.api.FieldHookDefinition;
@@ -53,13 +54,8 @@ public final class RequiredValidator implements FieldHookDefinition, ErrorMessag
     @SuppressWarnings("rawtypes")
     @Override
     public boolean call(final Entity entity, final Object oldValue, final Object newValue) {
-        if (fieldDefinition.getType() instanceof HasManyType) {
-            if (entity.getField(fieldDefinition.getName()) == null
-                    || ((List) entity.getField(fieldDefinition.getName())).isEmpty()) {
-                entity.addError(fieldDefinition, errorRelationMessage);
-                return false;
-            }
-        } else if (fieldDefinition.getType() instanceof TreeType) {
+        if (fieldDefinition.getType() instanceof HasManyType || fieldDefinition.getType() instanceof ManyToManyType
+                || fieldDefinition.getType() instanceof TreeType) {
             if (entity.getField(fieldDefinition.getName()) == null
                     || ((List) entity.getField(fieldDefinition.getName())).isEmpty()) {
                 entity.addError(fieldDefinition, errorRelationMessage);

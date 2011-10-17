@@ -57,6 +57,7 @@ import com.qcadoo.model.api.DictionaryService;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.types.FieldType;
 import com.qcadoo.model.api.types.HasManyType;
+import com.qcadoo.model.api.types.ManyToManyType;
 import com.qcadoo.model.api.types.TreeType;
 import com.qcadoo.model.internal.AbstractModelXmlConverter;
 import com.qcadoo.model.internal.DataDefinitionImpl;
@@ -80,6 +81,7 @@ import com.qcadoo.model.internal.types.EnumType;
 import com.qcadoo.model.internal.types.FileType;
 import com.qcadoo.model.internal.types.HasManyEntitiesType;
 import com.qcadoo.model.internal.types.IntegerType;
+import com.qcadoo.model.internal.types.ManyToManyEntitiesType;
 import com.qcadoo.model.internal.types.PasswordType;
 import com.qcadoo.model.internal.types.PriorityType;
 import com.qcadoo.model.internal.types.StringType;
@@ -350,6 +352,14 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
                 dataDefinitionService);
     }
 
+    private FieldType getManyToManyType(final XMLStreamReader reader, final String pluginIdentifier) {
+        String plugin = getStringAttribute(reader, "plugin");
+        ManyToManyType.Cascade cascade = "delete".equals(getStringAttribute(reader, "cascade")) ? ManyToManyType.Cascade.DELETE
+                : ManyToManyType.Cascade.NULLIFY;
+        return new ManyToManyEntitiesType(plugin != null ? plugin : pluginIdentifier, getStringAttribute(reader, TAG_MODEL),
+                cascade, getBooleanAttribute(reader, "copyable", false), dataDefinitionService);
+    }
+
     private FieldType getTreeType(final XMLStreamReader reader, final String pluginIdentifier) {
         String plugin = getStringAttribute(reader, "plugin");
         TreeType.Cascade cascade = "delete".equals(getStringAttribute(reader, "cascade")) ? TreeType.Cascade.DELETE
@@ -476,6 +486,8 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
                 return getBelongsToType(reader, dataDefinition.getPluginIdentifier());
             case HASMANY:
                 return getHasManyType(reader, dataDefinition.getPluginIdentifier());
+            case MANYTOMANY:
+                return getManyToManyType(reader, dataDefinition.getPluginIdentifier());
             case TREE:
                 return getTreeType(reader, dataDefinition.getPluginIdentifier());
             case ENUM:

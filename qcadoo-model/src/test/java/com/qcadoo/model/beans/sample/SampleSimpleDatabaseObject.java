@@ -25,6 +25,7 @@ package com.qcadoo.model.beans.sample;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Set;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -49,6 +50,9 @@ public class SampleSimpleDatabaseObject {
     private SampleParentDatabaseObject belongsTo;
 
     private SampleParentDatabaseObject lazyBelongsTo;
+    
+    private Set<SampleParentDatabaseObject> manyToMany;
+
 
     public SampleSimpleDatabaseObject() {
     }
@@ -127,6 +131,14 @@ public class SampleSimpleDatabaseObject {
 
     public void setBirthDate(final Date birthDate) {
         this.birthDate = birthDate;
+    }
+
+    public Set<SampleParentDatabaseObject> getManyToMany() {
+        return manyToMany;
+    }
+
+    public void setManyToMany(Set<SampleParentDatabaseObject> manyToMany) {
+        this.manyToMany = manyToMany;
     }
 
     @Override

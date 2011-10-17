@@ -35,6 +35,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import javassist.CannotCompileException;
+import javassist.ClassClassPath;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtField;
@@ -65,6 +66,11 @@ public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverte
 
     private ClassLoader classLoader;
 
+    public ModelXmlToClassConverterImpl() {
+        super();
+        classPool.appendClassPath(new ClassClassPath(org.hibernate.collection.PersistentSet.class));
+    }
+    
     @Override
     public void setBeanClassLoader(final ClassLoader classLoader) {
         this.classLoader = classLoader;
@@ -283,8 +289,9 @@ public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverte
             sb.append("int result = 1;");
 
             for (String field : fields) {
-                sb.append("result = prime * result + ((get" + StringUtils.capitalize(field) + "() == null) ? 0 : get"
-                        + StringUtils.capitalize(field) + "().hashCode());");
+                String fieldGetter = "get" + StringUtils.capitalize(field) + "()";
+                // explanation of the second condition -> https://hibernate.onjira.com/browse/HHH-3799
+                sb.append("result = prime * result + ((" + fieldGetter + " == null || " + fieldGetter + ".getClass().isAssignableFrom(org.hibernate.collection.PersistentSet.class)) ? 0 : " + fieldGetter + ".hashCode());");
             }
 
             sb.append("return result;");
@@ -355,9 +362,13 @@ public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverte
                     createBelongsField(ctClass, pluginIdentifier, reader);
                     fields.add(getStringAttribute(reader, "name"));
                     break;
+                case MANYTOMANY:
+                    createSetField(ctClass, reader);
+                    fields.add(getStringAttribute(reader, "name"));
+                    break;
                 case HASMANY:
                 case TREE:
-                    createHasManyField(ctClass, reader);
+                    createSetField(ctClass, reader);
                     break;
                 default:
                     break;
@@ -371,7 +382,7 @@ public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverte
         }
     }
 
-    private void createHasManyField(final CtClass ctClass, final XMLStreamReader reader) throws ModelXmlCompilingException {
+    private void createSetField(final CtClass ctClass, final XMLStreamReader reader) throws ModelXmlCompilingException {
         createField(ctClass, getStringAttribute(reader, "name"), "java.util.Set");
     }
 

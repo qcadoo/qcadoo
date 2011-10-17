@@ -203,12 +203,11 @@ public final class SearchCriteriaImpl implements SearchCriteriaBuilder, SearchCr
         return EqualsBuilder.reflectionEquals(this, obj);
     }
 
-    // @Override
-    // public String toString() {
-    // return "SearchCriteria[criteria=" + criteria + ", maxResults=" + maxResults + ", firstResult=" + firstResult + "]";
-    // }
-
-    // depreceted
+    // helpful for debug purposes
+    @Override
+    public String toString() {
+        return "SearchCriteria[criteria=" + criteria + ", maxResults=" + maxResults + ", firstResult=" + firstResult + "]";
+    }
 
     @Override
     public SearchCriteriaBuilder like(final String fieldName, final String value) {

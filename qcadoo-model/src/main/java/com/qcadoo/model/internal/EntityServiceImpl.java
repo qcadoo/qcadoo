@@ -27,17 +27,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.hibernate.proxy.HibernateProxy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.google.common.collect.Sets;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.ExpressionService;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.types.BelongsToType;
 import com.qcadoo.model.api.types.HasManyType;
+import com.qcadoo.model.api.types.ManyToManyType;
 import com.qcadoo.model.api.types.TreeType;
 import com.qcadoo.model.internal.api.EntityService;
 import com.qcadoo.model.internal.api.HibernateService;
@@ -114,6 +117,8 @@ public final class EntityServiceImpl implements EntityService {
             return getBelongsToField(databaseEntity, fieldDefinition);
         } else if (fieldDefinition.getType() instanceof HasManyType) {
             return getHasManyField(databaseEntity, fieldDefinition);
+        } else if (fieldDefinition.getType() instanceof ManyToManyType) {
+            return getManyToManyField(databaseEntity, fieldDefinition);
         } else if (fieldDefinition.getType() instanceof TreeType) {
             return getTreeField(databaseEntity, fieldDefinition);
         } else {
@@ -177,15 +182,28 @@ public final class EntityServiceImpl implements EntityService {
         return genericEntity;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Object convertToDatabaseEntity(final InternalDataDefinition dataDefinition, final Entity genericEntity,
             final Object existingDatabaseEntity) {
         Object databaseEntity = getDatabaseEntity(dataDefinition, genericEntity, existingDatabaseEntity);
 
         for (Entry<String, FieldDefinition> fieldDefinitionEntry : dataDefinition.getFields().entrySet()) {
-            if (fieldDefinitionEntry.getValue().isPersistent()
-                    && ((InternalFieldDefinition) fieldDefinitionEntry.getValue()).isEnabled()) {
-                setField(databaseEntity, fieldDefinitionEntry.getValue(), genericEntity.getField(fieldDefinitionEntry.getKey()));
+            FieldDefinition fieldDefinition = fieldDefinitionEntry.getValue();
+
+            if (fieldDefinition.isPersistent() && ((InternalFieldDefinition) fieldDefinition).isEnabled()) {
+                Object fieldValue = genericEntity.getField(fieldDefinitionEntry.getKey());
+
+                if (fieldDefinition.getType() instanceof ManyToManyType && fieldValue instanceof Iterable) {
+                    Set<Object> innerDatabaseEntities = Sets.newHashSet();
+                    for (Entity innerGenericEntity : (Iterable<Entity>) fieldValue) {
+                        innerDatabaseEntities.add(convertToDatabaseEntity(
+                                (InternalDataDefinition) innerGenericEntity.getDataDefinition(), innerGenericEntity, null));
+                    }
+                    setField(databaseEntity, fieldDefinitionEntry.getValue(), innerDatabaseEntities);
+                } else {
+                    setField(databaseEntity, fieldDefinitionEntry.getValue(), fieldValue);
+                }
             }
         }
 
@@ -224,6 +242,27 @@ public final class EntityServiceImpl implements EntityService {
         InternalDataDefinition referencedDataDefinition = (InternalDataDefinition) hasManyFieldType.getDataDefinition();
 
         return new EntityListImpl(referencedDataDefinition, hasManyFieldType.getJoinFieldName(), parentId);
+    }
+
+    @SuppressWarnings("unchecked")
+    private Object getManyToManyField(final Object databaseEntity, final FieldDefinition fieldDefinition) {
+        Set<Object> databaseEntities = (Set<Object>) getPrimitiveField(databaseEntity, fieldDefinition);
+        if (databaseEntities == null) {
+            return null;
+        }
+        Set<Entity> genericEntities = Sets.newHashSet();
+        InternalDataDefinition referencedDataDefinition = (InternalDataDefinition) ((ManyToManyType) fieldDefinition.getType())
+                .getDataDefinition();
+
+        for (Object innerEntity : (Iterable<Object>) getField(databaseEntity, fieldDefinition.getName())) {
+            Long id = getId(innerEntity);
+            if (id == null) {
+                genericEntities.add(convertToGenericEntity(referencedDataDefinition, innerEntity));
+            } else {
+                genericEntities.add(new ProxyEntity(referencedDataDefinition, id));
+            }
+        }
+        return genericEntities;
     }
 
     private Object getTreeField(final Object databaseEntity, final FieldDefinition fieldDefinition) {

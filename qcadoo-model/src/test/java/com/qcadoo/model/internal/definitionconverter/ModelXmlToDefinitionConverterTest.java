@@ -51,6 +51,7 @@ import com.qcadoo.model.Utils;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.types.BelongsToType;
 import com.qcadoo.model.api.types.HasManyType;
+import com.qcadoo.model.api.types.ManyToManyType;
 import com.qcadoo.model.api.types.TreeType;
 import com.qcadoo.model.internal.DataDefinitionImpl;
 import com.qcadoo.model.internal.DataDefinitionServiceImpl;
@@ -205,6 +206,13 @@ public class ModelXmlToDefinitionConverterTest {
         assertEquals("thirdEntity", getField(dataDefinition.getField("fieldHasMany").getType(), "entityName"));
         assertEquals(HasManyType.Cascade.NULLIFY, getField(dataDefinition.getField("fieldHasMany").getType(), "cascade"));
 
+        assertNotNull(dataDefinition.getField("fieldManyToMany"));
+        assertThat(dataDefinition.getField("fieldManyToMany").getType(), instanceOf(ManyToManyType.class));
+        assertEquals("thirdEntity", ((ManyToManyType) (dataDefinition.getField("fieldManyToMany")).getType()).getDataDefinition().getName());
+        assertEquals("full", getField(dataDefinition.getField("fieldManyToMany").getType(), "pluginIdentifier"));
+        assertEquals("thirdEntity", getField(dataDefinition.getField("fieldManyToMany").getType(), "entityName"));
+        assertEquals(ManyToManyType.Cascade.NULLIFY, getField(dataDefinition.getField("fieldManyToMany").getType(), "cascade"));
+        
         assertNotNull(dataDefinition.getField("fieldTree"));
         assertThat(dataDefinition.getField("fieldTree").getType(), instanceOf(TreeEntitiesType.class));
         assertEquals("fieldFirstEntity", ((TreeType) (dataDefinition.getField("fieldTree")).getType()).getJoinFieldName());
@@ -225,6 +233,15 @@ public class ModelXmlToDefinitionConverterTest {
         assertThat(dataDefinition.getField("fieldPassword").getType(), instanceOf(PasswordType.class));
         assertFalse(dataDefinition.getField("fieldInteger").isReadOnly());
         assertTrue(dataDefinition.getField("fieldText").isReadOnly());
+        
+        assertThat(dataDefinition.getField("createDate").getType(), instanceOf(DateTimeType.class));
+        assertThat(dataDefinition.getField("updateDate").getType(), instanceOf(DateTimeType.class));
+        assertThat(dataDefinition.getField("createUser").getType(), instanceOf(StringType.class));
+        assertThat(dataDefinition.getField("updateUser").getType(), instanceOf(StringType.class));
+        assertNotNull(dataDefinition.getField("createDate"));
+        assertNotNull(dataDefinition.getField("updateDate"));
+        assertNotNull(dataDefinition.getField("createUser"));
+        assertNotNull(dataDefinition.getField("updateUser"));
     }
 
     @Test

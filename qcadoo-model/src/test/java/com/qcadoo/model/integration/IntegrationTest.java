@@ -26,6 +26,8 @@ package com.qcadoo.model.integration;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
+import java.util.List;
+
 import org.hibernate.SessionFactory;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -63,6 +65,8 @@ public abstract class IntegrationTest {
     protected static String TABLE_NAME_COMPONENT = PLUGIN_PRODUCTS_NAME + "_" + ENTITY_NAME_COMPONENT;
 
     protected static String TABLE_NAME_PART = PLUGIN_PRODUCTS_NAME + "_" + ENTITY_NAME_PART;
+    
+    protected static String TABLE_NAME_JOIN_PRODUCT_PART = "JOINTABLE_" + ENTITY_NAME_PART.toUpperCase() + "_" + ENTITY_NAME_PRODUCT.toUpperCase();
 
     protected static InternalDataDefinitionService dataDefinitionService;
 
@@ -96,6 +100,7 @@ public abstract class IntegrationTest {
 
     @Before
     public void init() throws Exception {
+        jdbcTemplate.execute("delete from " + TABLE_NAME_JOIN_PRODUCT_PART);
         jdbcTemplate.execute("delete from " + TABLE_NAME_PART);
         jdbcTemplate.execute("delete from " + TABLE_NAME_COMPONENT);
         jdbcTemplate.execute("delete from " + TABLE_NAME_MACHINE);
@@ -115,6 +120,12 @@ public abstract class IntegrationTest {
         Entity entity = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PART).create();
         entity.setField("name", name);
         entity.setField("product", product);
+        return entity;
+    }
+    
+    protected Entity createPart(final String name, final Object product, final List<Entity> productsManyToMany) {
+        Entity entity = createPart(name, product);
+        entity.setField("products", productsManyToMany);
         return entity;
     }
 

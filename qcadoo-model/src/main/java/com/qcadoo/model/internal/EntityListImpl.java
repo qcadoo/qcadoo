@@ -62,10 +62,8 @@ public final class EntityListImpl extends AbstractList<Entity> implements Entity
 
     @Override
     public SearchCriteriaBuilder find() {
-        return dataDefinition.find().createAlias(joinFieldDefinition.getName(), joinFieldDefinition.getName()).add(
-        // SearchRestrictions.belongsTo(joinFieldDefinition.getName(),
-        // ((BelongsToType) joinFieldDefinition.getType()).getDataDefinition(), parentId));
-                SearchRestrictions.eq(joinFieldDefinition.getName() + ".id", parentId));
+        return dataDefinition.find().createAlias(joinFieldDefinition.getName(), joinFieldDefinition.getName())
+                .add(SearchRestrictions.eq(joinFieldDefinition.getName() + ".id", parentId));
     }
 
     @Override

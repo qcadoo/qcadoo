@@ -37,6 +37,7 @@ import static org.mockito.Mockito.mock;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
@@ -49,6 +50,7 @@ import com.qcadoo.model.api.DictionaryService;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.types.EnumeratedType;
 import com.qcadoo.model.api.types.FieldType;
+import com.qcadoo.model.api.types.ManyToManyType;
 import com.qcadoo.model.internal.DataAccessTest;
 import com.qcadoo.model.internal.DefaultEntity;
 import com.qcadoo.model.internal.FieldDefinitionImpl;
@@ -61,6 +63,7 @@ import com.qcadoo.model.internal.types.DecimalType;
 import com.qcadoo.model.internal.types.DictionaryType;
 import com.qcadoo.model.internal.types.EnumType;
 import com.qcadoo.model.internal.types.IntegerType;
+import com.qcadoo.model.internal.types.ManyToManyEntitiesType;
 import com.qcadoo.model.internal.types.PasswordType;
 import com.qcadoo.model.internal.types.PriorityType;
 import com.qcadoo.model.internal.types.StringType;
@@ -230,6 +233,17 @@ public class FieldTypeFactoryTest extends DataAccessTest {
         assertTrue(fieldType.toObject(fieldDefinition, new DefaultEntity(dataDefinition)).isValid());
     }
 
+    @Test
+    public void shouldReturnManyToManyType() throws Exception {
+        // when
+        FieldType fieldType = new ManyToManyEntitiesType("parent", "entity", ManyToManyType.Cascade.NULLIFY, true, dataDefinitionService);
+        
+        // then
+        assertThat(fieldType, is(ManyToManyEntitiesType.class));
+        assertEquals(Set.class, fieldType.getType());
+        assertTrue(fieldType.toObject(fieldDefinition, new DefaultEntity(dataDefinition)).isValid());
+    }
+    
     @Test
     public void shouldReturnPasswordType() throws Exception {
         // when
