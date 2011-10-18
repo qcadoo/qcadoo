@@ -197,6 +197,10 @@ public final class EntityServiceImpl implements EntityService {
                 if (fieldDefinition.getType() instanceof ManyToManyType && fieldValue instanceof Iterable) {
                     Set<Object> innerDatabaseEntities = Sets.newHashSet();
                     for (Entity innerGenericEntity : (Iterable<Entity>) fieldValue) {
+                        // TODO MAKU - fix infinity loop problem.
+                        if (innerGenericEntity instanceof ProxyEntity) {
+                            continue;
+                        }
                         innerDatabaseEntities.add(convertToDatabaseEntity(
                                 (InternalDataDefinition) innerGenericEntity.getDataDefinition(), innerGenericEntity, null));
                     }
