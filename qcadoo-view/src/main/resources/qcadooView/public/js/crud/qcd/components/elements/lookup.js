@@ -282,7 +282,7 @@ QCD.components.elements.Lookup = function(_element, _mainController) {
 					elements.input.removeClass('inactive');
 				}
 			} else {
-				_this.addMessage({
+				_this.addMessage( {
 					title : "",
 					content : viewState.error
 				});
@@ -292,7 +292,7 @@ QCD.components.elements.Lookup = function(_element, _mainController) {
 	}
 
 	function onDataStateChange() {
-		
+
 		if (dataState.autocomplete.code == dataState.currentCode) {
 			elements.loading.hide();
 		}
@@ -304,6 +304,15 @@ QCD.components.elements.Lookup = function(_element, _mainController) {
 			onViewStateChange();
 			return;
 		}
+
+		// awesomeDynamicList isn't so awesome - it steals the focus
+		if (!viewState.isFocused && dataState.autocomplete.code) {
+			dataState.currentCode = dataState.autocomplete.code;
+			viewState.isFocused = true;
+			$(elements.input).trigger("focus");
+			elements.input.val(dataState.autocomplete.code);
+		}
+
 		if (viewState.isFocused) {
 			lookupDropdown.updateAutocomplete(dataState.autocomplete.matches,
 					dataState.autocomplete.entitiesNumber);
@@ -416,7 +425,7 @@ QCD.components.elements.Lookup = function(_element, _mainController) {
 		var grid = lookupWindow.getComponent("window.grid");
 		grid.setLinkListener(this);
 		if (dataState.currentCode) {
-//			grid.setFilterState("lookupCode", dataState.currentCode);
+			// grid.setFilterState("lookupCode", dataState.currentCode);
 		}
 		lookupWindow.init();
 	}
@@ -428,7 +437,7 @@ QCD.components.elements.Lookup = function(_element, _mainController) {
 	this.onGridLinkClicked = function(entityId) {
 		var grid = lookupWindow.getComponent("window.grid");
 		var lookupData = grid.getLookupData(entityId);
-		performSelectEntity({
+		performSelectEntity( {
 			id : lookupData.entityId,
 			code : lookupData.lookupCode,
 			value : lookupData.lookupValue
