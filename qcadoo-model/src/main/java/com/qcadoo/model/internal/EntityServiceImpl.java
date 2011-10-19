@@ -197,7 +197,7 @@ public final class EntityServiceImpl implements EntityService {
                 if (fieldDefinition.getType() instanceof ManyToManyType && fieldValue instanceof Iterable) {
                     Set<Object> innerDatabaseEntities = Sets.newHashSet();
                     for (Entity innerGenericEntity : (Iterable<Entity>) fieldValue) {
-                        innerDatabaseEntities.add(convertToDatabaseEntity(
+                        innerDatabaseEntities.add(getDatabaseEntity(
                                 (InternalDataDefinition) innerGenericEntity.getDataDefinition(), innerGenericEntity, null));
                     }
                     setField(databaseEntity, fieldDefinitionEntry.getValue(), innerDatabaseEntities);
