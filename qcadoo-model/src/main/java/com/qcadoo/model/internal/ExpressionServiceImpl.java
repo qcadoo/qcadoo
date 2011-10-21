@@ -113,7 +113,7 @@ public final class ExpressionServiceImpl implements ExpressionService {
         }
 
         ExpressionParser parser = new SpelExpressionParser();
-        Expression exp = parser.parseExpression(translate(expression, locale));
+        Expression exp = parser.parseExpression(expression);
         EvaluationContext context = new StandardEvaluationContext();
 
         if (entity != null) {
@@ -140,7 +140,7 @@ public final class ExpressionServiceImpl implements ExpressionService {
         if (StringUtils.isEmpty(value) || "null".equals(value)) {
             return null;
         } else {
-            return value;
+            return translate(value, locale);
         }
     }
 
