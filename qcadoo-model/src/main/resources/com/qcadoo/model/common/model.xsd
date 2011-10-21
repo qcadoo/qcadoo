@@ -111,10 +111,14 @@
 	</xs:complexType>
 
 	<xs:complexType name="basicValidatableFieldType">
-		<xs:choice minOccurs="0" maxOccurs="unbounded">
-			<xs:element name="validatesWith" type="hookType" />
-			<xs:element name="validatesRegex" type="validatesRegexType" />
-		</xs:choice>
+		<xs:complexContent>
+			<xs:extension base="fieldType">
+				<xs:choice minOccurs="0" maxOccurs="unbounded">
+					<xs:element name="validatesWith" type="hookType" />
+					<xs:element name="validatesRegex" type="validatesRegexType" />
+				</xs:choice>
+			</xs:extension>
+		</xs:complexContent>
 	</xs:complexType>
 		
 	<xs:complexType name="numericFieldType">
