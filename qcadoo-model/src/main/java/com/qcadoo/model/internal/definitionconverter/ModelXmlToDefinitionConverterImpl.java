@@ -356,8 +356,9 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
         String plugin = getStringAttribute(reader, "plugin");
         ManyToManyType.Cascade cascade = "delete".equals(getStringAttribute(reader, "cascade")) ? ManyToManyType.Cascade.DELETE
                 : ManyToManyType.Cascade.NULLIFY;
-        return new ManyToManyEntitiesType(plugin != null ? plugin : pluginIdentifier, getStringAttribute(reader, TAG_MODEL),
-                cascade, getBooleanAttribute(reader, "copyable", false), dataDefinitionService);
+        return new ManyToManyEntitiesType(plugin != null ? plugin : pluginIdentifier, getStringAttribute(reader, TAG_MODEL), 
+                getStringAttribute(reader, "joinField"), cascade, getBooleanAttribute(reader, "copyable", false), 
+                dataDefinitionService);
     }
 
     private FieldType getTreeType(final XMLStreamReader reader, final String pluginIdentifier) {

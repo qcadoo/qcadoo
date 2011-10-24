@@ -24,17 +24,17 @@
 package com.qcadoo.model.api.types;
 
 /**
- * Object represents "belongs to" field type.
+ * Interface for fields that using joinField.
  * 
- * @since 0.4.0
+ * @since 0.4.10
  */
-public interface BelongsToType extends FieldType, DataDefinitionHolder {
+public interface JoinFieldHolder extends FieldType {
 
     /**
-     * Returns true if field will be lazy loaded.
+     * Returns field name joining the relation.
      * 
-     * @return true if lazy loading
+     * @return join field
      */
-    boolean isLazyLoading();
+    String getJoinFieldName();
 
 }

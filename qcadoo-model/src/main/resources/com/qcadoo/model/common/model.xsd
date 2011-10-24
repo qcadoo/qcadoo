@@ -185,6 +185,8 @@
 			<xs:extension base="fieldType">
 				<xs:attribute name="model" type="identifier" use="required" />
 				<xs:attribute name="plugin" type="identifier" />
+				<xs:attribute name="joinField" type="identifier"
+					use="required" />
 				<xs:attribute name="cascade" type="cascadeType" default="nullify" />
 				<xs:attribute name="copyable" type="xs:boolean" default="false" />
 			</xs:extension>

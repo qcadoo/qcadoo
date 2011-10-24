@@ -23,14 +23,12 @@
  */
 package com.qcadoo.model.api.types;
 
-import com.qcadoo.model.api.DataDefinition;
-
 /**
  * Object represents "has many" field type.
  * 
  * @since 0.4.0
  */
-public interface HasManyType extends FieldType {
+public interface HasManyType extends FieldType, DataDefinitionHolder, JoinFieldHolder {
 
     /**
      * Cascade type.
@@ -38,20 +36,6 @@ public interface HasManyType extends FieldType {
     enum Cascade {
         NULLIFY, DELETE
     }
-
-    /**
-     * Returns field name joining the relation.
-     * 
-     * @return join field
-     */
-    String getJoinFieldName();
-
-    /**
-     * Returns data definition.
-     * 
-     * @return data definition
-     */
-    DataDefinition getDataDefinition();
 
     /**
      * Returns cascade type.
