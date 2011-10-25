@@ -24,7 +24,9 @@
 package com.qcadoo.view.internal.components.ganttChart;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 import com.qcadoo.localization.api.utils.DateUtils;
 import com.qcadoo.view.api.components.ganttChart.GanttChartItem;
@@ -54,11 +56,29 @@ public class GanttChartItemFactory {
         return new GanttChartItemImpl(rowName, name, entityId, format.format(itemDateFrom), format.format(itemDateTo), from, to);
     }
 
+    private long getTimezoneOffset(Date date) {
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime(date);
+        return calendar.get(Calendar.ZONE_OFFSET) + calendar.get(Calendar.DST_OFFSET);
+    }
+
     private double getPosition(final Date dateFrom, final Date dateTo, final Date date) {
 
         long tmFrom = dateFrom.getTime();
         long tmItem = date.getTime();
         long tmTo = dateTo.getTime();
+
+        long dateFromOffset = getTimezoneOffset(dateFrom);
+        long dateOffset = getTimezoneOffset(date);
+        long dateToOffset = getTimezoneOffset(dateTo);
+
+        if (dateFromOffset != dateToOffset) {
+            tmTo += (dateToOffset - dateFromOffset);
+        }
+
+        if (dateFromOffset != dateOffset) {
+            tmItem += (dateOffset - dateFromOffset);
+        }
 
         int tmInterval = 1000 * 60 * 60 * interval;
 
