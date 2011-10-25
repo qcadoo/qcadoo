@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.8
+ * Version: 0.4.9
  *
  * This file is part of Qcadoo.
  *
@@ -236,7 +236,7 @@ public class FieldTypeFactoryTest extends DataAccessTest {
     @Test
     public void shouldReturnManyToManyType() throws Exception {
         // when
-        FieldType fieldType = new ManyToManyEntitiesType("parent", "entity", ManyToManyType.Cascade.NULLIFY, true, dataDefinitionService);
+        FieldType fieldType = new ManyToManyEntitiesType("parent", "entity", "joinFieldName", ManyToManyType.Cascade.NULLIFY, true, dataDefinitionService);
         
         // then
         assertThat(fieldType, is(ManyToManyEntitiesType.class));

@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.8
+ * Version: 0.4.9
  *
  * This file is part of Qcadoo.
  *
@@ -45,9 +45,7 @@ import org.w3c.dom.NodeList;
 import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.FieldDefinition;
-import com.qcadoo.model.api.types.BelongsToType;
-import com.qcadoo.model.api.types.HasManyType;
-import com.qcadoo.model.api.types.TreeType;
+import com.qcadoo.model.api.types.DataDefinitionHolder;
 import com.qcadoo.plugin.api.PluginUtils;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.ViewDefinitionState;
@@ -554,12 +552,8 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
     }
 
     private void getDataDefinitionFromFieldDefinition(final FieldDefinition fieldDefinition) {
-        if (fieldDefinition.getType() instanceof HasManyType) {
-            dataDefinition = ((HasManyType) fieldDefinition.getType()).getDataDefinition();
-        } else if (fieldDefinition.getType() instanceof TreeType) {
-            dataDefinition = ((TreeType) fieldDefinition.getType()).getDataDefinition();
-        } else if (fieldDefinition.getType() instanceof BelongsToType) {
-            dataDefinition = ((BelongsToType) fieldDefinition.getType()).getDataDefinition();
+        if (fieldDefinition.getType() instanceof DataDefinitionHolder) {
+            dataDefinition = ((DataDefinitionHolder) fieldDefinition.getType()).getDataDefinition();
         }
     }
 

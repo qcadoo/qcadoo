@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.8
+ * Version: 0.4.9
  *
  * This file is part of Qcadoo.
  *
@@ -23,21 +23,12 @@
  */
 package com.qcadoo.model.api.types;
 
-import com.qcadoo.model.api.DataDefinition;
-
 /**
  * Object represents "belongs to" field type.
  * 
  * @since 0.4.0
  */
-public interface BelongsToType extends FieldType {
-
-    /**
-     * Returns data definition.
-     * 
-     * @return data definition
-     */
-    DataDefinition getDataDefinition();
+public interface BelongsToType extends FieldType, DataDefinitionHolder {
 
     /**
      * Returns true if field will be lazy loaded.

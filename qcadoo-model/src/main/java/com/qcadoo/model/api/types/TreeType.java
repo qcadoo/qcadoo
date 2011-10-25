@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.8
+ * Version: 0.4.9
  *
  * This file is part of Qcadoo.
  *
@@ -23,14 +23,12 @@
  */
 package com.qcadoo.model.api.types;
 
-import com.qcadoo.model.api.DataDefinition;
-
 /**
  * Object represents "tree" field type.
  * 
  * @since 0.4.0
  */
-public interface TreeType extends FieldType {
+public interface TreeType extends FieldType, DataDefinitionHolder, JoinFieldHolder {
 
     /**
      * Cascade type.
@@ -38,20 +36,6 @@ public interface TreeType extends FieldType {
     enum Cascade {
         NULLIFY, DELETE
     }
-
-    /**
-     * Returns field name joining the relation.
-     * 
-     * @return join field
-     */
-    String getJoinFieldName();
-
-    /**
-     * Returns data definition.
-     * 
-     * @return data definition
-     */
-    DataDefinition getDataDefinition();
 
     /**
      * Returns cascade type.

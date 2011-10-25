@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.8
+ * Version: 0.4.9
  *
  * This file is part of Qcadoo.
  *
@@ -36,6 +36,8 @@ public final class ManyToManyEntitiesType implements ManyToManyType {
 
     private final String entityName;
 
+    private final String joinFieldName;
+
     private final DataDefinitionService dataDefinitionService;
 
     private final String pluginIdentifier;
@@ -44,10 +46,11 @@ public final class ManyToManyEntitiesType implements ManyToManyType {
 
     private final boolean copyable;
 
-    public ManyToManyEntitiesType(final String pluginIdentifier, final String entityName,
+    public ManyToManyEntitiesType(final String pluginIdentifier, final String entityName, final String joinFieldName,
             final Cascade cascade, final boolean copyable, final DataDefinitionService dataDefinitionService) {
         this.pluginIdentifier = pluginIdentifier;
         this.entityName = entityName;
+        this.joinFieldName = joinFieldName;
         this.cascade = cascade;
         this.copyable = copyable;
         this.dataDefinitionService = dataDefinitionService;
@@ -71,6 +74,11 @@ public final class ManyToManyEntitiesType implements ManyToManyType {
     @Override
     public Object fromString(final String value, final Locale locale) {
         return null;
+    }
+
+    @Override
+    public String getJoinFieldName() {
+        return joinFieldName;
     }
 
     @Override

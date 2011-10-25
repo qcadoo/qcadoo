@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.8
+ * Version: 0.4.9
  *
  * This file is part of Qcadoo.
  *
@@ -38,9 +38,10 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.qcadoo.model.api.FieldDefinition;
+import com.qcadoo.model.api.types.DataDefinitionHolder;
 import com.qcadoo.model.api.types.EnumeratedType;
-import com.qcadoo.model.api.types.HasManyType;
-import com.qcadoo.model.api.types.TreeType;
+import com.qcadoo.model.api.types.FieldType;
+import com.qcadoo.model.api.types.JoinFieldHolder;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.internal.ComponentDefinition;
 import com.qcadoo.view.internal.ComponentOption;
@@ -81,6 +82,8 @@ public final class GridComponentPattern extends AbstractComponentPattern {
     private boolean multiselect = false;
 
     private boolean hasPredefinedFilters = false;
+    
+    private boolean weakRelation = false;
 
     private final List<PredefinedFilter> predefinedFilters = new LinkedList<PredefinedFilter>();
 
@@ -102,7 +105,7 @@ public final class GridComponentPattern extends AbstractComponentPattern {
 
     @Override
     public ComponentState getComponentStateInstance() {
-        return new GridComponentState(belongsToFieldDefinition, columns, defaultOrderColumn, defaultOrderDirection, activable);
+        return new GridComponentState(belongsToFieldDefinition, columns, defaultOrderColumn, defaultOrderDirection, activable, weakRelation);
     }
 
     @Override
@@ -134,12 +137,10 @@ public final class GridComponentPattern extends AbstractComponentPattern {
 
     private void getBelongsToFieldDefinition() {
         if (getScopeFieldDefinition() != null) {
-            if (HasManyType.class.isAssignableFrom(getScopeFieldDefinition().getType().getClass())) {
-                HasManyType hasManyType = (HasManyType) getScopeFieldDefinition().getType();
-                belongsToFieldDefinition = hasManyType.getDataDefinition().getField(hasManyType.getJoinFieldName());
-            } else if (TreeType.class.isAssignableFrom(getScopeFieldDefinition().getType().getClass())) {
-                TreeType treeType = (TreeType) getScopeFieldDefinition().getType();
-                belongsToFieldDefinition = treeType.getDataDefinition().getField(treeType.getJoinFieldName());
+            FieldType fieldType = getScopeFieldDefinition().getType();
+            if (fieldType instanceof JoinFieldHolder && fieldType instanceof DataDefinitionHolder) {
+                belongsToFieldDefinition = ((DataDefinitionHolder) fieldType).getDataDefinition().getField(
+                        ((JoinFieldHolder) fieldType).getJoinFieldName());
             } else {
                 throwIllegalStateException("Scope field for grid be a hasMany one");
             }
@@ -154,6 +155,7 @@ public final class GridComponentPattern extends AbstractComponentPattern {
         json.put("creatable", creatable);
         json.put("multiselect", multiselect);
         json.put("activable", activable);
+        json.put("weakRelation", weakRelation);
 
         json.put("hasPredefinedFilters", hasPredefinedFilters);
 
@@ -412,6 +414,8 @@ public final class GridComponentPattern extends AbstractComponentPattern {
                 }
             } else if ("column".equals(option.getType())) {
                 parseColumnOption(option);
+            } else if ("weakRelation".equals(option.getType())) {
+                weakRelation = Boolean.parseBoolean(option.getValue());
             }
         }
         if (defaultOrderColumn == null) {

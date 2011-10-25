@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.8
+ * Version: 0.4.9
  *
  * This file is part of Qcadoo.
  *
@@ -45,7 +45,10 @@ import com.qcadoo.model.api.search.SearchCriteriaBuilder;
 import com.qcadoo.model.api.search.SearchOrders;
 import com.qcadoo.model.api.search.SearchRestrictions;
 import com.qcadoo.model.api.search.SearchResult;
+import com.qcadoo.model.api.search.SearchSubqueries;
 import com.qcadoo.model.api.types.BelongsToType;
+import com.qcadoo.model.api.types.DataDefinitionHolder;
+import com.qcadoo.model.api.types.ManyToManyType;
 import com.qcadoo.view.api.components.GridComponent;
 import com.qcadoo.view.internal.states.AbstractComponentState;
 
@@ -124,14 +127,17 @@ public final class GridComponentState extends AbstractComponentState implements 
     private boolean onlyActive = true;
 
     private final boolean activable;
+    
+    private final boolean weakRelation;
 
     public GridComponentState(final FieldDefinition scopeField, final Map<String, GridComponentColumn> columns,
-            final String orderColumn, final String orderDirection, final boolean activable) {
+            final String orderColumn, final String orderDirection, final boolean activable, final boolean weakRelation) {
         this.belongsToFieldDefinition = scopeField;
         this.columns = columns;
         this.orderColumn = orderColumn;
         this.orderDirection = orderDirection;
         this.activable = activable;
+        this.weakRelation = weakRelation;
         registerEvent("refresh", eventPerformer, "refresh");
         registerEvent("select", eventPerformer, "selectEntity");
         registerEvent("remove", eventPerformer, "removeSelectedEntity");
@@ -390,7 +396,16 @@ public final class GridComponentState extends AbstractComponentState implements 
         }
 
         public void removeSelectedEntity(final String[] args) {
-            getDataDefinition().delete(selectedEntities.toArray(new Long[selectedEntities.size()]));
+            if (weakRelation) {
+                Entity entity = null;
+                for (Long selectedId : selectedEntities.toArray(new Long[selectedEntities.size()])) {
+                    entity = getDataDefinition().get(selectedId);
+                    entity.setField(belongsToFieldDefinition.getName(), null);
+                    getDataDefinition().save(entity);
+                }
+            } else {
+                getDataDefinition().delete(selectedEntities.toArray(new Long[selectedEntities.size()]));
+            }
             if (selectedEntities.size() == 1) {
                 addMessage(translateMessage("deleteMessage"), MessageType.SUCCESS);
             } else {
@@ -461,8 +476,13 @@ public final class GridComponentState extends AbstractComponentState implements 
             if (belongsToFieldDefinition == null || belongsToEntityId != null) {
                 SearchCriteriaBuilder criteria = getDataDefinition().find();
                 if (belongsToFieldDefinition != null) {
-                    criteria.add(SearchRestrictions.belongsTo(belongsToFieldDefinition.getName(),
-                            ((BelongsToType) belongsToFieldDefinition.getType()).getDataDefinition(), belongsToEntityId));
+                    if (belongsToFieldDefinition.getType() instanceof ManyToManyType) {
+                        String belongsToFieldName = belongsToFieldDefinition.getName();
+                        criteria.createAlias(belongsToFieldName, belongsToFieldName).add(SearchRestrictions.eq(belongsToFieldName + ".id", belongsToEntityId));
+                    } else {
+                        criteria.add(SearchRestrictions.belongsTo(belongsToFieldDefinition.getName(),
+                                ((DataDefinitionHolder) belongsToFieldDefinition.getType()).getDataDefinition(), belongsToEntityId));
+                    }
                 }
 
                 try {

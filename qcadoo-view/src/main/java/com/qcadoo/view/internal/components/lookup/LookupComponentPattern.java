@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.8
+ * Version: 0.4.9
  *
  * This file is part of Qcadoo.
  *
@@ -37,8 +37,7 @@ import org.json.JSONObject;
 import com.google.common.collect.ImmutableMap;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.FieldDefinition;
-import com.qcadoo.model.api.types.HasManyType;
-import com.qcadoo.model.internal.types.TreeEntitiesType;
+import com.qcadoo.model.api.types.JoinFieldHolder;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.ribbon.RibbonActionItem.Type;
 import com.qcadoo.view.internal.ComponentDefinition;
@@ -83,10 +82,8 @@ public final class LookupComponentPattern extends FieldComponentPattern {
         }
 
         String joinFieldName = null;
-        if (TreeEntitiesType.class.isAssignableFrom(getScopeFieldDefinition().getType().getClass())) {
-            joinFieldName = ((TreeEntitiesType) getScopeFieldDefinition().getType()).getJoinFieldName();
-        } else {
-            joinFieldName = ((HasManyType) getScopeFieldDefinition().getType()).getJoinFieldName();
+        if (getScopeFieldDefinition().getType() instanceof JoinFieldHolder) {
+            joinFieldName = ((JoinFieldHolder) getScopeFieldDefinition().getType()).getJoinFieldName();
         }
         FieldDefinition fieldDefinition = getDataDefinition().getField(joinFieldName);
         return new LookupComponentState(fieldDefinition, fieldCode, expression, this);
