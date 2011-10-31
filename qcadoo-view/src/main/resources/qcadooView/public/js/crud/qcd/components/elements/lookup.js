@@ -418,24 +418,20 @@ QCD.components.elements.Lookup = function(_element, _mainController) {
 			params["window.grid.belongsToEntityId"] = dataState.contextEntityId;
 			url += "?context=" + JSON.stringify(params);
 		}
-		lookupWindow = mainController.openPopup(url, _this, "lookup");
+		
+		lookupWindow = mainController.openModal(elementPath + "_lookup", window.pluginIdentifier + "/" + url, false, onModalClose, onModalRender);
 	}
 
-	this.onPopupInit = function() {
-		var grid = lookupWindow.getComponent("window.grid");
-		grid.setLinkListener(this);
-		if (dataState.currentCode) {
-			// grid.setFilterState("lookupCode", dataState.currentCode);
-		}
-		lookupWindow.init();
-	}
-
-	this.onPopupClose = function() {
+	function onModalClose() {
 		lookupWindow = null;
+	}
+	
+	function onModalRender(modalWindow) {
+		modalWindow.getComponent("window.grid").setLinkListener(_this);
 	}
 
 	this.onGridLinkClicked = function(entityId) {
-		var grid = lookupWindow.getComponent("window.grid");
+		var grid = lookupWindow.mainController.getComponent("window.grid");
 		var lookupData = grid.getLookupData(entityId);
 		performSelectEntity( {
 			id : lookupData.entityId,
@@ -449,7 +445,7 @@ QCD.components.elements.Lookup = function(_element, _mainController) {
 			mainController.callEvent("onSelectedEntityChange", elementPath,
 					null, null, null);
 		}
-		mainController.closePopup();
+		mainController.closeThisModalWindow();
 	}
 
 	constructor(this);

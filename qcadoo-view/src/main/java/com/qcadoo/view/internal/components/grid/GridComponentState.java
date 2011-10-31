@@ -38,6 +38,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.search.CustomRestriction;
@@ -45,9 +48,8 @@ import com.qcadoo.model.api.search.SearchCriteriaBuilder;
 import com.qcadoo.model.api.search.SearchOrders;
 import com.qcadoo.model.api.search.SearchRestrictions;
 import com.qcadoo.model.api.search.SearchResult;
-import com.qcadoo.model.api.search.SearchSubqueries;
-import com.qcadoo.model.api.types.BelongsToType;
 import com.qcadoo.model.api.types.DataDefinitionHolder;
+import com.qcadoo.model.api.types.JoinFieldHolder;
 import com.qcadoo.model.api.types.ManyToManyType;
 import com.qcadoo.view.api.components.GridComponent;
 import com.qcadoo.view.internal.states.AbstractComponentState;
@@ -129,17 +131,22 @@ public final class GridComponentState extends AbstractComponentState implements 
     private final boolean activable;
     
     private final boolean weakRelation;
+    
+    private final DataDefinition scopeFieldDataDefinition;
 
     public GridComponentState(final FieldDefinition scopeField, final Map<String, GridComponentColumn> columns,
-            final String orderColumn, final String orderDirection, final boolean activable, final boolean weakRelation) {
+            final String orderColumn, final String orderDirection, final boolean activable, final boolean weakRelation,
+            final DataDefinition dataDefinition) {
         this.belongsToFieldDefinition = scopeField;
         this.columns = columns;
         this.orderColumn = orderColumn;
         this.orderDirection = orderDirection;
         this.activable = activable;
         this.weakRelation = weakRelation;
+        this.scopeFieldDataDefinition = dataDefinition;
         registerEvent("refresh", eventPerformer, "refresh");
         registerEvent("select", eventPerformer, "selectEntity");
+        registerEvent("addExistingEntity", eventPerformer, "addExistingEntity");
         registerEvent("remove", eventPerformer, "removeSelectedEntity");
         registerEvent("moveUp", eventPerformer, "moveUpSelectedEntity");
         registerEvent("moveDown", eventPerformer, "moveDownSelectedEntity");
@@ -393,6 +400,40 @@ public final class GridComponentState extends AbstractComponentState implements 
 
         public void selectEntity(final String[] args) {
             notifyEntityIdChangeListeners(getSelectedEntityId());
+        }
+        
+        public void addExistingEntity(final String[] selectedEntities) throws JSONException {
+            if (!weakRelation || selectedEntities.length == 0) {
+                return;
+            }
+            
+            JSONArray selectedEntitiesArray = null;
+            if (selectedEntities[0].contains("[")) {
+                selectedEntitiesArray = new JSONArray(selectedEntities[0]); 
+            } else {
+                selectedEntitiesArray = new JSONArray(selectedEntities);
+            }
+            
+            List<Long> selectedEntitiesId = Lists.newArrayList();
+            for (int i = 0; i < selectedEntitiesArray.length(); i++) {
+                selectedEntitiesId.add(Long.parseLong(selectedEntitiesArray.getString(i)));
+            }
+            
+            List<Entity> existingEntities = getEntities();
+            List<Entity> newlyAddedEntities = getDataDefinition().find().add(SearchRestrictions.in("id", selectedEntitiesId)).list().getEntities();
+            
+            entitiesToMarkAsNew = Sets.newHashSet(selectedEntitiesId);
+            for (Entity existingEntity : existingEntities) {
+                entitiesToMarkAsNew.remove(existingEntity.getId());
+            }
+
+            existingEntities.addAll(newlyAddedEntities);
+            
+            Entity gridOwnerEntity = scopeFieldDataDefinition.get(belongsToEntityId);
+            String ownerSideJoinFieldName = ((JoinFieldHolder) belongsToFieldDefinition.getType()).getJoinFieldName();
+            gridOwnerEntity.setField(ownerSideJoinFieldName, existingEntities);
+            gridOwnerEntity.getDataDefinition().save(gridOwnerEntity);
+            reload();
         }
 
         public void removeSelectedEntity(final String[] args) {

@@ -254,10 +254,10 @@ public final class EntityServiceImpl implements EntityService {
         InternalDataDefinition referencedDataDefinition = (InternalDataDefinition) ((ManyToManyType) fieldDefinition.getType())
                 .getDataDefinition();
 
-        for (Object innerEntity : (Iterable<Object>) getField(databaseEntity, fieldDefinition.getName())) {
-            Long id = getId(innerEntity);
+        for (Object innerDatabaseEntity : (Iterable<Object>) getField(databaseEntity, fieldDefinition.getName())) {
+            Long id = getId(innerDatabaseEntity);
             if (id == null) {
-                genericEntities.add(convertToGenericEntity(referencedDataDefinition, innerEntity));
+                genericEntities.add(convertToGenericEntity(referencedDataDefinition, innerDatabaseEntity));
             } else {
                 genericEntities.add(new ProxyEntity(referencedDataDefinition, id));
             }

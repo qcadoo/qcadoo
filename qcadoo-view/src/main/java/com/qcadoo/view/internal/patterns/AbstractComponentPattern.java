@@ -123,6 +123,8 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
 
     private AbstractComponentPattern scopeFieldComponent;
 
+    private boolean persistent;
+
     public AbstractComponentPattern(final ComponentDefinition componentDefinition) {
         checkArgument(hasText(componentDefinition.getName()), "Component name must be specified");
         this.name = componentDefinition.getName();
@@ -581,6 +583,8 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
     public void parse(final Node componentNode, final ViewDefinitionParser parser) throws ViewDefinitionParserNodeException {
         indexOrder = ((ViewDefinitionParserImpl) parser).getCurrentIndexOrder();
 
+        persistent = getPersistentAttribute(componentNode);
+
         NodeList childNodes = componentNode.getChildNodes();
 
         for (int i = 0; i < childNodes.getLength(); i++) {
@@ -597,6 +601,22 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
                 script += parser.getStringNodeContent(child) + ";";
             }
         }
+    }
+
+    @Override
+    public boolean isPersistent() {
+        return persistent;
+    }
+
+    private boolean getPersistentAttribute(final Node componentNode) {
+        if (nodeHasAttribute(componentNode, "persistent")) {
+            return Boolean.valueOf(componentNode.getAttributes().getNamedItem("persistent").toString());
+        }
+        return true;
+    }
+
+    private boolean nodeHasAttribute(final Node componentNode, final String attributeName) {
+        return componentNode.getAttributes() != null && componentNode.getAttributes().getNamedItem(attributeName) != null;
     }
 
 }

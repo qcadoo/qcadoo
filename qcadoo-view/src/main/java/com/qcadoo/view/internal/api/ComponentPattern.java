@@ -154,5 +154,12 @@ public interface ComponentPattern {
      *            event to remove
      */
     void removeCustomEvent(final ComponentCustomEvent customEvent);
+    
+    /**
+     * Checks if field defined by this component is persistent
+     * 
+     * @return true if field defined by this component is persistent
+     */
+    boolean isPersistent();
 
 }

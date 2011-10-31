@@ -294,7 +294,7 @@ public final class LookupComponentPattern extends FieldComponentPattern {
         InternalRibbonActionItem ribbonCancelActionItem = new RibbonActionItemImpl();
         ribbonCancelActionItem.setName("cancel");
         ribbonCancelActionItem.setIcon("cancelIcon24.png");
-        ribbonCancelActionItem.setAction("#{window}.performCloseWindow");
+        ribbonCancelActionItem.setAction("#{window}.closeThisModalWindow(false)");
         ribbonCancelActionItem.setType(Type.BIG_BUTTON);
         ribbonCancelActionItem.setEnabled(true);
 

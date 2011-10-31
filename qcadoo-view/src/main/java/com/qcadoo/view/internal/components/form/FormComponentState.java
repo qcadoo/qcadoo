@@ -42,6 +42,7 @@ import com.qcadoo.view.api.components.FormComponent;
 import com.qcadoo.view.internal.FieldEntityIdChangeListener;
 import com.qcadoo.view.internal.ScopeEntityIdChangeListener;
 import com.qcadoo.view.internal.components.FieldComponentState;
+import com.qcadoo.view.internal.components.lookup.LookupComponentState;
 import com.qcadoo.view.internal.states.AbstractContainerState;
 
 public class FormComponentState extends AbstractContainerState implements FormComponent {
@@ -263,10 +264,14 @@ public class FormComponentState extends AbstractContainerState implements FormCo
     }
 
     private void copyFieldsToEntity(final Entity entity) {
+        FieldComponentState fieldComponentState = null;
         for (Map.Entry<String, FieldComponentState> field : getFieldComponents().entrySet()) {
-            entity.setField(field.getKey(), convertFieldFromString(field.getValue().getFieldValue(), field.getKey()));
+            fieldComponentState = field.getValue();
+            if (fieldComponentState.isPersistent()) {
+                entity.setField(field.getKey(), convertFieldFromString(fieldComponentState.getFieldValue(), field.getKey()));
+            }
 
-            if (field.getValue().isHasError()) {
+            if (fieldComponentState.isHasError()) {
                 entity.setNotValid();
             }
         }
@@ -314,11 +319,18 @@ public class FormComponentState extends AbstractContainerState implements FormCo
             if (message != null) {
                 copyMessage(field.getValue(), message);
             }
+            if (fieldIsGridCorrespondingLookup(field.getValue(), field.getKey(), entity)) {
+                continue;
+            }
             field.getValue().setFieldValue(convertFieldToString(entity.getField(field.getKey()), field.getKey()));
             if (requestUpdateState) {
                 field.getValue().requestComponentUpdateState();
             }
         }
+    }
+    
+    private boolean fieldIsGridCorrespondingLookup(final FieldComponentState field, final String databaseFieldName, final Entity entity) {
+        return (field instanceof LookupComponentState) && (entity.getField(databaseFieldName) instanceof Collection);
     }
 
     private Object convertFieldToString(final Object value, final String field) {

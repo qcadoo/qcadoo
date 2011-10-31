@@ -414,13 +414,13 @@ QCD.PageController = function() {
 	}
 	var goToPage = this.goToPage;
 	
-	function openModal(id, url, shouldSerialize, onCloseListener) {
+	function openModal(id, url, shouldSerialize, onCloseListener, afterInitListener) {
 		shouldSerialize = (shouldSerialize == undefined) ? true : shouldSerialize;
 		var serializationObject = null;
 		if (shouldSerialize) {
 			serializationObject = getSerializationObject();	
 		}
-		window.parent.openModal(id, url, serializationObject, onCloseListener);
+		window.parent.openModal(id, url, serializationObject, onCloseListener, afterInitListener);
 	}
 	this.openModal = openModal
 	

@@ -42,18 +42,6 @@
 		</xs:complexType>
 	</xs:element>
 
-	<!--<xs:complexType name="viewType">
-		<xs:sequence>
-			<xs:element name="component" type="componentType" minOccurs="1" maxOccurs="1"/>
-			<xs:element name="preInitializeHook" type="hookType" minOccurs="0" maxOccurs="unbounded" />
-			<xs:element name="postInitializeHook" type="hookType" minOccurs="0" maxOccurs="unbounded" />
-			<xs:element name="preRenderHook" type="hookType" minOccurs="0" maxOccurs="unbounded" />
-		</xs:sequence>
-		<xs:attribute name="name" type="identifierType" use="required" />		
-		<xs:attribute name="menuAccessible" type="xs:boolean" default="false" />
-		<xs:attribute name="model" type="identifierType" use="optional" />
-	</xs:complexType>-->
-	
 	<xs:complexType name="ribbonType">
 		<xs:sequence>
 			<xs:element name="group" type="ribbonGroupType" minOccurs="0" maxOccurs="unbounded"/>
@@ -105,6 +93,7 @@
 		<xs:attribute name="defaultEnabled" type="xs:boolean" />
 		<xs:attribute name="defaultVisible" type="xs:boolean" />
 		<xs:attribute name="hasDescription" type="xs:boolean" default="false" />
+		<xs:attribute name="persistent" type="xs:boolean" default="true" />
 	</xs:complexType>
 
 	<xs:complexType name="optionType">

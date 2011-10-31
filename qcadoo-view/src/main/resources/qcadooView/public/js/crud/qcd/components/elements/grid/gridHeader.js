@@ -49,6 +49,7 @@ QCD.components.elements.grid.GridHeaderController = function(_gridController, _m
 	headerElements.predefiniedFiltersCustomOption_line1 = $("<option>").attr("value",-1).html("--------------").css("display", "none");
 	headerElements.predefiniedFiltersCustomOption_line2 = $("<option>").attr("value",-1).html(translations.customPredefinedFilter).css("display", "none");
 	headerElements.newButton = null;
+	headerElements.addExistingButton = null;
 	headerElements.deleteButton = null;
 	headerElements.upButton = null;
 	headerElements.downButton = null;
@@ -242,7 +243,7 @@ QCD.components.elements.grid.GridHeaderController = function(_gridController, _m
 			setEnabledButton(headerElements.filterButton, false);
 			headerElements.clearFilterButton.hide();
 		}
-		if (gridParameters.canNew) {
+		if (gridParameters.canNew && !gridParameters.weakRelation) {
 			headerElements.newButton = QCD.components.elements.utils.HeaderUtils.createHeaderButton(translations.newButton,function(e) {
 				if (headerElements.newButton.hasClass("headerButtonEnabled")) {
 					gridController.onNewButtonClicked();
@@ -250,6 +251,15 @@ QCD.components.elements.grid.GridHeaderController = function(_gridController, _m
 			}, "newIcon16_dis.png");
 			headerElement.append(headerElements.newButton);
 			setEnabledButton(headerElements.newButton, false);
+		}
+		if (gridParameters.canNew && gridParameters.weakRelation) {
+			headerElements.addExistingButton = QCD.components.elements.utils.HeaderUtils.createHeaderButton(translations.addExistingButton,function(e) {
+				if (headerElements.addExistingButton.hasClass("headerButtonEnabled")) {
+					gridController.onAddExistingButtonClicked();
+				}
+			}, "newIcon16_dis.png");
+			headerElement.append(headerElements.addExistingButton);
+			setEnabledButton(headerElements.addExistingButton, false);
 		}
 		if (gridParameters.canDelete) {
 			headerElements.deleteButton = QCD.components.elements.utils.HeaderUtils.createHeaderButton(translations.deleteButton, function(e) {
@@ -330,6 +340,9 @@ QCD.components.elements.grid.GridHeaderController = function(_gridController, _m
 			if (headerElements.newButton != null) {
 				setEnabledButton(headerElements.newButton, false);
 			}
+			if (headerElements.addExistingButton != null) {
+				setEnabledButton(headerElements.addExistingButton, false);
+			}
 			if (headerElements.deleteButton != null) {
 				setEnabledButton(headerElements.deleteButton, false);
 			} 
@@ -359,6 +372,9 @@ QCD.components.elements.grid.GridHeaderController = function(_gridController, _m
 			}
 			if (headerElements.newButton != null) {
 				setEnabledButton(headerElements.newButton, true);
+			}
+			if (headerElements.addExistingButton != null) {
+				setEnabledButton(headerElements.addExistingButton, true);
 			}
 			if (headerElements.deleteButton != null) {
 				if ((multiselectMode || rowIndex != null) && deleteButtonEnabled) {
@@ -412,7 +428,6 @@ QCD.components.elements.grid.GridHeaderController = function(_gridController, _m
 		} else {
 			headerElements.filterButton.addClass("headerButtonActive");
 			headerElements.filterButton.label.html(translations.removeFilterButton);
-//			headerElements.clearFilterButton.show();
 			headerElements.clearFilterButton.css("display","inline-block");
 		}
 		gridController.onFilterButtonClicked();
@@ -433,7 +448,6 @@ QCD.components.elements.grid.GridHeaderController = function(_gridController, _m
 	this.setFilterActive = function() {
 		headerElements.filterButton.addClass("headerButtonActive");
 		headerElements.filterButton.label.html(translations.removeFilterButton);
-//		headerElements.clearFilterButton.show();
 		headerElements.clearFilterButton.css("display","inline-block");
 	}
 	
@@ -512,14 +526,6 @@ QCD.components.elements.grid.GridPagingElement = function(_gridHeaderController,
 		var currPage = Math.ceil(pagingVars.first / pagingVars.max) + 1;
 		
 		var pageInfoSpan = $("<span>").addClass('grid_paging_pageInfo');
-		
-//		<div class="component_container_form_w">
-//			<div class="component_container_form_inner">
-//				<div class="component_container_form_x"></div>
-//				<div class="component_container_form_y"></div>
-//				<input type='text' id="usernameInput" name='j_username' value='<c:if test="${not empty param.login_error}"><c:out value="${SPRING_SECURITY_LAST_USERNAME}"/></c:if>'/>
-//			</div>
-//		</div>
 		
 			pagingElements.pageNo = $("<input type='text'></input>").addClass('pageInput');
 				var component_container_form_inner = $("<div>").addClass("component_container_form_inner");

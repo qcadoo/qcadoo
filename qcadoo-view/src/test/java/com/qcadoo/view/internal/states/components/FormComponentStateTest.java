@@ -98,6 +98,7 @@ public class FormComponentStateTest extends AbstractStateTest {
 
         FieldComponentPattern namePattern = mock(FieldComponentPattern.class);
         given(namePattern.isRequired()).willReturn(false);
+        given(namePattern.isPersistent()).willReturn(true);
         name = new FieldComponentState(namePattern);
         ((AbstractComponentState) name).setTranslationService(translationService);
         name.setName("name");

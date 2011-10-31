@@ -37,6 +37,7 @@ import org.json.JSONObject;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.types.DataDefinitionHolder;
 import com.qcadoo.model.api.types.EnumeratedType;
@@ -70,6 +71,8 @@ public final class GridComponentPattern extends AbstractComponentPattern {
     private String correspondingView;
 
     private String correspondingComponent;
+
+    private String correspondingLookup;
 
     private boolean correspondingViewInModal = false;
 
@@ -105,7 +108,11 @@ public final class GridComponentPattern extends AbstractComponentPattern {
 
     @Override
     public ComponentState getComponentStateInstance() {
-        return new GridComponentState(belongsToFieldDefinition, columns, defaultOrderColumn, defaultOrderDirection, activable, weakRelation);
+        DataDefinition scopeFieldDataDefinition = null;
+        if (getScopeFieldDefinition() != null) {
+            scopeFieldDataDefinition = getScopeFieldDefinition().getDataDefinition();
+        }
+        return new GridComponentState(belongsToFieldDefinition, columns, defaultOrderColumn, defaultOrderDirection, activable, weakRelation, scopeFieldDataDefinition);
     }
 
     @Override
@@ -129,9 +136,17 @@ public final class GridComponentPattern extends AbstractComponentPattern {
         parseOptions();
 
         activable = getDataDefinition().isActivable();
+        
+        if (creatable && weakRelation && getScopeFieldDefinition() == null) {
+            throwIllegalStateException("Missing scope field for grid");
+        }
 
         if (correspondingView != null && correspondingComponent == null) {
             throwIllegalStateException("Missing correspondingComponent for grid");
+        }
+        
+        if(weakRelation && creatable && correspondingLookup == null) {
+            throwIllegalStateException("Missing correspondingLookup for grid");
         }
     }
 
@@ -142,7 +157,7 @@ public final class GridComponentPattern extends AbstractComponentPattern {
                 belongsToFieldDefinition = ((DataDefinitionHolder) fieldType).getDataDefinition().getField(
                         ((JoinFieldHolder) fieldType).getJoinFieldName());
             } else {
-                throwIllegalStateException("Scope field for grid be a hasMany one");
+                throwIllegalStateException("Scope field for grid should be one of: hasMany, tree or manyToMany");
             }
         }
     }
@@ -172,6 +187,7 @@ public final class GridComponentPattern extends AbstractComponentPattern {
         json.put("lookup", lookup);
         json.put("correspondingView", correspondingView);
         json.put("correspondingComponent", correspondingComponent);
+        json.put("correspondingLookup", correspondingLookup);
         json.put("correspondingViewInModal", correspondingViewInModal);
         json.put("prioritizable", getDataDefinition().isPrioritizable());
         json.put("searchableColumns", new JSONArray(searchableColumns));
@@ -192,6 +208,7 @@ public final class GridComponentPattern extends AbstractComponentPattern {
         addTranslation(translations, "noResults", locale);
         addTranslation(translations, "removeFilterButton", locale);
         addTranslation(translations, "newButton", locale);
+        addTranslation(translations, "addExistingButton", locale);
         addTranslation(translations, "deleteButton", locale);
         addTranslation(translations, "upButton", locale);
         addTranslation(translations, "downButton", locale);
@@ -376,6 +393,8 @@ public final class GridComponentPattern extends AbstractComponentPattern {
                 correspondingView = option.getValue();
             } else if ("correspondingComponent".equals(option.getType())) {
                 correspondingComponent = option.getValue();
+            } else if ("correspondingLookup".equals(option.getType())) {
+                correspondingLookup = option.getValue();
             } else if ("correspondingViewInModal".equals(option.getType())) {
                 correspondingViewInModal = Boolean.parseBoolean(option.getValue());
             } else if ("paginable".equals(option.getType())) {

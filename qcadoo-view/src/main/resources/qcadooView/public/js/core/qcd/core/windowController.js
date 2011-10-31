@@ -80,7 +80,7 @@ QCD.WindowController = function(_menuStructure) {
 		performGoToPage(currentPage);
 	}
 	
-	window.openModal = function(id, url, serializationObject, onCloseListener) {
+	window.openModal = function(id, url, serializationObject, onCloseListener, afterInitListener) {
 		if (serializationObject != null) {
 			serializationObject.openedModal = true;
 			statesStack.push(serializationObject);
@@ -111,7 +111,12 @@ QCD.WindowController = function(_menuStructure) {
 				this.contentWindow.init(serializationObjectToInsert);
 				serializationObjectToInsert = null;
 			}
+			if (afterInitListener) {
+				afterInitListener(this.contentWindow);
+			}
 		});
+
+		return modalObjects[id].iframe[0].contentWindow;
 	}
 	
 	window.changeModalSize = function(width, height) {

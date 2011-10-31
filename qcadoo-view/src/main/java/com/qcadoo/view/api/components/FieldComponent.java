@@ -48,6 +48,13 @@ public interface FieldComponent extends ComponentState {
     void setRequired(boolean required);
 
     /**
+     * Checks if field defined by this component is persistent
+     * 
+     * @return true if field defined by this component is persistent
+     */
+    boolean isPersistent();
+
+    /**
      * Informs that this component should be updated
      */
     void requestComponentUpdateState();
