@@ -23,6 +23,10 @@
  */
 package com.qcadoo.model.internal.api;
 
+import java.util.Comparator;
+
+import com.qcadoo.model.api.Entity;
+
 
 public interface PriorityService {
 
@@ -31,5 +35,7 @@ public interface PriorityService {
     void deprioritizeEntity(InternalDataDefinition dataDefinition, Object databaseEntity);
 
     void move(InternalDataDefinition dataDefinition, Object databaseEntity, int position, int offset);
+    
+    Comparator<Entity> getEntityPriorityComparator();
 
 }

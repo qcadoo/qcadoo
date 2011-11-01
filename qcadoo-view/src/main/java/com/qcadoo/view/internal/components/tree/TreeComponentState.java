@@ -23,17 +23,23 @@
  */
 package com.qcadoo.view.internal.components.tree;
 
+import static com.qcadoo.model.api.types.TreeType.NODE_NUMBER_FIELD;
+
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.google.common.collect.Lists;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.EntityTree;
 import com.qcadoo.model.api.EntityTreeNode;
@@ -41,6 +47,7 @@ import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.expression.ExpressionUtils;
 import com.qcadoo.model.api.search.SearchCriteriaBuilder;
 import com.qcadoo.model.api.search.SearchRestrictions;
+import com.qcadoo.model.api.types.TreeType;
 import com.qcadoo.view.api.components.TreeComponent;
 import com.qcadoo.view.internal.components.FieldComponentState;
 
@@ -55,8 +62,6 @@ public final class TreeComponentState extends FieldComponentState implements Tre
     public static final String JSON_OPENED_NODES_ID = "openedNodes";
 
     public static final String JSON_TREE_STRUCTURE = "treeStructure";
-
-    public static final String NODE_NUMBER_FIELD = "nodeNumber";
 
     private final TreeEventPerformer eventPerformer = new TreeEventPerformer();
 
@@ -73,6 +78,8 @@ public final class TreeComponentState extends FieldComponentState implements Tre
     private Long belongsToEntityId;
 
     private final Map<String, TreeDataType> dataTypes;
+
+    private Map<Long, Entity> nodes = new HashMap<Long, Entity>();
 
     public TreeComponentState(final FieldDefinition scopeField, final Map<String, TreeDataType> dataTypes,
             final TreeComponentPattern pattern) {
@@ -181,7 +188,7 @@ public final class TreeComponentState extends FieldComponentState implements Tre
 
         EntityTree tree = entity.getTreeField(belongsToFieldDefinition.getName());
 
-        Map<Long, Entity> nodes = new HashMap<Long, Entity>();
+        nodes = new HashMap<Long, Entity>();
 
         for (Entity node : tree) {
             node.setField("children", new ArrayList<Entity>());
@@ -193,7 +200,8 @@ public final class TreeComponentState extends FieldComponentState implements Tre
             Entity parent = nodes.get(treeStructure.getJSONObject(0).getLong("id"));
 
             if (treeStructure.getJSONObject(0).has("children")) {
-                reorganize(nodes, parent, treeStructure.getJSONObject(0).getJSONArray("children"), "1.");
+                reorganize(parent, treeStructure.getJSONObject(0).getJSONArray("children"),
+                        Lists.newLinkedList(Lists.newArrayList("1")));
             }
 
             return Collections.singletonList(parent);
@@ -203,18 +211,52 @@ public final class TreeComponentState extends FieldComponentState implements Tre
     }
 
     @SuppressWarnings("unchecked")
-    private void reorganize(final Map<Long, Entity> nodes, final Entity parent, final JSONArray children, final String nodeNumber)
+    private void reorganize(final Entity parent, final JSONArray childrens, final Deque<String> nodeNumberChain)
             throws JSONException {
-        parent.setField(NODE_NUMBER_FIELD, nodeNumber);
-        for (int i = 0; i < children.length(); i++) {
-            String newNodeNumber = nodeNumber + (i + 1) + '.';
-            Entity nodeEntity = nodes.get(children.getJSONObject(i).getLong("id"));
-            nodeEntity.setField(NODE_NUMBER_FIELD, newNodeNumber);
+
+        parent.setField(TreeType.NODE_NUMBER_FIELD, collectionToString(nodeNumberChain));
+
+        if (childrens.length() == 0) {
+            return;
+        }
+
+        JSONObject children = null;
+
+        if (childrens.length() == 1) {
+            incrementLastChainElement(nodeNumberChain);
+            children = childrens.getJSONObject(0);
+            reorganize(nodes.get(children.getLong("id")), children.getJSONArray("children"), nodeNumberChain);
+            return;
+        }
+
+        if (nodeNumberChain.size() == 1) {
+            incrementLastChainElement(nodeNumberChain);
+        }
+
+        for (int i = 0; i < childrens.length(); i++) {
+            children = childrens.getJSONObject(i);
+
+            Deque<String> newNodeNumberBranch = Lists.newLinkedList(nodeNumberChain);
+            newNodeNumberBranch.addLast(String.valueOf((char) (65 + i)));
+            newNodeNumberBranch.addLast("1");
+
+            Entity nodeEntity = nodes.get(children.getLong("id"));
+            nodeEntity.setField(TreeType.NODE_NUMBER_FIELD, collectionToString(newNodeNumberBranch));
+
             ((List<Entity>) parent.getField("children")).add(nodeEntity);
-            if (children.getJSONObject(i).has("children")) {
-                reorganize(nodes, nodeEntity, children.getJSONObject(i).getJSONArray("children"), newNodeNumber);
+            if (children.has("children")) {
+                reorganize(nodeEntity, children.getJSONArray("children"), newNodeNumberBranch);
             }
         }
+    }
+
+    private String collectionToString(final Collection<String> collection) {
+        return StringUtils.join(collection, '.') + '.';
+    }
+
+    private void incrementLastChainElement(final Deque<String> chain) {
+        Integer nextNumber = Integer.valueOf(chain.pollLast()) + 1;
+        chain.addLast(nextNumber.toString());
     }
 
     @Override
@@ -275,26 +317,42 @@ public final class TreeComponentState extends FieldComponentState implements Tre
 
         EntityTree tree = entity.getTreeField(belongsToFieldDefinition.getName());
 
-        if (tree.getRoot() != null) {
-            rootNode = createNode(tree.getRoot(), "1.");
-            if (openedNodes == null) {
-                addOpenedNode(rootNode.getId());
-            }
+        if (tree.getRoot() == null) {
+            return;
+        }
+
+        rootNode = createNode(tree.getRoot(), Lists.newLinkedList(Lists.newArrayList("1")));
+        if (openedNodes == null) {
+            addOpenedNode(rootNode.getId());
         }
     }
 
-    private TreeNode createNode(final EntityTreeNode entityTreeNode, final String nodeNumberPrefix) {
-        entityTreeNode.setField(NODE_NUMBER_FIELD, nodeNumberPrefix);
+    private TreeNode createNode(final EntityTreeNode entityTreeNode, final Deque<String> nodeNumberChain) {
+        entityTreeNode.setField(NODE_NUMBER_FIELD, collectionToString(nodeNumberChain));
+
+        List<EntityTreeNode> childs = entityTreeNode.getChildren();
+
         TreeDataType entityType = dataTypes.get(entityTreeNode.getEntityNoteType());
         String nodeLabel = ExpressionUtils.getValue(entityTreeNode, entityType.getNodeLabelExpression(), getLocale());
         TreeNode node = new TreeNode(entityTreeNode.getId(), nodeLabel, entityType);
-        int childNumber = 1;
 
-        for (EntityTreeNode childEntityTreeNode : entityTreeNode.getChildren()) {
-            node.addChild(createNode(childEntityTreeNode, nodeNumberPrefix + childNumber + '.'));
-            childNumber++;
+        if (childs.size() == 1) {
+            incrementLastChainElement(nodeNumberChain);
+            node.addChild(createNode(childs.get(0), nodeNumberChain));
+            return node;
         }
 
+        if (nodeNumberChain.size() == 1) {
+            incrementLastChainElement(nodeNumberChain);
+        }
+
+        int j = 0;
+        for (EntityTreeNode childEntityTreeNode : childs) {
+            Deque<String> newNodeNumberBranch = Lists.newLinkedList(nodeNumberChain);
+            newNodeNumberBranch.addLast(String.valueOf((char) (65 + j++)));
+            newNodeNumberBranch.addLast("1");
+            node.addChild(createNode(childEntityTreeNode, newNodeNumberBranch));
+        }
         return node;
     }
 

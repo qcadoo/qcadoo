@@ -23,6 +23,7 @@
  */
 package com.qcadoo.model.internal;
 
+import java.util.Comparator;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -175,5 +176,17 @@ public final class PriorityServiceImpl implements PriorityService {
         }
 
         return criteria;
+    }
+
+    @Override
+    public Comparator<Entity> getEntityPriorityComparator() {
+        return new Comparator<Entity>() {
+            @Override
+            public int compare(final Entity n1, final Entity n2) {
+                Integer p1 = (Integer) n1.getField("priority");
+                Integer p2 = (Integer) n2.getField("priority");
+                return p1.compareTo(p2);
+            }
+        };
     }
 }

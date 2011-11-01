@@ -30,6 +30,8 @@ package com.qcadoo.model.api.types;
  */
 public interface TreeType extends FieldType, DataDefinitionHolder, JoinFieldHolder {
 
+    public static final String NODE_NUMBER_FIELD = "nodeNumber";
+    
     /**
      * Cascade type.
      */
