@@ -1189,8 +1189,11 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 			for ( var key in currentState.selectedEntities) {
 				selectedEntitiesId.push(key);
 			}
-			
-			linkClicked(selectedEntitiesId);
+			if (selectedEntitiesId.length == 1) {
+				linkClicked(selectedEntitiesId[0]);
+			} else {
+				linkClicked(selectedEntitiesId);
+			}
 			
 			if (actionsPerformer) {
 				actionsPerformer.performNext();
