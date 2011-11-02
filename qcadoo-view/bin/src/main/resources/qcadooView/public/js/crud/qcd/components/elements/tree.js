@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.1
+ * Version: 0.4.9
  *
  * This file is part of Qcadoo.
  *
@@ -70,6 +70,8 @@ QCD.components.elements.Tree = function(_element, _mainController) {
 	var newButtons = new Array();
 	var newButtonClickedBefore = false;
 	var addedEntityId;
+	
+	var firstLoad = true;
 	
 	if (this.options.referenceName) {
 		mainController.registerReferenceName(this.options.referenceName, this);
@@ -148,6 +150,14 @@ QCD.components.elements.Tree = function(_element, _mainController) {
 				}
 			}, "moveIcon16_dis.png").css("marginLeft", "20px").attr("title", translations.moveModeButton);
 			
+			buttons.expandTreeButton = QCD.components.elements.utils.HeaderUtils.createHeaderButton("", function(e) {
+				expandTreeClicked();
+			}, "downIcon16_dis.png").css("marginLeft", "20px").attr("title", translations.expandTreeButton);
+			
+			buttons.collapseTreeButton = QCD.components.elements.utils.HeaderUtils.createHeaderButton("", function(e) {
+				collapseTreeClicked();
+			}, "upIcon16_dis.png").attr("title", translations.collapseTreeButton);
+			
 			buttons.moveUpButton.hide();
 			buttons.moveDownButton.hide();
 			buttons.moveLeftButton.hide();
@@ -156,24 +166,35 @@ QCD.components.elements.Tree = function(_element, _mainController) {
 			buttons.saveButton.hide();
 			buttons.cancelButton.hide();
 			
-			for (var i in newButtons) {
-				header.append(newButtons[i]);
+			if (_this.options.buttonsOptions.hasNewButtons) {
+				for (var i in newButtons) {
+					header.append(newButtons[i]);
+				}
+			}
+			if (_this.options.buttonsOptions.hasEditButton) {
+				header.append(buttons.editButton);
+			}
+			if (_this.options.buttonsOptions.hasDeleteButton) {
+				header.append(buttons.deleteButton);
 			}
 			
-			header.append(buttons.editButton);
-			header.append(buttons.deleteButton);
+			if (_this.options.buttonsOptions.hasMoveButton) {
+				header.append(buttons.moveButton);
+				buttons.moveButton.addClass("headerButtonEnabled");
+				header.append(buttons.saveButton);
+				buttons.saveButton.addClass("headerButtonEnabled");
+				header.append(buttons.cancelButton);
+				buttons.cancelButton.addClass("headerButtonEnabled");
+				header.append(buttons.moveUpButton);
+				header.append(buttons.moveDownButton);
+				header.append(buttons.moveLeftButton);
+				header.append(buttons.moveRightButton);
+			}
 			
-			header.append(buttons.moveButton);
-			buttons.moveButton.addClass("headerButtonEnabled");
-			header.append(buttons.saveButton);
-			buttons.saveButton.addClass("headerButtonEnabled");
-			header.append(buttons.cancelButton);
-			buttons.cancelButton.addClass("headerButtonEnabled");
-			
-			header.append(buttons.moveUpButton);
-			header.append(buttons.moveDownButton);
-			header.append(buttons.moveLeftButton);
-			header.append(buttons.moveRightButton);
+			header.append(buttons.expandTreeButton);
+			buttons.expandTreeButton.addClass("headerButtonEnabled");
+			header.append(buttons.collapseTreeButton);
+			buttons.collapseTreeButton.addClass("headerButtonEnabled");
 		
 		contentElement = $("<div>").addClass('tree_content');
 		
@@ -195,23 +216,6 @@ QCD.components.elements.Tree = function(_element, _mainController) {
 			"json_data" : {
 				"data" : [ ]
 			},
-//			"hotkeys" : {
-//				"f2" : function () { },
-//				"del" : function () { }
-//				"up": function(){
-//					var o = this.data.ui.last_selected || -1;
-//					this.deselect_node(o);
-//					this.select_node(this._get_prev(o));
-//					return false; 
-//				},
-//				"down" : function () { 
-//					var o = this.data.ui.last_selected || -1;
-//					this.deselect_node(o);
-//					this.select_node(this._get_next(o));
-//					//tree.jstree("select_node", this._get_next(o), false);
-//					return false;
-//				}
-//			},
 			"ui": {
 				"select_limit": 1
 			},
@@ -239,7 +243,7 @@ QCD.components.elements.Tree = function(_element, _mainController) {
 					treeStructureChanged = true;
 				},
 			 	"drop_target" : false,
-			 	"drag_target" : false,
+			 	"drag_target" : false
 			},
 			core : {
 				html_titles: true,
@@ -287,7 +291,7 @@ QCD.components.elements.Tree = function(_element, _mainController) {
 			openedNodesArrayToInsert = null;
 		} else {
 			openedNodesArray = new Array();
-			tree.find(".jstree-open").each(function () { 
+			tree.find(".jstree-open").each(function () {
 				openedNodesArray.push(getEntityId(this.id));
 			});
 		}
@@ -326,12 +330,16 @@ QCD.components.elements.Tree = function(_element, _mainController) {
 		} else {
 			root = null;
 		}
-		
-		tree.jstree("close_all", root, true);
-		for (var i in value.openedNodes) {
-			tree.jstree("open_node", $("#"+elementSearchName+"_node_"+value.openedNodes[i]), false, true);
+
+		if (firstLoad) {
+			firstLoad = false;
+			expandTree();
+		} else {
+			for (var i in value.openedNodes) {
+				tree.jstree("open_node", $("#"+elementSearchName+"_node_"+value.openedNodes[i]), false, true);
+			}
 		}
-		
+
 		if (value.selectedEntityId != null) {
 			fireSelectEvent = false;
 			tree.jstree("select_node", $("#"+elementSearchName+"_node_"+value.selectedEntityId), false);
@@ -352,6 +360,18 @@ QCD.components.elements.Tree = function(_element, _mainController) {
 		updateButtons();
 		unblock();
 	}
+	
+	function expandTree() {
+		tree.find(".jstree-closed").each(function () {
+			tree.jstree("open_node", this, false, true);
+		});
+	}
+	this.expandTree = expandTree;
+	
+	function collapseTree() {
+		tree.jstree("close_all", root, true);
+	}
+	this.collapseTree = collapseTree;
 	
 	function activeMoveMode() {
 		$.jstree._focused()._get_settings().dnd.dnd_enabled = true;
@@ -502,12 +522,10 @@ QCD.components.elements.Tree = function(_element, _mainController) {
 			if (dataType.canHaveChildren) {
 				for (var i in newButtons) {
 					newButtons[i].addClass("headerButtonEnabled");
-					//newButtons[i].setInfo();
 				}
 			} else {
 				for (var i in newButtons) {
 					newButtons[i].removeClass("headerButtonEnabled");
-					//newButtons[i].setInfo("zaznaczony element nie moze miec dzieci");
 				}
 			}
 			if (selected != "0") {
@@ -556,11 +574,6 @@ QCD.components.elements.Tree = function(_element, _mainController) {
 		} else {
 			tree.addClass("treeDisabled");
 			header.addClass("elementHeaderDisabled");
-//			for (var i in newButtons) {
-//				newButtons[i].removeClass("headerButtonEnabled");
-//			}
-//			buttons.editButton.removeClass("headerButtonEnabled");
-//			buttons.deleteButton.removeClass("headerButtonEnabled");
 		}
 		updateButtons();
 	}
@@ -647,6 +660,18 @@ QCD.components.elements.Tree = function(_element, _mainController) {
 				block();
 				mainController.callEvent("clear", elementPath, null);
 			}
+		}
+	}
+	
+	function expandTreeClicked() {
+		if (buttons.expandTreeButton.hasClass("headerButtonEnabled")) {
+			expandTree();
+		}
+	}
+	
+	function collapseTreeClicked() {
+		if (buttons.collapseTreeButton.hasClass("headerButtonEnabled")) {
+			collapseTree();
 		}
 	}
 	

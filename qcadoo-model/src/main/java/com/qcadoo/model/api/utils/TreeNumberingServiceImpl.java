@@ -84,35 +84,29 @@ public class TreeNumberingServiceImpl implements TreeNumberingService {
         treeNode.setField(TreeType.NODE_NUMBER_FIELD, collectionToString(chain));
         
         List<EntityTreeNode> childrens = newLinkedList(treeNode.getChildren());
-        if (childrens.size() == 0) {
-            return;
-        }
-        
-        if (childrens.size() == 1) {
-            incrementLastChainElement(chain);
-            assignNumberToTreeNode(childrens.get(0), chain);
-            return;
-        }
-
-        if (chain.size() == 1) {
-            incrementLastChainElement(chain);
-        }
-        
         Collections.sort(childrens, priorityService.getEntityPriorityComparator());
         
-        int j = 0;
+        int charNumber = 0;
         for (EntityTreeNode child : childrens) {
             Deque<String> newBranch = Lists.newLinkedList(chain);
-            newBranch.addLast(String.valueOf((char) (65 + j++)));
-            newBranch.addLast("1");
+            if (childrens.size() == 1) {
+                incrementLastChainNumber(newBranch);
+            } else {
+                incrementLastChainCharacter(newBranch, charNumber++);
+            }
             assignNumberToTreeNode(child, newBranch);
         }
         
     }
 
-    private void incrementLastChainElement(final Deque<String> chain) {
+    private void incrementLastChainNumber(final Deque<String> chain) {
         Integer nextNumber = Integer.valueOf(chain.pollLast()) + 1;
         chain.addLast(nextNumber.toString());
+    }
+    
+    private void incrementLastChainCharacter(final Deque<String> chain, final int charNumber) {
+        chain.addLast(String.valueOf((char) (65 + charNumber)));
+        chain.addLast("1");
     }
     
     private String collectionToString(final Collection<String> collection) {

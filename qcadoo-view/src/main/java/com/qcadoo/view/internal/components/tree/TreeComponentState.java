@@ -216,47 +216,36 @@ public final class TreeComponentState extends FieldComponentState implements Tre
 
         parent.setField(TreeType.NODE_NUMBER_FIELD, collectionToString(nodeNumberChain));
 
-        if (childrens.length() == 0) {
-            return;
-        }
-
-        JSONObject children = null;
-
-        if (childrens.length() == 1) {
-            incrementLastChainElement(nodeNumberChain);
-            children = childrens.getJSONObject(0);
-            reorganize(nodes.get(children.getLong("id")), children.getJSONArray("children"), nodeNumberChain);
-            return;
-        }
-
-        if (nodeNumberChain.size() == 1) {
-            incrementLastChainElement(nodeNumberChain);
-        }
-
+        int charNumber = 0;
         for (int i = 0; i < childrens.length(); i++) {
-            children = childrens.getJSONObject(i);
-
             Deque<String> newNodeNumberBranch = Lists.newLinkedList(nodeNumberChain);
-            newNodeNumberBranch.addLast(String.valueOf((char) (65 + i)));
-            newNodeNumberBranch.addLast("1");
+            
+            if (childrens.length() == 1) {
+                incrementLastChainNumber(newNodeNumberBranch);
+            } else {
+                incrementLastChainCharacter(newNodeNumberBranch, charNumber++);
+            }
 
-            Entity nodeEntity = nodes.get(children.getLong("id"));
-            nodeEntity.setField(TreeType.NODE_NUMBER_FIELD, collectionToString(newNodeNumberBranch));
-
+            Entity nodeEntity = nodes.get(childrens.getJSONObject(i).getLong("id"));
             ((List<Entity>) parent.getField("children")).add(nodeEntity);
-            if (children.has("children")) {
-                reorganize(nodeEntity, children.getJSONArray("children"), newNodeNumberBranch);
+            if (childrens.getJSONObject(i).has("children")) {
+                reorganize(nodeEntity, childrens.getJSONObject(i).getJSONArray("children"), newNodeNumberBranch);
             }
         }
     }
-
+    
     private String collectionToString(final Collection<String> collection) {
         return StringUtils.join(collection, '.') + '.';
     }
 
-    private void incrementLastChainElement(final Deque<String> chain) {
+    private void incrementLastChainNumber(final Deque<String> chain) {
         Integer nextNumber = Integer.valueOf(chain.pollLast()) + 1;
         chain.addLast(nextNumber.toString());
+    }
+    
+    private void incrementLastChainCharacter(final Deque<String> chain, final int charNumber) {
+        chain.addLast(String.valueOf((char) (65 + charNumber)));
+        chain.addLast("1");
     }
 
     @Override
@@ -331,26 +320,18 @@ public final class TreeComponentState extends FieldComponentState implements Tre
         entityTreeNode.setField(NODE_NUMBER_FIELD, collectionToString(nodeNumberChain));
 
         List<EntityTreeNode> childs = entityTreeNode.getChildren();
-
         TreeDataType entityType = dataTypes.get(entityTreeNode.getEntityNoteType());
         String nodeLabel = ExpressionUtils.getValue(entityTreeNode, entityType.getNodeLabelExpression(), getLocale());
         TreeNode node = new TreeNode(entityTreeNode.getId(), nodeLabel, entityType);
 
-        if (childs.size() == 1) {
-            incrementLastChainElement(nodeNumberChain);
-            node.addChild(createNode(childs.get(0), nodeNumberChain));
-            return node;
-        }
-
-        if (nodeNumberChain.size() == 1) {
-            incrementLastChainElement(nodeNumberChain);
-        }
-
-        int j = 0;
+        int charNumber = 0;
         for (EntityTreeNode childEntityTreeNode : childs) {
             Deque<String> newNodeNumberBranch = Lists.newLinkedList(nodeNumberChain);
-            newNodeNumberBranch.addLast(String.valueOf((char) (65 + j++)));
-            newNodeNumberBranch.addLast("1");
+            if (childs.size() == 1) {
+                incrementLastChainNumber(newNodeNumberBranch);
+            } else {
+                incrementLastChainCharacter(newNodeNumberBranch, charNumber++);
+            }
             node.addChild(createNode(childEntityTreeNode, newNodeNumberBranch));
         }
         return node;

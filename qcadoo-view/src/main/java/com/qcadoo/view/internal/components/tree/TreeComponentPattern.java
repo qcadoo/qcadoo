@@ -158,6 +158,9 @@ public final class TreeComponentPattern extends FieldComponentPattern {
         translations.put("moveModeInfoHeader", getTranslation("moveModeInfoHeader", locale));
         translations.put("moveModeInfoContent", getTranslation("moveModeInfoContent", locale));
 
+        translations.put("expandTreeButton", getTranslation("expandTreeButton", locale));
+        translations.put("collapseTreeButton", getTranslation("collapseTreeButton", locale));
+        
         translations.put("loading", getTranslationService().translate("qcadooView.loading", locale));
 
         json.put("translations", translations);
