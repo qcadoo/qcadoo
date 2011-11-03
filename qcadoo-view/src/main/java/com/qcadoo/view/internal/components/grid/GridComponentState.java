@@ -49,6 +49,7 @@ import com.qcadoo.model.api.search.SearchOrders;
 import com.qcadoo.model.api.search.SearchRestrictions;
 import com.qcadoo.model.api.search.SearchResult;
 import com.qcadoo.model.api.types.DataDefinitionHolder;
+import com.qcadoo.model.api.types.EnumeratedType;
 import com.qcadoo.model.api.types.JoinFieldHolder;
 import com.qcadoo.model.api.types.ManyToManyType;
 import com.qcadoo.view.api.components.GridComponent;
@@ -56,8 +57,10 @@ import com.qcadoo.view.internal.states.AbstractComponentState;
 
 public final class GridComponentState extends AbstractComponentState implements GridComponent {
 
-	enum ExportMode {ALL, SELECTED};
-	
+    enum ExportMode {
+        ALL, SELECTED
+    };
+
     public static final String JSON_SELECTED_ENTITY_ID = "selectedEntityId";
 
     public static final String JSON_BELONGS_TO_ENTITY_ID = "belongsToEntityId";
@@ -129,9 +132,9 @@ public final class GridComponentState extends AbstractComponentState implements 
     private boolean onlyActive = true;
 
     private final boolean activable;
-    
+
     private final boolean weakRelation;
-    
+
     private final DataDefinition scopeFieldDataDefinition;
 
     public GridComponentState(final FieldDefinition scopeField, final Map<String, GridComponentColumn> columns,
@@ -401,34 +404,35 @@ public final class GridComponentState extends AbstractComponentState implements 
         public void selectEntity(final String[] args) {
             notifyEntityIdChangeListeners(getSelectedEntityId());
         }
-        
+
         public void addExistingEntity(final String[] selectedEntities) throws JSONException {
             if (!weakRelation || selectedEntities.length == 0) {
                 return;
             }
-            
+
             JSONArray selectedEntitiesArray = null;
             if (selectedEntities[0].contains("[")) {
-                selectedEntitiesArray = new JSONArray(selectedEntities[0]); 
+                selectedEntitiesArray = new JSONArray(selectedEntities[0]);
             } else {
                 selectedEntitiesArray = new JSONArray(selectedEntities);
             }
-            
+
             List<Long> selectedEntitiesId = Lists.newArrayList();
             for (int i = 0; i < selectedEntitiesArray.length(); i++) {
                 selectedEntitiesId.add(Long.parseLong(selectedEntitiesArray.getString(i)));
             }
-            
+
             List<Entity> existingEntities = getEntities();
-            List<Entity> newlyAddedEntities = getDataDefinition().find().add(SearchRestrictions.in("id", selectedEntitiesId)).list().getEntities();
-            
+            List<Entity> newlyAddedEntities = getDataDefinition().find().add(SearchRestrictions.in("id", selectedEntitiesId))
+                    .list().getEntities();
+
             entitiesToMarkAsNew = Sets.newHashSet(selectedEntitiesId);
             for (Entity existingEntity : existingEntities) {
                 entitiesToMarkAsNew.remove(existingEntity.getId());
             }
 
             existingEntities.addAll(newlyAddedEntities);
-            
+
             Entity gridOwnerEntity = scopeFieldDataDefinition.get(belongsToEntityId);
             String ownerSideJoinFieldName = ((JoinFieldHolder) belongsToFieldDefinition.getType()).getJoinFieldName();
             gridOwnerEntity.setField(ownerSideJoinFieldName, existingEntities);
@@ -519,10 +523,12 @@ public final class GridComponentState extends AbstractComponentState implements 
                 if (belongsToFieldDefinition != null) {
                     if (belongsToFieldDefinition.getType() instanceof ManyToManyType) {
                         String belongsToFieldName = belongsToFieldDefinition.getName();
-                        criteria.createAlias(belongsToFieldName, belongsToFieldName).add(SearchRestrictions.eq(belongsToFieldName + ".id", belongsToEntityId));
+                        criteria.createAlias(belongsToFieldName, belongsToFieldName).add(
+                                SearchRestrictions.eq(belongsToFieldName + ".id", belongsToEntityId));
                     } else {
                         criteria.add(SearchRestrictions.belongsTo(belongsToFieldDefinition.getName(),
-                                ((DataDefinitionHolder) belongsToFieldDefinition.getType()).getDataDefinition(), belongsToEntityId));
+                                ((DataDefinitionHolder) belongsToFieldDefinition.getType()).getDataDefinition(),
+                                belongsToEntityId));
                     }
                 }
 
@@ -599,9 +605,9 @@ public final class GridComponentState extends AbstractComponentState implements 
         Map<String, String> names = new LinkedHashMap<String, String>();
 
         for (GridComponentColumn column : columns.values()) {
-        	if (column.isHidden()) {
-        		continue;
-        	}
+            if (column.isHidden()) {
+                continue;
+            }
             if (column.getFields().size() == 1) {
                 String fieldCode = getDataDefinition().getPluginIdentifier() + "." + getDataDefinition().getName() + "."
                         + column.getFields().get(0).getName();
@@ -620,44 +626,58 @@ public final class GridComponentState extends AbstractComponentState implements 
 
     @Override
     public List<Map<String, String>> getColumnValuesOfAllRecords() {
-    	return getColumnValues(ExportMode.ALL);
+        return getColumnValues(ExportMode.ALL);
     }
-    
+
     @Override
     public List<Map<String, String>> getColumnValuesOfSelectedRecords() {
-    	return getColumnValues(ExportMode.SELECTED);
+        return getColumnValues(ExportMode.SELECTED);
     }
-    
+
     private List<Map<String, String>> getColumnValues(ExportMode mode) {
-    	if (entities == null) {
-    		eventPerformer.reload();
-    	}
-    	
-    	if (entities == null) {
-    		throw new IllegalStateException("Cannot load entities for grid component");
-    	}
-    	
-    	List<Map<String, String>> values = new ArrayList<Map<String, String>>();
-    	
-    	for (Entity entity : entities) {
-    		if (mode == ExportMode.ALL ||
-    				(mode == ExportMode.SELECTED && getSelectedEntitiesIds().contains(entity.getId()))) {
-    			values.add(convertEntityToMap(entity));
-    		}
-    	}
-    	
-    	return values;
-    }
-    
-    private Map<String, String> convertEntityToMap(final Entity entity) {
-        Map<String, String> values = new LinkedHashMap<String, String>();
-        for (GridComponentColumn column : columns.values()) {
-        	if (column.isHidden()) {
-        		continue;
-        	}
-            values.put(column.getName(), column.getValue(entity, getLocale()));
+        if (entities == null) {
+            eventPerformer.reload();
         }
+
+        if (entities == null) {
+            throw new IllegalStateException("Cannot load entities for grid component");
+        }
+
+        List<Map<String, String>> values = new ArrayList<Map<String, String>>();
+
+        for (Entity entity : entities) {
+            if (mode == ExportMode.ALL || (mode == ExportMode.SELECTED && getSelectedEntitiesIds().contains(entity.getId()))) {
+                values.add(convertEntityToMap(entity));
+            }
+        }
+
         return values;
     }
 
+    private Map<String, String> convertEntityToMap(final Entity entity) {
+        Map<String, String> values = new LinkedHashMap<String, String>();
+        for (GridComponentColumn column : columns.values()) {
+            if (column.isHidden()) {
+                continue;
+            }
+
+            if (column.getFields().get(0).getType() instanceof EnumeratedType) {
+                String fieldValue = column.getValue(entity, getLocale());
+
+                StringBuffer localeString = new StringBuffer();
+                localeString.append(getDataDefinition().getPluginIdentifier());
+                localeString.append(".");
+                localeString.append(getDataDefinition().getName());
+                localeString.append(".");
+                localeString.append(column.getName());
+                localeString.append(".value.");
+                localeString.append(fieldValue);
+
+                values.put(column.getName(), getTranslationService().translate(localeString.toString(), getLocale()));
+            } else {
+                values.put(column.getName(), column.getValue(entity, getLocale()));
+            }
+        }
+        return values;
+    }
 }
