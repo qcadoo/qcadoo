@@ -29,11 +29,11 @@
 	xsi:schemaLocation="http://schema.qcadoo.org/model http://schema.qcadoo.org/model.xsd">
 	<fields>
 		<string name="name" required="true" unique="true">
-			<validatesLength max="40" />
+			<validatesLength max="255" />
 		</string>
 		<string name="externalNumber" />
 		<string name="description">
-			<validatesLength max="255" />
+			<validatesLength max="2048" />
 		</string>
 		<belongsTo name="dictionary" model="dictionary" required="true" />
 	</fields>
