@@ -152,11 +152,11 @@ QCD.components.elements.Tree = function(_element, _mainController) {
 			
 			buttons.expandTreeButton = QCD.components.elements.utils.HeaderUtils.createHeaderButton("", function(e) {
 				expandTreeClicked();
-			}, "downIcon16_dis.png").css("marginLeft", "20px").attr("title", translations.expandTreeButton);
+			}, "expandAllIcon16.png").css("marginLeft", "20px").attr("title", translations.expandTreeButton);
 			
 			buttons.collapseTreeButton = QCD.components.elements.utils.HeaderUtils.createHeaderButton("", function(e) {
 				collapseTreeClicked();
-			}, "upIcon16_dis.png").attr("title", translations.collapseTreeButton);
+			}, "collapseAllIcon16.png").attr("title", translations.collapseTreeButton);
 			
 			buttons.moveUpButton.hide();
 			buttons.moveDownButton.hide();
