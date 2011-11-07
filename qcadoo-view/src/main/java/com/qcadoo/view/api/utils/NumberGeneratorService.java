@@ -27,8 +27,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.search.SearchOrders;
+import com.qcadoo.model.api.search.SearchRestrictions;
 import com.qcadoo.model.api.search.SearchResult;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.api.components.FieldComponent;
@@ -123,7 +125,8 @@ public class NumberGeneratorService {
      * @return new number of entity
      */
     public String generateNumber(final String plugin, final String entityName, final int digitsNumber) {
-        SearchResult results = dataDefinitionService.get(plugin, entityName).find().setMaxResults(1)
+        DataDefinition dataDefinition = dataDefinitionService.get(plugin, entityName);
+        SearchResult results = dataDefinition.find().setMaxResults(1)
                 .addOrder(SearchOrders.desc("id")).list();
 
         long longValue = 0;
@@ -131,20 +134,16 @@ public class NumberGeneratorService {
         if (results.getEntities().isEmpty()) {
             longValue++;
         } else {
-            longValue = results.getEntities().get(0).getId() + 1;
+            longValue = results.getEntities().get(0).getId();
+            while (numberAlreadyExist(dataDefinition, longValue, digitsNumber)) { 
+                longValue++; 
+            }
         }
 
         return String.format("%0" + digitsNumber + "d", longValue);
     }
 
-    /**
-     * Generate new 6-digits number of entity
-     * 
-     * @param plugin
-     *            plugin identifier of entity
-     * @param entityName
-     *            name of entity
-     * @return new number of entity
-     */
-
+    private boolean numberAlreadyExist(final DataDefinition dataDefinition, final long longValue, final int digitsNumber) {
+        return dataDefinition.find().add(SearchRestrictions.eq("number", String.format("%0" + digitsNumber + "d", longValue))).setMaxResults(1).uniqueResult() != null;
+   }
 }
