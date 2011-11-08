@@ -94,8 +94,9 @@ public final class PdfPageNumbering extends PdfPageEventHelper {
                     companyData = companyData.append(company.getStringField("country"));
                 }
                 this.address = companyData.toString();
-            } else
+            } else {
                 this.address = "";
+            }
 
             if (company.getStringField("phone") != null) {
                 companyData.setLength(0);
@@ -114,8 +115,9 @@ public final class PdfPageNumbering extends PdfPageEventHelper {
                     companyData = companyData.append("E-mail: ");
                     companyData = companyData.append(company.getStringField("email"));
                     this.phone_email = companyData.toString();
-                } else
+                } else {
                     this.phone_email = "";
+                }
             }
         } else {
             this.company_name = "";
