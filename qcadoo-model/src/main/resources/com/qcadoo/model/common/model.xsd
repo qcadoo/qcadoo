@@ -45,8 +45,8 @@
 			<xs:element name="string" type="stringFieldType" />
 			<xs:element name="text" type="characterFieldType" />
 			<xs:element name="decimal" type="decimalFieldType" />
-			<xs:element name="datetime" type="basicValidatableFieldType" />
-			<xs:element name="date" type="basicValidatableFieldType" />
+			<xs:element name="datetime" type="dateFieldType" />
+			<xs:element name="date" type="dateFieldType" />
 			<xs:element name="boolean" type="fieldType" />
 			<xs:element name="belongsTo" type="belongsToFieldType" />
 			<xs:element name="hasMany" type="hasManyFieldType" />
@@ -110,12 +110,14 @@
 		<xs:attribute name="unique" type="xs:boolean" default="false" />
 	</xs:complexType>
 
-	<xs:complexType name="basicValidatableFieldType">
+	<xs:complexType name="dateFieldType">
 		<xs:complexContent>
 			<xs:extension base="fieldType">
 				<xs:choice minOccurs="0" maxOccurs="unbounded">
 					<xs:element name="validatesWith" type="hookType" />
 					<xs:element name="validatesRegex" type="validatesRegexType" />
+					
+					<xs:element name="validatesRange" type="validatesRangeType" />
 				</xs:choice>
 			</xs:extension>
 		</xs:complexContent>
