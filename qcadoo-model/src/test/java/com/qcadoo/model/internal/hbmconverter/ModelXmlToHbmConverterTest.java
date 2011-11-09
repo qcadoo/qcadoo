@@ -147,7 +147,7 @@ public class ModelXmlToHbmConverterTest {
 
     @Test
     public void shouldDefineProperties() throws Exception {
-        assertNodeCount(17, "/hibernate-mapping/class[1]/property", hbmFirstEntity);
+        assertNodeCount(19, "/hibernate-mapping/class[1]/property", hbmFirstEntity);
         assertNodeCount(0, "/hibernate-mapping/class[1]/property", hbmSecondEntity);
         assertNodeCount(0, "/hibernate-mapping/class[1]/property", hbmThirdEntity);
         assertNodeExists("/hibernate-mapping/class[1]/property[@name='fieldInteger' and @type='integer']", hbmFirstEntity);
@@ -213,14 +213,17 @@ public class ModelXmlToHbmConverterTest {
     @Test
     public void shouldDefineScaleProperty() throws Exception {
         assertNodeEquals("4", "/hibernate-mapping/class[1]/property/column[@name='fieldDecimal']/@scale", hbmFirstEntity);
-        assertNodeCount(1, "/hibernate-mapping/class/property/column/@scale", hbmFirstEntity);
+        assertNodeEquals("3", "/hibernate-mapping/class[1]/property/column[@name='fieldDecimalWithoutValidators']/@scale", hbmFirstEntity);
+        assertNodeCount(3, "/hibernate-mapping/class/property/column/@scale", hbmFirstEntity);
     }
 
     @Test
     public void shouldDefinePrecisionProperty() throws Exception {
         assertNodeEquals("4", "/hibernate-mapping/class[1]/property/column[@name='fieldInteger']/@precision", hbmFirstEntity);
-        assertNodeEquals("2", "/hibernate-mapping/class[1]/property/column[@name='fieldDecimal']/@precision", hbmFirstEntity);
-        assertNodeCount(2, "/hibernate-mapping/class/property/column/@precision", hbmFirstEntity);
+        assertNodeEquals("6", "/hibernate-mapping/class[1]/property/column[@name='fieldDecimal']/@precision", hbmFirstEntity);
+        assertNodeEquals("11", "/hibernate-mapping/class[1]/property/column[@name='fieldDecimalOnlyWithScale']/@precision", hbmFirstEntity);
+        assertNodeEquals("10", "/hibernate-mapping/class[1]/property/column[@name='fieldDecimalWithoutValidators']/@precision", hbmFirstEntity);
+        assertNodeCount(4, "/hibernate-mapping/class/property/column/@precision", hbmFirstEntity);
     }
 
     @Test

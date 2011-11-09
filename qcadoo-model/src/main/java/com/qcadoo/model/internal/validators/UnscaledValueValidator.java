@@ -31,7 +31,7 @@ import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.internal.api.ErrorMessageDefinition;
 import com.qcadoo.model.internal.api.FieldHookDefinition;
 
-public final class PrecisionValidator implements FieldHookDefinition, ErrorMessageDefinition {
+public final class UnscaledValueValidator implements FieldHookDefinition, ErrorMessageDefinition {
 
     private static final String INVALID_PRECISION_ERROR = "qcadooView.validate.field.error.invalidPrecision";
 
@@ -45,7 +45,7 @@ public final class PrecisionValidator implements FieldHookDefinition, ErrorMessa
 
     private FieldDefinition fieldDefinition;
 
-    public PrecisionValidator(final Integer min, final Integer is, final Integer max) {
+    public UnscaledValueValidator(final Integer min, final Integer is, final Integer max) {
         this.min = min;
         this.is = is;
         this.max = max;

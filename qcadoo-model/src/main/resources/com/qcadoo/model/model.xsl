@@ -62,7 +62,27 @@
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
-
+	
+	<xsl:template name="precision">
+		<xsl:param name="unscaledValue" />
+		
+		<xsl:attribute name="precision">
+			<xsl:value-of select="$unscaledValue" />
+		</xsl:attribute>
+	</xsl:template>
+	
+	<xsl:template name="precisionAndScale">
+		<xsl:param name="unscaledValue" />
+		<xsl:param name="scale" />
+		
+		<xsl:attribute name="precision">
+			<xsl:value-of select="$unscaledValue + $scale" />
+		</xsl:attribute>
+		<xsl:attribute name="scale">
+			<xsl:value-of select="$scale" />
+		</xsl:attribute>
+	</xsl:template>
+	
 	<xsl:template match="//qcd:model">
 		<hibernate-mapping>
 			<class>
@@ -174,28 +194,48 @@
 						</xsl:attribute>
 				</xsl:when>
 			</xsl:choose>
+			
 			<xsl:choose>
-				<xsl:when test="./qcd:validatesPrecision[@is]">
-					<xsl:attribute name="precision">
-							<xsl:value-of select="./qcd:validatesPrecision/@is" />	
-						</xsl:attribute>
+				<xsl:when test="local-name()='integer'">
+					<xsl:call-template name="precision">
+						<xsl:with-param name="unscaledValue">
+							<xsl:choose>
+								<xsl:when test="./qcd:validatesUnscaledValue[@is]">
+									<xsl:value-of select="./qcd:validatesUnscaledValue/@is" />
+								</xsl:when>
+								<xsl:when test="./qcd:validatesUnscaledValue[@max]">
+									<xsl:value-of select="./qcd:validatesUnscaledValue/@max" />
+								</xsl:when>
+								<xsl:otherwise>10</xsl:otherwise>
+							</xsl:choose>
+						</xsl:with-param>
+					</xsl:call-template>
 				</xsl:when>
-				<xsl:when test="./qcd:validatesPrecision[@max]">
-					<xsl:attribute name="precision">
-							<xsl:value-of select="./qcd:validatesPrecision/@max" />	
-						</xsl:attribute>
-				</xsl:when>
-			</xsl:choose>
-			<xsl:choose>
-				<xsl:when test="./qcd:validatesScale[@is]">
-					<xsl:attribute name="scale">
-							<xsl:value-of select="./qcd:validatesScale/@is" />	
-						</xsl:attribute>
-				</xsl:when>
-				<xsl:when test="./qcd:validatesScale[@max]">
-					<xsl:attribute name="scale">
-							<xsl:value-of select="./qcd:validatesScale/@max" />	
-						</xsl:attribute>
+				<xsl:when test="local-name()='decimal'">
+					<xsl:call-template name="precisionAndScale">
+						<xsl:with-param name="unscaledValue">
+							<xsl:choose>
+								<xsl:when test="./qcd:validatesUnscaledValue[@is]">
+									<xsl:value-of select="./qcd:validatesUnscaledValue/@is" />
+								</xsl:when>
+								<xsl:when test="./qcd:validatesUnscaledValue[@max]">
+									<xsl:value-of select="./qcd:validatesUnscaledValue/@max" />
+								</xsl:when>
+								<xsl:otherwise>7</xsl:otherwise>
+							</xsl:choose>
+						</xsl:with-param>
+						<xsl:with-param name="scale">
+							<xsl:choose>
+								<xsl:when test="./qcd:validatesScale[@is]">
+									<xsl:value-of select="./qcd:validatesScale/@is" />
+								</xsl:when>
+								<xsl:when test="./qcd:validatesScale[@max]">
+									<xsl:value-of select="./qcd:validatesScale/@max" />
+								</xsl:when>
+								<xsl:otherwise>3</xsl:otherwise>
+							</xsl:choose>
+						</xsl:with-param>
+					</xsl:call-template>
 				</xsl:when>
 			</xsl:choose>
 			<xsl:if test="@default">

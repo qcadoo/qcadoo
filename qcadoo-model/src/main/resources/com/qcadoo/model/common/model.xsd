@@ -41,10 +41,10 @@
 
 	<xs:group name="fieldsType">
 		<xs:choice>
-			<xs:element name="integer" type="numericFieldType" />
+			<xs:element name="integer" type="integerFieldType" />
 			<xs:element name="string" type="stringFieldType" />
 			<xs:element name="text" type="characterFieldType" />
-			<xs:element name="decimal" type="numericFieldType" />
+			<xs:element name="decimal" type="decimalFieldType" />
 			<xs:element name="datetime" type="basicValidatableFieldType" />
 			<xs:element name="date" type="basicValidatableFieldType" />
 			<xs:element name="boolean" type="fieldType" />
@@ -121,14 +121,28 @@
 		</xs:complexContent>
 	</xs:complexType>
 		
-	<xs:complexType name="numericFieldType">
+	<xs:complexType name="integerFieldType">
+		<xs:complexContent>
+			<xs:extension base="fieldType">
+				<xs:choice minOccurs="0" maxOccurs="unbounded">
+					<xs:element name="validatesWith" type="hookType" />
+					<xs:element name="validatesRegex" type="validatesRegexType" />
+					
+					<xs:element name="validatesUnscaledValue" type="validatesLengthType" />
+					<xs:element name="validatesRange" type="validatesRangeType" />
+				</xs:choice>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="decimalFieldType">
 		<xs:complexContent>
 			<xs:extension base="fieldType">
 				<xs:choice minOccurs="0" maxOccurs="unbounded">
 					<xs:element name="validatesWith" type="hookType" />
 					<xs:element name="validatesRegex" type="validatesRegexType" />
 			
-					<xs:element name="validatesPrecision" type="validatesLengthType" />
+					<xs:element name="validatesUnscaledValue" type="validatesLengthType" />
 					<xs:element name="validatesScale" type="validatesLengthType" />
 					<xs:element name="validatesRange" type="validatesRangeType" />
 				</xs:choice>
@@ -144,6 +158,7 @@
 					<xs:element name="validatesRegex" type="validatesRegexType" />
 			
 					<xs:element name="validatesLength" type="validatesLengthType" />
+					<xs:element name="validatesRange" type="validatesRangeType" />
 				</xs:choice>
 			</xs:extension>
 		</xs:complexContent>

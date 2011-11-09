@@ -71,10 +71,10 @@
 
 	<xs:complexType name="fieldsdType">
 		<xs:choice minOccurs="0" maxOccurs="unbounded">
-			<xs:element name="integer" type="numericFieldType" />
+			<xs:element name="integer" type="integerFieldType" />
 			<xs:element name="string" type="stringFieldType" />
 			<xs:element name="text" type="characterFieldType" />
-			<xs:element name="decimal" type="numericFieldType" />
+			<xs:element name="decimal" type="decimalFieldType" />
 			<xs:element name="datetime" type="basicValidatableFieldType" />
 			<xs:element name="date" type="basicValidatableFieldType" />
 			<xs:element name="boolean" type="fieldType" />

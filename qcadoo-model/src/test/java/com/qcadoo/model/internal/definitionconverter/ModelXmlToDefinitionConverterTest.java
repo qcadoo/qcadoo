@@ -80,7 +80,7 @@ import com.qcadoo.model.internal.types.TreeEntitiesType;
 import com.qcadoo.model.internal.validators.CustomEntityValidator;
 import com.qcadoo.model.internal.validators.CustomValidator;
 import com.qcadoo.model.internal.validators.LengthValidator;
-import com.qcadoo.model.internal.validators.PrecisionValidator;
+import com.qcadoo.model.internal.validators.UnscaledValueValidator;
 import com.qcadoo.model.internal.validators.RangeValidator;
 import com.qcadoo.model.internal.validators.RegexValidator;
 import com.qcadoo.model.internal.validators.RequiredValidator;
@@ -286,7 +286,7 @@ public class ModelXmlToDefinitionConverterTest {
         assertEquals(1, getField(validators.get(3), "min"));
         assertNull(getField(validators.get(3), "is"));
         assertEquals(3, getField(validators.get(3), "max"));
-        assertThat(validators.get(4), instanceOf(PrecisionValidator.class));
+        assertThat(validators.get(4), instanceOf(UnscaledValueValidator.class));
         assertEquals(2, getField(validators.get(4), "min"));
         assertNull(getField(validators.get(4), "is"));
         assertEquals(4, getField(validators.get(4), "max"));
@@ -306,10 +306,21 @@ public class ModelXmlToDefinitionConverterTest {
         assertEquals(2, getField(validators.get(0), "min"));
         assertNull(getField(validators.get(0), "is"));
         assertEquals(4, getField(validators.get(0), "max"));
-        assertThat(validators.get(1), instanceOf(PrecisionValidator.class));
+        assertThat(validators.get(1), instanceOf(UnscaledValueValidator.class));
         assertNull(getField(validators.get(1), "min"));
         assertEquals(2, getField(validators.get(1), "is"));
         assertNull(getField(validators.get(1), "max"));
+        
+        validators = ((FieldDefinitionImpl) dataDefinition.getField("fieldDecimalOnlyWithScale")).getValidators();
+        
+        assertThat(validators.get(0), instanceOf(ScaleValidator.class));
+        assertEquals(2, getField(validators.get(0), "min"));
+        assertNull(getField(validators.get(0), "is"));
+        assertEquals(4, getField(validators.get(0), "max"));
+        
+        validators = ((FieldDefinitionImpl) dataDefinition.getField("fieldDecimalWithoutValidators")).getValidators();
+        
+        assertEquals(0, validators.size());
     }
 
     @Test

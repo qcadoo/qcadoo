@@ -53,7 +53,8 @@ import com.qcadoo.model.internal.hooks.FieldHookDefinitionImpl;
 import com.qcadoo.model.internal.validators.CustomEntityValidator;
 import com.qcadoo.model.internal.validators.CustomValidator;
 import com.qcadoo.model.internal.validators.LengthValidator;
-import com.qcadoo.model.internal.validators.PrecisionValidator;
+import com.qcadoo.model.internal.validators.RegexValidator;
+import com.qcadoo.model.internal.validators.UnscaledValueValidator;
 import com.qcadoo.model.internal.validators.RangeValidator;
 import com.qcadoo.model.internal.validators.RequiredValidator;
 import com.qcadoo.model.internal.validators.ScaleValidator;
@@ -397,7 +398,7 @@ public class ValidatorTest extends DataAccessTest {
         Entity entity = new DefaultEntity(dataDefinition);
         entity.setField("age", 123456);
 
-        fieldDefinitionAge.withValidator(initializeValidator(new LengthValidator(null, null, 5), fieldDefinitionAge));
+        fieldDefinitionAge.withValidator(initializeValidator(new UnscaledValueValidator(null, null, 5), fieldDefinitionAge));
 
         // when
         entity = dataDefinition.save(entity);
@@ -408,45 +409,44 @@ public class ValidatorTest extends DataAccessTest {
     }
 
     @Test
-    public void shouldHasErrorsIfBigDecimalValueIsTooLong() throws Exception {
+    public void shouldIgnoreUnscaledValueValidatorForStringValue() throws Exception {
+        // given
+        Entity entity = new DefaultEntity(dataDefinition);
+        entity.setField("name", "Qcadoo Framework RLZ!");
+
+        fieldDefinitionName.withValidator(initializeValidator(new UnscaledValueValidator(null, 1, null), fieldDefinitionName));
+
+        // when
+        entity = dataDefinition.save(entity);
+
+        // then
+        verify(session).save(any(SampleSimpleDatabaseObject.class));
+        assertTrue(entity.isValid());
+    }
+    
+    @Test
+    public void shouldIgnoreScaleValidatorForStringValue() throws Exception {
+        // given
+        Entity entity = new DefaultEntity(dataDefinition);
+        entity.setField("name", "Qcadoo Framework RLZ!");
+
+        fieldDefinitionName.withValidator(initializeValidator(new ScaleValidator(null, 1, null), fieldDefinitionName));
+
+        // when
+        entity = dataDefinition.save(entity);
+
+        // then
+        verify(session).save(any(SampleSimpleDatabaseObject.class));
+        assertTrue(entity.isValid());
+    }
+    
+    @Test
+    public void shouldIgnoreLengthValidatorForBigDecimalValue() throws Exception {
         // given
         Entity entity = new DefaultEntity(dataDefinition);
         entity.setField("money", new BigDecimal("123.456"));
 
-        fieldDefinitionMoney.withValidator(initializeValidator(new LengthValidator(null, null, 5), fieldDefinitionMoney));
-
-        // when
-        entity = dataDefinition.save(entity);
-
-        // then
-        verify(session, never()).save(any(SampleSimpleDatabaseObject.class));
-        assertFalse(entity.isValid());
-    }
-
-    @Test
-    public void shouldHasErrorsIfBigDecimalPresicionAndScaleAreTooLong() throws Exception {
-        // given
-        Entity entity = new DefaultEntity(dataDefinition);
-        entity.setField("money", new BigDecimal("123.456"));
-
-        fieldDefinitionMoney.withValidator(initializeValidator(new ScaleValidator(null, null, 2), fieldDefinitionMoney))
-                .withValidator(initializeValidator(new PrecisionValidator(null, null, 6), fieldDefinitionMoney));
-
-        // when
-        entity = dataDefinition.save(entity);
-
-        // then
-        verify(session, never()).save(any(SampleSimpleDatabaseObject.class));
-        assertFalse(entity.isValid());
-    }
-
-    @Test
-    public void shouldHasNoErrorsIfBigDecimalValueLenghtIsOk() throws Exception {
-        // given
-        Entity entity = new DefaultEntity(dataDefinition);
-        entity.setField("money", new BigDecimal("123.4"));
-
-        fieldDefinitionMoney.withValidator(initializeValidator(new LengthValidator(null, null, 5), fieldDefinitionMoney));
+        fieldDefinitionMoney.withValidator(initializeValidator(new LengthValidator(null, 1, null), fieldDefinitionMoney));
 
         // when
         entity = dataDefinition.save(entity);
@@ -457,12 +457,141 @@ public class ValidatorTest extends DataAccessTest {
     }
 
     @Test
+    public void shouldIgnoreLengthValidatorForIntegerValue() throws Exception {
+        // given
+        Entity entity = new DefaultEntity(dataDefinition);
+        entity.setField("age", new Integer("123456"));
+
+        fieldDefinitionAge.withValidator(initializeValidator(new LengthValidator(null, 1, null), fieldDefinitionAge));
+
+        // when
+        entity = dataDefinition.save(entity);
+
+        // then
+        verify(session).save(any(SampleSimpleDatabaseObject.class));
+        assertTrue(entity.isValid());
+    }
+    
+    @Test
+    public void shouldHasErrorsIfBigDecimalPresicionAndScaleAreTooLong() throws Exception {
+        // given
+        Entity entity = new DefaultEntity(dataDefinition);
+        entity.setField("money", new BigDecimal("123.456"));
+
+        fieldDefinitionMoney.withValidator(initializeValidator(new ScaleValidator(null, null, 2), fieldDefinitionMoney))
+                .withValidator(initializeValidator(new UnscaledValueValidator(null, null, 4), fieldDefinitionMoney));
+
+        // when
+        entity = dataDefinition.save(entity);
+
+        // then
+        verify(session, never()).save(any(SampleSimpleDatabaseObject.class));
+        assertFalse(entity.isValid());
+    }
+
+    @Test
+    public void shouldHasErrorsIfBigDecimalUnscaledValueAreTooShort() throws Exception {
+        // given
+        Entity entity = new DefaultEntity(dataDefinition);
+        entity.setField("money", new BigDecimal("123.45"));
+
+        fieldDefinitionMoney.withValidator(initializeValidator(new UnscaledValueValidator(5, null, null), fieldDefinitionMoney));
+
+        // when
+        entity = dataDefinition.save(entity);
+
+        // then
+        verify(session, never()).save(any(SampleSimpleDatabaseObject.class));
+        assertFalse(entity.isValid());
+    }
+
+    @Test
+    public void shouldHasErrorsIfIntegerUnscaledValueAreTooShort() throws Exception {
+        // given
+        Entity entity = new DefaultEntity(dataDefinition);
+        entity.setField("age", new Integer("123"));
+
+        fieldDefinitionAge.withValidator(initializeValidator(new UnscaledValueValidator(5, null, null), fieldDefinitionAge));
+
+        // when
+        entity = dataDefinition.save(entity);
+
+        // then
+        verify(session, never()).save(any(SampleSimpleDatabaseObject.class));
+        assertFalse(entity.isValid());
+    }
+    
+    @Test
+    public void shouldHasErrorsIfBigDecimalScaleAreTooShort() throws Exception {
+        // given
+        Entity entity = new DefaultEntity(dataDefinition);
+        entity.setField("money", new BigDecimal("123.45"));
+
+        fieldDefinitionMoney.withValidator(initializeValidator(new ScaleValidator(3, null, null), fieldDefinitionMoney));
+
+        // when
+        entity = dataDefinition.save(entity);
+
+        // then
+        verify(session, never()).save(any(SampleSimpleDatabaseObject.class));
+        assertFalse(entity.isValid());
+    }
+
+    @Test
+    public void shouldHasErrorsIfBigDecimalScaleIsNotEqual() throws Exception {
+        // given
+        Entity entity = new DefaultEntity(dataDefinition);
+        entity.setField("money", new BigDecimal("123.45"));
+
+        fieldDefinitionMoney.withValidator(initializeValidator(new ScaleValidator(null, 4, null), fieldDefinitionMoney));
+
+        // when
+        entity = dataDefinition.save(entity);
+
+        // then
+        verify(session, never()).save(any(SampleSimpleDatabaseObject.class));
+        assertFalse(entity.isValid());
+    }
+
+    @Test
+    public void shouldHasErrorsIfIntegerUnscaledValueIsNotEqual() throws Exception {
+        // given
+        Entity entity = new DefaultEntity(dataDefinition);
+        entity.setField("age", new Integer("123"));
+
+        fieldDefinitionAge.withValidator(initializeValidator(new UnscaledValueValidator(null, 4, null), fieldDefinitionAge));
+
+        // when
+        entity = dataDefinition.save(entity);
+
+        // then
+        verify(session, never()).save(any(SampleSimpleDatabaseObject.class));
+        assertFalse(entity.isValid());
+    }
+    
+    @Test
+    public void shouldHasErrorsIfBigDecimalUnscaledValueIsNotEqual() throws Exception {
+        // given
+        Entity entity = new DefaultEntity(dataDefinition);
+        entity.setField("money", new BigDecimal("123.45"));
+
+        fieldDefinitionMoney.withValidator(initializeValidator(new UnscaledValueValidator(null, 4, null), fieldDefinitionMoney));
+
+        // when
+        entity = dataDefinition.save(entity);
+
+        // then
+        verify(session, never()).save(any(SampleSimpleDatabaseObject.class));
+        assertFalse(entity.isValid());
+    }
+    
+    @Test
     public void shouldHasNoErrorsIfBigDecimalValuePresicionAndScaleIsOk() throws Exception {
         // given
         Entity entity = new DefaultEntity(dataDefinition);
         entity.setField("money", new BigDecimal("123.4"));
 
-        fieldDefinitionMoney.withValidator(initializeValidator(new PrecisionValidator(null, null, 4), fieldDefinitionMoney))
+        fieldDefinitionMoney.withValidator(initializeValidator(new UnscaledValueValidator(null, null, 3), fieldDefinitionMoney))
                 .withValidator(initializeValidator(new ScaleValidator(null, null, 1), fieldDefinitionMoney));
 
         // when
@@ -473,6 +602,38 @@ public class ValidatorTest extends DataAccessTest {
         assertTrue(entity.isValid());
     }
 
+    @Test
+    public void shouldHasErrorsIfStringLengthIsNotEqual() throws Exception {
+        // given
+        Entity entity = new DefaultEntity(dataDefinition);
+        entity.setField("name", "Qcadoo Framework RLZ!");
+
+        fieldDefinitionName.withValidator(initializeValidator(new LengthValidator(null, 4, null), fieldDefinitionName));
+
+        // when
+        entity = dataDefinition.save(entity);
+
+        // then
+        verify(session, never()).save(any(SampleSimpleDatabaseObject.class));
+        assertFalse(entity.isValid());
+    }
+    
+    @Test
+    public void shouldHasErrorsIfStringIsTooShort() throws Exception {
+        // given
+        Entity entity = new DefaultEntity(dataDefinition);
+        entity.setField("name", "Qcadoo Framework RLZ!");
+
+        fieldDefinitionName.withValidator(initializeValidator(new LengthValidator(50, null, null), fieldDefinitionName));
+
+        // when
+        entity = dataDefinition.save(entity);
+
+        // then
+        verify(session, never()).save(any(SampleSimpleDatabaseObject.class));
+        assertFalse(entity.isValid());
+    }
+    
     @Test
     public void shouldHasNoCheckLenghtOfBoolean() throws Exception {
         // given
@@ -652,6 +813,38 @@ public class ValidatorTest extends DataAccessTest {
         // then
         verify(session, never()).save(any(SampleSimpleDatabaseObject.class));
         assertFalse(entity.isValid());
+    }
+    
+    @Test
+    public void shouldHasErrorsIfStringNotMatchExpression() throws Exception {
+        // given
+        Entity entity = new DefaultEntity(dataDefinition);
+        entity.setField("name", "Qcadoo Framework RLZ!");
+
+        fieldDefinitionName.withValidator(initializeValidator(new RegexValidator(".*MES.*"), fieldDefinitionName));
+
+        // when
+        entity = dataDefinition.save(entity);
+
+        // then
+        verify(session, never()).save(any(SampleSimpleDatabaseObject.class));
+        assertFalse(entity.isValid());
+    }
+    
+    @Test
+    public void shouldHaveNoErrorsIfStringMatchExpression() throws Exception {
+        // given
+        Entity entity = new DefaultEntity(dataDefinition);
+        entity.setField("name", "Qcadoo Framework RLZ!");
+
+        fieldDefinitionName.withValidator(initializeValidator(new RegexValidator("^Qcadoo.*"), fieldDefinitionName));
+
+        // when
+        entity = dataDefinition.save(entity);
+
+        // then
+        verify(session).save(any(SampleSimpleDatabaseObject.class));
+        assertTrue(entity.isValid());
     }
 
     private FieldHookDefinition initializeValidator(final FieldHookDefinition fieldHook, final FieldDefinition fieldDefinition) {

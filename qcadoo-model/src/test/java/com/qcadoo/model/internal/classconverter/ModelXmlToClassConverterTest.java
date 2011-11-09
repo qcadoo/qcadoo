@@ -93,6 +93,8 @@ public class ModelXmlToClassConverterTest {
         verifyField(propertyDescriptors.get("fieldString"), String.class);
         verifyField(propertyDescriptors.get("fieldText"), String.class);
         verifyField(propertyDescriptors.get("fieldDecimal"), BigDecimal.class);
+        verifyField(propertyDescriptors.get("fieldDecimalOnlyWithScale"), BigDecimal.class);
+        verifyField(propertyDescriptors.get("fieldDecimalWithoutValidators"), BigDecimal.class);
         verifyField(propertyDescriptors.get("fieldDatetime"), Date.class);
         verifyField(propertyDescriptors.get("fieldDate"), Date.class);
         verifyField(propertyDescriptors.get("fieldBoolean"), Boolean.class);

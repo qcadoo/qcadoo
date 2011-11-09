@@ -91,7 +91,7 @@ import com.qcadoo.model.internal.utils.ClassNameUtils;
 import com.qcadoo.model.internal.validators.CustomEntityValidator;
 import com.qcadoo.model.internal.validators.CustomValidator;
 import com.qcadoo.model.internal.validators.LengthValidator;
-import com.qcadoo.model.internal.validators.PrecisionValidator;
+import com.qcadoo.model.internal.validators.UnscaledValueValidator;
 import com.qcadoo.model.internal.validators.RangeValidator;
 import com.qcadoo.model.internal.validators.RegexValidator;
 import com.qcadoo.model.internal.validators.RequiredValidator;
@@ -435,9 +435,9 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
                         new LengthValidator(getIntegerAttribute(reader, "min"), getIntegerAttribute(reader, "is"),
                                 getIntegerAttribute(reader, "max"))));
                 break;
-            case VALIDATESPRECISION:
+            case VALIDATESUNSCALEDVALUE:
                 fieldDefinition.withValidator(getValidatorDefinition(reader,
-                        new PrecisionValidator(getIntegerAttribute(reader, "min"), getIntegerAttribute(reader, "is"),
+                        new UnscaledValueValidator(getIntegerAttribute(reader, "min"), getIntegerAttribute(reader, "is"),
                                 getIntegerAttribute(reader, "max"))));
                 break;
             case VALIDATESSCALE:

@@ -23,8 +23,6 @@
  */
 package com.qcadoo.model.internal.validators;
 
-import java.math.BigDecimal;
-
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.FieldDefinition;
@@ -64,7 +62,7 @@ public final class LengthValidator implements FieldHookDefinition, ErrorMessageD
 
         Class<?> fieldClass = fieldDefinition.getType().getType();
 
-        if (!(fieldClass.equals(String.class) || fieldClass.equals(Integer.class) || fieldClass.equals(BigDecimal.class))) {
+        if (!fieldClass.equals(String.class)) {
             return true;
         }
 
