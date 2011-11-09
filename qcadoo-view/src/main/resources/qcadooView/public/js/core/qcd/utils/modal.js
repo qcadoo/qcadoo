@@ -38,9 +38,7 @@ QCD.utils.Modal.createModal = function() {
 	container.append(iframe);
 	
 	$("body").append(dialog);
-	dialog.jqm({
-		modal: true,
-	});
+	dialog.jqm({modal: true});
 	
 	return {
 		dialog: dialog,

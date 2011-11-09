@@ -94,8 +94,10 @@
 
 		jQuery(document).ready(function(){
 			if (!isSupportedBrowser()) {
+				$("#loginContentWrapper").hide();
+
 				var modal = QCD.utils.Modal.createModal();
-				modal.changeSize(400,300);
+				modal.changeSize(420, 320);
 				modal.showStatic("browserNotSupported.html");
 				return;
 			}
@@ -271,7 +273,6 @@
 	</c:if>
 </head>
 <body>
-
 	<div id="contentWrapperOuter">
 	<div id="contentWrapperMiddle">
 	<div id="contentWrapper">
