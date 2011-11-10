@@ -66,7 +66,7 @@ public class TreeNumberingServiceImpl implements TreeNumberingService {
     @Override
     public void generateNumbersAndUpdateTree(final DataDefinition dd, final String joinFieldName, final Long belongsToEntityId) {
         EntityTree tree = new EntityTreeImpl(dd, joinFieldName, belongsToEntityId);
-        if (tree.getRoot().getField(TreeType.NODE_NUMBER_FIELD) != null) {
+        if (tree.getRoot() == null || tree.getRoot().getField(TreeType.NODE_NUMBER_FIELD) != null) {
             return;
         }
         generateTreeNumbers(tree);
