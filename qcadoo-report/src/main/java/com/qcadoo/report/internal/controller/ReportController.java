@@ -37,7 +37,6 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,17 +75,18 @@ public class ReportController {
         ReportService.ReportType reportType = getReportType(request);
         Map<String, String> additionalArgs = convertJsonStringToMap(requestAdditionalArgs);
 
-        byte[] reportContent = reportService.generateReportForEntity(templatePlugin, templateName, reportType, entityIds,
-                additionalArgs, locale);
+        response.setContentType(reportType.getMimeType());
 
         try {
-            copy(new ByteArrayInputStream(reportContent), response.getOutputStream());
+            int bytes = copy(
+                    new ByteArrayInputStream(reportService.generateReportForEntity(templatePlugin, templateName, reportType,
+                            entityIds, additionalArgs, locale)), response.getOutputStream());
+
+            response.setContentLength(bytes);
         } catch (IOException e) {
             throw new ReportException(ReportException.Type.ERROR_WHILE_COPYING_REPORT_TO_RESPONSE, e);
         }
-        
-        response.setContentLength(reportContent.length);
-        response.setContentType(reportType.getMimeType());
+
         disableCache(response);
     }
 

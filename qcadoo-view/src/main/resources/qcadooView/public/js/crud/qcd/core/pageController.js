@@ -202,7 +202,7 @@ QCD.PageController = function() {
 		for (var i=0; i<ids.length; i++) {
 			url += "&id="+ids[i];
 		}
-		window.open(url);
+		window.open(url, url, 'status=0');
 		if (actionsPerformer) {
 			actionsPerformer.performNext();
 		}
