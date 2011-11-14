@@ -244,7 +244,7 @@ QCD.components.elements.Calendar = function(_element, _mainController) {
 			if (date == null) {
 				addMessage({
 					title: "",
-					content: "not ok"
+					content: ""
 				});
 				element.addClass("error");
 			} else {
