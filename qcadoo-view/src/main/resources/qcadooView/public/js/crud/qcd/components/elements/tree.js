@@ -50,6 +50,8 @@ QCD.components.elements.Tree = function(_element, _mainController) {
 	
 	var isEnabled = false;
 	
+	var selectableWhenDisabled = this.options.selectableWhenDisabled;
+	
 	var listeners = this.options.listeners;
 	
 	var openedNodesArrayToInsert;
@@ -251,7 +253,7 @@ QCD.components.elements.Tree = function(_element, _mainController) {
 			},
 		    cookies: false
 		}).bind("before.jstree", function (e, data) {
-			if (!isEnabled && (data.func == 'select_node' || data.func == 'hover_node')) { 
+			if (!isEnabled && !selectableWhenDisabled && (data.func == 'select_node' || data.func == 'hover_node')) { 
 				e.stopImmediatePropagation();
 		    	return false;
 			}
@@ -519,7 +521,7 @@ QCD.components.elements.Tree = function(_element, _mainController) {
 			}
 		} else {
 			var dataType = dataTypesMap[nodeDataTypesMap[selected]];
-			if (dataType.canHaveChildren) {
+			if (dataType.canHaveChildren && isEnabled) {
 				for (var i in newButtons) {
 					newButtons[i].addClass("headerButtonEnabled");
 				}
@@ -528,7 +530,7 @@ QCD.components.elements.Tree = function(_element, _mainController) {
 					newButtons[i].removeClass("headerButtonEnabled");
 				}
 			}
-			if (selected != "0") {
+			if (selected != "0" && isEnabled) {
 				buttons.editButton.addClass("headerButtonEnabled");
 				buttons.deleteButton.addClass("headerButtonEnabled");
 			} else {
@@ -572,7 +574,9 @@ QCD.components.elements.Tree = function(_element, _mainController) {
 			tree.removeClass("treeDisabled");
 			header.removeClass("elementHeaderDisabled");
 		} else {
-			tree.addClass("treeDisabled");
+			if (!selectableWhenDisabled) {
+				tree.addClass("treeDisabled");
+			}
 			header.addClass("elementHeaderDisabled");
 		}
 		updateButtons();
@@ -682,7 +686,7 @@ QCD.components.elements.Tree = function(_element, _mainController) {
 	}
 	
 	function onSelectChange() {
-		if (isEnabled) {
+		if (isEnabled || selectableWhenDisabled) {
 			mainController.callEvent("select", elementPath, null);
 		}
 	}

@@ -56,6 +56,8 @@ public final class TreeComponentPattern extends FieldComponentPattern {
     private boolean hasEditButton = true;
 
     private boolean hasMoveButton = true;
+    
+    private boolean selectableWhenDisabled = false;
 
     public TreeComponentPattern(final ComponentDefinition componentDefinition) {
         super(componentDefinition);
@@ -116,6 +118,8 @@ public final class TreeComponentPattern extends FieldComponentPattern {
                 hasEditButton = Boolean.parseBoolean(option.getValue());
             } else if ("hasMoveButton".equals(option.getType())) {
                 hasMoveButton = Boolean.parseBoolean(option.getValue());
+            } else if ("selectableWhenDisabled".equals(option.getType())) {
+                selectableWhenDisabled = Boolean.parseBoolean(option.getValue());
             }
         }
     }
@@ -137,6 +141,8 @@ public final class TreeComponentPattern extends FieldComponentPattern {
         buttonsOptions.put("hasEditButton", hasEditButton);
         buttonsOptions.put("hasMoveButton", hasMoveButton);
         json.put("buttonsOptions", buttonsOptions);
+        
+        json.put("selectableWhenDisabled", selectableWhenDisabled);
 
         JSONObject translations = new JSONObject();
         for (String dataTypeName : dataTypes.keySet()) {
