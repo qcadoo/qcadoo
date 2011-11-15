@@ -102,16 +102,16 @@ public class ExportToCsvController {
 
                 List<Map<String, String>> rows;
                 if (grid.getSelectedEntitiesIds().isEmpty()) {
-                	rows = grid.getColumnValuesOfAllRecords();
+                    rows = grid.getColumnValuesOfAllRecords();
                 } else {
-                	rows = grid.getColumnValuesOfSelectedRecords();
+                    rows = grid.getColumnValuesOfSelectedRecords();
                 }
-                
+
                 for (Map<String, String> row : rows) {
                     boolean firstValue = true;
                     for (String value : row.values()) {
-                    	output.append(value + " ");
-                    	
+                        output.append(value);
+                        output.append(" ");
                         if (firstValue) {
                             firstValue = false;
                         } else {
