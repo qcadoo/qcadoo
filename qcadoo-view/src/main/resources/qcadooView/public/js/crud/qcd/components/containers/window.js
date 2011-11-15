@@ -207,7 +207,9 @@ QCD.components.containers.Window = function(_element, _mainController) {
 			ribbon.blockButtons();
 		}
 		for (var tabName in tabs) {
-			tabs[tabName].blockButtons();
+			if (tabs[tabName].blockButtons) {
+				tabs[tabName].blockButtons();
+			}
 		}
 	}
 	
@@ -216,7 +218,9 @@ QCD.components.containers.Window = function(_element, _mainController) {
 			ribbon.unblockButtons();
 		}
 		for (var tabName in tabs) {
-			tabs[tabName].blockButtons();
+			if (tabs[tabName].unblockButtons) {
+				tabs[tabName].unblockButtons();
+			}
 		}
 	}
 	
