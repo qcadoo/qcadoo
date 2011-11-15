@@ -85,6 +85,18 @@ QCD.components.containers.WindowTab = function(_element, _mainController) {
 		// do nothing
 	}
 	
+	this.blockButtons = function() {
+		if (ribbon) {
+			ribbon.blockButtons();
+		}
+	}
+	
+	this.unblockButtons = function() {
+		if (ribbon) {
+			ribbon.unblockButtons();
+		}
+	}
+	
 	this.updateSize = function(_width, _height) {
 		var componentsHeight = _height ? _height-20 : null;
 		for (var i in this.components) {

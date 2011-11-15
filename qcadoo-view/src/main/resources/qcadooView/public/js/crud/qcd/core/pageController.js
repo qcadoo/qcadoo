@@ -84,6 +84,7 @@ QCD.PageController = function() {
 		} else {
 			$(window).focus(onWindowClick);
 		}
+		blockButtons();
 	}
 	
 	this.init = function(serializationObject) {
@@ -222,8 +223,10 @@ QCD.PageController = function() {
 	
 	
 	function performEvent(parameters, completeFunction, actionsPerformer, type) {
+		blockButtons();
 		var parametersJson = JSON.stringify(parameters);
 		QCDConnector.sendPost(parametersJson, function(response) {
+			unblockButtons();
 			if (completeFunction) {
 				completeFunction();
 			}
@@ -247,6 +250,7 @@ QCD.PageController = function() {
 				actionsPerformer.performNext();
 			}
 		}, function() {
+			unblockButtons();
 			if (completeFunction) {
 				completeFunction();
 			}
@@ -265,6 +269,14 @@ QCD.PageController = function() {
 	this.getActionEvaluator = function() {
 		return actionEvaluator;
 	};
+	
+	function blockButtons() {
+		headerComponent.blockButtons();
+	}
+	
+	function unblockButtons() {
+		headerComponent.unblockButtons();
+	}
 	
 	function getValueData() {
 		var values = new Object();

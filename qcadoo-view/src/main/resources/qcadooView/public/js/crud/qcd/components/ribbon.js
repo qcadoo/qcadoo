@@ -455,6 +455,40 @@ QCD.components.Ribbon = function(_model, _elementName, _mainController, _transla
 		}
 	}
 	
+	this.blockButtons = function() {
+		if (this.buttonsBlocked) {
+			return;
+		}
+		this.buttonsBlocked = true;
+		for (var g in ribbonModel.groups) {
+			var group = ribbonModel.groups[g];
+			for (var i in group.items) {
+				var item = group.items[i];
+				var itemObject = createJsObject(item);
+				item.previousEnabled = itemObject.isEnabled();
+				item.previousMessage = itemObject.tooltipMessageElementContent.html();
+				itemObject.disable();
+			}
+		}
+	}
+	
+	this.unblockButtons = function() {
+		if (! this.buttonsBlocked) {
+			return;
+		}
+		this.buttonsBlocked = false;
+		for (var g in ribbonModel.groups) {
+			var group = ribbonModel.groups[g];
+			for (var i in group.items) {
+				var item = group.items[i];
+				var itemObject = createJsObject(item);
+				if (item.previousEnabled) {
+					itemObject.enable(item.previousMessage);
+				}
+			}
+		}
+	}
+	
 	this.getRibbonItem = function(ribbonItemPath) {
 		var pathParts = ribbonItemPath.split(".");
 		if (pathParts.length != 2 && pathParts.length != 3) {

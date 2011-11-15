@@ -202,6 +202,24 @@ QCD.components.containers.Window = function(_element, _mainController) {
 		}
 	}
 	
+	this.blockButtons = function() {
+		if (ribbon) {
+			ribbon.blockButtons();
+		}
+		for (var tabName in tabs) {
+			tabs[tabName].blockButtons();
+		}
+	}
+	
+	this.unblockButtons = function() {
+		if (ribbon) {
+			ribbon.unblockButtons();
+		}
+		for (var tabName in tabs) {
+			tabs[tabName].blockButtons();
+		}
+	}
+	
 	this.updateSize = function(_width, _height) {
 		currentWidth = _width;
 		currentHeight = _height;
