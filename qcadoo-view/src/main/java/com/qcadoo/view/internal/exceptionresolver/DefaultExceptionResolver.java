@@ -153,10 +153,10 @@ public final class DefaultExceptionResolver extends SimpleMappingExceptionResolv
         for (Map.Entry<String, ErrorMessage> error : exception.getEntity().getErrors().entrySet()) {
             String field = translationService.translate(exception.getEntity().getDataDefinition().getPluginIdentifier() + "."
                     + exception.getEntity().getDataDefinition().getName() + "." + error.getKey() + ".label", locale);
-            return field + " - " + translationService.translate(error.getValue().getMessage(), locale);
+            return field + " - " + translationService.translate(error.getValue().getMessage(), locale, error.getValue().getVars());
         }
         for (ErrorMessage error : exception.getEntity().getGlobalErrors()) {
-            return translationService.translate(error.getMessage(), locale);
+            return translationService.translate(error.getMessage(), locale, error.getVars());
         }
         return null;
     }

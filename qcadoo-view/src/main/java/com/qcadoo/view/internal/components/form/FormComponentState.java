@@ -349,7 +349,7 @@ public class FormComponentState extends AbstractContainerState implements FormCo
 
     private void copyMessage(final ComponentState componentState, final ErrorMessage message) {
         if (message != null) {
-            String translation = getTranslationService().translate(message.getMessage(), getLocale());
+            String translation = getTranslationService().translate(message.getMessage(), getLocale(), message.getVars());
             componentState.addMessage(translation, MessageType.FAILURE);
         }
     }
