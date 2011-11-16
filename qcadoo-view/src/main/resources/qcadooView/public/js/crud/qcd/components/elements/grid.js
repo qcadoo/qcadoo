@@ -983,11 +983,9 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 		if (!forceUpdate) {
 			findMatchingPredefiniedFilter();
 		}
-		if (componentEnabled) {
-			mainController.callEvent("refresh", elementPath, function() {
-				unblockGrid();
-			});
-		}
+		mainController.callEvent("refresh", elementPath, function() {
+			unblockGrid();
+		});
 	}
 
 	function findMatchingPredefiniedFilter() {
