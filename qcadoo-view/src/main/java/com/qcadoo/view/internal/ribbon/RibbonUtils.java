@@ -36,7 +36,7 @@ import com.qcadoo.view.internal.api.ViewDefinition;
 import com.qcadoo.view.internal.patterns.AbstractComponentPattern;
 import com.qcadoo.view.internal.ribbon.model.InternalRibbon;
 
-public class RibbonUtils {
+public final class RibbonUtils {
 
     private RibbonUtils() {
 

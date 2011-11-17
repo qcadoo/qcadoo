@@ -183,7 +183,7 @@ public class DefaultPluginAccessor implements InternalPluginAccessor, Applicatio
             }
         }
         Set<InternalPlugin> temporaryPlugins = pluginDescriptorParser.getTemporaryPlugins();
-        for(InternalPlugin plugin : temporaryPlugins) {
+        for (InternalPlugin plugin : temporaryPlugins) {
             plugins.put(plugin.getIdentifier(), plugin);
         }
 

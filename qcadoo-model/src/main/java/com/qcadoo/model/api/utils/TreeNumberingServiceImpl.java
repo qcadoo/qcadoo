@@ -46,23 +46,23 @@ import com.qcadoo.model.internal.api.PriorityService;
 
 @Service
 public class TreeNumberingServiceImpl implements TreeNumberingService {
-    
+
     @Autowired
     private PriorityService priorityService;
-    
+
     @Override
     public void generateTreeNumbers(final EntityTree tree) {
-        if(tree.getRoot() == null) {
+        if (tree.getRoot() == null) {
             return;
         }
         assignNumberToTreeNode(tree.getRoot(), Lists.newLinkedList(Lists.newArrayList("1")));
     }
-    
+
     @Override
     public void generateTreeNumbers(final EntityTreeNode treeNode) {
         assignNumberToTreeNode(treeNode, Lists.newLinkedList(Lists.newArrayList("1")));
     }
-    
+
     @Override
     public void generateNumbersAndUpdateTree(final DataDefinition dd, final String joinFieldName, final Long belongsToEntityId) {
         EntityTree tree = new EntityTreeImpl(dd, joinFieldName, belongsToEntityId);
@@ -79,13 +79,13 @@ public class TreeNumberingServiceImpl implements TreeNumberingService {
     public Comparator<Entity> getTreeNodesNumberComparator() {
         return new TreeNodesNumberComparator();
     }
-    
+
     void assignNumberToTreeNode(final EntityTreeNode treeNode, final Deque<String> chain) {
         treeNode.setField(TreeType.NODE_NUMBER_FIELD, collectionToString(chain));
-        
+
         List<EntityTreeNode> childrens = newLinkedList(treeNode.getChildren());
         Collections.sort(childrens, priorityService.getEntityPriorityComparator());
-        
+
         int charNumber = 0;
         for (EntityTreeNode child : childrens) {
             Deque<String> newBranch = Lists.newLinkedList(chain);
@@ -96,24 +96,25 @@ public class TreeNumberingServiceImpl implements TreeNumberingService {
             }
             assignNumberToTreeNode(child, newBranch);
         }
-        
+
     }
 
     private void incrementLastChainNumber(final Deque<String> chain) {
         Integer nextNumber = Integer.valueOf(chain.pollLast()) + 1;
         chain.addLast(nextNumber.toString());
     }
-    
+
     private void incrementLastChainCharacter(final Deque<String> chain, final int charNumber) {
         chain.addLast(String.valueOf((char) (65 + charNumber)));
         chain.addLast("1");
     }
-    
+
     private String collectionToString(final Collection<String> collection) {
         return StringUtils.join(collection, '.') + '.';
     }
-    
+
     private final class TreeNodesNumberComparator implements Comparator<Entity> {
+
         @Override
         public int compare(final Entity e1, final Entity e2) {
             String n1 = e1.getStringField(TreeType.NODE_NUMBER_FIELD);

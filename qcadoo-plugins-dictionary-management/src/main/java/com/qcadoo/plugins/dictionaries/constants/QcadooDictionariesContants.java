@@ -25,12 +25,12 @@ package com.qcadoo.plugins.dictionaries.constants;
 
 public interface QcadooDictionariesContants {
 
-    public static final String PLUGIN_IDENTIFIER = "qcadooDictionaries";
+    String PLUGIN_IDENTIFIER = "qcadooDictionaries";
 
     // VIEW
-    public static final String VIEW_DICTIONARIES_LIST = "dictionariesList";
+    String VIEW_DICTIONARIES_LIST = "dictionariesList";
 
-    public static final String VIEW_DICTIONARY_DETAILS = "dictionaryDetails";
+    String VIEW_DICTIONARY_DETAILS = "dictionaryDetails";
 
-    public static final String VIEW_DICTIONARY_ITEM_DETAILS = "dictionaryItemDetails";
+    String VIEW_DICTIONARY_ITEM_DETAILS = "dictionaryItemDetails";
 }
