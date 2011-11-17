@@ -92,7 +92,7 @@ QCD.components.elements.TimeInput = function(_element, _mainController) {
 	}
 	
 	function convertToString(value) {
-		value = value.replace(/\s/g, "").split(",")[0];
+		value = value.match(/\d/g).join("");
 		
 		h = Math.floor(value / 3600) + "";
 		while(h.length < noHours) {
