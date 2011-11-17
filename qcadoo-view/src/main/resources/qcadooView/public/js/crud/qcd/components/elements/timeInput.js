@@ -41,6 +41,20 @@ QCD.components.elements.TimeInput = function(_element, _mainController) {
 		input.change(function() {
 			inputDataChanged();
 		});
+
+		input.focus(function() {
+		}).blur(function() {
+			checkTimeFormat(input.val());
+		});
+	}
+
+	function checkTimeFormat(value){
+		var intIndexOfMatch = value.indexOf( "_" )
+		while (intIndexOfMatch!=-1){
+			value = value.replace( "_", "0" )
+			intIndexOfMatch = value.indexOf( "_" );
+			}
+		input.val(value);
 	}
 	
 	function inputDataChanged() {
