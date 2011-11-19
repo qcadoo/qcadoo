@@ -30,13 +30,13 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-public class ReportNumberFormat extends NumberFormat {
+public final class ReportNumberFormat extends NumberFormat {
 
     private static final long serialVersionUID = 8881156984775289396L;
 
-    private NumberFormat decimalNumberFormat;
+    private final NumberFormat decimalNumberFormat;
 
-    private NumberFormat integerNumberFormat;
+    private final NumberFormat integerNumberFormat;
 
     private static final Map<Locale, ReportNumberFormat> formatters = new HashMap<Locale, ReportNumberFormat>();
 

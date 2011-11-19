@@ -23,7 +23,7 @@
  */
 package com.qcadoo.view.internal.xml;
 
-public class ViewDefinitionParserException extends RuntimeException {
+public final class ViewDefinitionParserException extends RuntimeException {
 
     private static final long serialVersionUID = -7437167697213640121L;
 

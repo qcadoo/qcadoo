@@ -58,7 +58,7 @@ public class TreeNumberingServiceImpl implements TreeNumberingService {
     private static final String ROOT_NODE_NUMBER = "1";
 
     @Override
-    public final void generateTreeNumbers(final EntityTree tree) {
+    public void generateTreeNumbers(final EntityTree tree) {
         if (tree.getRoot() == null) {
             return;
         }
@@ -134,7 +134,7 @@ public class TreeNumberingServiceImpl implements TreeNumberingService {
             storedParent.getChildren().remove(notSavedNode);
         }
 
-        assignNumberToTreeNode(storedParent, nodeNumberStringToChain(storedParent.getStringField(TreeType.NODE_NUMBER_FIELD)));
+        assignNumberToTreeNode(storedParent, convertNodeNumberStringToChain(storedParent.getStringField(TreeType.NODE_NUMBER_FIELD)));
 
         for (Entity node : storedParent.getChildren()) {
             if (node.getId() == null) {
@@ -144,8 +144,8 @@ public class TreeNumberingServiceImpl implements TreeNumberingService {
         }
     }
 
-    private void assignNumberToTreeNode(final EntityTreeNode treeNode, final Deque<String> chain) {
-        treeNode.setField(TreeType.NODE_NUMBER_FIELD, collectionToString(chain));
+    void assignNumberToTreeNode(final EntityTreeNode treeNode, final Deque<String> chain) {
+        treeNode.setField(TreeType.NODE_NUMBER_FIELD, convertCollectionToString(chain));
 
         List<EntityTreeNode> childrens = newLinkedList(treeNode.getChildren());
         Collections.sort(childrens, priorityService.getEntityPriorityComparator());
@@ -173,11 +173,11 @@ public class TreeNumberingServiceImpl implements TreeNumberingService {
         chain.addLast("1");
     }
 
-    private String collectionToString(final Collection<String> collection) {
+    private String convertCollectionToString(final Collection<String> collection) {
         return StringUtils.join(collection, '.') + '.';
     }
 
-    private LinkedList<String> nodeNumberStringToChain(final String stringChain) {
+    private LinkedList<String> convertNodeNumberStringToChain(final String stringChain) {
         return Lists.newLinkedList(Arrays.asList(StringUtils.split(stringChain, '.')));
     }
 

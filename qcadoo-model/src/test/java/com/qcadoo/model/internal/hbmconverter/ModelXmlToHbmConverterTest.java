@@ -27,11 +27,11 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
 import static org.custommonkey.xmlunit.XMLUnit.buildControlDocument;
+import static org.custommonkey.xmlunit.XMLUnit.newXpathEngine;
 
 import java.io.InputStream;
 
 import org.custommonkey.xmlunit.Validator;
-import org.custommonkey.xmlunit.XMLUnit;
 import org.custommonkey.xmlunit.XpathEngine;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -43,9 +43,9 @@ import com.qcadoo.model.internal.api.ModelXmlToHbmConverter;
 
 public class ModelXmlToHbmConverterTest {
 
-    private final static ModelXmlToHbmConverter modelXmlToHbmConverter = new ModelXmlToHbmConverterImpl();
+    private static final ModelXmlToHbmConverter modelXmlToHbmConverter = new ModelXmlToHbmConverterImpl();
 
-    private final static XpathEngine xpathEngine = XMLUnit.newXpathEngine();
+    private static final XpathEngine xpathEngine = newXpathEngine();
 
     private static InputStream hbmInputStream;
 
@@ -213,7 +213,8 @@ public class ModelXmlToHbmConverterTest {
     @Test
     public void shouldDefineScaleProperty() throws Exception {
         assertNodeEquals("4", "/hibernate-mapping/class[1]/property/column[@name='fieldDecimal']/@scale", hbmFirstEntity);
-        assertNodeEquals("3", "/hibernate-mapping/class[1]/property/column[@name='fieldDecimalWithoutValidators']/@scale", hbmFirstEntity);
+        assertNodeEquals("3", "/hibernate-mapping/class[1]/property/column[@name='fieldDecimalWithoutValidators']/@scale",
+                hbmFirstEntity);
         assertNodeCount(3, "/hibernate-mapping/class/property/column/@scale", hbmFirstEntity);
     }
 
@@ -221,8 +222,10 @@ public class ModelXmlToHbmConverterTest {
     public void shouldDefinePrecisionProperty() throws Exception {
         assertNodeEquals("4", "/hibernate-mapping/class[1]/property/column[@name='fieldInteger']/@precision", hbmFirstEntity);
         assertNodeEquals("6", "/hibernate-mapping/class[1]/property/column[@name='fieldDecimal']/@precision", hbmFirstEntity);
-        assertNodeEquals("11", "/hibernate-mapping/class[1]/property/column[@name='fieldDecimalOnlyWithScale']/@precision", hbmFirstEntity);
-        assertNodeEquals("10", "/hibernate-mapping/class[1]/property/column[@name='fieldDecimalWithoutValidators']/@precision", hbmFirstEntity);
+        assertNodeEquals("11", "/hibernate-mapping/class[1]/property/column[@name='fieldDecimalOnlyWithScale']/@precision",
+                hbmFirstEntity);
+        assertNodeEquals("10", "/hibernate-mapping/class[1]/property/column[@name='fieldDecimalWithoutValidators']/@precision",
+                hbmFirstEntity);
         assertNodeCount(4, "/hibernate-mapping/class/property/column/@precision", hbmFirstEntity);
     }
 
