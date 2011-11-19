@@ -43,7 +43,7 @@ public interface TreeNumberingService {
      * @param tree
      *            tree to be numbered
      */
-    public void generateTreeNumbers(final EntityTree tree);
+    void generateTreeNumbers(final EntityTree tree);
 
     /**
      * Generate new numbers for all sub-nodes of given tree node
@@ -51,10 +51,38 @@ public interface TreeNumberingService {
      * @param treeNode
      *            tree node to be numbered (with sub-nodes)
      */
-    public void generateTreeNumbers(final EntityTreeNode treeNode);
+    void generateTreeNumbers(final EntityTreeNode treeNode);
 
     /**
-     * Generate new numbers for all nodes of the tree
+     * Generate new numbers for all nodes of the tree (including given additional node) and save them
+     * 
+     * @param tree
+     *            entity tree
+     * @param additionalEntity
+     *            additional node to be included during tree numbering
+     */
+    void generateNumbersIncludingAdditionalEntity(EntityTree tree, Entity includedEntity);
+
+    /**
+     * Generate new numbers for all nodes of the tree (excluding given node) and save them
+     * 
+     * @param tree
+     *            entity tree
+     * @param additionalEntity
+     *            additional node to be excluded during tree numbering
+     */
+    void generateNumbersExcludingAdditionalEntity(EntityTree tree, Entity excludedEntity);
+
+    /**
+     * Generate new numbers for all nodes of the tree and save them
+     * 
+     * @param tree
+     *            tree entity
+     */
+    void generateNumbersAndUpdateTree(final EntityTree tree);
+
+    /**
+     * Generate new numbers for all nodes of the tree and save them
      * 
      * @param dd
      *            node component DataDefinition
@@ -63,13 +91,13 @@ public interface TreeNumberingService {
      * @param belongsToEntityId
      *            id of owning tree entity
      */
-    public void generateNumbersAndUpdateTree(final DataDefinition dd, final String joinFieldName, final Long belongsToEntityId);
+    void generateNumbersAndUpdateTree(final DataDefinition dd, final String joinFieldName, final Long belongsToEntityId);
 
     /**
      * Getter for tree node numbers comparator
      * 
      * @return instance of TreeNodesNumberComparator
      */
-    public Comparator<Entity> getTreeNodesNumberComparator();
+    Comparator<Entity> getTreeNodesNumberComparator();
 
 }
