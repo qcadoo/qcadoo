@@ -54,26 +54,6 @@ public interface TreeNumberingService {
     void generateTreeNumbers(final EntityTreeNode treeNode);
 
     /**
-     * Generate new numbers for all nodes of the tree (including given additional node) and save them
-     * 
-     * @param tree
-     *            entity tree
-     * @param additionalEntity
-     *            additional node to be included during tree numbering
-     */
-    void generateNumbersIncludingAdditionalEntity(EntityTree tree, Entity includedEntity);
-
-    /**
-     * Generate new numbers for all nodes of the tree (excluding given node) and save them
-     * 
-     * @param tree
-     *            entity tree
-     * @param additionalEntity
-     *            additional node to be excluded during tree numbering
-     */
-    void generateNumbersExcludingAdditionalEntity(EntityTree tree, Entity excludedEntity);
-
-    /**
      * Generate new numbers for all nodes of the tree and save them
      * 
      * @param tree

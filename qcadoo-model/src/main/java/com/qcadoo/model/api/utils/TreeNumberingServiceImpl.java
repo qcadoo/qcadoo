@@ -25,12 +25,10 @@ package com.qcadoo.model.api.utils;
 
 import static com.google.common.collect.Lists.newLinkedList;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Deque;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -43,10 +41,8 @@ import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.EntityTree;
 import com.qcadoo.model.api.EntityTreeNode;
-import com.qcadoo.model.api.search.SearchRestrictions;
 import com.qcadoo.model.api.types.TreeType;
 import com.qcadoo.model.internal.EntityTreeImpl;
-import com.qcadoo.model.internal.EntityTreeNodeImpl;
 import com.qcadoo.model.internal.api.PriorityService;
 
 @Service
@@ -58,7 +54,7 @@ public class TreeNumberingServiceImpl implements TreeNumberingService {
     private static final String ROOT_NODE_NUMBER = "1";
 
     @Override
-    public void generateTreeNumbers(final EntityTree tree) {
+    public final void generateTreeNumbers(final EntityTree tree) {
         if (tree.getRoot() == null) {
             return;
         }
@@ -94,57 +90,7 @@ public class TreeNumberingServiceImpl implements TreeNumberingService {
         return new TreeNodesNumberComparator();
     }
 
-    @Override
-    public final void generateNumbersIncludingAdditionalEntity(final EntityTree tree, final Entity includedEntity) {
-        rebuildTreeNumberingLikeMissingAfterHook(tree, includedEntity, GenerationMode.INCLUDE);
-    }
-
-    @Override
-    public final void generateNumbersExcludingAdditionalEntity(final EntityTree tree, final Entity excludedEntity) {
-        rebuildTreeNumberingLikeMissingAfterHook(tree, excludedEntity, GenerationMode.INCLUDE);
-    }
-
-    @Transactional
-    private void rebuildTreeNumberingLikeMissingAfterHook(final EntityTree tree, final Entity additionalEntity,
-            final GenerationMode mode) {
-        EntityTreeNode root = tree.getRoot();
-        if (root == null || additionalEntity.getField("parent") == null) {
-            additionalEntity.setField(TreeType.NODE_NUMBER_FIELD, ROOT_NODE_NUMBER + '.');
-            return;
-        }
-
-        EntityTreeNode notSavedNode = new EntityTreeNodeImpl(additionalEntity);
-
-        if (mode == GenerationMode.INCLUDE) {
-            notSavedNode.setField("priority", Integer.MAX_VALUE);
-        }
-
-        Entity parent = additionalEntity.getBelongsToField("parent");
-        List<Entity> parentChildren = additionalEntity.getDataDefinition().find()
-                .add(SearchRestrictions.belongsTo("parent", parent)).list().getEntities();
-
-        EntityTreeNode storedParent = new EntityTreeNodeImpl(parent);
-        for (Entity node : parentChildren) {
-            storedParent.getChildren().add(new EntityTreeNodeImpl(node));
-        }
-
-        if (mode == GenerationMode.INCLUDE) {
-            storedParent.getChildren().add(notSavedNode);
-        } else if (mode == GenerationMode.EXCLUDE) {
-            storedParent.getChildren().remove(notSavedNode);
-        }
-
-        assignNumberToTreeNode(storedParent, convertNodeNumberStringToChain(storedParent.getStringField(TreeType.NODE_NUMBER_FIELD)));
-
-        for (Entity node : storedParent.getChildren()) {
-            if (node.getId() == null) {
-                continue;
-            }
-            node.getDataDefinition().save(node);
-        }
-    }
-
-    void assignNumberToTreeNode(final EntityTreeNode treeNode, final Deque<String> chain) {
+    final void assignNumberToTreeNode(final EntityTreeNode treeNode, final Deque<String> chain) {
         treeNode.setField(TreeType.NODE_NUMBER_FIELD, convertCollectionToString(chain));
 
         List<EntityTreeNode> childrens = newLinkedList(treeNode.getChildren());
@@ -175,14 +121,6 @@ public class TreeNumberingServiceImpl implements TreeNumberingService {
 
     private String convertCollectionToString(final Collection<String> collection) {
         return StringUtils.join(collection, '.') + '.';
-    }
-
-    private LinkedList<String> convertNodeNumberStringToChain(final String stringChain) {
-        return Lists.newLinkedList(Arrays.asList(StringUtils.split(stringChain, '.')));
-    }
-
-    private enum GenerationMode {
-        INCLUDE, EXCLUDE;
     }
 
     private final class TreeNodesNumberComparator implements Comparator<Entity> {
