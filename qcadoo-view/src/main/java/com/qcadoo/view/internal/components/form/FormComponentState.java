@@ -57,6 +57,8 @@ public class FormComponentState extends AbstractContainerState implements FormCo
 
     public static final String JSON_HEADER_ENTITY_IDENTIFIER = "headerEntityIdentifier";
 
+    public static final String INITIALIZE_EVENT_NAME = "initialize";
+
     private Long entityId;
 
     private Long contextEntityId;
@@ -81,9 +83,9 @@ public class FormComponentState extends AbstractContainerState implements FormCo
         registerEvent("clear", eventPerformer, "clear");
         registerEvent("save", eventPerformer, "save");
         registerEvent("saveAndClear", eventPerformer, "saveAndClear");
-        registerEvent("initialize", eventPerformer, "initialize");
-        registerEvent("initializeAfterBack", eventPerformer, "initialize");
-        registerEvent("reset", eventPerformer, "initialize");
+        registerEvent(INITIALIZE_EVENT_NAME, eventPerformer, INITIALIZE_EVENT_NAME);
+        registerEvent("initializeAfterBack", eventPerformer, INITIALIZE_EVENT_NAME);
+        registerEvent("reset", eventPerformer, INITIALIZE_EVENT_NAME);
         registerEvent("delete", eventPerformer, "delete");
         registerEvent("copy", eventPerformer, "copy");
         registerEvent("activate", eventPerformer, "activate");
@@ -98,12 +100,13 @@ public class FormComponentState extends AbstractContainerState implements FormCo
 
     @Override
     protected void initializeContent(final JSONObject json) throws JSONException {
-        if (json.has(JSON_ENTITY_ID)) {
-            if (!json.isNull(JSON_ENTITY_ID)) {
-                entityId = json.getLong(JSON_ENTITY_ID);
-            } else {
-                entityId = null;
-            }
+        if (!json.has(JSON_ENTITY_ID)) {
+            return;
+        }
+        if (json.isNull(JSON_ENTITY_ID)) {
+            entityId = null;
+        } else {
+            entityId = json.getLong(JSON_ENTITY_ID);
         }
     }
 
@@ -157,12 +160,12 @@ public class FormComponentState extends AbstractContainerState implements FormCo
     }
 
     public void setEntity(final Entity entity) {
-        if (!entity.isValid()) {
+        if (entity.isValid()) {
+            active = entity.isActive();
+        } else {
             valid = false;
             requestRender();
             copyMessages(entity.getGlobalErrors());
-        } else {
-            active = entity.isActive();
         }
 
         copyEntityToFields(entity, entity.isValid());
@@ -195,16 +198,16 @@ public class FormComponentState extends AbstractContainerState implements FormCo
     protected JSONObject renderContent() throws JSONException {
         JSONObject json = new JSONObject();
         json.put(JSON_VALID, isValid());
-        if (entityId != null) {
-            json.put(JSON_ENTITY_ID, entityId);
-            json.put(JSON_IS_ACTIVE, active);
-            json.put(JSON_HEADER, getTranslationService().translate(getTranslationPath() + ".headerEdit", getLocale()));
-            json.put(JSON_HEADER_ENTITY_IDENTIFIER, getHeaderEdit());
-        } else {
+        if (entityId == null) {
             json.put(JSON_ENTITY_ID, JSONObject.NULL);
             json.put(JSON_IS_ACTIVE, active);
             json.put(JSON_HEADER, getTranslationService().translate(getTranslationPath() + ".headerNew", getLocale()));
             json.put(JSON_HEADER_ENTITY_IDENTIFIER, getHeaderNew());
+        } else {
+            json.put(JSON_ENTITY_ID, entityId);
+            json.put(JSON_IS_ACTIVE, active);
+            json.put(JSON_HEADER, getTranslationService().translate(getTranslationPath() + ".headerEdit", getLocale()));
+            json.put(JSON_HEADER_ENTITY_IDENTIFIER, getHeaderEdit());
         }
         return json;
     }
@@ -215,10 +218,10 @@ public class FormComponentState extends AbstractContainerState implements FormCo
     }
 
     private Object getHeaderNew() {
-        if (expressionNew != null) {
-            return ExpressionUtils.getValue(getEntity(), expressionNew, getLocale());
-        } else {
+        if (expressionNew == null) {
             return JSONObject.NULL;
+        } else {
+            return ExpressionUtils.getValue(getEntity(), expressionNew, getLocale());
         }
     }
 
@@ -328,23 +331,26 @@ public class FormComponentState extends AbstractContainerState implements FormCo
             }
         }
     }
-    
-    private boolean fieldIsGridCorrespondingLookup(final FieldComponentState field, final String databaseFieldName, final Entity entity) {
+
+    private boolean fieldIsGridCorrespondingLookup(final FieldComponentState field, final String databaseFieldName,
+            final Entity entity) {
         return (field instanceof LookupComponentState) && (entity.getField(databaseFieldName) instanceof Collection);
     }
 
     private Object convertFieldToString(final Object value, final String field) {
         if (value instanceof String) {
             return value;
-        } else if (value != null) {
-            if (value instanceof Collection) {
-                return value;
-            } else {
-                return getDataDefinition().getField(field).getType().toString(value, getLocale());
-            }
-        } else {
+        }
+
+        if (value == null) {
             return "";
         }
+
+        if (value instanceof Collection) {
+            return value;
+        }
+
+        return getDataDefinition().getField(field).getType().toString(value, getLocale());
     }
 
     private void copyMessage(final ComponentState componentState, final ErrorMessage message) {
@@ -466,22 +472,26 @@ public class FormComponentState extends AbstractContainerState implements FormCo
         public void initialize(final String[] args) {
             if (contextEntityId != null) {
                 entityId = contextEntityId;
-
             }
+
             Entity entity = getFormEntity();
             if (entity != null) {
                 active = entity.isActive();
                 copyEntityToFields(entity, true);
                 setFieldValue(entity.getId());
                 setFieldsRequiredAndDisables();
-            } else if (entityId != null) {
+                return;
+            }
+
+            if (entityId != null) {
                 setFormEnabled(false);
                 active = false;
                 valid = false;
                 addMessage(translateMessage("entityNotFound"), MessageType.FAILURE);
-            } else {
-                clear(args);
+                return;
             }
+
+            clear(args);
         }
 
         public void clear(final String[] args) {
@@ -493,11 +503,10 @@ public class FormComponentState extends AbstractContainerState implements FormCo
         }
 
         private Entity getFormEntity() {
-            if (entityId != null) {
-                return getDataDefinition().get(entityId);
-            } else {
+            if (entityId == null) {
                 return null;
             }
+            return getDataDefinition().get(entityId);
         }
 
         private void copyDefaultValuesToFields() {
