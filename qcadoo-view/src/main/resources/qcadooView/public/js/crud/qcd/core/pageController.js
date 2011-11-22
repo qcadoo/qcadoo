@@ -204,6 +204,7 @@ QCD.PageController = function() {
 			url += "&id="+ids[i];
 		}
 		window.open(url, "_blank", "status=0");
+		
 		if (actionsPerformer) {
 			actionsPerformer.performNext();
 		}
@@ -234,7 +235,8 @@ QCD.PageController = function() {
 				var contextPath = window.location.protocol+"//"+window.location.host;
 				var redirectUrl = response.redirect.url.replace(/\$\{root\}/, contextPath)
 				if (response.redirect.openInNewWindow) {
-					window.open(redirectUrl, "_blank", "status=0");
+					var w = window.open(redirectUrl, "_blank", "status=0");
+					w.location.href = redirectUrl;
 				} else if (response.redirect.openInModalWindow) {
 					openModal(redirectUrl, redirectUrl);
 				} else if (isPopup) {
