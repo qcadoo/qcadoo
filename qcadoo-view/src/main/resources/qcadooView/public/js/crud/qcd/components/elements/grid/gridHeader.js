@@ -410,13 +410,13 @@ QCD.components.elements.grid.GridHeaderController = function(_gridController, _m
 	
 	function allButtonClicked() {
 		headerElements.allButton.hide();
-		headerElements.onlyActiveButton.show();
+		headerElements.onlyActiveButton.css("display", "inline-block");
 		gridController.setOnlyActive(true);
 	}
 	
 	function onlyActiveButtonClicked() {
 		headerElements.onlyActiveButton.hide();
-		headerElements.allButton.show();
+		headerElements.allButton.css("display", "inline-block");
 		gridController.setOnlyActive(false);
 	}
 	
@@ -446,6 +446,7 @@ QCD.components.elements.grid.GridHeaderController = function(_gridController, _m
 	}
 	
 	this.setFilterActive = function() {
+		alert("sFA");
 		headerElements.filterButton.addClass("headerButtonActive");
 		headerElements.filterButton.label.html(translations.removeFilterButton);
 		headerElements.clearFilterButton.css("display","inline-block");
