@@ -42,6 +42,7 @@ public class FieldComponentState extends AbstractComponentState implements Field
     private boolean persistent;
 
     public FieldComponentState(final FieldComponentPattern pattern) {
+        super();
         defaultRequired = pattern.isRequired();
         persistent = pattern.isPersistent();
     }
@@ -66,7 +67,7 @@ public class FieldComponentState extends AbstractComponentState implements Field
 
     @Override
     public void setFieldValue(final Object value) {
-        this.value = value != null ? value.toString() : null;
+        this.value = value == null ? null : value.toString();
         requestRender();
     }
 
@@ -85,7 +86,7 @@ public class FieldComponentState extends AbstractComponentState implements Field
         this.required = required;
         requestRender();
     }
-    
+
     @Override
     public boolean isPersistent() {
         return persistent;
