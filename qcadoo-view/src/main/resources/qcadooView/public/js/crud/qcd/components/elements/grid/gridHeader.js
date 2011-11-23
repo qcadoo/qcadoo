@@ -446,7 +446,6 @@ QCD.components.elements.grid.GridHeaderController = function(_gridController, _m
 	}
 	
 	this.setFilterActive = function() {
-		alert("sFA");
 		headerElements.filterButton.addClass("headerButtonActive");
 		headerElements.filterButton.label.html(translations.removeFilterButton);
 		headerElements.clearFilterButton.css("display","inline-block");
