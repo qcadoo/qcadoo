@@ -54,6 +54,7 @@ import com.qcadoo.model.api.types.EnumeratedType;
 import com.qcadoo.model.api.types.FieldType;
 import com.qcadoo.model.api.types.JoinFieldHolder;
 import com.qcadoo.model.api.types.ManyToManyType;
+import com.qcadoo.model.api.validators.ErrorMessage;
 import com.qcadoo.model.internal.ProxyEntity;
 import com.qcadoo.view.api.components.GridComponent;
 import com.qcadoo.view.internal.states.AbstractComponentState;
@@ -444,10 +445,12 @@ public final class GridComponentState extends AbstractComponentState implements 
                 Entity gridOwnerEntity = scopeFieldDataDefinition.get(belongsToEntityId);
                 gridOwnerEntity.setField(((JoinFieldHolder) belongsToFieldType).getJoinFieldName(), existingEntities);
                 gridOwnerEntity.getDataDefinition().save(gridOwnerEntity);
+                copyFieldValidationMessages(gridOwnerEntity);
             } else if (belongsToFieldType instanceof BelongsToType) {
                 for (Entity entity : newlyAddedEntities) {
                     entity.setField(belongsToFieldDefinition.getName(), belongsToEntityId);
                     entity.getDataDefinition().save(entity);
+                    copyFieldValidationMessages(entity);
                 }
             } else {
                 throw new IllegalArgumentException("Unsupported relation type - " + belongsToFieldDefinition.getType().toString());
@@ -472,11 +475,13 @@ public final class GridComponentState extends AbstractComponentState implements 
                     }
                     gridOwnerEntity.setField(gridFieldName, relatedEntities);
                     scopeFieldDataDefinition.save(gridOwnerEntity);
+                    copyFieldValidationMessages(gridOwnerEntity);
                 } else {
                     for (Long selectedId : selectedEntitiesIds) {
                         entity = getDataDefinition().get(selectedId);
                         entity.setField(belongsToFieldDefinition.getName(), null);
                         getDataDefinition().save(entity);
+                        copyFieldValidationMessages(entity);
                     }
                 }
             } else {
@@ -710,5 +715,16 @@ public final class GridComponentState extends AbstractComponentState implements 
             }
         }
         return values;
+    }
+
+    private void copyFieldValidationMessages(final Entity messagesSource) {
+        for (ErrorMessage message : messagesSource.getErrors().values()) {
+            addValidationMessage(message);
+        }
+    }
+
+    private void addValidationMessage(final ErrorMessage message) {
+        String translatedMessage = getTranslationService().translate(message.getMessage(), getLocale(), message.getVars());
+        addMessage(translatedMessage, MessageType.FAILURE);
     }
 }
