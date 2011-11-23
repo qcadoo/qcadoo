@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.10
+ * Version: 1.1.0
  *
  * This file is part of Qcadoo.
  *
@@ -203,7 +203,8 @@ QCD.PageController = function() {
 		for (var i=0; i<ids.length; i++) {
 			url += "&id="+ids[i];
 		}
-		window.open(url, url, 'status=0');
+		window.open(url, "_blank", "status=0");
+		
 		if (actionsPerformer) {
 			actionsPerformer.performNext();
 		}
@@ -234,7 +235,8 @@ QCD.PageController = function() {
 				var contextPath = window.location.protocol+"//"+window.location.host;
 				var redirectUrl = response.redirect.url.replace(/\$\{root\}/, contextPath)
 				if (response.redirect.openInNewWindow) {
-					window.open(redirectUrl);
+					var w = window.open(redirectUrl, "_blank", "status=0");
+					w.location.href = redirectUrl;
 				} else if (response.redirect.openInModalWindow) {
 					openModal(redirectUrl, redirectUrl);
 				} else if (isPopup) {

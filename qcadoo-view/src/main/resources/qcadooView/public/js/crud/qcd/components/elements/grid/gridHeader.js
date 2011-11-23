@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.10
+ * Version: 1.1.0
  *
  * This file is part of Qcadoo.
  *
@@ -410,13 +410,13 @@ QCD.components.elements.grid.GridHeaderController = function(_gridController, _m
 	
 	function allButtonClicked() {
 		headerElements.allButton.hide();
-		headerElements.onlyActiveButton.show();
+		headerElements.onlyActiveButton.css("display", "inline-block");
 		gridController.setOnlyActive(true);
 	}
 	
 	function onlyActiveButtonClicked() {
 		headerElements.onlyActiveButton.hide();
-		headerElements.allButton.show();
+		headerElements.allButton.css("display", "inline-block");
 		gridController.setOnlyActive(false);
 	}
 	
