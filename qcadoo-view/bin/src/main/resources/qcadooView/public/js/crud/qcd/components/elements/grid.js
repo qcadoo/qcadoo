@@ -663,10 +663,21 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 			currentState.filtersEnabled = false;
 		}
 
+		var customOptions;
+		var parsedContext = $.parseJSON(window.context);
+		if (parsedContext) {
+			_this.addContext("customOptions", parsedContext[_this.elementPath  + ".options"]);
+			customOptions = _this.contextObject["customOptions"];
+		}
+		
 		noRecordsDiv = $("<div>").html(translations.noResults).addClass(
 				"noRecordsBox");
 		noRecordsDiv.hide();
 		$("#" + gridParameters.element).parent().append(noRecordsDiv);
+		
+		if (customOptions && customOptions["filter"]) {
+			_this.setFilterObject(customOptions, true);
+		}
 	}
 
 	this.onPagingParametersChange = function() {
@@ -864,8 +875,10 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 		onCurrentStateChange(false);
 	}
 
-	this.setFilterObject = function(filter) {
-		blockGrid();
+	this.setFilterObject = function(filter, isInInitState) {
+		if (!isInInitState) {
+			blockGrid();
+		}
 
 		var filterObject = filter.filter
 		for ( var i in columnModel) {
@@ -906,7 +919,9 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 
 		updateSearchFields();
 		onFiltersStateChange();
-		onCurrentStateChange(true);
+		if (!isInInitState) {
+			onCurrentStateChange(true);
+		}
 	}
 
 	this.onNewButtonClicked = function() {
@@ -1086,7 +1101,7 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 		blockGrid();
 		mainController.callEvent("addExistingEntity", elementPath, function() {
 			unblockGrid();
-		}, selectedEntities, actionsPerformer);
+		}, [selectedEntities], actionsPerformer);
 	}
 	var performAddExistingEntity = this.performAddExistingEntity;
 
@@ -1187,8 +1202,11 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 			for ( var key in currentState.selectedEntities) {
 				selectedEntitiesId.push(key);
 			}
-			
-			linkClicked(selectedEntitiesId);
+			if (selectedEntitiesId.length == 1) {
+				linkClicked(selectedEntitiesId[0]);
+			} else {
+				linkClicked(selectedEntitiesId);
+			}
 			
 			if (actionsPerformer) {
 				actionsPerformer.performNext();
