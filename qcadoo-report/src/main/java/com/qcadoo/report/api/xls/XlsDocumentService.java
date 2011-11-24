@@ -36,6 +36,7 @@ import org.springframework.stereotype.Service;
 
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.report.api.DocumentService;
+import com.qcadoo.report.api.ReportService;
 
 @Service
 public abstract class XlsDocumentService extends DocumentService {
@@ -55,7 +56,8 @@ public abstract class XlsDocumentService extends DocumentService {
         FileOutputStream outputStream = null;
         try {
             ensureReportDirectoryExist();
-            outputStream = new FileOutputStream((String) entity.getField("fileName") + getSuffix() + XlsUtil.XLS_EXTENSION);
+            outputStream = new FileOutputStream((String) entity.getField("fileName") + getSuffix() + "."
+                    + ReportService.ReportType.XLS.getExtension());
             workbook.write(outputStream);
         } catch (IOException e) {
             LOG.error("Problem with generating document - " + e.getMessage());

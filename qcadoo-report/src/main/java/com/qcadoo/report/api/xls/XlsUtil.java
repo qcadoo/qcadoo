@@ -30,8 +30,6 @@ import org.apache.poi.ss.usermodel.Font;
 
 public final class XlsUtil {
 
-    public static final String XLS_EXTENSION = ".xls";
-
     private XlsUtil() {
     }
 

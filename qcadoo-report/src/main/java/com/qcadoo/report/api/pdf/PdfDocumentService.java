@@ -38,6 +38,7 @@ import com.lowagie.text.PageSize;
 import com.lowagie.text.pdf.PdfWriter;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.report.api.DocumentService;
+import com.qcadoo.report.api.ReportService;
 import com.qcadoo.security.api.SecurityService;
 
 public abstract class PdfDocumentService extends DocumentService {
@@ -56,15 +57,14 @@ public abstract class PdfDocumentService extends DocumentService {
             getDecimalFormat().setMaximumFractionDigits(3);
             getDecimalFormat().setMinimumFractionDigits(3);
             ensureReportDirectoryExist();
-            FileOutputStream fileOutputStream = new FileOutputStream((String) entity.getField("fileName") + getSuffix()
-                    + PdfUtil.PDF_EXTENSION);
+            FileOutputStream fileOutputStream = new FileOutputStream((String) entity.getField("fileName") + getSuffix() + "."
+                    + ReportService.ReportType.PDF.getExtension());
             PdfWriter writer = PdfWriter.getInstance(document, fileOutputStream);
             writer.setPageEvent(new PdfPageNumbering(
                     getTranslationService().translate("qcadooReport.commons.page.label", locale), getTranslationService()
-                            .translate("qcadooReport.commons.of.label", locale), getTranslationService().translate("basic.company.phone.label",
-                            locale), company,
-                    getTranslationService().translate("qcadooReport.commons.generatedBy.label", locale), securityService
-                            .getCurrentUserName()));
+                            .translate("qcadooReport.commons.of.label", locale), getTranslationService().translate(
+                            "basic.company.phone.label", locale), company, getTranslationService().translate(
+                            "qcadooReport.commons.generatedBy.label", locale), securityService.getCurrentUserName()));
             document.setMargins(40, 40, 60, 60);
             buildPdfMetadata(document, locale);
             writer.createXmpMetadata();

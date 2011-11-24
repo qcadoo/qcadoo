@@ -40,6 +40,7 @@ import com.lowagie.text.DocumentException;
 import com.lowagie.text.pdf.PdfWriter;
 import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.api.Entity;
+import com.qcadoo.report.api.ReportService;
 import com.qcadoo.security.api.SecurityService;
 
 public abstract class ReportPdfView extends AbstractPdfView {
@@ -66,7 +67,8 @@ public abstract class ReportPdfView extends AbstractPdfView {
         } catch (IOException e) {
             throw new IllegalStateException(e.getMessage(), e);
         }
-        response.setHeader("Content-disposition", "inline; filename=" + fileName + PdfUtil.PDF_EXTENSION);
+        response.setHeader("Content-disposition",
+                "inline; filename=" + fileName + "." + ReportService.ReportType.PDF.getExtension());
         writer.addJavaScript("this.print(false);", false);
     }
 

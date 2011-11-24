@@ -57,8 +57,6 @@ public final class PdfUtil {
 
     private static final Logger LOG = LoggerFactory.getLogger(PdfUtil.class);
 
-    public static final String PDF_EXTENSION = ".pdf";
-
     private static Font dejavuBold19Light;
 
     private static Font dejavuBold19Dark;
