@@ -104,6 +104,9 @@ public class GanttChartScaleImpl implements GanttChartScale {
                 break;
             case D1:
                 return getWeeksScale();
+
+            default:
+                break;
         }
         scaleObject.put("categories", categoriesArray);
         return scaleObject;

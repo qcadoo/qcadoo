@@ -39,7 +39,6 @@ import org.mockito.Mockito;
 import com.google.common.collect.Lists;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.beans.sample.SampleSimpleDatabaseObject;
-import com.qcadoo.model.internal.DefaultEntity;
 
 public class PriorityTest extends DataAccessTest {
 

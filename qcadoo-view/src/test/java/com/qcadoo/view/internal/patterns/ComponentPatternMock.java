@@ -25,7 +25,6 @@ package com.qcadoo.view.internal.patterns;
 
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.internal.ComponentDefinition;
-import com.qcadoo.view.internal.patterns.AbstractComponentPattern;
 import com.qcadoo.view.internal.states.ComponentStateMock;
 
 public class ComponentPatternMock extends AbstractComponentPattern {

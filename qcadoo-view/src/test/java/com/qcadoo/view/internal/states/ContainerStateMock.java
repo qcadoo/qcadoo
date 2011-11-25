@@ -26,8 +26,6 @@ package com.qcadoo.view.internal.states;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.qcadoo.view.internal.states.AbstractContainerState;
-
 public class ContainerStateMock extends AbstractContainerState {
 
     @Override

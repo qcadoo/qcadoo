@@ -47,7 +47,7 @@ public class ModuleException extends RuntimeException {
         super(ModuleException.createMessage(pluginIdentifier, moduleType, element, cause, null), cause);
     }
 
-    private static final String createMessage(final String pluginIdentifier, final String moduleType, final Element element,
+    private static String createMessage(final String pluginIdentifier, final String moduleType, final Element element,
             final Throwable cause, final String message) {
         StringBuilder builder = new StringBuilder();
         builder.append("[PLUGIN: ");

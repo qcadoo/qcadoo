@@ -31,7 +31,6 @@ import org.json.JSONObject;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.internal.FieldEntityIdChangeListener;
 import com.qcadoo.view.internal.ScopeEntityIdChangeListener;
-import com.qcadoo.view.internal.states.AbstractComponentState;
 
 public class ComponentStateMock extends AbstractComponentState {
 
@@ -78,13 +77,13 @@ public class ComponentStateMock extends AbstractComponentState {
         return content;
     }
 
-    public static interface TestEvent {
+    public interface TestEvent {
 
         void invoke(String... args);
 
     }
 
-    public static interface TestCustomEvent {
+    public interface TestCustomEvent {
 
         void invoke(ComponentState componentState, String... args);
 
