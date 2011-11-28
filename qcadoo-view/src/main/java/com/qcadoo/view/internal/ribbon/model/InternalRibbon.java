@@ -46,6 +46,14 @@ public interface InternalRibbon extends Ribbon {
     void addGroupsPack(RibbonGroupsPack groupPack);
 
     /**
+     * Add group to this ribbon as first
+     * 
+     * @param group
+     *            group to add
+     */
+    void addGroupPackAsFirst(RibbonGroupsPack groupPack);
+
+    /**
      * Removes group from this ribbon
      * 
      * @param group
@@ -73,4 +81,5 @@ public interface InternalRibbon extends Ribbon {
      * @return ribon with only updated fields
      */
     InternalRibbon getUpdate();
+
 }

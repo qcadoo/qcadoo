@@ -24,28 +24,28 @@
 var QCD = QCD || {};
 
 QCD.WindowController = function(_menuStructure) {
-	
+
 	var iframe = null;
-	
+
 	var loadingIndicator;
-	
+
 	var statesStack = new Array();
-	
+
 	var modalsStack = new Array();
-	
+
 	var modalObjects = new Object();
-	
+
 	var serializationObjectToInsert = null;
-	
+
 	var currentPage = null;
-	
+
 	var messagesController = new QCD.MessagesController();
-	
+
 	var menuStructure = _menuStructure;
 	var menuController
-	
+
 	var lastPageController;
-	
+
 	function constructor(_this) {
 		iframe = $("#mainPageIframe");
 		loadingIndicator = $("#loadingIndicator");
@@ -54,58 +54,60 @@ QCD.WindowController = function(_menuStructure) {
 			onIframeLoad(this);
 		});
 		$(window).bind('resize', updateSize);
-		
+
 		menuController = new QCD.menu.MenuController(menuStructure, _this);
-		
+
 		updateSize();
 	}
-	
+
 	this.addMessage = function(type, content) {
 		messagesController.addMessage(type, content);
 	}
-	
+
 	this.performLogout = function() {
 		window.location = "j_spring_security_logout";
 	}
-	
+
 	this.goToPage = function(url, serializationObject, isPage) {
 		if (serializationObject) {
 			statesStack.push(serializationObject);
 		}
 		if (isPage) {
-			currentPage = "page/"+url;	
+			currentPage = "page/" + url;
 		} else {
 			currentPage = url;
 		}
 		performGoToPage(currentPage);
 	}
-	
-	window.openModal = function(id, url, serializationObject, onCloseListener, afterInitListener) {
+
+	window.openModal = function(id, url, serializationObject, onCloseListener,
+			afterInitListener) {
 		if (serializationObject != null) {
 			serializationObject.openedModal = true;
 			statesStack.push(serializationObject);
 		}
-		
-		if (! modalObjects[id]) {
+
+		if (!modalObjects[id]) {
 			modalObjects[id] = QCD.utils.Modal.createModal();
 		}
 		if (onCloseListener) {
 			modalObjects[id].onCloseListener = onCloseListener;
 		}
 		modalsStack.push(modalObjects[id]);
-		
+
 		if (url.indexOf("?") != -1) {
-			url+="&";
+			url += "&";
 		} else {
-			url+="?";
+			url += "?";
 		}
-		url+="popup=true";
-		
-		var contextPath = window.location.protocol+"//"+window.location.host;
+		url += "popup=true";
+
+		var contextPath = window.location.protocol + "//"
+				+ window.location.host;
 		if (url.indexOf(contextPath) == -1) {
-			url = "page/"+url;
+			url = "page/" + url;
 		}
-		
+
 		modalObjects[id].show(url, function() {
 			if (this.src != "" && this.contentWindow.init) {
 				this.contentWindow.init(serializationObjectToInsert);
@@ -118,19 +120,19 @@ QCD.WindowController = function(_menuStructure) {
 
 		return modalObjects[id].iframe[0].contentWindow;
 	}
-	
+
 	window.changeModalSize = function(width, height) {
 		if (modalsStack.length == 0) {
 			return;
 		}
-		var modal = modalsStack[modalsStack.length-1];
+		var modal = modalsStack[modalsStack.length - 1];
 		modal.changeSize(width, height);
 	}
-	
+
 	this.onLoginSuccess = function() {
 		this.goToLastPage();
 	}
-	
+
 	this.goBack = function(pageController) {
 		lastPageController = pageController;
 		var stateObject = statesStack.pop();
@@ -148,7 +150,7 @@ QCD.WindowController = function(_menuStructure) {
 			performGoToPage(currentPage);
 		}
 	}
-	
+
 	this.closeThisModalWindow = function(status) {
 		modal = modalsStack.pop();
 		modal.hide();
@@ -156,42 +158,43 @@ QCD.WindowController = function(_menuStructure) {
 			modal.onCloseListener(status);
 		}
 	}
-	
+
 	this.getLastPageController = function() {
 		return lastPageController;
 	}
-	
+
 	this.goToLastPage = function() {
 		performGoToPage(currentPage);
 	}
-	
+
 	this.activateMenuPosition = function(position) {
 		menuController.activateMenuPosition(position);
 	}
-	
+
 	this.goToMenuPosition = function(position) {
 		menuController.goToMenuPosition(position);
 	}
-	
+
 	this.goToDashboard = function() {
 		if (hasMenuPosition("home.home")) {
 			this.goToMenuPosition("home.home");
 		}
 	}
-	
+
 	this.hasMenuPosition = function(position) {
 		return menuController.hasMenuPosition(position);
 	}
-	
+
 	this.updateMenu = function() {
 		menuController.updateMenu();
 	}
-	
+
 	this.onSessionExpired = function(serializationObject, isModal) {
 		serializationObjectToInsert = serializationObject;
 		if (isModal) {
 			var modal = modalsStack[modalsStack.length - 1]
-			modal.show("login.html?popup=true&targetUrl="+escape(serializationObject.url), function() {
+			modal.show("login.html?popup=true&targetUrl="
+					+ escape(serializationObject.url), function() {
 				if (this.src != "" && this.contentWindow.init) {
 					this.contentWindow.init(serializationObjectToInsert);
 					serializationObjectToInsert = null;
@@ -201,11 +204,11 @@ QCD.WindowController = function(_menuStructure) {
 			performGoToPage("login.html");
 		}
 	}
-	
+
 	this.restoreMenuState = function() {
 		menuController.restoreState();
 	}
-	
+
 	this.canChangePage = function() {
 		try {
 			if (iframe[0].contentWindow.canClose) {
@@ -215,13 +218,13 @@ QCD.WindowController = function(_menuStructure) {
 		}
 		return true;
 	}
-	
+
 	this.onMenuClicked = function(pageName) {
 		currentPage = pageName;
 		statesStack = new Array();
 		performGoToPage(currentPage);
 	}
-	
+
 	function performGoToPage(url) {
 		loadingIndicator.show();
 		if (url.search("://") <= 0) {
@@ -243,9 +246,9 @@ QCD.WindowController = function(_menuStructure) {
 			iframe.attr('src', url);
 		}
 	}
-	
+
 	function onIframeLoad(iframeToInit) {
-		if (! iframeToInit) {
+		if (!iframeToInit) {
 			iframeToInit = iframe[0];
 		}
 		try {
@@ -257,7 +260,7 @@ QCD.WindowController = function(_menuStructure) {
 		}
 		loadingIndicator.hide();
 	}
-	
+
 	function updateSize() {
 		var width = $(document).width();
 		var margin = Math.round(width * 0.02);
@@ -266,7 +269,7 @@ QCD.WindowController = function(_menuStructure) {
 		$("#secondLevelMenu").width(innerWidth);
 	}
 	this.updateSize = updateSize;
-	
+
 	constructor(this);
-	
+
 }

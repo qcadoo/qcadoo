@@ -97,6 +97,8 @@ public final class GridComponentState extends AbstractComponentState implements 
 
     public static final String JSON_ENTITIES_TO_MARK_AS_NEW = "entitiesToMarkAsNew";
 
+    public static final String JSON_COMPONENT_OPTIONS = "options";
+
     private final GridEventPerformer eventPerformer = new GridEventPerformer();
 
     private final Map<String, GridComponentColumn> columns;
@@ -170,9 +172,10 @@ public final class GridComponentState extends AbstractComponentState implements 
             String field = iterator.next();
             if (JSON_BELONGS_TO_ENTITY_ID.equals(field)) {
                 onScopeEntityIdChange(json.getLong(field));
+            } else if (JSON_COMPONENT_OPTIONS.equals(field)) {
+                passFiltersFromJson(json.getJSONObject(JSON_COMPONENT_OPTIONS));
             }
         }
-        passFiltersFromJson(json);
     }
 
     @Override

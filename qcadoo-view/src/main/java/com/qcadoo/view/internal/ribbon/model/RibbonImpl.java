@@ -71,6 +71,11 @@ public class RibbonImpl implements InternalRibbon {
     }
 
     @Override
+    public void addGroupPackAsFirst(final RibbonGroupsPack groupPack) {
+        groupPacks.add(0, groupPack);
+    }
+
+    @Override
     public void removeGroupsPack(final RibbonGroupsPack groupPack) {
         groupPacks.remove(groupPack);
     }

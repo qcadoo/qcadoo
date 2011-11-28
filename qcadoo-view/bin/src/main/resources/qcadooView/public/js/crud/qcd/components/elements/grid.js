@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.10
+ * Version: 1.1.0
  *
  * This file is part of Qcadoo.
  *
@@ -675,8 +675,10 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 		noRecordsDiv.hide();
 		$("#" + gridParameters.element).parent().append(noRecordsDiv);
 		
-		if (customOptions && customOptions["filter"]) {
-			_this.setFilterObject(customOptions, true);
+		if (customOptions && customOptions["filters"]) {
+			_this.setFilterObject({
+				"filter": customOptions["filters"],
+			}, true);
 		}
 	}
 

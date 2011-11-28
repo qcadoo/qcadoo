@@ -242,7 +242,7 @@ QCD.PageController = function() {
 				} else if (isPopup) {
 					window.location = redirectUrl;
 				} else {
-					goToPage(redirectUrl, false, response.redirect.shouldSerializeWindow);
+					goToPage(putShowBackInContext(redirectUrl), false, response.redirect.shouldSerializeWindow);
 					return;
 				}
 			} else {
@@ -259,14 +259,23 @@ QCD.PageController = function() {
 		}, type);
 	}
 	
-	// TODO mina
-	
-//	this.performLookupSelect = function(entityId, entityString, entityCode, actionsPerformer) {
-//		window.opener[lookupComponentName+"_onSelectFunction"].call(null, entityId, entityString, entityCode);
-//		if (actionsPerformer) {
-//			actionsPerformer.performNext();
-//		}
-//	}
+	function putShowBackInContext(url) {
+		if (url.indexOf("context={") == -1) {
+			return appendGetVariableToUrl(url,
+					"context={\"window.showBack\":true}");
+		}
+		return url.replace("context={", "context={\"window.showBack\":true,");
+	}
+
+	function appendGetVariableToUrl(url, variableString) {
+		if (url.indexOf("?") != -1) {
+			url += "&";
+		} else {
+			url += "?";
+		}
+		url += variableString;
+		return url;
+	}
 	
 	this.getActionEvaluator = function() {
 		return actionEvaluator;

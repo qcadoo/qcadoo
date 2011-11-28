@@ -675,8 +675,10 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 		noRecordsDiv.hide();
 		$("#" + gridParameters.element).parent().append(noRecordsDiv);
 		
-		if (customOptions && customOptions["filter"]) {
-			_this.setFilterObject(customOptions, true);
+		if (customOptions && customOptions["filters"]) {
+			_this.setFilterObject({
+				"filter": customOptions["filters"],
+			}, true);
 		}
 	}
 

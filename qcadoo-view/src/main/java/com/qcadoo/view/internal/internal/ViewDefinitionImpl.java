@@ -43,6 +43,7 @@ import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.security.api.SecurityRole;
 import com.qcadoo.view.api.ViewDefinitionState;
+import com.qcadoo.view.api.ribbon.RibbonActionItem.Type;
 import com.qcadoo.view.internal.HookDefinition;
 import com.qcadoo.view.internal.api.ComponentPattern;
 import com.qcadoo.view.internal.api.ContainerPattern;
@@ -50,6 +51,13 @@ import com.qcadoo.view.internal.api.InternalViewDefinition;
 import com.qcadoo.view.internal.api.InternalViewDefinitionService;
 import com.qcadoo.view.internal.components.window.WindowComponentPattern;
 import com.qcadoo.view.internal.patterns.AbstractComponentPattern;
+import com.qcadoo.view.internal.ribbon.model.InternalRibbon;
+import com.qcadoo.view.internal.ribbon.model.InternalRibbonActionItem;
+import com.qcadoo.view.internal.ribbon.model.InternalRibbonGroup;
+import com.qcadoo.view.internal.ribbon.model.RibbonActionItemImpl;
+import com.qcadoo.view.internal.ribbon.model.RibbonGroupImpl;
+import com.qcadoo.view.internal.ribbon.model.RibbonGroupsPack;
+import com.qcadoo.view.internal.ribbon.model.SingleRibbonGroupPack;
 
 public final class ViewDefinitionImpl implements InternalViewDefinition {
 
@@ -134,6 +142,10 @@ public final class ViewDefinitionImpl implements InternalViewDefinition {
     public Map<String, Object> prepareView(final JSONObject jsonObject, final Locale locale) {
         callHooks(postConstructHooks, jsonObject, locale);
 
+        if (jsonObject.has("window.showBack") && !jsonObject.isNull("window.showBack")) {
+            appendNavigationRibbonGroup();
+        }
+
         Map<String, Object> model = new HashMap<String, Object>();
         Map<String, Object> childrenModels = new HashMap<String, Object>();
 
@@ -164,6 +176,30 @@ public final class ViewDefinitionImpl implements InternalViewDefinition {
         }
 
         return model;
+    }
+
+    private void appendNavigationRibbonGroup() {
+        WindowComponentPattern window = (WindowComponentPattern) patterns.get("window");
+        if (window == null) {
+            return;
+        }
+        InternalRibbon ribbon = window.getRibbon();
+        if (ribbon == null || ribbon.getGroupByName("navigation") != null) {
+            return;
+        }
+
+        InternalRibbonActionItem backButton = new RibbonActionItemImpl();
+        backButton.setName("back");
+        backButton.setIcon("backIcon24.png");
+        backButton.setAction("#{window}.performBack");
+        backButton.setEnabled(true);
+        backButton.setType(Type.BIG_BUTTON);
+
+        InternalRibbonGroup navigationGroup = new RibbonGroupImpl("navigation");
+        navigationGroup.addItem(backButton);
+
+        RibbonGroupsPack navigationGroupPack = new SingleRibbonGroupPack(navigationGroup);
+        ribbon.addGroupPackAsFirst(navigationGroupPack);
     }
 
     @Override
