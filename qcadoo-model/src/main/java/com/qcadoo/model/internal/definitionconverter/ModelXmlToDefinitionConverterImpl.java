@@ -91,12 +91,12 @@ import com.qcadoo.model.internal.utils.ClassNameUtils;
 import com.qcadoo.model.internal.validators.CustomEntityValidator;
 import com.qcadoo.model.internal.validators.CustomValidator;
 import com.qcadoo.model.internal.validators.LengthValidator;
-import com.qcadoo.model.internal.validators.UnscaledValueValidator;
 import com.qcadoo.model.internal.validators.RangeValidator;
 import com.qcadoo.model.internal.validators.RegexValidator;
 import com.qcadoo.model.internal.validators.RequiredValidator;
 import com.qcadoo.model.internal.validators.ScaleValidator;
 import com.qcadoo.model.internal.validators.UniqueValidator;
+import com.qcadoo.model.internal.validators.UnscaledValueValidator;
 
 @Service
 public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlConverter implements ModelXmlToDefinitionConverter {
@@ -347,7 +347,7 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
         String plugin = getStringAttribute(reader, "plugin");
         HasManyType.Cascade cascade = "delete".equals(getStringAttribute(reader, "cascade")) ? HasManyType.Cascade.DELETE
                 : HasManyType.Cascade.NULLIFY;
-        return new HasManyEntitiesType(plugin != null ? plugin : pluginIdentifier, getStringAttribute(reader, TAG_MODEL),
+        return new HasManyEntitiesType(plugin == null ? pluginIdentifier : plugin, getStringAttribute(reader, TAG_MODEL),
                 getStringAttribute(reader, "joinField"), cascade, getBooleanAttribute(reader, "copyable", false),
                 dataDefinitionService);
     }
@@ -356,8 +356,8 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
         String plugin = getStringAttribute(reader, "plugin");
         ManyToManyType.Cascade cascade = "delete".equals(getStringAttribute(reader, "cascade")) ? ManyToManyType.Cascade.DELETE
                 : ManyToManyType.Cascade.NULLIFY;
-        return new ManyToManyEntitiesType(plugin != null ? plugin : pluginIdentifier, getStringAttribute(reader, TAG_MODEL), 
-                getStringAttribute(reader, "joinField"), cascade, getBooleanAttribute(reader, "copyable", false), 
+        return new ManyToManyEntitiesType(plugin == null ? pluginIdentifier : plugin, getStringAttribute(reader, TAG_MODEL),
+                getStringAttribute(reader, "joinField"), cascade, getBooleanAttribute(reader, "copyable", false),
                 dataDefinitionService);
     }
 
@@ -365,7 +365,7 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
         String plugin = getStringAttribute(reader, "plugin");
         TreeType.Cascade cascade = "delete".equals(getStringAttribute(reader, "cascade")) ? TreeType.Cascade.DELETE
                 : TreeType.Cascade.NULLIFY;
-        return new TreeEntitiesType(plugin != null ? plugin : pluginIdentifier, getStringAttribute(reader, TAG_MODEL),
+        return new TreeEntitiesType(plugin == null ? pluginIdentifier : plugin, getStringAttribute(reader, TAG_MODEL),
                 getStringAttribute(reader, "joinField"), cascade, getBooleanAttribute(reader, "copyable", false),
                 dataDefinitionService);
     }
@@ -375,9 +375,9 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
         String plugin = getStringAttribute(reader, "plugin");
         String modelName = getStringAttribute(reader, TAG_MODEL);
         if (lazy) {
-            return new BelongsToEntityType(plugin != null ? plugin : pluginIdentifier, modelName, dataDefinitionService, true);
+            return new BelongsToEntityType(plugin == null ? pluginIdentifier : plugin, modelName, dataDefinitionService, true);
         } else {
-            return new BelongsToEntityType(plugin != null ? plugin : pluginIdentifier, modelName, dataDefinitionService, false);
+            return new BelongsToEntityType(plugin == null ? pluginIdentifier : plugin, modelName, dataDefinitionService, false);
         }
     }
 

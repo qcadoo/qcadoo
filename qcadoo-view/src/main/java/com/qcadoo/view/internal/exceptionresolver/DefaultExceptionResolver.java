@@ -84,76 +84,77 @@ public final class DefaultExceptionResolver extends SimpleMappingExceptionResolv
             final Object handler, final Exception exception) {
         ModelAndView mv = super.doResolveException(request, response, handler, exception);
 
-        if (mv != null) {
-
-            String codeStr = mv.getViewName();
-            int code = Integer.parseInt(codeStr);
-
-            CustomTranslationMessage customExceptionMessage = getCustomExceptionMessage(exception);
-
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Adding exception message to view: " + customExceptionMessage);
-            }
-
-            String customExceptionMessageHeader = null;
-            String customExceptionMessageExplanation = null;
-
-            @SuppressWarnings("rawtypes")
-            ExceptionInfoResolver exceptionInfoResolver = classResolversMap.get(exception.getClass());
-            if (exceptionInfoResolver != null) {
-
-                @SuppressWarnings("unchecked")
-                ExceptionInfo info = exceptionInfoResolver.getExceptionInfo(exception);
-                customExceptionMessageHeader = translationService.translate(info.getMessageHeader(),
-                        LocaleContextHolder.getLocale());
-                customExceptionMessageExplanation = translationService.translate(info.getMessageExplanation(),
-                        LocaleContextHolder.getLocale(), info.getMessageExplanationArgs());
-
-            } else if (customExceptionMessage != null) {
-
-                customExceptionMessageHeader = translationService.translate("qcadooView.errorPage.error."
-                        + customExceptionMessage.getMessage() + ".header", LocaleContextHolder.getLocale());
-                if (customExceptionMessage.getEntityIdentifier() != null) {
-                    customExceptionMessageExplanation = translationService.translate("qcadooView.errorPage.error."
-                            + customExceptionMessage.getMessage() + ".explanation", LocaleContextHolder.getLocale(),
-                            customExceptionMessage.getEntityIdentifier());
-                } else {
-                    customExceptionMessageExplanation = translationService.translate("qcadooView.errorPage.error."
-                            + customExceptionMessage.getMessage() + ".explanation", LocaleContextHolder.getLocale());
-                }
-                Throwable rootException = getRootException(exception);
-
-                if (rootException instanceof CopyException) {
-                    String copyExplanation = getAdditionalMessageForCopyException((CopyException) rootException,
-                            LocaleContextHolder.getLocale());
-                    if (copyExplanation != null) {
-                        customExceptionMessageExplanation = copyExplanation;
-                    }
-                }
-            }
-
-            return errorController.getAccessDeniedPageView(code, exception, customExceptionMessageHeader,
-                    customExceptionMessageExplanation, LocaleContextHolder.getLocale());
+        if (mv == null) {
+            return mv;
         }
 
-        return mv;
+        String codeStr = mv.getViewName();
+        int code = Integer.parseInt(codeStr);
+
+        CustomTranslationMessage customExceptionMessage = getCustomExceptionMessage(exception);
+
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Adding exception message to view: " + customExceptionMessage);
+        }
+
+        String customExceptionMessageHeader = null;
+        String customExceptionMessageExplanation = null;
+
+        @SuppressWarnings("rawtypes")
+        ExceptionInfoResolver exceptionInfoResolver = classResolversMap.get(exception.getClass());
+
+        if (exceptionInfoResolver != null) {
+
+            @SuppressWarnings("unchecked")
+            ExceptionInfo info = exceptionInfoResolver.getExceptionInfo(exception);
+            customExceptionMessageHeader = translationService.translate(info.getMessageHeader(), LocaleContextHolder.getLocale());
+            customExceptionMessageExplanation = translationService.translate(info.getMessageExplanation(),
+                    LocaleContextHolder.getLocale(), info.getMessageExplanationArgs());
+
+        } else if (customExceptionMessage != null) {
+
+            customExceptionMessageHeader = translationService.translate(
+                    "qcadooView.errorPage.error." + customExceptionMessage.getMessage() + ".header",
+                    LocaleContextHolder.getLocale());
+            if (customExceptionMessage.getEntityIdentifier() == null) {
+                customExceptionMessageExplanation = translationService.translate("qcadooView.errorPage.error."
+                        + customExceptionMessage.getMessage() + ".explanation", LocaleContextHolder.getLocale());
+            } else {
+                customExceptionMessageExplanation = translationService.translate("qcadooView.errorPage.error."
+                        + customExceptionMessage.getMessage() + ".explanation", LocaleContextHolder.getLocale(),
+                        customExceptionMessage.getEntityIdentifier());
+            }
+            Throwable rootException = getRootException(exception);
+
+            if (rootException instanceof CopyException) {
+                String copyExplanation = getAdditionalMessageForCopyException((CopyException) rootException,
+                        LocaleContextHolder.getLocale());
+                if (copyExplanation != null) {
+                    customExceptionMessageExplanation = copyExplanation;
+                }
+            }
+        }
+
+        return errorController.getAccessDeniedPageView(code, exception, customExceptionMessageHeader,
+                customExceptionMessageExplanation, LocaleContextHolder.getLocale());
     }
 
     private Throwable getRootException(final Throwable throwable) {
         if (throwable.getCause() != null) {
             return getRootException(throwable.getCause());
-        } else if (throwable instanceof InvocationTargetException) {
-            return getRootException(((InvocationTargetException) throwable).getTargetException());
-        } else {
-            return throwable;
         }
+        if (throwable instanceof InvocationTargetException) {
+            return getRootException(((InvocationTargetException) throwable).getTargetException());
+        }
+        return throwable;
     }
 
     private String getAdditionalMessageForCopyException(final CopyException exception, final Locale locale) {
         for (Map.Entry<String, ErrorMessage> error : exception.getEntity().getErrors().entrySet()) {
             String field = translationService.translate(exception.getEntity().getDataDefinition().getPluginIdentifier() + "."
                     + exception.getEntity().getDataDefinition().getName() + "." + error.getKey() + ".label", locale);
-            return field + " - " + translationService.translate(error.getValue().getMessage(), locale, error.getValue().getVars());
+            return field + " - "
+                    + translationService.translate(error.getValue().getMessage(), locale, error.getValue().getVars());
         }
         for (ErrorMessage error : exception.getEntity().getGlobalErrors()) {
             return translationService.translate(error.getMessage(), locale, error.getVars());
@@ -201,12 +202,11 @@ public final class DefaultExceptionResolver extends SimpleMappingExceptionResolv
 
         if (throwable instanceof InvocationTargetException) {
             return getCustomExceptionMessage(((InvocationTargetException) throwable).getTargetException());
-        } else if (throwable.getCause() != null) {
-            return getCustomExceptionMessage(throwable.getCause());
-        } else {
+        }
+        if (throwable.getCause() == null) {
             return null;
         }
-
+        return getCustomExceptionMessage(throwable.getCause());
     }
 
     private class CustomTranslationMessage {
