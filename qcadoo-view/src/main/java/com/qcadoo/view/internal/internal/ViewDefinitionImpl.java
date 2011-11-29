@@ -91,6 +91,10 @@ public final class ViewDefinitionImpl implements InternalViewDefinition {
 
     private final TranslationService translationService;
 
+    private boolean alreadyHasNavigation;
+
+    private RibbonGroupsPack ribbonNavigationGroupPack;
+
     public ViewDefinitionImpl(final String name, final String pluginIdentifier, final DataDefinition dataDefinition,
             final boolean menuAccessible, final TranslationService translationService) {
         this(name, pluginIdentifier, null, dataDefinition, menuAccessible, translationService);
@@ -136,18 +140,18 @@ public final class ViewDefinitionImpl implements InternalViewDefinition {
 
             lastNotInitialized = notInitialized;
         }
+
+        initAdditionalNavigation();
     }
 
     @Override
     public Map<String, Object> prepareView(final JSONObject jsonObject, final Locale locale) {
         callHooks(postConstructHooks, jsonObject, locale);
 
-        if (jsonObject.has("window.showBack") && !jsonObject.isNull("window.showBack")) {
-            appendNavigationRibbonGroup();
-        }
-
         Map<String, Object> model = new HashMap<String, Object>();
         Map<String, Object> childrenModels = new HashMap<String, Object>();
+
+        toggleAdditionalNavigationGroup(getBooleanFromJson(jsonObject, "window.showBack"));
 
         for (ComponentPattern componentPattern : patterns.values()) {
             childrenModels.put(componentPattern.getName(), componentPattern.prepareView(locale));
@@ -178,16 +182,28 @@ public final class ViewDefinitionImpl implements InternalViewDefinition {
         return model;
     }
 
-    private void appendNavigationRibbonGroup() {
-        WindowComponentPattern window = (WindowComponentPattern) patterns.get("window");
-        if (window == null) {
-            return;
+    private boolean getBooleanFromJson(final JSONObject jsonObject, final String fieldName) {
+        try {
+            return jsonObject.has(fieldName) && !jsonObject.isNull(fieldName) && jsonObject.getBoolean(fieldName);
+        } catch (JSONException e) {
+            throw new IllegalStateException(e.getMessage(), e);
         }
-        InternalRibbon ribbon = window.getRibbon();
-        if (ribbon == null || ribbon.getGroupByName("navigation") != null) {
-            return;
-        }
+    }
 
+    private InternalRibbon getRibbon() {
+        ComponentPattern window = patterns.get("window");
+        if (window instanceof WindowComponentPattern) {
+            return ((WindowComponentPattern) window).getRibbon();
+        }
+        return null;
+    }
+
+    private void initAdditionalNavigation() {
+        InternalRibbon ribbon = getRibbon();
+        if (ribbon == null || ribbon.getGroupByName("navigation") != null) {
+            alreadyHasNavigation = ribbon != null;
+            return;
+        }
         InternalRibbonActionItem backButton = new RibbonActionItemImpl();
         backButton.setName("back");
         backButton.setIcon("backIcon24.png");
@@ -195,11 +211,24 @@ public final class ViewDefinitionImpl implements InternalViewDefinition {
         backButton.setEnabled(true);
         backButton.setType(Type.BIG_BUTTON);
 
-        InternalRibbonGroup navigationGroup = new RibbonGroupImpl("navigation");
-        navigationGroup.addItem(backButton);
+        InternalRibbonGroup additionalNavigationGroup = new RibbonGroupImpl("navigation");
+        additionalNavigationGroup.addItem(backButton);
 
-        RibbonGroupsPack navigationGroupPack = new SingleRibbonGroupPack(navigationGroup);
-        ribbon.addGroupPackAsFirst(navigationGroupPack);
+        ribbonNavigationGroupPack = new SingleRibbonGroupPack(additionalNavigationGroup);
+    }
+
+    private void toggleAdditionalNavigationGroup(final boolean showBack) {
+        InternalRibbon ribbon = getRibbon();
+        if (ribbon == null || alreadyHasNavigation) {
+            return;
+        }
+        if (!showBack) {
+            ribbon.removeGroupsPack(ribbonNavigationGroupPack);
+            return;
+        }
+        if (ribbon.getGroupByName("navigation") == null) {
+            ribbon.addGroupPackAsFirst(ribbonNavigationGroupPack);
+        }
     }
 
     @Override
