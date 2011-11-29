@@ -113,6 +113,8 @@ public class FormComponentState extends AbstractContainerState implements FormCo
     @Override
     @SuppressWarnings("unchecked")
     protected void initializeContext(final JSONObject json) throws JSONException {
+        super.initializeContext(json);
+
         Iterator<String> iterator = json.keys();
         while (iterator.hasNext()) {
             String field = iterator.next();

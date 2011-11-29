@@ -146,20 +146,6 @@ QCD.components.Component = function(_element, _mainController) {
 		}
 	}
 	
-//	this.setLoading = function(isLoadingVisible) {
-//		var listeners = options.listeners;
-//		if (listeners) {
-//			for (var i in listeners) {
-//				mainController.getComponent(listeners[i]).setLoading(isLoadingVisible);
-//			}
-//		}
-//		if (this.setComponentLoading) {
-//			this.setComponentLoading(isLoadingVisible);
-//		} else {
-//			QCD.error(this.elementPath+".setLoading() no implemented");
-//		}
-//	}
-	
 	this.updateSize = function(width, height) {
 	}
 

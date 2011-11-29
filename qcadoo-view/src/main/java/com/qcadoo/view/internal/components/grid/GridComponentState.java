@@ -97,8 +97,6 @@ public final class GridComponentState extends AbstractComponentState implements 
 
     public static final String JSON_ENTITIES_TO_MARK_AS_NEW = "entitiesToMarkAsNew";
 
-    public static final String JSON_COMPONENT_OPTIONS = "options";
-
     private final GridEventPerformer eventPerformer = new GridEventPerformer();
 
     private final Map<String, GridComponentColumn> columns;
@@ -167,13 +165,18 @@ public final class GridComponentState extends AbstractComponentState implements 
     @Override
     @SuppressWarnings("unchecked")
     protected void initializeContext(final JSONObject json) throws JSONException {
+        super.initializeContext(json);
+
         Iterator<String> iterator = json.keys();
         while (iterator.hasNext()) {
             String field = iterator.next();
             if (JSON_BELONGS_TO_ENTITY_ID.equals(field)) {
                 onScopeEntityIdChange(json.getLong(field));
             } else if (JSON_COMPONENT_OPTIONS.equals(field)) {
-                passFiltersFromJson(json.getJSONObject(JSON_COMPONENT_OPTIONS));
+                JSONObject jsonOptions = json.getJSONObject(JSON_COMPONENT_OPTIONS);
+                passFiltersFromJson(jsonOptions);
+                passSelectedEntitiesFromJson(jsonOptions);
+                passEntitiesFromJson(jsonOptions);
             }
         }
     }
@@ -240,6 +243,28 @@ public final class GridComponentState extends AbstractComponentState implements 
             while (filtersKeys.hasNext()) {
                 String column = filtersKeys.next();
                 filters.put(column, filtersJson.getString(column).trim());
+            }
+        }
+    }
+
+    private void passSelectedEntitiesFromJson(final JSONObject json) throws JSONException {
+        if (json.has(JSON_SELECTED_ENTITIES) && !json.isNull(JSON_SELECTED_ENTITIES)) {
+            selectedEntities = Sets.newHashSet();
+            JSONArray entitiesToSelect = json.getJSONArray(JSON_SELECTED_ENTITIES);
+            for (int i = 0; i < entitiesToSelect.length(); i++) {
+                selectedEntities.add(Long.valueOf(entitiesToSelect.get(i).toString()));
+            }
+        }
+    }
+
+    private void passEntitiesFromJson(final JSONObject json) throws JSONException {
+        if (json.has(JSON_ENTITIES) && !json.isNull(JSON_ENTITIES)) {
+            entities = Lists.newArrayList();
+            JSONArray entities = json.getJSONArray(JSON_ENTITIES);
+            Long entityId = null;
+            for (int i = 0; i < entities.length(); i++) {
+                entityId = Long.valueOf(entities.get(i).toString());
+                this.entities.add(getDataDefinition().get(entityId));
             }
         }
     }

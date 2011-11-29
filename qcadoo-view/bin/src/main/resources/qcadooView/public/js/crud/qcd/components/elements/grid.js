@@ -662,24 +662,12 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 			grid[0].toggleToolbar();
 			currentState.filtersEnabled = false;
 		}
-
-		var customOptions;
-		var parsedContext = $.parseJSON(window.context);
-		if (parsedContext) {
-			_this.addContext("customOptions", parsedContext[_this.elementPath  + ".options"]);
-			customOptions = _this.contextObject["customOptions"];
-		}
 		
 		noRecordsDiv = $("<div>").html(translations.noResults).addClass(
 				"noRecordsBox");
 		noRecordsDiv.hide();
 		$("#" + gridParameters.element).parent().append(noRecordsDiv);
 		
-		if (customOptions && customOptions["filters"]) {
-			_this.setFilterObject({
-				"filter": customOptions["filters"],
-			}, true);
-		}
 	}
 
 	this.onPagingParametersChange = function() {
@@ -877,10 +865,8 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 		onCurrentStateChange(false);
 	}
 
-	this.setFilterObject = function(filter, isInInitState) {
-		if (!isInInitState) {
-			blockGrid();
-		}
+	this.setFilterObject = function(filter) {
+		blockGrid();
 
 		var filterObject = filter.filter
 		for ( var i in columnModel) {
@@ -921,9 +907,7 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 
 		updateSearchFields();
 		onFiltersStateChange();
-		if (!isInInitState) {
-			onCurrentStateChange(true);
-		}
+		onCurrentStateChange(true);
 	}
 
 	this.onNewButtonClicked = function() {

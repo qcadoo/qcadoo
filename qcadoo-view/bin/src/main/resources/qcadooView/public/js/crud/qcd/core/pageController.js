@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.1
+ * Version: 1.1.0
  *
  * This file is part of Qcadoo.
  *
@@ -49,6 +49,8 @@ QCD.PageController = function() {
 	
 	var serializationObjectToInsert;
 	
+	var isScriptsPerformed = false;
+	
 	this.constructor = function(_viewName, _pluginIdentifier, _hasDataDefinition, _isPopup) {
 		viewName = _viewName;
 		pluginIdentifier = _pluginIdentifier;
@@ -82,6 +84,7 @@ QCD.PageController = function() {
 		} else {
 			$(window).focus(onWindowClick);
 		}
+		blockButtons();
 	}
 	
 	this.init = function(serializationObject) {
@@ -94,8 +97,11 @@ QCD.PageController = function() {
 			updateSize();
 		}
 		QCD.components.elements.utils.LoadingIndicator.blockElement($("body"));
-		for (var i in pageComponents) {
-			pageComponents[i].performScript();
+		if (! isScriptsPerformed) {
+			for (var i in pageComponents) {
+				pageComponents[i].performScript();
+			}
+			isScriptsPerformed = true;
 		}
 		if (serializationObject) {
 			setComponentState(serializationObject);
@@ -108,6 +114,9 @@ QCD.PageController = function() {
 			if (hasDataDefinition) {
 				this.callEvent("initialize", null, function() {QCD.components.elements.utils.LoadingIndicator.unblockElement($("body"))});
 			} else {
+				for (var i in pageComponents) {
+					pageComponents[i].performInitialize();
+				}
 				QCD.components.elements.utils.LoadingIndicator.unblockElement($("body"));
 			}
 		}
@@ -194,7 +203,8 @@ QCD.PageController = function() {
 		for (var i=0; i<ids.length; i++) {
 			url += "&id="+ids[i];
 		}
-		window.open(url);
+		window.open(url, "_blank", "status=0");
+		
 		if (actionsPerformer) {
 			actionsPerformer.performNext();
 		}
@@ -214,8 +224,10 @@ QCD.PageController = function() {
 	
 	
 	function performEvent(parameters, completeFunction, actionsPerformer, type) {
+		blockButtons();
 		var parametersJson = JSON.stringify(parameters);
 		QCDConnector.sendPost(parametersJson, function(response) {
+			unblockButtons();
 			if (completeFunction) {
 				completeFunction();
 			}
@@ -223,13 +235,14 @@ QCD.PageController = function() {
 				var contextPath = window.location.protocol+"//"+window.location.host;
 				var redirectUrl = response.redirect.url.replace(/\$\{root\}/, contextPath)
 				if (response.redirect.openInNewWindow) {
-					window.open(redirectUrl);
+					var w = window.open(redirectUrl, "_blank", "status=0");
+					w.location.href = redirectUrl;
 				} else if (response.redirect.openInModalWindow) {
 					openModal(redirectUrl, redirectUrl);
 				} else if (isPopup) {
 					window.location = redirectUrl;
 				} else {
-					goToPage(redirectUrl, false, response.redirect.shouldSerializeWindow);
+					goToPage(putShowBackInContext(redirectUrl), false, response.redirect.shouldSerializeWindow);
 					return;
 				}
 			} else {
@@ -239,24 +252,42 @@ QCD.PageController = function() {
 				actionsPerformer.performNext();
 			}
 		}, function() {
+			unblockButtons();
 			if (completeFunction) {
 				completeFunction();
 			}
 		}, type);
 	}
 	
-	// TODO mina
-	
-//	this.performLookupSelect = function(entityId, entityString, entityCode, actionsPerformer) {
-//		window.opener[lookupComponentName+"_onSelectFunction"].call(null, entityId, entityString, entityCode);
-//		if (actionsPerformer) {
-//			actionsPerformer.performNext();
-//		}
-//	}
+	function putShowBackInContext(url) {
+		if (url.indexOf("context={") == -1) {
+			return appendGetVariableToUrl(url,
+					"context={\"window.showBack\":true}");
+		}
+		return url.replace("context={", "context={\"window.showBack\":true,");
+	}
+
+	function appendGetVariableToUrl(url, variableString) {
+		if (url.indexOf("?") != -1) {
+			url += "&";
+		} else {
+			url += "?";
+		}
+		url += variableString;
+		return url;
+	}
 	
 	this.getActionEvaluator = function() {
 		return actionEvaluator;
 	};
+	
+	function blockButtons() {
+		headerComponent.blockButtons();
+	}
+	
+	function unblockButtons() {
+		headerComponent.unblockButtons();
+	}
 	
 	function getValueData() {
 		var values = new Object();
@@ -370,8 +401,10 @@ QCD.PageController = function() {
 		} else {
 			url+="?";
 		}
+		if(window.location.href.indexOf("page/") == -1){
+				url = "page/"+pluginIdentifier+"/"+url;
+			}
 		url+="popup=true";
-		
 		popup = new Object();
 		popup.pageController = this;
 		popup.parentComponent = parentComponent;
@@ -420,7 +453,7 @@ QCD.PageController = function() {
 		if (shouldSerialize) {
 			serializationObject = getSerializationObject();	
 		}
-		window.parent.openModal(id, url, serializationObject, onCloseListener, afterInitListener);
+		return window.parent.openModal(id, url, serializationObject, onCloseListener, afterInitListener);
 	}
 	this.openModal = openModal
 	
@@ -488,8 +521,8 @@ QCD.PageController = function() {
 	}
 	
 	function updateSize() {
-		var width = $(document).width();
-		var height = $(document).height();
+		var width = $(window).width();
+		var height = $(window).height();
 		for (var i in pageComponents) {
 			pageComponents[i].updateSize(width, height);
 		}

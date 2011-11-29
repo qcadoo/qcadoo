@@ -87,6 +87,7 @@ public class GanttChartComponentState extends AbstractComponentState {
 
     @Override
     protected void initializeContext(final JSONObject json) throws JSONException {
+        super.initializeContext(json);
         this.context = json;
     }
 

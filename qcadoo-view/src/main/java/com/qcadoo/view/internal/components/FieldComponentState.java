@@ -48,6 +48,21 @@ public class FieldComponentState extends AbstractComponentState implements Field
     }
 
     @Override
+    protected void initializeContext(final JSONObject json) throws JSONException {
+        super.initializeContext(json);
+        if (json.has(JSON_COMPONENT_OPTIONS) && !json.isNull(JSON_COMPONENT_OPTIONS)) {
+            JSONObject jsonOptions = json.getJSONObject(JSON_COMPONENT_OPTIONS);
+            passValueFromJson(jsonOptions);
+        }
+    }
+
+    private void passValueFromJson(final JSONObject json) throws JSONException {
+        if (json.has(JSON_VALUE) && !json.isNull(JSON_VALUE)) {
+            value = json.getString(JSON_VALUE);
+        }
+    }
+
+    @Override
     protected void initializeContent(final JSONObject json) throws JSONException {
         if (json.has(JSON_VALUE) && !json.isNull(JSON_VALUE)) {
             value = json.getString(JSON_VALUE);
