@@ -118,6 +118,7 @@ QCD.PageController = function() {
 					pageComponents[i].performInitialize();
 				}
 				QCD.components.elements.utils.LoadingIndicator.unblockElement($("body"));
+				unblockButtons()
 			}
 		}
 	}
