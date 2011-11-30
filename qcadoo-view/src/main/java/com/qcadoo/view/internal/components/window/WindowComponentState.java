@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.9
+ * Version: 1.1.0
  *
  * This file is part of Qcadoo.
  *
@@ -44,6 +44,10 @@ public class WindowComponentState extends AbstractContainerState implements Wind
 
     private final WindowComponentPattern pattern;
 
+    public static final String JSON_ACTIVE_MENU = "activeMenu";
+
+    private String activeMenu = null;
+
     public WindowComponentState(final WindowComponentPattern pattern) {
         this.pattern = pattern;
         ribbon = pattern.getRibbon().getCopy();
@@ -77,7 +81,18 @@ public class WindowComponentState extends AbstractContainerState implements Wind
             }
         }
 
+        if (activeMenu != null) {
+            json.put(JSON_ACTIVE_MENU, activeMenu);
+        }
+
         return json;
+    }
+
+    @Override
+    public void initializeContext(final JSONObject json) throws JSONException {
+        if (json.has(JSON_ACTIVE_MENU) && !json.isNull(JSON_ACTIVE_MENU)) {
+            activeMenu = json.getString(JSON_ACTIVE_MENU);
+        }
     }
 
     @Override

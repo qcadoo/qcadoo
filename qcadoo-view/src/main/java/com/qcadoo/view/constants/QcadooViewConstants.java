@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.9
+ * Version: 1.1.0
  *
  * This file is part of Qcadoo.
  *
@@ -25,18 +25,18 @@ package com.qcadoo.view.constants;
 
 public interface QcadooViewConstants {
 
-    public static final String PLUGIN_IDENTIFIER = "qcadooView";
+    String PLUGIN_IDENTIFIER = "qcadooView";
 
     // MODEL
-    public static final String MODEL_CATEGORY = "category";
+    String MODEL_CATEGORY = "category";
 
-    public static final String MODEL_ITEM = "item";
+    String MODEL_ITEM = "item";
 
-    public static final String MODEL_VIEW = "view";
+    String MODEL_VIEW = "view";
 
     // VIEW
-    public static final String VIEW_SYSTEM_INFO = "systemInfo";
+    String VIEW_SYSTEM_INFO = "systemInfo";
 
-    public static final String VIEW_FILE_UPLOAD = "fileUpload";
+    String VIEW_FILE_UPLOAD = "fileUpload";
 
 }

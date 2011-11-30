@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.9
+ * Version: 1.1.0
  *
  * This file is part of Qcadoo.
  *
@@ -65,6 +65,8 @@ public abstract class AbstractComponentState implements InternalComponentState, 
     public static final String JSON_MESSAGE_TYPE = "type";
 
     public static final String JSON_MESSAGE_AUTOCLOSE = "autoClose";
+
+    public static final String JSON_COMPONENT_OPTIONS = "options";
 
     private final EntityIdChangeListenerHolder listenerHolder = new EntityIdChangeListenerHolder();
 
@@ -265,7 +267,23 @@ public abstract class AbstractComponentState implements InternalComponentState, 
     }
 
     protected void initializeContext(final JSONObject json) throws JSONException {
-        // implements if you want
+        if (json.has(JSON_COMPONENT_OPTIONS) && !json.isNull(JSON_COMPONENT_OPTIONS)) {
+            JSONObject jsonOptions = json.getJSONObject(JSON_COMPONENT_OPTIONS);
+            passEnabledFromJson(jsonOptions);
+            passVisibleFromJson(jsonOptions);
+        }
+    }
+
+    private void passEnabledFromJson(final JSONObject json) throws JSONException {
+        if (json.has(JSON_ENABLED) && !json.isNull(JSON_ENABLED)) {
+            enabled = json.getBoolean(JSON_ENABLED);
+        }
+    }
+
+    private void passVisibleFromJson(final JSONObject json) throws JSONException {
+        if (json.has(JSON_VISIBLE) && !json.isNull(JSON_VISIBLE)) {
+            visible = json.getBoolean(JSON_VISIBLE);
+        }
     }
 
     @Override

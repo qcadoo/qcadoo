@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.9
+ * Version: 1.1.0
  *
  * This file is part of Qcadoo.
  *
@@ -26,7 +26,10 @@ package com.qcadoo.report.internal.controller;
 import static org.apache.commons.io.IOUtils.copy;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -47,8 +50,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.qcadoo.localization.api.TranslationService;
+import com.qcadoo.model.api.DataDefinitionService;
+import com.qcadoo.model.api.Entity;
 import com.qcadoo.report.api.ReportException;
 import com.qcadoo.report.api.ReportService;
+import com.qcadoo.report.api.pdf.PdfUtil;
 import com.qcadoo.view.api.exception.ClassDrivenExceptionResolver;
 
 @Controller
@@ -56,6 +63,12 @@ public class ReportController {
 
     @Autowired
     private ReportService reportService;
+
+    @Autowired
+    private DataDefinitionService dataDefinitionService;
+
+    @Autowired
+    private TranslationService translationService;
 
     @Autowired
     @Qualifier("exceptionResolver")
@@ -88,6 +101,34 @@ public class ReportController {
         }
 
         disableCache(response);
+    }
+
+    @RequestMapping(value = "generateSavedReport/{plugin}/{model}", method = RequestMethod.GET)
+    public void generateSavedReport(@PathVariable("plugin") final String plugin, @PathVariable("model") final String model,
+            @RequestParam("id") final String id, @RequestParam("fieldDate") final String fieldDate,
+            @RequestParam("suffix") final String suffix, final HttpServletRequest request, final HttpServletResponse response,
+            final Locale locale) throws ReportException {
+        ReportService.ReportType reportType = getReportType(request);
+        Entity entity = dataDefinitionService.get(plugin, model).get(Long.parseLong(id));
+        String translatedSuffix = "";
+        if (suffix.length() > 0) {
+            translatedSuffix = translationService.translate(plugin + "." + model + ".report.fileName.suffix." + suffix, locale);
+        }
+        String translatedFileName = translationService.translate(plugin + "." + model + ".report.fileName", locale) + "_"
+                + PdfUtil.D_T_F.format((Date) entity.getField(fieldDate)) + "_" + translatedSuffix + "."
+                + reportType.getExtension();
+        response.setHeader("Content-disposition", "inline; filename=" + translatedFileName);
+        response.setContentType(reportType.getMimeType());
+        try {
+            int bytes = copy(
+                    new FileInputStream(new File(entity.getStringField("fileName") + suffix + "." + reportType.getExtension())),
+                    response.getOutputStream());
+
+            response.setContentLength(bytes);
+
+        } catch (IOException e) {
+            throw new IllegalStateException(e.getMessage(), e);
+        }
     }
 
     private ReportService.ReportType getReportType(final HttpServletRequest request) throws ReportException {

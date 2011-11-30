@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.9
+ * Version: 1.1.0
  *
  * This file is part of Qcadoo.
  *
@@ -25,11 +25,11 @@ package com.qcadoo.security.constants;
 
 public interface QcadooSecurityConstants {
 
-    public static final String PLUGIN_IDENTIFIER = "qcadooSecurity";
+    String PLUGIN_IDENTIFIER = "qcadooSecurity";
 
     // MODEL
-    public static final String MODEL_PERSISTENT_TOKEN = "persistentToken";
+    String MODEL_PERSISTENT_TOKEN = "persistentToken";
 
-    public static final String MODEL_USER = "user";
+    String MODEL_USER = "user";
 
 }

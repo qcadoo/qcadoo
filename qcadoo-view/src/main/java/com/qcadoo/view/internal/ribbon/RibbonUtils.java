@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.9
+ * Version: 1.1.0
  *
  * This file is part of Qcadoo.
  *
@@ -36,7 +36,7 @@ import com.qcadoo.view.internal.api.ViewDefinition;
 import com.qcadoo.view.internal.patterns.AbstractComponentPattern;
 import com.qcadoo.view.internal.ribbon.model.InternalRibbon;
 
-public class RibbonUtils {
+public final class RibbonUtils {
 
     private RibbonUtils() {
 

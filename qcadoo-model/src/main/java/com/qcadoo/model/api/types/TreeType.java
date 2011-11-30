@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.9
+ * Version: 1.1.0
  *
  * This file is part of Qcadoo.
  *
@@ -30,8 +30,8 @@ package com.qcadoo.model.api.types;
  */
 public interface TreeType extends FieldType, DataDefinitionHolder, JoinFieldHolder {
 
-    public static final String NODE_NUMBER_FIELD = "nodeNumber";
-    
+    String NODE_NUMBER_FIELD = "nodeNumber";
+
     /**
      * Cascade type.
      */

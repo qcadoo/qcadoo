@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.9
+ * Version: 1.1.0
  *
  * This file is part of Qcadoo.
  *
@@ -22,6 +22,8 @@
  * ***************************************************************************
  */
 package com.qcadoo.view.api;
+
+import java.util.Map;
 
 /**
  * ViewDefinitionState is instance of single view. It is generated using ViewDefinition in request scope.
@@ -55,6 +57,20 @@ public interface ViewDefinitionState extends ComponentState {
      *            true if before this redirection client should save window state
      */
     void redirectTo(String redirectToUrl, boolean openInNewWindow, boolean shouldSerialize);
+
+    /**
+     * Informs client that should redirect to some url and pass custom component parameters.
+     * 
+     * @param redirectToUrl
+     *            target url of redirection
+     * @param openInNewWindow
+     *            true if client should open given url in new window
+     * @param shouldSerialize
+     *            true if before this redirection client should save window state
+     * @param parameters
+     *            map of parameters which be passed between views
+     */
+    void redirectTo(String redirectToUrl, boolean openInNewWindow, boolean shouldSerialize, Map<String, Object> parameters);
 
     /**
      * Informs client that should open new modal window.

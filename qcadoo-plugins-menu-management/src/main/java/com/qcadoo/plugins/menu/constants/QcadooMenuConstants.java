@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.9
+ * Version: 1.1.0
  *
  * This file is part of Qcadoo.
  *
@@ -25,12 +25,12 @@ package com.qcadoo.plugins.menu.constants;
 
 public interface QcadooMenuConstants {
 
-    public static final String PLUGIN_IDENTIFIER = "qcadooMenu";
+    String PLUGIN_IDENTIFIER = "qcadooMenu";
 
     // VIEW
-    public static final String VIEW_MENU_CATEGORIES_LIST = "menuCategoriesList";
+    String VIEW_MENU_CATEGORIES_LIST = "menuCategoriesList";
 
-    public static final String VIEW_MENU_CATEGORY_DETAILS = "menuCategoryDetails";
+    String VIEW_MENU_CATEGORY_DETAILS = "menuCategoryDetails";
 
-    public static final String VIEW_MENU_VIEW_DEFINITION_ITEMS_DETAILS = "menuViewDefinitionItemDetails";
+    String VIEW_MENU_VIEW_DEFINITION_ITEMS_DETAILS = "menuViewDefinitionItemDetails";
 }

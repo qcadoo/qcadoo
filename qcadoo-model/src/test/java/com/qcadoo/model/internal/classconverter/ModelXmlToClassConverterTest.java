@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.9
+ * Version: 1.1.0
  *
  * This file is part of Qcadoo.
  *
@@ -46,7 +46,7 @@ import com.qcadoo.model.internal.utils.ClassNameUtils;
 
 public class ModelXmlToClassConverterTest {
 
-    private final static ModelXmlToClassConverterImpl modelXmlToClassConverter = new ModelXmlToClassConverterImpl();
+    private static final ModelXmlToClassConverterImpl modelXmlToClassConverter = new ModelXmlToClassConverterImpl();
 
     private static Map<String, Class<?>> classes = new HashMap<String, Class<?>>();
 
@@ -122,7 +122,7 @@ public class ModelXmlToClassConverterTest {
     public void shouldDefineManyToManyFields() throws Exception {
         verifyField(propertyDescriptors.get("fieldManyToMany"), Set.class);
     }
-    
+
     @Test
     public void shouldDefineHasManyFields() throws Exception {
         verifyField(propertyDescriptors.get("fieldTree"), Set.class);
@@ -136,7 +136,7 @@ public class ModelXmlToClassConverterTest {
         verifyField(propertyDescriptors.get("createUser"), String.class);
         verifyField(propertyDescriptors.get("updateUser"), String.class);
     }
-    
+
     @Test
     public void shouldHaveToStringMethod() throws Exception {
         // given

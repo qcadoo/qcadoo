@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.9
+ * Version: 1.1.0
  *
  * This file is part of Qcadoo.
  *
@@ -39,7 +39,6 @@ import org.mockito.Mockito;
 import com.google.common.collect.Lists;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.beans.sample.SampleSimpleDatabaseObject;
-import com.qcadoo.model.internal.DefaultEntity;
 
 public class PriorityTest extends DataAccessTest {
 

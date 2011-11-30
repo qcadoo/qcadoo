@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.9
+ * Version: 1.1.0
  *
  * This file is part of Qcadoo.
  *
@@ -45,11 +45,11 @@ public final class PdfPageNumbering extends PdfPageEventHelper {
 
     private final String in;
 
-    private final String company_name;
+    private final String companyName;
 
     private final String address;
 
-    private final String phone_email;
+    private final String phoneEmail;
 
     private final String generatedBy;
 
@@ -69,60 +69,60 @@ public final class PdfPageNumbering extends PdfPageEventHelper {
 
         this.generationDate = new SimpleDateFormat(DateUtils.DATE_TIME_FORMAT).format(new Date());
 
-        if (company != null) {
-            StringBuilder companyData = new StringBuilder();
+        if (company == null) {
+            this.companyName = "";
+            this.address = "";
+            this.phoneEmail = "";
+            return;
+        }
+        StringBuilder companyData = new StringBuilder();
 
-            companyData = companyData.append(company.getStringField("companyFullName"));
-            this.company_name = companyData.toString();
+        companyData = companyData.append(company.getStringField("companyFullName"));
+        this.companyName = companyData.toString();
 
-            if (company.getStringField("street") != null && company.getStringField("house") != null
-                    && company.getStringField("zipCode") != null && company.getStringField("city") != null) {
-                companyData.setLength(0);
-                companyData = companyData.append(company.getStringField("street"));
-                companyData = companyData.append(" ");
-                companyData = companyData.append(company.getStringField("house"));
-                if (company.getStringField("flat") != null) {
-                    companyData = companyData.append("/");
-                    companyData = companyData.append(company.getStringField("flat"));
-                }
-                companyData = companyData.append(", ");
-                companyData = companyData.append(company.getStringField("zipCode"));
-                companyData = companyData.append(" ");
-                companyData = companyData.append(company.getStringField("city"));
-                if (company.getStringField("country") != null) {
-                    companyData = companyData.append(", ");
-                    companyData = companyData.append(company.getStringField("country"));
-                }
-                this.address = companyData.toString();
-            } else {
-                this.address = "";
+        if (company.getStringField("street") == null || company.getStringField("house") == null
+                || company.getStringField("zipCode") == null || company.getStringField("city") == null) {
+            this.address = "";
+        } else {
+            companyData.setLength(0);
+            companyData = companyData.append(company.getStringField("street"));
+            companyData = companyData.append(" ");
+            companyData = companyData.append(company.getStringField("house"));
+            if (company.getStringField("flat") != null) {
+                companyData = companyData.append("/");
+                companyData = companyData.append(company.getStringField("flat"));
             }
+            companyData = companyData.append(", ");
+            companyData = companyData.append(company.getStringField("zipCode"));
+            companyData = companyData.append(" ");
+            companyData = companyData.append(company.getStringField("city"));
+            if (company.getStringField("country") != null) {
+                companyData = companyData.append(", ");
+                companyData = companyData.append(company.getStringField("country"));
+            }
+            this.address = companyData.toString();
+        }
 
-            if (company.getStringField("phone") != null) {
-                companyData.setLength(0);
-                companyData = companyData.append(phone);
-                companyData = companyData.append(": ");
-                companyData = companyData.append(company.getStringField("phone"));
-                if (company.getStringField("email") != null) {
-                    companyData = companyData.append(", ");
-                    companyData = companyData.append("E-mail: ");
-                    companyData = companyData.append(company.getStringField("email"));
-                }
-                this.phone_email = companyData.toString();
+        if (company.getStringField("phone") == null) {
+            if (company.getStringField("email") == null) {
+                this.phoneEmail = "";
             } else {
-                if (company.getStringField("email") != null) {
-                    companyData.setLength(0);
-                    companyData = companyData.append("E-mail: ");
-                    companyData = companyData.append(company.getStringField("email"));
-                    this.phone_email = companyData.toString();
-                } else {
-                    this.phone_email = "";
-                }
+                companyData.setLength(0);
+                companyData = companyData.append("E-mail: ");
+                companyData = companyData.append(company.getStringField("email"));
+                this.phoneEmail = companyData.toString();
             }
         } else {
-            this.company_name = "";
-            this.address = "";
-            this.phone_email = "";
+            companyData.setLength(0);
+            companyData = companyData.append(phone);
+            companyData = companyData.append(": ");
+            companyData = companyData.append(company.getStringField("phone"));
+            if (company.getStringField("email") != null) {
+                companyData = companyData.append(", ");
+                companyData = companyData.append("E-mail: ");
+                companyData = companyData.append(company.getStringField("email"));
+            }
+            this.phoneEmail = companyData.toString();
         }
     }
 
@@ -199,16 +199,16 @@ public final class PdfPageNumbering extends PdfPageEventHelper {
         cb.showText(generationDate);
 
         cb.setTextMatrix(document.left(), textBase);
-        cb.showText(company_name);
+        cb.showText(companyName);
         float companyFooterLine = 10;
         if (address != "") {
             cb.setTextMatrix(document.left(), textBase - companyFooterLine);
             cb.showText(address);
             companyFooterLine += 10;
         }
-        if (phone_email != "") {
+        if (phoneEmail != "") {
             cb.setTextMatrix(document.left(), textBase - companyFooterLine);
-            cb.showText(phone_email);
+            cb.showText(phoneEmail);
         }
         cb.endText();
         cb.addTemplate(total, document.right() - adjust, textBase);

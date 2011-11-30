@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.9
+ * Version: 1.1.0
  *
  * This file is part of Qcadoo.
  *
@@ -104,6 +104,9 @@ QCD.components.elements.FormComponent = function(_element, _mainController) {
 		baseValue = this.getComponentData().value;
 	}
 	this.isComponentChanged = function() {
+		if (!baseValue) {
+			return false;
+		}
 		if (! (baseValue == this.getComponentData().value)) {
 			baseValue
 		}

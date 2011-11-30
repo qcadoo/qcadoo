@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.9
+ * Version: 1.1.0
  *
  * This file is part of Qcadoo.
  *
@@ -104,6 +104,9 @@ public class GanttChartScaleImpl implements GanttChartScale {
                 break;
             case D1:
                 return getWeeksScale();
+
+            default:
+                break;
         }
         scaleObject.put("categories", categoriesArray);
         return scaleObject;

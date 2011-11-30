@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.9
+ * Version: 1.1.0
  *
  * This file is part of Qcadoo.
  *
@@ -50,6 +50,8 @@ QCD.PageController = function() {
 	var serializationObjectToInsert;
 	
 	var isScriptsPerformed = false;
+	
+	var currentMenuItem;
 	
 	this.constructor = function(_viewName, _pluginIdentifier, _hasDataDefinition, _isPopup) {
 		viewName = _viewName;
@@ -204,7 +206,8 @@ QCD.PageController = function() {
 		for (var i=0; i<ids.length; i++) {
 			url += "&id="+ids[i];
 		}
-		window.open(url, url, 'status=0');
+		window.open(url, "_blank", "status=0");
+		
 		if (actionsPerformer) {
 			actionsPerformer.performNext();
 		}
@@ -235,13 +238,14 @@ QCD.PageController = function() {
 				var contextPath = window.location.protocol+"//"+window.location.host;
 				var redirectUrl = response.redirect.url.replace(/\$\{root\}/, contextPath)
 				if (response.redirect.openInNewWindow) {
-					window.open(redirectUrl);
+					var w = window.open(redirectUrl, "_blank", "status=0");
+					w.location.href = redirectUrl;
 				} else if (response.redirect.openInModalWindow) {
 					openModal(redirectUrl, redirectUrl);
 				} else if (isPopup) {
 					window.location = redirectUrl;
 				} else {
-					goToPage(redirectUrl, false, response.redirect.shouldSerializeWindow);
+					goToPage(putShowBackInContext(redirectUrl), false, response.redirect.shouldSerializeWindow);
 					return;
 				}
 			} else {
@@ -258,14 +262,23 @@ QCD.PageController = function() {
 		}, type);
 	}
 	
-	// TODO mina
-	
-//	this.performLookupSelect = function(entityId, entityString, entityCode, actionsPerformer) {
-//		window.opener[lookupComponentName+"_onSelectFunction"].call(null, entityId, entityString, entityCode);
-//		if (actionsPerformer) {
-//			actionsPerformer.performNext();
-//		}
-//	}
+	function putShowBackInContext(url) {
+		if (url.indexOf("context={") == -1) {
+			return appendGetVariableToUrl(url,
+					"context={\"window.showBack\":true}");
+		}
+		return url.replace("context={", "context={\"window.showBack\":true,");
+	}
+
+	function appendGetVariableToUrl(url, variableString) {
+		if (url.indexOf("?") != -1) {
+			url += "&";
+		} else {
+			url += "?";
+		}
+		url += variableString;
+		return url;
+	}
 	
 	this.getActionEvaluator = function() {
 		return actionEvaluator;
@@ -294,6 +307,9 @@ QCD.PageController = function() {
 		for (var i in state.components) {
 			var component = pageComponents[i];
 			component.setState(state.components[i]);
+		}
+		if (state.currentMenuItem) {
+			window.parent.activateMenuPosition(state.currentMenuItem);
 		}
 	}
 	
@@ -415,6 +431,10 @@ QCD.PageController = function() {
 	this.updateMenu = function() {
 		window.parent.updateMenu();
 	}
+
+	this.activateMenuPosition = function(position) {
+		window.parent.activateMenuPosition(position);
+	}
 	
 	this.goToPage = function(url, isPage, serialize) {
 		if (isPage == undefined || isPage == null) {
@@ -457,7 +477,8 @@ QCD.PageController = function() {
 	function getSerializationObject() {
 		return {
 			url: windowUrl,
-			components: getValueData()
+			components: getValueData(),
+			currentMenuItem: currentMenuItem
 		}
 	}
 	
@@ -509,6 +530,11 @@ QCD.PageController = function() {
 	this.getCurrentUserLogin = function() {
 		return window.parent.getCurrentUserLogin();
 	}
+	
+	function getCurrentMenuItem() {
+		return window.parent.getCurrentMenuItem();
+	}
+	this.getCurrentMenuItem = getCurrentMenuItem;
 	
 	function updateSize() {
 		var width = $(window).width();

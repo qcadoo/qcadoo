@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.9
+ * Version: 1.1.0
  *
  * This file is part of Qcadoo.
  *
@@ -30,17 +30,25 @@ import java.util.Map;
 public interface ReportService {
 
     enum ReportType {
-        // HTML("text/html")
-        PDF("application/pdf"), XLS("application/xml"), CSV("text/csv");
+        // HTML("text/html", "html"),
+        PDF("application/pdf", "pdf"), XML("application/xml", "xml"), CSV("text/csv", "csv"), XLS("application/vnd.ms-excel",
+                "xls");
 
         private final String mimeType;
 
-        ReportType(final String mimeType) {
+        private final String extension;
+
+        ReportType(final String mimeType, final String extension) {
             this.mimeType = mimeType;
+            this.extension = extension;
         }
 
         public String getMimeType() {
             return mimeType;
+        }
+
+        public String getExtension() {
+            return extension;
         }
     }
 

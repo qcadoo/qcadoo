@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.9
+ * Version: 1.1.0
  *
  * This file is part of Qcadoo.
  *
@@ -41,8 +41,6 @@ import com.qcadoo.model.api.EntityTree;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.beans.sample.SampleParentDatabaseObject;
 import com.qcadoo.model.beans.sample.SampleSimpleDatabaseObject;
-import com.qcadoo.model.internal.EntityListImpl;
-import com.qcadoo.model.internal.EntityTreeImpl;
 import com.qcadoo.model.internal.types.IntegerType;
 
 public final class DataAccessServiceGetTest extends DataAccessTest {

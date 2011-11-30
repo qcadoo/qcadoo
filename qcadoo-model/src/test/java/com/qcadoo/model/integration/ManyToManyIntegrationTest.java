@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.9
+ * Version: 1.1.0
  *
  * This file is part of Qcadoo.
  *
@@ -52,11 +52,14 @@ public class ManyToManyIntegrationTest extends IntegrationTest {
         Entity firstProduct = productDataDefinition.save(createProduct("asd", "00001"));
         Entity secondProduct = productDataDefinition.save(createProduct("fgh", "00002"));
         Entity thirdProduct = productDataDefinition.save(createProduct("jkl", "00003"));
-        
-        Entity firstPart = partDataDefinition.save(createPart("qwe", firstProduct, Lists.newArrayList(firstProduct, secondProduct)));
-        Entity secondPart = partDataDefinition.save(createPart("rty", secondProduct, Lists.newArrayList(firstProduct, thirdProduct)));
-        Entity thirdPart = partDataDefinition.save(createPart("uiop", thirdProduct, Lists.newArrayList(firstProduct, secondProduct, thirdProduct)));
-        
+
+        Entity firstPart = partDataDefinition.save(createPart("qwe", firstProduct,
+                Lists.newArrayList(firstProduct, secondProduct)));
+        Entity secondPart = partDataDefinition.save(createPart("rty", secondProduct,
+                Lists.newArrayList(firstProduct, thirdProduct)));
+        Entity thirdPart = partDataDefinition.save(createPart("uiop", thirdProduct,
+                Lists.newArrayList(firstProduct, secondProduct, thirdProduct)));
+
         // when
         firstProduct = productDataDefinition.get(firstProduct.getId());
         secondProduct = productDataDefinition.get(secondProduct.getId());
@@ -79,14 +82,15 @@ public class ManyToManyIntegrationTest extends IntegrationTest {
         checkProxyCollection(partDataDefinition, thirdProductParts, Lists.newArrayList(secondPart, thirdPart));
     }
 
-    private void checkProxyCollection(final DataDefinition dataDefinition, final Set<Entity> proxyEntitiesSet,final List<Entity> entitiesList) {
+    private void checkProxyCollection(final DataDefinition dataDefinition, final Set<Entity> proxyEntitiesSet,
+            final List<Entity> entitiesList) {
         Set<Entity> loadedEntities = Sets.newHashSet();
-        for(Entity proxyEntity : proxyEntitiesSet) {
+        for (Entity proxyEntity : proxyEntitiesSet) {
             assertTrue(proxyEntity instanceof ProxyEntity);
             assertTrue(proxyEntity.isValid());
             loadedEntities.add(dataDefinition.get(proxyEntity.getId()));
         }
         assertTrue(loadedEntities.containsAll(entitiesList));
     }
-    
+
 }

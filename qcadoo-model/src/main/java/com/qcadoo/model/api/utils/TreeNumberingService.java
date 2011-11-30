@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.9
+ * Version: 1.1.0
  *
  * This file is part of Qcadoo.
  *
@@ -43,7 +43,7 @@ public interface TreeNumberingService {
      * @param tree
      *            tree to be numbered
      */
-    public void generateTreeNumbers(final EntityTree tree);
+    void generateTreeNumbers(final EntityTree tree);
 
     /**
      * Generate new numbers for all sub-nodes of given tree node
@@ -51,10 +51,18 @@ public interface TreeNumberingService {
      * @param treeNode
      *            tree node to be numbered (with sub-nodes)
      */
-    public void generateTreeNumbers(final EntityTreeNode treeNode);
+    void generateTreeNumbers(final EntityTreeNode treeNode);
 
     /**
-     * Generate new numbers for all nodes of the tree
+     * Generate new numbers for all nodes of the tree and save them
+     * 
+     * @param tree
+     *            tree entity
+     */
+    void generateNumbersAndUpdateTree(final EntityTree tree);
+
+    /**
+     * Generate new numbers for all nodes of the tree and save them
      * 
      * @param dd
      *            node component DataDefinition
@@ -63,13 +71,13 @@ public interface TreeNumberingService {
      * @param belongsToEntityId
      *            id of owning tree entity
      */
-    public void generateNumbersAndUpdateTree(final DataDefinition dd, final String joinFieldName, final Long belongsToEntityId);
+    void generateNumbersAndUpdateTree(final DataDefinition dd, final String joinFieldName, final Long belongsToEntityId);
 
     /**
      * Getter for tree node numbers comparator
      * 
      * @return instance of TreeNodesNumberComparator
      */
-    public Comparator<Entity> getTreeNodesNumberComparator();
+    Comparator<Entity> getTreeNodesNumberComparator();
 
 }

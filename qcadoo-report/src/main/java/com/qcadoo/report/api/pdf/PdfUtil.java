@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.9
+ * Version: 1.1.0
  *
  * This file is part of Qcadoo.
  *
@@ -56,8 +56,6 @@ public final class PdfUtil {
     public static final SimpleDateFormat D_T_F = new SimpleDateFormat(DateUtils.REPORT_DATE_TIME_FORMAT);
 
     private static final Logger LOG = LoggerFactory.getLogger(PdfUtil.class);
-
-    public static final String PDF_EXTENSION = ".pdf";
 
     private static Font dejavuBold19Light;
 

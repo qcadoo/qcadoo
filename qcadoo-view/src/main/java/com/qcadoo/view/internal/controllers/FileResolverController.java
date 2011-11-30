@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.9
+ * Version: 1.1.0
  *
  * This file is part of Qcadoo.
  *
@@ -73,7 +73,7 @@ public class FileResolverController {
 
                 int bytes = IOUtils.copy(input, output);
 
-                response.setHeader("Content-disposition", "attachment; filename=" + fileService.getName(path));
+                response.setHeader("Content-disposition", "inline; filename=" + fileService.getName(path));
                 response.setContentType(fileService.getContentType(path));
                 response.setContentLength(bytes);
 

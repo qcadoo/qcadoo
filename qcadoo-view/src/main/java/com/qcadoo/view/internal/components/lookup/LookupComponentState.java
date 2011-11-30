@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.9
+ * Version: 1.1.0
  *
  * This file is part of Qcadoo.
  *
@@ -203,13 +203,12 @@ public final class LookupComponentState extends FieldComponentState {
 
     @Override
     public void onScopeEntityIdChange(final Long scopeEntityId) {
-        if (belongsToFieldDefinition != null) {
-            belongsToEntityId = scopeEntityId;
-            setEnabled(scopeEntityId != null);
-            requestRender();
-        } else {
+        if (belongsToFieldDefinition == null) {
             throw new IllegalStateException("Lookup doesn't have scopeField, it cannot set scopeEntityId");
         }
+        belongsToEntityId = scopeEntityId;
+        setEnabled(scopeEntityId != null);
+        requestRender();
     }
 
     protected class LookupEventPerformer {
@@ -227,18 +226,19 @@ public final class LookupComponentState extends FieldComponentState {
                     searchCriteriaBuilder.add(SearchRestrictions.like(fieldCode, currentCode, SearchMatchMode.ANYWHERE));
                 }
 
-                if (belongsToFieldDefinition != null && belongsToEntityId != null && belongsToFieldDefinition.getType() instanceof BelongsToType) {
+                if (belongsToFieldDefinition != null && belongsToEntityId != null
+                        && belongsToFieldDefinition.getType() instanceof BelongsToType) {
                     BelongsToType type = (BelongsToType) belongsToFieldDefinition.getType();
-                    searchCriteriaBuilder.add(SearchRestrictions.belongsTo(belongsToFieldDefinition.getName(),
-                            type.getDataDefinition().get(belongsToEntityId)));
+                    searchCriteriaBuilder.add(SearchRestrictions.belongsTo(belongsToFieldDefinition.getName(), type
+                            .getDataDefinition().get(belongsToEntityId)));
                 }
 
                 if (getDataDefinition().isActivable()) {
-                    if (oldSelectedEntityId != null) {
+                    if (oldSelectedEntityId == null) {
+                        searchCriteriaBuilder.add(SearchRestrictions.eq("active", true));
+                    } else {
                         searchCriteriaBuilder.add(SearchRestrictions.or(SearchRestrictions.eq("active", true),
                                 SearchRestrictions.idEq(oldSelectedEntityId)));
-                    } else {
-                        searchCriteriaBuilder.add(SearchRestrictions.eq("active", true));
                     }
                 }
 
@@ -267,26 +267,22 @@ public final class LookupComponentState extends FieldComponentState {
 
         private void refresh() {
             Long entityId = getFieldValueWithoutSearching();
-
-            if (entityId != null) {
-
-                Entity entity = getDataDefinition().get(entityId);
-
-                if (entity != null) {
-                    selectedEntityCode = String.valueOf(entity.getField(fieldCode));
-                    selectedEntityValue = ExpressionUtils.getValue(entity, expression, getLocale());
-                    selectedEntityActive = entity.isActive();
-                } else {
-                    setFieldValueWithoutRefreshing(null);
-                    selectedEntityCode = "";
-                    selectedEntityValue = "";
-                    selectedEntityActive = true;
-                }
-
-            } else {
+            if (entityId == null) {
                 selectedEntityCode = "";
                 selectedEntityValue = "";
                 selectedEntityActive = true;
+                return;
+            }
+            Entity entity = getDataDefinition().get(entityId);
+            if (entity == null) {
+                setFieldValueWithoutRefreshing(null);
+                selectedEntityCode = "";
+                selectedEntityValue = "";
+                selectedEntityActive = true;
+            } else {
+                selectedEntityCode = String.valueOf(entity.getField(fieldCode));
+                selectedEntityValue = ExpressionUtils.getValue(entity, expression, getLocale());
+                selectedEntityActive = entity.isActive();
             }
         }
 

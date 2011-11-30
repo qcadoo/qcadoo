@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.9
+ * Version: 1.1.0
  *
  * This file is part of Qcadoo.
  *
@@ -178,12 +178,21 @@ QCD.components.elements.Calendar = function(_element, _mainController) {
 	}
 	
 	function checkTimeFormat(value){
-		var intIndexOfMatch = value.indexOf( "_" )
-		while (intIndexOfMatch!=-1){
-			value = value.replace( "_", "0" )
-			intIndexOfMatch = value.indexOf( "_" );
+		var fragmentaryValues = [ value.substr(0,2), value.substr(3,2), value.substr(6,2) ];
+		for (var i = 0; i < fragmentaryValues.length; i++) {
+			var value = fragmentaryValues[i]; 
+			if (value.charAt(0) != '_' && value.charAt(1) == '_') {
+				value = "0" + value.charAt(0); 
+			} else {
+				var intIndexOfMatch = value.indexOf( "_" );
+				while (intIndexOfMatch!=-1) {
+					value = value.replace( "_", "0" );
+					intIndexOfMatch = value.indexOf( "_" );
+				}
 			}
-		timeInput.val(value);
+			fragmentaryValues[i] = value;
+		}
+		timeInput.val(fragmentaryValues.join(":"));
 	}
 	
 	this.setComponentData = function(data) {

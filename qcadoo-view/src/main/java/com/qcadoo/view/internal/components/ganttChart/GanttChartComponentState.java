@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.9
+ * Version: 1.1.0
  *
  * This file is part of Qcadoo.
  *
@@ -87,6 +87,7 @@ public class GanttChartComponentState extends AbstractComponentState {
 
     @Override
     protected void initializeContext(final JSONObject json) throws JSONException {
+        super.initializeContext(json);
         this.context = json;
     }
 

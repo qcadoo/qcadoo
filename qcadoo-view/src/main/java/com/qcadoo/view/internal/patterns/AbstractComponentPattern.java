@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.9
+ * Version: 1.1.0
  *
  * This file is part of Qcadoo.
  *
@@ -456,7 +456,7 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
 
     @Override
     public final String getReference() {
-        return reference != null ? reference : getPath();
+        return reference == null ? getPath() : reference;
     }
 
     protected final FieldDefinition getFieldDefinition() {
@@ -518,8 +518,11 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
     private void getDataDefinitionFromFieldDefinition() {
         if (fieldDefinition != null) {
             getDataDefinitionFromFieldDefinition(fieldDefinition);
-        } else if (scopeFieldDefinition != null) {
+            return;
+        }
+        if (scopeFieldDefinition != null) {
             getDataDefinitionFromFieldDefinition(scopeFieldDefinition);
+            return;
         }
     }
 
@@ -542,15 +545,25 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
             final AbstractComponentPattern scopeFieldComponent, final DataDefinition localDataDefinition) {
         if (fieldPath != null && fieldComponent != null) {
             dataDefinition = fieldComponent.getDataDefinition();
-        } else if (scopeFieldPath != null && scopeFieldComponent != null) {
-            dataDefinition = scopeFieldComponent.getDataDefinition();
-        } else if (localDataDefinition != null) {
-            dataDefinition = localDataDefinition;
-        } else if (parent != null) {
-            dataDefinition = ((AbstractComponentPattern) parent).getDataDefinition();
-        } else {
-            dataDefinition = viewDefinition.getDataDefinition();
+            return;
         }
+
+        if (scopeFieldPath != null && scopeFieldComponent != null) {
+            dataDefinition = scopeFieldComponent.getDataDefinition();
+            return;
+        }
+
+        if (localDataDefinition != null) {
+            dataDefinition = localDataDefinition;
+            return;
+        }
+
+        if (parent != null) {
+            dataDefinition = ((AbstractComponentPattern) parent).getDataDefinition();
+            return;
+        }
+
+        dataDefinition = viewDefinition.getDataDefinition();
     }
 
     private void getDataDefinitionFromFieldDefinition(final FieldDefinition fieldDefinition) {

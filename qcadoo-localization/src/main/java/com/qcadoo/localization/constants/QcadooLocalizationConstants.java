@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.9
+ * Version: 1.1.0
  *
  * This file is part of Qcadoo.
  *
@@ -25,5 +25,5 @@ package com.qcadoo.localization.constants;
 
 public interface QcadooLocalizationConstants {
 
-    public static final String PLUGIN_IDENTIFIER = "qcadooLocalization";
+    String PLUGIN_IDENTIFIER = "qcadooLocalization";
 }

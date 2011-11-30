@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.10
+ * Version: 1.1.0
  *
  * This file is part of Qcadoo.
  *
@@ -662,11 +662,12 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 			grid[0].toggleToolbar();
 			currentState.filtersEnabled = false;
 		}
-
+		
 		noRecordsDiv = $("<div>").html(translations.noResults).addClass(
 				"noRecordsBox");
 		noRecordsDiv.hide();
 		$("#" + gridParameters.element).parent().append(noRecordsDiv);
+		
 	}
 
 	this.onPagingParametersChange = function() {
@@ -983,11 +984,9 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 		if (!forceUpdate) {
 			findMatchingPredefiniedFilter();
 		}
-		if (componentEnabled) {
-			mainController.callEvent("refresh", elementPath, function() {
-				unblockGrid();
-			});
-		}
+		mainController.callEvent("refresh", elementPath, function() {
+			unblockGrid();
+		});
 	}
 
 	function findMatchingPredefiniedFilter() {
@@ -1088,7 +1087,7 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 		blockGrid();
 		mainController.callEvent("addExistingEntity", elementPath, function() {
 			unblockGrid();
-		}, selectedEntities, actionsPerformer);
+		}, [selectedEntities], actionsPerformer);
 	}
 	var performAddExistingEntity = this.performAddExistingEntity;
 
@@ -1189,8 +1188,11 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 			for ( var key in currentState.selectedEntities) {
 				selectedEntitiesId.push(key);
 			}
-			
-			linkClicked(selectedEntitiesId);
+			if (selectedEntitiesId.length == 1) {
+				linkClicked(selectedEntitiesId[0]);
+			} else {
+				linkClicked(selectedEntitiesId);
+			}
 			
 			if (actionsPerformer) {
 				actionsPerformer.performNext();

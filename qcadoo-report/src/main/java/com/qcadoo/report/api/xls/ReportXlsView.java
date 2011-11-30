@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.9
+ * Version: 1.1.0
  *
  * This file is part of Qcadoo.
  *
@@ -35,6 +35,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.web.servlet.view.document.AbstractExcelView;
 
 import com.qcadoo.localization.api.TranslationService;
+import com.qcadoo.report.api.ReportService;
 
 public abstract class ReportXlsView extends AbstractExcelView {
 
@@ -45,7 +46,8 @@ public abstract class ReportXlsView extends AbstractExcelView {
     protected void buildExcelDocument(final Map<String, Object> model, final HSSFWorkbook workbook,
             final HttpServletRequest request, final HttpServletResponse response) {
         String fileName = addContent(model, workbook, LocaleContextHolder.getLocale());
-        response.setHeader("Content-disposition", "inline; filename=" + fileName + XlsUtil.XLS_EXTENSION);
+        response.setHeader("Content-disposition",
+                "inline; filename=" + fileName + "." + ReportService.ReportType.XLS.getExtension());
     }
 
     protected abstract String addContent(final Map<String, Object> model, final HSSFWorkbook workbook, final Locale locale);

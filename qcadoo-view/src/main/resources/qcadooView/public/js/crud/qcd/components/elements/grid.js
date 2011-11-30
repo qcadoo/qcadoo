@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.10
+ * Version: 1.1.0
  *
  * This file is part of Qcadoo.
  *
@@ -662,11 +662,12 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 			grid[0].toggleToolbar();
 			currentState.filtersEnabled = false;
 		}
-
+		
 		noRecordsDiv = $("<div>").html(translations.noResults).addClass(
 				"noRecordsBox");
 		noRecordsDiv.hide();
 		$("#" + gridParameters.element).parent().append(noRecordsDiv);
+		
 	}
 
 	this.onPagingParametersChange = function() {
@@ -983,11 +984,9 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 		if (!forceUpdate) {
 			findMatchingPredefiniedFilter();
 		}
-		if (componentEnabled) {
-			mainController.callEvent("refresh", elementPath, function() {
-				unblockGrid();
-			});
-		}
+		mainController.callEvent("refresh", elementPath, function() {
+			unblockGrid();
+		});
 	}
 
 	function findMatchingPredefiniedFilter() {

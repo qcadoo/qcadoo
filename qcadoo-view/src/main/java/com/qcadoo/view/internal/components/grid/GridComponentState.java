@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.9
+ * Version: 1.1.0
  *
  * This file is part of Qcadoo.
  *
@@ -48,10 +48,14 @@ import com.qcadoo.model.api.search.SearchCriteriaBuilder;
 import com.qcadoo.model.api.search.SearchOrders;
 import com.qcadoo.model.api.search.SearchRestrictions;
 import com.qcadoo.model.api.search.SearchResult;
+import com.qcadoo.model.api.types.BelongsToType;
 import com.qcadoo.model.api.types.DataDefinitionHolder;
 import com.qcadoo.model.api.types.EnumeratedType;
+import com.qcadoo.model.api.types.FieldType;
 import com.qcadoo.model.api.types.JoinFieldHolder;
 import com.qcadoo.model.api.types.ManyToManyType;
+import com.qcadoo.model.api.validators.ErrorMessage;
+import com.qcadoo.model.internal.ProxyEntity;
 import com.qcadoo.view.api.components.GridComponent;
 import com.qcadoo.view.internal.states.AbstractComponentState;
 
@@ -161,17 +165,24 @@ public final class GridComponentState extends AbstractComponentState implements 
     @Override
     @SuppressWarnings("unchecked")
     protected void initializeContext(final JSONObject json) throws JSONException {
+        super.initializeContext(json);
+
         Iterator<String> iterator = json.keys();
         while (iterator.hasNext()) {
             String field = iterator.next();
             if (JSON_BELONGS_TO_ENTITY_ID.equals(field)) {
                 onScopeEntityIdChange(json.getLong(field));
+            } else if (JSON_COMPONENT_OPTIONS.equals(field)) {
+                JSONObject jsonOptions = json.getJSONObject(JSON_COMPONENT_OPTIONS);
+                passFiltersFromJson(jsonOptions);
+                passSelectedEntityIdFromJson(jsonOptions);
+                passSelectedEntitiesFromJson(jsonOptions);
+                passEntitiesFromJson(jsonOptions);
             }
         }
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     protected void initializeContent(final JSONObject json) throws JSONException {
         if (json.has(JSON_SELECTED_ENTITY_ID) && !json.isNull(JSON_SELECTED_ENTITY_ID)) {
             selectedEntityId = json.getLong(JSON_SELECTED_ENTITY_ID);
@@ -182,16 +193,14 @@ public final class GridComponentState extends AbstractComponentState implements 
         if (json.has(JSON_SELECTED_ENTITIES) && !json.isNull(JSON_SELECTED_ENTITIES)) {
             JSONObject selectedEntitiesObj = json.getJSONObject(JSON_SELECTED_ENTITIES);
             JSONArray selectedEntitiesIds = selectedEntitiesObj.names();
-            if (selectedEntitiesIds != null) {
-                for (int i = 0; i < selectedEntitiesIds.length(); i++) {
-                    String key = selectedEntitiesIds.getString(i);
-                    boolean isSelected = false;
-                    if (selectedEntitiesObj.has(key) && !selectedEntitiesObj.isNull(key)) {
-                        isSelected = selectedEntitiesObj.getBoolean(key);
-                    }
-                    if (isSelected) {
-                        selectedEntities.add(Long.parseLong(key));
-                    }
+            for (int i = 0; selectedEntitiesIds != null && i < selectedEntitiesIds.length(); i++) {
+                String key = selectedEntitiesIds.getString(i);
+                boolean isSelected = false;
+                if (selectedEntitiesObj.has(key) && !selectedEntitiesObj.isNull(key)) {
+                    isSelected = selectedEntitiesObj.getBoolean(key);
+                }
+                if (isSelected) {
+                    selectedEntities.add(Long.parseLong(key));
                 }
             }
         }
@@ -204,9 +213,6 @@ public final class GridComponentState extends AbstractComponentState implements 
         if (json.has(JSON_MAX_ENTITIES) && !json.isNull(JSON_MAX_ENTITIES)) {
             maxResults = json.getInt(JSON_MAX_ENTITIES);
         }
-        if (json.has(JSON_FILTERS_ENABLED) && !json.isNull(JSON_FILTERS_ENABLED)) {
-            filtersEnabled = json.getBoolean(JSON_FILTERS_ENABLED);
-        }
         if (json.has(JSON_ONLY_ACTIVE) && !json.isNull(JSON_ONLY_ACTIVE) && activable) {
             onlyActive = json.getBoolean(JSON_ONLY_ACTIVE);
         }
@@ -217,7 +223,23 @@ public final class GridComponentState extends AbstractComponentState implements 
                 orderDirection = orderJson.getString(JSON_ORDER_DIRECTION);
             }
         }
+        if (belongsToFieldDefinition != null && belongsToEntityId == null) {
+            setEnabled(false);
+        }
+
+        passFiltersFromJson(json);
+
+        requestRender();
+        requestUpdateState();
+    }
+
+    @SuppressWarnings("unchecked")
+    private void passFiltersFromJson(final JSONObject json) throws JSONException {
+        if (json.has(JSON_FILTERS_ENABLED) && !json.isNull(JSON_FILTERS_ENABLED)) {
+            filtersEnabled = json.getBoolean(JSON_FILTERS_ENABLED);
+        }
         if (json.has(JSON_FILTERS) && !json.isNull(JSON_FILTERS)) {
+            filtersEnabled = true;
             JSONObject filtersJson = json.getJSONObject(JSON_FILTERS);
             Iterator<String> filtersKeys = filtersJson.keys();
             while (filtersKeys.hasNext()) {
@@ -225,13 +247,34 @@ public final class GridComponentState extends AbstractComponentState implements 
                 filters.put(column, filtersJson.getString(column).trim());
             }
         }
+    }
 
-        if (belongsToFieldDefinition != null && belongsToEntityId == null) {
-            setEnabled(false);
+    private void passSelectedEntitiesFromJson(final JSONObject json) throws JSONException {
+        if (json.has(JSON_SELECTED_ENTITIES) && !json.isNull(JSON_SELECTED_ENTITIES)) {
+            selectedEntities = Sets.newHashSet();
+            JSONArray entitiesToSelect = json.getJSONArray(JSON_SELECTED_ENTITIES);
+            for (int i = 0; i < entitiesToSelect.length(); i++) {
+                selectedEntities.add(Long.valueOf(entitiesToSelect.get(i).toString()));
+            }
         }
+    }
 
-        requestRender();
-        requestUpdateState();
+    private void passSelectedEntityIdFromJson(final JSONObject json) throws JSONException {
+        if (json.has(JSON_SELECTED_ENTITY_ID) && !json.isNull(JSON_SELECTED_ENTITY_ID)) {
+            selectedEntityId = json.getLong(JSON_SELECTED_ENTITY_ID);
+        }
+    }
+
+    private void passEntitiesFromJson(final JSONObject json) throws JSONException {
+        if (json.has(JSON_ENTITIES) && !json.isNull(JSON_ENTITIES)) {
+            entities = Lists.newArrayList();
+            JSONArray entities = json.getJSONArray(JSON_ENTITIES);
+            Long entityId = null;
+            for (int i = 0; i < entities.length(); i++) {
+                entityId = Long.valueOf(entities.get(i).toString());
+                this.entities.add(getDataDefinition().get(entityId));
+            }
+        }
     }
 
     @Override
@@ -241,17 +284,17 @@ public final class GridComponentState extends AbstractComponentState implements 
 
     @Override
     public void onScopeEntityIdChange(final Long scopeEntityId) {
-        if (belongsToFieldDefinition != null) {
-            if (belongsToEntityId != null && !belongsToEntityId.equals(scopeEntityId)) {
-                setSelectedEntityId(null);
-                selectedEntities = new HashSet<Long>();
-                multiselectMode = false;
-            }
-            belongsToEntityId = scopeEntityId;
-            setEnabled(scopeEntityId != null);
-        } else {
+        if (belongsToFieldDefinition == null) {
             throw new IllegalStateException("Grid doesn't have scopeField, it cannot set scopeEntityId");
         }
+
+        if (belongsToEntityId != null && !belongsToEntityId.equals(scopeEntityId)) {
+            setSelectedEntityId(null);
+            selectedEntities = new HashSet<Long>();
+            multiselectMode = false;
+        }
+        belongsToEntityId = scopeEntityId;
+        setEnabled(scopeEntityId != null);
     }
 
     @Override
@@ -433,20 +476,49 @@ public final class GridComponentState extends AbstractComponentState implements 
 
             existingEntities.addAll(newlyAddedEntities);
 
-            Entity gridOwnerEntity = scopeFieldDataDefinition.get(belongsToEntityId);
-            String ownerSideJoinFieldName = ((JoinFieldHolder) belongsToFieldDefinition.getType()).getJoinFieldName();
-            gridOwnerEntity.setField(ownerSideJoinFieldName, existingEntities);
-            gridOwnerEntity.getDataDefinition().save(gridOwnerEntity);
+            FieldType belongsToFieldType = belongsToFieldDefinition.getType();
+            if (belongsToFieldType instanceof JoinFieldHolder) {
+                Entity gridOwnerEntity = scopeFieldDataDefinition.get(belongsToEntityId);
+                gridOwnerEntity.setField(((JoinFieldHolder) belongsToFieldType).getJoinFieldName(), existingEntities);
+                gridOwnerEntity.getDataDefinition().save(gridOwnerEntity);
+                copyFieldValidationMessages(gridOwnerEntity);
+            } else if (belongsToFieldType instanceof BelongsToType) {
+                for (Entity entity : newlyAddedEntities) {
+                    entity.setField(belongsToFieldDefinition.getName(), belongsToEntityId);
+                    entity.getDataDefinition().save(entity);
+                    copyFieldValidationMessages(entity);
+                }
+            } else {
+                throw new IllegalArgumentException("Unsupported relation type - " + belongsToFieldDefinition.getType().toString());
+            }
+
             reload();
         }
 
         public void removeSelectedEntity(final String[] args) {
             if (weakRelation) {
                 Entity entity = null;
-                for (Long selectedId : selectedEntities.toArray(new Long[selectedEntities.size()])) {
-                    entity = getDataDefinition().get(selectedId);
-                    entity.setField(belongsToFieldDefinition.getName(), null);
-                    getDataDefinition().save(entity);
+                boolean isManyToManyRelationType = belongsToFieldDefinition.getType() instanceof JoinFieldHolder;
+                Long[] selectedEntitiesIds = selectedEntities.toArray(new Long[selectedEntities.size()]);
+
+                if (isManyToManyRelationType) {
+                    String gridFieldName = ((JoinFieldHolder) belongsToFieldDefinition.getType()).getJoinFieldName();
+                    Entity gridOwnerEntity = scopeFieldDataDefinition.get(belongsToEntityId);
+
+                    List<Entity> relatedEntities = gridOwnerEntity.getManyToManyField(gridFieldName);
+                    for (Long selectedId : selectedEntitiesIds) {
+                        relatedEntities.remove(new ProxyEntity(getDataDefinition(), selectedId));
+                    }
+                    gridOwnerEntity.setField(gridFieldName, relatedEntities);
+                    scopeFieldDataDefinition.save(gridOwnerEntity);
+                    copyFieldValidationMessages(gridOwnerEntity);
+                } else {
+                    for (Long selectedId : selectedEntitiesIds) {
+                        entity = getDataDefinition().get(selectedId);
+                        entity.setField(belongsToFieldDefinition.getName(), null);
+                        getDataDefinition().save(entity);
+                        copyFieldValidationMessages(entity);
+                    }
                 }
             } else {
                 getDataDefinition().delete(selectedEntities.toArray(new Long[selectedEntities.size()]));
@@ -679,5 +751,16 @@ public final class GridComponentState extends AbstractComponentState implements 
             }
         }
         return values;
+    }
+
+    private void copyFieldValidationMessages(final Entity messagesSource) {
+        for (ErrorMessage message : messagesSource.getErrors().values()) {
+            addValidationMessage(message);
+        }
+    }
+
+    private void addValidationMessage(final ErrorMessage message) {
+        String translatedMessage = getTranslationService().translate(message.getMessage(), getLocale(), message.getVars());
+        addMessage(translatedMessage, MessageType.FAILURE);
     }
 }

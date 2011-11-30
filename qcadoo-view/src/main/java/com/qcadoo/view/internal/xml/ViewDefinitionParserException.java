@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.9
+ * Version: 1.1.0
  *
  * This file is part of Qcadoo.
  *
@@ -23,7 +23,7 @@
  */
 package com.qcadoo.view.internal.xml;
 
-public class ViewDefinitionParserException extends RuntimeException {
+public final class ViewDefinitionParserException extends RuntimeException {
 
     private static final long serialVersionUID = -7437167697213640121L;
 

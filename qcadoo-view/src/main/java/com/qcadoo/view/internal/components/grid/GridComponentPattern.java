@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.9
+ * Version: 1.1.0
  *
  * This file is part of Qcadoo.
  *
@@ -85,7 +85,7 @@ public final class GridComponentPattern extends AbstractComponentPattern {
     private boolean multiselect = false;
 
     private boolean hasPredefinedFilters = false;
-    
+
     private boolean weakRelation = false;
 
     private final List<PredefinedFilter> predefinedFilters = new LinkedList<PredefinedFilter>();
@@ -112,7 +112,8 @@ public final class GridComponentPattern extends AbstractComponentPattern {
         if (getScopeFieldDefinition() != null) {
             scopeFieldDataDefinition = getScopeFieldDefinition().getDataDefinition();
         }
-        return new GridComponentState(belongsToFieldDefinition, columns, defaultOrderColumn, defaultOrderDirection, activable, weakRelation, scopeFieldDataDefinition);
+        return new GridComponentState(belongsToFieldDefinition, columns, defaultOrderColumn, defaultOrderDirection, activable,
+                weakRelation, scopeFieldDataDefinition);
     }
 
     @Override
@@ -136,7 +137,7 @@ public final class GridComponentPattern extends AbstractComponentPattern {
         parseOptions();
 
         activable = getDataDefinition().isActivable();
-        
+
         if (creatable && weakRelation && getScopeFieldDefinition() == null) {
             throwIllegalStateException("Missing scope field for grid");
         }
@@ -144,8 +145,8 @@ public final class GridComponentPattern extends AbstractComponentPattern {
         if (correspondingView != null && correspondingComponent == null) {
             throwIllegalStateException("Missing correspondingComponent for grid");
         }
-        
-        if(weakRelation && creatable && correspondingLookup == null) {
+
+        if (weakRelation && creatable && correspondingLookup == null) {
             throwIllegalStateException("Missing correspondingLookup for grid");
         }
     }

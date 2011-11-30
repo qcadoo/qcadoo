@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.9
+ * Version: 1.1.0
  *
  * This file is part of Qcadoo.
  *
@@ -43,6 +43,7 @@ import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.security.api.SecurityRole;
 import com.qcadoo.view.api.ViewDefinitionState;
+import com.qcadoo.view.api.ribbon.RibbonActionItem.Type;
 import com.qcadoo.view.internal.HookDefinition;
 import com.qcadoo.view.internal.api.ComponentPattern;
 import com.qcadoo.view.internal.api.ContainerPattern;
@@ -50,6 +51,13 @@ import com.qcadoo.view.internal.api.InternalViewDefinition;
 import com.qcadoo.view.internal.api.InternalViewDefinitionService;
 import com.qcadoo.view.internal.components.window.WindowComponentPattern;
 import com.qcadoo.view.internal.patterns.AbstractComponentPattern;
+import com.qcadoo.view.internal.ribbon.model.InternalRibbon;
+import com.qcadoo.view.internal.ribbon.model.InternalRibbonActionItem;
+import com.qcadoo.view.internal.ribbon.model.InternalRibbonGroup;
+import com.qcadoo.view.internal.ribbon.model.RibbonActionItemImpl;
+import com.qcadoo.view.internal.ribbon.model.RibbonGroupImpl;
+import com.qcadoo.view.internal.ribbon.model.RibbonGroupsPack;
+import com.qcadoo.view.internal.ribbon.model.SingleRibbonGroupPack;
 
 public final class ViewDefinitionImpl implements InternalViewDefinition {
 
@@ -82,6 +90,10 @@ public final class ViewDefinitionImpl implements InternalViewDefinition {
     private final Map<String, ComponentPattern> registry = new LinkedHashMap<String, ComponentPattern>();
 
     private final TranslationService translationService;
+
+    private boolean alreadyHasNavigation;
+
+    private RibbonGroupsPack ribbonNavigationGroupPack;
 
     public ViewDefinitionImpl(final String name, final String pluginIdentifier, final DataDefinition dataDefinition,
             final boolean menuAccessible, final TranslationService translationService) {
@@ -128,6 +140,8 @@ public final class ViewDefinitionImpl implements InternalViewDefinition {
 
             lastNotInitialized = notInitialized;
         }
+
+        initAdditionalNavigation();
     }
 
     @Override
@@ -136,6 +150,8 @@ public final class ViewDefinitionImpl implements InternalViewDefinition {
 
         Map<String, Object> model = new HashMap<String, Object>();
         Map<String, Object> childrenModels = new HashMap<String, Object>();
+
+        toggleAdditionalNavigationGroup(getBooleanFromJson(jsonObject, "window.showBack"));
 
         for (ComponentPattern componentPattern : patterns.values()) {
             childrenModels.put(componentPattern.getName(), componentPattern.prepareView(locale));
@@ -164,6 +180,55 @@ public final class ViewDefinitionImpl implements InternalViewDefinition {
         }
 
         return model;
+    }
+
+    private boolean getBooleanFromJson(final JSONObject jsonObject, final String fieldName) {
+        try {
+            return jsonObject.has(fieldName) && !jsonObject.isNull(fieldName) && jsonObject.getBoolean(fieldName);
+        } catch (JSONException e) {
+            throw new IllegalStateException(e.getMessage(), e);
+        }
+    }
+
+    private InternalRibbon getRibbon() {
+        ComponentPattern window = patterns.get("window");
+        if (window instanceof WindowComponentPattern) {
+            return ((WindowComponentPattern) window).getRibbon();
+        }
+        return null;
+    }
+
+    private void initAdditionalNavigation() {
+        InternalRibbon ribbon = getRibbon();
+        if (ribbon == null || ribbon.getGroupByName("navigation") != null) {
+            alreadyHasNavigation = ribbon != null;
+            return;
+        }
+        InternalRibbonActionItem backButton = new RibbonActionItemImpl();
+        backButton.setName("back");
+        backButton.setIcon("backIcon24.png");
+        backButton.setAction("#{window}.performBack");
+        backButton.setEnabled(true);
+        backButton.setType(Type.BIG_BUTTON);
+
+        InternalRibbonGroup additionalNavigationGroup = new RibbonGroupImpl("navigation");
+        additionalNavigationGroup.addItem(backButton);
+
+        ribbonNavigationGroupPack = new SingleRibbonGroupPack(additionalNavigationGroup);
+    }
+
+    private void toggleAdditionalNavigationGroup(final boolean showBack) {
+        InternalRibbon ribbon = getRibbon();
+        if (ribbon == null || alreadyHasNavigation) {
+            return;
+        }
+        if (!showBack) {
+            ribbon.removeGroupsPack(ribbonNavigationGroupPack);
+            return;
+        }
+        if (ribbon.getGroupByName("navigation") == null) {
+            ribbon.addGroupPackAsFirst(ribbonNavigationGroupPack);
+        }
     }
 
     @Override

@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.9
+ * Version: 1.1.0
  *
  * This file is part of Qcadoo.
  *
@@ -25,17 +25,17 @@ package com.qcadoo.plugins.plugins.constants;
 
 public interface QcadooPluginsConstants {
 
-    public static final String PLUGIN_IDENTIFIER = "qcadooPlugins";
+    String PLUGIN_IDENTIFIER = "qcadooPlugins";
 
     // VIEW
-    public static final String VIEW_PLUGIN_DETAILS = "pluginDetails";
+    String VIEW_PLUGIN_DETAILS = "pluginDetails";
 
-    public static final String VIEW_PLUGIN_DOWNLOAD = "pluginDownload";
+    String VIEW_PLUGIN_DOWNLOAD = "pluginDownload";
 
-    public static final String VIEW_PLUGIN_INFO = "pluginInfo";
+    String VIEW_PLUGIN_INFO = "pluginInfo";
 
-    public static final String VIEW_PLUGINS_LIST = "pluginsList";
+    String VIEW_PLUGINS_LIST = "pluginsList";
 
-    public static final String VIEW_RESTART_VIEW = "restartView";
+    String VIEW_RESTART_VIEW = "restartView";
 
 }

@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.9
+ * Version: 1.1.0
  *
  * This file is part of Qcadoo.
  *
@@ -34,6 +34,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.collect.Lists;
 import com.qcadoo.model.api.DataDefinition;
@@ -46,46 +47,55 @@ import com.qcadoo.model.internal.api.PriorityService;
 
 @Service
 public class TreeNumberingServiceImpl implements TreeNumberingService {
-    
+
     @Autowired
     private PriorityService priorityService;
-    
+
+    private static final String ROOT_NODE_NUMBER = "1";
+
     @Override
-    public void generateTreeNumbers(final EntityTree tree) {
-        if(tree.getRoot() == null) {
+    public final void generateTreeNumbers(final EntityTree tree) {
+        if (tree.getRoot() == null) {
             return;
         }
-        assignNumberToTreeNode(tree.getRoot(), Lists.newLinkedList(Lists.newArrayList("1")));
+        generateTreeNumbers(tree.getRoot());
     }
-    
+
     @Override
-    public void generateTreeNumbers(final EntityTreeNode treeNode) {
-        assignNumberToTreeNode(treeNode, Lists.newLinkedList(Lists.newArrayList("1")));
+    public final void generateTreeNumbers(final EntityTreeNode treeNode) {
+        assignNumberToTreeNode(treeNode, Lists.newLinkedList(Lists.newArrayList(ROOT_NODE_NUMBER)));
     }
-    
+
     @Override
-    public void generateNumbersAndUpdateTree(final DataDefinition dd, final String joinFieldName, final Long belongsToEntityId) {
-        EntityTree tree = new EntityTreeImpl(dd, joinFieldName, belongsToEntityId);
-        if (tree.getRoot() == null || tree.getRoot().getField(TreeType.NODE_NUMBER_FIELD) != null) {
+    @Transactional
+    public final void generateNumbersAndUpdateTree(final EntityTree tree) {
+        if (tree.getRoot() == null) {
             return;
         }
         generateTreeNumbers(tree);
         for (Entity treeNode : tree) {
-            dd.save(treeNode);
+            treeNode.getDataDefinition().save(treeNode);
         }
     }
 
     @Override
-    public Comparator<Entity> getTreeNodesNumberComparator() {
+    public final void generateNumbersAndUpdateTree(final DataDefinition dd, final String joinFieldName,
+            final Long belongsToEntityId) {
+        EntityTree tree = new EntityTreeImpl(dd, joinFieldName, belongsToEntityId);
+        generateNumbersAndUpdateTree(tree);
+    }
+
+    @Override
+    public final Comparator<Entity> getTreeNodesNumberComparator() {
         return new TreeNodesNumberComparator();
     }
-    
-    void assignNumberToTreeNode(final EntityTreeNode treeNode, final Deque<String> chain) {
-        treeNode.setField(TreeType.NODE_NUMBER_FIELD, collectionToString(chain));
-        
+
+    final void assignNumberToTreeNode(final EntityTreeNode treeNode, final Deque<String> chain) {
+        treeNode.setField(TreeType.NODE_NUMBER_FIELD, convertCollectionToString(chain));
+
         List<EntityTreeNode> childrens = newLinkedList(treeNode.getChildren());
         Collections.sort(childrens, priorityService.getEntityPriorityComparator());
-        
+
         int charNumber = 0;
         for (EntityTreeNode child : childrens) {
             Deque<String> newBranch = Lists.newLinkedList(chain);
@@ -96,28 +106,38 @@ public class TreeNumberingServiceImpl implements TreeNumberingService {
             }
             assignNumberToTreeNode(child, newBranch);
         }
-        
+
     }
 
     private void incrementLastChainNumber(final Deque<String> chain) {
         Integer nextNumber = Integer.valueOf(chain.pollLast()) + 1;
         chain.addLast(nextNumber.toString());
     }
-    
+
     private void incrementLastChainCharacter(final Deque<String> chain, final int charNumber) {
         chain.addLast(String.valueOf((char) (65 + charNumber)));
         chain.addLast("1");
     }
-    
-    private String collectionToString(final Collection<String> collection) {
+
+    private String convertCollectionToString(final Collection<String> collection) {
         return StringUtils.join(collection, '.') + '.';
     }
-    
+
     private final class TreeNodesNumberComparator implements Comparator<Entity> {
+
         @Override
         public int compare(final Entity e1, final Entity e2) {
             String n1 = e1.getStringField(TreeType.NODE_NUMBER_FIELD);
             String n2 = e2.getStringField(TreeType.NODE_NUMBER_FIELD);
+            if (n1 == null) {
+                if (n2 == null) {
+                    return 0;
+                }
+                return 1;
+            }
+            if (n2 == null) {
+                return -1;
+            }
             return n1.compareTo(n2);
         }
     }

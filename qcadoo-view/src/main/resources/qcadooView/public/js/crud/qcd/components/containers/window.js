@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.9
+ * Version: 1.1.0
  *
  * This file is part of Qcadoo.
  *
@@ -132,6 +132,7 @@ QCD.components.containers.Window = function(_element, _mainController) {
 		if (_this.options.referenceName) {
 			mainController.registerReferenceName(_this.options.referenceName, _this);
 		}
+		
 	}
 	
 	function showTab(tabName) {
@@ -179,6 +180,9 @@ QCD.components.containers.Window = function(_element, _mainController) {
 		}
 		if (value.ribbon) {
 			ribbon.updateRibbonState(value.ribbon);
+		}
+		if (value.activeMenu) {
+			mainController.activateMenuPosition(value.activeMenu);
 		}
 	}
 	

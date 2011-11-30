@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.9
+ * Version: 1.1.0
  *
  * This file is part of Qcadoo.
  *
@@ -29,12 +29,12 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.springframework.core.io.InputStreamResource;
-
-import com.google.common.base.Preconditions;
 import org.apache.commons.io.FilenameUtils;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.util.ResourceUtils;
+
+import com.google.common.base.Preconditions;
 
 public class JarEntryResource extends InputStreamResource {
 
@@ -49,18 +49,21 @@ public class JarEntryResource extends InputStreamResource {
     private String jarFileName;
 
     /**
-     * @param resource resource in classpath
+     * @param resource
+     *            resource in classpath
      * @throws MalformedURLException
      */
-    public JarEntryResource(Resource resource) throws MalformedURLException, IOException {
+    public JarEntryResource(Resource resource) throws IOException {
         super(resource.getInputStream(), "Jar entry [" + resource + "]");
         this.url = ResourceUtils.extractJarFileURL(resource.getURL());
         this.jarFileName = FilenameUtils.getName(url.toString());
     }
 
     /**
-     * @param file jar file
-     * @param inputStream entry in jar
+     * @param file
+     *            jar file
+     * @param inputStream
+     *            entry in jar
      * @throws MalformedURLException
      */
     public JarEntryResource(final File file, final InputStream inputStream) throws MalformedURLException {
@@ -72,7 +75,7 @@ public class JarEntryResource extends InputStreamResource {
 
     /**
      * Returns the name of the jar.
-     *
+     * 
      * This is just the last name in the pathname's name sequence.
      */
     public String getJarFileName() {

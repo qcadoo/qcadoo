@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.9
+ * Version: 1.1.0
  *
  * This file is part of Qcadoo.
  *
@@ -46,6 +46,14 @@ public interface InternalRibbon extends Ribbon {
     void addGroupsPack(RibbonGroupsPack groupPack);
 
     /**
+     * Add group to this ribbon as first
+     * 
+     * @param group
+     *            group to add
+     */
+    void addGroupPackAsFirst(RibbonGroupsPack groupPack);
+
+    /**
      * Removes group from this ribbon
      * 
      * @param group
@@ -73,4 +81,5 @@ public interface InternalRibbon extends Ribbon {
      * @return ribon with only updated fields
      */
     InternalRibbon getUpdate();
+
 }

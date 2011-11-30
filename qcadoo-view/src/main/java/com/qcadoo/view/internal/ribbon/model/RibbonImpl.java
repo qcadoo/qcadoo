@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.9
+ * Version: 1.1.0
  *
  * This file is part of Qcadoo.
  *
@@ -68,6 +68,11 @@ public class RibbonImpl implements InternalRibbon {
     @Override
     public void addGroupsPack(final RibbonGroupsPack groupPack) {
         groupPacks.add(groupPack);
+    }
+
+    @Override
+    public void addGroupPackAsFirst(final RibbonGroupsPack groupPack) {
+        groupPacks.add(0, groupPack);
     }
 
     @Override

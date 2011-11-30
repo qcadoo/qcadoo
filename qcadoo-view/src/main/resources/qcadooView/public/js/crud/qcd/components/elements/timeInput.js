@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.9
+ * Version: 1.1.0
  *
  * This file is part of Qcadoo.
  *
@@ -41,6 +41,29 @@ QCD.components.elements.TimeInput = function(_element, _mainController) {
 		input.change(function() {
 			inputDataChanged();
 		});
+
+		input.focus(function() {
+		}).blur(function() {
+			checkTimeFormat(input.val());
+		});
+	}
+
+	function checkTimeFormat(value){
+		var fragmentaryValues = [ value.substr(0,2), value.substr(3,2), value.substr(6,2) ];
+		for (var i = 0; i < fragmentaryValues.length; i++) {
+			var value = fragmentaryValues[i]; 
+			if (value.charAt(0) != '_' && value.charAt(1) == '_') {
+				value = "0" + value.charAt(0); 
+			} else {
+				var intIndexOfMatch = value.indexOf( "_" );
+				while (intIndexOfMatch!=-1) {
+					value = value.replace( "_", "0" );
+					intIndexOfMatch = value.indexOf( "_" );
+				}
+			}
+			fragmentaryValues[i] = value;
+		}
+		timeInput.val(fragmentaryValues.join(":"));
 	}
 	
 	function inputDataChanged() {
@@ -78,7 +101,7 @@ QCD.components.elements.TimeInput = function(_element, _mainController) {
 	}
 	
 	function convertToString(value) {
-		value = value.replace(/\s/g, "").split(",")[0];
+		value = value.match(/\d/g).join("");
 		
 		h = Math.floor(value / 3600) + "";
 		while(h.length < noHours) {

@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.9
+ * Version: 1.1.0
  *
  * This file is part of Qcadoo.
  *
@@ -73,8 +73,8 @@ public interface InternalViewDefinition extends ViewDefinition {
 
     ComponentPattern getComponentByReference(String reference);
 
-    abstract void addComponentPattern(final ComponentPattern componentPattern);
+    void addComponentPattern(final ComponentPattern componentPattern);
 
-    abstract void initialize();
+    void initialize();
 
 }

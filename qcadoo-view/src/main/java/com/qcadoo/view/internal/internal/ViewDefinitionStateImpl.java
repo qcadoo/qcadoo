@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.9
+ * Version: 1.1.0
  *
  * This file is part of Qcadoo.
  *
@@ -149,6 +149,21 @@ public final class ViewDefinitionStateImpl extends AbstractContainerState implem
         this.openInNewWindow = openInNewWindow;
         openInModalWindow = false;
         this.shouldSerializeWindow = shouldSerialize;
+    }
+
+    @Override
+    public void redirectTo(final String redirectToUrl, final boolean openInNewWindow, final boolean shouldSerialize,
+            final Map<String, Object> parameters) {
+        JSONObject context = new JSONObject(parameters);
+        StringBuilder url = new StringBuilder(redirectToUrl);
+        if (redirectToUrl.contains("?")) {
+            url.append("&");
+        } else {
+            url.append("?");
+        }
+        url.append("context=");
+        url.append(context.toString());
+        redirectTo(url.toString(), openInNewWindow, shouldSerialize);
     }
 
     @Override

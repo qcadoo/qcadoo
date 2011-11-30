@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.9
+ * Version: 1.1.0
  *
  * This file is part of Qcadoo.
  *
@@ -466,7 +466,7 @@ QCD.components.Ribbon = function(_model, _elementName, _mainController, _transla
 				var item = group.items[i];
 				var itemObject = createJsObject(item);
 				item.previousEnabled = itemObject.isEnabled();
-				item.previousMessage = itemObject.tooltipMessageElementContent.html();
+				item.previousMessage = itemObject.tooltipMessageElementContent ? itemObject.tooltipMessageElementContent.html() : null;
 				itemObject.disable();
 			}
 		}

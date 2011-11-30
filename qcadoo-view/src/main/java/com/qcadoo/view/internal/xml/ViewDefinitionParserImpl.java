@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.9
+ * Version: 1.1.0
  *
  * This file is part of Qcadoo.
  *
@@ -170,8 +170,8 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
         DataDefinition dataDefinition = null;
 
         if (getStringAttribute(viewNode, "modelName") != null) {
-            String modelPluginIdentifier = getStringAttribute(viewNode, "modelPlugin") != null ? getStringAttribute(viewNode,
-                    "modelPlugin") : pluginIdentifier;
+            String modelPluginIdentifier = getStringAttribute(viewNode, "modelPlugin") == null ? pluginIdentifier
+                    : getStringAttribute(viewNode, "modelPlugin");
             dataDefinition = dataDefinitionService.get(modelPluginIdentifier, getStringAttribute(viewNode, "modelName"));
         }
 
@@ -210,21 +210,19 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
     @Override
     public Boolean getBooleanAttribute(final Node node, final String name, final boolean defaultValue) {
         Node attribute = getAttribute(node, name);
-        if (attribute != null) {
-            return Boolean.valueOf(attribute.getNodeValue());
-        } else {
+        if (attribute == null) {
             return defaultValue;
         }
+        return Boolean.valueOf(attribute.getNodeValue());
     }
 
     @Override
     public String getStringAttribute(final Node node, final String name) {
         Node attribute = getAttribute(node, name);
-        if (attribute != null) {
-            return attribute.getNodeValue();
-        } else {
+        if (attribute == null) {
             return null;
         }
+        return attribute.getNodeValue();
     }
 
     @Override
@@ -256,11 +254,10 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
     }
 
     private Node getAttribute(final Node node, final String name) {
-        if (node != null && node.getAttributes() != null) {
-            return node.getAttributes().getNamedItem(name);
-        } else {
+        if (node == null || node.getAttributes() == null) {
             return null;
         }
+        return node.getAttributes().getNamedItem(name);
     }
 
     @Override
@@ -305,7 +302,7 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
         DataDefinition customDataDefinition = null;
 
         if (model != null) {
-            String modelPluginIdentifier = plugin != null ? plugin : viewDefinition.getPluginIdentifier();
+            String modelPluginIdentifier = plugin == null ? viewDefinition.getPluginIdentifier() : plugin;
             customDataDefinition = dataDefinitionService.get(modelPluginIdentifier, model);
         }
 

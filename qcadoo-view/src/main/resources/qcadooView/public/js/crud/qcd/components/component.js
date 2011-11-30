@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.9
+ * Version: 1.1.0
  *
  * This file is part of Qcadoo.
  *
@@ -145,20 +145,6 @@ QCD.components.Component = function(_element, _mainController) {
 			this.performComponentScript();
 		}
 	}
-	
-//	this.setLoading = function(isLoadingVisible) {
-//		var listeners = options.listeners;
-//		if (listeners) {
-//			for (var i in listeners) {
-//				mainController.getComponent(listeners[i]).setLoading(isLoadingVisible);
-//			}
-//		}
-//		if (this.setComponentLoading) {
-//			this.setComponentLoading(isLoadingVisible);
-//		} else {
-//			QCD.error(this.elementPath+".setLoading() no implemented");
-//		}
-//	}
 	
 	this.updateSize = function(width, height) {
 	}

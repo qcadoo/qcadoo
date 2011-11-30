@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.9
+ * Version: 1.1.0
  *
  * This file is part of Qcadoo.
  *
@@ -42,8 +42,24 @@ public class FieldComponentState extends AbstractComponentState implements Field
     private boolean persistent;
 
     public FieldComponentState(final FieldComponentPattern pattern) {
+        super();
         defaultRequired = pattern.isRequired();
         persistent = pattern.isPersistent();
+    }
+
+    @Override
+    protected void initializeContext(final JSONObject json) throws JSONException {
+        super.initializeContext(json);
+        if (json.has(JSON_COMPONENT_OPTIONS) && !json.isNull(JSON_COMPONENT_OPTIONS)) {
+            JSONObject jsonOptions = json.getJSONObject(JSON_COMPONENT_OPTIONS);
+            passValueFromJson(jsonOptions);
+        }
+    }
+
+    private void passValueFromJson(final JSONObject json) throws JSONException {
+        if (json.has(JSON_VALUE) && !json.isNull(JSON_VALUE)) {
+            value = json.getString(JSON_VALUE);
+        }
     }
 
     @Override
@@ -66,7 +82,7 @@ public class FieldComponentState extends AbstractComponentState implements Field
 
     @Override
     public void setFieldValue(final Object value) {
-        this.value = value != null ? value.toString() : null;
+        this.value = value == null ? null : value.toString();
         requestRender();
     }
 
@@ -85,7 +101,7 @@ public class FieldComponentState extends AbstractComponentState implements Field
         this.required = required;
         requestRender();
     }
-    
+
     @Override
     public boolean isPersistent() {
         return persistent;

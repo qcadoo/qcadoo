@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.9
+ * Version: 1.1.0
  *
  * This file is part of Qcadoo.
  *
@@ -26,7 +26,7 @@ package com.qcadoo.view.internal.ribbon.templates;
 import java.util.HashSet;
 import java.util.Set;
 
-public class RibbonTemplateParameters {
+public final class RibbonTemplateParameters {
 
     public static final String DEFAULT_TEMPLATE_PLUGIN = "qcadooView";
 
@@ -62,7 +62,7 @@ public class RibbonTemplateParameters {
         this.excludeItems = excludeItems;
     }
 
-    public static class RibbonTemplateParametersBuilder {
+    public static final class RibbonTemplateParametersBuilder {
 
         private final String templatePlugin;
 
