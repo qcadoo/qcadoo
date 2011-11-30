@@ -152,6 +152,21 @@ public final class ViewDefinitionStateImpl extends AbstractContainerState implem
     }
 
     @Override
+    public void redirectTo(final String redirectToUrl, final boolean openInNewWindow, final boolean shouldSerialize,
+            final Map<String, Object> parameters) {
+        JSONObject context = new JSONObject(parameters);
+        StringBuilder url = new StringBuilder(redirectToUrl);
+        if (redirectToUrl.contains("?")) {
+            url.append("&");
+        } else {
+            url.append("?");
+        }
+        url.append("context=");
+        url.append(context.toString());
+        redirectTo(url.toString(), openInNewWindow, shouldSerialize);
+    }
+
+    @Override
     public void openModal(final String url) {
         this.redirectToUrl = url;
         this.openInNewWindow = false;

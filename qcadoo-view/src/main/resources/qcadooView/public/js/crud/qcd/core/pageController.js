@@ -51,6 +51,8 @@ QCD.PageController = function() {
 	
 	var isScriptsPerformed = false;
 	
+	var currentMenuItem;
+	
 	this.constructor = function(_viewName, _pluginIdentifier, _hasDataDefinition, _isPopup) {
 		viewName = _viewName;
 		pluginIdentifier = _pluginIdentifier;
@@ -305,6 +307,9 @@ QCD.PageController = function() {
 			var component = pageComponents[i];
 			component.setState(state.components[i]);
 		}
+		if (state.currentMenuItem) {
+			window.parent.activateMenuPosition(state.currentMenuItem);
+		}
 	}
 	
 	this.showMessage = function(message) {
@@ -425,6 +430,10 @@ QCD.PageController = function() {
 	this.updateMenu = function() {
 		window.parent.updateMenu();
 	}
+
+	this.activateMenuPosition = function(position) {
+		window.parent.activateMenuPosition(position);
+	}
 	
 	this.goToPage = function(url, isPage, serialize) {
 		if (isPage == undefined || isPage == null) {
@@ -467,7 +476,8 @@ QCD.PageController = function() {
 	function getSerializationObject() {
 		return {
 			url: windowUrl,
-			components: getValueData()
+			components: getValueData(),
+			currentMenuItem: currentMenuItem
 		}
 	}
 	
@@ -519,6 +529,11 @@ QCD.PageController = function() {
 	this.getCurrentUserLogin = function() {
 		return window.parent.getCurrentUserLogin();
 	}
+	
+	function getCurrentMenuItem() {
+		return window.parent.getCurrentMenuItem();
+	}
+	this.getCurrentMenuItem = getCurrentMenuItem;
 	
 	function updateSize() {
 		var width = $(window).width();

@@ -173,7 +173,7 @@ QCD.menu.MenuController = function(menuStructure, _windowController) {
 
 	this.activateMenuPosition = function(position) {
 		var menuParts = position.split(".");
-
+		
 		var topItem = model.itemsMap[menuParts[0]];
 		var bottomItem = topItem.itemsMap[menuParts[0] + "_" + menuParts[1]];
 

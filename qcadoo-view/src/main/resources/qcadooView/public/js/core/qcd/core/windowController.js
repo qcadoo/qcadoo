@@ -38,6 +38,8 @@ QCD.WindowController = function(_menuStructure) {
 	var serializationObjectToInsert = null;
 
 	var currentPage = null;
+	
+	var currentMenuItem = null;
 
 	var messagesController = new QCD.MessagesController();
 
@@ -56,7 +58,7 @@ QCD.WindowController = function(_menuStructure) {
 		$(window).bind('resize', updateSize);
 
 		menuController = new QCD.menu.MenuController(menuStructure, _this);
-
+		
 		updateSize();
 	}
 
@@ -170,7 +172,18 @@ QCD.WindowController = function(_menuStructure) {
 	this.activateMenuPosition = function(position) {
 		menuController.activateMenuPosition(position);
 	}
-
+	
+	this.getCurrentMenuItem = function() {
+		var currentActive = menuController.currentActive;
+		if (currentActive.first) {
+			currentMenuItem = currentActive.first.name;
+		}
+		if (currentActive.second) {
+			currentMenuItem += "." + currentActive.second.name;
+		}
+		return currentMenuItem;
+	}
+	
 	this.goToMenuPosition = function(position) {
 		menuController.goToMenuPosition(position);
 	}

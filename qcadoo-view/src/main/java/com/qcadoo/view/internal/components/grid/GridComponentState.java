@@ -175,6 +175,7 @@ public final class GridComponentState extends AbstractComponentState implements 
             } else if (JSON_COMPONENT_OPTIONS.equals(field)) {
                 JSONObject jsonOptions = json.getJSONObject(JSON_COMPONENT_OPTIONS);
                 passFiltersFromJson(jsonOptions);
+                passSelectedEntityIdFromJson(jsonOptions);
                 passSelectedEntitiesFromJson(jsonOptions);
                 passEntitiesFromJson(jsonOptions);
             }
@@ -238,6 +239,7 @@ public final class GridComponentState extends AbstractComponentState implements 
             filtersEnabled = json.getBoolean(JSON_FILTERS_ENABLED);
         }
         if (json.has(JSON_FILTERS) && !json.isNull(JSON_FILTERS)) {
+            filtersEnabled = true;
             JSONObject filtersJson = json.getJSONObject(JSON_FILTERS);
             Iterator<String> filtersKeys = filtersJson.keys();
             while (filtersKeys.hasNext()) {
@@ -254,6 +256,12 @@ public final class GridComponentState extends AbstractComponentState implements 
             for (int i = 0; i < entitiesToSelect.length(); i++) {
                 selectedEntities.add(Long.valueOf(entitiesToSelect.get(i).toString()));
             }
+        }
+    }
+
+    private void passSelectedEntityIdFromJson(final JSONObject json) throws JSONException {
+        if (json.has(JSON_SELECTED_ENTITY_ID) && !json.isNull(JSON_SELECTED_ENTITY_ID)) {
+            selectedEntityId = json.getLong(JSON_SELECTED_ENTITY_ID);
         }
     }
 
