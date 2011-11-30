@@ -53,6 +53,7 @@ import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.aop.Monitorable;
 import com.qcadoo.model.api.file.FileService;
+import com.qcadoo.model.api.search.SearchRestrictions;
 import com.qcadoo.report.api.pdf.PdfPageNumbering;
 import com.qcadoo.report.api.pdf.PdfUtil;
 import com.qcadoo.security.api.SecurityService;
@@ -98,7 +99,8 @@ public class ExportToPDFController {
             FileOutputStream fileOutputStream = new FileOutputStream(file);
             PdfWriter writer = PdfWriter.getInstance(document, fileOutputStream);
 
-            Entity company = dataDefinitionService.get("basic", "company").find().uniqueResult();
+            Entity company = dataDefinitionService.get("basic", "company").find().add(SearchRestrictions.eq("owner", true))
+                    .setMaxResults(1).uniqueResult();
 
             writer.setPageEvent(new PdfPageNumbering(translationService.translate("qcadooReport.commons.page.label", locale),
                     translationService.translate("qcadooReport.commons.of.label", locale), "phone", company, translationService
