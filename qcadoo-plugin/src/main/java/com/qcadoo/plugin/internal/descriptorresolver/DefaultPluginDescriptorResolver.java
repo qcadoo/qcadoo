@@ -103,7 +103,7 @@ public class DefaultPluginDescriptorResolver implements PluginDescriptorResolver
     }
 
     @Override
-    public JarEntryResource getDescriptor(final File file) throws PluginException {
+    public JarEntryResource getDescriptor(final File file) {
         try {
 
             JarFile jarFile = new JarFile(file);

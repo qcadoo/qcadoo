@@ -26,12 +26,16 @@ package com.qcadoo.plugin.internal.dependencymanager;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.qcadoo.plugin.api.PluginDependencyInformation;
 import com.qcadoo.plugin.api.Version;
 import com.qcadoo.plugin.api.VersionOfDependency;
 
 public class PluginDependencyInformationTest {
+
+    private static final Logger LOG = LoggerFactory.getLogger(PluginDependencyInformationTest.class);
 
     PluginDependencyInformation dependencyInformation1;
 
@@ -61,31 +65,37 @@ public class PluginDependencyInformationTest {
             new PluginDependencyInformation("", new VersionOfDependency("[a1,1)"));
             Assert.fail();
         } catch (Exception e) {
+            LOG.info("empty catch");
         }
         try {
             new PluginDependencyInformation("", new VersionOfDependency("[1,2s)"));
             Assert.fail();
         } catch (Exception e) {
+            LOG.info("empty catch");
         }
         try {
             new PluginDependencyInformation("", new VersionOfDependency("[1.2.3.4,2s)"));
             Assert.fail();
         } catch (Exception e) {
+            LOG.info("empty catch");
         }
         try {
             new PluginDependencyInformation("", new VersionOfDependency("[2,1.2.3.4)"));
             Assert.fail();
         } catch (Exception e) {
+            LOG.info("empty catch");
         }
         try {
             new PluginDependencyInformation("", new VersionOfDependency("[1.1.1,1.1.0)"));
             Assert.fail();
         } catch (Exception e) {
+            LOG.info("empty catch");
         }
         try {
             new PluginDependencyInformation("", new VersionOfDependency("(1.0.0,1]"));
             Assert.fail();
         } catch (Exception e) {
+            LOG.info("empty catch");
         }
 
         // then
