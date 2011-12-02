@@ -47,22 +47,22 @@ public final class SystemInfoController {
     @Autowired
     private CrudService crudController;
 
-    @Value("${buildApplicationName:-}")
+    @Value("${buildApplicationName}")
     private String buildApplicationName;
 
-    @Value("${buildApplicationVersion:-}")
+    @Value("${buildApplicationVersion}")
     private String buildApplicationVersion;
 
-    @Value("${buildFrameworkVersion:-}")
+    @Value("${buildFrameworkVersion}")
     private String buildFrameworkVersion;
 
-    @Value("${buildTime:-}")
+    @Value("${buildTime}")
     private String buildTime;
 
-    @Value("${buildNumber:-}")
+    @Value("${buildNumber}")
     private String buildNumber;
 
-    @Value("${buildRevision:-}")
+    @Value("${buildRevision}")
     private String buildRevision;
 
     @Value("${useCompressedStaticResources}")
