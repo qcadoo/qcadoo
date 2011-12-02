@@ -51,8 +51,6 @@ QCD.PageController = function() {
 	
 	var isScriptsPerformed = false;
 	
-	var currentMenuItem;
-	
 	this.constructor = function(_viewName, _pluginIdentifier, _hasDataDefinition, _isPopup) {
 		viewName = _viewName;
 		pluginIdentifier = _pluginIdentifier;
@@ -478,7 +476,7 @@ QCD.PageController = function() {
 		return {
 			url: windowUrl,
 			components: getValueData(),
-			currentMenuItem: currentMenuItem
+			currentMenuItem: null
 		}
 	}
 	
@@ -530,11 +528,6 @@ QCD.PageController = function() {
 	this.getCurrentUserLogin = function() {
 		return window.parent.getCurrentUserLogin();
 	}
-	
-	function getCurrentMenuItem() {
-		return window.parent.getCurrentMenuItem();
-	}
-	this.getCurrentMenuItem = getCurrentMenuItem;
 	
 	function updateSize() {
 		var width = $(window).width();

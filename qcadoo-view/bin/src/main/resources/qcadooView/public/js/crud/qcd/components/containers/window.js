@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.1
+ * Version: 1.1.0
  *
  * This file is part of Qcadoo.
  *
@@ -31,6 +31,7 @@ QCD.components.containers.Window = function(_element, _mainController) {
 	var mainController = _mainController;
 	
 	var ribbon;
+	var row3Element;
 	var ribbonLeftElement
 	var tabsLeftElement;
 	var ribbonMainElement;
@@ -45,6 +46,7 @@ QCD.components.containers.Window = function(_element, _mainController) {
 	
 	var tabs;
 	var tabHeaders = new Object();
+	var tabRibbonExists = false;
 	
 	var oneTab = this.options.oneTab;
 	
@@ -67,6 +69,9 @@ QCD.components.containers.Window = function(_element, _mainController) {
 			});
 			tabHeaders[tabName] = tabElement;
 			tabsElement.append(tabElement);
+			if (tabs[tabName].getRibbonElement && tabs[tabName].getRibbonElement()) {
+				tabRibbonExists = true;
+			}
 		}
 		
 		if (_this.options.hasRibbon) {
@@ -77,7 +82,7 @@ QCD.components.containers.Window = function(_element, _mainController) {
 				
 			element = $("<div>");
 			
-			var row3Element =  $("<div>").attr("id", "q_row3_out_container");
+			row3Element =  $("<div>").attr("id", "q_row3_out_container");
 			element.append(row3Element);
 			
 			ribbonLeftElement = $("<div>").attr("id", "q_row3_out_left");
@@ -127,6 +132,7 @@ QCD.components.containers.Window = function(_element, _mainController) {
 		if (_this.options.referenceName) {
 			mainController.registerReferenceName(_this.options.referenceName, _this);
 		}
+		
 	}
 	
 	function showTab(tabName) {
@@ -161,7 +167,9 @@ QCD.components.containers.Window = function(_element, _mainController) {
 	}
 	
 	this.getComponentValue = function() {
-		return {};
+		return {
+			selectedTab: currentTabName
+		};
 	}
 	this.setComponentValue = function(value) {
 		for (var tabName in tabs) {
@@ -173,9 +181,13 @@ QCD.components.containers.Window = function(_element, _mainController) {
 		if (value.ribbon) {
 			ribbon.updateRibbonState(value.ribbon);
 		}
+		if (value.activeMenu) {
+			mainController.activateMenuPosition(value.activeMenu);
+		}
 	}
 	
 	this.setComponentState = function(state) {
+		showTab(state.selectedTab);
 	}
 	
 	this.setMessages = function(messages) {
@@ -194,6 +206,28 @@ QCD.components.containers.Window = function(_element, _mainController) {
 		}
 	}
 	
+	this.blockButtons = function() {
+		if (ribbon) {
+			ribbon.blockButtons();
+		}
+		for (var tabName in tabs) {
+			if (tabs[tabName].blockButtons) {
+				tabs[tabName].blockButtons();
+			}
+		}
+	}
+	
+	this.unblockButtons = function() {
+		if (ribbon) {
+			ribbon.unblockButtons();
+		}
+		for (var tabName in tabs) {
+			if (tabs[tabName].unblockButtons) {
+				tabs[tabName].unblockButtons();
+			}
+		}
+	}
+	
 	this.updateSize = function(_width, _height) {
 		currentWidth = _width;
 		currentHeight = _height;
@@ -208,12 +242,6 @@ QCD.components.containers.Window = function(_element, _mainController) {
 		}
 		var ribbonWidth = _width - margin;
 		width = Math.round(_width - 2 * margin);
-		
-		var innerWidth = innerWidthMarker.innerWidth();
-		if (innerWidth != $(window).width()) { // IS VERTICAL SCROLLBAR
-			width -= 15;
-		}
-		
 		if (width < 960 && isMinWidth) {
 			width = 960;
 			childrenElement.css("marginLeft", margin+"px");
@@ -227,8 +255,11 @@ QCD.components.containers.Window = function(_element, _mainController) {
 		if (! this.options.fixedHeight) {
 			childrenElement.css("marginBottom", margin+"px");
 		}
-		
-		
+		var windowWidth = width +2*margin
+		var innerWidth = innerWidthMarker.innerWidth();
+		//if (innerWidth != $(window).width()) { // IS VERTICAL SCROLLBAR
+			//width -= 15;
+		//}
 		
 		height = null;
 		if (this.options.fixedHeight) {
@@ -240,7 +271,6 @@ QCD.components.containers.Window = function(_element, _mainController) {
 			}
 			childrenElement.height(containerHeight);
 		}
-		
 		if (! oneTab) {
 			//var componentsHeight = height ? height-30 : null;
 			var componentsHeight = height ? height-35 : null;
@@ -256,14 +286,23 @@ QCD.components.containers.Window = function(_element, _mainController) {
 			}
 		}
 		
+		this.element.width(windowWidth);
+		
 		if (this.options.hasRibbon) {
 			ribbonLeftElement.width(margin);
-			ribbonShadowElement.width(innerWidth);
+			ribbonShadowElement.width(innerWidth > windowWidth ? windowWidth : innerWidth);
 			if (tabRibbonDiv) {
-				var tabRibbonWidth = width - ribbonMainElement.width() - 16; // TODO
+				var tabRibbonWidth = width - ribbonMainElement.width(); // TODO
 				tabRibbonDiv.width(tabRibbonWidth);
 			}
+			if (! tabRibbonExists) {
+				ribbonMainElement.width(width);
+				if (ribbon) {
+					ribbon.updateSize(width);
+				}
+			}
 		}
+		
 	}
 	
 	this.performBack = function(actionsPerformer) {

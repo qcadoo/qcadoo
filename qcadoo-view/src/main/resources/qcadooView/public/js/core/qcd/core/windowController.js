@@ -72,6 +72,7 @@ QCD.WindowController = function(_menuStructure) {
 
 	this.goToPage = function(url, serializationObject, isPage) {
 		if (serializationObject) {
+			serializationObject.currentMenuItem = getCurrentMenuItem();
 			statesStack.push(serializationObject);
 		}
 		if (isPage) {
@@ -82,6 +83,17 @@ QCD.WindowController = function(_menuStructure) {
 		performGoToPage(currentPage);
 	}
 
+	function getCurrentMenuItem() {
+		var currentActive = menuController.getCurrentActive();
+		if (currentActive.first) {
+			currentMenuItem = currentActive.first.name;
+		}
+		if (currentActive.second) {
+			currentMenuItem += "." + currentActive.second.name;
+		}
+		return currentMenuItem;
+	}
+	
 	window.openModal = function(id, url, serializationObject, onCloseListener,
 			afterInitListener) {
 		if (serializationObject != null) {
@@ -171,17 +183,6 @@ QCD.WindowController = function(_menuStructure) {
 
 	this.activateMenuPosition = function(position) {
 		menuController.activateMenuPosition(position);
-	}
-	
-	this.getCurrentMenuItem = function() {
-		var currentActive = menuController.currentActive;
-		if (currentActive.first) {
-			currentMenuItem = currentActive.first.name;
-		}
-		if (currentActive.second) {
-			currentMenuItem += "." + currentActive.second.name;
-		}
-		return currentMenuItem;
 	}
 	
 	this.goToMenuPosition = function(position) {
