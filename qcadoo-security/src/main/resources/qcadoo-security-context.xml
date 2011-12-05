@@ -46,24 +46,20 @@
 	<security:http use-expressions="true" auto-config="false"
 		entry-point-ref="loginUrlAuthenticationEntryPoint">
 		<security:intercept-url pattern="/login.html"
-			filters="none" requires-channel="any" />
-		<!-- <security:intercept-url pattern="/j_spring_security_check" requires-channel="https" 
-			/> -->
+			filters="none"  />
 		<security:intercept-url pattern="/css/**"
-			filters="none" requires-channel="any" />
+			filters="none"  />
 		<security:intercept-url pattern="/js/**"
-			filters="none" requires-channel="any" />
+			filters="none"  />
 		<security:intercept-url pattern="/browserNotSupported.html"
-			filters="none" requires-channel="any" />
+			filters="none"  />
 		<security:intercept-url pattern="/**"
-			access="isAuthenticated()" /> <!-- requires-channel="https" -->
+			access="isAuthenticated()" />
 			
 		<security:logout logout-success-url="/login.html?logout=true" />
 
 		<security:session-management
 			invalid-session-url="/login.html?timeout=true">
-			<!--<security:concurrency-control
-				max-sessions="5" error-if-maximum-exceeded="true" />-->
 		</security:session-management>
 
 		<security:custom-filter ref="mySessionExpirationFilter"
@@ -73,10 +69,6 @@
 			position="FORM_LOGIN_FILTER" />
 
 		<security:access-denied-handler ref="accessDeniedHandler" />
-
-		<security:port-mappings>
-			<security:port-mapping http="8282" https="8443" />
-		</security:port-mappings>
 
 		<security:http-basic />
 		
