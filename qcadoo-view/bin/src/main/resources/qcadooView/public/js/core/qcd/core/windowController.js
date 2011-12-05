@@ -38,6 +38,8 @@ QCD.WindowController = function(_menuStructure) {
 	var serializationObjectToInsert = null;
 
 	var currentPage = null;
+	
+	var currentMenuItem = null;
 
 	var messagesController = new QCD.MessagesController();
 
@@ -56,7 +58,7 @@ QCD.WindowController = function(_menuStructure) {
 		$(window).bind('resize', updateSize);
 
 		menuController = new QCD.menu.MenuController(menuStructure, _this);
-
+		
 		updateSize();
 	}
 
@@ -70,6 +72,7 @@ QCD.WindowController = function(_menuStructure) {
 
 	this.goToPage = function(url, serializationObject, isPage) {
 		if (serializationObject) {
+			serializationObject.currentMenuItem = getCurrentMenuItem();
 			statesStack.push(serializationObject);
 		}
 		if (isPage) {
@@ -80,6 +83,17 @@ QCD.WindowController = function(_menuStructure) {
 		performGoToPage(currentPage);
 	}
 
+	function getCurrentMenuItem() {
+		var currentActive = menuController.getCurrentActive();
+		if (currentActive.first) {
+			currentMenuItem = currentActive.first.name;
+		}
+		if (currentActive.second) {
+			currentMenuItem += "." + currentActive.second.name;
+		}
+		return currentMenuItem;
+	}
+	
 	window.openModal = function(id, url, serializationObject, onCloseListener,
 			afterInitListener) {
 		if (serializationObject != null) {
@@ -170,7 +184,7 @@ QCD.WindowController = function(_menuStructure) {
 	this.activateMenuPosition = function(position) {
 		menuController.activateMenuPosition(position);
 	}
-
+	
 	this.goToMenuPosition = function(position) {
 		menuController.goToMenuPosition(position);
 	}

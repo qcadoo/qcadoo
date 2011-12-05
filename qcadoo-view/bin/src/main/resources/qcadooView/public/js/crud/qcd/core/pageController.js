@@ -118,6 +118,7 @@ QCD.PageController = function() {
 					pageComponents[i].performInitialize();
 				}
 				QCD.components.elements.utils.LoadingIndicator.unblockElement($("body"));
+				unblockButtons()
 			}
 		}
 	}
@@ -305,6 +306,9 @@ QCD.PageController = function() {
 			var component = pageComponents[i];
 			component.setState(state.components[i]);
 		}
+		if (state.currentMenuItem) {
+			window.parent.activateMenuPosition(state.currentMenuItem);
+		}
 	}
 	
 	this.showMessage = function(message) {
@@ -425,6 +429,10 @@ QCD.PageController = function() {
 	this.updateMenu = function() {
 		window.parent.updateMenu();
 	}
+
+	this.activateMenuPosition = function(position) {
+		window.parent.activateMenuPosition(position);
+	}
 	
 	this.goToPage = function(url, isPage, serialize) {
 		if (isPage == undefined || isPage == null) {
@@ -467,7 +475,8 @@ QCD.PageController = function() {
 	function getSerializationObject() {
 		return {
 			url: windowUrl,
-			components: getValueData()
+			components: getValueData(),
+			currentMenuItem: null
 		}
 	}
 	

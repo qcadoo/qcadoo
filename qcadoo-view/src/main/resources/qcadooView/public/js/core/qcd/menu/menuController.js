@@ -175,7 +175,12 @@ QCD.menu.MenuController = function(menuStructure, _windowController) {
 		var menuParts = position.split(".");
 		
 		var topItem = model.itemsMap[menuParts[0]];
-		var bottomItem = topItem.itemsMap[menuParts[0] + "_" + menuParts[1]];
+		var bottomItem;
+		if (menuParts[1] && menuParts[1].indexOf(menuParts[0] + "_") != 0) {
+			bottomItem = topItem.itemsMap[menuParts[0] + "_" + menuParts[1]]; 
+		} else if (menuParts[1]) {
+			bottomItem = topItem.itemsMap[menuParts[1]];
+		}
 
 		model.selectedItem.element.removeClass("path");
 
@@ -188,6 +193,10 @@ QCD.menu.MenuController = function(menuStructure, _windowController) {
 		
 	}
 	 	
+	this.getCurrentActive = function() {
+		return currentActive;
+	}
+	
 	this.goToMenuPosition = function(position) {
 	 	this.activateMenuPosition(position);
 		changePage(model.selectedItem.selectedItem.page);

@@ -443,29 +443,26 @@ public class DynamicSessionFactory implements SessionFactory, SessionFactoryImpl
 
     @Override
     public boolean equals(final Object obj) {
-        if (sessionFactory != null) {
-            return getSessionFactory(false).equals(obj);
-        } else {
+        if (sessionFactory == null) {
             return super.equals(obj);
         }
+        return getSessionFactory(false).equals(obj);
     }
 
     @Override
     public int hashCode() {
-        if (sessionFactory != null) {
-            return getSessionFactory(false).hashCode();
-        } else {
+        if (sessionFactory == null) {
             return super.hashCode();
         }
+        return getSessionFactory(false).hashCode();
     }
 
     @Override
     public String toString() {
-        if (sessionFactory != null) {
-            return getSessionFactory(false).toString();
-        } else {
+        if (sessionFactory == null) {
             return super.toString();
         }
+        return getSessionFactory(false).toString();
     }
 
     @Override
