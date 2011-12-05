@@ -61,7 +61,7 @@ public class MenuModule extends Module {
     @Override
     public void multiTenantEnable() {
         try {
-            if (menuUrl != null) {
+            if (menuUrl == null) {
                 menuService.addView(menuViewPluginIdentifier, menuViewName, menuViewName, null);
                 menuService.createItem(pluginIdentifier, menuName, menuCategory, menuViewPluginIdentifier, menuViewName);
             } else {
