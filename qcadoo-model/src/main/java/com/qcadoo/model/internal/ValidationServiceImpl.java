@@ -53,17 +53,20 @@ public final class ValidationServiceImpl implements ValidationService {
 
         parseAndValidateEntity(dataDefinition, genericEntity);
 
-        if (genericEntity.getId() != null) {
-            dataDefinition.callUpdateHook(genericEntity);
-        } else {
+        if (genericEntity.getId() == null) {
             dataDefinition.callCreateHook(genericEntity);
+        } else {
+            dataDefinition.callUpdateHook(genericEntity);
         }
     }
 
     private void copyReadOnlyAndMissingFields(final InternalDataDefinition dataDefinition, final Entity genericEntity,
             final Entity existingGenericEntity) {
         for (Map.Entry<String, FieldDefinition> field : dataDefinition.getFields().entrySet()) {
-            Object value = existingGenericEntity != null ? existingGenericEntity.getField(field.getKey()) : null;
+            Object value = null;
+            if (existingGenericEntity != null) {
+                value = existingGenericEntity.getField(field.getKey());
+            }
             if (field.getValue().getType() instanceof PasswordType) {
                 continue;
             }
@@ -119,7 +122,9 @@ public final class ValidationServiceImpl implements ValidationService {
             final Entity validatedEntity) {
         Entity referencedEntity;
 
-        if (value != null) {
+        if (value == null) {
+            referencedEntity = null;
+        } else {
             Long referencedEntityId = null;
             if (value instanceof String) {
                 try {
@@ -144,8 +149,6 @@ public final class ValidationServiceImpl implements ValidationService {
                 BelongsToType belongsToFieldType = (BelongsToType) fieldDefinition.getType();
                 referencedEntity = belongsToFieldType.getDataDefinition().get(referencedEntityId);
             }
-        } else {
-            referencedEntity = null;
         }
 
         return parseAndValidateValue(fieldDefinition, referencedEntity, validatedEntity);

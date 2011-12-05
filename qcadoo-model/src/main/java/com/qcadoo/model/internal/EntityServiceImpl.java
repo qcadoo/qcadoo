@@ -77,11 +77,11 @@ public final class EntityServiceImpl implements EntityService {
 
     @Override
     public void setField(final Object databaseEntity, final FieldDefinition fieldDefinition, final Object value) {
-        if (!((InternalFieldDefinition) fieldDefinition).isEnabled()) {
+        if (!shouldAllowToSetField(fieldDefinition, value)) {
             return;
-        } else if (fieldDefinition.getType() instanceof PasswordType && value == null) {
-            return;
-        } else if (fieldDefinition.getType() instanceof BelongsToType && value != null) {
+        }
+
+        if (fieldDefinition.getType() instanceof BelongsToType && value != null) {
             Object belongsToValue = getBelongsToFieldValue(
                     (InternalDataDefinition) ((BelongsToType) fieldDefinition.getType()).getDataDefinition(), value);
             setField(databaseEntity, fieldDefinition.getName(), belongsToValue);
@@ -92,6 +92,11 @@ public final class EntityServiceImpl implements EntityService {
         } else {
             setField(databaseEntity, fieldDefinition.getName(), value);
         }
+    }
+
+    private boolean shouldAllowToSetField(final FieldDefinition fieldDefinition, final Object value) {
+        return ((InternalFieldDefinition) fieldDefinition).isEnabled()
+                && !(fieldDefinition.getType() instanceof PasswordType && value == null);
     }
 
     private Object getBelongsToFieldValue(final InternalDataDefinition dataDefinition, final Object value) {
@@ -113,17 +118,21 @@ public final class EntityServiceImpl implements EntityService {
     public Object getField(final Object databaseEntity, final FieldDefinition fieldDefinition) {
         if (!((InternalFieldDefinition) fieldDefinition).isEnabled()) {
             return null;
-        } else if (fieldDefinition.getType() instanceof BelongsToType) {
-            return getBelongsToField(databaseEntity, fieldDefinition);
-        } else if (fieldDefinition.getType() instanceof HasManyType) {
-            return getHasManyField(databaseEntity, fieldDefinition);
-        } else if (fieldDefinition.getType() instanceof ManyToManyType) {
-            return getManyToManyField(databaseEntity, fieldDefinition);
-        } else if (fieldDefinition.getType() instanceof TreeType) {
-            return getTreeField(databaseEntity, fieldDefinition);
-        } else {
-            return getPrimitiveField(databaseEntity, fieldDefinition);
         }
+        if (fieldDefinition.getType() instanceof BelongsToType) {
+            return getBelongsToField(databaseEntity, fieldDefinition);
+        }
+        if (fieldDefinition.getType() instanceof HasManyType) {
+            return getHasManyField(databaseEntity, fieldDefinition);
+        }
+        if (fieldDefinition.getType() instanceof ManyToManyType) {
+            return getManyToManyField(databaseEntity, fieldDefinition);
+        }
+        if (fieldDefinition.getType() instanceof TreeType) {
+            return getTreeField(databaseEntity, fieldDefinition);
+        }
+
+        return getPrimitiveField(databaseEntity, fieldDefinition);
     }
 
     @Override
@@ -145,10 +154,7 @@ public final class EntityServiceImpl implements EntityService {
                     genericEntity.setField(fields.get(i), databaseArray[i]);
                 }
             }
-        } else if (!(databaseEntity.getClass().getName().startsWith("com.qcadoo.model.beans"))) {
-            genericEntity = new DefaultEntity(dataDefinition);
-            genericEntity.setField(dataDefinition.getFields().keySet().iterator().next(), databaseEntity);
-        } else {
+        } else if (databaseEntity.getClass().getName().startsWith("com.qcadoo.model.beans")) {
             genericEntity = dataDefinition.create(getId(databaseEntity));
 
             if (dataDefinition.isActivable()) {
@@ -177,6 +183,9 @@ public final class EntityServiceImpl implements EntityService {
             }
 
             dataDefinition.callViewHook(genericEntity);
+        } else {
+            genericEntity = new DefaultEntity(dataDefinition);
+            genericEntity.setField(dataDefinition.getFields().keySet().iterator().next(), databaseEntity);
         }
 
         return genericEntity;
@@ -223,11 +232,11 @@ public final class EntityServiceImpl implements EntityService {
             final Object existingDatabaseEntity) {
         Object databaseEntity = null;
 
-        if (existingDatabaseEntity != null) {
-            databaseEntity = existingDatabaseEntity;
-        } else {
+        if (existingDatabaseEntity == null) {
             databaseEntity = dataDefinition.getInstanceForEntity();
             setId(databaseEntity, genericEntity.getId());
+        } else {
+            databaseEntity = existingDatabaseEntity;
         }
         return databaseEntity;
     }

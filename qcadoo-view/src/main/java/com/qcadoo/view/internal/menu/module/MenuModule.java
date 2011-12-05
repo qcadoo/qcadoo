@@ -62,11 +62,11 @@ public class MenuModule extends Module {
     public void multiTenantEnable() {
         try {
             if (menuUrl != null) {
-                menuService.addView(pluginIdentifier, menuName, null, menuUrl);
-                menuService.createItem(pluginIdentifier, menuName, menuCategory, pluginIdentifier, menuName);
-            } else {
                 menuService.addView(menuViewPluginIdentifier, menuViewName, menuViewName, null);
                 menuService.createItem(pluginIdentifier, menuName, menuCategory, menuViewPluginIdentifier, menuViewName);
+            } else {
+                menuService.addView(pluginIdentifier, menuName, null, menuUrl);
+                menuService.createItem(pluginIdentifier, menuName, menuCategory, pluginIdentifier, menuName);
             }
         } catch (Exception e) {
             throw new ModuleException(pluginIdentifier, factoryIdentifier, e);
@@ -76,10 +76,10 @@ public class MenuModule extends Module {
     @Override
     public void multiTenantDisable() {
         menuService.removeItem(pluginIdentifier, menuName);
-        if (menuUrl != null) {
-            menuService.removeView(pluginIdentifier, menuName);
-        } else {
+        if (menuUrl == null) {
             menuService.removeView(menuViewPluginIdentifier, menuViewName);
+        } else {
+            menuService.removeView(pluginIdentifier, menuName);
         }
     }
 }

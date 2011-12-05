@@ -84,30 +84,39 @@ public class VersionOfDependency {
         if (StringUtils.hasText(version)) {
             Matcher matcher = PATTERN.matcher(version);
 
-            if (matcher.matches()) {
-                if (matcher.group(3) != null && matcher.group(2) == null && matcher.group(7) == null && matcher.group(10) == null) {
-                    minVersion = new Version(matcher.group(3));
-                    includeMinVersion = true;
-                    maxVersion = minVersion;
-                    includeMaxVersion = true;
+            if (!matcher.matches()) {
+                throw new IllegalStateException("Version " + version + " is invalid");
+            }
+
+            if (matcher.group(3) != null && matcher.group(2) == null && matcher.group(7) == null && matcher.group(10) == null) {
+                minVersion = new Version(matcher.group(3));
+                includeMinVersion = true;
+                maxVersion = minVersion;
+                includeMaxVersion = true;
+            } else {
+                if (matcher.group(3) == null) {
+                    minVersion = null;
                 } else {
-                    minVersion = matcher.group(3) != null ? new Version(matcher.group(3)) : null;
-                    includeMinVersion = !"(".equals(matcher.group(2));
-                    maxVersion = matcher.group(7) != null ? new Version(matcher.group(7)) : null;
-                    includeMaxVersion = !"(".equals(matcher.group(10));
+                    minVersion = new Version(matcher.group(3));
                 }
 
-                if (this.minVersion != null && this.maxVersion != null) {
-                    int compareResult = this.minVersion.compareTo(this.maxVersion);
-                    if (compareResult > 0) {
-                        throw new IllegalStateException("Version " + version
-                                + " is invalid: min version is larger than max version");
-                    } else if (compareResult == 0 && !(includeMinVersion && includeMaxVersion)) {
-                        throw new IllegalStateException("Version " + version + " is invalid: range is empty");
-                    }
+                if (matcher.group(7) == null) {
+                    maxVersion = null;
+                } else {
+                    maxVersion = new Version(matcher.group(7));
                 }
-            } else {
-                throw new IllegalStateException("Version " + version + " is invalid");
+
+                includeMinVersion = !"(".equals(matcher.group(2));
+                includeMaxVersion = !"(".equals(matcher.group(10));
+            }
+
+            if (this.minVersion != null && this.maxVersion != null) {
+                int compareResult = this.minVersion.compareTo(this.maxVersion);
+                if (compareResult > 0) {
+                    throw new IllegalStateException("Version " + version + " is invalid: min version is larger than max version");
+                } else if (compareResult == 0 && !(includeMinVersion && includeMaxVersion)) {
+                    throw new IllegalStateException("Version " + version + " is invalid: range is empty");
+                }
             }
         } else {
             minVersion = null;
