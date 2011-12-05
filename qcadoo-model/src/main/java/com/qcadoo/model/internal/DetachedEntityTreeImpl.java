@@ -42,6 +42,7 @@ public final class DetachedEntityTreeImpl extends AbstractList<Entity> implement
     private EntityTreeNodeImpl root = null;
 
     public DetachedEntityTreeImpl(final List<Entity> entities) {
+        Preconditions.checkArgument(entities != null, "given entity list should not be null!");
         this.entities = entities;
         checkEntities();
     }
