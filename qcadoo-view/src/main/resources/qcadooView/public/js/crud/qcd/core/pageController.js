@@ -237,7 +237,9 @@ QCD.PageController = function() {
 				var redirectUrl = response.redirect.url.replace(/\$\{root\}/, contextPath)
 				if (response.redirect.openInNewWindow) {
 					var w = window.open(redirectUrl, "_blank", "status=0");
-					w.location.href = redirectUrl;
+					if (jQuery.browser.msie) {
+						w.location.href = redirectUrl;
+					}	
 				} else if (response.redirect.openInModalWindow) {
 					openModal(redirectUrl, redirectUrl);
 				} else if (isPopup) {
