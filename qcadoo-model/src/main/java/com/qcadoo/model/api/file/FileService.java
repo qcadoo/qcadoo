@@ -23,6 +23,7 @@
  */
 package com.qcadoo.model.api.file;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -96,9 +97,9 @@ public interface FileService {
      * 
      * @param filename
      *            filename
-     * @return path
+     * @return File
      */
-    String create(String filename);
+    File create(String filename);
 
     /**
      * Remove the file from given path.

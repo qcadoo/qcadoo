@@ -95,7 +95,7 @@ public class ExportToPDFController {
             ViewDefinitionState state = crudService.invokeEvent(pluginIdentifier, viewName, body, locale);
             GridComponent grid = (GridComponent) state.getComponentByReference("grid");
             Document document = new Document(PageSize.A4.rotate());
-            File file = new File(fileService.create("export.pdf"));
+            File file = fileService.create("export.pdf");
             FileOutputStream fileOutputStream = new FileOutputStream(file);
             PdfWriter writer = PdfWriter.getInstance(document, fileOutputStream);
 
