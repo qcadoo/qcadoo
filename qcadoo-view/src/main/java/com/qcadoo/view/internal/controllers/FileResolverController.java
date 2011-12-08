@@ -73,7 +73,7 @@ public class FileResolverController {
 
                 int bytes = IOUtils.copy(input, output);
 
-                response.setHeader("Content-disposition", "attachment; filename=" + fileService.getName(path));
+                response.setHeader("Content-disposition", "inline; filename=" + fileService.getName(path));
                 response.setContentType(fileService.getContentType(path));
                 response.setContentLength(bytes);
 
