@@ -37,6 +37,7 @@ import com.lowagie.text.DocumentException;
 import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.localization.api.utils.DateUtils;
 import com.qcadoo.model.api.Entity;
+import com.qcadoo.tenant.api.MultiTenantUtil;
 
 public abstract class DocumentService {
 
@@ -68,20 +69,14 @@ public abstract class DocumentService {
     }
 
     protected void ensureReportDirectoryExist() {
-        File file = new File(path);
+        File file = new File(getProperReportPath() + MultiTenantUtil.getCurrentTenantId() + File.separator);
         if (!file.exists()) {
             file.mkdirs();
         }
     }
 
-    public Entity updateFileName(final Entity entity) {
-        entity.setField("fileName", getFullFileName((Date) entity.getField("date"), entity.getStringField("name")));
-        return entity.getDataDefinition().save(entity);
-    }
-
     public Entity updateFileName(final Entity entity, final String name) {
-        entity.setField("fileName", getFullFileName((Date) entity.getField("date"), name));
-        return entity.getDataDefinition().save(entity);
+        return updateFileName(entity, "date", name);
     }
 
     public Entity updateFileName(final Entity entity, final String dateFieldName, final String name) {
@@ -94,6 +89,6 @@ public abstract class DocumentService {
     }
 
     private String getProperReportPath() {
-        return (path.endsWith("/") ? path : path + "/");
+        return (path.endsWith(File.separator) ? path : path + File.separator);
     }
 }
