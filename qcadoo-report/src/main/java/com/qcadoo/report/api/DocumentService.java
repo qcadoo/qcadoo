@@ -69,7 +69,7 @@ public abstract class DocumentService {
     }
 
     protected void ensureReportDirectoryExist() {
-        File file = new File(getProperReportPath() + MultiTenantUtil.getCurrentTenantId() + File.separator);
+        File file = new File(getProperReportPath());
         if (!file.exists()) {
             file.mkdirs();
         }
@@ -89,6 +89,7 @@ public abstract class DocumentService {
     }
 
     private String getProperReportPath() {
-        return (path.endsWith(File.separator) ? path : path + File.separator);
+        return (path.endsWith(File.separator) ? path : path + File.separator) + MultiTenantUtil.getCurrentTenantId()
+                + File.separator;
     }
 }
