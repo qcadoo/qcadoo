@@ -332,8 +332,10 @@ public class FormComponentState extends AbstractContainerState implements FormCo
             }
             if (fieldIsTreeType(field.getValue(), field.getKey(), entity)) {
                 EntityTree tree = entity.getTreeField(field.getKey());
-                ((TreeComponentState) field.getValue()).setRootNode(tree.getRoot());
-                field.getValue().setFieldValue(tree);
+                if (tree != null) {
+                    ((TreeComponentState) field.getValue()).setRootNode(tree.getRoot());
+                    field.getValue().setFieldValue(tree);
+                }
             } else {
                 field.getValue().setFieldValue(convertFieldToString(entity.getField(field.getKey()), field.getKey()));
             }
