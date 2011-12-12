@@ -77,7 +77,7 @@ public final class PdfPageNumbering extends PdfPageEventHelper {
         }
         StringBuilder companyData = new StringBuilder();
 
-        companyData = companyData.append(company.getStringField("companyFullName"));
+        companyData = companyData.append(company.getStringField("name"));
         this.companyName = companyData.toString();
 
         if (company.getStringField("street") == null || company.getStringField("house") == null
