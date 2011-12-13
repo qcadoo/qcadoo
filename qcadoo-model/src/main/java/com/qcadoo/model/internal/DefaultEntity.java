@@ -36,6 +36,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import com.google.common.collect.Lists;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
+import com.qcadoo.model.api.EntityTree;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.validators.ErrorMessage;
 
@@ -214,10 +215,10 @@ public final class DefaultEntity implements Entity {
         }
         return Lists.newArrayList((Set<Entity>) getField(fieldName));
     }
-    
+
     @Override
-    public EntityTreeImpl getTreeField(final String fieldName) {
-        return (EntityTreeImpl) getField(fieldName);
+    public EntityTree getTreeField(final String fieldName) {
+        return (EntityTree) getField(fieldName);
     }
 
     @Override

@@ -372,6 +372,7 @@ QCD.components.Ribbon = function(_model, _elementName, _mainController, _transla
 						this.tooltipMessageElementContent.html(msg);
 					} else {
 						this.tooltipElement.hide();
+						this.tooltipMessageElementContent.html("");
 					}
 				}
 			},
@@ -383,6 +384,7 @@ QCD.components.Ribbon = function(_model, _elementName, _mainController, _transla
 						this.tooltipMessageElementContent.html(msg);
 					} else {
 						this.tooltipElement.hide();
+						this.tooltipMessageElementContent.html("");
 					}
 				}
 			},

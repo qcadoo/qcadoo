@@ -63,6 +63,8 @@ public final class TreeComponentState extends FieldComponentState implements Tre
 
     public static final String JSON_TREE_STRUCTURE = "treeStructure";
 
+    private static final String INITIAL_NODE_NUMBER_VALUE = "1";
+
     private final TreeEventPerformer eventPerformer = new TreeEventPerformer();
 
     private TreeNode rootNode;
@@ -201,7 +203,7 @@ public final class TreeComponentState extends FieldComponentState implements Tre
 
             if (treeStructure.getJSONObject(0).has("children")) {
                 reorganize(parent, treeStructure.getJSONObject(0).getJSONArray("children"),
-                        Lists.newLinkedList(Lists.newArrayList("1")));
+                        Lists.newLinkedList(Lists.newArrayList(INITIAL_NODE_NUMBER_VALUE)));
             }
 
             return Collections.singletonList(parent);
@@ -219,7 +221,7 @@ public final class TreeComponentState extends FieldComponentState implements Tre
         int charNumber = 0;
         for (int i = 0; i < childrens.length(); i++) {
             Deque<String> newNodeNumberBranch = Lists.newLinkedList(nodeNumberChain);
-            
+
             if (childrens.length() == 1) {
                 incrementLastChainNumber(newNodeNumberBranch);
             } else {
@@ -233,7 +235,7 @@ public final class TreeComponentState extends FieldComponentState implements Tre
             }
         }
     }
-    
+
     private String collectionToString(final Collection<String> collection) {
         return StringUtils.join(collection, '.') + '.';
     }
@@ -242,10 +244,10 @@ public final class TreeComponentState extends FieldComponentState implements Tre
         Integer nextNumber = Integer.valueOf(chain.pollLast()) + 1;
         chain.addLast(nextNumber.toString());
     }
-    
+
     private void incrementLastChainCharacter(final Deque<String> chain, final int charNumber) {
         chain.addLast(String.valueOf((char) (65 + charNumber)));
-        chain.addLast("1");
+        chain.addLast(INITIAL_NODE_NUMBER_VALUE);
     }
 
     @Override
@@ -287,6 +289,17 @@ public final class TreeComponentState extends FieldComponentState implements Tre
         this.rootNode = rootNode;
     }
 
+    public void setRootNode(final EntityTreeNode rootNodeEntity) {
+        if (rootNodeEntity == null) {
+            return;
+        }
+        rootNode = createNode(rootNodeEntity, Lists.newLinkedList(Lists.newArrayList(INITIAL_NODE_NUMBER_VALUE)));
+        if (openedNodes == null) {
+            addOpenedNode(rootNode.getId());
+        }
+
+    }
+
     private String translateMessage(final String key) {
         return getTranslationService().translate(getTranslationPath() + "." + key, "qcadooView.message." + key, getLocale());
     }
@@ -310,7 +323,7 @@ public final class TreeComponentState extends FieldComponentState implements Tre
             return;
         }
 
-        rootNode = createNode(tree.getRoot(), Lists.newLinkedList(Lists.newArrayList("1")));
+        rootNode = createNode(tree.getRoot(), Lists.newLinkedList(Lists.newArrayList(INITIAL_NODE_NUMBER_VALUE)));
         if (openedNodes == null) {
             addOpenedNode(rootNode.getId());
         }

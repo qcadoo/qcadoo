@@ -699,7 +699,7 @@ public class DataAccessServiceImpl implements DataAccessService {
                 HasManyType hasManyFieldType = (HasManyType) fieldDefinition.getType();
                 EntityList children = entity.getHasManyField(fieldDefinition.getName());
                 InternalDataDefinition childDataDefinition = (InternalDataDefinition) hasManyFieldType.getDataDefinition();
-                if (HasManyType.Cascade.NULLIFY.equals(hasManyFieldType.getCascade())) {
+                if (HasManyType.Cascade.NULLIFY.equals(hasManyFieldType.getCascade()) && children != null) {
                     for (Entity child : children) {
                         child.setField(hasManyFieldType.getJoinFieldName(), null);
                         child = save(childDataDefinition, child);

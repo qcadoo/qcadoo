@@ -33,9 +33,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.qcadoo.model.api.Entity;
+import com.qcadoo.model.api.EntityTree;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.expression.ExpressionUtils;
 import com.qcadoo.model.api.validators.ErrorMessage;
+import com.qcadoo.model.internal.types.TreeEntitiesType;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.components.FieldComponent;
 import com.qcadoo.view.api.components.FormComponent;
@@ -43,6 +45,7 @@ import com.qcadoo.view.internal.FieldEntityIdChangeListener;
 import com.qcadoo.view.internal.ScopeEntityIdChangeListener;
 import com.qcadoo.view.internal.components.FieldComponentState;
 import com.qcadoo.view.internal.components.lookup.LookupComponentState;
+import com.qcadoo.view.internal.components.tree.TreeComponentState;
 import com.qcadoo.view.internal.states.AbstractContainerState;
 
 public class FormComponentState extends AbstractContainerState implements FormComponent {
@@ -327,7 +330,15 @@ public class FormComponentState extends AbstractContainerState implements FormCo
             if (fieldIsGridCorrespondingLookup(field.getValue(), field.getKey(), entity)) {
                 continue;
             }
-            field.getValue().setFieldValue(convertFieldToString(entity.getField(field.getKey()), field.getKey()));
+            if (fieldIsTreeType(field.getValue(), field.getKey(), entity)) {
+                EntityTree tree = entity.getTreeField(field.getKey());
+                if (tree != null) {
+                    ((TreeComponentState) field.getValue()).setRootNode(tree.getRoot());
+                    field.getValue().setFieldValue(tree);
+                }
+            } else {
+                field.getValue().setFieldValue(convertFieldToString(entity.getField(field.getKey()), field.getKey()));
+            }
             if (requestUpdateState) {
                 field.getValue().requestComponentUpdateState();
             }
@@ -337,6 +348,11 @@ public class FormComponentState extends AbstractContainerState implements FormCo
     private boolean fieldIsGridCorrespondingLookup(final FieldComponentState field, final String databaseFieldName,
             final Entity entity) {
         return (field instanceof LookupComponentState) && (entity.getField(databaseFieldName) instanceof Collection);
+    }
+
+    private boolean fieldIsTreeType(final Object fieldValue, final String databaseFieldName, final Entity entity) {
+        return fieldValue instanceof TreeComponentState
+                && entity.getDataDefinition().getField(databaseFieldName).getType() instanceof TreeEntitiesType;
     }
 
     private Object convertFieldToString(final Object value, final String field) {
