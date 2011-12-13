@@ -9,7 +9,7 @@ public class FormUtils {
     private FormUtils() {
     }
 
-    public final static void setFormEntity(final FormComponent form, final Entity entity) {
+    public static final void setFormEntity(final FormComponent form, final Entity entity) {
         ((FormComponentState) form).setEntity(entity);
     }
 }
