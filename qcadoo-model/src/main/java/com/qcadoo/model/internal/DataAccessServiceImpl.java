@@ -39,6 +39,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.hibernate.Criteria;
+import org.hibernate.FlushMode;
 import org.hibernate.Query;
 import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
@@ -769,7 +770,8 @@ public class DataAccessServiceImpl implements DataAccessService {
 
     protected int deleteAllDatabaseEntities(final InternalDataDefinition dataDefinition) {
         return hibernateService.getCurrentSession()
-                .createQuery("delete " + dataDefinition.getClassForEntity().getCanonicalName()).executeUpdate();
+                .createQuery("delete " + dataDefinition.getClassForEntity().getCanonicalName()).setFlushMode(FlushMode.COMMIT)
+                .executeUpdate();
     }
 
     protected void saveDatabaseEntity(final InternalDataDefinition dataDefinition, final Object databaseEntity) {
