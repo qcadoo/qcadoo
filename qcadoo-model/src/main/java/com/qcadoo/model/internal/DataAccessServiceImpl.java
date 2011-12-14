@@ -536,6 +536,15 @@ public class DataAccessServiceImpl implements DataAccessService {
     }
 
     @Override
+    @Transactional
+    @Monitorable
+    public void deleteAll(InternalDataDefinition dataDefinition) {
+        checkNotNull(dataDefinition, "DataDefinition must be given");
+        int deletedEntities = deleteAllDatabaseEntities(dataDefinition);
+        LOG.info(deletedEntities + " " + dataDefinition.getName() + " entities has been deleted");
+    }
+
+    @Override
     public InternalDataDefinition getDataDefinition(final String pluginIdentifier, final String name) {
         InternalDataDefinition dataDefinition = (InternalDataDefinition) dataDefinitionService.get(pluginIdentifier, name);
 
@@ -756,6 +765,11 @@ public class DataAccessServiceImpl implements DataAccessService {
 
     protected Object getDatabaseEntity(final InternalDataDefinition dataDefinition, final Long entityId) {
         return hibernateService.getCurrentSession().get(dataDefinition.getClassForEntity(), entityId);
+    }
+
+    protected int deleteAllDatabaseEntities(final InternalDataDefinition dataDefinition) {
+        return hibernateService.getCurrentSession()
+                .createQuery("delete " + dataDefinition.getClassForEntity().getCanonicalName()).executeUpdate();
     }
 
     protected void saveDatabaseEntity(final InternalDataDefinition dataDefinition, final Object databaseEntity) {
