@@ -77,12 +77,6 @@ public interface DataDefinition {
     void delete(final Long... id);
 
     /**
-     * Delete all entities related with this data definition.
-     * 
-     */
-    void deleteAll();
-
-    /**
      * Save the entity related with this data definition.
      * 
      * @param entity

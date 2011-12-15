@@ -39,7 +39,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.hibernate.Criteria;
-import org.hibernate.FlushMode;
 import org.hibernate.Query;
 import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
@@ -537,15 +536,6 @@ public class DataAccessServiceImpl implements DataAccessService {
     }
 
     @Override
-    @Transactional
-    @Monitorable
-    public void deleteAll(InternalDataDefinition dataDefinition) {
-        checkNotNull(dataDefinition, "DataDefinition must be given");
-        int deletedEntities = deleteAllDatabaseEntities(dataDefinition);
-        LOG.info(deletedEntities + " " + dataDefinition.getName() + " entities has been deleted");
-    }
-
-    @Override
     public InternalDataDefinition getDataDefinition(final String pluginIdentifier, final String name) {
         InternalDataDefinition dataDefinition = (InternalDataDefinition) dataDefinitionService.get(pluginIdentifier, name);
 
@@ -766,12 +756,6 @@ public class DataAccessServiceImpl implements DataAccessService {
 
     protected Object getDatabaseEntity(final InternalDataDefinition dataDefinition, final Long entityId) {
         return hibernateService.getCurrentSession().get(dataDefinition.getClassForEntity(), entityId);
-    }
-
-    protected int deleteAllDatabaseEntities(final InternalDataDefinition dataDefinition) {
-        return hibernateService.getCurrentSession()
-                .createQuery("delete " + dataDefinition.getClassForEntity().getCanonicalName()).setFlushMode(FlushMode.COMMIT)
-                .executeUpdate();
     }
 
     protected void saveDatabaseEntity(final InternalDataDefinition dataDefinition, final Object databaseEntity) {

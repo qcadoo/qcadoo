@@ -42,8 +42,6 @@ public interface DataAccessService {
 
     void delete(InternalDataDefinition dataDefinition, Long... entityId);
 
-    void deleteAll(InternalDataDefinition dataDefinition);
-
     SearchResult find(SearchCriteria searchCriteria);
 
     SearchResult find(SearchQuery searchQuery);

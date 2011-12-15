@@ -84,11 +84,6 @@ public class DynamicDataDefinitionImpl implements InternalDataDefinition {
     }
 
     @Override
-    public void deleteAll() {
-        throw new UnsupportedOperationException("Cannot delete all entities for dynamic data definition");
-    }
-
-    @Override
     public Entity save(final Entity entity) {
         throw new UnsupportedOperationException("Cannot save entity for dynamic data definition");
     }

@@ -117,11 +117,6 @@ public final class DataDefinitionImpl implements InternalDataDefinition {
     }
 
     @Override
-    public void deleteAll() {
-        dataAccessService.deleteAll(this);
-    }
-
-    @Override
     public Entity save(final Entity entity) {
         if (!this.equals(entity.getDataDefinition())) {
             throw new IllegalStateException("Incompatible types");
