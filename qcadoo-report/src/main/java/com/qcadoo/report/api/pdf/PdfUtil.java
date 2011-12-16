@@ -26,6 +26,7 @@ package com.qcadoo.report.api.pdf;
 import java.awt.Color;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.net.MalformedURLException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -34,6 +35,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.lowagie.text.BadElementException;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -41,6 +43,7 @@ import com.lowagie.text.Element;
 import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
+import com.lowagie.text.Image;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.Rectangle;
@@ -307,6 +310,24 @@ public final class PdfUtil {
     public static void addTableCellAsTable(final PdfPTable table, final String label, final Object fieldValue,
             final String nullValue, final Font headerFont, final Font valueFont) {
         addTableCellAsTable(table, label, fieldValue, nullValue, headerFont, valueFont, null);
+    }
+
+    public static void addImage(final Document document, final String fileName) {
+        try {
+            Image img = Image.getInstance(fileName);
+
+            img.scaleToFit(515, 370);
+
+            document.add(img);
+        } catch (BadElementException e) {
+            LOG.error(e.getMessage(), e);
+        } catch (MalformedURLException e) {
+            LOG.error(e.getMessage(), e);
+        } catch (IOException e) {
+            LOG.error(e.getMessage(), e);
+        } catch (DocumentException e) {
+            LOG.error(e.getMessage(), e);
+        }
     }
 
     public static PdfPTable createPanelTable(final int column) {
