@@ -37,7 +37,7 @@ import com.qcadoo.model.api.EntityTree;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.expression.ExpressionUtils;
 import com.qcadoo.model.api.validators.ErrorMessage;
-import com.qcadoo.model.internal.types.TreeEntitiesType;
+import com.qcadoo.model.internal.DetachedEntityTreeImpl;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.components.FieldComponent;
 import com.qcadoo.view.api.components.FormComponent;
@@ -330,15 +330,13 @@ public class FormComponentState extends AbstractContainerState implements FormCo
             if (fieldIsGridCorrespondingLookup(field.getValue(), field.getKey(), entity)) {
                 continue;
             }
-            if (fieldIsTreeType(field.getValue(), field.getKey(), entity)) {
+            if (fieldIsDetachedEntityTree(field.getValue(), field.getKey(), entity)) {
                 EntityTree tree = entity.getTreeField(field.getKey());
                 if (tree != null) {
                     ((TreeComponentState) field.getValue()).setRootNode(tree.getRoot());
-                    field.getValue().setFieldValue(tree);
                 }
-            } else {
-                field.getValue().setFieldValue(convertFieldToString(entity.getField(field.getKey()), field.getKey()));
             }
+            field.getValue().setFieldValue(convertFieldToString(entity.getField(field.getKey()), field.getKey()));
             if (requestUpdateState) {
                 field.getValue().requestComponentUpdateState();
             }
@@ -350,9 +348,8 @@ public class FormComponentState extends AbstractContainerState implements FormCo
         return (field instanceof LookupComponentState) && (entity.getField(databaseFieldName) instanceof Collection);
     }
 
-    private boolean fieldIsTreeType(final Object fieldValue, final String databaseFieldName, final Entity entity) {
-        return fieldValue instanceof TreeComponentState
-                && entity.getDataDefinition().getField(databaseFieldName).getType() instanceof TreeEntitiesType;
+    private boolean fieldIsDetachedEntityTree(final Object fieldValue, final String databaseFieldName, final Entity entity) {
+        return fieldValue instanceof TreeComponentState && entity.getField(databaseFieldName) instanceof DetachedEntityTreeImpl;
     }
 
     private Object convertFieldToString(final Object value, final String field) {

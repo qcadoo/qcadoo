@@ -87,6 +87,18 @@ public final class DetachedEntityTreeImpl extends AbstractList<Entity> implement
         return root;
     }
 
+    public boolean checkIfTreeContainsEntity(final Long entityId) {
+        if (entityId == null) {
+            return false;
+        }
+        for (Entity entity : entities) {
+            if (entityId.equals(entity.getId())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public String toString() {
         return "EntityTree[DETACHED!][size=" + size() + "]";
