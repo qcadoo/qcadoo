@@ -48,6 +48,7 @@ import com.qcadoo.model.api.expression.ExpressionUtils;
 import com.qcadoo.model.api.search.SearchCriteriaBuilder;
 import com.qcadoo.model.api.search.SearchRestrictions;
 import com.qcadoo.model.api.types.TreeType;
+import com.qcadoo.model.internal.DetachedEntityTreeImpl;
 import com.qcadoo.view.api.components.TreeComponent;
 import com.qcadoo.view.internal.components.FieldComponentState;
 
@@ -262,6 +263,9 @@ public final class TreeComponentState extends FieldComponentState implements Tre
     private boolean checkIfTreeContainsEntity(final EntityTree tree, final Long entityId) {
         if (entityId == null) {
             return false;
+        }
+        if (tree instanceof DetachedEntityTreeImpl) {
+            return ((DetachedEntityTreeImpl) tree).checkIfTreeContainsEntity(entityId);
         }
         SearchCriteriaBuilder searchBuilder = tree.find().add(SearchRestrictions.idEq(entityId));
         return searchBuilder.list().getTotalNumberOfEntities() > 0;
