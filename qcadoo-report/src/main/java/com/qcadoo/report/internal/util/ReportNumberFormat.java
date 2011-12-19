@@ -38,16 +38,16 @@ public final class ReportNumberFormat extends NumberFormat {
 
     private final NumberFormat integerNumberFormat;
 
-    private static final Map<Locale, ReportNumberFormat> formatters = new HashMap<Locale, ReportNumberFormat>();
+    private static final Map<Locale, ReportNumberFormat> FORMATTERS = new HashMap<Locale, ReportNumberFormat>();
 
     public static ReportNumberFormat getInstance(final Locale locale) {
-        ReportNumberFormat format = formatters.get(locale);
+        ReportNumberFormat format = FORMATTERS.get(locale);
         if (format == null) {
-            synchronized (formatters) {
-                format = formatters.get(locale);
+            synchronized (FORMATTERS) {
+                format = FORMATTERS.get(locale);
                 if (format == null) {
                     format = new ReportNumberFormat(locale);
-                    formatters.put(locale, format);
+                    FORMATTERS.put(locale, format);
                 }
             }
         }
