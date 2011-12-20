@@ -4,7 +4,7 @@
 
 	<groupId>com.qcadoo</groupId>
 	<artifactId>qcadoo-plugin-archetype</artifactId>
-	<version>1.1.1-SNAPSHOT</version>
+	<version>1.1.1</version>
 	<packaging>maven-archetype</packaging>
 
 	<name>Qcadoo Framework :: Plugin Archetype</name>
