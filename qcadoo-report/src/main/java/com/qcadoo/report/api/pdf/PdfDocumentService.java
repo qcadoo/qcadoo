@@ -57,7 +57,7 @@ public abstract class PdfDocumentService extends DocumentService {
             getDecimalFormat().setMaximumFractionDigits(3);
             getDecimalFormat().setMinimumFractionDigits(3);
             ensureReportDirectoryExist();
-            FileOutputStream fileOutputStream = new FileOutputStream((String) entity.getField("fileName") + getSuffix() + "."
+            FileOutputStream fileOutputStream = new FileOutputStream((String) entity.getField("fileName") + "."
                     + ReportService.ReportType.PDF.getExtension());
             PdfWriter writer = PdfWriter.getInstance(document, fileOutputStream);
             writer.setPageEvent(new PdfPageNumbering(

@@ -56,7 +56,7 @@ public abstract class XlsDocumentService extends DocumentService {
         FileOutputStream outputStream = null;
         try {
             ensureReportDirectoryExist();
-            outputStream = new FileOutputStream((String) entity.getField("fileName") + getSuffix() + "."
+            outputStream = new FileOutputStream((String) entity.getField("fileName") + "."
                     + ReportService.ReportType.XLS.getExtension());
             workbook.write(outputStream);
         } catch (IOException e) {
