@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 1.1.0
+ * Version: 1.1.1
  *
  * This file is part of Qcadoo.
  *
@@ -56,7 +56,7 @@ public abstract class XlsDocumentService extends DocumentService {
         FileOutputStream outputStream = null;
         try {
             ensureReportDirectoryExist();
-            outputStream = new FileOutputStream((String) entity.getField("fileName") + getSuffix() + "."
+            outputStream = new FileOutputStream((String) entity.getField("fileName") + "."
                     + ReportService.ReportType.XLS.getExtension());
             workbook.write(outputStream);
         } catch (IOException e) {

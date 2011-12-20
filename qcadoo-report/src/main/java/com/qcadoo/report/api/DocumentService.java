@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 1.1.0
+ * Version: 1.1.1
  *
  * This file is part of Qcadoo.
  *
@@ -51,8 +51,6 @@ public abstract class DocumentService {
 
     public abstract void generateDocument(final Entity entity, final Entity company, final Locale locale) throws IOException,
             DocumentException;
-
-    protected abstract String getSuffix();
 
     protected final TranslationService getTranslationService() {
         return translationService;

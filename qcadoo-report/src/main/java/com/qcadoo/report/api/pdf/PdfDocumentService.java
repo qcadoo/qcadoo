@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 1.1.0
+ * Version: 1.1.1
  *
  * This file is part of Qcadoo.
  *
@@ -57,7 +57,7 @@ public abstract class PdfDocumentService extends DocumentService {
             getDecimalFormat().setMaximumFractionDigits(3);
             getDecimalFormat().setMinimumFractionDigits(3);
             ensureReportDirectoryExist();
-            FileOutputStream fileOutputStream = new FileOutputStream((String) entity.getField("fileName") + getSuffix() + "."
+            FileOutputStream fileOutputStream = new FileOutputStream((String) entity.getField("fileName") + "."
                     + ReportService.ReportType.PDF.getExtension());
             PdfWriter writer = PdfWriter.getInstance(document, fileOutputStream);
             writer.setPageEvent(new PdfPageNumbering(
