@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 1.1.0
+ * Version: 1.1.1
  *
  * This file is part of Qcadoo.
  *
@@ -34,10 +34,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.qcadoo.model.api.DataDefinition;
@@ -58,6 +54,10 @@ import com.qcadoo.model.api.validators.ErrorMessage;
 import com.qcadoo.model.internal.ProxyEntity;
 import com.qcadoo.view.api.components.GridComponent;
 import com.qcadoo.view.internal.states.AbstractComponentState;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public final class GridComponentState extends AbstractComponentState implements GridComponent {
 
@@ -429,8 +429,9 @@ public final class GridComponentState extends AbstractComponentState implements 
         setSelectedEntityId((Long) value);
     }
 
-    private String translateMessage(final String key) {
-        return getTranslationService().translate(getTranslationPath() + "." + key, "qcadooView.message." + key, getLocale());
+    private String translateMessage(final String key, final String... args) {
+        return getTranslationService()
+                .translate(getTranslationPath() + "." + key, "qcadooView.message." + key, getLocale(), args);
     }
 
     @Override
@@ -526,7 +527,7 @@ public final class GridComponentState extends AbstractComponentState implements 
             if (selectedEntities.size() == 1) {
                 addMessage(translateMessage("deleteMessage"), MessageType.SUCCESS);
             } else {
-                addMessage(selectedEntities.size() + " " + translateMessage("deleteMessages"), MessageType.SUCCESS);
+                addMessage(translateMessage("deleteMessages", String.valueOf(selectedEntities.size())), MessageType.SUCCESS);
             }
             setSelectedEntityId(null);
             multiselectMode = false;
@@ -550,7 +551,7 @@ public final class GridComponentState extends AbstractComponentState implements 
             if (selectedEntities.size() == 1) {
                 addMessage(translateMessage("deactivateMessage"), MessageType.SUCCESS);
             } else {
-                addMessage(selectedEntities.size() + " " + translateMessage("deactivateMessages"), MessageType.SUCCESS);
+                addMessage(translateMessage("deactivateMessages", String.valueOf(selectedEntities.size())), MessageType.SUCCESS);
             }
         }
 
@@ -566,7 +567,7 @@ public final class GridComponentState extends AbstractComponentState implements 
             if (selectedEntities.size() == 1) {
                 addMessage(translateMessage("activateMessage"), MessageType.SUCCESS);
             } else {
-                addMessage(selectedEntities.size() + " " + translateMessage("activateMessages"), MessageType.SUCCESS);
+                addMessage(translateMessage("activateMessages", String.valueOf(selectedEntities.size())), MessageType.SUCCESS);
             }
         }
 
@@ -580,7 +581,7 @@ public final class GridComponentState extends AbstractComponentState implements 
             if (selectedEntities.size() == 1) {
                 addMessage(translateMessage("copyMessage"), MessageType.SUCCESS);
             } else {
-                addMessage(selectedEntities.size() + " " + translateMessage("copyMessages"), MessageType.SUCCESS);
+                addMessage(translateMessage("copyMessages", String.valueOf(selectedEntities.size())), MessageType.SUCCESS);
             }
         }
 

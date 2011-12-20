@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 1.1.0
+ * Version: 1.1.1
  *
  * This file is part of Qcadoo.
  *
@@ -85,6 +85,18 @@ public final class DetachedEntityTreeImpl extends AbstractList<Entity> implement
     @Override
     public EntityTreeNodeImpl getRoot() {
         return root;
+    }
+
+    public boolean checkIfTreeContainsEntity(final Long entityId) {
+        if (entityId == null) {
+            return false;
+        }
+        for (Entity entity : entities) {
+            if (entityId.equals(entity.getId())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

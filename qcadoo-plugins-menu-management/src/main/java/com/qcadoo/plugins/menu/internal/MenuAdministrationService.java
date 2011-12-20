@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 1.1.0
+ * Version: 1.1.1
  *
  * This file is part of Qcadoo.
  *
@@ -51,11 +51,11 @@ public class MenuAdministrationService {
     @Autowired
     private TranslationUtilsService translationUtilsService;
 
-    private static final List<String[]> hiddenCategories = new ArrayList<String[]>();
+    private static final List<String[]> HIDDEN_CATEGORIES = new ArrayList<String[]>();
 
     static {
-        hiddenCategories.add(new String[] { "qcadooView", "home" });
-        hiddenCategories.add(new String[] { "qcadooView", "administration" });
+        HIDDEN_CATEGORIES.add(new String[] { "qcadooView", "home" });
+        HIDDEN_CATEGORIES.add(new String[] { "qcadooView", "administration" });
     }
 
     public void addRestrictionToCategoriesGrid(final ViewDefinitionState viewDefinitionState) {
@@ -67,7 +67,7 @@ public class MenuAdministrationService {
             public void addRestriction(final SearchCriteriaBuilder searchCriteriaBuilder) {
                 SearchDisjunction disjunction = SearchRestrictions.disjunction();
 
-                for (String[] category : hiddenCategories) {
+                for (String[] category : HIDDEN_CATEGORIES) {
                     disjunction.add(SearchRestrictions.and(SearchRestrictions.eq("pluginIdentifier", category[0]),
                             SearchRestrictions.eq("name", category[1])));
                 }
