@@ -106,22 +106,15 @@ public class ReportController {
     @RequestMapping(value = "generateSavedReport/{plugin}/{model}", method = RequestMethod.GET)
     public void generateSavedReport(@PathVariable("plugin") final String plugin, @PathVariable("model") final String model,
             @RequestParam("id") final String id, @RequestParam("fieldDate") final String fieldDate,
-            @RequestParam("suffix") final String suffix, final HttpServletRequest request, final HttpServletResponse response,
-            final Locale locale) throws ReportException {
+            final HttpServletRequest request, final HttpServletResponse response, final Locale locale) throws ReportException {
         ReportService.ReportType reportType = getReportType(request);
         Entity entity = dataDefinitionService.get(plugin, model).get(Long.parseLong(id));
-        String translatedSuffix = "";
-        if (suffix.length() > 0) {
-            translatedSuffix = translationService.translate(plugin + "." + model + ".report.fileName.suffix." + suffix, locale);
-        }
         String translatedFileName = translationService.translate(plugin + "." + model + ".report.fileName", locale) + "_"
-                + PdfUtil.D_T_F.format((Date) entity.getField(fieldDate)) + "_" + translatedSuffix + "."
-                + reportType.getExtension();
+                + PdfUtil.D_T_F.format((Date) entity.getField(fieldDate)) + "_" + "." + reportType.getExtension();
         response.setHeader("Content-disposition", "inline; filename=" + translatedFileName);
         response.setContentType(reportType.getMimeType());
         try {
-            int bytes = copy(
-                    new FileInputStream(new File(entity.getStringField("fileName") + suffix + "." + reportType.getExtension())),
+            int bytes = copy(new FileInputStream(new File(entity.getStringField("fileName") + "." + reportType.getExtension())),
                     response.getOutputStream());
 
             response.setContentLength(bytes);

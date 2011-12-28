@@ -50,8 +50,8 @@
 	<properties>
 		<qcadoo.plugin.version>1.1.2</qcadoo.plugin.version>
 		<qcadoo.maven.plugin.version>1.1.2-SNAPSHOT</qcadoo.maven.plugin.version>
-		<spring.version>3.1.0.M1</spring.version>
-		<spring.security.version>3.0.5.RELEASE</spring.security.version>
+		<spring.version>3.1.0.RELEASE</spring.version>
+		<spring.security.version>3.0.7.RELEASE</spring.security.version>
 		<slf4j.version>1.6.1</slf4j.version>
 		<hibernate.version>3.6.1.Final</hibernate.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -389,8 +389,9 @@
 			</snapshots>
 		</repository>
 		<repository>
-			<id>SpringSource Enterprise Bundle Repository � External Bundle Milestones</id>
-			<url>http://maven.springframework.org/milestone</url>
+		    <id>springsource-repo</id>
+		    <name>SpringSource Repository</name>
+		    <url>http://repo.springsource.org/release</url>
 		</repository>
 	</repositories>
 
