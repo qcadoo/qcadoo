@@ -34,6 +34,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.qcadoo.model.api.DataDefinition;
@@ -54,10 +58,6 @@ import com.qcadoo.model.api.validators.ErrorMessage;
 import com.qcadoo.model.internal.ProxyEntity;
 import com.qcadoo.view.api.components.GridComponent;
 import com.qcadoo.view.internal.states.AbstractComponentState;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 public final class GridComponentState extends AbstractComponentState implements GridComponent {
 
@@ -266,15 +266,19 @@ public final class GridComponentState extends AbstractComponentState implements 
     }
 
     private void passEntitiesFromJson(final JSONObject json) throws JSONException {
-        if (json.has(JSON_ENTITIES) && !json.isNull(JSON_ENTITIES)) {
+        if (gridIsEmpty() && json.has(JSON_ENTITIES) && !json.isNull(JSON_ENTITIES)) {
             entities = Lists.newArrayList();
-            JSONArray entities = json.getJSONArray(JSON_ENTITIES);
+            JSONArray givenEntities = json.getJSONArray(JSON_ENTITIES);
             Long entityId = null;
-            for (int i = 0; i < entities.length(); i++) {
-                entityId = Long.valueOf(entities.get(i).toString());
-                this.entities.add(getDataDefinition().get(entityId));
+            for (int i = 0; i < givenEntities.length(); i++) {
+                entityId = Long.valueOf(givenEntities.get(i).toString());
+                entities.add(getDataDefinition().get(entityId));
             }
         }
+    }
+
+    private boolean gridIsEmpty() {
+        return belongsToEntityId == null;
     }
 
     @Override
