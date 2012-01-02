@@ -286,6 +286,7 @@ public final class PdfUtil {
         userAndDate.addCell(userParagraph);
         userAndDate.getDefaultCell().setHorizontalAlignment(Element.ALIGN_RIGHT);
         userAndDate.addCell(dateParagraph);
+        userAndDate.setSpacingAfter(14f);
         document.add(userAndDate);
     }
 
