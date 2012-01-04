@@ -46,6 +46,8 @@ public class AwesomeDynamicListState extends FieldComponentState implements Cont
 
     public static final String JSON_FORM_VALUES = "forms";
 
+    private final AwesomeDynamicListModelUtils awesomeDynamicListModelUtils;
+
     private final FormComponentPattern innerFormPattern;
 
     private List<FormComponentState> forms;
@@ -53,6 +55,7 @@ public class AwesomeDynamicListState extends FieldComponentState implements Cont
     public AwesomeDynamicListState(final AwesomeDynamicListPattern pattern, final FormComponentPattern innerFormPattern) {
         super(pattern);
         this.innerFormPattern = innerFormPattern;
+        this.awesomeDynamicListModelUtils = new AwesomeDynamicListModelUtilsImpl();
     }
 
     @Override
@@ -101,6 +104,7 @@ public class AwesomeDynamicListState extends FieldComponentState implements Cont
         List<Entity> entities = new LinkedList<Entity>();
         for (FormComponent form : forms) {
             Entity e = form.getEntity();
+            awesomeDynamicListModelUtils.proxyBelongsToFields(e);
             entities.add(e);
         }
         return entities;
