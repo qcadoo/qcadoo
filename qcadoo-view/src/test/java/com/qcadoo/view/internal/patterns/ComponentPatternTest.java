@@ -254,12 +254,12 @@ public class ComponentPatternTest extends AbstractPatternTest {
         JSONObject options = (JSONObject) model.get("jsOptions");
         JSONArray listenersArray = options.getJSONArray("listeners");
         assertEquals(3, listenersArray.length());
-        assertTrue(JsonArrayContain(listenersArray, "f1.t1"));
-        assertTrue(JsonArrayContain(listenersArray, "f1.t2"));
-        assertTrue(JsonArrayContain(listenersArray, "f1.t3"));
+        assertTrue(jsonArrayContain(listenersArray, "f1.t1"));
+        assertTrue(jsonArrayContain(listenersArray, "f1.t2"));
+        assertTrue(jsonArrayContain(listenersArray, "f1.t3"));
     }
 
-    private boolean JsonArrayContain(final JSONArray array, final String value) throws JSONException {
+    private boolean jsonArrayContain(final JSONArray array, final String value) throws JSONException {
         for (int i = 0; i < array.length(); i++) {
             if (array.getString(i).equals(value)) {
                 return true;

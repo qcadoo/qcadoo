@@ -60,7 +60,7 @@ public class GanttChartComponentState extends AbstractComponentState {
 
     Map<String, List<GanttChartItem>> collisionItems;
 
-    protected static final DateType dateType = new DateType();
+    protected static final DateType DATETYPE = new DateType();
 
     private final GanttChartItemResolver itemResolver;
 
@@ -114,7 +114,7 @@ public class GanttChartComponentState extends AbstractComponentState {
         if (dateFromString == null || "".equals(dateFromString)) {
             dateFromErrorMessage = translate("errorMessage.emptyDate");
         } else {
-            ValueAndError dateFromVaE = dateType.toObject(null, dateFromString);
+            ValueAndError dateFromVaE = DATETYPE.toObject(null, dateFromString);
             if (dateFromVaE.getMessage() == null) {
                 dateFrom = (Date) dateFromVaE.getValue();
             } else {
@@ -125,7 +125,7 @@ public class GanttChartComponentState extends AbstractComponentState {
         if (dateToString == null || "".equals(dateToString)) {
             dateToErrorMessage = translate("errorMessage.emptyDate");
         } else {
-            ValueAndError dateToVaE = dateType.toObject(null, dateToString);
+            ValueAndError dateToVaE = DATETYPE.toObject(null, dateToString);
             if (dateToVaE.getMessage() == null) {
                 dateTo = (Date) dateToVaE.getValue();
             } else {
@@ -159,10 +159,10 @@ public class GanttChartComponentState extends AbstractComponentState {
         json.put("dateFromErrorMessage", dateFromErrorMessage);
         json.put("dateToErrorMessage", dateToErrorMessage);
         if (dateFromErrorMessage == null) {
-            json.put("dateFrom", dateType.toString(scale.getDateFrom(), getLocale()));
+            json.put("dateFrom", DATETYPE.toString(scale.getDateFrom(), getLocale()));
         }
         if (dateToErrorMessage == null) {
-            json.put("dateTo", dateType.toString(scale.getDateTo(), getLocale()));
+            json.put("dateTo", DATETYPE.toString(scale.getDateTo(), getLocale()));
         }
 
         json.put("globalErrorMessage", globalErrorMessage);

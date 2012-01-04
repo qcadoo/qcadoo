@@ -42,7 +42,7 @@ public class GanttChartScaleImpl implements GanttChartScale {
 
     private final GanttChartItemFactory ganttChartItemFactory;
 
-    private static final DateType dateType = new DateType();
+    private static final DateType DATETYPE = new DateType();
 
     private final ZoomLevel zoomLevel;
 
@@ -117,7 +117,7 @@ public class GanttChartScaleImpl implements GanttChartScale {
         DateTime dateTimeFrom = new DateTime(dateFrom);
         DateTime dateTimeTo = new DateTime(dateTo);
         while (dateTimeFrom.compareTo(dateTimeTo) <= 0) {
-            daysArray.put(dateType.toString(dateTimeFrom.toDate(), ganttChartComponentState.getLocale()));
+            daysArray.put(DATETYPE.toString(dateTimeFrom.toDate(), ganttChartComponentState.getLocale()));
             dateTimeFrom = dateTimeFrom.plusDays(1);
         }
         return daysArray;
