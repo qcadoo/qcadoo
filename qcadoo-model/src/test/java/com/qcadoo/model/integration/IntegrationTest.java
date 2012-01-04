@@ -46,27 +46,28 @@ import com.qcadoo.tenant.internal.DefaultMultiTenantService;
 
 public abstract class IntegrationTest {
 
-    protected static String PLUGIN_PRODUCTS_NAME = "products";
+    protected static final String PLUGIN_PRODUCTS_NAME = "products";
 
-    protected static String PLUGIN_MACHINES_NAME = "machines";
+    protected static final String PLUGIN_MACHINES_NAME = "machines";
 
-    protected static String ENTITY_NAME_PRODUCT = "product";
+    protected static final String ENTITY_NAME_PRODUCT = "product";
 
-    protected static String ENTITY_NAME_PART = "part";
+    protected static final String ENTITY_NAME_PART = "part";
 
-    protected static String ENTITY_NAME_MACHINE = "machine";
+    protected static final String ENTITY_NAME_MACHINE = "machine";
 
-    protected static String ENTITY_NAME_COMPONENT = "component";
+    protected static final String ENTITY_NAME_COMPONENT = "component";
 
-    protected static String TABLE_NAME_PRODUCT = PLUGIN_PRODUCTS_NAME + "_" + ENTITY_NAME_PRODUCT;
+    protected static final String TABLE_NAME_PRODUCT = PLUGIN_PRODUCTS_NAME + "_" + ENTITY_NAME_PRODUCT;
 
-    protected static String TABLE_NAME_MACHINE = PLUGIN_MACHINES_NAME + "_" + ENTITY_NAME_MACHINE;
+    protected static final String TABLE_NAME_MACHINE = PLUGIN_MACHINES_NAME + "_" + ENTITY_NAME_MACHINE;
 
-    protected static String TABLE_NAME_COMPONENT = PLUGIN_PRODUCTS_NAME + "_" + ENTITY_NAME_COMPONENT;
+    protected static final String TABLE_NAME_COMPONENT = PLUGIN_PRODUCTS_NAME + "_" + ENTITY_NAME_COMPONENT;
 
-    protected static String TABLE_NAME_PART = PLUGIN_PRODUCTS_NAME + "_" + ENTITY_NAME_PART;
-    
-    protected static String TABLE_NAME_JOIN_PRODUCT_PART = "JOINTABLE_" + ENTITY_NAME_PART.toUpperCase() + "_" + ENTITY_NAME_PRODUCT.toUpperCase();
+    protected static final String TABLE_NAME_PART = PLUGIN_PRODUCTS_NAME + "_" + ENTITY_NAME_PART;
+
+    protected static final String TABLE_NAME_JOIN_PRODUCT_PART = "JOINTABLE_" + ENTITY_NAME_PART.toUpperCase() + "_"
+            + ENTITY_NAME_PRODUCT.toUpperCase();
 
     protected static InternalDataDefinitionService dataDefinitionService;
 
@@ -122,7 +123,7 @@ public abstract class IntegrationTest {
         entity.setField("product", product);
         return entity;
     }
-    
+
     protected Entity createPart(final String name, final Object product, final List<Entity> productsManyToMany) {
         Entity entity = createPart(name, product);
         entity.setField("products", productsManyToMany);
