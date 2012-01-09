@@ -145,7 +145,7 @@ public class AwesomeDynamicListModelUtilsImplTest {
     }
 
     private void assertProxy(final Entity proxyEntity) {
-        Assert.assertSame(1L, proxyEntity.getId());
+        Assert.assertEquals(Long.valueOf(1L), proxyEntity.getId());
         Assert.assertEquals(belongsToDataDefinition.getName(), proxyEntity.getDataDefinition().getName());
         Assert.assertEquals(belongsToDataDefinition.getPluginIdentifier(), proxyEntity.getDataDefinition().getPluginIdentifier());
     }
