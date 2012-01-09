@@ -316,10 +316,26 @@ public final class PdfUtil {
     public static void addImage(final Document document, final String fileName) {
         try {
             Image img = Image.getInstance(fileName);
-
             img.scaleToFit(515, 370);
 
             document.add(img);
+        } catch (BadElementException e) {
+            LOG.error(e.getMessage(), e);
+        } catch (MalformedURLException e) {
+            LOG.error(e.getMessage(), e);
+        } catch (IOException e) {
+            LOG.error(e.getMessage(), e);
+        } catch (DocumentException e) {
+            LOG.error(e.getMessage(), e);
+        }
+    }
+
+    public static void addImage(final PdfPTable table, final String fileName) {
+        try {
+            Image img = Image.getInstance(fileName);
+            img.scaleToFit(515, 370);
+
+            table.addCell(img);
         } catch (BadElementException e) {
             LOG.error(e.getMessage(), e);
         } catch (MalformedURLException e) {
