@@ -34,6 +34,8 @@ import java.util.Collections;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import com.google.common.collect.Lists;
@@ -46,6 +48,8 @@ import com.qcadoo.tenant.api.MultiTenantUtil;
 import com.qcadoo.tenant.internal.DefaultMultiTenantService;
 
 public class PluginChangeStateToTest {
+
+    private static final Logger LOG = LoggerFactory.getLogger(PluginChangeStateToTest.class);
 
     private PluginStateResolver mockPluginStateResolver;
 
@@ -106,7 +110,7 @@ public class PluginChangeStateToTest {
             plugin.changeStateTo(to);
             Assert.fail();
         } catch (IllegalStateException e) {
-            // ignore
+            LOG.info("ignore");
         }
     }
 
