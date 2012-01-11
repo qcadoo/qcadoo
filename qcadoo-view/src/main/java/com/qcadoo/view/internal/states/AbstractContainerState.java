@@ -23,6 +23,8 @@
  */
 package com.qcadoo.view.internal.states;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -97,6 +99,26 @@ public abstract class AbstractContainerState extends AbstractComponentState impl
     @Override
     public final void addChild(final InternalComponentState state) {
         children.put(state.getName(), state);
+    }
+
+    @Override
+    public InternalComponentState findChild(final String name) {
+        checkNotNull(name, "name should be given");
+        InternalComponentState referencedComponent = getChildren().get(name);
+        if (referencedComponent != null) {
+            return referencedComponent;
+        }
+
+        for (InternalComponentState component : getChildren().values()) {
+            if (component instanceof ContainerState) {
+                ContainerState innerContainer = (ContainerState) component;
+                referencedComponent = innerContainer.findChild(name);
+                if (referencedComponent != null) {
+                    return referencedComponent;
+                }
+            }
+        }
+        return null;
     }
 
 }

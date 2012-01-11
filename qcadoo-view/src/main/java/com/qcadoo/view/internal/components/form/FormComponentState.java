@@ -543,4 +543,9 @@ public class FormComponentState extends AbstractContainerState implements FormCo
 
     }
 
+    @Override
+    public FieldComponent findFieldComponentByName(final String name) {
+        return (FieldComponent) findChild(name);
+    }
+
 }

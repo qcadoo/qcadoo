@@ -61,4 +61,16 @@ public interface ContainerState extends InternalComponentState {
      */
     void addChild(InternalComponentState state);
 
+    /**
+     * Returns child component with specified name or null if no such component found
+     * 
+     * @param name
+     *            name of component
+     * @return component with specified name
+     * 
+     * @throws NullPointerException
+     *             if name is null
+     */
+    InternalComponentState findChild(String name);
+
 }

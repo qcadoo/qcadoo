@@ -62,4 +62,13 @@ public interface FormComponent extends ComponentState {
      */
     void setFormEnabled(boolean enabled);
 
+    /**
+     * Returns child field component with specified name (first occurence) or null if no such component found
+     * 
+     * @param name
+     *            name of component
+     * @return field component with specified name
+     */
+    FieldComponent findFieldComponentByName(String name);
+
 }

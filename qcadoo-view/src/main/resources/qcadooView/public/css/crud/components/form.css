@@ -84,6 +84,14 @@
 	height: 100%;
 }
 
+.required .component_container_form_textRepresentation {
+	font-weight: bold;
+}
+
+.error .component_container_form_textRepresentation {
+	color: #FF0000;
+}
+
  .component_container_form_textHeight {
 	height: 22px;
 	display: inline-block;

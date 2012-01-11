@@ -23,6 +23,8 @@
  */
 package com.qcadoo.view.internal.components.awesomeDynamicList;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -32,7 +34,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.google.common.collect.Lists;
 import com.qcadoo.model.api.Entity;
+import com.qcadoo.view.api.components.AwesomeDynamicListComponent;
 import com.qcadoo.view.api.components.FormComponent;
 import com.qcadoo.view.internal.api.ContainerState;
 import com.qcadoo.view.internal.api.InternalComponentState;
@@ -42,7 +46,7 @@ import com.qcadoo.view.internal.components.form.FormComponentPattern;
 import com.qcadoo.view.internal.components.form.FormComponentState;
 import com.qcadoo.view.internal.internal.ViewDefinitionStateImpl;
 
-public class AwesomeDynamicListState extends FieldComponentState implements ContainerState {
+public class AwesomeDynamicListState extends FieldComponentState implements AwesomeDynamicListComponent, ContainerState {
 
     public static final String JSON_FORM_VALUES = "forms";
 
@@ -171,5 +175,34 @@ public class AwesomeDynamicListState extends FieldComponentState implements Cont
             }
         }
         return false;
+    }
+
+    @Override
+    public List<FormComponent> getFormComponents() {
+        List<FormComponent> formComponents = Lists.newArrayList();
+        for (FormComponent form : forms) {
+            formComponents.add(form);
+        }
+        return formComponents;
+    }
+
+    @Override
+    public FormComponent getFormComponent(final Long id) {
+        checkNotNull(id, "id must be given");
+        for (FormComponent form : forms) {
+            if (id.equals(form.getEntityId())) {
+                return form;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public InternalComponentState findChild(final String reference) {
+        InternalComponentState component = null;
+        for (FormComponent form : getFormComponents()) {
+            component = (InternalComponentState) form.findFieldComponentByName(reference);
+        }
+        return component;
     }
 }
