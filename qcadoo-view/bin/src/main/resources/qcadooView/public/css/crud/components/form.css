@@ -200,7 +200,7 @@
 }
 
 .disabled .labelbox {
-	color: #7d7d7d; /*EDISONDA NEW*/
+	color: #555555; /*EDISONDA NEW*/ /* MAKU usability fix */
 }
 
 .component_element_checkbox .component_container_form_w {

@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 0.4.1
+ * Version: 1.1.1
  *
  * This file is part of Qcadoo.
  *
@@ -198,14 +198,14 @@ ul.q_row1 li.activ {
 	background-position: left;
 	}
 ul.q_row1 li.activ a {
-	color: #189106;
+	color: #0B5400; /* MAKU usability fix */
 	background-image: url('/qcadooView/public/css/core/menu/images/btn_row1.png');
 	background-repeat:no-repeat;
 	background-position:top right;
 	}
 ul.q_row1 li.activ a span {
 	padding-top:2px;
-	color: #189106;
+	color: #0B5400; /* MAKU usability fix */
 	background-image: url('/qcadooView/public/css/core/menu/images/btn_row1_activ_c.png');
 	}
 ul.q_row1 li.activ:hover {
@@ -343,10 +343,14 @@ ul.q_row2 li.activ:hover a span  {
 }
 /* ribbon [group] */
 .ribbonMenu {
-	display:block;
+	/*display:block;*/
+	display:inline-block;
+	vertical-align: top;
 	width:auto;
-	margin-right:10px;
-	float:left;
+	/*margin-right:10px;*/
+	/*margin-right:5px;*/
+	margin-right: 0px;
+	/*float:left;*/
 	background-image:url('/qcadooView/public/css/core/menu/images/ribbon_down.png');
 	background-position:bottom;
 	background-repeat:repeat-x;
@@ -360,11 +364,15 @@ ul.q_row2 li.activ:hover a span  {
 }
 .ribbonMenu_right {
 	height:61px;
-	padding: 0px 10px;
-	background-image:url('/qcadooView/public/css/core/menu/images/ribbon_right.png');
+	/*padding: 0px 10px;*/
+	padding: 0px 2px;
+	/*background-image:url('/qcadooView/public/css/core/menu/images/ribbon_right.png');*/
 	background-position:right;
 	background-repeat:no-repeat;
 	text-align:center;
+}
+.lastRibbonMenu .ribbonMenu_right {
+	background-image:url('/qcadooView/public/css/core/menu/images/ribbon_right.png');
 }
 .ribbon_title {
 	display:inline;
@@ -375,7 +383,8 @@ ul.q_row2 li.activ:hover a span  {
 	padding: 0px 4px;
 	margin:auto;
 	font-size:10px;
-	color:#b7b7b7;
+	/*color:#b7b7b7;*/
+	color:#777;
 	background-color:#f5f5f5;
 	text-align:center;
 }
@@ -1009,4 +1018,58 @@ ul.ribbon_list li.twoB.enabled ul li a.twoB_down:hover {
 .ribbon_content .ribbonListElement .description_message p a {
 	color: #464646;
 	height: auto;
+}
+
+.ribbonGroupsDropdownButton {
+	display: inline-block;
+	float: right;
+	width: 48px;
+	height: 46px;
+	margin-top: 12px;
+	margin-left: 5px;
+	background-image: url('/qcadooView/public/img/core/icons/dropdownIcon46.png');
+	background-repeat: no-repeat;
+	background-position: 0px 0px;
+	position: relative;
+	cursor: pointer;
+}
+.ribbonGroupsDropdownButton:hover {
+	background-position: 0px -46px;
+}
+.ribbonGroupsDropdownButton.ribbonGroupsDropdownButtonActive {
+	background-position: 0px -92px;
+}
+.ribbonGroupsDropdownButton.ribbonGroupsDropdownButtonActive:hover {
+	background-position: 0px -138px;
+}
+.ribbonGroupsDropdown {
+	width: 200px;
+	background-color: #F5F5F5;
+	position: absolute;
+	top: 70px;
+	right: 20px;
+	border: solid #707070 1px;
+	display: none;
+	padding-top: 5px;
+}
+.ribbonGroupsDropdown .ribbonMenu {
+	display: block;
+	background-position: center top;
+	margin-top: 3px;
+}
+.ribbonGroupsDropdown .ribbonMenu .ribbonMenu_left,
+.ribbonGroupsDropdown .ribbonMenu .ribbonMenu_right {
+	background: transparent;
+}
+
+.ribbonGroupsDropdown .ribbonMenu .ribbonMenu_right .ribbon_title {
+	top: -5px;
+}
+.ribbonGroupsDropdown .ribbonMenu_right {
+	height: auto;
+}
+.ribbonGroupsDropdown .ribbonBigElement,
+.ribbonGroupsDropdown .ribbon_list {
+	float: none;
+	display: inline-block;
 }

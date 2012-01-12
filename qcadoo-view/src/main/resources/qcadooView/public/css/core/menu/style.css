@@ -198,14 +198,14 @@ ul.q_row1 li.activ {
 	background-position: left;
 	}
 ul.q_row1 li.activ a {
-	color: #189106;
+	color: #0B5400; /* MAKU usability fix */
 	background-image: url('/qcadooView/public/css/core/menu/images/btn_row1.png');
 	background-repeat:no-repeat;
 	background-position:top right;
 	}
 ul.q_row1 li.activ a span {
 	padding-top:2px;
-	color: #189106;
+	color: #0B5400; /* MAKU usability fix */
 	background-image: url('/qcadooView/public/css/core/menu/images/btn_row1_activ_c.png');
 	}
 ul.q_row1 li.activ:hover {
