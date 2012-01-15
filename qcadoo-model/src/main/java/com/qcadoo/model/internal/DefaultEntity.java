@@ -23,6 +23,8 @@
  */
 package com.qcadoo.model.internal;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -38,6 +40,7 @@ import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.EntityTree;
 import com.qcadoo.model.api.FieldDefinition;
+import com.qcadoo.model.api.types.BelongsToType;
 import com.qcadoo.model.api.validators.ErrorMessage;
 
 public final class DefaultEntity implements Entity {
@@ -203,6 +206,18 @@ public final class DefaultEntity implements Entity {
     }
 
     @Override
+    public boolean getBooleanField(final String fieldName) {
+        Object fieldValue = getField(fieldName);
+        if (fieldValue instanceof Boolean) {
+            return ((Boolean) fieldValue).booleanValue();
+        }
+        if (fieldValue instanceof String) {
+            return Boolean.parseBoolean((String) fieldValue);
+        }
+        return false;
+    }
+
+    @Override
     public EntityListImpl getHasManyField(final String fieldName) {
         return (EntityListImpl) getField(fieldName);
     }
@@ -223,7 +238,21 @@ public final class DefaultEntity implements Entity {
 
     @Override
     public Entity getBelongsToField(final String fieldName) {
+        if (getField(fieldName) == null) {
+            return null;
+        }
+
+        checkArgument(dataDefinition.getField(fieldName).getType() instanceof BelongsToType, "Field should be belongsTo type");
+        if (getField(fieldName) instanceof Long) {
+            return getProxyForBelongsToField(fieldName);
+        }
         return (Entity) getField(fieldName);
+    }
+
+    private Entity getProxyForBelongsToField(final String fieldName) {
+        BelongsToType belongsToType = (BelongsToType) dataDefinition.getField(fieldName).getType();
+        Long belongsToEntityId = (Long) getField(fieldName);
+        return new ProxyEntity(belongsToType.getDataDefinition(), belongsToEntityId);
     }
 
     @Override

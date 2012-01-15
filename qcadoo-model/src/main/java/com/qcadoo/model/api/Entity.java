@@ -77,11 +77,23 @@ public interface Entity {
     String getStringField(String fieldName);
 
     /**
+     * Return the boolean value of the field with given name
+     * 
+     * @param fieldName
+     *            field's name
+     * @return the field's boolean value
+     */
+    boolean getBooleanField(String fieldName);
+
+    /**
      * Return the value, casted to entity, of the field with given name.
      * 
      * @param fieldName
      *            field's name
      * @return the field's value
+     * 
+     * @throws IllegalArgumentException
+     *             if given field is not belongsTo type
      */
     Entity getBelongsToField(String fieldName);
 
@@ -103,7 +115,6 @@ public interface Entity {
      */
     List<Entity> getManyToManyField(String fieldName);
 
-    
     /**
      * Return the value, casted to tree, of the field with given name.
      * 

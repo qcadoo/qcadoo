@@ -85,6 +85,11 @@ public final class EntityTreeNodeImpl implements EntityTreeNode {
     }
 
     @Override
+    public boolean getBooleanField(final String fieldName) {
+        return entity.getBooleanField(fieldName);
+    }
+
+    @Override
     public Entity getBelongsToField(final String fieldName) {
         return entity.getBelongsToField(fieldName);
     }
@@ -99,7 +104,6 @@ public final class EntityTreeNodeImpl implements EntityTreeNode {
         return entity.getManyToManyField(fieldName);
     }
 
-    
     @Override
     public EntityTree getTreeField(final String fieldName) {
         return entity.getTreeField(fieldName);

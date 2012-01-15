@@ -47,6 +47,7 @@ public final class ProxyEntity implements Entity {
     private Entity entity = null;
 
     public ProxyEntity(final DataDefinition dataDefinition, final Long id) {
+        checkNotNull(id, "missing id for proxied entity");
         this.dataDefinition = dataDefinition;
         this.id = id;
     }
@@ -149,6 +150,11 @@ public final class ProxyEntity implements Entity {
     }
 
     @Override
+    public boolean getBooleanField(final String fieldName) {
+        return getEntity().getBooleanField(fieldName);
+    }
+
+    @Override
     public Entity getBelongsToField(final String fieldName) {
         return getEntity().getBelongsToField(fieldName);
     }
@@ -162,7 +168,7 @@ public final class ProxyEntity implements Entity {
     public List<Entity> getManyToManyField(final String fieldName) {
         return getEntity().getManyToManyField(fieldName);
     }
-    
+
     @Override
     public EntityTree getTreeField(final String fieldName) {
         return getEntity().getTreeField(fieldName);
@@ -197,4 +203,5 @@ public final class ProxyEntity implements Entity {
         ProxyEntity other = (ProxyEntity) obj;
         return new EqualsBuilder().append(id, other.id).isEquals();
     }
+
 }
