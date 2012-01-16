@@ -78,10 +78,11 @@ public interface PluginManager {
     List<Plugin> getEnabledPluginsList();
 
     /**
-     * Checks if a plugin is enabled
+     * Checks if plugin with specified identifier is enabled
      * 
-     * @return result
+     * @param pluginIdentifier
+     *            plugin identifier
+     * @return true if plugin is enabled, otherwise returns false
      */
-
     boolean isPluginEnabled(final String pluginIdentifier);
 }
