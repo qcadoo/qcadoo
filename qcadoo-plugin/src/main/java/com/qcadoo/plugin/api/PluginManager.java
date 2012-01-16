@@ -23,6 +23,8 @@
  */
 package com.qcadoo.plugin.api;
 
+import java.util.List;
+
 import com.qcadoo.plugin.api.artifact.PluginArtifact;
 
 /**
@@ -67,4 +69,19 @@ public interface PluginManager {
      * @return status of the operation
      */
     PluginOperationResult installPlugin(final PluginArtifact pluginArtifact);
+
+    /**
+     * Gets list of enabled plugins
+     * 
+     * @return list identifier of enabled plugins.
+     */
+    List<Plugin> getEnabledPluginsList();
+
+    /**
+     * Checks if a plugin is enabled
+     * 
+     * @return result
+     */
+
+    boolean isPluginEnabled(final String pluginIdentifier);
 }

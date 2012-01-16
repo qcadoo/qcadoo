@@ -29,12 +29,14 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.qcadoo.model.beans.qcadooPlugin.QcadooPluginPlugin;
 import com.qcadoo.plugin.api.Plugin;
 import com.qcadoo.plugin.api.PluginDependencyInformation;
 import com.qcadoo.plugin.api.PluginDependencyResult;
@@ -389,6 +391,24 @@ public class DefaultPluginManager implements PluginManager {
 
     void setPluginDescriptorResolver(final PluginDescriptorResolver pluginDescriptorResolver) {
         this.pluginDescriptorResolver = pluginDescriptorResolver;
+    }
+
+    @Override
+    public List<Plugin> getEnabledPluginsList() {
+        List<Plugin> pluginIdentifierList = new ArrayList<Plugin>();
+        Set<QcadooPluginPlugin> pluginList = pluginDao.list();
+        for (QcadooPluginPlugin qcadooPlugin : pluginList) {
+            Plugin plugin = pluginAccessor.getEnabledPlugin(qcadooPlugin.getIdentifier());
+            if (plugin != null) {
+                pluginIdentifierList.add(plugin);
+            }
+        }
+        return pluginIdentifierList;
+    }
+
+    @Override
+    public boolean isPluginEnabled(final String pluginIdentifier) {
+        return pluginAccessor.getEnabledPlugin(pluginIdentifier) != null ? true : false;
     }
 
 }
