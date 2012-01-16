@@ -23,6 +23,8 @@
  */
 package com.qcadoo.report.api.pdf;
 
+import static org.springframework.context.i18n.LocaleContextHolder.getLocale;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -37,6 +39,8 @@ import com.qcadoo.localization.api.utils.DateUtils;
 import com.qcadoo.model.api.Entity;
 
 public final class PdfPageNumbering extends PdfPageEventHelper {
+
+    private static final String EMAIL = "email";
 
     /** The PdfTemplate that contains the total number of pages. */
     private PdfTemplate total;
@@ -67,7 +71,7 @@ public final class PdfPageNumbering extends PdfPageEventHelper {
         footerData = footerData.append(username);
         this.generatedBy = footerData.toString();
 
-        this.generationDate = new SimpleDateFormat(DateUtils.DATE_TIME_FORMAT).format(new Date());
+        this.generationDate = new SimpleDateFormat(DateUtils.DATE_TIME_FORMAT, getLocale()).format(new Date());
 
         if (company == null) {
             this.companyName = "";
@@ -104,12 +108,12 @@ public final class PdfPageNumbering extends PdfPageEventHelper {
         }
 
         if (company.getStringField("phone") == null) {
-            if (company.getStringField("email") == null) {
+            if (company.getStringField(EMAIL) == null) {
                 this.phoneEmail = "";
             } else {
                 companyData.setLength(0);
                 companyData = companyData.append("E-mail: ");
-                companyData = companyData.append(company.getStringField("email"));
+                companyData = companyData.append(company.getStringField(EMAIL));
                 this.phoneEmail = companyData.toString();
             }
         } else {
@@ -117,10 +121,10 @@ public final class PdfPageNumbering extends PdfPageEventHelper {
             companyData = companyData.append(phone);
             companyData = companyData.append(": ");
             companyData = companyData.append(company.getStringField("phone"));
-            if (company.getStringField("email") != null) {
+            if (company.getStringField(EMAIL) != null) {
                 companyData = companyData.append(", ");
                 companyData = companyData.append("E-mail: ");
-                companyData = companyData.append(company.getStringField("email"));
+                companyData = companyData.append(company.getStringField(EMAIL));
             }
             this.phoneEmail = companyData.toString();
         }
@@ -201,12 +205,12 @@ public final class PdfPageNumbering extends PdfPageEventHelper {
         cb.setTextMatrix(document.left(), textBase);
         cb.showText(companyName);
         float companyFooterLine = 10;
-        if (address != "") {
+        if (!"".equals(address)) {
             cb.setTextMatrix(document.left(), textBase - companyFooterLine);
             cb.showText(address);
             companyFooterLine += 10;
         }
-        if (phoneEmail != "") {
+        if (!"".equals(phoneEmail)) {
             cb.setTextMatrix(document.left(), textBase - companyFooterLine);
             cb.showText(phoneEmail);
         }

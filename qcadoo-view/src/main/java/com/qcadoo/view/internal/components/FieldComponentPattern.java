@@ -42,6 +42,10 @@ public abstract class FieldComponentPattern extends AbstractComponentPattern {
 
     private boolean defaultRequired = false;
 
+    private static final String LABEL = "label";
+
+    private static final String LABEL_SUFFIX = ".label";
+
     public FieldComponentPattern(final ComponentDefinition componentDefinition) {
         super(componentDefinition);
 
@@ -64,19 +68,19 @@ public abstract class FieldComponentPattern extends AbstractComponentPattern {
         Map<String, Object> translations = new HashMap<String, Object>();
 
         if (getFieldDefinition() == null) {
-            translations.put("label", getTranslationService().translate(getTranslationPath() + ".label", locale));
+            translations.put(LABEL, getTranslationService().translate(getTranslationPath() + LABEL_SUFFIX, locale));
         } else {
             String code1 = getFieldDefinition().getDataDefinition().getPluginIdentifier() + "."
-                    + getFieldDefinition().getDataDefinition().getName() + "." + getFieldDefinition().getName() + ".label";
+                    + getFieldDefinition().getDataDefinition().getName() + "." + getFieldDefinition().getName() + LABEL_SUFFIX;
 
             if (BelongsToType.class.isAssignableFrom(getFieldDefinition().getType().getClass())) {
                 DataDefinition fieldDataDefinition = ((BelongsToType) getFieldDefinition().getType()).getDataDefinition();
                 String code2 = fieldDataDefinition.getPluginIdentifier() + "." + fieldDataDefinition.getName() + "."
-                        + getFieldDefinition().getName() + ".label";
-                translations.put("label", getTranslationService()
-                        .translate(getTranslationPath() + ".label", code1, code2, locale));
+                        + getFieldDefinition().getName() + LABEL_SUFFIX;
+                translations.put(LABEL,
+                        getTranslationService().translate(getTranslationPath() + LABEL_SUFFIX, code1, code2, locale));
             } else {
-                translations.put("label", getTranslationService().translate(getTranslationPath() + ".label", code1, locale));
+                translations.put(LABEL, getTranslationService().translate(getTranslationPath() + LABEL_SUFFIX, code1, locale));
             }
         }
 

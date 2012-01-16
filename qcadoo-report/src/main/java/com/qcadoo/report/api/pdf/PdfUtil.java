@@ -23,6 +23,8 @@
  */
 package com.qcadoo.report.api.pdf;
 
+import static org.springframework.context.i18n.LocaleContextHolder.getLocale;
+
 import java.awt.Color;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -56,7 +58,7 @@ import com.qcadoo.localization.api.utils.DateUtils;
 
 public final class PdfUtil {
 
-    public static final SimpleDateFormat D_T_F = new SimpleDateFormat(DateUtils.REPORT_DATE_TIME_FORMAT);
+    public static final SimpleDateFormat D_T_F = new SimpleDateFormat(DateUtils.REPORT_DATE_TIME_FORMAT, getLocale());
 
     private static final Logger LOG = LoggerFactory.getLogger(PdfUtil.class);
 
@@ -268,7 +270,7 @@ public final class PdfUtil {
 
     public static void addDocumentHeader(final Document document, final String name, final String documenTitle,
             final String documentAuthor, final Date date, final String username) throws DocumentException {
-        SimpleDateFormat df = new SimpleDateFormat(DateUtils.DATE_TIME_FORMAT);
+        SimpleDateFormat df = new SimpleDateFormat(DateUtils.DATE_TIME_FORMAT, getLocale());
         LineSeparator line = new LineSeparator(3, 100f, lineDarkColor, Element.ALIGN_LEFT, 0);
         document.add(Chunk.NEWLINE);
         Paragraph title = new Paragraph(new Phrase(documenTitle, dejavuBold19Light));

@@ -46,6 +46,8 @@ public class WindowComponentPattern extends AbstractContainerPattern {
 
     private static final String JS_OBJECT = "QCD.components.containers.Window";
 
+    private static final String HEADER = "header";
+
     private Boolean header;
 
     private Boolean fixedHeight;
@@ -138,7 +140,7 @@ public class WindowComponentPattern extends AbstractContainerPattern {
 
                 String type = parser.getStringAttribute(child, "type");
                 String value = parser.getStringAttribute(child, "value");
-                if ("header".equals(type)) {
+                if (HEADER.equals(type)) {
                     header = Boolean.parseBoolean(value);
                 } else if ("fixedHeight".equals(type)) {
                     fixedHeight = Boolean.parseBoolean(value);
@@ -152,7 +154,7 @@ public class WindowComponentPattern extends AbstractContainerPattern {
         }
 
         if (header == null) {
-            header = parser.getBooleanAttribute(componentNode, "header", true);
+            header = parser.getBooleanAttribute(componentNode, HEADER, true);
         }
         if (fixedHeight == null) {
             fixedHeight = parser.getBooleanAttribute(componentNode, "fixedHeight", false);
@@ -169,7 +171,7 @@ public class WindowComponentPattern extends AbstractContainerPattern {
     @Override
     protected Map<String, Object> getJspOptions(final Locale locale) {
         Map<String, Object> options = new HashMap<String, Object>();
-        options.put("header", header);
+        options.put(HEADER, header);
         options.put("oneTab", this.getChildren().size() < 2);
         options.put("hasRibbon", hasRibbon);
         return options;
@@ -179,7 +181,7 @@ public class WindowComponentPattern extends AbstractContainerPattern {
     protected JSONObject getJsOptions(final Locale locale) throws JSONException {
         JSONObject json = new JSONObject();
         json.put("fixedHeight", fixedHeight);
-        json.put("header", header);
+        json.put(HEADER, header);
         json.put("oneTab", this.getChildren().size() < 2);
         json.put("hasRibbon", hasRibbon);
         if (ribbon != null) {
