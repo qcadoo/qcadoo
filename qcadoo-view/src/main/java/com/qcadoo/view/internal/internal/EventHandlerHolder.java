@@ -62,10 +62,9 @@ public final class EventHandlerHolder {
     public void performEvent(final ViewDefinitionState viewDefinitionState, final String event, final String... args) {
         if (!eventHandlers.containsKey(event)) {
             return;
-        } else {
-            for (EventHandler eventHandler : eventHandlers.get(event)) {
-                eventHandler.invokeEvent(viewDefinitionState, args);
-            }
+        }
+        for (EventHandler eventHandler : eventHandlers.get(event)) {
+            eventHandler.invokeEvent(viewDefinitionState, args);
         }
     }
 

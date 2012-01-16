@@ -102,13 +102,7 @@ public class RibbonParserService {
             final ViewDefinition viewDefinition) throws ViewDefinitionParserNodeException {
         String template = parser.getStringAttribute(groupNode, "template");
 
-        if (template != null) {
-            try {
-                return ribbonTemplates.getGroupTemplate(template, viewDefinition);
-            } catch (IllegalStateException e) {
-                throw new ViewDefinitionParserNodeException(groupNode, e);
-            }
-        } else {
+        if (template == null) {
             String groupName = parser.getStringAttribute(groupNode, "name");
             if (groupName == null) {
                 throw new ViewDefinitionParserNodeException(groupNode, "Name attribute cannot be empty");
@@ -126,6 +120,12 @@ public class RibbonParserService {
             }
 
             return ribbonGroup;
+        } else {
+            try {
+                return ribbonTemplates.getGroupTemplate(template, viewDefinition);
+            } catch (IllegalStateException e) {
+                throw new ViewDefinitionParserNodeException(groupNode, e);
+            }
         }
     }
 
@@ -160,7 +160,9 @@ public class RibbonParserService {
         item.setAction(RibbonUtils.translateRibbonAction(parser.getStringAttribute(itemNode, "action"), viewDefinition));
         item.setType(type);
         String state = parser.getStringAttribute(itemNode, "state");
-        if (state != null) {
+        if (state == null) {
+            item.setEnabled(true);
+        } else {
             if ("enabled".equals(state)) {
                 item.setEnabled(true);
             } else if ("disabled".equals(state)) {
@@ -168,8 +170,6 @@ public class RibbonParserService {
             } else {
                 throw new ViewDefinitionParserNodeException(itemNode, "Unsupported ribbon item state : " + state);
             }
-        } else {
-            item.setEnabled(true);
         }
         String message = parser.getStringAttribute(itemNode, "message");
         if (message != null) {

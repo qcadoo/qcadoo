@@ -49,8 +49,7 @@ public class ModuleException extends RuntimeException {
 
     private static String createMessage(final String pluginIdentifier, final String moduleType, final Element element,
             final Throwable cause, final String message) {
-        StringBuilder builder = new StringBuilder();
-        builder.append("[PLUGIN: ");
+        StringBuilder builder = new StringBuilder("[PLUGIN: ");
         builder.append(pluginIdentifier);
         builder.append(", ");
         if (element == null) {
@@ -62,10 +61,10 @@ public class ModuleException extends RuntimeException {
             builder.append(outputter.outputString(element));
         }
         builder.append("] ");
-        if (cause != null) {
-            builder.append(cause.getMessage());
-        } else {
+        if (cause == null) {
             builder.append(message);
+        } else {
+            builder.append(cause.getMessage());
         }
         return builder.toString();
     }

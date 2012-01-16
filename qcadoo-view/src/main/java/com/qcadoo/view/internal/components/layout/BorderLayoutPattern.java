@@ -59,8 +59,11 @@ public class BorderLayoutPattern extends AbstractLayoutPattern {
     @Override
     protected Map<String, Object> getJspOptions(final Locale locale) {
         Map<String, Object> options = super.getJspOptions(locale);
-        options.put("label", label != null ? getTranslationService().translate(getTranslationPath() + "." + label, label, locale)
-                : null);
+        Object value = null;
+        if (label != null) {
+            value = getTranslationService().translate(getTranslationPath() + "." + label, label, locale);
+        }
+        options.put("label", value);
         return options;
     }
 

@@ -62,20 +62,18 @@ public abstract class AbstractModelXmlConverter {
 
     protected Integer getIntegerAttribute(final XMLStreamReader reader, final String name) {
         String stringValue = reader.getAttributeValue(null, name);
-        if (stringValue != null) {
-            return Integer.valueOf(stringValue);
-        } else {
+        if (stringValue == null) {
             return null;
         }
+        return Integer.valueOf(stringValue);
     }
 
     protected boolean getBooleanAttribute(final XMLStreamReader reader, final String name, final boolean defaultValue) {
         String stringValue = reader.getAttributeValue(null, name);
-        if (stringValue != null) {
-            return Boolean.valueOf(stringValue);
-        } else {
+        if (stringValue == null) {
             return defaultValue;
         }
+        return Boolean.valueOf(stringValue);
     }
 
     protected String getStringAttribute(final XMLStreamReader reader, final String name) {

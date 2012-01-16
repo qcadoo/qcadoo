@@ -85,11 +85,10 @@ public final class SearchCriteriaImpl implements SearchCriteriaBuilder, SearchCr
 
     @Override
     public DataDefinition getDataDefinition() {
-        if (!hasProjection) {
-            return sourceDataDefinition;
-        } else {
+        if (hasProjection) {
             return null;
         }
+        return sourceDataDefinition;
     }
 
     @Override

@@ -477,11 +477,10 @@ public final class GridComponentPattern extends AbstractComponentPattern {
         Set<FieldDefinition> set = new HashSet<FieldDefinition>();
         for (String field : fields.split("\\s*,\\s*")) {
             FieldDefinition fieldDefiniton = getDataDefinition().getField(field);
-            if (fieldDefiniton != null) {
-                set.add(fieldDefiniton);
-            } else {
+            if (fieldDefiniton == null) {
                 throwIllegalStateException("field = " + field + " in option column = " + column.getName() + " doesn't exists");
             }
+            set.add(fieldDefiniton);
         }
         return set;
     }

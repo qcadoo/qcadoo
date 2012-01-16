@@ -117,12 +117,12 @@ public class SearchQueryImpl implements SearchQuery {
     private String prepareQuery(final String queryString) {
         if (!StringUtils.hasText(queryString)) {
             return "from #" + sourceDataDefinition.getPluginIdentifier() + "_" + sourceDataDefinition.getName();
-        } else if (queryString.trim().startsWith("where")) {
+        }
+        if (queryString.trim().startsWith("where")) {
             return "from #" + sourceDataDefinition.getPluginIdentifier() + "_" + sourceDataDefinition.getName() + " "
                     + queryString.trim();
-        } else {
-            return queryString.trim();
         }
+        return queryString.trim();
     }
 
     @Override

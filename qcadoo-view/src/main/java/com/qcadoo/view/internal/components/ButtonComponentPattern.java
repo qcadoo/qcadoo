@@ -78,10 +78,13 @@ public final class ButtonComponentPattern extends AbstractComponentPattern {
     public ComponentState getComponentStateInstance() {
         if (url != null) {
             return new ButtonComponentState(url);
-        } else {
-            return new ButtonComponentState(correspondingView, correspondingComponent, correspondingViewInModal,
-                    getScopeFieldDefinition() != null ? getScopeFieldDefinition().getName() : "id");
         }
+
+        String correspondingField = "id";
+        if (getScopeFieldDefinition() != null) {
+            correspondingField = getScopeFieldDefinition().getName();
+        }
+        return new ButtonComponentState(correspondingView, correspondingComponent, correspondingViewInModal, correspondingField);
     }
 
     @Override

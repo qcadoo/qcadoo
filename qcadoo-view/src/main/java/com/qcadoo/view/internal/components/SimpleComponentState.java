@@ -39,7 +39,11 @@ public final class SimpleComponentState extends AbstractComponentState {
 
     @Override
     public void setFieldValue(final Object value) {
-        this.value = value != null ? value.toString() : null;
+        if (value == null) {
+            this.value = null;
+        } else {
+            this.value = value.toString();
+        }
         requestRender();
         requestUpdateState();
     }

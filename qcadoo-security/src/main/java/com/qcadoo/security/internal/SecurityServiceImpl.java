@@ -167,12 +167,12 @@ public class SecurityServiceImpl implements InternalSecurityService, UserDetails
     public PersistentRememberMeToken getTokenForSeries(final String series) {
         Entity entity = getPersistentToken(series);
 
-        if (entity != null && getUserEntity(entity.getStringField("userName")) != null) {
-            return new PersistentRememberMeToken(entity.getStringField("userName"), entity.getStringField("series"),
-                    entity.getStringField("token"), (Date) entity.getField("lastUsed"));
-        } else {
+        if (entity == null || getUserEntity(entity.getStringField("userName")) == null) {
             return null;
         }
+
+        return new PersistentRememberMeToken(entity.getStringField("userName"), entity.getStringField("series"),
+                entity.getStringField("token"), (Date) entity.getField("lastUsed"));
     }
 
     @Override

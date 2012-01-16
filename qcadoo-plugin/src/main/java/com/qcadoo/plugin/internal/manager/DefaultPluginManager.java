@@ -281,9 +281,9 @@ public class DefaultPluginManager implements PluginManager {
             if (!pluginDependencyResult.isDependenciesSatisfied()
                     && !pluginDependencyResult.getUnsatisfiedDependencies().isEmpty()) {
                 return PluginOperationResultImpl.successWithMissingDependencies(pluginDependencyResult);
-            } else {
-                return PluginOperationResultImpl.success();
             }
+
+            return PluginOperationResultImpl.success();
         } else {
             if (existingPlugin.getVersion().compareTo(plugin.getVersion()) >= 0) {
                 pluginFileManager.uninstallPlugin(plugin.getFilename());

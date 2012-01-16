@@ -61,18 +61,18 @@ public final class ViewDefinitionStateImpl extends AbstractContainerState implem
 
     @Override
     public JSONObject render() throws JSONException {
-        if (redirectToUrl != null) {
-            JSONObject json = new JSONObject();
-            JSONObject jsonRedirect = new JSONObject();
-            json.put("redirect", jsonRedirect);
-            jsonRedirect.put("url", redirectToUrl);
-            jsonRedirect.put("openInNewWindow", openInNewWindow);
-            jsonRedirect.put("openInModalWindow", openInModalWindow);
-            jsonRedirect.put("shouldSerializeWindow", shouldSerializeWindow);
-            return json;
-        } else {
+        if (redirectToUrl == null) {
             return super.render();
         }
+
+        JSONObject json = new JSONObject();
+        JSONObject jsonRedirect = new JSONObject();
+        json.put("redirect", jsonRedirect);
+        jsonRedirect.put("url", redirectToUrl);
+        jsonRedirect.put("openInNewWindow", openInNewWindow);
+        jsonRedirect.put("openInModalWindow", openInModalWindow);
+        jsonRedirect.put("shouldSerializeWindow", shouldSerializeWindow);
+        return json;
     }
 
     @Override
@@ -97,10 +97,10 @@ public final class ViewDefinitionStateImpl extends AbstractContainerState implem
 
     @Override
     public void performEvent(final String component, final String event, final String... args) {
-        if (component != null) {
-            getComponentByPath(component).performEvent(this, event, args);
-        } else {
+        if (component == null) {
             performEventOnChildren(getChildren().values(), event, args);
+        } else {
+            getComponentByPath(component).performEvent(this, event, args);
         }
     }
 

@@ -150,10 +150,10 @@ public class DefaultPluginAccessor implements InternalPluginAccessor, Applicatio
                     break;
                 }
             }
-            if (existingPlugin != null) {
-                plugin.changeStateTo(PluginState.valueOf(existingPlugin.getState()));
-            } else {
+            if (existingPlugin == null) {
                 plugin.changeStateTo(PluginState.ENABLING);
+            } else {
+                plugin.changeStateTo(PluginState.valueOf(existingPlugin.getState()));
             }
 
             if (existingPlugin == null || plugin.compareVersion(new Version(existingPlugin.getVersion())) > 0) {

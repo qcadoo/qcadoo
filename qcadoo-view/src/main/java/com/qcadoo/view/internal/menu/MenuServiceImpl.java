@@ -100,17 +100,17 @@ public final class MenuServiceImpl implements InternalMenuService {
                     itemLabel = translationUtilsService.getItemTranslation(menuItem, locale);
                 }
 
-                if (menuView.getStringField("url") != null) {
-                    if (canAccess(menuView.getStringField("pluginIdentifier"), menuView.getStringField("name"))) {
-                        category.addItem(new UrlMenuItem(menuItem.getStringField("name"), itemLabel, null, menuView
-                                .getStringField("url")));
+                if (canAccess(menuView.getStringField("pluginIdentifier"), menuView.getStringField("name"))) {
+                    MenuItem newMenuItem = null;
+                    if (menuView.getStringField("url") == null) {
+                        newMenuItem = new ViewDefinitionMenuItemItem(menuItem.getStringField("name"), itemLabel,
+                                menuView.getStringField("pluginIdentifier"), menuView.getStringField("name"));
+                    } else {
+                        newMenuItem = new UrlMenuItem(menuItem.getStringField("name"), itemLabel, null,
+                                menuView.getStringField("url"));
                     }
-
-                } else if (canAccess(menuView.getStringField("pluginIdentifier"), menuView.getStringField("name"))) {
-                    category.addItem(new ViewDefinitionMenuItemItem(menuItem.getStringField("name"), itemLabel, menuView
-                            .getStringField("pluginIdentifier"), menuView.getStringField("name")));
+                    category.addItem(newMenuItem);
                 }
-
             }
 
             if ("administration".equals(category.getName())) {

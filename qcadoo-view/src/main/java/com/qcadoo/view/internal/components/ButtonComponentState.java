@@ -99,10 +99,10 @@ public class ButtonComponentState extends AbstractComponentState {
     private void refreshValue() {
         value = null;
 
-        if (url != null) {
-            value = url;
-        } else {
+        if (url == null) {
             value = correspondingView + ".html";
+        } else {
+            value = url;
         }
 
         if (correspondingComponent != null && belongsToEntityId != null) {
@@ -115,7 +115,11 @@ public class ButtonComponentState extends AbstractComponentState {
 
     @Override
     public final void setFieldValue(final Object value) {
-        this.value = value != null ? value.toString() : null;
+        if (value == null) {
+            this.value = null;
+        } else {
+            this.value = value.toString();
+        }
     }
 
     @Override

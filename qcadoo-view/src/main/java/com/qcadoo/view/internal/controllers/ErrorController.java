@@ -57,12 +57,7 @@ public class ErrorController {
 
         mav.addObject("code", code);
 
-        if (predefinedExceptionMessageHeader != null && predefinedExceptionMessageExplanation != null) {
-            mav.addObject("errorHeader", predefinedExceptionMessageHeader);
-            mav.addObject("errorExplanation", predefinedExceptionMessageExplanation);
-
-        } else {
-
+        if (predefinedExceptionMessageHeader == null || predefinedExceptionMessageExplanation == null) {
             String errorHeader = null;
             String errorExplanation = null;
             switch (code) {
@@ -94,6 +89,9 @@ public class ErrorController {
             mav.addObject("errorHeader", translationService.translate(errorHeader, locale));
             mav.addObject("errorExplanation", translationService.translate(errorExplanation, locale));
 
+        } else {
+            mav.addObject("errorHeader", predefinedExceptionMessageHeader);
+            mav.addObject("errorExplanation", predefinedExceptionMessageExplanation);
         }
 
         mav.addObject("showDetailsText", translationService.translate("qcadooView.errorPage.showDetails", locale));
