@@ -408,7 +408,7 @@ public class DefaultPluginManager implements PluginManager {
 
     @Override
     public boolean isPluginEnabled(final String pluginIdentifier) {
-        return pluginAccessor.getEnabledPlugin(pluginIdentifier) != null ? true : false;
+        return pluginAccessor.getEnabledPlugin(pluginIdentifier) != null;
     }
 
 }
