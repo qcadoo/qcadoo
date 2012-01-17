@@ -38,6 +38,8 @@ import com.qcadoo.localization.api.TranslationService;
 @Controller
 public final class LoginController {
 
+    private static final String FALSE = "false";
+
     @Autowired
     private TranslationService translationService;
 
@@ -49,11 +51,11 @@ public final class LoginController {
 
     @RequestMapping(value = "login", method = RequestMethod.GET)
     public ModelAndView getLoginPageView(@RequestParam(required = false) final String loginError,
-            @RequestParam(required = false, defaultValue = "false") final Boolean iframe,
-            @RequestParam(required = false, defaultValue = "false") final Boolean popup,
-            @RequestParam(required = false, defaultValue = "false") final Boolean logout,
+            @RequestParam(required = false, defaultValue = FALSE) final Boolean iframe,
+            @RequestParam(required = false, defaultValue = FALSE) final Boolean popup,
+            @RequestParam(required = false, defaultValue = FALSE) final Boolean logout,
             @RequestParam(required = false, defaultValue = "") final String targetUrl,
-            @RequestParam(required = false, defaultValue = "false") final Boolean timeout, final Locale locale) {
+            @RequestParam(required = false, defaultValue = FALSE) final Boolean timeout, final Locale locale) {
 
         ModelAndView mav = new ModelAndView();
         mav.setViewName("qcadooView/login");

@@ -59,9 +59,8 @@ public final class MessageHolder {
     private Object getTranslatedTitle(final String title, final MessageType type) {
         if (title != null) {
             return title;
-        } else {
-            return translationService.translate("qcadooView.notification." + type.toString().toLowerCase(locale), locale);
         }
+        return translationService.translate("qcadooView.notification." + type.toString().toLowerCase(locale), locale);
     }
 
     public JSONArray renderMessages() throws JSONException {

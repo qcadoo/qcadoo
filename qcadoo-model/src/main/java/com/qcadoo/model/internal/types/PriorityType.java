@@ -58,7 +58,10 @@ public final class PriorityType implements FieldType {
 
     @Override
     public String toString(final Object value, final Locale locale) {
-        return value != null ? String.valueOf(value) : "";
+        if (value == null) {
+            return "";
+        }
+        return String.valueOf(value);
     }
 
     @Override

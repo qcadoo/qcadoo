@@ -119,16 +119,17 @@ public class TemplateRibbonGroup {
                     filteredList.add(item);
                 }
             }
-        } else if (parameters.getIncludeItems() != null) {
+            return filteredList;
+        }
+        if (parameters.getIncludeItems() != null) {
             for (InternalRibbonActionItem item : items) {
                 if (parameters.getIncludeItems().contains(name + "." + item.getName())) {
                     filteredList.add(item);
                 }
             }
-        } else {
-            filteredList = items;
+            return filteredList;
         }
-        return filteredList;
+        return items;
     }
 
     public boolean containItem(final String itemName) {

@@ -54,12 +54,12 @@ public class DefaultPluginDao implements PluginDao {
     @Transactional("plugin")
     public void save(final Plugin plugin) {
         QcadooPluginPlugin existingPlugin = get(plugin.getIdentifier());
-        if (existingPlugin != null) {
+        if (existingPlugin == null) {
+            existingPlugin = new QcadooPluginPlugin(plugin);
+        } else {
             existingPlugin.setState(plugin.getState().toString());
             existingPlugin.setVersion(plugin.getVersion().toString());
             existingPlugin.setIsSystem(plugin.isSystemPlugin());
-        } else {
-            existingPlugin = new QcadooPluginPlugin(plugin);
         }
         save(existingPlugin);
     }

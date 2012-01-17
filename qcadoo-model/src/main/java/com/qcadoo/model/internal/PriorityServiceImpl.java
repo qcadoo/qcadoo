@@ -85,11 +85,9 @@ public final class PriorityServiceImpl implements PriorityService {
         FieldDefinition fieldDefinition = dataDefinition.getPriorityField();
 
         int currentPriority = (Integer) entityService.getField(databaseEntity, fieldDefinition);
-
         int targetPriority = getTargetPriority(position, offset, currentPriority);
 
         targetPriority = checkIfTargetPriorityIsNotTooLow(targetPriority);
-
         targetPriority = getIfTargetPriorityIsNotTooHigh(dataDefinition, databaseEntity, fieldDefinition, targetPriority);
 
         if (currentPriority < targetPriority) {
@@ -101,7 +99,6 @@ public final class PriorityServiceImpl implements PriorityService {
         }
 
         entityService.setField(databaseEntity, fieldDefinition, targetPriority);
-
         hibernateService.getCurrentSession().update(databaseEntity);
     }
 
@@ -125,14 +122,10 @@ public final class PriorityServiceImpl implements PriorityService {
     }
 
     private int getTargetPriority(final int position, final int offset, final int currentPriority) {
-        int targetPriority = 0;
-
-        if (offset != 0) {
-            targetPriority = currentPriority + offset;
-        } else {
-            targetPriority = position;
+        if (offset == 0) {
+            return position;
         }
-        return targetPriority;
+        return currentPriority + offset;
     }
 
     @SuppressWarnings("unchecked")
@@ -181,6 +174,7 @@ public final class PriorityServiceImpl implements PriorityService {
     @Override
     public Comparator<Entity> getEntityPriorityComparator() {
         return new Comparator<Entity>() {
+
             @Override
             public int compare(final Entity n1, final Entity n2) {
                 Integer p1 = (Integer) n1.getField("priority");

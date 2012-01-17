@@ -191,7 +191,10 @@ public final class ExpressionServiceImpl implements ExpressionService {
                     Entity belongsToEntity = getBelongsToEntity(entry.getValue(), (BelongsToType) type);
                     values.put(entry.getKey(), getValuesForEntity(belongsToEntity, locale, level - 1));
                 } else {
-                    String value = entry.getValue() != null ? type.toString(entry.getValue(), locale) : null;
+                    String value = null;
+                    if (entry.getValue() != null) {
+                        value = type.toString(entry.getValue(), locale);
+                    }
                     values.put(entry.getKey(), value);
                 }
             }

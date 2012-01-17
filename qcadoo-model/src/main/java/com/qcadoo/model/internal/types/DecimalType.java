@@ -59,10 +59,10 @@ public final class DecimalType implements FieldType {
     @Override
     public String toString(final Object value, final Locale locale) {
         NumberFormat format = null;
-        if (locale != null) {
-            format = NumberFormat.getNumberInstance(locale);
-        } else {
+        if (locale == null) {
             format = NumberFormat.getNumberInstance();
+        } else {
+            format = NumberFormat.getNumberInstance(locale);
         }
         format.setMinimumFractionDigits(3);
         format.setMaximumFractionDigits(3);
@@ -76,11 +76,12 @@ public final class DecimalType implements FieldType {
         DecimalFormat formatter = (DecimalFormat) NumberFormat.getNumberInstance(locale);
         formatter.setParseBigDecimal(true);
         Object parsedValue = formatter.parseObject(trimedValue, parsePosition);
-        if (parsePosition.getIndex() != trimedValue.length()) {
-            return value;
-        } else {
+
+        if (parsePosition.getIndex() == trimedValue.length()) {
             return parsedValue;
         }
+
+        return value;
     }
 
 }

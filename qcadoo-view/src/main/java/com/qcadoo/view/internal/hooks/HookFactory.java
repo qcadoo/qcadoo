@@ -40,11 +40,10 @@ public final class HookFactory {
         try {
             beanClass = Thread.currentThread().getContextClassLoader().loadClass(fullyQualifiedClassName);
             Object bean = applicationContext.getBean(beanClass);
-            if (bean != null) {
-                return new HookDefinitionImpl(bean, methodName, pluginIdentifier);
-            } else {
+            if (bean == null) {
                 throw new IllegalStateException("Cannot find bean for hook: " + fullyQualifiedClassName);
             }
+            return new HookDefinitionImpl(bean, methodName, pluginIdentifier);
         } catch (ClassNotFoundException e) {
             throw new IllegalStateException("Cannot find mapping class for hook: " + fullyQualifiedClassName, e);
         }

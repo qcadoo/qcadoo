@@ -109,9 +109,7 @@ public final class DefaultPluginDependencyManager implements PluginDependencyMan
                     continue;
                 }
 
-                if (!dependencyInfo.contains(requiredPlugin.getVersion())) {
-                    unsatisfiedDependencies.add(dependencyInfo);
-                } else {
+                if (dependencyInfo.contains(requiredPlugin.getVersion())) {
                     disabledDependencies.add(dependencyInfo);
 
                     PluginDependencyResult nextLevelDependencioesResult = getDependenciesToEnable(
@@ -123,6 +121,8 @@ public final class DefaultPluginDependencyManager implements PluginDependencyMan
                     }
 
                     disabledDependencies.addAll(nextLevelDependencioesResult.getDependenciesToEnable());
+                } else {
+                    unsatisfiedDependencies.add(dependencyInfo);
                 }
 
             }

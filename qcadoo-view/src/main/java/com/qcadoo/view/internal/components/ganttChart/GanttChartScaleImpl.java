@@ -50,6 +50,14 @@ public class GanttChartScaleImpl implements GanttChartScale {
 
     private Date dateTo;
 
+    private static final String JSON_ELEMENTS_IN_CATEGORY = "elementsInCategory";
+
+    private static final String JSON_ELEMENT_LABELS_INTERVAL = "elementLabelsInterval";
+
+    private static final String JSON_ELEMENT_LABEL_INITIAL_NUMBER = "elementLabelInitialNumber";
+
+    private static final String JSON_CATEGORIES = "categories";
+
     public enum ZoomLevel {
         H1(1, 1), H3(3, 3), H6(6, 6), D1(24, 24);
 
@@ -86,21 +94,21 @@ public class GanttChartScaleImpl implements GanttChartScale {
         switch (zoomLevel) {
             case H1:
                 categoriesArray = getDaysArray();
-                scaleObject.put("elementsInCategory", 24);
-                scaleObject.put("elementLabelsInterval", 1);
-                scaleObject.put("elementLabelInitialNumber", 0);
+                scaleObject.put(JSON_ELEMENTS_IN_CATEGORY, 24);
+                scaleObject.put(JSON_ELEMENT_LABELS_INTERVAL, 1);
+                scaleObject.put(JSON_ELEMENT_LABEL_INITIAL_NUMBER, 0);
                 break;
             case H3:
                 categoriesArray = getDaysArray();
-                scaleObject.put("elementsInCategory", 8);
-                scaleObject.put("elementLabelsInterval", 3);
-                scaleObject.put("elementLabelInitialNumber", 0);
+                scaleObject.put(JSON_ELEMENTS_IN_CATEGORY, 8);
+                scaleObject.put(JSON_ELEMENT_LABELS_INTERVAL, 3);
+                scaleObject.put(JSON_ELEMENT_LABEL_INITIAL_NUMBER, 0);
                 break;
             case H6:
                 categoriesArray = getDaysArray();
-                scaleObject.put("elementsInCategory", 4);
-                scaleObject.put("elementLabelsInterval", 6);
-                scaleObject.put("elementLabelInitialNumber", 0);
+                scaleObject.put(JSON_ELEMENTS_IN_CATEGORY, 4);
+                scaleObject.put(JSON_ELEMENT_LABELS_INTERVAL, 6);
+                scaleObject.put(JSON_ELEMENT_LABEL_INITIAL_NUMBER, 0);
                 break;
             case D1:
                 return getWeeksScale();
@@ -108,7 +116,7 @@ public class GanttChartScaleImpl implements GanttChartScale {
             default:
                 break;
         }
-        scaleObject.put("categories", categoriesArray);
+        scaleObject.put(JSON_CATEGORIES, categoriesArray);
         return scaleObject;
     }
 
@@ -164,12 +172,12 @@ public class GanttChartScaleImpl implements GanttChartScale {
         weekDays.put(ganttChartComponentState.translate("weekDay.short.friday"));
         weekDays.put(ganttChartComponentState.translate("weekDay.short.saturday"));
         weekDays.put(ganttChartComponentState.translate("weekDay.short.sunday"));
-        scaleObject.put("elementsInCategory", 7);
+        scaleObject.put(JSON_ELEMENTS_IN_CATEGORY, 7);
         scaleObject.put("elementLabelsValues", weekDays);
         scaleObject.put("firstCategoryFirstElement", dateTimeFromDayOfWeek);
         scaleObject.put("lastCategoryLastElement", dateTimeToDayOfWeek);
 
-        scaleObject.put("categories", weeksArray);
+        scaleObject.put(JSON_CATEGORIES, weeksArray);
 
         return scaleObject;
     }

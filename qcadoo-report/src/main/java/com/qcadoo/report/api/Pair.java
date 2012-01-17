@@ -82,9 +82,14 @@ public final class Pair<A, B> {
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 37 * hash + (this.key != null ? this.key.hashCode() : 0);
-        hash = 37 * hash + (this.value != null ? this.value.hashCode() : 0);
+        int hash = 37 * 7;
+        if (this.key != null) {
+            hash += this.key.hashCode();
+        }
+        hash = 37 * hash;
+        if (this.value != null) {
+            hash += this.value.hashCode();
+        }
         return hash;
     }
 
@@ -93,11 +98,11 @@ public final class Pair<A, B> {
         return String.format("Pair[%s,%s]", key, value);
     }
 
-    public void setKey(A key) {
+    public void setKey(final A key) {
         this.key = key;
     }
 
-    public void setValue(B value) {
+    public void setValue(final B value) {
         this.value = value;
     }
 

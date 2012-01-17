@@ -51,6 +51,8 @@ import com.qcadoo.view.internal.xml.ViewDefinitionParserNodeException;
 @Service
 public class RibbonParserService {
 
+    private static final String NAME = "name";
+
     @Autowired
     private RibbonTemplatesService ribbonTemplatesService;
 
@@ -81,7 +83,7 @@ public class RibbonParserService {
 
     private void applyTemplate(final Node templateNode, final InternalRibbon ribbon, final ViewDefinitionParser parser,
             final ViewDefinition viewDefinition) throws ViewDefinitionParserNodeException {
-        String name = parser.getStringAttribute(templateNode, "name");
+        String name = parser.getStringAttribute(templateNode, NAME);
         parser.checkState(name != null, templateNode, "Name attribute cannot be empty");
         String plugin = parser.getStringAttribute(templateNode, "plugin");
 
@@ -102,14 +104,8 @@ public class RibbonParserService {
             final ViewDefinition viewDefinition) throws ViewDefinitionParserNodeException {
         String template = parser.getStringAttribute(groupNode, "template");
 
-        if (template != null) {
-            try {
-                return ribbonTemplates.getGroupTemplate(template, viewDefinition);
-            } catch (IllegalStateException e) {
-                throw new ViewDefinitionParserNodeException(groupNode, e);
-            }
-        } else {
-            String groupName = parser.getStringAttribute(groupNode, "name");
+        if (template == null) {
+            String groupName = parser.getStringAttribute(groupNode, NAME);
             if (groupName == null) {
                 throw new ViewDefinitionParserNodeException(groupNode, "Name attribute cannot be empty");
             }
@@ -126,6 +122,12 @@ public class RibbonParserService {
             }
 
             return ribbonGroup;
+        } else {
+            try {
+                return ribbonTemplates.getGroupTemplate(template, viewDefinition);
+            } catch (IllegalStateException e) {
+                throw new ViewDefinitionParserNodeException(groupNode, e);
+            }
         }
     }
 
@@ -156,11 +158,13 @@ public class RibbonParserService {
         }
 
         item.setIcon(parser.getStringAttribute(itemNode, "icon"));
-        item.setName(parser.getStringAttribute(itemNode, "name"));
+        item.setName(parser.getStringAttribute(itemNode, NAME));
         item.setAction(RibbonUtils.translateRibbonAction(parser.getStringAttribute(itemNode, "action"), viewDefinition));
         item.setType(type);
         String state = parser.getStringAttribute(itemNode, "state");
-        if (state != null) {
+        if (state == null) {
+            item.setEnabled(true);
+        } else {
             if ("enabled".equals(state)) {
                 item.setEnabled(true);
             } else if ("disabled".equals(state)) {
@@ -168,8 +172,6 @@ public class RibbonParserService {
             } else {
                 throw new ViewDefinitionParserNodeException(itemNode, "Unsupported ribbon item state : " + state);
             }
-        } else {
-            item.setEnabled(true);
         }
         String message = parser.getStringAttribute(itemNode, "message");
         if (message != null) {
@@ -198,7 +200,7 @@ public class RibbonParserService {
                     if (!"option".equals(child.getNodeName())) {
                         throw new ViewDefinitionParserNodeException(child, "ribbon combobox can only have 'option' elements");
                     }
-                    ((RibbonComboBox) item).addOption(parser.getStringAttribute(child, "name"));
+                    ((RibbonComboBox) item).addOption(parser.getStringAttribute(child, NAME));
                 }
             }
         } else {

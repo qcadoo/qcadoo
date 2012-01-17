@@ -65,6 +65,20 @@ public final class MenuServiceImpl implements InternalMenuService {
     @Autowired
     private ViewDefinitionService viewDefinitionService;
 
+    private static final String VIEW = "view";
+
+    private static final String ITEM = "item";
+
+    private static final String PLUGIN_IDENTIFIER = "pluginIdentifier";
+
+    private static final String NAME = "name";
+
+    private static final String CATEGORY = "category";
+
+    private static final String SUCCESSION = "succession";
+
+    private static final String URL = "url";
+
     @Override
     @Transactional(readOnly = true)
     @Monitorable
@@ -72,45 +86,45 @@ public final class MenuServiceImpl implements InternalMenuService {
 
         MenuDefinition menuDefinition = new MenuDefinition();
 
-        List<Entity> menuCategories = getDataDefinition("category").find().addOrder(SearchOrders.asc("succession")).list()
+        List<Entity> menuCategories = getDataDefinition(CATEGORY).find().addOrder(SearchOrders.asc(SUCCESSION)).list()
                 .getEntities();
 
         for (Entity menuCategory : menuCategories) {
-            String label = menuCategory.getStringField("name");
+            String label = menuCategory.getStringField(NAME);
 
-            if (menuCategory.getStringField("pluginIdentifier") != null) {
+            if (menuCategory.getStringField(PLUGIN_IDENTIFIER) != null) {
                 label = translationUtilsService.getCategoryTranslation(menuCategory, locale);
             }
 
-            MenuItemsGroup category = new MenuItemsGroup(menuCategory.getStringField("name"), label);
+            MenuItemsGroup category = new MenuItemsGroup(menuCategory.getStringField(NAME), label);
 
-            List<Entity> menuItems = getDataDefinition("item").find().add(SearchRestrictions.belongsTo("category", menuCategory))
-                    .addOrder(SearchOrders.asc("succession")).list().getEntities();
+            List<Entity> menuItems = getDataDefinition(ITEM).find().add(SearchRestrictions.belongsTo(CATEGORY, menuCategory))
+                    .addOrder(SearchOrders.asc(SUCCESSION)).list().getEntities();
 
             for (Entity menuItem : menuItems) {
                 if (!(Boolean) menuItem.getField("active")) {
                     continue;
                 }
 
-                Entity menuView = menuItem.getBelongsToField("view");
+                Entity menuView = menuItem.getBelongsToField(VIEW);
 
-                String itemLabel = menuItem.getStringField("name");
+                String itemLabel = menuItem.getStringField(NAME);
 
-                if (menuItem.getStringField("pluginIdentifier") != null) {
+                if (menuItem.getStringField(PLUGIN_IDENTIFIER) != null) {
                     itemLabel = translationUtilsService.getItemTranslation(menuItem, locale);
                 }
 
-                if (menuView.getStringField("url") != null) {
-                    if (canAccess(menuView.getStringField("pluginIdentifier"), menuView.getStringField("name"))) {
-                        category.addItem(new UrlMenuItem(menuItem.getStringField("name"), itemLabel, null, menuView
-                                .getStringField("url")));
+                if (canAccess(menuView.getStringField(PLUGIN_IDENTIFIER), menuView.getStringField(NAME))) {
+                    MenuItem newMenuItem = null;
+                    if (menuView.getStringField(URL) == null) {
+                        newMenuItem = new ViewDefinitionMenuItemItem(menuItem.getStringField(NAME), itemLabel,
+                                menuView.getStringField(PLUGIN_IDENTIFIER), menuView.getStringField(NAME));
+                    } else {
+                        newMenuItem = new UrlMenuItem(menuItem.getStringField(NAME), itemLabel, null,
+                                menuView.getStringField(URL));
                     }
-
-                } else if (canAccess(menuView.getStringField("pluginIdentifier"), menuView.getStringField("name"))) {
-                    category.addItem(new ViewDefinitionMenuItemItem(menuItem.getStringField("name"), itemLabel, menuView
-                            .getStringField("pluginIdentifier"), menuView.getStringField("name")));
+                    category.addItem(newMenuItem);
                 }
-
             }
 
             if ("administration".equals(category.getName())) {
@@ -153,12 +167,12 @@ public final class MenuServiceImpl implements InternalMenuService {
             }
         }
 
-        menuView = getDataDefinition("view").create();
-        menuView.setField("pluginIdentifier", pluginIdentifier);
-        menuView.setField("name", viewName);
-        menuView.setField("url", url);
-        menuView.setField("view", view);
-        getDataDefinition("view").save(menuView);
+        menuView = getDataDefinition(VIEW).create();
+        menuView.setField(PLUGIN_IDENTIFIER, pluginIdentifier);
+        menuView.setField(NAME, viewName);
+        menuView.setField(URL, url);
+        menuView.setField(VIEW, view);
+        getDataDefinition(VIEW).save(menuView);
     }
 
     @Override
@@ -171,10 +185,10 @@ public final class MenuServiceImpl implements InternalMenuService {
 
         Collection<Entity> itemsToThisView = getItemsToView(menuView);
         for (Entity itemToThisView : itemsToThisView) {
-            getDataDefinition("item").delete(itemToThisView.getId());
+            getDataDefinition(ITEM).delete(itemToThisView.getId());
         }
 
-        getDataDefinition("view").delete(menuView.getId());
+        getDataDefinition(VIEW).delete(menuView.getId());
     }
 
     @Override
@@ -186,12 +200,12 @@ public final class MenuServiceImpl implements InternalMenuService {
             return;
         }
 
-        menuCategory = getDataDefinition("category").create();
-        menuCategory.setField("pluginIdentifier", pluginIdentifier);
-        menuCategory.setField("name", categoryName);
+        menuCategory = getDataDefinition(CATEGORY).create();
+        menuCategory.setField(PLUGIN_IDENTIFIER, pluginIdentifier);
+        menuCategory.setField(NAME, categoryName);
         menuCategory.setField("accessible", true);
-        menuCategory.setField("succession", getTotalNumberOfCategories());
-        getDataDefinition("category").save(menuCategory);
+        menuCategory.setField(SUCCESSION, getTotalNumberOfCategories());
+        getDataDefinition(CATEGORY).save(menuCategory);
     }
 
     @Override
@@ -204,7 +218,7 @@ public final class MenuServiceImpl implements InternalMenuService {
         }
 
         if (menuCategory.getHasManyField("items").size() == 0) {
-            getDataDefinition("category").delete(menuCategory.getId());
+            getDataDefinition(CATEGORY).delete(menuCategory.getId());
         }
     }
 
@@ -228,17 +242,17 @@ public final class MenuServiceImpl implements InternalMenuService {
         }
 
         if (menuItem == null) {
-            menuItem = getDataDefinition("item").create();
-            menuItem.setField("pluginIdentifier", pluginIdentifier);
-            menuItem.setField("name", name);
+            menuItem = getDataDefinition(ITEM).create();
+            menuItem.setField(PLUGIN_IDENTIFIER, pluginIdentifier);
+            menuItem.setField(NAME, name);
             menuItem.setField("active", true);
         }
 
-        if (menuItem == null || !menuView.equals(menuItem.getField("view"))) {
-            menuItem.setField("view", menuView);
-            menuItem.setField("category", menuCategory);
-            menuItem.setField("succession", getTotalNumberOfItems(menuCategory));
-            getDataDefinition("item").save(menuItem);
+        if (menuItem == null || !menuView.equals(menuItem.getField(VIEW))) {
+            menuItem.setField(VIEW, menuView);
+            menuItem.setField(CATEGORY, menuCategory);
+            menuItem.setField(SUCCESSION, getTotalNumberOfItems(menuCategory));
+            getDataDefinition(ITEM).save(menuItem);
         }
     }
 
@@ -249,7 +263,7 @@ public final class MenuServiceImpl implements InternalMenuService {
         if (menuItem == null) {
             return;
         }
-        getDataDefinition("item").delete(menuItem.getId());
+        getDataDefinition(ITEM).delete(menuItem.getId());
     }
 
     private DataDefinition getDataDefinition(final String entityName) {
@@ -257,36 +271,35 @@ public final class MenuServiceImpl implements InternalMenuService {
     }
 
     private int getTotalNumberOfItems(final Entity category) {
-        return getDataDefinition("item").find().add(SearchRestrictions.belongsTo("category", category)).list()
+        return getDataDefinition(ITEM).find().add(SearchRestrictions.belongsTo(CATEGORY, category)).list()
                 .getTotalNumberOfEntities() + 1;
     }
 
     private int getTotalNumberOfCategories() {
-        return getDataDefinition("category").find().list().getTotalNumberOfEntities() + 1;
+        return getDataDefinition(CATEGORY).find().list().getTotalNumberOfEntities() + 1;
     }
 
     private Entity getCategory(final String pluginIdentifier, final String categoryName) {
-        return getDataDefinition("category").find().add(SearchRestrictions.eq("name", categoryName))
-                .add(SearchRestrictions.eq("pluginIdentifier", pluginIdentifier)).setMaxResults(1).uniqueResult();
+        return getDataDefinition(CATEGORY).find().add(SearchRestrictions.eq(NAME, categoryName))
+                .add(SearchRestrictions.eq(PLUGIN_IDENTIFIER, pluginIdentifier)).setMaxResults(1).uniqueResult();
     }
 
     private Entity getCategory(final String categoryName) {
-        return getDataDefinition("category").find().add(SearchRestrictions.eq("name", categoryName)).setMaxResults(1)
-                .uniqueResult();
+        return getDataDefinition(CATEGORY).find().add(SearchRestrictions.eq(NAME, categoryName)).setMaxResults(1).uniqueResult();
     }
 
     private Entity getItem(final String pluginIdentifier, final String itemName) {
-        return getDataDefinition("item").find().add(SearchRestrictions.eq("name", itemName))
-                .add(SearchRestrictions.eq("pluginIdentifier", pluginIdentifier)).setMaxResults(1).uniqueResult();
+        return getDataDefinition(ITEM).find().add(SearchRestrictions.eq(NAME, itemName))
+                .add(SearchRestrictions.eq(PLUGIN_IDENTIFIER, pluginIdentifier)).setMaxResults(1).uniqueResult();
     }
 
     private Collection<Entity> getItemsToView(final Entity view) {
-        return getDataDefinition("item").find().add(SearchRestrictions.belongsTo("view", view)).list().getEntities();
+        return getDataDefinition(ITEM).find().add(SearchRestrictions.belongsTo(VIEW, view)).list().getEntities();
     }
 
     private Entity getView(final String pluginIdentifier, final String viewName) {
-        return getDataDefinition("view").find().add(SearchRestrictions.eq("name", viewName))
-                .add(SearchRestrictions.eq("pluginIdentifier", pluginIdentifier)).setMaxResults(1).uniqueResult();
+        return getDataDefinition(VIEW).find().add(SearchRestrictions.eq(NAME, viewName))
+                .add(SearchRestrictions.eq(PLUGIN_IDENTIFIER, pluginIdentifier)).setMaxResults(1).uniqueResult();
     }
 
 }

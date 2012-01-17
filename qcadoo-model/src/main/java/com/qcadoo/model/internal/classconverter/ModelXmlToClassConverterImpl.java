@@ -70,7 +70,7 @@ public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverte
         super();
         classPool.appendClassPath(new ClassClassPath(org.hibernate.collection.PersistentSet.class));
     }
-    
+
     @Override
     public void setBeanClassLoader(final ClassLoader classLoader) {
         this.classLoader = classLoader;
@@ -266,10 +266,10 @@ public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverte
             boolean first = true;
 
             for (String field : fields) {
-                if (!first) {
-                    sb.append("append(\",\").");
-                } else {
+                if (first) {
                     first = false;
+                } else {
+                    sb.append("append(\",\").");
                 }
                 sb.append("append(\"" + field + "=\").append(get" + StringUtils.capitalize(field) + "()).");
             }
@@ -291,7 +291,9 @@ public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverte
             for (String field : fields) {
                 String fieldGetter = "get" + StringUtils.capitalize(field) + "()";
                 // explanation of the second condition -> https://hibernate.onjira.com/browse/HHH-3799
-                sb.append("result = prime * result + ((" + fieldGetter + " == null || " + fieldGetter + ".getClass().isAssignableFrom(org.hibernate.collection.PersistentSet.class)) ? 0 : " + fieldGetter + ".hashCode());");
+                sb.append("result = prime * result + ((" + fieldGetter + " == null || " + fieldGetter
+                        + ".getClass().isAssignableFrom(org.hibernate.collection.PersistentSet.class)) ? 0 : " + fieldGetter
+                        + ".hashCode());");
             }
 
             sb.append("return result;");

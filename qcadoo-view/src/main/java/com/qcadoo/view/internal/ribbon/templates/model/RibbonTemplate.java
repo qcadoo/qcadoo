@@ -84,16 +84,17 @@ public class RibbonTemplate {
                     filteredList.add(group);
                 }
             }
-        } else if (parameters.getIncludeGroups() != null) {
+            return filteredList;
+        }
+        if (parameters.getIncludeGroups() != null) {
             for (TemplateRibbonGroup group : groups) {
                 if (parameters.getIncludeGroups().contains(group.getName())) {
                     filteredList.add(group);
                 }
             }
-        } else {
-            filteredList = groups;
+            return filteredList;
         }
-        return filteredList;
+        return groups;
     }
 
     public void parseParameters(final RibbonTemplateParameters parameters) {

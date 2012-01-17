@@ -75,14 +75,14 @@ public final class UserService {
         password.setRequired(true);
         passwordConfirmation.setRequired(true);
 
-        if (form.getEntityId() != null) {
-            password.setVisible(false);
-            passwordConfirmation.setVisible(false);
-            changePasswordButton.setVisible(true);
-        } else {
+        if (form.getEntityId() == null) {
             password.setVisible(true);
             passwordConfirmation.setVisible(true);
             changePasswordButton.setVisible(false);
+        } else {
+            password.setVisible(false);
+            passwordConfirmation.setVisible(false);
+            changePasswordButton.setVisible(true);
         }
     }
 

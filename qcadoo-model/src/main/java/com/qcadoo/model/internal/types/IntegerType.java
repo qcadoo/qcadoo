@@ -60,11 +60,10 @@ public final class IntegerType implements FieldType {
         ParsePosition parsePosition = new ParsePosition(0);
         String trimedValue = value.replace(" ", "");
         Object parsedValue = NumberFormat.getIntegerInstance(locale).parse(trimedValue, parsePosition);
-        if (parsePosition.getIndex() != trimedValue.length()) {
-            return value;
-        } else {
+        if (parsePosition.getIndex() == trimedValue.length()) {
             return parsedValue;
         }
+        return value;
     }
 
 }

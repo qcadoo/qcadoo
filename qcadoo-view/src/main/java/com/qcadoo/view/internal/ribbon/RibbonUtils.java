@@ -38,6 +38,8 @@ import com.qcadoo.view.internal.ribbon.model.InternalRibbon;
 
 public final class RibbonUtils {
 
+    private static final String NAME = "name";
+
     private RibbonUtils() {
 
     }
@@ -50,10 +52,9 @@ public final class RibbonUtils {
             JSONObject group = json.getJSONArray("groups").getJSONObject(i);
             group.put(
                     "label",
-                    pattern.getTranslationService().translate(
-                            pattern.getTranslationPath() + ".ribbon." + group.getString("name"),
-                            "qcadooView.ribbon." + group.getString("name"), locale));
-            translateRibbonItems(group, group.getString("name") + ".", locale, pattern);
+                    pattern.getTranslationService().translate(pattern.getTranslationPath() + ".ribbon." + group.getString(NAME),
+                            "qcadooView.ribbon." + group.getString(NAME), locale));
+            translateRibbonItems(group, group.getString(NAME) + ".", locale, pattern);
         }
 
         return json;
@@ -66,8 +67,8 @@ public final class RibbonUtils {
                 JSONObject item = owner.getJSONArray("items").getJSONObject(j);
 
                 String label = pattern.getTranslationService().translate(
-                        pattern.getTranslationPath() + ".ribbon." + prefix + item.getString("name"),
-                        "qcadooView.ribbon." + prefix + item.getString("name"), locale);
+                        pattern.getTranslationPath() + ".ribbon." + prefix + item.getString(NAME),
+                        "qcadooView.ribbon." + prefix + item.getString(NAME), locale);
                 item.put("label", label);
 
                 if (item.has("script")) {
@@ -87,7 +88,7 @@ public final class RibbonUtils {
                     item.put("message", pattern.prepareScript(message, locale));
                 }
 
-                translateRibbonItems(item, prefix + item.getString("name") + ".", locale, pattern);
+                translateRibbonItems(item, prefix + item.getString(NAME) + ".", locale, pattern);
             }
         }
     }

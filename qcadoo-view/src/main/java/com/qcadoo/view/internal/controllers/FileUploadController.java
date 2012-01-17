@@ -86,16 +86,16 @@ public class FileUploadController {
 
         JSONObject response = new JSONObject();
         try {
-            if (path != null) {
-                response.put("fileLastModificationDate", FileUtils.getInstance().getLastModificationDate(path));
-                response.put("fileUrl", FileUtils.getInstance().getUrl(path));
-                response.put("fileName", FileUtils.getInstance().getName(path));
-                response.put("filePath", path);
-            } else {
+            if (path == null) {
                 response.put("fileLastModificationDate", "");
                 response.put("fileUrl", "");
                 response.put("fileName", "");
                 response.put("filePath", "");
+            } else {
+                response.put("fileLastModificationDate", FileUtils.getInstance().getLastModificationDate(path));
+                response.put("fileUrl", FileUtils.getInstance().getUrl(path));
+                response.put("fileName", FileUtils.getInstance().getName(path));
+                response.put("filePath", path);
             }
             response.put("fileUploadError", error);
         } catch (JSONException e) {

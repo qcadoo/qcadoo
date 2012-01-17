@@ -66,6 +66,8 @@ public final class TreeComponentState extends FieldComponentState implements Tre
 
     private static final String INITIAL_NODE_NUMBER_VALUE = "1";
 
+    private static final String CHILDREN = "children";
+
     private final TreeEventPerformer eventPerformer = new TreeEventPerformer();
 
     private TreeNode rootNode;
@@ -194,7 +196,7 @@ public final class TreeComponentState extends FieldComponentState implements Tre
         nodes = new HashMap<Long, Entity>();
 
         for (Entity node : tree) {
-            node.setField("children", new ArrayList<Entity>());
+            node.setField(CHILDREN, new ArrayList<Entity>());
             node.setField("parent", null);
             nodes.put(node.getId(), node);
         }
@@ -202,8 +204,8 @@ public final class TreeComponentState extends FieldComponentState implements Tre
         try {
             Entity parent = nodes.get(treeStructure.getJSONObject(0).getLong("id"));
 
-            if (treeStructure.getJSONObject(0).has("children")) {
-                reorganize(parent, treeStructure.getJSONObject(0).getJSONArray("children"),
+            if (treeStructure.getJSONObject(0).has(CHILDREN)) {
+                reorganize(parent, treeStructure.getJSONObject(0).getJSONArray(CHILDREN),
                         Lists.newLinkedList(Lists.newArrayList(INITIAL_NODE_NUMBER_VALUE)));
             }
 
@@ -230,9 +232,9 @@ public final class TreeComponentState extends FieldComponentState implements Tre
             }
 
             Entity nodeEntity = nodes.get(childrens.getJSONObject(i).getLong("id"));
-            ((List<Entity>) parent.getField("children")).add(nodeEntity);
-            if (childrens.getJSONObject(i).has("children")) {
-                reorganize(nodeEntity, childrens.getJSONObject(i).getJSONArray("children"), newNodeNumberBranch);
+            ((List<Entity>) parent.getField(CHILDREN)).add(nodeEntity);
+            if (childrens.getJSONObject(i).has(CHILDREN)) {
+                reorganize(nodeEntity, childrens.getJSONObject(i).getJSONArray(CHILDREN), newNodeNumberBranch);
             }
         }
     }
