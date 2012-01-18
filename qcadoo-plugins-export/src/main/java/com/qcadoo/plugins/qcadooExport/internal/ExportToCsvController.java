@@ -110,8 +110,6 @@ public class ExportToCsvController {
                 for (Map<String, String> row : rows) {
                     boolean firstValue = true;
                     for (String value : row.values()) {
-                        output.append(value);
-                        output.append(" ");
                         if (firstValue) {
                             firstValue = false;
                         } else {
