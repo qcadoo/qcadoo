@@ -331,7 +331,7 @@ public final class GridComponentState extends AbstractComponentState implements 
             json.put(JSON_EDITABLE, isEditable);
         }
 
-        if (entitiesToMarkAsNew.size() > 0) {
+        if (!entitiesToMarkAsNew.isEmpty()) {
             JSONObject entitiesToMarkAsNewJson = new JSONObject();
             for (Long entityId : entitiesToMarkAsNew) {
                 entitiesToMarkAsNewJson.put(entityId.toString(), true);
@@ -711,7 +711,7 @@ public final class GridComponentState extends AbstractComponentState implements 
         return getColumnValues(ExportMode.SELECTED);
     }
 
-    private List<Map<String, String>> getColumnValues(ExportMode mode) {
+    private List<Map<String, String>> getColumnValues(final ExportMode mode) {
         if (entities == null) {
             eventPerformer.reload();
         }
@@ -743,9 +743,9 @@ public final class GridComponentState extends AbstractComponentState implements 
 
                 StringBuffer localeString = new StringBuffer();
                 localeString.append(getDataDefinition().getPluginIdentifier());
-                localeString.append(".");
+                localeString.append('.');
                 localeString.append(getDataDefinition().getName());
-                localeString.append(".");
+                localeString.append('.');
                 localeString.append(column.getName());
                 localeString.append(".value.");
                 localeString.append(fieldValue);

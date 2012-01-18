@@ -234,13 +234,13 @@ public final class DefaultExceptionResolver extends SimpleMappingExceptionResolv
     }
 
     @Override
-    public <T extends Exception> void addExceptionInfoResolver(Class<T> exceptionClass,
-            ExceptionInfoResolver<T> exceptionInfoResolver) {
+    public <T extends Exception> void addExceptionInfoResolver(final Class<T> exceptionClass,
+            final ExceptionInfoResolver<T> exceptionInfoResolver) {
         classResolversMap.put(exceptionClass, exceptionInfoResolver);
     }
 
     @Override
-    public <T extends Exception> void removeExceptionInfoResolver(Class<T> exceptionClass) {
+    public <T extends Exception> void removeExceptionInfoResolver(final Class<T> exceptionClass) {
         classResolversMap.remove(exceptionClass);
     }
 }

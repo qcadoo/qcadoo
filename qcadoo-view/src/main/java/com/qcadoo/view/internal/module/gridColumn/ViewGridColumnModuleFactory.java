@@ -38,7 +38,7 @@ public class ViewGridColumnModuleFactory extends ModuleFactory<ViewGridColumnMod
     private InternalViewDefinitionService viewDefinitionService;
 
     @Override
-    protected ViewGridColumnModule parseElement(String pluginIdentifier, Element element) {
+    protected ViewGridColumnModule parseElement(final String pluginIdentifier, final Element element) {
 
         String plugin = getRequiredAttribute(element, "plugin");
         String view = getRequiredAttribute(element, "view");

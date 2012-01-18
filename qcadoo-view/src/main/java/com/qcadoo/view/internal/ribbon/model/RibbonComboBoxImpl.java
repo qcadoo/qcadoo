@@ -37,7 +37,7 @@ public class RibbonComboBoxImpl extends RibbonActionItemImpl implements RibbonCo
     private List<String> options = new LinkedList<String>();
 
     @Override
-    public void addOption(String option) {
+    public void addOption(final String option) {
         options.add(option);
     }
 

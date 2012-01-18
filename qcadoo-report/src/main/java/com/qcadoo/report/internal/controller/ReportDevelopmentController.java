@@ -98,7 +98,7 @@ public class ReportDevelopmentController {
         try {
             List<Entity> entities = dataDefinitionService.get("qcadooPlugin", "plugin").find(hql).list().getEntities();
 
-            if (entities.size() > 0) {
+            if (!entities.isEmpty()) {
                 DataDefinition dataDefinition = entities.get(0).getDataDefinition();
 
                 List<String> headers = new ArrayList<String>();

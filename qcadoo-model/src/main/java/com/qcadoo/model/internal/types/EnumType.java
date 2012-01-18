@@ -39,6 +39,8 @@ import com.qcadoo.plugin.api.PluginUtils;
 
 public final class EnumType implements EnumeratedType {
 
+    private static final EnumTypeComparator ENUM_TYPE_COMPARATOR = new EnumTypeComparator();
+
     private final List<EnumTypeKey> keys;
 
     private final TranslationService translationService;
@@ -52,13 +54,7 @@ public final class EnumType implements EnumeratedType {
         for (String key : keys) {
             this.keys.add(new EnumTypeKey(key, null));
         }
-        Collections.sort(this.keys, new Comparator<EnumTypeKey>() {
-
-            @Override
-            public int compare(EnumTypeKey arg0, EnumTypeKey arg1) {
-                return arg0.getValue().compareTo(arg1.getValue());
-            }
-        });
+        Collections.sort(this.keys, ENUM_TYPE_COMPARATOR);
     }
 
     public List<EnumTypeKey> getKeys() {
@@ -106,6 +102,15 @@ public final class EnumType implements EnumeratedType {
     @Override
     public Object fromString(final String value, final Locale locale) {
         return value;
+    }
+
+    private static final class EnumTypeComparator implements Comparator<EnumTypeKey> {
+
+        @Override
+        public int compare(final EnumTypeKey arg0, final EnumTypeKey arg1) {
+            return arg0.getValue().compareTo(arg1.getValue());
+        }
+
     }
 
 }

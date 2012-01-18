@@ -164,7 +164,7 @@ public class PluginManagmentUrlController {
                 }
             }
         }
-        if (dependencies.size() > 0) {
+        if (!dependencies.isEmpty()) {
             return dependencies;
         } else {
             return null;

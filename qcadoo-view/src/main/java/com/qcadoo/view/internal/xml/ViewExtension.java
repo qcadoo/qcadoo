@@ -33,7 +33,7 @@ public class ViewExtension {
 
     private final Node extesionNode;
 
-    public ViewExtension(String pluginName, String viewName, Node extesionNode) {
+    public ViewExtension(final String pluginName, final String viewName, final Node extesionNode) {
         super();
         this.pluginName = pluginName;
         this.viewName = viewName;

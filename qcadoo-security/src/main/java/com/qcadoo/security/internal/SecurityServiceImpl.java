@@ -138,7 +138,7 @@ public class SecurityServiceImpl implements InternalSecurityService, UserDetails
 
         authorities.add(new GrantedAuthorityImpl(role.getRoleIdentifier()));
 
-        checkState(authorities.size() > 0, "Current user with login %s cannot be found", entity.getStringField("userName"));
+        checkState(!authorities.isEmpty(), "Current user with login %s cannot be found", entity.getStringField("userName"));
 
         return new User(entity.getStringField("userName"), entity.getStringField("password"), true, true, true, true, authorities);
     }

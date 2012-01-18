@@ -56,7 +56,7 @@ public final class TreeComponentPattern extends FieldComponentPattern {
     private boolean hasEditButton = true;
 
     private boolean hasMoveButton = true;
-    
+
     private boolean selectableWhenDisabled = false;
 
     public TreeComponentPattern(final ComponentDefinition componentDefinition) {
@@ -102,7 +102,7 @@ public final class TreeComponentPattern extends FieldComponentPattern {
                 dataTypes.put(dataTypeName, dataType);
             }
         }
-        if (dataTypes.size() == 0) {
+        if (dataTypes.isEmpty()) {
             throw new ViewDefinitionParserNodeException(componentNode, "Tree must contains at least one 'dataType' node");
         }
     }
@@ -141,7 +141,7 @@ public final class TreeComponentPattern extends FieldComponentPattern {
         buttonsOptions.put("hasEditButton", hasEditButton);
         buttonsOptions.put("hasMoveButton", hasMoveButton);
         json.put("buttonsOptions", buttonsOptions);
-        
+
         json.put("selectableWhenDisabled", selectableWhenDisabled);
 
         JSONObject translations = new JSONObject();
@@ -166,7 +166,7 @@ public final class TreeComponentPattern extends FieldComponentPattern {
 
         translations.put("expandTreeButton", getTranslation("expandTreeButton", locale));
         translations.put("collapseTreeButton", getTranslation("collapseTreeButton", locale));
-        
+
         translations.put("loading", getTranslationService().translate("qcadooView.loading", locale));
 
         json.put("translations", translations);

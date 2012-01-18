@@ -48,7 +48,7 @@ public class ViewDefinitionPermissionEvaluator implements QcadooPermisionEvaluat
     }
 
     @Override
-    public boolean hasPermission(Authentication authentication, String permission, String targetId) {
+    public boolean hasPermission(final Authentication authentication, final String permission, final String targetId) {
 
         if ("isAuthorizedToSee".equals(permission)) {
 
@@ -61,7 +61,7 @@ public class ViewDefinitionPermissionEvaluator implements QcadooPermisionEvaluat
         }
     }
 
-    private SecurityRole getViewRole(String targetId) {
+    private SecurityRole getViewRole(final String targetId) {
         if (viewDefinitionRoleResolver == null) {
             viewDefinitionRoleResolver = context.getBean(SecurityViewDefinitionRoleResolver.class);
         }

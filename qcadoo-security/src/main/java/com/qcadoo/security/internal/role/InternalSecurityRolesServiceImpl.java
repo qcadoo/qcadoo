@@ -51,7 +51,7 @@ public class InternalSecurityRolesServiceImpl implements InternalSecurityRolesSe
     }
 
     @Override
-    public SecurityRole getRoleByName(String roleName) {
+    public SecurityRole getRoleByName(final String roleName) {
         Preconditions.checkNotNull(roleName, "roleName must be not null");
         for (SecurityRole role : roles.values()) {
             if (roleName.equals(role.getName())) {

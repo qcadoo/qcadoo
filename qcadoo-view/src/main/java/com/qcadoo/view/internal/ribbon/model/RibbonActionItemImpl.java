@@ -26,7 +26,6 @@ package com.qcadoo.view.internal.ribbon.model;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
 public class RibbonActionItemImpl implements InternalRibbonActionItem {
 
     private String name;
@@ -106,7 +105,7 @@ public class RibbonActionItemImpl implements InternalRibbonActionItem {
     }
 
     @Override
-    public void setScript(String script) {
+    public void setScript(final String script) {
         this.script = script;
     }
 
@@ -116,7 +115,7 @@ public class RibbonActionItemImpl implements InternalRibbonActionItem {
     }
 
     @Override
-    public void setEnabled(Boolean enabled) {
+    public void setEnabled(final Boolean enabled) {
         this.enabled = enabled;
     }
 
@@ -126,7 +125,7 @@ public class RibbonActionItemImpl implements InternalRibbonActionItem {
     }
 
     @Override
-    public void setMessage(String message) {
+    public void setMessage(final String message) {
         this.message = message;
     }
 
@@ -137,7 +136,7 @@ public class RibbonActionItemImpl implements InternalRibbonActionItem {
         return copy;
     }
 
-    protected void copyFields(InternalRibbonActionItem item) {
+    protected void copyFields(final InternalRibbonActionItem item) {
         item.setName(name);
         item.setType(type);
         item.setIcon(icon);
@@ -153,7 +152,7 @@ public class RibbonActionItemImpl implements InternalRibbonActionItem {
     }
 
     @Override
-    public void requestUpdate(boolean shouldBeUpdated) {
+    public void requestUpdate(final boolean shouldBeUpdated) {
         this.shouldBeUpdated = shouldBeUpdated;
     }
 }

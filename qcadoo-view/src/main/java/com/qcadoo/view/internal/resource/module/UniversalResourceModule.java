@@ -50,7 +50,7 @@ public class UniversalResourceModule extends ResourceModule {
             final String pluginIdentifier, final String uriPattern) {
         super(resourceService);
         this.applicationContext = applicationContext;
-        if (uriPattern.startsWith("/")) {
+        if (uriPattern.charAt(0) == '/') {
             this.uriPattern = "/" + pluginIdentifier + uriPattern;
         } else {
             this.uriPattern = "/" + pluginIdentifier + "/" + uriPattern;

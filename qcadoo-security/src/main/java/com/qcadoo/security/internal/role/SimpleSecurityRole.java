@@ -33,7 +33,7 @@ public class SimpleSecurityRole implements SecurityRole {
 
     private final boolean isAccessible;
 
-    public SimpleSecurityRole(String name, String roleIdentifier, final boolean isAccessible) {
+    public SimpleSecurityRole(final String name, final String roleIdentifier, final boolean isAccessible) {
         this.name = name;
         this.roleIdentifier = roleIdentifier;
         this.isAccessible = isAccessible;

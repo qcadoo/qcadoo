@@ -54,24 +54,24 @@ public final class ReportNumberFormat extends NumberFormat {
         return format;
     }
 
-    private ReportNumberFormat(Locale locale) {
+    private ReportNumberFormat(final Locale locale) {
         decimalNumberFormat = NumberFormat.getNumberInstance(locale);
         decimalNumberFormat.setMinimumFractionDigits(3);
         integerNumberFormat = NumberFormat.getNumberInstance(locale);
     }
 
     @Override
-    public StringBuffer format(double number, StringBuffer toAppendTo, FieldPosition pos) {
+    public StringBuffer format(final double number, final StringBuffer toAppendTo, final FieldPosition pos) {
         return decimalNumberFormat.format(number, toAppendTo, pos);
     }
 
     @Override
-    public StringBuffer format(long number, StringBuffer toAppendTo, FieldPosition pos) {
+    public StringBuffer format(final long number, final StringBuffer toAppendTo, final FieldPosition pos) {
         return integerNumberFormat.format(number, toAppendTo, pos);
     }
 
     @Override
-    public Number parse(String source, ParsePosition parsePosition) {
+    public Number parse(final String source, final ParsePosition parsePosition) {
         return decimalNumberFormat.parse(source, parsePosition);
     }
 }

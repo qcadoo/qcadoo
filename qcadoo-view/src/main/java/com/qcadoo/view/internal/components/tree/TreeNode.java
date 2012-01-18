@@ -98,7 +98,7 @@ public final class TreeNode {
         return toStringWithTabs(0);
     }
 
-    public String toStringWithTabs(int tabs) {
+    public String toStringWithTabs(final int tabs) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < tabs; i++) {
             sb.append("    ");

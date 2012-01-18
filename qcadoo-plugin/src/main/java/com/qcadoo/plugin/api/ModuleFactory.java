@@ -63,7 +63,7 @@ public abstract class ModuleFactory<T extends Module> {
      * @throws ModuleException
      *             when some exception occured
      */
-    public final T parse(String pluginIdentifier, Element element) {
+    public final T parse(final String pluginIdentifier, final Element element) {
         try {
             return parseElement(pluginIdentifier, element);
         } catch (Exception e) {
@@ -71,7 +71,7 @@ public abstract class ModuleFactory<T extends Module> {
         }
     }
 
-    protected abstract T parseElement(String pluginIdentifier, Element element);
+    protected abstract T parseElement(final String pluginIdentifier, final Element element);
 
     /**
      * Identifier is used to distinguish the type of the module. It is equal to the name of the tag in section "modules" in plugin
@@ -123,10 +123,10 @@ public abstract class ModuleFactory<T extends Module> {
      * @throws IllegalStateException
      *             when element is empty or element contains more than one inner elements
      */
-    @SuppressWarnings("unchecked")
     protected final Element getOneElementContent(final Element element) {
+        @SuppressWarnings("unchecked")
         List<Element> elements = element.getChildren();
-        checkState(elements.size() != 0, "Missing content of " + getIdentifier() + " module");
+        checkState(!elements.isEmpty(), "Missing content of " + getIdentifier() + " module");
         checkState(elements.size() == 1, "Only one element can be defined in single " + getIdentifier() + " module");
         return elements.get(0);
     }

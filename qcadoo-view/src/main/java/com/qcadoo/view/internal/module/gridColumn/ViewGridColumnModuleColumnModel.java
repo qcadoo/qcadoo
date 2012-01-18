@@ -48,7 +48,7 @@ public class ViewGridColumnModuleColumnModel {
         return expression;
     }
 
-    public void setExpression(String expression) {
+    public void setExpression(final String expression) {
         this.expression = expression;
     }
 
@@ -56,7 +56,7 @@ public class ViewGridColumnModuleColumnModel {
         return width;
     }
 
-    public void setWidth(Integer width) {
+    public void setWidth(final Integer width) {
         this.width = width;
     }
 
@@ -64,7 +64,7 @@ public class ViewGridColumnModuleColumnModel {
         return link;
     }
 
-    public void setLink(boolean link) {
+    public void setLink(final boolean link) {
         this.link = link;
     }
 
@@ -72,7 +72,7 @@ public class ViewGridColumnModuleColumnModel {
         return searchable;
     }
 
-    public void setSearchable(boolean searchable) {
+    public void setSearchable(final boolean searchable) {
         this.searchable = searchable;
     }
 
@@ -80,7 +80,7 @@ public class ViewGridColumnModuleColumnModel {
         return orderable;
     }
 
-    public void setOrderable(Boolean orderable) {
+    public void setOrderable(final Boolean orderable) {
         this.orderable = orderable;
     }
 

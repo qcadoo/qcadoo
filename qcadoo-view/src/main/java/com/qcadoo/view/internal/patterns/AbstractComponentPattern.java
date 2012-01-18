@@ -379,7 +379,7 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
     }
 
     public void updateComponentStateListeners(final ViewDefinitionState viewDefinitionState) {
-        if (fieldEntityIdChangeListeners.size() > 0) {
+        if (!fieldEntityIdChangeListeners.isEmpty()) {
             AbstractComponentState thisComponentState = (AbstractComponentState) viewDefinitionState
                     .getComponentByReference(getReference());
             for (Map.Entry<String, ComponentPattern> listenerPattern : fieldEntityIdChangeListeners.entrySet()) {
@@ -393,7 +393,7 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
                 }
             }
         }
-        if (scopeEntityIdChangeListeners.size() > 0) {
+        if (!scopeEntityIdChangeListeners.isEmpty()) {
             AbstractComponentState thisComponentState = (AbstractComponentState) viewDefinitionState
                     .getComponentByReference(getReference());
             for (Map.Entry<String, ComponentPattern> listenerPattern : scopeEntityIdChangeListeners.entrySet()) {
@@ -493,7 +493,7 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
 
     private void addListenersToJsOptions(final JSONObject jsOptions) throws JSONException {
         JSONArray listeners = new JSONArray();
-        if (fieldEntityIdChangeListeners.size() > 0 || scopeEntityIdChangeListeners.size() > 0) {
+        if (!fieldEntityIdChangeListeners.isEmpty() || !scopeEntityIdChangeListeners.isEmpty()) {
             for (ComponentPattern listener : fieldEntityIdChangeListeners.values()) {
                 if (isComponentEnabled(listener)) {
                     listeners.put(listener.getPath());
@@ -505,7 +505,7 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
                 }
             }
         }
-        if (customEvents.size() > 0) {
+        if (!customEvents.isEmpty()) {
             listeners.put(getPath());
         }
         jsOptions.put("listeners", listeners);

@@ -55,7 +55,7 @@ public class RibbonImpl implements InternalRibbon {
     }
 
     @Override
-    public RibbonGroup getGroupByName(String groupName) {
+    public RibbonGroup getGroupByName(final String groupName) {
         for (RibbonGroupsPack groupPack : groupPacks) {
             RibbonGroup group = groupPack.getGroupByName(groupName);
             if (group != null) {

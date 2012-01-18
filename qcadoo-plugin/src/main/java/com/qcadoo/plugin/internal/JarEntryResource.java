@@ -53,7 +53,7 @@ public class JarEntryResource extends InputStreamResource {
      *            resource in classpath
      * @throws MalformedURLException
      */
-    public JarEntryResource(Resource resource) throws IOException {
+    public JarEntryResource(final Resource resource) throws IOException {
         super(resource.getInputStream(), "Jar entry [" + resource + "]");
         this.url = ResourceUtils.extractJarFileURL(resource.getURL());
         this.jarFileName = FilenameUtils.getName(url.toString());

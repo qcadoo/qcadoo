@@ -112,7 +112,7 @@ public class DefaultPluginDescriptorParser implements PluginDescriptorParser {
     }
 
     @Override
-    public InternalPlugin parse(JarEntryResource resource, final boolean ignoreModules) {
+    public InternalPlugin parse(final JarEntryResource resource, final boolean ignoreModules) {
         try {
             LOG.info("Parsing descriptor for:" + resource);
 
@@ -303,24 +303,6 @@ public class DefaultPluginDescriptorParser implements PluginDescriptorParser {
         }
         return null;
     }
-
-    // private static class ValidationErrorHandler implements ErrorHandler {
-    //
-    // @Override
-    // public void warning(final SAXParseException e) throws SAXException {
-    // LOG.debug(e.getMessage());
-    // }
-    //
-    // @Override
-    // public void error(final SAXParseException e) throws SAXException {
-    // LOG.debug(e.getMessage());
-    // }
-    //
-    // @Override
-    // public void fatalError(final SAXParseException e) throws SAXException {
-    // LOG.error(e.getMessage());
-    // }
-    // }
 
     public void setModuleFactoryAccessor(final ModuleFactoryAccessor moduleFactoryAccessor) {
         this.moduleFactoryAccessor = moduleFactoryAccessor;

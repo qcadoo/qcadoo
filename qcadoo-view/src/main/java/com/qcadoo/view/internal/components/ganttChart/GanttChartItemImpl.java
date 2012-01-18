@@ -84,27 +84,27 @@ public class GanttChartItemImpl implements GanttChartModifiableItem {
     }
 
     @Override
-    public void setFrom(double from) {
+    public void setFrom(final double from) {
         this.from = from;
     }
 
     @Override
-    public void setTo(double to) {
+    public void setTo(final double to) {
         this.to = to;
     }
 
     @Override
-    public void setDateFrom(String dateFrom) {
+    public void setDateFrom(final String dateFrom) {
         this.dateFrom = dateFrom;
     }
 
     @Override
-    public void setDateTo(String dateTo) {
+    public void setDateTo(final String dateTo) {
         this.dateTo = dateTo;
     }
 
     @Override
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 

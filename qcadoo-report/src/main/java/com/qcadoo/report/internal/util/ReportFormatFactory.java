@@ -33,12 +33,12 @@ import net.sf.jasperreports.engine.util.FormatFactory;
 public class ReportFormatFactory implements FormatFactory {
 
     @Override
-    public DateFormat createDateFormat(String pattern, Locale locale, TimeZone timezone) {
+    public DateFormat createDateFormat(final String pattern, final Locale locale, final TimeZone timezone) {
         return DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale);
     }
 
     @Override
-    public NumberFormat createNumberFormat(String pattern, Locale locale) {
+    public NumberFormat createNumberFormat(final String pattern, final Locale locale) {
         return ReportNumberFormat.getInstance(locale);
     }
 

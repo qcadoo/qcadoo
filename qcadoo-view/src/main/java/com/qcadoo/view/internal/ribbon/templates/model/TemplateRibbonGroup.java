@@ -71,7 +71,7 @@ public class TemplateRibbonGroup {
             return null;
         }
         List<InternalRibbonActionItem> itemsToApply = getFilteredList(parameters);
-        if (itemsToApply.size() == 0) {
+        if (itemsToApply.isEmpty()) {
             return null;
         }
         if (!checkCondition(condition, viewDefinition)) {

@@ -8,11 +8,11 @@ public class PrioritizedString implements Comparable<PrioritizedString> {
 
     private Pair<String, Integer> pair;
 
-    public PrioritizedString(String string) {
+    public PrioritizedString(final String string) {
         pair = new Pair<String, Integer>(string, 0);
     }
 
-    public PrioritizedString(String string, Integer priority) {
+    public PrioritizedString(final String string, final Integer priority) {
         pair = new Pair<String, Integer>(string, priority);
     }
 
@@ -20,7 +20,7 @@ public class PrioritizedString implements Comparable<PrioritizedString> {
         return pair.getKey();
     }
 
-    public void setString(String string) {
+    public void setString(final String string) {
         pair.setKey(string);
     }
 
@@ -28,7 +28,7 @@ public class PrioritizedString implements Comparable<PrioritizedString> {
         return pair.getValue();
     }
 
-    public void setPriority(Integer priority) {
+    public void setPriority(final Integer priority) {
         pair.setValue(priority);
     }
 
@@ -48,7 +48,7 @@ public class PrioritizedString implements Comparable<PrioritizedString> {
     }
 
     @Override
-    public int compareTo(PrioritizedString o) {
+    public int compareTo(final PrioritizedString o) {
         String a = getPriority() + getString();
         String b = o.getPriority() + o.getString();
         return a.compareTo(b);

@@ -44,7 +44,7 @@ public class GridLayoutCell {
         return components;
     }
 
-    public void addComponent(ComponentPattern component) {
+    public void addComponent(final ComponentPattern component) {
         if (components == null) {
             components = new LinkedList<ComponentPattern>();
         }
@@ -55,7 +55,7 @@ public class GridLayoutCell {
         return rowspan;
     }
 
-    public void setRowspan(int rowspan) {
+    public void setRowspan(final int rowspan) {
         this.rowspan = rowspan;
     }
 
@@ -63,7 +63,7 @@ public class GridLayoutCell {
         return colspan;
     }
 
-    public void setColspan(int colspan) {
+    public void setColspan(final int colspan) {
         this.colspan = colspan;
     }
 
@@ -71,7 +71,7 @@ public class GridLayoutCell {
         return available;
     }
 
-    public void setAvailable(boolean available) {
+    public void setAvailable(final boolean available) {
         this.available = available;
     }
 
@@ -79,7 +79,7 @@ public class GridLayoutCell {
         return rightBorder;
     }
 
-    public void setRightBorder(boolean rightBorder) {
+    public void setRightBorder(final boolean rightBorder) {
         this.rightBorder = rightBorder;
     }
 

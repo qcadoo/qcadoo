@@ -55,7 +55,7 @@ public class RibbonGroupImpl implements InternalRibbonGroup {
     }
 
     @Override
-    public RibbonActionItem getItemByName(String itemName) {
+    public RibbonActionItem getItemByName(final String itemName) {
         for (RibbonActionItem item : items) {
             if (item.getName().equals(itemName)) {
                 return item;
@@ -114,7 +114,7 @@ public class RibbonGroupImpl implements InternalRibbonGroup {
     }
 
     @Override
-    public void setExtensionPluginIdentifier(String extensionPluginIdentifier) {
+    public void setExtensionPluginIdentifier(final String extensionPluginIdentifier) {
         this.extensionPluginIdentifier = extensionPluginIdentifier;
     }
 

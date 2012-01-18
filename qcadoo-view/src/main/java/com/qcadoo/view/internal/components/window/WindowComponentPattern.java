@@ -69,11 +69,11 @@ public class WindowComponentPattern extends AbstractContainerPattern {
         return new WindowComponentState(this);
     }
 
-    public void setHeader(Boolean header) {
+    public void setHeader(final Boolean header) {
         this.header = header;
     }
 
-    public void setFixedHeight(Boolean fixedHeight) {
+    public void setFixedHeight(final Boolean fixedHeight) {
         this.fixedHeight = fixedHeight;
     }
 

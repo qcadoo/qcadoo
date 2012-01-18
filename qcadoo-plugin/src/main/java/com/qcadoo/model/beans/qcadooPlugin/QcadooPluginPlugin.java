@@ -152,7 +152,7 @@ public class QcadooPluginPlugin {
         return isSystem;
     }
 
-    public void setIsSystem(boolean isSystem) {
+    public void setIsSystem(final boolean isSystem) {
         this.isSystem = isSystem;
     }
 

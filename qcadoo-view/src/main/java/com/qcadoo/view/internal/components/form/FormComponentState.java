@@ -433,7 +433,7 @@ public class FormComponentState extends AbstractContainerState implements FormCo
 
             List<Entity> copiedEntities = getDataDefinition().copy(entityId);
 
-            if (copiedEntities.size() > 0 && copiedEntities.get(0).getId() != null) {
+            if (!copiedEntities.isEmpty() && copiedEntities.get(0).getId() != null) {
                 clear(args);
                 setEntityId(copiedEntities.get(0).getId());
                 initialize(args);
@@ -451,7 +451,7 @@ public class FormComponentState extends AbstractContainerState implements FormCo
 
             List<Entity> activatedEntities = getDataDefinition().activate(entityId);
 
-            if (activatedEntities.size() > 0) {
+            if (!activatedEntities.isEmpty()) {
                 active = true;
                 addMessage(translateMessage("activateMessage"), MessageType.SUCCESS);
                 setEntity(activatedEntities.get(0));
@@ -466,7 +466,7 @@ public class FormComponentState extends AbstractContainerState implements FormCo
 
             List<Entity> deactivatedEntities = getDataDefinition().deactivate(entityId);
 
-            if (deactivatedEntities.size() > 0) {
+            if (!deactivatedEntities.isEmpty()) {
                 active = false;
                 addMessage(translateMessage("deactivateMessage"), MessageType.SUCCESS);
                 setEntity(deactivatedEntities.get(0));

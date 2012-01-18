@@ -38,5 +38,5 @@ public interface EnumeratedType extends FieldType {
      * 
      * @return values
      */
-    Map<String, String> values(Locale locale);
+    Map<String, String> values(final Locale locale);
 }

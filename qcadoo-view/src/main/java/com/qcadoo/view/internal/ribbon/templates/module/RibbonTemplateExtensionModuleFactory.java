@@ -40,7 +40,7 @@ public class RibbonTemplateExtensionModuleFactory extends ModuleFactory<RibbonTe
     private RibbonTemplatesService ribbonTemplatesService;
 
     @Override
-    protected RibbonTemplateExtensionModule parseElement(String pluginIdentifier, Element element) {
+    protected RibbonTemplateExtensionModule parseElement(final String pluginIdentifier, final Element element) {
         String resource = getRequiredAttribute(element, "resource");
 
         return new RibbonTemplateExtensionModule(pluginIdentifier, new ClassPathResource(pluginIdentifier + "/" + resource),

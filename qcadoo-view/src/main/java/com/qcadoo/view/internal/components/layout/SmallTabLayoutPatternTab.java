@@ -34,11 +34,11 @@ public class SmallTabLayoutPatternTab {
 
     private List<ComponentPattern> components = new LinkedList<ComponentPattern>();
 
-    public SmallTabLayoutPatternTab(String name) {
+    public SmallTabLayoutPatternTab(final String name) {
         this.name = name;
     }
 
-    public void addComponent(ComponentPattern component) {
+    public void addComponent(final ComponentPattern component) {
         components.add(component);
     }
 
@@ -50,11 +50,11 @@ public class SmallTabLayoutPatternTab {
         return components;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
-    public void setComponents(List<ComponentPattern> components) {
+    public void setComponents(final List<ComponentPattern> components) {
         this.components = components;
     }
 }

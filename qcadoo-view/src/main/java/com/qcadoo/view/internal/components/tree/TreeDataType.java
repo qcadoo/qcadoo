@@ -125,7 +125,7 @@ public class TreeDataType {
         return nodeIcon;
     }
 
-    public void setNodeIcon(String nodeIcon) {
+    public void setNodeIcon(final String nodeIcon) {
         this.nodeIcon = nodeIcon;
     }
 
@@ -133,7 +133,7 @@ public class TreeDataType {
         return newIcon;
     }
 
-    public void setNewIcon(String newIcon) {
+    public void setNewIcon(final String newIcon) {
         this.newIcon = newIcon;
     }
 
@@ -141,7 +141,7 @@ public class TreeDataType {
         return canHaveChildren;
     }
 
-    public void setCanHaveChildren(boolean canHaveChildren) {
+    public void setCanHaveChildren(final boolean canHaveChildren) {
         this.canHaveChildren = canHaveChildren;
     }
 
@@ -149,7 +149,7 @@ public class TreeDataType {
         return correspondingViewInModal;
     }
 
-    public void setCorrespondingViewInModal(boolean correspondingViewInModal) {
+    public void setCorrespondingViewInModal(final boolean correspondingViewInModal) {
         this.correspondingViewInModal = correspondingViewInModal;
     }
 }

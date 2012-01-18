@@ -24,6 +24,8 @@
 package com.qcadoo.model.internal.definitionconverter;
 
 import static com.google.common.base.Preconditions.checkState;
+import static com.qcadoo.model.internal.AbstractModelXmlConverter.FieldsTag.PRIORITY;
+import static com.qcadoo.model.internal.AbstractModelXmlConverter.OtherTag.IDENTIFIER;
 import static org.springframework.util.StringUtils.hasText;
 
 import java.io.IOException;
@@ -291,26 +293,18 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
     private void addOtherElement(final XMLStreamReader reader, final DataDefinitionImpl dataDefinition, final String tag)
             throws XMLStreamException {
         OtherTag otherTag = OtherTag.valueOf(tag.toUpperCase(Locale.ENGLISH));
-
-        switch (otherTag) {
-            case IDENTIFIER:
-                dataDefinition.setIdentifierExpression(getIdentifierExpression(reader));
-                break;
-            default:
-                break;
+        if (otherTag == IDENTIFIER) {
+            dataDefinition.setIdentifierExpression(getIdentifierExpression(reader));
         }
     }
 
     private void addFieldElement(final XMLStreamReader reader, final DataDefinitionImpl dataDefinition, final String tag)
             throws XMLStreamException, HookInitializationException, ModelXmlParsingException {
         FieldsTag fieldTag = FieldsTag.valueOf(tag.toUpperCase(Locale.ENGLISH));
-        switch (fieldTag) {
-            case PRIORITY:
-                dataDefinition.addPriorityField(getPriorityFieldDefinition(reader, dataDefinition));
-                break;
-            default:
-                dataDefinition.withField(getFieldDefinition(reader, dataDefinition, fieldTag));
-                break;
+        if (fieldTag == PRIORITY) {
+            dataDefinition.addPriorityField(getPriorityFieldDefinition(reader, dataDefinition));
+        } else {
+            dataDefinition.withField(getFieldDefinition(reader, dataDefinition, fieldTag));
         }
     }
 

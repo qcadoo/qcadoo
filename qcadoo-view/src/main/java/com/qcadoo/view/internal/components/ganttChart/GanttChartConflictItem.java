@@ -36,7 +36,7 @@ public class GanttChartConflictItem extends GanttChartItemImpl {
 
     private final List<GanttChartItem> items = new ArrayList<GanttChartItem>();
 
-    public GanttChartConflictItem(String row, String dateFrom, String dateTo, double from, double to) {
+    public GanttChartConflictItem(final String row, final String dateFrom, final String dateTo, final double from, final double to) {
         super(row, null, null, dateFrom, dateTo, from, to);
     }
 

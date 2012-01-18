@@ -36,7 +36,7 @@ public class ReportTemplateModuleFactory extends ModuleFactory<ReportTemplateMod
     private ReportTemplateService reportTemplateService;
 
     @Override
-    protected ReportTemplateModule parseElement(String pluginIdentifier, Element element) {
+    protected ReportTemplateModule parseElement(final String pluginIdentifier, final Element element) {
         String resource = getRequiredAttribute(element, "resource");
         String name = getRequiredAttribute(element, "name");
 

@@ -50,7 +50,7 @@ public class PredefinedFilter {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -58,7 +58,7 @@ public class PredefinedFilter {
         return filterRestrictions;
     }
 
-    public void addFilterRestriction(String column, String restriction) {
+    public void addFilterRestriction(final String column, final String restriction) {
         filterRestrictions.put(column, restriction);
     }
 
@@ -75,7 +75,7 @@ public class PredefinedFilter {
         return object;
     }
 
-    private String parseRestriction(String restriction) {
+    private String parseRestriction(final String restriction) {
         Pattern p = Pattern.compile("@\\{.*?\\}");
         Matcher m = p.matcher(restriction);
         int lastEnd = 0;
@@ -93,7 +93,7 @@ public class PredefinedFilter {
         }
     }
 
-    private String evalExpression(String expression) {
+    private String evalExpression(final String expression) {
         DateTime today = new DateTime();
         DateTime date;
         if ("today".equals(expression)) {
@@ -112,7 +112,7 @@ public class PredefinedFilter {
         return orderColumn;
     }
 
-    public void setOrderColumn(String orderColumn) {
+    public void setOrderColumn(final String orderColumn) {
         this.orderColumn = orderColumn;
     }
 
@@ -120,7 +120,7 @@ public class PredefinedFilter {
         return orderDirection;
     }
 
-    public void setOrderDirection(String orderDirection) {
+    public void setOrderDirection(final String orderDirection) {
         this.orderDirection = orderDirection;
     }
 }

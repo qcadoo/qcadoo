@@ -108,7 +108,7 @@ public final class MenuDefinition {
      * @param administrationCategory
      *            new content of administration category
      */
-    public void setAdministrationCategory(MenuItemsGroup administrationCategory) {
+    public void setAdministrationCategory(final MenuItemsGroup administrationCategory) {
         this.administrationCategory = administrationCategory;
     }
 
@@ -127,7 +127,7 @@ public final class MenuDefinition {
      * @param homeCategory
      *            new content of home category
      */
-    public void setHomeCategory(MenuItemsGroup homeCategory) {
+    public void setHomeCategory(final MenuItemsGroup homeCategory) {
         this.homeCategory = homeCategory;
     }
 }

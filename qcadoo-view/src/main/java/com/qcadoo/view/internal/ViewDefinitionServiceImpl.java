@@ -103,7 +103,7 @@ public class ViewDefinitionServiceImpl implements InternalViewDefinitionService,
     }
 
     @Override
-    public boolean viewExists(String pluginIdentifier, String viewName) {
+    public boolean viewExists(final String pluginIdentifier, final String viewName) {
         return getWithoutSession(pluginIdentifier, viewName) != null;
     }
 
