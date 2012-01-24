@@ -57,7 +57,7 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 	var currentState = {
 		selectedEntityId : null,
 		selectedEntities : new Object(),
-		filtersEnabled : false,
+		filtersEnabled : true,
 		newButtonClickedBefore : false,
 		addExistingButtonClickedBefore : false,
 		multiselectMode : true,
@@ -102,7 +102,7 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 
 		var colNames = new Array();
 		var colModel = new Array();
-		var isfiltersEnabled = false;
+		var isfiltersEnabled = true;
 
 		for ( var i in options.columns) {
 			var column = options.columns[i];
@@ -174,6 +174,7 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 			}
 		}
 
+		gridParameters.filtersDefaultEnabled = true;
 		gridParameters.hasPredefinedFilters = options.hasPredefinedFilters;
 		gridParameters.predefinedFilters = options.predefinedFilters;
 
@@ -654,13 +655,17 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 			stringResult : true
 		});
 
-		if (gridParameters.isLookup) {
+		if (gridParameters.isLookup || gridParameters.filtersDefaultEnabled) {
 			headerController.setFilterActive();
 			currentState.filtersEnabled = true;
 			$("#gs_" + options.columns[0].name).focus();
 		} else {
 			grid[0].toggleToolbar();
 			currentState.filtersEnabled = false;
+		}
+		
+		if (gridParameters.filtersDefaultEnabled) {
+			updateSearchFields();
 		}
 		
 		noRecordsDiv = $("<div>").html(translations.noResults).addClass(
@@ -787,7 +792,7 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 		currentState.filtersEnabled = !currentState.filtersEnabled;
 		if (currentState.filtersEnabled) {
 			currentGridHeight -= 23;
-			updateSearchFields()
+			updateSearchFields();
 			$("#gs_" + options.columns[0].name).focus();
 		} else {
 			currentGridHeight += 23;
