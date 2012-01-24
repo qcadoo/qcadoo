@@ -91,12 +91,13 @@ public final class MenuServiceImpl implements InternalMenuService {
 
         for (Entity menuCategory : menuCategories) {
             String label = menuCategory.getStringField(NAME);
+            String categoryDescription = translationUtilsService.getCategoryDescriptionTranslation(menuCategory, locale);
 
             if (menuCategory.getStringField(PLUGIN_IDENTIFIER) != null) {
                 label = translationUtilsService.getCategoryTranslation(menuCategory, locale);
             }
 
-            MenuItemsGroup category = new MenuItemsGroup(menuCategory.getStringField(NAME), label);
+            MenuItemsGroup category = new MenuItemsGroup(menuCategory.getStringField(NAME), label, categoryDescription);
 
             List<Entity> menuItems = getDataDefinition(ITEM).find().add(SearchRestrictions.belongsTo(CATEGORY, menuCategory))
                     .addOrder(SearchOrders.asc(SUCCESSION)).list().getEntities();
@@ -109,6 +110,7 @@ public final class MenuServiceImpl implements InternalMenuService {
                 Entity menuView = menuItem.getBelongsToField(VIEW);
 
                 String itemLabel = menuItem.getStringField(NAME);
+                String itemDescription = translationUtilsService.getItemDescriptionTranslation(menuItem, locale);
 
                 if (menuItem.getStringField(PLUGIN_IDENTIFIER) != null) {
                     itemLabel = translationUtilsService.getItemTranslation(menuItem, locale);
@@ -117,10 +119,10 @@ public final class MenuServiceImpl implements InternalMenuService {
                 if (canAccess(menuView.getStringField(PLUGIN_IDENTIFIER), menuView.getStringField(NAME))) {
                     MenuItem newMenuItem = null;
                     if (menuView.getStringField(URL) == null) {
-                        newMenuItem = new ViewDefinitionMenuItemItem(menuItem.getStringField(NAME), itemLabel,
+                        newMenuItem = new ViewDefinitionMenuItemItem(menuItem.getStringField(NAME), itemLabel, itemDescription,
                                 menuView.getStringField(PLUGIN_IDENTIFIER), menuView.getStringField(NAME));
                     } else {
-                        newMenuItem = new UrlMenuItem(menuItem.getStringField(NAME), itemLabel, null,
+                        newMenuItem = new UrlMenuItem(menuItem.getStringField(NAME), itemLabel, itemDescription, null,
                                 menuView.getStringField(URL));
                     }
                     category.addItem(newMenuItem);

@@ -39,13 +39,16 @@ public final class ViewDefinitionMenuItemItem extends MenuItem {
      *            identifier of item
      * @param label
      *            item label to display
+     * @param description
+     *            item description to display as a tooltip
      * @param pluginIdentifier
      *            plugin identifier of this item
      * @param viewName
      *            name of view that this item leads to
      */
-    public ViewDefinitionMenuItemItem(final String name, final String label, final String pluginIdentifier, final String viewName) {
-        super(name, label, pluginIdentifier);
+    public ViewDefinitionMenuItemItem(final String name, final String label, final String description,
+            final String pluginIdentifier, final String viewName) {
+        super(name, label, description, pluginIdentifier);
         this.viewName = viewName;
     }
 

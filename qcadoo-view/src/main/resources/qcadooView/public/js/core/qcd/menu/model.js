@@ -55,6 +55,7 @@ QCD.menu.FirstButton = function(menuItem, menuItemType) {
 	this.type = menuItemType ? menuItemType : QCD.menu.MenuModel.REGULAR_CATEGORY;
 	this.name = menuItem.name;
 	this.label = menuItem.label;
+	this.description = menuItem.description;
 	
 	this.element = null;
 	
@@ -72,6 +73,7 @@ QCD.menu.FirstButton = function(menuItem, menuItemType) {
 QCD.menu.SecondButton = function(menuItem, firstButton) {
 	this.name = firstButton.name+"_"+menuItem.name;
 	this.label = menuItem.label;
+	this.description = menuItem.description;
 	
 	this.page = menuItem.page;
 	

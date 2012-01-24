@@ -42,6 +42,8 @@ public final class MenuItemsGroup {
 
     private final String label;
 
+    private final String description;
+
     private final List<MenuItem> items;
 
     /**
@@ -51,10 +53,11 @@ public final class MenuItemsGroup {
      * @param label
      *            group label to display
      */
-    public MenuItemsGroup(final String name, final String label) {
+    public MenuItemsGroup(final String name, final String label, final String description) {
         super();
         this.name = name;
         this.label = label;
+        this.description = description;
         items = new LinkedList<MenuItem>();
     }
 
@@ -110,6 +113,7 @@ public final class MenuItemsGroup {
             itemsArray.put(item.getAsJson());
         }
         itemObject.put("items", itemsArray);
+        itemObject.put("description", description);
         return itemObject;
     }
 }

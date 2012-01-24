@@ -124,6 +124,9 @@ QCD.menu.MenuController = function(menuStructure, _windowController) {
 				menuHomeContentElement.append(firstLevelButton);
 			} else {
 				firstLevelButton = $("<li>").html("<a href='#'><span>" + item.label + "</span></a>").attr("id", "firstLevelButton_" + item.name);
+				if (item.description) {
+					firstLevelButton.attr("title", item.description);
+				}
 				menuContentElement.append(firstLevelButton);
 			}
 
@@ -264,6 +267,9 @@ QCD.menu.MenuController = function(menuStructure, _windowController) {
 					"<a href='#'><span>" + secondLevelItem.label
 							+ "</span></a>").attr("id",
 					"secondLevelButton_" + secondLevelItem.name);
+			if (secondLevelItem.description) {
+				secondLevelButton.attr("title", secondLevelItem.description);
+			}
 			menuContentElement.append(secondLevelButton);
 			secondLevelItem.element = secondLevelButton;
 

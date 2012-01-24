@@ -42,6 +42,12 @@ public class TranslationUtilsService {
     @Autowired
     private TranslationService translationService;
 
+    private static final String CATEGORY = "category";
+
+    private static final String NAME = "name";
+
+    private static final String PLUGIN_IDENTIFIER = "pluginIdentifier";
+
     /**
      * Returns menu category translation
      * 
@@ -53,8 +59,29 @@ public class TranslationUtilsService {
      */
     public String getCategoryTranslation(final Entity category, final Locale locale) {
         return translationService.translate(
-                category.getStringField("pluginIdentifier") + ".menu." + category.getStringField("name"),
-                "qcadooView.menu." + category.getStringField("name"), locale);
+                category.getStringField(PLUGIN_IDENTIFIER) + ".menu." + category.getStringField(NAME), "qcadooView.menu."
+                        + category.getStringField(NAME), locale);
+    }
+
+    /**
+     * Returns menu category description translation
+     * 
+     * @param category
+     *            category entity
+     * @param locale
+     *            localization
+     * @return category description translation or empty String if translation does not exists
+     * 
+     * @since 1.1.3
+     */
+    public String getCategoryDescriptionTranslation(final Entity category, final Locale locale) {
+        String translationKey = category.getStringField(PLUGIN_IDENTIFIER) + ".menu." + category.getStringField(NAME)
+                + ".description";
+        String translation = translationService.translate(translationKey, locale);
+        if (translationKey.equals(translation)) {
+            return "";
+        }
+        return translation;
     }
 
     /**
@@ -67,11 +94,33 @@ public class TranslationUtilsService {
      * @return item translation
      */
     public String getItemTranslation(final Entity item, final Locale locale) {
-        Entity categoryEntity = item.getBelongsToField("category");
+        Entity categoryEntity = item.getBelongsToField(CATEGORY);
         return translationService.translate(
-                item.getStringField("pluginIdentifier") + ".menu." + categoryEntity.getStringField("name") + "."
-                        + item.getStringField("name"),
-                "qcadooView.menu." + categoryEntity.getStringField("name") + "." + item.getStringField("name"), locale);
+                item.getStringField(PLUGIN_IDENTIFIER) + ".menu." + categoryEntity.getStringField(NAME) + '.'
+                        + item.getStringField(NAME),
+                "qcadooView.menu." + categoryEntity.getStringField(NAME) + '.' + item.getStringField(NAME), locale);
+    }
+
+    /**
+     * Returns menu item description translation
+     * 
+     * @param item
+     *            category entity
+     * @param locale
+     *            localization
+     * @return item description translation or empty String if translation does not exists
+     * 
+     * @since 1.1.3
+     */
+    public String getItemDescriptionTranslation(final Entity item, final Locale locale) {
+        Entity category = item.getBelongsToField(CATEGORY);
+        String translationKey = item.getStringField(PLUGIN_IDENTIFIER) + ".menu." + category.getStringField(NAME) + '.'
+                + item.getStringField(NAME) + ".description";
+        String translation = translationService.translate(translationKey, locale);
+        if (translationKey.equals(translation)) {
+            return "";
+        }
+        return translation;
     }
 
 }

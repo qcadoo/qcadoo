@@ -37,6 +37,8 @@ public abstract class MenuItem {
 
     private final String label;
 
+    private final String description;
+
     private final String pluginIdentifier;
 
     /**
@@ -44,12 +46,15 @@ public abstract class MenuItem {
      *            identifier of item
      * @param label
      *            item label to display
+     * @param description
+     *            item description to display as a tooltip
      * @param pluginIdentifier
      *            plugin identifier of this item
      */
-    public MenuItem(final String name, final String label, final String pluginIdentifier) {
+    public MenuItem(final String name, final String label, final String description, final String pluginIdentifier) {
         this.name = name;
         this.label = label;
+        this.description = description;
         this.pluginIdentifier = pluginIdentifier;
     }
 
@@ -69,6 +74,15 @@ public abstract class MenuItem {
      */
     public final String getLabel() {
         return label;
+    }
+
+    /**
+     * Get item description to display as a tooltip
+     * 
+     * @return item description to display as a tooltip
+     */
+    public String getDescription() {
+        return description;
     }
 
     /**
@@ -98,7 +112,7 @@ public abstract class MenuItem {
         itemObject.put("name", getName());
         itemObject.put("label", getLabel());
         itemObject.put("page", getPage());
+        itemObject.put("description", getDescription());
         return itemObject;
     }
-
 }

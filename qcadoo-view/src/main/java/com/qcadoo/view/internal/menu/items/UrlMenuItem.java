@@ -37,13 +37,16 @@ public final class UrlMenuItem extends MenuItem {
      *            identifier of item
      * @param label
      *            item label to display
+     * @param description
+     *            item description to display as a tooltip
      * @param pluginIdentifier
      *            plugin identifier of this item
      * @param pageUrl
      *            URL of page that this item leads to
      */
-    public UrlMenuItem(final String name, final String label, final String pluginIdentifier, final String pageUrl) {
-        super(name, label, pluginIdentifier);
+    public UrlMenuItem(final String name, final String label, final String description, final String pluginIdentifier,
+            final String pageUrl) {
+        super(name, label, description, pluginIdentifier);
         this.pageUrl = pageUrl;
     }
 
