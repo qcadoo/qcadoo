@@ -23,10 +23,12 @@
     ***************************************************************************
 
 --%>
-<![CDATA[ERROR PAGE: ${errorHeader}##${errorExplanation}]]>
 
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
+
+<![CDATA[ERROR PAGE: <c:out value="${errorHeader}" escapeXml="true" />##<c:out value="${errorExplanation}" escapeXml="true" />]]>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 	<head>
@@ -60,11 +62,26 @@
 				vertical-align: top;
 				margin-right: 10px;
 			}
+			#content #codeDivSad {
+				width: 130px;
+				height: 130px;
+				background-image: url('/qcadooView/public/img/core/error/errorCodeBgSad.png');
+				background-repeat: no-repeat;
+				font-size: 45px;
+				text-align: center;
+				padding-top: 37px;
+				display: inline-block;
+				vertical-align: top;
+				margin-right: 10px;
+			}
 			#content #contentDiv {
 				width: 800px;
 				display: inline-block;
 				color: #d7d7d7;
 				font-size: 15px;
+			}
+			#content #contentDiv a {
+				text-decoration: none;
 			}
 			#content #contentDiv h1 {
 				margin-top: 37px;
@@ -161,9 +178,14 @@
 	</head>
     <body>
     	<div id="content">
-	        <div id="codeDiv">
-	        	${code}
-	        </div>
+   			<c:choose>
+    			<c:when test="${code == '402'}">
+		        	<div id="codeDivSad"> </div>
+		    	</c:when>
+		    	<c:otherwise>
+		        	<div id="codeDiv">${code}</div>
+		    	</c:otherwise>
+		    </c:choose>
 	        <div id="contentDiv">
 	        		<h1>${errorHeader}</h1>
 	        	<div>

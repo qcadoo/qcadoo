@@ -61,9 +61,13 @@ public class ErrorController {
             String errorHeader = null;
             String errorExplanation = null;
             switch (code) {
-                case 400: // Bad request
+                case 400: // Bad Request
                     errorHeader = "qcadooView.errorPage.error.badRequest.header";
                     errorExplanation = "qcadooView.errorPage.error.badRequest.explanation";
+                    break;
+                case 402: // Payment Required
+                    errorHeader = "qcadooView.errorPage.error.paymentRequired.header";
+                    errorExplanation = "qcadooView.errorPage.error.paymentRequired.explanation";
                     break;
                 case 403: // Forbidden
                     errorHeader = "qcadooView.errorPage.error.forbidden.header";
@@ -77,7 +81,7 @@ public class ErrorController {
                     errorHeader = "qcadooView.errorPage.error.internalError.header";
                     errorExplanation = "qcadooView.errorPage.error.internalError.explanation";
                     break;
-                case 503: // Gateway timeout
+                case 503: // Gateway Timeout
                     errorHeader = "qcadooView.errorPage.error.gatewayTimeout.header";
                     errorExplanation = "qcadooView.errorPage.error.gatewayTimeout.explanation";
                     break;
