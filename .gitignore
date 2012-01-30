@@ -3,6 +3,7 @@
 .settings
 .DS_Store
 target
+bin
 pom.xml.releaseBackup
 pom.xml.next
 release.properties
