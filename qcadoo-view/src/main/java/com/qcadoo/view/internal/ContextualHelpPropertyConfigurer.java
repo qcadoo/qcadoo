@@ -13,19 +13,19 @@ import org.springframework.stereotype.Component;
 @Component
 public class ContextualHelpPropertyConfigurer extends PropertyPlaceholderConfigurer {
 
-    private static Map<String, String> urlsByComponentPathMap;
+    private Map<String, String> urlsByComponentPathMap;
 
     public ContextualHelpPropertyConfigurer() {
+        super();
+        urlsByComponentPathMap = new HashMap<String, String>();
         setIgnoreResourceNotFound(true);
         setIgnoreUnresolvablePlaceholders(true);
         setLocation(new ClassPathResource("help.properties"));
-        // setFileEncoding("UTF-8");
     }
 
     @Override
     protected void processProperties(final ConfigurableListableBeanFactory beanFactory, final Properties props) {
         super.processProperties(beanFactory, props);
-        urlsByComponentPathMap = new HashMap<String, String>();
         for (Object key : props.keySet()) {
             String componentPath = key.toString();
             urlsByComponentPathMap.put(componentPath, resolvePlaceholder(componentPath, props));
