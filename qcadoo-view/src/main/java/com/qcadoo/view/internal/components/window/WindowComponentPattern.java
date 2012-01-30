@@ -126,6 +126,7 @@ public class WindowComponentPattern extends AbstractContainerPattern {
                     componentDefinition.setName("mainTab");
                     componentDefinition.setParent(this);
                     componentDefinition.setTranslationService(getTranslationService());
+                    componentDefinition.setContextualHelpService(getContextualHelpService());
                     componentDefinition.setViewDefinition(getViewDefinition());
                     componentDefinition.setReference("mainTab");
                     componentDefinition.setDataDefinition(null);

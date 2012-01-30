@@ -34,6 +34,7 @@ import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.view.internal.ComponentDefinition;
 import com.qcadoo.view.internal.api.ComponentPattern;
 import com.qcadoo.view.internal.api.ContainerPattern;
+import com.qcadoo.view.internal.api.ContextualHelpService;
 import com.qcadoo.view.internal.api.InternalViewDefinition;
 import com.qcadoo.view.internal.api.ViewDefinition;
 
@@ -57,6 +58,8 @@ public abstract class AbstractPatternTest {
         componentDefinition.setParent(parent);
         TranslationService translationService = mock(TranslationService.class);
         componentDefinition.setTranslationService(translationService);
+        ContextualHelpService contextualHelpService = mock(ContextualHelpService.class);
+        componentDefinition.setContextualHelpService(contextualHelpService);
         if (viewDefinition != null) {
             componentDefinition.setViewDefinition(viewDefinition);
         } else {

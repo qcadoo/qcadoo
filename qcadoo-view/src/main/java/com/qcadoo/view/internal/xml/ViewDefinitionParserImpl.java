@@ -59,6 +59,7 @@ import com.qcadoo.view.internal.HookDefinition;
 import com.qcadoo.view.internal.api.ComponentCustomEvent;
 import com.qcadoo.view.internal.api.ComponentPattern;
 import com.qcadoo.view.internal.api.ContainerPattern;
+import com.qcadoo.view.internal.api.ContextualHelpService;
 import com.qcadoo.view.internal.api.InternalViewDefinition;
 import com.qcadoo.view.internal.api.InternalViewDefinitionService;
 import com.qcadoo.view.internal.api.ViewDefinition;
@@ -88,6 +89,9 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
 
     @Autowired
     private TranslationService translationService;
+
+    @Autowired
+    private ContextualHelpService contextualHelpService;
 
     @Autowired
     private SecurityRolesService securityRolesService;
@@ -312,6 +316,7 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
         componentDefinition.setSourceFieldPath(sourceFieldPath);
         componentDefinition.setParent(parent);
         componentDefinition.setTranslationService(translationService);
+        componentDefinition.setContextualHelpService(contextualHelpService);
         componentDefinition.setViewDefinition(viewDefinition);
         componentDefinition.setReference(getStringAttribute(componentNode, "reference"));
         componentDefinition.setDefaultEnabled(getBooleanAttribute(componentNode, "defaultEnabled", true));

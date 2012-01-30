@@ -34,6 +34,17 @@
 <tiles:useAttribute name="component" />
 
 <div style="padding: 10px; display: none;">
+	<c:if test="${not empty component['helpPath']}">
+		<div class="contextualHelpPath">
+			<span><c:out value="${component['helpPath']}" /></span>
+		</div>
+	</c:if>
+	<c:if test="${not empty component['help']}">
+		<div class="contextualHelpButton">
+			<a title="${component['helpTooltip']}" href="<c:out value="${component['help']}" />" target="_blank">(?)</a>
+		</div>
+	</c:if>
+	
 	<c:forEach items="${component['children']}" var="component">
 		<tiles:insertTemplate template="../component.jsp">
 			<tiles:putAttribute name="component" value="${component.value}" />

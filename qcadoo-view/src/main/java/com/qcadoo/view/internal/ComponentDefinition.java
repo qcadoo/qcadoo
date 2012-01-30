@@ -28,6 +28,7 @@ import org.springframework.context.ApplicationContext;
 import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.view.internal.api.ComponentPattern;
+import com.qcadoo.view.internal.api.ContextualHelpService;
 import com.qcadoo.view.internal.api.ViewDefinition;
 
 public final class ComponentDefinition {
@@ -51,6 +52,8 @@ public final class ComponentDefinition {
     private boolean hasLabel;
 
     private TranslationService translationService;
+
+    private ContextualHelpService contextualHelpService;
 
     private ApplicationContext applicationContext;
 
@@ -130,6 +133,14 @@ public final class ComponentDefinition {
 
     public void setTranslationService(final TranslationService translationService) {
         this.translationService = translationService;
+    }
+
+    public ContextualHelpService getContextualHelpService() {
+        return contextualHelpService;
+    }
+
+    public void setContextualHelpService(final ContextualHelpService contextualHelpService) {
+        this.contextualHelpService = contextualHelpService;
     }
 
     public ViewDefinition getViewDefinition() {

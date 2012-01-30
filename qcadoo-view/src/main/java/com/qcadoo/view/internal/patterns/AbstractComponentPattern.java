@@ -39,6 +39,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -55,6 +56,7 @@ import com.qcadoo.view.internal.FieldEntityIdChangeListener;
 import com.qcadoo.view.internal.ScopeEntityIdChangeListener;
 import com.qcadoo.view.internal.api.ComponentCustomEvent;
 import com.qcadoo.view.internal.api.ComponentPattern;
+import com.qcadoo.view.internal.api.ContextualHelpService;
 import com.qcadoo.view.internal.api.InternalComponentState;
 import com.qcadoo.view.internal.api.InternalViewDefinition;
 import com.qcadoo.view.internal.api.InternalViewDefinitionService;
@@ -94,6 +96,8 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
     private final String reference;
 
     private final TranslationService translationService;
+
+    private final ContextualHelpService contextualHelpService;
 
     private final ApplicationContext applicationContext;
 
@@ -138,6 +142,7 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
         this.defaultEnabled = componentDefinition.isDefaultEnabled();
         this.defaultVisible = componentDefinition.isDefaultVisible();
         this.translationService = componentDefinition.getTranslationService();
+        this.contextualHelpService = componentDefinition.getContextualHelpService();
         this.dataDefinition = componentDefinition.getDataDefinition();
         this.applicationContext = componentDefinition.getApplicationContext();
         this.viewDefinition = (InternalViewDefinition) componentDefinition.getViewDefinition();
@@ -232,6 +237,8 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
         map.put("jsObjectName", getJsObjectName());
         map.put("hasDescription", isHasDescription());
         map.put("hasLabel", isHasLabel());
+        appendContextualHelpUrl(map);
+        appendContextualHelpPath(map);
 
         Map<String, Object> jspOptions = getJspOptions(locale);
         jspOptions.put("defaultEnabled", isDefaultEnabled());
@@ -255,6 +262,21 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
         }
 
         return map;
+    }
+
+    private void appendContextualHelpUrl(final Map<String, Object> map) {
+        String helpUrl = getContextualHelpService().getHelpUrl(this);
+        if (helpUrl != null) {
+            map.put("help", helpUrl);
+            map.put("helpTooltip",
+                    translationService.translate("qcadooView.tabs.contextualHelp.tooltip", LocaleContextHolder.getLocale()));
+        }
+    }
+
+    private void appendContextualHelpPath(final Map<String, Object> map) {
+        if (getContextualHelpService().isContextualHelpPathsVisible()) {
+            map.put("helpPath", getContextualHelpService().getContextualHelpKey(this));
+        }
     }
 
     public String prepareScript(final String scriptBody, final Locale locale) {
@@ -473,6 +495,10 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
 
     public final TranslationService getTranslationService() {
         return translationService;
+    }
+
+    public ContextualHelpService getContextualHelpService() {
+        return contextualHelpService;
     }
 
     public final ApplicationContext getApplicationContext() {

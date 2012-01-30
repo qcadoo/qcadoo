@@ -230,6 +230,7 @@ public final class LookupComponentPattern extends FieldComponentPattern {
         gridComponentDefinition.setTranslationService(getTranslationService());
         gridComponentDefinition.setViewDefinition(lookupViewDefinition);
         gridComponentDefinition.setParent(window);
+        gridComponentDefinition.setContextualHelpService(getContextualHelpService());
         gridComponentDefinition.setReference("grid");
 
         if (getScopeFieldDefinition() != null) {
@@ -270,6 +271,7 @@ public final class LookupComponentPattern extends FieldComponentPattern {
         windowComponentDefinition.setName("window");
         windowComponentDefinition.setTranslationService(getTranslationService());
         windowComponentDefinition.setViewDefinition(lookupViewDefinition);
+        windowComponentDefinition.setContextualHelpService(getContextualHelpService());
 
         WindowComponentPattern window = new WindowComponentPattern(windowComponentDefinition);
         window.setFixedHeight(true);

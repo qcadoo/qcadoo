@@ -59,6 +59,7 @@ import com.qcadoo.view.internal.HookDefinition;
 import com.qcadoo.view.internal.ViewDefinitionServiceImpl;
 import com.qcadoo.view.internal.api.ComponentCustomEvent;
 import com.qcadoo.view.internal.api.ComponentPattern;
+import com.qcadoo.view.internal.api.ContextualHelpService;
 import com.qcadoo.view.internal.api.InternalViewDefinition;
 import com.qcadoo.view.internal.api.ViewDefinition;
 import com.qcadoo.view.internal.api.ViewDefinitionService;
@@ -95,6 +96,8 @@ public class ViewDefinitionParserImplTest {
 
     private TranslationService translationService;
 
+    private ContextualHelpService contextualHelpService;
+
     private static ViewComponentsResolverImpl viewComponentsResolver;
 
     @BeforeClass
@@ -117,6 +120,8 @@ public class ViewDefinitionParserImplTest {
         translationService = mock(TranslationService.class);
         RibbonParserService ribbonService = new RibbonParserService();
 
+        contextualHelpService = mock(ContextualHelpService.class);
+
         viewDefinitionService = new ViewDefinitionServiceImpl();
 
         hookFactory = new HookFactory();
@@ -127,6 +132,7 @@ public class ViewDefinitionParserImplTest {
         setField(viewDefinitionParser, "viewDefinitionService", viewDefinitionService);
         setField(viewDefinitionParser, "hookFactory", hookFactory);
         setField(viewDefinitionParser, "translationService", translationService);
+        setField(viewDefinitionParser, "contextualHelpService", contextualHelpService);
         setField(viewDefinitionParser, "viewComponentsResolver", viewComponentsResolver);
         setField(viewDefinitionParser, "ribbonService", ribbonService);
 
