@@ -27,8 +27,10 @@ var pnotify_stack = {"dir1": "up", "dir2": "left", "firstpos1": 15, "firstpos2":
 
 QCD.MessagesController = function() {
 
+	var initialized = false;
+	
 	this.clearMessager = function() {
-		$.pnotify_remove_all()
+		$.pnotify_remove_all();
 	}
 	
 	this.addMessage = function(message) { // type = [info|error|success]
@@ -64,7 +66,11 @@ QCD.MessagesController = function() {
 		}
 		
 		$.pnotify(messageOptionsObject);
-		
+		initialized = true;
+	}
+	
+	this.isInitialized = function() {
+		return initialized;
 	}
 
 }

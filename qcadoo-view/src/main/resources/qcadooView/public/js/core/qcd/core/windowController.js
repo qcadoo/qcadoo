@@ -240,6 +240,9 @@ QCD.WindowController = function(_menuStructure) {
 	}
 
 	function performGoToPage(url) {
+		if (messagesController.isInitialized()) {
+			messagesController.clearMessager();
+		}
 		loadingIndicator.show();
 		if (url.search("://") <= 0) {
 			if (url.indexOf("?") == -1) {
