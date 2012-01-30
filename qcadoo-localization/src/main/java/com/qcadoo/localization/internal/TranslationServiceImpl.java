@@ -53,8 +53,6 @@ public final class TranslationServiceImpl implements InternalTranslationService 
 
     private static final Map<String, Set<String>> GROUP_MESSAGES = new HashMap<String, Set<String>>();
 
-    private static final String DEFAULT_MISSING_MESSAGE = "-";
-
     @Value("${ignoreMissingTranslations}")
     private boolean ignoreMissingTranslations;
 

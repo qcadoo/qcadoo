@@ -77,11 +77,7 @@ public class TranslationUtilsService {
     public String getCategoryDescriptionTranslation(final Entity category, final Locale locale) {
         String translationKey = category.getStringField(PLUGIN_IDENTIFIER) + ".menu." + category.getStringField(NAME)
                 + ".description";
-        String translation = translationService.translate(translationKey, locale);
-        if (translationKey.equals(translation)) {
-            return "";
-        }
-        return translation;
+        return translateAndIgnoreMissingMessages(translationKey, locale);
     }
 
     /**
@@ -116,11 +112,24 @@ public class TranslationUtilsService {
         Entity category = item.getBelongsToField(CATEGORY);
         String translationKey = item.getStringField(PLUGIN_IDENTIFIER) + ".menu." + category.getStringField(NAME) + '.'
                 + item.getStringField(NAME) + ".description";
+        return translateAndIgnoreMissingMessages(translationKey, locale);
+    }
+
+    /**
+     * Returns translation for given key or empty string if translation has been not found.
+     * 
+     * @param translationKey
+     *            translation key
+     * @param locale
+     *            localization
+     * @return translated message or empty String if translation does not exists
+     */
+    private String translateAndIgnoreMissingMessages(final String translationKey, final Locale locale) {
         String translation = translationService.translate(translationKey, locale);
-        if (translationKey.equals(translation)) {
+        if (translation == null || translation.equals(TranslationService.DEFAULT_MISSING_MESSAGE)
+                || translationKey.equals(translation)) {
             return "";
         }
         return translation;
     }
-
 }
