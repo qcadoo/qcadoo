@@ -67,6 +67,7 @@ public class AwesomeDynamicListPattern extends FieldComponentPattern {
         formComponentDefinition.setTranslationService(getTranslationService());
         formComponentDefinition.setViewDefinition(getViewDefinition());
         formComponentDefinition.setParent(this);
+        formComponentDefinition.setContextualHelpService(getContextualHelpService());
         innerFormPattern = new FormComponentPattern(formComponentDefinition);
     }
 
