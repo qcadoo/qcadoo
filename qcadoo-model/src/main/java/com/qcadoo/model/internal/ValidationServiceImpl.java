@@ -53,6 +53,10 @@ public final class ValidationServiceImpl implements ValidationService {
 
         parseAndValidateEntity(dataDefinition, genericEntity);
 
+        if (!genericEntity.isValid()) {
+            return;
+        }
+
         if (genericEntity.getId() == null) {
             dataDefinition.callCreateHook(genericEntity);
         } else {
