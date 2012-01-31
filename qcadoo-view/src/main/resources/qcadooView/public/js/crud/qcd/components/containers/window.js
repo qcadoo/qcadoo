@@ -312,6 +312,10 @@ QCD.components.containers.Window = function(_element, _mainController) {
 		}
 	}
 	
+	this.performRefresh = function(actionsPerformer) {
+		mainController.refreshView();
+	}
+	
 	this.updateMenu = function() {
 		mainController.updateMenu();
 	}

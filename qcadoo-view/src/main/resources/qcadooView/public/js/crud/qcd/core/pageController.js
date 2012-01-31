@@ -471,6 +471,13 @@ QCD.PageController = function() {
 		}
 	}
 	
+	this.refreshView = function() {
+		if(canClose()) {
+			QCD.components.elements.utils.LoadingIndicator.blockElement($("body"));
+			window.parent.refreshView();
+		}
+	}
+	
 	function getSerializationObject() {
 		return {
 			url: windowUrl,

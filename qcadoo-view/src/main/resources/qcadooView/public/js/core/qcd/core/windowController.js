@@ -142,6 +142,10 @@ QCD.WindowController = function(_menuStructure) {
 		var modal = modalsStack[modalsStack.length - 1];
 		modal.changeSize(width, height);
 	}
+	
+	window.refreshView = function() {
+		performGoToPage(currentPage);
+	}
 
 	this.onLoginSuccess = function() {
 		this.goToLastPage();
