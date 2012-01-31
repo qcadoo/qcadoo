@@ -73,8 +73,6 @@ QCD.components.elements.Tree = function(_element, _mainController) {
 	var newButtonClickedBefore = false;
 	var addedEntityId;
 	
-	var firstLoad = true;
-	
 	if (this.options.referenceName) {
 		mainController.registerReferenceName(this.options.referenceName, this);
 	}
@@ -333,14 +331,7 @@ QCD.components.elements.Tree = function(_element, _mainController) {
 			root = null;
 		}
 
-		if (firstLoad) {
-			firstLoad = false;
-			expandTree();
-		} else {
-			for (var i in value.openedNodes) {
-				tree.jstree("open_node", $("#"+elementSearchName+"_node_"+value.openedNodes[i]), false, true);
-			}
-		}
+		expandTree();
 
 		if (value.selectedEntityId != null) {
 			fireSelectEvent = false;
