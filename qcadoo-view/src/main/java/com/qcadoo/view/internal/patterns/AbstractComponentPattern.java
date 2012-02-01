@@ -39,7 +39,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -237,7 +236,6 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
         map.put("jsObjectName", getJsObjectName());
         map.put("hasDescription", isHasDescription());
         map.put("hasLabel", isHasLabel());
-        appendContextualHelpUrl(map);
         appendContextualHelpPath(map);
 
         Map<String, Object> jspOptions = getJspOptions(locale);
@@ -262,15 +260,6 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
         }
 
         return map;
-    }
-
-    private void appendContextualHelpUrl(final Map<String, Object> map) {
-        String helpUrl = getContextualHelpService().getHelpUrl(this);
-        if (helpUrl != null) {
-            map.put("help", helpUrl);
-            map.put("helpTooltip",
-                    translationService.translate("qcadooView.tabs.contextualHelp.tooltip", LocaleContextHolder.getLocale()));
-        }
     }
 
     private void appendContextualHelpPath(final Map<String, Object> map) {
@@ -478,7 +467,18 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
 
     @Override
     public final String getReference() {
-        return reference == null ? getPath() : reference;
+        if (reference == null) {
+            return getPath();
+        }
+        return reference;
+    }
+
+    @Override
+    public final String getContextualHelpUrl() {
+        if (getContextualHelpService() != null) {
+            return getContextualHelpService().getHelpUrl(this);
+        }
+        return null;
     }
 
     protected final FieldDefinition getFieldDefinition() {

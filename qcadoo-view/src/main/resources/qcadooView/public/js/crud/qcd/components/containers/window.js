@@ -30,6 +30,8 @@ QCD.components.containers.Window = function(_element, _mainController) {
 	
 	var mainController = _mainController;
 	
+	var _this = this;
+	
 	var ribbon;
 	var row3Element;
 	var ribbonLeftElement
@@ -184,6 +186,42 @@ QCD.components.containers.Window = function(_element, _mainController) {
 		if (value.activeMenu) {
 			mainController.activateMenuPosition(value.activeMenu);
 		}
+		setContextualHelpButton(value.contextualHelpUrl);
+	}
+	
+	function setContextualHelpButton(url) {
+		var contentElement = $("#" + _this.elementPath + "_windowContent");
+		var windowContextualHelpButton = $("#" + _this.elementSearchName + "_contextualHelpButton"); 
+		if (windowContextualHelpButton.length) {
+			if (url) {
+				windowContextualHelpButton.find("a").attr("href", url);
+				windowContextualHelpButton.parent().removeClass("hasContextualHelpButton");
+			} else {
+				windowContextualHelpButton.remove();
+			}
+			return;
+		}
+
+		if (!url) {
+			return;
+		}
+		
+		var button = QCD.components.elements.ContextualHelpButton.createBigButton(url, _this.options.translations["contextualHelpTooltip"]);
+		button.attr("id", "#"+_this.elementSearchName+"_contextualHelpButton")
+			
+		if (contentElement.find("#" + _this.elementSearchName + "_windowHeader").length) {
+			contentElement.addClass("hasContextualHelpButton");
+			contentElement.prepend(button);
+		} else if (contentElement.find("#" + _this.elementSearchName + "_windowTabs").length) {
+			contentElement.addClass("hasContextualHelpButton");
+			button.addClass("inTabsHeader");
+			contentElement.prepend(button);
+		} else {
+			button.addClass('inComponentHeader');
+			var gridHeaderPaging = contentElement.find("#" + _this.elementSearchName + "\\.mainTab .gridWrapper:first .grid_header .grid_paging"); 
+			gridHeaderPaging.addClass("hasContextualHelpButton");
+			gridHeaderPaging.prepend(button);
+		}
 	}
 	
 	this.setComponentState = function(state) {
@@ -257,29 +295,27 @@ QCD.components.containers.Window = function(_element, _mainController) {
 		}
 		var windowWidth = width +2*margin
 		var innerWidth = innerWidthMarker.innerWidth();
-		//if (innerWidth != $(window).width()) { // IS VERTICAL SCROLLBAR
-			//width -= 15;
-		//}
 		
 		height = null;
 		if (this.options.fixedHeight) {
 			var containerHeight = Math.round(_height - 2 * margin - 70);
 			height = containerHeight;
 			if (this.options.header) {
-				//height -= 34;
 				height -= 24;
 			}
-			childrenElement.height(containerHeight);
+			var childrenElementHeight = containerHeight;
+			if (childrenElement.hasClass("displayingHelpPaths")) {
+				containerHeight -= 40;
+				height -= 35;
+			}
+			childrenElement.height(childrenElementHeight);
 		}
 		if (! oneTab) {
-			//var componentsHeight = height ? height-30 : null;
 			var componentsHeight = height ? height-35 : null;
 			for (var i in this.components) {
 				this.components[i].updateSize(width, componentsHeight);
 			}
 		} else {
-			//var componentsHeight = height ? height-20 : null;
-			//var componentsHeight = height ? height-18 : null;
 			var componentsHeight = height;
 			for (var i in this.components) {
 				this.components[i].updateSize(width, componentsHeight);

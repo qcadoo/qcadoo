@@ -30,18 +30,24 @@ import com.qcadoo.view.internal.states.AbstractContainerState;
 
 public class WindowTabComponentState extends AbstractContainerState {
 
-    public WindowTabComponentState() {
+    private final WindowTabComponentPattern pattern;
 
+    public WindowTabComponentState(final WindowTabComponentPattern pattern) {
+        this.pattern = pattern;
     }
 
     @Override
     protected void initializeContent(final JSONObject json) throws JSONException {
-        // empty
+        requestRender();
     }
 
     @Override
     protected JSONObject renderContent() throws JSONException {
-        return new JSONObject();
+        JSONObject json = new JSONObject();
+        if (pattern.getContextualHelpUrl() != null) {
+            json.put("contextualHelpUrl", pattern.getContextualHelpUrl());
+        }
+        return json;
     }
 
 }

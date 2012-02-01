@@ -52,7 +52,7 @@ public class WindowTabComponentPattern extends AbstractContainerPattern {
 
     @Override
     public ComponentState getComponentStateInstance() {
-        return new WindowTabComponentState();
+        return new WindowTabComponentState(this);
     }
 
     @Override
@@ -75,6 +75,12 @@ public class WindowTabComponentPattern extends AbstractContainerPattern {
         if (ribbon != null) {
             json.put("ribbon", RibbonUtils.translateRibbon(ribbon, locale, this));
         }
+
+        JSONObject translations = new JSONObject();
+        translations.put("contextualHelpTooltip",
+                getTranslationService().translate("qcadooView.tooltip.contextualHelpButton", locale));
+        json.put("translations", translations);
+
         return json;
     }
 

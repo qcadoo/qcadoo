@@ -42,7 +42,13 @@
 	</c:if>
 	<div class="windowContainerContentBody" id="${component['path']}_windowContainerContentBody">
 		<div id="${component['path']}_windowContainerContentBodyWidthMarker" style=" z-index: 5000;"></div>
-		<div class="windowContent" id="${component['path']}_windowContent">
+		
+		<div class="windowContent<c:if test="${not empty component['helpPath']}"> displayingHelpPaths</c:if>" id="${component['path']}_windowContent">
+			<c:if test="${not empty component['helpPath']}">
+				<div class="contextualHelpPath">
+					<span><c:out value="${component['helpPath']}" /></span>
+				</div>
+			</c:if>
 			<c:if test="${component.jspOptions['header']}">
 				<div class="tabWindowHeader <c:if test="${component.jspOptions['oneTab']}">noTabs</c:if>" id="${component['path']}_windowHeader"></div>
 			</c:if>
@@ -57,6 +63,8 @@
 						<tiles:putAttribute name="component" value="${component.value}" />
 					</tiles:insertTemplate>
 				</c:forEach>
-			</div></div>
+			</div>
+			<div style="clear: both;"></div>
+		</div>
 	</div>
 </div>

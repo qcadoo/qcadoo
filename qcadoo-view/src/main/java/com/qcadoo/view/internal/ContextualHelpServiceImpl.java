@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.qcadoo.view.internal.api.ComponentPattern;
 import com.qcadoo.view.internal.api.ContextualHelpService;
 import com.qcadoo.view.internal.api.ViewDefinition;
+import com.qcadoo.view.internal.components.window.WindowComponentPattern;
 import com.qcadoo.view.internal.components.window.WindowTabComponentPattern;
 
 @Service
@@ -43,13 +44,24 @@ public class ContextualHelpServiceImpl implements ContextualHelpService {
         return helpKey.toString();
     }
 
+    private String getHelpKeyForWindow(final WindowComponentPattern windowComponentPattern) {
+        StringBuilder helpKey = new StringBuilder();
+        ViewDefinition viewDefinition = windowComponentPattern.getViewDefinition();
+        helpKey.append(viewDefinition.getPluginIdentifier());
+        helpKey.append('.');
+        helpKey.append(viewDefinition.getName());
+        return helpKey.toString();
+    }
+
     @Override
     public String getContextualHelpKey(final ComponentPattern componentPattern) {
-        String helpKey = null;
         if (componentPattern instanceof WindowTabComponentPattern) {
-            helpKey = getHelpKeyForWindowTab((WindowTabComponentPattern) componentPattern);
+            return getHelpKeyForWindowTab((WindowTabComponentPattern) componentPattern);
         }
-        return helpKey;
+        if (componentPattern instanceof WindowComponentPattern) {
+            return getHelpKeyForWindow((WindowComponentPattern) componentPattern);
+        }
+        return null;
     }
 
     @Override

@@ -30,6 +30,8 @@ QCD.components.containers.WindowTab = function(_element, _mainController) {
 	
 	var mainController = _mainController;
 	
+	var _this = this;
+	
 	var ribbon;
 	var ribbonElement;
 	
@@ -40,8 +42,6 @@ QCD.components.containers.WindowTab = function(_element, _mainController) {
 		if (_this.options.ribbon) {
 			ribbon = new QCD.components.Ribbon(_this.options.ribbon, _this.elementName, mainController, _this.options.translations);
 			ribbonElement = ribbon.constructElementContent();
-			//var ribbonDiv = $("#"+_this.elementPath+"_windowContainerRibbon");
-			//ribbonDiv.append(ribbonElement);
 		}
 		
 		if (_this.options.referenceName) {
@@ -67,6 +67,30 @@ QCD.components.containers.WindowTab = function(_element, _mainController) {
 		return {};
 	}
 	this.setComponentValue = function(value) {
+		setContextualHelpButton(value.contextualHelpUrl);
+	}
+	
+	function setContextualHelpButton(url) {
+		var contentElement = _this.element.find("div:first");
+		var windowTabContextualHelpButton = $("#" + _this.elementSearchName + "_contextualHelpButton"); 
+		if (windowTabContextualHelpButton.length) {
+			if (url) {
+				windowTabContextualHelpButton.find("a").attr("href", url);
+			} else {
+				windowTabContextualHelpButton.parent().removeClass("hasContextualHelpButton");
+				windowTabContextualHelpButton.remove();
+			}
+			return;
+		}
+
+		if (!url) {
+			return;
+		}
+
+		var button = QCD.components.elements.ContextualHelpButton.createSmallButton(url, _this.options.translations["contextualHelpTooltip"]);
+		button.attr("id", "#"+_this.elementSearchName+"_contextualHelpButton")
+		contentElement.addClass("hasContextualHelpButton");
+		contentElement.prepend(button);
 	}
 	
 	this.setComponentState = function(state) {

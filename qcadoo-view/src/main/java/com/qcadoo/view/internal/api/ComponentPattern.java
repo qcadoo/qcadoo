@@ -123,6 +123,13 @@ public interface ComponentPattern {
     String getReference();
 
     /**
+     * Returns contextual help URL for this component or null if no URL specified
+     * 
+     * @return contextual help URL for this component
+     */
+    String getContextualHelpUrl();
+
+    /**
      * Returns dot separated path to this plugin which doesn't take into consideration layout components.
      * 
      * @return dot separated path to this plugin which doesn't take into consideration layout components
@@ -154,7 +161,7 @@ public interface ComponentPattern {
      *            event to remove
      */
     void removeCustomEvent(final ComponentCustomEvent customEvent);
-    
+
     /**
      * Checks if field defined by this component is persistent
      * 

@@ -74,6 +74,10 @@ public class WindowComponentState extends AbstractContainerState implements Wind
         }
         json.put("errors", errors);
 
+        if (pattern.getContextualHelpUrl() != null) {
+            json.put("contextualHelpUrl", pattern.getContextualHelpUrl());
+        }
+
         if (ribbon != null) {
             InternalRibbon diffrenceRibbon = ribbon.getUpdate();
             if (diffrenceRibbon != null) {

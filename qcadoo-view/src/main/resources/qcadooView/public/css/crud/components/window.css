@@ -279,29 +279,3 @@
 	height: 20px;
 	width: 0px;
 }
-
-div.contextualHelpButton,
-div.contextualHelpPath {
-	float: right;
-	display: block;
-}
-
-div.contextualHelpPath {
-	background-color: yellow;
-	color: #000;
-}
-
-div.contextualHelpButton {
-	background-color: blue;
-	border-radius: 10px;
-	color: #fff;
-}
-
-div.contextualHelpButton a,
-div.contextualHelpButton a:visited,
-div.contextualHelpButton a:active,
-div.contextualHelpButton a:hover {
-	text-decoration: none;
-	color: #fff;
-	font-weight: bold;
-}

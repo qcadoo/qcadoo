@@ -39,11 +39,6 @@
 			<span><c:out value="${component['helpPath']}" /></span>
 		</div>
 	</c:if>
-	<c:if test="${not empty component['help']}">
-		<div class="contextualHelpButton">
-			<a title="${component['helpTooltip']}" href="<c:out value="${component['help']}" />" target="_blank">(?)</a>
-		</div>
-	</c:if>
 	
 	<c:forEach items="${component['children']}" var="component">
 		<tiles:insertTemplate template="../component.jsp">
