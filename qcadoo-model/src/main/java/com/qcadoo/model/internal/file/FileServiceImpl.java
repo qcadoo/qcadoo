@@ -149,10 +149,20 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public File create(final String filename) {
-        return getFileFromFilename(filename);
+        return getFileFromFilenameWithRandomDirectory(filename);
     }
 
+    // public File create(final String fileName) {
+    // getFileFromFilename(final String filename)
+    // }
+
     private File getFileFromFilename(final String filename) {
+        File directory = new File(uploadDirectory, MultiTenantUtil.getCurrentTenantId() + File.separator);
+        directory.mkdirs();
+        return new File(directory, getNormalizedFileName(filename));
+    }
+
+    private File getFileFromFilenameWithRandomDirectory(final String filename) {
         String date = Long.toString(System.currentTimeMillis());
         File directory = new File(uploadDirectory, MultiTenantUtil.getCurrentTenantId() + File.separator
                 + date.charAt(date.length() - 1) + File.separator + date.charAt(date.length() - 2) + File.separator);

@@ -25,46 +25,26 @@ package com.qcadoo.report.api;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import com.lowagie.text.DocumentException;
-import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.localization.api.utils.DateUtils;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.tenant.api.MultiTenantUtil;
 
 public abstract class DocumentService {
 
-    private DecimalFormat decimalFormat;
-
     @Value("${reportPath}")
     private String path;
-
-    @Autowired
-    private TranslationService translationService;
 
     public abstract void generateDocument(final Entity entity, final Entity company, final Locale locale) throws IOException,
             DocumentException;
 
-    protected final TranslationService getTranslationService() {
-        return translationService;
-    }
-
     protected abstract String getReportTitle(final Locale locale);
-
-    public final DecimalFormat getDecimalFormat() {
-        return decimalFormat;
-    }
-
-    protected void setDecimalFormat(final DecimalFormat decimalFormat) {
-        this.decimalFormat = decimalFormat;
-    }
 
     protected void ensureReportDirectoryExist() {
         File file = new File(getProperReportPath());

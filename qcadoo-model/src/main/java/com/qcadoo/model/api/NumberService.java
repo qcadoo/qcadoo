@@ -1,6 +1,8 @@
 package com.qcadoo.model.api;
 
 import java.math.MathContext;
+import java.text.DecimalFormat;
+import java.util.Locale;
 
 /**
  * Service to provide utilities for numbers
@@ -15,5 +17,15 @@ public interface NumberService {
      * @return {@link MathContext}
      */
     MathContext getMathContext();
+
+    /**
+     * Provide global DecimalFormat
+     * 
+     * @param locale
+     *            locale
+     * 
+     * @return {@link DecimalFormat}
+     */
+    DecimalFormat getDecimalFormat(Locale locale);
 
 }

@@ -83,10 +83,10 @@ public abstract class ReportPdfView extends AbstractPdfView {
     protected void prepareWriter(final Map<String, Object> model, final PdfWriter writer, final HttpServletRequest request)
             throws DocumentException {
         super.prepareWriter(model, writer, request);
-        writer.setPageEvent(new PdfPageNumbering(getTranslationService().translate("qcadooReport.commons.page.label",
-                LocaleContextHolder.getLocale()), getTranslationService().translate("qcadooReport.commons.of.label",
-                LocaleContextHolder.getLocale()), getTranslationService().translate("basic.company.phone.label",
-                LocaleContextHolder.getLocale()), (Entity) model.get("company"), getTranslationService().translate(
+        writer.setPageEvent(new PdfPageNumbering(translationService.translate("qcadooReport.commons.page.label",
+                LocaleContextHolder.getLocale()), translationService.translate("qcadooReport.commons.of.label",
+                LocaleContextHolder.getLocale()), translationService.translate("basic.company.phone.label",
+                LocaleContextHolder.getLocale()), (Entity) model.get("company"), translationService.translate(
                 "qcadooReport.commons.generatedBy.label", LocaleContextHolder.getLocale()), securityService.getCurrentUserName()));
     }
 
@@ -99,10 +99,6 @@ public abstract class ReportPdfView extends AbstractPdfView {
 
     protected abstract String addContent(final Document document, final Map<String, Object> model, final Locale locale,
             final PdfWriter writer) throws DocumentException, IOException;
-
-    protected final TranslationService getTranslationService() {
-        return translationService;
-    }
 
     protected abstract void addTitle(final Document document, final Locale locale);
 

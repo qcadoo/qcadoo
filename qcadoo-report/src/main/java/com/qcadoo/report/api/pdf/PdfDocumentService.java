@@ -25,7 +25,6 @@ package com.qcadoo.report.api.pdf;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.DecimalFormat;
 import java.util.Locale;
 
 import org.slf4j.Logger;
@@ -36,6 +35,7 @@ import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.PageSize;
 import com.lowagie.text.pdf.PdfWriter;
+import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.report.api.DocumentService;
 import com.qcadoo.report.api.ReportService;
@@ -46,6 +46,9 @@ public abstract class PdfDocumentService extends DocumentService {
     @Autowired
     SecurityService securityService;
 
+    @Autowired
+    private TranslationService translationService;
+
     private static final Logger LOG = LoggerFactory.getLogger(PdfDocumentService.class);
 
     @Override
@@ -53,17 +56,13 @@ public abstract class PdfDocumentService extends DocumentService {
             DocumentException {
         Document document = new Document(PageSize.A4);
         try {
-            setDecimalFormat((DecimalFormat) DecimalFormat.getInstance(locale));
-            getDecimalFormat().setMaximumFractionDigits(3);
-            getDecimalFormat().setMinimumFractionDigits(3);
             ensureReportDirectoryExist();
             FileOutputStream fileOutputStream = new FileOutputStream((String) entity.getField("fileName") + "."
                     + ReportService.ReportType.PDF.getExtension());
             PdfWriter writer = PdfWriter.getInstance(document, fileOutputStream);
-            writer.setPageEvent(new PdfPageNumbering(
-                    getTranslationService().translate("qcadooReport.commons.page.label", locale), getTranslationService()
-                            .translate("qcadooReport.commons.of.label", locale), getTranslationService().translate(
-                            "basic.company.phone.label", locale), company, getTranslationService().translate(
+            writer.setPageEvent(new PdfPageNumbering(translationService.translate("qcadooReport.commons.page.label", locale),
+                    translationService.translate("qcadooReport.commons.of.label", locale), translationService.translate(
+                            "basic.company.phone.label", locale), company, translationService.translate(
                             "qcadooReport.commons.generatedBy.label", locale), securityService.getCurrentUserName()));
             document.setMargins(40, 40, 60, 60);
             buildPdfMetadata(document, locale);
@@ -71,7 +70,7 @@ public abstract class PdfDocumentService extends DocumentService {
             document.open();
             buildPdfContent(document, entity, locale);
             PdfUtil.addEndOfDocument(document, writer,
-                    getTranslationService().translate("qcadooReport.commons.endOfPrint.label", locale));
+                    translationService.translate("qcadooReport.commons.endOfPrint.label", locale));
             document.close();
         } catch (DocumentException e) {
             LOG.error("Problem with generating document - " + e.getMessage());
