@@ -211,9 +211,7 @@ public final class ProxyEntity implements Entity {
             boolean isPluginEqual = dataDefinition.getPluginIdentifier().equals(entity.getDataDefinition().getPluginIdentifier());
             boolean isModelEqual = dataDefinition.getName().equals(entity.getDataDefinition().getName());
 
-            if (isPluginEqual && isModelEqual && id.equals(entity.getId())) {
-                return true;
-            }
+            return isPluginEqual && isModelEqual && id.equals(entity.getId());
         }
         // end of added code
 
