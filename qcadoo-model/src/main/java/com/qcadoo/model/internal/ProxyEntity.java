@@ -197,11 +197,27 @@ public final class ProxyEntity implements Entity {
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof ProxyEntity)) {
-            return false;
+
+        // FIXME mici, I am not 100% sure if removing this won't break something
+
+        // if (!(obj instanceof ProxyEntity)) {
+        // return false;
+        // }
+
+        // added code
+        if (obj instanceof Entity) {
+            Entity entity = (Entity) obj;
+
+            boolean isPluginEqual = dataDefinition.getPluginIdentifier().equals(entity.getDataDefinition().getPluginIdentifier());
+            boolean isModelEqual = dataDefinition.getName().equals(entity.getDataDefinition().getName());
+
+            if (isPluginEqual && isModelEqual && id.equals(entity.getId())) {
+                return true;
+            }
         }
+        // end of added code
+
         ProxyEntity other = (ProxyEntity) obj;
         return new EqualsBuilder().append(id, other.id).isEquals();
     }
-
 }
