@@ -19,7 +19,7 @@ public class NumberServiceImpl implements NumberService {
     }
 
     @Override
-    public DecimalFormat getDecimalFormat(final Locale locale) {
+    public synchronized DecimalFormat getDecimalFormat(final Locale locale) {
         if (decimalFormat == null) {
             decimalFormat = (DecimalFormat) DecimalFormat.getInstance(locale);
             decimalFormat.setMaximumFractionDigits(3);
