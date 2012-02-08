@@ -23,7 +23,14 @@
  */
 package com.qcadoo.view.api.utils;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 import org.springframework.stereotype.Service;
+
+import com.qcadoo.localization.api.utils.DateUtils;
 
 /**
  * Helper service for convert time from database to format (hh:mm:ss)
@@ -63,6 +70,22 @@ public class TimeConverterService {
 
         return (minus ? "-" : "") + (hours < 10 ? "0" : "") + hours + ":" + (minutes < 10 ? "0" : "") + minutes + ":"
                 + (seconds < 10 ? "0" : "") + seconds;
+    }
+
+    /**
+     * Converts value from data field to Date
+     * 
+     * @param dateFromField
+     *            value from view field
+     * @return date value in format dd:mm:rrrr hh:mm
+     */
+
+    public Date getDateFromField(final Object dateFromField) {
+        try {
+            return new SimpleDateFormat(DateUtils.DATE_TIME_FORMAT, Locale.getDefault()).parse((String) dateFromField);
+        } catch (ParseException e) {
+            throw new IllegalStateException(e.getMessage(), e);
+        }
     }
 
 }
