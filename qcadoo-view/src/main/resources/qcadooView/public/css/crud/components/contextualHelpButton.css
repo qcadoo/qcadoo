@@ -25,6 +25,7 @@ div.contextualHelpButton {
 	float: right;
 	display: block;
 	background-color: #EBEBEB;
+	z-index: 1000;
 } 
 
 div.contextualHelpButton a:active {
@@ -59,7 +60,7 @@ div.windowContent div.contextualHelpButton.inTabsHeader {
 	position: relative;
 }
 
-div.windowContent.hasContextualHelpButton div.windowTabs {
+div.windowContent div.windowTabs.hasContextualHelpButton {
 	margin-right: 35px;
 }
 
