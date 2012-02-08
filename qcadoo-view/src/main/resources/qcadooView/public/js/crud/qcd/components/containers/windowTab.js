@@ -88,7 +88,7 @@ QCD.components.containers.WindowTab = function(_element, _mainController) {
 		}
 
 		var button = QCD.components.elements.ContextualHelpButton.createSmallButton(url, _this.options.translations["contextualHelpTooltip"]);
-		button.attr("id", "#"+_this.elementSearchName+"_contextualHelpButton")
+		button.attr("id", _this.elementPath+"_contextualHelpButton");
 		contentElement.addClass("hasContextualHelpButton");
 		contentElement.prepend(button);
 	}
