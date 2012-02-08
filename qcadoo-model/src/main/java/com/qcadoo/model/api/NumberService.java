@@ -1,7 +1,7 @@
 package com.qcadoo.model.api;
 
+import java.math.BigDecimal;
 import java.math.MathContext;
-import java.text.DecimalFormat;
 
 /**
  * Service to provide utilities for numbers
@@ -11,17 +11,28 @@ import java.text.DecimalFormat;
 public interface NumberService {
 
     /**
-     * Provide global MathContext
+     * Provide global MathContext.
      * 
      * @return {@link MathContext}
      */
     MathContext getMathContext();
 
     /**
-     * Provide global DecimalFormat
+     * Formats an object with DecimalFormat to produce a String.
      * 
-     * @return {@link DecimalFormat}
+     * @param obj
+     * 
+     * @return Formatted string.
      */
-    DecimalFormat getDecimalFormat();
+    String format(Object obj);
+
+    /**
+     * Set scale 3 to {@link BigDecimal} with RoundingMode HALF_EVEN.
+     * 
+     * @param decimal
+     * 
+     * @return BigDecimal with scale 3.
+     */
+    BigDecimal setScale(BigDecimal decimal);
 
 }

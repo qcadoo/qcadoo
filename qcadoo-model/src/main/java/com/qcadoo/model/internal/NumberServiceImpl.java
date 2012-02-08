@@ -1,7 +1,9 @@
 package com.qcadoo.model.internal;
 
+import static java.math.RoundingMode.HALF_EVEN;
 import static org.springframework.context.i18n.LocaleContextHolder.getLocale;
 
+import java.math.BigDecimal;
 import java.math.MathContext;
 import java.text.DecimalFormat;
 
@@ -21,6 +23,7 @@ public class NumberServiceImpl implements NumberService {
         decimalFormat = (DecimalFormat) DecimalFormat.getInstance(getLocale());
         decimalFormat.setMaximumFractionDigits(3);
         decimalFormat.setMinimumFractionDigits(3);
+        decimalFormat.setRoundingMode(HALF_EVEN);
     }
 
     @Override
@@ -29,7 +32,12 @@ public class NumberServiceImpl implements NumberService {
     }
 
     @Override
-    public DecimalFormat getDecimalFormat() {
-        return decimalFormat;
+    public String format(Object obj) {
+        return decimalFormat.format(obj);
+    }
+
+    @Override
+    public BigDecimal setScale(BigDecimal decimal) {
+        return decimal.setScale(3, HALF_EVEN);
     }
 }
