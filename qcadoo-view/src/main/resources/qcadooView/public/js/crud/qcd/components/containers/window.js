@@ -191,13 +191,18 @@ QCD.components.containers.Window = function(_element, _mainController) {
 	
 	function setContextualHelpButton(url) {
 		var contentElement = $("#" + _this.elementPath + "_windowContent");
+		var windowTabs = contentElement.find("#" + _this.elementSearchName + "_windowTabs");
+		var windowHeader = contentElement.find("#" + _this.elementSearchName + "_windowHeader");
+		
 		var windowContextualHelpButton = $("#" + _this.elementSearchName + "_contextualHelpButton"); 
 		if (windowContextualHelpButton.length) {
 			if (url) {
 				windowContextualHelpButton.find("a").attr("href", url);
-				windowContextualHelpButton.parent().removeClass("hasContextualHelpButton");
 			} else {
-				windowContextualHelpButton.remove();
+				windowContextualHelpButton.parent().removeClass("hasContextualHelpButton");
+				if (windowTabs.length) {
+					windowTabs.removeClass("hasContextualHelpButton");
+				}
 			}
 			return;
 		}
@@ -207,13 +212,12 @@ QCD.components.containers.Window = function(_element, _mainController) {
 		}
 		
 		var button = QCD.components.elements.ContextualHelpButton.createBigButton(url, _this.options.translations["contextualHelpTooltip"]);
-		button.attr("id", "#"+_this.elementSearchName+"_contextualHelpButton")
+		button.attr("id", _this.elementPath+"_contextualHelpButton");
 			
-		if (contentElement.find("#" + _this.elementSearchName + "_windowHeader").length) {
-			contentElement.addClass("hasContextualHelpButton");
+		if (windowHeader.length) {
 			contentElement.prepend(button);
-		} else if (contentElement.find("#" + _this.elementSearchName + "_windowTabs").length) {
-			contentElement.addClass("hasContextualHelpButton");
+		} else if (windowTabs.length) {
+			windowTabs.addClass("hasContextualHelpButton");
 			button.addClass("inTabsHeader");
 			contentElement.prepend(button);
 		} else {
@@ -223,6 +227,8 @@ QCD.components.containers.Window = function(_element, _mainController) {
 			gridHeaderPaging.prepend(button);
 		}
 	}
+		
+	
 	
 	this.setComponentState = function(state) {
 		showTab(state.selectedTab);
