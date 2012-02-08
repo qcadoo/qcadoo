@@ -37,17 +37,21 @@ import com.lowagie.text.PageSize;
 import com.lowagie.text.pdf.PdfWriter;
 import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.api.Entity;
-import com.qcadoo.report.api.DocumentService;
+import com.qcadoo.model.api.file.FileService;
+import com.qcadoo.report.api.ReportDocumentService;
 import com.qcadoo.report.api.ReportService;
 import com.qcadoo.security.api.SecurityService;
 
-public abstract class PdfDocumentService extends DocumentService {
+public abstract class PdfDocumentService implements ReportDocumentService {
 
     @Autowired
     SecurityService securityService;
 
     @Autowired
     private TranslationService translationService;
+
+    @Autowired
+    private FileService fileService;
 
     private static final Logger LOG = LoggerFactory.getLogger(PdfDocumentService.class);
 
@@ -56,9 +60,8 @@ public abstract class PdfDocumentService extends DocumentService {
             DocumentException {
         Document document = new Document(PageSize.A4);
         try {
-            ensureReportDirectoryExist();
-            FileOutputStream fileOutputStream = new FileOutputStream((String) entity.getField("fileName") + "."
-                    + ReportService.ReportType.PDF.getExtension());
+            FileOutputStream fileOutputStream = new FileOutputStream(fileService.createReportFile((String) entity
+                    .getField("fileName") + "." + ReportService.ReportType.PDF.getExtension()));
             PdfWriter writer = PdfWriter.getInstance(document, fileOutputStream);
             writer.setPageEvent(new PdfPageNumbering(translationService.translate("qcadooReport.commons.page.label", locale),
                     translationService.translate("qcadooReport.commons.of.label", locale), translationService.translate(

@@ -45,6 +45,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.qcadoo.localization.api.utils.DateUtils;
+import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.file.FileService;
 import com.qcadoo.tenant.api.MultiTenantUtil;
 
@@ -148,18 +149,24 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public File create(final String filename) {
+    public File creatExportFile(final String filename) {
         return getFileFromFilenameWithRandomDirectory(filename);
     }
 
-    // public File create(final String fileName) {
-    // getFileFromFilename(final String filename)
-    // }
+    @Override
+    public File createReportFile(final String fileName) throws IOException {
+        return getFileFromFilename(fileName);
+    }
 
-    private File getFileFromFilename(final String filename) {
+    private File getFileFromFilename(final String filename) throws IOException {
         File directory = new File(uploadDirectory, MultiTenantUtil.getCurrentTenantId() + File.separator);
-        directory.mkdirs();
-        return new File(directory, getNormalizedFileName(filename));
+        try {
+            FileUtils.forceMkdir(directory);
+        } catch (IOException e) {
+            LOG.error(e.getMessage(), e);
+            throw e;
+        }
+        return new File(directory, getNormalizedFileName(filename.substring(filename.lastIndexOf(File.separator) + 1)));
     }
 
     private File getFileFromFilenameWithRandomDirectory(final String filename) {
@@ -172,6 +179,20 @@ public class FileServiceImpl implements FileService {
 
     private String getNormalizedFileName(final String filename) {
         return filename.replaceAll("[^a-zA-Z0-9.]+", "_");
+    }
+
+    @Override
+    public Entity updateReportFileName(final Entity entity, final String dateFieldName, final String name) {
+        entity.setField("fileName", getReportFullPath(name, (Date) entity.getField(dateFieldName)));
+        return entity.getDataDefinition().save(entity);
+    }
+
+    private String getReportFullPath(final String name, final Date date) {
+        return getReportPath() + name + "_" + DateUtils.REPORT_D_T_F.format(date);
+    }
+
+    private String getReportPath() {
+        return uploadDirectory.getAbsolutePath() + File.separator + MultiTenantUtil.getCurrentTenantId() + File.separator;
     }
 
     @Override

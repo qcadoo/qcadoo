@@ -58,8 +58,6 @@ import com.qcadoo.localization.api.utils.DateUtils;
 
 public final class PdfUtil {
 
-    public static final SimpleDateFormat D_T_F = new SimpleDateFormat(DateUtils.REPORT_DATE_TIME_FORMAT, getLocale());
-
     private static final Logger LOG = LoggerFactory.getLogger(PdfUtil.class);
 
     private static Font dejavuBold19Light;
