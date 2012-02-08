@@ -23,7 +23,10 @@
  */
 package com.qcadoo.localization.api.utils;
 
+import static org.springframework.context.i18n.LocaleContextHolder.getLocale;
+
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -47,10 +50,12 @@ public final class DateUtils {
      */
     public static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
+    private static final String REPORT_DATE_TIME_FORMAT = "yyyy_MM_dd_HH_mm_ss";
+
     /**
      * Date-time format for filenames.
      */
-    public static final String REPORT_DATE_TIME_FORMAT = "yyyy_MM_dd_HH_mm_ss";
+    public static final SimpleDateFormat REPORT_D_T_F = new SimpleDateFormat(REPORT_DATE_TIME_FORMAT, getLocale());
 
     /**
      * Parse string into date, with autocomplete missing month and day.

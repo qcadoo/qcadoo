@@ -29,6 +29,8 @@ import java.io.InputStream;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.qcadoo.model.api.Entity;
+
 /**
  * Service for managing files.
  * 
@@ -93,13 +95,23 @@ public interface FileService {
     String getContentType(final String path);
 
     /**
-     * Create empty file with given name.
+     * Create empty export file with given name.
      * 
      * @param filename
      *            filename
      * @return File
      */
-    File create(String filename);
+    File creatExportFile(String filename);
+
+    /**
+     * Create empty report file with given name.
+     * 
+     * @param filename
+     *            filename
+     * @return File
+     * @throws IOException
+     */
+    File createReportFile(String filename) throws IOException;
 
     /**
      * Remove the file from given path.
@@ -108,5 +120,16 @@ public interface FileService {
      *            path
      */
     void remove(String path);
+
+    /**
+     * Update report file name for given report entity
+     * 
+     * @param entity
+     * @param dateFieldName
+     *            report date field name
+     * @param name
+     * @return updated entity
+     */
+    Entity updateReportFileName(Entity entity, String dateFieldName, String name);
 
 }

@@ -31,29 +31,33 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.qcadoo.model.api.Entity;
-import com.qcadoo.report.api.DocumentService;
+import com.qcadoo.model.api.file.FileService;
+import com.qcadoo.report.api.ReportDocumentService;
 import com.qcadoo.report.api.ReportService;
 
 @Service
-public abstract class XlsDocumentService extends DocumentService {
+public abstract class XlsDocumentService implements ReportDocumentService {
 
     private static final Logger LOG = LoggerFactory.getLogger(XlsDocumentService.class);
+
+    @Autowired
+    private FileService fileService;
 
     @Override
     public final void generateDocument(final Entity entity, final Entity company, final Locale locale) throws IOException {
         HSSFWorkbook workbook = new HSSFWorkbook();
         HSSFSheet sheet = workbook.createSheet(getReportTitle(locale));
         addHeader(sheet, locale);
-        addSeries(sheet, entity, locale);
+        addSeries(sheet, entity);
         sheet.setZoom(4, 3);
         FileOutputStream outputStream = null;
         try {
-            ensureReportDirectoryExist();
-            outputStream = new FileOutputStream((String) entity.getField("fileName") + "."
-                    + ReportService.ReportType.XLS.getExtension());
+            outputStream = new FileOutputStream(fileService.createReportFile((String) entity.getField("fileName") + "."
+                    + ReportService.ReportType.XLS.getExtension()));
             workbook.write(outputStream);
         } catch (IOException e) {
             LOG.error("Problem with generating document - " + e.getMessage());
@@ -67,6 +71,6 @@ public abstract class XlsDocumentService extends DocumentService {
 
     protected abstract void addHeader(final HSSFSheet sheet, final Locale locale);
 
-    protected abstract void addSeries(final HSSFSheet sheet, final Entity entity, final Locale locale);
+    protected abstract void addSeries(final HSSFSheet sheet, final Entity entity);
 
 }

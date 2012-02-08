@@ -29,7 +29,6 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -50,12 +49,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.report.api.ReportException;
 import com.qcadoo.report.api.ReportService;
-import com.qcadoo.report.api.pdf.PdfUtil;
 import com.qcadoo.view.api.exception.ClassDrivenExceptionResolver;
 
 @Controller
@@ -66,9 +63,6 @@ public class ReportController {
 
     @Autowired
     private DataDefinitionService dataDefinitionService;
-
-    @Autowired
-    private TranslationService translationService;
 
     @Autowired
     @Qualifier("exceptionResolver")
@@ -105,12 +99,13 @@ public class ReportController {
 
     @RequestMapping(value = "generateSavedReport/{plugin}/{model}", method = RequestMethod.GET)
     public void generateSavedReport(@PathVariable("plugin") final String plugin, @PathVariable("model") final String model,
-            @RequestParam("id") final String id, @RequestParam("fieldDate") final String fieldDate,
-            final HttpServletRequest request, final HttpServletResponse response, final Locale locale) throws ReportException {
+            @RequestParam("id") final String id, final HttpServletRequest request, final HttpServletResponse response)
+            throws ReportException {
         ReportService.ReportType reportType = getReportType(request);
         Entity entity = dataDefinitionService.get(plugin, model).get(Long.parseLong(id));
-        String translatedFileName = translationService.translate(plugin + "." + model + ".report.fileName", locale) + "_"
-                + PdfUtil.D_T_F.format((Date) entity.getField(fieldDate)) + "_" + "." + reportType.getExtension();
+        String translatedFileName = entity.getStringField("fileName").substring(
+                entity.getStringField("fileName").lastIndexOf(File.separator) + 1)
+                + "." + reportType.getExtension();
         response.setHeader("Content-disposition", "inline; filename=" + translatedFileName);
         response.setContentType(reportType.getMimeType());
         try {
