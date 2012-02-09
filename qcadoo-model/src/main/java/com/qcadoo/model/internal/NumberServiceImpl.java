@@ -20,6 +20,10 @@ public class NumberServiceImpl implements NumberService {
 
     @PostConstruct
     public void init() {
+        initialise();
+    }
+
+    private static void initialise() {
         decimalFormat = (DecimalFormat) DecimalFormat.getInstance(getLocale());
         decimalFormat.setMaximumFractionDigits(3);
         decimalFormat.setMinimumFractionDigits(3);
