@@ -30,6 +30,10 @@ import java.util.Map;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.ViewDefinitionState;
 
+/**
+ * Service for generating and printing reports.
+ * 
+ */
 public interface ReportService {
 
     enum ReportType {
@@ -62,6 +66,14 @@ public interface ReportService {
     byte[] generateReport(String templateContent, ReportType type, Map<String, Object> parameters, Locale locale)
             throws ReportException;
 
+    /**
+     * Print generated report.
+     * 
+     * @param viewDefinitionState
+     * @param state
+     * @param args
+     *            report entity id, plugin identifier, model name
+     */
     void printGeneratedReport(final ViewDefinitionState viewDefinitionState, final ComponentState state, final String[] args);
 
 }

@@ -9,29 +9,124 @@ import com.lowagie.text.Font;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 
+/**
+ * Helper for PDF.
+ * 
+ * @since 1.1.3
+ * 
+ */
 public interface PdfHelper {
 
+    /**
+     * Add header to the document
+     * 
+     * @param document
+     * @param name
+     *            document name
+     * @param documenTitle
+     * @param documentAuthor
+     * @param date
+     *            actual date
+     * @param username
+     *            name of user generating document
+     * @throws DocumentException
+     */
     void addDocumentHeader(final Document document, final String name, final String documenTitle, final String documentAuthor,
             final Date date, final String username) throws DocumentException;
 
+    /**
+     * Add text to end of given document.
+     * 
+     * @param document
+     * @param writer
+     * @param text
+     */
     void addEndOfDocument(final Document document, final PdfWriter writer, final String text);
 
+    /**
+     * Add metadata to given document.
+     * 
+     * @param document
+     */
     void addMetaData(final Document document);
 
+    /**
+     * Create panel table with given quantity of columns.
+     * 
+     * @param column
+     *            quantity of columns
+     * @return panel table
+     */
     PdfPTable createPanelTable(final int column);
 
+    /**
+     * Add cell with table to current table.
+     * 
+     * @param table
+     * @param label
+     *            header label
+     * @param fieldValue
+     *            value
+     * @param headerFont
+     * @param valueFont
+     * @param columns
+     *            quantity of columns
+     */
     void addTableCellAsTable(final PdfPTable table, final String label, final Object fieldValue, final Font headerFont,
             final Font valueFont, final int columns);
 
+    /**
+     * Add cell with two columns table to current table.
+     * 
+     * @param table
+     * @param label
+     *            header label
+     * @param fieldValue
+     *            value
+     */
     void addTableCellAsTwoColumnsTable(final PdfPTable table, final String label, final Object fieldValue);
 
+    /**
+     * Add cell with one columns table to current table.
+     * 
+     * @param table
+     * @param label
+     *            header label
+     * @param fieldValue
+     *            value
+     */
     void addTableCellAsOneColumnTable(final PdfPTable table, final String label, final Object fieldValue);
 
+    /**
+     * Add image from file name to given document.
+     * 
+     * @param document
+     * @param fileName
+     */
     void addImage(final Document document, final String fileName);
 
+    /**
+     * Create new table with header and given column widths.
+     * 
+     * @param numOfColumns
+     * @param header
+     *            header labels
+     * @param lastColumnAligmentToLeft
+     * @param columnWidths
+     * @return table
+     */
     PdfPTable createTableWithHeader(final int numOfColumns, final List<String> header, final boolean lastColumnAligmentToLeft,
             final int[] columnWidths);
 
+    /**
+     * Create new table with header.
+     * 
+     * @param numOfColumns
+     * @param header
+     *            header labels
+     * @param lastColumnAligmentToLeft
+     * @return table
+     */
     PdfPTable createTableWithHeader(final int numOfColumns, final List<String> header, final boolean lastColumnAligmentToLeft);
 
 }

@@ -30,29 +30,115 @@ import com.qcadoo.model.api.search.SearchResult;
 import com.qcadoo.model.internal.search.SearchCriteria;
 import com.qcadoo.model.internal.search.SearchQuery;
 
+/**
+ * Service for manipulating data.
+ * 
+ * @since 0.4.0
+ * 
+ */
 public interface DataAccessService {
 
+    /**
+     * Return dataDefinition for given pluginIdentifier and name
+     * 
+     * @param pluginIdentifier
+     * @param name
+     * @return the data definition
+     */
     InternalDataDefinition getDataDefinition(String pluginIdentifier, String name);
 
+    /**
+     * Save the entity related with given data definition.
+     * 
+     * @param dataDefinition
+     * @param entity
+     * @return saved entity
+     */
     Entity save(InternalDataDefinition dataDefinition, Entity entity);
 
+    /**
+     * Return the entity related with given data definition, by its id.
+     * 
+     * @param dataDefinition
+     * @param entityId
+     * @return entity
+     */
     Entity get(InternalDataDefinition dataDefinition, Long entityId);
 
+    /**
+     * Return the copied entity related with given data definition.
+     * 
+     * @param dataDefinition
+     * @param entityId
+     * @return entity
+     */
     List<Entity> copy(InternalDataDefinition dataDefinition, Long... entityId);
 
+    /**
+     * Delete the entity related with given data definition, by its id.
+     * 
+     * @param dataDefinition
+     * @param entityId
+     */
     void delete(InternalDataDefinition dataDefinition, Long... entityId);
 
+    /**
+     * Find search result for given search criteria.
+     * 
+     * @param searchCriteria
+     * @return result of search
+     */
     SearchResult find(SearchCriteria searchCriteria);
 
+    /**
+     * Find search result for given search query.
+     * 
+     * @param searchQuery
+     * @return result of search
+     */
     SearchResult find(SearchQuery searchQuery);
 
+    /**
+     * Move the prioritizable entity to the target position.
+     * 
+     * @param dataDefinition
+     * @param entityId
+     * @param position
+     */
     void moveTo(InternalDataDefinition dataDefinition, Long entityId, int position);
 
+    /**
+     * Move the prioritizable entity by offset.
+     * 
+     * @param dataDefinition
+     * @param entityId
+     * @param offset
+     */
     void move(InternalDataDefinition dataDefinition, Long entityId, int offset);
 
+    /**
+     * Convert given entity to database entity.
+     * 
+     * @param entity
+     * @return database entity
+     */
     Object convertToDatabaseEntity(Entity entity);
 
+    /**
+     * Deactivate given entities.
+     * 
+     * @param dataDefinition
+     * @param entityId
+     * @return deactivated entities
+     */
     List<Entity> deactivate(InternalDataDefinition dataDefinition, Long... entityId);
 
+    /**
+     * Activate given entities.
+     * 
+     * @param dataDefinition
+     * @param entityId
+     * @return activated entities
+     */
     List<Entity> activate(InternalDataDefinition dataDefinition, Long... entityId);
 }
