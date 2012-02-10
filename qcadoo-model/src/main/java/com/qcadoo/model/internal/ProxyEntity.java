@@ -186,7 +186,11 @@ public final class ProxyEntity implements Entity {
 
     @Override
     public int hashCode() {
+        // TODO mici, im not sure about this hashCode
+        // return getEntity().hashCode(); maybe?
+
         return new HashCodeBuilder(23, 41).append(id).toHashCode();
+
     }
 
     @Override
