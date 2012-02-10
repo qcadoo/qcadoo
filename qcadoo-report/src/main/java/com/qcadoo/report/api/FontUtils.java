@@ -38,7 +38,7 @@ public class FontUtils {
     private FontUtils() {
     }
 
-    public static void prepare() throws DocumentException, IOException {
+    public static synchronized void prepare() throws DocumentException, IOException {
         if (dejavuBold10Dark == null) {
             if (LOG.isDebugEnabled()) {
                 LOG.debug("Pdf fonts initialization");

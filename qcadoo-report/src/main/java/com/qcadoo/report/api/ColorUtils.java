@@ -22,7 +22,7 @@ public class ColorUtils {
     private ColorUtils() {
     }
 
-    public static void prepare() {
+    public static synchronized void prepare() {
         if (backgroundColor == null) {
             if (LOG.isDebugEnabled()) {
                 LOG.debug("Pdf colors initialization");
