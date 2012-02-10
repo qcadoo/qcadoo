@@ -132,7 +132,7 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public String upload(final MultipartFile multipartFile) throws IOException {
-        File file = getFileFromFilename(multipartFile.getOriginalFilename());
+        File file = getFileFromFilenameWithRandomDirectory(multipartFile.getOriginalFilename());
 
         OutputStream output = null;
 
