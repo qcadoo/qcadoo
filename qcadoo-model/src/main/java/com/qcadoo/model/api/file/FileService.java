@@ -101,7 +101,7 @@ public interface FileService {
      *            filename
      * @return File
      */
-    File creatExportFile(String filename);
+    File createExportFile(String filename);
 
     /**
      * Create empty report file with given name.

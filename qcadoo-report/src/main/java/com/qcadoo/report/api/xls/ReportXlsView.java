@@ -30,17 +30,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.web.servlet.view.document.AbstractExcelView;
 
-import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.report.api.ReportService;
 
 public abstract class ReportXlsView extends AbstractExcelView {
-
-    @Autowired
-    private TranslationService translationService;
 
     @Override
     protected void buildExcelDocument(final Map<String, Object> model, final HSSFWorkbook workbook,
@@ -51,9 +46,5 @@ public abstract class ReportXlsView extends AbstractExcelView {
     }
 
     protected abstract String addContent(final Map<String, Object> model, final HSSFWorkbook workbook, final Locale locale);
-
-    protected final TranslationService getTranslationService() {
-        return translationService;
-    }
 
 }

@@ -27,12 +27,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import com.qcadoo.view.api.ComponentState;
+import com.qcadoo.view.api.ViewDefinitionState;
+
 public interface ReportService {
 
     enum ReportType {
-        // HTML("text/html", "html"),
-        PDF("application/pdf", "pdf"), XML("application/xml", "xml"), CSV("text/csv", "csv"), XLS("application/vnd.ms-excel",
-                "xls");
+        PDF("application/pdf", "pdf"), CSV("text/csv", "csv"), XLS("application/vnd.ms-excel", "xls");
 
         private final String mimeType;
 
@@ -60,5 +61,7 @@ public interface ReportService {
 
     byte[] generateReport(String templateContent, ReportType type, Map<String, Object> parameters, Locale locale)
             throws ReportException;
+
+    void printGeneratedReport(final ViewDefinitionState viewDefinitionState, final ComponentState state, final String[] args);
 
 }

@@ -56,12 +56,20 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.support.MessageSourceResourceBundle;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
+import com.qcadoo.localization.api.TranslationService;
+import com.qcadoo.model.api.DataDefinitionService;
+import com.qcadoo.model.api.Entity;
 import com.qcadoo.report.api.ReportException;
 import com.qcadoo.report.api.ReportService;
 import com.qcadoo.report.internal.templates.ReportTemplateService;
 import com.qcadoo.report.internal.util.ReportFormatFactory;
 import com.qcadoo.security.api.SecurityService;
+import com.qcadoo.view.api.ComponentState;
+import com.qcadoo.view.api.ComponentState.MessageType;
+import com.qcadoo.view.api.ViewDefinitionState;
+import com.qcadoo.view.api.components.FormComponent;
 
 @Service
 public class ReportServiceImpl implements ReportService {
@@ -79,6 +87,12 @@ public class ReportServiceImpl implements ReportService {
 
     @Autowired
     private MessageSource messageSource;
+
+    @Autowired
+    private TranslationService translationService;
+
+    @Autowired
+    DataDefinitionService dataDefinitionService;
 
     @Override
     public byte[] generateReportForEntity(final String templatePlugin, final String templateName, final ReportType type,
@@ -173,12 +187,39 @@ public class ReportServiceImpl implements ReportService {
             case CSV:
                 exporter = new JRCsvExporter();
                 break;
-            // case HTML:
-            // exporter = new JRHtmlExporter();
-            // break;
             default:
                 throw new ReportException(ReportException.Type.WRONG_REPORT_TYPE, type.toString());
         }
         return exporter;
     }
+
+    @Override
+    public void printGeneratedReport(ViewDefinitionState viewDefinitionState, ComponentState state, String[] args) {
+        if (state.getFieldValue() instanceof Long) {
+            Entity entity = dataDefinitionService.get(args[1], args[2]).get((Long) state.getFieldValue());
+            if (entity == null) {
+                state.addMessage(translationService.translate("qcadooView.message.entityNotFound", state.getLocale()),
+                        MessageType.FAILURE);
+            } else if (StringUtils.hasText(entity.getStringField("fileName"))) {
+                final StringBuilder urlBuilder = new StringBuilder();
+                urlBuilder.append("/generateSavedReport/").append(args[1]);
+                urlBuilder.append("/").append(args[2]).append(".");
+                urlBuilder.append(args[0]).append("?id=").append(state.getFieldValue());
+                viewDefinitionState.redirectTo(urlBuilder.toString(), true, false);
+            } else {
+                state.addMessage(
+                        translationService.translate("qcadooReport.errorMessage.documentsWasNotGenerated", state.getLocale()),
+                        MessageType.FAILURE);
+            }
+        } else {
+            if (state instanceof FormComponent) {
+                state.addMessage(translationService.translate("qcadooView.form.entityWithoutIdentifier", state.getLocale()),
+                        MessageType.FAILURE);
+            } else {
+                state.addMessage(translationService.translate("qcadooView.grid.noRowSelectedError", state.getLocale()),
+                        MessageType.FAILURE);
+            }
+        }
+    }
+
 }

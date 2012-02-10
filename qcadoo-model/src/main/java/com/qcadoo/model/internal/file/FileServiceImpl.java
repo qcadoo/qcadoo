@@ -149,7 +149,7 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public File creatExportFile(final String filename) {
+    public File createExportFile(final String filename) {
         return getFileFromFilenameWithRandomDirectory(filename);
     }
 

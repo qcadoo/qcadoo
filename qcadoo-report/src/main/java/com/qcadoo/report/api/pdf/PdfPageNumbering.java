@@ -37,6 +37,8 @@ import com.lowagie.text.pdf.PdfTemplate;
 import com.lowagie.text.pdf.PdfWriter;
 import com.qcadoo.localization.api.utils.DateUtils;
 import com.qcadoo.model.api.Entity;
+import com.qcadoo.report.api.ColorUtils;
+import com.qcadoo.report.api.FontUtils;
 
 public final class PdfPageNumbering extends PdfPageEventHelper {
 
@@ -138,7 +140,8 @@ public final class PdfPageNumbering extends PdfPageEventHelper {
         total = writer.getDirectContent().createTemplate(100, 100);
         total.setBoundingBox(new Rectangle(-20, -20, 100, 100));
         try {
-            PdfUtil.prepareFontsAndColors();
+            ColorUtils.prepare();
+            FontUtils.prepare();
         } catch (Exception e) {
             throw new ExceptionConverter(e);
         }
@@ -153,12 +156,12 @@ public final class PdfPageNumbering extends PdfPageEventHelper {
         cb.saveState();
         String text = page + " " + writer.getPageNumber() + " " + in + " ";
         float textBase = document.top() + 22;
-        float textSize = PdfUtil.getArial().getWidthPoint(text, 7);
-        cb.setColorFill(PdfUtil.getLightColor());
-        cb.setColorStroke(PdfUtil.getLightColor());
+        float textSize = FontUtils.getDejavu().getWidthPoint(text, 7);
+        cb.setColorFill(ColorUtils.getLightColor());
+        cb.setColorStroke(ColorUtils.getLightColor());
         cb.beginText();
-        cb.setFontAndSize(PdfUtil.getArial(), 7);
-        float adjust = PdfUtil.getArial().getWidthPoint("0", 7);
+        cb.setFontAndSize(FontUtils.getDejavu(), 7);
+        float adjust = FontUtils.getDejavu().getWidthPoint("0", 7);
         cb.setTextMatrix(document.right() - textSize - adjust, textBase);
         cb.showText(text);
         cb.endText();
@@ -180,25 +183,25 @@ public final class PdfPageNumbering extends PdfPageEventHelper {
         cb.saveState();
         String text = page + " " + writer.getPageNumber() + " " + in + " ";
         float textBase = document.bottom() - 25;
-        float textSize = PdfUtil.getArial().getWidthPoint(text, 7);
-        cb.setColorFill(PdfUtil.getLightColor());
-        cb.setColorStroke(PdfUtil.getLightColor());
+        float textSize = FontUtils.getDejavu().getWidthPoint(text, 7);
+        cb.setColorFill(ColorUtils.getLightColor());
+        cb.setColorStroke(ColorUtils.getLightColor());
         cb.setLineWidth(1);
         cb.setLineDash(2, 2, 1);
         cb.moveTo(document.left(), document.bottom() - 10);
         cb.lineTo(document.right(), document.bottom() - 10);
         cb.stroke();
         cb.beginText();
-        cb.setFontAndSize(PdfUtil.getArial(), 7);
-        float adjust = PdfUtil.getArial().getWidthPoint("0", 7);
+        cb.setFontAndSize(FontUtils.getDejavu(), 7);
+        float adjust = FontUtils.getDejavu().getWidthPoint("0", 7);
         cb.setTextMatrix(document.right() - textSize - adjust, textBase);
         cb.showText(text);
 
-        textSize = PdfUtil.getArial().getWidthPoint(generatedBy, 7);
+        textSize = FontUtils.getDejavu().getWidthPoint(generatedBy, 7);
         cb.setTextMatrix(document.right() - textSize, textBase - 10);
         cb.showText(generatedBy);
 
-        textSize = PdfUtil.getArial().getWidthPoint(generationDate, 7);
+        textSize = FontUtils.getDejavu().getWidthPoint(generationDate, 7);
         cb.setTextMatrix(document.right() - textSize, textBase - 20);
         cb.showText(generationDate);
 
@@ -225,7 +228,7 @@ public final class PdfPageNumbering extends PdfPageEventHelper {
     @Override
     public void onCloseDocument(final PdfWriter writer, final Document document) {
         total.beginText();
-        total.setFontAndSize(PdfUtil.getArial(), 7);
+        total.setFontAndSize(FontUtils.getDejavu(), 7);
         total.setTextMatrix(0, 0);
         total.showText(String.valueOf(writer.getPageNumber() - 1));
         total.endText();

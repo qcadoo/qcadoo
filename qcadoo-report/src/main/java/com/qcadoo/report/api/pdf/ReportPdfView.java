@@ -24,7 +24,6 @@
 package com.qcadoo.report.api.pdf;
 
 import java.io.IOException;
-import java.text.DecimalFormat;
 import java.util.Locale;
 import java.util.Map;
 
@@ -51,14 +50,12 @@ public abstract class ReportPdfView extends AbstractPdfView {
     @Autowired
     private SecurityService securityService;
 
-    private DecimalFormat decimalFormat;
+    @Autowired
+    private PdfHelper pdfHelper;
 
     @Override
     protected final void buildPdfDocument(final Map<String, Object> model, final Document document, final PdfWriter writer,
             final HttpServletRequest request, final HttpServletResponse response) {
-        decimalFormat = (DecimalFormat) DecimalFormat.getInstance(LocaleContextHolder.getLocale());
-        decimalFormat.setMaximumFractionDigits(3);
-        decimalFormat.setMinimumFractionDigits(3);
         String fileName;
         try {
             fileName = addContent(document, model, LocaleContextHolder.getLocale(), writer);
@@ -94,16 +91,12 @@ public abstract class ReportPdfView extends AbstractPdfView {
     protected final void buildPdfMetadata(final Map<String, Object> model, final Document document,
             final HttpServletRequest request) {
         addTitle(document, LocaleContextHolder.getLocale());
-        PdfUtil.addMetaData(document);
+        pdfHelper.addMetaData(document);
     }
 
     protected abstract String addContent(final Document document, final Map<String, Object> model, final Locale locale,
             final PdfWriter writer) throws DocumentException, IOException;
 
     protected abstract void addTitle(final Document document, final Locale locale);
-
-    public final DecimalFormat getDecimalFormat() {
-        return decimalFormat;
-    }
 
 }

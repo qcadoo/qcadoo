@@ -54,8 +54,9 @@ import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.aop.Monitorable;
 import com.qcadoo.model.api.file.FileService;
 import com.qcadoo.model.api.search.SearchRestrictions;
+import com.qcadoo.report.api.FontUtils;
+import com.qcadoo.report.api.pdf.PdfHelper;
 import com.qcadoo.report.api.pdf.PdfPageNumbering;
-import com.qcadoo.report.api.pdf.PdfUtil;
 import com.qcadoo.security.api.SecurityService;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.api.components.GridComponent;
@@ -85,6 +86,9 @@ public class ExportToPDFController {
     @Autowired
     private DataDefinitionService dataDefinitionService;
 
+    @Autowired
+    private PdfHelper pdfHelper;
+
     @Monitorable(threshold = 500)
     @RequestMapping(value = { CONTROLLER_PATH }, method = RequestMethod.POST)
     @ResponseBody
@@ -95,7 +99,7 @@ public class ExportToPDFController {
             ViewDefinitionState state = crudService.invokeEvent(pluginIdentifier, viewName, body, locale);
             GridComponent grid = (GridComponent) state.getComponentByReference("grid");
             Document document = new Document(PageSize.A4.rotate());
-            File file = fileService.creatExportFile("export.pdf");
+            File file = fileService.createExportFile("export.pdf");
             FileOutputStream fileOutputStream = new FileOutputStream(file);
             PdfWriter writer = PdfWriter.getInstance(document, fileOutputStream);
 
@@ -109,7 +113,7 @@ public class ExportToPDFController {
             document.setMargins(40, 40, 60, 60);
 
             document.addTitle("export.pdf");
-            PdfUtil.addMetaData(document);
+            pdfHelper.addMetaData(document);
             writer.createXmpMetadata();
             document.open();
 
@@ -118,7 +122,7 @@ public class ExportToPDFController {
 
             Date generationDate = new Date();
 
-            PdfUtil.addDocumentHeader(document, "", title,
+            pdfHelper.addDocumentHeader(document, "", title,
                     translationService.translate("qcadooReport.commons.generatedBy.label", locale), generationDate,
                     securityService.getCurrentUserName());
 
@@ -128,7 +132,7 @@ public class ExportToPDFController {
                 exportToPDFTableHeader.add(name);
                 columns++;
             }
-            PdfPTable table = PdfUtil.createTableWithHeader(columns, exportToPDFTableHeader, false);
+            PdfPTable table = pdfHelper.createTableWithHeader(columns, exportToPDFTableHeader, false);
 
             List<Map<String, String>> rows;
             if (grid.getSelectedEntitiesIds().isEmpty()) {
@@ -139,12 +143,12 @@ public class ExportToPDFController {
 
             for (Map<String, String> row : rows) {
                 for (String value : row.values()) {
-                    table.addCell(new Phrase(value, PdfUtil.getArialRegular9Dark()));
+                    table.addCell(new Phrase(value, FontUtils.getDejavuRegular9Dark()));
                 }
             }
             document.add(table);
 
-            PdfUtil.addEndOfDocument(document, writer,
+            pdfHelper.addEndOfDocument(document, writer,
                     translationService.translate("qcadooReport.commons.endOfPrint.label", locale));
             document.close();
 
