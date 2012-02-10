@@ -53,6 +53,9 @@ public abstract class PdfDocumentService implements ReportDocumentService {
     @Autowired
     private FileService fileService;
 
+    @Autowired
+    private PdfHelper pdfHelper;
+
     private static final Logger LOG = LoggerFactory.getLogger(PdfDocumentService.class);
 
     @Override
@@ -72,7 +75,7 @@ public abstract class PdfDocumentService implements ReportDocumentService {
             writer.createXmpMetadata();
             document.open();
             buildPdfContent(document, entity, locale);
-            PdfUtil.addEndOfDocument(document, writer,
+            pdfHelper.addEndOfDocument(document, writer,
                     translationService.translate("qcadooReport.commons.endOfPrint.label", locale));
             document.close();
         } catch (DocumentException e) {
@@ -84,7 +87,7 @@ public abstract class PdfDocumentService implements ReportDocumentService {
 
     protected void buildPdfMetadata(final Document document, final Locale locale) {
         document.addTitle(getReportTitle(locale));
-        PdfUtil.addMetaData(document);
+        pdfHelper.addMetaData(document);
     }
 
     protected abstract void buildPdfContent(final Document document, final Entity entity, final Locale locale)

@@ -80,7 +80,7 @@ public class ExportToCsvController {
 
             GridComponent grid = (GridComponent) state.getComponentByReference("grid");
 
-            File file = fileService.creatExportFile("export.csv");
+            File file = fileService.createExportFile("export.csv");
 
             BufferedWriter output = null;
 

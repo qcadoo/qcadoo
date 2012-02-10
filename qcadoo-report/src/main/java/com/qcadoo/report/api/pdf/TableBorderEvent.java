@@ -26,6 +26,7 @@ package com.qcadoo.report.api.pdf;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfPTableEvent;
+import com.qcadoo.report.api.ColorUtils;
 
 public final class TableBorderEvent implements PdfPTableEvent {
 
@@ -40,7 +41,7 @@ public final class TableBorderEvent implements PdfPTableEvent {
         PdfContentByte cb = canvases[PdfPTable.LINECANVAS];
         cb.saveState();
         cb.setLineWidth(1);
-        cb.setColorStroke(PdfUtil.getLineDarkColor());
+        cb.setColorStroke(ColorUtils.getLineDarkColor());
         cb.rectangle(x1, y1, x2 - x1, y2 - y1);
         cb.stroke();
         cb.restoreState();

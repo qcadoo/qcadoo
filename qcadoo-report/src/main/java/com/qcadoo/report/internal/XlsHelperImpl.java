@@ -21,19 +21,27 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * ***************************************************************************
  */
-package com.qcadoo.report.api.xls;
+package com.qcadoo.report.internal;
 
+import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFFont;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Font;
+import org.springframework.stereotype.Component;
 
-public final class XlsUtil {
+import com.qcadoo.report.api.xls.XlsHelper;
 
-    private XlsUtil() {
+@Component
+public final class XlsHelperImpl implements XlsHelper {
+
+    @Override
+    public void setCellStyle(final HSSFSheet sheet, HSSFCell cell) {
+        cell.setCellStyle(getHeaderStyle(sheet.getWorkbook()));
     }
 
-    public static HSSFCellStyle getHeaderStyle(final HSSFWorkbook workbook) {
+    private HSSFCellStyle getHeaderStyle(final HSSFWorkbook workbook) {
         HSSFCellStyle style = workbook.createCellStyle();
         Font font = workbook.createFont();
         font.setFontHeightInPoints((short) 12);
@@ -42,5 +50,4 @@ public final class XlsUtil {
         style.setFont(font);
         return style;
     }
-
 }
