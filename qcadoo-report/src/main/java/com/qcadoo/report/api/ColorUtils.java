@@ -5,6 +5,10 @@ import java.awt.Color;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Utilities for pdf colors management.
+ * 
+ */
 public class ColorUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(ColorUtils.class);
@@ -22,6 +26,9 @@ public class ColorUtils {
     private ColorUtils() {
     }
 
+    /**
+     * Prepare colors.
+     */
     public static synchronized void prepare() {
         if (backgroundColor == null) {
             if (LOG.isDebugEnabled()) {

@@ -65,6 +65,12 @@ public interface FileService {
      */
     String getUrl(final String path);
 
+    /**
+     * Returns path for the file from given URL.
+     * 
+     * @param url
+     * @return path
+     */
     String getPathFromUrl(final String url);
 
     /**

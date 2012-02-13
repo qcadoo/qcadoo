@@ -57,12 +57,47 @@ public interface ReportService {
         }
     }
 
+    /**
+     * Generate report for entity.
+     * 
+     * @param templatePlugin
+     * @param templateName
+     * @param type
+     * @param entityIds
+     *            list of entity ids
+     * @param userArgs
+     *            additional user args
+     * @param locale
+     * @return report as bytes table
+     * @throws ReportException
+     */
     byte[] generateReportForEntity(String templatePlugin, String templateName, ReportType type, List<Long> entityIds,
             Map<String, String> userArgs, Locale locale) throws ReportException;
 
+    /**
+     * Generate report for given parameters.
+     * 
+     * @param templatePlugin
+     * @param templateName
+     * @param type
+     * @param parameters
+     * @param locale
+     * @return report as bytes table
+     * @throws ReportException
+     */
     byte[] generateReport(String templatePlugin, String templateName, ReportType type, Map<String, Object> parameters,
             Locale locale) throws ReportException;
 
+    /**
+     * Generate report with given content for given parameters.
+     * 
+     * @param templateContent
+     * @param type
+     * @param parameters
+     * @param locale
+     * @return report as bytes table
+     * @throws ReportException
+     */
     byte[] generateReport(String templateContent, ReportType type, Map<String, Object> parameters, Locale locale)
             throws ReportException;
 

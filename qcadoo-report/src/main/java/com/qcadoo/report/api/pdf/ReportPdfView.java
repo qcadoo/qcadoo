@@ -42,6 +42,11 @@ import com.qcadoo.model.api.Entity;
 import com.qcadoo.report.api.ReportService;
 import com.qcadoo.security.api.SecurityService;
 
+/**
+ * Abstract superclass for report PDF views, using Bruno Lowagie's <a href="http://www.lowagie.com/iText">iText</a> package.
+ * Application-specific view classes will extend this class. The view will be held in the subclass itself, not in a template.
+ * 
+ */
 public abstract class ReportPdfView extends AbstractPdfView {
 
     @Autowired

@@ -35,6 +35,12 @@ import org.springframework.web.servlet.view.document.AbstractExcelView;
 
 import com.qcadoo.report.api.ReportService;
 
+/**
+ * Convenient superclass for report Excel document views. Compatible with Apache POI 3.0 as well as 3.5, as of Spring 3.0.
+ * 
+ * This class is similar to the ReportPdfView class in usage style.
+ * 
+ */
 public abstract class ReportXlsView extends AbstractExcelView {
 
     @Override

@@ -11,6 +11,10 @@ import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
 import com.lowagie.text.pdf.BaseFont;
 
+/**
+ * Utilities for pdf fonts management.
+ * 
+ */
 public class FontUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(FontUtils.class);
@@ -38,6 +42,12 @@ public class FontUtils {
     private FontUtils() {
     }
 
+    /**
+     * Prepare fonts.
+     * 
+     * @throws DocumentException
+     * @throws IOException
+     */
     public static synchronized void prepare() throws DocumentException, IOException {
         if (dejavuBold10Dark == null) {
             if (LOG.isDebugEnabled()) {

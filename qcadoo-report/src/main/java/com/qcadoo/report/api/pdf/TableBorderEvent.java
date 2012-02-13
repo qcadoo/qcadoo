@@ -28,6 +28,10 @@ import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfPTableEvent;
 import com.qcadoo.report.api.ColorUtils;
 
+/**
+ * An implementation class which provide border for pdf tables.
+ * 
+ */
 public final class TableBorderEvent implements PdfPTableEvent {
 
     @Override

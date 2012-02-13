@@ -32,14 +32,17 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.file.FileService;
 import com.qcadoo.report.api.ReportDocumentService;
 import com.qcadoo.report.api.ReportService;
 
-@Service
+/**
+ * Service for creating XLS report documents.
+ * 
+ * 
+ */
 public abstract class XlsDocumentService implements ReportDocumentService {
 
     private static final Logger LOG = LoggerFactory.getLogger(XlsDocumentService.class);

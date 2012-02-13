@@ -42,6 +42,12 @@ import com.qcadoo.report.api.ReportDocumentService;
 import com.qcadoo.report.api.ReportService;
 import com.qcadoo.security.api.SecurityService;
 
+/**
+ * Service for creating PDF report documents.
+ * 
+ * @since 0.4.1
+ * 
+ */
 public abstract class PdfDocumentService implements ReportDocumentService {
 
     @Autowired
