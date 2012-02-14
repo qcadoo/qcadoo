@@ -25,6 +25,7 @@ package com.qcadoo.view.internal.ribbon.templates.model;
 
 import java.util.List;
 
+import com.google.common.collect.Lists;
 import com.qcadoo.view.internal.api.ViewDefinition;
 import com.qcadoo.view.internal.ribbon.model.InternalRibbonGroup;
 import com.qcadoo.view.internal.ribbon.model.RibbonGroupsPack;
@@ -36,6 +37,8 @@ public class TemplateRibbonGroupsPack implements RibbonGroupsPack {
 
     private final RibbonTemplateParameters parameters;
 
+    private List<InternalRibbonGroup> groups;
+
     private final ViewDefinition viewDefinition;
 
     public TemplateRibbonGroupsPack(final RibbonTemplate template, final RibbonTemplateParameters parameters,
@@ -45,9 +48,20 @@ public class TemplateRibbonGroupsPack implements RibbonGroupsPack {
         this.viewDefinition = viewDefinition;
     }
 
+    private TemplateRibbonGroupsPack(final RibbonTemplate template, final RibbonTemplateParameters parameters,
+            final ViewDefinition viewDefinition, final List<InternalRibbonGroup> updatedGroups) {
+        this.template = template;
+        this.parameters = parameters;
+        this.viewDefinition = viewDefinition;
+        this.groups = updatedGroups;
+    }
+
     @Override
     public List<InternalRibbonGroup> getGroups() {
-        return template.getRibbonGroups(parameters, viewDefinition);
+        if (groups == null) {
+            groups = template.getRibbonGroups(parameters, viewDefinition);
+        }
+        return groups;
     }
 
     @Override
@@ -62,14 +76,23 @@ public class TemplateRibbonGroupsPack implements RibbonGroupsPack {
 
     @Override
     public RibbonGroupsPack getCopy() {
-        // we can return this instance because no permanent changes can be made
-        return this;
+        return new TemplateRibbonGroupsPack(template, parameters, viewDefinition);
     }
 
     @Override
     public RibbonGroupsPack getUpdate() {
-        // template cannot be updated
-        return null;
+        List<InternalRibbonGroup> updatedGroups = Lists.newArrayList();
+        for (InternalRibbonGroup group : getGroups()) {
+            InternalRibbonGroup updatedGroup = group.getUpdate();
+            if (updatedGroup != null) {
+                updatedGroups.add(updatedGroup);
+            }
+        }
+        if (updatedGroups.isEmpty()) {
+            return null;
+        }
+
+        return new TemplateRibbonGroupsPack(template, parameters, viewDefinition, updatedGroups);
     }
 
 }

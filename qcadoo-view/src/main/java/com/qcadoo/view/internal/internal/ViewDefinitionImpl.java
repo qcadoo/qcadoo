@@ -58,6 +58,7 @@ import com.qcadoo.view.internal.ribbon.model.RibbonActionItemImpl;
 import com.qcadoo.view.internal.ribbon.model.RibbonGroupImpl;
 import com.qcadoo.view.internal.ribbon.model.RibbonGroupsPack;
 import com.qcadoo.view.internal.ribbon.model.SingleRibbonGroupPack;
+import com.qcadoo.view.internal.states.AbstractComponentState;
 
 public final class ViewDefinitionImpl implements InternalViewDefinition {
 
@@ -92,6 +93,8 @@ public final class ViewDefinitionImpl implements InternalViewDefinition {
     private final TranslationService translationService;
 
     private boolean alreadyHasNavigation;
+
+    private boolean permanentlyDisabled;
 
     private RibbonGroupsPack ribbonNavigationGroupPack;
 
@@ -152,6 +155,8 @@ public final class ViewDefinitionImpl implements InternalViewDefinition {
         Map<String, Object> childrenModels = new HashMap<String, Object>();
 
         toggleAdditionalNavigationGroup(getBooleanFromJson(jsonObject, "window.showBack"));
+        permanentlyDisabled = getBooleanFromJson(jsonObject, "window." + AbstractComponentState.JSON_PERMANENTLY_DISABLED);
+        toggleRibbonPermanentlyDisabled();
 
         for (ComponentPattern componentPattern : patterns.values()) {
             childrenModels.put(componentPattern.getName(), componentPattern.prepareView(locale));
@@ -217,6 +222,7 @@ public final class ViewDefinitionImpl implements InternalViewDefinition {
         ribbonNavigationGroupPack = new SingleRibbonGroupPack(additionalNavigationGroup);
     }
 
+    // TODO MAKU move additional navigation to template
     private void toggleAdditionalNavigationGroup(final boolean showBack) {
         InternalRibbon ribbon = getRibbon();
         if (ribbon == null || alreadyHasNavigation) {
@@ -228,6 +234,13 @@ public final class ViewDefinitionImpl implements InternalViewDefinition {
         }
         if (ribbon.getGroupByName("navigation") == null) {
             ribbon.addGroupPackAsFirst(ribbonNavigationGroupPack);
+        }
+    }
+
+    private void toggleRibbonPermanentlyDisabled() {
+        InternalRibbon ribbon = getRibbon();
+        if (ribbon != null) {
+            ribbon.setPermanentlyDisabled(permanentlyDisabled);
         }
     }
 
@@ -243,6 +256,7 @@ public final class ViewDefinitionImpl implements InternalViewDefinition {
 
         callHooks(beforeInitializeHooks, viewDefinitionState);
 
+        jsonObject.put(AbstractComponentState.JSON_PERMANENTLY_DISABLED, permanentlyDisabled);
         viewDefinitionState.initialize(jsonObject, locale);
 
         for (ComponentPattern cp : patterns.values()) {

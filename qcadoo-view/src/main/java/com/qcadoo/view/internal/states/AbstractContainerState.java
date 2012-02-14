@@ -49,13 +49,25 @@ public abstract class AbstractContainerState extends AbstractComponentState impl
             childerJson = json.getJSONObject(JSON_CHILDREN);
         }
 
+        boolean containerIsPermanentlyDisabled = containerIsPermanentlyDisabled(json);
+
         for (Map.Entry<String, InternalComponentState> child : children.entrySet()) {
+            JSONObject childJson = null;
             if (childerJson == null) {
-                child.getValue().initialize(new JSONObject(), locale);
+                childJson = new JSONObject();
             } else {
-                child.getValue().initialize(childerJson.getJSONObject(child.getKey()), locale);
+                childJson = childerJson.getJSONObject(child.getKey());
             }
+            childJson.put(JSON_PERMANENTLY_DISABLED, containerIsPermanentlyDisabled);
+            child.getValue().initialize(childJson, locale);
         }
+    }
+
+    private boolean containerIsPermanentlyDisabled(final JSONObject json) throws JSONException {
+        if (json.has(JSON_PERMANENTLY_DISABLED) && !json.isNull(JSON_PERMANENTLY_DISABLED)) {
+            return json.getBoolean(JSON_PERMANENTLY_DISABLED);
+        }
+        return false;
     }
 
     @Override

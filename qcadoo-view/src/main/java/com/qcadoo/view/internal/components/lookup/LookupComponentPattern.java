@@ -288,6 +288,7 @@ public final class LookupComponentPattern extends FieldComponentPattern {
         ribbonSelectActionItem.setAction("#{window.grid}.performLinkClicked();");
         ribbonSelectActionItem.setType(Type.BIG_BUTTON);
         ribbonSelectActionItem.setEnabled(false);
+        ribbonSelectActionItem.setDefaultEnabled(false);
         ribbonSelectActionItem.setMessage("#{translate(noRecordSelected)}");
         ribbonSelectActionItem
                 .setScript("#{grid}.addOnChangeListener({onChange: function(selectedArray) {if (!selectedArray || selectedArray.length == 0) {"

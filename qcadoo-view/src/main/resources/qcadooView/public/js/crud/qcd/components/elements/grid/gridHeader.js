@@ -331,9 +331,6 @@ QCD.components.elements.grid.GridHeaderController = function(_gridController, _m
 	
 	function refreshButtons() {
 		if (!enabled) {
-			if (headerElements.filterButton != null) {
-				setEnabledButton(headerElements.filterButton, false);
-			}
 			if (headerElements.predefiniedFiltersCombo != null) {
 				headerElements.predefiniedFiltersCombo.disable();
 			}

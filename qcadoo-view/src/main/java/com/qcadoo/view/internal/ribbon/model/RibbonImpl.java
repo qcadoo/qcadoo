@@ -26,11 +26,13 @@ package com.qcadoo.view.internal.ribbon.model;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.qcadoo.plugin.api.PluginUtils;
+import com.qcadoo.view.api.ribbon.RibbonActionItem;
 import com.qcadoo.view.api.ribbon.RibbonGroup;
 
 public class RibbonImpl implements InternalRibbon {
@@ -142,5 +144,26 @@ public class RibbonImpl implements InternalRibbon {
             allGroups.addAll(groupPack.getGroups());
         }
         return allGroups;
+    }
+
+    @Override
+    public void setPermanentlyDisabled(final boolean permanentlyDisabled) {
+        for (RibbonGroup group : getGroups()) {
+            for (RibbonActionItem item : group.getItems()) {
+                boolean disabled = permanentlyDisabled && ribbonItemShouldBeDisabled(group, item);
+                ((InternalRibbonActionItem) item).setPermanentlyDisabled(disabled);
+                item.requestUpdate(true);
+            }
+        }
+    }
+
+    private boolean ribbonItemShouldBeDisabled(final RibbonGroup group, final RibbonActionItem item) {
+        for (String excludedItemPattern : InternalRibbon.EXCLUDE_FROM_DISABLING) {
+            String[] itemPath = StringUtils.split(excludedItemPattern, '.');
+            if (itemPath[0].equals(group.getName()) && itemPath[1].equals(item.getName())) {
+                return false;
+            }
+        }
+        return true;
     }
 }

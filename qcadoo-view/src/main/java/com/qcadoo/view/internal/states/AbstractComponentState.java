@@ -48,6 +48,8 @@ public abstract class AbstractComponentState implements InternalComponentState, 
 
     public static final String JSON_ENABLED = "enabled";
 
+    public static final String JSON_PERMANENTLY_DISABLED = "permanentlyDisabled";
+
     public static final String JSON_CONTENT = "content";
 
     public static final String JSON_CONTEXT = "context";
@@ -87,6 +89,8 @@ public abstract class AbstractComponentState implements InternalComponentState, 
     private boolean requestUpdateState;
 
     private boolean enabled = true;
+
+    private boolean permanentlyDisabled = false;
 
     private boolean visible = true;
 
@@ -150,6 +154,10 @@ public abstract class AbstractComponentState implements InternalComponentState, 
         this.locale = locale;
         this.messageHolder = new MessageHolder(translationService, locale);
 
+        if (json.has(JSON_PERMANENTLY_DISABLED)) {
+            setPermanentlyDisabled(json.getBoolean(JSON_PERMANENTLY_DISABLED));
+        }
+
         if (json.has(JSON_ENABLED)) {
             setEnabled(json.getBoolean(JSON_ENABLED));
         }
@@ -191,6 +199,7 @@ public abstract class AbstractComponentState implements InternalComponentState, 
     public JSONObject render() throws JSONException {
         JSONObject json = new JSONObject();
         json.put(JSON_ENABLED, isEnabled());
+        json.put(JSON_PERMANENTLY_DISABLED, permanentlyDisabled);
         json.put(JSON_VISIBLE, isVisible());
         if (messageHolder != null) {
             json.put(JSON_MESSAGES, messageHolder.renderMessages());
@@ -253,7 +262,19 @@ public abstract class AbstractComponentState implements InternalComponentState, 
 
     @Override
     public void setEnabled(final boolean enabled) {
-        this.enabled = enabled;
+        if (permanentlyDisabled) {
+            this.enabled = false;
+        } else {
+            this.enabled = enabled;
+        }
+    }
+
+    @Override
+    public void setPermanentlyDisabled(final boolean permanentlyDisabled) {
+        this.permanentlyDisabled = permanentlyDisabled;
+        if (permanentlyDisabled) {
+            setEnabled(false);
+        }
     }
 
     @Override

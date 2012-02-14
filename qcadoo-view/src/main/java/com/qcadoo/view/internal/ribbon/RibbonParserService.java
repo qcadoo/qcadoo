@@ -173,6 +173,7 @@ public class RibbonParserService {
                 throw new ViewDefinitionParserNodeException(itemNode, "Unsupported ribbon item state : " + state);
             }
         }
+        item.setDefaultEnabled(item.isEnabled());
         String message = parser.getStringAttribute(itemNode, "message");
         if (message != null) {
             item.setMessage(message);

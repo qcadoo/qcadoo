@@ -23,11 +23,19 @@
  */
 package com.qcadoo.view.internal.ribbon.model;
 
+import java.util.List;
+
 import org.json.JSONObject;
 
+import com.google.common.collect.Lists;
 import com.qcadoo.view.api.ribbon.Ribbon;
 
 public interface InternalRibbon extends Ribbon {
+
+    /**
+     * List of items which should not be permanently disabled.
+     */
+    List<String> EXCLUDE_FROM_DISABLING = Lists.newArrayList("navigation.back", "actions.refresh");
 
     /**
      * Set identifier of this ribbon
@@ -81,5 +89,14 @@ public interface InternalRibbon extends Ribbon {
      * @return ribon with only updated fields
      */
     InternalRibbon getUpdate();
+
+    /**
+     * Set this ribbon items state to permanently disabled. Permanently disabled means that you can not enable them using {@link
+     * RibbonActionItem.setEnabled()}
+     * 
+     * @param permanentlyDisabled
+     *            true if items in this ribbon should be permanently disabled
+     */
+    void setPermanentlyDisabled(boolean permanentlyDisabled);
 
 }

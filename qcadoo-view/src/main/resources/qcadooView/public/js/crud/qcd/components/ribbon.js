@@ -169,7 +169,6 @@ QCD.components.Ribbon = function(_model, _elementName, _mainController, _transla
 	function showDropdown() {
 		contentDropdownButton.addClass("ribbonGroupsDropdownButtonActive");
 		contentDropdown.show();
-		//contentDropdown.css("right", (currentWidth-contentDropdownButton.offset().left)+"px")
 		dropdownVisible = true;
 	}
 	
@@ -181,7 +180,6 @@ QCD.components.Ribbon = function(_model, _elementName, _mainController, _transla
 	
 	function createBigButton(path, itemModel) {
 		var aElement = $("<a>").attr('href','#').html("<span><div"+getItemIconStyle(itemModel)+"></div><label class='ribbonLabel'>"+itemModel.label+"</label></div></div></span>");
-		//var aElement = $("<a>").attr('href','#').html("<span><div"+getItemIconStyle(itemModel)+"></div></div></div></span>");
 		var liElement = $("<li>").append(aElement);
 		var ribbonListElement = $("<ul>").addClass("ribbonListElement").append(liElement);
 		var itemElement = $("<div>").addClass("ribbonBigElement").append(ribbonListElement);
@@ -220,7 +218,6 @@ QCD.components.Ribbon = function(_model, _elementName, _mainController, _transla
 	
 	function createSmallButton(path, itemModel) {
 		var itemElementButton = $("<a>").attr('href','#').html("<span><div"+getItemIconStyle(itemModel)+"></div><div class='btnOneLabel ribbonLabel'>"+itemModel.label+"</div></span>");
-		//var itemElementButton = $("<a>").attr('href','#').html("<span><div"+getItemIconStyle(itemModel)+"></div><div class='btnOneLabel ribbonLabel'></div></span>");
 		createTooltip(itemModel,itemElementButton);
 		var itemElement = $("<li>").addClass("btnOne").append(itemElementButton);
 		itemElementButton.bind('click', {itemElement: itemElement, itemName: itemModel.name, clickAction: itemModel.clickAction}, buttonClicked);
@@ -299,12 +296,6 @@ QCD.components.Ribbon = function(_model, _elementName, _mainController, _transla
 		var spanElement = $("<span>").append(divElement);
 		var itemElement = $("<li>").addClass("twoB").addClass("ribbonDropdownContainer").append(spanElement);
 		
-		//itemElementButton.bind('click', {itemName: itemModel.name, clickAction: itemModel.clickAction}, buttonClicked);
-		
-		//var dropdownMenu = createDropdownMenu(path + "." + (itemModel.label ? itemModel.label : itemModel.name), itemModel).addClass("smallButtonDropdownMenu");
-		//addDropdownAction(itemElementDropdownButton);
-		//itemElement.append(dropdownMenu);
-			
 		return itemElement;
 	}
 	
@@ -377,6 +368,10 @@ QCD.components.Ribbon = function(_model, _elementName, _mainController, _transla
 				}
 			},
 			enable: function(msg) {
+				if (item.permanentlyDisabled) {
+					return;
+				}
+				
 				this.element.addClass("enabled");
 				if (this.tooltipElement) {
 					if (msg && msg != "") {

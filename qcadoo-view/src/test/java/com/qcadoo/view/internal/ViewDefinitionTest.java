@@ -175,8 +175,10 @@ public class ViewDefinitionTest extends AbstractPatternTest {
         eventJson.put(InternalViewDefinition.JSON_EVENT_COMPONENT, "componentName");
         eventJson.put(InternalViewDefinition.JSON_EVENT_ARGS, new JSONArray(newArrayList("arg1", "arg2")));
 
-        JSONObject contentJson = new JSONObject(of("asd", "qwe"));
-        JSONObject componentJson = new JSONObject(of(AbstractComponentState.JSON_CONTENT, contentJson));
+        JSONObject contentJson = new JSONObject();
+        contentJson.put("asd", "qwe");
+        JSONObject componentJson = new JSONObject();
+        componentJson.put(AbstractComponentState.JSON_CONTENT, contentJson);
 
         JSONObject json = new JSONObject();
         json.put(InternalViewDefinition.JSON_EVENT, eventJson);

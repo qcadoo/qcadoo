@@ -104,7 +104,7 @@ public interface RibbonActionItem {
      * 
      * @return true if this item is enabled
      */
-    Boolean isEnabled();
+    boolean isEnabled();
 
     /**
      * Sets this item state
@@ -112,7 +112,7 @@ public interface RibbonActionItem {
      * @param enabled
      *            true when this item should be enabled or false when this item should be disabled
      */
-    void setEnabled(Boolean enabled);
+    void setEnabled(boolean enabled);
 
     /**
      * Returns message connected to this item

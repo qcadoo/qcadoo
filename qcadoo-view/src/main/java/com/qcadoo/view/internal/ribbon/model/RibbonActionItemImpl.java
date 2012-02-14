@@ -38,7 +38,11 @@ public class RibbonActionItemImpl implements InternalRibbonActionItem {
 
     private String clickAction;
 
-    private Boolean enabled;
+    private boolean enabled;
+
+    private boolean defaultEnabled = true;
+
+    private boolean permanentlyDisabled;
 
     private String message;
 
@@ -91,6 +95,7 @@ public class RibbonActionItemImpl implements InternalRibbonActionItem {
         itemObject.put("type", type);
         itemObject.put("icon", icon);
         itemObject.put("enabled", enabled);
+        itemObject.put("permanentlyDisabled", permanentlyDisabled);
         itemObject.put("message", message);
         if (script != null) {
             itemObject.put("script", script);
@@ -110,13 +115,32 @@ public class RibbonActionItemImpl implements InternalRibbonActionItem {
     }
 
     @Override
-    public Boolean isEnabled() {
+    public boolean isEnabled() {
         return enabled;
     }
 
     @Override
-    public void setEnabled(final Boolean enabled) {
-        this.enabled = enabled;
+    public void setEnabled(final boolean enabled) {
+        if (permanentlyDisabled) {
+            this.enabled = false;
+        } else {
+            this.enabled = enabled;
+        }
+    }
+
+    @Override
+    public void setDefaultEnabled(final boolean defaultEnabled) {
+        this.defaultEnabled = defaultEnabled;
+    }
+
+    @Override
+    public void setPermanentlyDisabled(final boolean permanentlyDisabled) {
+        this.permanentlyDisabled = permanentlyDisabled;
+        if (permanentlyDisabled) {
+            setEnabled(false);
+        } else {
+            setEnabled(defaultEnabled);
+        }
     }
 
     @Override
@@ -143,6 +167,7 @@ public class RibbonActionItemImpl implements InternalRibbonActionItem {
         item.setScript(script);
         item.setAction(clickAction);
         item.setEnabled(enabled);
+        item.setDefaultEnabled(defaultEnabled);
         item.setMessage(message);
     }
 

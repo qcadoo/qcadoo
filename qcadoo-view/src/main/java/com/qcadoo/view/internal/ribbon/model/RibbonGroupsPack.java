@@ -31,8 +31,18 @@ public interface RibbonGroupsPack {
 
     InternalRibbonGroup getGroupByName(String groupName);
 
+    /**
+     * Gets copy of this group pack - internal usage only
+     * 
+     * @return copy of this group pack
+     */
     RibbonGroupsPack getCopy();
 
+    /**
+     * Gets ribbon group pack with only updated groups - internal usage only
+     * 
+     * @return ribon group pack with only updated groups
+     */
     RibbonGroupsPack getUpdate();
 
 }

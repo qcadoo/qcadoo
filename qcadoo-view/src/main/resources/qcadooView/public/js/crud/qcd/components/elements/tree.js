@@ -525,7 +525,6 @@ QCD.components.elements.Tree = function(_element, _mainController) {
 				buttons.editButton.addClass("headerButtonEnabled");
 				buttons.deleteButton.addClass("headerButtonEnabled");
 			} else {
-				buttons.editButton.removeClass("headerButtonEnabled");
 				buttons.deleteButton.removeClass("headerButtonEnabled");
 			}
 			if (moveMode) {
@@ -592,6 +591,9 @@ QCD.components.elements.Tree = function(_element, _mainController) {
 			var params = new Object();
 			var entityId = getSelectedEntityId()
 			dataType = dataTypesMap[nodeDataTypesMap[entityId]];
+			if (!isEnabled) {
+				params["window.permanentlyDisabled"] = true;
+			}
 			params[dataType.correspondingComponent+".id"] = entityId;
 			redirectToCorrespondingPage(params, dataType);
 		}

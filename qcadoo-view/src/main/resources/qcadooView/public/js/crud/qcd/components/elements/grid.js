@@ -351,7 +351,7 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 	}
 
 	function linkClicked(selectedEntities) {
-		if (!componentEnabled || !currentState.isEditable) {
+		if (!currentState.isEditable) {
 			return;
 		}
 		if (linkListener) {
@@ -366,6 +366,7 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 	function redirectToCorrespondingPage(params) {
 		if (gridParameters.correspondingViewName
 				&& gridParameters.correspondingViewName != '') {
+			setPermanentlyDisableParam(params);
 			params[gridParameters.correspondingComponent + "."
 					+ belongsToFieldName] = currentState.belongsToEntityId;
 			var url = gridParameters.correspondingViewName + ".html?context="
@@ -381,11 +382,18 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 	function showCorrespondingLookupGridModal(params) {
 		if (gridParameters.correspondingLookup
 				&& gridParameters.correspondingLookup != '') {
+			setPermanentlyDisableParam(params);
 			var correspondingLookupComponent = mainController.getComponentByReferenceName(gridParameters.correspondingLookup);
 			var url = pluginIdentifier + "/" + correspondingLookupComponent.options.viewName + ".html?context="
 					+ JSON.stringify(params);
 			lookupWindow = mainController.openModal(elementPath + "_editWindow",
 					url, false, onModalClose, onModalRender);	
+		}
+	}
+	
+	function setPermanentlyDisableParam(params) {
+		if (!componentEnabled) {
+			params["window.permanentlyDisabled"] = true;
 		}
 	}
 

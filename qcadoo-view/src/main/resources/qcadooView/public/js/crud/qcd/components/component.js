@@ -40,6 +40,7 @@ QCD.components.Component = function(_element, _mainController) {
 	
 	var isVisible = true;
 	var isEnabled = true;
+	var isPermanentlyDisabled = false;
 	
 	this.contextObject = null;
 	
@@ -62,6 +63,7 @@ QCD.components.Component = function(_element, _mainController) {
 		
 		valueObject.enabled = isEnabled;
 		valueObject.visible = isVisible;
+		valueObject.permanentlyDisabled = isPermanentlyDisabled;
 		
 		if (this.getComponentValue) {
 			valueObject.content = this.getComponentValue();
@@ -78,6 +80,7 @@ QCD.components.Component = function(_element, _mainController) {
 	}
 	
 	this.setValue = function(value) {
+		this.setPermanentlyDisabled(value.permanentlyDisabled);
 		this.setEnabled(value.enabled);
 		this.setVisible(value.visible);
 		this.setMessages(value.messages);
@@ -118,6 +121,7 @@ QCD.components.Component = function(_element, _mainController) {
 	}
 	
 	this.setState = function(state) {
+		this.setPermanentlyDisabled(state.permanentlyDisabled);
 		this.setEnabled(state.enabled);
 		this.setVisible(state.visible);
 		if (this.setComponentState) {
@@ -154,9 +158,27 @@ QCD.components.Component = function(_element, _mainController) {
 			mainController.showMessage(messages[i]);
 		}
 	}
+	
+	this.setPermanentlyDisabled = function(_isPermanentlyDisabled, isDeep) {
+		isPermanentlyDisabled = _isPermanentlyDisabled;
+		this.setComponentEnabled(!_isPermanentlyDisabled);
+		if (isDeep && this.components) {
+			for (var i in this.components) {
+				this.components[i].setPermanentlyDisabled(_isPermanentlyDisabled, isDeep);
+			}
+		}
+	}
+	
+	this.isPermanentlyDisabled = function() {
+		return isPermanentlyDisabled;
+	}
 
 	this.setEnabled = function(_isEnabled, isDeep) {
-		isEnabled = _isEnabled;
+		if (isPermanentlyDisabled) {
+			isEnabled = false;
+		} else {
+			isEnabled = _isEnabled;
+		}
 		this.setComponentEnabled(isEnabled);
 		if (isDeep && this.components) {
 			for (var i in this.components) {

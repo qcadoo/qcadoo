@@ -47,6 +47,14 @@ public interface InternalRibbonActionItem extends RibbonActionItem {
     void setName(String name);
 
     /**
+     * Sets this item default state
+     * 
+     * @param enabled
+     *            true when this item should be default enabled or false when this item should be default disabled
+     */
+    void setDefaultEnabled(boolean defaultEnabled);
+
+    /**
      * Set item type
      * 
      * @param type
@@ -83,4 +91,14 @@ public interface InternalRibbonActionItem extends RibbonActionItem {
      * @return information if this item state should be updated
      */
     boolean isShouldBeUpdated();
+
+    /**
+     * Defines if this item should be permanently disabled. Permanently disabled means that you can not enable them using {@link
+     * RibbonActionItem.setEnabled()}
+     * 
+     * @param permanentlyDisabled
+     *            true if this item should be permanently disabled
+     */
+    void setPermanentlyDisabled(boolean permanentlyDisabled);
+
 }

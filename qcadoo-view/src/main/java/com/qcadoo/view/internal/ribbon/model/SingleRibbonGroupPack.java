@@ -56,8 +56,9 @@ public class SingleRibbonGroupPack implements RibbonGroupsPack {
     public RibbonGroupsPack getUpdate() {
         InternalRibbonGroup diffGroup = group.getUpdate();
         if (diffGroup != null) {
-            return new SingleRibbonGroupPack(group.getUpdate());
+            return new SingleRibbonGroupPack(diffGroup);
         }
         return null;
     }
+
 }

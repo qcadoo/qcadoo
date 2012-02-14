@@ -52,4 +52,14 @@ public interface InternalComponentState extends ComponentState {
      *             when data for client contains errors
      */
     JSONObject render() throws JSONException;
+
+    /**
+     * Defines if element defined by this component should be permanently disabled. Permanently disabled means that you can not
+     * enable them using {@link ComponentState.setEnabled()}
+     * 
+     * @param permanentlyDisabled
+     *            true if element defined by this component should be permanently disabled
+     */
+    void setPermanentlyDisabled(boolean permanentlyDisabled);
+
 }

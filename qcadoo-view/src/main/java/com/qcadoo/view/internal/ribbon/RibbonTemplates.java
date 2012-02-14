@@ -99,6 +99,7 @@ public class RibbonTemplates {
         ribbonDeleteAction.setName("delete");
         ribbonDeleteAction.setType(RibbonActionItem.Type.SMALL_BUTTON);
         ribbonDeleteAction.setEnabled(false);
+        ribbonDeleteAction.setDefaultEnabled(false);
         ribbonDeleteAction.setScript("var listener = {onChange: function(selectedArray) {if (selectedArray.length == 0) {"
                 + "this.disable();} else {this.enable();}}}; #{grid}.addOnChangeListener(listener);");
         return ribbonDeleteAction;
@@ -110,6 +111,7 @@ public class RibbonTemplates {
         ribbonCopyAction.setIcon("copyIcon16.png");
         ribbonCopyAction.setName("copy");
         ribbonCopyAction.setEnabled(false);
+        ribbonCopyAction.setDefaultEnabled(false);
         ribbonCopyAction.setScript("var listener = {onChange: function(selectedArray) {if (selectedArray.length == 0) {"
                 + "this.disable();} else {this.enable();}}}; #{grid}.addOnChangeListener(listener);");
         ribbonCopyAction.setType(RibbonActionItem.Type.SMALL_BUTTON);
@@ -176,7 +178,7 @@ public class RibbonTemplates {
         ribbonDeleteAction.setName("delete");
         ribbonDeleteAction.setType(RibbonActionItem.Type.SMALL_BUTTON);
         ribbonDeleteAction.setEnabled(false);
-        // ribbonDeleteAction.setMessage("recordNotCreated");
+        ribbonDeleteAction.setDefaultEnabled(false);
         ribbonDeleteAction
                 .setScript("var listener = {onSetValue: function(value) {if (!value || !value.content) return; if (value.content.entityId) {"
                         + "this.enable();} else {this.disable();}}}; #{form}.addOnChangeListener(listener);");
@@ -200,6 +202,7 @@ public class RibbonTemplates {
         ribbonCopyAction.setName("copy");
         ribbonCopyAction.setType(RibbonActionItem.Type.SMALL_BUTTON);
         ribbonCopyAction.setEnabled(false);
+        ribbonCopyAction.setDefaultEnabled(false);
         // ribbonCopyAction.setMessage("recordNotCreated");
         ribbonCopyAction
                 .setScript("var listener = {onSetValue: function(value) {if (!value || !value.content) return; if (value.content.entityId) {"
