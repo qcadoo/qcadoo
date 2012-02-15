@@ -144,7 +144,17 @@ QCD.WindowController = function(_menuStructure) {
 	}
 	
 	window.refreshView = function() {
-		performGoToPage(currentPage);
+		if (messagesController.isInitialized()) {
+			messagesController.clearMessager();
+		}
+		loadingIndicator.show();
+		if (modalsStack.length > 0) {
+			var modal = modalsStack[modalsStack.length - 1];
+			var modalUrl = modal.iframe.attr('src');
+			modal.iframe.attr('src', modalUrl);
+		} else {
+			iframe.attr('src', currentPage);
+		}
 	}
 
 	this.onLoginSuccess = function() {
