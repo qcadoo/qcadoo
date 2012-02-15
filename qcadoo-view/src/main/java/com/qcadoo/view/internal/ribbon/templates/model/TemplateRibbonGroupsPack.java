@@ -58,7 +58,7 @@ public class TemplateRibbonGroupsPack implements RibbonGroupsPack {
 
     @Override
     public List<InternalRibbonGroup> getGroups() {
-        if (groups == null) {
+        if (groups == null || groups.isEmpty()) {
             groups = template.getRibbonGroups(parameters, viewDefinition);
         }
         return groups;
