@@ -215,10 +215,13 @@ QCD.components.containers.Window = function(_element, _mainController) {
 		button.attr("id", _this.elementPath+"_contextualHelpButton");
 			
 		if (windowHeader.length) {
+			if (!windowTabs.length) {
+				button.addClass("withBorder");
+			}
 			contentElement.prepend(button);
 		} else if (windowTabs.length) {
 			windowTabs.addClass("hasContextualHelpButton");
-			button.addClass("inTabsHeader");
+			button.addClass("withBorder");
 			contentElement.prepend(button);
 		} else {
 			button.addClass('inComponentHeader');

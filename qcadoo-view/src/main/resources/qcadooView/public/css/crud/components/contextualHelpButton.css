@@ -48,11 +48,11 @@ div.contextualHelpButton.smallButton {
 	background-color: transparent;
 }
 
-div.windowContent.displayingHelpPaths div.contextualHelpButton.inTabsHeader {
+div.windowContent.displayingHelpPaths div.contextualHelpButton.withBorder {
 	margin-top: 20px;
 }
 
-div.windowContent div.contextualHelpButton.inTabsHeader {
+div.windowContent div.contextualHelpButton.withBorder {
 	border-bottom: 1px solid #A7A7A7;
 }
 
