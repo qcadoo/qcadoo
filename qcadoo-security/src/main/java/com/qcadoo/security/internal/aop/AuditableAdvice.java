@@ -30,7 +30,6 @@ import org.aspectj.lang.annotation.Before;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.internal.api.InternalDataDefinition;
 import com.qcadoo.security.api.SecurityService;
@@ -40,10 +39,7 @@ import com.qcadoo.security.api.SecurityService;
 public class AuditableAdvice {
 
     @Autowired
-    DataDefinitionService dataDefinitionService;
-
-    @Autowired
-    SecurityService securityService;
+    private SecurityService securityService;
 
     @Before("execution(@com.qcadoo.model.api.aop.Auditable * *(..)) &&" + "args(dataDefinition,genericEntity,..)")
     public void auditEntity(final InternalDataDefinition dataDefinition, final Entity genericEntity) {
