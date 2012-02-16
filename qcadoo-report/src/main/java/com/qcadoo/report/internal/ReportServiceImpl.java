@@ -58,7 +58,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.report.api.ReportException;
@@ -89,10 +88,7 @@ public class ReportServiceImpl implements ReportService {
     private MessageSource messageSource;
 
     @Autowired
-    private TranslationService translationService;
-
-    @Autowired
-    DataDefinitionService dataDefinitionService;
+    private DataDefinitionService dataDefinitionService;
 
     @Override
     public byte[] generateReportForEntity(final String templatePlugin, final String templateName, final ReportType type,
@@ -198,8 +194,7 @@ public class ReportServiceImpl implements ReportService {
         if (state.getFieldValue() instanceof Long) {
             Entity entity = dataDefinitionService.get(args[1], args[2]).get((Long) state.getFieldValue());
             if (entity == null) {
-                state.addMessage(translationService.translate("qcadooView.message.entityNotFound", state.getLocale()),
-                        MessageType.FAILURE);
+                state.addMessage("qcadooView.message.entityNotFound", MessageType.FAILURE);
             } else if (StringUtils.hasText(entity.getStringField("fileName"))) {
                 final StringBuilder urlBuilder = new StringBuilder();
                 urlBuilder.append("/generateSavedReport/").append(args[1]);
@@ -207,17 +202,13 @@ public class ReportServiceImpl implements ReportService {
                 urlBuilder.append(args[0]).append("?id=").append(state.getFieldValue());
                 viewDefinitionState.redirectTo(urlBuilder.toString(), true, false);
             } else {
-                state.addMessage(
-                        translationService.translate("qcadooReport.errorMessage.documentsWasNotGenerated", state.getLocale()),
-                        MessageType.FAILURE);
+                state.addMessage("qcadooReport.errorMessage.documentsWasNotGenerated", MessageType.FAILURE);
             }
         } else {
             if (state instanceof FormComponent) {
-                state.addMessage(translationService.translate("qcadooView.form.entityWithoutIdentifier", state.getLocale()),
-                        MessageType.FAILURE);
+                state.addMessage("qcadooView.form.entityWithoutIdentifier", MessageType.FAILURE);
             } else {
-                state.addMessage(translationService.translate("qcadooView.grid.noRowSelectedError", state.getLocale()),
-                        MessageType.FAILURE);
+                state.addMessage("qcadooView.grid.noRowSelectedError", MessageType.FAILURE);
             }
         }
     }

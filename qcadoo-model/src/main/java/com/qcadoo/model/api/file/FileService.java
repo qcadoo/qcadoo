@@ -134,6 +134,7 @@ public interface FileService {
      * @param dateFieldName
      *            report date field name
      * @param name
+     *            translation code for language specific file name
      * @return updated entity
      */
     Entity updateReportFileName(Entity entity, String dateFieldName, String name);

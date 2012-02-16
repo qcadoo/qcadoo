@@ -39,11 +39,14 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.localization.api.utils.DateUtils;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.file.FileService;
@@ -51,6 +54,9 @@ import com.qcadoo.tenant.api.MultiTenantUtil;
 
 @Service
 public class FileServiceImpl implements FileService {
+
+    @Autowired
+    private TranslationService translationService;
 
     private static final Logger LOG = LoggerFactory.getLogger(FileServiceImpl.class);
 
@@ -188,7 +194,8 @@ public class FileServiceImpl implements FileService {
     }
 
     private String getReportFullPath(final String name, final Date date) {
-        return getReportPath() + name + "_" + DateUtils.REPORT_D_T_F.format(date);
+        String translatedReportName = translationService.translate(name, LocaleContextHolder.getLocale());
+        return getReportPath() + translatedReportName + "_" + DateUtils.REPORT_D_T_F.format(date);
     }
 
     private String getReportPath() {

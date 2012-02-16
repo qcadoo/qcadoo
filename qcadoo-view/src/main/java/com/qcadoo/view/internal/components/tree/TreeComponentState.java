@@ -184,8 +184,7 @@ public final class TreeComponentState extends FieldComponentState implements Tre
         }
 
         if (treeStructure.length() > 1) {
-            addMessage(getTranslationService().translate("qcadooView.validate.field.error.multipleRoots", getLocale()),
-                    MessageType.FAILURE);
+            addMessage("qcadooView.validate.field.error.multipleRoots", MessageType.FAILURE);
             return null;
         }
 
@@ -306,10 +305,6 @@ public final class TreeComponentState extends FieldComponentState implements Tre
 
     }
 
-    private String translateMessage(final String key) {
-        return getTranslationService().translate(getTranslationPath() + "." + key, "qcadooView.message." + key, getLocale());
-    }
-
     private Long parseSelectedIdForListeners(final Long selectedEntityId) {
         if (selectedEntityId == null || selectedEntityId == 0) {
             return null;
@@ -386,7 +381,7 @@ public final class TreeComponentState extends FieldComponentState implements Tre
         public void removeSelectedEntity(final String[] args) {
             getDataDefinition().delete(selectedEntityId);
             setSelectedEntityId(null);
-            addMessage(translateMessage("deleteMessage"), MessageType.SUCCESS);
+            addTranslatedMessage(translateMessage("deleteMessage"), MessageType.SUCCESS);
             requestRender();
             requestUpdateState();
         }
@@ -406,7 +401,7 @@ public final class TreeComponentState extends FieldComponentState implements Tre
             if (afterSaveEntity.isValid()) {
                 requestRender();
                 requestUpdateState();
-                addMessage(getTranslationService().translate("qcadooView.message.saveMessage", getLocale()), MessageType.SUCCESS);
+                addTranslatedMessage(translateMessage("saveMessage"), MessageType.SUCCESS);
             }
         }
 

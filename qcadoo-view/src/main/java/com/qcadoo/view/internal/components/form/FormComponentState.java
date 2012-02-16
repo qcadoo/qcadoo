@@ -230,10 +230,6 @@ public class FormComponentState extends AbstractContainerState implements FormCo
         }
     }
 
-    private String translateMessage(final String key) {
-        return getTranslationService().translate(getTranslationPath() + "." + key, "qcadooView.message." + key, getLocale());
-    }
-
     private Map<String, FieldComponentState> getFieldComponents() {
         if (fieldComponents != null) {
             return fieldComponents;
@@ -370,8 +366,7 @@ public class FormComponentState extends AbstractContainerState implements FormCo
 
     private void copyMessage(final ComponentState componentState, final ErrorMessage message) {
         if (message != null) {
-            String translation = getTranslationService().translate(message.getMessage(), getLocale(), message.getVars());
-            componentState.addMessage(translation, MessageType.FAILURE);
+            componentState.addMessage(message);
         }
     }
 
@@ -414,10 +409,10 @@ public class FormComponentState extends AbstractContainerState implements FormCo
 
             if (entity.isValid()) {
                 setFieldValue(entity.getId());
-                addMessage(translateMessage("saveMessage"), MessageType.SUCCESS);
+                addTranslatedMessage(translateMessage("saveMessage"), MessageType.SUCCESS);
             } else {
                 if (entity.getGlobalErrors().size() == 0) {
-                    addMessage(translateMessage("saveFailedMessage"), MessageType.FAILURE);
+                    addTranslatedMessage(translateMessage("saveFailedMessage"), MessageType.FAILURE);
                 }
                 valid = false;
             }
@@ -427,7 +422,7 @@ public class FormComponentState extends AbstractContainerState implements FormCo
 
         public void copy(final String[] args) {
             if (entityId == null) {
-                addMessage(translateMessage("copyFailedMessage"), MessageType.FAILURE);
+                addTranslatedMessage(translateMessage("copyFailedMessage"), MessageType.FAILURE);
                 return;
             }
 
@@ -437,15 +432,15 @@ public class FormComponentState extends AbstractContainerState implements FormCo
                 clear(args);
                 setEntityId(copiedEntities.get(0).getId());
                 initialize(args);
-                addMessage(translateMessage("copyMessage"), MessageType.SUCCESS);
+                addTranslatedMessage(translateMessage("copyMessage"), MessageType.SUCCESS);
             } else {
-                addMessage(translateMessage("copyFailedMessage"), MessageType.FAILURE);
+                addTranslatedMessage(translateMessage("copyFailedMessage"), MessageType.FAILURE);
             }
         }
 
         public void activate(final String[] args) {
             if (entityId == null) {
-                addMessage(translateMessage("activateFailedMessage"), MessageType.FAILURE);
+                addTranslatedMessage(translateMessage("activateFailedMessage"), MessageType.FAILURE);
                 return;
             }
 
@@ -453,14 +448,14 @@ public class FormComponentState extends AbstractContainerState implements FormCo
 
             if (!activatedEntities.isEmpty()) {
                 active = true;
-                addMessage(translateMessage("activateMessage"), MessageType.SUCCESS);
+                addTranslatedMessage(translateMessage("activateMessage"), MessageType.SUCCESS);
                 setEntity(activatedEntities.get(0));
             }
         }
 
         public void deactivate(final String[] args) {
             if (entityId == null) {
-                addMessage(translateMessage("deactivateFailedMessage"), MessageType.FAILURE);
+                addTranslatedMessage(translateMessage("deactivateFailedMessage"), MessageType.FAILURE);
                 return;
             }
 
@@ -468,7 +463,7 @@ public class FormComponentState extends AbstractContainerState implements FormCo
 
             if (!deactivatedEntities.isEmpty()) {
                 active = false;
-                addMessage(translateMessage("deactivateMessage"), MessageType.SUCCESS);
+                addTranslatedMessage(translateMessage("deactivateMessage"), MessageType.SUCCESS);
                 setEntity(deactivatedEntities.get(0));
             }
         }
@@ -479,7 +474,7 @@ public class FormComponentState extends AbstractContainerState implements FormCo
                 throw new IllegalStateException("Entity cannot be found");
             } else if (entityId != null) {
                 getDataDefinition().delete(entityId);
-                addMessage(translateMessage("deleteMessage"), MessageType.SUCCESS);
+                addTranslatedMessage(translateMessage("deleteMessage"), MessageType.SUCCESS);
                 clear(args);
             }
         }
@@ -502,7 +497,7 @@ public class FormComponentState extends AbstractContainerState implements FormCo
                 setFormEnabled(false);
                 active = false;
                 valid = false;
-                addMessage(translateMessage("entityNotFound"), MessageType.FAILURE);
+                addTranslatedMessage(translateMessage("entityNotFound"), MessageType.FAILURE);
                 return;
             }
 

@@ -433,11 +433,6 @@ public final class GridComponentState extends AbstractComponentState implements 
         setSelectedEntityId((Long) value);
     }
 
-    private String translateMessage(final String key, final String... args) {
-        return getTranslationService()
-                .translate(getTranslationPath() + "." + key, "qcadooView.message." + key, getLocale(), args);
-    }
-
     @Override
     public void setCustomRestriction(final CustomRestriction customRestriction) {
         this.customRestriction = customRestriction;
@@ -529,9 +524,10 @@ public final class GridComponentState extends AbstractComponentState implements 
                 getDataDefinition().delete(selectedEntities.toArray(new Long[selectedEntities.size()]));
             }
             if (selectedEntities.size() == 1) {
-                addMessage(translateMessage("deleteMessage"), MessageType.SUCCESS);
+                addTranslatedMessage(translateMessage("deleteMessage"), MessageType.SUCCESS);
             } else {
-                addMessage(translateMessage("deleteMessages", String.valueOf(selectedEntities.size())), MessageType.SUCCESS);
+                addTranslatedMessage(translateMessage("deleteMessages", String.valueOf(selectedEntities.size())),
+                        MessageType.SUCCESS);
             }
             setSelectedEntityId(null);
             multiselectMode = false;
@@ -540,7 +536,7 @@ public final class GridComponentState extends AbstractComponentState implements 
 
         public void moveUpSelectedEntity(final String[] args) {
             getDataDefinition().move(selectedEntityId, -1);
-            addMessage(translateMessage("moveMessage"), MessageType.SUCCESS);
+            addTranslatedMessage(translateMessage("moveMessage"), MessageType.SUCCESS);
         }
 
         public void deactivateSelectedEntity(final String[] args) {
@@ -553,9 +549,10 @@ public final class GridComponentState extends AbstractComponentState implements 
             }
 
             if (selectedEntities.size() == 1) {
-                addMessage(translateMessage("deactivateMessage"), MessageType.SUCCESS);
+                addTranslatedMessage(translateMessage("deactivateMessage"), MessageType.SUCCESS);
             } else {
-                addMessage(translateMessage("deactivateMessages", String.valueOf(selectedEntities.size())), MessageType.SUCCESS);
+                addTranslatedMessage(translateMessage("deactivateMessages", String.valueOf(selectedEntities.size())),
+                        MessageType.SUCCESS);
             }
         }
 
@@ -569,9 +566,10 @@ public final class GridComponentState extends AbstractComponentState implements 
             }
 
             if (selectedEntities.size() == 1) {
-                addMessage(translateMessage("activateMessage"), MessageType.SUCCESS);
+                addTranslatedMessage(translateMessage("activateMessage"), MessageType.SUCCESS);
             } else {
-                addMessage(translateMessage("activateMessages", String.valueOf(selectedEntities.size())), MessageType.SUCCESS);
+                addTranslatedMessage(translateMessage("activateMessages", String.valueOf(selectedEntities.size())),
+                        MessageType.SUCCESS);
             }
         }
 
@@ -583,15 +581,16 @@ public final class GridComponentState extends AbstractComponentState implements 
             }
 
             if (selectedEntities.size() == 1) {
-                addMessage(translateMessage("copyMessage"), MessageType.SUCCESS);
+                addTranslatedMessage(translateMessage("copyMessage"), MessageType.SUCCESS);
             } else {
-                addMessage(translateMessage("copyMessages", String.valueOf(selectedEntities.size())), MessageType.SUCCESS);
+                addTranslatedMessage(translateMessage("copyMessages", String.valueOf(selectedEntities.size())),
+                        MessageType.SUCCESS);
             }
         }
 
         public void moveDownSelectedEntity(final String[] args) {
             getDataDefinition().move(selectedEntityId, 1);
-            addMessage(translateMessage("moveMessage"), MessageType.SUCCESS);
+            addTranslatedMessage(translateMessage("moveMessage"), MessageType.SUCCESS);
         }
 
         private void reload() {
@@ -760,12 +759,8 @@ public final class GridComponentState extends AbstractComponentState implements 
 
     private void copyFieldValidationMessages(final Entity messagesSource) {
         for (ErrorMessage message : messagesSource.getErrors().values()) {
-            addValidationMessage(message);
+            addMessage(message);
         }
     }
 
-    private void addValidationMessage(final ErrorMessage message) {
-        String translatedMessage = getTranslationService().translate(message.getMessage(), getLocale(), message.getVars());
-        addMessage(translatedMessage, MessageType.FAILURE);
-    }
 }

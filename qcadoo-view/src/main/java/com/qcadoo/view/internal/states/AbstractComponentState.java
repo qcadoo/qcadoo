@@ -31,6 +31,7 @@ import org.json.JSONObject;
 
 import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.api.DataDefinition;
+import com.qcadoo.model.api.validators.ErrorMessage;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.internal.FieldEntityIdChangeListener;
 import com.qcadoo.view.internal.ScopeEntityIdChangeListener;
@@ -132,16 +133,37 @@ public abstract class AbstractComponentState implements InternalComponentState, 
     }
 
     @Override
-    public void addMessage(final String message, final MessageType type) {
-        addMessage(message, type, true);
+    public final void addMessage(final ErrorMessage errorMessage) {
+        addMessage(errorMessage.getMessage(), MessageType.FAILURE, true, errorMessage.getVars());
     }
 
     @Override
-    public final void addMessage(final String message, final MessageType type, final boolean autoClose) {
-        messageHolder.addMessage(null, message, type, autoClose);
+    public void addMessage(final String message, final MessageType type, final String... args) {
+        addMessage(message, type, true, args);
+    }
+
+    @Override
+    public final void addMessage(final String message, final MessageType type, final boolean autoClose, final String... args) {
+        String translatedMessage = getTranslationService().translate(message, getLocale(), args);
+        addTranslatedMessage(translatedMessage, type, autoClose);
+    }
+
+    @Override
+    public final void addTranslatedMessage(final String translatedMessage, final MessageType type) {
+        addTranslatedMessage(translatedMessage, type, true);
+    }
+
+    @Override
+    public final void addTranslatedMessage(final String translatedMessage, final MessageType type, final boolean autoClose) {
+        messageHolder.addMessage(null, translatedMessage, type, autoClose);
         if (MessageType.FAILURE.equals(type)) {
             hasError = true;
         }
+    }
+
+    protected String translateMessage(final String key, final String... args) {
+        return getTranslationService()
+                .translate(getTranslationPath() + "." + key, "qcadooView.message." + key, getLocale(), args);
     }
 
     @Override

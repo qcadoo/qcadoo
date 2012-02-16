@@ -25,6 +25,8 @@ package com.qcadoo.view.api;
 
 import java.util.Locale;
 
+import com.qcadoo.model.api.validators.ErrorMessage;
+
 /**
  * ComponentState is instance of single view element. It is created by ComponentPattern in request scope.
  * <p>
@@ -56,14 +58,24 @@ public interface ComponentState {
     }
 
     /**
+     * Adds message to this component with type set to MessageType.FAILURE. Message will automatically close after some time.
+     * 
+     * @param errorMessage
+     *            validation error message
+     */
+    void addMessage(ErrorMessage errorMessage);
+
+    /**
      * Adds message to this component. Message will automatically close after some time.
      * 
      * @param message
      *            message content
      * @param type
      *            message type
+     * @param args
+     *            message's arguments
      */
-    void addMessage(String message, MessageType type);
+    void addMessage(String message, MessageType type, String... args);
 
     /**
      * Adds message to this component.
@@ -74,8 +86,34 @@ public interface ComponentState {
      *            message type
      * @param autoClose
      *            true if this message should automatically close after some time
+     * @param args
+     *            message's arguments
      */
-    void addMessage(String message, MessageType type, boolean autoClose);
+    void addMessage(String message, MessageType type, boolean autoClose, String... args);
+
+    /**
+     * Adds translated message to this component. Message will automatically close after some time.
+     * 
+     * @param message
+     *            message content
+     * @param type
+     *            message type
+     * @param autoClose
+     *            true if this message should automatically close after some time
+     */
+    void addTranslatedMessage(String message, MessageType type);
+
+    /**
+     * Adds translated message to this component.
+     * 
+     * @param message
+     *            message content
+     * @param type
+     *            message type
+     * @param autoClose
+     *            true if this message should automatically close after some time
+     */
+    void addTranslatedMessage(String message, MessageType type, boolean autoClose);
 
     /**
      * Returns current localization
