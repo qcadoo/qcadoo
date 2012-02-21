@@ -43,7 +43,7 @@ String ctx = request.getContextPath();
 
 <div class="pluginInfoPage">
 
-	<div style="margin-left: 10px; margin-top: 10px; font: 11px arial; font-weight: normal;">
+	<div style="margin-left: 10px; margin-top: 10px; font: 12px arial; font-weight: normal;">
 		${content}
 	</div>
 	
