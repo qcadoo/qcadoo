@@ -29,6 +29,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -80,7 +82,8 @@ public class ExportToCsvController {
 
             GridComponent grid = (GridComponent) state.getComponentByReference("grid");
 
-            File file = fileService.createExportFile("export.csv");
+            String date = DateFormat.getDateInstance().format(new Date());
+            File file = fileService.createExportFile("export_" + grid.getName() + "_" + date + ".csv");
 
             BufferedWriter output = null;
 
