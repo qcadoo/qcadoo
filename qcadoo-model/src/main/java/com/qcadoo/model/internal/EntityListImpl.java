@@ -83,6 +83,14 @@ public final class EntityListImpl extends AbstractList<Entity> implements Entity
     }
 
     @Override
+    public boolean isEmpty() {
+        if (entities == null) {
+            loadEntities();
+        }
+        return entities.isEmpty();
+    }
+
+    @Override
     public String toString() {
         return "EntityList[" + dataDefinition.getPluginIdentifier() + "." + dataDefinition.getName() + "]["
                 + joinFieldDefinition.getName() + "=" + parentId + "]";
