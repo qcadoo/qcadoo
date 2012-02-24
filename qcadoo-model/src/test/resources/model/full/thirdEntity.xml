@@ -29,7 +29,8 @@
 	xsi:schemaLocation="http://schema.qcadoo.org/model http://schema.qcadoo.org/model.xsd">
 	<fields>
 		<belongsTo name="fieldFirstEntity" model="firstEntity" />
-		<manyToMany name="fieldManyToMany" model="firstEntity" cascade="nullify" />
+		<manyToMany name="fieldManyToMany" model="firstEntity"
+			cascade="nullify" />
 	</fields>
 	<hooks />
 </model>

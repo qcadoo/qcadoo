@@ -29,14 +29,14 @@
 	xmlns:testModel="http://schema.qcadoo.org/modules/testModel" xmlns:view="http://schema.qcadoo.org/modules/view"
 	xmlns:localization="http://schema.qcadoo.org/modules/localization"
 	xsi:schemaLocation="
-       http://schema.qcadoo.org/plugin
-       http://schema.qcadoo.org/plugin.xsd
-       http://schema.qcadoo.org/modules/testModel
-       http://schema.qcadoo.org/modules/testModel.xsd
-       http://schema.qcadoo.org/modules/view
-       http://schema.qcadoo.org/modules/view.xsd
-       http://schema.qcadoo.org/modules/localization
-       http://schema.qcadoo.org/modules/localization.xsd">
+		http://schema.qcadoo.org/plugin 
+		http://schema.qcadoo.org/plugin.xsd 
+		http://schema.qcadoo.org/modules/testModel 
+		http://schema.qcadoo.org/modules/testModel.xsd 
+		http://schema.qcadoo.org/modules/view 
+		http://schema.qcadoo.org/modules/view.xsd 
+		http://schema.qcadoo.org/modules/localization 
+		http://schema.qcadoo.org/modules/localization.xsd">
 
 	<information>
 		<name>plugin1</name>

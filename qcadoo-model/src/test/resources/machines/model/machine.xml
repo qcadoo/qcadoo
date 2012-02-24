@@ -24,12 +24,13 @@
     ***************************************************************************
 
 -->
-<model name="machine"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns="http://schema.qcadoo.org/model"
+<model name="machine" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schema.qcadoo.org/model"
 	xsi:schemaLocation="http://schema.qcadoo.org/model http://schema.qcadoo.org/model.xsd">
 	<fields>
 		<string name="name" required="true" />
-		<hasMany name="components" plugin="products" model="component" joinField="product" cascade="delete" />
+		<hasMany name="components" plugin="products" model="component"
+			joinField="product" cascade="delete" />
 	</fields>
 	<hooks />
 </model>

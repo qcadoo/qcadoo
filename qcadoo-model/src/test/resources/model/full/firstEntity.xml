@@ -24,9 +24,9 @@
     ***************************************************************************
 
 -->
-<model plugin="full" name="firstEntity" insertable="false" activable="true" auditable="true"
-	deletable="false" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns="http://schema.qcadoo.org/model"
+<model plugin="full" name="firstEntity" insertable="false"
+	activable="true" auditable="true" deletable="false"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schema.qcadoo.org/model"
 	xsi:schemaLocation="http://schema.qcadoo.org/model http://schema.qcadoo.org/model.xsd">
 	<fields>
 		<integer name="fieldInteger" required="true" unique="true">
@@ -64,10 +64,10 @@
 			joinField="fieldFirstEntity" />
 		<hasMany name="fieldHasMany" model="thirdEntity" cascade="nullify"
 			joinField="fieldFirstEntity" />
-		<manyToMany name="fieldManyToMany" model="thirdEntity" cascade="nullify" />
+		<manyToMany name="fieldManyToMany" model="thirdEntity"
+			cascade="nullify" />
 		<dictionary name="fieldDictionary" dictionary="categories" />
-		<dictionary name="fieldOtherDictionary"
-			dictionary="categories" />
+		<dictionary name="fieldOtherDictionary" dictionary="categories" />
 		<enum name="fieldEnum" values="one,two,three" />
 		<password name="fieldPassword" />
 		<priority name="fieldPriority" scope="fieldInteger" />
@@ -81,4 +81,4 @@
 		<onCopy class="com.qcadoo.model.CustomHook" method="copyHook" />
 	</hooks>
 	<identifier expression="#fieldString" />
-</model>	
+</model>

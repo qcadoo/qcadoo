@@ -24,13 +24,14 @@
     ***************************************************************************
 
 -->
-<plugin plugin="machines" version="1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns="http://schema.qcadoo.org/plugin" xmlns:model="http://schema.qcadoo.org/modules/model"
+<plugin plugin="machines" version="1.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schema.qcadoo.org/plugin"
+	xmlns:model="http://schema.qcadoo.org/modules/model"
 	xsi:schemaLocation="
-       http://schema.qcadoo.org/plugin
-       http://schema.qcadoo.org/plugin.xsd
-       http://schema.qcadoo.org/modules/model
-       http://schema.qcadoo.org/modules/model.xsd">
+		http://schema.qcadoo.org/plugin 
+		http://schema.qcadoo.org/plugin.xsd 
+		http://schema.qcadoo.org/modules/model 
+		http://schema.qcadoo.org/modules/model.xsd">
 
 	<information>
 		<name>machines</name>
@@ -45,17 +46,20 @@
 
 	<modules>
 		<model:model-field plugin="products" model="component">
-			<model:belongsTo plugin="machines" name="machine" model="machine" required="false" />
+			<model:belongsTo plugin="machines" name="machine"
+				model="machine" required="false" />
 		</model:model-field>
 		<model:model-field plugin="products" model="component">
 			<model:string name="machineName" required="true" />
 		</model:model-field>
-		<model:model-enum-value plugin="products" model="product" enum="enum" value="three" />
+		<model:model-enum-value plugin="products"
+			model="product" enum="enum" value="three" />
 		<model:model-hook plugin="products" model="product">
-			<model:onSave class="com.qcadoo.model.integration.MockHook" method="changeName"/>
+			<model:onSave class="com.qcadoo.model.integration.MockHook"
+				method="changeName" />
 		</model:model-hook>
 		<model:dictionary name="categories" />
 		<model:model model="machine" resource="model/machine.xml" />
 	</modules>
-	
+
 </plugin>

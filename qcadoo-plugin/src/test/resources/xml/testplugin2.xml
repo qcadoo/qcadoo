@@ -24,20 +24,25 @@
     ***************************************************************************
 
 -->
-<plugin plugin="testPlugin2" version="2.3.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schema.qcadoo.org/plugin"
-	xmlns:testModel="http://schema.qcadoo.org/modules/testModel" xmlns:view="http://schema.qcadoo.org/modules/view"
-	xmlns:localization="http://schema.qcadoo.org/modules/localization"
+<plugin plugin="testPlugin2" version="2.3.1"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schema.qcadoo.org/plugin"
+	xmlns:testModel="http://schema.qcadoo.org/modules/testModel"
+	xmlns:view="http://schema.qcadoo.org/modules/view" xmlns:localization="http://schema.qcadoo.org/modules/localization"
 	xsi:schemaLocation="
-       http://schema.qcadoo.org/plugin
-       http://schema.qcadoo.org/plugin.xsd
-       http://schema.qcadoo.org/modules/testModel
-       http://schema.qcadoo.org/modules/testModel.xsd
-       http://schema.qcadoo.org/modules/view
-       http://schema.qcadoo.org/modules/view.xsd
-       http://schema.qcadoo.org/modules/localization
-       http://schema.qcadoo.org/modules/localization.xsd">
+		http://schema.qcadoo.org/plugin 
+		http://schema.qcadoo.org/plugin.xsd 
+		http://schema.qcadoo.org/modules/testModel 
+		http://schema.qcadoo.org/modules/testModel.xsd 
+		http://schema.qcadoo.org/modules/view 
+		http://schema.qcadoo.org/modules/view.xsd 
+		http://schema.qcadoo.org/modules/localization 
+		http://schema.qcadoo.org/modules/localization.xsd">
+
 	<information>
 		<name>testPlugin2Name</name>
 	</information>
-	<modules></modules>
+
+	<modules>
+	</modules>
+
 </plugin>

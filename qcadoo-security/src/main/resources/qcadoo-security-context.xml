@@ -25,14 +25,13 @@
 
 -->
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:security="http://www.springframework.org/schema/security"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:security="http://www.springframework.org/schema/security"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xsi:schemaLocation="
        http://www.springframework.org/schema/beans 
-       http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+       http://www.springframework.org/schema/beans/spring-beans-3.1.xsd 
        http://www.springframework.org/schema/security 
-       http://www.springframework.org/schema/security/spring-security-3.0.xsd
+       http://www.springframework.org/schema/security/spring-security-3.0.xsd 
        http://www.springframework.org/schema/context 
        http://www.springframework.org/schema/context/spring-context-3.1.xsd">
 
@@ -46,16 +45,16 @@
 	<security:http use-expressions="true" auto-config="false"
 		entry-point-ref="loginUrlAuthenticationEntryPoint">
 		<security:intercept-url pattern="/login.html"
-			filters="none"  />
+			filters="none" />
 		<security:intercept-url pattern="/css/**"
-			filters="none"  />
+			filters="none" />
 		<security:intercept-url pattern="/js/**"
-			filters="none"  />
+			filters="none" />
 		<security:intercept-url pattern="/browserNotSupported.html"
-			filters="none"  />
+			filters="none" />
 		<security:intercept-url pattern="/**"
 			access="isAuthenticated()" />
-			
+
 		<security:logout logout-success-url="/login.html?logout=true" />
 
 		<security:session-management
@@ -71,25 +70,31 @@
 		<security:access-denied-handler ref="accessDeniedHandler" />
 
 		<security:http-basic />
-		
-		<security:remember-me user-service-ref="userDetailsService" token-repository-ref="userDetailsService" services-alias="rememberMeServices" key="qcd01" />
-		
+
+		<security:remember-me user-service-ref="userDetailsService"
+			token-repository-ref="userDetailsService" services-alias="rememberMeServices"
+			key="qcd01" />
+
 	</security:http>
 
 	<security:authentication-manager alias="authenticationManager">
-		<security:authentication-provider user-service-ref="userDetailsService">
+		<security:authentication-provider
+			user-service-ref="userDetailsService">
 			<security:password-encoder ref="passwordEncoder" />
 		</security:authentication-provider>
 	</security:authentication-manager>
 
-	<bean id="passwordEncoder" class="org.springframework.security.authentication.encoding.ShaPasswordEncoder">
+	<bean id="passwordEncoder"
+		class="org.springframework.security.authentication.encoding.ShaPasswordEncoder">
 		<constructor-arg value="256" />
 	</bean>
 
-	<bean id="globalDefinitionPermissionEvaluator" class="com.qcadoo.security.internal.QcadooGlobalPermissionEvaluator">
+	<bean id="globalDefinitionPermissionEvaluator"
+		class="com.qcadoo.security.internal.QcadooGlobalPermissionEvaluator">
 		<property name="qcadooEvaluators">
 			<set>
-				<bean class="com.qcadoo.view.internal.security.ViewDefinitionPermissionEvaluator" />
+				<bean
+					class="com.qcadoo.view.internal.security.ViewDefinitionPermissionEvaluator" />
 			</set>
 		</property>
 	</bean>
@@ -97,7 +102,7 @@
 	<bean id="methodSecurityExpressionHandler"
 		class="org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler">
 		<property name="roleHierarchy" ref="roleHierarchy" />
-		<property name="permissionEvaluator" ref="globalDefinitionPermissionEvaluator"/>
+		<property name="permissionEvaluator" ref="globalDefinitionPermissionEvaluator" />
 	</bean>
 
 	<bean id="roleHierarchy"
@@ -140,5 +145,5 @@
 		class="org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler">
 		<property name="defaultFailureUrl" value="/login.html?login_error=error" />
 	</bean>
-	
+
 </beans>
