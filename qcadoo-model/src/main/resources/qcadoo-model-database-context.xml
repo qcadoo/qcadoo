@@ -46,6 +46,8 @@
 		<property name="password" value="${dbPassword}" />
 	</bean>
 	
+	<context:load-time-weaver />
+	
 	<beans profile="standalone">
 
 		<bean id="sessionFactory" class="com.qcadoo.model.internal.sessionfactory.DynamicSessionFactoryBeanImpl">
@@ -68,7 +70,7 @@
 			<property name="dataSource" ref="dataSource" />
 		</bean>
 	
-		<tx:annotation-driven />
+		<tx:annotation-driven transaction-manager="transactionManager" mode="aspectj" />
 	
 	</beans>
 	
