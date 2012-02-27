@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 1.1.2
+ * Version: 1.1.3
  *
  * This file is part of Qcadoo.
  *
@@ -26,6 +26,7 @@ package com.qcadoo.plugins.qcadooExport.internal;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -99,10 +100,10 @@ public class ExportToPDFController {
             ViewDefinitionState state = crudService.invokeEvent(pluginIdentifier, viewName, body, locale);
             GridComponent grid = (GridComponent) state.getComponentByReference("grid");
             Document document = new Document(PageSize.A4.rotate());
-            File file = fileService.createExportFile("export.pdf");
+            String date = DateFormat.getDateInstance().format(new Date());
+            File file = fileService.createExportFile("export_" + grid.getName() + "_" + date + ".pdf");
             FileOutputStream fileOutputStream = new FileOutputStream(file);
             PdfWriter writer = PdfWriter.getInstance(document, fileOutputStream);
-
             Entity company = dataDefinitionService.get("basic", "company").find().add(SearchRestrictions.eq("owner", true))
                     .setMaxResults(1).uniqueResult();
 

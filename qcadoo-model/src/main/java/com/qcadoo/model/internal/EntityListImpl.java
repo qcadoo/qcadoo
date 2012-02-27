@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 1.1.2
+ * Version: 1.1.3
  *
  * This file is part of Qcadoo.
  *
@@ -80,6 +80,14 @@ public final class EntityListImpl extends AbstractList<Entity> implements Entity
             loadEntities();
         }
         return entities.size();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        if (entities == null) {
+            loadEntities();
+        }
+        return entities.isEmpty();
     }
 
     @Override

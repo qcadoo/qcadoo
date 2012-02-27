@@ -3,7 +3,7 @@
     ***************************************************************************
     Copyright (c) 2010 Qcadoo Limited
     Project: Qcadoo Framework
-    Version: 1.1.2
+    Version: 1.1.3
 
     This file is part of Qcadoo.
 
@@ -43,7 +43,7 @@ String ctx = request.getContextPath();
 
 <div class="pluginInfoPage">
 
-	<div>
+	<div style="margin-left: 10px; margin-top: 10px; font: 12px arial; font-weight: normal;">
 		${content}
 	</div>
 	

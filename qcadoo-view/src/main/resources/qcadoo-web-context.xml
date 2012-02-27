@@ -4,7 +4,7 @@
     ***************************************************************************
     Copyright (c) 2010 Qcadoo Limited
     Project: Qcadoo Framework
-    Version: 1.1.2
+    Version: 1.1.3
 
     This file is part of Qcadoo.
 
@@ -29,44 +29,45 @@
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:aop="http://www.springframework.org/schema/aop"
 	xsi:schemaLocation="
-        http://www.springframework.org/schema/beans 
-        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-        http://www.springframework.org/schema/context 
-        http://www.springframework.org/schema/context/spring-context-3.0.xsd
-        http://www.springframework.org/schema/aop 
-       	http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+		 http://www.springframework.org/schema/beans 
+		 http://www.springframework.org/schema/beans/spring-beans-3.0.xsd 
+		 http://www.springframework.org/schema/context 
+		 http://www.springframework.org/schema/context/spring-context-3.0.xsd 
+		 http://www.springframework.org/schema/aop 
+		 http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
 
 	<aop:aspectj-autoproxy />
 
 	<context:component-scan base-package="com.qcadoo.view">
-		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+		<context:include-filter type="annotation"
+			expression="org.springframework.stereotype.Controller" />
 	</context:component-scan>
-	
-	<bean id="contentNegotiatingViewResolver" 
-   		class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver"
-   		p:order="#{T(org.springframework.core.Ordered).HIGHEST_PRECEDENCE}">
-      	<property name="mediaTypes">
+
+	<bean id="contentNegotiatingViewResolver"
+		class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver"
+		p:order="#{T(org.springframework.core.Ordered).HIGHEST_PRECEDENCE}">
+		<property name="mediaTypes">
 			<map>
-		        <entry key="html" value="text/html; charset=utf-8"/> 
-		        <entry key="pdf" value="application/pdf"/> 
-		        <entry key="xls" value="application/vnd.ms-excel"/> 
-		        <entry key="xml" value="application/xml"/> 
-		        <entry key="json" value="application/json; charset=utf-8"/>
+				<entry key="html" value="text/html; charset=utf-8" />
+				<entry key="pdf" value="application/pdf" />
+				<entry key="xls" value="application/vnd.ms-excel" />
+				<entry key="xml" value="application/xml" />
+				<entry key="json" value="application/json; charset=utf-8" />
 			</map>
 		</property>
 	</bean>
-	
+
 	<bean id="staticResourcesFilter" class="com.qcadoo.view.internal.resource.ResourceFilter">
 		<property name="useJarStaticResources" value="${useJarStaticResources}" />
 	</bean>
-  		
-  	<bean id="beanNameViewResolver"
-  		class="org.springframework.web.servlet.view.BeanNameViewResolver">
-  		<property name="order" value="#{contentNegotiatingViewResolver.order+1}"/>
+
+	<bean id="beanNameViewResolver"
+		class="org.springframework.web.servlet.view.BeanNameViewResolver">
+		<property name="order" value="#{contentNegotiatingViewResolver.order+1}" />
 	</bean>
 
 	<bean class="org.springframework.web.servlet.view.UrlBasedViewResolver">
-		<property name="order" value="#{beanNameViewResolver.order+1}"/>
+		<property name="order" value="#{beanNameViewResolver.order+1}" />
 		<property name="viewClass"
 			value="org.springframework.web.servlet.view.JstlView" />
 		<property name="prefix" value="/WEB-INF/jsp/" />
@@ -74,8 +75,8 @@
 	</bean>
 
 	<bean id="multipartResolver"
-    	class="org.springframework.web.multipart.commons.CommonsMultipartResolver">	
-	    <property name="maxUploadSize" value="2000000"/>
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="maxUploadSize" value="2000000" />
 	</bean>
 
 	<bean
@@ -88,14 +89,17 @@
 		class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
 		<property name="messageConverters">
 			<list>
-				<bean id="stringHttpMessageConverter" class="org.springframework.http.converter.StringHttpMessageConverter" />
+				<bean id="stringHttpMessageConverter"
+					class="org.springframework.http.converter.StringHttpMessageConverter" />
 				<bean id="jsonConverter" class="com.qcadoo.view.internal.JsonHttpMessageConverter" />
-				<bean id="jsonMapperConverter" class="com.qcadoo.view.internal.JsonMapperHttpMessageConverter" />
+				<bean id="jsonMapperConverter"
+					class="com.qcadoo.view.internal.JsonMapperHttpMessageConverter" />
 			</list>
 		</property>
 	</bean>
 
-	<bean id="tilesConfigurer" class="org.springframework.web.servlet.view.tiles2.TilesConfigurer">
+	<bean id="tilesConfigurer"
+		class="org.springframework.web.servlet.view.tiles2.TilesConfigurer">
 		<property name="definitions">
 			<list>
 			</list>
@@ -109,15 +113,15 @@
 
 	<bean class="org.codehaus.jackson.map.ObjectMapper" id="jacksonObjectMapper" />
 
-	<bean id="exceptionResolver"  
-		class="com.qcadoo.view.internal.exceptionresolver.DefaultExceptionResolver">  
-  		<property name="defaultErrorView" value="500" />
-  		<property name="warnLogCategory" value="com.qcadoo.mes.application.Application" />
-  		<property name="exceptionMappings">  
-			<props>  
-				<prop key="org.springframework.security.access.AccessDeniedException">403</prop>  
-			</props>  
-		</property> 
- 	</bean>  
+	<bean id="exceptionResolver"
+		class="com.qcadoo.view.internal.exceptionresolver.DefaultExceptionResolver">
+		<property name="defaultErrorView" value="500" />
+		<property name="warnLogCategory" value="com.qcadoo.mes.application.Application" />
+		<property name="exceptionMappings">
+			<props>
+				<prop key="org.springframework.security.access.AccessDeniedException">403</prop>
+			</props>
+		</property>
+	</bean>
 
 </beans>

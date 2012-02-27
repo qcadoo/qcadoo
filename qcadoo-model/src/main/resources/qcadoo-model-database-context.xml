@@ -4,7 +4,7 @@
     ***************************************************************************
     Copyright (c) 2010 Qcadoo Limited
     Project: Qcadoo Framework
-    Version: 1.1.2
+    Version: 1.1.3
 
     This file is part of Qcadoo.
 
@@ -25,18 +25,17 @@
 
 -->
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:util="http://www.springframework.org/schema/util"
-	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:util="http://www.springframework.org/schema/util" xmlns:context="http://www.springframework.org/schema/context"
 	xsi:schemaLocation="
-       http://www.springframework.org/schema/beans 
-       http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
-       http://www.springframework.org/schema/tx 
-       http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
-       http://www.springframework.org/schema/util 
-       http://www.springframework.org/schema/util/spring-util-3.1.xsd
-       http://www.springframework.org/schema/context 
-       http://www.springframework.org/schema/context/spring-context-3.1.xsd">
+		http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-3.1.xsd 
+		http://www.springframework.org/schema/tx 
+		http://www.springframework.org/schema/tx/spring-tx-3.1.xsd 
+		http://www.springframework.org/schema/util 
+		http://www.springframework.org/schema/util/spring-util-3.1.xsd 
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context-3.1.xsd">
 
 	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
 		destroy-method="close">
@@ -47,25 +46,24 @@
 	</bean>
 	
 	<context:load-time-weaver />
-	
+
 	<beans profile="standalone">
 
-		<bean id="sessionFactory" class="com.qcadoo.model.internal.sessionfactory.DynamicSessionFactoryBeanImpl">
+		<bean id="sessionFactory"
+			class="com.qcadoo.model.internal.sessionfactory.DynamicSessionFactoryBeanImpl">
 			<property name="dataSource" ref="dataSource" />
 			<property name="hibernateProperties">
 				<props>
 					<prop key="hibernate.dialect">${hibernateDialect}</prop>
 					<prop key="hibernate.show_sql">${hibernateShowSql}</prop>
 					<prop key="hibernate.hbm2ddl.auto">${hibernateHbm2ddlAuto}</prop>
-					<!-- prop key="hibernate.cache.use_query_cache">true</prop>
-					<prop key="hibernate.cache.use_second_level_cache">true</prop>
-					<prop key="hibernate.cache.region.factory_class">net.sf.ehcache.hibernate.EhCacheRegionFactory</prop -->
-	            	<prop key="hibernate.bytecode.use_reflection_optimizer">true</prop>
+					<prop key="hibernate.bytecode.use_reflection_optimizer">true</prop>
 				</props>
 			</property>
 		</bean>
-		
-		<bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+
+		<bean id="transactionManager"
+			class="org.springframework.orm.hibernate3.HibernateTransactionManager">
 			<property name="sessionFactory" ref="sessionFactory" />
 			<property name="dataSource" ref="dataSource" />
 		</bean>
@@ -73,5 +71,5 @@
 		<tx:annotation-driven transaction-manager="transactionManager" mode="aspectj" />
 	
 	</beans>
-	
+
 </beans>

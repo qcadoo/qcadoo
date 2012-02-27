@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 1.1.2
+ * Version: 1.1.3
  *
  * This file is part of Qcadoo.
  *
@@ -186,11 +186,10 @@ public final class ProxyEntity implements Entity {
 
     @Override
     public int hashCode() {
-        // TODO mici, im not sure about this hashCode
-        // return getEntity().hashCode(); maybe?
+        // TODO mici, im not sure about this
+        // return getEntity().hashCode(); maybe? but it breaks the tests
 
         return new HashCodeBuilder(23, 41).append(id).toHashCode();
-
     }
 
     @Override
@@ -208,7 +207,6 @@ public final class ProxyEntity implements Entity {
         // return false;
         // }
 
-        // added code
         if (obj instanceof Entity) {
             Entity entity = (Entity) obj;
 
@@ -217,7 +215,6 @@ public final class ProxyEntity implements Entity {
 
             return isPluginEqual && isModelEqual && id.equals(entity.getId());
         }
-        // end of added code
 
         ProxyEntity other = (ProxyEntity) obj;
         return new EqualsBuilder().append(id, other.id).isEquals();

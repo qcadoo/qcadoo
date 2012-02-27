@@ -4,7 +4,7 @@
     ***************************************************************************
     Copyright (c) 2010 Qcadoo Limited
     Project: Qcadoo Framework
-    Version: 1.1.2
+    Version: 1.1.3
 
     This file is part of Qcadoo.
 
@@ -24,13 +24,14 @@
     ***************************************************************************
 
 -->
-<plugin plugin="products" version="1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns="http://schema.qcadoo.org/plugin" xmlns:model="http://schema.qcadoo.org/modules/model"
+<plugin plugin="products" version="1.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schema.qcadoo.org/plugin"
+	xmlns:model="http://schema.qcadoo.org/modules/model"
 	xsi:schemaLocation="
-       http://schema.qcadoo.org/plugin
-       http://schema.qcadoo.org/plugin.xsd
-       http://schema.qcadoo.org/modules/model
-       http://schema.qcadoo.org/modules/model.xsd">
+		http://schema.qcadoo.org/plugin 
+		http://schema.qcadoo.org/plugin.xsd 
+		http://schema.qcadoo.org/modules/model 
+		http://schema.qcadoo.org/modules/model.xsd">
 
 	<information>
 		<name>products</name>
@@ -41,5 +42,5 @@
 		<model:model model="component" resource="model/component.xml" />
 		<model:model model="part" resource="model/part.xml" />
 	</modules>
-	
+
 </plugin>

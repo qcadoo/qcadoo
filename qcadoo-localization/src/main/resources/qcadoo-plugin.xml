@@ -4,7 +4,7 @@
     ***************************************************************************
     Copyright (c) 2010 Qcadoo Limited
     Project: Qcadoo Framework
-    Version: 1.1.2
+    Version: 1.1.3
 
     This file is part of Qcadoo.
 
@@ -24,21 +24,22 @@
     ***************************************************************************
 
 -->
-<plugin plugin="qcadooLocalization" version="${qcadoo.plugin.version}" system="true"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schema.qcadoo.org/plugin"
-	xmlns:model="http://schema.qcadoo.org/modules/model" xmlns:view="http://schema.qcadoo.org/modules/view"
-	xmlns:menu="http://schema.qcadoo.org/modules/menu" xmlns:localization="http://schema.qcadoo.org/modules/localization"
+<plugin plugin="qcadooLocalization" version="${qcadoo.plugin.version}"
+	system="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://schema.qcadoo.org/plugin" xmlns:model="http://schema.qcadoo.org/modules/model"
+	xmlns:view="http://schema.qcadoo.org/modules/view" xmlns:menu="http://schema.qcadoo.org/modules/menu"
+	xmlns:localization="http://schema.qcadoo.org/modules/localization"
 	xsi:schemaLocation="
-       http://schema.qcadoo.org/plugin
-       http://schema.qcadoo.org/plugin.xsd
-       http://schema.qcadoo.org/modules/model
-       http://schema.qcadoo.org/modules/model.xsd
-       http://schema.qcadoo.org/modules/view
-       http://schema.qcadoo.org/modules/view.xsd
-       http://schema.qcadoo.org/modules/localization
-       http://schema.qcadoo.org/modules/localization.xsd
-       http://schema.qcadoo.org/modules/menu
-       http://schema.qcadoo.org/modules/menu.xsd">
+		http://schema.qcadoo.org/plugin 
+		http://schema.qcadoo.org/plugin.xsd 
+		http://schema.qcadoo.org/modules/model 
+		http://schema.qcadoo.org/modules/model.xsd 
+		http://schema.qcadoo.org/modules/view 
+		http://schema.qcadoo.org/modules/view.xsd 
+		http://schema.qcadoo.org/modules/localization 
+		http://schema.qcadoo.org/modules/localization.xsd 
+		http://schema.qcadoo.org/modules/menu 
+		http://schema.qcadoo.org/modules/menu.xsd">
 
 	<information>
 		<name>Qcadoo Framework Localization</name>
@@ -47,20 +48,19 @@
 			<url>http://www.qcadoo.com/</url>
 		</vendor>
 	</information>
-	
+
 	<dependencies>
-        <dependency>
-            <plugin>qcadooPlugin</plugin>
-            <version>[0.4.1</version>
-        </dependency>
-    </dependencies>
+		<dependency>
+			<plugin>qcadooPlugin</plugin>
+			<version>[0.4.1</version>
+		</dependency>
+	</dependencies>
 
 	<modules>
-	
-		<localization:translation-locale locale="en" label="English" />
-		<localization:translation-locale locale="pl" label="Polski" />
-
+		<localization:translation-locale
+			locale="en" label="English" />
+		<localization:translation-locale
+			locale="pl" label="Polski" />
 	</modules>
-
 
 </plugin>
