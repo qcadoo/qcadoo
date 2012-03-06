@@ -131,6 +131,33 @@ public final class DataAccessServiceCopyTest extends DataAccessTest {
     }
 
     @Test
+    public void shouldCopyEntityWithUniqueFieldWhenNull() throws Exception {
+        // given
+        FieldHookDefinition fieldHook = new UniqueValidator();
+        fieldHook.initialize(dataDefinition, fieldDefinitionName);
+
+        fieldDefinitionName.withValidator(fieldHook);
+
+        SampleSimpleDatabaseObject simpleDatabaseObject = new SampleSimpleDatabaseObject();
+        simpleDatabaseObject.setId(13L);
+        simpleDatabaseObject.setName(null);
+        simpleDatabaseObject.setAge(66);
+
+        given(hibernateService.getTotalNumberOfEntities(Mockito.any(Criteria.class))).willReturn(0);
+        given(session.get(any(Class.class), Matchers.anyInt())).willReturn(simpleDatabaseObject);
+
+        // when
+        List<Entity> entities = dataDefinition.copy(new Long[] { 13L });
+
+        // then
+        verify(session, times(1)).save(Mockito.any(SampleSimpleDatabaseObject.class));
+        assertEquals(1, entities.size());
+        assertTrue(entities.get(0).isValid());
+        Assert.assertEquals(66, entities.get(0).getField("age"));
+        Assert.assertEquals(null, entities.get(0).getField("name"));
+    }
+
+    @Test
     public void shouldCopyEntityWithoutHasManyField() throws Exception {
         // given
         SampleSimpleDatabaseObject simpleDatabaseObject = new SampleSimpleDatabaseObject();
@@ -199,19 +226,19 @@ public final class DataAccessServiceCopyTest extends DataAccessTest {
         simpleDatabaseObject.setId(12L);
         simpleDatabaseObject.setName("Mr T");
         simpleDatabaseObject.setAge(30);
-        
+
         SampleParentDatabaseObject parentDatabaseObject = new SampleParentDatabaseObject();
         parentDatabaseObject.setId(13L);
         parentDatabaseObject.setName("Mr T");
-        
+
         given(hibernateService.getTotalNumberOfEntities(Mockito.any(Criteria.class))).willReturn(1, 0);
         given(session.get(Mockito.eq(SampleSimpleDatabaseObject.class), Mockito.eq(12L))).willReturn(simpleDatabaseObject);
         given(session.get(Mockito.eq(SampleParentDatabaseObject.class), Mockito.eq(13L))).willReturn(parentDatabaseObject);
         given(hibernateService.list(Mockito.any(Criteria.class))).willReturn((List) Lists.newArrayList(simpleDatabaseObject));
-        
+
         // when
         List<Entity> entities = parentDataDefinition.copy(new Long[] { 13L });
-        
+
         // then
         assertEquals(1, entities.size());
         assertTrue(entities.get(0).isValid());
@@ -219,7 +246,7 @@ public final class DataAccessServiceCopyTest extends DataAccessTest {
         verify(session).save(Mockito.any());
         verify(session, never()).get(Mockito.eq(SampleSimpleDatabaseObject.class), anyInt());
     }
-    
+
     @Test
     public void shouldCopyEntityWithoutTreeField() throws Exception {
         // given

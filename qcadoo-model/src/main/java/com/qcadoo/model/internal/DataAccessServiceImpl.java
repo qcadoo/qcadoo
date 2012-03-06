@@ -476,24 +476,28 @@ public class DataAccessServiceImpl implements DataAccessService {
 
     private String getCopyValueOfUniqueField(final DataDefinition dataDefinition, final FieldDefinition fieldDefinition,
             final String value) {
-        Matcher matcher = Pattern.compile("(.+)\\((\\d+)\\)").matcher(value);
+        if (value == null) {
+            return value;
+        } else {
+            Matcher matcher = Pattern.compile("(.+)\\((\\d+)\\)").matcher(value);
 
-        String oldValue = value;
-        int index = 1;
+            String oldValue = value;
+            int index = 1;
 
-        if (matcher.matches()) {
-            oldValue = matcher.group(1);
-            index = Integer.valueOf(matcher.group(2)) + 1;
-        }
+            if (matcher.matches()) {
+                oldValue = matcher.group(1);
+                index = Integer.valueOf(matcher.group(2)) + 1;
+            }
 
-        while (true) {
-            String newValue = oldValue + "(" + (index++) + ")";
+            while (true) {
+                String newValue = oldValue + "(" + (index++) + ")";
 
-            int matches = dataDefinition.find().setMaxResults(1).add(SearchRestrictions.eq(fieldDefinition.getName(), newValue))
-                    .list().getTotalNumberOfEntities();
+                int matches = dataDefinition.find().setMaxResults(1)
+                        .add(SearchRestrictions.eq(fieldDefinition.getName(), newValue)).list().getTotalNumberOfEntities();
 
-            if (matches == 0) {
-                return newValue;
+                if (matches == 0) {
+                    return newValue;
+                }
             }
         }
     }
