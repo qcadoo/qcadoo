@@ -80,7 +80,7 @@ public class FileServiceImpl implements FileService {
         if (!StringUtils.hasText(path)) {
             return null;
         }
-        return path.substring(path.lastIndexOf(File.separatorChar) + 15);
+        return path.substring(path.lastIndexOf(File.separatorChar) + 1);
     }
 
     @Override
@@ -189,7 +189,18 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public Entity updateReportFileName(final Entity entity, final String dateFieldName, final String name) {
-        entity.setField("fileName", getReportFullPath(name, (Date) entity.getField(dateFieldName)));
+        String filename = getNormalizedFileName(name);
+        String currentFiles = entity.getStringField("fileName");
+        if (currentFiles == null) {
+            currentFiles = "";
+        }
+
+        if (!currentFiles.isEmpty()) {
+            currentFiles += ",";
+        }
+
+        entity.setField("fileName", currentFiles + getReportFullPath(filename, (Date) entity.getField(dateFieldName)));
+
         return entity.getDataDefinition().save(entity);
     }
 

@@ -200,6 +200,9 @@ public class ReportServiceImpl implements ReportService {
                 urlBuilder.append("/generateSavedReport/").append(args[1]);
                 urlBuilder.append("/").append(args[2]).append(".");
                 urlBuilder.append(args[0]).append("?id=").append(state.getFieldValue());
+                if (args.length >= 4) {
+                    urlBuilder.append("&reportNo=").append(args[3]);
+                }
                 viewDefinitionState.redirectTo(urlBuilder.toString(), true, false);
             } else {
                 state.addMessage("qcadooReport.errorMessage.documentsWasNotGenerated", MessageType.FAILURE);
