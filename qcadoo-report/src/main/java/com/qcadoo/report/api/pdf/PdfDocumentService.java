@@ -67,10 +67,36 @@ public abstract class PdfDocumentService implements ReportDocumentService {
     @Override
     public void generateDocument(final Entity entity, final Entity company, final Locale locale) throws IOException,
             DocumentException {
+        String path = entity.getStringField("fileName").split(",")[0];
+
+        generate(entity, company, locale, path);
+    }
+
+    public void generateDocument(final Entity entity, final Entity company, final Locale locale, final String localePrefixToMatch)
+            throws IOException, DocumentException {
+
+        String prefix = translationService.translate(localePrefixToMatch, locale);
+
+        String path = null;
+        for (String pt : entity.getStringField("fileName").split(",")) {
+            if (fileService.getName(pt).startsWith(prefix)) {
+                path = pt;
+            }
+        }
+
+        if (path == null) {
+            throw new IllegalStateException("filename pattern not found");
+        }
+
+        generate(entity, company, locale, path);
+    }
+
+    private void generate(final Entity entity, final Entity company, final Locale locale, final String filename)
+            throws IOException, DocumentException {
         Document document = new Document(PageSize.A4);
         try {
-            FileOutputStream fileOutputStream = new FileOutputStream(fileService.createReportFile((String) entity
-                    .getField("fileName") + "." + ReportService.ReportType.PDF.getExtension()));
+            FileOutputStream fileOutputStream = new FileOutputStream(fileService.createReportFile(filename + "."
+                    + ReportService.ReportType.PDF.getExtension()));
             PdfWriter writer = PdfWriter.getInstance(document, fileOutputStream);
             writer.setPageEvent(new PdfPageNumbering(translationService.translate("qcadooReport.commons.page.label", locale),
                     translationService.translate("qcadooReport.commons.of.label", locale), translationService.translate(
