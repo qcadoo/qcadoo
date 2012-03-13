@@ -39,16 +39,16 @@ import com.qcadoo.model.api.Entity;
 @Service
 public class TranslationUtilsService {
 
-    private static final String MENU = ".menu.";
+    private static final String L_MENU = ".menu.";
 
     @Autowired
     private TranslationService translationService;
 
-    private static final String CATEGORY = "category";
+    private static final String L_CATEGORY = "category";
 
-    private static final String NAME = "name";
+    private static final String L_NAME = "name";
 
-    private static final String PLUGIN_IDENTIFIER = "pluginIdentifier";
+    private static final String L_PLUGIN_IDENTIFIER = "pluginIdentifier";
 
     /**
      * Returns menu category translation
@@ -61,8 +61,8 @@ public class TranslationUtilsService {
      */
     public String getCategoryTranslation(final Entity category, final Locale locale) {
         return translationService.translate(
-                category.getStringField(PLUGIN_IDENTIFIER) + MENU + category.getStringField(NAME), "qcadooView.menu."
-                        + category.getStringField(NAME), locale);
+                category.getStringField(L_PLUGIN_IDENTIFIER) + L_MENU + category.getStringField(L_NAME), "qcadooView.menu."
+                        + category.getStringField(L_NAME), locale);
     }
 
     /**
@@ -77,7 +77,7 @@ public class TranslationUtilsService {
      * @since 1.1.3
      */
     public String getCategoryDescriptionTranslation(final Entity category, final Locale locale) {
-        String translationKey = category.getStringField(PLUGIN_IDENTIFIER) + MENU + category.getStringField(NAME)
+        String translationKey = category.getStringField(L_PLUGIN_IDENTIFIER) + L_MENU + category.getStringField(L_NAME)
                 + ".description";
         return translateAndIgnoreMissingMessages(translationKey, locale);
     }
@@ -92,11 +92,11 @@ public class TranslationUtilsService {
      * @return item translation
      */
     public String getItemTranslation(final Entity item, final Locale locale) {
-        Entity categoryEntity = item.getBelongsToField(CATEGORY);
+        Entity categoryEntity = item.getBelongsToField(L_CATEGORY);
         return translationService.translate(
-                item.getStringField(PLUGIN_IDENTIFIER) + MENU + categoryEntity.getStringField(NAME) + '.'
-                        + item.getStringField(NAME),
-                "qcadooView.menu." + categoryEntity.getStringField(NAME) + '.' + item.getStringField(NAME), locale);
+                item.getStringField(L_PLUGIN_IDENTIFIER) + L_MENU + categoryEntity.getStringField(L_NAME) + '.'
+                        + item.getStringField(L_NAME),
+                "qcadooView.menu." + categoryEntity.getStringField(L_NAME) + '.' + item.getStringField(L_NAME), locale);
     }
 
     /**
@@ -111,9 +111,9 @@ public class TranslationUtilsService {
      * @since 1.1.3
      */
     public String getItemDescriptionTranslation(final Entity item, final Locale locale) {
-        Entity category = item.getBelongsToField(CATEGORY);
-        String translationKey = item.getStringField(PLUGIN_IDENTIFIER) + MENU + category.getStringField(NAME) + '.'
-                + item.getStringField(NAME) + ".description";
+        Entity category = item.getBelongsToField(L_CATEGORY);
+        String translationKey = item.getStringField(L_PLUGIN_IDENTIFIER) + L_MENU + category.getStringField(L_NAME) + '.'
+                + item.getStringField(L_NAME) + ".description";
         return translateAndIgnoreMissingMessages(translationKey, locale);
     }
 

@@ -79,9 +79,9 @@ import com.qcadoo.tenant.api.Standalone;
 @Standalone
 public class DataAccessServiceImpl implements DataAccessService {
 
-    private static final String DATA_DEFINITION_BELONGS_TO_DISABLED_PLUGIN = "DataDefinition belongs to disabled plugin";
+    private static final String L_DATA_DEFINITION_BELONGS_TO_DISABLED_PLUGIN = "DataDefinition belongs to disabled plugin";
 
-    private static final String DATA_DEFINITION_MUST_BE_GIVEN = "DataDefinition must be given";
+    private static final String L_DATA_DEFINITION_MUST_BE_GIVEN = "DataDefinition must be given";
 
     @Autowired
     private DataDefinitionService dataDefinitionService;
@@ -128,8 +128,8 @@ public class DataAccessServiceImpl implements DataAccessService {
     private Entity performSave(final InternalDataDefinition dataDefinition, final Entity genericEntity,
             final Set<Entity> alreadySavedEntities, final Set<Entity> newlySavedEntities) {
 
-        checkNotNull(dataDefinition, DATA_DEFINITION_MUST_BE_GIVEN);
-        checkState(dataDefinition.isEnabled(), DATA_DEFINITION_BELONGS_TO_DISABLED_PLUGIN);
+        checkNotNull(dataDefinition, L_DATA_DEFINITION_MUST_BE_GIVEN);
+        checkState(dataDefinition.isEnabled(), L_DATA_DEFINITION_BELONGS_TO_DISABLED_PLUGIN);
         checkNotNull(genericEntity, "Entity must be given");
 
         if (alreadySavedEntities.contains(genericEntity)) {
@@ -510,8 +510,8 @@ public class DataAccessServiceImpl implements DataAccessService {
     @Transactional(readOnly = true)
     @Monitorable
     public Entity get(final InternalDataDefinition dataDefinition, final Long entityId) {
-        checkNotNull(dataDefinition, DATA_DEFINITION_MUST_BE_GIVEN);
-        checkState(dataDefinition.isEnabled(), DATA_DEFINITION_BELONGS_TO_DISABLED_PLUGIN);
+        checkNotNull(dataDefinition, L_DATA_DEFINITION_MUST_BE_GIVEN);
+        checkState(dataDefinition.isEnabled(), L_DATA_DEFINITION_BELONGS_TO_DISABLED_PLUGIN);
         checkNotNull(entityId, "EntityId must be given");
 
         Object databaseEntity = getDatabaseEntity(dataDefinition, entityId);
@@ -533,9 +533,9 @@ public class DataAccessServiceImpl implements DataAccessService {
     @Transactional
     @Monitorable
     public void delete(final InternalDataDefinition dataDefinition, final Long... entityIds) {
-        checkNotNull(dataDefinition, DATA_DEFINITION_MUST_BE_GIVEN);
+        checkNotNull(dataDefinition, L_DATA_DEFINITION_MUST_BE_GIVEN);
         checkState(dataDefinition.isDeletable(), "Entity must be deletable");
-        checkState(dataDefinition.isEnabled(), DATA_DEFINITION_BELONGS_TO_DISABLED_PLUGIN);
+        checkState(dataDefinition.isEnabled(), L_DATA_DEFINITION_BELONGS_TO_DISABLED_PLUGIN);
         checkState(entityIds.length > 0, "EntityIds must be given");
 
         for (Long entityId : entityIds) {
@@ -634,9 +634,9 @@ public class DataAccessServiceImpl implements DataAccessService {
     @Transactional
     @Monitorable
     public void moveTo(final InternalDataDefinition dataDefinition, final Long entityId, final int position) {
-        checkNotNull(dataDefinition, DATA_DEFINITION_MUST_BE_GIVEN);
+        checkNotNull(dataDefinition, L_DATA_DEFINITION_MUST_BE_GIVEN);
         checkState(dataDefinition.isPrioritizable(), "Entity must be prioritizable");
-        checkState(dataDefinition.isEnabled(), DATA_DEFINITION_BELONGS_TO_DISABLED_PLUGIN);
+        checkState(dataDefinition.isEnabled(), L_DATA_DEFINITION_BELONGS_TO_DISABLED_PLUGIN);
         checkNotNull(entityId, "EntityId must be given");
         checkState(position > 0, "Position must be greaten than 0");
 
@@ -658,9 +658,9 @@ public class DataAccessServiceImpl implements DataAccessService {
     @Transactional
     @Monitorable
     public void move(final InternalDataDefinition dataDefinition, final Long entityId, final int offset) {
-        checkNotNull(dataDefinition, DATA_DEFINITION_MUST_BE_GIVEN);
+        checkNotNull(dataDefinition, L_DATA_DEFINITION_MUST_BE_GIVEN);
         checkState(dataDefinition.isPrioritizable(), "Entity must be prioritizable");
-        checkState(dataDefinition.isEnabled(), DATA_DEFINITION_BELONGS_TO_DISABLED_PLUGIN);
+        checkState(dataDefinition.isEnabled(), L_DATA_DEFINITION_BELONGS_TO_DISABLED_PLUGIN);
         checkNotNull(entityId, "EntityId must be given");
         checkState(offset != 0, "Offset must be different than 0");
 

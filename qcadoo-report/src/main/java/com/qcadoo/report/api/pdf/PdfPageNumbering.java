@@ -92,7 +92,7 @@ public final class PdfPageNumbering extends PdfPageEventHelper {
         footerData = footerData.append(username);
         this.generatedBy = footerData.toString();
 
-        this.generationDate = new SimpleDateFormat(DateUtils.DATE_TIME_FORMAT, getLocale()).format(new Date());
+        this.generationDate = new SimpleDateFormat(DateUtils.L_DATE_TIME_FORMAT, getLocale()).format(new Date());
 
         if (company == null) {
             this.companyName = "";

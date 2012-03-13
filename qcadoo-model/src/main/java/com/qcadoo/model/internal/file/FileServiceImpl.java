@@ -90,7 +90,7 @@ public class FileServiceImpl implements FileService {
         }
         Date date = new Date(Long.valueOf(path.substring(path.lastIndexOf(File.separatorChar) + 1,
                 path.lastIndexOf(File.separatorChar) + 14)));
-        return new SimpleDateFormat(DateUtils.DATE_FORMAT).format(date);
+        return new SimpleDateFormat(DateUtils.L_DATE_FORMAT).format(date);
     }
 
     @Override

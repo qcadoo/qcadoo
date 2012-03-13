@@ -45,7 +45,7 @@ import com.qcadoo.view.constants.QcadooViewConstants;
 @Service
 public class MenuAdministrationService {
 
-    private static final String PLUGIN_IDENTIFIER = "pluginIdentifier";
+    private static final String L_PLUGIN_IDENTIFIER = "pluginIdentifier";
 
     @Autowired
     private DataDefinitionService dataDefinitionService;
@@ -70,7 +70,7 @@ public class MenuAdministrationService {
                 SearchDisjunction disjunction = SearchRestrictions.disjunction();
 
                 for (String[] category : HIDDEN_CATEGORIES) {
-                    disjunction.add(SearchRestrictions.and(SearchRestrictions.eq(PLUGIN_IDENTIFIER, category[0]),
+                    disjunction.add(SearchRestrictions.and(SearchRestrictions.eq(L_PLUGIN_IDENTIFIER, category[0]),
                             SearchRestrictions.eq("name", category[1])));
                 }
 
@@ -83,7 +83,7 @@ public class MenuAdministrationService {
     public void translateCategoriesGrid(final ViewDefinitionState viewDefinitionState) {
         GridComponent categoriesGrid = (GridComponent) viewDefinitionState.getComponentByReference("grid");
         for (Entity categoryEntity : categoriesGrid.getEntities()) {
-            if (categoryEntity.getStringField(PLUGIN_IDENTIFIER) != null) {
+            if (categoryEntity.getStringField(L_PLUGIN_IDENTIFIER) != null) {
                 categoryEntity.setField("name",
                         translationUtilsService.getCategoryTranslation(categoryEntity, viewDefinitionState.getLocale()));
             }
@@ -98,7 +98,7 @@ public class MenuAdministrationService {
                     .get(categoryForm.getEntity().getId());
         }
 
-        if (categoryEntity != null && categoryEntity.getStringField(PLUGIN_IDENTIFIER) != null) {
+        if (categoryEntity != null && categoryEntity.getStringField(L_PLUGIN_IDENTIFIER) != null) {
             ComponentState categoryNameField = viewDefinitionState.getComponentByReference("categoryName");
             categoryNameField.setEnabled(false);
             categoryNameField.setFieldValue(translationUtilsService.getCategoryTranslation(categoryEntity,
@@ -107,7 +107,7 @@ public class MenuAdministrationService {
 
         GridComponent categoryItemsGrid = (GridComponent) viewDefinitionState.getComponentByReference("itemsGrid");
         for (Entity itemEntity : categoryItemsGrid.getEntities()) {
-            if (itemEntity.getStringField(PLUGIN_IDENTIFIER) != null) {
+            if (itemEntity.getStringField(L_PLUGIN_IDENTIFIER) != null) {
                 itemEntity.setField("name",
                         translationUtilsService.getItemTranslation(itemEntity, viewDefinitionState.getLocale()));
             }
@@ -121,7 +121,7 @@ public class MenuAdministrationService {
             itemEntity = dataDefinitionService.get(QcadooViewConstants.PLUGIN_IDENTIFIER, QcadooViewConstants.MODEL_ITEM).get(
                     itemForm.getEntity().getId());
         }
-        if (itemEntity != null && itemEntity.getStringField(PLUGIN_IDENTIFIER) != null) {
+        if (itemEntity != null && itemEntity.getStringField(L_PLUGIN_IDENTIFIER) != null) {
             ComponentState itemNameField = viewDefinitionState.getComponentByReference("itemName");
             itemNameField.setEnabled(false);
             itemNameField.setFieldValue(translationUtilsService.getItemTranslation(itemEntity, viewDefinitionState.getLocale()));

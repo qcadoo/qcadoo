@@ -105,7 +105,7 @@ public class PredefinedFilter {
         } else {
             throw new IllegalStateException("unsupported predefined filter expression: '" + expression + "'");
         }
-        return new SimpleDateFormat(DateUtils.DATE_FORMAT).format(date.toDate());
+        return new SimpleDateFormat(DateUtils.L_DATE_FORMAT).format(date.toDate());
     }
 
     public String getOrderColumn() {
