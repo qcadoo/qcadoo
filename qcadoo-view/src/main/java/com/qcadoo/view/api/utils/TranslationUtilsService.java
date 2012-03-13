@@ -39,6 +39,8 @@ import com.qcadoo.model.api.Entity;
 @Service
 public class TranslationUtilsService {
 
+    private static final String MENU = ".menu.";
+
     @Autowired
     private TranslationService translationService;
 
@@ -59,7 +61,7 @@ public class TranslationUtilsService {
      */
     public String getCategoryTranslation(final Entity category, final Locale locale) {
         return translationService.translate(
-                category.getStringField(PLUGIN_IDENTIFIER) + ".menu." + category.getStringField(NAME), "qcadooView.menu."
+                category.getStringField(PLUGIN_IDENTIFIER) + MENU + category.getStringField(NAME), "qcadooView.menu."
                         + category.getStringField(NAME), locale);
     }
 
@@ -75,7 +77,7 @@ public class TranslationUtilsService {
      * @since 1.1.3
      */
     public String getCategoryDescriptionTranslation(final Entity category, final Locale locale) {
-        String translationKey = category.getStringField(PLUGIN_IDENTIFIER) + ".menu." + category.getStringField(NAME)
+        String translationKey = category.getStringField(PLUGIN_IDENTIFIER) + MENU + category.getStringField(NAME)
                 + ".description";
         return translateAndIgnoreMissingMessages(translationKey, locale);
     }
@@ -92,7 +94,7 @@ public class TranslationUtilsService {
     public String getItemTranslation(final Entity item, final Locale locale) {
         Entity categoryEntity = item.getBelongsToField(CATEGORY);
         return translationService.translate(
-                item.getStringField(PLUGIN_IDENTIFIER) + ".menu." + categoryEntity.getStringField(NAME) + '.'
+                item.getStringField(PLUGIN_IDENTIFIER) + MENU + categoryEntity.getStringField(NAME) + '.'
                         + item.getStringField(NAME),
                 "qcadooView.menu." + categoryEntity.getStringField(NAME) + '.' + item.getStringField(NAME), locale);
     }
@@ -110,7 +112,7 @@ public class TranslationUtilsService {
      */
     public String getItemDescriptionTranslation(final Entity item, final Locale locale) {
         Entity category = item.getBelongsToField(CATEGORY);
-        String translationKey = item.getStringField(PLUGIN_IDENTIFIER) + ".menu." + category.getStringField(NAME) + '.'
+        String translationKey = item.getStringField(PLUGIN_IDENTIFIER) + MENU + category.getStringField(NAME) + '.'
                 + item.getStringField(NAME) + ".description";
         return translateAndIgnoreMissingMessages(translationKey, locale);
     }

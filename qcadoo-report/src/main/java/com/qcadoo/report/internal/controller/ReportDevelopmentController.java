@@ -69,6 +69,18 @@ import com.qcadoo.report.api.ReportService.ReportType;
 @Controller
 public class ReportDevelopmentController {
 
+    private static final String PARAMS = "params";
+
+    private static final String LOCALE = "locale";
+
+    private static final String TEMPLATE = "template";
+
+    private static final String QCADOO_REPORT_REPORT = "qcadooReport/report";
+
+    private static final String HQL = "hql";
+
+    private static final String QCADOO_REPORT_HQL = "qcadooReport/hql";
+
     private static final Logger LOG = LoggerFactory.getLogger(ReportDevelopmentController.class);
 
     @Autowired
@@ -86,11 +98,11 @@ public class ReportDevelopmentController {
             return new ModelAndView(new RedirectView("/"));
         }
 
-        return new ModelAndView("qcadooReport/hql");
+        return new ModelAndView(QCADOO_REPORT_HQL);
     }
 
     @RequestMapping(value = "developReport/hql", method = RequestMethod.POST)
-    public ModelAndView executeHql(@RequestParam("hql") final String hql) {
+    public ModelAndView executeHql(@RequestParam(HQL) final String hql) {
         if (!showReportDevelopment) {
             return new ModelAndView(new RedirectView("/"));
         }
@@ -131,13 +143,13 @@ public class ReportDevelopmentController {
                     rows.add(row);
                 }
 
-                return new ModelAndView("qcadooReport/hql").addObject("hql", hql).addObject("headers", headers)
+                return new ModelAndView(QCADOO_REPORT_HQL).addObject(HQL, hql).addObject("headers", headers)
                         .addObject("rows", rows).addObject("isOk", true);
             } else {
-                return new ModelAndView("qcadooReport/hql").addObject("hql", hql).addObject("isEmpty", true);
+                return new ModelAndView(QCADOO_REPORT_HQL).addObject(HQL, hql).addObject("isEmpty", true);
             }
         } catch (Exception e) {
-            return showException("qcadooReport/hql", e).addObject("hql", hql);
+            return showException(QCADOO_REPORT_HQL, e).addObject(HQL, hql);
         }
     }
 
@@ -158,7 +170,7 @@ public class ReportDevelopmentController {
             return new ModelAndView(new RedirectView("/"));
         }
 
-        return new ModelAndView("qcadooReport/report");
+        return new ModelAndView(QCADOO_REPORT_REPORT);
     }
 
     @RequestMapping(value = "developReport/report", method = RequestMethod.POST)
@@ -168,7 +180,7 @@ public class ReportDevelopmentController {
         }
 
         if (file.isEmpty()) {
-            return new ModelAndView("qcadooReport/report").addObject("isFileInvalid", true);
+            return new ModelAndView(QCADOO_REPORT_REPORT).addObject("isFileInvalid", true);
         }
 
         try {
@@ -176,10 +188,10 @@ public class ReportDevelopmentController {
 
             List<ReportParameter> params = getReportParameters(template);
 
-            return new ModelAndView("qcadooReport/report").addObject("template", template).addObject("isParameter", true)
-                    .addObject("params", params).addObject("locale", "en");
+            return new ModelAndView(QCADOO_REPORT_REPORT).addObject(TEMPLATE, template).addObject("isParameter", true)
+                    .addObject(PARAMS, params).addObject(LOCALE, "en");
         } catch (Exception e) {
-            return showException("qcadooReport/report", e);
+            return showException(QCADOO_REPORT_REPORT, e);
         }
     }
 
@@ -213,8 +225,8 @@ public class ReportDevelopmentController {
     }
 
     @RequestMapping(value = "developReport/generate", method = RequestMethod.POST)
-    public ModelAndView generateReport(@RequestParam(value = "template") final String template,
-            @RequestParam(value = "type") final String type, @RequestParam(value = "locale") final String locale,
+    public ModelAndView generateReport(@RequestParam(value = TEMPLATE) final String template,
+            @RequestParam(value = "type") final String type, @RequestParam(value = LOCALE) final String locale,
             final HttpServletRequest request, final HttpServletResponse response) {
         if (!showReportDevelopment) {
             return new ModelAndView(new RedirectView("/"));
@@ -226,8 +238,8 @@ public class ReportDevelopmentController {
             params = getReportParameters(template);
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
-            return showException("qcadooReport/report", e).addObject("template", template).addObject("isParameter", true)
-                    .addObject("locale", locale);
+            return showException(QCADOO_REPORT_REPORT, e).addObject(TEMPLATE, template).addObject("isParameter", true)
+                    .addObject(LOCALE, locale);
         }
 
         try {
@@ -265,13 +277,15 @@ public class ReportDevelopmentController {
             return null;
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
-            return showException("qcadooReport/report", e).addObject("template", template).addObject("isParameter", true)
-                    .addObject("params", params).addObject("locale", locale);
+            return showException(QCADOO_REPORT_REPORT, e).addObject(TEMPLATE, template).addObject("isParameter", true)
+                    .addObject(PARAMS, params).addObject(LOCALE, locale);
         }
 
     }
 
     public static class ReportParameter {
+
+        private static final String JAVA_UTIL_LIST = "java.util.List";
 
         private final String name;
 
@@ -309,7 +323,7 @@ public class ReportDevelopmentController {
         private String convertValueToString(final Object value) {
             if (value == null) {
                 return "";
-            } else if ("java.util.List".equals(clazz)) {
+            } else if (JAVA_UTIL_LIST.equals(clazz)) {
                 return StringUtils.join((List) value, ",");
             } else {
                 return String.valueOf(value);
@@ -317,9 +331,9 @@ public class ReportDevelopmentController {
         }
 
         private Object convertValueToObject(final String value) {
-            if ("java.util.List".equals(clazz) && !org.springframework.util.StringUtils.hasText(value)) {
+            if (JAVA_UTIL_LIST.equals(clazz) && !org.springframework.util.StringUtils.hasText(value)) {
                 return Collections.emptyList();
-            } else if ("java.util.List".equals(clazz) && "EntityIds".equals(name)) {
+            } else if (JAVA_UTIL_LIST.equals(clazz) && "EntityIds".equals(name)) {
                 String[] strings = value.trim().split("\\s*,\\s*");
                 List<Long> values = new ArrayList<Long>();
 
@@ -328,7 +342,7 @@ public class ReportDevelopmentController {
                 }
 
                 return values;
-            } else if ("java.util.List".equals(clazz)) {
+            } else if (JAVA_UTIL_LIST.equals(clazz)) {
                 String[] values = value.trim().split("\\s*,\\s*");
                 return Arrays.asList(values);
             } else {

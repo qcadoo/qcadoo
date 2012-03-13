@@ -50,6 +50,8 @@ import com.qcadoo.model.internal.api.InternalDataDefinition;
 
 public final class SearchCriteriaImpl implements SearchCriteriaBuilder, SearchCriteria {
 
+    private static final String PLEASE_USE_NEW_CRITERIA_API = "Please use new criteria API";
+
     private static final int DEFAULT_MAX_RESULTS = Integer.MAX_VALUE;
 
     private final DataDefinition sourceDataDefinition;
@@ -261,32 +263,32 @@ public final class SearchCriteriaImpl implements SearchCriteriaBuilder, SearchCr
 
     @Override
     public SearchCriteriaBuilder openNot() {
-        throw new UnsupportedOperationException("Please use new criteria API");
+        throw new UnsupportedOperationException(PLEASE_USE_NEW_CRITERIA_API);
     }
 
     @Override
     public SearchCriteriaBuilder closeNot() {
-        throw new UnsupportedOperationException("Please use new criteria API");
+        throw new UnsupportedOperationException(PLEASE_USE_NEW_CRITERIA_API);
     }
 
     @Override
     public SearchCriteriaBuilder openOr() {
-        throw new UnsupportedOperationException("Please use new criteria API");
+        throw new UnsupportedOperationException(PLEASE_USE_NEW_CRITERIA_API);
     }
 
     @Override
     public SearchCriteriaBuilder closeOr() {
-        throw new UnsupportedOperationException("Please use new criteria API");
+        throw new UnsupportedOperationException(PLEASE_USE_NEW_CRITERIA_API);
     }
 
     @Override
     public SearchCriteriaBuilder openAnd() {
-        throw new UnsupportedOperationException("Please use new criteria API");
+        throw new UnsupportedOperationException(PLEASE_USE_NEW_CRITERIA_API);
     }
 
     @Override
     public SearchCriteriaBuilder closeAnd() {
-        throw new UnsupportedOperationException("Please use new criteria API");
+        throw new UnsupportedOperationException(PLEASE_USE_NEW_CRITERIA_API);
     }
 
     @Override
