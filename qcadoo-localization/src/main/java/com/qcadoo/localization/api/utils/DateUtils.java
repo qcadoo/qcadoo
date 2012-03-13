@@ -37,6 +37,8 @@ import java.util.Date;
  */
 public final class DateUtils {
 
+    private static final String WRONG_DATE = "wrong date";
+
     private DateUtils() {
     }
 
@@ -97,17 +99,17 @@ public final class DateUtils {
         try {
             int year = Integer.parseInt(dateExpressionParts[0]);
             if (year > 2500) {
-                throw new ParseException("wrong date", 1);
+                throw new ParseException(WRONG_DATE, 1);
             }
             if (year < 1500) {
-                throw new ParseException("wrong date", 1);
+                throw new ParseException(WRONG_DATE, 1);
             }
             cal.set(Calendar.YEAR, year);
 
             if (dateExpressionParts.length > 1) {
                 int month = Integer.parseInt(dateExpressionParts[1]);
                 if (month > 12 || month < 1) {
-                    throw new ParseException("wrong date", 1);
+                    throw new ParseException(WRONG_DATE, 1);
                 }
                 cal.set(Calendar.MONTH, month - 1);
             } else {
@@ -134,7 +136,7 @@ public final class DateUtils {
             }
             return cal.getTime();
         } catch (NumberFormatException e) {
-            throw (ParseException) new ParseException("wrong date", 1).initCause(e);
+            throw (ParseException) new ParseException(WRONG_DATE, 1).initCause(e);
         }
     }
 

@@ -52,6 +52,8 @@ import com.qcadoo.view.internal.xml.ViewDefinitionParserNodeException;
 
 public final class GridComponentPattern extends AbstractComponentPattern {
 
+    private static final String WIDTH2 = "width";
+
     private static final String JSP_PATH = "elements/grid.jsp";
 
     private static final String JS_OBJECT = "QCD.components.elements.Grid";
@@ -183,7 +185,7 @@ public final class GridComponentPattern extends AbstractComponentPattern {
         json.put("predefinedFilters", predefinedFiltersArray);
 
         json.put("height", height);
-        json.put("width", width);
+        json.put(WIDTH2, width);
         json.put("fullscreen", width == 0 || height == 0);
         json.put("lookup", lookup);
         json.put("correspondingView", correspondingView);
@@ -284,7 +286,7 @@ public final class GridComponentPattern extends AbstractComponentPattern {
             jsonColumn.put("label", nameTranslation);
             jsonColumn.put("link", column.isLink());
             jsonColumn.put("hidden", column.isHidden());
-            jsonColumn.put("width", column.getWidth());
+            jsonColumn.put(WIDTH2, column.getWidth());
             jsonColumn.put("align", column.getAlign());
             jsonColumn.put("filterValues", getFilterValuesForColumn(column, locale));
             jsonColumns.put(jsonColumn);
@@ -410,7 +412,7 @@ public final class GridComponentPattern extends AbstractComponentPattern {
                 deletable = Boolean.parseBoolean(option.getValue());
             } else if ("height".equals(option.getType())) {
                 height = Integer.parseInt(option.getValue());
-            } else if ("width".equals(option.getType())) {
+            } else if (WIDTH2.equals(option.getType())) {
                 width = Integer.parseInt(option.getValue());
             } else if ("fullscreen".equals(option.getType())) {
                 width = 0;
@@ -452,7 +454,7 @@ public final class GridComponentPattern extends AbstractComponentPattern {
             }
         }
         column.setExpression(option.getAtrributeValue("expression"));
-        String columnWidth = option.getAtrributeValue("width");
+        String columnWidth = option.getAtrributeValue(WIDTH2);
         if (columnWidth != null) {
             column.setWidth(Integer.valueOf(columnWidth));
         }

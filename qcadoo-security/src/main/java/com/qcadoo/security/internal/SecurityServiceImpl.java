@@ -25,6 +25,9 @@ package com.qcadoo.security.internal;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
+import static com.qcadoo.security.constants.QcadooSecurityConstants.MODEL_PERSISTENT_TOKEN;
+import static com.qcadoo.security.constants.QcadooSecurityConstants.MODEL_USER;
+import static com.qcadoo.security.constants.QcadooSecurityConstants.PLUGIN_IDENTIFIER;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -59,6 +62,8 @@ import com.qcadoo.security.internal.api.QcadooUser;
 public class SecurityServiceImpl implements InternalSecurityService, UserDetailsService, PersistentTokenRepository,
         ApplicationListener<AuthorizedEvent> {
 
+    private static final String USER_NAME = "userName";
+
     @Autowired
     private DataDefinitionService dataDefinitionService;
 
@@ -68,10 +73,10 @@ public class SecurityServiceImpl implements InternalSecurityService, UserDetails
     @Override
     public void onApplicationEvent(final AuthorizedEvent event) {
         UserDetails userDetails = (UserDetails) event.getAuthentication().getPrincipal();
-        Entity entity = dataDefinitionService.get("qcadooSecurity", "user").find()
-                .add(SearchRestrictions.eq("userName", userDetails.getUsername())).uniqueResult();
+        Entity entity = dataDefinitionService.get(PLUGIN_IDENTIFIER, MODEL_USER).find()
+                .add(SearchRestrictions.eq(USER_NAME, userDetails.getUsername())).uniqueResult();
         entity.setField("lastActivity", new Date());
-        dataDefinitionService.get("qcadooSecurity", "user").save(entity);
+        dataDefinitionService.get(PLUGIN_IDENTIFIER, MODEL_USER).save(entity);
     }
 
     @Override
@@ -84,13 +89,13 @@ public class SecurityServiceImpl implements InternalSecurityService, UserDetails
         String login = SecurityContextHolder.getContext().getAuthentication().getName();
         Entity entity = getUserEntity(SecurityContextHolder.getContext().getAuthentication().getName());
         checkNotNull(entity, "Current user with login %s cannot be found", login);
-        return entity.getStringField("userName");
+        return entity.getStringField(USER_NAME);
     }
 
     @Override
     public List<QcadooUser> getUsers() {
-        List<Entity> userEntities = dataDefinitionService.get("qcadooSecurity", "user").find()
-                .addOrder(SearchOrders.asc("userName")).list().getEntities();
+        List<Entity> userEntities = dataDefinitionService.get(PLUGIN_IDENTIFIER, MODEL_USER).find()
+                .addOrder(SearchOrders.asc(USER_NAME)).list().getEntities();
         List<QcadooUser> users = new LinkedList<QcadooUser>();
         for (Entity userEntity : userEntities) {
             users.add(new QcadooUser(userEntity));
@@ -99,8 +104,8 @@ public class SecurityServiceImpl implements InternalSecurityService, UserDetails
     }
 
     protected Entity getUserEntity(final String login) {
-        List<Entity> users = dataDefinitionService.get("qcadooSecurity", "user").find()
-                .add(SearchRestrictions.eq("userName", login)).setMaxResults(1).list().getEntities();
+        List<Entity> users = dataDefinitionService.get(PLUGIN_IDENTIFIER, MODEL_USER).find()
+                .add(SearchRestrictions.eq(USER_NAME, login)).setMaxResults(1).list().getEntities();
         if (users.size() == 1) {
             return users.get(0);
         } else {
@@ -138,19 +143,19 @@ public class SecurityServiceImpl implements InternalSecurityService, UserDetails
 
         authorities.add(new GrantedAuthorityImpl(role.getRoleIdentifier()));
 
-        checkState(!authorities.isEmpty(), "Current user with login %s cannot be found", entity.getStringField("userName"));
+        checkState(!authorities.isEmpty(), "Current user with login %s cannot be found", entity.getStringField(USER_NAME));
 
-        return new User(entity.getStringField("userName"), entity.getStringField("password"), true, true, true, true, authorities);
+        return new User(entity.getStringField(USER_NAME), entity.getStringField("password"), true, true, true, true, authorities);
     }
 
     @Override
     public void createNewToken(final PersistentRememberMeToken token) {
-        Entity entity = dataDefinitionService.get("qcadooSecurity", "persistentToken").create();
-        entity.setField("userName", token.getUsername());
+        Entity entity = dataDefinitionService.get(PLUGIN_IDENTIFIER, MODEL_PERSISTENT_TOKEN).create();
+        entity.setField(USER_NAME, token.getUsername());
         entity.setField("series", token.getSeries());
         entity.setField("token", token.getTokenValue());
         entity.setField("lastUsed", token.getDate());
-        dataDefinitionService.get("qcadooSecurity", "persistentToken").save(entity);
+        dataDefinitionService.get(PLUGIN_IDENTIFIER, MODEL_PERSISTENT_TOKEN).save(entity);
     }
 
     @Override
@@ -159,7 +164,7 @@ public class SecurityServiceImpl implements InternalSecurityService, UserDetails
         if (entity != null) {
             entity.setField("token", tokenValue);
             entity.setField("lastUsed", lastUsed);
-            dataDefinitionService.get("qcadooSecurity", "persistentToken").save(entity);
+            dataDefinitionService.get(PLUGIN_IDENTIFIER, MODEL_PERSISTENT_TOKEN).save(entity);
         }
     }
 
@@ -167,26 +172,26 @@ public class SecurityServiceImpl implements InternalSecurityService, UserDetails
     public PersistentRememberMeToken getTokenForSeries(final String series) {
         Entity entity = getPersistentToken(series);
 
-        if (entity == null || getUserEntity(entity.getStringField("userName")) == null) {
+        if (entity == null || getUserEntity(entity.getStringField(USER_NAME)) == null) {
             return null;
         }
 
-        return new PersistentRememberMeToken(entity.getStringField("userName"), entity.getStringField("series"),
+        return new PersistentRememberMeToken(entity.getStringField(USER_NAME), entity.getStringField("series"),
                 entity.getStringField("token"), (Date) entity.getField("lastUsed"));
     }
 
     @Override
     public void removeUserTokens(final String username) {
-        List<Entity> entities = dataDefinitionService.get("qcadooSecurity", "persistentToken").find()
-                .add(SearchRestrictions.eq("userName", username)).list().getEntities();
+        List<Entity> entities = dataDefinitionService.get(PLUGIN_IDENTIFIER, MODEL_PERSISTENT_TOKEN).find()
+                .add(SearchRestrictions.eq(USER_NAME, username)).list().getEntities();
 
         for (Entity entity : entities) {
-            dataDefinitionService.get("qcadooSecurity", "persistentToken").delete(entity.getId());
+            dataDefinitionService.get(PLUGIN_IDENTIFIER, MODEL_PERSISTENT_TOKEN).delete(entity.getId());
         }
     }
 
     private Entity getPersistentToken(final String series) {
-        List<Entity> entities = dataDefinitionService.get("qcadooSecurity", "persistentToken").find()
+        List<Entity> entities = dataDefinitionService.get(PLUGIN_IDENTIFIER, MODEL_PERSISTENT_TOKEN).find()
                 .add(SearchRestrictions.eq("series", series)).list().getEntities();
 
         if (entities.size() == 1) {
