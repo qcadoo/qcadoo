@@ -99,17 +99,21 @@ public class ReportController {
 
     @RequestMapping(value = "generateSavedReport/{plugin}/{model}", method = RequestMethod.GET)
     public void generateSavedReport(@PathVariable("plugin") final String plugin, @PathVariable("model") final String model,
-            @RequestParam("id") final String id, final HttpServletRequest request, final HttpServletResponse response)
-            throws ReportException {
+            @RequestParam("id") final String id,
+            @RequestParam(value = "reportNo", required = false, defaultValue = "0") final String reportNo,
+            final HttpServletRequest request, final HttpServletResponse response) throws ReportException {
         ReportService.ReportType reportType = getReportType(request);
         Entity entity = dataDefinitionService.get(plugin, model).get(Long.parseLong(id));
-        String translatedFileName = entity.getStringField("fileName").substring(
-                entity.getStringField("fileName").lastIndexOf(File.separator) + 1)
-                + "." + reportType.getExtension();
+
+        String filename = entity.getStringField("fileName").split(",")[Integer.valueOf(reportNo)];
+
+        String translatedFileName = filename.substring(filename.lastIndexOf(File.separator) + 1) + "."
+                + reportType.getExtension();
+
         response.setHeader("Content-disposition", "inline; filename=" + translatedFileName);
         response.setContentType(reportType.getMimeType());
         try {
-            int bytes = copy(new FileInputStream(new File(entity.getStringField("fileName") + "." + reportType.getExtension())),
+            int bytes = copy(new FileInputStream(new File(filename + "." + reportType.getExtension())),
                     response.getOutputStream());
 
             response.setContentLength(bytes);

@@ -138,5 +138,4 @@ public interface FileService {
      * @return updated entity
      */
     Entity updateReportFileName(Entity entity, String dateFieldName, String name);
-
 }
