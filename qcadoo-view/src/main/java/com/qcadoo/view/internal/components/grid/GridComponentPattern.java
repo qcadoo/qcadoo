@@ -52,7 +52,9 @@ import com.qcadoo.view.internal.xml.ViewDefinitionParserNodeException;
 
 public final class GridComponentPattern extends AbstractComponentPattern {
 
-    private static final String WIDTH2 = "width";
+    private static final String COLUMN = "column";
+
+    private static final String WIDTH = "width";
 
     private static final String JSP_PATH = "elements/grid.jsp";
 
@@ -185,7 +187,7 @@ public final class GridComponentPattern extends AbstractComponentPattern {
         json.put("predefinedFilters", predefinedFiltersArray);
 
         json.put("height", height);
-        json.put(WIDTH2, width);
+        json.put(WIDTH, width);
         json.put("fullscreen", width == 0 || height == 0);
         json.put("lookup", lookup);
         json.put("correspondingView", correspondingView);
@@ -286,7 +288,7 @@ public final class GridComponentPattern extends AbstractComponentPattern {
             jsonColumn.put("label", nameTranslation);
             jsonColumn.put("link", column.isLink());
             jsonColumn.put("hidden", column.isHidden());
-            jsonColumn.put(WIDTH2, column.getWidth());
+            jsonColumn.put(WIDTH, column.getWidth());
             jsonColumn.put("align", column.getAlign());
             jsonColumn.put("filterValues", getFilterValuesForColumn(column, locale));
             jsonColumns.put(jsonColumn);
@@ -349,10 +351,10 @@ public final class GridComponentPattern extends AbstractComponentPattern {
                         Node restrictionNode = restrictionNodes.item(restrictionNodesIndex);
                         if (restrictionNode.getNodeType() == Node.ELEMENT_NODE) {
                             if ("filterRestriction".equals(restrictionNode.getNodeName())) {
-                                predefinedFilter.addFilterRestriction(parser.getStringAttribute(restrictionNode, "column"),
+                                predefinedFilter.addFilterRestriction(parser.getStringAttribute(restrictionNode, COLUMN),
                                         parser.getStringAttribute(restrictionNode, "value"));
                             } else if ("filterOrder".equals(restrictionNode.getNodeName())) {
-                                String column = parser.getStringAttribute(restrictionNode, "column");
+                                String column = parser.getStringAttribute(restrictionNode, COLUMN);
                                 String direction = parser.getStringAttribute(restrictionNode, "direction");
                                 if (column == null) {
                                     throw new ViewDefinitionParserNodeException(restrictionNode,
@@ -412,7 +414,7 @@ public final class GridComponentPattern extends AbstractComponentPattern {
                 deletable = Boolean.parseBoolean(option.getValue());
             } else if ("height".equals(option.getType())) {
                 height = Integer.parseInt(option.getValue());
-            } else if (WIDTH2.equals(option.getType())) {
+            } else if (WIDTH.equals(option.getType())) {
                 width = Integer.parseInt(option.getValue());
             } else if ("fullscreen".equals(option.getType())) {
                 width = 0;
@@ -424,7 +426,7 @@ public final class GridComponentPattern extends AbstractComponentPattern {
             } else if ("orderable".equals(option.getType())) {
                 orderableColumns.addAll(parseColumns(option.getValue()));
             } else if ("order".equals(option.getType())) {
-                defaultOrderColumn = option.getAtrributeValue("column");
+                defaultOrderColumn = option.getAtrributeValue(COLUMN);
                 defaultOrderDirection = option.getAtrributeValue("direction");
                 if (predefinedFilters != null) {
                     for (PredefinedFilter predefinedFilter : predefinedFilters) {
@@ -434,7 +436,7 @@ public final class GridComponentPattern extends AbstractComponentPattern {
                         }
                     }
                 }
-            } else if ("column".equals(option.getType())) {
+            } else if (COLUMN.equals(option.getType())) {
                 parseColumnOption(option);
             } else if ("weakRelation".equals(option.getType())) {
                 weakRelation = Boolean.parseBoolean(option.getValue());
@@ -454,7 +456,7 @@ public final class GridComponentPattern extends AbstractComponentPattern {
             }
         }
         column.setExpression(option.getAtrributeValue("expression"));
-        String columnWidth = option.getAtrributeValue(WIDTH2);
+        String columnWidth = option.getAtrributeValue(WIDTH);
         if (columnWidth != null) {
             column.setWidth(Integer.valueOf(columnWidth));
         }
