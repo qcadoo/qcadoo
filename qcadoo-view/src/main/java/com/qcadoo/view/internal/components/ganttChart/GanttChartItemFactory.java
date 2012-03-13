@@ -37,7 +37,7 @@ public class GanttChartItemFactory {
 
     private final int interval;
 
-    private final SimpleDateFormat format = new SimpleDateFormat(DateUtils.DATE_TIME_FORMAT);
+    private final SimpleDateFormat format = new SimpleDateFormat(DateUtils.L_DATE_TIME_FORMAT);
 
     public GanttChartItemFactory(final int interval) {
         this.interval = interval;

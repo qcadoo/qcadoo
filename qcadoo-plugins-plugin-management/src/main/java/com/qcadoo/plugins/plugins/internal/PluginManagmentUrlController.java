@@ -48,6 +48,10 @@ import com.qcadoo.view.api.crud.CrudService;
 @Controller
 public class PluginManagmentUrlController {
 
+    private static final String L_TYPE = "type";
+
+    private static final String L_HEADER_LABEL = "headerLabel";
+
     @Autowired
     private PluginManagmentPerformer pluginManagmentPerformer;
 
@@ -61,7 +65,7 @@ public class PluginManagmentUrlController {
     public ModelAndView getDownloadPageView(final Locale locale) {
         ModelAndView mav = getCrudPopupView(QcadooPluginsConstants.VIEW_PLUGIN_DOWNLOAD, locale);
 
-        mav.addObject("headerLabel", translationService.translate("qcadooPlugins.downloadView.header", locale));
+        mav.addObject(L_HEADER_LABEL, translationService.translate("qcadooPlugins.downloadView.header", locale));
         mav.addObject("buttonLabel", translationService.translate("qcadooPlugins.downloadView.button", locale));
         mav.addObject("chooseFileLabel", translationService.translate("qcadooPlugins.downloadView.chooseFileLabel", locale));
 
@@ -83,16 +87,16 @@ public class PluginManagmentUrlController {
     public ModelAndView getInfoPageView(@RequestParam final Map<String, String> arguments, final Locale locale) {
         ModelAndView mav = getCrudPopupView(QcadooPluginsConstants.VIEW_PLUGIN_INFO, locale);
 
-        if ("success".equals(arguments.get("type"))) {
+        if ("success".equals(arguments.get(L_TYPE))) {
             mav.addObject("headerClass", "successHeader");
-            mav.addObject("headerLabel", translationService.translate("qcadooPlugins.pluginInfo.successHeader", locale));
+            mav.addObject(L_HEADER_LABEL, translationService.translate("qcadooPlugins.pluginInfo.successHeader", locale));
 
-        } else if ("error".equals(arguments.get("type"))) {
+        } else if ("error".equals(arguments.get(L_TYPE))) {
             mav.addObject("headerClass", "errorHeader");
-            mav.addObject("headerLabel", translationService.translate("qcadooPlugins.pluginInfo.errorHeader", locale));
+            mav.addObject(L_HEADER_LABEL, translationService.translate("qcadooPlugins.pluginInfo.errorHeader", locale));
 
-        } else if ("confirm".equals(arguments.get("type"))) {
-            mav.addObject("headerLabel", translationService.translate("qcadooPlugins.pluginInfo.confirmHeader", locale));
+        } else if ("confirm".equals(arguments.get(L_TYPE))) {
+            mav.addObject(L_HEADER_LABEL, translationService.translate("qcadooPlugins.pluginInfo.confirmHeader", locale));
             mav.addObject("isConfirm", true);
             mav.addObject("cancelButtonLabel",
                     translationService.translate("qcadooPlugins.pluginInfo.buttons." + arguments.get("cancelLabel"), locale));
@@ -101,7 +105,7 @@ public class PluginManagmentUrlController {
             mav.addObject("acceptRedirect", arguments.get("acceptRedirect"));
 
         } else {
-            throw new IllegalStateException("Unsuported plugin info type: " + arguments.get("type"));
+            throw new IllegalStateException("Unsuported plugin info type: " + arguments.get(L_TYPE));
         }
         mav.addObject("content",
                 translationService.translate("qcadooPlugins.pluginInfo.content." + arguments.get("status"), locale));
@@ -114,7 +118,7 @@ public class PluginManagmentUrlController {
     public ModelAndView getRestartPageView(@RequestParam final Map<String, String> arguments, final Locale locale) {
         ModelAndView mav = getCrudPopupView(QcadooPluginsConstants.VIEW_RESTART_VIEW, locale);
 
-        mav.addObject("headerLabel", translationService.translate("qcadooPlugins.restartView.header", locale));
+        mav.addObject(L_HEADER_LABEL, translationService.translate("qcadooPlugins.restartView.header", locale));
         mav.addObject("restartMessage", translationService.translate("qcadooPlugins.restartView.message", locale));
         mav.addObject("restartErrorMessage", translationService.translate("qcadooPlugins.restartView.errorMessage", locale));
         mav.addObject("redirectPage", arguments.get("redirect"));

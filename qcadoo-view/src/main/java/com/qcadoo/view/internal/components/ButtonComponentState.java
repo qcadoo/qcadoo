@@ -31,6 +31,8 @@ import com.qcadoo.view.internal.states.AbstractComponentState;
 
 public class ButtonComponentState extends AbstractComponentState {
 
+    private static final String L_INITIALIZE = "initialize";
+
     public static final String JSON_BELONGS_TO_ENTITY_ID = "belongsToEntityId";
 
     public static final String JSON_OPEN_IN_MODAL = "openInModal";
@@ -55,8 +57,8 @@ public class ButtonComponentState extends AbstractComponentState {
         this.correspondingComponent = null;
         this.correspondingField = null;
         this.correspondingViewInModal = false;
-        registerEvent("initialize", this, "initialize");
-        registerEvent("initializeAfterBack", this, "initialize");
+        registerEvent(L_INITIALIZE, this, L_INITIALIZE);
+        registerEvent("initializeAfterBack", this, L_INITIALIZE);
     }
 
     public ButtonComponentState(final String correspondingView, final String correspondingComponent,
@@ -66,8 +68,8 @@ public class ButtonComponentState extends AbstractComponentState {
         this.correspondingView = correspondingView;
         this.correspondingComponent = correspondingComponent;
         this.correspondingViewInModal = correspondingViewInModal;
-        registerEvent("initialize", this, "initialize");
-        registerEvent("initializeAfterBack", this, "initialize");
+        registerEvent(L_INITIALIZE, this, L_INITIALIZE);
+        registerEvent("initializeAfterBack", this, L_INITIALIZE);
     }
 
     @Override

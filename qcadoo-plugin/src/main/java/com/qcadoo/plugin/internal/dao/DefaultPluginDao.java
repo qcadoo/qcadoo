@@ -40,18 +40,19 @@ import com.qcadoo.plugin.internal.api.PluginDao;
 @Service
 public class DefaultPluginDao implements PluginDao {
 
+    private static final String L_PLUGIN = "plugin";
     @Autowired
-    @Qualifier("plugin")
+    @Qualifier(L_PLUGIN)
     private SessionFactory sessionFactory;
 
     @Override
-    @Transactional("plugin")
+    @Transactional(L_PLUGIN)
     public void save(final QcadooPluginPlugin plugin) {
         sessionFactory.getCurrentSession().save(plugin);
     }
 
     @Override
-    @Transactional("plugin")
+    @Transactional(L_PLUGIN)
     public void save(final Plugin plugin) {
         QcadooPluginPlugin existingPlugin = get(plugin.getIdentifier());
         if (existingPlugin == null) {
@@ -65,13 +66,13 @@ public class DefaultPluginDao implements PluginDao {
     }
 
     @Override
-    @Transactional("plugin")
+    @Transactional(L_PLUGIN)
     public void delete(final QcadooPluginPlugin plugin) {
         sessionFactory.getCurrentSession().delete(plugin);
     }
 
     @Override
-    @Transactional("plugin")
+    @Transactional(L_PLUGIN)
     public void delete(final Plugin plugin) {
         QcadooPluginPlugin existingPlugin = get(plugin.getIdentifier());
         if (existingPlugin != null) {
@@ -80,7 +81,7 @@ public class DefaultPluginDao implements PluginDao {
     }
 
     @Override
-    @Transactional(value = "plugin", readOnly = true)
+    @Transactional(value = L_PLUGIN, readOnly = true)
     @SuppressWarnings("unchecked")
     public Set<QcadooPluginPlugin> list() {
         return Sets.newHashSet(sessionFactory.getCurrentSession().createCriteria(QcadooPluginPlugin.class).list());

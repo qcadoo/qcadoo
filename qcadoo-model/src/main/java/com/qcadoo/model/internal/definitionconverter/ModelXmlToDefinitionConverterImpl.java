@@ -502,17 +502,17 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
             return null;
         } else if (type instanceof DateTimeType) {
             try {
-                return new SimpleDateFormat(DateUtils.DATE_TIME_FORMAT).parse(range);
+                return new SimpleDateFormat(DateUtils.L_DATE_TIME_FORMAT).parse(range);
             } catch (ParseException e) {
                 throw new ModelXmlParsingException("Range '" + range + "' has invalid datetime format, should match "
-                        + DateUtils.DATE_TIME_FORMAT, e);
+                        + DateUtils.L_DATE_TIME_FORMAT, e);
             }
         } else if (type instanceof DateType) {
             try {
-                return new SimpleDateFormat(DateUtils.DATE_FORMAT).parse(range);
+                return new SimpleDateFormat(DateUtils.L_DATE_FORMAT).parse(range);
             } catch (ParseException e) {
                 throw new ModelXmlParsingException("Range '" + range + "' has invalid date format, should match "
-                        + DateUtils.DATE_FORMAT, e);
+                        + DateUtils.L_DATE_FORMAT, e);
             }
         } else if (type instanceof DecimalType) {
             return new BigDecimal(range);

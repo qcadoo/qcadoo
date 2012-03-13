@@ -37,25 +37,27 @@ import java.util.Date;
  */
 public final class DateUtils {
 
+    private static final String L_WRONG_DATE = "wrong date";
+
     private DateUtils() {
     }
 
     /**
      * Date format.
      */
-    public static final String DATE_FORMAT = "yyyy-MM-dd";
+    public static final String L_DATE_FORMAT = "yyyy-MM-dd";
 
     /**
      * Date-time format.
      */
-    public static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    public static final String L_DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
-    private static final String REPORT_DATE_TIME_FORMAT = "yyyy_MM_dd_HH_mm_ss";
+    private static final String L_REPORT_DATE_TIME_FORMAT = "yyyy_MM_dd_HH_mm_ss";
 
     /**
      * Date-time format for filenames.
      */
-    public static final SimpleDateFormat REPORT_D_T_F = new SimpleDateFormat(REPORT_DATE_TIME_FORMAT, getLocale());
+    public static final SimpleDateFormat REPORT_D_T_F = new SimpleDateFormat(L_REPORT_DATE_TIME_FORMAT, getLocale());
 
     /**
      * Parse string into date, with autocomplete missing month and day.
@@ -97,17 +99,17 @@ public final class DateUtils {
         try {
             int year = Integer.parseInt(dateExpressionParts[0]);
             if (year > 2500) {
-                throw new ParseException("wrong date", 1);
+                throw new ParseException(L_WRONG_DATE, 1);
             }
             if (year < 1500) {
-                throw new ParseException("wrong date", 1);
+                throw new ParseException(L_WRONG_DATE, 1);
             }
             cal.set(Calendar.YEAR, year);
 
             if (dateExpressionParts.length > 1) {
                 int month = Integer.parseInt(dateExpressionParts[1]);
                 if (month > 12 || month < 1) {
-                    throw new ParseException("wrong date", 1);
+                    throw new ParseException(L_WRONG_DATE, 1);
                 }
                 cal.set(Calendar.MONTH, month - 1);
             } else {
@@ -134,7 +136,7 @@ public final class DateUtils {
             }
             return cal.getTime();
         } catch (NumberFormatException e) {
-            throw (ParseException) new ParseException("wrong date", 1).initCause(e);
+            throw (ParseException) new ParseException(L_WRONG_DATE, 1).initCause(e);
         }
     }
 

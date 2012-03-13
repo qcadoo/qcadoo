@@ -82,7 +82,7 @@ public class TimeConverterService {
 
     public Date getDateFromField(final Object dateFromField) {
         try {
-            return new SimpleDateFormat(DateUtils.DATE_TIME_FORMAT, Locale.getDefault()).parse((String) dateFromField);
+            return new SimpleDateFormat(DateUtils.L_DATE_TIME_FORMAT, Locale.getDefault()).parse((String) dateFromField);
         } catch (ParseException e) {
             throw new IllegalStateException(e.getMessage(), e);
         }

@@ -59,6 +59,12 @@ import com.qcadoo.view.internal.ribbon.model.SingleRibbonGroupPack;
 
 public final class LookupComponentPattern extends FieldComponentPattern {
 
+    private static final String L_LOOKUP_CODE = "lookupCode";
+
+    private static final String L_VALUE = "value";
+
+    private static final String L_TRUE = "true";
+
     private static final String JSP_PATH = "elements/lookup.jsp";
 
     private static final String JS_OBJECT = "QCD.components.elements.Lookup";
@@ -147,12 +153,12 @@ public final class LookupComponentPattern extends FieldComponentPattern {
                 continue;
             } else if ("orderable".equals(option.getType())) {
                 Map<String, String> newAttributes = new HashMap<String, String>();
-                newAttributes.put("value", option.getValue() + ",lookupCode");
+                newAttributes.put(L_VALUE, option.getValue() + ",lookupCode");
                 option = new ComponentOption("orderable", newAttributes);
                 grid.addOption(option);
             } else if ("searchable".equals(option.getType())) {
                 Map<String, String> newAttributes = new HashMap<String, String>();
-                newAttributes.put("value", option.getValue() + ",lookupCode");
+                newAttributes.put(L_VALUE, option.getValue() + ",lookupCode");
                 option = new ComponentOption("searchable", newAttributes);
                 grid.addOption(option);
             } else {
@@ -160,7 +166,7 @@ public final class LookupComponentPattern extends FieldComponentPattern {
             }
         }
 
-        grid.addOption(new ComponentOption("lookup", Collections.singletonMap("value", "true")));
+        grid.addOption(new ComponentOption("lookup", Collections.singletonMap(L_VALUE, L_TRUE)));
 
         window.addChild(grid);
 
@@ -238,11 +244,11 @@ public final class LookupComponentPattern extends FieldComponentPattern {
         }
 
         GridComponentPattern grid = new GridComponentPattern(gridComponentDefinition);
-        grid.addOption(new ComponentOption("lookup", ImmutableMap.of("value", "true")));
-        grid.addOption(new ComponentOption("fullscreen", ImmutableMap.of("value", "true")));
-        grid.addOption(new ComponentOption("orderable", ImmutableMap.of("value", "lookupCode")));
-        grid.addOption(new ComponentOption("order", ImmutableMap.of("column", "lookupCode", "direction", "asc")));
-        grid.addOption(new ComponentOption("searchable", ImmutableMap.of("value", "lookupCode")));
+        grid.addOption(new ComponentOption("lookup", ImmutableMap.of(L_VALUE, L_TRUE)));
+        grid.addOption(new ComponentOption("fullscreen", ImmutableMap.of(L_VALUE, L_TRUE)));
+        grid.addOption(new ComponentOption("orderable", ImmutableMap.of(L_VALUE, L_LOOKUP_CODE)));
+        grid.addOption(new ComponentOption("order", ImmutableMap.of("column", L_LOOKUP_CODE, "direction", "asc")));
+        grid.addOption(new ComponentOption("searchable", ImmutableMap.of(L_VALUE, L_LOOKUP_CODE)));
         grid.addOption(createLookupValueColumn());
         grid.addOption(createLookupCodeColumn());
 
@@ -253,16 +259,16 @@ public final class LookupComponentPattern extends FieldComponentPattern {
         Map<String, String> valueColumnOptions = new HashMap<String, String>();
         valueColumnOptions.put("name", "lookupValue");
         valueColumnOptions.put("expression", expression);
-        valueColumnOptions.put("hidden", "true");
+        valueColumnOptions.put("hidden", L_TRUE);
         return new ComponentOption("column", valueColumnOptions);
     }
 
     private ComponentOption createLookupCodeColumn() {
         Map<String, String> codeVisibleColumnOptions = new HashMap<String, String>();
-        codeVisibleColumnOptions.put("name", "lookupCode");
+        codeVisibleColumnOptions.put("name", L_LOOKUP_CODE);
         codeVisibleColumnOptions.put("fields", fieldCode);
         codeVisibleColumnOptions.put("hidden", "false");
-        codeVisibleColumnOptions.put("link", "true");
+        codeVisibleColumnOptions.put("link", L_TRUE);
         return new ComponentOption("column", codeVisibleColumnOptions);
     }
 
