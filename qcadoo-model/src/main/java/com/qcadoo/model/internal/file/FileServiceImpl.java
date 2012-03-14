@@ -189,7 +189,6 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public Entity updateReportFileName(final Entity entity, final String dateFieldName, final String name) {
-        String filename = getNormalizedFileName(name);
         String currentFiles = entity.getStringField("fileName");
         if (currentFiles == null) {
             currentFiles = "";
@@ -199,7 +198,7 @@ public class FileServiceImpl implements FileService {
             currentFiles += ",";
         }
 
-        entity.setField("fileName", currentFiles + getReportFullPath(filename, (Date) entity.getField(dateFieldName)));
+        entity.setField("fileName", currentFiles + getReportFullPath(name, (Date) entity.getField(dateFieldName)));
 
         return entity.getDataDefinition().save(entity);
     }

@@ -99,6 +99,24 @@ public interface PdfHelper {
             final Font valueFont, final int columns);
 
     /**
+     * Add cell with table to current table.
+     * 
+     * @param table
+     * @param label
+     *            header label
+     * @param fieldValue
+     *            value
+     * @param nullValue
+     *            string to display in case the value is null
+     * @param headerFont
+     * @param valueFont
+     * @param columns
+     *            quantity of columns
+     */
+    void addTableCellAsTable(final PdfPTable table, final String label, final Object fieldValue, final String nullValue,
+            final Font headerFont, final Font valueFont, final int columns);
+
+    /**
      * Add cell with two columns table to current table.
      * 
      * @param table
