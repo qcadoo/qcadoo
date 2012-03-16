@@ -42,7 +42,7 @@ import com.qcadoo.plugin.internal.api.PluginFileManager;
 @Service
 public final class DefaultPluginFileManager implements PluginFileManager {
 
-    private static final String FILE_SEPARATOR = "file.separator";
+    private static final String L_FILE_SEPARATOR = "file.separator";
 
     private static final Logger LOG = LoggerFactory.getLogger(DefaultPluginFileManager.class);
 
@@ -64,7 +64,7 @@ public final class DefaultPluginFileManager implements PluginFileManager {
         }
         for (String filename : filenames) {
             try {
-                FileUtils.moveToDirectory(new File(pluginsTmpPath + getProperty(FILE_SEPARATOR) + filename), new File(
+                FileUtils.moveToDirectory(new File(pluginsTmpPath + getProperty(L_FILE_SEPARATOR) + filename), new File(
                         pluginsPath), false);
             } catch (IOException e) {
                 LOG.error("Problem with moving plugin file - " + e.getMessage());
@@ -77,7 +77,7 @@ public final class DefaultPluginFileManager implements PluginFileManager {
     @Override
     public File uploadPlugin(final PluginArtifact pluginArtifact) {
         InputStream input = pluginArtifact.getInputStream();
-        File pluginFile = new File(pluginsTmpPath + getProperty(FILE_SEPARATOR) + pluginArtifact.getName());
+        File pluginFile = new File(pluginsTmpPath + getProperty(L_FILE_SEPARATOR) + pluginArtifact.getName());
         try {
             FileUtils.copyInputStreamToFile(input, pluginFile);
         } catch (IOException e) {
@@ -90,9 +90,9 @@ public final class DefaultPluginFileManager implements PluginFileManager {
     @Override
     public void uninstallPlugin(final String... filenames) {
         for (String filename : filenames) {
-            File file = new File((pluginsTmpPath + getProperty(FILE_SEPARATOR) + filename));
+            File file = new File((pluginsTmpPath + getProperty(L_FILE_SEPARATOR) + filename));
             if (!file.exists()) {
-                file = new File(pluginsPath + getProperty(FILE_SEPARATOR) + filename);
+                file = new File(pluginsPath + getProperty(L_FILE_SEPARATOR) + filename);
             }
             try {
                 FileUtils.forceDelete(file);
@@ -107,7 +107,7 @@ public final class DefaultPluginFileManager implements PluginFileManager {
     }
 
     private boolean checkFileExists(final String key, final String path) {
-        File file = new File(path + getProperty(FILE_SEPARATOR) + key);
+        File file = new File(path + getProperty(L_FILE_SEPARATOR) + key);
         if (!file.exists()) {
             return false;
         }

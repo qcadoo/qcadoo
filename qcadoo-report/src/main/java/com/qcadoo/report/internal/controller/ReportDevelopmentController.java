@@ -69,17 +69,17 @@ import com.qcadoo.report.api.ReportService.ReportType;
 @Controller
 public class ReportDevelopmentController {
 
-    private static final String PARAMS = "params";
+    private static final String L_PARAMS = "params";
 
-    private static final String LOCALE = "locale";
+    private static final String L_LOCALE = "locale";
 
-    private static final String TEMPLATE = "template";
+    private static final String L_TEMPLATE = "template";
 
-    private static final String QCADOO_REPORT_REPORT = "qcadooReport/report";
+    private static final String L_QCADOO_REPORT_REPORT = "qcadooReport/report";
 
-    private static final String HQL = "hql";
+    private static final String L_HQL = "hql";
 
-    private static final String QCADOO_REPORT_HQL = "qcadooReport/hql";
+    private static final String L_QCADOO_REPORT_HQL = "qcadooReport/hql";
 
     private static final Logger LOG = LoggerFactory.getLogger(ReportDevelopmentController.class);
 
@@ -98,11 +98,11 @@ public class ReportDevelopmentController {
             return new ModelAndView(new RedirectView("/"));
         }
 
-        return new ModelAndView(QCADOO_REPORT_HQL);
+        return new ModelAndView(L_QCADOO_REPORT_HQL);
     }
 
     @RequestMapping(value = "developReport/hql", method = RequestMethod.POST)
-    public ModelAndView executeHql(@RequestParam(HQL) final String hql) {
+    public ModelAndView executeHql(@RequestParam(L_HQL) final String hql) {
         if (!showReportDevelopment) {
             return new ModelAndView(new RedirectView("/"));
         }
@@ -143,13 +143,13 @@ public class ReportDevelopmentController {
                     rows.add(row);
                 }
 
-                return new ModelAndView(QCADOO_REPORT_HQL).addObject(HQL, hql).addObject("headers", headers)
+                return new ModelAndView(L_QCADOO_REPORT_HQL).addObject(L_HQL, hql).addObject("headers", headers)
                         .addObject("rows", rows).addObject("isOk", true);
             } else {
-                return new ModelAndView(QCADOO_REPORT_HQL).addObject(HQL, hql).addObject("isEmpty", true);
+                return new ModelAndView(L_QCADOO_REPORT_HQL).addObject(L_HQL, hql).addObject("isEmpty", true);
             }
         } catch (Exception e) {
-            return showException(QCADOO_REPORT_HQL, e).addObject(HQL, hql);
+            return showException(L_QCADOO_REPORT_HQL, e).addObject(L_HQL, hql);
         }
     }
 
@@ -170,7 +170,7 @@ public class ReportDevelopmentController {
             return new ModelAndView(new RedirectView("/"));
         }
 
-        return new ModelAndView(QCADOO_REPORT_REPORT);
+        return new ModelAndView(L_QCADOO_REPORT_REPORT);
     }
 
     @RequestMapping(value = "developReport/report", method = RequestMethod.POST)
@@ -180,7 +180,7 @@ public class ReportDevelopmentController {
         }
 
         if (file.isEmpty()) {
-            return new ModelAndView(QCADOO_REPORT_REPORT).addObject("isFileInvalid", true);
+            return new ModelAndView(L_QCADOO_REPORT_REPORT).addObject("isFileInvalid", true);
         }
 
         try {
@@ -188,10 +188,10 @@ public class ReportDevelopmentController {
 
             List<ReportParameter> params = getReportParameters(template);
 
-            return new ModelAndView(QCADOO_REPORT_REPORT).addObject(TEMPLATE, template).addObject("isParameter", true)
-                    .addObject(PARAMS, params).addObject(LOCALE, "en");
+            return new ModelAndView(L_QCADOO_REPORT_REPORT).addObject(L_TEMPLATE, template).addObject("isParameter", true)
+                    .addObject(L_PARAMS, params).addObject(L_LOCALE, "en");
         } catch (Exception e) {
-            return showException(QCADOO_REPORT_REPORT, e);
+            return showException(L_QCADOO_REPORT_REPORT, e);
         }
     }
 
@@ -225,8 +225,8 @@ public class ReportDevelopmentController {
     }
 
     @RequestMapping(value = "developReport/generate", method = RequestMethod.POST)
-    public ModelAndView generateReport(@RequestParam(value = TEMPLATE) final String template,
-            @RequestParam(value = "type") final String type, @RequestParam(value = LOCALE) final String locale,
+    public ModelAndView generateReport(@RequestParam(value = L_TEMPLATE) final String template,
+            @RequestParam(value = "type") final String type, @RequestParam(value = L_LOCALE) final String locale,
             final HttpServletRequest request, final HttpServletResponse response) {
         if (!showReportDevelopment) {
             return new ModelAndView(new RedirectView("/"));
@@ -238,8 +238,8 @@ public class ReportDevelopmentController {
             params = getReportParameters(template);
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
-            return showException(QCADOO_REPORT_REPORT, e).addObject(TEMPLATE, template).addObject("isParameter", true)
-                    .addObject(LOCALE, locale);
+            return showException(L_QCADOO_REPORT_REPORT, e).addObject(L_TEMPLATE, template).addObject("isParameter", true)
+                    .addObject(L_LOCALE, locale);
         }
 
         try {
@@ -277,8 +277,8 @@ public class ReportDevelopmentController {
             return null;
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
-            return showException(QCADOO_REPORT_REPORT, e).addObject(TEMPLATE, template).addObject("isParameter", true)
-                    .addObject(PARAMS, params).addObject(LOCALE, locale);
+            return showException(L_QCADOO_REPORT_REPORT, e).addObject(L_TEMPLATE, template).addObject("isParameter", true)
+                    .addObject(L_PARAMS, params).addObject(L_LOCALE, locale);
         }
 
     }

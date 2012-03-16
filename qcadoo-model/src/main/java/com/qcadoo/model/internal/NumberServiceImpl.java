@@ -60,7 +60,7 @@ public class NumberServiceImpl implements NumberService {
 
     @Override
     public String format(Object obj) {
-        return decimalFormat.format(obj);
+        return (obj == null) ? null : decimalFormat.format(obj);
     }
 
     @Override

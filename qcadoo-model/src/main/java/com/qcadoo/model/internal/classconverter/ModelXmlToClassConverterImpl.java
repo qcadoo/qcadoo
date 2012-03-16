@@ -60,11 +60,11 @@ import com.qcadoo.model.internal.utils.ClassNameUtils;
 public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverter implements ModelXmlToClassConverter,
         BeanClassLoaderAware {
 
-    private static final String FAILED_TO_COMPILE_CLASS = "Failed to compile class ";
+    private static final String L_FAILED_TO_COMPILE_CLASS = "Failed to compile class ";
 
-    private static final String NAME = "name";
+    private static final String L_NAME = "name";
 
-    private static final String ERROR_WHILE_PARSING_MODEL_XML = "Error while parsing model.xml: ";
+    private static final String L_ERROR_WHILE_PARSING_MODEL_XML = "Error while parsing model.xml: ";
 
     private static final Logger LOG = LoggerFactory.getLogger(ModelXmlToClassConverterImpl.class);
 
@@ -94,9 +94,9 @@ public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverte
                 try {
                     existingClasses.putAll(findExistingClasses(resource.getInputStream()));
                 } catch (XMLStreamException e) {
-                    throw new IllegalStateException(ERROR_WHILE_PARSING_MODEL_XML + e.getMessage(), e);
+                    throw new IllegalStateException(L_ERROR_WHILE_PARSING_MODEL_XML + e.getMessage(), e);
                 } catch (IOException e) {
-                    throw new IllegalStateException(ERROR_WHILE_PARSING_MODEL_XML + e.getMessage(), e);
+                    throw new IllegalStateException(L_ERROR_WHILE_PARSING_MODEL_XML + e.getMessage(), e);
                 }
             }
         }
@@ -107,9 +107,9 @@ public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverte
                 try {
                     ctClasses.putAll(createClasses(existingClasses, resource.getInputStream()));
                 } catch (XMLStreamException e) {
-                    throw new IllegalStateException(ERROR_WHILE_PARSING_MODEL_XML + e.getMessage(), e);
+                    throw new IllegalStateException(L_ERROR_WHILE_PARSING_MODEL_XML + e.getMessage(), e);
                 } catch (IOException e) {
-                    throw new IllegalStateException(ERROR_WHILE_PARSING_MODEL_XML + e.getMessage(), e);
+                    throw new IllegalStateException(L_ERROR_WHILE_PARSING_MODEL_XML + e.getMessage(), e);
                 }
             }
         }
@@ -120,11 +120,11 @@ public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverte
                 try {
                     defineClasses(ctClasses, resource.getInputStream());
                 } catch (XMLStreamException e) {
-                    throw new IllegalStateException(ERROR_WHILE_PARSING_MODEL_XML + e.getMessage(), e);
+                    throw new IllegalStateException(L_ERROR_WHILE_PARSING_MODEL_XML + e.getMessage(), e);
                 } catch (ModelXmlCompilingException e) {
-                    throw new IllegalStateException(ERROR_WHILE_PARSING_MODEL_XML + e.getMessage(), e);
+                    throw new IllegalStateException(L_ERROR_WHILE_PARSING_MODEL_XML + e.getMessage(), e);
                 } catch (IOException e) {
-                    throw new IllegalStateException(ERROR_WHILE_PARSING_MODEL_XML + e.getMessage(), e);
+                    throw new IllegalStateException(L_ERROR_WHILE_PARSING_MODEL_XML + e.getMessage(), e);
                 }
             }
         }
@@ -135,7 +135,7 @@ public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverte
             try {
                 classes.add(ctClass.toClass(classLoader));
             } catch (CannotCompileException e) {
-                throw new IllegalStateException(ERROR_WHILE_PARSING_MODEL_XML + e.getMessage(), e);
+                throw new IllegalStateException(L_ERROR_WHILE_PARSING_MODEL_XML + e.getMessage(), e);
             }
         }
 
@@ -151,7 +151,7 @@ public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverte
         while (reader.hasNext() && reader.next() > 0) {
             if (isTagStarted(reader, TAG_MODEL)) {
                 String pluginIdentifier = getPluginIdentifier(reader);
-                String modelName = getStringAttribute(reader, NAME);
+                String modelName = getStringAttribute(reader, L_NAME);
                 String className = ClassNameUtils.getFullyQualifiedClassName(pluginIdentifier, modelName);
 
                 try {
@@ -178,7 +178,7 @@ public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverte
         while (reader.hasNext() && reader.next() > 0) {
             if (isTagStarted(reader, TAG_MODEL)) {
                 String pluginIdentifier = getPluginIdentifier(reader);
-                String modelName = getStringAttribute(reader, NAME);
+                String modelName = getStringAttribute(reader, L_NAME);
                 String className = ClassNameUtils.getFullyQualifiedClassName(pluginIdentifier, modelName);
 
                 if (existingClasses.containsKey(className)) {
@@ -204,7 +204,7 @@ public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverte
         while (reader.hasNext() && reader.next() > 0) {
             if (isTagStarted(reader, TAG_MODEL)) {
                 String pluginIdentifier = getPluginIdentifier(reader);
-                String modelName = getStringAttribute(reader, NAME);
+                String modelName = getStringAttribute(reader, L_NAME);
                 String className = ClassNameUtils.getFullyQualifiedClassName(pluginIdentifier, modelName);
 
                 if (ctClasses.containsKey(className)) {
@@ -284,7 +284,7 @@ public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverte
 
             ctClass.addMethod(CtNewMethod.make("public String toString() { " + sb.toString() + " }", ctClass));
         } catch (CannotCompileException e) {
-            throw new ModelXmlCompilingException(FAILED_TO_COMPILE_CLASS + ctClass.getName(), e);
+            throw new ModelXmlCompilingException(L_FAILED_TO_COMPILE_CLASS + ctClass.getName(), e);
         }
     }
 
@@ -306,7 +306,7 @@ public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverte
 
             ctClass.addMethod(CtNewMethod.make("public int hashCode() { " + sb.toString() + " }", ctClass));
         } catch (CannotCompileException e) {
-            throw new ModelXmlCompilingException(FAILED_TO_COMPILE_CLASS + ctClass.getName(), e);
+            throw new ModelXmlCompilingException(L_FAILED_TO_COMPILE_CLASS + ctClass.getName(), e);
         }
     }
 
@@ -329,7 +329,7 @@ public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverte
 
             ctClass.addMethod(CtNewMethod.make("public boolean equals(Object obj) { " + sb.toString() + " }", ctClass));
         } catch (CannotCompileException e) {
-            throw new ModelXmlCompilingException(FAILED_TO_COMPILE_CLASS + ctClass.getName(), e);
+            throw new ModelXmlCompilingException(L_FAILED_TO_COMPILE_CLASS + ctClass.getName(), e);
         }
     }
 
@@ -341,8 +341,8 @@ public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverte
             switch (modelTag) {
                 case PRIORITY:
                 case INTEGER:
-                    createField(ctClass, getStringAttribute(reader, NAME), Integer.class.getCanonicalName());
-                    fields.add(getStringAttribute(reader, NAME));
+                    createField(ctClass, getStringAttribute(reader, L_NAME), Integer.class.getCanonicalName());
+                    fields.add(getStringAttribute(reader, L_NAME));
                     break;
                 case STRING:
                 case FILE:
@@ -350,29 +350,29 @@ public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverte
                 case ENUM:
                 case DICTIONARY:
                 case PASSWORD:
-                    createField(ctClass, getStringAttribute(reader, NAME), String.class.getCanonicalName());
-                    fields.add(getStringAttribute(reader, NAME));
+                    createField(ctClass, getStringAttribute(reader, L_NAME), String.class.getCanonicalName());
+                    fields.add(getStringAttribute(reader, L_NAME));
                     break;
                 case DECIMAL:
-                    createField(ctClass, getStringAttribute(reader, NAME), BigDecimal.class.getCanonicalName());
-                    fields.add(getStringAttribute(reader, NAME));
+                    createField(ctClass, getStringAttribute(reader, L_NAME), BigDecimal.class.getCanonicalName());
+                    fields.add(getStringAttribute(reader, L_NAME));
                     break;
                 case DATETIME:
                 case DATE:
-                    createField(ctClass, getStringAttribute(reader, NAME), Date.class.getCanonicalName());
-                    fields.add(getStringAttribute(reader, NAME));
+                    createField(ctClass, getStringAttribute(reader, L_NAME), Date.class.getCanonicalName());
+                    fields.add(getStringAttribute(reader, L_NAME));
                     break;
                 case BOOLEAN:
-                    createField(ctClass, getStringAttribute(reader, NAME), Boolean.class.getCanonicalName());
-                    fields.add(getStringAttribute(reader, NAME));
+                    createField(ctClass, getStringAttribute(reader, L_NAME), Boolean.class.getCanonicalName());
+                    fields.add(getStringAttribute(reader, L_NAME));
                     break;
                 case BELONGSTO:
                     createBelongsField(ctClass, pluginIdentifier, reader);
-                    fields.add(getStringAttribute(reader, NAME));
+                    fields.add(getStringAttribute(reader, L_NAME));
                     break;
                 case MANYTOMANY:
                     createSetField(ctClass, reader);
-                    fields.add(getStringAttribute(reader, NAME));
+                    fields.add(getStringAttribute(reader, L_NAME));
                     break;
                 case HASMANY:
                 case TREE:
@@ -391,7 +391,7 @@ public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverte
     }
 
     private void createSetField(final CtClass ctClass, final XMLStreamReader reader) throws ModelXmlCompilingException {
-        createField(ctClass, getStringAttribute(reader, NAME), "java.util.Set");
+        createField(ctClass, getStringAttribute(reader, L_NAME), "java.util.Set");
     }
 
     private void createBelongsField(final CtClass ctClass, final String pluginIdentifier, final XMLStreamReader reader)
@@ -404,7 +404,7 @@ public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverte
 
         String model = getStringAttribute(reader, "model");
 
-        createField(ctClass, getStringAttribute(reader, NAME), ClassNameUtils.getFullyQualifiedClassName(plugin, model));
+        createField(ctClass, getStringAttribute(reader, L_NAME), ClassNameUtils.getFullyQualifiedClassName(plugin, model));
     }
 
     private void createField(final CtClass ctClass, final String name, final String clazz) throws ModelXmlCompilingException {
@@ -415,7 +415,7 @@ public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverte
             ctClass.addMethod(CtNewMethod.make("public void set" + StringUtils.capitalize(name) + "(" + clazz + " " + name
                     + ") { this." + name + " = " + name + "; }", ctClass));
         } catch (CannotCompileException e) {
-            throw new ModelXmlCompilingException(FAILED_TO_COMPILE_CLASS + ctClass.getName(), e);
+            throw new ModelXmlCompilingException(L_FAILED_TO_COMPILE_CLASS + ctClass.getName(), e);
         }
     }
 

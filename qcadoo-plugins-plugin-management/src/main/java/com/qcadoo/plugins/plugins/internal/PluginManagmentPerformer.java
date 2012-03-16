@@ -38,7 +38,7 @@ import com.qcadoo.plugin.api.artifact.PluginArtifact;
 @Service
 public class PluginManagmentPerformer {
 
-    private static final String WRONG_STATUS = "Wrong status";
+    private static final String L_WRONG_STATUS = "Wrong status";
     @Autowired
     private PluginManagmentConnector pluginManagmentConnector;
 
@@ -90,7 +90,7 @@ public class PluginManagmentPerformer {
                         .getDependenciesToDisableUnsatisfiedAfterUpdate());
                 break;
             default:
-                throw new IllegalStateException(WRONG_STATUS);
+                throw new IllegalStateException(L_WRONG_STATUS);
         }
 
         return url;
@@ -122,7 +122,7 @@ public class PluginManagmentPerformer {
                 url = createErrorPageUrl("enable.cannotInstall");
                 break;
             default:
-                throw new IllegalStateException(WRONG_STATUS);
+                throw new IllegalStateException(L_WRONG_STATUS);
         }
 
         return url;
@@ -147,7 +147,7 @@ public class PluginManagmentPerformer {
                                 .getPluginDependencyResult().getDependenciesToDisable(), pluginIdentifiers);
                 break;
             default:
-                throw new IllegalStateException(WRONG_STATUS);
+                throw new IllegalStateException(L_WRONG_STATUS);
         }
 
         return url;
@@ -175,7 +175,7 @@ public class PluginManagmentPerformer {
                                 .getPluginDependencyResult().getDependenciesToUninstall(), pluginIdentifiers);
                 break;
             default:
-                throw new IllegalStateException(WRONG_STATUS);
+                throw new IllegalStateException(L_WRONG_STATUS);
         }
 
         return url;

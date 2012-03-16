@@ -24,6 +24,8 @@
 package com.qcadoo.model.internal.dictionaries;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.qcadoo.model.constants.DictionaryFields.ACTIVE;
+import static com.qcadoo.model.constants.DictionaryFields.NAME;
 import static com.qcadoo.model.constants.QcadooModelConstants.MODEL_DICTIONARY;
 import static com.qcadoo.model.constants.QcadooModelConstants.MODEL_DICTIONARY_ITEM;
 import static com.qcadoo.model.constants.QcadooModelConstants.PLUGIN_IDENTIFIER;
@@ -52,10 +54,6 @@ import com.qcadoo.model.internal.api.InternalDictionaryService;
 
 @Service
 public final class DictionaryServiceImpl implements InternalDictionaryService {
-
-    private static final String ACTIVE = "active";
-
-    private static final String NAME = "name";
 
     @Autowired
     private TranslationService translationService;

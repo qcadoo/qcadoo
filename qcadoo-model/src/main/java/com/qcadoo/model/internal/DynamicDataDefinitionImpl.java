@@ -39,7 +39,7 @@ import com.qcadoo.model.internal.search.SearchCriteria;
 
 public class DynamicDataDefinitionImpl implements InternalDataDefinition {
 
-    private static final String CANNOT_FIND_ENTITY_FOR_DYNAMIC_DATA_DEFINITION = "Cannot find entity for dynamic data definition";
+    private static final String L_CANNOT_FIND_ENTITY_FOR_DYNAMIC_DATA_DEFINITION = "Cannot find entity for dynamic data definition";
 
     private final String name;
 
@@ -92,17 +92,17 @@ public class DynamicDataDefinitionImpl implements InternalDataDefinition {
 
     @Override
     public SearchCriteriaBuilder find() {
-        throw new UnsupportedOperationException(CANNOT_FIND_ENTITY_FOR_DYNAMIC_DATA_DEFINITION);
+        throw new UnsupportedOperationException(L_CANNOT_FIND_ENTITY_FOR_DYNAMIC_DATA_DEFINITION);
     }
 
     @Override
     public SearchCriteriaBuilder findWithAlias(final String alias) {
-        throw new UnsupportedOperationException(CANNOT_FIND_ENTITY_FOR_DYNAMIC_DATA_DEFINITION);
+        throw new UnsupportedOperationException(L_CANNOT_FIND_ENTITY_FOR_DYNAMIC_DATA_DEFINITION);
     }
 
     @Override
     public SearchQueryBuilder find(final String queryString) {
-        throw new UnsupportedOperationException(CANNOT_FIND_ENTITY_FOR_DYNAMIC_DATA_DEFINITION);
+        throw new UnsupportedOperationException(L_CANNOT_FIND_ENTITY_FOR_DYNAMIC_DATA_DEFINITION);
     }
 
     @Override
@@ -156,7 +156,7 @@ public class DynamicDataDefinitionImpl implements InternalDataDefinition {
 
     @Override
     public SearchResult find(final SearchCriteria searchCriteria) {
-        throw new UnsupportedOperationException(CANNOT_FIND_ENTITY_FOR_DYNAMIC_DATA_DEFINITION);
+        throw new UnsupportedOperationException(L_CANNOT_FIND_ENTITY_FOR_DYNAMIC_DATA_DEFINITION);
     }
 
     @Override

@@ -49,7 +49,7 @@ public final class DateTimeType implements FieldType {
             return ValueAndError.withoutError(value);
         }
         try {
-            DateTimeFormatter fmt = DateTimeFormat.forPattern(DateUtils.DATE_TIME_FORMAT);
+            DateTimeFormatter fmt = DateTimeFormat.forPattern(DateUtils.L_DATE_TIME_FORMAT);
             DateTime dt = fmt.parseDateTime(String.valueOf(value));
             int year = dt.getYear();
             if (year < 1500 || year > 2500) {
@@ -63,7 +63,7 @@ public final class DateTimeType implements FieldType {
 
     @Override
     public String toString(final Object value, final Locale locale) {
-        return new SimpleDateFormat(DateUtils.DATE_TIME_FORMAT).format((Date) value);
+        return new SimpleDateFormat(DateUtils.L_DATE_TIME_FORMAT).format((Date) value);
     }
 
     @Override

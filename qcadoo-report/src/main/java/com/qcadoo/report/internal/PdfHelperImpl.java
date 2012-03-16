@@ -63,7 +63,7 @@ public final class PdfHelperImpl implements PdfHelper {
     @Override
     public void addDocumentHeader(final Document document, final String name, final String documenTitle,
             final String documentAuthor, final Date date, final String username) throws DocumentException {
-        SimpleDateFormat df = new SimpleDateFormat(DateUtils.DATE_TIME_FORMAT, getLocale());
+        SimpleDateFormat df = new SimpleDateFormat(DateUtils.L_DATE_TIME_FORMAT, getLocale());
         LineSeparator line = new LineSeparator(3, 100f, ColorUtils.getLineDarkColor(), Element.ALIGN_LEFT, 0);
         document.add(Chunk.NEWLINE);
         Paragraph title = new Paragraph(new Phrase(documenTitle, FontUtils.getDejavuBold19Light()));
@@ -123,11 +123,17 @@ public final class PdfHelperImpl implements PdfHelper {
     @Override
     public void addTableCellAsTable(final PdfPTable table, final String label, final Object fieldValue, final Font headerFont,
             final Font valueFont, final int columns) {
+        addTableCellAsTable(table, label, fieldValue, "", headerFont, valueFont, columns);
+    }
+
+    @Override
+    public void addTableCellAsTable(final PdfPTable table, final String label, final Object fieldValue, final String nullValue,
+            final Font headerFont, final Font valueFont, final int columns) {
         PdfPTable cellTable = new PdfPTable(columns);
         cellTable.getDefaultCell().setBorder(Rectangle.NO_BORDER);
         cellTable.addCell(new Phrase(label, headerFont));
         if (fieldValue == null) {
-            cellTable.addCell(new Phrase("", valueFont));
+            cellTable.addCell(new Phrase(nullValue, valueFont));
         } else {
             cellTable.addCell(new Phrase(fieldValue.toString(), valueFont));
         }

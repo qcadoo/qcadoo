@@ -50,15 +50,13 @@ import com.qcadoo.model.internal.api.InternalDataDefinition;
 
 public final class SearchCriteriaImpl implements SearchCriteriaBuilder, SearchCriteria {
 
-    private static final String PLEASE_USE_NEW_CRITERIA_API = "Please use new criteria API";
-
-    private static final int DEFAULT_MAX_RESULTS = Integer.MAX_VALUE;
+    private static final String L_PLEASE_USE_NEW_CRITERIA_API = "Please use new criteria API";
 
     private final DataDefinition sourceDataDefinition;
 
     private final DetachedCriteria criteria;
 
-    private int maxResults = DEFAULT_MAX_RESULTS;
+    private int maxResults = Integer.MAX_VALUE;
 
     private int firstResult;
 
@@ -263,32 +261,32 @@ public final class SearchCriteriaImpl implements SearchCriteriaBuilder, SearchCr
 
     @Override
     public SearchCriteriaBuilder openNot() {
-        throw new UnsupportedOperationException(PLEASE_USE_NEW_CRITERIA_API);
+        throw new UnsupportedOperationException(L_PLEASE_USE_NEW_CRITERIA_API);
     }
 
     @Override
     public SearchCriteriaBuilder closeNot() {
-        throw new UnsupportedOperationException(PLEASE_USE_NEW_CRITERIA_API);
+        throw new UnsupportedOperationException(L_PLEASE_USE_NEW_CRITERIA_API);
     }
 
     @Override
     public SearchCriteriaBuilder openOr() {
-        throw new UnsupportedOperationException(PLEASE_USE_NEW_CRITERIA_API);
+        throw new UnsupportedOperationException(L_PLEASE_USE_NEW_CRITERIA_API);
     }
 
     @Override
     public SearchCriteriaBuilder closeOr() {
-        throw new UnsupportedOperationException(PLEASE_USE_NEW_CRITERIA_API);
+        throw new UnsupportedOperationException(L_PLEASE_USE_NEW_CRITERIA_API);
     }
 
     @Override
     public SearchCriteriaBuilder openAnd() {
-        throw new UnsupportedOperationException(PLEASE_USE_NEW_CRITERIA_API);
+        throw new UnsupportedOperationException(L_PLEASE_USE_NEW_CRITERIA_API);
     }
 
     @Override
     public SearchCriteriaBuilder closeAnd() {
-        throw new UnsupportedOperationException(PLEASE_USE_NEW_CRITERIA_API);
+        throw new UnsupportedOperationException(L_PLEASE_USE_NEW_CRITERIA_API);
     }
 
     @Override

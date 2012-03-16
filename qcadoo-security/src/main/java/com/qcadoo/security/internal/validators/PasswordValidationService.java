@@ -31,10 +31,10 @@ import com.qcadoo.model.api.Entity;
 @Service
 public class PasswordValidationService {
 
-    private static final String PASSWORD = "password";
+    private static final String L_PASSWORD = "password";
 
     public boolean checkPassword(final DataDefinition dataDefinition, final Entity entity) {
-        String password = entity.getStringField(PASSWORD);
+        String password = entity.getStringField(L_PASSWORD);
         String passwordConfirmation = entity.getStringField("passwordConfirmation");
         String oldPassword = entity.getStringField("oldPassword");
         String viewIdentifier = entity.getId() == null ? "userChangePassword" : entity.getStringField("viewIdentifier");
@@ -48,7 +48,7 @@ public class PasswordValidationService {
                 entity.addError(dataDefinition.getField("oldPassword"), "qcadooUsers.validate.global.error.noOldPassword");
                 return false;
             }
-            Object currentPassword = dataDefinition.get(entity.getId()).getField(PASSWORD);
+            Object currentPassword = dataDefinition.get(entity.getId()).getField(L_PASSWORD);
 
             if (!currentPassword.equals(oldPassword)) {
                 entity.addError(dataDefinition.getField("oldPassword"), "qcadooUsers.validate.global.error.wrongOldPassword");
@@ -57,7 +57,7 @@ public class PasswordValidationService {
         }
 
         if (password == null) {
-            entity.addError(dataDefinition.getField(PASSWORD), "qcadooUsers.validate.global.error.noPassword");
+            entity.addError(dataDefinition.getField(L_PASSWORD), "qcadooUsers.validate.global.error.noPassword");
             return false;
         }
 
@@ -68,7 +68,7 @@ public class PasswordValidationService {
         }
 
         if (!password.equals(passwordConfirmation)) {
-            entity.addError(dataDefinition.getField(PASSWORD), "qcadooUsers.validate.global.error.notMatch");
+            entity.addError(dataDefinition.getField(L_PASSWORD), "qcadooUsers.validate.global.error.notMatch");
             entity.addError(dataDefinition.getField("passwordConfirmation"), "qcadooUsers.validate.global.error.notMatch");
             return false;
         }
