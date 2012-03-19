@@ -29,13 +29,13 @@
 	xmlns:util="http://www.springframework.org/schema/util" xmlns:context="http://www.springframework.org/schema/context"
 	xsi:schemaLocation="
 		http://www.springframework.org/schema/beans 
-		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd 
+		http://www.springframework.org/schema/beans/spring-beans-3.1.xsd 
 		http://www.springframework.org/schema/tx 
-		http://www.springframework.org/schema/tx/spring-tx-3.0.xsd 
+		http://www.springframework.org/schema/tx/spring-tx-3.1.xsd 
 		http://www.springframework.org/schema/util 
-		http://www.springframework.org/schema/util/spring-util-3.0.xsd 
+		http://www.springframework.org/schema/util/spring-util-3.1.xsd 
 		http://www.springframework.org/schema/context 
-		http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+		http://www.springframework.org/schema/context/spring-context-3.1.xsd">
 
 	<util:properties id="plugin">
 		<prop key="restartCommand">cd</prop>
@@ -47,6 +47,16 @@
 	<context:component-scan base-package="com.qcadoo.tenant" />
 
 	<context:component-scan base-package="com.qcadoo.plugin" />
+
+<!-- 	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" -->
+<!-- 		destroy-method="close"> -->
+<!-- 		<property name="driverClass" value="org.hsqldb.jdbcDriver" /> -->
+<!-- 		<property name="jdbcUrl" value="jdbc:hsqldb:mem:qcadoo;shutdown=true" /> -->
+<!-- 		<property name="debugUnreturnedConnectionStackTraces" value="true" /> -->
+<!-- 		<property name="maxPoolSize" value="100" /> -->
+<!-- 		<property name="user" value="sa" /> -->
+<!-- 		<property name="password" value="" /> -->
+<!-- 	</bean> -->
 
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
 		destroy-method="close">
@@ -81,7 +91,13 @@
 		<property name="sessionFactory" ref="pluginSessionFactory" />
 	</bean>
 
-	<tx:annotation-driven />
+	<bean id="annotationTransactionAspect" factory-method="aspectOf" 
+		class="org.springframework.transaction.aspectj.AnnotationTransactionAspect">
+       	<property name="transactionManager" ref="pluginTransactionManager" />
+	</bean>
+
+<!-- 	<tx:annotation-driven mode="aspectj" transaction-manager="pluginTransactionManager"/> -->
+<!-- 	<tx:annotation-driven /> -->
 
 	<bean class="com.qcadoo.plugin.internal.module.DefaultModuleFactoryAccessor">
 		<property name="moduleFactories">

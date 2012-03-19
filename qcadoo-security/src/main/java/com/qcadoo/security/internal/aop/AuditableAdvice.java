@@ -28,14 +28,14 @@ import java.util.Date;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.internal.api.InternalDataDefinition;
 import com.qcadoo.security.api.SecurityService;
 
 @Aspect
-@Component
+@Configurable
 public class AuditableAdvice {
 
     @Autowired

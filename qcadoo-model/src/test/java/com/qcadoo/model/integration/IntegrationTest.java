@@ -106,7 +106,8 @@ public abstract class IntegrationTest {
         jdbcTemplate.execute("delete from " + TABLE_NAME_COMPONENT);
         jdbcTemplate.execute("delete from " + TABLE_NAME_MACHINE);
         jdbcTemplate.execute("delete from " + TABLE_NAME_PRODUCT);
-        applicationContext.getBean(PluginManager.class).enablePlugin("machines");
+        PluginManager pluginManager = applicationContext.getBean(PluginManager.class);
+        pluginManager.enablePlugin("machines");
     }
 
     protected Entity createComponent(final String name, final Object product, final Object machine) {

@@ -41,6 +41,7 @@ import com.qcadoo.plugin.internal.api.PluginDao;
 public class DefaultPluginDao implements PluginDao {
 
     private static final String L_PLUGIN = "plugin";
+
     @Autowired
     @Qualifier(L_PLUGIN)
     private SessionFactory sessionFactory;
