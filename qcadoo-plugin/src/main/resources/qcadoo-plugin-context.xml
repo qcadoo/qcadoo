@@ -84,7 +84,6 @@
 			class="org.springframework.transaction.aspectj.AnnotationTransactionAspect">
 	       	<property name="transactionManager" ref="pluginTransactionManager" />
 		</bean>
-<!-- 		<tx:annotation-driven mode="aspectj" transaction-manager="pluginTransactionManager"/> -->
 		
 		<bean class="com.qcadoo.plugin.internal.module.DefaultModuleFactoryAccessor">
 			<property name="moduleFactories">
