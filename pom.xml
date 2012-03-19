@@ -326,14 +326,10 @@
 				<configuration>
 					<instrumentation>
 						<ignores>
-							<ignore>
-								org.aspectj.*
-							</ignore>
+							<ignore>org.aspectj.**</ignore>
 						</ignores>
 						<excludes>
-							<exclude>
-								**/*$AjcClosure*
-							</exclude>
+							<exclude>**/*$AjcClosure*</exclude>
 						</excludes>
 					</instrumentation>
 				</configuration>
