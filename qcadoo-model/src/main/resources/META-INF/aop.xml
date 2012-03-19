@@ -1,0 +1,12 @@
+<!DOCTYPE aspectj PUBLIC
+        "-//AspectJ//DTD//EN" "http://www.eclipse.org/aspectj/dtd/aspectj.dtd">
+<aspectj>
+	<weaver options="-showWeaveInfo -verbose -debug">
+		<exclude within="com.qcadoo..*CGLIB*" />
+		<exclude within="com.qcadoo.model.beans..*" />
+		<exclude within="org.objectweb.asm..*" />
+	</weaver>
+	<aspects>
+		<aspect name="com.qcadoo.model.internal.aop.MonitorableAdvice" />
+	</aspects>
+</aspectj>

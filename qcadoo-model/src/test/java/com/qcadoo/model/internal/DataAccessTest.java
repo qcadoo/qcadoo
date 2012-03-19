@@ -39,6 +39,10 @@ import org.junit.Before;
 import org.mockito.Mockito;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.aspectj.AnnotationTransactionAspect;
 
 import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.DictionaryService;
@@ -123,8 +127,21 @@ public abstract class DataAccessTest {
 
     protected FieldDefinitionImpl treeFieldDefinitionOwner = null;
 
+    protected PlatformTransactionManager txManager = null;
+
+    private TransactionStatus txStatus;
+
     @Before
     public void superInit() {
+        txStatus = mock(TransactionStatus.class);
+        given(txStatus.isRollbackOnly()).willReturn(false);
+
+        txManager = mock(PlatformTransactionManager.class);
+        given(txManager.getTransaction((TransactionDefinition) Mockito.anyObject())).willReturn(txStatus);
+
+        AnnotationTransactionAspect txAspect = AnnotationTransactionAspect.aspectOf();
+        txAspect.setTransactionManager(txManager);
+
         validationService = new ValidationServiceImpl();
 
         entityService = new EntityServiceImpl();
@@ -139,6 +156,7 @@ public abstract class DataAccessTest {
         ReflectionTestUtils.setField(dataAccessService, "priorityService", priorityService);
         ReflectionTestUtils.setField(dataAccessService, "validationService", validationService);
         ReflectionTestUtils.setField(dataAccessService, "hibernateService", hibernateService);
+        AnnotationTransactionAspect.aspectOf();
 
         SearchRestrictions restrictions = new SearchRestrictions();
         ReflectionTestUtils.setField(restrictions, "dataAccessService", dataAccessService);
@@ -230,6 +248,7 @@ public abstract class DataAccessTest {
         given(criteria.setFirstResult(anyInt())).willReturn(criteria);
         given(criteria.setMaxResults(anyInt())).willReturn(criteria);
         given(criteria.addOrder(any(Order.class))).willReturn(criteria);
+
     }
 
 }

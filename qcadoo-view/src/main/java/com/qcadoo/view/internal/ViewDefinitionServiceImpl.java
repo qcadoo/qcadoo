@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,6 +48,7 @@ public class ViewDefinitionServiceImpl implements InternalViewDefinitionService,
     @Override
     @Transactional(readOnly = true)
     @Monitorable
+    @PreAuthorize("isAuthenticated() and hasPermission(#pluginIdentifier + '#' + #viewName, 'viewDefinition', 'isAuthorizedToSee')")
     public ViewDefinition get(final String pluginIdentifier, final String viewName) {
         if (PluginUtils.isEnabled(pluginIdentifier)) {
             return getWithoutSession(pluginIdentifier, viewName);

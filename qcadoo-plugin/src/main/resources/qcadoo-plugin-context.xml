@@ -80,6 +80,11 @@
 			<property name="sessionFactory" ref="pluginSessionFactory" />
 		</bean> 
 		
+		<bean id="annotationTransactionAspect" factory-method="aspectOf" 
+			class="org.springframework.transaction.aspectj.AnnotationTransactionAspect">
+	       	<property name="transactionManager" ref="pluginTransactionManager" />
+		</bean>
+		
 		<bean class="com.qcadoo.plugin.internal.module.DefaultModuleFactoryAccessor">
 			<property name="moduleFactories">
 				<list>

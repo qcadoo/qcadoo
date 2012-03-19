@@ -91,8 +91,8 @@ public class InternalSecurityRolesServiceImpl implements InternalSecurityRolesSe
             return true;
         }
 
-        Collection<GrantedAuthority> reachableAuthorities = roleHierarchy.getReachableGrantedAuthorities(userAuthentication
-                .getAuthorities());
+        Collection<? extends GrantedAuthority> reachableAuthorities = roleHierarchy
+                .getReachableGrantedAuthorities(userAuthentication.getAuthorities());
 
         for (GrantedAuthority grantedAuthority : reachableAuthorities) {
             if (grantedAuthority.getAuthority().equals(targetRole.getRoleIdentifier())) {

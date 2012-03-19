@@ -30,8 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.PostConstruct;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,6 +82,8 @@ public class DefaultPluginAccessor implements InternalPluginAccessor, Applicatio
 
     private final Map<String, Plugin> plugins = new HashMap<String, Plugin>();
 
+    private volatile boolean alreadyInitialized;
+
     @Override
     public Plugin getEnabledPlugin(final String identifier) {
         Plugin plugin = plugins.get(identifier);
@@ -134,7 +134,6 @@ public class DefaultPluginAccessor implements InternalPluginAccessor, Applicatio
         return plugins.values();
     }
 
-    @PostConstruct
     public void init() {
         LOG.info("Plugin Framework initialization");
 
@@ -189,13 +188,19 @@ public class DefaultPluginAccessor implements InternalPluginAccessor, Applicatio
         for (InternalPlugin plugin : temporaryPlugins) {
             plugins.put(plugin.getIdentifier(), plugin);
         }
-
         LOG.info("Plugin Framework initialized in " + (System.currentTimeMillis() - time) + "ms");
     }
 
     @Override
     public void onApplicationEvent(final ContextRefreshedEvent event) {
-
+        if (!alreadyInitialized) {
+            synchronized (this) {
+                if (!alreadyInitialized) {
+                    init();
+                    alreadyInitialized = true;
+                }
+            }
+        }
         if (event != null && event.getSource() instanceof XmlWebApplicationContext) {
             XmlWebApplicationContext eventSource = (XmlWebApplicationContext) event.getSource();
             if (eventSource.getParent() != null) {
