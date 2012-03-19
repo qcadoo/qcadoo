@@ -123,7 +123,7 @@ public final class PdfHelperImpl implements PdfHelper {
     @Override
     public void addTableCellAsTable(final PdfPTable table, final String label, final Object fieldValue, final Font headerFont,
             final Font valueFont, final int columns) {
-        addTableCellAsTable(table, label, fieldValue, "", headerFont, valueFont, columns);
+        addTableCellAsTable(table, label, fieldValue, "-", headerFont, valueFont, columns);
     }
 
     @Override
