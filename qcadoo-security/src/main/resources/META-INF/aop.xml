@@ -1,10 +1,6 @@
 <!DOCTYPE aspectj PUBLIC
         "-//AspectJ//DTD//EN" "http://www.eclipse.org/aspectj/dtd/aspectj.dtd">
 <aspectj>
-	<weaver options="-showWeaveInfo -verbose -debug">
-		<exclude within="com.qcadoo..*CGLIB*" />
-		<include within="com.qcadoo..*" />
-	</weaver>
 	<aspects>
 		<aspect name="com.qcadoo.security.internal.aop.AuditableAdvice" />
 	</aspects>

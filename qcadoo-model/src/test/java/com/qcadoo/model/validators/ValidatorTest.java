@@ -53,12 +53,12 @@ import com.qcadoo.model.internal.hooks.FieldHookDefinitionImpl;
 import com.qcadoo.model.internal.validators.CustomEntityValidator;
 import com.qcadoo.model.internal.validators.CustomValidator;
 import com.qcadoo.model.internal.validators.LengthValidator;
-import com.qcadoo.model.internal.validators.RegexValidator;
-import com.qcadoo.model.internal.validators.UnscaledValueValidator;
 import com.qcadoo.model.internal.validators.RangeValidator;
+import com.qcadoo.model.internal.validators.RegexValidator;
 import com.qcadoo.model.internal.validators.RequiredValidator;
 import com.qcadoo.model.internal.validators.ScaleValidator;
 import com.qcadoo.model.internal.validators.UniqueValidator;
+import com.qcadoo.model.internal.validators.UnscaledValueValidator;
 
 public class ValidatorTest extends DataAccessTest {
 
@@ -423,7 +423,7 @@ public class ValidatorTest extends DataAccessTest {
         verify(session).save(any(SampleSimpleDatabaseObject.class));
         assertTrue(entity.isValid());
     }
-    
+
     @Test
     public void shouldIgnoreScaleValidatorForStringValue() throws Exception {
         // given
@@ -439,7 +439,7 @@ public class ValidatorTest extends DataAccessTest {
         verify(session).save(any(SampleSimpleDatabaseObject.class));
         assertTrue(entity.isValid());
     }
-    
+
     @Test
     public void shouldIgnoreLengthValidatorForBigDecimalValue() throws Exception {
         // given
@@ -471,7 +471,7 @@ public class ValidatorTest extends DataAccessTest {
         verify(session).save(any(SampleSimpleDatabaseObject.class));
         assertTrue(entity.isValid());
     }
-    
+
     @Test
     public void shouldHasErrorsIfBigDecimalPresicionAndScaleAreTooLong() throws Exception {
         // given
@@ -520,7 +520,7 @@ public class ValidatorTest extends DataAccessTest {
         verify(session, never()).save(any(SampleSimpleDatabaseObject.class));
         assertFalse(entity.isValid());
     }
-    
+
     @Test
     public void shouldHasErrorsIfBigDecimalScaleAreTooShort() throws Exception {
         // given
@@ -568,7 +568,7 @@ public class ValidatorTest extends DataAccessTest {
         verify(session, never()).save(any(SampleSimpleDatabaseObject.class));
         assertFalse(entity.isValid());
     }
-    
+
     @Test
     public void shouldHasErrorsIfBigDecimalUnscaledValueIsNotEqual() throws Exception {
         // given
@@ -584,7 +584,7 @@ public class ValidatorTest extends DataAccessTest {
         verify(session, never()).save(any(SampleSimpleDatabaseObject.class));
         assertFalse(entity.isValid());
     }
-    
+
     @Test
     public void shouldHasNoErrorsIfBigDecimalValuePresicionAndScaleIsOk() throws Exception {
         // given
@@ -617,7 +617,7 @@ public class ValidatorTest extends DataAccessTest {
         verify(session, never()).save(any(SampleSimpleDatabaseObject.class));
         assertFalse(entity.isValid());
     }
-    
+
     @Test
     public void shouldHasErrorsIfStringIsTooShort() throws Exception {
         // given
@@ -633,7 +633,7 @@ public class ValidatorTest extends DataAccessTest {
         verify(session, never()).save(any(SampleSimpleDatabaseObject.class));
         assertFalse(entity.isValid());
     }
-    
+
     @Test
     public void shouldHasNoCheckLenghtOfBoolean() throws Exception {
         // given
@@ -814,7 +814,7 @@ public class ValidatorTest extends DataAccessTest {
         verify(session, never()).save(any(SampleSimpleDatabaseObject.class));
         assertFalse(entity.isValid());
     }
-    
+
     @Test
     public void shouldHasErrorsIfStringNotMatchExpression() throws Exception {
         // given
@@ -830,7 +830,7 @@ public class ValidatorTest extends DataAccessTest {
         verify(session, never()).save(any(SampleSimpleDatabaseObject.class));
         assertFalse(entity.isValid());
     }
-    
+
     @Test
     public void shouldHaveNoErrorsIfStringMatchExpression() throws Exception {
         // given

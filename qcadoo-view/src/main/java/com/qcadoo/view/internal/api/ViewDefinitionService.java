@@ -25,8 +25,6 @@ package com.qcadoo.view.internal.api;
 
 import java.util.List;
 
-import org.springframework.security.access.prepost.PreAuthorize;
-
 /**
  * Service for manipulating view definitions.
  * 
@@ -44,7 +42,6 @@ public interface ViewDefinitionService {
      *            view's name
      * @return the view definition, null if not found
      */
-    @PreAuthorize("isAuthenticated() and hasPermission(#pluginIdentifier + '#' + #viewName, 'viewDefinition', 'isAuthorizedToSee')")
     ViewDefinition get(String pluginIdentifier, String viewName);
 
     /**

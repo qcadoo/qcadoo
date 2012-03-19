@@ -36,8 +36,6 @@
 		 http://www.springframework.org/schema/aop 
 		 http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
 
-	<aop:aspectj-autoproxy />
-
 	<context:component-scan base-package="com.qcadoo.view">
 		<context:include-filter type="annotation"
 			expression="org.springframework.stereotype.Controller" />

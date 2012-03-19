@@ -3,7 +3,8 @@
 <aspectj>
 	<weaver options="-showWeaveInfo -verbose -debug">
 		<exclude within="com.qcadoo..*CGLIB*" />
-		<include within="com.qcadoo..*" />
+		<exclude within="com.qcadoo.model.beans..*" />
+		<exclude within="org.objectweb.asm..*" />
 	</weaver>
 	<aspects>
 		<aspect name="com.qcadoo.model.internal.aop.MonitorableAdvice" />

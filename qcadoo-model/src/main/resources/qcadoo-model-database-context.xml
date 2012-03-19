@@ -45,8 +45,6 @@
 		<property name="password" value="${dbPassword}" />
 	</bean>
 	
-	<context:load-time-weaver />
-
 	<beans profile="standalone">
 
 		<bean id="sessionFactory"
@@ -67,8 +65,13 @@
 			<property name="sessionFactory" ref="sessionFactory" />
 			<property name="dataSource" ref="dataSource" />
 		</bean>
-	
-		<tx:annotation-driven transaction-manager="transactionManager" mode="aspectj" />
+		
+<!--	 	<tx:annotation-driven/> -->
+<!-- 		<tx:annotation-driven transaction-manager="transactionManager" mode="aspectj" /> -->
+		<bean id="annotationTransactionAspect" factory-method="aspectOf" 
+			class="org.springframework.transaction.aspectj.AnnotationTransactionAspect">
+        	<property name="transactionManager" ref="transactionManager" />
+		</bean>
 	
 	</beans>
 

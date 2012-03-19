@@ -138,6 +138,11 @@
 			<version>${spring.security.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-aspects</artifactId>
+			<version>${spring.security.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
 			<version>${hibernate.version}</version>
@@ -240,11 +245,6 @@
 			<version>${aspectj.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.aspectj</groupId>
-			<artifactId>aspectjweaver</artifactId>
-			<version>${aspectj.version}</version>
-		</dependency>
-		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-aspects</artifactId>
 			<version>${spring.version}</version>
@@ -331,7 +331,21 @@
 				<configuration>
 					<source>1.6</source>
 					<target>1.6</target>
+					<aspectLibraries>
+           				<aspectLibrary>
+               				<groupId>org.springframework</groupId>
+              				<artifactId>spring-aspects</artifactId>
+            			</aspectLibrary>
+					</aspectLibraries>
+			    	<showWeaveInfo>true</showWeaveInfo>
 				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>org.aspectj</groupId>
+						<artifactId>aspectjtools</artifactId>
+						<version>${aspectj.version}</version>
+					</dependency>
+				</dependencies>
 				<executions>
 					<execution>
 						<goals>
@@ -340,16 +354,6 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.12</version>
-				<configuration>
-					<forkMode>once</forkMode>
-					<argLine>-javaagent:${settings.localRepository}/org/springframework/spring-instrument/${spring.version}/spring-instrument-${spring.version}.jar</argLine>
-					<useSystemClassLoader>true</useSystemClassLoader>
-				</configuration>
 			</plugin>
 		</plugins>
 		<resources>

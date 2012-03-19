@@ -35,6 +35,7 @@
        http://www.springframework.org/schema/context 
        http://www.springframework.org/schema/context/spring-context-3.1.xsd">
 
+	<context:spring-configured />
 	<context:component-scan base-package="com.qcadoo.security" />
 
 	<security:global-method-security

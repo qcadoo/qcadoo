@@ -53,7 +53,7 @@
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
 		destroy-method="close">
 		<property name="driverClassName" value="org.hsqldb.jdbcDriver" />
-		<property name="url" value="jdbc:hsqldb:mem:mes" />
+		<property name="url" value="jdbc:hsqldb:mem:mes;create=true" />
 		<property name="username" value="sa" />
 		<property name="password" value="" />
 	</bean>
@@ -95,8 +95,11 @@
 		<property name="sessionFactory" ref="sessionFactory" />
 		<property name="dataSource" ref="dataSource" />
 	</bean>
-	
-	<tx:annotation-driven />
+
+<!-- 	<tx:annotation-driven mode="aspectj" transaction-manager="transactionManager"/> -->
+	<bean class="org.springframework.transaction.aspectj.AnnotationTransactionAspect" factory-method="aspectOf">
+		<property name="transactionManager" ref="pluginTransactionManager"/>
+	</bean>
 	
 	<bean class="com.qcadoo.plugin.internal.module.DefaultModuleFactoryAccessor">
 		<property name="moduleFactories">

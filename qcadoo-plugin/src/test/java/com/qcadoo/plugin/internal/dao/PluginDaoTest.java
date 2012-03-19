@@ -39,6 +39,11 @@ import org.hibernate.classic.Session;
 import org.hibernate.criterion.Criterion;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.aspectj.AnnotationTransactionAspect;
 
 import com.google.common.collect.Lists;
 import com.qcadoo.model.beans.qcadooPlugin.QcadooPluginPlugin;
@@ -63,8 +68,23 @@ public class PluginDaoTest {
 
     private final Criteria criteria = mock(Criteria.class);
 
+    // private ClassPathXmlApplicationContext applicationContext;
+
+    private TransactionStatus txStatus;
+
+    private PlatformTransactionManager txManager;
+
     @Before
     public void init() {
+        txStatus = mock(TransactionStatus.class);
+        given(txStatus.isRollbackOnly()).willReturn(false);
+
+        txManager = mock(PlatformTransactionManager.class);
+        given(txManager.getTransaction((TransactionDefinition) Mockito.anyObject())).willReturn(txStatus);
+
+        AnnotationTransactionAspect txAspect = AnnotationTransactionAspect.aspectOf();
+        txAspect.setTransactionManager(txManager);
+
         plugin1.setIdentifier("plugin1");
         plugin2.setIdentifier("plugin2");
 
