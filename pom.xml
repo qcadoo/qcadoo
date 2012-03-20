@@ -323,16 +323,6 @@
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>cobertura-maven-plugin</artifactId>
 				<version>2.4</version>
-				<configuration>
-					<instrumentation>
-						<ignores>
-							<ignore>org.aspectj.**</ignore>
-						</ignores>
-						<excludes>
-							<exclude>**/*$AjcClosure*</exclude>
-						</excludes>
-					</instrumentation>
-				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -364,7 +354,6 @@
 					<execution>
 						<goals>
 							<goal>compile</goal>
-							<goal>test-compile</goal>
 						</goals>
 					</execution>
 				</executions>
