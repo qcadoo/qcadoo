@@ -103,6 +103,8 @@
 .ganttContainer .ganttRowNamesConteiner .ganttRowNameElement {
 	border-bottom: solid #999999 1px;
 	text-align: center;
+	overflow-y: auto;
+	word-wrap: break-word;
 }
 .ganttContainer .ganttCenterConteiner .ganttCenterContentWrapper .rowsContainerWrapper .rowsContainer .ganttRowElement.ganttFirstRow,
 .ganttContainer .ganttRowNamesConteiner .ganttRowNameElement.ganttFirstRow {
