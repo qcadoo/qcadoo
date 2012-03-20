@@ -36,8 +36,9 @@
 <tiles:useAttribute name="componentBody" />
 <tiles:useAttribute name="componentAlign" ignore="true" />
 <tiles:useAttribute name="componentIgnoreBorder" ignore="true" />
+<tiles:useAttribute name="componentCssClass" ignore="true" />
 
-<div class="component_element component_form_element component_element_${componentType}">
+<div class="component_element component_form_element component_element_${componentType} ${componentCssClass}">
 
 	<c:set var="hasLabel" value="${component['hasLabel'] && component['jspOptions']['translations']['label'] != ''}" />
 	<c:set var="labelWidth" value="${hasLabel ? component['jspOptions']['labelWidth'] : 0}" />
