@@ -109,6 +109,7 @@
 	right: 10px;
 	height: 100%;
 	white-space: nowrap;
+	overflow-x: auto;
 }
 .component_container_form_w.noLabel {
 	left: 25px;
