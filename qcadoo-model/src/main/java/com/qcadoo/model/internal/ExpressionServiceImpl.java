@@ -42,6 +42,7 @@ import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.SpelEvaluationException;
+import org.springframework.expression.spel.SpelMessage;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.stereotype.Component;
@@ -133,8 +134,12 @@ public final class ExpressionServiceImpl implements ExpressionService {
                 LOG.debug("Calculating value of expression \"" + expression + "\" for " + entity + " : " + value);
             }
         } catch (SpelEvaluationException e) {
-            LOG.error("Error while calculating value of expression \"" + expression + "\" for " + entity, e);
-            value = "!!!";
+            if (SpelMessage.CANNOT_INDEX_INTO_NULL_VALUE.equals(e.getMessageCode())) {
+                return "";
+            } else {
+                LOG.error("Error while calculating value of expression \"" + expression + "\" for " + entity, e);
+                value = "!!!";
+            }
         }
 
         if (StringUtils.isEmpty(value) || "null".equals(value)) {
