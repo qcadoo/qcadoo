@@ -36,6 +36,11 @@
 <tiles:insertTemplate template="formComponent.jsp">
 	<tiles:putAttribute name="component" value="${component}" />
 	<tiles:putAttribute name="componentType" value="lookup" />
+	<tiles:putAttribute name="componentCssClass">
+		<c:if test="${component['jspOptions']['textRepresentationOnDisabled']}">
+			textRepresentationOnDisabled
+		</c:if>
+	</tiles:putAttribute>
 	<tiles:putAttribute name="componentBody">
 		<c:if test="${component['jspOptions']['textRepresentationOnDisabled']}">
 			<c:set var="displayHiddenIfTextRepresentationOnDisabled" value="display: none" />

@@ -109,6 +109,8 @@
 	right: 10px;
 	height: 100%;
 	white-space: nowrap;
+}
+.textRepresentationOnDisabled .component_container_form_w {
 	overflow-x: auto;
 }
 #loginForm .component_container_form_w {
