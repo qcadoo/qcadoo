@@ -78,15 +78,7 @@ public class ModelXmlToHbmConverterImpl implements ModelXmlToHbmConverter {
             if (resource.isReadable()) {
                 LOG.info("Converting " + resource + " to hbm.xml");
 
-                byte[] hbm = null;
-
-                try {
-                    hbm = transform(resource);
-                } catch (TransformerException e) {
-                    throw new IllegalStateException("Error while parsing model.xml: " + e.getMessage(), e);
-                } catch (IOException e) {
-                    throw new IllegalStateException("Error while parsing model.xml: " + e.getMessage(), e);
-                }
+                byte[] hbm = getHbm(resource);
 
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(new String(hbm));
@@ -97,6 +89,16 @@ public class ModelXmlToHbmConverterImpl implements ModelXmlToHbmConverter {
         }
 
         return hbms.toArray(new Resource[hbms.size()]);
+    }
+
+    private byte[] getHbm(final Resource resource) {
+        try {
+            return transform(resource);
+        } catch (TransformerException e) {
+            throw new IllegalStateException("Error while parsing model.xml: " + e.getMessage(), e);
+        } catch (IOException e) {
+            throw new IllegalStateException("Error while parsing model.xml: " + e.getMessage(), e);
+        }
     }
 
     protected byte[] transform(final Resource resource) throws TransformerException, IOException {
