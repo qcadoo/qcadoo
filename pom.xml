@@ -49,7 +49,7 @@
 
 	<properties>
 		<qcadoo.plugin.version>1.1.4</qcadoo.plugin.version>
-		<qcadoo.maven.plugin.version>1.1.4-SNAPSHOT</qcadoo.maven.plugin.version>
+		<qcadoo.maven.plugin.version>1.1.4</qcadoo.maven.plugin.version>
 		<spring.version>3.1.0.RELEASE</spring.version>
 		<spring.security.version>3.0.7.RELEASE</spring.security.version>
 		<slf4j.version>1.6.1</slf4j.version>
