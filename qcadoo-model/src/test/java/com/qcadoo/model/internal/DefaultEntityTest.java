@@ -31,6 +31,9 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.math.BigDecimal;
+
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -243,5 +246,43 @@ public class DefaultEntityTest {
 
         // then
         assertFalse(returnedValue);
+    }
+
+    @Test
+    public final void shouldReturnBigDecimalValue() throws Exception {
+        // given
+        BigDecimal decimal = BigDecimal.ZERO;
+        final String decimalFieldName = "decimalField";
+        defaultEntity.setField(decimalFieldName, decimal);
+
+        // when
+        BigDecimal result = defaultEntity.getDecimalField(decimalFieldName);
+
+        // then
+        Assert.assertNotNull(result);
+        Assert.assertEquals(decimal, result);
+    }
+
+    @Test
+    public final void shouldReturnNullIfDecimalFieldIsNull() throws Exception {
+        // given
+        final String decimalFieldName = "decimalField";
+        defaultEntity.setField(decimalFieldName, null);
+
+        // when
+        BigDecimal result = defaultEntity.getDecimalField(decimalFieldName);
+
+        // then
+        Assert.assertNull(result);
+    }
+
+    @Test(expected = ClassCastException.class)
+    public final void shouldThrowExceptionIfDecimalFieldTypeIsNotSupported() throws Exception {
+        // given
+        final String decimalFieldName = "decimalField";
+        defaultEntity.setField(decimalFieldName, "qcadoo rlz!");
+
+        // when
+        defaultEntity.getDecimalField(decimalFieldName);
     }
 }

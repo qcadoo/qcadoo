@@ -23,6 +23,7 @@
  */
 package com.qcadoo.model.internal;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -87,6 +88,11 @@ public final class EntityTreeNodeImpl implements EntityTreeNode {
     @Override
     public boolean getBooleanField(final String fieldName) {
         return entity.getBooleanField(fieldName);
+    }
+
+    @Override
+    public BigDecimal getDecimalField(final String fieldName) {
+        return entity.getDecimalField(fieldName);
     }
 
     @Override

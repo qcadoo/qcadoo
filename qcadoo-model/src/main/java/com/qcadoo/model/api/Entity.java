@@ -23,6 +23,7 @@
  */
 package com.qcadoo.model.api;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -84,6 +85,18 @@ public interface Entity {
      * @return the field's boolean value
      */
     boolean getBooleanField(String fieldName);
+
+    /**
+     * Return the decimal (java.math.BigDecimal) value of the field with given name
+     * 
+     * @param fieldName
+     *            field's name
+     * @return the field's decimal value
+     * 
+     * @throws ClassCastException
+     *             if given field is not BigDecimal (sub)type
+     */
+    BigDecimal getDecimalField(String fieldName);
 
     /**
      * Return the value, casted to entity, of the field with given name.

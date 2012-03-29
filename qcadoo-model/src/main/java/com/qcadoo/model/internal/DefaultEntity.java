@@ -25,6 +25,7 @@ package com.qcadoo.model.internal;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -215,6 +216,19 @@ public final class DefaultEntity implements Entity {
             return Boolean.parseBoolean((String) fieldValue);
         }
         return false;
+    }
+
+    @Override
+    public BigDecimal getDecimalField(final String fieldName) {
+        Object fieldValue = getField(fieldName);
+        if (fieldValue == null) {
+            return null;
+        }
+        if (fieldValue instanceof BigDecimal) {
+            return (BigDecimal) fieldValue;
+        }
+        throw new ClassCastException("Field " + fieldName + " in " + dataDefinition.getPluginIdentifier() + '.'
+                + dataDefinition.getName() + " does not contain BigDecimal value");
     }
 
     @Override
