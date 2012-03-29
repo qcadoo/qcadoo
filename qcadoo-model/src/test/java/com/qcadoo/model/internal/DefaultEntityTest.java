@@ -32,13 +32,16 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.google.common.collect.Lists;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
+import com.qcadoo.model.api.EntityList;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.types.BelongsToType;
 import com.qcadoo.model.api.types.FieldType;
@@ -276,7 +279,7 @@ public class DefaultEntityTest {
         Assert.assertNull(result);
     }
 
-    @Test(expected = ClassCastException.class)
+    @Test(expected = IllegalArgumentException.class)
     public final void shouldThrowExceptionIfDecimalFieldTypeIsNotSupported() throws Exception {
         // given
         final String decimalFieldName = "decimalField";
@@ -284,5 +287,73 @@ public class DefaultEntityTest {
 
         // when
         defaultEntity.getDecimalField(decimalFieldName);
+    }
+
+    @Test
+    public final void shouldReturnDetachedEntityListImpl() throws Exception {
+        // given
+        final String hasManyFieldName = "hasManyDetachedField";
+        List<Entity> listOfMockEntities = getListOfMockEntities();
+        defaultEntity.setField(hasManyFieldName, listOfMockEntities);
+
+        // when
+        EntityList resultList = defaultEntity.getHasManyField(hasManyFieldName);
+
+        // then
+        Assert.assertTrue(resultList instanceof DetachedEntityListImpl);
+        Assert.assertEquals(listOfMockEntities.size(), resultList.size());
+        Assert.assertArrayEquals(listOfMockEntities.toArray(), resultList.toArray());
+    }
+
+    @Test
+    public final void shouldReturnExistingEntityList() throws Exception {
+        // given
+        final String hasManyFieldName = "hasManyDetachedField";
+        EntityList entityList = mock(EntityList.class);
+        defaultEntity.setField(hasManyFieldName, entityList);
+
+        // when
+        EntityList resultList = defaultEntity.getHasManyField(hasManyFieldName);
+
+        // then
+        Assert.assertTrue(resultList instanceof EntityList);
+        Assert.assertEquals(entityList, resultList);
+    }
+
+    @Test
+    public final void shouldReturnEmptyDetachedEntityListIfFieldIsNull() throws Exception {
+        // given
+        final String hasManyFieldName = "hasManyDetachedField";
+        defaultEntity.setField(hasManyFieldName, null);
+
+        // when
+        EntityList resultList = defaultEntity.getHasManyField(hasManyFieldName);
+
+        // then
+        Assert.assertNotNull(resultList);
+        Assert.assertTrue(resultList instanceof DetachedEntityListImpl);
+        Assert.assertTrue(resultList.isEmpty());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public final void shouldThrowExceptionIfHasManyFieldHaveUnsupportedType() throws Exception {
+        // given
+        final String hasManyFieldName = "hasManyDetachedField";
+        defaultEntity.setField(hasManyFieldName, "usupported value type (String)");
+
+        // when
+        defaultEntity.getHasManyField(hasManyFieldName);
+    }
+
+    private List<Entity> getListOfMockEntities() {
+        Entity e1 = mock(Entity.class);
+        Entity e2 = mock(Entity.class);
+        Entity e3 = mock(Entity.class);
+
+        when(e1.getId()).thenReturn(1L);
+        when(e2.getId()).thenReturn(2L);
+        when(e3.getId()).thenReturn(3L);
+
+        return Lists.newArrayList(e1, e2, e3);
     }
 }

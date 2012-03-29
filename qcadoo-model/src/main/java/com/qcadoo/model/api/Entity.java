@@ -93,7 +93,7 @@ public interface Entity {
      *            field's name
      * @return the field's decimal value
      * 
-     * @throws ClassCastException
+     * @throws IllegalArgumentException
      *             if given field is not BigDecimal (sub)type
      */
     BigDecimal getDecimalField(String fieldName);
@@ -116,6 +116,9 @@ public interface Entity {
      * @param fieldName
      *            field's name
      * @return the field's value
+     * 
+     * @throws IllegalArgumentException
+     *             if given field have incompatible type
      */
     EntityList getHasManyField(String fieldName);
 
