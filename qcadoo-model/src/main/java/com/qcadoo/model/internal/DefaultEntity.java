@@ -25,6 +25,7 @@ package com.qcadoo.model.internal;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -38,6 +39,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import com.google.common.collect.Lists;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
+import com.qcadoo.model.api.EntityList;
 import com.qcadoo.model.api.EntityTree;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.types.BelongsToType;
@@ -218,17 +220,44 @@ public final class DefaultEntity implements Entity {
     }
 
     @Override
-    public EntityListImpl getHasManyField(final String fieldName) {
-        return (EntityListImpl) getField(fieldName);
+    public BigDecimal getDecimalField(final String fieldName) {
+        Object fieldValue = getField(fieldName);
+        if (fieldValue == null) {
+            return null;
+        }
+        if (fieldValue instanceof BigDecimal) {
+            return (BigDecimal) fieldValue;
+        }
+        throw new IllegalArgumentException("Field " + fieldName + " in " + dataDefinition.getPluginIdentifier() + '.'
+                + dataDefinition.getName() + " does not contain BigDecimal value");
     }
 
-    @SuppressWarnings("unchecked")
+    @Override
+    public EntityList getHasManyField(final String fieldName) {
+        Object fieldValue = getField(fieldName);
+        if (fieldValue == null) {
+            return new DetachedEntityListImpl(dataDefinition, null);
+        }
+        if (fieldValue instanceof EntityList) {
+            return (EntityList) fieldValue;
+        }
+        if (fieldValue instanceof List<?>) {
+            @SuppressWarnings("unchecked")
+            EntityList entityList = new DetachedEntityListImpl(dataDefinition, (List<Entity>) fieldValue);
+            return entityList;
+        }
+        throw new IllegalArgumentException("Field " + fieldName + " in " + dataDefinition.getPluginIdentifier() + '.'
+                + dataDefinition.getName() + " does not contain value of type List<Entity> or EntityList");
+    }
+
     @Override
     public List<Entity> getManyToManyField(final String fieldName) {
         if (getField(fieldName) == null) {
             return Lists.newArrayList();
         }
-        return Lists.newArrayList((Set<Entity>) getField(fieldName));
+        @SuppressWarnings("unchecked")
+        List<Entity> entityList = Lists.newArrayList((Set<Entity>) getField(fieldName));
+        return entityList;
     }
 
     @Override

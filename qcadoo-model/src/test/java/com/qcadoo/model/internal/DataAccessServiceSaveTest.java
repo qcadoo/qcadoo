@@ -29,6 +29,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -47,6 +48,7 @@ import com.qcadoo.model.api.EntityTree;
 import com.qcadoo.model.beans.sample.SampleParentDatabaseObject;
 import com.qcadoo.model.beans.sample.SampleSimpleDatabaseObject;
 import com.qcadoo.model.beans.sample.SampleTreeDatabaseObject;
+import com.qcadoo.model.internal.api.EntityHookDefinition;
 
 public final class DataAccessServiceSaveTest extends DataAccessTest {
 
@@ -267,6 +269,30 @@ public final class DataAccessServiceSaveTest extends DataAccessTest {
         assertEquals(tree, entity.getField("tree"));
 
         verify(session, times(1)).save(Mockito.any());
+    }
+
+    @Test
+    public void shouldNotOmitCreateHooksExceptOnCopy() throws Exception {
+        EntityHookDefinition onCreateHook = mock(EntityHookDefinition.class);
+        given(onCreateHook.isEnabled()).willReturn(true);
+        dataDefinition.addCreateHook(onCreateHook);
+
+        Entity entity = new DefaultEntity(dataDefinition);
+        entity.setField("name", "Mr T");
+        entity.setField("age", 66);
+
+        SampleSimpleDatabaseObject databaseObject = new SampleSimpleDatabaseObject();
+        databaseObject.setName("Mr T");
+        databaseObject.setAge(66);
+
+        // when
+        entity = dataDefinition.save(entity);
+
+        // then
+        verify(session).save(databaseObject);
+        assertTrue(entity.isValid());
+        verify(onCreateHook, times(1)).isEnabled();
+        verify(onCreateHook, times(1)).call(Mockito.any(Entity.class));
     }
 
 }

@@ -33,5 +33,6 @@
 	</weaver>
 	<aspects>
 		<aspect name="com.qcadoo.model.internal.aop.MonitorableAdvice" />
+		<aspect name="com.qcadoo.model.internal.aop.OmitModelCreateHooksAspect" />
 	</aspects>
 </aspectj>
