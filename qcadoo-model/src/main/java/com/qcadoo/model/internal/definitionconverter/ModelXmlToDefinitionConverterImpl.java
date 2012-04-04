@@ -528,11 +528,6 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
     }
 
     private FieldHookDefinition getValidatorDefinition(final XMLStreamReader reader, final FieldHookDefinition validator) {
-        return getValidatorDefinition(reader, validator, null);
-    }
-
-    private FieldHookDefinition getValidatorDefinition(final XMLStreamReader reader, final FieldHookDefinition validator,
-            final String pluginIdentifier) {
         String customMessage = getStringAttribute(reader, "message");
         if (StringUtils.hasText(customMessage) && validator instanceof ErrorMessageDefinition) {
             ((ErrorMessageDefinition) validator).setErrorMessage(customMessage);
@@ -583,10 +578,6 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
         public void execHookDefinitionGetter(final XMLStreamReader reader) {
         }
 
-        @Pointcut("execution(com.qcadoo.model.internal.api.FieldHookDefinition ModelXmlToDefinitionConverterImpl.*(javax.xml.stream.XMLStreamReader, com.qcadoo.model.internal.api.FieldHookDefinition, String)) && args(reader, *, *)")
-        public void execValidatorDefinitionGetter(final XMLStreamReader reader) {
-        }
-
         @Pointcut("execution(com.qcadoo.model.api.FieldDefinition ModelXmlToDefinitionConverterImpl.getFieldDefinition(javax.xml.stream.XMLStreamReader, com.qcadoo.model.internal.DataDefinitionImpl, com.qcadoo.model.internal.AbstractModelXmlConverter.FieldsTag)) && args(reader, ..)")
         public void execFieldDefinitionGetter(final XMLStreamReader reader) {
         }
@@ -596,14 +587,6 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
                 final String pluginIdentifier) throws Throwable {
             Object[] args = pjp.getArgs();
             args[1] = getSourcePluginName(reader, pluginIdentifier);
-            return pjp.proceed(args);
-        }
-
-        @Around("execValidatorDefinitionGetter(reader) && cflow(execGetDataDefinition(pluginIdentifier))")
-        public Object appendPluginIdentifierToValidator(final ProceedingJoinPoint pjp, final XMLStreamReader reader,
-                final String pluginIdentifier) throws Throwable {
-            Object[] args = pjp.getArgs();
-            args[2] = getSourcePluginName(reader, pluginIdentifier);
             return pjp.proceed(args);
         }
 
