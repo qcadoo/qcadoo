@@ -36,6 +36,8 @@ QCD.components.elements.TimeInput = function(_element, _mainController) {
 	
 	var hasListeners = (this.options.listeners.length > 0) ? true : false;
 	
+	
+	
 	function constructor(_this) {
 		$.mask.definitions['6']='[0-5]';
 		input.change(function() {
@@ -100,25 +102,25 @@ QCD.components.elements.TimeInput = function(_element, _mainController) {
 		return (part[2] * 1) + (part[1] * 60) + (part[0] * 3600);
 	}
 	
+	
+	function checkMinusSign(negative) {
+		if (negative.match(/^-\d/g)) {
+			return true;
+		} else { 
+			return false; }
+	}
+	
 	function convertToString(value) {
-		value = value.match(/\d/g).join("");
+	   var minusSign= false;
+	   if (checkMinusSign(value)) {
+	   		minusSign=true;
+	   }
+	   value = value.match(/\d/g).join("");
+	   h = Math.floor(value / 3600) + "";
+	   m = Math.floor((value % 3600) / 60);
+	   s = (value % 3600) % 60;
 		
-		h = Math.floor(value / 3600) + "";
-		while(h.length < noHours) {
-			h = "0" + h;
-		}
-
-		m = Math.floor((value % 3600) / 60);
-		if(m < 10) {
-			m = "0" + m;
-		}
-		
-		s = (value % 3600) % 60;
-		if(s < 10) {
-			s = "0" + s;
-		}
-		
-		return h + ":" + m + ":" + s;
+		    return (minusSign ? "-" : "") + (h.lenght < noHours ? "0" : "") + h + ":" + (m < 10 ? "0" : "") + m + ":" + (s < 10 ? "0" : "") + s;
 	}
 	
 	this.updateSize = function(_width, _height) {
