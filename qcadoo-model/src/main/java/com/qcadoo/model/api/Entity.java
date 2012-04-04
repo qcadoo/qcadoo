@@ -226,6 +226,10 @@ public interface Entity {
     /**
      * Create new entity and copy fields values.
      * 
+     * Notice: This method copies all the fields of entity, including the ID and fields with copyable attribute set to false.
+     * Returned copy is not persisted. If you want to make persistent copy with unique ID and copyable/persistent/etc. attributes
+     * aware consider use {@link DataDefinition#copy(Long...)}
+     * 
      * @return copied entity
      */
     Entity copy();
