@@ -88,7 +88,7 @@ public class DefaultPluginAccessor implements InternalPluginAccessor, Applicatio
     public Plugin getEnabledPlugin(final String identifier) {
         Plugin plugin = plugins.get(identifier);
 
-        if(plugin == null) {
+        if (plugin == null) {
             return null;
         }
         if (plugin.hasState(PluginState.ENABLED)) {
