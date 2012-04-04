@@ -28,14 +28,15 @@ import org.springframework.context.ApplicationContext;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.internal.api.EntityHookDefinition;
+import com.qcadoo.plugin.api.PluginUtils;
 
 public final class EntityHookDefinitionImpl extends HookDefinitionImpl implements EntityHookDefinition {
 
     private boolean enabled = true;
 
-    public EntityHookDefinitionImpl(final String className, final String methodName, final ApplicationContext applicationContext)
-            throws HookInitializationException {
-        super(className, methodName, applicationContext);
+    public EntityHookDefinitionImpl(final String className, final String methodName, final String pluginIdentifier,
+            final ApplicationContext applicationContext) throws HookInitializationException {
+        super(className, methodName, pluginIdentifier, applicationContext);
     }
 
     @Override
@@ -55,7 +56,7 @@ public final class EntityHookDefinitionImpl extends HookDefinitionImpl implement
 
     @Override
     public boolean isEnabled() {
-        return enabled;
+        return enabled && PluginUtils.isEnabled(getPluginIdentifier());
     }
 
     @Override

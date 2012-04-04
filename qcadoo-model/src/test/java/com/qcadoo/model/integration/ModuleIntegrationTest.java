@@ -52,17 +52,22 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 
 import java.util.Locale;
 import java.util.Map;
 
 import org.junit.Test;
 import org.junit.matchers.JUnitMatchers;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.types.EnumeratedType;
 import com.qcadoo.plugin.api.PluginManager;
+import com.qcadoo.plugin.api.PluginStateResolver;
+import com.qcadoo.plugin.internal.PluginUtilsService;
 
 public class ModuleIntegrationTest extends IntegrationTest {
 
@@ -72,6 +77,51 @@ public class ModuleIntegrationTest extends IntegrationTest {
         DataDefinition productDao = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PRODUCT);
         DataDefinition machineDao = dataDefinitionService.get(PLUGIN_MACHINES_NAME, ENTITY_NAME_MACHINE);
         DataDefinition componentDao = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_COMPONENT);
+
+        Entity machine = machineDao.save(createMachine("asd"));
+
+        Entity product = createProduct("asd", "asd");
+        product.setField("changeableName", "xxx");
+        product = productDao.save(product);
+
+        Entity component = createComponent("name", product, machine);
+        component.setField("machineName", "test");
+
+        // when
+        component = componentDao.save(component);
+
+        // then
+
+        assertEquals("test", component.getField("machineName"));
+        assertEquals("XXX", product.getField("changeableName"));
+        assertNotNull(component.getField("machine"));
+
+        Map<String, Object> componentResult = jdbcTemplate.queryForMap("select * from " + TABLE_NAME_COMPONENT);
+
+        assertNotNull(componentResult);
+        assertEquals("test", componentResult.get("machineName"));
+
+        Map<String, Object> productResult = jdbcTemplate.queryForMap("select * from " + TABLE_NAME_PRODUCT);
+
+        assertNotNull(productResult);
+        assertEquals("XXX", productResult.get("changeableName"));
+
+        assertThat(((EnumeratedType) productDao.getField("enum").getType()).values(Locale.ENGLISH).keySet(),
+                JUnitMatchers.hasItems("one", "two", "three"));
+    }
+
+    @Test
+    public void shouldCallAdditinanalHooksIfPluginIsEnabledForCurrentUser() throws Exception {
+        // given
+        DataDefinition productDao = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PRODUCT);
+        DataDefinition machineDao = dataDefinitionService.get(PLUGIN_MACHINES_NAME, ENTITY_NAME_MACHINE);
+        DataDefinition componentDao = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_COMPONENT);
+
+        PluginStateResolver pluginStateResolver = mock(PluginStateResolver.class);
+        PluginUtilsService pluginUtil = new PluginUtilsService();
+        ReflectionTestUtils.setField(pluginUtil, "pluginStateResolver", pluginStateResolver);
+        pluginUtil.init();
+        given(pluginStateResolver.isEnabled("machines")).willReturn(true);
 
         Entity machine = machineDao.save(createMachine("asd"));
 
@@ -141,12 +191,59 @@ public class ModuleIntegrationTest extends IntegrationTest {
 
         assertEquals("xxx", product.getField("changeableName"));
         assertNull(component.getField("machineName"));
-        assertNull(component.getField("machines"));
+        assertNull(component.getField("machine"));
 
         Map<String, Object> componentResult = jdbcTemplate.queryForMap("select * from " + TABLE_NAME_COMPONENT);
 
         assertNotNull(componentResult);
         assertNull(componentResult.get("machineName"));
+
+        Map<String, Object> productResult = jdbcTemplate.queryForMap("select * from " + TABLE_NAME_PRODUCT);
+
+        assertNotNull(productResult);
+        assertEquals("xxx", productResult.get("changeableName"));
+
+        assertThat(((EnumeratedType) productDao.getField("enum").getType()).values(Locale.ENGLISH).keySet(),
+                JUnitMatchers.hasItems("one", "two"));
+    }
+
+    @Test
+    public void shouldNotCallAdditinanalHooksIfPluginIsDisabledOnlyForCurrentUser() throws Exception {
+        // given
+        DataDefinition machineDao = dataDefinitionService.get(PLUGIN_MACHINES_NAME, ENTITY_NAME_MACHINE);
+        machineDao.save(createMachine("asd"));
+
+        applicationContext.getBean(PluginManager.class).enablePlugin("machines");
+
+        PluginStateResolver pluginStateResolver = mock(PluginStateResolver.class);
+        PluginUtilsService pluginUtil = new PluginUtilsService();
+        ReflectionTestUtils.setField(pluginUtil, "pluginStateResolver", pluginStateResolver);
+        pluginUtil.init();
+        given(pluginStateResolver.isEnabled("machines")).willReturn(false);
+
+        DataDefinition productDao = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PRODUCT);
+        DataDefinition componentDao = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_COMPONENT);
+
+        Entity product = createProduct("asd", "asd");
+        product.setField("changeableName", "xxx");
+        product = productDao.save(product);
+
+        Entity component = createComponent("name", product, null);
+        component.setField("machineName", "test");
+
+        // when
+        component = componentDao.save(component);
+
+        // then
+
+        assertEquals("xxx", product.getField("changeableName"));
+        assertNotNull(component.getField("machineName"));
+        assertNull(component.getField("machine"));
+
+        Map<String, Object> componentResult = jdbcTemplate.queryForMap("select * from " + TABLE_NAME_COMPONENT);
+
+        assertNotNull(componentResult);
+        assertNotNull(componentResult.get("machineName"));
 
         Map<String, Object> productResult = jdbcTemplate.queryForMap("select * from " + TABLE_NAME_PRODUCT);
 

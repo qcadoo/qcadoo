@@ -42,6 +42,10 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -524,6 +528,11 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
     }
 
     private FieldHookDefinition getValidatorDefinition(final XMLStreamReader reader, final FieldHookDefinition validator) {
+        return getValidatorDefinition(reader, validator, null);
+    }
+
+    private FieldHookDefinition getValidatorDefinition(final XMLStreamReader reader, final FieldHookDefinition validator,
+            final String pluginIdentifier) {
         String customMessage = getStringAttribute(reader, "message");
         if (StringUtils.hasText(customMessage) && validator instanceof ErrorMessageDefinition) {
             ((ErrorMessageDefinition) validator).setErrorMessage(customMessage);
@@ -532,15 +541,25 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
     }
 
     private EntityHookDefinition getHookDefinition(final XMLStreamReader reader) throws HookInitializationException {
+        return getHookDefinition(reader, null);
+    }
+
+    private EntityHookDefinition getHookDefinition(final XMLStreamReader reader, final String pluginIdentifier)
+            throws HookInitializationException {
         String className = getStringAttribute(reader, "class");
         String methodName = getStringAttribute(reader, "method");
-        return new EntityHookDefinitionImpl(className, methodName, applicationContext);
+        return new EntityHookDefinitionImpl(className, methodName, pluginIdentifier, applicationContext);
     }
 
     private FieldHookDefinition getFieldHookDefinition(final XMLStreamReader reader) throws HookInitializationException {
+        return getFieldHookDefinition(reader, null);
+    }
+
+    private FieldHookDefinition getFieldHookDefinition(final XMLStreamReader reader, final String pluginIdentifier)
+            throws HookInitializationException {
         String className = getStringAttribute(reader, "class");
         String methodName = getStringAttribute(reader, "method");
-        return new FieldHookDefinitionImpl(className, methodName, applicationContext);
+        return new FieldHookDefinitionImpl(className, methodName, pluginIdentifier, applicationContext);
     }
 
     private FieldDefinition getPriorityFieldDefinition(final XMLStreamReader reader, final DataDefinitionImpl dataDefinition) {
@@ -551,6 +570,63 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
         }
         return new FieldDefinitionImpl(dataDefinition, getStringAttribute(reader, "name"))
                 .withType(new PriorityType(scopedField));
+    }
+
+    @Aspect
+    static class PluginIdentifierInjectionAspect {
+
+        @Pointcut("execution(* ModelXmlToDefinitionConverterImpl.getDataDefinition(javax.xml.stream.XMLStreamReader, String)) && args(*, pluginIdentifier)")
+        public void execGetDataDefinition(final String pluginIdentifier) {
+        }
+
+        @Pointcut("execution((com.qcadoo.model.internal.api.EntityHookDefinition || com.qcadoo.model.internal.api.FieldHookDefinition) ModelXmlToDefinitionConverterImpl.*(javax.xml.stream.XMLStreamReader, String)) && args(reader, *)")
+        public void execHookDefinitionGetter(final XMLStreamReader reader) {
+        }
+
+        @Pointcut("execution(com.qcadoo.model.internal.api.FieldHookDefinition ModelXmlToDefinitionConverterImpl.*(javax.xml.stream.XMLStreamReader, com.qcadoo.model.internal.api.FieldHookDefinition, String)) && args(reader, *, *)")
+        public void execValidatorDefinitionGetter(final XMLStreamReader reader) {
+        }
+
+        @Pointcut("execution(com.qcadoo.model.api.FieldDefinition ModelXmlToDefinitionConverterImpl.getFieldDefinition(javax.xml.stream.XMLStreamReader, com.qcadoo.model.internal.DataDefinitionImpl, com.qcadoo.model.internal.AbstractModelXmlConverter.FieldsTag)) && args(reader, ..)")
+        public void execFieldDefinitionGetter(final XMLStreamReader reader) {
+        }
+
+        @Around("execHookDefinitionGetter(reader) && cflow(execGetDataDefinition(pluginIdentifier))")
+        public Object appendPluginIdentifierToHook(final ProceedingJoinPoint pjp, final XMLStreamReader reader,
+                final String pluginIdentifier) throws Throwable {
+            Object[] args = pjp.getArgs();
+            args[1] = getSourcePluginName(reader, pluginIdentifier);
+            return pjp.proceed(args);
+        }
+
+        @Around("execValidatorDefinitionGetter(reader) && cflow(execGetDataDefinition(pluginIdentifier))")
+        public Object appendPluginIdentifierToValidator(final ProceedingJoinPoint pjp, final XMLStreamReader reader,
+                final String pluginIdentifier) throws Throwable {
+            Object[] args = pjp.getArgs();
+            args[2] = getSourcePluginName(reader, pluginIdentifier);
+            return pjp.proceed(args);
+        }
+
+        @Around("execFieldDefinitionGetter(reader) && cflow(execGetDataDefinition(pluginIdentifier))")
+        public Object appendPluginIdentifierToField(final ProceedingJoinPoint pjp, final XMLStreamReader reader,
+                final String pluginIdentifier) throws Throwable {
+            String sourcePluginIdentifier = getSourcePluginName(reader, pluginIdentifier);
+            FieldDefinitionImpl fieldDefinition = (FieldDefinitionImpl) pjp.proceed();
+            fieldDefinition.setPluginIdentifier(sourcePluginIdentifier);
+            return fieldDefinition;
+        }
+
+        private String getSourcePluginName(final XMLStreamReader reader, final String targetPluginName) {
+            String sourcePluginIdentifier = reader.getAttributeValue(null, "sourcePluginIdentifier");
+            if (sourcePluginIdentifier == null && targetPluginName == null) {
+                throw new IllegalStateException("Missing plugin identifier");
+            } else if (sourcePluginIdentifier == null) {
+                return targetPluginName;
+            } else {
+                return sourcePluginIdentifier;
+            }
+        }
+
     }
 
 }

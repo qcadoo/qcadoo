@@ -38,6 +38,7 @@ import com.qcadoo.model.internal.api.FieldHookDefinition;
 import com.qcadoo.model.internal.api.InternalFieldDefinition;
 import com.qcadoo.model.internal.validators.RequiredValidator;
 import com.qcadoo.model.internal.validators.UniqueValidator;
+import com.qcadoo.plugin.internal.PluginUtilsService;
 
 public final class FieldDefinitionImpl implements InternalFieldDefinition {
 
@@ -62,6 +63,8 @@ public final class FieldDefinitionImpl implements InternalFieldDefinition {
     private String expression;
 
     private boolean enabled = true;
+
+    private String pluginIdentifier;
 
     public FieldDefinitionImpl(final DataDefinition dataDefinition, final String name) {
         this.dataDefinition = dataDefinition;
@@ -160,10 +163,18 @@ public final class FieldDefinitionImpl implements InternalFieldDefinition {
         return expression;
     }
 
+    public String getPluginIdentifier() {
+        return pluginIdentifier;
+    }
+
+    public void setPluginIdentifier(final String pluginIdentifier) {
+        this.pluginIdentifier = pluginIdentifier;
+    }
+
     @Override
     public boolean callValidators(final Entity entity, final Object oldValue, final Object newValue) {
         for (FieldHookDefinition hook : validators) {
-            if (!hook.call(entity, oldValue, newValue)) {
+            if (PluginUtilsService.isEnabled(pluginIdentifier) && !hook.call(entity, oldValue, newValue)) {
                 return false;
             }
         }
@@ -201,6 +212,7 @@ public final class FieldDefinitionImpl implements InternalFieldDefinition {
 
     @Override
     public boolean isEnabled() {
+        // FIXME MAKU I think we should check also if plugin which inject this field is enabled for current user.
         return enabled;
     }
 

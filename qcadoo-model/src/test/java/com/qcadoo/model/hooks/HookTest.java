@@ -68,7 +68,7 @@ public class HookTest extends DataAccessTest {
         entity.setField("age", null);
 
         dataDefinition.addCreateHook(new EntityHookDefinitionImpl(CustomEntityService.class.getName(), "onCreate",
-                applicationContext));
+                PLUGIN_IDENTIFIER, applicationContext));
 
         // when
         entity = dataDefinition.save(entity);
@@ -90,7 +90,7 @@ public class HookTest extends DataAccessTest {
         given(session.get(any(Class.class), Matchers.anyInt())).willReturn(databaseObject);
 
         dataDefinition.addUpdateHook(new EntityHookDefinitionImpl(CustomEntityService.class.getName(), "onUpdate",
-                applicationContext));
+                PLUGIN_IDENTIFIER, applicationContext));
 
         // when
         entity = dataDefinition.save(entity);
@@ -108,9 +108,9 @@ public class HookTest extends DataAccessTest {
         entity.setField("age", null);
 
         dataDefinition.addCreateHook(new EntityHookDefinitionImpl(CustomEntityService.class.getName(), "onCreate",
+                PLUGIN_IDENTIFIER, applicationContext));
+        dataDefinition.addSaveHook(new EntityHookDefinitionImpl(CustomEntityService.class.getName(), "onSave", PLUGIN_IDENTIFIER,
                 applicationContext));
-        dataDefinition
-                .addSaveHook(new EntityHookDefinitionImpl(CustomEntityService.class.getName(), "onSave", applicationContext));
 
         // when
         entity = dataDefinition.save(entity);
@@ -131,8 +131,8 @@ public class HookTest extends DataAccessTest {
 
         given(session.get(any(Class.class), Matchers.anyInt())).willReturn(databaseObject);
 
-        dataDefinition
-                .addSaveHook(new EntityHookDefinitionImpl(CustomEntityService.class.getName(), "onSave", applicationContext));
+        dataDefinition.addSaveHook(new EntityHookDefinitionImpl(CustomEntityService.class.getName(), "onSave", PLUGIN_IDENTIFIER,
+                applicationContext));
 
         // when
         entity = dataDefinition.save(entity);
@@ -154,9 +154,9 @@ public class HookTest extends DataAccessTest {
         given(session.get(any(Class.class), Matchers.anyInt())).willReturn(databaseObject);
 
         dataDefinition.addUpdateHook(new EntityHookDefinitionImpl(CustomEntityService.class.getName(), "onUpdate",
+                PLUGIN_IDENTIFIER, applicationContext));
+        dataDefinition.addSaveHook(new EntityHookDefinitionImpl(CustomEntityService.class.getName(), "onSave", PLUGIN_IDENTIFIER,
                 applicationContext));
-        dataDefinition
-                .addSaveHook(new EntityHookDefinitionImpl(CustomEntityService.class.getName(), "onSave", applicationContext));
 
         // when
         entity = dataDefinition.save(entity);
@@ -174,7 +174,7 @@ public class HookTest extends DataAccessTest {
         entity.setField("age", null);
 
         dataDefinition.addCreateHook(new EntityHookDefinitionImpl(CustomEntityService.class.getName(), "onSave",
-                applicationContext));
+                PLUGIN_IDENTIFIER, applicationContext));
 
         // when
         entity = dataDefinition.save(entity);

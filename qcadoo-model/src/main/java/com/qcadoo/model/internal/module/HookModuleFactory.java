@@ -42,8 +42,10 @@ public class HookModuleFactory extends ModuleFactory<HookModule> {
         String targetPluginIdentifier = getRequiredAttribute(element, "plugin");
         String targetModelName = getRequiredAttribute(element, "model");
 
-        return new HookModule(targetPluginIdentifier, targetModelName, getOneElementContent(element), modelXmlHolder,
-                dataDefinitionService);
+        Element hook = getOneElementContent(element);
+        hook.setAttribute("sourcePluginIdentifier", pluginIdentifier);
+
+        return new HookModule(targetPluginIdentifier, targetModelName, hook, modelXmlHolder, dataDefinitionService);
     }
 
     @Override

@@ -23,24 +23,20 @@
  */
 package com.qcadoo.model.integration;
 
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-
 import java.util.List;
 
 import org.hibernate.SessionFactory;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.mockito.Mockito;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
 
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.internal.api.InternalDataDefinitionService;
 import com.qcadoo.plugin.api.PluginManager;
-import com.qcadoo.plugin.api.PluginStateResolver;
-import com.qcadoo.plugin.internal.PluginUtilsService;
 import com.qcadoo.tenant.api.MultiTenantUtil;
 import com.qcadoo.tenant.internal.DefaultMultiTenantService;
 
@@ -77,18 +73,15 @@ public abstract class IntegrationTest {
 
     protected static ClassPathXmlApplicationContext applicationContext;
 
+    protected static TransactionStatus txStatus;
+
+    protected static PlatformTransactionManager txManager;
+
     @BeforeClass
     public static void classInit() throws Exception {
         MultiTenantUtil multiTenantUtil = new MultiTenantUtil();
         ReflectionTestUtils.setField(multiTenantUtil, "multiTenantService", new DefaultMultiTenantService());
         multiTenantUtil.init();
-
-        PluginStateResolver mockPluginStateResolver = mock(PluginStateResolver.class);
-        given(mockPluginStateResolver.isEnabled(Mockito.anyString())).willReturn(true);
-
-        PluginUtilsService pluginUtil = new PluginUtilsService();
-        ReflectionTestUtils.setField(pluginUtil, "pluginStateResolver", mockPluginStateResolver);
-        pluginUtil.init();
 
         applicationContext = new ClassPathXmlApplicationContext();
         applicationContext.getEnvironment().setActiveProfiles("standalone");

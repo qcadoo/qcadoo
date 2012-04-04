@@ -44,14 +44,17 @@ public abstract class HookDefinitionImpl {
 
     private final String methodName;
 
+    private final String pluginIdentifier;
+
     private DataDefinition dataDefinition;
 
     private FieldDefinition fieldDefinition;
 
-    public HookDefinitionImpl(final String className, final String methodName, final ApplicationContext applicationContext)
-            throws HookInitializationException {
+    public HookDefinitionImpl(final String className, final String methodName, final String pluginIdentifier,
+            final ApplicationContext applicationContext) throws HookInitializationException {
         this.className = className;
         this.methodName = methodName;
+        this.pluginIdentifier = pluginIdentifier;
 
         if (!StringUtils.hasText(className)) {
             throw new HookInitializationException(className, methodName, "Class name cannot be empty");
@@ -104,6 +107,10 @@ public abstract class HookDefinitionImpl {
 
     public final Object getBean() {
         return bean;
+    }
+
+    public final String getPluginIdentifier() {
+        return pluginIdentifier;
     }
 
     private Class<?> getHookClass(final String hookClassName) throws HookInitializationException {

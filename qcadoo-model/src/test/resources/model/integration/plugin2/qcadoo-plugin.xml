@@ -52,6 +52,11 @@
 		<model:model-field plugin="products" model="component">
 			<model:string name="machineName" required="true" />
 		</model:model-field>
+		<model:model-field plugin="products" model="component">
+			<model:string name="machineDescription" required="false">
+				<model:validatesLength min="3" />
+			</model:string>
+		</model:model-field>
 		<model:model-enum-value plugin="products"
 			model="product" enum="enum" value="three" />
 		<model:model-hook plugin="products" model="product">

@@ -65,14 +65,15 @@ public class DefaultEntityTest {
     @Before
     public final void init() {
         belongsToFieldDefinition = mock(FieldDefinition.class);
-        FieldType belongsToType = mock(BelongsToType.class);
+        BelongsToType belongsToType = mock(BelongsToType.class);
         when(belongsToFieldDefinition.getType()).thenReturn(belongsToType);
         belongsToFieldDataDefinition = mock(DataDefinition.class);
         when(belongsToFieldDefinition.getDataDefinition()).thenReturn(belongsToFieldDataDefinition);
+        FieldDefinition stringFieldDefinition = mock(FieldDefinition.class);
+        when(stringFieldDefinition.isPersistent()).thenReturn(false);
 
         dataDefinition = mock(DataDefinition.class);
         when(dataDefinition.getField(BELONGS_TO_FIELD_NAME)).thenReturn(belongsToFieldDefinition);
-        FieldDefinition stringFieldDefinition = mock(FieldDefinition.class);
         when(dataDefinition.getField(STRING_FIELD_NAME)).thenReturn(stringFieldDefinition);
         FieldDefinition booleanFieldDefinition = mock(FieldDefinition.class);
         when(dataDefinition.getField(BOOLEAN_FIELD_NAME)).thenReturn(booleanFieldDefinition);

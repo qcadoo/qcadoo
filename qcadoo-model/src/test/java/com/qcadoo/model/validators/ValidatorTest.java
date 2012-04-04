@@ -28,6 +28,7 @@ import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
@@ -39,6 +40,7 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.FieldDefinition;
@@ -59,12 +61,13 @@ import com.qcadoo.model.internal.validators.RequiredValidator;
 import com.qcadoo.model.internal.validators.ScaleValidator;
 import com.qcadoo.model.internal.validators.UniqueValidator;
 import com.qcadoo.model.internal.validators.UnscaledValueValidator;
+import com.qcadoo.plugin.api.PluginStateResolver;
+import com.qcadoo.plugin.internal.PluginUtilsService;
 
 public class ValidatorTest extends DataAccessTest {
 
     @Before
     public void init() {
-
         given(applicationContext.getBean(CustomEntityService.class)).willReturn(new CustomEntityService());
     }
 
@@ -748,7 +751,8 @@ public class ValidatorTest extends DataAccessTest {
         entity.setField("name", "qwerty");
 
         fieldDefinitionName.withValidator(initializeValidator(new CustomValidator(new FieldHookDefinitionImpl(
-                CustomEntityService.class.getName(), "isEqualToQwerty", applicationContext)), fieldDefinitionName));
+                CustomEntityService.class.getName(), "isEqualToQwerty", PLUGIN_IDENTIFIER, applicationContext)),
+                fieldDefinitionName));
 
         // when
         entity = dataDefinition.save(entity);
@@ -765,7 +769,8 @@ public class ValidatorTest extends DataAccessTest {
         entity.setField("name", "qwert");
 
         fieldDefinitionName.withValidator(initializeValidator(new CustomValidator(new FieldHookDefinitionImpl(
-                CustomEntityService.class.getName(), "isEqualToQwerty", applicationContext)), fieldDefinitionName));
+                CustomEntityService.class.getName(), "isEqualToQwerty", PLUGIN_IDENTIFIER, applicationContext)),
+                fieldDefinitionName));
 
         // when
         entity = dataDefinition.save(entity);
@@ -786,7 +791,7 @@ public class ValidatorTest extends DataAccessTest {
         entity.setField("age", "18");
 
         dataDefinition.addValidatorHook(new CustomEntityValidator(new EntityHookDefinitionImpl(CustomEntityService.class
-                .getName(), "hasAge18AndNameMrT", applicationContext)));
+                .getName(), "hasAge18AndNameMrT", PLUGIN_IDENTIFIER, applicationContext)));
 
         // when
         entity = dataDefinition.save(entity);
@@ -799,13 +804,12 @@ public class ValidatorTest extends DataAccessTest {
     @Test
     public void shouldHaveErrorIfCustomEntityValidatorReturnsFalse() throws Exception {
         // given
-        // given
         Entity entity = new DefaultEntity(dataDefinition);
         entity.setField("name", "Mr");
         entity.setField("age", "18");
 
         dataDefinition.addValidatorHook(initializeValidator(new CustomEntityValidator(new EntityHookDefinitionImpl(
-                CustomEntityService.class.getName(), "hasAge18AndNameMrT", applicationContext))));
+                CustomEntityService.class.getName(), "hasAge18AndNameMrT", PLUGIN_IDENTIFIER, applicationContext))));
 
         // when
         entity = dataDefinition.save(entity);
@@ -845,6 +849,95 @@ public class ValidatorTest extends DataAccessTest {
         // then
         verify(session).save(any(SampleSimpleDatabaseObject.class));
         assertTrue(entity.isValid());
+    }
+
+    @Test
+    public final void shouldNotCallEntityValidatorIfSourcePluginIsNotEnabled() throws Exception {
+        // given
+        Entity entity = new DefaultEntity(dataDefinition);
+        dataDefinition.addValidatorHook(initializeValidator(new CustomEntityValidator(new EntityHookDefinitionImpl(
+                CustomEntityService.class.getName(), "hasAge18AndNameMrT", PLUGIN_IDENTIFIER, applicationContext))));
+
+        PluginStateResolver pluginStateResolver = mock(PluginStateResolver.class);
+        PluginUtilsService pluginUtil = new PluginUtilsService();
+        ReflectionTestUtils.setField(pluginUtil, "pluginStateResolver", pluginStateResolver);
+        pluginUtil.init();
+        given(pluginStateResolver.isEnabled(PLUGIN_IDENTIFIER)).willReturn(false);
+
+        // when
+        Entity savedEntity = dataDefinition.save(entity);
+
+        // then
+        assertTrue(savedEntity.isValid());
+    }
+
+    @Test
+    public final void shouldCallEntityValidatorIfSourcePluginIsEnabled() throws Exception {
+        // given
+        Entity entity = new DefaultEntity(dataDefinition);
+        entity.setField("age", 24);
+        entity.setField("name", "Fantomas");
+
+        dataDefinition.addValidatorHook(initializeValidator(new CustomEntityValidator(new EntityHookDefinitionImpl(
+                CustomEntityService.class.getName(), "hasAge18AndNameMrT", PLUGIN_IDENTIFIER, applicationContext))));
+
+        PluginStateResolver pluginStateResolver = mock(PluginStateResolver.class);
+        PluginUtilsService pluginUtil = new PluginUtilsService();
+        ReflectionTestUtils.setField(pluginUtil, "pluginStateResolver", pluginStateResolver);
+        pluginUtil.init();
+        given(pluginStateResolver.isEnabled(PLUGIN_IDENTIFIER)).willReturn(true);
+
+        // when
+        Entity savedEntity = dataDefinition.save(entity);
+
+        // then
+        assertFalse(savedEntity.isValid());
+    }
+
+    @Test
+    public final void shouldNotCallFieldValidatorIfSourcePluginIsNotEnabled() throws Exception {
+        // given
+        Entity entity = new DefaultEntity(dataDefinition);
+        entity.setField("name", "EverythingButNotQWERTY :)");
+        fieldDefinitionName.withValidator(initializeValidator(new CustomValidator(new FieldHookDefinitionImpl(
+                CustomEntityService.class.getName(), "isEqualToQwerty", PLUGIN_IDENTIFIER, applicationContext)),
+                fieldDefinitionName));
+
+        PluginStateResolver pluginStateResolver = mock(PluginStateResolver.class);
+        PluginUtilsService pluginUtil = new PluginUtilsService();
+        ReflectionTestUtils.setField(pluginUtil, "pluginStateResolver", pluginStateResolver);
+        pluginUtil.init();
+        given(pluginStateResolver.isEnabled(PLUGIN_IDENTIFIER)).willReturn(false);
+
+        // when
+        Entity savedEntity = dataDefinition.save(entity);
+
+        // then
+        assertTrue(savedEntity.isValid());
+    }
+
+    @Test
+    public final void shouldCallFieldValidatorIfSourcePluginIsEnabled() throws Exception {
+        // given
+        Entity entity = new DefaultEntity(dataDefinition);
+        entity.setField("name", "not equals to qwerty string");
+
+        fieldDefinitionName.withValidator(initializeValidator(new CustomValidator(new FieldHookDefinitionImpl(
+                CustomEntityService.class.getName(), "isEqualToQwerty", PLUGIN_IDENTIFIER, applicationContext)),
+                fieldDefinitionName));
+
+        PluginStateResolver pluginStateResolver = mock(PluginStateResolver.class);
+        PluginUtilsService pluginUtil = new PluginUtilsService();
+        ReflectionTestUtils.setField(pluginUtil, "pluginStateResolver", pluginStateResolver);
+        pluginUtil.init();
+        given(pluginStateResolver.isEnabled(PLUGIN_IDENTIFIER)).willReturn(true);
+
+        // when
+        entity = dataDefinition.save(entity);
+
+        // then
+        verify(session, never()).save(any(SampleSimpleDatabaseObject.class));
+        assertFalse(entity.isValid());
     }
 
     private FieldHookDefinition initializeValidator(final FieldHookDefinition fieldHook, final FieldDefinition fieldDefinition) {

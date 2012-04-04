@@ -29,6 +29,9 @@ import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
 
+import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
 import org.hibernate.Criteria;
 import org.hibernate.classic.Session;
 import org.hibernate.criterion.Criterion;
@@ -66,6 +69,9 @@ import com.qcadoo.model.internal.types.IntegerType;
 import com.qcadoo.model.internal.types.PriorityType;
 import com.qcadoo.model.internal.types.StringType;
 import com.qcadoo.model.internal.types.TreeEntitiesType;
+import com.qcadoo.plugin.api.Plugin;
+import com.qcadoo.plugin.api.PluginStateResolver;
+import com.qcadoo.plugin.internal.PluginUtilsService;
 
 public abstract class DataAccessTest {
 
@@ -82,6 +88,8 @@ public abstract class DataAccessTest {
     protected final ApplicationContext applicationContext = mock(ApplicationContext.class);
 
     protected final DataAccessService dataAccessServiceMock = mock(DataAccessService.class);
+
+    protected final static String PLUGIN_IDENTIFIER = "somePlugin";
 
     protected EntityService entityService = null;
 
@@ -127,18 +135,25 @@ public abstract class DataAccessTest {
 
     protected FieldDefinitionImpl treeFieldDefinitionOwner = null;
 
+    protected PluginStateResolver pluginStateResolver = null;
+
     protected PlatformTransactionManager txManager = null;
 
     private TransactionStatus txStatus;
 
     @Before
     public void superInit() {
+        PluginUtilsService pluginUtilsService = new PluginUtilsService();
+        pluginUtilsService.init();
+        pluginStateResolver = Mockito.mock(PluginStateResolver.class);
+        given(pluginStateResolver.isEnabled(Mockito.anyString())).willReturn(true);
+        given(pluginStateResolver.isEnabled(Mockito.any(Plugin.class))).willReturn(true);
+        ReflectionTestUtils.setField(pluginUtilsService, "pluginStateResolver", pluginStateResolver);
+
         txStatus = mock(TransactionStatus.class);
         given(txStatus.isRollbackOnly()).willReturn(false);
-
         txManager = mock(PlatformTransactionManager.class);
         given(txManager.getTransaction((TransactionDefinition) Mockito.anyObject())).willReturn(txStatus);
-
         AnnotationTransactionAspect txAspect = AnnotationTransactionAspect.aspectOf();
         txAspect.setTransactionManager(txManager);
 
@@ -248,6 +263,20 @@ public abstract class DataAccessTest {
         given(criteria.setFirstResult(anyInt())).willReturn(criteria);
         given(criteria.setMaxResults(anyInt())).willReturn(criteria);
         given(criteria.addOrder(any(Order.class))).willReturn(criteria);
+
+    }
+
+    @Aspect
+    public static class DefaultPluginIdentifierAspect {
+
+        @Pointcut("call(com.qcadoo.model.internal.FieldDefinitionImpl+.new(..)) && within(DataAccessTest+)")
+        public void fieldDefinitionInstantiation() {
+        }
+
+        @AfterReturning(value = "fieldDefinitionInstantiation()", returning = "fieldDefinition")
+        public void applyDefaultPluginIdentifier(final FieldDefinitionImpl fieldDefinition) {
+            fieldDefinition.setPluginIdentifier(PLUGIN_IDENTIFIER);
+        }
 
     }
 

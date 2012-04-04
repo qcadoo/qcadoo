@@ -42,8 +42,10 @@ public class FieldModuleFactory extends ModuleFactory<FieldModule> {
         String targetPluginIdentifier = getRequiredAttribute(element, "plugin");
         String targetModelName = getRequiredAttribute(element, "model");
 
-        return new FieldModule(targetPluginIdentifier, targetModelName, getOneElementContent(element), modelXmlHolder,
-                dataDefinitionService);
+        Element field = getOneElementContent(element);
+        field.setAttribute("sourcePluginIdentifier", pluginIdentifier);
+
+        return new FieldModule(targetPluginIdentifier, targetModelName, field, modelXmlHolder, dataDefinitionService);
     }
 
     @Override

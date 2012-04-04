@@ -34,5 +34,6 @@
 	<aspects>
 		<aspect name="com.qcadoo.model.internal.aop.MonitorableAdvice" />
 		<aspect name="com.qcadoo.model.internal.aop.OmitModelCreateHooksAspect" />
+		<aspect name="com.qcadoo.model.internal.definitionconverter.ModelXmlToDefinitionConverterImpl$PluginIdentifierInjectionAspect" />
 	</aspects>
 </aspectj>
