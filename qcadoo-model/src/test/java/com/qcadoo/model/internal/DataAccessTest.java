@@ -89,7 +89,7 @@ public abstract class DataAccessTest {
 
     protected final DataAccessService dataAccessServiceMock = mock(DataAccessService.class);
 
-    protected final static String PLUGIN_IDENTIFIER = "somePlugin";
+    protected static final String PLUGIN_IDENTIFIER = "somePlugin";
 
     protected EntityService entityService = null;
 

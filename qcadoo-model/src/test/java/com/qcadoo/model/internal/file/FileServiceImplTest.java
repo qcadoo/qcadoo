@@ -80,7 +80,7 @@ public class FileServiceImplTest {
         given(MultiTenantUtil.getCurrentTenantId()).willReturn(0);
 
         given(uploadDirectory.getAbsolutePath()).willReturn("");
-        given(date.getTime()).willReturn(1234567l);
+        given(date.getTime()).willReturn(1234567L);
         given(entity.getField("date")).willReturn(date);
         given(entity.getDataDefinition()).willReturn(dataDefinition);
     }
