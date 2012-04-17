@@ -117,10 +117,14 @@ QCD.components.elements.TimeInput = function(_element, _mainController) {
 	   }
 	   value = value.match(/\d/g).join("");
 	   h = Math.floor(value / 3600) + "";
+	   while(h.length < noHours) {
+		   h = "0" + h;
+	   }
+	   
 	   m = Math.floor((value % 3600) / 60);
 	   s = (value % 3600) % 60;
 		
-		    return (minusSign ? "-" : "") + (h.lenght < noHours ? "0" : "") + h + ":" + (m < 10 ? "0" : "") + m + ":" + (s < 10 ? "0" : "") + s;
+		    return (minusSign ? "-" : "") + h + ":" + (m < 10 ? "0" : "") + m + ":" + (s < 10 ? "0" : "") + s;
 	}
 	
 	this.updateSize = function(_width, _height) {
