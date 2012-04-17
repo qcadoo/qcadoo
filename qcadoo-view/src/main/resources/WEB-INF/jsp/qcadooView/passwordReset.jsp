@@ -23,8 +23,6 @@
     ***************************************************************************
 
 --%>
-<![CDATA[ERROR PAGE:LoginPage]]>
-
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -41,7 +39,8 @@
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/qcadoo-min.js"></script>
 		</c:when>
 		<c:otherwise>
-			<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/core/login.css" type="text/css" />
+			<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/core/qcd.css" type="text/css">
+			<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/core/passwordReset.css" type="text/css" />
 			<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/crud/components/form.css" type="text/css" />
 			<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/core/jqModal.css" type="text/css" />
 			
@@ -50,12 +49,14 @@
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/qcd/utils/serializator.js"></script>
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/qcd/utils/logger.js"></script>
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/qcd/utils/modal.js"></script>
+			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/jquery.blockUI.js"></script>
+			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/crud/qcd/components/elements/utils/loadingIndicator.js"></script>
 		</c:otherwise>
 	</c:choose>
 
 	<link rel="shortcut icon" href="/qcadooView/public/img/core/icons/favicon.png">
 	
-	<title>QCADOO :: login</title>
+	<title>QCADOO :: forgot password</title>
 		
 	<script type="text/javascript">
 
@@ -63,6 +64,8 @@
 		QCD.global = QCD.global || {};
 		QCD.global.isSonowOnPage = false;
 
+		var formModal;
+		
 		var serverMessageType;
 		var serverMessageHeader;
 		var serverMessageContent;
@@ -72,15 +75,19 @@
 		var messagePanelContent;
 
 		var loginErrorMessagePanel;
-		var passwordErrorMessagePanel;
 		
 		var wrongLoginText = '${translation["security.message.wrongLogin"]}';
-		var wrongPasswordText = '${translation["security.message.wrongPassword"]}';
 
 		var errorHeaderText = '${translation["security.message.errorHeader"]}';
 		var errorContentText = '${translation["security.message.errorContent"]}';
+		
+		var invalidMailAddressText = '${translation["security.message.invalidMailAddressContent"]}';
+		var invalidConfigContentText = '${translation["security.message.invalidMailConfigContent"]}';
+		var userNotFoundText = '${translation["security.message.loginNotFound"]}';
+		
+		var successHeaderText = '${translation["security.message.passwordReset.successHeader"]}';
+		var successContentText = '${translation["security.message.passwordReset.successContent"]}'; 
 
-		var fillLoginAsDemo = ${showUserAndPassword};
 		var isPopup = ${popup};
 		var targetUrl = "${targetUrl}";
 
@@ -93,109 +100,56 @@
 		</c:if>
 
 		jQuery(document).ready(function(){
-			if (!isSupportedBrowser()) {
-				$("#loginContentWrapper").hide();
-
-				var modal = QCD.utils.Modal.createModal();
-				modal.changeSize(420, 320);
-				modal.showStatic("browserNotSupported.html");
-				return;
-			}
+			formModal = $("#passwordResetContentWrapper");
 			
 			messagePanel = $("#messagePanel");
 			messagePanelHeader = $("#messageHeader");
 			messagePanelContent = $("#messageContent");
 			
 			loginErrorMessagePanel = $("#loginErrorMessagePanel");
-			passwordErrorMessagePanel = $("#passwordErrorMessagePanel");
 
 			usernameInput = $("#usernameInput");
-			
-			var passwordInput = $("#passwordInput");
-			var loginButton = $("#loginButton");
 			
 			if (serverMessageType) {
 				showMessageBox(serverMessageType, serverMessageHeader, serverMessageContent);
 			}
 
-			var currentLogin = null;
-			try {
-				if (window.parent && window.parent.getCurrentUserLogin) {
-					currentLogin = window.parent.getCurrentUserLogin();
-				} else if (window.opener && window.opener.controller && window.opener.controller.getCurrentUserLogin) {
-					currentLogin = window.opener.controller.getCurrentUserLogin();
-				}
-			} catch (err) {
-				// ignore
-			}
-			
-			if (currentLogin) {
-				usernameInput.val(currentLogin);
-				usernameInput.attr("disabled", "disabled");
-				$("#usernameInput_component_container_form_w").addClass("disabled");
-				passwordInput.focus();
-				$("#changeUserButton").show();
-			} else {
-				$("#changeUserButton").hide();
-				usernameInput.focus();
-				loginButton.css("display", "block");
-				loginButton.css("margin", "auto");
-				usernameInput.keypress(function(e) {
-					var key=e.keyCode || e.which;
-					if (key==13) {
-						ajaxLogin();
-					}
-				});
-			}
-
-			if (fillLoginAsDemo) {
-				usernameInput.val("demo");
-				$("#passwordInput").val("demo");
-				passwordInput.focus();
-			}
-			
-			$("#languageSelect").val("${currentLanguage}");
-			
-			passwordInput.keypress(function(e) {
+			usernameInput.focus();
+			usernameInput.keypress(function(e) {
 				var key=e.keyCode || e.which;
 				if (key==13) {
-					ajaxLogin();
+					ajaxSubmit();
+					return false;
 				}
 			});
-		});
 
-		isSupportedBrowser = function() {
-			if (jQuery.browser.mozilla) { // firefox
-				var parts = jQuery.browser.version.split(".");
-				var firstPart = parseInt(parts[0]);
-				var secondPart = parseInt(parts[1]);
-				if (firstPart >=2 || (firstPart == 1 && secondPart==9) ) { // larger than 1.9
-					return true;
-				}
-			} else if (jQuery.browser.webkit) { // chrome, safari
-				return true;
-			} else if (jQuery.browser.msie) { // ie
-				var parts = jQuery.browser.version.split(".");
-				if (parseInt(parts[0]) >= 8) {
-					return true;
-				}
-			}
-			return false;
+			$("#languageSelect").val("${currentLanguage}");
+			
+		});
+		
+		blockForm = function() {
+			QCD.components.elements.utils.LoadingIndicator.blockElement(formModal);
+		}
+
+		unblockForm = function() {
+			QCD.components.elements.utils.LoadingIndicator.unblockElement(formModal);
 		}
 	
 		changeLanguage = function(language) {
-			window.location = "login.html?lang="+language;
+			window.location = "passwordReset.html?lang="+language;
 		}
 
-		ajaxLogin = function() {
+		ajaxSubmit = function() {
 			usernameInput.attr("disabled", ""); // enable field to send it in form (and disable it later if neceserry)
-			var formData = QCDSerializator.serializeForm($("#loginForm"));
+			var formData = QCDSerializator.serializeForm($("#passwordResetForm"));
 			if (window.parent.getCurrentUserLogin) {
 				usernameInput.attr("disabled", "disabled");
 			}
-			var url = "j_spring_security_check";
+			var url = "passwordReset.html";
 
-			hideLoginAndPasswordMessages();
+			hideLoginMessages();
+			
+			blockForm();
 			
 			$.ajax({
 				url: url,
@@ -203,28 +157,33 @@
 				data: formData,
 				success: function(response) {
 					response = $.trim(response);
-					if (response == "loginSuccessfull") {
-						if (isPopup) {
-							window.location = targetUrl;
-						} else if (window.parent.onLoginSuccess) {
-							window.parent.onLoginSuccess();
-						} else {
-							window.location = "main.html"
-						}
-					} else {
-						if (response == "loginUnsuccessfull:login") {
+					switch(response) {
+						case "success":
+							window.location = "login.html?passwordReseted=true";
+							break;
+						case "userNotFound":
+							showMessageBox("error", errorHeaderText, userNotFoundText);
+							$('#usernameInput').css("border-color", "#ec1c24");
+							break;
+						case "loginIsBlank":
 							hideMessageBox();
 							addLoginMessage();
-						} else if (response == "loginUnsuccessfull:password") {
-							hideMessageBox();
-							addPasswordMessage();
-						} else {
+							break;
+						case "invalidMailAddress":
+							showMessageBox("error", errorHeaderText, invalidMailAddressText);
+							break;
+						case "invalidMailConfig":
+							showMessageBox("error", errorHeaderText, invalidConfigContentText);
+							break;
+						default:
 							showMessageBox("error", errorHeaderText, errorContentText);
-						} 
+							break;
 					}
+					unblockForm();
 				},
 				error: function(xhr, textStatus, errorThrown){
 					showMessageBox("error", errorHeaderText, errorMessage);
+					unblockForm();
 				}
 
 			});
@@ -246,31 +205,13 @@
 			loginErrorMessagePanel.css("display", "block");
 			$('#usernameInput').css("border-color", "#ec1c24");
 		}
-		addPasswordMessage = function() {
-			passwordErrorMessagePanel.css("display", "block");
-			$('#passwordInput').css("border-color", "#ec1c24");
-		}
-		hideLoginAndPasswordMessages = function() {
+		hideLoginMessages = function() {
 			loginErrorMessagePanel.css("display", "none");
 			$('#usernameInput').css("border-color", "")
-			passwordErrorMessagePanel.css("display", "none");
-			$('#passwordInput').css("border-color", "");
 		}
 
 	</script>
 	
-	<c:if test="${showUserAndPassword}">
-		<script type="text/javascript">
-		 var _gaq = _gaq || [];
-		  _gaq.push(['_setAccount', 'UA-20029533-2']);
-		  _gaq.push(['_trackPageview']);
-		  (function() {
-		    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-		    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-		    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-		  })();
-		</script>
-	</c:if>
 </head>
 <body>
 	<div id="contentWrapperOuter">
@@ -282,10 +223,10 @@
 			<div id="messageContent"></div>
 		</div>
 	
-		<div id="loginContentWrapper">
+		<div id="passwordResetContentWrapper">
 		
-			<div id="loginHeader">
-				${translation["security.form.header"]}
+			<div id="passwordResetHeader">
+				${translation["security.form.header.passwordReset"]}
 				<c:if test="${! iframe && ! popup}">
 					<div id="languageDiv">
 				 		<select id="languageSelect" onchange="changeLanguage(this.value)">
@@ -297,58 +238,38 @@
 			 	</c:if>
 			</div>
 	
-			<div id="loginFormWrapper">
-				<form id="loginForm" name="loginForm" action="<c:url value='j_spring_security_check'/>" method="POST">
+			<div id="passwordResetFormWrapper">
+				<form id="passwordResetForm" name="passwordResetForm" method="POST">
 			 		<div>
 			 			<label>${translation["security.form.label.login"]}</label>
 			 			<div class="component_form_element" style="height: 20px; width: 200px; vertical-align: middle; display: inline-block;">
-				 			<div class="component_container_form_w" id="usernameInput_component_container_form_w" style="left: 0; right: 0;">
-								<div class="component_container_form_inner">
-									<div class="component_container_form_x"></div>
-									<div class="component_container_form_y"></div>
-					 				<input type='text' id="usernameInput" name='j_username' value='<c:if test="${not empty param.login_error}"><c:out value="${SPRING_SECURITY_LAST_USERNAME}"/></c:if>'/>
-						 			<div id="loginErrorMessagePanel" class="errorMessagePanel" style="display: none;">
-						 				<div class="login_failed"></div>
-						 				<span id="loginMessage" class="login_failed_message">${translation["security.message.wrongLogin"]}</span>
-						 			</div>
+			 			<div class="component_container_form_w" id="usernameInput_component_container_form_w" style="left: 0; right: 0;">
+							<div class="component_container_form_inner">
+								<div class="component_container_form_x"></div>
+								<div class="component_container_form_y"></div>
+				 				<input type='text' id="usernameInput" name='login' value='<c:if test="${not empty param.login_error}"><c:out value="${SPRING_SECURITY_LAST_USERNAME}"/></c:if>'/>
+					 			<div id="loginErrorMessagePanel" class="errorMessagePanel" style="display: none;">
+					 				<div class="login_failed"></div>
+					 				<span id="loginMessage" class="login_failed_message">${translation["security.message.wrongLogin"]}</span>
 					 			</div>
-							</div>
+				 			</div>
+						</div>
 						</div>
 			 		</div>
-			 		<div>
-			 			<label>${translation["security.form.label.password"]}</label>
-			 			<div class="component_form_element" style="height: 20px; width: 200px; vertical-align: middle; display: inline-block;">
-				 			<div class="component_container_form_w" style="left: 0; right: 0;">
-								<div class="component_container_form_inner">
-									<div class="component_container_form_x"></div>
-									<div class="component_container_form_y"></div>
-									<input type='password' id="passwordInput" name='j_password'>
-									<div id="passwordErrorMessagePanel" class="errorMessagePanel" style="display: none;">
-					 					<div class="login_failed"></div>
-					 					<span id="passwordMessage" class="login_failed_message">${translation["security.message.wrongPassword"]}</span>								
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-			 		<div id="rememberMeRow">
-			 			<label></label><input id="rememberMeCheckbox" type="checkbox" name="_spring_security_remember_me" /><label id="rememberMeLabel">${translation["security.form.label.rememberMe"]}</label>
+			 		<div id="passwordResetDescriptionWrapper">
+			 			<span id="passwordResetDescription">
+			 				${translation["security.form.content.passwordReset"]}
+			 			</span>
 			 		</div>
-					<div id="loginButtonWrapper">
-			 			<a href="#" id="changeUserButton" onclick="window.parent.location='login.html'">${translation["security.form.button.changeUser"]}</a>
-			 			<a href="#" id="loginButton" onclick="ajaxLogin(); return false;"><span>${translation['security.form.button.logIn']}</span></a>
+					<div id="passwordResetButtonWrapper">
+			 			<a href="#" id="passwordResetButton" onclick="ajaxSubmit(); return false;"><span>${translation['security.form.button.passwordReset']}</span></a>
 					</div>
-					<c:if test="${not showUserAndPassword}">
-						<div id="forgotPasswordLinkWrapper">
-							<a href="#" id="forgotPasswordLink" onclick="window.parent.location='passwordReset.html'">${translation['security.form.link.forgotPassword']}</a>
-						</div>
-					</c:if>
 			    </form>
 		 	</div>
 	 
-	 		<div id="loginFooter">
-				<div id="loginFooterLine"></div>
-				<div id="loginFooterLogo"></div>
+	 		<div id="passwordResetFooter">
+				<div id="passwordResetFooterLine"></div>
+				<div id="passwordResetFooterLogo"></div>
 			</div>
 	 	</div>
  	</div>

@@ -24,6 +24,6 @@ public interface MailService {
      * @throws InvalidMailAddressException
      *             if one of email address is blank or invalid
      */
-    void sendPlainTextEmail(String recipient, String subject, String body) throws IllegalArgumentException,
+    void sendEmail(String recipient, String subject, String body) throws IllegalArgumentException,
             MailConfigurationException, InvalidMailAddressException;
 }

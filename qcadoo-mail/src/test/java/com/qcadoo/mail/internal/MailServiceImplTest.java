@@ -1,15 +1,18 @@
 package com.qcadoo.mail.internal;
 
-import static junit.framework.Assert.assertEquals;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+
+import javax.mail.Message;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
-import org.springframework.mail.MailSender;
-import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import com.qcadoo.mail.api.InvalidMailAddressException;
@@ -27,13 +30,18 @@ public class MailServiceImplTest {
 
     private MailServiceImpl mailServiceImpl;
 
-    private MailSender mailSender;
+    private JavaMailSender mailSender;
+
+    private MimeMessage mimeMessage;
 
     @Before
     public final void init() {
         mailServiceImpl = new MailServiceImpl();
 
-        mailSender = mock(MailSender.class);
+        mailSender = mock(JavaMailSender.class);
+        mimeMessage = mock(MimeMessage.class);
+        given(mailSender.createMimeMessage()).willReturn(mimeMessage);
+
         ReflectionTestUtils.setField(mailServiceImpl, "mailSender", mailSender);
         ReflectionTestUtils.setField(mailServiceImpl, "defaultSender", DEFAULT_SENDER);
     }
@@ -41,18 +49,17 @@ public class MailServiceImplTest {
     @Test
     public final void shouldSendPlainTextEmail() throws Exception {
         // given
-        ArgumentCaptor<SimpleMailMessage> mailMessageCaptor = ArgumentCaptor.forClass(SimpleMailMessage.class);
+        ArgumentCaptor<MimeMessage> mailMessageCaptor = ArgumentCaptor.forClass(MimeMessage.class);
 
         // when
-        mailServiceImpl.sendPlainTextEmail(DEFAULT_RECIPIENT, DEFAULT_SUBJECT, DEFAULT_BODY);
+        mailServiceImpl.sendEmail(DEFAULT_RECIPIENT, DEFAULT_SUBJECT, DEFAULT_BODY);
 
         // then
         verify(mailSender, Mockito.times(1)).send(mailMessageCaptor.capture());
-        SimpleMailMessage mailMessage = mailMessageCaptor.getValue();
-        assertEquals(DEFAULT_SENDER, mailMessage.getFrom());
-        assertEquals(DEFAULT_RECIPIENT, mailMessage.getTo()[0]);
-        assertEquals(DEFAULT_SUBJECT, mailMessage.getSubject());
-        assertEquals(DEFAULT_BODY, mailMessage.getText());
+        verify(mimeMessage).setFrom(new InternetAddress(DEFAULT_SENDER));
+        verify(mimeMessage).setRecipient(Message.RecipientType.TO, new InternetAddress(DEFAULT_RECIPIENT));
+        verify(mimeMessage).setSubject(DEFAULT_SUBJECT);
+        verify(mimeMessage).setContent(DEFAULT_BODY, "text/html");
     }
 
     @Test(expected = MailConfigurationException.class)
@@ -61,7 +68,7 @@ public class MailServiceImplTest {
         setDefaultSender(null);
 
         // when
-        mailServiceImpl.sendPlainTextEmail(DEFAULT_RECIPIENT, DEFAULT_SUBJECT, DEFAULT_BODY);
+        mailServiceImpl.sendEmail(DEFAULT_RECIPIENT, DEFAULT_SUBJECT, DEFAULT_BODY);
     }
 
     @Test(expected = MailConfigurationException.class)
@@ -70,7 +77,7 @@ public class MailServiceImplTest {
         setDefaultSender("");
 
         // when
-        mailServiceImpl.sendPlainTextEmail(DEFAULT_RECIPIENT, DEFAULT_SUBJECT, DEFAULT_BODY);
+        mailServiceImpl.sendEmail(DEFAULT_RECIPIENT, DEFAULT_SUBJECT, DEFAULT_BODY);
     }
 
     @Test(expected = MailConfigurationException.class)
@@ -79,7 +86,7 @@ public class MailServiceImplTest {
         setDefaultSender("  ");
 
         // when
-        mailServiceImpl.sendPlainTextEmail(DEFAULT_RECIPIENT, DEFAULT_SUBJECT, DEFAULT_BODY);
+        mailServiceImpl.sendEmail(DEFAULT_RECIPIENT, DEFAULT_SUBJECT, DEFAULT_BODY);
     }
 
     @Test(expected = MailConfigurationException.class)
@@ -88,7 +95,7 @@ public class MailServiceImplTest {
         setDefaultSender("invalid");
 
         // when
-        mailServiceImpl.sendPlainTextEmail(DEFAULT_RECIPIENT, DEFAULT_SUBJECT, DEFAULT_BODY);
+        mailServiceImpl.sendEmail(DEFAULT_RECIPIENT, DEFAULT_SUBJECT, DEFAULT_BODY);
     }
 
     private void setDefaultSender(final String defaultSender) {
@@ -98,85 +105,85 @@ public class MailServiceImplTest {
     @Test(expected = InvalidMailAddressException.class)
     public final void shouldThrowExceptionIfSenderIsNull() throws Exception {
         // when
-        mailServiceImpl.sendPlainTextEmail(null, DEFAULT_RECIPIENT, DEFAULT_SUBJECT, DEFAULT_BODY);
+        mailServiceImpl.sendHtmlTextEmail(null, DEFAULT_RECIPIENT, DEFAULT_SUBJECT, DEFAULT_BODY);
     }
 
     @Test(expected = InvalidMailAddressException.class)
     public final void shouldThrowExceptionIfSenderIsEmpty() throws Exception {
         // when
-        mailServiceImpl.sendPlainTextEmail("", DEFAULT_RECIPIENT, DEFAULT_SUBJECT, DEFAULT_BODY);
+        mailServiceImpl.sendHtmlTextEmail("", DEFAULT_RECIPIENT, DEFAULT_SUBJECT, DEFAULT_BODY);
     }
 
     @Test(expected = InvalidMailAddressException.class)
     public final void shouldThrowExceptionIfSenderIsBlank() throws Exception {
         // when
-        mailServiceImpl.sendPlainTextEmail(" ", DEFAULT_RECIPIENT, DEFAULT_SUBJECT, DEFAULT_BODY);
+        mailServiceImpl.sendHtmlTextEmail(" ", DEFAULT_RECIPIENT, DEFAULT_SUBJECT, DEFAULT_BODY);
     }
 
     @Test(expected = InvalidMailAddressException.class)
     public final void shouldThrowExceptionIfSenderIsNotValid() throws Exception {
         // when
-        mailServiceImpl.sendPlainTextEmail("invalid", DEFAULT_RECIPIENT, DEFAULT_SUBJECT, DEFAULT_BODY);
+        mailServiceImpl.sendHtmlTextEmail("invalid", DEFAULT_RECIPIENT, DEFAULT_SUBJECT, DEFAULT_BODY);
     }
 
     @Test(expected = InvalidMailAddressException.class)
     public final void shouldThrowExceptionIfRecipientIsNull() throws Exception {
         // when
-        mailServiceImpl.sendPlainTextEmail(null, DEFAULT_SUBJECT, DEFAULT_BODY);
+        mailServiceImpl.sendEmail(null, DEFAULT_SUBJECT, DEFAULT_BODY);
     }
 
     @Test(expected = InvalidMailAddressException.class)
     public final void shouldThrowExceptionIfRecipientIsEmpty() throws Exception {
         // when
-        mailServiceImpl.sendPlainTextEmail("", DEFAULT_SUBJECT, DEFAULT_BODY);
+        mailServiceImpl.sendEmail("", DEFAULT_SUBJECT, DEFAULT_BODY);
     }
 
     @Test(expected = InvalidMailAddressException.class)
     public final void shouldThrowExceptionIfRecipientIsBlank() throws Exception {
         // when
-        mailServiceImpl.sendPlainTextEmail(" ", DEFAULT_SUBJECT, DEFAULT_BODY);
+        mailServiceImpl.sendEmail(" ", DEFAULT_SUBJECT, DEFAULT_BODY);
     }
 
     @Test(expected = InvalidMailAddressException.class)
     public final void shouldThrowExceptionIfRecipientIsNotValid() throws Exception {
         // when
-        mailServiceImpl.sendPlainTextEmail("invalid", DEFAULT_SUBJECT, DEFAULT_BODY);
+        mailServiceImpl.sendEmail("invalid", DEFAULT_SUBJECT, DEFAULT_BODY);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public final void shouldThrowExceptionIfSubjectIsNull() throws Exception {
         // when
-        mailServiceImpl.sendPlainTextEmail(DEFAULT_RECIPIENT, null, DEFAULT_BODY);
+        mailServiceImpl.sendEmail(DEFAULT_RECIPIENT, null, DEFAULT_BODY);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public final void shouldThrowExceptionIfSubjectIsEmpty() throws Exception {
         // when
-        mailServiceImpl.sendPlainTextEmail(DEFAULT_RECIPIENT, "", DEFAULT_BODY);
+        mailServiceImpl.sendEmail(DEFAULT_RECIPIENT, "", DEFAULT_BODY);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public final void shouldThrowExceptionIfSubjectIsBlank() throws Exception {
         // when
-        mailServiceImpl.sendPlainTextEmail(DEFAULT_RECIPIENT, " ", DEFAULT_BODY);
+        mailServiceImpl.sendEmail(DEFAULT_RECIPIENT, " ", DEFAULT_BODY);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public final void shouldThrowExceptionIfBodyIsNull() throws Exception {
         // when
-        mailServiceImpl.sendPlainTextEmail(DEFAULT_RECIPIENT, DEFAULT_SUBJECT, null);
+        mailServiceImpl.sendEmail(DEFAULT_RECIPIENT, DEFAULT_SUBJECT, null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public final void shouldThrowExceptionIfBodyIsEmpty() throws Exception {
         // when
-        mailServiceImpl.sendPlainTextEmail(DEFAULT_RECIPIENT, DEFAULT_SUBJECT, "");
+        mailServiceImpl.sendEmail(DEFAULT_RECIPIENT, DEFAULT_SUBJECT, "");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public final void shouldThrowExceptionIfBodyIsBlank() throws Exception {
         // when
-        mailServiceImpl.sendPlainTextEmail(DEFAULT_RECIPIENT, DEFAULT_SUBJECT, " ");
+        mailServiceImpl.sendEmail(DEFAULT_RECIPIENT, DEFAULT_SUBJECT, " ");
     }
 
 }

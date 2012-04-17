@@ -103,14 +103,10 @@ public class SecurityServiceImpl implements InternalSecurityService, UserDetails
         return users;
     }
 
-    protected Entity getUserEntity(final String login) {
-        List<Entity> users = dataDefinitionService.get(PLUGIN_IDENTIFIER, MODEL_USER).find()
-                .add(SearchRestrictions.eq(L_USER_NAME, login)).setMaxResults(1).list().getEntities();
-        if (users.size() == 1) {
-            return users.get(0);
-        } else {
-            return null;
-        }
+    @Override
+    public Entity getUserEntity(final String login) {
+        return dataDefinitionService.get(PLUGIN_IDENTIFIER, MODEL_USER).find().add(SearchRestrictions.eq(L_USER_NAME, login))
+                .setMaxResults(1).uniqueResult();
     }
 
     @Override
@@ -145,7 +141,8 @@ public class SecurityServiceImpl implements InternalSecurityService, UserDetails
 
         checkState(!authorities.isEmpty(), "Current user with login %s cannot be found", entity.getStringField(L_USER_NAME));
 
-        return new User(entity.getStringField(L_USER_NAME), entity.getStringField("password"), true, true, true, true, authorities);
+        return new User(entity.getStringField(L_USER_NAME), entity.getStringField("password"), true, true, true, true,
+                authorities);
     }
 
     @Override
