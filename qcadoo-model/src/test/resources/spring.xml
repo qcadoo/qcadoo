@@ -50,6 +50,8 @@
 	
 	<bean class="com.qcadoo.model.integration.MockHook" />
 	
+	<bean class="com.qcadoo.model.integration.VerifyHooks" />
+	
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
 		destroy-method="close">
 		<property name="driverClassName" value="org.hsqldb.jdbcDriver" />

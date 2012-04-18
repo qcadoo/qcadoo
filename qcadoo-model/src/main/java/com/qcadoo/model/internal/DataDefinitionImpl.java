@@ -287,57 +287,36 @@ public final class DataDefinitionImpl implements InternalDataDefinition {
 
     @Override
     public boolean callViewHook(final Entity entity) {
-        for (EntityHookDefinition hook : viewHooks) {
-            if (hook.isEnabled()) {
-                hook.call(entity);
-            }
-        }
-        return true;
+        return callHooks(entity, viewHooks);
     }
 
     @Override
     public boolean callCreateHook(final Entity entity) {
-        for (EntityHookDefinition hook : createHooks) {
-            if (hook.isEnabled() && !hook.call(entity)) {
-                return false;
-            }
-        }
-        for (EntityHookDefinition hook : saveHooks) {
-            if (hook.isEnabled() && !hook.call(entity)) {
-                return false;
-            }
-        }
-        return true;
+        return callHooks(entity, createHooks);
     }
 
     @Override
     public boolean callUpdateHook(final Entity entity) {
-        for (EntityHookDefinition hook : updateHooks) {
-            if (hook.isEnabled() && !hook.call(entity)) {
-                return false;
-            }
-        }
-        for (EntityHookDefinition hook : saveHooks) {
-            if (hook.isEnabled() && !hook.call(entity)) {
-                return false;
-            }
-        }
-        return true;
+        return callHooks(entity, updateHooks);
+    }
+
+    @Override
+    public boolean callSaveHook(final Entity entity) {
+        return callHooks(entity, saveHooks);
     }
 
     @Override
     public boolean callCopyHook(final Entity entity) {
-        for (EntityHookDefinition hook : copyHooks) {
-            if (hook.isEnabled() && !hook.call(entity)) {
-                return false;
-            }
-        }
-        return true;
+        return callHooks(entity, copyHooks);
     }
 
     @Override
     public boolean callValidators(final Entity entity) {
-        for (EntityHookDefinition hook : validators) {
+        return callHooks(entity, validators);
+    }
+
+    private boolean callHooks(final Entity entity, final List<EntityHookDefinition> hooksToCall) {
+        for (EntityHookDefinition hook : hooksToCall) {
             if (hook.isEnabled() && !hook.call(entity)) {
                 return false;
             }

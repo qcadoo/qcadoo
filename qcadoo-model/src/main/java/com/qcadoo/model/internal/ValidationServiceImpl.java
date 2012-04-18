@@ -62,6 +62,7 @@ public final class ValidationServiceImpl implements ValidationService {
         } else {
             dataDefinition.callUpdateHook(genericEntity);
         }
+        dataDefinition.callSaveHook(genericEntity);
     }
 
     private void copyReadOnlyAndMissingFields(final InternalDataDefinition dataDefinition, final Entity genericEntity,

@@ -24,7 +24,7 @@
 package com.qcadoo.model.integration;
 
 import static junit.framework.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static junit.framework.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -38,6 +38,7 @@ import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.search.SearchOrders;
 import com.qcadoo.model.api.search.SearchRestrictions;
+import com.qcadoo.model.integration.VerifyHooks.HookType;
 
 public class CrudIntegrationTest extends IntegrationTest {
 
@@ -65,6 +66,91 @@ public class CrudIntegrationTest extends IntegrationTest {
         assertEquals(product.getId(), result.get("id"));
         assertEquals("asd", result.get("name"));
         assertEquals("def", result.get("number"));
+
+        assertEquals(1, verifyHooks.getNumOfInvocations(HookType.SAVE));
+        assertEquals(1, verifyHooks.getNumOfInvocations(HookType.CREATE));
+        assertEquals(0, verifyHooks.getNumOfInvocations(HookType.COPY));
+        assertEquals(0, verifyHooks.getNumOfInvocations(HookType.UPDATE));
+    }
+
+    @Test
+    public void shouldCopyEntity() throws Exception {
+        // given
+        DataDefinition productDataDefinition = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PRODUCT);
+
+        Entity product = productDataDefinition.save(createProduct("asd", "def"));
+
+        verifyHooks.clear();
+
+        // when
+        Entity productCopy = productDataDefinition.copy(product.getId()).get(0);
+
+        // then
+        assertEquals(product.getField("name"), productCopy.getField("name"));
+        assertEquals(product.getField("number") + "(1)", productCopy.getField("number"));
+        assertNotNull(productCopy.getId());
+        assertFalse(productCopy.getId().equals(product.getId()));
+        assertTrue(productCopy.isValid());
+        assertEquals(product.getDataDefinition().getName(), productCopy.getDataDefinition().getName());
+        assertEquals(product.getDataDefinition().getPluginIdentifier(), productCopy.getDataDefinition().getPluginIdentifier());
+
+        List<Map<String, Object>> result = jdbcTemplate.queryForList("select * from " + TABLE_NAME_PRODUCT + " order by id asc");
+
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        assertEquals(product.getId(), result.get(0).get("id"));
+        assertEquals(productCopy.getId(), result.get(1).get("id"));
+        assertEquals("asd", result.get(0).get("name"));
+        assertEquals("asd", result.get(1).get("name"));
+        assertEquals("def", result.get(0).get("number"));
+        assertEquals("def(1)", result.get(1).get("number"));
+
+        assertEquals(1, verifyHooks.getNumOfInvocations(HookType.SAVE));
+        assertEquals(0, verifyHooks.getNumOfInvocations(HookType.CREATE));
+        assertEquals(1, verifyHooks.getNumOfInvocations(HookType.COPY));
+        assertEquals(0, verifyHooks.getNumOfInvocations(HookType.UPDATE));
+    }
+
+    @Test
+    public void shouldUpdateEntity() throws Exception {
+        // given
+        final String newName = "newName";
+        final String newNumber = "newNumber";
+
+        DataDefinition productDataDefinition = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PRODUCT);
+
+        Entity product = createProduct("asd", "def");
+        product = productDataDefinition.save(product);
+
+        verifyHooks.clear();
+
+        // when
+        product.setField("name", newName);
+        product.setField("number", newNumber);
+        Entity updatedProduct = productDataDefinition.save(product);
+
+        // then
+        assertEquals(newName, product.getField("name"));
+        assertEquals(newNumber, product.getField("number"));
+        assertNotNull(product.getId());
+        assertEquals(product.getId(), updatedProduct.getId());
+        assertTrue(updatedProduct.isValid());
+        assertEquals(product.getDataDefinition().getName(), updatedProduct.getDataDefinition().getName());
+        assertEquals(product.getDataDefinition().getPluginIdentifier(), updatedProduct.getDataDefinition().getPluginIdentifier());
+        assertEquals("product", updatedProduct.getDataDefinition().getName());
+        assertEquals("products", updatedProduct.getDataDefinition().getPluginIdentifier());
+
+        Map<String, Object> result = jdbcTemplate.queryForMap("select * from " + TABLE_NAME_PRODUCT);
+
+        assertNotNull(result);
+        assertEquals(product.getId(), result.get("id"));
+        assertEquals(newName, result.get("name"));
+        assertEquals(newNumber, result.get("number"));
+
+        assertEquals(1, verifyHooks.getNumOfInvocations(HookType.SAVE));
+        assertEquals(0, verifyHooks.getNumOfInvocations(HookType.CREATE));
+        assertEquals(0, verifyHooks.getNumOfInvocations(HookType.COPY));
+        assertEquals(1, verifyHooks.getNumOfInvocations(HookType.UPDATE));
     }
 
     @Test
@@ -86,6 +172,11 @@ public class CrudIntegrationTest extends IntegrationTest {
         int total = jdbcTemplate.queryForInt("select count(*) from " + TABLE_NAME_PRODUCT);
 
         assertEquals(0, total);
+
+        assertEquals(0, verifyHooks.getNumOfInvocations(HookType.SAVE));
+        assertEquals(0, verifyHooks.getNumOfInvocations(HookType.CREATE));
+        assertEquals(0, verifyHooks.getNumOfInvocations(HookType.COPY));
+        assertEquals(0, verifyHooks.getNumOfInvocations(HookType.UPDATE));
     }
 
     @Test
@@ -97,6 +188,8 @@ public class CrudIntegrationTest extends IntegrationTest {
         product.setField("quantity", "2");
         product = productDataDefinition.save(product);
         product.setField("quantity", "0");
+
+        verifyHooks.clear();
 
         // when
         product = productDataDefinition.save(product);
@@ -110,6 +203,11 @@ public class CrudIntegrationTest extends IntegrationTest {
 
         assertNotNull(result);
         assertEquals(2, result.get("quantity"));
+
+        assertEquals(0, verifyHooks.getNumOfInvocations(HookType.SAVE));
+        assertEquals(0, verifyHooks.getNumOfInvocations(HookType.CREATE));
+        assertEquals(0, verifyHooks.getNumOfInvocations(HookType.COPY));
+        assertEquals(0, verifyHooks.getNumOfInvocations(HookType.UPDATE));
     }
 
     @Test
@@ -119,6 +217,8 @@ public class CrudIntegrationTest extends IntegrationTest {
 
         Entity product = productDataDefinition.save(createProduct("asd", "asd"));
 
+        verifyHooks.clear();
+
         // when
         productDataDefinition.delete(product.getId());
 
@@ -126,6 +226,11 @@ public class CrudIntegrationTest extends IntegrationTest {
         int total = jdbcTemplate.queryForInt("select count(*) from " + TABLE_NAME_PRODUCT);
 
         assertEquals(0, total);
+
+        assertEquals(0, verifyHooks.getNumOfInvocations(HookType.SAVE));
+        assertEquals(0, verifyHooks.getNumOfInvocations(HookType.CREATE));
+        assertEquals(0, verifyHooks.getNumOfInvocations(HookType.COPY));
+        assertEquals(0, verifyHooks.getNumOfInvocations(HookType.UPDATE));
     }
 
     @Test
