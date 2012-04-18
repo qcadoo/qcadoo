@@ -59,6 +59,7 @@ QCD.components.elements.ContextualHelpButton.createButton = function(url, icon, 
 	
 	var itemIcon = $('<img>');
 	itemIcon.attr('src', elementIcon);
+	itemIcon.attr('border', '0');
 	
 	itemElement.append(itemIcon);
 	
