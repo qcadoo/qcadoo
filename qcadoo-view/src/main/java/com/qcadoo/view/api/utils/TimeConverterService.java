@@ -49,7 +49,10 @@ public class TimeConverterService {
      */
 
     public String convertTimeToString(final Integer duration) {
+        return duration2String(duration);
+    }
 
+    public static String duration2String(final Integer duration) {
         long longValueFromDuration = duration.longValue();
         long hours = longValueFromDuration / 3600;
         long minutes = longValueFromDuration % 3600 / 60;

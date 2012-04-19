@@ -38,4 +38,9 @@ public final class EntityTreeUtils {
         return new DetachedEntityTreeImpl(entities);
     }
 
+    public static List<Entity> getEntitiesInDepthFirstOrder(EntityTree tree) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }
