@@ -27,8 +27,18 @@ import java.util.List;
 
 public interface RibbonGroupsPack {
 
+    /**
+     * Gets contained ribbon groups
+     * 
+     * @return List of ribbon groups contained in this object
+     */
     List<InternalRibbonGroup> getGroups();
 
+    /**
+     * Gets contained ribbon group with specified name
+     * 
+     * @return ribbon group contained in this object with specified name or null if group was not found
+     */
     InternalRibbonGroup getGroupByName(String groupName);
 
     /**
@@ -41,7 +51,7 @@ public interface RibbonGroupsPack {
     /**
      * Gets ribbon group pack with only updated groups - internal usage only
      * 
-     * @return ribon group pack with only updated groups
+     * @return ribbon group pack with only updated groups
      */
     RibbonGroupsPack getUpdate();
 

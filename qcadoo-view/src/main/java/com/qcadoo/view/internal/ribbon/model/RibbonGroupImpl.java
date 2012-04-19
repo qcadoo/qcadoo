@@ -26,6 +26,8 @@ package com.qcadoo.view.internal.ribbon.model;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -122,4 +124,28 @@ public class RibbonGroupImpl implements InternalRibbonGroup {
     public String toString() {
         return "RibbonGroupImpl [name=" + name + ", extensionPluginIdentifier=" + extensionPluginIdentifier + "]";
     }
+
+    @Override
+    public final int hashCode() {
+        return new HashCodeBuilder(1, 31).append(getName()).append(getExtensionPluginIdentifier()).append(getItems().size())
+                .toHashCode();
+    }
+
+    @Override
+    public final boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        RibbonGroupImpl other = (RibbonGroupImpl) obj;
+        return new EqualsBuilder().append(getName(), other.getName())
+                .append(getExtensionPluginIdentifier(), other.getExtensionPluginIdentifier())
+                .append(getItems().size(), other.getItems().size()).isEquals();
+    }
+
 }

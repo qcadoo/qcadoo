@@ -23,9 +23,12 @@
  */
 package com.qcadoo.view.internal.ribbon.templates.model;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.qcadoo.view.internal.api.ViewDefinition;
 import com.qcadoo.view.internal.ribbon.model.InternalRibbonGroup;
 import com.qcadoo.view.internal.ribbon.model.RibbonGroupsPack;
@@ -41,11 +44,11 @@ public class TemplateRibbonGroupsPack implements RibbonGroupsPack {
 
     private final ViewDefinition viewDefinition;
 
+    private final boolean update;
+
     public TemplateRibbonGroupsPack(final RibbonTemplate template, final RibbonTemplateParameters parameters,
             final ViewDefinition viewDefinition) {
-        this.template = template;
-        this.parameters = parameters;
-        this.viewDefinition = viewDefinition;
+        this(template, parameters, viewDefinition, new ArrayList<InternalRibbonGroup>());
     }
 
     private TemplateRibbonGroupsPack(final RibbonTemplate template, final RibbonTemplateParameters parameters,
@@ -54,14 +57,25 @@ public class TemplateRibbonGroupsPack implements RibbonGroupsPack {
         this.parameters = parameters;
         this.viewDefinition = viewDefinition;
         this.groups = updatedGroups;
+        update = !updatedGroups.isEmpty();
     }
 
     @Override
     public List<InternalRibbonGroup> getGroups() {
-        if (groups == null || groups.isEmpty()) {
-            groups = template.getRibbonGroups(parameters, viewDefinition);
+        if (update) {
+            return groups;
+        }
+        List<InternalRibbonGroup> templateGroups = template.getRibbonGroups(parameters, viewDefinition);
+        if (templateGroups.size() > groups.size()) {
+            appendGroupsFromTemplate(templateGroups);
         }
         return groups;
+    }
+
+    private void appendGroupsFromTemplate(final List<InternalRibbonGroup> templateGroups) {
+        Set<InternalRibbonGroup> groupsSet = Sets.newLinkedHashSet(groups);
+        groupsSet.addAll(templateGroups);
+        groups = Lists.newArrayList(groupsSet);
     }
 
     @Override
