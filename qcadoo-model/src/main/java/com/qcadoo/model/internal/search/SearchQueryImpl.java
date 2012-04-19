@@ -24,6 +24,7 @@
 package com.qcadoo.model.internal.search;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -70,6 +71,8 @@ public class SearchQueryImpl implements SearchQuery {
     private final Map<String, Date> timestamps = new HashMap<String, Date>();
 
     private final Map<String, Object> parameters = new HashMap<String, Object>();
+
+    private final Map<String, Collection<? extends Object>> parameterLists = new HashMap<String, Collection<? extends Object>>();
 
     private final Map<String, Object> entities = new HashMap<String, Object>();
 
@@ -262,6 +265,12 @@ public class SearchQueryImpl implements SearchQuery {
     }
 
     @Override
+    public SearchQueryBuilder setParameterList(final String name, final Collection<? extends Object> values) {
+        parameterLists.put(name, values);
+        return this;
+    }
+
+    @Override
     public Query createQuery(final Session session) {
         return session.createQuery(queryString);
     }
@@ -306,6 +315,9 @@ public class SearchQueryImpl implements SearchQuery {
         }
         for (Map.Entry<String, Object> parameter : parameters.entrySet()) {
             query.setParameter(parameter.getKey(), parameter.getValue());
+        }
+        for (Map.Entry<String, Collection<? extends Object>> parametersList : parameterLists.entrySet()) {
+            query.setParameterList(parametersList.getKey(), parametersList.getValue());
         }
         for (Map.Entry<String, Object> parameter : entities.entrySet()) {
             query.setEntity(parameter.getKey(), parameter.getValue());

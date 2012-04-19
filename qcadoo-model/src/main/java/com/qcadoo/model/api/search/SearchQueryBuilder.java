@@ -24,6 +24,7 @@
 package com.qcadoo.model.api.search;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.Date;
 
 import com.qcadoo.model.api.Entity;
@@ -272,5 +273,16 @@ public interface SearchQueryBuilder {
      * @return this query builder
      */
     SearchQueryBuilder setParameter(String name, Object val);
+
+    /**
+     * Sets the collection of parameters for given placeholder.
+     * 
+     * @param name
+     *            placeholder
+     * @param val
+     *            collection of values for the parameter
+     * @return this query builder
+     */
+    SearchQueryBuilder setParameterList(String name, Collection<? extends Object> parameters);
 
 }
