@@ -180,6 +180,11 @@ public class DynamicDataDefinitionImpl implements InternalDataDefinition {
     }
 
     @Override
+    public boolean callSaveHook(final Entity entity) {
+        return true;
+    }
+
+    @Override
     public Class<?> getClassForEntity() {
         throw new UnsupportedOperationException("Cannot get class for dynamic data definition");
     }

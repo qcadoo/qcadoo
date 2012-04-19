@@ -77,6 +77,8 @@ public abstract class IntegrationTest {
 
     protected static PlatformTransactionManager txManager;
 
+    protected static VerifyHooks verifyHooks;
+
     @BeforeClass
     public static void classInit() throws Exception {
         MultiTenantUtil multiTenantUtil = new MultiTenantUtil();
@@ -90,6 +92,7 @@ public abstract class IntegrationTest {
         dataDefinitionService = applicationContext.getBean(InternalDataDefinitionService.class);
         sessionFactory = applicationContext.getBean("sessionFactory", SessionFactory.class);
         jdbcTemplate = applicationContext.getBean(JdbcTemplate.class);
+        verifyHooks = applicationContext.getBean(VerifyHooks.class);
     }
 
     @Before
@@ -101,6 +104,7 @@ public abstract class IntegrationTest {
         jdbcTemplate.execute("delete from " + TABLE_NAME_PRODUCT);
         PluginManager pluginManager = applicationContext.getBean(PluginManager.class);
         pluginManager.enablePlugin("machines");
+        verifyHooks.clear();
     }
 
     protected Entity createComponent(final String name, final Object product, final Object machine) {

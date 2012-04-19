@@ -302,33 +302,33 @@
 			 		<div>
 			 			<label>${translation["security.form.label.login"]}</label>
 			 			<div class="component_form_element" style="height: 20px; width: 200px; vertical-align: middle; display: inline-block;">
-			 			<div class="component_container_form_w" id="usernameInput_component_container_form_w" style="left: 0; right: 0;">
-							<div class="component_container_form_inner">
-								<div class="component_container_form_x"></div>
-								<div class="component_container_form_y"></div>
-				 				<input type='text' id="usernameInput" name='j_username' value='<c:if test="${not empty param.login_error}"><c:out value="${SPRING_SECURITY_LAST_USERNAME}"/></c:if>'/>
-					 			<div id="loginErrorMessagePanel" class="errorMessagePanel" style="display: none;">
-					 				<div class="login_failed"></div>
-					 				<span id="loginMessage" class="login_failed_message">${translation["security.message.wrongLogin"]}</span>
+				 			<div class="component_container_form_w" id="usernameInput_component_container_form_w" style="left: 0; right: 0;">
+								<div class="component_container_form_inner">
+									<div class="component_container_form_x"></div>
+									<div class="component_container_form_y"></div>
+					 				<input type='text' id="usernameInput" name='j_username' value='<c:if test="${not empty param.login_error}"><c:out value="${SPRING_SECURITY_LAST_USERNAME}"/></c:if>'/>
+						 			<div id="loginErrorMessagePanel" class="errorMessagePanel" style="display: none;">
+						 				<div class="login_failed"></div>
+						 				<span id="loginMessage" class="login_failed_message">${translation["security.message.wrongLogin"]}</span>
+						 			</div>
 					 			</div>
-				 			</div>
-						</div>
+							</div>
 						</div>
 			 		</div>
 			 		<div>
 			 			<label>${translation["security.form.label.password"]}</label>
 			 			<div class="component_form_element" style="height: 20px; width: 200px; vertical-align: middle; display: inline-block;">
-			 			<div class="component_container_form_w" style="left: 0; right: 0;">
-							<div class="component_container_form_inner">
-								<div class="component_container_form_x"></div>
-								<div class="component_container_form_y"></div>
-								<input type='password' id="passwordInput" name='j_password'>
-								<div id="passwordErrorMessagePanel" class="errorMessagePanel" style="display: none;">
-				 					<div class="login_failed"></div>
-				 					<span id="passwordMessage" class="login_failed_message">${translation["security.message.wrongPassword"]}</span>								
+				 			<div class="component_container_form_w" style="left: 0; right: 0;">
+								<div class="component_container_form_inner">
+									<div class="component_container_form_x"></div>
+									<div class="component_container_form_y"></div>
+									<input type='password' id="passwordInput" name='j_password'>
+									<div id="passwordErrorMessagePanel" class="errorMessagePanel" style="display: none;">
+					 					<div class="login_failed"></div>
+					 					<span id="passwordMessage" class="login_failed_message">${translation["security.message.wrongPassword"]}</span>								
+									</div>
 								</div>
 							</div>
-						</div>
 						</div>
 					</div>
 			 		<div id="rememberMeRow">
@@ -338,6 +338,11 @@
 			 			<a href="#" id="changeUserButton" onclick="window.parent.location='login.html'">${translation["security.form.button.changeUser"]}</a>
 			 			<a href="#" id="loginButton" onclick="ajaxLogin(); return false;"><span>${translation['security.form.button.logIn']}</span></a>
 					</div>
+					<c:if test="${not showUserAndPassword}">
+						<div id="forgotPasswordLinkWrapper">
+							<a href="#" id="forgotPasswordLink" onclick="window.parent.location='passwordReset.html'">${translation['security.form.link.forgotPassword']}</a>
+						</div>
+					</c:if>
 			    </form>
 		 	</div>
 	 

@@ -42,7 +42,7 @@
 					<component type="flowLayout" name="flowLayout">
 						<component type="input" name="login" field="userName" />
 						<component type="select" name="role" field="role" />
-						<component type="input" name="email" field="email" />
+						<component type="input" name="email" field="email" hasDescription="true" />
 						<component type="input" name="firstName" field="firstName" />
 						<component type="input" name="lastName" field="lastName" />
 						<component type="textarea" name="description" field="description" />

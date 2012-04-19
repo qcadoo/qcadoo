@@ -55,7 +55,8 @@ public final class LoginController {
             @RequestParam(required = false, defaultValue = FALSE) final Boolean popup,
             @RequestParam(required = false, defaultValue = FALSE) final Boolean logout,
             @RequestParam(required = false, defaultValue = "") final String targetUrl,
-            @RequestParam(required = false, defaultValue = FALSE) final Boolean timeout, final Locale locale) {
+            @RequestParam(required = false, defaultValue = FALSE) final Boolean timeout,
+            @RequestParam(required = false, defaultValue = FALSE) final Boolean passwordReseted, final Locale locale) {
 
         ModelAndView mav = new ModelAndView();
         mav.setViewName("qcadooView/login");
@@ -79,6 +80,10 @@ public final class LoginController {
             mav.addObject("messageType", "error");
             mav.addObject("messageHeader", "security.message.errorHeader");
             mav.addObject("messageContent", "security.message.errorContent");
+        } else if (passwordReseted) {
+            mav.addObject("messageType", "success");
+            mav.addObject("messageHeader", "security.message.passwordReset.successHeader");
+            mav.addObject("messageContent", "security.message.passwordReset.successContent");
         }
 
         if (setAsDemoEnviroment) {

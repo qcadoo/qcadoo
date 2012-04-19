@@ -28,7 +28,6 @@ import static junit.framework.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -49,7 +48,6 @@ import com.qcadoo.model.api.types.TreeType;
 import com.qcadoo.model.beans.sample.SampleParentDatabaseObject;
 import com.qcadoo.model.beans.sample.SampleSimpleDatabaseObject;
 import com.qcadoo.model.beans.sample.SampleTreeDatabaseObject;
-import com.qcadoo.model.internal.api.EntityHookDefinition;
 import com.qcadoo.model.internal.api.FieldHookDefinition;
 import com.qcadoo.model.internal.types.HasManyEntitiesType;
 import com.qcadoo.model.internal.types.TreeEntitiesType;
@@ -305,28 +303,6 @@ public final class DataAccessServiceCopyTest extends DataAccessTest {
         Assert.assertEquals("Mr T", entities.get(0).getField("name"));
         verify(session, times(2)).save(Mockito.any());
         verify(session, never()).get(Mockito.eq(SampleSimpleDatabaseObject.class), anyInt());
-    }
-
-    @Test
-    public void shouldOmitCreateHooksOnCopy() throws Exception {
-        // given
-        EntityHookDefinition onCreateHook = mock(EntityHookDefinition.class);
-
-        dataDefinition.addCreateHook(onCreateHook);
-
-        SampleSimpleDatabaseObject simpleDatabaseObject = new SampleSimpleDatabaseObject();
-        simpleDatabaseObject.setId(13L);
-
-        given(session.get(any(Class.class), Matchers.anyInt())).willReturn(simpleDatabaseObject);
-
-        // when
-        List<Entity> entities = dataDefinition.copy(new Long[] { 13L });
-
-        // then
-        verify(session, times(1)).save(Mockito.any(SampleSimpleDatabaseObject.class));
-        assertEquals(1, entities.size());
-        assertTrue(entities.get(0).isValid());
-        verify(onCreateHook, never()).call(Mockito.any(Entity.class));
     }
 
 }

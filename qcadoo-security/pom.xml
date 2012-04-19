@@ -19,6 +19,12 @@
 			<artifactId>qcadoo-model</artifactId>
 			<version>1.1.5-SNAPSHOT</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>com.qcadoo</groupId>
+			<artifactId>qcadoo-mail</artifactId>
+			<version>1.1.5-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 
 	<build>
