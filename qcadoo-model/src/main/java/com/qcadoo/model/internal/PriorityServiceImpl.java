@@ -23,6 +23,8 @@
  */
 package com.qcadoo.model.internal;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.util.Comparator;
 import java.util.List;
 
@@ -171,16 +173,25 @@ public final class PriorityServiceImpl implements PriorityService {
         return criteria;
     }
 
+    private static EntityPriorityComparator entityPriorityComparator = new EntityPriorityComparator();
+
+    private static class EntityPriorityComparator implements Comparator<Entity> {
+
+        @Override
+        public int compare(final Entity n1, final Entity n2) {
+            return getPriorityValue(n1).compareTo(getPriorityValue(n2));
+        }
+
+        private Integer getPriorityValue(final Entity entity) {
+            FieldDefinition priorityFieldDefinition = entity.getDataDefinition().getPriorityField();
+            checkNotNull(priorityFieldDefinition, "Missing priority field [" + entity.getDataDefinition().toString() + "].");
+            return (Integer) entity.getField(priorityFieldDefinition.getName());
+        }
+
+    }
+
     @Override
     public Comparator<Entity> getEntityPriorityComparator() {
-        return new Comparator<Entity>() {
-
-            @Override
-            public int compare(final Entity n1, final Entity n2) {
-                Integer p1 = (Integer) n1.getField("priority");
-                Integer p2 = (Integer) n2.getField("priority");
-                return p1.compareTo(p2);
-            }
-        };
+        return entityPriorityComparator;
     }
 }

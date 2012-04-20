@@ -40,10 +40,11 @@ import com.google.common.collect.Lists;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.EntityTree;
 import com.qcadoo.model.api.EntityTreeNode;
-import com.qcadoo.model.internal.PriorityServiceImpl;
 import com.qcadoo.model.internal.api.PriorityService;
 
 public class TreeNumberingServiceTest {
+
+    private final static String PRIORITY = "priority";
 
     private TreeNumberingService treeNumberingService;
 
@@ -59,20 +60,20 @@ public class TreeNumberingServiceTest {
 
         tree = mock(EntityTree.class);
         when(tree.getRoot()).thenReturn(rootNode);
-        when(rootNode.getField("priority")).thenReturn(1L);
+        when(rootNode.getField(PRIORITY)).thenReturn(1L);
 
         PriorityService priorityService = mock(PriorityService.class);
         when(priorityService.getEntityPriorityComparator()).thenReturn(new Comparator<Entity>() {
 
             @Override
             public int compare(final Entity n1, final Entity n2) {
-                Integer p1 = (Integer) n1.getField("priority");
-                Integer p2 = (Integer) n2.getField("priority");
+                Integer p1 = (Integer) n1.getField(PRIORITY);
+                Integer p2 = (Integer) n2.getField(PRIORITY);
                 return p1.compareTo(p2);
             }
         });
 
-        ReflectionTestUtils.setField(treeNumberingService, "priorityService", new PriorityServiceImpl());
+        ReflectionTestUtils.setField(treeNumberingService, "priorityService", priorityService);
     }
 
     @Test
@@ -124,7 +125,7 @@ public class TreeNumberingServiceTest {
         Mockito.verify(node1).setField(Mockito.eq(NODE_NUMBER_FIELD), argument.capture());
         assertEquals("2.", argument.getValue());
     }
-    
+
     @Test
     public void shouldNumberBranchedTree() throws Exception {
         // given
@@ -216,7 +217,7 @@ public class TreeNumberingServiceTest {
 
     private EntityTreeNode getTreeNodeMock(final Integer priority) {
         EntityTreeNode node = mock(EntityTreeNode.class);
-        when(node.getField("priority")).thenReturn(priority);
+        when(node.getField(PRIORITY)).thenReturn(priority);
         return node;
     }
 
