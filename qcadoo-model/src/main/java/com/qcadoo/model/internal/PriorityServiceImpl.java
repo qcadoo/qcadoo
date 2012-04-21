@@ -25,6 +25,7 @@ package com.qcadoo.model.internal;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.io.Serializable;
 import java.util.Comparator;
 import java.util.List;
 
@@ -175,7 +176,9 @@ public final class PriorityServiceImpl implements PriorityService {
 
     private static EntityPriorityComparator entityPriorityComparator = new EntityPriorityComparator();
 
-    private static class EntityPriorityComparator implements Comparator<Entity> {
+    private static class EntityPriorityComparator implements Comparator<Entity>, Serializable {
+
+        private static final long serialVersionUID = 143898239L;
 
         @Override
         public int compare(final Entity n1, final Entity n2) {

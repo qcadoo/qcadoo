@@ -87,11 +87,13 @@ public final class PasswordResetController {
         if (setAsDemoEnviroment) {
             return null;
         }
-
         if (StringUtils.isBlank(login)) {
             return "loginIsBlank";
         }
+        return performPasswordReseting(login);
+    }
 
+    private String performPasswordReseting(final String login) {
         try {
             passwordReminderService.generateAndSendNewPassword(login);
         } catch (UsernameNotFoundException e) {
@@ -103,9 +105,7 @@ public final class PasswordResetController {
         } catch (Exception e) {
             return "error";
         }
-
         return "success";
-
     }
 
 }

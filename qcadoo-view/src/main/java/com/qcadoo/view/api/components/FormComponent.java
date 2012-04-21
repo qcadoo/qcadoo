@@ -71,4 +71,13 @@ public interface FormComponent extends ComponentState {
      */
     FieldComponent findFieldComponentByName(String name);
 
+    /**
+     * Set Entity which be used to fill this form
+     * 
+     * @param entity
+     *            entity which be used to fill form
+     * @since 1.1.5
+     */
+    void setEntity(Entity entity);
+
 }

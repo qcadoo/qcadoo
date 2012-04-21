@@ -57,17 +57,16 @@ public class TemplateRibbonGroupsPack implements RibbonGroupsPack {
         this.parameters = parameters;
         this.viewDefinition = viewDefinition;
         this.groups = updatedGroups;
-        update = !updatedGroups.isEmpty();
+        update = updatedGroups.isEmpty() ^ true;
     }
 
     @Override
     public List<InternalRibbonGroup> getGroups() {
-        if (update) {
-            return groups;
-        }
-        List<InternalRibbonGroup> templateGroups = template.getRibbonGroups(parameters, viewDefinition);
-        if (templateGroups.size() > groups.size()) {
-            appendGroupsFromTemplate(templateGroups);
+        if (!update) {
+            List<InternalRibbonGroup> templateGroups = template.getRibbonGroups(parameters, viewDefinition);
+            if (templateGroups.size() > groups.size()) {
+                appendGroupsFromTemplate(templateGroups);
+            }
         }
         return groups;
     }

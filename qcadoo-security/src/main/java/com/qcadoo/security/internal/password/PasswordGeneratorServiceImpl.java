@@ -16,7 +16,7 @@ public class PasswordGeneratorServiceImpl implements PasswordGeneratorService {
     }
 
     @Override
-    public String generatePassword(int length) {
+    public String generatePassword(final int length) {
         return RandomStringUtils.random(length, PASSWORD_GENERATOR_CHARS);
     }
 

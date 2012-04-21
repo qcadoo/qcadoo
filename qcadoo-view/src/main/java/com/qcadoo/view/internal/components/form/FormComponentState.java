@@ -164,6 +164,7 @@ public class FormComponentState extends AbstractContainerState implements FormCo
         return entity;
     }
 
+    @Override
     public void setEntity(final Entity entity) {
         if (entity.isValid()) {
             active = entity.isActive();

@@ -25,6 +25,7 @@ package com.qcadoo.view.internal.controllers;
 
 import java.util.Locale;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -39,6 +40,12 @@ import com.qcadoo.localization.api.TranslationService;
 public final class LoginController {
 
     private static final String FALSE = "false";
+
+    private static final String MESSAGE_TYPE = "messageType";
+
+    private static final String MESSAGE_HEADER = "messageHeader";
+
+    private static final String MESSAGE_CONTENT = "messageContent";
 
     @Autowired
     private TranslationService translationService;
@@ -69,21 +76,21 @@ public final class LoginController {
         mav.addObject("targetUrl", targetUrl);
 
         if (logout) {
-            mav.addObject("messageType", "success");
-            mav.addObject("messageHeader", "security.message.logoutHeader");
-            mav.addObject("messageContent", "security.message.logoutContent");
+            mav.addObject(MESSAGE_TYPE, "success");
+            mav.addObject(MESSAGE_HEADER, "security.message.logoutHeader");
+            mav.addObject(MESSAGE_CONTENT, "security.message.logoutContent");
         } else if (timeout || iframe || popup) {
-            mav.addObject("messageType", "info");
-            mav.addObject("messageHeader", "security.message.timeoutHeader");
-            mav.addObject("messageContent", "security.message.timeoutContent");
-        } else if (loginError != null) {
-            mav.addObject("messageType", "error");
-            mav.addObject("messageHeader", "security.message.errorHeader");
-            mav.addObject("messageContent", "security.message.errorContent");
+            mav.addObject(MESSAGE_TYPE, "info");
+            mav.addObject(MESSAGE_HEADER, "security.message.timeoutHeader");
+            mav.addObject(MESSAGE_CONTENT, "security.message.timeoutContent");
+        } else if (StringUtils.isNotEmpty(loginError)) {
+            mav.addObject(MESSAGE_TYPE, "error");
+            mav.addObject(MESSAGE_HEADER, "security.message.errorHeader");
+            mav.addObject(MESSAGE_CONTENT, "security.message.errorContent");
         } else if (passwordReseted) {
-            mav.addObject("messageType", "success");
-            mav.addObject("messageHeader", "security.message.passwordReset.successHeader");
-            mav.addObject("messageContent", "security.message.passwordReset.successContent");
+            mav.addObject(MESSAGE_TYPE, "success");
+            mav.addObject(MESSAGE_HEADER, "security.message.passwordReset.successHeader");
+            mav.addObject(MESSAGE_CONTENT, "security.message.passwordReset.successContent");
         }
 
         if (setAsDemoEnviroment) {

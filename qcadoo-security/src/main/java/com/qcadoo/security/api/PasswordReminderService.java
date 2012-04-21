@@ -2,6 +2,11 @@ package com.qcadoo.security.api;
 
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+/**
+ * Service for resetting password
+ * 
+ * @since 1.1.5
+ */
 public interface PasswordReminderService {
 
     /**
@@ -12,5 +17,5 @@ public interface PasswordReminderService {
      * @throws UsernameNotFoundException
      *             when user with given name does not exist
      */
-    public void generateAndSendNewPassword(String userName) throws UsernameNotFoundException;
+    void generateAndSendNewPassword(String userName) throws UsernameNotFoundException;
 }

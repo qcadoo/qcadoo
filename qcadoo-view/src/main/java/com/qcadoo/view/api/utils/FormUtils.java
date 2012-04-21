@@ -25,14 +25,27 @@ package com.qcadoo.view.api.utils;
 
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.view.api.components.FormComponent;
-import com.qcadoo.view.internal.components.form.FormComponentState;
 
+/**
+ * Helper class for Form
+ * 
+ * @deprecated
+ */
+@Deprecated
 public class FormUtils {
 
-    private FormUtils() {
-    }
-
+    /**
+     * Set Entity which be used to fill this form
+     * 
+     * @deprecated this method is deprecated, if you want set form's entity, use {@link FormComponent#setEntity(Entity)}
+     * 
+     * @param form
+     *            form which want to fill
+     * @param entity
+     *            entity which be used to fill form
+     */
+    @Deprecated
     public static final void setFormEntity(final FormComponent form, final Entity entity) {
-        ((FormComponentState) form).setEntity(entity);
+        form.setEntity(entity);
     }
 }
