@@ -47,18 +47,22 @@ public class TimeConverterService {
      *            time value from database
      * @return time value in format hh:mm:ss
      */
-    public String convertTimeToString(final Integer duration) {
-        return duration2String(duration);
+
+    public static String convertTimeToString(final String duration) {
+        if (duration == null) {
+            return "";
+        }
+
+        int integerDuration = Integer.parseInt(duration.replaceAll("\\D", ""));
+
+        return durationToString(integerDuration);
     }
 
-    /**
-     * Convert integer time value to string in format hh:mm:ss
-     * 
-     * @param duration
-     *            time value from database
-     * @return time value in format hh:mm:ss
-     */
-    public static String duration2String(final Integer duration) {
+    public String convertTimeToString(final Integer duration) {
+        return durationToString(duration);
+    }
+
+    public static String durationToString(final Integer duration) {
         long longValueFromDuration = duration.longValue();
         long hours = longValueFromDuration / 3600;
         long minutes = longValueFromDuration % 3600 / 60;
@@ -88,6 +92,7 @@ public class TimeConverterService {
      *            value from view field
      * @return date value in format dd:mm:rrrr hh:mm
      */
+
     public Date getDateFromField(final Object dateFromField) {
         try {
             return new SimpleDateFormat(DateUtils.L_DATE_TIME_FORMAT, Locale.getDefault()).parse((String) dateFromField);
