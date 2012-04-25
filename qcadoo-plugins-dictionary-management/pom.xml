@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>com.qcadoo</groupId>
 		<artifactId>qcadoo</artifactId>
-		<version>1.1.5-SNAPSHOT</version>
+		<version>1.1.5</version>
 	</parent>
 
 	<artifactId>qcadoo-plugins-dictionary-management</artifactId>
@@ -17,12 +17,12 @@
 		<dependency>
 			<groupId>com.qcadoo</groupId>
 			<artifactId>qcadoo-model</artifactId>
-			<version>1.1.5-SNAPSHOT</version>
+			<version>1.1.5</version>
 		</dependency>
 		<dependency>
 			<groupId>com.qcadoo</groupId>
 			<artifactId>qcadoo-view</artifactId>
-			<version>1.1.5-SNAPSHOT</version>
+			<version>1.1.5</version>
 		</dependency>
 	</dependencies>
 
