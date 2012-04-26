@@ -62,6 +62,7 @@ import com.qcadoo.model.api.aop.Monitorable;
 import com.qcadoo.model.api.search.SearchRestrictions;
 import com.qcadoo.model.api.search.SearchResult;
 import com.qcadoo.model.api.types.HasManyType;
+import com.qcadoo.model.api.types.ManyToManyType;
 import com.qcadoo.model.api.types.TreeType;
 import com.qcadoo.model.api.validators.ErrorMessage;
 import com.qcadoo.model.internal.api.DataAccessService;
@@ -404,6 +405,9 @@ public class DataAccessServiceImpl implements DataAccessService {
         for (String fieldName : dataDefinition.getFields().keySet()) {
             copyTreeField(sourceEntity, targetEntity, dataDefinition, fieldName);
         }
+        for (String fieldName : dataDefinition.getFields().keySet()) {
+            copyManyToManyField(sourceEntity, targetEntity, dataDefinition, fieldName);
+        }
 
         return targetEntity;
     }
@@ -459,6 +463,16 @@ public class DataAccessServiceImpl implements DataAccessService {
         targetEntity.setField(fieldName, entities);
     }
 
+    private void copyManyToManyField(final Entity sourceEntity, final Entity targetEntity, final DataDefinition dataDefinition,
+            final String fieldName) {
+        FieldDefinition fieldDefinition = dataDefinition.getField(fieldName);
+
+        if (!(fieldDefinition.getType() instanceof ManyToManyType) || !((ManyToManyType) fieldDefinition.getType()).isCopyable()) {
+            return;
+        }
+        targetEntity.setField(fieldName, sourceEntity.getField(fieldName));
+    }
+
     private Object getCopyValueOfSimpleField(final Entity sourceEntity, final DataDefinition dataDefinition,
             final String fieldName) {
         FieldDefinition fieldDefinition = dataDefinition.getField(fieldName);
@@ -472,6 +486,8 @@ public class DataAccessServiceImpl implements DataAccessService {
         } else if (fieldDefinition.getType() instanceof HasManyType) {
             return null;
         } else if (fieldDefinition.getType() instanceof TreeType) {
+            return null;
+        } else if (fieldDefinition.getType() instanceof ManyToManyType) {
             return null;
         } else {
             return sourceEntity.getField(fieldName);
