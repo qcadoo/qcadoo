@@ -40,7 +40,7 @@
 			cascade="nullify" />
 		<hasMany name="parts" model="part" joinField="product"
 			cascade="nullify" />
-		<manyToMany name="partsManyToMany" model="part" plugin="products" />
+		<manyToMany name="partsManyToMany" model="part" plugin="products" copyable="true"/>
 	</fields>
 	<hooks>
 		<onCopy class="com.qcadoo.model.integration.VerifyHooks" method="onCopy"/>

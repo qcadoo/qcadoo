@@ -66,22 +66,22 @@ public interface ComponentState {
     void addMessage(ErrorMessage errorMessage);
 
     /**
-     * Adds message to this component. Message will automatically close after some time.
+     * Adds message (translated using given key) to this component. Message will automatically close after some time.
      * 
-     * @param message
-     *            message content
+     * @param messageTranslationKey
+     *            translation key for message content
      * @param type
      *            message type
      * @param args
      *            message's arguments
      */
-    void addMessage(String message, MessageType type, String... args);
+    void addMessage(String messageTranslationKey, MessageType type, String... args);
 
     /**
-     * Adds message to this component.
+     * Adds message (translated using given key) to this component.
      * 
-     * @param message
-     *            message content
+     * @param messageTranslationKey
+     *            translation key for message content
      * @param type
      *            message type
      * @param autoClose
@@ -89,31 +89,31 @@ public interface ComponentState {
      * @param args
      *            message's arguments
      */
-    void addMessage(String message, MessageType type, boolean autoClose, String... args);
+    void addMessage(String messageTranslationKey, MessageType type, boolean autoClose, String... args);
 
     /**
-     * Adds translated message to this component. Message will automatically close after some time.
+     * Adds already translated message to this component. Message will automatically close after some time.
      * 
-     * @param message
-     *            message content
+     * @param translatedMessage
+     *            translated message content
      * @param type
      *            message type
      * @param autoClose
      *            true if this message should automatically close after some time
      */
-    void addTranslatedMessage(String message, MessageType type);
+    void addTranslatedMessage(String translatedMessage, MessageType type);
 
     /**
-     * Adds translated message to this component.
+     * Adds already translated message to this component.
      * 
-     * @param message
-     *            message content
+     * @param translatedMessage
+     *            translated message content
      * @param type
      *            message type
      * @param autoClose
      *            true if this message should automatically close after some time
      */
-    void addTranslatedMessage(String message, MessageType type, boolean autoClose);
+    void addTranslatedMessage(String translatedMessage, MessageType type, boolean autoClose);
 
     /**
      * Returns current localization
