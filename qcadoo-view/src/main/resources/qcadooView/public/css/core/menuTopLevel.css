@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 1.1.4
+ * Version: 1.1.5
  *
  * This file is part of Qcadoo.
  *
@@ -21,34 +21,3 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * ***************************************************************************
  */
-#topLevelMenu {
-	height: 45px;
-	padding-left: 20px;
-	background: #f1f1f1 url('/qcadooView/public/css/core/images/topBg.png') repeat-x 0 0;
-}
-
-#topLevelMenu #logoImage {
-	margin-top: 8px;
-	cursor: pointer;
-}
-
-#topLevelMenu #topRightPanel {
-	float: right;
-	margin-right: 20px;
-	line-height: 45px;
-	font-size: 12px;
-	font-family: "Lucida Grande", Arial, Helvetica, sans-serif;
-}
-
-#topLevelMenu #topRightPanel #userInfo {
-	color: #919191;
-	margin-right: 20px;
-}
-
-#topLevelMenu #topRightPanel #profileButton {
-	margin-right: 15px;
-}
-
-#topLevelMenu #topRightPanel a {
-	color: black;
-}
