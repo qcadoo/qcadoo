@@ -93,4 +93,38 @@ public class ManyToManyIntegrationTest extends IntegrationTest {
         assertTrue(loadedEntities.containsAll(entitiesList));
     }
 
+    @Test
+    @SuppressWarnings("unchecked")
+    public void shouldCopyManyToManyField() throws Exception {
+        DataDefinition productDataDefinition = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PRODUCT);
+        DataDefinition partDataDefinition = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PART);
+
+        Entity firstProduct = productDataDefinition.save(createProduct("asd", "00001"));
+        Entity secondProduct = productDataDefinition.save(createProduct("fgh", "00002"));
+        Entity thirdProduct = productDataDefinition.save(createProduct("jkl", "00003"));
+
+        Entity firstPart = partDataDefinition.save(createPart("qwe", firstProduct,
+                Lists.newArrayList(firstProduct, secondProduct)));
+        Entity secondPart = partDataDefinition.save(createPart("rty", secondProduct,
+                Lists.newArrayList(firstProduct, thirdProduct)));
+        Entity thirdPart = partDataDefinition.save(createPart("uiop", thirdProduct,
+                Lists.newArrayList(firstProduct, secondProduct, thirdProduct)));
+
+        // when
+        Entity copyFirstProduct = productDataDefinition.copy(firstProduct.getId()).get(0);
+        copyFirstProduct = productDataDefinition.get(copyFirstProduct.getId());
+        Entity copyFirstPart = partDataDefinition.copy(firstPart.getId()).get(0);
+        copyFirstPart = partDataDefinition.get(copyFirstPart.getId());
+
+        Set<Entity> firstProductParts = (Set<Entity>) copyFirstProduct.getField("partsManyToMany");
+        assertNotNull(firstProductParts);
+        assertEquals(3, firstProductParts.size());
+        checkProxyCollection(partDataDefinition, firstProductParts, Lists.newArrayList(firstPart, secondPart, thirdPart));
+
+        Set<Entity> firstPartsCopied = (Set<Entity>) copyFirstPart.getField("products");
+        assertNotNull(firstPartsCopied);
+        assertEquals(0, firstPartsCopied.size());
+
+    }
+
 }
