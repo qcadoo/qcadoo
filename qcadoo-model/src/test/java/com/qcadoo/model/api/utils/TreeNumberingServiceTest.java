@@ -44,7 +44,7 @@ import com.qcadoo.model.internal.api.PriorityService;
 
 public class TreeNumberingServiceTest {
 
-    private final static String PRIORITY = "priority";
+    private static final String PRIORITY = "priority";
 
     private TreeNumberingService treeNumberingService;
 

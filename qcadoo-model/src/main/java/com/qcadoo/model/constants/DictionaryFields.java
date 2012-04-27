@@ -23,7 +23,11 @@
  */
 package com.qcadoo.model.constants;
 
-public class DictionaryFields {
+public final class DictionaryFields {
+
+    private DictionaryFields() {
+
+    }
 
     public static final String NAME = "name";
 
