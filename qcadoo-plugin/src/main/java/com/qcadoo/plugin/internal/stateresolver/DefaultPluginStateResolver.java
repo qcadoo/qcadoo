@@ -38,11 +38,13 @@ public class DefaultPluginStateResolver implements InternalPluginStateResolver {
     private PluginAccessor pluginAccessor;
 
     @Override
+    public void setPluginAccessor(final PluginAccessor pluginAccessor) {
+        this.pluginAccessor = pluginAccessor;
+    }
+
+    @Override
     public boolean isEnabled(final String pluginIdentifier) {
-        Preconditions.checkState(pluginAccessor != null, "No PluginAccessor defined");
-        Plugin plugin = pluginAccessor.getPlugin(pluginIdentifier);
-        Preconditions.checkNotNull(plugin, "No such plugin: '" + pluginIdentifier + "'");
-        return isEnabled(plugin);
+        return isEnabled(getPlugin(pluginIdentifier));
     }
 
     @Override
@@ -50,9 +52,31 @@ public class DefaultPluginStateResolver implements InternalPluginStateResolver {
         return PluginState.ENABLED.equals(plugin.getState());
     }
 
+    // TODO maku test
+    /**
+     * @deprecated internal use only!
+     * */
+    @Deprecated
     @Override
-    public void setPluginAccessor(final PluginAccessor pluginAccessor) {
-        this.pluginAccessor = pluginAccessor;
+    public boolean isEnabledOrEnabling(final String pluginIdentifier) {
+        return isEnabledOrEnabling(getPlugin(pluginIdentifier));
+    }
+
+    // TODO maku test
+    /**
+     * @deprecated internal use only!
+     * */
+    @Deprecated
+    @Override
+    public boolean isEnabledOrEnabling(final Plugin plugin) {
+        return isEnabled(plugin) || PluginState.ENABLING.equals(plugin.getState());
+    }
+
+    protected Plugin getPlugin(final String pluginIdentifier) {
+        Preconditions.checkState(pluginAccessor != null, "No PluginAccessor defined");
+        Plugin plugin = pluginAccessor.getPlugin(pluginIdentifier);
+        Preconditions.checkNotNull(plugin, "No such plugin: '" + pluginIdentifier + "'");
+        return plugin;
     }
 
 }

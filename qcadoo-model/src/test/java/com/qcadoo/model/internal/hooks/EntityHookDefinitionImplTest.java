@@ -58,6 +58,7 @@ public class EntityHookDefinitionImplTest {
         ReflectionTestUtils.setField(pluginUtil, "pluginStateResolver", pluginStateResolver);
         pluginUtil.init();
         given(pluginStateResolver.isEnabled("somePlugin")).willReturn(true);
+        given(pluginStateResolver.isEnabledOrEnabling("somePlugin")).willReturn(true);
 
         entityHookDefinitionImpl.enable();
 
@@ -76,6 +77,7 @@ public class EntityHookDefinitionImplTest {
         ReflectionTestUtils.setField(pluginUtil, "pluginStateResolver", pluginStateResolver);
         pluginUtil.init();
         given(pluginStateResolver.isEnabled("somePlugin")).willReturn(true);
+        given(pluginStateResolver.isEnabledOrEnabling("somePlugin")).willReturn(true);
 
         entityHookDefinitionImpl.disable();
 
@@ -94,6 +96,7 @@ public class EntityHookDefinitionImplTest {
         ReflectionTestUtils.setField(pluginUtil, "pluginStateResolver", pluginStateResolver);
         pluginUtil.init();
         given(pluginStateResolver.isEnabled("somePlugin")).willReturn(false);
+        given(pluginStateResolver.isEnabledOrEnabling("somePlugin")).willReturn(false);
 
         entityHookDefinitionImpl.disable();
 
@@ -112,6 +115,7 @@ public class EntityHookDefinitionImplTest {
         ReflectionTestUtils.setField(pluginUtil, "pluginStateResolver", pluginStateResolver);
         pluginUtil.init();
         given(pluginStateResolver.isEnabled("somePlugin")).willReturn(false);
+        given(pluginStateResolver.isEnabledOrEnabling("somePlugin")).willReturn(false);
 
         entityHookDefinitionImpl.enable();
 

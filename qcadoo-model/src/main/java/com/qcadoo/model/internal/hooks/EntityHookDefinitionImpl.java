@@ -56,7 +56,7 @@ public final class EntityHookDefinitionImpl extends HookDefinitionImpl implement
 
     @Override
     public boolean isEnabled() {
-        return enabled && PluginUtils.isEnabled(getPluginIdentifier());
+        return enabled && PluginUtils.isEnabledOrEnabling(getPluginIdentifier());
     }
 
     @Override

@@ -121,7 +121,9 @@ public class ModuleIntegrationTest extends IntegrationTest {
         PluginUtilsService pluginUtil = new PluginUtilsService();
         ReflectionTestUtils.setField(pluginUtil, "pluginStateResolver", pluginStateResolver);
         pluginUtil.init();
+
         given(pluginStateResolver.isEnabled("machines")).willReturn(true);
+        given(pluginStateResolver.isEnabledOrEnabling("machines")).willReturn(true);
 
         Entity machine = machineDao.save(createMachine("asd"));
 

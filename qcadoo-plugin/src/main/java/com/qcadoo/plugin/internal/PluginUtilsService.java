@@ -77,4 +77,34 @@ public class PluginUtilsService {
         return instance.pluginStateResolver.isEnabled(pluginIdentifier);
     }
 
+    /**
+     * Returns true if plugin is enabled or enabling.
+     * 
+     * @deprecated for internal use only
+     * 
+     * @param plugin
+     *            plugin
+     * @return true if enabled or enabling
+     * @see PluginStateResolver#isEnabledOrEnabling(Plugin)
+     */
+    @Deprecated
+    public static boolean isEnabledOrEnabling(final Plugin plugin) {
+        return instance.pluginStateResolver.isEnabledOrEnabling(plugin);
+    }
+
+    /**
+     * Returns true if plugin is enabled or enabling.
+     * 
+     * @deprecated for internal use only
+     * 
+     * @param pluginIdentifier
+     *            plugin's identifier
+     * @return true if enabled or enabling
+     * @see PluginStateResolver#isEnabledOrEnabling(Plugin)
+     */
+    @Deprecated
+    public static boolean isEnabledOrEnabling(final String pluginIdentifier) {
+        return instance.pluginStateResolver.isEnabledOrEnabling(pluginIdentifier);
+    }
+
 }
