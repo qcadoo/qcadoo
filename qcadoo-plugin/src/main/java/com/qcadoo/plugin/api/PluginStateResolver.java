@@ -48,4 +48,28 @@ public interface PluginStateResolver {
      */
     boolean isEnabled(final Plugin plugin);
 
+    /**
+     * Returns true if plugin is enabled or enabling.
+     * 
+     * @deprecated for internal use only
+     * 
+     * @param plugin
+     *            plugin
+     * @return true if enabled or enabling
+     */
+    @Deprecated
+    boolean isEnabledOrEnabling(Plugin plugin);
+
+    /**
+     * Returns true if plugin with specified plugin identifier is enabled or enabling.
+     * 
+     * @deprecated for internal use only
+     * 
+     * @param pluginIdentifier
+     *            plugin's identifier
+     * @return true if enabled or enabling
+     */
+    @Deprecated
+    boolean isEnabledOrEnabling(String pluginIdentifier);
+
 }

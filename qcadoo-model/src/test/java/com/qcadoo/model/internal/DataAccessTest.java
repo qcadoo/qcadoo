@@ -148,6 +148,8 @@ public abstract class DataAccessTest {
         pluginStateResolver = Mockito.mock(PluginStateResolver.class);
         given(pluginStateResolver.isEnabled(Mockito.anyString())).willReturn(true);
         given(pluginStateResolver.isEnabled(Mockito.any(Plugin.class))).willReturn(true);
+        given(pluginStateResolver.isEnabledOrEnabling(Mockito.anyString())).willReturn(true);
+        given(pluginStateResolver.isEnabledOrEnabling(Mockito.any(Plugin.class))).willReturn(true);
         ReflectionTestUtils.setField(pluginUtilsService, "pluginStateResolver", pluginStateResolver);
 
         txStatus = mock(TransactionStatus.class);

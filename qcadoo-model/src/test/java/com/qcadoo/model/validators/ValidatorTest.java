@@ -863,6 +863,7 @@ public class ValidatorTest extends DataAccessTest {
         ReflectionTestUtils.setField(pluginUtil, "pluginStateResolver", pluginStateResolver);
         pluginUtil.init();
         given(pluginStateResolver.isEnabled(PLUGIN_IDENTIFIER)).willReturn(false);
+        given(pluginStateResolver.isEnabledOrEnabling(PLUGIN_IDENTIFIER)).willReturn(false);
 
         // when
         Entity savedEntity = dataDefinition.save(entity);
@@ -886,6 +887,7 @@ public class ValidatorTest extends DataAccessTest {
         ReflectionTestUtils.setField(pluginUtil, "pluginStateResolver", pluginStateResolver);
         pluginUtil.init();
         given(pluginStateResolver.isEnabled(PLUGIN_IDENTIFIER)).willReturn(true);
+        given(pluginStateResolver.isEnabledOrEnabling(PLUGIN_IDENTIFIER)).willReturn(true);
 
         // when
         Entity savedEntity = dataDefinition.save(entity);
@@ -908,6 +910,7 @@ public class ValidatorTest extends DataAccessTest {
         ReflectionTestUtils.setField(pluginUtil, "pluginStateResolver", pluginStateResolver);
         pluginUtil.init();
         given(pluginStateResolver.isEnabled(PLUGIN_IDENTIFIER)).willReturn(false);
+        given(pluginStateResolver.isEnabledOrEnabling(PLUGIN_IDENTIFIER)).willReturn(false);
 
         // when
         Entity savedEntity = dataDefinition.save(entity);
@@ -931,6 +934,7 @@ public class ValidatorTest extends DataAccessTest {
         ReflectionTestUtils.setField(pluginUtil, "pluginStateResolver", pluginStateResolver);
         pluginUtil.init();
         given(pluginStateResolver.isEnabled(PLUGIN_IDENTIFIER)).willReturn(true);
+        given(pluginStateResolver.isEnabledOrEnabling(PLUGIN_IDENTIFIER)).willReturn(true);
 
         // when
         entity = dataDefinition.save(entity);
