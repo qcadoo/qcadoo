@@ -27,6 +27,7 @@ import static org.springframework.context.i18n.LocaleContextHolder.getLocale;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,6 +44,12 @@ import com.qcadoo.security.internal.api.InternalSecurityService;
 
 @Service
 public class PasswordReminderServiceImpl implements PasswordReminderService {
+
+    @Value("${mail.company}")
+    private String company;
+
+    @Value("${mail.email}")
+    private String contactMail;
 
     @Autowired
     private MailService mailService;
@@ -87,9 +94,9 @@ public class PasswordReminderServiceImpl implements PasswordReminderService {
     }
 
     private void sendNewPassword(final String userEmail, final String userName, final String newPassword) {
-        String topic = translationService.translate("security.message.passwordReset.mail.topic", getLocale());
-        String body = translationService
-                .translate("security.message.passwordReset.mail.body", getLocale(), userName, newPassword);
+        String topic = translationService.translate("security.message.passwordReset.mail.topic", getLocale(), company);
+        String body = translationService.translate("security.message.passwordReset.mail.body", getLocale(), userName,
+                newPassword, company, contactMail);
         mailService.sendEmail(userEmail, topic, body);
     }
 
