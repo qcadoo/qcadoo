@@ -23,13 +23,14 @@
  */
 package com.qcadoo.plugin.internal.stateresolver;
 
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
-import junit.framework.Assert;
+import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import com.qcadoo.plugin.api.Plugin;
 import com.qcadoo.plugin.api.PluginAccessor;
@@ -50,17 +51,20 @@ public class DefaultPluginStateResolverTest {
         stateResolverImpl = new DefaultPluginStateResolver();
 
         pluginAccessor = mock(PluginAccessor.class);
-        ReflectionTestUtils.setField(stateResolverImpl, "pluginAccessor", pluginAccessor);
+        setField(stateResolverImpl, "pluginAccessor", pluginAccessor);
 
         plugin = mock(Plugin.class);
         given(plugin.getIdentifier()).willReturn(PLUGIN_IDENTIFIER);
         given(pluginAccessor.getPlugin(PLUGIN_IDENTIFIER)).willReturn(plugin);
     }
 
-    @Test(expected = NullPointerException.class)
-    public final void shouldIsEnabledThrowException() throws Exception {
+    @Test
+    public final void shouldIsEnabledReturnFalseIfPluginDoesNotExist() throws Exception {
         // when
-        stateResolverImpl.isEnabled("phantomPlugin");
+        boolean isEnabled = stateResolverImpl.isEnabled("phantomPlugin");
+
+        // then
+        assertFalse(isEnabled);
     }
 
     @Test
@@ -72,7 +76,7 @@ public class DefaultPluginStateResolverTest {
         boolean isEnabled = stateResolverImpl.isEnabled(PLUGIN_IDENTIFIER);
 
         // then
-        Assert.assertTrue(isEnabled);
+        assertTrue(isEnabled);
     }
 
     @Test
@@ -84,7 +88,7 @@ public class DefaultPluginStateResolverTest {
         boolean isEnabled = stateResolverImpl.isEnabled(PLUGIN_IDENTIFIER);
 
         // then
-        Assert.assertFalse(isEnabled);
+        assertFalse(isEnabled);
     }
 
     private void setMockPluginEnabled() {

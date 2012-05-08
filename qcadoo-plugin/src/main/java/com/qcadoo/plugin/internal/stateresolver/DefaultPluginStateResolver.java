@@ -49,7 +49,7 @@ public class DefaultPluginStateResolver implements InternalPluginStateResolver {
 
     @Override
     public boolean isEnabled(final Plugin plugin) {
-        return PluginState.ENABLED.equals(plugin.getState());
+        return plugin != null && PluginState.ENABLED.equals(plugin.getState());
     }
 
     // TODO maku test
@@ -69,14 +69,16 @@ public class DefaultPluginStateResolver implements InternalPluginStateResolver {
     @Deprecated
     @Override
     public boolean isEnabledOrEnabling(final Plugin plugin) {
-        return isEnabled(plugin) || PluginState.ENABLING.equals(plugin.getState());
+        return isEnabled(plugin) || isEnabling(plugin);
+    }
+
+    private boolean isEnabling(final Plugin plugin) {
+        return plugin != null && PluginState.ENABLING.equals(plugin.getState());
     }
 
     protected Plugin getPlugin(final String pluginIdentifier) {
         Preconditions.checkState(pluginAccessor != null, "No PluginAccessor defined");
-        Plugin plugin = pluginAccessor.getPlugin(pluginIdentifier);
-        Preconditions.checkNotNull(plugin, "No such plugin: '" + pluginIdentifier + "'");
-        return plugin;
+        return pluginAccessor.getPlugin(pluginIdentifier);
     }
 
 }
