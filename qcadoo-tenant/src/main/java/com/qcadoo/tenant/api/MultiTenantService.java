@@ -31,4 +31,6 @@ public interface MultiTenantService {
 
     int getCurrentTenantId();
 
+    SamplesDataset getTenantSamplesDataset();
+
 }
