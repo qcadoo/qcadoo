@@ -51,15 +51,11 @@ public final class ValidationServiceImpl implements ValidationService {
 
         copyReadOnlyAndMissingFields(dataDefinition, genericEntity, existingGenericEntity);
 
-        parseAndValidateEntity(dataDefinition, genericEntity);
-
-        if (!genericEntity.isValid()) {
-            return;
-        }
-
         if (genericEntity.getId() == null) {
             dataDefinition.callCreateHook(genericEntity);
+            parseAndValidateEntity(dataDefinition, genericEntity);
         } else {
+            parseAndValidateEntity(dataDefinition, genericEntity);
             dataDefinition.callUpdateHook(genericEntity);
         }
         dataDefinition.callSaveHook(genericEntity);

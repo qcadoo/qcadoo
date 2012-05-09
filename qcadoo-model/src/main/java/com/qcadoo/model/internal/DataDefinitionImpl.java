@@ -297,12 +297,12 @@ public final class DataDefinitionImpl implements InternalDataDefinition {
 
     @Override
     public boolean callUpdateHook(final Entity entity) {
-        return callHooks(entity, updateHooks);
+        return entity.isValid() && callHooks(entity, updateHooks);
     }
 
     @Override
     public boolean callSaveHook(final Entity entity) {
-        return callHooks(entity, saveHooks);
+        return entity.isValid() && callHooks(entity, saveHooks);
     }
 
     @Override

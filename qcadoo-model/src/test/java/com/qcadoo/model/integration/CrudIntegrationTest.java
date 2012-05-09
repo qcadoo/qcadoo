@@ -174,7 +174,7 @@ public class CrudIntegrationTest extends IntegrationTest {
         assertEquals(0, total);
 
         assertEquals(0, verifyHooks.getNumOfInvocations(HookType.SAVE));
-        assertEquals(0, verifyHooks.getNumOfInvocations(HookType.CREATE));
+        assertEquals(1, verifyHooks.getNumOfInvocations(HookType.CREATE));
         assertEquals(0, verifyHooks.getNumOfInvocations(HookType.COPY));
         assertEquals(0, verifyHooks.getNumOfInvocations(HookType.UPDATE));
     }

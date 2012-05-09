@@ -24,7 +24,6 @@
 package com.qcadoo.model.internal;
 
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -55,9 +54,8 @@ public class ValidationServiceImplTest {
     }
 
     @Test
-    public final void shouldCallCreateHooksIfEntityIsValid() throws Exception {
+    public final void shouldCallCreateAndSaveHooks() throws Exception {
         // given
-        when(genericEntity.isValid()).thenReturn(true);
         when(genericEntity.getId()).thenReturn(null);
 
         // when
@@ -65,13 +63,12 @@ public class ValidationServiceImplTest {
 
         // then
         verify(dataDefinition).callCreateHook(genericEntity);
-
+        verify(dataDefinition).callSaveHook(genericEntity);
     }
 
     @Test
-    public final void shouldCallUpdateHooksIfEntityIsValid() throws Exception {
+    public final void shouldCallUpdateAndSaveHooks() throws Exception {
         // given
-        when(genericEntity.isValid()).thenReturn(true);
         when(genericEntity.getId()).thenReturn(1L);
 
         // when
@@ -79,20 +76,35 @@ public class ValidationServiceImplTest {
 
         // then
         verify(dataDefinition).callUpdateHook(genericEntity);
-
+        verify(dataDefinition).callSaveHook(genericEntity);
     }
 
     @Test
-    public final void shouldNotCallModelHooksIfEntityIsNotValid() throws Exception {
+    public final void shouldDelegateCallCreateHooksAlsoIfEntityIsNotValid() throws Exception {
         // given
+        when(genericEntity.getId()).thenReturn(null);
         when(genericEntity.isValid()).thenReturn(false);
 
         // when
         validationService.validateGenericEntity(dataDefinition, genericEntity, null);
 
         // then
-        verify(dataDefinition, never()).callCreateHook(genericEntity);
-        verify(dataDefinition, never()).callUpdateHook(genericEntity);
+        verify(dataDefinition).callCreateHook(genericEntity);
+        verify(dataDefinition).callSaveHook(genericEntity);
+    }
+
+    @Test
+    public final void shouldDelegateCallUpdateHooksAlsoIfEntityIsNotValid() throws Exception {
+        // given
+        when(genericEntity.getId()).thenReturn(1L);
+        when(genericEntity.isValid()).thenReturn(false);
+
+        // when
+        validationService.validateGenericEntity(dataDefinition, genericEntity, null);
+
+        // then
+        verify(dataDefinition).callUpdateHook(genericEntity);
+        verify(dataDefinition).callSaveHook(genericEntity);
     }
 
 }
