@@ -26,16 +26,16 @@ package com.qcadoo.model.api.types;
 import com.qcadoo.model.api.DataDefinition;
 
 /**
- * Interface for fields that can return related DataDefinition.
+ * Interface for fields that can return DataDefinition of corresponding model.
  * 
  * @since 0.4.10
  */
 public interface DataDefinitionHolder extends FieldType {
 
     /**
-     * Returns data definition.
+     * Returns data definition of corresponding model.
      * 
-     * @return data definition
+     * @return data definition of corresponding model.
      */
     DataDefinition getDataDefinition();
 
