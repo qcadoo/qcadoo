@@ -55,6 +55,10 @@ public class TimeConverterService {
 
         int integerDuration = Integer.parseInt(duration.replaceAll("\\D", ""));
 
+        if (duration.contains("-")) {
+            integerDuration = -integerDuration;
+        }
+
         return durationToString(integerDuration);
     }
 
