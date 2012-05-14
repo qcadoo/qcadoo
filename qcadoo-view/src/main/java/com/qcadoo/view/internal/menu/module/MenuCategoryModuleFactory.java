@@ -37,9 +37,7 @@ public class MenuCategoryModuleFactory extends ModuleFactory<MenuCategoryModule>
     @Override
     protected MenuCategoryModule parseElement(final String pluginIdentifier, final Element element) {
         String menuCategoryName = getRequiredAttribute(element, "name");
-        String menuCategoryDescription = getAttribute(element, "description");
-
-        return new MenuCategoryModule(menuService, pluginIdentifier, menuCategoryName, menuCategoryDescription);
+        return new MenuCategoryModule(menuService, pluginIdentifier, menuCategoryName);
     }
 
     @Override

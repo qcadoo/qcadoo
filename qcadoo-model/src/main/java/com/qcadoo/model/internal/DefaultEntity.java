@@ -232,6 +232,7 @@ public final class DefaultEntity implements Entity {
                 + dataDefinition.getName() + " does not contain BigDecimal value");
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public EntityList getHasManyField(final String fieldName) {
         Object fieldValue = getField(fieldName);
@@ -242,22 +243,19 @@ public final class DefaultEntity implements Entity {
             return (EntityList) fieldValue;
         }
         if (fieldValue instanceof List<?>) {
-            @SuppressWarnings("unchecked")
-            EntityList entityList = new DetachedEntityListImpl(dataDefinition, (List<Entity>) fieldValue);
-            return entityList;
+            return new DetachedEntityListImpl(dataDefinition, (List<Entity>) fieldValue);
         }
         throw new IllegalArgumentException("Field " + fieldName + " in " + dataDefinition.getPluginIdentifier() + '.'
                 + dataDefinition.getName() + " does not contain value of type List<Entity> or EntityList");
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public List<Entity> getManyToManyField(final String fieldName) {
         if (getField(fieldName) == null) {
             return Lists.newArrayList();
         }
-        @SuppressWarnings("unchecked")
-        List<Entity> entityList = Lists.newArrayList((Set<Entity>) getField(fieldName));
-        return entityList;
+        return Lists.newArrayList((Set<Entity>) getField(fieldName));
     }
 
     @Override

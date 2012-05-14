@@ -38,7 +38,7 @@ import com.lowagie.text.pdf.BaseFont;
  * Utilities for pdf fonts management.
  * 
  */
-public class FontUtils {
+public final class FontUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(FontUtils.class);
 

@@ -26,6 +26,7 @@ package com.qcadoo.model.internal.definitionconverter;
 import static com.google.common.base.Preconditions.checkState;
 import static com.qcadoo.model.internal.AbstractModelXmlConverter.FieldsTag.PRIORITY;
 import static com.qcadoo.model.internal.AbstractModelXmlConverter.OtherTag.IDENTIFIER;
+import static org.springframework.context.i18n.LocaleContextHolder.getLocale;
 import static org.springframework.util.StringUtils.hasText;
 
 import java.io.IOException;
@@ -109,6 +110,10 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
 
     private static final Logger LOG = LoggerFactory.getLogger(ModelXmlToDefinitionConverterImpl.class);
 
+    private static final String L_PLUGIN = "plugin";
+
+    private static final String L_PARSE_ERROR = "Error while parsing model.xml: ";
+
     @Autowired
     private DictionaryService dictionaryService;
 
@@ -139,15 +144,15 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
                 try {
                     dataDefinitions.add(parse(resource.getInputStream()));
                 } catch (HookInitializationException e) {
-                    throw new IllegalStateException("Error while parsing model.xml: " + e.getMessage(), e);
+                    throw new IllegalStateException(L_PARSE_ERROR + e.getMessage(), e);
                 } catch (IOException e) {
-                    throw new IllegalStateException("Error while parsing model.xml: " + e.getMessage(), e);
+                    throw new IllegalStateException(L_PARSE_ERROR + e.getMessage(), e);
                 } catch (ModelXmlParsingException e) {
-                    throw new IllegalStateException("Error while parsing model.xml: " + e.getMessage(), e);
+                    throw new IllegalStateException(L_PARSE_ERROR + e.getMessage(), e);
                 } catch (XMLStreamException e) {
-                    throw new IllegalStateException("Error while parsing model.xml: " + e.getMessage(), e);
+                    throw new IllegalStateException(L_PARSE_ERROR + e.getMessage(), e);
                 } catch (javax.xml.stream.FactoryConfigurationError e) {
-                    throw new IllegalStateException("Error while parsing model.xml: " + e.getMessage(), e);
+                    throw new IllegalStateException(L_PARSE_ERROR + e.getMessage(), e);
                 }
             }
         }
@@ -342,7 +347,7 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
     }
 
     private FieldType getHasManyType(final XMLStreamReader reader, final String pluginIdentifier) {
-        String plugin = getStringAttribute(reader, "plugin");
+        String plugin = getStringAttribute(reader, L_PLUGIN);
         HasManyType.Cascade cascade = "delete".equals(getStringAttribute(reader, "cascade")) ? HasManyType.Cascade.DELETE
                 : HasManyType.Cascade.NULLIFY;
         return new HasManyEntitiesType(plugin == null ? pluginIdentifier : plugin, getStringAttribute(reader, TAG_MODEL),
@@ -351,7 +356,7 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
     }
 
     private FieldType getManyToManyType(final XMLStreamReader reader, final String pluginIdentifier) {
-        String plugin = getStringAttribute(reader, "plugin");
+        String plugin = getStringAttribute(reader, L_PLUGIN);
         ManyToManyType.Cascade cascade = "delete".equals(getStringAttribute(reader, "cascade")) ? ManyToManyType.Cascade.DELETE
                 : ManyToManyType.Cascade.NULLIFY;
         return new ManyToManyEntitiesType(plugin == null ? pluginIdentifier : plugin, getStringAttribute(reader, TAG_MODEL),
@@ -360,7 +365,7 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
     }
 
     private FieldType getTreeType(final XMLStreamReader reader, final String pluginIdentifier) {
-        String plugin = getStringAttribute(reader, "plugin");
+        String plugin = getStringAttribute(reader, L_PLUGIN);
         TreeType.Cascade cascade = "delete".equals(getStringAttribute(reader, "cascade")) ? TreeType.Cascade.DELETE
                 : TreeType.Cascade.NULLIFY;
         return new TreeEntitiesType(plugin == null ? pluginIdentifier : plugin, getStringAttribute(reader, TAG_MODEL),
@@ -370,7 +375,7 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
 
     private FieldType getBelongsToType(final XMLStreamReader reader, final String pluginIdentifier) {
         boolean lazy = getBooleanAttribute(reader, "lazy", true);
-        String plugin = getStringAttribute(reader, "plugin");
+        String plugin = getStringAttribute(reader, L_PLUGIN);
         String modelName = getStringAttribute(reader, TAG_MODEL);
         if (lazy) {
             return new BelongsToEntityType(plugin == null ? pluginIdentifier : plugin, modelName, dataDefinitionService, true);
@@ -506,14 +511,14 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
             return null;
         } else if (type instanceof DateTimeType) {
             try {
-                return new SimpleDateFormat(DateUtils.L_DATE_TIME_FORMAT).parse(range);
+                return new SimpleDateFormat(DateUtils.L_DATE_TIME_FORMAT, getLocale()).parse(range);
             } catch (ParseException e) {
                 throw new ModelXmlParsingException("Range '" + range + "' has invalid datetime format, should match "
                         + DateUtils.L_DATE_TIME_FORMAT, e);
             }
         } else if (type instanceof DateType) {
             try {
-                return new SimpleDateFormat(DateUtils.L_DATE_FORMAT).parse(range);
+                return new SimpleDateFormat(DateUtils.L_DATE_FORMAT, getLocale()).parse(range);
             } catch (ParseException e) {
                 throw new ModelXmlParsingException("Range '" + range + "' has invalid date format, should match "
                         + DateUtils.L_DATE_FORMAT, e);

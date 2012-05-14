@@ -533,8 +533,7 @@ public class DataAccessServiceImpl implements DataAccessService {
         Object databaseEntity = getDatabaseEntity(dataDefinition, entityId);
 
         if (databaseEntity == null) {
-            LOG.info("Entity[" + dataDefinition.getPluginIdentifier() + "." + dataDefinition.getName() + "][id=" + entityId
-                    + "] hasn't been retrieved, because it doesn't exist");
+            logEntityInfo(dataDefinition, entityId, "hasn't been retrieved, because it doesn't exist");
             return null;
         }
 
@@ -659,15 +658,13 @@ public class DataAccessServiceImpl implements DataAccessService {
         Object databaseEntity = getDatabaseEntity(dataDefinition, entityId);
 
         if (databaseEntity == null) {
-            LOG.info("Entity[" + dataDefinition.getPluginIdentifier() + "." + dataDefinition.getName() + "][id=" + entityId
-                    + "] hasn't been prioritized, because it doesn't exist");
+            logEntityInfo(dataDefinition, entityId, "hasn't been prioritized, because it doesn't exist");
             return;
         }
 
         priorityService.move(dataDefinition, databaseEntity, position, 0);
 
-        LOG.info("Entity[" + dataDefinition.getPluginIdentifier() + "." + dataDefinition.getName() + "][id=" + entityId
-                + "] has been prioritized");
+        logEntityInfo(dataDefinition, entityId, "has been prioritized");
     }
 
     @Override
@@ -683,15 +680,13 @@ public class DataAccessServiceImpl implements DataAccessService {
         Object databaseEntity = getDatabaseEntity(dataDefinition, entityId);
 
         if (databaseEntity == null) {
-            LOG.info("Entity[" + dataDefinition.getPluginIdentifier() + "." + dataDefinition.getName() + "][id=" + entityId
-                    + "] hasn't been prioritized, because it doesn't exist");
+            logEntityInfo(dataDefinition, entityId, "hasn't been prioritized, because it doesn't exist");
             return;
         }
 
         priorityService.move(dataDefinition, databaseEntity, 0, offset);
 
-        LOG.info("Entity[" + dataDefinition.getPluginIdentifier() + "." + dataDefinition.getName() + "][id=" + entityId
-                + "] has been prioritized");
+        logEntityInfo(dataDefinition, entityId, "has been prioritized");
     }
 
     private Object getExistingDatabaseEntity(final InternalDataDefinition dataDefinition, final Entity entity) {
@@ -759,8 +754,7 @@ public class DataAccessServiceImpl implements DataAccessService {
                     expressionService.getValue(entity, dataDefinition.getIdentifierExpression(), Locale.ENGLISH)), e);
         }
 
-        LOG.info("Entity[" + dataDefinition.getPluginIdentifier() + "." + dataDefinition.getName() + "][id=" + entityId
-                + "] has been deleted");
+        logEntityInfo(dataDefinition, entityId, "has been deleted");
     }
 
     private SearchResultImpl getResultSet(final InternalDataDefinition dataDefinition, final int totalNumberOfEntities,
@@ -802,6 +796,16 @@ public class DataAccessServiceImpl implements DataAccessService {
         for (Map.Entry<String, ErrorMessage> error : genericEntity.getErrors().entrySet()) {
             genericEntityToSave.addError(dataDefinition.getField(error.getKey()), error.getValue().getMessage(), error.getValue()
                     .getVars());
+        }
+    }
+
+    private void logEntityInfo(final DataDefinition dataDefinition, final Long entityId, final String message) {
+        if (LOG.isInfoEnabled()) {
+            StringBuilder entityInfo = new StringBuilder("Entity[");
+            entityInfo.append(dataDefinition.getPluginIdentifier()).append('.').append(dataDefinition.getName());
+            entityInfo.append("][id=").append(entityId).append("] ");
+            entityInfo.append(message);
+            LOG.info(entityInfo.toString());
         }
     }
 

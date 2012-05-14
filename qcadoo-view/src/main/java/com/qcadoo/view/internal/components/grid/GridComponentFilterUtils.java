@@ -41,7 +41,10 @@ import com.qcadoo.model.api.search.SearchRestrictions;
 import com.qcadoo.model.api.search.SearchRestrictions.SearchMatchMode;
 import com.qcadoo.model.api.types.BelongsToType;
 
-public class GridComponentFilterUtils {
+public final class GridComponentFilterUtils {
+
+    private GridComponentFilterUtils() {
+    }
 
     public static void addFilters(final Map<String, String> filters, final Map<String, GridComponentColumn> columns,
             final DataDefinition dataDefinition, final SearchCriteriaBuilder criteria) throws ParseException {

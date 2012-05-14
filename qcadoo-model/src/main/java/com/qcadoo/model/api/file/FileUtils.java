@@ -30,7 +30,10 @@ import com.qcadoo.model.internal.file.FileServiceImpl;
  * 
  * @since 0.4.1
  */
-public class FileUtils {
+public final class FileUtils {
+
+    private FileUtils() {
+    }
 
     /**
      * Returns the {@link FileService} instance.

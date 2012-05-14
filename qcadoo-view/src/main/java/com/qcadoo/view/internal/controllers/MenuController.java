@@ -55,7 +55,7 @@ public final class MenuController {
         responseHeaders.add("Cache-Control", "post-check=0, pre-check=0");
         responseHeaders.add("Pragma", "no-cache");
         try {
-            responseHeaders.add("Content-Length", "" + responseBody.getBytes("utf-8").length);
+            responseHeaders.add("Content-Length", String.valueOf(responseBody.getBytes("utf-8").length));
         } catch (UnsupportedEncodingException e) {
             throw new IllegalStateException(e.getMessage(), e);
         }

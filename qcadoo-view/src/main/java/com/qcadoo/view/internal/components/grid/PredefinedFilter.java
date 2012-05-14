@@ -23,6 +23,8 @@
  */
 package com.qcadoo.view.internal.components.grid;
 
+import static org.springframework.context.i18n.LocaleContextHolder.getLocale;
+
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
@@ -105,7 +107,7 @@ public class PredefinedFilter {
         } else {
             throw new IllegalStateException("unsupported predefined filter expression: '" + expression + "'");
         }
-        return new SimpleDateFormat(DateUtils.L_DATE_FORMAT).format(date.toDate());
+        return new SimpleDateFormat(DateUtils.L_DATE_FORMAT, getLocale()).format(date.toDate());
     }
 
     public String getOrderColumn() {

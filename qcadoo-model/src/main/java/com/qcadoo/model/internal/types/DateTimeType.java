@@ -63,7 +63,7 @@ public final class DateTimeType implements FieldType {
 
     @Override
     public String toString(final Object value, final Locale locale) {
-        return new SimpleDateFormat(DateUtils.L_DATE_TIME_FORMAT).format((Date) value);
+        return new SimpleDateFormat(DateUtils.L_DATE_TIME_FORMAT, locale).format((Date) value);
     }
 
     @Override

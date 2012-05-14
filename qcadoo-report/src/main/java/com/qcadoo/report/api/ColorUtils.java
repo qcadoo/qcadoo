@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
  * Utilities for pdf colors management.
  * 
  */
-public class ColorUtils {
+public final class ColorUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(ColorUtils.class);
 

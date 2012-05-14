@@ -34,8 +34,7 @@ public class MenuCategoryModule extends Module {
 
     private final String pluginIdentifier;
 
-    public MenuCategoryModule(final InternalMenuService menuService, final String pluginIdentifier,
-            final String menuCategoryName, final String menuCategoryDescription) {
+    public MenuCategoryModule(final InternalMenuService menuService, final String pluginIdentifier, final String menuCategoryName) {
         this.menuService = menuService;
         this.pluginIdentifier = pluginIdentifier;
         this.menuCategoryName = menuCategoryName;

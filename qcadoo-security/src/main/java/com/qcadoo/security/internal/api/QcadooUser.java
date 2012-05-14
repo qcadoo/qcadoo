@@ -85,7 +85,7 @@ public class QcadooUser {
     }
 
     public Date getLastActivity() {
-        return lastActivity;
+        return new Date(lastActivity.getTime());
     }
 
     public void setLogin(final String login) {
@@ -109,7 +109,7 @@ public class QcadooUser {
     }
 
     public void setLastActivity(final Date lastActivity) {
-        this.lastActivity = lastActivity;
+        this.lastActivity = new Date(lastActivity.getTime());
     }
 
 }

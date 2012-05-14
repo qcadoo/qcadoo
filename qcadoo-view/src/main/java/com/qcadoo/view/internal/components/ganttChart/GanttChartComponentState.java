@@ -139,7 +139,7 @@ public class GanttChartComponentState extends AbstractComponentState {
             if (scale.isFromLargerThanTo()) {
                 globalErrorMessage = translate("errorMessage.fromLargerThanTo");
             } else if (scale.isTooLargeRange()) {
-                globalErrorMessage = translate("errorMessage.tooLargeRange", "" + scale.getMaxRangeInMonths());
+                globalErrorMessage = translate("errorMessage.tooLargeRange", String.valueOf(scale.getMaxRangeInMonths()));
             }
         }
 

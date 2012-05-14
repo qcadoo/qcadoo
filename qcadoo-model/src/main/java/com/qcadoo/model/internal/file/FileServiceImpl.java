@@ -23,6 +23,8 @@
  */
 package com.qcadoo.model.internal.file;
 
+import static org.springframework.context.i18n.LocaleContextHolder.getLocale;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -90,7 +92,7 @@ public class FileServiceImpl implements FileService {
         }
         Date date = new Date(Long.valueOf(path.substring(path.lastIndexOf(File.separatorChar) + 1,
                 path.lastIndexOf(File.separatorChar) + 14)));
-        return new SimpleDateFormat(DateUtils.L_DATE_FORMAT).format(date);
+        return new SimpleDateFormat(DateUtils.L_DATE_FORMAT, getLocale()).format(date);
     }
 
     @Override

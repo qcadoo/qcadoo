@@ -28,6 +28,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import org.springframework.context.i18n.LocaleContextHolder;
+
 import com.qcadoo.localization.api.utils.DateUtils;
 import com.qcadoo.view.api.components.ganttChart.GanttChartItem;
 
@@ -37,7 +39,7 @@ public class GanttChartItemFactory {
 
     private final int interval;
 
-    private final SimpleDateFormat format = new SimpleDateFormat(DateUtils.L_DATE_TIME_FORMAT);
+    private final SimpleDateFormat format = new SimpleDateFormat(DateUtils.L_DATE_TIME_FORMAT, LocaleContextHolder.getLocale());
 
     public GanttChartItemFactory(final int interval) {
         this.interval = interval;

@@ -30,7 +30,10 @@ import com.qcadoo.plugin.internal.PluginUtilsService;
  * 
  * @since 0.4.0
  */
-public class PluginUtils {
+public final class PluginUtils {
+
+    private PluginUtils() {
+    }
 
     /**
      * Returns true if plugin is enabled.

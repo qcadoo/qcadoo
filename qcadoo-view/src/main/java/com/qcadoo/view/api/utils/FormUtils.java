@@ -32,7 +32,10 @@ import com.qcadoo.view.api.components.FormComponent;
  * @deprecated
  */
 @Deprecated
-public class FormUtils {
+public final class FormUtils {
+
+    private FormUtils() {
+    }
 
     /**
      * Set Entity which be used to fill this form
