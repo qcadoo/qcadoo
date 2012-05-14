@@ -23,6 +23,10 @@
  */
 package com.qcadoo.view.api.exception;
 
+import java.util.Arrays;
+
+import org.apache.commons.lang.ArrayUtils;
+
 public class ExceptionInfo {
 
     private final String messageHeader;
@@ -34,7 +38,11 @@ public class ExceptionInfo {
     public ExceptionInfo(final String messageHeader, final String messageExplanation, final String... messageExplanationArgs) {
         this.messageHeader = messageHeader;
         this.messageExplanation = messageExplanation;
-        this.messageExplanationArgs = messageExplanationArgs;
+        if (ArrayUtils.isEmpty(messageExplanationArgs)) {
+            this.messageExplanationArgs = ArrayUtils.EMPTY_STRING_ARRAY;
+        } else {
+            this.messageExplanationArgs = messageExplanationArgs;
+        }
     }
 
     public String getMessageHeader() {
@@ -46,7 +54,7 @@ public class ExceptionInfo {
     }
 
     public String[] getMessageExplanationArgs() {
-        return messageExplanationArgs;
+        return Arrays.copyOf(messageExplanationArgs, messageExplanationArgs.length);
     }
 
 }

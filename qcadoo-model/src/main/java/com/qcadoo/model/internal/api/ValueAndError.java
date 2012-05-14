@@ -23,6 +23,10 @@
  */
 package com.qcadoo.model.internal.api;
 
+import java.util.Arrays;
+
+import org.apache.commons.lang.ArrayUtils;
+
 public final class ValueAndError {
 
     private final Object value;
@@ -34,7 +38,11 @@ public final class ValueAndError {
     private ValueAndError(final Object value, final String message, final String... args) {
         this.value = value;
         this.message = message;
-        this.args = args;
+        if (ArrayUtils.isEmpty(args)) {
+            this.args = ArrayUtils.EMPTY_STRING_ARRAY;
+        } else {
+            this.args = args;
+        }
     }
 
     public static ValueAndError withoutError(final Object value) {
@@ -58,7 +66,7 @@ public final class ValueAndError {
     }
 
     public String[] getArgs() {
-        return args;
+        return Arrays.copyOf(args, args.length);
     }
 
     public String getMessage() {

@@ -25,6 +25,8 @@ package com.qcadoo.report.api;
 
 import java.util.Arrays;
 
+import org.apache.commons.lang.ArrayUtils;
+
 public class ReportException extends Exception {
 
     public static enum Type {
@@ -56,7 +58,11 @@ public class ReportException extends Exception {
     public ReportException(final Type type, final Throwable cause, final String... args) {
         super(ReportException.generateMessage(type, args), cause);
         this.type = type;
-        this.args = args;
+        if (ArrayUtils.isEmpty(args)) {
+            this.args = ArrayUtils.EMPTY_STRING_ARRAY;
+        } else {
+            this.args = args;
+        }
     }
 
     private static String generateMessage(final Type type, final String... args) {
@@ -72,6 +78,6 @@ public class ReportException extends Exception {
     }
 
     public String[] getArgs() {
-        return args;
+        return Arrays.copyOf(args, args.length);
     }
 }

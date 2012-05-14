@@ -23,6 +23,10 @@
  */
 package com.qcadoo.model.api.validators;
 
+import java.util.Arrays;
+
+import org.apache.commons.lang.ArrayUtils;
+
 /**
  * Object holds validation error message.
  * 
@@ -44,7 +48,11 @@ public final class ErrorMessage {
      */
     public ErrorMessage(final String message, final String... vars) {
         this.message = message;
-        this.vars = vars;
+        if (ArrayUtils.isEmpty(vars)) {
+            this.vars = ArrayUtils.EMPTY_STRING_ARRAY;
+        } else {
+            this.vars = vars;
+        }
     }
 
     /**
@@ -62,7 +70,7 @@ public final class ErrorMessage {
      * @return message's vars
      */
     public String[] getVars() {
-        return vars;
+        return Arrays.copyOf(vars, vars.length);
     }
 
 }
