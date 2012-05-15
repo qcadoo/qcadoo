@@ -85,6 +85,9 @@ public class QcadooUser {
     }
 
     public Date getLastActivity() {
+        if (lastActivity == null) {
+            return null;
+        }
         return new Date(lastActivity.getTime());
     }
 
@@ -109,7 +112,11 @@ public class QcadooUser {
     }
 
     public void setLastActivity(final Date lastActivity) {
-        this.lastActivity = new Date(lastActivity.getTime());
+        if (lastActivity == null) {
+            this.lastActivity = null;
+        } else {
+            this.lastActivity = new Date(lastActivity.getTime());
+        }
     }
 
 }

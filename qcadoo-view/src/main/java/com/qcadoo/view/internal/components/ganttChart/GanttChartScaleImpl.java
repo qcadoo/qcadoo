@@ -202,11 +202,17 @@ public class GanttChartScaleImpl implements GanttChartScale {
 
     @Override
     public Date getDateTo() {
+        if (dateTo == null) {
+            return null;
+        }
         return new Date(dateTo.getTime());
     }
 
     @Override
     public Date getDateFrom() {
+        if (dateFrom == null) {
+            return null;
+        }
         return new Date(dateFrom.getTime());
     }
 
