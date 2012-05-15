@@ -270,7 +270,7 @@ public final class DefaultEntity implements Entity {
         }
 
         checkArgument(dataDefinition.getField(fieldName).getType() instanceof BelongsToType, "Field should be belongsTo type");
-        if (getField(fieldName) instanceof Long) {
+        if (getField(fieldName) instanceof Number) {
             return getProxyForBelongsToField(fieldName);
         }
         return (Entity) getField(fieldName);
@@ -278,7 +278,7 @@ public final class DefaultEntity implements Entity {
 
     private Entity getProxyForBelongsToField(final String fieldName) {
         BelongsToType belongsToType = (BelongsToType) dataDefinition.getField(fieldName).getType();
-        Long belongsToEntityId = (Long) getField(fieldName);
+        Long belongsToEntityId = ((Number) getField(fieldName)).longValue();
         return new ProxyEntity(belongsToType.getDataDefinition(), belongsToEntityId);
     }
 

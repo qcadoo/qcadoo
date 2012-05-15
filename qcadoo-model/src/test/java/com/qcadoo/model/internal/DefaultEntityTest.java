@@ -107,6 +107,21 @@ public class DefaultEntityTest {
         assertEquals(belongsToEntityId, returnedEntity.getId());
     }
 
+    @Test
+    public final void shouldGetBelongsToFieldReturnProxyEntityUsingIntegerValue() throws Exception {
+        // given
+        Integer belongsToEntityId = 1;
+        defaultEntity.setField(BELONGS_TO_FIELD_NAME, belongsToEntityId);
+
+        // when
+        Entity returnedEntity = defaultEntity.getBelongsToField(BELONGS_TO_FIELD_NAME);
+
+        // then
+        assertTrue(returnedEntity.getId() instanceof Long);
+        assertFalse(belongsToEntityId.equals(returnedEntity.getId()));
+        assertEquals(belongsToEntityId.longValue(), returnedEntity.getId().longValue());
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public final void shouldGetBelongsToFieldThrowIllegalArgumentExceptionIfFieldIsNotABelongsToType() throws Exception {
         // given
