@@ -121,9 +121,8 @@ public final class ValidationServiceImpl implements ValidationService {
                 validatedEntity.addError(fieldDefinition, "qcadooView.validate.field.error.wrongType", value.getClass()
                         .getSimpleName(), fieldDefinition.getType().getType().getSimpleName());
             }
-            if (referencedEntityId == null) {
-                referencedEntity = null;
-            } else {
+
+            if (referencedEntityId != null) {
                 BelongsToType belongsToFieldType = (BelongsToType) fieldDefinition.getType();
                 referencedEntity = belongsToFieldType.getDataDefinition().get(referencedEntityId);
             }
