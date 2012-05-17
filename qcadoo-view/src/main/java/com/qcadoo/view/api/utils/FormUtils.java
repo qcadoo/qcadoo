@@ -48,7 +48,7 @@ public final class FormUtils {
      *            entity which be used to fill form
      */
     @Deprecated
-    public static final void setFormEntity(final FormComponent form, final Entity entity) {
+    public static void setFormEntity(final FormComponent form, final Entity entity) {
         form.setEntity(entity);
     }
 }
