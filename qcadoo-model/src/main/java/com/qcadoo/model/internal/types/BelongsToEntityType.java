@@ -71,7 +71,11 @@ public final class BelongsToEntityType implements BelongsToType {
 
     @Override
     public Object fromString(final String value, final Locale locale) {
-        return value;
+        try {
+            return Long.valueOf(value);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Can't parse value '" + value + "' to (Long) entity id.", e);
+        }
     }
 
     @Override

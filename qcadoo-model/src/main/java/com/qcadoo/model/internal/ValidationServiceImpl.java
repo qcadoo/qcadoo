@@ -50,6 +50,7 @@ public final class ValidationServiceImpl implements ValidationService {
             final Entity existingGenericEntity) {
 
         copyReadOnlyAndMissingFields(dataDefinition, genericEntity, existingGenericEntity);
+        parseFields(dataDefinition, genericEntity);
 
         if (genericEntity.getId() == null) {
             dataDefinition.callCreateHook(genericEntity);
@@ -78,6 +79,56 @@ public final class ValidationServiceImpl implements ValidationService {
                 genericEntity.setField(field.getKey(), value);
             }
         }
+    }
+
+    private void parseFields(final InternalDataDefinition dataDefinition, final Entity genericEntity) {
+        for (Entry<String, FieldDefinition> fieldDefinitionEntry : dataDefinition.getFields().entrySet()) {
+            final InternalFieldDefinition fieldDefinition = (InternalFieldDefinition) fieldDefinitionEntry.getValue();
+            final FieldType fieldType = fieldDefinition.getType();
+            final Object fieldValue = genericEntity.getField(fieldDefinitionEntry.getKey());
+            Object parsedValue = null;
+
+            if (fieldType instanceof BelongsToType) {
+                parsedValue = parseBelongsToField(fieldDefinition, trimAndNullIfEmpty(fieldValue), genericEntity);
+            } else {
+                parsedValue = fieldValue;
+            }
+
+            genericEntity.setField(fieldDefinitionEntry.getKey(), parsedValue);
+        }
+    }
+
+    private Object parseBelongsToField(final InternalFieldDefinition fieldDefinition, final Object value,
+            final Entity validatedEntity) {
+        Entity referencedEntity = null;
+
+        if (value != null) {
+            Long referencedEntityId = null;
+            if (value instanceof String) {
+                try {
+                    referencedEntityId = Long.valueOf((String) value);
+                } catch (NumberFormatException e) {
+                    validatedEntity.addError(fieldDefinition, "qcadooView.validate.field.error.wrongType", value.getClass()
+                            .getSimpleName(), fieldDefinition.getType().getType().getSimpleName());
+                }
+            } else if (value instanceof Long) {
+                referencedEntityId = (Long) value;
+            } else if (value instanceof Integer) {
+                referencedEntityId = Long.valueOf((Integer) value);
+            } else if (value instanceof Entity) {
+                referencedEntityId = ((Entity) value).getId();
+            } else {
+                validatedEntity.addError(fieldDefinition, "qcadooView.validate.field.error.wrongType", value.getClass()
+                        .getSimpleName(), fieldDefinition.getType().getType().getSimpleName());
+            }
+            if (referencedEntityId == null) {
+                referencedEntity = null;
+            } else {
+                BelongsToType belongsToFieldType = (BelongsToType) fieldDefinition.getType();
+                referencedEntity = belongsToFieldType.getDataDefinition().get(referencedEntityId);
+            }
+        }
+        return referencedEntity;
     }
 
     private void parseAndValidateEntity(final InternalDataDefinition dataDefinition, final Entity genericEntity) {
@@ -119,48 +170,10 @@ public final class ValidationServiceImpl implements ValidationService {
         }
     }
 
-    private Object parseAndValidateBelongsToField(final InternalFieldDefinition fieldDefinition, final Object value,
-            final Entity validatedEntity) {
-        Entity referencedEntity;
-
-        if (value == null) {
-            referencedEntity = null;
-        } else {
-            Long referencedEntityId = null;
-            if (value instanceof String) {
-                try {
-                    referencedEntityId = Long.valueOf((String) value);
-                } catch (NumberFormatException e) {
-                    validatedEntity.addError(fieldDefinition, "qcadooView.validate.field.error.wrongType", value.getClass()
-                            .getSimpleName(), fieldDefinition.getType().getType().getSimpleName());
-                }
-            } else if (value instanceof Long) {
-                referencedEntityId = (Long) value;
-            } else if (value instanceof Integer) {
-                referencedEntityId = Long.valueOf((Integer) value);
-            } else if (value instanceof Entity) {
-                referencedEntityId = ((Entity) value).getId();
-            } else {
-                validatedEntity.addError(fieldDefinition, "qcadooView.validate.field.error.wrongType", value.getClass()
-                        .getSimpleName(), fieldDefinition.getType().getType().getSimpleName());
-            }
-            if (referencedEntityId == null) {
-                referencedEntity = null;
-            } else {
-                BelongsToType belongsToFieldType = (BelongsToType) fieldDefinition.getType();
-                referencedEntity = belongsToFieldType.getDataDefinition().get(referencedEntityId);
-            }
-        }
-
-        return parseAndValidateValue(fieldDefinition, referencedEntity, validatedEntity);
-    }
-
     private Object parseAndValidateField(final InternalFieldDefinition fieldDefinition, final Object value,
             final Entity validatedEntity) {
         FieldType fieldType = fieldDefinition.getType();
-        if (fieldType instanceof BelongsToType) {
-            return parseAndValidateBelongsToField(fieldDefinition, trimAndNullIfEmpty(value), validatedEntity);
-        } else if (fieldType instanceof HasManyType || fieldType instanceof TreeType || fieldType instanceof ManyToManyType) {
+        if (fieldType instanceof HasManyType || fieldType instanceof TreeType || fieldType instanceof ManyToManyType) {
             return value;
         } else {
             return parseAndValidateValue(fieldDefinition, trimAndNullIfEmpty(value), validatedEntity);
