@@ -78,23 +78,23 @@ public class EntityTreeUtilsServiceTest {
     @Test
     public final void shouldReturnListOfNodesInTheSameOrderAsTheyAppearOnTheTree() throws Exception {
         // given
-        EntityTreeNode l1_b1_a11 = mockEntityTreeNode(null, 1, "1.B.1.A.11");
-        EntityTreeNode l1_b1_a10 = mockEntityTreeNode(Lists.newArrayList(l1_b1_a11), 1, "1.B.1.A.10");
-        EntityTreeNode l1_b1_a9 = mockEntityTreeNode(Lists.newArrayList(l1_b1_a10), 1, "1.B.1.A.9");
-        EntityTreeNode l1_b1_a8 = mockEntityTreeNode(Lists.newArrayList(l1_b1_a9), 1, "1.B.1.A.8");
-        EntityTreeNode l1_b1_a7 = mockEntityTreeNode(Lists.newArrayList(l1_b1_a8), 1, "1.B.1.A.7");
-        EntityTreeNode l1_b1_a6 = mockEntityTreeNode(Lists.newArrayList(l1_b1_a7), 1, "1.B.1.A.6");
-        EntityTreeNode l1_b1_a5 = mockEntityTreeNode(Lists.newArrayList(l1_b1_a6), 1, "1.B.1.A.5");
-        EntityTreeNode l1_b1_a4 = mockEntityTreeNode(Lists.newArrayList(l1_b1_a5), 1, "1.B.1.A.4");
-        EntityTreeNode l1_b1_a3 = mockEntityTreeNode(Lists.newArrayList(l1_b1_a4), 1, "1.B.1.A.3");
-        EntityTreeNode l1_b1_a2 = mockEntityTreeNode(Lists.newArrayList(l1_b1_a3), 1, "1.B.1.A.2");
-        EntityTreeNode l1_b1_a1 = mockEntityTreeNode(Lists.newArrayList(l1_b1_a2), 1, "1.B.1.A.1");
-        EntityTreeNode l1_b1_b1 = mockEntityTreeNode(null, 2, "1.B.1.B.1");
+        EntityTreeNode l1b1a11 = mockEntityTreeNode(null, 1, "1.B.1.A.11");
+        EntityTreeNode l1b1a10 = mockEntityTreeNode(Lists.newArrayList(l1b1a11), 1, "1.B.1.A.10");
+        EntityTreeNode l1b1a9 = mockEntityTreeNode(Lists.newArrayList(l1b1a10), 1, "1.B.1.A.9");
+        EntityTreeNode l1b1a8 = mockEntityTreeNode(Lists.newArrayList(l1b1a9), 1, "1.B.1.A.8");
+        EntityTreeNode l1b1a7 = mockEntityTreeNode(Lists.newArrayList(l1b1a8), 1, "1.B.1.A.7");
+        EntityTreeNode l1b1a6 = mockEntityTreeNode(Lists.newArrayList(l1b1a7), 1, "1.B.1.A.6");
+        EntityTreeNode l1b1a5 = mockEntityTreeNode(Lists.newArrayList(l1b1a6), 1, "1.B.1.A.5");
+        EntityTreeNode l1b1a4 = mockEntityTreeNode(Lists.newArrayList(l1b1a5), 1, "1.B.1.A.4");
+        EntityTreeNode l1b1a3 = mockEntityTreeNode(Lists.newArrayList(l1b1a4), 1, "1.B.1.A.3");
+        EntityTreeNode l1b1a2 = mockEntityTreeNode(Lists.newArrayList(l1b1a3), 1, "1.B.1.A.2");
+        EntityTreeNode l1b1a1 = mockEntityTreeNode(Lists.newArrayList(l1b1a2), 1, "1.B.1.A.1");
+        EntityTreeNode l1b1b1 = mockEntityTreeNode(null, 2, "1.B.1.B.1");
 
-        EntityTreeNode l1_a1 = mockEntityTreeNode(null, 1, "1.A.1");
-        EntityTreeNode l1_b1 = mockEntityTreeNode(Lists.newLinkedList(Lists.newArrayList(l1_b1_b1, l1_b1_a1)), 2, "1.B.1");
+        EntityTreeNode l1a1 = mockEntityTreeNode(null, 1, "1.A.1");
+        EntityTreeNode l1b1 = mockEntityTreeNode(Lists.newLinkedList(Lists.newArrayList(l1b1b1, l1b1a1)), 2, "1.B.1");
 
-        EntityTreeNode root = mockEntityTreeNode(Lists.newLinkedList(Lists.newArrayList(l1_a1, l1_b1)), 1, "1");
+        EntityTreeNode root = mockEntityTreeNode(Lists.newLinkedList(Lists.newArrayList(l1a1, l1b1)), 1, "1");
 
         given(tree.getRoot()).willReturn(root);
         given(tree.isEmpty()).willReturn(false);

@@ -82,8 +82,8 @@ public final class PasswordResetController {
     }
 
     @RequestMapping(value = "passwordReset", method = RequestMethod.POST)
-    public @ResponseBody
-    String processForgotPasswordFormView(@RequestParam final String login) {
+    @ResponseBody
+    public String processForgotPasswordFormView(@RequestParam final String login) {
         if (setAsDemoEnviroment) {
             return null;
         }

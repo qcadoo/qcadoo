@@ -36,6 +36,10 @@ import com.qcadoo.model.internal.sessionfactory.DynamicSessionFactoryBeanImpl;
 
 public class Utils {
 
+    private Utils() {
+
+    }
+
     public static final String HBM_DTD_PATH = new File("src/test/resources/hibernate-mapping-3.0.dtd").getAbsolutePath();
 
     public static final String SPRING_CONTEXT_PATH = "spring.xml";

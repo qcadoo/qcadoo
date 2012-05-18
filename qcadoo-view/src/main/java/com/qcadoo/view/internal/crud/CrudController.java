@@ -68,8 +68,8 @@ public class CrudController {
     }
 
     @Monitorable(threshold = 500)
-    @RequestMapping(value = { CONTROLLER_PATH }, method = RequestMethod.POST)
     @ResponseBody
+    @RequestMapping(value = { CONTROLLER_PATH }, method = RequestMethod.POST)
     public Object performEvent(@PathVariable(PLUGIN_IDENTIFIER_VARIABLE) final String pluginIdentifier,
             @PathVariable(VIEW_NAME_VARIABLE) final String viewName, @RequestBody final JSONObject body, final Locale locale) {
         return crudService.invokeEventAndRenderView(pluginIdentifier, viewName, body, locale);

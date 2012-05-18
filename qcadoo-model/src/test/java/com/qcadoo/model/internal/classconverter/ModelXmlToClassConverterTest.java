@@ -46,7 +46,7 @@ import com.qcadoo.model.internal.utils.ClassNameUtils;
 
 public class ModelXmlToClassConverterTest {
 
-    private static final ModelXmlToClassConverterImpl modelXmlToClassConverter = new ModelXmlToClassConverterImpl();
+    private static final ModelXmlToClassConverterImpl MODEL_XML_TO_CLASSCONVERTER = new ModelXmlToClassConverterImpl();
 
     private static Map<String, Class<?>> classes = new HashMap<String, Class<?>>();
 
@@ -54,9 +54,9 @@ public class ModelXmlToClassConverterTest {
 
     @BeforeClass
     public static void init() throws Exception {
-        modelXmlToClassConverter.setBeanClassLoader(ClassLoader.getSystemClassLoader());
+        MODEL_XML_TO_CLASSCONVERTER.setBeanClassLoader(ClassLoader.getSystemClassLoader());
 
-        for (Class<?> clazz : modelXmlToClassConverter.convert(Utils.FULL_FIRST_ENTITY_XML_RESOURCE,
+        for (Class<?> clazz : MODEL_XML_TO_CLASSCONVERTER.convert(Utils.FULL_FIRST_ENTITY_XML_RESOURCE,
                 Utils.FULL_SECOND_ENTITY_XML_RESOURCE, Utils.FULL_THIRD_ENTITY_XML_RESOURCE,
                 Utils.OTHER_FIRST_ENTITY_XML_RESOURCE, Utils.OTHER_SECOND_ENTITY_XML_RESOURCE)) {
             classes.put(clazz.getCanonicalName(), clazz);

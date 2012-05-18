@@ -43,9 +43,9 @@ import com.qcadoo.model.internal.api.ModelXmlToHbmConverter;
 
 public class ModelXmlToHbmConverterTest {
 
-    private static final ModelXmlToHbmConverter modelXmlToHbmConverter = new ModelXmlToHbmConverterImpl();
+    private static final ModelXmlToHbmConverter MODEL_XML_TO_HBM_CONVERTER = new ModelXmlToHbmConverterImpl();
 
-    private static final XpathEngine xpathEngine = newXpathEngine();
+    private static final XpathEngine XPATH_ENGINE = newXpathEngine();
 
     private static InputStream hbmInputStream;
 
@@ -60,14 +60,14 @@ public class ModelXmlToHbmConverterTest {
     @BeforeClass
     public static void init() throws Exception {
 
-        hbmInputStream = modelXmlToHbmConverter.convert(Utils.FULL_FIRST_ENTITY_XML_RESOURCE)[0].getInputStream();
-        hbmInputSource = new InputSource(modelXmlToHbmConverter.convert(Utils.FULL_FIRST_ENTITY_XML_RESOURCE)[0].getInputStream());
+        hbmInputStream = MODEL_XML_TO_HBM_CONVERTER.convert(Utils.FULL_FIRST_ENTITY_XML_RESOURCE)[0].getInputStream();
+        hbmInputSource = new InputSource(MODEL_XML_TO_HBM_CONVERTER.convert(Utils.FULL_FIRST_ENTITY_XML_RESOURCE)[0].getInputStream());
         hbmFirstEntity = buildControlDocument(new InputSource(
-                modelXmlToHbmConverter.convert(Utils.FULL_FIRST_ENTITY_XML_RESOURCE)[0].getInputStream()));
+                MODEL_XML_TO_HBM_CONVERTER.convert(Utils.FULL_FIRST_ENTITY_XML_RESOURCE)[0].getInputStream()));
         hbmSecondEntity = buildControlDocument(new InputSource(
-                modelXmlToHbmConverter.convert(Utils.FULL_SECOND_ENTITY_XML_RESOURCE)[0].getInputStream()));
+                MODEL_XML_TO_HBM_CONVERTER.convert(Utils.FULL_SECOND_ENTITY_XML_RESOURCE)[0].getInputStream()));
         hbmThirdEntity = buildControlDocument(new InputSource(
-                modelXmlToHbmConverter.convert(Utils.FULL_THIRD_ENTITY_XML_RESOURCE)[0].getInputStream()));
+                MODEL_XML_TO_HBM_CONVERTER.convert(Utils.FULL_THIRD_ENTITY_XML_RESOURCE)[0].getInputStream()));
     }
 
     @Test
@@ -275,19 +275,19 @@ public class ModelXmlToHbmConverterTest {
     }
 
     private void assertNodeEquals(final String expectedValue, final String xpath, final Document document) throws Exception {
-        assertEquals(expectedValue, xpathEngine.evaluate(xpath, document));
+        assertEquals(expectedValue, XPATH_ENGINE.evaluate(xpath, document));
     }
 
     private void assertNodeExists(final String xpath, final Document document) throws Exception {
-        assertTrue(xpathEngine.getMatchingNodes(xpath, document).getLength() > 0);
+        assertTrue(XPATH_ENGINE.getMatchingNodes(xpath, document).getLength() > 0);
     }
 
     private void assertNodeNotExists(final String xpath, final Document document) throws Exception {
-        assertTrue(xpathEngine.getMatchingNodes(xpath, document).getLength() == 0);
+        assertTrue(XPATH_ENGINE.getMatchingNodes(xpath, document).getLength() == 0);
     }
 
     private void assertNodeCount(final int expectedCount, final String xpath, final Document document) throws Exception {
-        assertEquals(expectedCount, xpathEngine.getMatchingNodes(xpath, document).getLength());
+        assertEquals(expectedCount, XPATH_ENGINE.getMatchingNodes(xpath, document).getLength());
     }
 
 }
