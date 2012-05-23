@@ -342,6 +342,7 @@
             			</aspectLibrary>
 					</aspectLibraries>
 			    	<showWeaveInfo>true</showWeaveInfo>
+			    	<aspectDirectory>src/main/java</aspectDirectory>
 				</configuration>
 				<dependencies>
 					<dependency>
