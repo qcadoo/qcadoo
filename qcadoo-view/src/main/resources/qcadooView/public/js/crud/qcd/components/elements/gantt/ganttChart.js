@@ -245,7 +245,7 @@ QCD.components.elements.GanttChart = function(_element, _mainController) {
 		htmlElements.wrapper.append(htmlElements.centerContainer);
 		
 		htmlElements.scrollWrapper = $("<div>").addClass("ganttScrollWrapper").hide();
-		htmlElements.scrollWrapper.width(50);
+		htmlElements.scrollWrapper.width("100%");
 		htmlElements.wrapper.append(htmlElements.scrollWrapper);
 		
 		// NAMES
