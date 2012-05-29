@@ -56,6 +56,7 @@
 		<datetime name="fieldDatetime" required="false" />
 		<date name="fieldDate" />
 		<boolean name="fieldBoolean" />
+		<belongsTo name="fieldThirdEntity" model="thirdEntity" lazy="false" />
 		<belongsTo name="fieldSecondEntity" plugin="other" model="secondEntity"
 			lazy="false" />
 		<belongsTo name="fieldSecondEntity2" plugin="other" model="secondEntity"

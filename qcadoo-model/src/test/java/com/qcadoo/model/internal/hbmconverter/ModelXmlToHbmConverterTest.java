@@ -61,7 +61,8 @@ public class ModelXmlToHbmConverterTest {
     public static void init() throws Exception {
 
         hbmInputStream = MODEL_XML_TO_HBM_CONVERTER.convert(Utils.FULL_FIRST_ENTITY_XML_RESOURCE)[0].getInputStream();
-        hbmInputSource = new InputSource(MODEL_XML_TO_HBM_CONVERTER.convert(Utils.FULL_FIRST_ENTITY_XML_RESOURCE)[0].getInputStream());
+        hbmInputSource = new InputSource(
+                MODEL_XML_TO_HBM_CONVERTER.convert(Utils.FULL_FIRST_ENTITY_XML_RESOURCE)[0].getInputStream());
         hbmFirstEntity = buildControlDocument(new InputSource(
                 MODEL_XML_TO_HBM_CONVERTER.convert(Utils.FULL_FIRST_ENTITY_XML_RESOURCE)[0].getInputStream()));
         hbmSecondEntity = buildControlDocument(new InputSource(
@@ -149,7 +150,7 @@ public class ModelXmlToHbmConverterTest {
     public void shouldDefineProperties() throws Exception {
         assertNodeCount(19, "/hibernate-mapping/class[1]/property", hbmFirstEntity);
         assertNodeCount(0, "/hibernate-mapping/class[1]/property", hbmSecondEntity);
-        assertNodeCount(0, "/hibernate-mapping/class[1]/property", hbmThirdEntity);
+        assertNodeCount(2, "/hibernate-mapping/class[1]/property", hbmThirdEntity);
         assertNodeExists("/hibernate-mapping/class[1]/property[@name='fieldInteger' and @type='integer']", hbmFirstEntity);
         assertNodeExists("/hibernate-mapping/class[1]/property[@name='fieldString' and @type='string']", hbmFirstEntity);
         assertNodeExists("/hibernate-mapping/class[1]/property[@name='fieldText' and @type='text']", hbmFirstEntity);
@@ -231,7 +232,7 @@ public class ModelXmlToHbmConverterTest {
 
     @Test
     public void shouldDefineBelongsToRelation() throws Exception {
-        assertNodeCount(2, "/hibernate-mapping/class[1]/many-to-one", hbmFirstEntity);
+        assertNodeCount(3, "/hibernate-mapping/class[1]/many-to-one", hbmFirstEntity);
         assertNodeCount(2, "/hibernate-mapping/class[1]/many-to-one", hbmSecondEntity);
         assertNodeCount(1, "/hibernate-mapping/class[1]/many-to-one", hbmThirdEntity);
         assertNodeExists("/hibernate-mapping/class[1]/many-to-one[@name='fieldSecondEntity']", hbmFirstEntity);

@@ -36,11 +36,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import junit.framework.Assert;
+
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.google.common.collect.Sets;
 import com.qcadoo.model.Utils;
 import com.qcadoo.model.internal.utils.ClassNameUtils;
 
@@ -193,6 +196,108 @@ public class ModelXmlToClassConverterTest {
         assertFalse(entity2.equals(entity1));
         assertFalse(entity1.equals(null));
         assertFalse(entity1.equals(entity3));
+    }
+
+    @Test
+    public void shouldHashCodeDoNotHaveCycleWithBelongsToFields() throws Exception {
+        // given
+        Object firstEntity = classes.get(ClassNameUtils.getFullyQualifiedClassName("full", "firstEntity")).newInstance();
+        Object thirdEntity = classes.get(ClassNameUtils.getFullyQualifiedClassName("full", "thirdEntity")).newInstance();
+
+        BeanUtils.setProperty(firstEntity, "fieldThirdEntity", thirdEntity);
+        BeanUtils.setProperty(thirdEntity, "fieldFirstEntity", firstEntity);
+
+        // when & then
+        try {
+            firstEntity.hashCode();
+            thirdEntity.hashCode();
+        } catch (StackOverflowError t) {
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void shouldHashCodeDoNotHaveCycleWithHasManyFields() throws Exception {
+        // given
+        Object firstEntity = classes.get(ClassNameUtils.getFullyQualifiedClassName("full", "firstEntity")).newInstance();
+        Object thirdEntity = classes.get(ClassNameUtils.getFullyQualifiedClassName("full", "thirdEntity")).newInstance();
+
+        BeanUtils.setProperty(firstEntity, "fieldHasMany", Sets.newHashSet(thirdEntity));
+        BeanUtils.setProperty(thirdEntity, "fieldFirstEntity", firstEntity);
+
+        // when & then
+        try {
+            firstEntity.hashCode();
+            thirdEntity.hashCode();
+        } catch (StackOverflowError t) {
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void shouldHashCodeDoNotHaveCycleWithManyToManyFields() throws Exception {
+        // given
+        Object firstEntity = classes.get(ClassNameUtils.getFullyQualifiedClassName("full", "firstEntity")).newInstance();
+        Object thirdEntity = classes.get(ClassNameUtils.getFullyQualifiedClassName("full", "thirdEntity")).newInstance();
+
+        BeanUtils.setProperty(firstEntity, "fieldManyToMany", Sets.newHashSet(thirdEntity));
+        BeanUtils.setProperty(thirdEntity, "fieldManyToMany", Sets.newHashSet(firstEntity));
+
+        // when & then
+        try {
+            firstEntity.hashCode();
+            thirdEntity.hashCode();
+        } catch (StackOverflowError t) {
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void shouldHashCodeDoNotHaveCycleWithBelongsToAndManyToManyFields() throws Exception {
+        // given
+        Object firstEntity = classes.get(ClassNameUtils.getFullyQualifiedClassName("full", "firstEntity")).newInstance();
+        Object thirdEntity = classes.get(ClassNameUtils.getFullyQualifiedClassName("full", "thirdEntity")).newInstance();
+
+        BeanUtils.setProperty(firstEntity, "fieldThirdEntity", thirdEntity);
+        BeanUtils.setProperty(thirdEntity, "fieldManyToMany", Sets.newHashSet(firstEntity));
+
+        // when & then
+        try {
+            firstEntity.hashCode();
+            thirdEntity.hashCode();
+        } catch (StackOverflowError t) {
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public final void shouldReturnDifferentHashCodesIfRelatedEntitiesAreDifferent() throws Exception {
+        // given
+        Object firstEntityA = classes.get(ClassNameUtils.getFullyQualifiedClassName("full", "firstEntity")).newInstance();
+        Object firstEntityB = classes.get(ClassNameUtils.getFullyQualifiedClassName("full", "firstEntity")).newInstance();
+
+        Object thirdEntityA = classes.get(ClassNameUtils.getFullyQualifiedClassName("full", "thirdEntity")).newInstance();
+        Object thirdEntityB = classes.get(ClassNameUtils.getFullyQualifiedClassName("full", "thirdEntity")).newInstance();
+
+        BeanUtils.setProperty(firstEntityA, "fieldInteger", 13);
+        BeanUtils.setProperty(firstEntityA, "fieldString", "Xxx");
+        BeanUtils.setProperty(firstEntityA, "fieldManyToMany", Sets.newHashSet(thirdEntityA));
+        BeanUtils.setProperty(thirdEntityA, "fieldString", "Aaa");
+        BeanUtils.setProperty(thirdEntityA, "fieldManyToMany", Sets.newHashSet(firstEntityA));
+
+        BeanUtils.setProperty(firstEntityB, "fieldInteger", 13);
+        BeanUtils.setProperty(firstEntityB, "fieldString", "Xxx");
+        BeanUtils.setProperty(firstEntityB, "fieldManyToMany", Sets.newHashSet(thirdEntityB));
+        BeanUtils.setProperty(thirdEntityB, "fieldString", "Bbb");
+        BeanUtils.setProperty(thirdEntityB, "fieldManyToMany", Sets.newHashSet(firstEntityB));
+
+        // when
+        int hashCodeFirstB = firstEntityB.hashCode();
+        assertFalse(firstEntityA.hashCode() == firstEntityB.hashCode());
+        BeanUtils.setProperty(thirdEntityB, "fieldString", "Aaa");
+        assertFalse(hashCodeFirstB == firstEntityB.hashCode());
+        BeanUtils.setProperty(firstEntityB, "fieldManyToMany", Sets.newHashSet(thirdEntityA));
+        assertTrue(firstEntityA.hashCode() == firstEntityB.hashCode());
     }
 
     private void verifyField(final PropertyDescriptor propertyDescriptor, final Class<?> type) {

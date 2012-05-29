@@ -53,6 +53,10 @@
 		<property type="boolean" name="fieldBoolean" not-null="false">
 			<column name="fieldBoolean" />
 		</property>
+		<many-to-one entity-name="com.qcadoo.model.beans.full.FullThirdEntity" cascade="none"
+			lazy="false" name="fieldThirdEntity" not-null="false">
+			<column name="fieldThirdEntity" />
+		</many-to-one>
 		<many-to-one entity-name="com.qcadoo.model.beans.other.OtherSecondEntity" cascade="none"
 			lazy="false" name="fieldSecondEntity" not-null="false">
 			<column name="fieldSecondEntity" />
@@ -115,6 +119,12 @@
 		<id column="id" name="id" type="long">
 			<generator class="increment" />
 		</id>
+		<property type="big_decimal" name="fieldDecimal" not-null="false">
+			<column name="fieldDecimal" />
+		</property>
+		<property type="string" name="fieldString" not-null="false">
+			<column name="fieldString" />
+		</property>
 		<many-to-one entity-name="com.qcadoo.model.beans.full.FullFirstEntity" cascade="none"
 			lazy="proxy" name="fieldFirstEntity" not-null="false">
 			<column name="fieldFirstEntity" />

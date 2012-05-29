@@ -40,6 +40,7 @@ import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtField;
 import javassist.CtNewMethod;
+import javassist.NotFoundException;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -75,6 +76,7 @@ public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverte
     public ModelXmlToClassConverterImpl() {
         super();
         classPool.appendClassPath(new ClassClassPath(org.hibernate.collection.PersistentSet.class));
+        classPool.appendClassPath(new ClassClassPath(com.qcadoo.model.internal.classconverter.QcadooModelBean.class));
     }
 
     @Override
@@ -124,6 +126,8 @@ public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverte
                 } catch (ModelXmlCompilingException e) {
                     throw new IllegalStateException(L_ERROR_WHILE_PARSING_MODEL_XML + e.getMessage(), e);
                 } catch (IOException e) {
+                    throw new IllegalStateException(L_ERROR_WHILE_PARSING_MODEL_XML + e.getMessage(), e);
+                } catch (NotFoundException e) {
                     throw new IllegalStateException(L_ERROR_WHILE_PARSING_MODEL_XML + e.getMessage(), e);
                 }
             }
@@ -198,7 +202,7 @@ public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverte
     }
 
     private void defineClasses(final Map<String, CtClass> ctClasses, final InputStream stream) throws XMLStreamException,
-            ModelXmlCompilingException {
+            ModelXmlCompilingException, NotFoundException {
         XMLStreamReader reader = XMLInputFactory.newInstance().createXMLStreamReader(stream);
 
         while (reader.hasNext() && reader.next() > 0) {
@@ -217,8 +221,10 @@ public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverte
     }
 
     private void parse(final XMLStreamReader reader, final CtClass ctClass, final String pluginIdentifier)
-            throws XMLStreamException, ModelXmlCompilingException {
+            throws XMLStreamException, ModelXmlCompilingException, NotFoundException {
         LOG.info("Defining class " + ctClass.getName());
+
+        ctClass.addInterface(classPool.get(QcadooModelBean.class.getName()));
 
         createField(ctClass, "id", Long.class.getCanonicalName());
 
@@ -289,24 +295,71 @@ public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverte
     }
 
     private void buildHashCode(final CtClass ctClass, final List<String> fields) throws ModelXmlCompilingException {
-        try {
-            StringBuilder sb = new StringBuilder();
-            sb.append("final int prime = 31;");
-            sb.append("int result = 1;");
+        buildHashCode(ctClass, fields, false);
+        buildHashCode(ctClass, fields, true);
+    }
 
-            for (String field : fields) {
-                String fieldGetter = "get" + StringUtils.capitalize(field) + "()";
-                // explanation of the second condition -> https://hibernate.onjira.com/browse/HHH-3799
-                sb.append("result = prime * result + ((" + fieldGetter + " == null || " + fieldGetter
-                        + ".getClass().isAssignableFrom(org.hibernate.collection.PersistentSet.class)) ? 0 : " + fieldGetter
-                        + ".hashCode());");
+    private void buildHashCode(final CtClass ctClass, final List<String> fields, final boolean deep)
+            throws ModelXmlCompilingException {
+        try {
+            String methodName = null;
+            StringBuilder methodCode = new StringBuilder();
+            methodCode.append("final int prime = 31;");
+            methodCode.append("int result = 1;");
+
+            if (deep) {
+                methodName = "hashCode";
+                getFieldsDeepHashCode(methodCode, fields);
+            } else {
+                methodName = "flatHashCode";
+                getFieldsFlatHashCode(methodCode, fields);
             }
 
-            sb.append("return result;");
+            methodCode.append("return result;");
 
-            ctClass.addMethod(CtNewMethod.make("public int hashCode() { " + sb.toString() + " }", ctClass));
+            ctClass.addMethod(CtNewMethod.make("public int " + methodName + "() { " + methodCode.toString() + " }", ctClass));
         } catch (CannotCompileException e) {
             throw new ModelXmlCompilingException(L_FAILED_TO_COMPILE_CLASS + ctClass.getName(), e);
+        }
+    }
+
+    private String getGetterForField(final String fieldName) {
+        return "get" + StringUtils.capitalize(fieldName) + "()";
+    }
+
+    private void getFieldsDeepHashCode(final StringBuilder sb, final List<String> fieldNames) {
+        for (String fieldName : fieldNames) {
+            sb.append("final Object fieldValue = " + getGetterForField(fieldName) + ";");
+            sb.append("if (fieldValue instanceof com.qcadoo.model.internal.classconverter.QcadooModelBean) {");
+            sb.append("    result += prime * result + ((com.qcadoo.model.internal.classconverter.QcadooModelBean) fieldValue).flatHashCode();");
+            sb.append("} else if (fieldValue != null && !(fieldValue instanceof org.hibernate.collection.PersistentSet)) {");
+            sb.append("    if (fieldValue instanceof Iterable) {");
+            sb.append("       for (java.util.Iterator iter = ((Iterable) fieldValue).iterator(); iter.hasNext(); ) {");
+            sb.append("           Object collectionElement = iter.next();");
+            sb.append("           if (collectionElement == null)  { continue; }");
+            sb.append("           result += prime * result + "
+                    + "(collectionElement instanceof com.qcadoo.model.internal.classconverter.QcadooModelBean ? "
+                    + "((com.qcadoo.model.internal.classconverter.QcadooModelBean) collectionElement).flatHashCode() : "
+                    + "collectionElement.hashCode());");
+            sb.append("       }");
+            sb.append("    } else {");
+            sb.append("        result += prime * result + fieldValue.hashCode();");
+            sb.append("    }");
+            sb.append("}");
+        }
+    }
+
+    private void getFieldsFlatHashCode(final StringBuilder sb, final List<String> fieldNames) {
+        for (String fieldName : fieldNames) {
+            sb.append("final Object fieldValue = " + getGetterForField(fieldName) + ";");
+            sb.append("if (fieldValue != null && !(fieldValue instanceof org.hibernate.collection.PersistentSet)) {");
+            sb.append("   if (fieldValue instanceof com.qcadoo.model.internal.classconverter.QcadooModelBean) {");
+            sb.append("      Object relatedEntityId = ((com.qcadoo.model.internal.classconverter.QcadooModelBean) fieldValue).getId();");
+            sb.append("      result += prime * result + (relatedEntityId == null ? 0 : relatedEntityId.hashCode());");
+            sb.append("   } else if (!(fieldValue instanceof Iterable)) {");
+            sb.append("      result += prime * result + fieldValue.hashCode();");
+            sb.append("   }");
+            sb.append("}");
         }
     }
 
@@ -320,7 +373,7 @@ public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverte
 
             for (String field : fields) {
                 sb.append("if (get" + StringUtils.capitalize(field) + "() == null) {");
-                sb.append("if (other.get" + StringUtils.capitalize(field) + "() != null) { return false; }");
+                sb.append("   if (other.get" + StringUtils.capitalize(field) + "() != null) { return false; }");
                 sb.append("} else if (!get" + StringUtils.capitalize(field) + "().equals(other.get"
                         + StringUtils.capitalize(field) + "())) { return false; }");
             }
