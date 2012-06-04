@@ -148,7 +148,9 @@ QCD.PageController = function() {
 			if (componentListeners) {
 				for (var i = 0; i<componentListeners.length; i++) {
 					var listenerElement = getComponent(componentListeners[i]);
-					listenerElement.setComponentLoading(true);
+					if (listenerElement != null) {
+						listenerElement.setComponentLoading(true);
+					}
 				}
 				eventCompleteFunction = function() {
 					if (completeFunction) {
@@ -156,7 +158,9 @@ QCD.PageController = function() {
 					}
 					for (var i = 0; i<componentListeners.length; i++) {
 						var listenerElement = getComponent(componentListeners[i]);
-						listenerElement.setComponentLoading(false);
+						if (listenerElement != null) {
+							listenerElement.setComponentLoading(false);
+						}
 					}
 				}
 			}
