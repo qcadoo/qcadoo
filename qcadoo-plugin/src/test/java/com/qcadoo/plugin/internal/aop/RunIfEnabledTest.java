@@ -20,6 +20,8 @@ public class RunIfEnabledTest {
 
     private static final String PLUGIN_NAME = "somePlugin";
 
+    private static final String SECOND_PLUGIN_NAME = "someSecondPlugin";
+
     @Mock
     private DependencyMock dependencyMock;
 
@@ -42,6 +44,7 @@ public class RunIfEnabledTest {
         public void run() {
             dependencyMock.run();
         }
+
     }
 
     @RunIfEnabled(PLUGIN_NAME)
@@ -53,7 +56,34 @@ public class RunIfEnabledTest {
             this.dependencyMock = dependencyMock;
         }
 
-        @RunIfEnabled(PLUGIN_NAME)
+        public void run() {
+            dependencyMock.run();
+        }
+    }
+
+    @RunIfEnabled({ PLUGIN_NAME, SECOND_PLUGIN_NAME })
+    private static class ClassLevelAnnotatedWithManyPlugins {
+
+        private DependencyMock dependencyMock;
+
+        public ClassLevelAnnotatedWithManyPlugins(final DependencyMock dependencyMock) {
+            this.dependencyMock = dependencyMock;
+        }
+
+        public void run() {
+            dependencyMock.run();
+        }
+    }
+
+    private static class MethodLevelAnnotatedWithManyPlugins {
+
+        private DependencyMock dependencyMock;
+
+        public MethodLevelAnnotatedWithManyPlugins(final DependencyMock dependencyMock) {
+            this.dependencyMock = dependencyMock;
+        }
+
+        @RunIfEnabled({ PLUGIN_NAME, SECOND_PLUGIN_NAME })
         public void run() {
             dependencyMock.run();
         }
@@ -123,6 +153,72 @@ public class RunIfEnabledTest {
         // then
         verify(pluginStateResolver).isEnabled(PLUGIN_NAME);
         verify(dependencyMock).run();
+    }
+
+    @Test
+    public final void shouldRunClassLevelAnnotationWithManyPlugins() {
+        // given
+        enablePlugin(PLUGIN_NAME);
+        enablePlugin(SECOND_PLUGIN_NAME);
+
+        ClassLevelAnnotatedWithManyPlugins object = new ClassLevelAnnotatedWithManyPlugins(dependencyMock);
+
+        // when
+        object.run();
+
+        // then
+        verify(pluginStateResolver).isEnabled(PLUGIN_NAME);
+        verify(pluginStateResolver).isEnabled(SECOND_PLUGIN_NAME);
+        verify(dependencyMock).run();
+    }
+
+    @Test
+    public final void shouldNotRunClassLevelAnnotationWithManyPlugins() {
+        // given
+        enablePlugin(PLUGIN_NAME);
+
+        ClassLevelAnnotatedWithManyPlugins object = new ClassLevelAnnotatedWithManyPlugins(dependencyMock);
+
+        // when
+        object.run();
+
+        // then
+        verify(pluginStateResolver).isEnabled(PLUGIN_NAME);
+        verify(pluginStateResolver).isEnabled(SECOND_PLUGIN_NAME);
+        verify(dependencyMock, never()).run();
+    }
+
+    @Test
+    public final void shouldRunMethodLevelAnnotationWithManyPlugins() {
+        // given
+        enablePlugin(PLUGIN_NAME);
+        enablePlugin(SECOND_PLUGIN_NAME);
+
+        MethodLevelAnnotatedWithManyPlugins object = new MethodLevelAnnotatedWithManyPlugins(dependencyMock);
+
+        // when
+        object.run();
+
+        // then
+        verify(pluginStateResolver).isEnabled(PLUGIN_NAME);
+        verify(pluginStateResolver).isEnabled(SECOND_PLUGIN_NAME);
+        verify(dependencyMock).run();
+    }
+
+    @Test
+    public final void shouldNotRunMethodLevelAnnotationWithManyPlugins() {
+        // given
+        enablePlugin(PLUGIN_NAME);
+
+        MethodLevelAnnotatedWithManyPlugins object = new MethodLevelAnnotatedWithManyPlugins(dependencyMock);
+
+        // when
+        object.run();
+
+        // then
+        verify(pluginStateResolver).isEnabled(PLUGIN_NAME);
+        verify(pluginStateResolver).isEnabled(SECOND_PLUGIN_NAME);
+        verify(dependencyMock, never()).run();
     }
 
     @SuppressWarnings("deprecation")

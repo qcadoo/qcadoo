@@ -8,7 +8,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * Determines execution of annotated (type's) method. Run method(s) only if the plugin with given pluginIdentifier is enabled.
+ * Determines execution of annotated (type's) method. Run method(s) only if all the plugins with given identifiers are enabled.
  * 
  * This annotation also works with aspects and advices.
  * 
@@ -19,10 +19,10 @@ import java.lang.annotation.Target;
 public @interface RunIfEnabled {
 
     /**
-     * Plugin Identifier
+     * Plugin identifiers
      * 
-     * @return pluginIdentifier
+     * @return plugin identifiers
      */
-    String value();
+    String[] value();
 
 }
