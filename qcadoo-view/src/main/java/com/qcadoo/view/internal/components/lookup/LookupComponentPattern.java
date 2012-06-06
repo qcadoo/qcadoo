@@ -71,6 +71,8 @@ public final class LookupComponentPattern extends FieldComponentPattern {
 
     private boolean textRepresentationOnDisabled;
 
+    private boolean boldTextRepresentationOnDisabled;
+
     private String expression;
 
     private String fieldCode;
@@ -121,6 +123,10 @@ public final class LookupComponentPattern extends FieldComponentPattern {
                 fieldCode = option.getValue();
             } else if ("textRepresentationOnDisabled".equals(option.getType())) {
                 textRepresentationOnDisabled = Boolean.parseBoolean(option.getValue());
+            } else if ("boldTextRepresentationOnDisabled".equals(option.getType())) {
+                Boolean optionValue = Boolean.parseBoolean(option.getValue());
+                textRepresentationOnDisabled = optionValue;
+                boldTextRepresentationOnDisabled = optionValue;
             }
         }
 
@@ -216,6 +222,7 @@ public final class LookupComponentPattern extends FieldComponentPattern {
     protected Map<String, Object> getJspOptions(final Locale locale) {
         Map<String, Object> options = super.getJspOptions(locale);
         options.put("textRepresentationOnDisabled", textRepresentationOnDisabled);
+        options.put("boldTextRepresentationOnDisabled", boldTextRepresentationOnDisabled);
         return options;
     }
 
