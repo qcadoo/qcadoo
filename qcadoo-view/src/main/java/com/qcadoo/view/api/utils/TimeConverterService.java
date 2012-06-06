@@ -41,13 +41,12 @@ import com.qcadoo.localization.api.utils.DateUtils;
 public class TimeConverterService {
 
     /**
-     * Convert integer time value to string in format hh:mm:ss
+     * Convert string time value to string in format hh:mm:ss
      * 
      * @param duration
      *            time value from database
      * @return time value in format hh:mm:ss
      */
-
     public static String convertTimeToString(final String duration) {
         if (duration == null) {
             return "";
@@ -62,6 +61,13 @@ public class TimeConverterService {
         return durationToString(integerDuration);
     }
 
+    /**
+     * Convert integer time value to string in format hh:mm:ss
+     * 
+     * @param duration
+     *            time value from database
+     * @return time value in format hh:mm:ss
+     */
     public String convertTimeToString(final Integer duration) {
         return durationToString(duration);
     }
@@ -103,6 +109,17 @@ public class TimeConverterService {
         } catch (ParseException e) {
             throw new IllegalStateException(e.getMessage(), e);
         }
+    }
+
+    /**
+     * Converts value from field to Object
+     * 
+     * @param date
+     *            value from entity
+     * @return date to view field
+     */
+    public Object setDateToField(final Date date) {
+        return new SimpleDateFormat(DateUtils.L_DATE_TIME_FORMAT, Locale.getDefault()).format(date);
     }
 
 }
