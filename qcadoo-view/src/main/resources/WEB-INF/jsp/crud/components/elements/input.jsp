@@ -36,6 +36,7 @@
 <tiles:insertTemplate template="formComponent.jsp">
 	<tiles:putAttribute name="component" value="${component}" />
 	<tiles:putAttribute name="componentType" value="input" />
+	<tiles:putAttribute name="componentAlign" value="${component['jspOptions']['alignment']}" />
 	<tiles:putAttribute name="componentBody">
 		<c:if test="${component['jspOptions']['alignment']=='right'}">
 			<c:set var="alignment" value="text-align: right;" />
