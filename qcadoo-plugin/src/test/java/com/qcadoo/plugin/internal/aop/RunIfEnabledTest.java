@@ -89,6 +89,21 @@ public class RunIfEnabledTest {
         }
     }
 
+    @RunIfEnabled({ PLUGIN_NAME })
+    private static class MethodAndClassLevelAnnotated {
+
+        private DependencyMock dependencyMock;
+
+        public MethodAndClassLevelAnnotated(final DependencyMock dependencyMock) {
+            this.dependencyMock = dependencyMock;
+        }
+
+        @RunIfEnabled({ SECOND_PLUGIN_NAME })
+        public void run() {
+            dependencyMock.run();
+        }
+    }
+
     @SuppressWarnings("deprecation")
     @Before
     public final void init() {
@@ -217,6 +232,38 @@ public class RunIfEnabledTest {
 
         // then
         verify(pluginStateResolver).isEnabled(PLUGIN_NAME);
+        verify(pluginStateResolver).isEnabled(SECOND_PLUGIN_NAME);
+        verify(dependencyMock, never()).run();
+    }
+
+    @Test
+    public final void shouldRunAndIgnoreClassLevelAnnotationIfMethodIsAlsoAnnotated() {
+        // given
+        enablePlugin(SECOND_PLUGIN_NAME);
+
+        MethodAndClassLevelAnnotated object = new MethodAndClassLevelAnnotated(dependencyMock);
+
+        // when
+        object.run();
+
+        // then
+        verify(pluginStateResolver, never()).isEnabled(PLUGIN_NAME);
+        verify(pluginStateResolver).isEnabled(SECOND_PLUGIN_NAME);
+        verify(dependencyMock).run();
+    }
+
+    @Test
+    public final void shouldNotRunAndIgnoreClassLevelAnnotationIfMethodIsAlsoAnnotated() {
+        // given
+        enablePlugin(PLUGIN_NAME);
+
+        MethodAndClassLevelAnnotated object = new MethodAndClassLevelAnnotated(dependencyMock);
+
+        // when
+        object.run();
+
+        // then
+        verify(pluginStateResolver, never()).isEnabled(PLUGIN_NAME);
         verify(pluginStateResolver).isEnabled(SECOND_PLUGIN_NAME);
         verify(dependencyMock, never()).run();
     }

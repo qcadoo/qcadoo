@@ -16,7 +16,7 @@ public class RunIfEnabledAspect {
         return runIfEnabled(pjp, annotation);
     }
 
-    @Around("(execution(* *(..)) || adviceexecution()) && @within(annotation)")
+    @Around("(execution(* *(..)) || adviceexecution()) && @within(annotation) && !@annotation(com.qcadoo.plugin.api.RunIfEnabled)")
     public Object runClassMethodIfEnabledAdvice(final ProceedingJoinPoint pjp, final RunIfEnabled annotation) throws Throwable {
         return runIfEnabled(pjp, annotation);
     }
