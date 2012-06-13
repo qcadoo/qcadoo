@@ -84,7 +84,7 @@ public final class EventHandlerHolder {
             this.pluginIdentifier = pluginIdentifier;
             try {
                 if (isCustom) {
-                    this.method = obj.getClass().getDeclaredMethod(method, ViewDefinitionState.class, ComponentState.class,
+                    this.method = obj.getClass().getMethod(method, ViewDefinitionState.class, ComponentState.class,
                             String[].class);
                 } else {
                     this.method = obj.getClass().getDeclaredMethod(method, String[].class);
