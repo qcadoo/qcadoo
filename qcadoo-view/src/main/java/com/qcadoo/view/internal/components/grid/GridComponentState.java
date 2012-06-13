@@ -386,6 +386,16 @@ public final class GridComponentState extends AbstractComponentState implements 
     }
 
     @Override
+    public List<Entity> getSelectedEntities() {
+        if (selectedEntities == null || selectedEntities.isEmpty()) {
+            return Lists.newArrayList();
+        }
+        final SearchCriteriaBuilder searchCriteria = getDataDefinition().find();
+        searchCriteria.add(SearchRestrictions.in("id", selectedEntities));
+        return searchCriteria.list().getEntities();
+    }
+
+    @Override
     public void setEditable(final boolean isEditable) {
         this.isEditable = isEditable;
     }

@@ -54,6 +54,13 @@ public interface GridComponent extends ComponentState {
     void setSelectedEntitiesIds(final Set<Long> selectedEntities);
 
     /**
+     * Gets all selected entities
+     * 
+     * @return all selected entities
+     */
+    List<Entity> getSelectedEntities();
+
+    /**
      * Sets new content of grid
      * 
      * <b>Warning:</b> Paging, searching and sorting can not work when grid content is put directly by this method.
@@ -91,7 +98,7 @@ public interface GridComponent extends ComponentState {
      * @return column values
      */
     List<Map<String, String>> getColumnValuesOfSelectedRecords();
-    
+
     /**
      * Adds restriction to this grid
      * 
