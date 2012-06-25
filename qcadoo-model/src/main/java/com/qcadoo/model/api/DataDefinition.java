@@ -215,4 +215,13 @@ public interface DataDefinition {
      */
     List<Entity> activate(Long... ids);
 
+    /**
+     * Validate specified entity.
+     * 
+     * @param targetEntity
+     *            entity which be validated.
+     * @return true if given entity is valid.
+     */
+    boolean callValidators(final Entity targetEntity);
+
 }

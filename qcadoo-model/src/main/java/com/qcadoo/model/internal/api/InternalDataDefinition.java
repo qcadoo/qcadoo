@@ -133,8 +133,6 @@ public interface InternalDataDefinition extends DataDefinition {
      */
     boolean callCopyHook(Entity targetEntity);
 
-    boolean callValidators(Entity targetEntity);
-
     EntityHookDefinition getHook(String type, String className, String methodName);
 
     String getIdentifierExpression();
