@@ -124,11 +124,14 @@ public class MenuAdministrationService {
         if (itemEntity != null && itemEntity.getStringField(L_PLUGIN_IDENTIFIER) != null) {
             ComponentState itemNameField = viewDefinitionState.getComponentByReference("itemName");
             itemNameField.setEnabled(false);
-            itemNameField.setFieldValue(translationUtilsService.getItemTranslation(itemEntity, viewDefinitionState.getLocale()));
+
+            // TODO lupo fix problem with menu
+            // itemNameField.setFieldValue(translationUtilsService.getItemTranslation(itemEntity,
+            // viewDefinitionState.getLocale()));
 
             viewDefinitionState.getComponentByReference("itemView").setEnabled(false);
 
-            viewDefinitionState.getComponentByReference("itemActive").setEnabled(false);
+            // viewDefinitionState.getComponentByReference("itemActive").setEnabled(false);
         }
     }
 

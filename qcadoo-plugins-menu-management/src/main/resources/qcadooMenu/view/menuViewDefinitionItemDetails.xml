@@ -61,32 +61,6 @@
 			<option type="header" value="true" />
 			<option type="expression"
 				value="#name + ' - ' + #category['name'] + '[' + #succession + ']'" />
-			<script><![CDATA[
-				var save = #{window}.getRibbonItem("actions.save");
-				var saveBack = #{window}.getRibbonItem("actions.saveBack");
-				var cancel = #{window}.getRibbonItem("actions.cancel");
-				var del = #{window}.getRibbonItem("actions.delete");
-				
-				this.addOnChangeListener({
-					onSetValue: function(value) {
-						if (! value || ! value.content) {
-							return;
-						}
-						var pluginIdentifier =  #{pluginIdentifier}.getComponentData().value;
-						if (pluginIdentifier && pluginIdentifier != "") {
-							save.disable();
-							saveBack.disable();
-							cancel.disable();
-							del.disable();
-						} else {
-							save.enable();
-							saveBack.enable();
-							cancel.enable();
-							del.enable();
-						}
-					}
-				});
-				]]></script>
 		</component>
 	</component>
 	<hooks>
