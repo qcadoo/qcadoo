@@ -48,8 +48,8 @@ public class NumberServiceImpl implements NumberService {
 
     private static void initialise() {
         decimalFormat = (DecimalFormat) DecimalFormat.getInstance(getLocale());
-        decimalFormat.setMaximumFractionDigits(3);
-        decimalFormat.setMinimumFractionDigits(3);
+        decimalFormat.setMaximumFractionDigits(5);
+        decimalFormat.setMinimumFractionDigits(5);
         decimalFormat.setRoundingMode(HALF_EVEN);
     }
 
@@ -65,6 +65,6 @@ public class NumberServiceImpl implements NumberService {
 
     @Override
     public BigDecimal setScale(BigDecimal decimal) {
-        return decimal.setScale(3, HALF_EVEN);
+        return decimal.setScale(5, HALF_EVEN);
     }
 }

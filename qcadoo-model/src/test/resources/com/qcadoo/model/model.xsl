@@ -232,7 +232,7 @@
 								<xsl:when test="./qcd:validatesScale[@max]">
 									<xsl:value-of select="./qcd:validatesScale/@max" />
 								</xsl:when>
-								<xsl:otherwise>3</xsl:otherwise>
+								<xsl:otherwise>5</xsl:otherwise>
 							</xsl:choose>
 						</xsl:with-param>
 					</xsl:call-template>

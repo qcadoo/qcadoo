@@ -214,7 +214,7 @@ public class ModelXmlToHbmConverterTest {
     @Test
     public void shouldDefineScaleProperty() throws Exception {
         assertNodeEquals("4", "/hibernate-mapping/class[1]/property/column[@name='fieldDecimal']/@scale", hbmFirstEntity);
-        assertNodeEquals("3", "/hibernate-mapping/class[1]/property/column[@name='fieldDecimalWithoutValidators']/@scale",
+        assertNodeEquals("5", "/hibernate-mapping/class[1]/property/column[@name='fieldDecimalWithoutValidators']/@scale",
                 hbmFirstEntity);
         assertNodeCount(3, "/hibernate-mapping/class/property/column/@scale", hbmFirstEntity);
     }
@@ -225,7 +225,7 @@ public class ModelXmlToHbmConverterTest {
         assertNodeEquals("6", "/hibernate-mapping/class[1]/property/column[@name='fieldDecimal']/@precision", hbmFirstEntity);
         assertNodeEquals("11", "/hibernate-mapping/class[1]/property/column[@name='fieldDecimalOnlyWithScale']/@precision",
                 hbmFirstEntity);
-        assertNodeEquals("10", "/hibernate-mapping/class[1]/property/column[@name='fieldDecimalWithoutValidators']/@precision",
+        assertNodeEquals("12", "/hibernate-mapping/class[1]/property/column[@name='fieldDecimalWithoutValidators']/@precision",
                 hbmFirstEntity);
         assertNodeCount(4, "/hibernate-mapping/class/property/column/@precision", hbmFirstEntity);
     }

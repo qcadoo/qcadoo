@@ -56,8 +56,8 @@ public final class ReportNumberFormat extends NumberFormat {
 
     private ReportNumberFormat(final Locale locale) {
         decimalNumberFormat = NumberFormat.getNumberInstance(locale);
-        decimalNumberFormat.setMinimumFractionDigits(3);
-        decimalNumberFormat.setMaximumFractionDigits(3);
+        decimalNumberFormat.setMinimumFractionDigits(5);
+        decimalNumberFormat.setMaximumFractionDigits(5);
         integerNumberFormat = NumberFormat.getNumberInstance(locale);
     }
 
