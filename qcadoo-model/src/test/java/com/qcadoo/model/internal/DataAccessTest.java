@@ -42,11 +42,9 @@ import org.junit.Before;
 import org.mockito.Mockito;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.aspectj.AnnotationTransactionAspect;
 
+import com.qcadoo.model.TransactionMockAwareTest;
 import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.DictionaryService;
 import com.qcadoo.model.api.search.SearchRestrictions;
@@ -73,7 +71,7 @@ import com.qcadoo.plugin.api.Plugin;
 import com.qcadoo.plugin.api.PluginStateResolver;
 import com.qcadoo.plugin.internal.PluginUtilsService;
 
-public abstract class DataAccessTest {
+public abstract class DataAccessTest extends TransactionMockAwareTest {
 
     protected final DataDefinitionService dataDefinitionService = mock(DataDefinitionService.class);
 
@@ -137,10 +135,6 @@ public abstract class DataAccessTest {
 
     protected PluginStateResolver pluginStateResolver = null;
 
-    protected PlatformTransactionManager txManager = null;
-
-    private TransactionStatus txStatus;
-
     @Before
     public void superInit() {
         PluginUtilsService pluginUtilsService = new PluginUtilsService();
@@ -151,13 +145,6 @@ public abstract class DataAccessTest {
         given(pluginStateResolver.isEnabledOrEnabling(Mockito.anyString())).willReturn(true);
         given(pluginStateResolver.isEnabledOrEnabling(Mockito.any(Plugin.class))).willReturn(true);
         ReflectionTestUtils.setField(pluginUtilsService, "pluginStateResolver", pluginStateResolver);
-
-        txStatus = mock(TransactionStatus.class);
-        given(txStatus.isRollbackOnly()).willReturn(false);
-        txManager = mock(PlatformTransactionManager.class);
-        given(txManager.getTransaction((TransactionDefinition) Mockito.anyObject())).willReturn(txStatus);
-        AnnotationTransactionAspect txAspect = AnnotationTransactionAspect.aspectOf();
-        txAspect.setTransactionManager(txManager);
 
         validationService = new ValidationServiceImpl();
 

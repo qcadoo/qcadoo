@@ -32,7 +32,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
-import com.qcadoo.plugin.api.PluginManager;
 import com.qcadoo.plugin.api.PluginStateResolver;
 import com.qcadoo.plugin.internal.PluginUtilsService;
 
@@ -100,7 +99,7 @@ public class FieldModuleIntegrationTest extends IntegrationTest {
         DataDefinition machineDao = dataDefinitionService.get(PLUGIN_MACHINES_NAME, ENTITY_NAME_MACHINE);
         machineDao.save(createMachine("asd"));
 
-        applicationContext.getBean(PluginManager.class).disablePlugin(PLUGIN_MACHINES_NAME);
+        pluginManager.disablePlugin(PLUGIN_MACHINES_NAME);
 
         PluginStateResolver pluginStateResolver = mock(PluginStateResolver.class);
         PluginUtilsService pluginUtil = new PluginUtilsService();

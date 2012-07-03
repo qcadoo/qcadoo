@@ -236,14 +236,15 @@ public class FieldTypeFactoryTest extends DataAccessTest {
     @Test
     public void shouldReturnManyToManyType() throws Exception {
         // when
-        FieldType fieldType = new ManyToManyEntitiesType("parent", "entity", "joinFieldName", ManyToManyType.Cascade.NULLIFY, true, dataDefinitionService);
-        
+        FieldType fieldType = new ManyToManyEntitiesType("parent", "entity", "joinFieldName", ManyToManyType.Cascade.NULLIFY,
+                true, dataDefinitionService);
+
         // then
         assertThat(fieldType, is(ManyToManyEntitiesType.class));
         assertEquals(Set.class, fieldType.getType());
         assertTrue(fieldType.toObject(fieldDefinition, new DefaultEntity(dataDefinition)).isValid());
     }
-    
+
     @Test
     public void shouldReturnPasswordType() throws Exception {
         // when

@@ -26,6 +26,8 @@ package com.qcadoo.model.integration;
 import java.util.List;
 
 import org.hibernate.SessionFactory;
+import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -79,6 +81,8 @@ public abstract class IntegrationTest {
 
     protected static VerifyHooks verifyHooks;
 
+    protected PluginManager pluginManager;
+
     @BeforeClass
     public static void classInit() throws Exception {
         MultiTenantUtil multiTenantUtil = new MultiTenantUtil();
@@ -97,14 +101,24 @@ public abstract class IntegrationTest {
 
     @Before
     public void init() throws Exception {
+        pluginManager = applicationContext.getBean(PluginManager.class);
+        pluginManager.enablePlugin("machines");
+        verifyHooks.clear();
+    }
+
+    @After
+    public void destroy() {
         jdbcTemplate.execute("delete from " + TABLE_NAME_JOIN_PRODUCT_PART);
         jdbcTemplate.execute("delete from " + TABLE_NAME_PART);
         jdbcTemplate.execute("delete from " + TABLE_NAME_COMPONENT);
         jdbcTemplate.execute("delete from " + TABLE_NAME_MACHINE);
         jdbcTemplate.execute("delete from " + TABLE_NAME_PRODUCT);
-        PluginManager pluginManager = applicationContext.getBean(PluginManager.class);
-        pluginManager.enablePlugin("machines");
-        verifyHooks.clear();
+    }
+
+    @AfterClass
+    public static void classDestroy() {
+        sessionFactory.close();
+        applicationContext.close();
     }
 
     protected Entity createComponent(final String name, final Object product, final Object machine) {

@@ -40,7 +40,7 @@ public class HasManyIntegrationTest extends IntegrationTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void shouldSaveBelongsToField() throws Exception {
+    public void shouldSaveHasManyField() throws Exception {
         // given
         DataDefinition productDataDefinition = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PRODUCT);
         DataDefinition machineDataDefinition = dataDefinitionService.get(PLUGIN_MACHINES_NAME, ENTITY_NAME_MACHINE);

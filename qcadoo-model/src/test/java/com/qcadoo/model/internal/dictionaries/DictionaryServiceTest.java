@@ -39,6 +39,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import com.qcadoo.model.TransactionMockAwareTest;
 import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.DictionaryService;
 import com.qcadoo.model.api.Entity;
@@ -46,7 +47,7 @@ import com.qcadoo.model.api.search.SearchOrders;
 import com.qcadoo.model.api.search.SearchRestrictions;
 import com.qcadoo.model.internal.DefaultEntity;
 
-public class DictionaryServiceTest {
+public class DictionaryServiceTest extends TransactionMockAwareTest {
 
     private final DataDefinitionService dataDefinitionService = mock(DataDefinitionService.class, RETURNS_DEEP_STUBS);
 

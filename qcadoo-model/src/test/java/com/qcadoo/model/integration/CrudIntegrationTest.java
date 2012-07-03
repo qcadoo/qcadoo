@@ -34,6 +34,7 @@ import java.util.Map;
 
 import org.junit.Test;
 
+import com.google.common.collect.Lists;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.search.SearchOrders;
@@ -174,6 +175,43 @@ public class CrudIntegrationTest extends IntegrationTest {
         assertEquals(0, total);
 
         assertEquals(0, verifyHooks.getNumOfInvocations(HookType.SAVE));
+        assertEquals(1, verifyHooks.getNumOfInvocations(HookType.CREATE));
+        assertEquals(0, verifyHooks.getNumOfInvocations(HookType.COPY));
+        assertEquals(0, verifyHooks.getNumOfInvocations(HookType.UPDATE));
+    }
+
+    @Test
+    public void shouldNotSaveEntityWithHasManyRelationToInvalidEntity() throws Exception {
+        // given
+        final DataDefinition productDataDefinition = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PRODUCT);
+
+        Entity product = createProduct("product", "asd");
+        Entity part1 = createPart("part1", product);
+        Entity part2 = createPart(null, product);
+        product.setField("parts", Lists.newArrayList(part1, part2));
+
+        // when
+        product = productDataDefinition.save(product);
+
+        // then
+        final List<Entity> productParts = product.getHasManyField("parts");
+        part1 = productParts.get(0);
+        part2 = productParts.get(1);
+
+        assertNotNull(product.getField("name"));
+        assertNull(product.getId());
+        assertFalse(product.isValid());
+        assertTrue(product.isFieldValid("name"));
+        assertNotNull(part1.getField("name"));
+        assertTrue(part1.isValid());
+        assertNull(part2.getField("name"));
+        assertFalse(part2.isValid());
+
+        int total = jdbcTemplate.queryForInt("select count(*) from " + TABLE_NAME_PRODUCT);
+
+        assertEquals(0, total);
+
+        assertEquals(1, verifyHooks.getNumOfInvocations(HookType.SAVE));
         assertEquals(1, verifyHooks.getNumOfInvocations(HookType.CREATE));
         assertEquals(0, verifyHooks.getNumOfInvocations(HookType.COPY));
         assertEquals(0, verifyHooks.getNumOfInvocations(HookType.UPDATE));

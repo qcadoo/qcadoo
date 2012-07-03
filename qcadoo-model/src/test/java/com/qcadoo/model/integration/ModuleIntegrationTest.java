@@ -65,7 +65,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.types.EnumeratedType;
-import com.qcadoo.plugin.api.PluginManager;
 import com.qcadoo.plugin.api.PluginStateResolver;
 import com.qcadoo.plugin.internal.PluginUtilsService;
 
@@ -160,7 +159,7 @@ public class ModuleIntegrationTest extends IntegrationTest {
     @Test(expected = IllegalStateException.class)
     public void shouldNotHaveAdditinanalModels() throws Exception {
         // given
-        applicationContext.getBean(PluginManager.class).disablePlugin("machines");
+        pluginManager.disablePlugin("machines");
 
         DataDefinition machineDao = dataDefinitionService.get(PLUGIN_MACHINES_NAME, ENTITY_NAME_MACHINE);
 
@@ -174,7 +173,7 @@ public class ModuleIntegrationTest extends IntegrationTest {
         DataDefinition machineDao = dataDefinitionService.get(PLUGIN_MACHINES_NAME, ENTITY_NAME_MACHINE);
         machineDao.save(createMachine("asd"));
 
-        applicationContext.getBean(PluginManager.class).disablePlugin("machines");
+        pluginManager.disablePlugin("machines");
 
         DataDefinition productDao = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PRODUCT);
         DataDefinition componentDao = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_COMPONENT);
@@ -215,7 +214,7 @@ public class ModuleIntegrationTest extends IntegrationTest {
         DataDefinition machineDao = dataDefinitionService.get(PLUGIN_MACHINES_NAME, ENTITY_NAME_MACHINE);
         machineDao.save(createMachine("asd"));
 
-        applicationContext.getBean(PluginManager.class).enablePlugin("machines");
+        pluginManager.enablePlugin("machines");
 
         PluginStateResolver pluginStateResolver = mock(PluginStateResolver.class);
         PluginUtilsService pluginUtil = new PluginUtilsService();

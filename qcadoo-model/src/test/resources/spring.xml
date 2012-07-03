@@ -60,23 +60,6 @@
 		<property name="password" value="" />
 	</bean>
 
-	<bean id="pluginSessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
-		<qualifier value="plugin"/>
-		<property name="dataSource" ref="dataSource" />
-		<property name="hibernateProperties">
-			<props>
-				<prop key="hibernate.dialect">org.hibernate.dialect.HSQLDialect</prop>
-				<prop key="hibernate.show_sql">true</prop>
-				<prop key="hibernate.hbm2ddl.auto">update</prop>
-			</props>
-		</property>
-		<property name="annotatedClasses">
-			<list>
-				<value>com.qcadoo.model.beans.qcadooPlugin.QcadooPluginPlugin</value>
-			</list>
-		</property>
-	</bean>
-	
 	<bean id="sessionFactory" class="com.qcadoo.model.internal.sessionfactory.DynamicSessionFactoryBeanImpl">
 		<property name="dataSource" ref="dataSource" />
 		<property name="hibernateProperties">
@@ -88,20 +71,12 @@
 		</property>
 	</bean>
 
-	<bean id="pluginTransactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
-		<qualifier value="plugin" />
-		<property name="sessionFactory" ref="pluginSessionFactory" />
-	</bean>
-	
 	<bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
 		<property name="sessionFactory" ref="sessionFactory" />
 		<property name="dataSource" ref="dataSource" />
 	</bean>
 
-<!-- 	<tx:annotation-driven mode="aspectj" transaction-manager="transactionManager"/> -->
-	<bean class="org.springframework.transaction.aspectj.AnnotationTransactionAspect" factory-method="aspectOf">
-		<property name="transactionManager" ref="pluginTransactionManager"/>
-	</bean>
+	<tx:annotation-driven mode="aspectj" transaction-manager="transactionManager"/>
 	
 	<bean class="com.qcadoo.plugin.internal.module.DefaultModuleFactoryAccessor">
 		<property name="moduleFactories">
@@ -119,5 +94,41 @@
 	<bean class="org.springframework.jdbc.core.JdbcTemplate">
 		<property name="dataSource" ref="dataSource" />
 	</bean>
+	
+	
+	<!-- qcadoo-plugin's transaction manager & dependencies bean definitions below - necessary for integration tests -->
+	<bean id="pluginDataSource" class="org.apache.commons.dbcp.BasicDataSource"
+	destroy-method="close">
+		<property name="driverClassName" value="org.hsqldb.jdbcDriver" />
+		<property name="url" value="jdbc:hsqldb:mem:mes;create=true" />
+		<property name="username" value="sa" />
+		<property name="password" value="" />
+	</bean>
+
+	<bean id="pluginSessionFactory"
+		class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+		<qualifier value="plugin" />
+		<property name="dataSource" ref="pluginDataSource" />
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.HSQLDialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+			</props>
+		</property>
+		<property name="annotatedClasses">
+			<list>
+				<value>com.qcadoo.model.beans.qcadooPlugin.QcadooPluginPlugin
+				</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="pluginTransactionManager"
+		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<qualifier value="plugin" />
+		<property name="sessionFactory" ref="pluginSessionFactory" />
+	</bean>
+	<!-- end of qcadoo-plugin's transaction manager & dependencies bean definitions --> 
 
 </beans>

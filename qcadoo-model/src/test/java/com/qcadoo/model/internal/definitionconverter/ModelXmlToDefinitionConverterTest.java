@@ -47,6 +47,7 @@ import org.springframework.context.ApplicationContext;
 
 import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.CustomHook;
+import com.qcadoo.model.TransactionMockAwareTest;
 import com.qcadoo.model.Utils;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.types.BelongsToType;
@@ -80,14 +81,14 @@ import com.qcadoo.model.internal.types.TreeEntitiesType;
 import com.qcadoo.model.internal.validators.CustomEntityValidator;
 import com.qcadoo.model.internal.validators.CustomValidator;
 import com.qcadoo.model.internal.validators.LengthValidator;
-import com.qcadoo.model.internal.validators.UnscaledValueValidator;
 import com.qcadoo.model.internal.validators.RangeValidator;
 import com.qcadoo.model.internal.validators.RegexValidator;
 import com.qcadoo.model.internal.validators.RequiredValidator;
 import com.qcadoo.model.internal.validators.ScaleValidator;
 import com.qcadoo.model.internal.validators.UniqueValidator;
+import com.qcadoo.model.internal.validators.UnscaledValueValidator;
 
-public class ModelXmlToDefinitionConverterTest {
+public class ModelXmlToDefinitionConverterTest extends TransactionMockAwareTest {
 
     private static ModelXmlToDefinitionConverterImpl modelXmlToDefinitionConverter;
 
@@ -208,11 +209,12 @@ public class ModelXmlToDefinitionConverterTest {
 
         assertNotNull(dataDefinition.getField("fieldManyToMany"));
         assertThat(dataDefinition.getField("fieldManyToMany").getType(), instanceOf(ManyToManyType.class));
-        assertEquals("thirdEntity", ((ManyToManyType) (dataDefinition.getField("fieldManyToMany")).getType()).getDataDefinition().getName());
+        assertEquals("thirdEntity", ((ManyToManyType) (dataDefinition.getField("fieldManyToMany")).getType()).getDataDefinition()
+                .getName());
         assertEquals("full", getField(dataDefinition.getField("fieldManyToMany").getType(), "pluginIdentifier"));
         assertEquals("thirdEntity", getField(dataDefinition.getField("fieldManyToMany").getType(), "entityName"));
         assertEquals(ManyToManyType.Cascade.NULLIFY, getField(dataDefinition.getField("fieldManyToMany").getType(), "cascade"));
-        
+
         assertNotNull(dataDefinition.getField("fieldTree"));
         assertThat(dataDefinition.getField("fieldTree").getType(), instanceOf(TreeEntitiesType.class));
         assertEquals("fieldFirstEntity", ((TreeType) (dataDefinition.getField("fieldTree")).getType()).getJoinFieldName());
@@ -233,7 +235,7 @@ public class ModelXmlToDefinitionConverterTest {
         assertThat(dataDefinition.getField("fieldPassword").getType(), instanceOf(PasswordType.class));
         assertFalse(dataDefinition.getField("fieldInteger").isReadOnly());
         assertTrue(dataDefinition.getField("fieldText").isReadOnly());
-        
+
         assertThat(dataDefinition.getField("createDate").getType(), instanceOf(DateTimeType.class));
         assertThat(dataDefinition.getField("updateDate").getType(), instanceOf(DateTimeType.class));
         assertThat(dataDefinition.getField("createUser").getType(), instanceOf(StringType.class));
@@ -310,16 +312,16 @@ public class ModelXmlToDefinitionConverterTest {
         assertNull(getField(validators.get(1), "min"));
         assertEquals(2, getField(validators.get(1), "is"));
         assertNull(getField(validators.get(1), "max"));
-        
+
         validators = ((FieldDefinitionImpl) dataDefinition.getField("fieldDecimalOnlyWithScale")).getValidators();
-        
+
         assertThat(validators.get(0), instanceOf(ScaleValidator.class));
         assertEquals(2, getField(validators.get(0), "min"));
         assertNull(getField(validators.get(0), "is"));
         assertEquals(4, getField(validators.get(0), "max"));
-        
+
         validators = ((FieldDefinitionImpl) dataDefinition.getField("fieldDecimalWithoutValidators")).getValidators();
-        
+
         assertEquals(0, validators.size());
     }
 
