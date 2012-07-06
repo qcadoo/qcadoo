@@ -50,11 +50,11 @@ public interface NumberService {
     String format(Object obj);
 
     /**
-     * Set scale 3 to {@link BigDecimal} with RoundingMode HALF_EVEN.
+     * Set scale 5 to {@link BigDecimal} with RoundingMode HALF_EVEN.
      * 
      * @param decimal
      * 
-     * @return BigDecimal with scale 3.
+     * @return BigDecimal with scale 5.
      */
     BigDecimal setScale(BigDecimal decimal);
 
