@@ -35,6 +35,7 @@
 		<string name="description">
 			<validatesLength max="2048" />
 		</string>
+		<string name="technicalCode" />
 		<belongsTo name="dictionary" model="dictionary" required="true" />
 	</fields>
 	<hooks />
