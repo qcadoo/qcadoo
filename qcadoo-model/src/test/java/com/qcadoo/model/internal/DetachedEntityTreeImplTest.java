@@ -48,13 +48,6 @@ public class DetachedEntityTreeImplTest {
         assertTrue(tree.isEmpty());
     }
 
-    /*
-     * @Test public void shouldLoadEntities() throws Exception { // given Entity entity = mock(Entity.class); List<Entity>
-     * entities = Collections.singletonList(entity); // when EntityTree tree = new DetachedEntityTreeImpl(entities); // then
-     * assertEquals(1, tree.size()); assertEquals(entity, tree.get(0)); assertEquals(entity, getField(tree.getRoot(), "entity"));
-     * }
-     */
-
     @Test(expected = IllegalArgumentException.class)
     public final void shouldThrowExceptionIfEntitiesIsNull() throws Exception {
         // when

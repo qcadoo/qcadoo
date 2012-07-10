@@ -25,6 +25,7 @@ package com.qcadoo.model.internal;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
@@ -38,6 +39,7 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Projections;
 import org.junit.Assert;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 
@@ -54,6 +56,18 @@ import com.qcadoo.model.internal.types.TreeEntitiesType;
 import com.qcadoo.model.internal.validators.UniqueValidator;
 
 public final class DataAccessServiceCopyTest extends DataAccessTest {
+
+    private static final String BELONGS_TO_SIMPLE = "belongsToSimple";
+
+    private static final String NAME = "name";
+
+    private static final String SIMPLE_1 = "simple1";
+
+    private static final String SIMPLE_2 = "simple1";
+
+    private static final String SIMPLE_3 = "simple1";
+
+    private static final String SIMPLE_4 = "simple1";
 
     @Test
     public void shouldCopyEntity() throws Exception {
@@ -73,7 +87,7 @@ public final class DataAccessServiceCopyTest extends DataAccessTest {
         assertEquals(1, entities.size());
         assertTrue(entities.get(0).isValid());
         Assert.assertEquals(66, entities.get(0).getField("age"));
-        Assert.assertEquals("Mr T", entities.get(0).getField("name"));
+        Assert.assertEquals("Mr T", entities.get(0).getField(NAME));
     }
 
     @Test
@@ -100,7 +114,7 @@ public final class DataAccessServiceCopyTest extends DataAccessTest {
         assertEquals(1, entities.size());
         assertTrue(entities.get(0).isValid());
         Assert.assertEquals(66, entities.get(0).getField("age"));
-        Assert.assertEquals("Mr T(1)", entities.get(0).getField("name"));
+        Assert.assertEquals("Mr T(1)", entities.get(0).getField(NAME));
     }
 
     @Test
@@ -127,7 +141,7 @@ public final class DataAccessServiceCopyTest extends DataAccessTest {
         assertEquals(1, entities.size());
         assertTrue(entities.get(0).isValid());
         Assert.assertEquals(66, entities.get(0).getField("age"));
-        Assert.assertEquals("Mr T(3)", entities.get(0).getField("name"));
+        Assert.assertEquals("Mr T(3)", entities.get(0).getField(NAME));
     }
 
     @Test
@@ -154,7 +168,7 @@ public final class DataAccessServiceCopyTest extends DataAccessTest {
         assertEquals(1, entities.size());
         assertTrue(entities.get(0).isValid());
         Assert.assertEquals(66, entities.get(0).getField("age"));
-        Assert.assertEquals(null, entities.get(0).getField("name"));
+        Assert.assertEquals(null, entities.get(0).getField(NAME));
     }
 
     @Test
@@ -181,7 +195,7 @@ public final class DataAccessServiceCopyTest extends DataAccessTest {
         verify(session, times(1)).save(Mockito.any(SampleSimpleDatabaseObject.class));
         assertEquals(1, entities.size());
         assertTrue(entities.get(0).isValid());
-        Assert.assertEquals("Mr T", entities.get(0).getField("name"));
+        Assert.assertEquals("Mr T", entities.get(0).getField(NAME));
         verify(session, times(1)).save(Mockito.any());
         verify(session, never()).get(Mockito.eq(SampleSimpleDatabaseObject.class), anyInt());
     }
@@ -213,7 +227,7 @@ public final class DataAccessServiceCopyTest extends DataAccessTest {
         // then
         assertEquals(1, entities.size());
         assertTrue(entities.get(0).isValid());
-        Assert.assertEquals("Mr T", entities.get(0).getField("name"));
+        Assert.assertEquals("Mr T", entities.get(0).getField(NAME));
         verify(session, times(2)).save(Mockito.any());
         verify(session, never()).get(Mockito.eq(SampleSimpleDatabaseObject.class), anyInt());
     }
@@ -242,7 +256,7 @@ public final class DataAccessServiceCopyTest extends DataAccessTest {
         // then
         assertEquals(1, entities.size());
         assertTrue(entities.get(0).isValid());
-        Assert.assertEquals("Mr T", entities.get(0).getField("name"));
+        Assert.assertEquals("Mr T", entities.get(0).getField(NAME));
         verify(session).save(Mockito.any());
         verify(session, never()).get(Mockito.eq(SampleSimpleDatabaseObject.class), anyInt());
     }
@@ -269,7 +283,7 @@ public final class DataAccessServiceCopyTest extends DataAccessTest {
         // then
         assertEquals(1, entities.size());
         assertTrue(entities.get(0).isValid());
-        Assert.assertEquals("Mr T", entities.get(0).getField("name"));
+        Assert.assertEquals("Mr T", entities.get(0).getField(NAME));
         verify(session, times(1)).save(Mockito.any());
         verify(session, never()).get(Mockito.eq(SampleSimpleDatabaseObject.class), anyInt());
     }
@@ -300,9 +314,189 @@ public final class DataAccessServiceCopyTest extends DataAccessTest {
         // then
         assertEquals(1, entities.size());
         assertTrue(entities.get(0).isValid());
-        Assert.assertEquals("Mr T", entities.get(0).getField("name"));
+        Assert.assertEquals("Mr T", entities.get(0).getField(NAME));
         verify(session, times(2)).save(Mockito.any());
         verify(session, never()).get(Mockito.eq(SampleSimpleDatabaseObject.class), anyInt());
+    }
+
+    @Test
+    public final void shouldCopyEntityWithoutInfinityCycleWith2Entities() {
+        // given
+        SampleSimpleDatabaseObject simpleDatabaseObject1 = new SampleSimpleDatabaseObject();
+        simpleDatabaseObject1.setId(1L);
+        simpleDatabaseObject1.setName(SIMPLE_1);
+
+        SampleSimpleDatabaseObject simpleDatabaseObject2 = new SampleSimpleDatabaseObject();
+        simpleDatabaseObject2.setId(2L);
+        simpleDatabaseObject2.setName(SIMPLE_2);
+
+        simpleDatabaseObject1.setBelongsToSimple(simpleDatabaseObject2);
+        simpleDatabaseObject2.setBelongsToSimple(simpleDatabaseObject1);
+
+        stubSessionGet(simpleDatabaseObject1);
+        stubSessionGet(simpleDatabaseObject2);
+
+        // when
+        List<Entity> entities = null;
+        try {
+            entities = dataDefinition.copy(new Long[] { simpleDatabaseObject1.getId() });
+        } catch (StackOverflowError e) {
+            Assert.fail();
+        }
+
+        // then
+        final ArgumentCaptor<SampleSimpleDatabaseObject> argCaptor = ArgumentCaptor.forClass(SampleSimpleDatabaseObject.class);
+
+        verify(session, times(1)).save(Mockito.any(SampleSimpleDatabaseObject.class));
+        verify(session, times(1)).save(argCaptor.capture());
+        final SampleSimpleDatabaseObject savedObject = argCaptor.getValue();
+        assertEquals(SIMPLE_1, savedObject.getName());
+        assertFalse(simpleDatabaseObject1.getId().equals(savedObject.getId()));
+        assertEquals(SIMPLE_2, savedObject.getBelongsToSimple().getName());
+        assertEquals(simpleDatabaseObject2.getId(), savedObject.getBelongsToSimple().getId());
+
+        assertEquals(1, entities.size());
+        assertTrue(entities.get(0).isValid());
+        final Entity entityCopy = entities.get(0);
+        Assert.assertEquals(SIMPLE_1, entityCopy.getField(NAME));
+        Assert.assertEquals(SIMPLE_2, entityCopy.getBelongsToField(BELONGS_TO_SIMPLE).getField(NAME));
+        Assert.assertEquals(Long.valueOf(2L), entityCopy.getBelongsToField(BELONGS_TO_SIMPLE).getId());
+        assertFalse(simpleDatabaseObject1.getId().equals(entityCopy.getId()));
+    }
+
+    @Test
+    public final void shouldCopyEntityWithoutInfinityCycleWith3Entities() {
+        // given
+        SampleSimpleDatabaseObject simpleDatabaseObject1 = new SampleSimpleDatabaseObject();
+        simpleDatabaseObject1.setId(1L);
+        simpleDatabaseObject1.setName(SIMPLE_1);
+
+        SampleSimpleDatabaseObject simpleDatabaseObject2 = new SampleSimpleDatabaseObject();
+        simpleDatabaseObject2.setId(2L);
+        simpleDatabaseObject2.setName(SIMPLE_2);
+
+        SampleSimpleDatabaseObject simpleDatabaseObject3 = new SampleSimpleDatabaseObject();
+        simpleDatabaseObject3.setId(3L);
+        simpleDatabaseObject3.setName(SIMPLE_3);
+
+        simpleDatabaseObject1.setBelongsToSimple(simpleDatabaseObject2);
+        simpleDatabaseObject2.setBelongsToSimple(simpleDatabaseObject3);
+        simpleDatabaseObject3.setBelongsToSimple(simpleDatabaseObject1);
+
+        stubSessionGet(simpleDatabaseObject1);
+        stubSessionGet(simpleDatabaseObject2);
+        stubSessionGet(simpleDatabaseObject3);
+
+        // when
+        List<Entity> entities = null;
+        try {
+            entities = dataDefinition.copy(new Long[] { simpleDatabaseObject1.getId() });
+        } catch (StackOverflowError e) {
+            Assert.fail();
+        }
+
+        // then
+        final ArgumentCaptor<SampleSimpleDatabaseObject> argCaptor = ArgumentCaptor.forClass(SampleSimpleDatabaseObject.class);
+
+        verify(session, times(1)).save(Mockito.any(SampleSimpleDatabaseObject.class));
+        verify(session, times(1)).save(argCaptor.capture());
+        final SampleSimpleDatabaseObject savedObject = argCaptor.getValue();
+
+        assertEquals(SIMPLE_1, savedObject.getName());
+        assertFalse(simpleDatabaseObject1.getId().equals(savedObject.getId()));
+
+        assertEquals(SIMPLE_2, savedObject.getBelongsToSimple().getName());
+        assertEquals(simpleDatabaseObject2.getId(), savedObject.getBelongsToSimple().getId());
+
+        assertEquals(SIMPLE_3, savedObject.getBelongsToSimple().getBelongsToSimple().getName());
+        assertEquals(simpleDatabaseObject3.getId(), savedObject.getBelongsToSimple().getBelongsToSimple().getId());
+
+        assertEquals(1, entities.size());
+        assertTrue(entities.get(0).isValid());
+        final Entity entityCopy = entities.get(0);
+        Assert.assertEquals(SIMPLE_1, entityCopy.getField(NAME));
+        Assert.assertEquals(SIMPLE_2, entityCopy.getBelongsToField(BELONGS_TO_SIMPLE).getField(NAME));
+        Assert.assertEquals(SIMPLE_3, entityCopy.getBelongsToField(BELONGS_TO_SIMPLE).getBelongsToField(BELONGS_TO_SIMPLE)
+                .getField(NAME));
+        Assert.assertEquals(Long.valueOf(2L), entityCopy.getBelongsToField(BELONGS_TO_SIMPLE).getId());
+        assertFalse(simpleDatabaseObject1.getId().equals(entityCopy.getId()));
+    }
+
+    @Test
+    public final void shouldCopyEntityWithoutInfinityCycleWith4Entities() {
+        // given
+        SampleSimpleDatabaseObject simpleDatabaseObject1 = new SampleSimpleDatabaseObject();
+        simpleDatabaseObject1.setId(1L);
+        simpleDatabaseObject1.setName(SIMPLE_1);
+
+        SampleSimpleDatabaseObject simpleDatabaseObject2 = new SampleSimpleDatabaseObject();
+        simpleDatabaseObject2.setId(2L);
+        simpleDatabaseObject2.setName(SIMPLE_2);
+
+        SampleSimpleDatabaseObject simpleDatabaseObject3 = new SampleSimpleDatabaseObject();
+        simpleDatabaseObject3.setId(3L);
+        simpleDatabaseObject3.setName(SIMPLE_3);
+
+        SampleSimpleDatabaseObject simpleDatabaseObject4 = new SampleSimpleDatabaseObject();
+        simpleDatabaseObject4.setId(4L);
+        simpleDatabaseObject4.setName(SIMPLE_4);
+
+        simpleDatabaseObject1.setBelongsToSimple(simpleDatabaseObject2);
+        simpleDatabaseObject2.setBelongsToSimple(simpleDatabaseObject3);
+        simpleDatabaseObject3.setBelongsToSimple(simpleDatabaseObject4);
+        simpleDatabaseObject4.setBelongsToSimple(simpleDatabaseObject1);
+
+        stubSessionGet(simpleDatabaseObject1);
+        stubSessionGet(simpleDatabaseObject2);
+        stubSessionGet(simpleDatabaseObject3);
+        stubSessionGet(simpleDatabaseObject4);
+
+        // when
+        List<Entity> entities = null;
+        try {
+            entities = dataDefinition.copy(new Long[] { simpleDatabaseObject1.getId() });
+        } catch (StackOverflowError e) {
+            Assert.fail();
+        }
+
+        // then
+        final ArgumentCaptor<SampleSimpleDatabaseObject> argCaptor = ArgumentCaptor.forClass(SampleSimpleDatabaseObject.class);
+
+        verify(session, times(1)).save(Mockito.any(SampleSimpleDatabaseObject.class));
+        verify(session, times(1)).save(argCaptor.capture());
+        final SampleSimpleDatabaseObject savedObject = argCaptor.getValue();
+
+        assertEquals(SIMPLE_1, savedObject.getName());
+        assertFalse(simpleDatabaseObject1.getId().equals(savedObject.getId()));
+
+        assertEquals(SIMPLE_2, savedObject.getBelongsToSimple().getName());
+        assertEquals(simpleDatabaseObject2.getId(), savedObject.getBelongsToSimple().getId());
+
+        assertEquals(SIMPLE_3, savedObject.getBelongsToSimple().getBelongsToSimple().getName());
+        assertEquals(simpleDatabaseObject3.getId(), savedObject.getBelongsToSimple().getBelongsToSimple().getId());
+
+        assertEquals(SIMPLE_4, savedObject.getBelongsToSimple().getBelongsToSimple().getBelongsToSimple().getName());
+        assertEquals(simpleDatabaseObject4.getId(), savedObject.getBelongsToSimple().getBelongsToSimple().getBelongsToSimple()
+                .getId());
+
+        assertEquals(1, entities.size());
+        assertTrue(entities.get(0).isValid());
+        final Entity entityCopy = entities.get(0);
+        Assert.assertEquals(SIMPLE_1, entityCopy.getField(NAME));
+        Assert.assertEquals(SIMPLE_2, entityCopy.getBelongsToField(BELONGS_TO_SIMPLE).getField(NAME));
+        Assert.assertEquals(SIMPLE_3, entityCopy.getBelongsToField(BELONGS_TO_SIMPLE).getBelongsToField(BELONGS_TO_SIMPLE)
+                .getField(NAME));
+        Assert.assertEquals(SIMPLE_4, entityCopy.getBelongsToField(BELONGS_TO_SIMPLE).getBelongsToField(BELONGS_TO_SIMPLE)
+                .getBelongsToField(BELONGS_TO_SIMPLE).getField(NAME));
+        Assert.assertEquals(Long.valueOf(2L), entityCopy.getBelongsToField(BELONGS_TO_SIMPLE).getId());
+        assertFalse(simpleDatabaseObject1.getId().equals(entityCopy.getId()));
+    }
+
+    private void stubSessionGet(final SampleSimpleDatabaseObject sampleSimpleDatabaseObject) {
+        given(session.get(sampleSimpleDatabaseObject.getClass(), sampleSimpleDatabaseObject.getId())).willReturn(
+                sampleSimpleDatabaseObject);
+        given(session.load(sampleSimpleDatabaseObject.getClass(), sampleSimpleDatabaseObject.getId())).willReturn(
+                sampleSimpleDatabaseObject);
     }
 
 }

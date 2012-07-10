@@ -107,6 +107,8 @@ public abstract class DataAccessTest extends TransactionMockAwareTest {
 
     protected FieldDefinitionImpl fieldDefinitionBelongsTo = null;
 
+    protected FieldDefinitionImpl fieldDefinitionBelongsToSimple = null;
+
     protected FieldDefinitionImpl fieldDefinitionLazyBelongsTo = null;
 
     protected FieldDefinitionImpl fieldDefinitionAge = null;
@@ -212,6 +214,9 @@ public abstract class DataAccessTest extends TransactionMockAwareTest {
         fieldDefinitionBelongsTo = new FieldDefinitionImpl(null, "belongsTo");
         fieldDefinitionBelongsTo.withType(new BelongsToEntityType("parent", "entity", dataDefinitionService, false));
 
+        fieldDefinitionBelongsToSimple = new FieldDefinitionImpl(null, "belongsToSimple");
+        fieldDefinitionBelongsToSimple.withType(new BelongsToEntityType("simple", "entity", dataDefinitionService, false));
+
         fieldDefinitionLazyBelongsTo = new FieldDefinitionImpl(null, "lazyBelongsTo");
         fieldDefinitionLazyBelongsTo.withType(new BelongsToEntityType("parent", "entity", dataDefinitionService, true));
 
@@ -240,6 +245,7 @@ public abstract class DataAccessTest extends TransactionMockAwareTest {
         dataDefinition.withField(fieldDefinitionRetired);
         dataDefinition.withField(fieldDefinitionBirthDate);
         dataDefinition.withField(fieldDefinitionBelongsTo);
+        dataDefinition.withField(fieldDefinitionBelongsToSimple);
         dataDefinition.withField(fieldDefinitionLazyBelongsTo);
         dataDefinition.setFullyQualifiedClassName(SampleSimpleDatabaseObject.class.getCanonicalName());
 

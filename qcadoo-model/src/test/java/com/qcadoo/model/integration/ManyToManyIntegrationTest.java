@@ -27,8 +27,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+
+import junit.framework.Assert;
 
 import org.junit.Test;
 
@@ -66,23 +69,23 @@ public class ManyToManyIntegrationTest extends IntegrationTest {
         thirdProduct = productDataDefinition.get(thirdProduct.getId());
 
         // then
-        Set<Entity> firstProductParts = (Set<Entity>) firstProduct.getField("partsManyToMany");
+        Collection<Entity> firstProductParts = (Collection<Entity>) firstProduct.getField("partsManyToMany");
         assertNotNull(firstProductParts);
         assertEquals(3, firstProductParts.size());
         checkProxyCollection(partDataDefinition, firstProductParts, Lists.newArrayList(firstPart, secondPart, thirdPart));
 
-        Set<Entity> secondProductParts = (Set<Entity>) secondProduct.getField("partsManyToMany");
+        Collection<Entity> secondProductParts = (Collection<Entity>) secondProduct.getField("partsManyToMany");
         assertNotNull(secondProductParts);
         assertEquals(2, secondProductParts.size());
         checkProxyCollection(partDataDefinition, secondProductParts, Lists.newArrayList(firstPart, thirdPart));
 
-        Set<Entity> thirdProductParts = (Set<Entity>) thirdProduct.getField("partsManyToMany");
+        Collection<Entity> thirdProductParts = (Collection<Entity>) thirdProduct.getField("partsManyToMany");
         assertNotNull(thirdProductParts);
         assertEquals(2, thirdProductParts.size());
         checkProxyCollection(partDataDefinition, thirdProductParts, Lists.newArrayList(secondPart, thirdPart));
     }
 
-    private void checkProxyCollection(final DataDefinition dataDefinition, final Set<Entity> proxyEntitiesSet,
+    private void checkProxyCollection(final DataDefinition dataDefinition, final Collection<Entity> proxyEntitiesSet,
             final List<Entity> entitiesList) {
         Set<Entity> loadedEntities = Sets.newHashSet();
         for (Entity proxyEntity : proxyEntitiesSet) {
@@ -91,6 +94,65 @@ public class ManyToManyIntegrationTest extends IntegrationTest {
             loadedEntities.add(dataDefinition.get(proxyEntity.getId()));
         }
         assertTrue(loadedEntities.containsAll(entitiesList));
+    }
+
+    @Test
+    public void shouldGeteManyToManyFieldReturnDistinctCollection() throws Exception {
+        // given
+        DataDefinition productDataDefinition = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PRODUCT);
+        DataDefinition partDataDefinition = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PART);
+
+        Entity firstProduct = productDataDefinition.save(createProduct("asd", "00001"));
+
+        Entity firstPart = partDataDefinition.save(createPart("qwe", firstProduct,
+                Lists.newArrayList(firstProduct, firstProduct, firstProduct)));
+
+        firstProduct = productDataDefinition.get(firstProduct.getId());
+
+        // when
+        List<Entity> firstProductParts = firstProduct.getManyToManyField("partsManyToMany");
+
+        // then
+        assertEquals(1, firstProductParts.size());
+        assertEquals(firstPart, firstProductParts.get(0));
+    }
+
+    @Test
+    public void shouldEntityWithManyToManyFieldHashCodeDoNotMakeInfinityCycle() throws Exception {
+        // given
+        DataDefinition productDataDefinition = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PRODUCT);
+        DataDefinition partDataDefinition = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PART);
+
+        Entity firstProduct = productDataDefinition.save(createProduct("asd", "00001"));
+
+        partDataDefinition.save(createPart("qwe", firstProduct, Lists.newArrayList(firstProduct)));
+
+        firstProduct = productDataDefinition.get(firstProduct.getId());
+
+        // when
+        try {
+            firstProduct.hashCode();
+        } catch (StackOverflowError e) {
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void shouldEntityWithManyToManyFieldEqualsDoNotMakeInfinityCycleAndReturnTue() throws Exception {
+        // given
+        Entity product = createProduct("asd", "00001");
+        product.setField("partsManyToMany", Lists.newArrayList(createPart("qwe", product, Lists.newArrayList(product))));
+
+        Entity otherProduct = createProduct("asd", "00001");
+        otherProduct.setField("partsManyToMany",
+                Lists.newArrayList(createPart("qwe", otherProduct, Lists.newArrayList(otherProduct))));
+
+        // when
+        try {
+            Assert.assertEquals(product, otherProduct);
+        } catch (StackOverflowError e) {
+            Assert.fail();
+        }
     }
 
     @Test
@@ -116,12 +178,12 @@ public class ManyToManyIntegrationTest extends IntegrationTest {
         Entity copyFirstPart = partDataDefinition.copy(firstPart.getId()).get(0);
         copyFirstPart = partDataDefinition.get(copyFirstPart.getId());
 
-        Set<Entity> firstProductParts = (Set<Entity>) copyFirstProduct.getField("partsManyToMany");
+        Collection<Entity> firstProductParts = (Collection<Entity>) copyFirstProduct.getField("partsManyToMany");
         assertNotNull(firstProductParts);
         assertEquals(3, firstProductParts.size());
         checkProxyCollection(partDataDefinition, firstProductParts, Lists.newArrayList(firstPart, secondPart, thirdPart));
 
-        Set<Entity> firstPartsCopied = (Set<Entity>) copyFirstPart.getField("products");
+        Collection<Entity> firstPartsCopied = (Collection<Entity>) copyFirstPart.getField("products");
         assertNotNull(firstPartsCopied);
         assertEquals(0, firstPartsCopied.size());
 

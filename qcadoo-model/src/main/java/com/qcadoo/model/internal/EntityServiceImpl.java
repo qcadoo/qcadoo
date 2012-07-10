@@ -34,6 +34,7 @@ import org.hibernate.proxy.HibernateProxy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.ExpressionService;
@@ -116,11 +117,15 @@ public final class EntityServiceImpl implements EntityService {
 
     @Override
     public Object getField(final Object databaseEntity, final FieldDefinition fieldDefinition) {
+        return getField(databaseEntity, fieldDefinition, null);
+    }
+
+    public Object getField(final Object databaseEntity, final FieldDefinition fieldDefinition, final Entity performer) {
         if (!((InternalFieldDefinition) fieldDefinition).isEnabled()) {
             return null;
         }
         if (fieldDefinition.getType() instanceof BelongsToType) {
-            return getBelongsToField(databaseEntity, fieldDefinition);
+            return getBelongsToField(databaseEntity, fieldDefinition, performer);
         }
         if (fieldDefinition.getType() instanceof HasManyType) {
             return getHasManyField(databaseEntity, fieldDefinition);
@@ -137,6 +142,11 @@ public final class EntityServiceImpl implements EntityService {
 
     @Override
     public Entity convertToGenericEntity(final InternalDataDefinition dataDefinition, final Object databaseEntity) {
+        return convertToGenericEntity(dataDefinition, databaseEntity, null);
+    }
+
+    public Entity convertToGenericEntity(final InternalDataDefinition dataDefinition, final Object databaseEntity,
+            final Entity performer) {
         Entity genericEntity = null;
 
         if (databaseEntity instanceof Object[]) {
@@ -164,8 +174,12 @@ public final class EntityServiceImpl implements EntityService {
             for (Entry<String, FieldDefinition> fieldDefinitionEntry : dataDefinition.getFields().entrySet()) {
                 if (fieldDefinitionEntry.getValue().isPersistent()
                         && ((InternalFieldDefinition) fieldDefinitionEntry.getValue()).isEnabled()) {
+                    Entity currentPerformer = performer;
+                    if (currentPerformer == null) {
+                        currentPerformer = genericEntity;
+                    }
                     genericEntity.setField(fieldDefinitionEntry.getKey(),
-                            getField(databaseEntity, fieldDefinitionEntry.getValue()));
+                            getField(databaseEntity, fieldDefinitionEntry.getValue(), currentPerformer));
                 }
             }
 
@@ -253,23 +267,27 @@ public final class EntityServiceImpl implements EntityService {
         return new EntityListImpl(referencedDataDefinition, hasManyFieldType.getJoinFieldName(), parentId);
     }
 
-    @SuppressWarnings("unchecked")
     private Object getManyToManyField(final Object databaseEntity, final FieldDefinition fieldDefinition) {
+        @SuppressWarnings("unchecked")
         Set<Object> databaseEntities = (Set<Object>) getPrimitiveField(databaseEntity, fieldDefinition);
         if (databaseEntities == null) {
             return null;
         }
-        Set<Entity> genericEntities = Sets.newHashSet();
+        List<Entity> genericEntities = Lists.newArrayList();
         InternalDataDefinition referencedDataDefinition = (InternalDataDefinition) ((ManyToManyType) fieldDefinition.getType())
                 .getDataDefinition();
 
-        for (Object innerDatabaseEntity : (Iterable<Object>) getField(databaseEntity, fieldDefinition.getName())) {
+        @SuppressWarnings("unchecked")
+        final Iterable<Object> fieldValues = (Iterable<Object>) getField(databaseEntity, fieldDefinition.getName());
+        for (Object innerDatabaseEntity : fieldValues) {
+            Entity innerEntity = null;
             Long id = getId(innerDatabaseEntity);
             if (id == null) {
-                genericEntities.add(convertToGenericEntity(referencedDataDefinition, innerDatabaseEntity));
+                innerEntity = convertToGenericEntity(referencedDataDefinition, innerDatabaseEntity);
             } else {
-                genericEntities.add(new ProxyEntity(referencedDataDefinition, id));
+                innerEntity = new ProxyEntity(referencedDataDefinition, id);
             }
+            genericEntities.add(innerEntity);
         }
         return genericEntities;
     }
@@ -282,7 +300,7 @@ public final class EntityServiceImpl implements EntityService {
         return new EntityTreeImpl(referencedDataDefinition, treeFieldType.getJoinFieldName(), parentId);
     }
 
-    private Object getBelongsToField(final Object databaseEntity, final FieldDefinition fieldDefinition) {
+    private Object getBelongsToField(final Object databaseEntity, final FieldDefinition fieldDefinition, final Entity performer) {
         BelongsToType belongsToFieldType = (BelongsToType) fieldDefinition.getType();
         InternalDataDefinition referencedDataDefinition = (InternalDataDefinition) belongsToFieldType.getDataDefinition();
 
@@ -290,6 +308,11 @@ public final class EntityServiceImpl implements EntityService {
 
         if (value == null) {
             return null;
+        }
+
+        if (performer != null && referencedDataDefinition.equals(performer.getDataDefinition()) && performer.getId() != null
+                && performer.getId().equals(getId(value))) {
+            return performer;
         }
 
         if (belongsToFieldType.isLazyLoading()) {
@@ -307,7 +330,11 @@ public final class EntityServiceImpl implements EntityService {
 
             return new ProxyEntity(referencedDataDefinition, id);
         } else {
-            return convertToGenericEntity(referencedDataDefinition, value);
+            Entity currentPerformer = performer;
+            if (performer == null || performer.getId() == null && referencedDataDefinition.equals(performer.getDataDefinition())) {
+                currentPerformer = new ProxyEntity(referencedDataDefinition, getId(value));
+            }
+            return convertToGenericEntity(referencedDataDefinition, value, currentPerformer);
         }
     }
 

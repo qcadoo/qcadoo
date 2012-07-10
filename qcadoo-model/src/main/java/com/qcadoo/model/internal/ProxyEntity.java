@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
@@ -38,8 +37,10 @@ import com.qcadoo.model.api.EntityList;
 import com.qcadoo.model.api.EntityTree;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.validators.ErrorMessage;
+import com.qcadoo.model.internal.api.EntityAwareCopyPerformer;
+import com.qcadoo.model.internal.api.EntityAwareEqualsPerformer;
 
-public final class ProxyEntity implements Entity {
+public final class ProxyEntity implements Entity, EntityAwareCopyPerformer, EntityAwareEqualsPerformer {
 
     private final DataDefinition dataDefinition;
 
@@ -142,7 +143,18 @@ public final class ProxyEntity implements Entity {
 
     @Override
     public Entity copy() {
-        return getEntity().copy();
+        return copy(null);
+    }
+
+    @Override
+    public Entity copy(final Entity performerEntity) {
+        Entity entityCopy = null;
+        if (getEntity() instanceof EntityAwareCopyPerformer) {
+            entityCopy = ((EntityAwareCopyPerformer) getEntity()).copy(performerEntity);
+        } else {
+            entityCopy = getEntity().copy();
+        }
+        return entityCopy;
     }
 
     @Override
@@ -192,10 +204,7 @@ public final class ProxyEntity implements Entity {
 
     @Override
     public int hashCode() {
-        // TODO mici, im not sure about this
-        // return getEntity().hashCode(); maybe? but it breaks the tests
-
-        return new HashCodeBuilder(23, 41).append(id).toHashCode();
+        return getEntity().hashCode();
     }
 
     @Override
@@ -206,24 +215,44 @@ public final class ProxyEntity implements Entity {
         if (obj == this) {
             return true;
         }
+        if (!(obj instanceof Entity)) {
+            return false;
+        }
+        Entity other = (Entity) obj;
 
-        // FIXME mici, I am not 100% sure if removing this won't break something
-
-        // if (!(obj instanceof ProxyEntity)) {
-        // return false;
-        // }
-
-        if (obj instanceof Entity) {
-            Entity entity = (Entity) obj;
-
-            boolean isPluginEqual = dataDefinition.getPluginIdentifier().equals(entity.getDataDefinition().getPluginIdentifier());
-            boolean isModelEqual = dataDefinition.getName().equals(entity.getDataDefinition().getName());
-
-            return isPluginEqual && isModelEqual && id.equals(entity.getId());
+        if (!definitionsAreEquals(other)) {
+            return false;
         }
 
-        ProxyEntity other = (ProxyEntity) obj;
-        return new EqualsBuilder().append(id, other.id).isEquals();
+        return getEntity().equals(other);
+    }
+
+    private boolean definitionsAreEquals(final Entity other) {
+        return new EqualsBuilder().append(id, other.getId()).append(dataDefinition, other.getDataDefinition()).isEquals();
+    }
+
+    @Override
+    public boolean equals(final Entity obj, final Entity performerEntity) {
+        boolean isEquals;
+        final Entity entity = getEntity();
+        if (entity instanceof EntityAwareEqualsPerformer) {
+            isEquals = ((EntityAwareEqualsPerformer) entity).equals(obj, performerEntity);
+        } else {
+            isEquals = entity.equals(obj);
+        }
+        return isEquals;
+    }
+
+    @Override
+    public boolean flatEquals(final Entity obj) {
+        boolean isEquals;
+        final Entity entity = getEntity();
+        if (entity instanceof EntityAwareEqualsPerformer) {
+            isEquals = ((EntityAwareEqualsPerformer) entity).flatEquals(obj);
+        } else {
+            isEquals = entity.equals(obj);
+        }
+        return isEquals;
     }
 
 }

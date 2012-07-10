@@ -35,8 +35,10 @@ import com.qcadoo.model.api.EntityTree;
 import com.qcadoo.model.api.EntityTreeNode;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.validators.ErrorMessage;
+import com.qcadoo.model.internal.api.EntityAwareCopyPerformer;
+import com.qcadoo.model.internal.api.EntityAwareEqualsPerformer;
 
-public final class EntityTreeNodeImpl implements EntityTreeNode {
+public final class EntityTreeNodeImpl implements EntityTreeNode, EntityAwareCopyPerformer, EntityAwareEqualsPerformer {
 
     private final List<EntityTreeNode> children = new ArrayList<EntityTreeNode>();
 
@@ -182,7 +184,18 @@ public final class EntityTreeNodeImpl implements EntityTreeNode {
 
     @Override
     public EntityTreeNodeImpl copy() {
-        return new EntityTreeNodeImpl(entity.copy());
+        return copy(this);
+    }
+
+    @Override
+    public EntityTreeNodeImpl copy(final Entity performerEntity) {
+        Entity entityCopy = null;
+        if (entity instanceof EntityAwareCopyPerformer) {
+            entityCopy = ((EntityAwareCopyPerformer) entity).copy(performerEntity);
+        } else {
+            entityCopy = entity.copy();
+        }
+        return new EntityTreeNodeImpl(entityCopy);
     }
 
     @Override
@@ -193,6 +206,28 @@ public final class EntityTreeNodeImpl implements EntityTreeNode {
     @Override
     public boolean equals(final Object obj) {
         return entity.equals(obj);
+    }
+
+    @Override
+    public boolean equals(final Entity obj, final Entity performerEntity) {
+        boolean isEquals;
+        if (entity instanceof EntityAwareEqualsPerformer) {
+            isEquals = ((EntityAwareEqualsPerformer) entity).equals(obj, performerEntity);
+        } else {
+            isEquals = entity.equals(obj);
+        }
+        return isEquals;
+    }
+
+    @Override
+    public boolean flatEquals(final Entity obj) {
+        boolean isEquals;
+        if (entity instanceof EntityAwareEqualsPerformer) {
+            isEquals = ((EntityAwareEqualsPerformer) entity).flatEquals(obj);
+        } else {
+            isEquals = entity.equals(obj);
+        }
+        return isEquals;
     }
 
 }

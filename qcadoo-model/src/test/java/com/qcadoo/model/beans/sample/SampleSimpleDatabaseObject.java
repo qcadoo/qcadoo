@@ -49,10 +49,11 @@ public class SampleSimpleDatabaseObject {
 
     private SampleParentDatabaseObject belongsTo;
 
-    private SampleParentDatabaseObject lazyBelongsTo;
-    
-    private Set<SampleParentDatabaseObject> manyToMany;
+    private SampleSimpleDatabaseObject belongsToSimple;
 
+    private SampleParentDatabaseObject lazyBelongsTo;
+
+    private Set<SampleParentDatabaseObject> manyToMany;
 
     public SampleSimpleDatabaseObject() {
     }
@@ -91,6 +92,14 @@ public class SampleSimpleDatabaseObject {
 
     public void setBelongsTo(final SampleParentDatabaseObject belongsTo) {
         this.belongsTo = belongsTo;
+    }
+
+    public SampleSimpleDatabaseObject getBelongsToSimple() {
+        return belongsToSimple;
+    }
+
+    public void setBelongsToSimple(final SampleSimpleDatabaseObject belongsToSimple) {
+        this.belongsToSimple = belongsToSimple;
     }
 
     public SampleParentDatabaseObject getLazyBelongsTo() {
