@@ -91,5 +91,6 @@
 	</component>
 	<hooks>
 		<beforeRender class="com.qcadoo.plugins.dictionaries.internal.ViewDictionaryService" method="disableDictionaryItemFormForExternalItems" />
+		<beforeRender class="com.qcadoo.plugins.dictionaries.hooks.DictionaryDetailsHooks" method="blokedDeleteOptionSelectedEntities" />
 	</hooks>
 </view>

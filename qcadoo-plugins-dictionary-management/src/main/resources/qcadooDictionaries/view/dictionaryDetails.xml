@@ -51,14 +51,24 @@
 								deleteButton.disable();
 							} else {
 								var hasExternal = false;
+								var hasTechnicalCode = false;
 								for (var i in selectedEntitiesArray) {
 									if (selectedEntitiesArray[i].fields.externalNumber != '' && selectedEntitiesArray[i].fields.externalNumber != undefined) {
 										hasExternal = true;
 										break;	
 									}
+									if (selectedEntitiesArray[i].fields.technicalCode != '' && selectedEntitiesArray[i].fields.technicalCode != undefined) {
+										hasTechnicalCode = true;
+										break;	
+									}
 								}
 								if (hasExternal) {
 									deleteButton.disable("#{translate(qcadooDictionaries.dictionaryItems.ribbon.message.someDictionaryItemIsExternal)}");
+								} else {
+									deleteButton.enable();
+								}
+								if(hasTechnicalCode){
+									deleteButton.disable();
 								} else {
 									deleteButton.enable();
 								}
@@ -73,6 +83,7 @@
 			<option type="column" name="description" fields="description"
 				width="100" />
 			<option type="column" name="externalNumber" fields="externalNumber" hidden="true" />
+			<option type="column" name="technicalCode" fields="technicalCode" hidden="true" />
 			<option type="order" column="name" direction="asc" />
 			<option type="searchable" value="name,description" />
 			<option type="orderable" value="name,description" />
