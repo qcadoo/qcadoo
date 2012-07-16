@@ -320,7 +320,7 @@ public final class DataAccessServiceCopyTest extends DataAccessTest {
     }
 
     @Test
-    public final void shouldCopyEntityWithoutInfinityCycleWith2Entities() {
+    public void shouldCopyEntityWithoutInfinityCycleWith2Entities() {
         // given
         SampleSimpleDatabaseObject simpleDatabaseObject1 = new SampleSimpleDatabaseObject();
         simpleDatabaseObject1.setId(1L);
@@ -365,7 +365,7 @@ public final class DataAccessServiceCopyTest extends DataAccessTest {
     }
 
     @Test
-    public final void shouldCopyEntityWithoutInfinityCycleWith3Entities() {
+    public void shouldCopyEntityWithoutInfinityCycleWith3Entities() {
         // given
         SampleSimpleDatabaseObject simpleDatabaseObject1 = new SampleSimpleDatabaseObject();
         simpleDatabaseObject1.setId(1L);
@@ -423,7 +423,7 @@ public final class DataAccessServiceCopyTest extends DataAccessTest {
     }
 
     @Test
-    public final void shouldCopyEntityWithoutInfinityCycleWith4Entities() {
+    public void shouldCopyEntityWithoutInfinityCycleWith4Entities() {
         // given
         SampleSimpleDatabaseObject simpleDatabaseObject1 = new SampleSimpleDatabaseObject();
         simpleDatabaseObject1.setId(1L);
