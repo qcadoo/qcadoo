@@ -62,7 +62,7 @@ QCD.components.elements.AwesomeDynamicList = function(_element, _mainController)
 	
 	function constructor(_this) {
 		innerFormContainer = $("#"+_this.elementSearchName+" > .awesomeDynamicList > .awesomeDynamicListInnerForm").children();
-		
+				
 		awesomeDynamicListContent = $("#"+_this.elementSearchName+" > .awesomeDynamicList > .awesomeDynamicListContent");
 		awesomeDynamicListHeader = $("#"+_this.elementSearchName+" > .awesomeDynamicList > .awesomeDynamicListHeader");
 		if (awesomeDynamicListHeader && awesomeDynamicListHeader.length > 0) {
@@ -233,7 +233,7 @@ QCD.components.elements.AwesomeDynamicList = function(_element, _mainController)
 		formObject.isVirtual = isVirtual;
 		
 		formObject.updateSize(currentWidth-BUTTONS_WIDTH, currentHeight);
-		formObject.setEnabled(true, true);
+		formObject.setValue(formObject.getValue());
 		
 		return formObject;
 	}
