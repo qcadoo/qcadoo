@@ -32,6 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
@@ -45,6 +46,7 @@ import com.qcadoo.model.api.types.BelongsToType;
 import com.qcadoo.model.api.validators.ErrorMessage;
 import com.qcadoo.model.internal.api.EntityAwareCopyPerformer;
 import com.qcadoo.model.internal.api.EntityAwareEqualsPerformer;
+import com.qcadoo.model.internal.api.ValueAndError;
 
 public final class DefaultEntity implements Entity, EntityAwareCopyPerformer, EntityAwareEqualsPerformer {
 
@@ -288,15 +290,25 @@ public final class DefaultEntity implements Entity, EntityAwareCopyPerformer, En
 
     @Override
     public BigDecimal getDecimalField(final String fieldName) {
-        Object fieldValue = getField(fieldName);
+        final Object fieldValue = getField(fieldName);
         if (fieldValue == null) {
             return null;
         }
         if (fieldValue instanceof BigDecimal) {
             return (BigDecimal) fieldValue;
         }
+        final FieldDefinition fieldDefinition = dataDefinition.getField(fieldName);
+        if (fieldValue instanceof String && BigDecimal.class.equals(fieldDefinition.getType().getType())) {
+            if (StringUtils.isBlank((String) fieldValue)) {
+                return null;
+            }
+            final ValueAndError valueAndError = fieldDefinition.getType().toObject(fieldDefinition, fieldValue);
+            if (valueAndError.isValid()) {
+                return (BigDecimal) valueAndError.getValue();
+            }
+        }
         throw new IllegalArgumentException("Field " + fieldName + " in " + dataDefinition.getPluginIdentifier() + '.'
-                + dataDefinition.getName() + " does not contain BigDecimal value");
+                + dataDefinition.getName() + " does not contain correct BigDecimal value");
     }
 
     @SuppressWarnings("unchecked")

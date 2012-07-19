@@ -28,6 +28,7 @@ import static junit.framework.Assert.assertNotSame;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -47,6 +48,7 @@ import com.qcadoo.model.api.EntityList;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.types.BelongsToType;
 import com.qcadoo.model.api.types.FieldType;
+import com.qcadoo.model.internal.types.DecimalType;
 
 public class DefaultEntityTest {
 
@@ -58,11 +60,15 @@ public class DefaultEntityTest {
 
     private DataDefinition belongsToFieldDataDefinition;
 
+    private FieldDefinition decimalFieldDefinition;
+
     private static final String BELONGS_TO_FIELD_NAME = "belongsToField";
 
     private static final String STRING_FIELD_NAME = "stringField";
 
     private static final String BOOLEAN_FIELD_NAME = "booleanField";
+
+    private static final String DECIMAL_FIELD_NAME = "decimalField";
 
     private static final String L_FIRST = "first";
 
@@ -80,6 +86,10 @@ public class DefaultEntityTest {
         belongsToFieldDataDefinition = mock(DataDefinition.class);
         when(belongsToFieldDefinition.getDataDefinition()).thenReturn(belongsToFieldDataDefinition);
 
+        decimalFieldDefinition = mock(FieldDefinition.class);
+        final DecimalType decimalType = new DecimalType();
+        when(decimalFieldDefinition.getType()).thenReturn(decimalType);
+
         FieldDefinition stringFieldDefinition = mock(FieldDefinition.class);
         when(stringFieldDefinition.isPersistent()).thenReturn(false);
 
@@ -92,6 +102,7 @@ public class DefaultEntityTest {
         fieldsMap.put(BELONGS_TO_FIELD_NAME, belongsToFieldDefinition);
         fieldsMap.put(STRING_FIELD_NAME, stringFieldDefinition);
         fieldsMap.put(BOOLEAN_FIELD_NAME, booleanFieldDefinition);
+        fieldsMap.put(DECIMAL_FIELD_NAME, decimalFieldDefinition);
 
         for (Map.Entry<String, FieldDefinition> fieldEntry : fieldsMap.entrySet()) {
             when(dataDefinition.getField(fieldEntry.getKey())).thenReturn(fieldEntry.getValue());
@@ -290,15 +301,72 @@ public class DefaultEntityTest {
     public final void shouldReturnBigDecimalValue() throws Exception {
         // given
         BigDecimal decimal = BigDecimal.ZERO;
-        final String decimalFieldName = "decimalField";
-        defaultEntity.setField(decimalFieldName, decimal);
+        defaultEntity.setField(DECIMAL_FIELD_NAME, decimal);
 
         // when
-        BigDecimal result = defaultEntity.getDecimalField(decimalFieldName);
+        BigDecimal result = defaultEntity.getDecimalField(DECIMAL_FIELD_NAME);
 
         // then
         Assert.assertNotNull(result);
         Assert.assertEquals(decimal, result);
+    }
+
+    @Test
+    public final void shouldReturnBigDecimalValueFromStringUsingDecimalType() throws Exception {
+        // given
+        final String decimalStringValue = "10.00";
+        defaultEntity.setField(DECIMAL_FIELD_NAME, decimalStringValue);
+
+        // when
+        BigDecimal result = defaultEntity.getDecimalField(DECIMAL_FIELD_NAME);
+
+        // then
+        Assert.assertNotNull(result);
+        Assert.assertEquals(new BigDecimal(decimalStringValue), result);
+    }
+
+    @Test
+    public final void shouldReturnNullBigDecimalValueFromEmptyStringUsingDecimalType() throws Exception {
+        // given
+        final String decimalStringValue = "";
+        defaultEntity.setField(DECIMAL_FIELD_NAME, decimalStringValue);
+
+        // when
+        BigDecimal result = defaultEntity.getDecimalField(DECIMAL_FIELD_NAME);
+
+        // then
+        Assert.assertNull(result);
+    }
+
+    @Test
+    public final void shouldReturnNullBigDecimalValueFromBlankStringUsingDecimalType() throws Exception {
+        // given
+        final String decimalStringValue = "   ";
+        defaultEntity.setField(DECIMAL_FIELD_NAME, decimalStringValue);
+
+        // when
+        BigDecimal result = defaultEntity.getDecimalField(DECIMAL_FIELD_NAME);
+
+        // then
+        Assert.assertNull(result);
+    }
+
+    @Test
+    public final void shouldThrowExceptionWhenGettingBigDecimalValueFromInvalidStringUsingDecimalType() throws Exception {
+        // given
+        final String decimalStringValue = "invalid decimal value";
+        final String decimalFieldName = "decimalField";
+        defaultEntity.setField(decimalFieldName, decimalStringValue);
+
+        given(dataDefinition.getField(decimalFieldName)).willReturn(decimalFieldDefinition);
+
+        // when & then
+        try {
+            defaultEntity.getDecimalField(decimalFieldName);
+        } catch (Exception e) {
+            assertTrue(e instanceof IllegalArgumentException);
+        }
+
     }
 
     @Test
@@ -312,16 +380,6 @@ public class DefaultEntityTest {
 
         // then
         Assert.assertNull(result);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public final void shouldThrowExceptionIfDecimalFieldTypeIsNotSupported() throws Exception {
-        // given
-        final String decimalFieldName = "decimalField";
-        defaultEntity.setField(decimalFieldName, "qcadoo rlz!");
-
-        // when
-        defaultEntity.getDecimalField(decimalFieldName);
     }
 
     @Test
