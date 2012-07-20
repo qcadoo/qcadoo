@@ -34,6 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.PageSize;
+import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfWriter;
 import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.api.Entity;
@@ -65,15 +66,21 @@ public abstract class PdfDocumentService implements ReportDocumentService {
     private static final Logger LOG = LoggerFactory.getLogger(PdfDocumentService.class);
 
     @Override
-    public void generateDocument(final Entity entity, final Entity company, final Locale locale) throws IOException,
-            DocumentException {
+    public void generateDocument(final Entity entity, final Entity company, final Locale locale, final Rectangle pageSize)
+            throws IOException, DocumentException {
         String path = entity.getStringField("fileName").split(",")[0];
 
-        generate(entity, company, locale, path);
+        generate(entity, company, locale, path, pageSize);
     }
 
-    public void generateDocument(final Entity entity, final Entity company, final Locale locale, final String localePrefixToMatch)
-            throws IOException, DocumentException {
+    @Override
+    public void generateDocument(final Entity entity, final Entity company, final Locale locale) throws IOException,
+            DocumentException {
+        generateDocument(entity, company, locale, PageSize.A4);
+    }
+
+    public void generateDocument(final Entity entity, final Entity company, final Locale locale,
+            final String localePrefixToMatch, final Rectangle pageSize) throws IOException, DocumentException {
 
         String prefix = translationService.translate(localePrefixToMatch, locale);
 
@@ -88,12 +95,12 @@ public abstract class PdfDocumentService implements ReportDocumentService {
             throw new IllegalStateException("filename pattern not found");
         }
 
-        generate(entity, company, locale, path);
+        generate(entity, company, locale, path, pageSize);
     }
 
-    private void generate(final Entity entity, final Entity company, final Locale locale, final String filename)
-            throws IOException, DocumentException {
-        Document document = new Document(PageSize.A4);
+    private void generate(final Entity entity, final Entity company, final Locale locale, final String filename,
+            final Rectangle pageSize) throws IOException, DocumentException {
+        Document document = new Document(pageSize);
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(fileService.createReportFile(filename + "."
                     + ReportService.ReportType.PDF.getExtension()));

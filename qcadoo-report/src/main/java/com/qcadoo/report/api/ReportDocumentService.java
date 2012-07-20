@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.util.Locale;
 
 import com.lowagie.text.DocumentException;
+import com.lowagie.text.Rectangle;
 import com.qcadoo.model.api.Entity;
 
 /**
@@ -47,6 +48,19 @@ public interface ReportDocumentService {
      * @throws DocumentException
      */
     void generateDocument(final Entity entity, final Entity company, final Locale locale) throws IOException, DocumentException;
+
+    /**
+     * Generate report document
+     * 
+     * @param entity
+     * @param company
+     * @param locale
+     * @param pageSize
+     * @throws IOException
+     * @throws DocumentException
+     */
+    void generateDocument(final Entity entity, final Entity company, final Locale locale, final Rectangle pageSize)
+            throws IOException, DocumentException;
 
     /**
      * Get report title
