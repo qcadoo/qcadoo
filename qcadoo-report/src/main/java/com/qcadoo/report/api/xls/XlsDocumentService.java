@@ -33,6 +33,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.lowagie.text.PageSize;
+import com.lowagie.text.Rectangle;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.file.FileService;
 import com.qcadoo.report.api.ReportDocumentService;
@@ -52,6 +54,12 @@ public abstract class XlsDocumentService implements ReportDocumentService {
 
     @Override
     public final void generateDocument(final Entity entity, final Entity company, final Locale locale) throws IOException {
+        generateDocument(entity, company, locale, PageSize.A4);
+    }
+
+    @Override
+    public final void generateDocument(final Entity entity, final Entity company, final Locale locale, final Rectangle pageSize)
+            throws IOException {
         HSSFWorkbook workbook = new HSSFWorkbook();
         HSSFSheet sheet = workbook.createSheet(getReportTitle(locale));
         addHeader(sheet, locale);
