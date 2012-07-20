@@ -79,6 +79,11 @@ public abstract class PdfDocumentService implements ReportDocumentService {
         generateDocument(entity, company, locale, PageSize.A4);
     }
 
+    public void generateDocument(final Entity entity, final Entity company, final Locale locale, final String localePrefixToMatch)
+            throws IOException, DocumentException {
+        generateDocument(entity, company, locale, localePrefixToMatch, PageSize.A4);
+    }
+
     public void generateDocument(final Entity entity, final Entity company, final Locale locale,
             final String localePrefixToMatch, final Rectangle pageSize) throws IOException, DocumentException {
 
