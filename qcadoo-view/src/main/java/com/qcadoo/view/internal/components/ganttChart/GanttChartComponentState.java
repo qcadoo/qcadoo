@@ -74,12 +74,12 @@ public class GanttChartComponentState extends AbstractComponentState {
 
     private JSONObject context;
 
-    public GanttChartComponentState(final GanttChartItemResolver itemResolver, final ZoomLevel defaultZoomLevel,
-            final int defaultStartDay, final int defaultEndDay) {
+    public GanttChartComponentState(final GanttChartItemResolver itemResolver, final GanttChartComponentPattern pattern) {
+        super(pattern);
         this.itemResolver = itemResolver;
-        this.defaultZoomLevel = defaultZoomLevel;
-        this.defaultStartDay = defaultStartDay;
-        this.defaultEndDay = defaultEndDay;
+        this.defaultZoomLevel = pattern.getDefaultZoomLevel();
+        this.defaultStartDay = pattern.getDefaultStartDay();
+        this.defaultEndDay = pattern.getDefaultEndDay();
         registerEvent("refresh", eventPerformer, "refresh");
         registerEvent("initialize", eventPerformer, "initialize");
         registerEvent("select", eventPerformer, "selectEntity");

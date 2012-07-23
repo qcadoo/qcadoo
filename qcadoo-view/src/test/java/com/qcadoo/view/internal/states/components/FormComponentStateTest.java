@@ -55,6 +55,7 @@ import com.qcadoo.view.internal.api.ContainerState;
 import com.qcadoo.view.internal.api.InternalComponentState;
 import com.qcadoo.view.internal.components.FieldComponentPattern;
 import com.qcadoo.view.internal.components.FieldComponentState;
+import com.qcadoo.view.internal.components.form.FormComponentPattern;
 import com.qcadoo.view.internal.components.form.FormComponentState;
 import com.qcadoo.view.internal.states.AbstractComponentState;
 import com.qcadoo.view.internal.states.AbstractContainerState;
@@ -104,7 +105,10 @@ public class FormComponentStateTest extends AbstractStateTest {
         name.setName("name");
         name.initialize(new JSONObject(), Locale.ENGLISH);
 
-        form = new FormComponentState(null, "'static expression'");
+        FormComponentPattern pattern = mock(FormComponentPattern.class);
+        given(pattern.getExpressionNew()).willReturn(null);
+        given(pattern.getExpressionEdit()).willReturn("'static expression'");
+        form = new FormComponentState(pattern);
         ((AbstractContainerState) form).setDataDefinition(dataDefinition);
         ((AbstractContainerState) form).setTranslationService(translationService);
         ((AbstractContainerState) form).addFieldEntityIdChangeListener("name", name);
@@ -116,7 +120,10 @@ public class FormComponentStateTest extends AbstractStateTest {
     @Test
     public void shouldInitialeFormWithEntityId() throws Exception {
         // given
-        InternalComponentState componentState = new FormComponentState(null, null);
+        FormComponentPattern pattern = mock(FormComponentPattern.class);
+        given(pattern.getExpressionNew()).willReturn(null);
+        given(pattern.getExpressionEdit()).willReturn(null);
+        InternalComponentState componentState = new FormComponentState(pattern);
 
         JSONObject json = new JSONObject();
         JSONObject jsonContent = new JSONObject();
@@ -135,7 +142,10 @@ public class FormComponentStateTest extends AbstractStateTest {
     @Test
     public void shouldInitialeFormWithNullEntityId() throws Exception {
         // given
-        InternalComponentState componentState = new FormComponentState(null, null);
+        FormComponentPattern pattern = mock(FormComponentPattern.class);
+        given(pattern.getExpressionNew()).willReturn(null);
+        given(pattern.getExpressionEdit()).willReturn(null);
+        InternalComponentState componentState = new FormComponentState(pattern);
 
         JSONObject json = new JSONObject();
         JSONObject jsonContent = new JSONObject();
@@ -156,7 +166,10 @@ public class FormComponentStateTest extends AbstractStateTest {
         // given
         TranslationService translationService = mock(TranslationService.class);
         DataDefinition dataDefinition = mock(DataDefinition.class);
-        AbstractComponentState componentState = new FormComponentState(null, "2");
+        FormComponentPattern pattern = mock(FormComponentPattern.class);
+        given(pattern.getExpressionNew()).willReturn(null);
+        given(pattern.getExpressionEdit()).willReturn("2");
+        AbstractComponentState componentState = new FormComponentState(pattern);
         componentState.setTranslationService(translationService);
         componentState.setDataDefinition(dataDefinition);
         componentState.setFieldValue(13L);

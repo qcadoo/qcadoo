@@ -80,9 +80,10 @@ public class FormComponentState extends AbstractContainerState implements FormCo
 
     private final String expressionNew;
 
-    public FormComponentState(final String expressionNew, final String expressionEdit) {
-        this.expressionNew = expressionNew;
-        this.expressionEdit = expressionEdit;
+    public FormComponentState(final FormComponentPattern pattern) {
+        super(pattern);
+        this.expressionNew = pattern.getExpressionNew();
+        this.expressionEdit = pattern.getExpressionEdit();
         registerEvent("clear", eventPerformer, "clear");
         registerEvent("save", eventPerformer, "save");
         registerEvent("saveAndClear", eventPerformer, "saveAndClear");

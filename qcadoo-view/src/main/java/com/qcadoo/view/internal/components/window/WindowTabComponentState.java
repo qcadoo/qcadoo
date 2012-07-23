@@ -33,6 +33,7 @@ public class WindowTabComponentState extends AbstractContainerState {
     private final WindowTabComponentPattern pattern;
 
     public WindowTabComponentState(final WindowTabComponentPattern pattern) {
+        super(pattern);
         this.pattern = pattern;
     }
 

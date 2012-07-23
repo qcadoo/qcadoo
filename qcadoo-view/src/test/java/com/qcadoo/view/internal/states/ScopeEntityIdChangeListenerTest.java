@@ -23,12 +23,15 @@
  */
 package com.qcadoo.view.internal.states;
 
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import org.junit.Test;
 
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.internal.ScopeEntityIdChangeListener;
+import com.qcadoo.view.internal.components.form.FormComponentPattern;
 import com.qcadoo.view.internal.components.form.FormComponentState;
 
 public class ScopeEntityIdChangeListenerTest extends AbstractStateTest {
@@ -39,7 +42,10 @@ public class ScopeEntityIdChangeListenerTest extends AbstractStateTest {
         ComponentState component1 = createMockComponent("component1");
         ComponentState component2 = createMockComponent("component2");
 
-        FormComponentState container = new FormComponentState(null, null);
+        FormComponentPattern pattern = mock(FormComponentPattern.class);
+        given(pattern.getExpressionNew()).willReturn(null);
+        given(pattern.getExpressionEdit()).willReturn(null);
+        FormComponentState container = new FormComponentState(pattern);
         container.addScopeEntityIdChangeListener("component1", (ScopeEntityIdChangeListener) component1);
         container.addScopeEntityIdChangeListener("component2", (ScopeEntityIdChangeListener) component2);
 

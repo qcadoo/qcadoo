@@ -33,10 +33,19 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.qcadoo.view.api.ComponentState;
+import com.qcadoo.view.internal.api.ComponentPattern;
 import com.qcadoo.view.internal.api.ContainerState;
 import com.qcadoo.view.internal.api.InternalComponentState;
 
 public abstract class AbstractContainerState extends AbstractComponentState implements ContainerState {
+
+    public AbstractContainerState() {
+        super();
+    }
+
+    public AbstractContainerState(final ComponentPattern pattern) {
+        super(pattern);
+    }
 
     private final Map<String, InternalComponentState> children = new HashMap<String, InternalComponentState>();
 
@@ -49,7 +58,7 @@ public abstract class AbstractContainerState extends AbstractComponentState impl
             childerJson = json.getJSONObject(JSON_CHILDREN);
         }
 
-        boolean containerIsPermanentlyDisabled = containerIsPermanentlyDisabled(json);
+        final boolean containerIsPermanentlyDisabled = containerIsPermanentlyDisabled(json);
 
         for (Map.Entry<String, InternalComponentState> child : children.entrySet()) {
             JSONObject childJson = null;
@@ -58,7 +67,9 @@ public abstract class AbstractContainerState extends AbstractComponentState impl
             } else {
                 childJson = childerJson.getJSONObject(child.getKey());
             }
-            childJson.put(JSON_PERMANENTLY_DISABLED, containerIsPermanentlyDisabled);
+            if (containerIsPermanentlyDisabled) {
+                childJson.put(JSON_PERMANENTLY_DISABLED, true);
+            }
             child.getValue().initialize(childJson, locale);
         }
     }

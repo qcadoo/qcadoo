@@ -39,8 +39,9 @@ public class SmallTabLayoutState extends AbstractContainerState {
 
     private final List<SmallTabLayoutPatternTab> tabs;
 
-    public SmallTabLayoutState(final List<SmallTabLayoutPatternTab> tabs) {
-        this.tabs = tabs;
+    public SmallTabLayoutState(final SmallTabLayoutPattern pattern) {
+        super(pattern);
+        this.tabs = pattern.getTabs();
     }
 
     @Override

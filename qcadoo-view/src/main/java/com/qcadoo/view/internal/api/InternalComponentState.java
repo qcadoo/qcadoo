@@ -54,6 +54,13 @@ public interface InternalComponentState extends ComponentState {
     JSONObject render() throws JSONException;
 
     /**
+     * Returns true if element defined by this component is permanently disabled
+     * 
+     * @return true if element defined by this component is permanently disabled
+     */
+    boolean isPermanentlyDisabled();
+
+    /**
      * Defines if element defined by this component should be permanently disabled. Permanently disabled means that you can not
      * enable them using {@link ComponentState.setEnabled()}
      * 

@@ -28,6 +28,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.springframework.test.util.ReflectionTestUtils.getField;
@@ -162,7 +163,9 @@ public class ViewDefinitionParserImplTest {
         given(belongToAType.getDataDefinition()).willReturn(dataDefinitionA);
         given(dataDefinitionA.getField("beansB")).willReturn(hasManyB);
         given(dataDefinitionA.getField("name")).willReturn(nameA);
-        given(dataDefinitionB.getField("active")).willReturn(nameA);
+        given(dataDefinitionB.getField("activeA")).willReturn(nameA);
+        given(dataDefinitionB.getField("activeB")).willReturn(nameA);
+        given(dataDefinitionB.getField("activeC")).willReturn(nameA);
         given(dataDefinitionB.getField("beanA")).willReturn(belongToA);
         given(dataDefinitionB.getField("beanM")).willReturn(belongToA);
         given(dataDefinitionB.getField("beanB")).willReturn(belongToA);
@@ -276,6 +279,11 @@ public class ViewDefinitionParserImplTest {
 
         checkComponent(vd.getComponentByReference("active"), CheckBoxComponentPattern.class, "active", "beanB");
 
+        checkComponent(vd.getComponentByReference("neverEnabledCheckbox"), CheckBoxComponentPattern.class,
+                "neverEnabledCheckbox", "beanB");
+
+        checkComponent(vd.getComponentByReference("enabledCheckbox"), CheckBoxComponentPattern.class, "enabledCheckbox", "beanB");
+
         checkComponent(vd.getComponentByReference("selectBeanA"), TextInputComponentPattern.class, "selectBeanA", "beanA");
 
         checkComponent(vd.getComponentByReference("beanM"), TextAreaComponentPattern.class, "beanM", "beanB");
@@ -291,10 +299,49 @@ public class ViewDefinitionParserImplTest {
         checkComponent(vd.getComponentByReference("link"), ButtonComponentPattern.class, "link", "beanB");
 
         checkFieldListener(vd.getComponentByReference("beanBForm"), vd.getComponentByReference("referenceToTextarea"), "name");
-        checkFieldListener(vd.getComponentByReference("beanBForm"), vd.getComponentByReference("active"), "active");
+        checkFieldListener(vd.getComponentByReference("beanBForm"), vd.getComponentByReference("active"), "activeA");
         checkFieldListener(vd.getComponentByReference("beanBForm"), vd.getComponentByReference("beanAForm"), "beanA");
         checkFieldListener(vd.getComponentByReference("beanBForm"), vd.getComponentByReference("beanM"), "beanM");
 
+    }
+
+    @Test
+    public final void shouldMarkComponentAsPermanentlyDisabled() {
+        // given
+        final InternalViewDefinition vd = parseAndGetViewDefinition();
+
+        // when
+        final ComponentPattern component = vd.getComponentByReference("neverEnabledCheckbox");
+
+        // then
+        assertTrue(component.isPermanentlyDisabled());
+        assertFalse(component.isDefaultEnabled());
+    }
+
+    @Test
+    public final void shouldMarkComponentAsNotEnabled() {
+        // given
+        final InternalViewDefinition vd = parseAndGetViewDefinition();
+
+        // when
+        final ComponentPattern component = vd.getComponentByReference("active");
+
+        // then
+        assertFalse(component.isPermanentlyDisabled());
+        assertFalse(component.isDefaultEnabled());
+    }
+
+    @Test
+    public final void shouldMarkComponentAsEnabled() {
+        // given
+        final InternalViewDefinition vd = parseAndGetViewDefinition();
+
+        // when
+        final ComponentPattern component = vd.getComponentByReference("enabledCheckbox");
+
+        // then
+        assertFalse(component.isPermanentlyDisabled());
+        assertTrue(component.isDefaultEnabled());
     }
 
     @SuppressWarnings("unchecked")

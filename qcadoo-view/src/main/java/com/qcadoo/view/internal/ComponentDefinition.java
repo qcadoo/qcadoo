@@ -45,6 +45,8 @@ public final class ComponentDefinition {
 
     private boolean defaultEnabled = true;
 
+    private boolean permanentlyDisabled = false;
+
     private boolean defaultVisible = true;
 
     private boolean hasDescription;
@@ -101,6 +103,17 @@ public final class ComponentDefinition {
 
     public void setDefaultEnabled(final boolean defaultEnabled) {
         this.defaultEnabled = defaultEnabled;
+    }
+
+    public boolean isPermanentlyDisabled() {
+        return permanentlyDisabled;
+    }
+
+    public void setPermanentlyDisabled(final boolean permanentlyDisabled) {
+        this.permanentlyDisabled = permanentlyDisabled;
+        if (permanentlyDisabled) {
+            setDefaultEnabled(false);
+        }
     }
 
     public boolean isDefaultVisible() {

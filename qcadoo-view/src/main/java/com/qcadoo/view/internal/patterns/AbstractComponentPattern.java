@@ -86,6 +86,8 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
 
     private final boolean defaultEnabled;
 
+    private final boolean permanentlyDisabled;
+
     private final boolean defaultVisible;
 
     private final boolean hasDescription;
@@ -139,6 +141,7 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
         this.hasDescription = componentDefinition.isHasDescription();
         this.hasLabel = componentDefinition.isHasLabel();
         this.defaultEnabled = componentDefinition.isDefaultEnabled();
+        this.permanentlyDisabled = componentDefinition.isPermanentlyDisabled();
         this.defaultVisible = componentDefinition.isDefaultVisible();
         this.translationService = componentDefinition.getTranslationService();
         this.contextualHelpService = componentDefinition.getContextualHelpService();
@@ -433,8 +436,14 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
         return scopeEntityIdChangeListeners;
     }
 
-    protected final boolean isDefaultEnabled() {
+    @Override
+    public final boolean isDefaultEnabled() {
         return defaultEnabled;
+    }
+
+    @Override
+    public boolean isPermanentlyDisabled() {
+        return permanentlyDisabled;
     }
 
     protected final boolean isDefaultRequired() {

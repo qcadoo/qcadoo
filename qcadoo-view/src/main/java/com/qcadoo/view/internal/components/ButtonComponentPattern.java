@@ -77,14 +77,14 @@ public final class ButtonComponentPattern extends AbstractComponentPattern {
     @Override
     public ComponentState getComponentStateInstance() {
         if (url != null) {
-            return new ButtonComponentState(url);
+            return new ButtonComponentState(this);
         }
 
         String correspondingField = "id";
         if (getScopeFieldDefinition() != null) {
             correspondingField = getScopeFieldDefinition().getName();
         }
-        return new ButtonComponentState(correspondingView, correspondingComponent, correspondingViewInModal, correspondingField);
+        return new ButtonComponentState(correspondingField, this);
     }
 
     @Override
@@ -109,5 +109,21 @@ public final class ButtonComponentPattern extends AbstractComponentPattern {
     @Override
     public String getJsObjectName() {
         return JS_OBJECT;
+    }
+
+    public final String getUrl() {
+        return url;
+    }
+
+    public final String getCorrespondingView() {
+        return correspondingView;
+    }
+
+    public final String getCorrespondingComponent() {
+        return correspondingComponent;
+    }
+
+    public final boolean isCorrespondingViewInModal() {
+        return correspondingViewInModal;
     }
 }

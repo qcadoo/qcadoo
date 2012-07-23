@@ -50,7 +50,7 @@ import com.qcadoo.view.internal.patterns.AbstractComponentPattern;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
 import com.qcadoo.view.internal.xml.ViewDefinitionParserNodeException;
 
-public final class GridComponentPattern extends AbstractComponentPattern {
+public class GridComponentPattern extends AbstractComponentPattern {
 
     private static final String L_COLUMN = "column";
 
@@ -116,8 +116,7 @@ public final class GridComponentPattern extends AbstractComponentPattern {
         if (getScopeFieldDefinition() != null) {
             scopeFieldDataDefinition = getScopeFieldDefinition().getDataDefinition();
         }
-        return new GridComponentState(belongsToFieldDefinition, columns, defaultOrderColumn, defaultOrderDirection, activable,
-                weakRelation, scopeFieldDataDefinition);
+        return new GridComponentState(scopeFieldDataDefinition, this);
     }
 
     @Override
@@ -137,7 +136,7 @@ public final class GridComponentPattern extends AbstractComponentPattern {
 
     @Override
     protected void initializeComponent() throws JSONException {
-        getBelongsToFieldDefinition();
+        configureBelongsToFieldDefinition();
         parseOptions();
 
         activable = getDataDefinition().isActivable();
@@ -155,7 +154,7 @@ public final class GridComponentPattern extends AbstractComponentPattern {
         }
     }
 
-    private void getBelongsToFieldDefinition() {
+    private void configureBelongsToFieldDefinition() {
         if (getScopeFieldDefinition() != null) {
             FieldType fieldType = getScopeFieldDefinition().getType();
             if (fieldType instanceof JoinFieldHolder && fieldType instanceof DataDefinitionHolder) {
@@ -492,5 +491,33 @@ public final class GridComponentPattern extends AbstractComponentPattern {
     private void throwIllegalStateException(final String message) {
         throw new IllegalStateException(getViewDefinition().getPluginIdentifier() + "." + getViewDefinition().getName() + "#"
                 + getPath() + ": " + message);
+    }
+
+    public Set<String> getOrderableColumns() {
+        return orderableColumns;
+    }
+
+    public boolean isWeakRelation() {
+        return weakRelation;
+    }
+
+    public String getDefaultOrderColumn() {
+        return defaultOrderColumn;
+    }
+
+    public String getDefaultOrderDirection() {
+        return defaultOrderDirection;
+    }
+
+    public Map<String, GridComponentColumn> getColumns() {
+        return columns;
+    }
+
+    public boolean isActivable() {
+        return activable;
+    }
+
+    public FieldDefinition getBelongsToFieldDefinition() {
+        return belongsToFieldDefinition;
     }
 }

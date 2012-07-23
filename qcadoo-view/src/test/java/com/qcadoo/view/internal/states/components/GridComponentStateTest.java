@@ -58,6 +58,7 @@ import com.qcadoo.model.internal.ExpressionServiceImpl;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.internal.FieldEntityIdChangeListener;
 import com.qcadoo.view.internal.components.grid.GridComponentColumn;
+import com.qcadoo.view.internal.components.grid.GridComponentPattern;
 import com.qcadoo.view.internal.components.grid.GridComponentState;
 import com.qcadoo.view.internal.states.AbstractComponentState;
 import com.qcadoo.view.internal.states.AbstractStateTest;
@@ -144,7 +145,12 @@ public class GridComponentStateTest extends AbstractStateTest {
                 "i18n");
         given(translationService.translate(Mockito.anyString(), Mockito.any(Locale.class))).willReturn("i18n");
 
-        grid = new GridComponentState(substitutesFieldDefinition, columns, null, null, false, false, productDataDefinition);
+        GridComponentPattern pattern = mock(GridComponentPattern.class);
+        given(pattern.getColumns()).willReturn(columns);
+        given(pattern.getBelongsToFieldDefinition()).willReturn(substitutesFieldDefinition);
+        given(pattern.isActivable()).willReturn(false);
+        given(pattern.isWeakRelation()).willReturn(false);
+        grid = new GridComponentState(productDataDefinition, pattern);
         grid.setDataDefinition(substituteDataDefinition);
         grid.setTranslationService(translationService);
 
@@ -181,7 +187,12 @@ public class GridComponentStateTest extends AbstractStateTest {
     @SuppressWarnings("unchecked")
     public void shouldInitializeWithoutData() throws Exception {
         // given
-        grid = new GridComponentState(null, columns, null, null, false, false, productDataDefinition);
+        GridComponentPattern pattern = mock(GridComponentPattern.class);
+        given(pattern.getColumns()).willReturn(columns);
+        given(pattern.getBelongsToFieldDefinition()).willReturn(null);
+        given(pattern.isActivable()).willReturn(false);
+        given(pattern.isWeakRelation()).willReturn(false);
+        grid = new GridComponentState(productDataDefinition, pattern);
         grid.setDataDefinition(substituteDataDefinition);
 
         JSONObject json = new JSONObject(Collections.singletonMap(AbstractComponentState.JSON_CONTENT, new JSONObject()));

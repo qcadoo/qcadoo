@@ -40,8 +40,12 @@
 			</group>
 		</ribbon>
 		<component type="form" name="beanBForm" reference="beanBForm">
-			<component type="checkbox" name="active" field="active"
+			<component type="checkbox" name="active" field="activeA"
 				defaultEnabled="false" defaultVisible="false" reference="active" />
+			<component type="checkbox" name="neverEnabledCheckbox" field="activeB"
+				defaultEnabled="never" defaultVisible="false" reference="neverEnabledCheckbox" />
+			<component type="checkbox" name="enabledCheckbox" field="activeC"
+				defaultEnabled="true" defaultVisible="false" reference="enabledCheckbox" />
 			<component type="input" name="selectBeanA" field="beanA"
 				reference="selectBeanA" />
 			<component type="textarea" name="beanM" field="beanM"

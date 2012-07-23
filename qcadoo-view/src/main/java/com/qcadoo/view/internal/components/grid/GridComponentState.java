@@ -141,15 +141,14 @@ public final class GridComponentState extends AbstractComponentState implements 
 
     private final DataDefinition scopeFieldDataDefinition;
 
-    public GridComponentState(final FieldDefinition scopeField, final Map<String, GridComponentColumn> columns,
-            final String orderColumn, final String orderDirection, final boolean activable, final boolean weakRelation,
-            final DataDefinition dataDefinition) {
-        this.belongsToFieldDefinition = scopeField;
-        this.columns = columns;
-        this.orderColumn = orderColumn;
-        this.orderDirection = orderDirection;
-        this.activable = activable;
-        this.weakRelation = weakRelation;
+    public GridComponentState(final DataDefinition dataDefinition, final GridComponentPattern pattern) {
+        super(pattern);
+        this.belongsToFieldDefinition = pattern.getBelongsToFieldDefinition();
+        this.columns = pattern.getColumns();
+        this.orderColumn = pattern.getDefaultOrderColumn();
+        this.orderDirection = pattern.getDefaultOrderDirection();
+        this.activable = pattern.isActivable();
+        this.weakRelation = pattern.isWeakRelation();
         this.scopeFieldDataDefinition = dataDefinition;
         registerEvent("refresh", eventPerformer, "refresh");
         registerEvent("select", eventPerformer, "selectEntity");

@@ -42,7 +42,7 @@ public class FieldComponentState extends AbstractComponentState implements Field
     private boolean persistent;
 
     public FieldComponentState(final FieldComponentPattern pattern) {
-        super();
+        super(pattern);
         defaultRequired = pattern.isRequired();
         persistent = pattern.isPersistent();
     }

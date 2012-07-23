@@ -26,6 +26,7 @@ package com.qcadoo.view.internal.states;
 import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
 import java.util.Locale;
@@ -40,6 +41,7 @@ import com.qcadoo.model.internal.ExpressionServiceImpl;
 import com.qcadoo.view.api.ComponentState.MessageType;
 import com.qcadoo.view.internal.api.InternalComponentState;
 import com.qcadoo.view.internal.components.SimpleComponentState;
+import com.qcadoo.view.internal.components.form.FormComponentPattern;
 import com.qcadoo.view.internal.components.form.FormComponentState;
 
 public class ComponentStateTest {
@@ -108,7 +110,10 @@ public class ComponentStateTest {
 
         TranslationService translationService = mock(TranslationService.class);
         DataDefinition dataDefinition = mock(DataDefinition.class);
-        AbstractComponentState componentState = new FormComponentState(null, "2");
+        FormComponentPattern pattern = mock(FormComponentPattern.class);
+        given(pattern.getExpressionNew()).willReturn(null);
+        given(pattern.getExpressionEdit()).willReturn("2");
+        AbstractComponentState componentState = new FormComponentState(pattern);
         componentState.setTranslationService(translationService);
         componentState.setDataDefinition(dataDefinition);
         componentState.setFieldValue(13L);
@@ -125,7 +130,10 @@ public class ComponentStateTest {
     public void shouldNotHaveRequestUpdateStateIfNotValid() throws Exception {
         // given
         TranslationService translationService = mock(TranslationService.class);
-        AbstractComponentState componentState = new FormComponentState(null, null);
+        FormComponentPattern pattern = mock(FormComponentPattern.class);
+        given(pattern.getExpressionNew()).willReturn(null);
+        given(pattern.getExpressionEdit()).willReturn(null);
+        AbstractComponentState componentState = new FormComponentState(pattern);
         componentState.setTranslationService(translationService);
         componentState.initialize(new JSONObject(ImmutableMap.of("components", new JSONObject())), Locale.ENGLISH);
         componentState.addMessage("test", MessageType.FAILURE);

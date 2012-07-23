@@ -51,23 +51,27 @@ public class ButtonComponentState extends AbstractComponentState {
 
     private Long belongsToEntityId;
 
-    public ButtonComponentState(final String url) {
-        this.url = url;
+    public ButtonComponentState(final ButtonComponentPattern pattern) {
+        super(pattern);
+        this.url = pattern.getUrl();
         this.correspondingView = null;
         this.correspondingComponent = null;
         this.correspondingField = null;
         this.correspondingViewInModal = false;
-        registerEvent(L_INITIALIZE, this, L_INITIALIZE);
-        registerEvent("initializeAfterBack", this, L_INITIALIZE);
+        registerEvents();
     }
 
-    public ButtonComponentState(final String correspondingView, final String correspondingComponent,
-            final boolean correspondingViewInModal, final String correspondingField) {
+    public ButtonComponentState(final String correspondingField, final ButtonComponentPattern pattern) {
+        super(pattern);
         this.url = null;
         this.correspondingField = correspondingField;
-        this.correspondingView = correspondingView;
-        this.correspondingComponent = correspondingComponent;
-        this.correspondingViewInModal = correspondingViewInModal;
+        this.correspondingView = pattern.getCorrespondingView();
+        this.correspondingComponent = pattern.getCorrespondingComponent();
+        this.correspondingViewInModal = pattern.isCorrespondingViewInModal();
+        registerEvents();
+    }
+
+    private void registerEvents() {
         registerEvent(L_INITIALIZE, this, L_INITIALIZE);
         registerEvent("initializeAfterBack", this, L_INITIALIZE);
     }

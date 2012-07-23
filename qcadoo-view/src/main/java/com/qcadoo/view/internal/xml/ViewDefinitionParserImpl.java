@@ -60,6 +60,7 @@ import com.qcadoo.view.internal.api.ComponentCustomEvent;
 import com.qcadoo.view.internal.api.ComponentPattern;
 import com.qcadoo.view.internal.api.ContainerPattern;
 import com.qcadoo.view.internal.api.ContextualHelpService;
+import com.qcadoo.view.internal.api.EnabledAttribute;
 import com.qcadoo.view.internal.api.InternalViewDefinition;
 import com.qcadoo.view.internal.api.InternalViewDefinitionService;
 import com.qcadoo.view.internal.api.ViewDefinition;
@@ -319,12 +320,19 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
         componentDefinition.setContextualHelpService(contextualHelpService);
         componentDefinition.setViewDefinition(viewDefinition);
         componentDefinition.setReference(getStringAttribute(componentNode, "reference"));
-        componentDefinition.setDefaultEnabled(getBooleanAttribute(componentNode, "defaultEnabled", true));
         componentDefinition.setDefaultVisible(getBooleanAttribute(componentNode, "defaultVisible", true));
         componentDefinition.setHasLabel(getBooleanAttribute(componentNode, "hasLabel", true));
         componentDefinition.setHasDescription(getBooleanAttribute(componentNode, "hasDescription", false));
         componentDefinition.setDataDefinition(customDataDefinition);
         componentDefinition.setApplicationContext(applicationContext);
+
+        EnabledAttribute enabledAttribute = EnabledAttribute.TRUE;
+        final String defaultEnabled = getStringAttribute(componentNode, "defaultEnabled");
+        if (defaultEnabled != null) {
+            enabledAttribute = EnabledAttribute.parseString(defaultEnabled);
+        }
+        componentDefinition.setDefaultEnabled(EnabledAttribute.TRUE.equals(enabledAttribute));
+        componentDefinition.setPermanentlyDisabled(EnabledAttribute.NEVER.equals(enabledAttribute));
 
         return componentDefinition;
     }

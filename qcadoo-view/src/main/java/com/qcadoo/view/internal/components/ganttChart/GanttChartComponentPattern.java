@@ -59,7 +59,7 @@ public class GanttChartComponentPattern extends AbstractComponentPattern {
 
     @Override
     protected ComponentState getComponentStateInstance() {
-        return new GanttChartComponentState(getResolver(resolver), defaultZoomLevel, defaultStartDay, defaultEndDay);
+        return new GanttChartComponentState(getResolver(resolver), this);
     }
 
     private GanttChartItemResolver getResolver(final String resolver) {
@@ -138,6 +138,18 @@ public class GanttChartComponentPattern extends AbstractComponentPattern {
     @Override
     protected String getJsObjectName() {
         return JS_OBJECT;
+    }
+
+    public final int getDefaultStartDay() {
+        return defaultStartDay;
+    }
+
+    public final int getDefaultEndDay() {
+        return defaultEndDay;
+    }
+
+    public final ZoomLevel getDefaultZoomLevel() {
+        return defaultZoomLevel;
     }
 
 }

@@ -35,6 +35,7 @@ import com.qcadoo.model.api.validators.ErrorMessage;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.internal.FieldEntityIdChangeListener;
 import com.qcadoo.view.internal.ScopeEntityIdChangeListener;
+import com.qcadoo.view.internal.api.ComponentPattern;
 import com.qcadoo.view.internal.api.InternalComponentState;
 import com.qcadoo.view.internal.internal.EntityIdChangeListenerHolder;
 import com.qcadoo.view.internal.internal.EventHandlerHolder;
@@ -98,6 +99,15 @@ public abstract class AbstractComponentState implements InternalComponentState, 
     private boolean hasError = false;
 
     private String translationPath;
+
+    public AbstractComponentState() {
+    }
+
+    public AbstractComponentState(final ComponentPattern pattern) {
+        if (pattern != null) {
+            this.permanentlyDisabled = pattern.isPermanentlyDisabled();
+        }
+    }
 
     @Override
     public final String getName() {
@@ -176,8 +186,9 @@ public abstract class AbstractComponentState implements InternalComponentState, 
         this.locale = locale;
         this.messageHolder = new MessageHolder(translationService, locale);
 
-        if (json.has(JSON_PERMANENTLY_DISABLED)) {
-            setPermanentlyDisabled(json.getBoolean(JSON_PERMANENTLY_DISABLED));
+        if (json.has(JSON_PERMANENTLY_DISABLED) && !json.isNull(JSON_PERMANENTLY_DISABLED)
+                && json.getBoolean(JSON_PERMANENTLY_DISABLED)) {
+            setPermanentlyDisabled(true);
         }
 
         if (json.has(JSON_ENABLED)) {
@@ -337,6 +348,10 @@ public abstract class AbstractComponentState implements InternalComponentState, 
     @Override
     public Object getFieldValue() {
         return null; // implements if you want
+    }
+
+    public boolean isPermanentlyDisabled() {
+        return permanentlyDisabled;
     }
 
 }

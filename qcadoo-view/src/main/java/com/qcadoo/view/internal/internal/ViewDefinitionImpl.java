@@ -256,7 +256,9 @@ public final class ViewDefinitionImpl implements InternalViewDefinition {
 
         callHooks(beforeInitializeHooks, viewDefinitionState);
 
-        jsonObject.put(AbstractComponentState.JSON_PERMANENTLY_DISABLED, permanentlyDisabled);
+        if (permanentlyDisabled) {
+            jsonObject.put(AbstractComponentState.JSON_PERMANENTLY_DISABLED, true);
+        }
         viewDefinitionState.initialize(jsonObject, locale);
 
         for (ComponentPattern cp : patterns.values()) {

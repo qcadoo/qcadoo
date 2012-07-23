@@ -33,7 +33,7 @@ import com.qcadoo.view.internal.ComponentDefinition;
 import com.qcadoo.view.internal.ComponentOption;
 import com.qcadoo.view.internal.patterns.AbstractContainerPattern;
 
-public final class FormComponentPattern extends AbstractContainerPattern {
+public class FormComponentPattern extends AbstractContainerPattern {
 
     private static final String JSP_PATH = "containers/form.jsp";
 
@@ -90,7 +90,7 @@ public final class FormComponentPattern extends AbstractContainerPattern {
 
     @Override
     public ComponentState getComponentStateInstance() {
-        return new FormComponentState(expressionNew, expressionEdit);
+        return new FormComponentState(this);
     }
 
     @Override
@@ -106,6 +106,14 @@ public final class FormComponentPattern extends AbstractContainerPattern {
     @Override
     public String getJsObjectName() {
         return JS_OBJECT;
+    }
+
+    public String getExpressionEdit() {
+        return expressionEdit;
+    }
+
+    public String getExpressionNew() {
+        return expressionNew;
     }
 
 }

@@ -28,6 +28,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import java.util.Collections;
@@ -39,6 +40,7 @@ import org.junit.Test;
 
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.internal.api.InternalComponentState;
+import com.qcadoo.view.internal.components.form.FormComponentPattern;
 import com.qcadoo.view.internal.components.form.FormComponentState;
 
 public class ContainerStateTest extends AbstractStateTest {
@@ -46,7 +48,10 @@ public class ContainerStateTest extends AbstractStateTest {
     @Test
     public void shouldHaveNoChildren() throws Exception {
         // given
-        FormComponentState container = new FormComponentState(null, null);
+        FormComponentPattern pattern = mock(FormComponentPattern.class);
+        given(pattern.getExpressionNew()).willReturn(null);
+        given(pattern.getExpressionEdit()).willReturn(null);
+        FormComponentState container = new FormComponentState(pattern);
 
         // when
         Map<String, InternalComponentState> children = container.getChildren();
@@ -62,7 +67,10 @@ public class ContainerStateTest extends AbstractStateTest {
         InternalComponentState component1 = createMockComponent("component1");
         InternalComponentState component2 = createMockComponent("component2");
 
-        FormComponentState container = new FormComponentState(null, null);
+        FormComponentPattern pattern = mock(FormComponentPattern.class);
+        given(pattern.getExpressionNew()).willReturn(null);
+        given(pattern.getExpressionEdit()).willReturn(null);
+        FormComponentState container = new FormComponentState(pattern);
         container.addChild(component1);
         container.addChild(component2);
 
@@ -79,7 +87,10 @@ public class ContainerStateTest extends AbstractStateTest {
         // given
         InternalComponentState component = createMockComponent("component");
 
-        FormComponentState container = new FormComponentState(null, null);
+        FormComponentPattern pattern = mock(FormComponentPattern.class);
+        given(pattern.getExpressionNew()).willReturn(null);
+        given(pattern.getExpressionEdit()).willReturn(null);
+        FormComponentState container = new FormComponentState(pattern);
         container.addChild(component);
 
         // when
@@ -92,7 +103,10 @@ public class ContainerStateTest extends AbstractStateTest {
     @Test
     public void shouldReturnNullIfChildNotExist() throws Exception {
         // given
-        FormComponentState container = new FormComponentState(null, null);
+        FormComponentPattern pattern = mock(FormComponentPattern.class);
+        given(pattern.getExpressionNew()).willReturn(null);
+        given(pattern.getExpressionEdit()).willReturn(null);
+        FormComponentState container = new FormComponentState(pattern);
 
         // when
         ComponentState child = container.getChild("component");
@@ -107,7 +121,10 @@ public class ContainerStateTest extends AbstractStateTest {
         InternalComponentState component1 = createMockComponent("component1");
         InternalComponentState component2 = createMockComponent("component2");
 
-        FormComponentState container = new FormComponentState(null, null);
+        FormComponentPattern pattern = mock(FormComponentPattern.class);
+        given(pattern.getExpressionNew()).willReturn(null);
+        given(pattern.getExpressionEdit()).willReturn(null);
+        FormComponentState container = new FormComponentState(pattern);
         container.addChild(component1);
         container.addChild(component2);
 
@@ -143,7 +160,10 @@ public class ContainerStateTest extends AbstractStateTest {
         InternalComponentState component2 = createMockComponent("component2");
         given(component2.render()).willReturn(component2Json);
 
-        FormComponentState container = new FormComponentState(null, null);
+        FormComponentPattern pattern = mock(FormComponentPattern.class);
+        given(pattern.getExpressionNew()).willReturn(null);
+        given(pattern.getExpressionEdit()).willReturn(null);
+        FormComponentState container = new FormComponentState(pattern);
         container.addChild(component1);
         container.addChild(component2);
 

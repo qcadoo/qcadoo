@@ -24,6 +24,7 @@
 package com.qcadoo.view.internal.states;
 
 import static org.junit.Assert.assertNull;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
 import org.junit.Test;
@@ -31,7 +32,7 @@ import org.mockito.Mockito;
 
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.ViewDefinitionState;
-import com.qcadoo.view.api.components.FormComponent;
+import com.qcadoo.view.internal.components.form.FormComponentPattern;
 import com.qcadoo.view.internal.components.form.FormComponentState;
 
 public class EventHandlerTest {
@@ -41,7 +42,10 @@ public class EventHandlerTest {
         // given
         ViewDefinitionState viewDefinitionState = mock(ViewDefinitionState.class);
 
-        FormComponent component = new FormComponentState(null, null);
+        FormComponentPattern pattern = mock(FormComponentPattern.class);
+        given(pattern.getExpressionNew()).willReturn(null);
+        given(pattern.getExpressionEdit()).willReturn(null);
+        FormComponentState component = new FormComponentState(pattern);
         component.setFieldValue(13L);
 
         // when
@@ -58,7 +62,10 @@ public class EventHandlerTest {
         ViewDefinitionState viewDefinitionState = mock(ViewDefinitionState.class);
 
         CustomEventBean bean = mock(CustomEventBean.class);
-        FormComponentState component = new FormComponentState(null, null);
+        FormComponentPattern pattern = mock(FormComponentPattern.class);
+        given(pattern.getExpressionNew()).willReturn(null);
+        given(pattern.getExpressionEdit()).willReturn(null);
+        FormComponentState component = new FormComponentState(pattern);
         component.registerCustomEvent("custom", bean, "customMethod", null);
 
         // when
@@ -73,7 +80,10 @@ public class EventHandlerTest {
         // given
         ViewDefinitionState viewDefinitionState = mock(ViewDefinitionState.class);
 
-        FormComponentState component = new FormComponentState(null, null);
+        FormComponentPattern pattern = mock(FormComponentPattern.class);
+        given(pattern.getExpressionNew()).willReturn(null);
+        given(pattern.getExpressionEdit()).willReturn(null);
+        FormComponentState component = new FormComponentState(pattern);
         component.setFieldValue(13L);
 
         CustomEventBean bean1 = mock(CustomEventBean.class);
@@ -96,7 +106,10 @@ public class EventHandlerTest {
         // given
         ViewDefinitionState viewDefinitionState = mock(ViewDefinitionState.class);
 
-        FormComponent component = new FormComponentState(null, null);
+        FormComponentPattern pattern = mock(FormComponentPattern.class);
+        given(pattern.getExpressionNew()).willReturn(null);
+        given(pattern.getExpressionEdit()).willReturn(null);
+        FormComponentState component = new FormComponentState(pattern);
         component.setFieldValue(13L);
 
         // when

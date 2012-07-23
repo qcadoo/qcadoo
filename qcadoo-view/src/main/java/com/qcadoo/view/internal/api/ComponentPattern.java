@@ -169,4 +169,18 @@ public interface ComponentPattern {
      */
     boolean isPersistent();
 
+    /**
+     * Checks if field defined by this component is enabled by default
+     * 
+     * @return true if field defined by this component is enabled by default
+     */
+    boolean isDefaultEnabled();
+
+    /**
+     * Returns true if element defined by this component is permanently disabled
+     * 
+     * @return true if element defined by this component is permanently disabled
+     */
+    boolean isPermanentlyDisabled();
+
 }

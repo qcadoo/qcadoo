@@ -100,7 +100,7 @@ public class SmallTabLayoutPattern extends AbstractLayoutPattern {
 
     @Override
     protected ComponentState getComponentStateInstance() {
-        return new SmallTabLayoutState(tabs);
+        return new SmallTabLayoutState(this);
     }
 
     @Override
@@ -116,6 +116,10 @@ public class SmallTabLayoutPattern extends AbstractLayoutPattern {
     @Override
     public String getJsObjectName() {
         return JS_OBJECT;
+    }
+
+    public final List<SmallTabLayoutPatternTab> getTabs() {
+        return tabs;
     }
 
 }
