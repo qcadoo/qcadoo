@@ -62,7 +62,7 @@ public abstract class XlsDocumentService implements ReportDocumentService {
             throws IOException {
         HSSFWorkbook workbook = new HSSFWorkbook();
         HSSFSheet sheet = workbook.createSheet(getReportTitle(locale));
-        addHeader(sheet, locale);
+        addHeader(sheet, locale, entity);
         addSeries(sheet, entity);
         sheet.setZoom(4, 3);
         FileOutputStream outputStream = null;
@@ -80,7 +80,7 @@ public abstract class XlsDocumentService implements ReportDocumentService {
         outputStream.close();
     }
 
-    protected abstract void addHeader(final HSSFSheet sheet, final Locale locale);
+    protected abstract void addHeader(final HSSFSheet sheet, final Locale locale, final Entity entity);
 
     protected abstract void addSeries(final HSSFSheet sheet, final Entity entity);
 
