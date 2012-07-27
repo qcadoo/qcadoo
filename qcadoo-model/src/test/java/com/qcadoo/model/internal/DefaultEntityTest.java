@@ -250,6 +250,30 @@ public class DefaultEntityTest {
     }
 
     @Test
+    public final void shouldGetBooleanValueReturnTrueIfFieldValueIsStringRepresentingNumberOne() throws Exception {
+        // given
+        defaultEntity.setField(BOOLEAN_FIELD_NAME, "1");
+
+        // when
+        boolean returnedValue = defaultEntity.getBooleanField(BOOLEAN_FIELD_NAME);
+
+        // then
+        assertTrue(returnedValue);
+    }
+
+    @Test
+    public final void shouldGetBooleanValueReturnTrueIfFieldValueIsStringRepresentingNumberZero() throws Exception {
+        // given
+        defaultEntity.setField(BOOLEAN_FIELD_NAME, "0");
+
+        // when
+        boolean returnedValue = defaultEntity.getBooleanField(BOOLEAN_FIELD_NAME);
+
+        // then
+        assertFalse(returnedValue);
+    }
+
+    @Test
     public final void shouldGetBooleanValueReturnFalseIfFieldValueIsStringFalse() throws Exception {
         // given
         defaultEntity.setField(BOOLEAN_FIELD_NAME, "false");

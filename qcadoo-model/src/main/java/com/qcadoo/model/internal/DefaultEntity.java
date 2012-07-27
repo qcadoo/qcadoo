@@ -283,7 +283,7 @@ public final class DefaultEntity implements Entity, EntityAwareCopyPerformer, En
             return ((Boolean) fieldValue).booleanValue();
         }
         if (fieldValue instanceof String) {
-            return Boolean.parseBoolean((String) fieldValue);
+            return "1".equals(fieldValue) || Boolean.parseBoolean((String) fieldValue);
         }
         return false;
     }
