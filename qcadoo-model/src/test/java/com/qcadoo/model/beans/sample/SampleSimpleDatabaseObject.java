@@ -35,6 +35,8 @@ public class SampleSimpleDatabaseObject {
 
     private Long id;
 
+    private String readOnly;
+
     private String name;
 
     private Integer age;
@@ -76,6 +78,14 @@ public class SampleSimpleDatabaseObject {
 
     public void setAge(final Integer age) {
         this.age = age;
+    }
+
+    public String getReadOnly() {
+        return readOnly;
+    }
+
+    public void setReadOnly(final String readOnly) {
+        this.readOnly = readOnly;
     }
 
     public String getName() {

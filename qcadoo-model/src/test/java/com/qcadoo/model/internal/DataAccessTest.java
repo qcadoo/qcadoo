@@ -103,6 +103,8 @@ public abstract class DataAccessTest extends TransactionMockAwareTest {
 
     protected DataDefinitionImpl dataDefinition = null;
 
+    protected FieldDefinitionImpl fieldDefinitionReadOnly;
+
     protected FieldDefinitionImpl fieldDefinitionPriority = null;
 
     protected FieldDefinitionImpl fieldDefinitionBelongsTo = null;
@@ -223,6 +225,10 @@ public abstract class DataAccessTest extends TransactionMockAwareTest {
         fieldDefinitionName = new FieldDefinitionImpl(null, "name");
         fieldDefinitionName.withType(new StringType());
 
+        fieldDefinitionReadOnly = new FieldDefinitionImpl(null, "readOnly");
+        fieldDefinitionReadOnly.withType(new StringType());
+        fieldDefinitionReadOnly.withReadOnly(true);
+
         fieldDefinitionAge = new FieldDefinitionImpl(null, "age");
         fieldDefinitionAge.withType(new IntegerType());
 
@@ -239,6 +245,7 @@ public abstract class DataAccessTest extends TransactionMockAwareTest {
         fieldDefinitionBirthDate = new FieldDefinitionImpl(null, "birthDate");
         fieldDefinitionBirthDate.withType(new DateType());
 
+        dataDefinition.withField(fieldDefinitionReadOnly);
         dataDefinition.withField(fieldDefinitionName);
         dataDefinition.withField(fieldDefinitionAge);
         dataDefinition.withField(fieldDefinitionMoney);

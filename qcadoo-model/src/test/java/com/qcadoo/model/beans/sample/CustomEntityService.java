@@ -29,6 +29,8 @@ import com.qcadoo.model.api.FieldDefinition;
 
 public class CustomEntityService {
 
+    private static final String READ_ONLY_FIELD_NAME = "readOnly";
+
     public void onUpdate(final DataDefinition dataDefinition, final Entity entity) {
         entity.setField("name", "update");
     }
@@ -41,8 +43,12 @@ public class CustomEntityService {
         entity.setField("name", "create");
     }
 
-    public void onDelete(final DataDefinition dataDefinition, final Entity entity) {
-        entity.setField("name", "delete");
+    public void rewriteReadOnlyField(final DataDefinition dataDefinition, final Entity entity) {
+        entity.setField("name", entity.getField(READ_ONLY_FIELD_NAME));
+    }
+
+    public void overrideReadOnlyField(final DataDefinition dataDefinition, final Entity entity) {
+        entity.setField(READ_ONLY_FIELD_NAME, "overrided");
     }
 
     public boolean isEqualToQwerty(final DataDefinition dataDefinition, final FieldDefinition fieldDefinition,

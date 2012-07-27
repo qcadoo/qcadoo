@@ -249,6 +249,138 @@ public class CrudIntegrationTest extends IntegrationTest {
     }
 
     @Test
+    public void shouldNotSetReadOnlyFieldOnCreate() throws Exception {
+        // given
+        DataDefinition machineDataDefinition = dataDefinitionService.get(PLUGIN_MACHINES_NAME, ENTITY_NAME_MACHINE);
+
+        Entity machine = createMachine("machine");
+
+        // when
+        machine.setField("readOnly", "someValue");
+        machine = machineDataDefinition.save(machine);
+
+        // then
+        assertTrue(machine.isValid());
+        assertNull(machine.getField("readOnly"));
+
+        Map<String, Object> result = jdbcTemplate.queryForMap("select * from " + TABLE_NAME_MACHINE);
+
+        assertNotNull(result);
+        assertNull(result.get("readOnly"));
+    }
+
+    @Test
+    public void shouldNotUpdateReadOnlyFieldOnUpdate() throws Exception {
+        // given
+        DataDefinition machineDataDefinition = dataDefinitionService.get(PLUGIN_MACHINES_NAME, ENTITY_NAME_MACHINE);
+
+        Entity machine = createMachine("machine");
+        machine = machineDataDefinition.save(machine);
+
+        // when
+        machine.setField("readOnly", "someValue");
+        machine = machineDataDefinition.save(machine);
+
+        // then
+        assertTrue(machine.isValid());
+        assertNull(machine.getField("readOnly"));
+
+        Map<String, Object> result = jdbcTemplate.queryForMap("select * from " + TABLE_NAME_MACHINE);
+
+        assertNotNull(result);
+        assertNull(result.get("readOnly"));
+    }
+
+    @Test
+    public void shouldHookUpdateReadOnlyFieldOnCreate() throws Exception {
+        // given
+        DataDefinition productDataDefinition = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PRODUCT);
+
+        Entity product = createProduct("product", "18");
+
+        // when
+        product.setField("readOnly", "someValue");
+        product = productDataDefinition.save(product);
+
+        // then
+        assertTrue(product.isValid());
+        assertEquals("changedByHook", product.getField("readOnly"));
+
+        Map<String, Object> result = jdbcTemplate.queryForMap("select * from " + TABLE_NAME_PRODUCT);
+
+        assertNotNull(result);
+        assertEquals("changedByHook", result.get("readOnly"));
+    }
+
+    @Test
+    public void shouldHookUpdateReadOnlyFieldOnUpdate() throws Exception {
+        // given
+        DataDefinition productDataDefinition = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PRODUCT);
+
+        Entity product = createProduct("product", "18");
+        product = productDataDefinition.save(product);
+
+        // when
+        product.setField("readOnly", "someValue");
+        product = productDataDefinition.save(product);
+
+        // then
+        assertTrue(product.isValid());
+        assertEquals("changedByHook", product.getField("readOnly"));
+
+        Map<String, Object> result = jdbcTemplate.queryForMap("select * from " + TABLE_NAME_PRODUCT);
+
+        assertNotNull(result);
+        assertEquals("changedByHook", result.get("readOnly"));
+    }
+
+    @Test
+    public void shouldOverrideReadOnlyFieldValueWithExistingValueOnUpdate() throws Exception {
+        // given
+        DataDefinition machineDataDefinition = dataDefinitionService.get(PLUGIN_MACHINES_NAME, ENTITY_NAME_MACHINE);
+
+        Entity machine = createMachine("machine");
+        machine = machineDataDefinition.save(machine);
+        jdbcTemplate.execute("UPDATE " + TABLE_NAME_MACHINE + " SET readOnly = 'existingValue' WHERE id = " + machine.getId());
+
+        // when
+        machine.setField("readOnly", "someValue");
+        machine = machineDataDefinition.save(machine);
+
+        // then
+        assertTrue(machine.isValid());
+        assertEquals("existingValue", machine.getField("readOnly"));
+
+        Map<String, Object> result = jdbcTemplate.queryForMap("select * from " + TABLE_NAME_MACHINE);
+
+        assertNotNull(result);
+        assertEquals("existingValue", result.get("readOnly"));
+    }
+
+    @Test
+    public void shouldOverrideReadOnlyFieldValueWithHookValueInsteadOfExistingValueOnUpdate() throws Exception {
+        // given
+        DataDefinition productDataDefinition = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PRODUCT);
+
+        Entity product = createProduct("product", "18");
+        product = productDataDefinition.save(product);
+        jdbcTemplate.execute("UPDATE " + TABLE_NAME_MACHINE + " SET readOnly = 'existingValue' WHERE id = " + product.getId());
+
+        // when
+        product.setField("readOnly", "someValue");
+        product = productDataDefinition.save(product);
+
+        // then
+        assertTrue(product.isValid());
+        assertEquals("changedByHook", product.getField("readOnly"));
+
+        Map<String, Object> result = jdbcTemplate.queryForMap("select * from " + TABLE_NAME_PRODUCT);
+
+        assertNotNull(result);
+        assertEquals("changedByHook", result.get("readOnly"));
+    }
+
+    @Test
     public void shouldHardDeleteEntity() throws Exception {
         // given
         DataDefinition productDataDefinition = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PRODUCT);

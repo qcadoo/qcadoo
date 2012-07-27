@@ -24,6 +24,7 @@
 package com.qcadoo.model.hooks;
 
 import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
 
@@ -182,6 +183,133 @@ public class HookTest extends DataAccessTest {
         // then
         assertEquals(null, entity.getField("name"));
         assertEquals(Integer.valueOf(11), entity.getField("age"));
+    }
+
+    @Test
+    public void shouldCreateHookNotSeeNewValueOfReadOnlyField() throws Exception {
+        // given
+        Entity entity = new DefaultEntity(dataDefinition, null);
+        entity.setField("name", null);
+        entity.setField("age", null);
+        entity.setField("readOnly", "youCanNotSeeMe!");
+
+        dataDefinition.addCreateHook(new EntityHookDefinitionImpl(CustomEntityService.class.getName(), "rewriteReadOnlyField",
+                PLUGIN_IDENTIFIER, applicationContext));
+
+        // when
+        entity = dataDefinition.save(entity);
+
+        // then
+        assertNull(entity.getField("readOnly"));
+        assertNull(entity.getField("name"));
+    }
+
+    @Test
+    public void shouldUpdateHookNotSeeNewValueOfReadOnlyField() throws Exception {
+        // given
+        Entity entity = new DefaultEntity(dataDefinition, 1L);
+        entity.setField("name", null);
+        entity.setField("age", null);
+        entity.setField("readOnly", "youCanNotSeeMe!");
+
+        SampleSimpleDatabaseObject databaseObject = new SampleSimpleDatabaseObject(1L);
+
+        given(session.get(any(Class.class), Matchers.anyInt())).willReturn(databaseObject);
+
+        dataDefinition.addUpdateHook(new EntityHookDefinitionImpl(CustomEntityService.class.getName(), "rewriteReadOnlyField",
+                PLUGIN_IDENTIFIER, applicationContext));
+
+        // when
+        entity = dataDefinition.save(entity);
+
+        // then
+        assertNull(entity.getField("readOnly"));
+        assertNull(entity.getField("name"));
+    }
+
+    @Test
+    public void shouldSaveHookNotSeeNewValueOfReadOnlyField() throws Exception {
+        // given
+        Entity entity = new DefaultEntity(dataDefinition, 1L);
+        entity.setField("name", null);
+        entity.setField("age", null);
+        entity.setField("readOnly", "youCanNotSeeMe!");
+
+        SampleSimpleDatabaseObject databaseObject = new SampleSimpleDatabaseObject(1L);
+
+        given(session.get(any(Class.class), Matchers.anyInt())).willReturn(databaseObject);
+
+        dataDefinition.addSaveHook(new EntityHookDefinitionImpl(CustomEntityService.class.getName(), "rewriteReadOnlyField",
+                PLUGIN_IDENTIFIER, applicationContext));
+
+        // when
+        entity = dataDefinition.save(entity);
+
+        // then
+        assertNull(entity.getField("readOnly"));
+        assertNull(entity.getField("name"));
+    }
+
+    @Test
+    public void shouldCreateHookCanOverrideValueOfReadOnlyField() throws Exception {
+        // given
+        Entity entity = new DefaultEntity(dataDefinition, null);
+        entity.setField("name", null);
+        entity.setField("age", null);
+        entity.setField("readOnly", "youCanNotSeeMe!");
+
+        dataDefinition.addCreateHook(new EntityHookDefinitionImpl(CustomEntityService.class.getName(), "overrideReadOnlyField",
+                PLUGIN_IDENTIFIER, applicationContext));
+
+        // when
+        entity = dataDefinition.save(entity);
+
+        // then
+        assertEquals("overrided", entity.getField("readOnly"));
+    }
+
+    @Test
+    public void shouldUpdateHookCanOverrideValueOfReadOnlyField() throws Exception {
+        // given
+        Entity entity = new DefaultEntity(dataDefinition, 1L);
+        entity.setField("name", null);
+        entity.setField("age", null);
+        entity.setField("readOnly", "youCanNotSeeMe!");
+
+        SampleSimpleDatabaseObject databaseObject = new SampleSimpleDatabaseObject(1L);
+
+        given(session.get(any(Class.class), Matchers.anyInt())).willReturn(databaseObject);
+
+        dataDefinition.addUpdateHook(new EntityHookDefinitionImpl(CustomEntityService.class.getName(), "overrideReadOnlyField",
+                PLUGIN_IDENTIFIER, applicationContext));
+
+        // when
+        entity = dataDefinition.save(entity);
+
+        // then
+        assertEquals("overrided", entity.getField("readOnly"));
+    }
+
+    @Test
+    public void shouldSaveHookCanOverrideValueOfReadOnlyField() throws Exception {
+        // given
+        Entity entity = new DefaultEntity(dataDefinition, 1L);
+        entity.setField("name", null);
+        entity.setField("age", null);
+        entity.setField("readOnly", "youCanNotSeeMe!");
+
+        SampleSimpleDatabaseObject databaseObject = new SampleSimpleDatabaseObject(1L);
+
+        given(session.get(any(Class.class), Matchers.anyInt())).willReturn(databaseObject);
+
+        dataDefinition.addSaveHook(new EntityHookDefinitionImpl(CustomEntityService.class.getName(), "overrideReadOnlyField",
+                PLUGIN_IDENTIFIER, applicationContext));
+
+        // when
+        entity = dataDefinition.save(entity);
+
+        // then
+        assertEquals("overrided", entity.getField("readOnly"));
     }
 
 }

@@ -33,6 +33,8 @@ import com.qcadoo.model.api.Entity;
 
 public class VerifyHooks {
 
+    private static final String READ_ONLY_FIELD_NAME = "readOnly";
+
     public enum HookType {
         SAVE, CREATE, UPDATE, COPY;
     }
@@ -53,6 +55,22 @@ public class VerifyHooks {
 
     public void onCreate(final DataDefinition dataDefinition, final Entity entity) {
         noticeInteraction(CREATE);
+    }
+
+    public void changeReadOnlyFieldOnSave(final DataDefinition dataDefinition, final Entity entity) {
+        entity.setField(READ_ONLY_FIELD_NAME, "changedByHook");
+    }
+
+    public void changeReadOnlyFieldOnUpdate(final DataDefinition dataDefinition, final Entity entity) {
+        entity.setField(READ_ONLY_FIELD_NAME, "changedByHook");
+    }
+
+    public void changeReadOnlyFieldOnCopy(final DataDefinition dataDefinition, final Entity entity) {
+        entity.setField(READ_ONLY_FIELD_NAME, "changedByHook");
+    }
+
+    public void changeReadOnlyFieldOnCreate(final DataDefinition dataDefinition, final Entity entity) {
+        entity.setField(READ_ONLY_FIELD_NAME, "changedByHook");
     }
 
     public void clear() {

@@ -31,6 +31,7 @@
 		<string name="name" required="true" />
 		<hasMany name="components" plugin="products" model="component"
 			joinField="product" cascade="delete" />
+		<string name="readOnly" readonly="true" />
 	</fields>
 	<hooks />
 </model>
