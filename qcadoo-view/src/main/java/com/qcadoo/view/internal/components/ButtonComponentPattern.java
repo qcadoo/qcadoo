@@ -111,19 +111,19 @@ public final class ButtonComponentPattern extends AbstractComponentPattern {
         return JS_OBJECT;
     }
 
-    public final String getUrl() {
+    public String getUrl() {
         return url;
     }
 
-    public final String getCorrespondingView() {
+    public String getCorrespondingView() {
         return correspondingView;
     }
 
-    public final String getCorrespondingComponent() {
+    public String getCorrespondingComponent() {
         return correspondingComponent;
     }
 
-    public final boolean isCorrespondingViewInModal() {
+    public boolean isCorrespondingViewInModal() {
         return correspondingViewInModal;
     }
 }
