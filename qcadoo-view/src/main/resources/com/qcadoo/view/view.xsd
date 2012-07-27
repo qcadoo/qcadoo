@@ -90,16 +90,23 @@
 		<xs:attribute name="reference" type="identifierType" use="optional" />
 		<xs:attribute name="field" type="xs:string" />
 		<xs:attribute name="source" type="xs:string" />
-		<xs:attribute name="defaultEnabled" type="xs:boolean" />
+		<xs:attribute name="defaultEnabled" type="enabledAttribute" />
 		<xs:attribute name="defaultVisible" type="xs:boolean" />
 		<xs:attribute name="hasDescription" type="xs:boolean" default="false" />
 		<xs:attribute name="persistent" type="xs:boolean" default="true" />
 	</xs:complexType>
 
+	<xs:simpleType name="enabledAttribute">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="true" />
+			<xs:enumeration value="false" />
+			<xs:enumeration value="never" />
+		</xs:restriction>
+	</xs:simpleType>
+
 	<xs:complexType name="optionType">
 		<xs:attribute name="type" type="identifierType" use="required" />
 		<xs:attribute name="value" type="xs:string" />
-		<!-- TODO - custom attributes -->
 		<xs:attribute name="fields" type="xs:string" />
 		<xs:attribute name="expression" type="xs:string" />
 		<xs:attribute name="aggregation" type="xs:string" />
