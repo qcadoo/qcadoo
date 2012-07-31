@@ -252,7 +252,7 @@ QCD.PageController = function() {
 			} else {
 				setValueData(response);
 			}
-			if (actionsPerformer && ! (response.content && response.content.status && response.content.status != "ok")) {
+			if (actionsPerformer && ! (response.content && response.content.status && response.content.status != "ok") && (typeof actionsPerformer.performNext === 'function')) {
 				actionsPerformer.performNext();
 			}
 		}, function() {

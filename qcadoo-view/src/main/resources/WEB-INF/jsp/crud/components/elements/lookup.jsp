@@ -46,7 +46,7 @@
 			<c:set var="displayHiddenIfTextRepresentationOnDisabled" value="display: none" />
 		</c:if>
 		<c:if test="${component['jspOptions']['boldTextRepresentationOnDisabled']}">
-			<c:set var="boldFont" value="margin: 0.1em; font-size: 1.1em; font-weight: bold;" />
+			<c:set var="boldFont" value="margin: 0.1em; font-size: 1.1em; font-weight: normal;" />
 		</c:if>
 		<div class="lookupValueWrapper" style="${displayHiddenIfTextRepresentationOnDisabled}">
 			<div class="lookupInputWrapper">
