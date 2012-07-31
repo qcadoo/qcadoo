@@ -35,10 +35,11 @@ import com.qcadoo.model.api.EntityTree;
 import com.qcadoo.model.api.EntityTreeNode;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.validators.ErrorMessage;
-import com.qcadoo.model.internal.api.EntityAwareCopyPerformer;
-import com.qcadoo.model.internal.api.EntityAwareEqualsPerformer;
+import com.qcadoo.model.internal.api.EntityAwareCopyPerformers;
+import com.qcadoo.model.internal.api.EntityAwareEqualsPerformers;
+import com.qcadoo.model.internal.api.PerformerEntitiesChain;
 
-public final class EntityTreeNodeImpl implements EntityTreeNode, EntityAwareCopyPerformer, EntityAwareEqualsPerformer {
+public final class EntityTreeNodeImpl implements EntityTreeNode, EntityAwareCopyPerformers, EntityAwareEqualsPerformers {
 
     private final List<EntityTreeNode> children = new ArrayList<EntityTreeNode>();
 
@@ -184,14 +185,14 @@ public final class EntityTreeNodeImpl implements EntityTreeNode, EntityAwareCopy
 
     @Override
     public EntityTreeNodeImpl copy() {
-        return copy(this);
+        return copy(new PerformerEntitiesChainImpl(this));
     }
 
     @Override
-    public EntityTreeNodeImpl copy(final Entity performerEntity) {
+    public EntityTreeNodeImpl copy(final PerformerEntitiesChain performersChain) {
         Entity entityCopy = null;
-        if (entity instanceof EntityAwareCopyPerformer) {
-            entityCopy = ((EntityAwareCopyPerformer) entity).copy(performerEntity);
+        if (entity instanceof EntityAwareCopyPerformers) {
+            entityCopy = ((EntityAwareCopyPerformers) entity).copy(performersChain);
         } else {
             entityCopy = entity.copy();
         }
@@ -209,10 +210,10 @@ public final class EntityTreeNodeImpl implements EntityTreeNode, EntityAwareCopy
     }
 
     @Override
-    public boolean equals(final Entity obj, final Entity performerEntity) {
+    public boolean equals(final Entity obj, final PerformerEntitiesChain performersChain) {
         boolean isEquals;
-        if (entity instanceof EntityAwareEqualsPerformer) {
-            isEquals = ((EntityAwareEqualsPerformer) entity).equals(obj, performerEntity);
+        if (entity instanceof EntityAwareEqualsPerformers) {
+            isEquals = ((EntityAwareEqualsPerformers) entity).equals(obj, performersChain);
         } else {
             isEquals = entity.equals(obj);
         }
@@ -222,8 +223,8 @@ public final class EntityTreeNodeImpl implements EntityTreeNode, EntityAwareCopy
     @Override
     public boolean flatEquals(final Entity obj) {
         boolean isEquals;
-        if (entity instanceof EntityAwareEqualsPerformer) {
-            isEquals = ((EntityAwareEqualsPerformer) entity).flatEquals(obj);
+        if (entity instanceof EntityAwareEqualsPerformers) {
+            isEquals = ((EntityAwareEqualsPerformers) entity).flatEquals(obj);
         } else {
             isEquals = entity.equals(obj);
         }

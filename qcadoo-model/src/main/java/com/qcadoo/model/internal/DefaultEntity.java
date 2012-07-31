@@ -44,11 +44,12 @@ import com.qcadoo.model.api.EntityTree;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.types.BelongsToType;
 import com.qcadoo.model.api.validators.ErrorMessage;
-import com.qcadoo.model.internal.api.EntityAwareCopyPerformer;
-import com.qcadoo.model.internal.api.EntityAwareEqualsPerformer;
+import com.qcadoo.model.internal.api.EntityAwareCopyPerformers;
+import com.qcadoo.model.internal.api.EntityAwareEqualsPerformers;
+import com.qcadoo.model.internal.api.PerformerEntitiesChain;
 import com.qcadoo.model.internal.api.ValueAndError;
 
-public final class DefaultEntity implements Entity, EntityAwareCopyPerformer, EntityAwareEqualsPerformer {
+public final class DefaultEntity implements Entity, EntityAwareCopyPerformers, EntityAwareEqualsPerformers {
 
     private Long id;
 
@@ -175,25 +176,26 @@ public final class DefaultEntity implements Entity, EntityAwareCopyPerformer, En
             return false;
         }
         Entity other = (Entity) obj;
-        return equals(other, this);
+        return equals(other, new PerformerEntitiesChainImpl(this));
     }
 
     @Override
     public boolean flatEquals(final Entity otherEntity) {
-        return definitionsAreEquals(otherEntity) && fieldsAreEquals(otherEntity, null, true);
+        return definitionsAndIdsAreEqual(otherEntity) && fieldsAreEquals(otherEntity, null, true);
     }
 
     @Override
-    public boolean equals(final Entity otherEntity, final Entity performer) {
-        return otherEntity == performer || definitionsAreEquals(otherEntity) && fieldsAreEquals(otherEntity, performer, false);
+    public boolean equals(final Entity otherEntity, final PerformerEntitiesChain performersChain) {
+        return otherEntity == performersChain.getLast() || definitionsAndIdsAreEqual(otherEntity)
+                && fieldsAreEquals(otherEntity, performersChain, false);
     }
 
-    private boolean definitionsAreEquals(final Entity otherEntity) {
+    private boolean definitionsAndIdsAreEqual(final Entity otherEntity) {
         return new EqualsBuilder().append(id, otherEntity.getId()).append(dataDefinition, otherEntity.getDataDefinition())
                 .isEquals();
     }
 
-    private boolean fieldsAreEquals(final Entity otherEntity, final Entity performer, final boolean flat) {
+    private boolean fieldsAreEquals(final Entity otherEntity, final PerformerEntitiesChain performersChain, final boolean flat) {
         for (String fieldName : dataDefinition.getFields().keySet()) {
             final Object fieldValue = fields.get(fieldName);
             final Object otherFieldValue = otherEntity.getField(fieldName);
@@ -204,7 +206,7 @@ public final class DefaultEntity implements Entity, EntityAwareCopyPerformer, En
             } else if (fieldValue instanceof Collection) {
                 continue;
             } else if (fieldValue instanceof Entity) {
-                if (!flat && !belongsToAreEquals((Entity) fieldValue, (Entity) otherFieldValue, performer)) {
+                if (!flat && !belongsToAreEquals((Entity) fieldValue, (Entity) otherFieldValue, performersChain)) {
                     return false;
                 }
             } else if (!fieldValue.equals(otherFieldValue)) {
@@ -214,14 +216,16 @@ public final class DefaultEntity implements Entity, EntityAwareCopyPerformer, En
         return true;
     }
 
-    private boolean belongsToAreEquals(final Entity fieldValue, final Entity otherFieldValue, final Entity performer) {
+    private boolean belongsToAreEquals(final Entity fieldValue, final Entity otherFieldValue,
+            final PerformerEntitiesChain performersChain) {
         boolean btResult;
-        if (fieldValue instanceof EntityAwareEqualsPerformer) {
-            final EntityAwareEqualsPerformer fieldEntityValue = (EntityAwareEqualsPerformer) fieldValue;
-            if (performer != null && performer.hashCode() == fieldValue.hashCode()) {
-                btResult = fieldEntityValue.flatEquals(otherFieldValue);
+        if (fieldValue instanceof EntityAwareEqualsPerformers) {
+            final EntityAwareEqualsPerformers fieldEntityValue = (EntityAwareEqualsPerformers) fieldValue;
+            if (performersChain.find(fieldValue) == null) {
+                performersChain.append(this);
+                btResult = fieldEntityValue.equals(otherFieldValue, performersChain);
             } else {
-                btResult = fieldEntityValue.equals(otherFieldValue, performer);
+                btResult = fieldEntityValue.flatEquals(otherFieldValue);
             }
         } else {
             btResult = fieldValue.equals(otherFieldValue);
@@ -231,16 +235,16 @@ public final class DefaultEntity implements Entity, EntityAwareCopyPerformer, En
 
     @Override
     public DefaultEntity copy() {
-        return copy(this);
+        return copy(new PerformerEntitiesChainImpl(this));
     }
 
     @Override
-    public DefaultEntity copy(final Entity performerEntity) {
+    public DefaultEntity copy(final PerformerEntitiesChain performersChain) {
         DefaultEntity entity = new DefaultEntity(dataDefinition, id);
         for (Map.Entry<String, Object> field : fields.entrySet()) {
             Object fieldValueCopy = null;
             if (field.getValue() instanceof Entity) {
-                fieldValueCopy = copyFieldEntityValue(performerEntity, (Entity) field.getValue());
+                fieldValueCopy = copyFieldEntityValue(performersChain, (Entity) field.getValue());
             } else {
                 fieldValueCopy = field.getValue();
             }
@@ -249,17 +253,14 @@ public final class DefaultEntity implements Entity, EntityAwareCopyPerformer, En
         return entity;
     }
 
-    private Entity copyFieldEntityValue(final Entity performerEntity, final Entity fieldEntity) {
+    private Entity copyFieldEntityValue(final PerformerEntitiesChain performersChain, final Entity fieldEntity) {
         Entity fieldEntityCopy = null;
-        if (performerEntity != null && fieldEntity.hashCode() == performerEntity.hashCode()) {
-            fieldEntityCopy = fieldEntity;
-        } else if (fieldEntity instanceof EntityAwareCopyPerformer) {
-            Entity currentPerformer = performerEntity;
-            if (performerEntity == null || performerEntity.getId() == null
-                    && performerEntity.getDataDefinition().equals(fieldEntity.getDataDefinition())) {
-                currentPerformer = fieldEntity;
-            }
-            fieldEntityCopy = ((EntityAwareCopyPerformer) fieldEntity).copy(currentPerformer);
+        final Entity existingPerformer = performersChain.find(fieldEntity);
+        if (existingPerformer != null) {
+            fieldEntityCopy = existingPerformer;
+        } else if (fieldEntity instanceof EntityAwareCopyPerformers) {
+            performersChain.append(this);
+            fieldEntityCopy = ((EntityAwareCopyPerformers) fieldEntity).copy(performersChain);
         } else {
             fieldEntityCopy = fieldEntity.copy();
         }

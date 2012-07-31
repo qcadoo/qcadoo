@@ -37,10 +37,11 @@ import com.qcadoo.model.api.EntityList;
 import com.qcadoo.model.api.EntityTree;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.validators.ErrorMessage;
-import com.qcadoo.model.internal.api.EntityAwareCopyPerformer;
-import com.qcadoo.model.internal.api.EntityAwareEqualsPerformer;
+import com.qcadoo.model.internal.api.EntityAwareCopyPerformers;
+import com.qcadoo.model.internal.api.EntityAwareEqualsPerformers;
+import com.qcadoo.model.internal.api.PerformerEntitiesChain;
 
-public final class ProxyEntity implements Entity, EntityAwareCopyPerformer, EntityAwareEqualsPerformer {
+public final class ProxyEntity implements Entity, EntityAwareCopyPerformers, EntityAwareEqualsPerformers {
 
     private final DataDefinition dataDefinition;
 
@@ -143,14 +144,14 @@ public final class ProxyEntity implements Entity, EntityAwareCopyPerformer, Enti
 
     @Override
     public Entity copy() {
-        return copy(null);
+        return copy(new PerformerEntitiesChainImpl(this));
     }
 
     @Override
-    public Entity copy(final Entity performerEntity) {
+    public Entity copy(final PerformerEntitiesChain performersChain) {
         Entity entityCopy = null;
-        if (getEntity() instanceof EntityAwareCopyPerformer) {
-            entityCopy = ((EntityAwareCopyPerformer) getEntity()).copy(performerEntity);
+        if (getEntity() instanceof EntityAwareCopyPerformers) {
+            entityCopy = ((EntityAwareCopyPerformers) getEntity()).copy(performersChain);
         } else {
             entityCopy = getEntity().copy();
         }
@@ -232,11 +233,11 @@ public final class ProxyEntity implements Entity, EntityAwareCopyPerformer, Enti
     }
 
     @Override
-    public boolean equals(final Entity obj, final Entity performerEntity) {
+    public boolean equals(final Entity obj, final PerformerEntitiesChain performersChain) {
         boolean isEquals;
         final Entity entity = getEntity();
-        if (entity instanceof EntityAwareEqualsPerformer) {
-            isEquals = ((EntityAwareEqualsPerformer) entity).equals(obj, performerEntity);
+        if (entity instanceof EntityAwareEqualsPerformers) {
+            isEquals = ((EntityAwareEqualsPerformers) entity).equals(obj, performersChain);
         } else {
             isEquals = entity.equals(obj);
         }
@@ -247,8 +248,8 @@ public final class ProxyEntity implements Entity, EntityAwareCopyPerformer, Enti
     public boolean flatEquals(final Entity obj) {
         boolean isEquals;
         final Entity entity = getEntity();
-        if (entity instanceof EntityAwareEqualsPerformer) {
-            isEquals = ((EntityAwareEqualsPerformer) entity).flatEquals(obj);
+        if (entity instanceof EntityAwareEqualsPerformers) {
+            isEquals = ((EntityAwareEqualsPerformers) entity).flatEquals(obj);
         } else {
             isEquals = entity.equals(obj);
         }

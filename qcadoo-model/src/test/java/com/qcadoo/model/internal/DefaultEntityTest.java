@@ -28,6 +28,7 @@ import static junit.framework.Assert.assertNotSame;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -48,6 +49,8 @@ import com.qcadoo.model.api.EntityList;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.types.BelongsToType;
 import com.qcadoo.model.api.types.FieldType;
+import com.qcadoo.model.api.types.HasManyType;
+import com.qcadoo.model.api.types.ManyToManyType;
 import com.qcadoo.model.internal.types.DecimalType;
 
 public class DefaultEntityTest {
@@ -62,6 +65,22 @@ public class DefaultEntityTest {
 
     private FieldDefinition decimalFieldDefinition;
 
+    private FieldDefinition manyToManyFieldDefinition;
+
+    private DataDefinition manyToManyDataDefinition;
+
+    private FieldDefinition booleanFieldDefinition;
+
+    private FieldDefinition stringFieldDefinition;
+
+    private FieldDefinition hasManyFieldDefinition;
+
+    private DataDefinition hasManyDataDefinition;
+
+    private FieldDefinition secondManyToManyFieldDefinition;
+
+    private DataDefinition secondManyToManyDataDefinition;
+
     private static final String BELONGS_TO_FIELD_NAME = "belongsToField";
 
     private static final String STRING_FIELD_NAME = "stringField";
@@ -69,6 +88,12 @@ public class DefaultEntityTest {
     private static final String BOOLEAN_FIELD_NAME = "booleanField";
 
     private static final String DECIMAL_FIELD_NAME = "decimalField";
+
+    private static final String MANY_TO_MANY_FIELD_NAME = "manyToMany";
+
+    private static final String SECOND_MANY_TO_MANY_FIELD_NAME = "secondManyToMany";
+
+    private static final String HAS_MANY_FIELD_NAME = "hasMany";
 
     private static final String L_FIRST = "first";
 
@@ -78,10 +103,12 @@ public class DefaultEntityTest {
 
     private static final String L_FOURTH = "fourth";
 
+    private static final String L_DIFFERENCE = "difference";
+
     @Before
     public final void init() {
         belongsToFieldDefinition = mock(FieldDefinition.class);
-        BelongsToType belongsToType = mock(BelongsToType.class);
+        final BelongsToType belongsToType = mock(BelongsToType.class);
         when(belongsToFieldDefinition.getType()).thenReturn(belongsToType);
         belongsToFieldDataDefinition = mock(DataDefinition.class);
         when(belongsToFieldDefinition.getDataDefinition()).thenReturn(belongsToFieldDataDefinition);
@@ -90,19 +117,40 @@ public class DefaultEntityTest {
         final DecimalType decimalType = new DecimalType();
         when(decimalFieldDefinition.getType()).thenReturn(decimalType);
 
-        FieldDefinition stringFieldDefinition = mock(FieldDefinition.class);
+        manyToManyFieldDefinition = mock(FieldDefinition.class);
+        final ManyToManyType manyToManyType = mock(ManyToManyType.class);
+        when(manyToManyFieldDefinition.getType()).thenReturn(manyToManyType);
+        manyToManyDataDefinition = mock(DataDefinition.class);
+        when(manyToManyFieldDefinition.getDataDefinition()).thenReturn(manyToManyDataDefinition);
+
+        secondManyToManyFieldDefinition = mock(FieldDefinition.class);
+        when(secondManyToManyFieldDefinition.getType()).thenReturn(manyToManyType);
+        secondManyToManyDataDefinition = mock(DataDefinition.class);
+        when(secondManyToManyFieldDefinition.getDataDefinition()).thenReturn(secondManyToManyDataDefinition);
+
+        hasManyFieldDefinition = mock(FieldDefinition.class);
+        final HasManyType hasManyType = mock(HasManyType.class);
+        when(hasManyType.getJoinFieldName()).thenReturn(BELONGS_TO_FIELD_NAME);
+        when(hasManyFieldDefinition.getType()).thenReturn(hasManyType);
+        hasManyDataDefinition = mock(DataDefinition.class);
+        when(hasManyFieldDefinition.getDataDefinition()).thenReturn(hasManyDataDefinition);
+
+        stringFieldDefinition = mock(FieldDefinition.class);
         when(stringFieldDefinition.isPersistent()).thenReturn(false);
 
         dataDefinition = mock(DataDefinition.class);
-        FieldDefinition booleanFieldDefinition = mock(FieldDefinition.class);
+        booleanFieldDefinition = mock(FieldDefinition.class);
 
         defaultEntity = new DefaultEntity(dataDefinition);
 
-        Map<String, FieldDefinition> fieldsMap = Maps.newHashMap();
+        final Map<String, FieldDefinition> fieldsMap = Maps.newHashMap();
         fieldsMap.put(BELONGS_TO_FIELD_NAME, belongsToFieldDefinition);
         fieldsMap.put(STRING_FIELD_NAME, stringFieldDefinition);
         fieldsMap.put(BOOLEAN_FIELD_NAME, booleanFieldDefinition);
         fieldsMap.put(DECIMAL_FIELD_NAME, decimalFieldDefinition);
+        fieldsMap.put(MANY_TO_MANY_FIELD_NAME, manyToManyFieldDefinition);
+        fieldsMap.put(SECOND_MANY_TO_MANY_FIELD_NAME, secondManyToManyFieldDefinition);
+        fieldsMap.put(HAS_MANY_FIELD_NAME, hasManyFieldDefinition);
 
         for (Map.Entry<String, FieldDefinition> fieldEntry : fieldsMap.entrySet()) {
             when(dataDefinition.getField(fieldEntry.getKey())).thenReturn(fieldEntry.getValue());
@@ -467,8 +515,11 @@ public class DefaultEntityTest {
         // given
         final Entity firstEntity = new DefaultEntity(dataDefinition);
         final Entity secondEntity = new DefaultEntity(dataDefinition);
-        secondEntity.setField(BELONGS_TO_FIELD_NAME, defaultEntity);
+
         firstEntity.setField(BELONGS_TO_FIELD_NAME, secondEntity);
+        firstEntity.setId(1L);
+        secondEntity.setField(BELONGS_TO_FIELD_NAME, firstEntity);
+        secondEntity.setId(2L);
 
         // when
         Entity copy = null;
@@ -481,6 +532,33 @@ public class DefaultEntityTest {
         // then
         assertNotSame(firstEntity, copy);
         assertEquals(firstEntity, copy);
+        assertNotSame(secondEntity, copy.getBelongsToField(BELONGS_TO_FIELD_NAME));
+        assertEquals(secondEntity, copy.getBelongsToField(BELONGS_TO_FIELD_NAME));
+    }
+
+    @Test
+    public final void shouldCopyDoNotMakeInfinityCycleWith2EntitiesWithoutId() {
+        // given
+        final Entity firstEntity = new DefaultEntity(dataDefinition);
+        final Entity secondEntity = new DefaultEntity(dataDefinition);
+
+        firstEntity.setField(BELONGS_TO_FIELD_NAME, secondEntity);
+        firstEntity.setField(STRING_FIELD_NAME, L_FIRST);
+        secondEntity.setField(BELONGS_TO_FIELD_NAME, firstEntity);
+        secondEntity.setField(STRING_FIELD_NAME, L_SECOND);
+
+        // when
+        Entity copy = null;
+        try {
+            copy = firstEntity.copy();
+        } catch (StackOverflowError e) {
+            Assert.fail();
+        }
+
+        // then
+        assertNotSame(firstEntity, copy);
+        assertEquals(firstEntity, copy);
+        assertNotSame(secondEntity, copy.getBelongsToField(BELONGS_TO_FIELD_NAME));
         assertEquals(secondEntity, copy.getBelongsToField(BELONGS_TO_FIELD_NAME));
     }
 
@@ -493,7 +571,9 @@ public class DefaultEntityTest {
 
         firstEntity.setId(1L);
         firstEntity.setField(BELONGS_TO_FIELD_NAME, secondEntity);
+        secondEntity.setId(2L);
         secondEntity.setField(BELONGS_TO_FIELD_NAME, thirdEntity);
+        thirdEntity.setId(3L);
         thirdEntity.setField(BELONGS_TO_FIELD_NAME, firstEntity);
 
         // when
@@ -507,7 +587,40 @@ public class DefaultEntityTest {
         // then
         assertNotSame(firstEntity, copy);
         assertEquals(firstEntity, copy);
+        assertNotSame(secondEntity, copy.getBelongsToField(BELONGS_TO_FIELD_NAME));
         assertEquals(secondEntity, copy.getBelongsToField(BELONGS_TO_FIELD_NAME));
+        assertNotSame(thirdEntity, copy.getBelongsToField(BELONGS_TO_FIELD_NAME).getBelongsToField(BELONGS_TO_FIELD_NAME));
+        assertEquals(thirdEntity, copy.getBelongsToField(BELONGS_TO_FIELD_NAME).getBelongsToField(BELONGS_TO_FIELD_NAME));
+    }
+
+    @Test
+    public final void shouldCopyDoNotMakeInfinityCycleWith3EntitiesWithoutId() {
+        // given
+        final Entity firstEntity = new DefaultEntity(dataDefinition);
+        final Entity secondEntity = new DefaultEntity(dataDefinition);
+        final Entity thirdEntity = new DefaultEntity(dataDefinition);
+
+        firstEntity.setField(BELONGS_TO_FIELD_NAME, secondEntity);
+        firstEntity.setField(STRING_FIELD_NAME, L_FIRST);
+        secondEntity.setField(BELONGS_TO_FIELD_NAME, thirdEntity);
+        secondEntity.setField(STRING_FIELD_NAME, L_SECOND);
+        thirdEntity.setField(BELONGS_TO_FIELD_NAME, firstEntity);
+        thirdEntity.setField(STRING_FIELD_NAME, L_THIRD);
+
+        // when
+        Entity copy = null;
+        try {
+            copy = firstEntity.copy();
+        } catch (StackOverflowError e) {
+            Assert.fail();
+        }
+
+        // then
+        assertNotSame(firstEntity, copy);
+        assertEquals(firstEntity, copy);
+        assertNotSame(secondEntity, copy.getBelongsToField(BELONGS_TO_FIELD_NAME));
+        assertEquals(secondEntity, copy.getBelongsToField(BELONGS_TO_FIELD_NAME));
+        assertNotSame(thirdEntity, copy.getBelongsToField(BELONGS_TO_FIELD_NAME).getBelongsToField(BELONGS_TO_FIELD_NAME));
         assertEquals(thirdEntity, copy.getBelongsToField(BELONGS_TO_FIELD_NAME).getBelongsToField(BELONGS_TO_FIELD_NAME));
     }
 
@@ -520,9 +633,13 @@ public class DefaultEntityTest {
         final Entity fourthEntity = new DefaultEntity(dataDefinition);
 
         firstEntity.setField(BELONGS_TO_FIELD_NAME, secondEntity);
+        firstEntity.setId(1L);
         secondEntity.setField(BELONGS_TO_FIELD_NAME, thirdEntity);
+        secondEntity.setId(2L);
         thirdEntity.setField(BELONGS_TO_FIELD_NAME, fourthEntity);
+        thirdEntity.setId(3L);
         fourthEntity.setField(BELONGS_TO_FIELD_NAME, firstEntity);
+        fourthEntity.setId(4L);
 
         // when
         Entity copy = null;
@@ -534,10 +651,233 @@ public class DefaultEntityTest {
 
         assertNotSame(firstEntity, copy);
         assertEquals(firstEntity, copy);
+        assertNotSame(secondEntity, copy.getBelongsToField(BELONGS_TO_FIELD_NAME));
         assertEquals(secondEntity, copy.getBelongsToField(BELONGS_TO_FIELD_NAME));
+        assertNotSame(thirdEntity, copy.getBelongsToField(BELONGS_TO_FIELD_NAME).getBelongsToField(BELONGS_TO_FIELD_NAME));
         assertEquals(thirdEntity, copy.getBelongsToField(BELONGS_TO_FIELD_NAME).getBelongsToField(BELONGS_TO_FIELD_NAME));
+        assertNotSame(fourthEntity, copy.getBelongsToField(BELONGS_TO_FIELD_NAME).getBelongsToField(BELONGS_TO_FIELD_NAME)
+                .getBelongsToField(BELONGS_TO_FIELD_NAME));
         assertEquals(fourthEntity, copy.getBelongsToField(BELONGS_TO_FIELD_NAME).getBelongsToField(BELONGS_TO_FIELD_NAME)
                 .getBelongsToField(BELONGS_TO_FIELD_NAME));
+    }
+
+    @Test
+    public final void shouldCopyDoNotMakeInfinityCycleWith4EntitiesWithoutId() {
+        // given
+        final Entity firstEntity = new DefaultEntity(dataDefinition);
+        final Entity secondEntity = new DefaultEntity(dataDefinition);
+        final Entity thirdEntity = new DefaultEntity(dataDefinition);
+        final Entity fourthEntity = new DefaultEntity(dataDefinition);
+
+        firstEntity.setField(BELONGS_TO_FIELD_NAME, secondEntity);
+        firstEntity.setField(STRING_FIELD_NAME, L_FIRST);
+        secondEntity.setField(BELONGS_TO_FIELD_NAME, thirdEntity);
+        secondEntity.setField(STRING_FIELD_NAME, L_SECOND);
+        thirdEntity.setField(BELONGS_TO_FIELD_NAME, fourthEntity);
+        thirdEntity.setField(STRING_FIELD_NAME, L_THIRD);
+        fourthEntity.setField(BELONGS_TO_FIELD_NAME, firstEntity);
+        fourthEntity.setField(STRING_FIELD_NAME, L_FOURTH);
+
+        // when
+        Entity copy = null;
+        try {
+            copy = firstEntity.copy();
+        } catch (StackOverflowError e) {
+            Assert.fail();
+        }
+
+        assertNotSame(firstEntity, copy);
+        assertEquals(firstEntity, copy);
+        assertNotSame(secondEntity, copy.getBelongsToField(BELONGS_TO_FIELD_NAME));
+        assertEquals(secondEntity, copy.getBelongsToField(BELONGS_TO_FIELD_NAME));
+        assertNotSame(thirdEntity, copy.getBelongsToField(BELONGS_TO_FIELD_NAME).getBelongsToField(BELONGS_TO_FIELD_NAME));
+        assertEquals(thirdEntity, copy.getBelongsToField(BELONGS_TO_FIELD_NAME).getBelongsToField(BELONGS_TO_FIELD_NAME));
+        assertNotSame(fourthEntity, copy.getBelongsToField(BELONGS_TO_FIELD_NAME).getBelongsToField(BELONGS_TO_FIELD_NAME)
+                .getBelongsToField(BELONGS_TO_FIELD_NAME));
+        assertEquals(fourthEntity, copy.getBelongsToField(BELONGS_TO_FIELD_NAME).getBelongsToField(BELONGS_TO_FIELD_NAME)
+                .getBelongsToField(BELONGS_TO_FIELD_NAME));
+    }
+
+    @Test
+    public final void shouldCopyDoNotMakeInfinityCycleWith2DeeplyNestedEntities() {
+        // given
+        final Entity firstEntity = new DefaultEntity(dataDefinition);
+        final Entity secondEntity = new DefaultEntity(dataDefinition);
+        final Entity thirdEntity = new DefaultEntity(dataDefinition);
+        final Entity fourthEntity = new DefaultEntity(dataDefinition);
+
+        firstEntity.setField(BELONGS_TO_FIELD_NAME, secondEntity);
+        firstEntity.setId(1L);
+        secondEntity.setField(BELONGS_TO_FIELD_NAME, thirdEntity);
+        secondEntity.setId(2L);
+        thirdEntity.setField(BELONGS_TO_FIELD_NAME, fourthEntity);
+        thirdEntity.setId(3L);
+        fourthEntity.setField(BELONGS_TO_FIELD_NAME, thirdEntity);
+        fourthEntity.setId(4L);
+
+        // when
+        Entity copy = null;
+        try {
+            copy = firstEntity.copy();
+        } catch (StackOverflowError e) {
+            Assert.fail();
+        }
+
+        // then
+        assertNotSame(firstEntity, copy);
+        assertEquals(firstEntity, copy);
+        assertEquals(secondEntity, copy.getBelongsToField(BELONGS_TO_FIELD_NAME));
+        assertNotSame(secondEntity, copy.getBelongsToField(BELONGS_TO_FIELD_NAME));
+        assertEquals(thirdEntity, copy.getBelongsToField(BELONGS_TO_FIELD_NAME).getBelongsToField(BELONGS_TO_FIELD_NAME));
+        assertNotSame(thirdEntity, copy.getBelongsToField(BELONGS_TO_FIELD_NAME).getBelongsToField(BELONGS_TO_FIELD_NAME));
+        assertEquals(fourthEntity, copy.getBelongsToField(BELONGS_TO_FIELD_NAME).getBelongsToField(BELONGS_TO_FIELD_NAME)
+                .getBelongsToField(BELONGS_TO_FIELD_NAME));
+        assertNotSame(fourthEntity, copy.getBelongsToField(BELONGS_TO_FIELD_NAME).getBelongsToField(BELONGS_TO_FIELD_NAME)
+                .getBelongsToField(BELONGS_TO_FIELD_NAME));
+    }
+
+    @Test
+    public final void shouldCopyDoNotMakeInfinityCycleWith2DeeplyNestedEntitiesWithoutId() {
+        // given
+        final Entity firstEntity = new DefaultEntity(dataDefinition);
+        final Entity secondEntity = new DefaultEntity(dataDefinition);
+        final Entity thirdEntity = new DefaultEntity(dataDefinition);
+        final Entity fourthEntity = new DefaultEntity(dataDefinition);
+
+        firstEntity.setField(BELONGS_TO_FIELD_NAME, secondEntity);
+        firstEntity.setField(STRING_FIELD_NAME, L_FIRST);
+        secondEntity.setField(BELONGS_TO_FIELD_NAME, thirdEntity);
+        secondEntity.setField(STRING_FIELD_NAME, L_SECOND);
+        thirdEntity.setField(BELONGS_TO_FIELD_NAME, fourthEntity);
+        thirdEntity.setField(STRING_FIELD_NAME, L_THIRD);
+        fourthEntity.setField(BELONGS_TO_FIELD_NAME, thirdEntity);
+        fourthEntity.setField(STRING_FIELD_NAME, L_FOURTH);
+
+        // when
+        Entity copy = null;
+        try {
+            copy = firstEntity.copy();
+        } catch (StackOverflowError e) {
+            Assert.fail();
+        }
+
+        // then
+        assertNotSame(firstEntity, copy);
+        assertEquals(firstEntity, copy);
+        assertEquals(secondEntity, copy.getBelongsToField(BELONGS_TO_FIELD_NAME));
+        assertNotSame(secondEntity, copy.getBelongsToField(BELONGS_TO_FIELD_NAME));
+        assertEquals(thirdEntity, copy.getBelongsToField(BELONGS_TO_FIELD_NAME).getBelongsToField(BELONGS_TO_FIELD_NAME));
+        assertNotSame(thirdEntity, copy.getBelongsToField(BELONGS_TO_FIELD_NAME).getBelongsToField(BELONGS_TO_FIELD_NAME));
+        assertEquals(fourthEntity, copy.getBelongsToField(BELONGS_TO_FIELD_NAME).getBelongsToField(BELONGS_TO_FIELD_NAME)
+                .getBelongsToField(BELONGS_TO_FIELD_NAME));
+        assertNotSame(fourthEntity, copy.getBelongsToField(BELONGS_TO_FIELD_NAME).getBelongsToField(BELONGS_TO_FIELD_NAME)
+                .getBelongsToField(BELONGS_TO_FIELD_NAME));
+    }
+
+    @Test
+    public final void shouldCopyDoNotMakeInfinityCycleWithManyToManyField() {
+        // given
+        final Entity firstEntity = new DefaultEntity(dataDefinition);
+        final Entity secondEntity = new DefaultEntity(dataDefinition);
+
+        firstEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(secondEntity));
+        firstEntity.setId(1L);
+        secondEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(firstEntity));
+        secondEntity.setId(2L);
+
+        // when
+        Entity copy = null;
+        try {
+            copy = firstEntity.copy();
+        } catch (StackOverflowError e) {
+            Assert.fail();
+        }
+
+        // then
+        assertNotSame(firstEntity, copy);
+        assertEquals(firstEntity, copy);
+        assertSame(secondEntity, firstEntity.getManyToManyField(MANY_TO_MANY_FIELD_NAME).get(0));
+    }
+
+    @Test
+    public final void shouldCopyDoNotMakeInfinityCycleWithManyToManyFieldWithoutId() {
+        // given
+        final Entity firstEntity = new DefaultEntity(dataDefinition);
+        final Entity secondEntity = new DefaultEntity(dataDefinition);
+
+        firstEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(secondEntity));
+        firstEntity.setField(STRING_FIELD_NAME, L_FIRST);
+        secondEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(firstEntity));
+        secondEntity.setField(STRING_FIELD_NAME, L_SECOND);
+
+        // when
+        Entity copy = null;
+        try {
+            copy = firstEntity.copy();
+        } catch (StackOverflowError e) {
+            Assert.fail();
+        }
+
+        // then
+        assertNotSame(firstEntity, copy);
+        assertEquals(firstEntity, copy);
+        assertSame(secondEntity, firstEntity.getManyToManyField(MANY_TO_MANY_FIELD_NAME).get(0));
+    }
+
+    @Test
+    public final void shouldCopyDoNotMakeInfinityCycleWithTwoManyToManyFields() {
+        // given
+        final Entity firstEntity = new DefaultEntity(dataDefinition);
+        final Entity secondEntity = new DefaultEntity(dataDefinition);
+
+        firstEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(secondEntity));
+        firstEntity.setField(SECOND_MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(secondEntity));
+        firstEntity.setId(1L);
+        secondEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(firstEntity));
+        secondEntity.setField(SECOND_MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(firstEntity));
+        secondEntity.setId(2L);
+
+        // when
+        Entity copy = null;
+        try {
+            copy = firstEntity.copy();
+        } catch (StackOverflowError e) {
+            Assert.fail();
+        }
+
+        // then
+        assertNotSame(firstEntity, copy);
+        assertEquals(firstEntity, copy);
+        assertSame(secondEntity, firstEntity.getManyToManyField(MANY_TO_MANY_FIELD_NAME).get(0));
+        assertSame(secondEntity, firstEntity.getManyToManyField(SECOND_MANY_TO_MANY_FIELD_NAME).get(0));
+    }
+
+    @Test
+    public final void shouldCopyDoNotMakeInfinityCycleWithTwoManyToManyFieldsWithoutId() {
+        // given
+        final Entity firstEntity = new DefaultEntity(dataDefinition);
+        final Entity secondEntity = new DefaultEntity(dataDefinition);
+
+        firstEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(secondEntity));
+        firstEntity.setField(SECOND_MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(secondEntity));
+        firstEntity.setField(STRING_FIELD_NAME, L_FIRST);
+        secondEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(firstEntity));
+        secondEntity.setField(SECOND_MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(firstEntity));
+        secondEntity.setField(STRING_FIELD_NAME, L_SECOND);
+
+        // when
+        Entity copy = null;
+        try {
+            copy = firstEntity.copy();
+        } catch (StackOverflowError e) {
+            Assert.fail();
+        }
+
+        // then
+        assertNotSame(firstEntity, copy);
+        assertEquals(firstEntity, copy);
+        assertSame(secondEntity, firstEntity.getManyToManyField(MANY_TO_MANY_FIELD_NAME).get(0));
+        assertSame(secondEntity, firstEntity.getManyToManyField(SECOND_MANY_TO_MANY_FIELD_NAME).get(0));
     }
 
     @Test
@@ -545,8 +885,30 @@ public class DefaultEntityTest {
         // given
         final Entity firstEntity = new DefaultEntity(dataDefinition);
         final Entity secondEntity = new DefaultEntity(dataDefinition);
-        secondEntity.setField(BELONGS_TO_FIELD_NAME, defaultEntity);
+
+        secondEntity.setField(BELONGS_TO_FIELD_NAME, firstEntity);
+        secondEntity.setId(2L);
         firstEntity.setField(BELONGS_TO_FIELD_NAME, secondEntity);
+        firstEntity.setId(1L);
+
+        // when
+        try {
+            firstEntity.hashCode();
+        } catch (StackOverflowError e) {
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public final void shouldHashCodeDoNotMakeInfinityCycleWith2EntitiesWithoutId() {
+        // given
+        final Entity firstEntity = new DefaultEntity(dataDefinition);
+        final Entity secondEntity = new DefaultEntity(dataDefinition);
+
+        firstEntity.setField(BELONGS_TO_FIELD_NAME, secondEntity);
+        firstEntity.setField(STRING_FIELD_NAME, L_FIRST);
+        secondEntity.setField(BELONGS_TO_FIELD_NAME, firstEntity);
+        secondEntity.setField(STRING_FIELD_NAME, L_SECOND);
 
         // when
         try {
@@ -565,8 +927,32 @@ public class DefaultEntityTest {
 
         firstEntity.setId(1L);
         firstEntity.setField(BELONGS_TO_FIELD_NAME, secondEntity);
+        secondEntity.setId(2L);
         secondEntity.setField(BELONGS_TO_FIELD_NAME, thirdEntity);
+        thirdEntity.setId(3L);
         thirdEntity.setField(BELONGS_TO_FIELD_NAME, firstEntity);
+
+        // when
+        try {
+            firstEntity.hashCode();
+        } catch (StackOverflowError e) {
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public final void shouldHashCodeDoNotMakeInfinityCycleWith3EntitiesWithoutId() {
+        // given
+        final Entity firstEntity = new DefaultEntity(dataDefinition);
+        final Entity secondEntity = new DefaultEntity(dataDefinition);
+        final Entity thirdEntity = new DefaultEntity(dataDefinition);
+
+        firstEntity.setField(BELONGS_TO_FIELD_NAME, secondEntity);
+        firstEntity.setField(STRING_FIELD_NAME, L_FIRST);
+        secondEntity.setField(BELONGS_TO_FIELD_NAME, thirdEntity);
+        secondEntity.setField(STRING_FIELD_NAME, L_SECOND);
+        thirdEntity.setField(BELONGS_TO_FIELD_NAME, firstEntity);
+        thirdEntity.setField(STRING_FIELD_NAME, L_THIRD);
 
         // when
         try {
@@ -584,10 +970,370 @@ public class DefaultEntityTest {
         final Entity thirdEntity = new DefaultEntity(dataDefinition);
         final Entity fourthEntity = new DefaultEntity(dataDefinition);
 
+        firstEntity.setId(1L);
         firstEntity.setField(BELONGS_TO_FIELD_NAME, secondEntity);
+        secondEntity.setId(2L);
         secondEntity.setField(BELONGS_TO_FIELD_NAME, thirdEntity);
+        thirdEntity.setId(3L);
         thirdEntity.setField(BELONGS_TO_FIELD_NAME, fourthEntity);
+        fourthEntity.setId(4L);
         fourthEntity.setField(BELONGS_TO_FIELD_NAME, firstEntity);
+
+        // when
+        try {
+            firstEntity.hashCode();
+        } catch (StackOverflowError e) {
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public final void shouldHashCodeDoNotMakeInfinityCycleWith4EntitiesWithoutId() {
+        // given
+        final Entity firstEntity = new DefaultEntity(dataDefinition);
+        final Entity secondEntity = new DefaultEntity(dataDefinition);
+        final Entity thirdEntity = new DefaultEntity(dataDefinition);
+        final Entity fourthEntity = new DefaultEntity(dataDefinition);
+
+        firstEntity.setField(BELONGS_TO_FIELD_NAME, secondEntity);
+        firstEntity.setField(STRING_FIELD_NAME, L_FIRST);
+        secondEntity.setField(BELONGS_TO_FIELD_NAME, thirdEntity);
+        secondEntity.setField(STRING_FIELD_NAME, L_SECOND);
+        thirdEntity.setField(BELONGS_TO_FIELD_NAME, fourthEntity);
+        thirdEntity.setField(STRING_FIELD_NAME, L_THIRD);
+        fourthEntity.setField(BELONGS_TO_FIELD_NAME, firstEntity);
+        fourthEntity.setField(STRING_FIELD_NAME, L_FOURTH);
+
+        // when
+        try {
+            firstEntity.hashCode();
+        } catch (StackOverflowError e) {
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public final void shouldHashCodeDoNotMakeInfinityCycleWith2DeeplyNestedEntities() {
+        // given
+        final Entity firstEntity = new DefaultEntity(dataDefinition);
+        final Entity secondEntity = new DefaultEntity(dataDefinition);
+        final Entity thirdEntity = new DefaultEntity(dataDefinition);
+        final Entity fourthEntity = new DefaultEntity(dataDefinition);
+
+        firstEntity.setField(BELONGS_TO_FIELD_NAME, secondEntity);
+        firstEntity.setId(1L);
+        secondEntity.setField(BELONGS_TO_FIELD_NAME, thirdEntity);
+        secondEntity.setId(2L);
+        thirdEntity.setField(BELONGS_TO_FIELD_NAME, fourthEntity);
+        thirdEntity.setId(3L);
+        fourthEntity.setField(BELONGS_TO_FIELD_NAME, thirdEntity);
+        fourthEntity.setId(4L);
+
+        // when
+        try {
+            firstEntity.hashCode();
+        } catch (StackOverflowError e) {
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public final void shouldHashCodeDoNotMakeInfinityCycleWith2DeeplyNestedEntitiesWithoutId() {
+        // given
+        final Entity firstEntity = new DefaultEntity(dataDefinition);
+        final Entity secondEntity = new DefaultEntity(dataDefinition);
+        final Entity thirdEntity = new DefaultEntity(dataDefinition);
+        final Entity fourthEntity = new DefaultEntity(dataDefinition);
+
+        firstEntity.setField(BELONGS_TO_FIELD_NAME, secondEntity);
+        firstEntity.setField(STRING_FIELD_NAME, L_FIRST);
+        secondEntity.setField(BELONGS_TO_FIELD_NAME, thirdEntity);
+        secondEntity.setField(STRING_FIELD_NAME, L_SECOND);
+        thirdEntity.setField(BELONGS_TO_FIELD_NAME, fourthEntity);
+        thirdEntity.setField(STRING_FIELD_NAME, L_THIRD);
+        fourthEntity.setField(BELONGS_TO_FIELD_NAME, thirdEntity);
+        fourthEntity.setField(STRING_FIELD_NAME, L_FOURTH);
+
+        // when
+        try {
+            firstEntity.hashCode();
+        } catch (StackOverflowError e) {
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public final void shouldHashCodeDoNotMakeInfinityCycleWithHasManyFields() {
+        // given
+        final Entity firstEntity = new DefaultEntity(dataDefinition);
+        final Entity secondEntity = new DefaultEntity(dataDefinition);
+
+        firstEntity.setField(BELONGS_TO_FIELD_NAME, secondEntity);
+        firstEntity.setField(HAS_MANY_FIELD_NAME, Lists.newArrayList(secondEntity));
+        firstEntity.setId(1L);
+        secondEntity.setField(BELONGS_TO_FIELD_NAME, firstEntity);
+        secondEntity.setField(HAS_MANY_FIELD_NAME, Lists.newArrayList(firstEntity));
+        secondEntity.setId(2L);
+
+        // when
+        try {
+            firstEntity.hashCode();
+        } catch (StackOverflowError e) {
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public final void shouldHashCodeDoNotMakeInfinityCycleWithHasManyFieldsWithoutId() {
+        // given
+        final Entity firstEntity = new DefaultEntity(dataDefinition);
+        final Entity secondEntity = new DefaultEntity(dataDefinition);
+
+        firstEntity.setField(BELONGS_TO_FIELD_NAME, secondEntity);
+        firstEntity.setField(HAS_MANY_FIELD_NAME, Lists.newArrayList(secondEntity));
+        firstEntity.setField(STRING_FIELD_NAME, L_FIRST);
+        secondEntity.setField(BELONGS_TO_FIELD_NAME, firstEntity);
+        secondEntity.setField(HAS_MANY_FIELD_NAME, Lists.newArrayList(firstEntity));
+        secondEntity.setField(STRING_FIELD_NAME, L_SECOND);
+
+        // when
+        try {
+            firstEntity.hashCode();
+        } catch (StackOverflowError e) {
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public final void shouldHashCodeDoNotMakeInfinityCycleWithDeeplyNestedHasManyFields() {
+        // given
+        final Entity firstEntity = new DefaultEntity(dataDefinition);
+        final Entity secondEntity = new DefaultEntity(dataDefinition);
+        final Entity thirdEntity = new DefaultEntity(dataDefinition);
+        final Entity fourthEntity = new DefaultEntity(dataDefinition);
+
+        firstEntity.setField(BELONGS_TO_FIELD_NAME, secondEntity);
+        firstEntity.setId(1L);
+        secondEntity.setField(BELONGS_TO_FIELD_NAME, thirdEntity);
+        secondEntity.setId(2L);
+
+        thirdEntity.setField(BELONGS_TO_FIELD_NAME, fourthEntity);
+        thirdEntity.setField(HAS_MANY_FIELD_NAME, Lists.newArrayList(fourthEntity));
+        thirdEntity.setId(3L);
+        fourthEntity.setField(BELONGS_TO_FIELD_NAME, thirdEntity);
+        fourthEntity.setField(HAS_MANY_FIELD_NAME, Lists.newArrayList(thirdEntity));
+        fourthEntity.setId(4L);
+
+        // when
+        try {
+            firstEntity.hashCode();
+        } catch (StackOverflowError e) {
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public final void shouldHashCodeDoNotMakeInfinityCycleWithDeeplyNestedHasManyFieldsWithoutId() {
+        // given
+        final Entity firstEntity = new DefaultEntity(dataDefinition);
+        final Entity secondEntity = new DefaultEntity(dataDefinition);
+        final Entity thirdEntity = new DefaultEntity(dataDefinition);
+        final Entity fourthEntity = new DefaultEntity(dataDefinition);
+
+        firstEntity.setField(BELONGS_TO_FIELD_NAME, secondEntity);
+        firstEntity.setField(STRING_FIELD_NAME, L_FIRST);
+        secondEntity.setField(BELONGS_TO_FIELD_NAME, thirdEntity);
+        secondEntity.setField(STRING_FIELD_NAME, L_SECOND);
+        thirdEntity.setField(BELONGS_TO_FIELD_NAME, fourthEntity);
+        thirdEntity.setField(HAS_MANY_FIELD_NAME, fourthEntity);
+        thirdEntity.setField(STRING_FIELD_NAME, L_THIRD);
+        fourthEntity.setField(BELONGS_TO_FIELD_NAME, thirdEntity);
+        fourthEntity.setField(HAS_MANY_FIELD_NAME, thirdEntity);
+        fourthEntity.setField(STRING_FIELD_NAME, L_FOURTH);
+
+        // when
+        try {
+            firstEntity.hashCode();
+        } catch (StackOverflowError e) {
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public final void shouldHashCodeDoNotMakeInfinityCycleWithManyToManyField() {
+        // given
+        final Entity firstEntity = new DefaultEntity(dataDefinition);
+        final Entity secondEntity = new DefaultEntity(dataDefinition);
+
+        firstEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(secondEntity));
+        firstEntity.setId(1L);
+        secondEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(firstEntity));
+        secondEntity.setId(2L);
+
+        // when
+        try {
+            firstEntity.hashCode();
+        } catch (StackOverflowError e) {
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public final void shouldHashCodeDoNotMakeInfinityCycleWithManyToManyFieldWithoutId() {
+        // given
+        final Entity firstEntity = new DefaultEntity(dataDefinition);
+        final Entity secondEntity = new DefaultEntity(dataDefinition);
+
+        firstEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(secondEntity));
+        firstEntity.setField(STRING_FIELD_NAME, L_FIRST);
+        secondEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(firstEntity));
+        secondEntity.setField(STRING_FIELD_NAME, L_SECOND);
+
+        // when
+        try {
+            firstEntity.hashCode();
+        } catch (StackOverflowError e) {
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public final void shouldHashCodeDoNotMakeInfinityCycleWithTwoManyToManyFields() {
+        // given
+        final Entity firstEntity = new DefaultEntity(dataDefinition);
+        final Entity secondEntity = new DefaultEntity(dataDefinition);
+
+        firstEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(secondEntity));
+        firstEntity.setField(SECOND_MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(secondEntity));
+        firstEntity.setId(1L);
+        secondEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(firstEntity));
+        secondEntity.setField(SECOND_MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(firstEntity));
+        secondEntity.setId(2L);
+
+        // when
+        try {
+            firstEntity.hashCode();
+        } catch (StackOverflowError e) {
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public final void shouldHashCodeDoNotMakeInfinityCycleWithTwoManyToManyFieldsWithoutId() {
+        // given
+        final Entity firstEntity = new DefaultEntity(dataDefinition);
+        final Entity secondEntity = new DefaultEntity(dataDefinition);
+
+        firstEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(secondEntity));
+        firstEntity.setField(SECOND_MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(secondEntity));
+        firstEntity.setField(STRING_FIELD_NAME, L_FIRST);
+        secondEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(firstEntity));
+        secondEntity.setField(SECOND_MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(firstEntity));
+        secondEntity.setField(STRING_FIELD_NAME, L_SECOND);
+
+        // when
+        try {
+            firstEntity.hashCode();
+        } catch (StackOverflowError e) {
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public final void shouldHashCodeDoNotMakeInfinityCycleWithDeeplyNestedManyToManyField() {
+        // given
+        final Entity firstEntity = new DefaultEntity(dataDefinition);
+        final Entity secondEntity = new DefaultEntity(dataDefinition);
+        final Entity thirdEntity = new DefaultEntity(dataDefinition);
+        final Entity fourthEntity = new DefaultEntity(dataDefinition);
+
+        firstEntity.setField(BELONGS_TO_FIELD_NAME, secondEntity);
+        firstEntity.setId(1L);
+        secondEntity.setField(BELONGS_TO_FIELD_NAME, thirdEntity);
+        secondEntity.setId(2L);
+        thirdEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(fourthEntity));
+        thirdEntity.setId(3L);
+        fourthEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(thirdEntity));
+        fourthEntity.setId(4L);
+
+        // when
+        try {
+            firstEntity.hashCode();
+        } catch (StackOverflowError e) {
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public final void shouldHashCodeDoNotMakeInfinityCycleWithDeeplyNestedManyToManyFieldWithoutId() {
+        // given
+        final Entity firstEntity = new DefaultEntity(dataDefinition);
+        final Entity secondEntity = new DefaultEntity(dataDefinition);
+        final Entity thirdEntity = new DefaultEntity(dataDefinition);
+        final Entity fourthEntity = new DefaultEntity(dataDefinition);
+
+        firstEntity.setField(BELONGS_TO_FIELD_NAME, secondEntity);
+        firstEntity.setField(STRING_FIELD_NAME, L_FIRST);
+        secondEntity.setField(BELONGS_TO_FIELD_NAME, thirdEntity);
+        secondEntity.setField(STRING_FIELD_NAME, L_SECOND);
+        thirdEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(fourthEntity));
+        thirdEntity.setField(STRING_FIELD_NAME, L_THIRD);
+        fourthEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(thirdEntity));
+        fourthEntity.setField(STRING_FIELD_NAME, L_FOURTH);
+
+        // when
+        try {
+            firstEntity.hashCode();
+        } catch (StackOverflowError e) {
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public final void shouldHashCodeDoNotMakeInfinityCycleWithTwoDeeplyNestedManyToManyFields() {
+        // given
+        final Entity firstEntity = new DefaultEntity(dataDefinition);
+        final Entity secondEntity = new DefaultEntity(dataDefinition);
+        final Entity thirdEntity = new DefaultEntity(dataDefinition);
+        final Entity fourthEntity = new DefaultEntity(dataDefinition);
+
+        firstEntity.setField(BELONGS_TO_FIELD_NAME, secondEntity);
+        firstEntity.setId(1L);
+        secondEntity.setField(BELONGS_TO_FIELD_NAME, thirdEntity);
+        secondEntity.setId(2L);
+        thirdEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(fourthEntity));
+        thirdEntity.setField(SECOND_MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(fourthEntity));
+        thirdEntity.setId(3L);
+        fourthEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(thirdEntity));
+        fourthEntity.setField(SECOND_MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(thirdEntity));
+        fourthEntity.setId(4L);
+
+        // when
+        try {
+            firstEntity.hashCode();
+        } catch (StackOverflowError e) {
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public final void shouldHashCodeDoNotMakeInfinityCycleWithTwoDeeplyNestedManyToManyFieldsWithoutId() {
+        // given
+        final Entity firstEntity = new DefaultEntity(dataDefinition);
+        final Entity secondEntity = new DefaultEntity(dataDefinition);
+        final Entity thirdEntity = new DefaultEntity(dataDefinition);
+        final Entity fourthEntity = new DefaultEntity(dataDefinition);
+
+        firstEntity.setField(BELONGS_TO_FIELD_NAME, secondEntity);
+        firstEntity.setField(STRING_FIELD_NAME, L_FIRST);
+        secondEntity.setField(BELONGS_TO_FIELD_NAME, thirdEntity);
+        secondEntity.setField(STRING_FIELD_NAME, L_SECOND);
+        thirdEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(fourthEntity));
+        thirdEntity.setField(SECOND_MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(fourthEntity));
+        thirdEntity.setField(STRING_FIELD_NAME, L_THIRD);
+        fourthEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(thirdEntity));
+        fourthEntity.setField(SECOND_MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(thirdEntity));
+        fourthEntity.setField(STRING_FIELD_NAME, L_FOURTH);
 
         // when
         try {
@@ -602,8 +1348,30 @@ public class DefaultEntityTest {
         // given
         final Entity firstEntity = new DefaultEntity(dataDefinition);
         final Entity secondEntity = new DefaultEntity(dataDefinition);
-        secondEntity.setField(BELONGS_TO_FIELD_NAME, defaultEntity);
+
         firstEntity.setField(BELONGS_TO_FIELD_NAME, secondEntity);
+        firstEntity.setId(1L);
+        secondEntity.setField(BELONGS_TO_FIELD_NAME, firstEntity);
+        secondEntity.setId(2L);
+
+        // when
+        try {
+            firstEntity.toString();
+        } catch (StackOverflowError e) {
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public final void shouldToStringDoNotMakeInfinityCycleWith2EntitiesWithoutId() {
+        // given
+        final Entity firstEntity = new DefaultEntity(dataDefinition);
+        final Entity secondEntity = new DefaultEntity(dataDefinition);
+
+        firstEntity.setField(BELONGS_TO_FIELD_NAME, secondEntity);
+        firstEntity.setField(STRING_FIELD_NAME, L_FIRST);
+        secondEntity.setField(BELONGS_TO_FIELD_NAME, firstEntity);
+        secondEntity.setField(STRING_FIELD_NAME, L_SECOND);
 
         // when
         try {
@@ -620,10 +1388,34 @@ public class DefaultEntityTest {
         final Entity secondEntity = new DefaultEntity(dataDefinition);
         final Entity thirdEntity = new DefaultEntity(dataDefinition);
 
-        firstEntity.setId(1L);
         firstEntity.setField(BELONGS_TO_FIELD_NAME, secondEntity);
+        firstEntity.setId(1L);
         secondEntity.setField(BELONGS_TO_FIELD_NAME, thirdEntity);
+        secondEntity.setId(2L);
         thirdEntity.setField(BELONGS_TO_FIELD_NAME, firstEntity);
+        thirdEntity.setId(3L);
+
+        // when
+        try {
+            firstEntity.toString();
+        } catch (StackOverflowError e) {
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public final void shouldToStringDoNotMakeInfinityCycleWith3EntitiesWithoutId() {
+        // given
+        final Entity firstEntity = new DefaultEntity(dataDefinition);
+        final Entity secondEntity = new DefaultEntity(dataDefinition);
+        final Entity thirdEntity = new DefaultEntity(dataDefinition);
+
+        firstEntity.setField(BELONGS_TO_FIELD_NAME, secondEntity);
+        firstEntity.setField(STRING_FIELD_NAME, L_FIRST);
+        secondEntity.setField(BELONGS_TO_FIELD_NAME, thirdEntity);
+        secondEntity.setField(STRING_FIELD_NAME, L_SECOND);
+        thirdEntity.setField(BELONGS_TO_FIELD_NAME, firstEntity);
+        thirdEntity.setField(STRING_FIELD_NAME, L_THIRD);
 
         // when
         try {
@@ -642,9 +1434,368 @@ public class DefaultEntityTest {
         final Entity fourthEntity = new DefaultEntity(dataDefinition);
 
         firstEntity.setField(BELONGS_TO_FIELD_NAME, secondEntity);
+        firstEntity.setId(1L);
         secondEntity.setField(BELONGS_TO_FIELD_NAME, thirdEntity);
+        secondEntity.setId(2L);
         thirdEntity.setField(BELONGS_TO_FIELD_NAME, fourthEntity);
+        thirdEntity.setId(3L);
         fourthEntity.setField(BELONGS_TO_FIELD_NAME, firstEntity);
+        fourthEntity.setId(4L);
+
+        // when
+        try {
+            firstEntity.toString();
+        } catch (StackOverflowError e) {
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public final void shouldToStringDoNotMakeInfinityCycleWith4EntitiesWithoutId() {
+        // given
+        final Entity firstEntity = new DefaultEntity(dataDefinition);
+        final Entity secondEntity = new DefaultEntity(dataDefinition);
+        final Entity thirdEntity = new DefaultEntity(dataDefinition);
+        final Entity fourthEntity = new DefaultEntity(dataDefinition);
+
+        firstEntity.setField(BELONGS_TO_FIELD_NAME, secondEntity);
+        firstEntity.setField(STRING_FIELD_NAME, L_FIRST);
+        secondEntity.setField(BELONGS_TO_FIELD_NAME, thirdEntity);
+        secondEntity.setField(STRING_FIELD_NAME, L_SECOND);
+        thirdEntity.setField(BELONGS_TO_FIELD_NAME, fourthEntity);
+        thirdEntity.setField(STRING_FIELD_NAME, L_THIRD);
+        fourthEntity.setField(BELONGS_TO_FIELD_NAME, firstEntity);
+        fourthEntity.setField(STRING_FIELD_NAME, L_FOURTH);
+
+        // when
+        try {
+            firstEntity.toString();
+        } catch (StackOverflowError e) {
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public final void shouldToStringDoNotMakeInfinityCycleWith2DeeplyNestedEntities() {
+        // given
+        final Entity firstEntity = new DefaultEntity(dataDefinition);
+        final Entity secondEntity = new DefaultEntity(dataDefinition);
+        final Entity thirdEntity = new DefaultEntity(dataDefinition);
+        final Entity fourthEntity = new DefaultEntity(dataDefinition);
+
+        firstEntity.setField(BELONGS_TO_FIELD_NAME, secondEntity);
+        firstEntity.setId(1L);
+        secondEntity.setField(BELONGS_TO_FIELD_NAME, thirdEntity);
+        secondEntity.setId(2L);
+        thirdEntity.setField(BELONGS_TO_FIELD_NAME, fourthEntity);
+        thirdEntity.setId(3L);
+        fourthEntity.setField(BELONGS_TO_FIELD_NAME, thirdEntity);
+        fourthEntity.setId(4L);
+
+        // when
+        try {
+            firstEntity.toString();
+        } catch (StackOverflowError e) {
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public final void shouldToStringDoNotMakeInfinityCycleWith2DeeplyNestedEntitiesWithoutId() {
+        // given
+        final Entity firstEntity = new DefaultEntity(dataDefinition);
+        final Entity secondEntity = new DefaultEntity(dataDefinition);
+        final Entity thirdEntity = new DefaultEntity(dataDefinition);
+        final Entity fourthEntity = new DefaultEntity(dataDefinition);
+
+        firstEntity.setField(BELONGS_TO_FIELD_NAME, secondEntity);
+        firstEntity.setField(STRING_FIELD_NAME, L_FIRST);
+        secondEntity.setField(BELONGS_TO_FIELD_NAME, thirdEntity);
+        secondEntity.setField(STRING_FIELD_NAME, L_SECOND);
+        thirdEntity.setField(BELONGS_TO_FIELD_NAME, fourthEntity);
+        thirdEntity.setField(STRING_FIELD_NAME, L_THIRD);
+        fourthEntity.setField(BELONGS_TO_FIELD_NAME, thirdEntity);
+        fourthEntity.setField(STRING_FIELD_NAME, L_FOURTH);
+
+        // when
+        try {
+            firstEntity.toString();
+        } catch (StackOverflowError e) {
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public final void shouldToStringDoNotMakeInfinityCycleWithHasManyField() {
+        // given
+        final Entity firstEntity = new DefaultEntity(dataDefinition);
+        final Entity secondEntity = new DefaultEntity(dataDefinition);
+
+        firstEntity.setField(HAS_MANY_FIELD_NAME, Lists.newArrayList(secondEntity));
+        firstEntity.setField(BELONGS_TO_FIELD_NAME, secondEntity);
+        firstEntity.setId(1L);
+        secondEntity.setField(HAS_MANY_FIELD_NAME, Lists.newArrayList(firstEntity));
+        secondEntity.setField(BELONGS_TO_FIELD_NAME, firstEntity);
+        secondEntity.setId(2L);
+
+        // when
+        try {
+            firstEntity.toString();
+        } catch (StackOverflowError e) {
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public final void shouldToStringDoNotMakeInfinityCycleWithHasManyFieldWithoutId() {
+        // given
+        final Entity firstEntity = new DefaultEntity(dataDefinition);
+        final Entity secondEntity = new DefaultEntity(dataDefinition);
+
+        firstEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(secondEntity));
+        firstEntity.setField(BELONGS_TO_FIELD_NAME, secondEntity);
+        firstEntity.setField(STRING_FIELD_NAME, L_FIRST);
+        secondEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(firstEntity));
+        secondEntity.setField(BELONGS_TO_FIELD_NAME, firstEntity);
+        secondEntity.setField(STRING_FIELD_NAME, L_SECOND);
+
+        // when
+        try {
+            firstEntity.toString();
+        } catch (StackOverflowError e) {
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public final void shouldToStringDoNotMakeInfinityCycleWithDeeplyNestedHasManyField() {
+        // given
+        final Entity firstEntity = new DefaultEntity(dataDefinition);
+        final Entity secondEntity = new DefaultEntity(dataDefinition);
+        final Entity thirdEntity = new DefaultEntity(dataDefinition);
+        final Entity fourthEntity = new DefaultEntity(dataDefinition);
+
+        firstEntity.setField(BELONGS_TO_FIELD_NAME, secondEntity);
+        firstEntity.setId(1L);
+        secondEntity.setField(BELONGS_TO_FIELD_NAME, thirdEntity);
+        secondEntity.setId(2L);
+        thirdEntity.setField(HAS_MANY_FIELD_NAME, Lists.newArrayList(fourthEntity));
+        thirdEntity.setField(BELONGS_TO_FIELD_NAME, fourthEntity);
+        thirdEntity.setId(3L);
+        fourthEntity.setField(HAS_MANY_FIELD_NAME, Lists.newArrayList(thirdEntity));
+        fourthEntity.setField(BELONGS_TO_FIELD_NAME, thirdEntity);
+        fourthEntity.setId(4L);
+
+        // when
+        try {
+            firstEntity.toString();
+        } catch (StackOverflowError e) {
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public final void shouldToStringDoNotMakeInfinityCycleWithDeeplyNestedHasManyFieldWithoutId() {
+        // given
+        final Entity firstEntity = new DefaultEntity(dataDefinition);
+        final Entity secondEntity = new DefaultEntity(dataDefinition);
+        final Entity thirdEntity = new DefaultEntity(dataDefinition);
+        final Entity fourthEntity = new DefaultEntity(dataDefinition);
+
+        firstEntity.setField(BELONGS_TO_FIELD_NAME, secondEntity);
+        firstEntity.setField(STRING_FIELD_NAME, L_FIRST);
+        secondEntity.setField(BELONGS_TO_FIELD_NAME, thirdEntity);
+        secondEntity.setField(STRING_FIELD_NAME, L_SECOND);
+        thirdEntity.setField(HAS_MANY_FIELD_NAME, Lists.newArrayList(fourthEntity));
+        thirdEntity.setField(BELONGS_TO_FIELD_NAME, fourthEntity);
+        thirdEntity.setField(STRING_FIELD_NAME, L_THIRD);
+        fourthEntity.setField(HAS_MANY_FIELD_NAME, Lists.newArrayList(thirdEntity));
+        fourthEntity.setField(BELONGS_TO_FIELD_NAME, thirdEntity);
+        fourthEntity.setField(STRING_FIELD_NAME, L_FOURTH);
+
+        // when
+        try {
+            firstEntity.toString();
+        } catch (StackOverflowError e) {
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public final void shouldToStringDoNotMakeInfinityCycleWithManyToManyField() {
+        // given
+        final Entity firstEntity = new DefaultEntity(dataDefinition);
+        final Entity secondEntity = new DefaultEntity(dataDefinition);
+
+        firstEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(secondEntity));
+        firstEntity.setId(1L);
+        secondEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(firstEntity));
+        secondEntity.setId(2L);
+
+        // when
+        try {
+            firstEntity.toString();
+        } catch (StackOverflowError e) {
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public final void shouldToStringDoNotMakeInfinityCycleWithManyToManyFieldWithoutId() {
+        // given
+        final Entity firstEntity = new DefaultEntity(dataDefinition);
+        final Entity secondEntity = new DefaultEntity(dataDefinition);
+
+        firstEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(secondEntity));
+        firstEntity.setField(STRING_FIELD_NAME, L_FIRST);
+        secondEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(firstEntity));
+        secondEntity.setField(STRING_FIELD_NAME, L_SECOND);
+
+        // when
+        try {
+            firstEntity.toString();
+        } catch (StackOverflowError e) {
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public final void shouldToStringDoNotMakeInfinityCycleWithTwoManyToManyFields() {
+        // given
+        final Entity firstEntity = new DefaultEntity(dataDefinition);
+        final Entity secondEntity = new DefaultEntity(dataDefinition);
+
+        firstEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(secondEntity));
+        firstEntity.setField(SECOND_MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(secondEntity));
+        firstEntity.setId(1L);
+        secondEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(firstEntity));
+        secondEntity.setField(SECOND_MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(firstEntity));
+        secondEntity.setId(2L);
+
+        // when
+        try {
+            firstEntity.toString();
+        } catch (StackOverflowError e) {
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public final void shouldToStringDoNotMakeInfinityCycleWithTwoManyToManyFieldsWithoutId() {
+        // given
+        final Entity firstEntity = new DefaultEntity(dataDefinition);
+        final Entity secondEntity = new DefaultEntity(dataDefinition);
+
+        firstEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(secondEntity));
+        firstEntity.setField(SECOND_MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(secondEntity));
+        firstEntity.setField(STRING_FIELD_NAME, L_FIRST);
+        secondEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(firstEntity));
+        secondEntity.setField(SECOND_MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(firstEntity));
+        secondEntity.setField(STRING_FIELD_NAME, L_SECOND);
+
+        // when
+        try {
+            firstEntity.toString();
+        } catch (StackOverflowError e) {
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public final void shouldToStringDoNotMakeInfinityCycleWithDeeplyNestedManyToManyField() {
+        // given
+        final Entity firstEntity = new DefaultEntity(dataDefinition);
+        final Entity secondEntity = new DefaultEntity(dataDefinition);
+        final Entity thirdEntity = new DefaultEntity(dataDefinition);
+        final Entity fourthEntity = new DefaultEntity(dataDefinition);
+
+        firstEntity.setField(BELONGS_TO_FIELD_NAME, secondEntity);
+        firstEntity.setId(1L);
+        secondEntity.setField(BELONGS_TO_FIELD_NAME, thirdEntity);
+        secondEntity.setId(2L);
+        thirdEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(fourthEntity));
+        thirdEntity.setId(3L);
+        fourthEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(thirdEntity));
+        fourthEntity.setId(4L);
+
+        // when
+        try {
+            firstEntity.toString();
+        } catch (StackOverflowError e) {
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public final void shouldToStringDoNotMakeInfinityCycleWithDeeplyNestedManyToManyFieldWithoutId() {
+        // given
+        final Entity firstEntity = new DefaultEntity(dataDefinition);
+        final Entity secondEntity = new DefaultEntity(dataDefinition);
+        final Entity thirdEntity = new DefaultEntity(dataDefinition);
+        final Entity fourthEntity = new DefaultEntity(dataDefinition);
+
+        firstEntity.setField(BELONGS_TO_FIELD_NAME, secondEntity);
+        firstEntity.setField(STRING_FIELD_NAME, L_FIRST);
+        secondEntity.setField(BELONGS_TO_FIELD_NAME, thirdEntity);
+        secondEntity.setField(STRING_FIELD_NAME, L_SECOND);
+        thirdEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(fourthEntity));
+        thirdEntity.setField(STRING_FIELD_NAME, L_THIRD);
+        fourthEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(thirdEntity));
+        fourthEntity.setField(STRING_FIELD_NAME, L_FOURTH);
+
+        // when
+        try {
+            firstEntity.toString();
+        } catch (StackOverflowError e) {
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public final void shouldToStringDoNotMakeInfinityCycleWithTwoDeeplyNestedManyToManyFields() {
+        // given
+        final Entity firstEntity = new DefaultEntity(dataDefinition);
+        final Entity secondEntity = new DefaultEntity(dataDefinition);
+        final Entity thirdEntity = new DefaultEntity(dataDefinition);
+        final Entity fourthEntity = new DefaultEntity(dataDefinition);
+
+        firstEntity.setField(BELONGS_TO_FIELD_NAME, secondEntity);
+        firstEntity.setId(1L);
+        secondEntity.setField(BELONGS_TO_FIELD_NAME, thirdEntity);
+        secondEntity.setId(2L);
+        thirdEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(fourthEntity));
+        thirdEntity.setField(SECOND_MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(fourthEntity));
+        thirdEntity.setId(3L);
+        fourthEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(thirdEntity));
+        fourthEntity.setField(SECOND_MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(thirdEntity));
+        fourthEntity.setId(4L);
+
+        // when
+        try {
+            firstEntity.toString();
+        } catch (StackOverflowError e) {
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public final void shouldToStringDoNotMakeInfinityCycleWithTwoDeeplyNestedManyToManyFieldsWithoutId() {
+        // given
+        final Entity firstEntity = new DefaultEntity(dataDefinition);
+        final Entity secondEntity = new DefaultEntity(dataDefinition);
+        final Entity thirdEntity = new DefaultEntity(dataDefinition);
+        final Entity fourthEntity = new DefaultEntity(dataDefinition);
+
+        firstEntity.setField(BELONGS_TO_FIELD_NAME, secondEntity);
+        firstEntity.setField(STRING_FIELD_NAME, L_FIRST);
+        secondEntity.setField(BELONGS_TO_FIELD_NAME, thirdEntity);
+        secondEntity.setField(STRING_FIELD_NAME, L_SECOND);
+        thirdEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(fourthEntity));
+        thirdEntity.setField(SECOND_MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(fourthEntity));
+        thirdEntity.setField(STRING_FIELD_NAME, L_THIRD);
+        fourthEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(thirdEntity));
+        fourthEntity.setField(SECOND_MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(thirdEntity));
+        fourthEntity.setField(STRING_FIELD_NAME, L_FOURTH);
 
         // when
         try {
@@ -702,7 +1853,7 @@ public class DefaultEntityTest {
         firstOtherEntity.setField(BELONGS_TO_FIELD_NAME, secondOtherEntity);
         firstOtherEntity.setField(STRING_FIELD_NAME, L_FIRST);
         secondOtherEntity.setField(BELONGS_TO_FIELD_NAME, firstOtherEntity);
-        secondOtherEntity.setField(STRING_FIELD_NAME, "difference");
+        secondOtherEntity.setField(STRING_FIELD_NAME, L_DIFFERENCE);
 
         // when
         boolean result = true;
@@ -781,7 +1932,7 @@ public class DefaultEntityTest {
         firstOtherEntity.setField(BELONGS_TO_FIELD_NAME, secondOtherEntity);
         firstOtherEntity.setField(STRING_FIELD_NAME, L_FIRST);
         firstOtherEntityB.setField(BELONGS_TO_FIELD_NAME, secondOtherEntity);
-        firstOtherEntityB.setField(STRING_FIELD_NAME, "difference");
+        firstOtherEntityB.setField(STRING_FIELD_NAME, L_DIFFERENCE);
         secondOtherEntity.setField(BELONGS_TO_FIELD_NAME, thirdOtherEntity);
         secondOtherEntity.setField(STRING_FIELD_NAME, L_SECOND);
         thirdOtherEntity.setField(BELONGS_TO_FIELD_NAME, firstOtherEntityB);
@@ -870,7 +2021,7 @@ public class DefaultEntityTest {
         thirdOtherEntity.setField(BELONGS_TO_FIELD_NAME, fourthOtherEntity);
         thirdOtherEntity.setField(STRING_FIELD_NAME, L_THIRD);
         fourthOtherEntity.setField(BELONGS_TO_FIELD_NAME, firstOtherEntity);
-        fourthOtherEntity.setField(STRING_FIELD_NAME, "difference");
+        fourthOtherEntity.setField(STRING_FIELD_NAME, L_DIFFERENCE);
 
         // when
         boolean result = true;
@@ -881,6 +2032,460 @@ public class DefaultEntityTest {
         }
 
         assertFalse(result);
+    }
+
+    @Test
+    public final void shouldEqualsReturnTrueAndDoNotMakeInfinityCycleWith2DeeplyNestedEntities() {
+        // given
+        final Entity firstEntity = new DefaultEntity(dataDefinition);
+        final Entity secondEntity = new DefaultEntity(dataDefinition);
+        final Entity thirdEntity = new DefaultEntity(dataDefinition);
+        final Entity fourthEntity = new DefaultEntity(dataDefinition);
+
+        final Entity firstOtherEntity = new DefaultEntity(dataDefinition);
+        final Entity secondOtherEntity = new DefaultEntity(dataDefinition);
+        final Entity thirdOtherEntity = new DefaultEntity(dataDefinition);
+        final Entity fourthOtherEntity = new DefaultEntity(dataDefinition);
+
+        firstEntity.setField(BELONGS_TO_FIELD_NAME, secondEntity);
+        firstEntity.setField(STRING_FIELD_NAME, L_FIRST);
+        secondEntity.setField(BELONGS_TO_FIELD_NAME, thirdEntity);
+        secondEntity.setField(STRING_FIELD_NAME, L_SECOND);
+        thirdEntity.setField(BELONGS_TO_FIELD_NAME, fourthEntity);
+        thirdEntity.setField(STRING_FIELD_NAME, L_THIRD);
+        fourthEntity.setField(BELONGS_TO_FIELD_NAME, thirdEntity);
+        fourthEntity.setField(STRING_FIELD_NAME, L_FOURTH);
+
+        firstOtherEntity.setField(BELONGS_TO_FIELD_NAME, secondOtherEntity);
+        firstOtherEntity.setField(STRING_FIELD_NAME, L_FIRST);
+        secondOtherEntity.setField(BELONGS_TO_FIELD_NAME, thirdOtherEntity);
+        secondOtherEntity.setField(STRING_FIELD_NAME, L_SECOND);
+        thirdOtherEntity.setField(BELONGS_TO_FIELD_NAME, fourthOtherEntity);
+        thirdOtherEntity.setField(STRING_FIELD_NAME, L_THIRD);
+        fourthOtherEntity.setField(BELONGS_TO_FIELD_NAME, thirdOtherEntity);
+        fourthOtherEntity.setField(STRING_FIELD_NAME, L_FOURTH);
+
+        // when
+        boolean result = false;
+        try {
+            result = firstEntity.equals(firstOtherEntity);
+        } catch (StackOverflowError e) {
+            Assert.fail();
+        }
+
+        // then
+        assertTrue(result);
+    }
+
+    @Test
+    public final void shouldEqualsReturnFalseAndDoNotMakeInfinityCycleWith2DeeplyNestedEntities() {
+        // given
+        final Entity firstEntity = new DefaultEntity(dataDefinition);
+        final Entity secondEntity = new DefaultEntity(dataDefinition);
+        final Entity thirdEntity = new DefaultEntity(dataDefinition);
+        final Entity fourthEntity = new DefaultEntity(dataDefinition);
+
+        final Entity firstOtherEntity = new DefaultEntity(dataDefinition);
+        final Entity secondOtherEntity = new DefaultEntity(dataDefinition);
+        final Entity thirdOtherEntity = new DefaultEntity(dataDefinition);
+        final Entity fourthOtherEntity = new DefaultEntity(dataDefinition);
+
+        firstEntity.setField(BELONGS_TO_FIELD_NAME, secondEntity);
+        firstEntity.setField(STRING_FIELD_NAME, L_FIRST);
+        secondEntity.setField(BELONGS_TO_FIELD_NAME, thirdEntity);
+        secondEntity.setField(STRING_FIELD_NAME, L_SECOND);
+        thirdEntity.setField(BELONGS_TO_FIELD_NAME, fourthEntity);
+        thirdEntity.setField(STRING_FIELD_NAME, L_THIRD);
+        fourthEntity.setField(BELONGS_TO_FIELD_NAME, thirdEntity);
+        fourthEntity.setField(STRING_FIELD_NAME, L_FOURTH);
+
+        firstOtherEntity.setField(BELONGS_TO_FIELD_NAME, secondOtherEntity);
+        firstOtherEntity.setField(STRING_FIELD_NAME, L_FIRST);
+        secondOtherEntity.setField(BELONGS_TO_FIELD_NAME, thirdOtherEntity);
+        secondOtherEntity.setField(STRING_FIELD_NAME, L_SECOND);
+        thirdOtherEntity.setField(BELONGS_TO_FIELD_NAME, fourthOtherEntity);
+        thirdOtherEntity.setField(STRING_FIELD_NAME, L_THIRD);
+        fourthOtherEntity.setField(BELONGS_TO_FIELD_NAME, thirdOtherEntity);
+        fourthOtherEntity.setField(STRING_FIELD_NAME, L_DIFFERENCE);
+
+        // when
+        boolean result = true;
+        try {
+            result = firstEntity.equals(firstOtherEntity);
+        } catch (StackOverflowError e) {
+            Assert.fail();
+        }
+
+        // then
+        assertFalse(result);
+
+    }
+
+    @Test
+    public final void shouldEqualsReturnFalseAndDoNotMakeInfinityCycleWithHasManyField() {
+        // given
+        final Entity firstEntity = new DefaultEntity(dataDefinition);
+        final Entity secondEntity = new DefaultEntity(dataDefinition);
+
+        firstEntity.setField(HAS_MANY_FIELD_NAME, Lists.newArrayList(secondEntity));
+        firstEntity.setField(BELONGS_TO_FIELD_NAME, secondEntity);
+        firstEntity.setId(1L);
+        secondEntity.setField(HAS_MANY_FIELD_NAME, Lists.newArrayList(firstEntity));
+        secondEntity.setField(BELONGS_TO_FIELD_NAME, firstEntity);
+        secondEntity.setId(2L);
+
+        // when
+        boolean result = true;
+        try {
+            result = firstEntity.equals(secondEntity);
+        } catch (StackOverflowError e) {
+            Assert.fail();
+        }
+
+        // then
+        assertFalse(result);
+    }
+
+    @Test
+    public final void shouldEqualsReturnsFalseAndDoNotMakeInfinityCycleWithHasManyFieldWithoutId() {
+        // given
+        final Entity firstEntity = new DefaultEntity(dataDefinition);
+        final Entity secondEntity = new DefaultEntity(dataDefinition);
+
+        firstEntity.setField(HAS_MANY_FIELD_NAME, Lists.newArrayList(secondEntity));
+        firstEntity.setField(BELONGS_TO_FIELD_NAME, secondEntity);
+        firstEntity.setField(STRING_FIELD_NAME, L_FIRST);
+        secondEntity.setField(HAS_MANY_FIELD_NAME, Lists.newArrayList(firstEntity));
+        secondEntity.setField(BELONGS_TO_FIELD_NAME, firstEntity);
+        secondEntity.setField(STRING_FIELD_NAME, L_SECOND);
+
+        // when
+        boolean result = true;
+        try {
+            result = firstEntity.equals(secondEntity);
+        } catch (StackOverflowError e) {
+            Assert.fail();
+        }
+
+        // then
+        assertFalse(result);
+    }
+
+    @Test
+    public final void shouldEqualsReturnTrueAndDoNotMakeInfinityCycleWithHasManyField() {
+        // given
+        final Entity firstEntity = new DefaultEntity(dataDefinition);
+        final Entity secondEntity = new DefaultEntity(dataDefinition);
+        final Entity firstOtherEntity = new DefaultEntity(dataDefinition);
+        final Entity secondOtherEntity = new DefaultEntity(dataDefinition);
+
+        firstEntity.setField(HAS_MANY_FIELD_NAME, Lists.newArrayList(secondEntity));
+        firstEntity.setField(BELONGS_TO_FIELD_NAME, secondEntity);
+        firstEntity.setId(1L);
+        secondEntity.setField(HAS_MANY_FIELD_NAME, Lists.newArrayList(firstEntity));
+        secondEntity.setField(BELONGS_TO_FIELD_NAME, firstEntity);
+        secondEntity.setId(2L);
+
+        firstOtherEntity.setField(HAS_MANY_FIELD_NAME, Lists.newArrayList(secondOtherEntity));
+        firstOtherEntity.setField(BELONGS_TO_FIELD_NAME, secondOtherEntity);
+        firstOtherEntity.setId(1L);
+        secondOtherEntity.setField(HAS_MANY_FIELD_NAME, Lists.newArrayList(firstOtherEntity));
+        secondOtherEntity.setField(BELONGS_TO_FIELD_NAME, firstOtherEntity);
+        secondOtherEntity.setId(2L);
+
+        // when
+        boolean result = true;
+        try {
+            result = firstEntity.equals(firstOtherEntity);
+        } catch (StackOverflowError e) {
+            Assert.fail();
+        }
+
+        // then
+        assertTrue(result);
+    }
+
+    @Test
+    public final void shouldEqualsReturnTrueAndDoNotMakeInfinityCycleWithHasManyFieldWithoutId() {
+        // given
+        final Entity firstEntity = new DefaultEntity(dataDefinition);
+        final Entity secondEntity = new DefaultEntity(dataDefinition);
+        final Entity firstOtherEntity = new DefaultEntity(dataDefinition);
+        final Entity secondOtherEntity = new DefaultEntity(dataDefinition);
+
+        firstEntity.setField(HAS_MANY_FIELD_NAME, Lists.newArrayList(secondEntity));
+        firstEntity.setField(BELONGS_TO_FIELD_NAME, secondEntity);
+        firstEntity.setField(STRING_FIELD_NAME, L_FIRST);
+        secondEntity.setField(HAS_MANY_FIELD_NAME, Lists.newArrayList(firstEntity));
+        secondEntity.setField(BELONGS_TO_FIELD_NAME, firstEntity);
+        secondEntity.setField(STRING_FIELD_NAME, L_SECOND);
+
+        firstOtherEntity.setField(HAS_MANY_FIELD_NAME, Lists.newArrayList(secondOtherEntity));
+        firstOtherEntity.setField(BELONGS_TO_FIELD_NAME, secondOtherEntity);
+        firstOtherEntity.setField(STRING_FIELD_NAME, L_FIRST);
+        secondOtherEntity.setField(HAS_MANY_FIELD_NAME, Lists.newArrayList(firstOtherEntity));
+        secondOtherEntity.setField(BELONGS_TO_FIELD_NAME, firstOtherEntity);
+        secondOtherEntity.setField(STRING_FIELD_NAME, L_SECOND);
+
+        // when
+        boolean result = true;
+        try {
+            result = firstEntity.equals(firstOtherEntity);
+        } catch (StackOverflowError e) {
+            Assert.fail();
+        }
+
+        // then
+        assertTrue(result);
+    }
+
+    @Test
+    public final void shouldEqualsReturnFalseAndDoNotMakeInfinityCycleWithManyToManyField() {
+        // given
+        final Entity firstEntity = new DefaultEntity(dataDefinition);
+        final Entity secondEntity = new DefaultEntity(dataDefinition);
+
+        firstEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(secondEntity));
+        firstEntity.setId(1L);
+        secondEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(firstEntity));
+        secondEntity.setId(2L);
+
+        // when
+        boolean result = true;
+        try {
+            result = firstEntity.equals(secondEntity);
+        } catch (StackOverflowError e) {
+            Assert.fail();
+        }
+
+        // then
+        assertFalse(result);
+    }
+
+    @Test
+    public final void shouldEqualsReturnsFalseAndDoNotMakeInfinityCycleWithManyToManyFieldWithoutId() {
+        // given
+        final Entity firstEntity = new DefaultEntity(dataDefinition);
+        final Entity secondEntity = new DefaultEntity(dataDefinition);
+
+        firstEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(secondEntity));
+        firstEntity.setField(STRING_FIELD_NAME, L_FIRST);
+        secondEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(firstEntity));
+        secondEntity.setField(STRING_FIELD_NAME, L_SECOND);
+
+        // when
+        boolean result = true;
+        try {
+            result = firstEntity.equals(secondEntity);
+        } catch (StackOverflowError e) {
+            Assert.fail();
+        }
+
+        // then
+        assertFalse(result);
+    }
+
+    @Test
+    public final void shouldEqualsReturnTrueAndDoNotMakeInfinityCycleWithManyToManyField() {
+        // given
+        final Entity firstEntity = new DefaultEntity(dataDefinition);
+        final Entity secondEntity = new DefaultEntity(dataDefinition);
+        final Entity firstOtherEntity = new DefaultEntity(dataDefinition);
+        final Entity secondOtherEntity = new DefaultEntity(dataDefinition);
+
+        firstEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(secondEntity));
+        firstEntity.setId(1L);
+        secondEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(firstEntity));
+        secondEntity.setId(2L);
+
+        firstOtherEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(secondOtherEntity));
+        firstOtherEntity.setId(1L);
+        secondOtherEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(firstOtherEntity));
+        secondOtherEntity.setId(2L);
+
+        // when
+        boolean result = true;
+        try {
+            result = firstEntity.equals(firstOtherEntity);
+        } catch (StackOverflowError e) {
+            Assert.fail();
+        }
+
+        // then
+        assertTrue(result);
+    }
+
+    @Test
+    public final void shouldEqualsReturnTrueAndDoNotMakeInfinityCycleWithManyToManyFieldWithoutId() {
+        // given
+        final Entity firstEntity = new DefaultEntity(dataDefinition);
+        final Entity secondEntity = new DefaultEntity(dataDefinition);
+        final Entity firstOtherEntity = new DefaultEntity(dataDefinition);
+        final Entity secondOtherEntity = new DefaultEntity(dataDefinition);
+
+        firstEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(secondEntity));
+        firstEntity.setField(STRING_FIELD_NAME, L_FIRST);
+        secondEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(firstEntity));
+        secondEntity.setField(STRING_FIELD_NAME, L_SECOND);
+
+        firstOtherEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(secondOtherEntity));
+        firstOtherEntity.setField(STRING_FIELD_NAME, L_FIRST);
+        secondOtherEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(firstOtherEntity));
+        secondOtherEntity.setField(STRING_FIELD_NAME, L_SECOND);
+
+        // when
+        boolean result = true;
+        try {
+            result = firstEntity.equals(firstOtherEntity);
+        } catch (StackOverflowError e) {
+            Assert.fail();
+        }
+
+        // then
+        assertTrue(result);
+    }
+
+    @Test
+    public final void shouldEqualsReturnTrueAndDoNotMakeInfinityCycleWithTwoManyToManyFields() {
+        // given
+        final Entity firstEntity = new DefaultEntity(dataDefinition);
+        final Entity secondEntity = new DefaultEntity(dataDefinition);
+        final Entity firstOtherEntity = new DefaultEntity(dataDefinition);
+        final Entity secondOtherEntity = new DefaultEntity(dataDefinition);
+
+        firstEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(secondEntity));
+        firstEntity.setField(SECOND_MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(secondEntity));
+        firstEntity.setId(1L);
+        secondEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(firstEntity));
+        secondEntity.setField(SECOND_MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(firstEntity));
+        secondEntity.setId(2L);
+
+        firstOtherEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(secondOtherEntity));
+        firstOtherEntity.setField(SECOND_MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(secondOtherEntity));
+        firstOtherEntity.setId(1L);
+        secondOtherEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(firstOtherEntity));
+        secondOtherEntity.setField(SECOND_MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(firstOtherEntity));
+        secondOtherEntity.setId(2L);
+
+        // when
+        boolean result = true;
+        try {
+            result = firstEntity.equals(firstOtherEntity);
+        } catch (StackOverflowError e) {
+            Assert.fail();
+        }
+
+        // then
+        assertTrue(result);
+    }
+
+    @Test
+    public final void shouldEqualsReturnFalseAndDoNotMakeInfinityCycleWithTwoManyToManyFields2() {
+        // given
+        final Entity firstEntity = new DefaultEntity(dataDefinition);
+        final Entity secondEntity = new DefaultEntity(dataDefinition);
+
+        firstEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(secondEntity));
+        firstEntity.setField(SECOND_MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(secondEntity));
+        firstEntity.setId(1L);
+        secondEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(firstEntity));
+        secondEntity.setField(SECOND_MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(firstEntity));
+        secondEntity.setId(2L);
+
+        // when
+        boolean result = true;
+        try {
+            result = firstEntity.equals(secondEntity);
+        } catch (StackOverflowError e) {
+            Assert.fail();
+        }
+
+        // then
+        assertFalse(result);
+    }
+
+    @Test
+    public final void shouldEqualsReturnFalseAndDoNotMakeInfinityCycleWithTwoManyToManyFieldsWithoutId2() {
+        // given
+        final Entity firstEntity = new DefaultEntity(dataDefinition);
+        final Entity secondEntity = new DefaultEntity(dataDefinition);
+
+        firstEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(secondEntity));
+        firstEntity.setField(SECOND_MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(secondEntity));
+        firstEntity.setField(STRING_FIELD_NAME, L_FIRST);
+        secondEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(firstEntity));
+        secondEntity.setField(SECOND_MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(firstEntity));
+        secondEntity.setField(STRING_FIELD_NAME, L_SECOND);
+
+        // when
+        boolean result = true;
+        try {
+            result = firstEntity.equals(secondEntity);
+        } catch (StackOverflowError e) {
+            Assert.fail();
+        }
+
+        // then
+        assertFalse(result);
+    }
+
+    @Test
+    public final void shouldEqualsReturnTrueAndDoNotMakeInfinityCycleWithTwoManyToManyFieldsWithoutId2() {
+        // given
+        final Entity firstEntity = new DefaultEntity(dataDefinition);
+        final Entity secondEntity = new DefaultEntity(dataDefinition);
+
+        firstEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(secondEntity));
+        firstEntity.setField(SECOND_MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(secondEntity));
+        firstEntity.setField(STRING_FIELD_NAME, L_FIRST);
+        secondEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(firstEntity));
+        secondEntity.setField(SECOND_MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(firstEntity));
+        secondEntity.setField(STRING_FIELD_NAME, L_FIRST);
+
+        // when
+        boolean result = true;
+        try {
+            result = firstEntity.equals(secondEntity);
+        } catch (StackOverflowError e) {
+            Assert.fail();
+        }
+
+        // then
+        assertTrue(result);
+    }
+
+    @Test
+    public final void shouldEqualsReturnTrueAndDoNotMakeInfinityCycleWithTwoManyToManyFieldsWithoutId() {
+        // given
+        final Entity firstEntity = new DefaultEntity(dataDefinition);
+        final Entity secondEntity = new DefaultEntity(dataDefinition);
+        final Entity firstOtherEntity = new DefaultEntity(dataDefinition);
+        final Entity secondOtherEntity = new DefaultEntity(dataDefinition);
+
+        firstEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(secondEntity));
+        firstEntity.setField(SECOND_MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(secondEntity));
+        firstEntity.setField(STRING_FIELD_NAME, L_FIRST);
+        secondEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(firstEntity));
+        secondEntity.setField(SECOND_MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(firstEntity));
+        secondEntity.setField(STRING_FIELD_NAME, L_SECOND);
+
+        firstOtherEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(secondOtherEntity));
+        firstOtherEntity.setField(SECOND_MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(secondOtherEntity));
+        firstOtherEntity.setField(STRING_FIELD_NAME, L_FIRST);
+        secondOtherEntity.setField(MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(firstOtherEntity));
+        secondOtherEntity.setField(SECOND_MANY_TO_MANY_FIELD_NAME, Lists.newArrayList(firstOtherEntity));
+        secondOtherEntity.setField(STRING_FIELD_NAME, L_SECOND);
+
+        // when
+        boolean result = true;
+        try {
+            result = firstEntity.equals(firstOtherEntity);
+        } catch (StackOverflowError e) {
+            Assert.fail();
+        }
+
+        // then
+        assertTrue(result);
     }
 
     private List<Entity> getListOfMockEntities() {
