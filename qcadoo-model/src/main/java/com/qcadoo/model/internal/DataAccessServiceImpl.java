@@ -340,7 +340,7 @@ public class DataAccessServiceImpl implements DataAccessService {
             Entity entity = get(dataDefinition, entityId);
 
             if (entity == null) {
-                throw new IllegalStateException("Cannot deactivate " + entityId);
+                throw new IllegalStateException("Cannot deactivate " + entityId + " (entity not found)");
             }
 
             if (entity.isActive()) {
@@ -348,7 +348,7 @@ public class DataAccessServiceImpl implements DataAccessService {
                 entity = save(dataDefinition, entity);
 
                 if (!entity.isValid()) {
-                    throw new IllegalStateException("Cannot deactivate " + entity);
+                    throw new IllegalStateException("Cannot deactivate " + entity + " because of validation errors");
                 }
 
                 LOG.info(entity + " has been deactivated");
