@@ -723,8 +723,7 @@ public class DataAccessServiceImpl implements DataAccessService {
                         child.setField(hasManyFieldType.getJoinFieldName(), null);
                         child = save(childDataDefinition, child);
                         if (!child.isValid()) {
-                            throw new IllegalStateException(String.format("Entity [ENTITY.%s] is in use",
-                                    expressionService.getValue(entity, dataDefinition.getIdentifierExpression(), Locale.ENGLISH)));
+                            throw new IllegalStateException(getConstraintViolationMessage(dataDefinition, entity));
                         }
                     }
                 }
@@ -739,8 +738,7 @@ public class DataAccessServiceImpl implements DataAccessService {
                         child.setField(treeFieldType.getJoinFieldName(), null);
                         child = save(childDataDefinition, child);
                         if (!child.isValid()) {
-                            throw new IllegalStateException(String.format("Entity [ENTITY.%s] is in use",
-                                    expressionService.getValue(entity, dataDefinition.getIdentifierExpression(), Locale.ENGLISH)));
+                            throw new IllegalStateException(getConstraintViolationMessage(dataDefinition, entity));
                         }
                     }
                 }
@@ -750,11 +748,21 @@ public class DataAccessServiceImpl implements DataAccessService {
             hibernateService.getCurrentSession().delete(databaseEntity);
             hibernateService.getCurrentSession().flush();
         } catch (ConstraintViolationException e) {
-            throw new IllegalStateException(String.format("Entity [ENTITY.%s] is in use",
-                    expressionService.getValue(entity, dataDefinition.getIdentifierExpression(), Locale.ENGLISH)), e);
+            throw new IllegalStateException(getConstraintViolationMessage(dataDefinition, entity), e);
         }
 
         logEntityInfo(dataDefinition, entityId, "has been deleted");
+    }
+
+    private String getConstraintViolationMessage(final InternalDataDefinition dataDefinition, final Entity entity) {
+        String message = null;
+        try {
+            message = String.format("Entity [ENTITY.%s] is in use",
+                    expressionService.getValue(entity, dataDefinition.getIdentifierExpression(), Locale.ENGLISH));
+        } catch (Exception e) {
+            message = "Entity is in use";
+        }
+        return message;
     }
 
     private SearchResultImpl getResultSet(final InternalDataDefinition dataDefinition, final int totalNumberOfEntities,
