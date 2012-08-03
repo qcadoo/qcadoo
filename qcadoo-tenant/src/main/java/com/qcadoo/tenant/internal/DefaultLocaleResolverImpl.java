@@ -10,7 +10,7 @@ import com.qcadoo.tenant.api.Standalone;
 
 @Standalone
 @Service
-public class DefaultLocaleResolverImpl implements DefaultLocaleResolver {
+public final class DefaultLocaleResolverImpl implements DefaultLocaleResolver {
 
     private static final Locale PL = new Locale("pl");
 
