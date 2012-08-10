@@ -31,6 +31,7 @@
 		<exclude within="com.qcadoo.model.beans..*" />
 		<exclude within="org.objectweb.asm..*" />
 		<exclude within="javassist..*" />
+		<exclude within="net.sf.cglib..*" />
 	</weaver>
 	<aspects>
 		<aspect name="com.qcadoo.model.internal.aop.MonitorableAdvice" />
