@@ -433,11 +433,11 @@ QCD.components.elements.Lookup = function(_element, _mainController) {
 	this.onGridLinkClicked = function(entityId) {
 		var grid = lookupWindow.mainController.getComponent("window.grid");
 		var lookupData = grid.getLookupData(entityId);
-		performSelectEntity( {
-			            id : lookupData.entityId,
-			            code : lookupData.lookupCode,
-			            value : lookupData.lookupValue
-			        }, false);
+		performSelectEntity({
+			id : lookupData.entityId,
+			code : lookupData.lookupCode,
+			value : lookupData.lookupValue
+			},false);
 		dataState.currentCode = lookupData.lookupCode;
 		onDataStateChange();
 		onViewStateChange();
