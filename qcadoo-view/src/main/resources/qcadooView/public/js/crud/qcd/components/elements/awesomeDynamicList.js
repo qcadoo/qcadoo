@@ -233,9 +233,24 @@ QCD.components.elements.AwesomeDynamicList = function(_element, _mainController)
 		formObject.isVirtual = isVirtual;
 		
 		formObject.updateSize(currentWidth-BUTTONS_WIDTH, currentHeight);
-		formObject.setValue(formObject.getValue());
+		formObject.setValue(deleteContentFromField(formObject.getValue()));
 		
 		return formObject;
+	}
+	
+	function deleteContentFromField(value){
+		if(value.content){
+			value.content = null;
+		}
+		for (var i in value.components) {
+			var formObj = formObjects[i];
+			if (! formObj) {
+				continue;
+			}else{
+			deleteContentFromField(formObj);
+			}
+		}
+		return value;
 	}
 	
 	function addRowClicked(rowId) {
