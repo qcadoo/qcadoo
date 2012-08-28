@@ -45,7 +45,7 @@ public final class SearchOrders {
      * @return order
      */
     public static SearchOrder asc(final String field) {
-        return new SearchOrderImpl(Order.asc(field));
+        return new SearchOrderImpl(Order.asc(field).ignoreCase());
     }
 
     /**
@@ -56,7 +56,7 @@ public final class SearchOrders {
      * @return order
      */
     public static SearchOrder desc(final String field) {
-        return new SearchOrderImpl(Order.desc(field));
+        return new SearchOrderImpl(Order.desc(field).ignoreCase());
     }
 
 }
