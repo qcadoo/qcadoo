@@ -233,7 +233,9 @@ QCD.components.elements.AwesomeDynamicList = function(_element, _mainController)
 		formObject.isVirtual = isVirtual;
 		
 		formObject.updateSize(currentWidth-BUTTONS_WIDTH, currentHeight);
-		formObject.setValue(deleteContentFromField(formObject.getValue()));
+		var componentValue = formObject.getValue()
+		deleteContentFromField(componentValue);
+		formObject.setValue(componentValue);
 		
 		return formObject;
 	}
@@ -243,11 +245,9 @@ QCD.components.elements.AwesomeDynamicList = function(_element, _mainController)
 			value.content = null;
 		}
 		for (var i in value.components) {
-			var formObj = formObjects[i];
-			if (! formObj) {
-				continue;
-			}else{
-			deleteContentFromField(formObj);
+			var formObj = value.components[i];
+			if (formObj) {
+				deleteContentFromField(formObj);
 			}
 		}
 		return value;
