@@ -57,7 +57,7 @@ import com.qcadoo.view.internal.ribbon.model.RibbonGroupImpl;
 import com.qcadoo.view.internal.ribbon.model.RibbonImpl;
 import com.qcadoo.view.internal.ribbon.model.SingleRibbonGroupPack;
 
-public final class LookupComponentPattern extends FieldComponentPattern {
+public class LookupComponentPattern extends FieldComponentPattern {
 
     private static final String L_LOOKUP_CODE = "lookupCode";
 

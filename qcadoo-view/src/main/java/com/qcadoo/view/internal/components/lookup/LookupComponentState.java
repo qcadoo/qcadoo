@@ -40,9 +40,10 @@ import com.qcadoo.model.api.search.SearchRestrictions;
 import com.qcadoo.model.api.search.SearchRestrictions.SearchMatchMode;
 import com.qcadoo.model.api.search.SearchResult;
 import com.qcadoo.model.api.types.BelongsToType;
+import com.qcadoo.view.api.components.LookupComponent;
 import com.qcadoo.view.internal.components.FieldComponentState;
 
-public final class LookupComponentState extends FieldComponentState {
+public final class LookupComponentState extends FieldComponentState implements LookupComponent {
 
     public static final String JSON_REQUIRED = "required";
 
@@ -209,6 +210,15 @@ public final class LookupComponentState extends FieldComponentState {
         belongsToEntityId = scopeEntityId;
         setEnabled(scopeEntityId != null);
         requestRender();
+    }
+
+    @Override
+    public Entity getEntity() {
+        Long entityId = getFieldValueWithoutSearching();
+        if (entityId == null) {
+            return null;
+        }
+        return getDataDefinition().get(entityId);
     }
 
     protected class LookupEventPerformer {
