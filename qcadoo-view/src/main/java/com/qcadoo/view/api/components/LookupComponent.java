@@ -9,6 +9,6 @@ public interface LookupComponent extends FieldComponent {
      * 
      * @return entity with is selected in lookup
      */
-    public Entity getEntity();
+    Entity getEntity();
 
 }
