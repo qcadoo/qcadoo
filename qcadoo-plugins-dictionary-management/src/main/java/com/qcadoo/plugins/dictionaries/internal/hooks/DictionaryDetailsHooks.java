@@ -21,7 +21,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * ***************************************************************************
  */
-package com.qcadoo.plugins.dictionaries.hooks;
+package com.qcadoo.plugins.dictionaries.internal.hooks;
 
 import static com.qcadoo.model.constants.DictionaryItemFields.TECHNICAL_CODE;
 

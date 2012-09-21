@@ -45,7 +45,6 @@ public class PluginManagmentDataHook {
         entity.setField("description", pluginAdditionalData.getDescription());
         entity.setField("vendor", pluginAdditionalData.getVendor());
         entity.setField("vendorUrl", pluginAdditionalData.getVendorUrl());
-
-        // pluginManagmentConnector.getPluginData(pluginIdentifier);
     }
+
 }
