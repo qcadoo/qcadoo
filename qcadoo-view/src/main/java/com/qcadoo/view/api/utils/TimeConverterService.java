@@ -103,7 +103,7 @@ public class TimeConverterService {
      * @return date value in format dd:mm:rrrr hh:mm
      */
 
-    public Date getDateFromField(final Object dateFromField) {
+    public Date getDateTimeFromField(final Object dateFromField) {
         try {
             return new SimpleDateFormat(DateUtils.L_DATE_TIME_FORMAT, Locale.getDefault()).parse((String) dateFromField);
         } catch (ParseException e) {
@@ -118,8 +118,35 @@ public class TimeConverterService {
      *            value from entity
      * @return date to view field
      */
-    public Object setDateToField(final Date date) {
+    public Object setDateTimeToField(final Date date) {
         return new SimpleDateFormat(DateUtils.L_DATE_TIME_FORMAT, Locale.getDefault()).format(date);
+    }
+
+    /**
+     * Converts value from data field to Date
+     * 
+     * @param dateFromField
+     *            value from view field
+     * @return date value in format dd:mm:rrrr
+     */
+
+    public Date getDateFromField(final Object dateFromField) {
+        try {
+            return new SimpleDateFormat(DateUtils.L_DATE_FORMAT, Locale.getDefault()).parse((String) dateFromField);
+        } catch (ParseException e) {
+            throw new IllegalStateException(e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Converts value from field to Object
+     * 
+     * @param date
+     *            value from entity
+     * @return date to view field
+     */
+    public Object setDateToField(final Date date) {
+        return new SimpleDateFormat(DateUtils.L_DATE_FORMAT, Locale.getDefault()).format(date);
     }
 
 }
