@@ -53,7 +53,7 @@ public class ViewHookModuleFactory extends ModuleFactory<ViewHookModule> {
         InternalViewDefinition.HookType hookType;
         if ("afterInitialize".equals(hookTypeStr)) {
             hookType = InternalViewDefinition.HookType.AFTER_INITIALIZE;
-        } else if ("beforeInitalize".equals(hookTypeStr)) {
+        } else if ("beforeInitialize".equals(hookTypeStr)) {
             hookType = InternalViewDefinition.HookType.BEFORE_INITIALIZE;
         } else if ("beforeRender".equals(hookTypeStr)) {
             hookType = InternalViewDefinition.HookType.BEFORE_RENDER;

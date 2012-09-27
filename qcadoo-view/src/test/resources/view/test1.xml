@@ -90,7 +90,7 @@
 		</component>
 	</component>
 	<hooks>
-		<beforeInitalize class="com.qcadoo.model.beans.sample.CustomEntityService"
+		<beforeInitialize class="com.qcadoo.model.beans.sample.CustomEntityService"
 			method="onView" />
 		<afterInitialize class="com.qcadoo.model.beans.sample.CustomEntityService"
 			method="onView" />

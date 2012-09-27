@@ -78,7 +78,7 @@
 				<xs:annotation><xs:documentation>Type of the hook</xs:documentation></xs:annotation>
 				<xs:simpleType>
 					<xs:restriction base="xs:string">
-      					<xs:enumeration value="beforeInitalize">
+      					<xs:enumeration value="beforeInitialize">
       						<xs:annotation><xs:documentation>This hook is executed before view state initialization</xs:documentation></xs:annotation>
       					</xs:enumeration>
       					<xs:enumeration value="afterInitialize">
