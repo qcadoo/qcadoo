@@ -359,7 +359,7 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
             if (Node.ELEMENT_NODE != child.getNodeType()) {
                 continue;
             }
-            if ("beforeInitalize".equals(child.getNodeName())) {
+            if ("beforeInitialize".equals(child.getNodeName())) {
                 viewDefinition.addBeforeInitializeHook(parseHook(child));
             } else if ("afterInitialize".equals(child.getNodeName())) {
                 viewDefinition.addAfterInitializeHook(parseHook(child));
