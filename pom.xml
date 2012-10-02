@@ -25,6 +25,8 @@
 		<module>qcadoo-plugins-menu-management</module>
 		<module>qcadoo-plugins-export</module>
 		<module>qcadoo-mail</module>
+		<module>qcadoo-custom-translation</module>
+		<module>qcadoo-plugins-custom-translation-management</module>
 	</modules>
 
 	<name>Qcadoo Framework</name>

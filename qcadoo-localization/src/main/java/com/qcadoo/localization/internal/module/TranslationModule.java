@@ -33,10 +33,11 @@ import java.util.regex.Pattern;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
 
+import com.qcadoo.localization.api.TranslationPropertiesHolder;
 import com.qcadoo.localization.internal.TranslationModuleService;
 import com.qcadoo.plugin.api.Module;
 
-public class TranslationModule extends Module {
+public class TranslationModule extends Module implements TranslationPropertiesHolder {
 
     private final ApplicationContext applicationContext;
 
@@ -67,13 +68,7 @@ public class TranslationModule extends Module {
 
     @Override
     public void enable() {
-        if (basename == null || "*".equals(basename)) {
-            basenames.addAll(getAllFilesFromPath());
-        } else {
-            basenames.add("classpath:" + pluginIdentifier + "/" + path + "/" + basename);
-        }
-
-        translationModuleService.addTranslationModule(basenames);
+        translationModuleService.addTranslationModule(parseBasenames());
     }
 
     @Override
@@ -85,6 +80,26 @@ public class TranslationModule extends Module {
         // }
 
         translationModuleService.removeTranslationModule(basenames);
+    }
+
+    private Set<String> parseBasenames() {
+        if (basename == null || "*".equals(basename)) {
+            basenames.addAll(getAllFilesFromPath());
+        } else {
+            basenames.add("classpath:" + pluginIdentifier + "/" + path + "/" + basename);
+        }
+
+        return basenames;
+    }
+
+    @Override
+    public Set<String> getParsedBasenames() {
+        return basenames;
+    }
+
+    @Override
+    public String getPluginIdentifier() {
+        return pluginIdentifier;
     }
 
     private Collection<? extends String> getAllFilesFromPath() {
