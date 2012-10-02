@@ -40,7 +40,7 @@ public class TranslationModuleOverrideAspect {
     @Autowired
     private TranslationModuleOverrideUtil translationModuleOverrideUtil;
 
-    @Pointcut("execution(public void com.qcadoo.localization.internal.module.TranslationModule.enable(..)) "
+    @Pointcut("execution(public void com.qcadoo.localization.internal.module.TranslationModule.multiTenantEnable(..)) "
             + "&& target(translationPropertiesHolder)")
     public void enableExecution(final TranslationPropertiesHolder translationPropertiesHolder) {
     }
@@ -55,7 +55,7 @@ public class TranslationModuleOverrideAspect {
         }
     }
 
-    @Pointcut("execution(public void com.qcadoo.localization.internal.module.TranslationModule.disable(..)) "
+    @Pointcut("execution(public void com.qcadoo.localization.internal.module.TranslationModule.multiTenantDisable(..)) "
             + "&& this(translationPropertiesHolder)")
     public void disableExecution(final TranslationPropertiesHolder translationPropertiesHolder) {
     }

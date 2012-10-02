@@ -72,13 +72,17 @@ public class TranslationModule extends Module implements TranslationPropertiesHo
     }
 
     @Override
-    public void disable() {
-        // if (basename == null || "*".equals(basename)) {
-        // basenames.removeAll(getAllFilesFromPath());
-        // } else {
-        // basenames.remove("classpath:" + pluginIdentifier + "/" + path + "/" + basename);
-        // }
+    public void multiTenantEnable() {
+        super.multiTenantEnable();
+    }
 
+    @Override
+    public void multiTenantDisable() {
+        super.multiTenantDisable();
+    }
+
+    @Override
+    public void disable() {
         translationModuleService.removeTranslationModule(basenames);
     }
 

@@ -17,7 +17,7 @@ public class TranslationModuleOverrideAspectTest {
     public final void checkEnableExecutionPointcutDefinition() throws NoSuchMethodException {
         Class<?> clazz = TranslationModule.class;
         assertEquals("com.qcadoo.localization.internal.module.TranslationModule", clazz.getCanonicalName());
-        final Method method = clazz.getDeclaredMethod("enable");
+        final Method method = clazz.getDeclaredMethod("multiTenantEnable");
         assertNotNull(method);
         assertTrue(Modifier.isPublic(method.getModifiers()));
         assertEquals(void.class, method.getReturnType());
@@ -27,7 +27,7 @@ public class TranslationModuleOverrideAspectTest {
     public final void checkDisableExecutionPointcutDefinition() throws NoSuchMethodException {
         Class<?> clazz = TranslationModule.class;
         assertEquals("com.qcadoo.localization.internal.module.TranslationModule", clazz.getCanonicalName());
-        final Method method = clazz.getDeclaredMethod("disable");
+        final Method method = clazz.getDeclaredMethod("multiTenantDisable");
         assertNotNull(method);
         assertTrue(Modifier.isPublic(method.getModifiers()));
         assertEquals(void.class, method.getReturnType());
