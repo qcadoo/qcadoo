@@ -21,7 +21,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * ***************************************************************************
  */
-package com.qcadoo.customTranslation.api;
+package com.qcadoo.customTranslation.internal;
 
 import static com.qcadoo.customTranslation.constants.CustomTranslationFields.ACTIVE;
 import static com.qcadoo.customTranslation.constants.CustomTranslationFields.CUSTOM_TRANSLATION;
@@ -35,6 +35,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
+import com.qcadoo.customTranslation.api.CustomTranslationManagementService;
+import com.qcadoo.customTranslation.api.CustomTranslationResolver;
 import com.qcadoo.customTranslation.constants.CustomTranslationContants;
 import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.Entity;
@@ -74,12 +76,10 @@ public class CustomTranslationResolverImpl implements CustomTranslationResolver 
 
             translation = translation.replace("'", "''");
 
-            Object[] argsToUse = null;
+            Object[] argsToUse = args;
 
-            if (ObjectUtils.isEmpty(args)) {
+            if (ObjectUtils.isEmpty(argsToUse)) {
                 argsToUse = new Object[0];
-            } else {
-                argsToUse = args;
             }
 
             MessageFormat messageFormat = new MessageFormat(translation);

@@ -18,7 +18,6 @@ import com.qcadoo.model.api.search.CustomRestriction;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.api.components.FieldComponent;
-import com.qcadoo.view.api.components.FormComponent;
 import com.qcadoo.view.api.components.GridComponent;
 import com.qcadoo.view.api.ribbon.Ribbon;
 import com.qcadoo.view.api.ribbon.RibbonActionItem;
@@ -28,8 +27,6 @@ import com.qcadoo.view.internal.components.window.WindowComponentState;
 public class CustomTranslationsListViewHooksTest {
 
     private static final String L_GRID = "grid";
-
-    private static final String L_FORM = "form";
 
     private static final String L_WINDOW = "window";
 
@@ -44,9 +41,6 @@ public class CustomTranslationsListViewHooksTest {
 
     @Mock
     private GridComponent customTranslationsGrid;
-
-    @Mock
-    private FormComponent localeForm;
 
     @Mock
     private FieldComponent localeField;
@@ -163,7 +157,6 @@ public class CustomTranslationsListViewHooksTest {
         verify(customTranslationsGrid).setCustomRestriction(null);
     }
 
-    // TODO lupo fix problem with test
     @Test
     public void shouldSetCustomRestrictionsWhenAddDiscriminatorRestrictionToGridIfLocaleIsntEmpty() {
         // given

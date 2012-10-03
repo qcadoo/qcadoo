@@ -21,8 +21,6 @@ public class TranslationServiceOverrideUtilTest {
 
     private TranslationServiceOverrideUtil translationServiceOverrideUtil;
 
-    private boolean useCustomTranslations;
-
     @Mock
     private PluginStateResolver pluginStateResolver;
 

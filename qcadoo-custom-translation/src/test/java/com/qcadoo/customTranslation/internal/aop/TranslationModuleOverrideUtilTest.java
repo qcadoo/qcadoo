@@ -3,11 +3,15 @@ package com.qcadoo.customTranslation.internal.aop;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -20,10 +24,15 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 import com.qcadoo.customTranslation.api.CustomTranslationManagementService;
 import com.qcadoo.customTranslation.constants.CustomTranslationContants;
 import com.qcadoo.localization.api.TranslationService;
@@ -49,28 +58,16 @@ public class TranslationModuleOverrideUtilTest {
     private Set<String> basenames;
 
     @Mock
-    private Iterator<String> basenamesIterator;
-
-    @Mock
     private Map<String, String> localesMap;
 
     @Mock
     private Set<String> locales;
 
     @Mock
-    private Iterator<String> localesIterator;
-
-    @Mock
     private List<Resource> resources;
 
     @Mock
-    private Iterator<Resource> resourcesIterator;
-
-    @Mock
     private Set<Object> keys;
-
-    @Mock
-    private Iterator<Object> keysIterator;
 
     @Mock
     private Resource resource;
@@ -80,6 +77,57 @@ public class TranslationModuleOverrideUtilTest {
 
     @Mock
     private Properties properties;
+
+    private static Set<String> mockStringSet(final Set<String> strings) {
+        @SuppressWarnings("unchecked")
+        final Set<String> stringSet = mock(Set.class);
+
+        given(stringSet.iterator()).willAnswer(new Answer<Iterator<String>>() {
+
+            @Override
+            public Iterator<String> answer(final InvocationOnMock invocation) throws Throwable {
+                return ImmutableSet.copyOf(strings).iterator();
+            }
+        });
+
+        given(stringSet.isEmpty()).willReturn(strings.isEmpty());
+
+        return stringSet;
+    }
+
+    private static List<Resource> mockResourcesList(final List<Resource> resources) {
+        @SuppressWarnings("unchecked")
+        final List<Resource> resourceList = mock(List.class);
+
+        given(resourceList.iterator()).willAnswer(new Answer<Iterator<Resource>>() {
+
+            @Override
+            public Iterator<Resource> answer(final InvocationOnMock invocation) throws Throwable {
+                return ImmutableList.copyOf(resources).iterator();
+            }
+        });
+
+        given(resourceList.isEmpty()).willReturn(resources.isEmpty());
+
+        return resourceList;
+    }
+
+    private static Set<Object> mockObjectSet(final Set<Object> objects) {
+        @SuppressWarnings("unchecked")
+        final Set<Object> objectSet = mock(Set.class);
+
+        given(objectSet.iterator()).willAnswer(new Answer<Iterator<Object>>() {
+
+            @Override
+            public Iterator<Object> answer(final InvocationOnMock invocation) throws Throwable {
+                return ImmutableSet.copyOf(objects).iterator();
+            }
+        });
+
+        given(objectSet.isEmpty()).willReturn(objects.isEmpty());
+
+        return objectSet;
+    }
 
     @Before
     public void init() {
@@ -127,12 +175,10 @@ public class TranslationModuleOverrideUtilTest {
         // given
         String pluginIdentifier = "plugin";
 
+        locales = mockStringSet(new HashSet<String>());
+
         given(translationService.getLocales()).willReturn(localesMap);
         given(localesMap.keySet()).willReturn(locales);
-
-        given(localesIterator.hasNext()).willReturn(false);
-
-        given(locales.iterator()).willReturn(localesIterator);
 
         // when
         translationModuleOverrideUtil.addTranslationKeysForPlugin(pluginIdentifier, basenames);
@@ -149,21 +195,14 @@ public class TranslationModuleOverrideUtilTest {
 
         String locale = "pl";
 
+        locales = mockStringSet(Sets.newHashSet(locale));
+
         given(translationService.getLocales()).willReturn(localesMap);
         given(localesMap.keySet()).willReturn(locales);
 
-        given(localesIterator.hasNext()).willReturn(true, false);
-        given(localesIterator.next()).willReturn(locale);
+        basenames = mockStringSet(new HashSet<String>());
 
-        given(locales.iterator()).willReturn(localesIterator);
-
-        given(basenamesIterator.hasNext()).willReturn(false);
-
-        given(basenames.iterator()).willReturn(basenamesIterator);
-
-        given(resourcesIterator.hasNext()).willReturn(false);
-
-        given(resources.iterator()).willReturn(resourcesIterator);
+        resources = mockResourcesList(new ArrayList<Resource>());
 
         // when
         translationModuleOverrideUtil.addTranslationKeysForPlugin(pluginIdentifier, basenames);
@@ -173,8 +212,6 @@ public class TranslationModuleOverrideUtilTest {
                 Mockito.anyString());
     }
 
-    // TODO lupo fix problem with test
-    @Ignore
     @Test
     public void shouldntAddTranslationKeysForPluginIfKeysAreEmpty() throws IOException {
         // given
@@ -182,30 +219,22 @@ public class TranslationModuleOverrideUtilTest {
 
         String locale = "pl";
         String basename = "basename";
+        String searchName = basename + "_" + locale + ".properties";
+
+        locales = mockStringSet(Sets.newHashSet(locale));
 
         given(translationService.getLocales()).willReturn(localesMap);
         given(localesMap.keySet()).willReturn(locales);
 
-        given(localesIterator.hasNext()).willReturn(true, false);
-        given(localesIterator.next()).willReturn(locale);
+        basenames = mockStringSet(Sets.newHashSet(basename));
 
-        given(locales.iterator()).willReturn(localesIterator);
+        given(applicationContext.getResource(searchName)).willReturn(resource);
 
-        given(basenamesIterator.hasNext()).willReturn(true, false);
-        given(localesIterator.next()).willReturn(basename);
-
-        given(basenames.iterator()).willReturn(basenamesIterator);
+        resources = mockResourcesList(Arrays.asList(resource));
 
         given(resource.getInputStream()).willReturn(inputStream);
 
-        given(resourcesIterator.hasNext()).willReturn(true, false);
-        given(resourcesIterator.next()).willReturn(resource);
-
-        given(resources.iterator()).willReturn(resourcesIterator);
-
-        given(keysIterator.hasNext()).willReturn(false);
-
-        given(keys.iterator()).willReturn(keysIterator);
+        keys = mockObjectSet(new HashSet<Object>());
 
         given(properties.keySet()).willReturn(keys);
 
@@ -226,32 +255,25 @@ public class TranslationModuleOverrideUtilTest {
 
         String locale = "pl";
         String basename = "basename";
-        String key = "key";
+        String searchName = basename + "_" + locale + ".properties";
+        Object key = "key";
+
+        locales = mockStringSet(Sets.newHashSet(locale));
 
         given(translationService.getLocales()).willReturn(localesMap);
         given(localesMap.keySet()).willReturn(locales);
 
-        given(localesIterator.hasNext()).willReturn(true, false);
-        given(localesIterator.next()).willReturn(locale);
+        basenames = mockStringSet(Sets.newHashSet(basename));
 
-        given(locales.iterator()).willReturn(localesIterator);
-
-        given(basenamesIterator.hasNext()).willReturn(true, false);
-        given(localesIterator.next()).willReturn(basename);
-
-        given(basenames.iterator()).willReturn(basenamesIterator);
+        given(applicationContext.getResource(searchName)).willReturn(resource);
 
         given(resource.getInputStream()).willReturn(inputStream);
 
-        given(resourcesIterator.hasNext()).willReturn(true, false);
-        given(resourcesIterator.next()).willReturn(resource);
+        resources = mockResourcesList(Arrays.asList(resource));
 
-        given(resources.iterator()).willReturn(resourcesIterator);
+        // given(resource.getInputStream()).willReturn(inputStream);
 
-        given(keysIterator.hasNext()).willReturn(true, false);
-        given(keysIterator.next()).willReturn(key);
-
-        given(keys.iterator()).willReturn(keysIterator);
+        keys = mockObjectSet(Sets.newHashSet(key));
 
         given(properties.keySet()).willReturn(keys);
 
@@ -268,12 +290,10 @@ public class TranslationModuleOverrideUtilTest {
         // given
         String pluginIdentifier = "plugin";
 
+        locales = mockStringSet(new HashSet<String>());
+
         given(translationService.getLocales()).willReturn(localesMap);
         given(localesMap.keySet()).willReturn(locales);
-
-        given(localesIterator.hasNext()).willReturn(false);
-
-        given(locales.iterator()).willReturn(localesIterator);
 
         // when
         translationModuleOverrideUtil.removeTranslationKeysForPlugin(pluginIdentifier, basenames);
@@ -290,21 +310,14 @@ public class TranslationModuleOverrideUtilTest {
 
         String locale = "pl";
 
+        locales = mockStringSet(Sets.newHashSet(locale));
+
         given(translationService.getLocales()).willReturn(localesMap);
         given(localesMap.keySet()).willReturn(locales);
 
-        given(localesIterator.hasNext()).willReturn(true, false);
-        given(localesIterator.next()).willReturn(locale);
+        basenames = mockStringSet(new HashSet<String>());
 
-        given(locales.iterator()).willReturn(localesIterator);
-
-        given(basenamesIterator.hasNext()).willReturn(false);
-
-        given(basenames.iterator()).willReturn(basenamesIterator);
-
-        given(resourcesIterator.hasNext()).willReturn(false);
-
-        given(resources.iterator()).willReturn(resourcesIterator);
+        resources = mockResourcesList(new ArrayList<Resource>());
 
         // when
         translationModuleOverrideUtil.removeTranslationKeysForPlugin(pluginIdentifier, basenames);
@@ -314,8 +327,6 @@ public class TranslationModuleOverrideUtilTest {
                 Mockito.anyString());
     }
 
-    // TODO lupo fix problem with test
-    @Ignore
     @Test
     public void shouldntRemoveTranslationKeysForPluginIfKeysAreEmpty() throws IOException {
         // given
@@ -323,30 +334,22 @@ public class TranslationModuleOverrideUtilTest {
 
         String locale = "pl";
         String basename = "basename";
+        String searchName = basename + "_" + locale + ".properties";
+
+        locales = mockStringSet(Sets.newHashSet(locale));
 
         given(translationService.getLocales()).willReturn(localesMap);
         given(localesMap.keySet()).willReturn(locales);
 
-        given(localesIterator.hasNext()).willReturn(true, false);
-        given(localesIterator.next()).willReturn(locale);
+        basenames = mockStringSet(Sets.newHashSet(basename));
 
-        given(locales.iterator()).willReturn(localesIterator);
+        given(applicationContext.getResource(searchName)).willReturn(resource);
 
-        given(basenamesIterator.hasNext()).willReturn(true, false);
-        given(localesIterator.next()).willReturn(basename);
-
-        given(basenames.iterator()).willReturn(basenamesIterator);
+        resources = mockResourcesList(Arrays.asList(resource));
 
         given(resource.getInputStream()).willReturn(inputStream);
 
-        given(resourcesIterator.hasNext()).willReturn(true, false);
-        given(resourcesIterator.next()).willReturn(resource);
-
-        given(resources.iterator()).willReturn(resourcesIterator);
-
-        given(keysIterator.hasNext()).willReturn(false);
-
-        given(keys.iterator()).willReturn(keysIterator);
+        keys = mockObjectSet(new HashSet<Object>());
 
         given(properties.keySet()).willReturn(keys);
 
@@ -367,32 +370,23 @@ public class TranslationModuleOverrideUtilTest {
 
         String locale = "pl";
         String basename = "basename";
-        String key = "key";
+        String searchName = basename + "_" + locale + ".properties";
+        Object key = "key";
+
+        locales = mockStringSet(Sets.newHashSet(locale));
 
         given(translationService.getLocales()).willReturn(localesMap);
         given(localesMap.keySet()).willReturn(locales);
 
-        given(localesIterator.hasNext()).willReturn(true, false);
-        given(localesIterator.next()).willReturn(locale);
+        basenames = mockStringSet(Sets.newHashSet(basename));
 
-        given(locales.iterator()).willReturn(localesIterator);
+        given(applicationContext.getResource(searchName)).willReturn(resource);
 
-        given(basenamesIterator.hasNext()).willReturn(true, false);
-        given(localesIterator.next()).willReturn(basename);
-
-        given(basenames.iterator()).willReturn(basenamesIterator);
+        resources = mockResourcesList(Arrays.asList(resource));
 
         given(resource.getInputStream()).willReturn(inputStream);
 
-        given(resourcesIterator.hasNext()).willReturn(true, false);
-        given(resourcesIterator.next()).willReturn(resource);
-
-        given(resources.iterator()).willReturn(resourcesIterator);
-
-        given(keysIterator.hasNext()).willReturn(true, false);
-        given(keysIterator.next()).willReturn(key);
-
-        given(keys.iterator()).willReturn(keysIterator);
+        keys = mockObjectSet(Sets.newHashSet(key));
 
         given(properties.keySet()).willReturn(keys);
 

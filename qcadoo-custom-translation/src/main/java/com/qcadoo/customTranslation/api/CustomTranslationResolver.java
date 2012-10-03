@@ -25,6 +25,11 @@ package com.qcadoo.customTranslation.api;
 
 import java.util.Locale;
 
+/**
+ * Service for resolving custom translation.
+ * 
+ * @since 1.8.0
+ */
 public interface CustomTranslationResolver {
 
     /**

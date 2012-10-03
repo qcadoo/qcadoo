@@ -3,9 +3,11 @@ package com.qcadoo.plugins.customTranslations.internal.listeners;
 import static com.qcadoo.customTranslation.constants.CustomTranslationFields.LOCALE;
 import static com.qcadoo.plugins.customTranslations.constants.CustomTranslationFieldsCTM.PROPERTIES_TRANSLATION;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -14,8 +16,11 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import com.google.common.collect.ImmutableList;
 import com.qcadoo.customTranslation.api.CustomTranslationManagementService;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
@@ -59,8 +64,22 @@ public class ReplaceCustomTranslationsListenersTest {
     @Mock
     private List<Entity> customTranslations;
 
-    @Mock
-    private Iterator<Entity> customTranslationsIterator;
+    private static List<Entity> mockEntityList(final List<Entity> entities) {
+        @SuppressWarnings("unchecked")
+        final List<Entity> entityList = mock(List.class);
+
+        given(entityList.iterator()).willAnswer(new Answer<Iterator<Entity>>() {
+
+            @Override
+            public Iterator<Entity> answer(final InvocationOnMock invocation) throws Throwable {
+                return ImmutableList.copyOf(entities).iterator();
+            }
+        });
+
+        given(entityList.isEmpty()).willReturn(entities.isEmpty());
+
+        return entityList;
+    }
 
     @Before
     public void init() {
@@ -91,12 +110,9 @@ public class ReplaceCustomTranslationsListenersTest {
         given(replaceFromField.getFieldValue()).willReturn(replaceFrom);
         given(replaceToField.getFieldValue()).willReturn(replaceTo);
 
+        customTranslations = mockEntityList(Arrays.asList(customTranslation));
+
         given(customTranslationManagementService.getCustomTranslations(locale)).willReturn(customTranslations);
-
-        given(customTranslationsIterator.hasNext()).willReturn(true, false);
-        given(customTranslationsIterator.next()).willReturn(customTranslation);
-
-        given(customTranslations.iterator()).willReturn(customTranslationsIterator);
 
         given(customTranslation.getStringField(PROPERTIES_TRANSLATION)).willReturn(translation);
 
@@ -128,12 +144,9 @@ public class ReplaceCustomTranslationsListenersTest {
         given(replaceFromField.getFieldValue()).willReturn(replaceFrom);
         given(replaceToField.getFieldValue()).willReturn(replaceTo);
 
+        customTranslations = mockEntityList(Arrays.asList(customTranslation));
+
         given(customTranslationManagementService.getCustomTranslations(locale)).willReturn(customTranslations);
-
-        given(customTranslationsIterator.hasNext()).willReturn(true, false);
-        given(customTranslationsIterator.next()).willReturn(customTranslation);
-
-        given(customTranslations.iterator()).willReturn(customTranslationsIterator);
 
         given(customTranslation.getStringField(PROPERTIES_TRANSLATION)).willReturn(translation);
 

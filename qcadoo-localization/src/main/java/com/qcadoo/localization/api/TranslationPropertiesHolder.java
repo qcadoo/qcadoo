@@ -26,13 +26,23 @@ package com.qcadoo.localization.api;
 import java.util.Set;
 
 /**
- * Service for getting translation properties.
+ * Service for getting translation properties for plugin.
  * 
- * @since 0.4.0
+ * @since 1.8.0
  */
 public interface TranslationPropertiesHolder {
 
+    /**
+     * Returns all parsed basenames.
+     * 
+     * @return basenames
+     */
     Set<String> getParsedBasenames();
 
+    /**
+     * Returns plugin identifier.
+     * 
+     * @return plugin identifier
+     */
     String getPluginIdentifier();
 }

@@ -28,6 +28,11 @@ import java.util.List;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 
+/**
+ * Service for managing custom translations.
+ * 
+ * @since 1.8.0
+ */
 public interface CustomTranslationManagementService {
 
     /**

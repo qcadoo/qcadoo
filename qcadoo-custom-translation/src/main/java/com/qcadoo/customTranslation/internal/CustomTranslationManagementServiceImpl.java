@@ -21,7 +21,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * ***************************************************************************
  */
-package com.qcadoo.customTranslation.api;
+package com.qcadoo.customTranslation.internal;
 
 import static com.qcadoo.customTranslation.constants.CustomTranslationFields.ACTIVE;
 import static com.qcadoo.customTranslation.constants.CustomTranslationFields.KEY;
@@ -33,6 +33,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.qcadoo.customTranslation.api.CustomTranslationManagementService;
 import com.qcadoo.customTranslation.constants.CustomTranslationContants;
 import com.qcadoo.customTranslation.constants.CustomTranslationFields;
 import com.qcadoo.model.api.DataDefinition;

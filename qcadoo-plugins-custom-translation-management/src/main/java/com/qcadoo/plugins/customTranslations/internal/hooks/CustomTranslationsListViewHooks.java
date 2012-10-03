@@ -43,8 +43,6 @@ import com.qcadoo.view.api.ribbon.RibbonGroup;
 @Service
 public class CustomTranslationsListViewHooks {
 
-    private static final String L_FORM = "form";
-
     private static final String L_CLEAN_CUSTOM_TRANSLATIONS = "cleanCustomTranslations";
 
     private static final String L_CLEAN = "clean";

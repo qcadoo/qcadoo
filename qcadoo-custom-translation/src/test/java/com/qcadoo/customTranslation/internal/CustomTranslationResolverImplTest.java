@@ -1,4 +1,4 @@
-package com.qcadoo.customTranslation.api;
+package com.qcadoo.customTranslation.internal;
 
 import static com.qcadoo.customTranslation.constants.CustomTranslationFields.CUSTOM_TRANSLATION;
 import static org.junit.Assert.assertEquals;
@@ -17,6 +17,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import com.qcadoo.customTranslation.api.CustomTranslationResolver;
 import com.qcadoo.customTranslation.constants.CustomTranslationContants;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.DataDefinitionService;

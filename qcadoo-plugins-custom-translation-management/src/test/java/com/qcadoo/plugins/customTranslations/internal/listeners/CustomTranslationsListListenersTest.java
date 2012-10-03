@@ -1,9 +1,12 @@
 package com.qcadoo.plugins.customTranslations.internal.listeners;
 
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -13,7 +16,10 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
@@ -44,10 +50,24 @@ public class CustomTranslationsListListenersTest {
     @Mock
     private List<Entity> customTranslations;
 
-    @Mock
-    private Iterator<Entity> customTranslationsIterator;
-
     private Map<String, Object> parameters = Maps.newHashMap();
+
+    private static List<Entity> mockEntityList(final List<Entity> entities) {
+        @SuppressWarnings("unchecked")
+        final List<Entity> entityList = mock(List.class);
+
+        given(entityList.iterator()).willAnswer(new Answer<Iterator<Entity>>() {
+
+            @Override
+            public Iterator<Entity> answer(final InvocationOnMock invocation) throws Throwable {
+                return ImmutableList.copyOf(entities).iterator();
+            }
+        });
+
+        given(entityList.isEmpty()).willReturn(entities.isEmpty());
+
+        return entityList;
+    }
 
     @Before
     public void init() {
@@ -59,14 +79,10 @@ public class CustomTranslationsListListenersTest {
     @Test
     public void shouldCleanCustomTranslationsWhenCustomTranslationIsSelected() {
         // given
+        customTranslations = mockEntityList(Arrays.asList(customTranslation));
+
         given(view.getComponentByReference(L_GRID)).willReturn(customTranslationsGrid);
         given(customTranslationsGrid.getSelectedEntities()).willReturn(customTranslations);
-        given(customTranslations.isEmpty()).willReturn(false);
-
-        given(customTranslationsIterator.hasNext()).willReturn(true, false);
-        given(customTranslationsIterator.next()).willReturn(customTranslation);
-
-        given(customTranslations.iterator()).willReturn(customTranslationsIterator);
 
         given(customTranslation.getDataDefinition()).willReturn(customTranslationDD);
 
@@ -82,9 +98,10 @@ public class CustomTranslationsListListenersTest {
     @Test
     public void shouldntCleanCustomTranslationsWhenCustomTranslationIsntSelected() {
         // given
+        customTranslations = mockEntityList(new ArrayList<Entity>());
+
         given(view.getComponentByReference(L_GRID)).willReturn(customTranslationsGrid);
         given(customTranslationsGrid.getSelectedEntities()).willReturn(customTranslations);
-        given(customTranslations.isEmpty()).willReturn(true);
 
         // when
         customTranslationsListListeners.cleanCustomTranslations(view, null, null);
