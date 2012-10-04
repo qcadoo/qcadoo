@@ -19,6 +19,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import com.qcadoo.customTranslation.api.CustomTranslationCacheService;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.FieldDefinition;
@@ -30,6 +31,9 @@ import com.qcadoo.plugin.api.PluginStateResolver;
 public class CustomTranslationModelHooksTest {
 
     private CustomTranslationModelHooks customTranslationModelHooks;
+
+    @Mock
+    private CustomTranslationCacheService customTranslationCacheService;
 
     @Mock
     private PluginStateResolver pluginStateResolver;
@@ -56,6 +60,7 @@ public class CustomTranslationModelHooksTest {
         customTranslationModelHooks = new CustomTranslationModelHooks();
 
         ReflectionTestUtils.setField(customTranslationModelHooks, "pluginStateResolver", pluginStateResolver);
+        ReflectionTestUtils.setField(customTranslationModelHooks, "customTranslationCacheService", customTranslationCacheService);
     }
 
     @Test
@@ -212,6 +217,112 @@ public class CustomTranslationModelHooksTest {
 
         // then
         verify(customTranslation).setField(ACTIVE, true);
+    }
+
+    @Test
+    public void shouldUpdateCustomTranslationWhenUpdateCacheIfPluginIsEnabledAndContainsKey() {
+        // given
+        String plugin = "plugin";
+
+        String key = "key";
+        String locale = "locale";
+        String translation = "translation";
+
+        given(customTranslation.getStringField(PLUGIN_IDENTIFIER)).willReturn(plugin);
+        given(customTranslation.getStringField(KEY)).willReturn(key);
+        given(customTranslation.getStringField(LOCALE)).willReturn(locale);
+        given(customTranslation.getStringField(CUSTOM_TRANSLATION)).willReturn(translation);
+
+        given(pluginStateResolver.isEnabled(plugin)).willReturn(true);
+        given(customTranslationCacheService.isCustomTranslationAdded(key)).willReturn(true);
+
+        // when
+        customTranslationModelHooks.updateCache(customTranslationDD, customTranslation);
+
+        // then
+        verify(customTranslationCacheService, never()).addCustomTranslation(Mockito.anyString(), Mockito.anyString(),
+                Mockito.anyString());
+        verify(customTranslationCacheService).updateCustomTranslation(Mockito.anyString(), Mockito.anyString(),
+                Mockito.anyString());
+    }
+
+    @Test
+    public void shouldAddCustomTranslationWhenUpdateCacheIfPluginIsEnabledAndNotContainsKey() {
+        // given
+        String plugin = "plugin";
+
+        String key = "key";
+        String locale = "locale";
+        String translation = "translation";
+
+        given(customTranslation.getStringField(PLUGIN_IDENTIFIER)).willReturn(plugin);
+        given(customTranslation.getStringField(KEY)).willReturn(key);
+        given(customTranslation.getStringField(LOCALE)).willReturn(locale);
+        given(customTranslation.getStringField(CUSTOM_TRANSLATION)).willReturn(translation);
+
+        given(pluginStateResolver.isEnabled(plugin)).willReturn(true);
+        given(customTranslationCacheService.isCustomTranslationAdded(key)).willReturn(false);
+
+        // when
+        customTranslationModelHooks.updateCache(customTranslationDD, customTranslation);
+
+        // then
+        verify(customTranslationCacheService).addCustomTranslation(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+        verify(customTranslationCacheService, never()).updateCustomTranslation(Mockito.anyString(), Mockito.anyString(),
+                Mockito.anyString());
+    }
+
+    @Test
+    public void shouldUpdateCustomTranslationWhenUpdateCacheIfPluginIsntEnabledAndContainsKey() {
+        // given
+        String plugin = "plugin";
+
+        String key = "key";
+        String locale = "locale";
+        String translation = "translation";
+
+        given(customTranslation.getStringField(PLUGIN_IDENTIFIER)).willReturn(plugin);
+        given(customTranslation.getStringField(KEY)).willReturn(key);
+        given(customTranslation.getStringField(LOCALE)).willReturn(locale);
+        given(customTranslation.getStringField(CUSTOM_TRANSLATION)).willReturn(translation);
+
+        given(pluginStateResolver.isEnabled(plugin)).willReturn(false);
+        given(customTranslationCacheService.isCustomTranslationAdded(key)).willReturn(true);
+
+        // when
+        customTranslationModelHooks.updateCache(customTranslationDD, customTranslation);
+
+        // then
+        verify(customTranslationCacheService, never()).addCustomTranslation(Mockito.anyString(), Mockito.anyString(),
+                Mockito.anyString());
+        verify(customTranslationCacheService).updateCustomTranslation(Mockito.anyString(), Mockito.anyString(),
+                Mockito.anyString());
+    }
+
+    @Test
+    public void shouldAddCustomTranslationWhenUpdateCacheIfPluginIsntEnabledAndNotContainsKey() {
+        // given
+        String plugin = "plugin";
+
+        String key = "key";
+        String locale = "locale";
+        String translation = "translation";
+
+        given(customTranslation.getStringField(PLUGIN_IDENTIFIER)).willReturn(plugin);
+        given(customTranslation.getStringField(KEY)).willReturn(key);
+        given(customTranslation.getStringField(LOCALE)).willReturn(locale);
+        given(customTranslation.getStringField(CUSTOM_TRANSLATION)).willReturn(translation);
+
+        given(pluginStateResolver.isEnabled(plugin)).willReturn(false);
+        given(customTranslationCacheService.isCustomTranslationAdded(key)).willReturn(false);
+
+        // when
+        customTranslationModelHooks.updateCache(customTranslationDD, customTranslation);
+
+        // then
+        verify(customTranslationCacheService).addCustomTranslation(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+        verify(customTranslationCacheService, never()).updateCustomTranslation(Mockito.anyString(), Mockito.anyString(),
+                Mockito.anyString());
     }
 
 }

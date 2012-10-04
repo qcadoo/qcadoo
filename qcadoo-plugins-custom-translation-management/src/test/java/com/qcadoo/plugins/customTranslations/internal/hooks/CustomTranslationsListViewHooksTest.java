@@ -9,12 +9,15 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.search.CustomRestriction;
+import com.qcadoo.model.api.search.SearchCriteriaBuilder;
+import com.qcadoo.model.api.search.SearchCriterion;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.api.components.FieldComponent;
@@ -59,6 +62,12 @@ public class CustomTranslationsListViewHooksTest {
 
     @Mock
     private List<Entity> customTranslations;
+
+    @Mock
+    private CustomRestriction customRestriction;
+
+    @Mock
+    private SearchCriteriaBuilder searchCriteriaBuilder;
 
     @Before
     public void init() {
@@ -142,6 +151,40 @@ public class CustomTranslationsListViewHooksTest {
     }
 
     @Test
+    public void shouldSetCustomRestrictionsToNullWhenAddDiscriminatorRestrictionToGridListenerIfLocaleIsEmpty() {
+        // given
+        given(view.getComponentByReference(L_GRID)).willReturn(customTranslationsGrid);
+
+        given(view.getComponentByReference(LOCALE)).willReturn(localeField);
+
+        given(localeField.getFieldValue()).willReturn(null);
+
+        // when
+        customTranslationsListViewHooks.addDiscriminatorRestrictionToGrid(view, null, null);
+
+        // then
+        verify(customTranslationsGrid).setCustomRestriction(null);
+    }
+
+    @Test
+    public void shouldSetCustomRestrictionsWhenAddDiscriminatorRestrictionToGridListenerIfLocaleIsntEmpty() {
+        // given
+        String locale = "pl";
+
+        given(view.getComponentByReference(L_GRID)).willReturn(customTranslationsGrid);
+
+        given(view.getComponentByReference(LOCALE)).willReturn(localeField);
+
+        given(localeField.getFieldValue()).willReturn(locale);
+
+        // when
+        customTranslationsListViewHooks.addDiscriminatorRestrictionToGrid(view);
+
+        // then
+        verify(customTranslationsGrid).setCustomRestriction(Mockito.any(CustomRestriction.class));
+    }
+
+    @Test
     public void shouldSetCustomRestrictionsToNullWhenAddDiscriminatorRestrictionToGridIfLocaleIsEmpty() {
         // given
         given(view.getComponentByReference(L_GRID)).willReturn(customTranslationsGrid);
@@ -168,11 +211,17 @@ public class CustomTranslationsListViewHooksTest {
 
         given(localeField.getFieldValue()).willReturn(locale);
 
+        ArgumentCaptor<CustomRestriction> customRestrictionCaptor = ArgumentCaptor.forClass(CustomRestriction.class);
+
         // when
         customTranslationsListViewHooks.addDiscriminatorRestrictionToGrid(view);
 
         // then
         verify(customTranslationsGrid).setCustomRestriction(Mockito.any(CustomRestriction.class));
+        verify(customTranslationsGrid).setCustomRestriction(customRestrictionCaptor.capture());
+        customRestriction = customRestrictionCaptor.getValue();
+        customRestriction.addRestriction(searchCriteriaBuilder);
+        verify(searchCriteriaBuilder).add(Mockito.any(SearchCriterion.class));
     }
 
 }

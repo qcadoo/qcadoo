@@ -52,6 +52,7 @@ public class CustomTranslationManagementServiceImpl implements CustomTranslation
         Entity customTranslation = getCustomTranslation(pluginIdentifier, key, locale);
 
         if (customTranslation == null) {
+
             customTranslation = getCustomTranslationDD().create();
 
             customTranslation.setField(PLUGIN_IDENTIFIER, pluginIdentifier);

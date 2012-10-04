@@ -95,7 +95,7 @@ public class TranslationModuleOverrideUtil {
         }
     }
 
-    private List<Resource> getPropertiesResources(final Set<String> basenames, final String locale) throws IOException {
+    private List<Resource> getPropertiesResources(final Set<String> basenames, final String locale) {
         List<Resource> resources = new ArrayList<Resource>();
         for (String basename : basenames) {
             String searchName = basename + "_" + locale + ".properties";

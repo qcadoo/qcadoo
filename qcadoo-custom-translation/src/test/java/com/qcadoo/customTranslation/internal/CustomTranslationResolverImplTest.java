@@ -1,52 +1,28 @@
 package com.qcadoo.customTranslation.internal;
 
-import static com.qcadoo.customTranslation.constants.CustomTranslationFields.CUSTOM_TRANSLATION;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
 
 import java.text.MessageFormat;
-import java.util.List;
 import java.util.Locale;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import com.qcadoo.customTranslation.api.CustomTranslationCacheService;
 import com.qcadoo.customTranslation.api.CustomTranslationResolver;
-import com.qcadoo.customTranslation.constants.CustomTranslationContants;
-import com.qcadoo.model.api.DataDefinition;
-import com.qcadoo.model.api.DataDefinitionService;
-import com.qcadoo.model.api.Entity;
-import com.qcadoo.model.api.search.SearchCriteriaBuilder;
-import com.qcadoo.model.api.search.SearchCriterion;
-import com.qcadoo.model.api.search.SearchResult;
 
 public class CustomTranslationResolverImplTest {
 
     private CustomTranslationResolver customTranslationResolver;
 
     @Mock
-    private DataDefinitionService dataDefinitionService;
-
-    @Mock
-    private DataDefinition customTranslationDD;
-
-    @Mock
-    private Entity customTranslation;
-
-    @Mock
-    private SearchCriteriaBuilder searchCriteriaBuilder;
-
-    @Mock
-    private SearchResult searchResult;
-
-    @Mock
-    private List<Entity> customTranslations;
+    private CustomTranslationCacheService customTranslationCacheService;
 
     @Before
     public void init() {
@@ -54,12 +30,7 @@ public class CustomTranslationResolverImplTest {
 
         customTranslationResolver = new CustomTranslationResolverImpl();
 
-        ReflectionTestUtils.setField(customTranslationResolver, "dataDefinitionService", dataDefinitionService);
-
-        given(
-                dataDefinitionService.get(CustomTranslationContants.PLUGIN_IDENTIFIER,
-                        CustomTranslationContants.MODEL_CUSTOM_TRANSLATION)).willReturn(customTranslationDD);
-        given(customTranslationDD.find()).willReturn(searchCriteriaBuilder);
+        ReflectionTestUtils.setField(customTranslationResolver, "customTranslationCacheService", customTranslationCacheService);
     }
 
     @Test
@@ -68,10 +39,7 @@ public class CustomTranslationResolverImplTest {
         String key = "key";
         Locale locale = new Locale("pl");
 
-        given(searchCriteriaBuilder.add(Mockito.any(SearchCriterion.class))).willReturn(searchCriteriaBuilder);
-        given(searchCriteriaBuilder.list()).willReturn(searchResult);
-        given(searchResult.getEntities()).willReturn(customTranslations);
-        given(customTranslations.isEmpty()).willReturn(false);
+        given(customTranslationCacheService.isCustomTranslationActive(key, locale.getLanguage())).willReturn(true);
 
         // when
         boolean result = customTranslationResolver.isCustomTranslationActive(key, locale);
@@ -86,11 +54,7 @@ public class CustomTranslationResolverImplTest {
         String key = "key";
         Locale locale = new Locale("pl");
 
-        given(searchCriteriaBuilder.add(Mockito.any(SearchCriterion.class))).willReturn(searchCriteriaBuilder);
-        given(searchCriteriaBuilder.list()).willReturn(searchResult);
-        given(searchResult.getEntities()).willReturn(customTranslations);
-        given(customTranslations.isEmpty()).willReturn(true);
-
+        given(customTranslationCacheService.isCustomTranslationActive(key, locale.getLanguage())).willReturn(false);
         // when
         boolean result = customTranslationResolver.isCustomTranslationActive(key, locale);
 
@@ -104,9 +68,7 @@ public class CustomTranslationResolverImplTest {
         String key = "key";
         Locale locale = new Locale("pl");
 
-        given(searchCriteriaBuilder.add(Mockito.any(SearchCriterion.class))).willReturn(searchCriteriaBuilder);
-        given(searchCriteriaBuilder.setMaxResults(1)).willReturn(searchCriteriaBuilder);
-        given(searchCriteriaBuilder.uniqueResult()).willReturn(null);
+        given(customTranslationCacheService.getCustomTranslation(key, locale.getLanguage())).willReturn(null);
 
         // when
         String translation = customTranslationResolver.getCustomTranslation(key, locale, null);
@@ -124,11 +86,7 @@ public class CustomTranslationResolverImplTest {
 
         String translation = "translation";
 
-        given(searchCriteriaBuilder.add(Mockito.any(SearchCriterion.class))).willReturn(searchCriteriaBuilder);
-        given(searchCriteriaBuilder.setMaxResults(1)).willReturn(searchCriteriaBuilder);
-        given(searchCriteriaBuilder.uniqueResult()).willReturn(customTranslation);
-
-        given(customTranslation.getStringField(CUSTOM_TRANSLATION)).willReturn(translation);
+        given(customTranslationCacheService.getCustomTranslation(key, locale.getLanguage())).willReturn(translation);
 
         MessageFormat messageFormat = new MessageFormat(translation);
 
@@ -152,11 +110,7 @@ public class CustomTranslationResolverImplTest {
 
         String translation = "translation";
 
-        given(searchCriteriaBuilder.add(Mockito.any(SearchCriterion.class))).willReturn(searchCriteriaBuilder);
-        given(searchCriteriaBuilder.setMaxResults(1)).willReturn(searchCriteriaBuilder);
-        given(searchCriteriaBuilder.uniqueResult()).willReturn(customTranslation);
-
-        given(customTranslation.getStringField(CUSTOM_TRANSLATION)).willReturn(translation);
+        given(customTranslationCacheService.getCustomTranslation(key, locale.getLanguage())).willReturn(translation);
 
         MessageFormat messageFormat = new MessageFormat(translation);
 

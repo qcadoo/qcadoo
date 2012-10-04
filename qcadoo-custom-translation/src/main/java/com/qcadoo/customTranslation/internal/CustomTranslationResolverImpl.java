@@ -23,11 +23,6 @@
  */
 package com.qcadoo.customTranslation.internal;
 
-import static com.qcadoo.customTranslation.constants.CustomTranslationFields.ACTIVE;
-import static com.qcadoo.customTranslation.constants.CustomTranslationFields.CUSTOM_TRANSLATION;
-import static com.qcadoo.customTranslation.constants.CustomTranslationFields.KEY;
-import static com.qcadoo.customTranslation.constants.CustomTranslationFields.LOCALE;
-
 import java.text.MessageFormat;
 import java.util.Locale;
 
@@ -35,45 +30,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
-import com.qcadoo.customTranslation.api.CustomTranslationManagementService;
+import com.qcadoo.customTranslation.api.CustomTranslationCacheService;
 import com.qcadoo.customTranslation.api.CustomTranslationResolver;
-import com.qcadoo.customTranslation.constants.CustomTranslationContants;
-import com.qcadoo.model.api.DataDefinitionService;
-import com.qcadoo.model.api.Entity;
-import com.qcadoo.model.api.search.SearchRestrictions;
-import com.qcadoo.model.api.search.SearchResult;
 
 @Service
 public class CustomTranslationResolverImpl implements CustomTranslationResolver {
 
     @Autowired
-    private DataDefinitionService dataDefinitionService;
-
-    @Autowired
-    private CustomTranslationManagementService customTranslationManagementService;
+    private CustomTranslationCacheService customTranslationCacheService;
 
     @Override
     public boolean isCustomTranslationActive(final String key, final Locale locale) {
-        SearchResult searchResult = dataDefinitionService
-                .get(CustomTranslationContants.PLUGIN_IDENTIFIER, CustomTranslationContants.MODEL_CUSTOM_TRANSLATION).find()
-                .add(SearchRestrictions.eq(KEY, key)).add(SearchRestrictions.eq(LOCALE, locale.getLanguage()))
-                .add(SearchRestrictions.eq(ACTIVE, true)).list();
-
-        return !searchResult.getEntities().isEmpty();
+        return customTranslationCacheService.isCustomTranslationActive(key, locale.getLanguage());
     }
 
     @Override
     public String getCustomTranslation(final String key, final Locale locale, final String[] args) {
-        Entity customTranslation = dataDefinitionService
-                .get(CustomTranslationContants.PLUGIN_IDENTIFIER, CustomTranslationContants.MODEL_CUSTOM_TRANSLATION).find()
-                .add(SearchRestrictions.eq(KEY, key)).add(SearchRestrictions.eq(LOCALE, locale.getLanguage()))
-                .add(SearchRestrictions.eq(ACTIVE, true)).setMaxResults(1).uniqueResult();
+        String translation = customTranslationCacheService.getCustomTranslation(key, locale.getLanguage());
 
-        if (customTranslation == null) {
+        if (translation == null) {
             return null;
         } else {
-            String translation = customTranslation.getStringField(CUSTOM_TRANSLATION);
-
             translation = translation.replace("'", "''");
 
             Object[] argsToUse = args;

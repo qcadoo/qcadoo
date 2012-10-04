@@ -41,5 +41,8 @@
 		<onSave 
 			class="com.qcadoo.customTranslation.internal.hooks.CustomTranslationModelHooks" 
 			method="changeActiveState" />
+		<onSave 
+			class="com.qcadoo.customTranslation.internal.hooks.CustomTranslationModelHooks" 
+			method="updateCache" />
 	</hooks>
 </model>

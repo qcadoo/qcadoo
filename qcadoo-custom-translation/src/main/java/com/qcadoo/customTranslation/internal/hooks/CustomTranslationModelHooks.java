@@ -32,6 +32,7 @@ import static com.qcadoo.customTranslation.constants.CustomTranslationFields.PLU
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.qcadoo.customTranslation.api.CustomTranslationCacheService;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.search.SearchCriteriaBuilder;
@@ -41,6 +42,9 @@ import com.qcadoo.plugin.api.PluginStateResolver;
 
 @Service
 public final class CustomTranslationModelHooks {
+
+    @Autowired
+    private CustomTranslationCacheService customTranslationCacheService;
 
     @Autowired
     private PluginStateResolver pluginStateResolver;
@@ -79,6 +83,28 @@ public final class CustomTranslationModelHooks {
                 customTranslation.setField(ACTIVE, false);
             } else {
                 customTranslation.setField(ACTIVE, true);
+            }
+        }
+    }
+
+    public void updateCache(final DataDefinition customTranslationDD, final Entity customTranslation) {
+        String pluginIdentifier = customTranslation.getStringField(PLUGIN_IDENTIFIER);
+
+        String key = customTranslation.getStringField(KEY);
+        String locale = customTranslation.getStringField(LOCALE);
+        String translation = customTranslation.getStringField(CUSTOM_TRANSLATION);
+
+        if (pluginStateResolver.isEnabled(pluginIdentifier)) {
+            if (customTranslationCacheService.isCustomTranslationAdded(key)) {
+                customTranslationCacheService.updateCustomTranslation(key, locale, translation);
+            } else {
+                customTranslationCacheService.addCustomTranslation(key, locale, translation);
+            }
+        } else {
+            if (customTranslationCacheService.isCustomTranslationAdded(key)) {
+                customTranslationCacheService.updateCustomTranslation(key, locale, null);
+            } else {
+                customTranslationCacheService.addCustomTranslation(key, locale, null);
             }
         }
     }

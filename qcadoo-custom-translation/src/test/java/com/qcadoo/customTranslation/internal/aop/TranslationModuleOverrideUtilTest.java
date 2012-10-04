@@ -7,7 +7,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -213,7 +212,7 @@ public class TranslationModuleOverrideUtilTest {
     }
 
     @Test
-    public void shouldntAddTranslationKeysForPluginIfKeysAreEmpty() throws IOException {
+    public void shouldntAddTranslationKeysForPluginIfKeysAreEmpty() throws Exception {
         // given
         String pluginIdentifier = "plugin";
 
@@ -230,9 +229,11 @@ public class TranslationModuleOverrideUtilTest {
 
         given(applicationContext.getResource(searchName)).willReturn(resource);
 
+        given(resource.getInputStream()).willReturn(inputStream);
+
         resources = mockResourcesList(Arrays.asList(resource));
 
-        given(resource.getInputStream()).willReturn(inputStream);
+        properties.load(inputStream);
 
         keys = mockObjectSet(new HashSet<Object>());
 
@@ -249,7 +250,7 @@ public class TranslationModuleOverrideUtilTest {
     // TODO lupo fix problem with test
     @Ignore
     @Test
-    public void shouldAddTranslationKeysForPlugin() throws IOException {
+    public void shouldAddTranslationKeysForPlugin() throws Exception {
         // given
         String pluginIdentifier = "plugin";
 
@@ -271,7 +272,7 @@ public class TranslationModuleOverrideUtilTest {
 
         resources = mockResourcesList(Arrays.asList(resource));
 
-        // given(resource.getInputStream()).willReturn(inputStream);
+        properties.load(inputStream);
 
         keys = mockObjectSet(Sets.newHashSet(key));
 
@@ -328,7 +329,7 @@ public class TranslationModuleOverrideUtilTest {
     }
 
     @Test
-    public void shouldntRemoveTranslationKeysForPluginIfKeysAreEmpty() throws IOException {
+    public void shouldntRemoveTranslationKeysForPluginIfKeysAreEmpty() throws Exception {
         // given
         String pluginIdentifier = "plugin";
 
@@ -345,9 +346,11 @@ public class TranslationModuleOverrideUtilTest {
 
         given(applicationContext.getResource(searchName)).willReturn(resource);
 
+        given(resource.getInputStream()).willReturn(inputStream);
+
         resources = mockResourcesList(Arrays.asList(resource));
 
-        given(resource.getInputStream()).willReturn(inputStream);
+        properties.load(inputStream);
 
         keys = mockObjectSet(new HashSet<Object>());
 
@@ -364,7 +367,7 @@ public class TranslationModuleOverrideUtilTest {
     // TODO lupo fix problem with test
     @Ignore
     @Test
-    public void shouldRemoveTranslationKeysForPlugin() throws IOException {
+    public void shouldRemoveTranslationKeysForPlugin() throws Exception {
         // given
         String pluginIdentifier = "plugin";
 
@@ -382,9 +385,11 @@ public class TranslationModuleOverrideUtilTest {
 
         given(applicationContext.getResource(searchName)).willReturn(resource);
 
+        given(resource.getInputStream()).willReturn(inputStream);
+
         resources = mockResourcesList(Arrays.asList(resource));
 
-        given(resource.getInputStream()).willReturn(inputStream);
+        properties.load(inputStream);
 
         keys = mockObjectSet(Sets.newHashSet(key));
 

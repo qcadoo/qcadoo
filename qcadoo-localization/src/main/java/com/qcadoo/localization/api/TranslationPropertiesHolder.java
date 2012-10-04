@@ -45,4 +45,5 @@ public interface TranslationPropertiesHolder {
      * @return plugin identifier
      */
     String getPluginIdentifier();
+
 }
