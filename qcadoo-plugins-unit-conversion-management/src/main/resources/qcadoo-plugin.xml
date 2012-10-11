@@ -24,20 +24,24 @@
     ***************************************************************************
 
 -->
-<plugin plugin="qcadooModel" version="${qcadoo.plugin.version}"
-	system="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns="http://schema.qcadoo.org/plugin" xmlns:model="http://schema.qcadoo.org/modules/model"
-	xmlns:view="http://schema.qcadoo.org/modules/view"
+<plugin plugin="qcadooUnitConversions" version="${qcadoo.plugin.version}"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schema.qcadoo.org/plugin"
+	xmlns:model="http://schema.qcadoo.org/modules/model" xmlns:view="http://schema.qcadoo.org/modules/view"
+	xmlns:menu="http://schema.qcadoo.org/modules/menu" xmlns:localization="http://schema.qcadoo.org/modules/localization"
 	xsi:schemaLocation="
 		http://schema.qcadoo.org/plugin 
 		http://schema.qcadoo.org/plugin.xsd 
 		http://schema.qcadoo.org/modules/model 
 		http://schema.qcadoo.org/modules/model.xsd 
 		http://schema.qcadoo.org/modules/view 
-		http://schema.qcadoo.org/modules/view.xsd">
+		http://schema.qcadoo.org/modules/view.xsd 
+		http://schema.qcadoo.org/modules/localization 
+		http://schema.qcadoo.org/modules/localization.xsd 
+		http://schema.qcadoo.org/modules/menu 
+		http://schema.qcadoo.org/modules/menu.xsd">
 
 	<information>
-		<name>Qcadoo Framework Model</name>
+		<name>Qcadoo Unit Conversion Management</name>
 		<vendor>
 			<name>Qcadoo Limited</name>
 			<url>http://www.qcadoo.com/</url>
@@ -46,19 +50,22 @@
 
 	<dependencies>
 		<dependency>
-			<plugin>qcadooLocalization</plugin>
-			<version>[0.4.1</version>
+			<plugin>qcadooView</plugin>
+			<version>[1.1.8</version>
+		</dependency>
+		<dependency>
+			<plugin>qcadooDictionaries</plugin>
+			<version>[1.1.8</version>
 		</dependency>
 	</dependencies>
 
 	<modules>
-		<model:model model="dictionary" resource="model/dictionary.xml" />
-		<model:model model="dictionaryItem" resource="model/dictionaryItem.xml" />
-		
-		<model:model model="globalUnitConversionsAggregate" resource="model/globalUnitConversionsAggregate.xml" />
-		<model:model model="unitConversionItem" resource="model/unitConversionItem.xml" />
-		
-		<model:dictionary name="units" />
+		<localization:translation path="locales" />
+
+		<menu:menu-item-url name="unitConversions"
+			category="administration" url="/unitConversions.html" />
+
+		<view:view resource="view/unitConversions.xml" />
 	</modules>
 
 </plugin>

@@ -1,0 +1,162 @@
+package com.qcadoo.model.internal.units;
+
+import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.util.Collections;
+import java.util.List;
+
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.springframework.test.util.ReflectionTestUtils;
+
+import com.google.common.collect.Lists;
+import com.qcadoo.model.api.DataDefinition;
+import com.qcadoo.model.api.Entity;
+import com.qcadoo.model.api.NumberService;
+import com.qcadoo.model.api.units.PossibleUnitConversions;
+import com.qcadoo.model.api.units.UnitConversionModelService;
+import com.qcadoo.model.constants.UnitConversionItemFields;
+
+public class UnitConversionServiceImplTest {
+
+    private static final MathContext MATH_CONTEXT = MathContext.DECIMAL64;
+
+    private UnitConversionServiceImpl unitConversionService;
+
+    @Mock
+    private UnitConversionModelService unitConversionModelService;
+
+    @Mock
+    private DataDefinition unitConversionItemDD;
+
+    @Before
+    public final void init() {
+        MockitoAnnotations.initMocks(this);
+        unitConversionService = new UnitConversionServiceImpl();
+
+        final NumberService numberService = mock(NumberService.class);
+        given(numberService.getMathContext()).willReturn(MATH_CONTEXT);
+        given(unitConversionModelService.getDataDefinition()).willReturn(unitConversionItemDD);
+        ReflectionTestUtils.setField(unitConversionService, "numberService", numberService);
+        ReflectionTestUtils.setField(unitConversionService, "unitConversionModelService", unitConversionModelService);
+    }
+
+    private void stubGetAll(final List<Entity> unitConversionItems) {
+        given(unitConversionModelService.find(Mockito.anyString())).willReturn(unitConversionItems);
+    }
+
+    private Entity mockUnitConversionItem(final BigDecimal quantityFrom, final String unitFrom, final BigDecimal quantityTo,
+            final String unitTo) {
+        final Entity unitConversionItem = mock(Entity.class);
+        given(unitConversionItem.getStringField(UnitConversionItemFields.UNIT_FROM)).willReturn(unitFrom);
+        given(unitConversionItem.getStringField(UnitConversionItemFields.UNIT_TO)).willReturn(unitTo);
+        given(unitConversionItem.getDecimalField(UnitConversionItemFields.QUANTITY_FROM)).willReturn(quantityFrom);
+        given(unitConversionItem.getDecimalField(UnitConversionItemFields.QUANTITY_TO)).willReturn(quantityTo);
+
+        return unitConversionItem;
+    }
+
+    private void assertBigDecimalEquals(final BigDecimal expected, final BigDecimal actual) {
+        if (expected.compareTo(actual) != 0) {
+            Assert.fail("expected " + expected + " but actual value is " + actual);
+        }
+    }
+
+    @Test
+    public final void shouldReturnEmptyConversionsSet() {
+        // given
+        stubGetAll(Collections.<Entity> emptyList());
+
+        // when
+        final PossibleUnitConversions result = unitConversionService.getPossibleConversions("m");
+
+        // then
+        assertTrue(result.isEmpty());
+
+    }
+
+    @Test
+    public final void shouldReturnNonEmptyConversionsSetUsingSimpleOneDirectionalTraverse() {
+        // given
+        final Entity m_dm = mockUnitConversionItem(BigDecimal.ONE, "m", BigDecimal.valueOf(10L), "dm");
+        final Entity dm_cm = mockUnitConversionItem(BigDecimal.ONE, "dm", BigDecimal.valueOf(10L), "cm");
+        final Entity cm_mm = mockUnitConversionItem(BigDecimal.ONE, "cm", BigDecimal.valueOf(10L), "mm");
+        stubGetAll(Lists.newArrayList(m_dm, dm_cm, cm_mm));
+
+        // when
+        final PossibleUnitConversions result = unitConversionService.getPossibleConversions("m");
+
+        // then
+        assertEquals(3, result.asUnitToConversionMap().size());
+        assertBigDecimalEquals(BigDecimal.valueOf(10L), result.convertTo(BigDecimal.ONE, "dm"));
+        assertBigDecimalEquals(BigDecimal.valueOf(100L), result.convertTo(BigDecimal.ONE, "cm"));
+        assertBigDecimalEquals(BigDecimal.valueOf(1000L), result.convertTo(BigDecimal.ONE, "mm"));
+    }
+
+    @Test
+    public final void shouldReturnNonEmptyConversionsSetUsingSimpleBiDirectionalTraverse() {
+        // given
+        final Entity km_m = mockUnitConversionItem(BigDecimal.ONE, "km", BigDecimal.valueOf(1000L), "m");
+        final Entity m_dm = mockUnitConversionItem(BigDecimal.ONE, "m", BigDecimal.valueOf(100L), "cm");
+        final Entity cm_mm = mockUnitConversionItem(BigDecimal.ONE, "cm", BigDecimal.valueOf(10L), "mm");
+        stubGetAll(Lists.newArrayList(m_dm, km_m, cm_mm));
+
+        // when
+        final PossibleUnitConversions result = unitConversionService.getPossibleConversions("m");
+
+        // then
+        assertEquals(3, result.asUnitToConversionMap().size());
+        assertBigDecimalEquals(new BigDecimal("0.001"), result.convertTo(BigDecimal.ONE, "km"));
+        assertBigDecimalEquals(BigDecimal.valueOf(100L), result.convertTo(BigDecimal.ONE, "cm"));
+        assertBigDecimalEquals(BigDecimal.valueOf(1000L), result.convertTo(BigDecimal.ONE, "mm"));
+    }
+
+    @Test
+    public final void shouldReturnNonEmptyConversionsSetUsingSimpleOneDirectionalTraverseWithCycle() {
+        // given
+        final Entity m_dm = mockUnitConversionItem(BigDecimal.ONE, "m", BigDecimal.valueOf(10L), "dm");
+        final Entity dm_cm = mockUnitConversionItem(BigDecimal.ONE, "dm", BigDecimal.valueOf(10L), "cm");
+        final Entity cm_mm = mockUnitConversionItem(BigDecimal.ONE, "cm", BigDecimal.valueOf(10L), "mm");
+        final Entity mm_m = mockUnitConversionItem(BigDecimal.ONE, "mm", new BigDecimal("0.001"), "m");
+        stubGetAll(Lists.newArrayList(m_dm, dm_cm, cm_mm, mm_m));
+
+        // when
+        final PossibleUnitConversions result = unitConversionService.getPossibleConversions("m");
+
+        // then
+        assertEquals(3, result.asUnitToConversionMap().size());
+        assertBigDecimalEquals(BigDecimal.valueOf(10L), result.convertTo(BigDecimal.ONE, "dm"));
+        assertBigDecimalEquals(BigDecimal.valueOf(100L), result.convertTo(BigDecimal.ONE, "cm"));
+        assertBigDecimalEquals(BigDecimal.valueOf(1000L), result.convertTo(BigDecimal.ONE, "mm"));
+    }
+
+    @Test
+    public final void shouldReturnNonEmptyConversionsSetUsingSimpleBiDirectionalTraverseWithCycle() {
+        // given
+        final Entity km_m = mockUnitConversionItem(BigDecimal.ONE, "km", BigDecimal.valueOf(1000L), "m");
+        final Entity m_dm = mockUnitConversionItem(BigDecimal.ONE, "m", BigDecimal.valueOf(10L), "dm");
+        final Entity km_mm = mockUnitConversionItem(BigDecimal.ONE, "km", BigDecimal.valueOf(1000000L), "mm");
+        final Entity mm_dm = mockUnitConversionItem(BigDecimal.valueOf(100L), "mm", BigDecimal.ONE, "dm");
+        final Entity dm_m = mockUnitConversionItem(BigDecimal.valueOf(10L), "dm", BigDecimal.ONE, "m");
+        stubGetAll(Lists.newArrayList(m_dm, km_m, km_mm, mm_dm, dm_m));
+
+        // when
+        final PossibleUnitConversions result = unitConversionService.getPossibleConversions("m");
+
+        // then
+        assertEquals(3, result.asUnitToConversionMap().size());
+        assertBigDecimalEquals(new BigDecimal("0.001"), result.convertTo(BigDecimal.ONE, "km"));
+        assertBigDecimalEquals(BigDecimal.valueOf(10L), result.convertTo(BigDecimal.ONE, "dm"));
+        assertBigDecimalEquals(BigDecimal.valueOf(1000L), result.convertTo(BigDecimal.ONE, "mm"));
+    }
+
+}
