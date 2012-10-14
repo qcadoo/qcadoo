@@ -37,7 +37,7 @@ import com.qcadoo.report.api.xls.XlsHelper;
 public final class XlsHelperImpl implements XlsHelper {
 
     @Override
-    public void setCellStyle(final HSSFSheet sheet, HSSFCell cell) {
+    public void setCellStyle(final HSSFSheet sheet, final HSSFCell cell) {
         cell.setCellStyle(getHeaderStyle(sheet.getWorkbook()));
     }
 

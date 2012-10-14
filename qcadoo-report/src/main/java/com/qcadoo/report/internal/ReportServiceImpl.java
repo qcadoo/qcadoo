@@ -190,7 +190,8 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public void printGeneratedReport(ViewDefinitionState viewDefinitionState, ComponentState state, String[] args) {
+    public void printGeneratedReport(final ViewDefinitionState viewDefinitionState, final ComponentState state,
+            final String[] args) {
         if (state.getFieldValue() instanceof Long) {
             Entity entity = dataDefinitionService.get(args[1], args[2]).get((Long) state.getFieldValue());
             if (entity == null) {

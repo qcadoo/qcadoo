@@ -59,6 +59,8 @@ public class ViewRibbonModule extends Module {
 
     public ViewRibbonModule(final String pluginIdentifier, final Resource xmlFile,
             final InternalViewDefinitionService viewDefinitionService, final ViewDefinitionParser viewDefinitionParser) {
+        super();
+
         this.pluginIdentifier = pluginIdentifier;
         this.viewDefinitionService = viewDefinitionService;
         this.viewDefinitionParser = viewDefinitionParser;

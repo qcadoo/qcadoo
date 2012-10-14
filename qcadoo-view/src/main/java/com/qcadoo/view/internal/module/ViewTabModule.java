@@ -59,6 +59,8 @@ public class ViewTabModule extends Module {
 
     public ViewTabModule(final String pluginIdentifier, final Resource xmlFile,
             final InternalViewDefinitionService viewDefinitionService, final ViewDefinitionParser viewDefinitionParser) {
+        super();
+
         this.pluginIdentifier = pluginIdentifier;
         this.viewDefinitionService = viewDefinitionService;
         this.viewDefinitionParser = viewDefinitionParser;

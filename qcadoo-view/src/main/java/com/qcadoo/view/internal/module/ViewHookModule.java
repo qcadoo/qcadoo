@@ -47,6 +47,8 @@ public class ViewHookModule extends Module {
     public ViewHookModule(final String pluginIdentifier, final InternalViewDefinitionService viewDefinitionService,
             final String extendsViewPlugin, final String extendsViewName, final InternalViewDefinition.HookType hookType,
             final HookDefinition hook) {
+        super();
+
         this.pluginIdentifier = pluginIdentifier;
         this.viewDefinitionService = viewDefinitionService;
         this.extendsViewPlugin = extendsViewPlugin;

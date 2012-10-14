@@ -46,6 +46,8 @@ public class UserModule extends Module {
 
     public UserModule(final String login, final String email, final String firstName, final String lastName,
             final String password, final String groupName, final DataDefinitionService dataDefinitionService) {
+        super();
+
         this.login = login;
         this.email = email;
         this.firstName = firstName;

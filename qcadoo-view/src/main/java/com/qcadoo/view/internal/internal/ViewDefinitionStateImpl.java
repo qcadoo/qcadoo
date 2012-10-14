@@ -51,6 +51,8 @@ public final class ViewDefinitionStateImpl extends AbstractContainerState implem
     private final Map<String, ComponentState> registry = new HashMap<String, ComponentState>();
 
     public ViewDefinitionStateImpl() {
+        super();
+
         requestRender();
     }
 

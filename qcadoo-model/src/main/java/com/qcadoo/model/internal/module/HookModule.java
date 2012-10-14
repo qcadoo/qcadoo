@@ -49,6 +49,8 @@ public class HookModule extends Module {
 
     public HookModule(final String pluginIdentifier, final String modelName, final Element hook,
             final ModelXmlHolder modelXmlHolder, final InternalDataDefinitionService dataDefinitionService) {
+        super();
+
         this.pluginIdentifier = pluginIdentifier;
         this.modelName = modelName;
         this.hook = hook;

@@ -44,6 +44,8 @@ public class ReportTemplateModule extends Module {
 
     public ReportTemplateModule(final String pluginIdentifier, final String templateName, final Resource templateFile,
             final ReportTemplateService reportTemplateService) {
+        super();
+
         this.pluginIdentifier = pluginIdentifier;
         this.templateName = templateName;
         this.templateFile = templateFile;

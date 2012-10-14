@@ -49,6 +49,8 @@ public class WindowComponentState extends AbstractContainerState implements Wind
     private String activeMenu = null;
 
     public WindowComponentState(final WindowComponentPattern pattern) {
+        super();
+
         this.pattern = pattern;
         ribbon = pattern.getRibbon().getCopy();
     }

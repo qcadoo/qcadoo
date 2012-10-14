@@ -59,12 +59,12 @@ public class NumberServiceImpl implements NumberService {
     }
 
     @Override
-    public String format(Object obj) {
+    public String format(final Object obj) {
         return (obj == null) ? null : decimalFormat.format(obj);
     }
 
     @Override
-    public BigDecimal setScale(BigDecimal decimal) {
+    public BigDecimal setScale(final BigDecimal decimal) {
         return decimal.setScale(5, HALF_EVEN);
     }
 }

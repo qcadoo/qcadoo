@@ -36,15 +36,18 @@ import com.qcadoo.view.internal.xml.ViewDefinitionParserNodeException;
 
 public class RibbonTemplateModule extends Module {
 
-    final RibbonTemplate template;
+    private final RibbonTemplatesService ribbonTemplatesService;
 
-    final RibbonTemplatesService ribbonTemplatesService;
+    private final String fileName;
+
+    private final RibbonTemplate template;
 
     public RibbonTemplateModule(final String pluginIdentifier, final Resource xmlFile, final ViewDefinitionParser parser,
             final RibbonTemplatesService ribbonTemplatesService) {
-        this.ribbonTemplatesService = ribbonTemplatesService;
+        super();
 
-        String fileName = xmlFile.getFilename();
+        fileName = xmlFile.getFilename();
+        this.ribbonTemplatesService = ribbonTemplatesService;
         try {
 
             Node root = parser.getRootOfXmlDocument(xmlFile);

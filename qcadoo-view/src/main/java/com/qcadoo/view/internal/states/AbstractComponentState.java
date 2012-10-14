@@ -101,6 +101,7 @@ public abstract class AbstractComponentState implements InternalComponentState, 
     private String translationPath;
 
     public AbstractComponentState() {
+        // empty
     }
 
     public AbstractComponentState(final ComponentPattern pattern) {

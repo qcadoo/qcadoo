@@ -35,6 +35,8 @@ public class DictionaryModule extends Module {
     private final String pluginIdentifier;
 
     public DictionaryModule(final String pluginIdentifier, final String name, final InternalDictionaryService dictionaryService) {
+        super();
+
         this.pluginIdentifier = pluginIdentifier;
         this.name = name;
         this.dictionaryService = dictionaryService;
