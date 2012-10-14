@@ -35,7 +35,7 @@ import com.qcadoo.view.api.components.ganttChart.GanttChartItem;
 
 public class GanttChartItemFactory {
 
-    private final int precision = 10;
+    private static final int precision = 10;
 
     private final int interval;
 
