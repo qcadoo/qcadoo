@@ -87,10 +87,10 @@ public class UnitConversionServiceImplTest {
     @Test
     public final void shouldReturnNonEmptyConversionsSetUsingSimpleOneDirectionalTraverse() {
         // given
-        final Entity m_dm = mockUnitConversionItem(BigDecimal.ONE, "m", BigDecimal.valueOf(10L), "dm");
-        final Entity dm_cm = mockUnitConversionItem(BigDecimal.ONE, "dm", BigDecimal.valueOf(10L), "cm");
-        final Entity cm_mm = mockUnitConversionItem(BigDecimal.ONE, "cm", BigDecimal.valueOf(10L), "mm");
-        stubGetAll(Lists.newArrayList(m_dm, dm_cm, cm_mm));
+        final Entity mToDm = mockUnitConversionItem(BigDecimal.ONE, "m", BigDecimal.valueOf(10L), "dm");
+        final Entity dmToCm = mockUnitConversionItem(BigDecimal.ONE, "dm", BigDecimal.valueOf(10L), "cm");
+        final Entity cmToMm = mockUnitConversionItem(BigDecimal.ONE, "cm", BigDecimal.valueOf(10L), "mm");
+        stubGetAll(Lists.newArrayList(mToDm, dmToCm, cmToMm));
 
         // when
         final PossibleUnitConversions result = unitConversionService.getPossibleConversions("m");
@@ -105,10 +105,10 @@ public class UnitConversionServiceImplTest {
     @Test
     public final void shouldReturnNonEmptyConversionsSetUsingSimpleBiDirectionalTraverse() {
         // given
-        final Entity km_m = mockUnitConversionItem(BigDecimal.ONE, "km", BigDecimal.valueOf(1000L), "m");
-        final Entity m_dm = mockUnitConversionItem(BigDecimal.ONE, "m", BigDecimal.valueOf(100L), "cm");
-        final Entity cm_mm = mockUnitConversionItem(BigDecimal.ONE, "cm", BigDecimal.valueOf(10L), "mm");
-        stubGetAll(Lists.newArrayList(m_dm, km_m, cm_mm));
+        final Entity kmToM = mockUnitConversionItem(BigDecimal.ONE, "km", BigDecimal.valueOf(1000L), "m");
+        final Entity mToDm = mockUnitConversionItem(BigDecimal.ONE, "m", BigDecimal.valueOf(100L), "cm");
+        final Entity cmToMm = mockUnitConversionItem(BigDecimal.ONE, "cm", BigDecimal.valueOf(10L), "mm");
+        stubGetAll(Lists.newArrayList(mToDm, kmToM, cmToMm));
 
         // when
         final PossibleUnitConversions result = unitConversionService.getPossibleConversions("m");
@@ -123,11 +123,11 @@ public class UnitConversionServiceImplTest {
     @Test
     public final void shouldReturnNonEmptyConversionsSetUsingSimpleOneDirectionalTraverseWithCycle() {
         // given
-        final Entity m_dm = mockUnitConversionItem(BigDecimal.ONE, "m", BigDecimal.valueOf(10L), "dm");
-        final Entity dm_cm = mockUnitConversionItem(BigDecimal.ONE, "dm", BigDecimal.valueOf(10L), "cm");
-        final Entity cm_mm = mockUnitConversionItem(BigDecimal.ONE, "cm", BigDecimal.valueOf(10L), "mm");
-        final Entity mm_m = mockUnitConversionItem(BigDecimal.ONE, "mm", new BigDecimal("0.001"), "m");
-        stubGetAll(Lists.newArrayList(m_dm, dm_cm, cm_mm, mm_m));
+        final Entity mToDm = mockUnitConversionItem(BigDecimal.ONE, "m", BigDecimal.valueOf(10L), "dm");
+        final Entity dmToCm = mockUnitConversionItem(BigDecimal.ONE, "dm", BigDecimal.valueOf(10L), "cm");
+        final Entity cmToMm = mockUnitConversionItem(BigDecimal.ONE, "cm", BigDecimal.valueOf(10L), "mm");
+        final Entity mmToM = mockUnitConversionItem(BigDecimal.ONE, "mm", new BigDecimal("0.001"), "m");
+        stubGetAll(Lists.newArrayList(mToDm, dmToCm, cmToMm, mmToM));
 
         // when
         final PossibleUnitConversions result = unitConversionService.getPossibleConversions("m");
@@ -142,12 +142,12 @@ public class UnitConversionServiceImplTest {
     @Test
     public final void shouldReturnNonEmptyConversionsSetUsingSimpleBiDirectionalTraverseWithCycle() {
         // given
-        final Entity km_m = mockUnitConversionItem(BigDecimal.ONE, "km", BigDecimal.valueOf(1000L), "m");
-        final Entity m_dm = mockUnitConversionItem(BigDecimal.ONE, "m", BigDecimal.valueOf(10L), "dm");
-        final Entity km_mm = mockUnitConversionItem(BigDecimal.ONE, "km", BigDecimal.valueOf(1000000L), "mm");
-        final Entity mm_dm = mockUnitConversionItem(BigDecimal.valueOf(100L), "mm", BigDecimal.ONE, "dm");
-        final Entity dm_m = mockUnitConversionItem(BigDecimal.valueOf(10L), "dm", BigDecimal.ONE, "m");
-        stubGetAll(Lists.newArrayList(m_dm, km_m, km_mm, mm_dm, dm_m));
+        final Entity kmToM = mockUnitConversionItem(BigDecimal.ONE, "km", BigDecimal.valueOf(1000L), "m");
+        final Entity mToDm = mockUnitConversionItem(BigDecimal.ONE, "m", BigDecimal.valueOf(10L), "dm");
+        final Entity kmToMm = mockUnitConversionItem(BigDecimal.ONE, "km", BigDecimal.valueOf(1000000L), "mm");
+        final Entity mmToDm = mockUnitConversionItem(BigDecimal.valueOf(100L), "mm", BigDecimal.ONE, "dm");
+        final Entity dmToM = mockUnitConversionItem(BigDecimal.valueOf(10L), "dm", BigDecimal.ONE, "m");
+        stubGetAll(Lists.newArrayList(mToDm, kmToM, kmToMm, mmToDm, dmToM));
 
         // when
         final PossibleUnitConversions result = unitConversionService.getPossibleConversions("m");

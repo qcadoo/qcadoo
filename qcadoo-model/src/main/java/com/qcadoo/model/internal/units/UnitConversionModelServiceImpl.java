@@ -23,7 +23,7 @@ public class UnitConversionModelServiceImpl implements UnitConversionModelServic
     @Autowired
     private DataDefinitionService dataDefinitionService;
 
-    private final static CustomRestriction RESTRICTION_ONLY_GLOBAL = new CustomRestriction() {
+    private static final CustomRestriction RESTRICTION_ONLY_GLOBAL = new CustomRestriction() {
 
         @Override
         public void addRestriction(final SearchCriteriaBuilder searchCriteriaBuilder) {
