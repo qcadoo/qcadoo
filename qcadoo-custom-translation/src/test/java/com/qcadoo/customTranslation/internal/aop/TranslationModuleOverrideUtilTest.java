@@ -8,7 +8,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -184,67 +183,7 @@ public class TranslationModuleOverrideUtilTest {
 
         // then
         verify(customTranslationManagementService, never()).addCustomTranslation(Mockito.anyString(), Mockito.anyString(),
-                Mockito.anyString());
-    }
-
-    @Test
-    public void shouldntAddTranslationKeysForPluginIfResourcesAreEmpty() {
-        // given
-        String pluginIdentifier = "plugin";
-
-        String locale = "pl";
-
-        locales = mockStringSet(Sets.newHashSet(locale));
-
-        given(translationService.getLocales()).willReturn(localesMap);
-        given(localesMap.keySet()).willReturn(locales);
-
-        basenames = mockStringSet(new HashSet<String>());
-
-        resources = mockResourcesList(new ArrayList<Resource>());
-
-        // when
-        translationModuleOverrideUtil.addTranslationKeysForPlugin(pluginIdentifier, basenames);
-
-        // then
-        verify(customTranslationManagementService, never()).addCustomTranslation(Mockito.anyString(), Mockito.anyString(),
-                Mockito.anyString());
-    }
-
-    @Test
-    public void shouldntAddTranslationKeysForPluginIfKeysAreEmpty() throws Exception {
-        // given
-        String pluginIdentifier = "plugin";
-
-        String locale = "pl";
-        String basename = "basename";
-        String searchName = basename + "_" + locale + ".properties";
-
-        locales = mockStringSet(Sets.newHashSet(locale));
-
-        given(translationService.getLocales()).willReturn(localesMap);
-        given(localesMap.keySet()).willReturn(locales);
-
-        basenames = mockStringSet(Sets.newHashSet(basename));
-
-        given(applicationContext.getResource(searchName)).willReturn(resource);
-
-        given(resource.getInputStream()).willReturn(inputStream);
-
-        resources = mockResourcesList(Arrays.asList(resource));
-
-        properties.load(inputStream);
-
-        keys = mockObjectSet(new HashSet<Object>());
-
-        given(properties.keySet()).willReturn(keys);
-
-        // when
-        translationModuleOverrideUtil.addTranslationKeysForPlugin(pluginIdentifier, basenames);
-
-        // then
-        verify(customTranslationManagementService, never()).addCustomTranslation(Mockito.anyString(), Mockito.anyString(),
-                Mockito.anyString());
+				Mockito.anySet());
     }
 
     // TODO lupo fix problem with test
@@ -283,86 +222,9 @@ public class TranslationModuleOverrideUtilTest {
 
         // then
         verify(customTranslationManagementService).addCustomTranslation(Mockito.anyString(), Mockito.anyString(),
-                Mockito.anyString());
+				Mockito.anySet());
     }
 
-    @Test
-    public void shouldntRemoveTranslationKeysForPluginIfLocalesAreEmpty() {
-        // given
-        String pluginIdentifier = "plugin";
-
-        locales = mockStringSet(new HashSet<String>());
-
-        given(translationService.getLocales()).willReturn(localesMap);
-        given(localesMap.keySet()).willReturn(locales);
-
-        // when
-        translationModuleOverrideUtil.removeTranslationKeysForPlugin(pluginIdentifier, basenames);
-
-        // then
-        verify(customTranslationManagementService, never()).removeCustomTranslation(Mockito.anyString(), Mockito.anyString(),
-                Mockito.anyString());
-    }
-
-    @Test
-    public void shouldntRemoveTranslationKeysForPluginIfResourcesAreEmpty() {
-        // given
-        String pluginIdentifier = "plugin";
-
-        String locale = "pl";
-
-        locales = mockStringSet(Sets.newHashSet(locale));
-
-        given(translationService.getLocales()).willReturn(localesMap);
-        given(localesMap.keySet()).willReturn(locales);
-
-        basenames = mockStringSet(new HashSet<String>());
-
-        resources = mockResourcesList(new ArrayList<Resource>());
-
-        // when
-        translationModuleOverrideUtil.removeTranslationKeysForPlugin(pluginIdentifier, basenames);
-
-        // then
-        verify(customTranslationManagementService, never()).removeCustomTranslation(Mockito.anyString(), Mockito.anyString(),
-                Mockito.anyString());
-    }
-
-    @Test
-    public void shouldntRemoveTranslationKeysForPluginIfKeysAreEmpty() throws Exception {
-        // given
-        String pluginIdentifier = "plugin";
-
-        String locale = "pl";
-        String basename = "basename";
-        String searchName = basename + "_" + locale + ".properties";
-
-        locales = mockStringSet(Sets.newHashSet(locale));
-
-        given(translationService.getLocales()).willReturn(localesMap);
-        given(localesMap.keySet()).willReturn(locales);
-
-        basenames = mockStringSet(Sets.newHashSet(basename));
-
-        given(applicationContext.getResource(searchName)).willReturn(resource);
-
-        given(resource.getInputStream()).willReturn(inputStream);
-
-        resources = mockResourcesList(Arrays.asList(resource));
-
-        properties.load(inputStream);
-
-        keys = mockObjectSet(new HashSet<Object>());
-
-        given(properties.keySet()).willReturn(keys);
-
-        // when
-        translationModuleOverrideUtil.removeTranslationKeysForPlugin(pluginIdentifier, basenames);
-
-        // then
-        verify(customTranslationManagementService, never()).removeCustomTranslation(Mockito.anyString(), Mockito.anyString(),
-                Mockito.anyString());
-    }
 
     // TODO lupo fix problem with test
     @Ignore
@@ -399,8 +261,7 @@ public class TranslationModuleOverrideUtilTest {
         translationModuleOverrideUtil.removeTranslationKeysForPlugin(pluginIdentifier, basenames);
 
         // then
-        verify(customTranslationManagementService).removeCustomTranslation(Mockito.anyString(), Mockito.anyString(),
-                Mockito.anyString());
+		verify(customTranslationManagementService).removeCustomTranslation(Mockito.anyString());
     }
 
 }
