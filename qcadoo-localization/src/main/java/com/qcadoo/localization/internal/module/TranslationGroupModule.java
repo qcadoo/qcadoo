@@ -35,6 +35,8 @@ public class TranslationGroupModule extends Module {
     private final String name;
 
     public TranslationGroupModule(final InternalTranslationService translationService, final String prefix, final String name) {
+        super();
+
         this.translationService = translationService;
         this.prefix = prefix;
         this.name = name;

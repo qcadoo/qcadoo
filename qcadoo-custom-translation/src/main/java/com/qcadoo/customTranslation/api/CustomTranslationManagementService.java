@@ -24,6 +24,7 @@
 package com.qcadoo.customTranslation.api;
 
 import java.util.List;
+import java.util.Set;
 
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
@@ -36,28 +37,24 @@ import com.qcadoo.model.api.Entity;
 public interface CustomTranslationManagementService {
 
     /**
-     * Add custom translation with given plugin identifier, key and locale
-     * 
-     * @param pluginIdentifier
-     *            plugin identifier
-     * @param key
-     *            translation key
-     * @param locale
-     *            locale
-     */
-    void addCustomTranslation(final String pluginIdentifier, final String key, final String locale);
+	 * Add custom translation with given plugin identifier, key and locale
+	 * 
+	 * @param pluginIdentifier
+	 *            plugin identifier
+	 * @param keys
+	 *            translation keys
+	 * @param locale
+	 *            locale
+	 */
+	void addCustomTranslation(final String pluginIdentifier, final String locale, final Set<String> keys);
 
     /**
-     * Remove custom translation with given plugin identifier, key and locale
-     * 
-     * @param pluginIdentifier
-     *            plugin identifier
-     * @param key
-     *            translation key
-     * @param locale
-     *            locale
-     */
-    void removeCustomTranslation(final String pluginIdentifier, final String key, final String locale);
+	 * Remove custom translation with given plugin identifier
+	 * 
+	 * @param pluginIdentifier
+	 *            plugin identifier
+	 */
+	void removeCustomTranslation(final String pluginIdentifier);
 
     /**
      * Gets custom translation with given plugin identifier, key and locale

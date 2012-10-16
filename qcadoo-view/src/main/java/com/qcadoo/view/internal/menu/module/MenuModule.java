@@ -48,6 +48,8 @@ public class MenuModule extends Module {
     public MenuModule(final String factoryIdentifier, final InternalMenuService menuService, final String pluginIdentifier,
             final String menuName, final String menuCategory, final String menuViewPluginIdentifier, final String menuViewName,
             final String menuUrl) {
+        super();
+
         this.factoryIdentifier = factoryIdentifier;
         this.menuService = menuService;
         this.pluginIdentifier = pluginIdentifier;

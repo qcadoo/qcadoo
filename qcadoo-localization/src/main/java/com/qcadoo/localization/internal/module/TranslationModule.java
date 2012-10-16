@@ -54,6 +54,8 @@ public class TranslationModule extends Module implements TranslationPropertiesHo
     public TranslationModule(final ApplicationContext applicationContext,
             final TranslationModuleService translationModuleService, final String pluginIdentifier, final String basename,
             final String path) {
+        super();
+
         this.applicationContext = applicationContext;
         this.translationModuleService = translationModuleService;
         this.pluginIdentifier = pluginIdentifier;

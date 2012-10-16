@@ -45,6 +45,8 @@ public class FieldModule extends Module {
 
     public FieldModule(final String pluginIdentifier, final String modelName, final Element field,
             final ModelXmlHolder modelXmlHolder, final DataDefinitionService dataDefinitionService) {
+        super();
+
         this.pluginIdentifier = pluginIdentifier;
         this.modelName = modelName;
         this.field = field;

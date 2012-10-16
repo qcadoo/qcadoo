@@ -23,6 +23,7 @@
  */
 package com.qcadoo.model.internal.types;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -104,7 +105,9 @@ public final class EnumType implements EnumeratedType {
         return value;
     }
 
-    private static final class EnumTypeComparator implements Comparator<EnumTypeKey> {
+    private static final class EnumTypeComparator implements Comparator<EnumTypeKey>, Serializable {
+
+        private static final long serialVersionUID = 1323570043651191244L;
 
         @Override
         public int compare(final EnumTypeKey arg0, final EnumTypeKey arg1) {

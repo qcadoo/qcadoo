@@ -1,23 +1,27 @@
 package com.qcadoo.customTranslation.internal;
 
-import static org.junit.Assert.assertEquals;
+import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.util.Collections;
 import java.util.List;
 
+import org.hibernate.classic.Session;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import com.qcadoo.customTranslation.api.CustomTranslationManagementService;
 import com.qcadoo.customTranslation.constants.CustomTranslationContants;
-import com.qcadoo.customTranslation.internal.CustomTranslationManagementServiceImpl;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.Entity;
@@ -25,6 +29,8 @@ import com.qcadoo.model.api.search.SearchCriteriaBuilder;
 import com.qcadoo.model.api.search.SearchCriterion;
 import com.qcadoo.model.api.search.SearchResult;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(CustomTranslationManagementServiceImplTest.class)
 public class CustomTranslationManagementServiceImplTest {
 
     private CustomTranslationManagementService customTranslationManagementService;
@@ -61,88 +67,49 @@ public class CustomTranslationManagementServiceImplTest {
     }
 
     @Test
-    public void shouldAddWhenAddCustomTranslationIfCustomTranslationIsNull() {
+	public void shouldAddWhenAddCustomTranslationIfCustomTranslationIsNull() throws Exception {
         // given
         String pluginIdentifier = "plugin";
         String key = "key";
         String locale = "pl";
 
-        given(customTranslationDD.find()).willReturn(searchCriteriaBuilder);
-        given(searchCriteriaBuilder.add(Mockito.any(SearchCriterion.class))).willReturn(searchCriteriaBuilder);
-        given(searchCriteriaBuilder.setMaxResults(1)).willReturn(searchCriteriaBuilder);
-        given(searchCriteriaBuilder.uniqueResult()).willReturn(null);
+		Session session = Mockito.mock(Session.class, Mockito.RETURNS_DEEP_STUBS);
+		CustomTranslationBean entity = new CustomTranslationBean();
 
-        given(customTranslation.getDataDefinition()).willReturn(customTranslationDD);
-        given(customTranslationDD.create()).willReturn(customTranslation);
-
-        // when
-        customTranslationManagementService.addCustomTranslation(pluginIdentifier, key, locale);
-
-        // then
-        verify(customTranslation, times(4)).setField(Mockito.anyString(), Mockito.any());
-        verify(customTranslationDD).save(Mockito.any(Entity.class));
-    }
-
-    @Test
-    public void shouldntAddWhenAddCustomTranslationIfCustomTranslationIsntNull() {
-        // given
-        String pluginIdentifier = "plugin";
-        String key = "key";
-        String locale = "pl";
-
-        given(customTranslationDD.find()).willReturn(searchCriteriaBuilder);
-        given(searchCriteriaBuilder.add(Mockito.any(SearchCriterion.class))).willReturn(searchCriteriaBuilder);
-        given(searchCriteriaBuilder.setMaxResults(1)).willReturn(searchCriteriaBuilder);
-        given(searchCriteriaBuilder.uniqueResult()).willReturn(customTranslation);
-
-        // when
-        customTranslationManagementService.addCustomTranslation(pluginIdentifier, key, locale);
-
-        // then
-        verify(customTranslation, never()).setField(Mockito.anyString(), Mockito.any());
-        verify(customTranslationDD, never()).save(Mockito.any(Entity.class));
-    }
-
-    @Test
-    public void shouldRemoveWhenRemoveCustomTranslationIfCustomTranslationIsntNull() {
-        // given
-        String pluginIdentifier = "plugin";
-        String key = "key";
-        String locale = "pl";
-
-        given(customTranslationDD.find()).willReturn(searchCriteriaBuilder);
-        given(searchCriteriaBuilder.add(Mockito.any(SearchCriterion.class))).willReturn(searchCriteriaBuilder);
-        given(searchCriteriaBuilder.setMaxResults(1)).willReturn(searchCriteriaBuilder);
-        given(searchCriteriaBuilder.uniqueResult()).willReturn(customTranslation);
+		CustomTranslationManagementService mockedCustomTranslationManagementService = PowerMockito.spy(customTranslationManagementService);
+		PowerMockito.doReturn(session).when(mockedCustomTranslationManagementService, "getCurrentSession", customTranslationDD);
+		PowerMockito.doReturn(entity).when(mockedCustomTranslationManagementService, "getInstanceForEntity", customTranslationDD);
 
         given(customTranslation.getDataDefinition()).willReturn(customTranslationDD);
 
         // when
-        customTranslationManagementService.removeCustomTranslation(pluginIdentifier, key, locale);
+		mockedCustomTranslationManagementService.addCustomTranslation(pluginIdentifier, locale, Collections.singleton(key));
 
         // then
-        verify(customTranslation, times(1)).setField(Mockito.anyString(), Mockito.any());
-        verify(customTranslationDD).save(Mockito.any(Entity.class));
+		assertEquals("key", entity.key);
+		assertEquals("pl", entity.locale);
+		assertEquals("plugin", entity.pluginIdentifier);
+		assertFalse(entity.active);
+		verify(session).save(entity);
     }
 
     @Test
-    public void shouldntRemoveWhenRemoveCustomTranslationIfCustomTranslationIsNull() {
+	public void shouldRemoveWhenRemoveCustomTranslationIfCustomTranslationIsntNull() throws Exception {
         // given
         String pluginIdentifier = "plugin";
-        String key = "key";
-        String locale = "pl";
 
-        given(customTranslationDD.find()).willReturn(searchCriteriaBuilder);
-        given(searchCriteriaBuilder.add(Mockito.any(SearchCriterion.class))).willReturn(searchCriteriaBuilder);
-        given(searchCriteriaBuilder.setMaxResults(1)).willReturn(searchCriteriaBuilder);
-        given(searchCriteriaBuilder.uniqueResult()).willReturn(null);
+		Session session = Mockito.mock(Session.class, Mockito.RETURNS_DEEP_STUBS);
+
+		CustomTranslationManagementService mockedCustomTranslationManagementService = PowerMockito.spy(customTranslationManagementService);
+		PowerMockito.doReturn(session).when(mockedCustomTranslationManagementService, "getCurrentSession", customTranslationDD);
+
+        given(customTranslation.getDataDefinition()).willReturn(customTranslationDD);
 
         // when
-        customTranslationManagementService.removeCustomTranslation(pluginIdentifier, key, locale);
+		mockedCustomTranslationManagementService.removeCustomTranslation(pluginIdentifier);
 
         // then
-        verify(customTranslation, never()).setField(Mockito.anyString(), Mockito.any());
-        verify(customTranslationDD, never()).save(Mockito.any(Entity.class));
+		verify(session).createQuery(Mockito.anyString());
     }
 
     @Test
@@ -227,5 +194,14 @@ public class CustomTranslationManagementServiceImplTest {
         // then
         assertEquals(customTranslationDD, result);
     }
+
+	private static class CustomTranslationBean {
+
+		String pluginIdentifier;
+		String key;
+		String locale;
+		boolean active;
+
+	}
 
 }

@@ -51,6 +51,8 @@ public final class EntityTreeImpl extends AbstractList<Entity> implements Entity
     private EntityTreeNodeImpl root = null;
 
     public EntityTreeImpl(final DataDefinition dataDefinition, final String joinFieldName, final Long belongsToId) {
+        super();
+
         this.dataDefinition = dataDefinition;
         this.joinFieldDefinition = dataDefinition.getField(joinFieldName);
         this.belongsToId = belongsToId;

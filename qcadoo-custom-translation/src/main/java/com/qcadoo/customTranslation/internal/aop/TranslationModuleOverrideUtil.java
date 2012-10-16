@@ -26,6 +26,7 @@ package com.qcadoo.customTranslation.internal.aop;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
@@ -70,11 +71,11 @@ public class TranslationModuleOverrideUtil {
     public void addTranslationKeysForPlugin(final String pluginIdentifier, final Set<String> basenames) {
         try {
             for (String locale : translationService.getLocales().keySet()) {
+				Set<String> keys = new HashSet<String>();
                 for (Resource resource : getPropertiesResources(basenames, locale)) {
-                    for (Object key : getTranslationKeysFromProperties(resource.getInputStream())) {
-                        customTranslationManagementService.addCustomTranslation(pluginIdentifier, (String) key, locale);
-                    }
+					keys.addAll(getTranslationKeysFromProperties(resource.getInputStream()));
                 }
+				customTranslationManagementService.addCustomTranslation(pluginIdentifier, locale, keys);
             }
         } catch (IOException e) {
             LOG.error("Cannot read messages file", e);
@@ -82,17 +83,7 @@ public class TranslationModuleOverrideUtil {
     }
 
     public void removeTranslationKeysForPlugin(final String pluginIdentifier, final Set<String> basenames) {
-        try {
-            for (String locale : translationService.getLocales().keySet()) {
-                for (Resource resource : getPropertiesResources(basenames, locale)) {
-                    for (Object key : getTranslationKeysFromProperties(resource.getInputStream())) {
-                        customTranslationManagementService.removeCustomTranslation(pluginIdentifier, (String) key, locale);
-                    }
-                }
-            }
-        } catch (IOException e) {
-            LOG.error("Cannot read messages file", e);
-        }
+		customTranslationManagementService.removeCustomTranslation(pluginIdentifier);
     }
 
     private List<Resource> getPropertiesResources(final Set<String> basenames, final String locale) {
@@ -106,11 +97,14 @@ public class TranslationModuleOverrideUtil {
         return resources;
     }
 
-    private Set<Object> getTranslationKeysFromProperties(final InputStream inputStream) throws IOException {
+	private Set<String> getTranslationKeysFromProperties(final InputStream inputStream) throws IOException {
         Properties properties = new Properties();
         properties.load(inputStream);
-
-        return properties.keySet();
+		Set<String> strings = new HashSet<String>();
+		for (Object key : properties.keySet()) {
+			strings.add((String) key);
+		}
+		return strings;
     }
 
 }

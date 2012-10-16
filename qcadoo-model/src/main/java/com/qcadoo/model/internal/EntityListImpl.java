@@ -45,6 +45,8 @@ public final class EntityListImpl extends AbstractList<Entity> implements Entity
     private List<Entity> entities = null;
 
     public EntityListImpl(final DataDefinition dataDefinition, final String joinFieldName, final Long parentId) {
+        super();
+
         this.dataDefinition = dataDefinition;
         this.joinFieldDefinition = dataDefinition.getField(joinFieldName);
         this.parentId = parentId;

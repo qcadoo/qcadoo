@@ -33,6 +33,8 @@ public abstract class ResourceModule extends Module {
     private final ResourceService resourceService;
 
     public ResourceModule(final ResourceService resourceService) {
+        super();
+
         this.resourceService = resourceService;
     }
 

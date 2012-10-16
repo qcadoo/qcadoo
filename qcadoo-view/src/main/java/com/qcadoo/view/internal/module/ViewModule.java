@@ -43,6 +43,8 @@ public class ViewModule extends Module {
 
     public ViewModule(final String pluginIdentifier, final Resource xmlFile, final ViewDefinitionParser viewDefinitionParser,
             final InternalViewDefinitionService viewDefinitionService) {
+        super();
+
         this.pluginIdentifier = pluginIdentifier;
         this.xmlFile = xmlFile;
         this.viewDefinitionParser = viewDefinitionParser;

@@ -35,6 +35,8 @@ public class LocaleModule extends Module {
     private final String label;
 
     public LocaleModule(final InternalTranslationService translationService, final String locale, final String label) {
+        super();
+
         this.translationService = translationService;
         this.locale = locale;
         this.label = label;

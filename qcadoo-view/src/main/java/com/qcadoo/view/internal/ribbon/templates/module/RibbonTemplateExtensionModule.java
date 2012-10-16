@@ -51,6 +51,8 @@ public class RibbonTemplateExtensionModule extends Module {
 
     public RibbonTemplateExtensionModule(final String pluginIdentifier, final Resource xmlFile,
             final ViewDefinitionParser parser, final RibbonTemplatesService ribbonTemplatesService) {
+        super();
+
         fileName = xmlFile.getFilename();
         this.ribbonTemplatesService = ribbonTemplatesService;
         try {

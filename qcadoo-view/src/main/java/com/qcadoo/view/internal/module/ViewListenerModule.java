@@ -48,6 +48,8 @@ public class ViewListenerModule extends Module {
     public ViewListenerModule(final String pluginIdentifier, final InternalViewDefinitionService viewDefinitionService,
             final String extendsViewPlugin, final String extendsViewName, final String extendsComponentName,
             final ComponentCustomEvent event) {
+        super();
+
         this.pluginIdentifier = pluginIdentifier;
         this.viewDefinitionService = viewDefinitionService;
         this.extendsViewPlugin = extendsViewPlugin;

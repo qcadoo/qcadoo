@@ -39,6 +39,8 @@ public final class DetachedEntityListImpl extends AbstractList<Entity> implement
     private final List<Entity> entities;
 
     public DetachedEntityListImpl(final DataDefinition dataDefinition, final List<Entity> entities) {
+        super();
+
         this.dataDefinition = dataDefinition;
         if (entities == null) {
             this.entities = Lists.newArrayList();
