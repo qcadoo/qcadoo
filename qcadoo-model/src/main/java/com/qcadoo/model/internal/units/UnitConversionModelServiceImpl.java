@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.common.base.Preconditions;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.Entity;
@@ -23,34 +24,17 @@ public class UnitConversionModelServiceImpl implements UnitConversionModelServic
     @Autowired
     private DataDefinitionService dataDefinitionService;
 
-    private final static CustomRestriction RESTRICTION_ONLY_GLOBAL = new CustomRestriction() {
-
-        @Override
-        public void addRestriction(final SearchCriteriaBuilder searchCriteriaBuilder) {
-            searchCriteriaBuilder.add(SearchRestrictions.isNotNull(UnitConversionItemFields.GLOBAL_UNIT_CONVERSIONS_AGGREGATE));
-        }
-    };
+    private static final OnlyGlobalConversionRestriction ONLY_GLOBAL_CONVERSION_RESTRICTION = new OnlyGlobalConversionRestriction();
 
     @Override
     public List<Entity> find(final String unit) {
-        return find(unit, RESTRICTION_ONLY_GLOBAL);
+        return find(unit, ONLY_GLOBAL_CONVERSION_RESTRICTION);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<Entity> find(final String unit, final CustomRestriction customRestriction) {
-        final CustomRestriction unitMatchingRestriction = new CustomRestriction() {
-
-            @Override
-            public void addRestriction(final SearchCriteriaBuilder searchCriteriaBuilder) {
-                customRestriction.addRestriction(searchCriteriaBuilder);
-                final SearchDisjunction disjunction = SearchRestrictions.disjunction();
-                disjunction.add(SearchRestrictions.eq(UnitConversionItemFields.UNIT_FROM, unit));
-                disjunction.add(SearchRestrictions.eq(UnitConversionItemFields.UNIT_TO, unit));
-                searchCriteriaBuilder.add(disjunction);
-            }
-        };
-
+        final CustomRestriction unitMatchingRestriction = new ConversionMatchingUnitRestriction(unit, customRestriction);
         final SearchCriteriaBuilder searchCriteriaBuilder = getDataDefinition().find();
         unitMatchingRestriction.addRestriction(searchCriteriaBuilder);
         return searchCriteriaBuilder.list().getEntities();
@@ -59,6 +43,38 @@ public class UnitConversionModelServiceImpl implements UnitConversionModelServic
     @Override
     public DataDefinition getDataDefinition() {
         return dataDefinitionService.get(QcadooModelConstants.PLUGIN_IDENTIFIER, QcadooModelConstants.MODEL_UNIT_CONVERSION_ITEM);
+    }
+
+    private static final class ConversionMatchingUnitRestriction implements CustomRestriction {
+
+        private final String unit;
+
+        private final CustomRestriction customRestriction;
+
+        private ConversionMatchingUnitRestriction(final String unit, final CustomRestriction customRestriction) {
+            Preconditions.checkNotNull(unit);
+            Preconditions.checkNotNull(customRestriction);
+            this.unit = unit;
+            this.customRestriction = customRestriction;
+        }
+
+        @Override
+        public void addRestriction(final SearchCriteriaBuilder searchCriteriaBuilder) {
+            customRestriction.addRestriction(searchCriteriaBuilder);
+            final SearchDisjunction disjunction = SearchRestrictions.disjunction();
+            disjunction.add(SearchRestrictions.eq(UnitConversionItemFields.UNIT_FROM, unit));
+            disjunction.add(SearchRestrictions.eq(UnitConversionItemFields.UNIT_TO, unit));
+            searchCriteriaBuilder.add(disjunction);
+        }
+    }
+
+    private static final class OnlyGlobalConversionRestriction implements CustomRestriction {
+
+        @Override
+        public void addRestriction(final SearchCriteriaBuilder searchCriteriaBuilder) {
+            searchCriteriaBuilder.add(SearchRestrictions.isNotNull(UnitConversionItemFields.GLOBAL_UNIT_CONVERSIONS_AGGREGATE));
+        }
+
     }
 
 }
