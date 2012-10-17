@@ -38,15 +38,13 @@ public class RibbonTemplateModule extends Module {
 
     private final RibbonTemplatesService ribbonTemplatesService;
 
-    private final String fileName;
-
     private final RibbonTemplate template;
 
     public RibbonTemplateModule(final String pluginIdentifier, final Resource xmlFile, final ViewDefinitionParser parser,
             final RibbonTemplatesService ribbonTemplatesService) {
         super();
 
-        fileName = xmlFile.getFilename();
+        final String fileName = xmlFile.getFilename();
         this.ribbonTemplatesService = ribbonTemplatesService;
         try {
 

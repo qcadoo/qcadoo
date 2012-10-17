@@ -83,7 +83,7 @@ public class GanttChartScaleImpl implements GanttChartScale {
             final Date dateFrom, final Date dateTo) {
         this.ganttChartComponentState = ganttChartComponentState;
         this.zoomLevel = zoomLevel;
-        this.dateFrom = (Date) dateFrom.clone();
+        this.dateFrom = new Date(dateFrom.getTime());
         this.dateTo = new DateTime(dateTo).withHourOfDay(23).withMinuteOfHour(59).withSecondOfMinute(59).toDate();
         this.ganttChartItemFactory = new GanttChartItemFactory(zoomLevel.getHoursInterval());
     }
