@@ -51,12 +51,12 @@ public final class CustomTranslationModelHooks {
 
     public boolean checkIfCustomTranslationIsUnique(final DataDefinition customTranslationDD, final Entity customTranslation) {
         String pluginIdentifier = customTranslation.getStringField(PLUGIN_IDENTIFIER);
-        String key = customTranslation.getStringField(KEY);
         String locale = customTranslation.getStringField(LOCALE);
+        String key = customTranslation.getStringField(KEY);
 
         SearchCriteriaBuilder searchCriteriaBuilder = customTranslationDD.find()
-                .add(SearchRestrictions.eq(PLUGIN_IDENTIFIER, pluginIdentifier)).add(SearchRestrictions.eq(KEY, key))
-                .add(SearchRestrictions.eq(LOCALE, locale));
+                .add(SearchRestrictions.eq(PLUGIN_IDENTIFIER, pluginIdentifier)).add(SearchRestrictions.eq(LOCALE, locale))
+                .add(SearchRestrictions.eq(KEY, key));
 
         if (customTranslation.getId() != null) {
             searchCriteriaBuilder.add(SearchRestrictions.ne("id", customTranslation.getId()));
@@ -88,24 +88,16 @@ public final class CustomTranslationModelHooks {
     }
 
     public void updateCache(final DataDefinition customTranslationDD, final Entity customTranslation) {
-        String pluginIdentifier = customTranslation.getStringField(PLUGIN_IDENTIFIER);
+        boolean active = customTranslation.getBooleanField(ACTIVE);
 
         String key = customTranslation.getStringField(KEY);
         String locale = customTranslation.getStringField(LOCALE);
         String translation = customTranslation.getStringField(CUSTOM_TRANSLATION);
 
-        if (pluginStateResolver.isEnabled(pluginIdentifier)) {
-            if (customTranslationCacheService.isCustomTranslationAdded(key)) {
-                customTranslationCacheService.updateCustomTranslation(key, locale, translation);
-            } else {
-                customTranslationCacheService.addCustomTranslation(key, locale, translation);
-            }
+        if (active) {
+            customTranslationCacheService.manageCustomTranslation(key, locale, translation);
         } else {
-            if (customTranslationCacheService.isCustomTranslationAdded(key)) {
-                customTranslationCacheService.updateCustomTranslation(key, locale, null);
-            } else {
-                customTranslationCacheService.addCustomTranslation(key, locale, null);
-            }
+            customTranslationCacheService.manageCustomTranslation(key, locale, null);
         }
     }
 

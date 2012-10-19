@@ -23,17 +23,20 @@
  */
 package com.qcadoo.customTranslation.api;
 
+import java.util.List;
 import java.util.Map;
+
+import com.qcadoo.model.api.Entity;
 
 /**
  * Service for managing custom translations cache.
  * 
- * @since 1.8.0
+ * @since 1.1.8
  */
 public interface CustomTranslationCacheService {
 
     /**
-     * Add custom translation with given key, locale and customTranslation
+     * Adds custom translation with given key, locale and customTranslation
      * 
      * @param key
      *            translation key
@@ -45,7 +48,7 @@ public interface CustomTranslationCacheService {
     void addCustomTranslation(final String key, final String locale, final String customTranslation);
 
     /**
-     * Update custom translation with given key, locale and customTranslation
+     * Updates custom translation with given key, locale and customTranslation
      * 
      * @param key
      *            translation key
@@ -56,6 +59,19 @@ public interface CustomTranslationCacheService {
      * 
      */
     void updateCustomTranslation(final String key, final String locale, final String customTranslation);
+
+    /**
+     * Manages custom translation with given key, locale and customTranslation
+     * 
+     * @param key
+     *            translation key
+     * @param locale
+     *            locale
+     * @param customTranslation
+     *            custom translation
+     * 
+     */
+    void manageCustomTranslation(final String key, final String locale, final String customTranslation);
 
     /**
      * Gets custom translation with given key and locale
@@ -97,5 +113,12 @@ public interface CustomTranslationCacheService {
      * @return boolean
      */
     boolean isCustomTranslationActive(final String key, final String locale);
+
+    /**
+     * Loads custom translations
+     * 
+     * @param customTranslations
+     */
+    void loadCustomTranslations(final List<Entity> customTranslations);
 
 }

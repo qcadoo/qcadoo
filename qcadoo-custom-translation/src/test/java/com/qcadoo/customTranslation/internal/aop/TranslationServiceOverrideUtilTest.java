@@ -8,6 +8,7 @@ import static org.mockito.BDDMockito.given;
 import java.util.Locale;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -17,6 +18,7 @@ import com.qcadoo.customTranslation.api.CustomTranslationResolver;
 import com.qcadoo.customTranslation.constants.CustomTranslationContants;
 import com.qcadoo.plugin.api.PluginStateResolver;
 
+@Ignore
 public class TranslationServiceOverrideUtilTest {
 
     private TranslationServiceOverrideUtil translationServiceOverrideUtil;

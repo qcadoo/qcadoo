@@ -25,9 +25,10 @@ package com.qcadoo.customTranslation.internal.aop;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
+import java.io.InputStreamReader;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
@@ -39,6 +40,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
+import com.google.common.base.Charsets;
+import com.google.common.collect.Maps;
 import com.qcadoo.customTranslation.api.CustomTranslationManagementService;
 import com.qcadoo.customTranslation.constants.CustomTranslationContants;
 import com.qcadoo.localization.api.TranslationService;
@@ -71,23 +74,26 @@ public class TranslationModuleOverrideUtil {
     public void addTranslationKeysForPlugin(final String pluginIdentifier, final Set<String> basenames) {
         try {
             for (String locale : translationService.getLocales().keySet()) {
-				Set<String> keys = new HashSet<String>();
+                Map<String, String> translations = Maps.newHashMap();
+
                 for (Resource resource : getPropertiesResources(basenames, locale)) {
-					keys.addAll(getTranslationKeysFromProperties(resource.getInputStream()));
+                    translations.putAll(getTranslationsFromProperties(resource.getInputStream()));
                 }
-				customTranslationManagementService.addCustomTranslation(pluginIdentifier, locale, keys);
+
+                customTranslationManagementService.addCustomTranslations(pluginIdentifier, locale, translations);
             }
         } catch (IOException e) {
-            LOG.error("Cannot read messages file", e);
+            LOG.error("Cannot read properties file", e);
         }
     }
 
-    public void removeTranslationKeysForPlugin(final String pluginIdentifier, final Set<String> basenames) {
-		customTranslationManagementService.removeCustomTranslation(pluginIdentifier);
+    public void removeTranslationKeysForPlugin(final String pluginIdentifier) {
+        customTranslationManagementService.removeCustomTranslations(pluginIdentifier);
     }
 
-    private List<Resource> getPropertiesResources(final Set<String> basenames, final String locale) {
-        List<Resource> resources = new ArrayList<Resource>();
+    private Set<Resource> getPropertiesResources(final Set<String> basenames, final String locale) {
+        Set<Resource> resources = new HashSet<Resource>();
+
         for (String basename : basenames) {
             String searchName = basename + "_" + locale + ".properties";
 
@@ -97,14 +103,20 @@ public class TranslationModuleOverrideUtil {
         return resources;
     }
 
-	private Set<String> getTranslationKeysFromProperties(final InputStream inputStream) throws IOException {
+    private Map<String, String> getTranslationsFromProperties(final InputStream inputStream) throws IOException {
+        Map<String, String> translations = Maps.newHashMap();
+
         Properties properties = new Properties();
-        properties.load(inputStream);
-		Set<String> strings = new HashSet<String>();
-		for (Object key : properties.keySet()) {
-			strings.add((String) key);
-		}
-		return strings;
+        properties.load(new InputStreamReader(inputStream, Charsets.UTF_8));
+
+        for (Entry<Object, Object> translation : properties.entrySet()) {
+            String key = (String) translation.getKey();
+            String value = (String) translation.getValue();
+
+            translations.put(key, value);
+        }
+
+        return translations;
     }
 
 }

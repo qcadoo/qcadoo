@@ -21,24 +21,34 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * ***************************************************************************
  */
-package com.qcadoo.customTranslation.constants;
+package com.qcadoo.customTranslation.internal;
 
-public final class CustomTranslationFields {
+import java.util.List;
 
-    private CustomTranslationFields() {
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.qcadoo.customTranslation.api.CustomTranslationCacheService;
+import com.qcadoo.customTranslation.api.CustomTranslationManagementService;
+import com.qcadoo.model.api.Entity;
+import com.qcadoo.plugin.api.Module;
+
+@Service
+public class CustomTranslationsOnStartupService extends Module {
+
+    @Autowired
+    private CustomTranslationManagementService customTranslationManagementService;
+
+    @Autowired
+    private CustomTranslationCacheService customTranslationCacheService;
+
+    @Override
+    @Transactional
+    public void multiTenantEnableOnStartup() {
+        List<Entity> customTranslations = customTranslationManagementService.getCustomTranslations();
+
+        customTranslationCacheService.loadCustomTranslations(customTranslations);
     }
-
-    public static final String PLUGIN_IDENTIFIER = "pluginIdentifier";
-
-    public static final String KEY = "key";
-
-    public static final String PROPERTIES_TRANSLATION = "propertiesTranslation";
-
-    public static final String CUSTOM_TRANSLATION = "customTranslation";
-
-    public static final String ACTIVE = "active";
-
-    public static final String LOCALE = "locale";
 
 }

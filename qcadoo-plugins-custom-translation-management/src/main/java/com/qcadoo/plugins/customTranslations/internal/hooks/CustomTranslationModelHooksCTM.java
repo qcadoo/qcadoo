@@ -27,7 +27,6 @@ import static com.qcadoo.customTranslation.constants.CustomTranslationFields.KEY
 import static com.qcadoo.customTranslation.constants.CustomTranslationFields.LOCALE;
 import static com.qcadoo.customTranslation.constants.CustomTranslationFields.PLUGIN_IDENTIFIER;
 import static com.qcadoo.plugins.customTranslations.constants.CustomTranslationFieldsCTM.PLUGIN_NAME;
-import static com.qcadoo.plugins.customTranslations.constants.CustomTranslationFieldsCTM.PROPERTIES_TRANSLATION;
 
 import org.apache.commons.lang.LocaleUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +52,7 @@ public class CustomTranslationModelHooksCTM {
         String locale = customTranslation.getStringField(LOCALE);
 
         customTranslation.setField(PLUGIN_NAME, getPluginName(pluginIdentifier));
-        customTranslation.setField(PROPERTIES_TRANSLATION, getPropertiesTranslation(key, locale));
+        // customTranslation.setField(PROPERTIES_TRANSLATION, getPropertiesTranslation(key, locale));
     }
 
     private String getPropertiesTranslation(final String key, final String locale) {

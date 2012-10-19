@@ -23,20 +23,33 @@
  */
 package com.qcadoo.customTranslation.internal;
 
+import static com.qcadoo.customTranslation.constants.CustomTranslationFields.ACTIVE;
+import static com.qcadoo.customTranslation.constants.CustomTranslationFields.KEY;
+import static com.qcadoo.customTranslation.constants.CustomTranslationFields.LOCALE;
+
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.google.common.collect.Maps;
 import com.qcadoo.customTranslation.api.CustomTranslationCacheService;
+import com.qcadoo.customTranslation.constants.CustomTranslationFields;
+import com.qcadoo.model.api.Entity;
+import com.qcadoo.tenant.api.MultiTenantService;
 
 @Service
 public class CustomTranslationCacheServiceImpl implements CustomTranslationCacheService {
 
-    private final Map<String, Map<String, String>> customTranslations;
+    @Autowired
+    private MultiTenantService multiTenantService;
+
+    private final Map<Integer, Map<String, Map<String, String>>> customTranslationsCache;
 
     public CustomTranslationCacheServiceImpl() {
-        this.customTranslations = Maps.newHashMap();
+        this.customTranslationsCache = Maps.newHashMap();
     }
 
     @Override
@@ -44,45 +57,83 @@ public class CustomTranslationCacheServiceImpl implements CustomTranslationCache
         Map<String, String> localeAndCustomTranslation = Maps.newHashMap();
         localeAndCustomTranslation.put(locale, customTranslation);
 
-        customTranslations.put(key, localeAndCustomTranslation);
+        getTenantCustomTranslationsCache().put(key, localeAndCustomTranslation);
     }
 
     @Override
     public void updateCustomTranslation(final String key, final String locale, final String customTranslation) {
         if (isCustomTranslationAdded(key)) {
-            customTranslations.get(key).put(locale, customTranslation);
+            getTenantCustomTranslationsCache().get(key).put(locale, customTranslation);
+        }
+    }
+
+    @Override
+    public void manageCustomTranslation(final String key, final String locale, final String customTranslation) {
+        if (isCustomTranslationAdded(key)) {
+            updateCustomTranslation(key, locale, customTranslation);
+        } else {
+            addCustomTranslation(key, locale, customTranslation);
         }
     }
 
     @Override
     public String getCustomTranslation(final String key, final String locale) {
-        if (customTranslations.containsKey(key)) {
-            if (customTranslations.get(key).containsKey(locale)) {
-                return customTranslations.get(key).get(locale);
-            }
+        if (getTenantCustomTranslationsCache().containsKey(key)
+                && getTenantCustomTranslationsCache().get(key).containsKey(locale)) {
+            return getTenantCustomTranslationsCache().get(key).get(locale);
         }
         return null;
     }
 
     @Override
     public Map<String, Map<String, String>> getCustomTranslations() {
-        return customTranslations;
+        return Collections.unmodifiableMap(getTenantCustomTranslationsCache());
     }
 
     @Override
     public boolean isCustomTranslationAdded(final String key) {
-        return customTranslations.containsKey(key);
+        return getTenantCustomTranslationsCache().containsKey(key);
     }
 
     @Override
     public boolean isCustomTranslationActive(final String key, final String locale) {
-        if (customTranslations.containsKey(key)) {
-            if (customTranslations.get(key).containsKey(locale)) {
-                return customTranslations.get(key).get(locale) != null;
-            }
+        if (getTenantCustomTranslationsCache().containsKey(key)
+                && getTenantCustomTranslationsCache().get(key).containsKey(locale)) {
+            return getTenantCustomTranslationsCache().get(key).get(locale) != null;
         }
 
         return false;
+    }
+
+    private Map<String, Map<String, String>> getTenantCustomTranslationsCache() {
+        final int tenantId = multiTenantService.getCurrentTenantId();
+
+        Map<String, Map<String, String>> tenantCustomTranslationsCache = customTranslationsCache.get(tenantId);
+
+        if (tenantCustomTranslationsCache == null) {
+            tenantCustomTranslationsCache = Maps.newHashMap();
+
+            customTranslationsCache.put(tenantId, tenantCustomTranslationsCache);
+        }
+
+        return tenantCustomTranslationsCache;
+    }
+
+    @Override
+    public void loadCustomTranslations(final List<Entity> customTranslations) {
+        for (Entity customTranslation : customTranslations) {
+            boolean active = customTranslation.getBooleanField(ACTIVE);
+
+            String key = customTranslation.getStringField(KEY);
+            String translation = customTranslation.getStringField(CustomTranslationFields.CUSTOM_TRANSLATION);
+            String locale = customTranslation.getStringField(LOCALE);
+
+            if (active) {
+                manageCustomTranslation(key, locale, translation);
+            } else {
+                manageCustomTranslation(key, locale, null);
+            }
+        }
     }
 
 }

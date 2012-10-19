@@ -25,7 +25,7 @@ package com.qcadoo.plugins.customTranslations.internal.listeners;
 
 import static com.qcadoo.customTranslation.constants.CustomTranslationFields.CUSTOM_TRANSLATION;
 import static com.qcadoo.customTranslation.constants.CustomTranslationFields.LOCALE;
-import static com.qcadoo.plugins.customTranslations.constants.CustomTranslationFieldsCTM.PROPERTIES_TRANSLATION;
+import static com.qcadoo.customTranslation.constants.CustomTranslationFields.PROPERTIES_TRANSLATION;
 
 import java.util.List;
 

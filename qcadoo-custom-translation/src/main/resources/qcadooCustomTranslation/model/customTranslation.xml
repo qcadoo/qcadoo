@@ -32,6 +32,9 @@
 		<string name="key" required="true">
 			<validatesLength max="1024" />
 		</string>
+		<string name="propertiesTranslation">
+			<validatesLength max="1024" />
+		</string>
 		<string name="customTranslation">
 			<validatesLength max="1024" />
 		</string>

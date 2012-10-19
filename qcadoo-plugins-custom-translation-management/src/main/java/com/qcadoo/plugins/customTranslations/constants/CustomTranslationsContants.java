@@ -23,7 +23,11 @@
  */
 package com.qcadoo.plugins.customTranslations.constants;
 
-public interface CustomTranslationsContants {
+public final class CustomTranslationsContants {
+
+    private CustomTranslationsContants() {
+
+    }
 
     String PLUGIN_IDENTIFIER = "qcadooCustomTranslations";
 

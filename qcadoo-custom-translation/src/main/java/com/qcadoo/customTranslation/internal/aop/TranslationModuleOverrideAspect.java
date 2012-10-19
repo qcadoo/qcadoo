@@ -64,9 +64,8 @@ public class TranslationModuleOverrideAspect {
     public void afterReturningDisableExecution(final TranslationPropertiesHolder translationPropertiesHolder) throws Throwable {
         if (translationModuleOverrideUtil.shouldOverride()) {
             String pluginIdentifier = translationPropertiesHolder.getPluginIdentifier();
-            Set<String> basenames = translationPropertiesHolder.getParsedBasenames();
 
-            translationModuleOverrideUtil.removeTranslationKeysForPlugin(pluginIdentifier, basenames);
+            translationModuleOverrideUtil.removeTranslationKeysForPlugin(pluginIdentifier);
         }
     }
 

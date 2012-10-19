@@ -62,9 +62,9 @@
 			<model:string name="pluginName" persistent="false" />
 		</model:model-field>
 		
-		<model:model-field plugin="qcadooCustomTranslation" model="customTranslation">
-			<model:string name="propertiesTranslation" persistent="false" />
-		</model:model-field>
+<!-- 		<model:model-field plugin="qcadooCustomTranslation" model="customTranslation"> -->
+<!-- 			<model:string name="propertiesTranslation" persistent="false" /> -->
+<!-- 		</model:model-field> -->
 		
 		<model:model-hook plugin="qcadooCustomTranslation" model="customTranslation">
 			<model:onView

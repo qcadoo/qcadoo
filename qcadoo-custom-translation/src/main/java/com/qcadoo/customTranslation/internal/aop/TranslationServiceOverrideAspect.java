@@ -44,11 +44,7 @@ public class TranslationServiceOverrideAspect {
     public void translateWithErrorExecution(final String messageCode, final Locale locale, final String[] args) {
     }
 
-    @Pointcut("execution(public void com.qcadoo.plugins.customTranslations.internal.hooks.CustomTranslationModelHooksCTM.updateCustomTranslationData(..))")
-    public void updateCustomTranslationDataExecution() {
-    }
-
-    @Around("translateWithErrorExecution(messageCode, locale, args) && !cflow(updateCustomTranslationDataExecution())")
+    @Around("translateWithErrorExecution(messageCode, locale, args)")
     public String aroundTranslateWithErrorExecution(final ProceedingJoinPoint pjp, final String messageCode, final Locale locale,
             final String[] args) throws Throwable {
         String result = null;

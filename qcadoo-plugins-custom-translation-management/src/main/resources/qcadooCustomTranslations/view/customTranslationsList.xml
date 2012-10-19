@@ -65,8 +65,8 @@
 					<option type="column" name="active" fields="active" />
 					<option type="column" name="customTranslation" fields="customTranslation" link="true" />
 
-					<option type="searchable" value="pluginIdentifier,key,active,customTranslation,locale" />
-					<option type="orderable" value="pluginIdentifier,key,active,customTranslation,locale" />
+					<option type="searchable" value="pluginIdentifier,key,active,propertiesTranslation,customTranslation,locale" />
+					<option type="orderable" value="pluginIdentifier,key,active,propertiesTranslation,customTranslation,locale" />
 					
 					<option type="order" column="pluginIdentifier" direction="asc" />
 					
