@@ -26,6 +26,7 @@ package com.qcadoo.customTranslation.internal;
 import java.text.MessageFormat;
 import java.util.Locale;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -55,15 +56,13 @@ public class CustomTranslationResolverImpl implements CustomTranslationResolver 
 
             Object[] argsToUse = args;
 
-            if (ObjectUtils.isEmpty(argsToUse)) {
-                argsToUse = new Object[0];
+            if (!ObjectUtils.isEmpty(argsToUse)) {
+                argsToUse = ArrayUtils.EMPTY_OBJECT_ARRAY;
             }
 
             MessageFormat messageFormat = new MessageFormat(translation);
 
-            synchronized (messageFormat) {
-                return messageFormat.format(argsToUse);
-            }
+            return messageFormat.format(argsToUse);
         }
     }
 

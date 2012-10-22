@@ -169,7 +169,7 @@ public class TranslationModuleOverrideUtilTest {
     }
 
     @Test
-    public void shouldntAddTranslationKeysForPluginIfLocalesAreEmpty() {
+    public void shouldntAddTranslationKeysForPluginIfLocalesAreEmpty() throws Exception {
         // given
         String pluginIdentifier = "plugin";
 

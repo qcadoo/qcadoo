@@ -58,8 +58,8 @@ public class CustomTranslationManagementServiceImpl implements CustomTranslation
     @Transactional
     @SuppressWarnings("unchecked")
     public void addCustomTranslations(final String pluginIdentifier, final String locale, final Map<String, String> translations) {
-        DataDefinition dataDefinition = getCustomTranslationDD();
-        Session currentSession = getCurrentSession(dataDefinition);
+        DataDefinition customTranslationDD = getCustomTranslationDD();
+        Session currentSession = getCurrentSession(customTranslationDD);
 
         List<String> existingKeys = currentSession
                 .createQuery(
@@ -75,7 +75,7 @@ public class CustomTranslationManagementServiceImpl implements CustomTranslation
                 continue;
             }
 
-            Object entity = getInstanceForEntity(dataDefinition);
+            Object entity = getInstanceForEntity(customTranslationDD);
 
             FieldUtils.setProtectedFieldValue(PLUGIN_IDENTIFIER, entity, pluginIdentifier);
             FieldUtils.setProtectedFieldValue(KEY, entity, key);
@@ -85,35 +85,19 @@ public class CustomTranslationManagementServiceImpl implements CustomTranslation
 
             currentSession.save(entity);
         }
-
-        // currentSession
-        // .createQuery(
-        // "UPDATE com.qcadoo.model.beans.qcadooCustomTranslation.QcadooCustomTranslationCustomTranslation "
-        // + "SET active = true "
-        // + "WHERE pluginIdentifier = ? AND active = false AND customTranslation IS not null AND customTranslation != ''")
-        // .setString(0, pluginIdentifier).executeUpdate();
     }
 
     @Override
     @Transactional
     public void removeCustomTranslations(final String pluginIdentifier) {
-        Session currentSession = getCurrentSession(getCustomTranslationDD());
-
-        List<String> existingKeys = currentSession
-                .createQuery(
-                        "SELECT key FROM com.qcadoo.model.beans.qcadooCustomTranslation.QcadooCustomTranslationCustomTranslation "
-                                + "WHERE pluginIdentifier = :pluginIdentifier").setString("pluginIdentifier", pluginIdentifier)
-                .list();
-
-        for (String key : existingKeys) {
-
-        }
+        DataDefinition customTranslationDD = getCustomTranslationDD();
+        Session currentSession = getCurrentSession(customTranslationDD);
 
         currentSession
                 .createQuery(
                         "UPDATE com.qcadoo.model.beans.qcadooCustomTranslation.QcadooCustomTranslationCustomTranslation "
                                 + "SET active = false WHERE pluginIdentifier = :pluginIdentifier AND active = true")
-                .setString("plugnIdenfitier", pluginIdentifier).executeUpdate();
+                .setString("pluginIdenfitier", pluginIdentifier).executeUpdate();
     }
 
     @Override

@@ -79,11 +79,7 @@ public final class CustomTranslationModelHooks {
         String translation = customTranslation.getStringField(CUSTOM_TRANSLATION);
 
         if (pluginStateResolver.isEnabled(pluginIdentifier)) {
-            if (translation == null) {
-                customTranslation.setField(ACTIVE, false);
-            } else {
-                customTranslation.setField(ACTIVE, true);
-            }
+            customTranslation.setField(ACTIVE, (translation != null));
         }
     }
 
@@ -92,13 +88,9 @@ public final class CustomTranslationModelHooks {
 
         String key = customTranslation.getStringField(KEY);
         String locale = customTranslation.getStringField(LOCALE);
-        String translation = customTranslation.getStringField(CUSTOM_TRANSLATION);
+        String translation = (active) ? customTranslation.getStringField(CUSTOM_TRANSLATION) : null;
 
-        if (active) {
-            customTranslationCacheService.manageCustomTranslation(key, locale, translation);
-        } else {
-            customTranslationCacheService.manageCustomTranslation(key, locale, null);
-        }
+        customTranslationCacheService.manageCustomTranslation(key, locale, translation);
     }
 
 }

@@ -141,7 +141,7 @@ public final class TranslationServiceImpl implements InternalTranslationService 
                 getMessagesByPrefix(prefix, messages, resource.getInputStream());
             }
         } catch (IOException e) {
-            LOG.error("Cannot read messages file", e);
+            LOG.error("Can not read messages file", e);
         }
         LOG.info("Messages for " + prefix + ": " + messages);
     }

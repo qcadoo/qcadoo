@@ -51,7 +51,7 @@
 	<dependencies>
 		<dependency>
 			<plugin>qcadooView</plugin>
-			<version>[0.4.1</version>
+			<version>[1.1.8</version>
 		</dependency>
 	</dependencies>
 

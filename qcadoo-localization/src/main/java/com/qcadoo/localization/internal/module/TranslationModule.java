@@ -124,7 +124,7 @@ public class TranslationModule extends Module implements TranslationPropertiesHo
                 }
             }
         } catch (IOException e) {
-            throw new IllegalStateException("Cannot find localization resources", e);
+            throw new IllegalStateException("Can not find localization resources", e);
         }
 
         return basenamesInDirectory;

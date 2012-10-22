@@ -59,11 +59,9 @@ public class CustomTranslationsListViewHooks {
 
         RibbonActionItem cleanCustomTranslations = (RibbonActionItem) clean.getItemByName(L_CLEAN_CUSTOM_TRANSLATIONS);
 
-        if (customTranslationsGrid.getSelectedEntities().isEmpty()) {
-            updateButtonState(cleanCustomTranslations, false);
-        } else {
-            updateButtonState(cleanCustomTranslations, true);
-        }
+        boolean isAnyTranslationSelected = customTranslationsGrid.getSelectedEntities().isEmpty();
+
+        updateButtonState(cleanCustomTranslations, !isAnyTranslationSelected);
     }
 
     private void updateButtonState(final RibbonActionItem ribbonActionItem, final boolean isEnabled) {

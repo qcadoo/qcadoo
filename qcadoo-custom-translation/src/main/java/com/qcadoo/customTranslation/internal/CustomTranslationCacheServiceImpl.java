@@ -126,13 +126,9 @@ public class CustomTranslationCacheServiceImpl implements CustomTranslationCache
 
             String key = customTranslation.getStringField(KEY);
             String translation = customTranslation.getStringField(CustomTranslationFields.CUSTOM_TRANSLATION);
-            String locale = customTranslation.getStringField(LOCALE);
+            String locale = (active) ? customTranslation.getStringField(LOCALE) : null;
 
-            if (active) {
-                manageCustomTranslation(key, locale, translation);
-            } else {
-                manageCustomTranslation(key, locale, null);
-            }
+            manageCustomTranslation(key, locale, translation);
         }
     }
 

@@ -29,11 +29,11 @@ public final class CustomTranslationsContants {
 
     }
 
-    String PLUGIN_IDENTIFIER = "qcadooCustomTranslations";
+    public static final String PLUGIN_IDENTIFIER = "qcadooCustomTranslations";
 
     // VIEW
-    String VIEW_TRANSLATIONS_LIST = "customTranslationsList";
+    public static final String VIEW_TRANSLATIONS_LIST = "customTranslationsList";
 
-    String VIEW_TRANSLATION_DETAILS = "customTranslationDetails";
+    public static final String VIEW_TRANSLATION_DETAILS = "customTranslationDetails";
 
 }

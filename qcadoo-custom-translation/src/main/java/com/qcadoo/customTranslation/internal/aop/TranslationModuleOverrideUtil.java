@@ -72,19 +72,16 @@ public class TranslationModuleOverrideUtil {
     }
 
     public void addTranslationKeysForPlugin(final String pluginIdentifier, final Set<String> basenames) {
-        try {
-            for (String locale : translationService.getLocales().keySet()) {
-                Map<String, String> translations = Maps.newHashMap();
+        for (String locale : translationService.getLocales().keySet()) {
+            Map<String, String> translations = Maps.newHashMap();
 
-                for (Resource resource : getPropertiesResources(basenames, locale)) {
-                    translations.putAll(getTranslationsFromProperties(resource.getInputStream()));
-                }
-
-                customTranslationManagementService.addCustomTranslations(pluginIdentifier, locale, translations);
+            for (Resource resource : getPropertiesResources(basenames, locale)) {
+                translations.putAll(getTranslationsFromProperties(resource));
             }
-        } catch (IOException e) {
-            LOG.error("Cannot read properties file", e);
+
+            customTranslationManagementService.addCustomTranslations(pluginIdentifier, locale, translations);
         }
+
     }
 
     public void removeTranslationKeysForPlugin(final String pluginIdentifier) {
@@ -103,20 +100,46 @@ public class TranslationModuleOverrideUtil {
         return resources;
     }
 
-    private Map<String, String> getTranslationsFromProperties(final InputStream inputStream) throws IOException {
+    private Map<String, String> getTranslationsFromProperties(final Resource resource) {
         Map<String, String> translations = Maps.newHashMap();
 
         Properties properties = new Properties();
-        properties.load(new InputStreamReader(inputStream, Charsets.UTF_8));
 
-        for (Entry<Object, Object> translation : properties.entrySet()) {
-            String key = (String) translation.getKey();
-            String value = (String) translation.getValue();
+        InputStream inputStream = null;
+        InputStreamReader inputStreamReader = null;
 
-            translations.put(key, value);
+        try {
+            inputStream = resource.getInputStream();
+            inputStreamReader = new InputStreamReader(inputStream, Charsets.UTF_8);
+
+            properties.load(inputStreamReader);
+
+            for (Entry<Object, Object> translation : properties.entrySet()) {
+                String key = (String) translation.getKey();
+                String value = (String) translation.getValue();
+
+                translations.put(key, value);
+            }
+        } catch (IOException e) {
+            LOG.error("Can not read properties file", e);
+        } finally {
+            try {
+                if (inputStreamReader != null) {
+                    inputStreamReader.close();
+                }
+            } catch (IOException e) {
+                LOG.error("Can not close inputStreamReader", e);
+            } finally {
+                if (inputStream != null) {
+                    try {
+                        inputStream.close();
+                    } catch (IOException e) {
+                        LOG.error("Can not close inputStream", e);
+                    }
+                }
+            }
         }
 
         return translations;
     }
-
 }
