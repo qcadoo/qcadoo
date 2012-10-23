@@ -97,7 +97,7 @@ public class CustomTranslationManagementServiceImpl implements CustomTranslation
                 .createQuery(
                         "UPDATE com.qcadoo.model.beans.qcadooCustomTranslation.QcadooCustomTranslationCustomTranslation "
                                 + "SET active = false WHERE pluginIdentifier = :pluginIdentifier AND active = true")
-                .setString("pluginIdenfitier", pluginIdentifier).executeUpdate();
+                .setString("pluginIdentifier", pluginIdentifier).executeUpdate();
     }
 
     @Override
