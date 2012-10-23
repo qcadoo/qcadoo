@@ -24,6 +24,7 @@
 package com.qcadoo.customTranslation.api;
 
 import java.util.List;
+import java.util.Map;
 
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
@@ -31,36 +32,32 @@ import com.qcadoo.model.api.Entity;
 /**
  * Service for managing custom translations.
  * 
- * @since 1.8.0
+ * @since 1.1.8
  */
 public interface CustomTranslationManagementService {
 
     /**
-     * Add custom translation with given plugin identifier, key and locale
+     * Adds custom translations with given plugin identifier, locale and key
      * 
      * @param pluginIdentifier
      *            plugin identifier
-     * @param key
-     *            translation key
      * @param locale
      *            locale
+     * @param translations
+     *            translation keys and values
      */
-    void addCustomTranslation(final String pluginIdentifier, final String key, final String locale);
+    void addCustomTranslations(final String pluginIdentifier, final String locale, final Map<String, String> translations);
 
     /**
-     * Remove custom translation with given plugin identifier, key and locale
+     * Removes custom translations with given plugin identifier
      * 
      * @param pluginIdentifier
      *            plugin identifier
-     * @param key
-     *            translation key
-     * @param locale
-     *            locale
      */
-    void removeCustomTranslation(final String pluginIdentifier, final String key, final String locale);
+    void removeCustomTranslations(final String pluginIdentifier);
 
     /**
-     * Gets custom translation with given plugin identifier, key and locale
+     * Gets custom translation with given plugin identifier, locale and key
      * 
      * @param pluginIdentifier
      *            plugin identifier
@@ -82,6 +79,13 @@ public interface CustomTranslationManagementService {
      * @return the list of custom translations
      */
     List<Entity> getCustomTranslations(final String locale);
+
+    /**
+     * Gets list of custom translations
+     * 
+     * @return the list of custom translations
+     */
+    List<Entity> getCustomTranslations();
 
     /**
      * Gets DataDefinition for model custom translation

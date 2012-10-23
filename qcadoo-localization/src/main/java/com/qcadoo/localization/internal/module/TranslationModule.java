@@ -54,6 +54,8 @@ public class TranslationModule extends Module implements TranslationPropertiesHo
     public TranslationModule(final ApplicationContext applicationContext,
             final TranslationModuleService translationModuleService, final String pluginIdentifier, final String basename,
             final String path) {
+        super();
+
         this.applicationContext = applicationContext;
         this.translationModuleService = translationModuleService;
         this.pluginIdentifier = pluginIdentifier;
@@ -122,7 +124,7 @@ public class TranslationModule extends Module implements TranslationPropertiesHo
                 }
             }
         } catch (IOException e) {
-            throw new IllegalStateException("Cannot find localization resources", e);
+            throw new IllegalStateException("Can not find localization resources", e);
         }
 
         return basenamesInDirectory;

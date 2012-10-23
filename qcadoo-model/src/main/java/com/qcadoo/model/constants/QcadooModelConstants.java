@@ -32,4 +32,8 @@ public interface QcadooModelConstants {
 
     String MODEL_DICTIONARY_ITEM = "dictionaryItem";
 
+    String MODEL_UNIT_CONVERSION_ITEM = "unitConversionItem";
+
+    String MODEL_GLOBAL_UNIT_CONVERSIONS_AGGREGATE = "globalUnitConversionsAggregate";
+
 }

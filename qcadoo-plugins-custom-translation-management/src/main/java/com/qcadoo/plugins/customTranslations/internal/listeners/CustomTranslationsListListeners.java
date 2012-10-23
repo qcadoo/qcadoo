@@ -47,9 +47,9 @@ public class CustomTranslationsListListeners {
     public void cleanCustomTranslations(final ViewDefinitionState view, final ComponentState state, final String[] args) {
         GridComponent customTranslationsGrid = (GridComponent) view.getComponentByReference(L_GRID);
 
-        if (!customTranslationsGrid.getSelectedEntities().isEmpty()) {
-            List<Entity> customTranslations = customTranslationsGrid.getSelectedEntities();
+        List<Entity> customTranslations = customTranslationsGrid.getSelectedEntities();
 
+        if (!customTranslations.isEmpty()) {
             for (Entity customTranslation : customTranslations) {
                 customTranslation.setField(CUSTOM_TRANSLATION, null);
 
@@ -68,6 +68,7 @@ public class CustomTranslationsListListeners {
         parameters.put(L_WINDOW_ACTIVE_MENU, "administration.customTranslations");
 
         String url = "../page/qcadooCustomTranslations/replaceCustomTranslations.html";
+
         view.redirectTo(url, false, true, parameters);
     }
 

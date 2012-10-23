@@ -33,6 +33,8 @@ public final class CustomTranslationFields {
 
     public static final String KEY = "key";
 
+    public static final String PROPERTIES_TRANSLATION = "propertiesTranslation";
+
     public static final String CUSTOM_TRANSLATION = "customTranslation";
 
     public static final String ACTIVE = "active";

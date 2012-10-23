@@ -13,6 +13,7 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -28,6 +29,7 @@ import com.qcadoo.model.api.search.SearchCriterion;
 import com.qcadoo.model.api.search.SearchResult;
 import com.qcadoo.plugin.api.PluginStateResolver;
 
+@Ignore
 public class CustomTranslationModelHooksTest {
 
     private CustomTranslationModelHooks customTranslationModelHooks;

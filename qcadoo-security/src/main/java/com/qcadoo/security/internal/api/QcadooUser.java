@@ -52,7 +52,7 @@ public class QcadooUser {
         this.firstName = firstName;
         this.lastName = lastName;
         this.groupName = groupName;
-        this.lastActivity = lastActivity;
+        this.lastActivity = new Date(lastActivity.getTime());
     }
 
     public QcadooUser(final Entity userEntity) {

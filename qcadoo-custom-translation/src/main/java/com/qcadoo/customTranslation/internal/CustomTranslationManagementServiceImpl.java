@@ -27,15 +27,22 @@ import static com.qcadoo.customTranslation.constants.CustomTranslationFields.ACT
 import static com.qcadoo.customTranslation.constants.CustomTranslationFields.KEY;
 import static com.qcadoo.customTranslation.constants.CustomTranslationFields.LOCALE;
 import static com.qcadoo.customTranslation.constants.CustomTranslationFields.PLUGIN_IDENTIFIER;
+import static com.qcadoo.customTranslation.constants.CustomTranslationFields.PROPERTIES_TRANSLATION;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
+import org.apache.commons.beanutils.MethodUtils;
+import org.hibernate.classic.Session;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.util.FieldUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.qcadoo.customTranslation.api.CustomTranslationManagementService;
 import com.qcadoo.customTranslation.constants.CustomTranslationContants;
-import com.qcadoo.customTranslation.constants.CustomTranslationFields;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.Entity;
@@ -48,54 +55,98 @@ public class CustomTranslationManagementServiceImpl implements CustomTranslation
     private DataDefinitionService dataDefinitionService;
 
     @Override
-    public void addCustomTranslation(final String pluginIdentifier, final String key, final String locale) {
-        Entity customTranslation = getCustomTranslation(pluginIdentifier, key, locale);
+    @Transactional
+    @SuppressWarnings("unchecked")
+    public void addCustomTranslations(final String pluginIdentifier, final String locale, final Map<String, String> translations) {
+        DataDefinition customTranslationDD = getCustomTranslationDD();
+        Session currentSession = getCurrentSession(customTranslationDD);
 
-        if (customTranslation == null) {
+        List<String> existingKeys = currentSession
+                .createQuery(
+                        "SELECT key FROM com.qcadoo.model.beans.qcadooCustomTranslation.QcadooCustomTranslationCustomTranslation "
+                                + "WHERE pluginIdentifier = :pluginIdentifier AND locale = :locale")
+                .setString("pluginIdentifier", pluginIdentifier).setString("locale", locale).list();
 
-            customTranslation = getCustomTranslationDD().create();
+        for (Entry<String, String> translation : translations.entrySet()) {
+            String key = translation.getKey();
+            String value = translation.getValue();
 
-            customTranslation.setField(PLUGIN_IDENTIFIER, pluginIdentifier);
-            customTranslation.setField(KEY, key);
-            customTranslation.setField(LOCALE, locale);
-            customTranslation.setField(ACTIVE, false);
+            if (existingKeys.contains(key)) {
+                continue;
+            }
 
-            customTranslation.getDataDefinition().save(customTranslation);
+            Object entity = getInstanceForEntity(customTranslationDD);
+
+            FieldUtils.setProtectedFieldValue(PLUGIN_IDENTIFIER, entity, pluginIdentifier);
+            FieldUtils.setProtectedFieldValue(KEY, entity, key);
+            FieldUtils.setProtectedFieldValue(PROPERTIES_TRANSLATION, entity, value);
+            FieldUtils.setProtectedFieldValue(LOCALE, entity, locale);
+            FieldUtils.setProtectedFieldValue(ACTIVE, entity, false);
+
+            currentSession.save(entity);
         }
     }
 
     @Override
-    public void removeCustomTranslation(final String pluginIdentifier, final String key, final String locale) {
-        Entity customTranslation = getCustomTranslation(pluginIdentifier, key, locale);
+    @Transactional
+    public void removeCustomTranslations(final String pluginIdentifier) {
+        DataDefinition customTranslationDD = getCustomTranslationDD();
+        Session currentSession = getCurrentSession(customTranslationDD);
 
-        if (customTranslation != null) {
-            customTranslation.setField(CustomTranslationFields.ACTIVE, false);
-
-            customTranslation.getDataDefinition().save(customTranslation);
-        }
+        currentSession
+                .createQuery(
+                        "UPDATE com.qcadoo.model.beans.qcadooCustomTranslation.QcadooCustomTranslationCustomTranslation "
+                                + "SET active = false WHERE pluginIdentifier = :pluginIdentifier AND active = true")
+                .setString("pluginIdenfitier", pluginIdentifier).executeUpdate();
     }
 
     @Override
-    public Entity getCustomTranslation(final String pluginIdentifier, final String key, final String locale) {
-        Entity customTranslation = getCustomTranslationDD().find()
-                .add(SearchRestrictions.eq(PLUGIN_IDENTIFIER, pluginIdentifier)).add(SearchRestrictions.eq(KEY, key))
-                .add(SearchRestrictions.eq(LOCALE, locale)).setMaxResults(1).uniqueResult();
-
-        return customTranslation;
+    public Entity getCustomTranslation(final String pluginIdentifier, final String locale, final String key) {
+        return getCustomTranslationDD().find().add(SearchRestrictions.eq(PLUGIN_IDENTIFIER, pluginIdentifier))
+                .add(SearchRestrictions.eq(LOCALE, locale)).add(SearchRestrictions.eq(KEY, key)).setMaxResults(1).uniqueResult();
     }
 
     @Override
     public List<Entity> getCustomTranslations(final String locale) {
-        List<Entity> customTranslations = getCustomTranslationDD().find().add(SearchRestrictions.eq(LOCALE, locale)).list()
-                .getEntities();
+        return getCustomTranslationDD().find().add(SearchRestrictions.eq(LOCALE, locale)).list().getEntities();
+    }
 
-        return customTranslations;
+    @Override
+    public List<Entity> getCustomTranslations() {
+        return getCustomTranslationDD().find().list().getEntities();
     }
 
     @Override
     public DataDefinition getCustomTranslationDD() {
         return dataDefinitionService.get(CustomTranslationContants.PLUGIN_IDENTIFIER,
                 CustomTranslationContants.MODEL_CUSTOM_TRANSLATION);
+    }
+
+    private Session getCurrentSession(final DataDefinition dataDefinition) {
+        Object dataAccessService = FieldUtils.getProtectedFieldValue("dataAccessService", dataDefinition);
+        Object hibernateService = FieldUtils.getProtectedFieldValue("hibernateService", dataAccessService);
+
+        try {
+            return (Session) MethodUtils.invokeExactMethod(hibernateService, "getCurrentSession", new Object[0]);
+        } catch (NoSuchMethodException e) {
+            throw new IllegalStateException(e.getMessage(), e);
+        } catch (IllegalAccessException e) {
+            throw new IllegalStateException(e.getMessage(), e);
+        } catch (InvocationTargetException e) {
+            throw new IllegalStateException(e.getMessage(), e);
+        }
+    }
+
+    private Object getInstanceForEntity(final DataDefinition dataDefinition) {
+        try {
+            return MethodUtils.invokeExactMethod(dataDefinition, "getInstanceForEntity", new Object[0]);
+        } catch (NoSuchMethodException e) {
+            throw new IllegalStateException(e.getMessage(), e);
+        } catch (IllegalAccessException e) {
+            throw new IllegalStateException(e.getMessage(), e);
+        } catch (InvocationTargetException e) {
+            throw new IllegalStateException(e.getMessage(), e);
+        }
     }
 
 }

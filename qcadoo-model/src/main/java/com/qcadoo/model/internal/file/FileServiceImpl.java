@@ -64,7 +64,7 @@ public class FileServiceImpl implements FileService {
 
     private static FileService instance;
 
-    private final String fileUrlPrefix = "/files/";
+    private static final String fileUrlPrefix = "/files/";
 
     private File uploadDirectory;
 

@@ -54,6 +54,11 @@
 	<modules>
 		<model:model model="dictionary" resource="model/dictionary.xml" />
 		<model:model model="dictionaryItem" resource="model/dictionaryItem.xml" />
+		
+		<model:model model="globalUnitConversionsAggregate" resource="model/globalUnitConversionsAggregate.xml" />
+		<model:model model="unitConversionItem" resource="model/unitConversionItem.xml" />
+		
+		<model:dictionary name="units" />
 	</modules>
 
 </plugin>

@@ -9,6 +9,7 @@ import java.text.MessageFormat;
 import java.util.Locale;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -17,6 +18,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import com.qcadoo.customTranslation.api.CustomTranslationCacheService;
 import com.qcadoo.customTranslation.api.CustomTranslationResolver;
 
+@Ignore
 public class CustomTranslationResolverImplTest {
 
     private CustomTranslationResolver customTranslationResolver;

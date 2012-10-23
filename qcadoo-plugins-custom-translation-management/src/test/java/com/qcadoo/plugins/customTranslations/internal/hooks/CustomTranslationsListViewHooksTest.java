@@ -8,6 +8,7 @@ import static org.mockito.Mockito.verify;
 import java.util.List;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
@@ -27,6 +28,7 @@ import com.qcadoo.view.api.ribbon.RibbonActionItem;
 import com.qcadoo.view.api.ribbon.RibbonGroup;
 import com.qcadoo.view.internal.components.window.WindowComponentState;
 
+@Ignore
 public class CustomTranslationsListViewHooksTest {
 
     private static final String L_GRID = "grid";

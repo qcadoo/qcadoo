@@ -25,7 +25,7 @@ package com.qcadoo.plugins.customTranslations.internal.listeners;
 
 import static com.qcadoo.customTranslation.constants.CustomTranslationFields.CUSTOM_TRANSLATION;
 import static com.qcadoo.customTranslation.constants.CustomTranslationFields.LOCALE;
-import static com.qcadoo.plugins.customTranslations.constants.CustomTranslationFieldsCTM.PROPERTIES_TRANSLATION;
+import static com.qcadoo.customTranslation.constants.CustomTranslationFields.PROPERTIES_TRANSLATION;
 
 import java.util.List;
 
@@ -64,8 +64,6 @@ public class ReplaceCustomTranslationsListeners {
         String replaceFrom = (String) replaceFromField.getFieldValue();
         String replaceTo = (String) replaceToField.getFieldValue();
 
-        state.performEvent(view, "refresh");
-
         if (StringUtils.isEmpty(replaceFrom) || StringUtils.isEmpty(replaceTo)) {
             replaceCustomTranslationsFrom.addMessage(
                     "qcadooCustomTranslations.replaceCustomTranslations.message.replaceCustomTranslationsFailure",
@@ -73,12 +71,13 @@ public class ReplaceCustomTranslationsListeners {
         } else {
             List<Entity> customTranslations = customTranslationManagementService.getCustomTranslations(locale);
 
-            if (customTranslations == null) {
+            if (customTranslations.isEmpty()) {
                 replaceCustomTranslationsFrom.addMessage(
                         "qcadooCustomTranslations.replaceCustomTranslations.message.replaceCustomTranslationsEmpty",
                         MessageType.INFO);
             } else {
                 int count = 0;
+
                 for (Entity customTranslation : customTranslations) {
                     String translation = customTranslation.getStringField(PROPERTIES_TRANSLATION);
 

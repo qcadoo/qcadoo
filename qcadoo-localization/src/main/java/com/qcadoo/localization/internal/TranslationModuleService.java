@@ -71,7 +71,7 @@ public class TranslationModuleService {
             try {
                 resources.addAll(Arrays.asList(applicationContext.getResources(searchName)));
             } catch (IOException e) {
-                LOG.error("Cannot read messages file", e);
+                LOG.error("Can not read messages file", e);
             }
         }
         return resources;

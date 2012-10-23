@@ -31,6 +31,4 @@ public final class CustomTranslationFieldsCTM {
 
     public static final String PLUGIN_NAME = "pluginName";
 
-    public static final String PROPERTIES_TRANSLATION = "propertiesTranslation";
-
 }

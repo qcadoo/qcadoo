@@ -45,6 +45,8 @@ public class ModelModule extends Module {
 
     public ModelModule(final String pluginIdentifier, final String modelName, final String resource,
             final ModelXmlHolder modelXmlHolder, final InternalDataDefinitionService dataDefinitionService) {
+        super();
+
         this.pluginIdentifier = pluginIdentifier;
         this.modelName = modelName;
         this.resource = resource;

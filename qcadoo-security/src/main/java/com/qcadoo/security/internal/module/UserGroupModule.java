@@ -45,6 +45,8 @@ public class UserGroupModule extends Module {
 
     public UserGroupModule(final String name, final String role, final DataDefinitionService dataDefinitionService,
             final InternalSecurityRolesService securityRolesService) {
+        super();
+
         this.name = name;
         this.role = role;
         this.dataDefinitionService = dataDefinitionService;

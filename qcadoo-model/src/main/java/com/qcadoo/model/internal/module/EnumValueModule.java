@@ -44,6 +44,8 @@ public class EnumValueModule extends Module {
 
     public EnumValueModule(final String originPluginIdentifier, final DataDefinitionService dataDefinitionService,
             final String pluginIdentifier, final String modelName, final String fieldName, final String value) {
+        super();
+
         this.dataDefinitionService = dataDefinitionService;
         this.pluginIdentifier = pluginIdentifier;
         this.modelName = modelName;

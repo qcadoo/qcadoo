@@ -163,10 +163,8 @@ public final class MenuServiceImpl implements InternalMenuService {
             return;
         }
 
-        if (url == null) {
-            if (!viewDefinitionService.viewExists(pluginIdentifier, viewName)) {
-                throw new IllegalStateException("View " + pluginIdentifier + "/" + view + " does not exist.");
-            }
+        if ((url == null) && !viewDefinitionService.viewExists(pluginIdentifier, viewName)) {
+            throw new IllegalStateException("View " + pluginIdentifier + "/" + view + " does not exist.");
         }
 
         menuView = getDataDefinition(VIEW).create();

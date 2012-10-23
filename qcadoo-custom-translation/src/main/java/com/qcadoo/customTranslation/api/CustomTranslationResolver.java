@@ -28,7 +28,7 @@ import java.util.Locale;
 /**
  * Service for resolving custom translation.
  * 
- * @since 1.8.0
+ * @since 1.1.8
  */
 public interface CustomTranslationResolver {
 

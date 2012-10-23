@@ -28,6 +28,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schema.qcadoo.org/plugin"
 	xmlns:model="http://schema.qcadoo.org/modules/model" xmlns:view="http://schema.qcadoo.org/modules/view"
 	xmlns:menu="http://schema.qcadoo.org/modules/menu" xmlns:localization="http://schema.qcadoo.org/modules/localization"
+	xmlns:custom="http://schema.qcadoo.org/modules/custom"
 	xsi:schemaLocation="
 		http://schema.qcadoo.org/plugin 
 		http://schema.qcadoo.org/plugin.xsd 
@@ -38,7 +39,9 @@
 		http://schema.qcadoo.org/modules/localization 
 		http://schema.qcadoo.org/modules/localization.xsd 
 		http://schema.qcadoo.org/modules/menu 
-		http://schema.qcadoo.org/modules/menu.xsd">
+		http://schema.qcadoo.org/modules/menu.xsd
+		http://schema.qcadoo.org/modules/custom 
+		http://schema.qcadoo.org/modules/custom.xsd">
 
 	<information>
 		<name>Qcadoo Custom Translation</name>
@@ -51,7 +54,7 @@
 	<dependencies>
 		<dependency>
 			<plugin>qcadooModel</plugin>
-			<version>[0.4.1</version>
+			<version>[1.1.8</version>
 		</dependency>
 	</dependencies>
 
@@ -59,6 +62,8 @@
 		<localization:translation path="locales" />
 
 		<model:model model="customTranslation" resource="model/customTranslation.xml" />
+		
+		<custom:custom class="com.qcadoo.customTranslation.internal.CustomTranslationsOnStartupService" />
 	</modules>
 
 </plugin>

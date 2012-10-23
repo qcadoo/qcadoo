@@ -49,6 +49,7 @@ public class ViewGridColumnModule extends Module {
     public ViewGridColumnModule(final String pluginIdentifier, final String extendsViewPlugin, final String extendsViewName,
             final String extendsComponentName, final List<ViewGridColumnModuleColumnModel> columns,
             final InternalViewDefinitionService viewDefinitionService) {
+        super();
 
         this.pluginIdentifier = pluginIdentifier;
         this.extendsViewPlugin = extendsViewPlugin;

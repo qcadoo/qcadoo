@@ -125,7 +125,7 @@ public class ReportController {
 
     private ReportService.ReportType getReportType(final HttpServletRequest request) throws ReportException {
         String uri = request.getRequestURI();
-        String type = uri.substring(uri.lastIndexOf(".") + 1).toUpperCase();
+        String type = uri.substring(uri.lastIndexOf('.') + 1).toUpperCase(Locale.getDefault());
         try {
             return ReportService.ReportType.valueOf(type);
         } catch (IllegalArgumentException e) {

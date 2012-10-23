@@ -83,7 +83,7 @@ public class GanttChartScaleImpl implements GanttChartScale {
             final Date dateFrom, final Date dateTo) {
         this.ganttChartComponentState = ganttChartComponentState;
         this.zoomLevel = zoomLevel;
-        this.dateFrom = dateFrom;
+        this.dateFrom = new Date(dateFrom.getTime());
         this.dateTo = new DateTime(dateTo).withHourOfDay(23).withMinuteOfHour(59).withSecondOfMinute(59).toDate();
         this.ganttChartItemFactory = new GanttChartItemFactory(zoomLevel.getHoursInterval());
     }
@@ -154,9 +154,9 @@ public class GanttChartScaleImpl implements GanttChartScale {
         JSONArray weeksArray = new JSONArray();
         for (int i = 0; i < weekNumbers.size(); i++) {
             if (i == 0 && dateTimeFromDayOfWeek > 5) {
-                weeksArray.put("" + weekNumbers.get(i));
+                weeksArray.put(weekNumbers.get(i).toString());
             } else if (i == weekNumbers.size() - 1 && dateTimeToDayOfWeek < 3) {
-                weeksArray.put("" + weekNumbers.get(i));
+                weeksArray.put(weekNumbers.get(i).toString());
             } else {
                 weeksArray.put(ganttChartComponentState.translate("week") + " " + weekNumbers.get(i));
             }

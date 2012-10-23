@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model name="unitConversionItem"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schema.qcadoo.org/model"
+	xsi:schemaLocation="http://schema.qcadoo.org/model http://schema.qcadoo.org/model.xsd">
+	<fields>
+		<decimal name="quantityFrom" required="true" />
+		<decimal name="quantityTo" required="true"/>
+		<dictionary name="unitFrom" dictionary="units" required="true"/>
+		<dictionary name="unitTo" dictionary="units" required="true"/>
+		<belongsTo name="globalUnitConversionsAggregate" model="globalUnitConversionsAggregate"/>
+	</fields>
+	<hooks>
+		<validatesWith class="com.qcadoo.model.internal.units.hooks.UnitConversionItemValidators" method="validateQuantityFrom"/>	
+	</hooks>
+</model>	

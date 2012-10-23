@@ -23,17 +23,12 @@
  */
 package com.qcadoo.plugins.customTranslations.internal.hooks;
 
-import static com.qcadoo.customTranslation.constants.CustomTranslationFields.KEY;
-import static com.qcadoo.customTranslation.constants.CustomTranslationFields.LOCALE;
 import static com.qcadoo.customTranslation.constants.CustomTranslationFields.PLUGIN_IDENTIFIER;
 import static com.qcadoo.plugins.customTranslations.constants.CustomTranslationFieldsCTM.PLUGIN_NAME;
-import static com.qcadoo.plugins.customTranslations.constants.CustomTranslationFieldsCTM.PROPERTIES_TRANSLATION;
 
-import org.apache.commons.lang.LocaleUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.plugin.api.PluginAccessor;
@@ -44,30 +39,10 @@ public class CustomTranslationModelHooksCTM {
     @Autowired
     private PluginAccessor pluginAccessor;
 
-    @Autowired
-    private TranslationService translationService;
-
     public void updateCustomTranslationData(final DataDefinition customTranslationDD, final Entity customTranslation) {
         String pluginIdentifier = customTranslation.getStringField(PLUGIN_IDENTIFIER);
-        String key = customTranslation.getStringField(KEY);
-        String locale = customTranslation.getStringField(LOCALE);
 
         customTranslation.setField(PLUGIN_NAME, getPluginName(pluginIdentifier));
-        customTranslation.setField(PROPERTIES_TRANSLATION, getPropertiesTranslation(key, locale));
-    }
-
-    private String getPropertiesTranslation(final String key, final String locale) {
-        String translation = null;
-
-        if ((key != null) && (locale != null)) {
-            translation = translationService.translate(key, LocaleUtils.toLocale(locale));
-
-            if (translation != null) {
-                translation = translation.replace("''", "'");
-            }
-        }
-
-        return translation;
     }
 
     private String getPluginName(final String pluginIdentifier) {

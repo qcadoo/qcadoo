@@ -51,7 +51,7 @@
 	<dependencies>
 		<dependency>
 			<plugin>qcadooView</plugin>
-			<version>[0.4.1</version>
+			<version>[1.1.8</version>
 		</dependency>
 	</dependencies>
 
@@ -62,9 +62,9 @@
 			<model:string name="pluginName" persistent="false" />
 		</model:model-field>
 		
-		<model:model-field plugin="qcadooCustomTranslation" model="customTranslation">
-			<model:string name="propertiesTranslation" persistent="false" />
-		</model:model-field>
+<!-- 		<model:model-field plugin="qcadooCustomTranslation" model="customTranslation"> -->
+<!-- 			<model:string name="propertiesTranslation" persistent="false" /> -->
+<!-- 		</model:model-field> -->
 		
 		<model:model-hook plugin="qcadooCustomTranslation" model="customTranslation">
 			<model:onView
