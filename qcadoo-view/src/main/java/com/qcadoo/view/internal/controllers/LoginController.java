@@ -50,9 +50,6 @@ public final class LoginController {
     @Autowired
     private TranslationService translationService;
 
-    @Value("${setAsDemoEnviroment}")
-    private boolean setAsDemoEnviroment;
-
     @Value("${useCompressedStaticResources}")
     private boolean useCompressedStaticResources;
 
@@ -93,11 +90,6 @@ public final class LoginController {
             mav.addObject(MESSAGE_CONTENT, "security.message.passwordReset.successContent");
         }
 
-        if (setAsDemoEnviroment) {
-            mav.addObject("showUserAndPassword", true);
-        } else {
-            mav.addObject("showUserAndPassword", false);
-        }
         mav.addObject("useCompressedStaticResources", useCompressedStaticResources);
 
         return mav;

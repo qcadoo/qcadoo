@@ -24,8 +24,6 @@
 package com.qcadoo.view.internal.controllers;
 
 import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertTrue;
-import static org.junit.Assert.assertNull;
 import static org.mockito.AdditionalMatchers.not;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -36,14 +34,10 @@ import static org.powermock.api.mockito.PowerMockito.doThrow;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 
-import java.util.Locale;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.RedirectView;
 
 import com.qcadoo.mail.api.InvalidMailAddressException;
 import com.qcadoo.mail.api.MailConfigurationException;
@@ -70,20 +64,6 @@ public class PasswordResetControllerTest {
     }
 
     @Test
-    public final void shouldRedirectToMainViewIfActiveProfileIsDemo() throws Exception {
-        // given
-        setField(passwordResetController, "setAsDemoEnviroment", true);
-
-        // when
-        ModelAndView mav = passwordResetController.getForgotPasswordFormView(false, false, Locale.getDefault());
-
-        // then
-        assertTrue(mav.getView() instanceof RedirectView);
-        assertEquals("main.html", ((RedirectView) mav.getView()).getUrl());
-        verifyZeroInteractions(passwordReminderService);
-    }
-
-    @Test
     public final void shouldReturnSuccess() throws Exception {
         // when
         String result = passwordResetController.processForgotPasswordFormView(EXISTING_USER_NAME);
@@ -92,19 +72,6 @@ public class PasswordResetControllerTest {
         assertEquals("success", result);
         verify(passwordReminderService, times(1)).generateAndSendNewPassword(EXISTING_USER_NAME);
         verify(passwordReminderService, never()).generateAndSendNewPassword(not(Mockito.eq(EXISTING_USER_NAME)));
-    }
-
-    @Test
-    public final void shouldReturnNullIfActiveProfileIsDemo() throws Exception {
-        // given
-        setField(passwordResetController, "setAsDemoEnviroment", true);
-
-        // when
-        String result = passwordResetController.processForgotPasswordFormView(EXISTING_USER_NAME);
-
-        // then
-        assertNull(result);
-        verifyZeroInteractions(passwordReminderService);
     }
 
     @Test

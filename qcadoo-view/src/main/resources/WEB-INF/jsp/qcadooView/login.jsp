@@ -80,7 +80,6 @@
 		var errorHeaderText = '${translation["security.message.errorHeader"]}';
 		var errorContentText = '${translation["security.message.errorContent"]}';
 
-		var fillLoginAsDemo = ${showUserAndPassword};
 		var isPopup = ${popup};
 		var targetUrl = "${targetUrl}";
 
@@ -146,12 +145,6 @@
 						ajaxLogin();
 					}
 				});
-			}
-
-			if (fillLoginAsDemo) {
-				usernameInput.val("demo");
-				$("#passwordInput").val("demo");
-				passwordInput.focus();
 			}
 			
 			$("#languageSelect").val("${currentLanguage}");
@@ -258,19 +251,6 @@
 		}
 
 	</script>
-	
-	<c:if test="${showUserAndPassword}">
-		<script type="text/javascript">
-		 var _gaq = _gaq || [];
-		  _gaq.push(['_setAccount', 'UA-20029533-2']);
-		  _gaq.push(['_trackPageview']);
-		  (function() {
-		    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-		    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-		    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-		  })();
-		</script>
-	</c:if>
 </head>
 <body>
 	<div id="contentWrapperOuter">
@@ -338,11 +318,9 @@
 			 			<a href="#" id="changeUserButton" onclick="window.parent.location='login.html'">${translation["security.form.button.changeUser"]}</a>
 			 			<a href="#" id="loginButton" onclick="ajaxLogin(); return false;"><span>${translation['security.form.button.logIn']}</span></a>
 					</div>
-					<c:if test="${not showUserAndPassword}">
-						<div id="forgotPasswordLinkWrapper">
-							<a href="#" id="forgotPasswordLink" onclick="window.parent.location='passwordReset.html'">${translation['security.form.link.forgotPassword']}</a>
-						</div>
-					</c:if>
+					<div id="forgotPasswordLinkWrapper">
+						<a href="#" id="forgotPasswordLink" onclick="window.parent.location='passwordReset.html'">${translation['security.form.link.forgotPassword']}</a>
+					</div>
 			    </form>
 		 	</div>
 	 

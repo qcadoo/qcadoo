@@ -36,7 +36,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.RedirectView;
 
 import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.mail.api.InvalidMailAddressException;
@@ -53,19 +52,12 @@ public final class PasswordResetController {
     @Autowired
     private PasswordReminderService passwordReminderService;
 
-    @Value("${setAsDemoEnviroment}")
-    private boolean setAsDemoEnviroment;
-
     @Value("${useCompressedStaticResources}")
     private boolean useCompressedStaticResources;
 
     @RequestMapping(value = "passwordReset", method = RequestMethod.GET)
     public ModelAndView getForgotPasswordFormView(@RequestParam(required = false, defaultValue = FALSE) final Boolean iframe,
             @RequestParam(required = false, defaultValue = FALSE) final Boolean popup, final Locale locale) {
-
-        if (setAsDemoEnviroment) {
-            return new ModelAndView(new RedirectView("main.html"));
-        }
 
         ModelAndView mav = new ModelAndView();
         mav.setViewName("qcadooView/passwordReset");
@@ -84,9 +76,6 @@ public final class PasswordResetController {
     @RequestMapping(value = "passwordReset", method = RequestMethod.POST)
     @ResponseBody
     public String processForgotPasswordFormView(@RequestParam final String login) {
-        if (setAsDemoEnviroment) {
-            return null;
-        }
         if (StringUtils.isBlank(login)) {
             return "loginIsBlank";
         }

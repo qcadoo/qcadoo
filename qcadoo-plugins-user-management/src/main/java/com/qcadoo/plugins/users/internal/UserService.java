@@ -23,7 +23,6 @@
  */
 package com.qcadoo.plugins.users.internal;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.qcadoo.view.api.ComponentState;
@@ -33,9 +32,6 @@ import com.qcadoo.view.api.components.FormComponent;
 
 @Service
 public final class UserService {
-
-    @Value("${setAsDemoEnviroment}")
-    private boolean setAsDemoEnviroment;
 
     public void setPasswordAndOldPasswordAdRequired(final ViewDefinitionState state) {
         FieldComponent viewIdentifier = (FieldComponent) state.getComponentByReference("viewIdentifierHiddenInput");
@@ -47,13 +43,6 @@ public final class UserService {
         password.setRequired(true);
         passwordConfirmation.setRequired(true);
         viewIdentifier.setFieldValue("profileChangePassword");
-    }
-
-    public void removeChangePasswordButtonWhenNotAllowed(final ViewDefinitionState state) {
-        if (setAsDemoEnviroment) {
-            ComponentState changePasswordButton = state.getComponentByReference("changePasswordButton");
-            changePasswordButton.setVisible(false);
-        }
     }
 
     public void setPasswordAsRequired(final ViewDefinitionState state) {
