@@ -168,10 +168,11 @@ public class PluginManagmentUrlController {
                 }
             }
         }
-        if (!dependencies.isEmpty()) {
-            return dependencies;
-        } else {
+        if (dependencies.isEmpty()) {
             return null;
+        } else {
+            return dependencies;
+
         }
     }
 
