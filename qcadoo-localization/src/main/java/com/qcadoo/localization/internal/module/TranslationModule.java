@@ -75,12 +75,12 @@ public class TranslationModule extends Module implements TranslationPropertiesHo
 
     @Override
     public void multiTenantEnable() {
-        super.multiTenantEnable();
+
     }
 
     @Override
     public void multiTenantDisable() {
-        super.multiTenantDisable();
+
     }
 
     @Override
