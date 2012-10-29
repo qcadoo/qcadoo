@@ -186,8 +186,9 @@ public final class DefaultEntity implements Entity, EntityAwareCopyPerformers, E
 
     @Override
     public boolean equals(final Entity otherEntity, final PerformerEntitiesChain performersChain) {
-        return otherEntity == performersChain.getLast() || definitionsAndIdsAreEqual(otherEntity)
-                && fieldsAreEquals(otherEntity, performersChain, false);
+        return otherEntity != null
+                && (otherEntity == performersChain.getLast() || definitionsAndIdsAreEqual(otherEntity)
+                        && fieldsAreEquals(otherEntity, performersChain, false));
     }
 
     private boolean definitionsAndIdsAreEqual(final Entity otherEntity) {

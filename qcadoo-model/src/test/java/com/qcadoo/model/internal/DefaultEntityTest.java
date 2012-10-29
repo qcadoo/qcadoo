@@ -1806,6 +1806,50 @@ public class DefaultEntityTest {
     }
 
     @Test
+    public final void shouldEqualsReturnFalseIfBelongsToFieldIsNullOnlyOnOneSide() {
+        // given
+        final Entity firstEntity = new DefaultEntity(dataDefinition);
+        final Entity secondEntity = new DefaultEntity(dataDefinition);
+
+        final Entity firstOtherEntity = new DefaultEntity(dataDefinition);
+        final Entity secondOtherEntity = null;
+
+        firstEntity.setField(BELONGS_TO_FIELD_NAME, secondEntity);
+        firstEntity.setField(STRING_FIELD_NAME, L_FIRST);
+
+        firstOtherEntity.setField(BELONGS_TO_FIELD_NAME, secondOtherEntity);
+        firstOtherEntity.setField(STRING_FIELD_NAME, L_FIRST);
+
+        // when
+        final boolean result = firstEntity.equals(firstOtherEntity);
+
+        // then
+        assertFalse(result);
+    }
+
+    @Test
+    public final void shouldEqualsReturnTruIfBelongsToFieldIsBothNull() {
+        // given
+        final Entity firstEntity = new DefaultEntity(dataDefinition);
+        final Entity secondEntity = null;
+
+        final Entity firstOtherEntity = new DefaultEntity(dataDefinition);
+        final Entity secondOtherEntity = null;
+
+        firstEntity.setField(BELONGS_TO_FIELD_NAME, secondEntity);
+        firstEntity.setField(STRING_FIELD_NAME, L_FIRST);
+
+        firstOtherEntity.setField(BELONGS_TO_FIELD_NAME, secondOtherEntity);
+        firstOtherEntity.setField(STRING_FIELD_NAME, L_FIRST);
+
+        // when
+        final boolean result = firstEntity.equals(firstOtherEntity);
+
+        // then
+        assertTrue(result);
+    }
+
+    @Test
     public final void shouldEqualsReturnTrueAndDoNotMakeInfinityCycleWith2Entities() {
         // given
         final Entity firstEntity = new DefaultEntity(dataDefinition);
