@@ -101,6 +101,20 @@ public class CustomTranslationManagementServiceImpl implements CustomTranslation
     }
 
     @Override
+    @Transactional
+    @SuppressWarnings("unchecked")
+    public List<String> getCustomTranslationKeys(final String pluginIdentifier) {
+        DataDefinition customTranslationDD = getCustomTranslationDD();
+        Session currentSession = getCurrentSession(customTranslationDD);
+
+        return currentSession
+                .createQuery(
+                        "SELECT key FROM com.qcadoo.model.beans.qcadooCustomTranslation.QcadooCustomTranslationCustomTranslation "
+                                + "WHERE pluginIdentifier = :pluginIdentifier").setString("pluginIdentifier", pluginIdentifier)
+                .list();
+    }
+
+    @Override
     public Entity getCustomTranslation(final String pluginIdentifier, final String locale, final String key) {
         return getCustomTranslationDD().find().add(SearchRestrictions.eq(PLUGIN_IDENTIFIER, pluginIdentifier))
                 .add(SearchRestrictions.eq(LOCALE, locale)).add(SearchRestrictions.eq(KEY, key)).setMaxResults(1).uniqueResult();

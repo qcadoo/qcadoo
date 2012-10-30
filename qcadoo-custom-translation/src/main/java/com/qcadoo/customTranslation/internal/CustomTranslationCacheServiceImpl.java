@@ -77,6 +77,19 @@ public class CustomTranslationCacheServiceImpl implements CustomTranslationCache
     }
 
     @Override
+    public void removeCustomTranslations(final List<String> keys) {
+        if (keys != null) {
+            for (String key : keys) {
+                if (isCustomTranslationAdded(key)) {
+                    for (String locale : getTenantCustomTranslationsCache().get(key).keySet()) {
+                        updateCustomTranslation(key, locale, null);
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
     public String getCustomTranslation(final String key, final String locale) {
         if (getTenantCustomTranslationsCache().containsKey(key)
                 && getTenantCustomTranslationsCache().get(key).containsKey(locale)) {
@@ -105,6 +118,19 @@ public class CustomTranslationCacheServiceImpl implements CustomTranslationCache
         return false;
     }
 
+    @Override
+    public void loadCustomTranslations(final List<Entity> customTranslations) {
+        for (Entity customTranslation : customTranslations) {
+            boolean active = customTranslation.getBooleanField(ACTIVE);
+
+            String key = customTranslation.getStringField(KEY);
+            String translation = customTranslation.getStringField(CustomTranslationFields.CUSTOM_TRANSLATION);
+            String locale = (active) ? customTranslation.getStringField(LOCALE) : null;
+
+            manageCustomTranslation(key, locale, translation);
+        }
+    }
+
     private Map<String, Map<String, String>> getTenantCustomTranslationsCache() {
         final int tenantId = multiTenantService.getCurrentTenantId();
 
@@ -117,19 +143,6 @@ public class CustomTranslationCacheServiceImpl implements CustomTranslationCache
         }
 
         return tenantCustomTranslationsCache;
-    }
-
-    @Override
-    public void loadCustomTranslations(final List<Entity> customTranslations) {
-        for (Entity customTranslation : customTranslations) {
-            boolean active = customTranslation.getBooleanField(ACTIVE);
-
-            String key = customTranslation.getStringField(KEY);
-            String translation = customTranslation.getStringField(CustomTranslationFields.CUSTOM_TRANSLATION);
-            String locale = (active) ? customTranslation.getStringField(LOCALE) : null;
-
-            manageCustomTranslation(key, locale, translation);
-        }
     }
 
 }

@@ -57,6 +57,16 @@ public interface CustomTranslationManagementService {
     void removeCustomTranslations(final String pluginIdentifier);
 
     /**
+     * Gets list of custom translation keys with given plugin identifier
+     * 
+     * @param pluginIdentifier
+     *            plugin identifier
+     * 
+     * @return the list of custom translation keys
+     */
+    List<String> getCustomTranslationKeys(final String pluginIdentifier);
+
+    /**
      * Gets custom translation with given plugin identifier, locale and key
      * 
      * @param pluginIdentifier

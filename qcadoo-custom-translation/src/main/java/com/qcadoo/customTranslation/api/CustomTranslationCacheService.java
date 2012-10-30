@@ -74,6 +74,15 @@ public interface CustomTranslationCacheService {
     void manageCustomTranslation(final String key, final String locale, final String customTranslation);
 
     /**
+     * Removes custom translations with given keys
+     * 
+     * @param keys
+     *            translation keys
+     * 
+     */
+    void removeCustomTranslations(final List<String> keys);
+
+    /**
      * Gets custom translation with given key and locale
      * 
      * @param key

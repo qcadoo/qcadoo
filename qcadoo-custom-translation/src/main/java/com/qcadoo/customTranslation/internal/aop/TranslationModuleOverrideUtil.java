@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
@@ -42,6 +43,7 @@ import org.springframework.stereotype.Service;
 
 import com.google.common.base.Charsets;
 import com.google.common.collect.Maps;
+import com.qcadoo.customTranslation.api.CustomTranslationCacheService;
 import com.qcadoo.customTranslation.api.CustomTranslationManagementService;
 import com.qcadoo.customTranslation.constants.CustomTranslationContants;
 import com.qcadoo.localization.api.TranslationService;
@@ -67,6 +69,9 @@ public class TranslationModuleOverrideUtil {
     @Autowired
     private CustomTranslationManagementService customTranslationManagementService;
 
+    @Autowired
+    private CustomTranslationCacheService customTranslationCacheService;
+
     public boolean shouldOverride() {
         return pluginStateResolver.isEnabled(CustomTranslationContants.PLUGIN_IDENTIFIER) && useCustomTranslations;
     }
@@ -81,11 +86,14 @@ public class TranslationModuleOverrideUtil {
 
             customTranslationManagementService.addCustomTranslations(pluginIdentifier, locale, translations);
         }
-
     }
 
     public void removeTranslationKeysForPlugin(final String pluginIdentifier) {
         customTranslationManagementService.removeCustomTranslations(pluginIdentifier);
+
+        List<String> keys = customTranslationManagementService.getCustomTranslationKeys(pluginIdentifier);
+
+        customTranslationCacheService.removeCustomTranslations(keys);
     }
 
     private Set<Resource> getPropertiesResources(final Set<String> basenames, final String locale) {
