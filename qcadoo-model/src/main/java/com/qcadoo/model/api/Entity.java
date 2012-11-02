@@ -97,6 +97,18 @@ public interface Entity {
      *             if given field is not BigDecimal (sub)type
      */
     BigDecimal getDecimalField(String fieldName);
+    
+    /**
+     * Return the Integer value of the field with given name
+     * 
+     * @param fieldName
+     *            field's name
+     * @return the field's integer value
+     * 
+     * @throws IllegalArgumentException
+     *             if given field is not Integer type
+     */    
+    Integer getIntegerField(final String fieldName);
 
     /**
      * Return the value, casted to entity, of the field with given name.

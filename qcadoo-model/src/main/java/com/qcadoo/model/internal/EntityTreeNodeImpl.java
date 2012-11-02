@@ -97,6 +97,11 @@ public final class EntityTreeNodeImpl implements EntityTreeNode, EntityAwareCopy
     public BigDecimal getDecimalField(final String fieldName) {
         return entity.getDecimalField(fieldName);
     }
+    
+	@Override
+	public Integer getIntegerField(final String fieldName) {
+		return entity.getIntegerField(fieldName);
+	}    
 
     @Override
     public Entity getBelongsToField(final String fieldName) {
