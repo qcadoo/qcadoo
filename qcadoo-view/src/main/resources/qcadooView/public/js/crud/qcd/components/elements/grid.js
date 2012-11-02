@@ -175,7 +175,7 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 		}
 
 		gridParameters.hasFilterableColumns = hasFilterableColumns;
-		gridParameters.filtersDefaultEnabled = hasFilterableColumns;
+		gridParameters.filtersDefaultEnabled = options.filtersDefaultVisible && hasFilterableColumns;
 		gridParameters.hasPredefinedFilters = options.hasPredefinedFilters;
 		gridParameters.predefinedFilters = options.predefinedFilters;
 

@@ -90,6 +90,8 @@ public class GridComponentPattern extends AbstractComponentPattern {
 
     private boolean hasPredefinedFilters = false;
 
+    private boolean filtersDefaultVisible = true;
+
     private boolean weakRelation = false;
 
     private final List<PredefinedFilter> predefinedFilters = new LinkedList<PredefinedFilter>();
@@ -177,6 +179,7 @@ public class GridComponentPattern extends AbstractComponentPattern {
         json.put("weakRelation", weakRelation);
 
         json.put("hasPredefinedFilters", hasPredefinedFilters);
+        json.put("filtersDefaultVisible", filtersDefaultVisible);
 
         JSONArray predefinedFiltersArray = new JSONArray();
         for (PredefinedFilter predefinedFilter : predefinedFilters) {
@@ -409,6 +412,8 @@ public class GridComponentPattern extends AbstractComponentPattern {
                 multiselect = Boolean.parseBoolean(option.getValue());
             } else if ("hasPredefinedFilters".equals(option.getType())) {
                 hasPredefinedFilters = Boolean.parseBoolean(option.getValue());
+            } else if ("filtersDefaultVisible".equals(option.getType())) {
+                filtersDefaultVisible = Boolean.parseBoolean(option.getValue());
             } else if ("deletable".equals(option.getType())) {
                 deletable = Boolean.parseBoolean(option.getValue());
             } else if ("height".equals(option.getType())) {
