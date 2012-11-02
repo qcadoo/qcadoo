@@ -205,7 +205,7 @@ QCD.components.elements.grid.GridHeaderController = function(_gridController, _m
 			setEnabledButton(headerElements.allButton, true);
 			headerElements.allButton.hide();
 		}
-		if (gridParameters.hasPredefinedFilters) { // TODO mina add option
+		if (gridParameters.hasPredefinedFilters) {
 			var options = new Array();
 			for (var i in gridParameters.predefinedFilters) {
 				options[i] = {
@@ -222,11 +222,13 @@ QCD.components.elements.grid.GridHeaderController = function(_gridController, _m
 				var filterObj = gridParameters.predefinedFilters[selectedItem];
 				gridController.setFilterObject(filterObj);	
 			});
-			headerElements.predefiniedFiltersCombo.append(headerElements.predefiniedFiltersCustomOption_line1);
-			headerElements.predefiniedFiltersCombo.append(headerElements.predefiniedFiltersCustomOption_line2);
+			if (gridParameters.hasFilterableColumns) {
+				headerElements.predefiniedFiltersCombo.append(headerElements.predefiniedFiltersCustomOption_line1);
+				headerElements.predefiniedFiltersCombo.append(headerElements.predefiniedFiltersCustomOption_line2);
+			}
 			headerElement.append(headerElements.predefiniedFiltersCombo);
 		}
-		if (gridParameters.filter) {
+		if (gridParameters.hasFilterableColumns && gridParameters.filter) {
 			headerElements.filterButton = QCD.components.elements.utils.HeaderUtils.createHeaderButton(translations.addFilterButton, function(e) {
 				if (headerElements.filterButton.hasClass("headerButtonEnabled")) {
 					filterClicked();
@@ -443,15 +445,19 @@ QCD.components.elements.grid.GridHeaderController = function(_gridController, _m
 	}
 	
 	this.setFilterActive = function() {
-		headerElements.filterButton.addClass("headerButtonActive");
-		headerElements.filterButton.label.html(translations.removeFilterButton);
-		headerElements.clearFilterButton.css("display","inline-block");
+		if (gridParameters.hasFilterableColumns) {
+			headerElements.filterButton.addClass("headerButtonActive");
+			headerElements.filterButton.label.html(translations.removeFilterButton);
+			headerElements.clearFilterButton.css("display","inline-block");
+		}
 	}
 	
 	this.setFilterNotActive = function() {
-		headerElements.filterButton.removeClass("headerButtonActive");
-		headerElements.filterButton.label.html(translations.addFilterButton);
-		headerElements.clearFilterButton.hide();
+		if (gridParameters.hasFilterableColumns) {
+			headerElements.filterButton.removeClass("headerButtonActive");
+			headerElements.filterButton.label.html(translations.addFilterButton);
+			headerElements.clearFilterButton.hide();
+		}
 	}
 	
 	this.setPredefinedFilter = function(predefinedFilter) {
@@ -467,11 +473,13 @@ QCD.components.elements.grid.GridHeaderController = function(_gridController, _m
 	}
 
 	this.setEnabledButton = function(button, enabled) {
-		if (enabled) {
-			button.addClass("headerButtonEnabled");
-		} else {
-			button.removeClass("headerButtonEnabled");
-		}		
+		if (button) {
+			if (enabled) {
+				button.addClass("headerButtonEnabled");
+			} else {
+				button.removeClass("headerButtonEnabled");
+			}		
+		}
 	} 
 	var setEnabledButton = this.setEnabledButton;
 	

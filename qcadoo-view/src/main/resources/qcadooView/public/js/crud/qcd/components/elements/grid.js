@@ -102,7 +102,7 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 
 		var colNames = new Array();
 		var colModel = new Array();
-		var isfiltersEnabled = true;
+		var hasFilterableColumns = false;
 
 		for ( var i in options.columns) {
 			var column = options.columns[i];
@@ -118,7 +118,7 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 			for ( var sortColIter in options.searchableColumns) {
 				if (options.searchableColumns[sortColIter] == column.name) {
 					isSerchable = true;
-					isfiltersEnabled = true;
+					hasFilterableColumns = true;
 					break;
 				}
 			}
@@ -174,7 +174,8 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 			}
 		}
 
-		gridParameters.filtersDefaultEnabled = true;
+		gridParameters.hasFilterableColumns = hasFilterableColumns;
+		gridParameters.filtersDefaultEnabled = hasFilterableColumns;
 		gridParameters.hasPredefinedFilters = options.hasPredefinedFilters;
 		gridParameters.predefinedFilters = options.predefinedFilters;
 
@@ -192,7 +193,7 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 		gridParameters.paging = options.paginable;
 		gridParameters.activable = options.activable;
 		gridParameters.lookup = options.lookup;
-		gridParameters.filter = isfiltersEnabled;
+		gridParameters.filter = hasFilterableColumns;
 		gridParameters.orderable = options.prioritizable;
 		gridParameters.allowMultiselect = options.multiselect;
 
@@ -806,7 +807,7 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 			currentGridHeight += 23;
 		}
 		grid.setGridHeight(currentGridHeight);
-		onCurrentStateChange();
+		onCurrentStateChange(true);
 		onFiltersStateChange();
 	}
 
@@ -875,7 +876,7 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 	this.setOnlyActive = function(onlyActive) {
 		blockGrid();
 		currentState.onlyActive = onlyActive;
-		onCurrentStateChange(false);
+		onCurrentStateChange(gridParameters.hasPredefinedFilters);
 	}
 
 	this.setFilterObject = function(filter) {
@@ -895,22 +896,25 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 		currentState.filters = filterObject;
 
 		if (fieldsNo == 0) {
-			if (currentState.filtersEnabled) {
-				currentGridHeight += 23;
-				grid.setGridHeight(currentGridHeight);
-				grid[0].toggleToolbar();
+			if (!gridParameters.filtersDefaultEnabled) {
+				if (currentState.filtersEnabled) {
+					currentGridHeight += 23;
+					grid.setGridHeight(currentGridHeight);
+					$(grid[0]).find('.ui-search-toolbar').hide();
+				}
+				headerController.setFilterNotActive();
+				currentState.filtersEnabled = false;
 			}
-			headerController.setFilterNotActive();
-			currentState.filtersEnabled = false;
 		} else {
 			if (!currentState.filtersEnabled) {
 				currentGridHeight -= 23;
 				grid.setGridHeight(currentGridHeight);
-				grid[0].toggleToolbar();
+				$(grid[0]).find('.ui-search-toolbar').show();
 				$("#gs_" + options.columns[0].name).focus();
+			
+				headerController.setFilterActive();
+				currentState.filtersEnabled = true;
 			}
-			headerController.setFilterActive();
-			currentState.filtersEnabled = true;
 		}
 
 		setSortColumnAndDirection( {
