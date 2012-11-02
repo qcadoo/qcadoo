@@ -52,6 +52,7 @@ import com.qcadoo.model.api.types.FieldType;
 import com.qcadoo.model.api.types.HasManyType;
 import com.qcadoo.model.api.types.ManyToManyType;
 import com.qcadoo.model.internal.types.DecimalType;
+import com.qcadoo.model.internal.types.IntegerType;
 
 public class DefaultEntityTest {
 
@@ -64,6 +65,8 @@ public class DefaultEntityTest {
     private DataDefinition belongsToFieldDataDefinition;
 
     private FieldDefinition decimalFieldDefinition;
+    
+    private FieldDefinition integerFieldDefinition;    
 
     private FieldDefinition manyToManyFieldDefinition;
 
@@ -88,6 +91,8 @@ public class DefaultEntityTest {
     private static final String BOOLEAN_FIELD_NAME = "booleanField";
 
     private static final String DECIMAL_FIELD_NAME = "decimalField";
+    
+    private static final String INTEGER_FIELD_NAME = "integerField";    
 
     private static final String MANY_TO_MANY_FIELD_NAME = "manyToMany";
 
@@ -116,6 +121,10 @@ public class DefaultEntityTest {
         decimalFieldDefinition = mock(FieldDefinition.class);
         final DecimalType decimalType = new DecimalType();
         when(decimalFieldDefinition.getType()).thenReturn(decimalType);
+        
+        integerFieldDefinition = mock(FieldDefinition.class);
+        final IntegerType integerType = new IntegerType();
+        when(integerFieldDefinition.getType()).thenReturn(integerType);        
 
         manyToManyFieldDefinition = mock(FieldDefinition.class);
         final ManyToManyType manyToManyType = mock(ManyToManyType.class);
@@ -148,6 +157,7 @@ public class DefaultEntityTest {
         fieldsMap.put(STRING_FIELD_NAME, stringFieldDefinition);
         fieldsMap.put(BOOLEAN_FIELD_NAME, booleanFieldDefinition);
         fieldsMap.put(DECIMAL_FIELD_NAME, decimalFieldDefinition);
+        fieldsMap.put(INTEGER_FIELD_NAME, integerFieldDefinition);        
         fieldsMap.put(MANY_TO_MANY_FIELD_NAME, manyToManyFieldDefinition);
         fieldsMap.put(SECOND_MANY_TO_MANY_FIELD_NAME, secondManyToManyFieldDefinition);
         fieldsMap.put(HAS_MANY_FIELD_NAME, hasManyFieldDefinition);
@@ -454,6 +464,91 @@ public class DefaultEntityTest {
         Assert.assertNull(result);
     }
 
+    @Test
+    public final void shouldReturnIntegerValue() throws Exception {
+        // given
+    	Integer integer = Integer.MAX_VALUE;
+        defaultEntity.setField(INTEGER_FIELD_NAME, integer);
+
+        // when
+        Integer result = defaultEntity.getIntegerField(INTEGER_FIELD_NAME);
+
+        // then
+        Assert.assertNotNull(result);
+        Assert.assertEquals(integer, result);
+    }
+
+    @Test
+    public final void shouldReturnIntegerValueFromStringUsingIntegerType() throws Exception {
+        // given
+        final String integerStringValue = "10";
+        defaultEntity.setField(INTEGER_FIELD_NAME, integerStringValue);
+
+        // when
+        Integer result = defaultEntity.getIntegerField(INTEGER_FIELD_NAME);
+
+        // then
+        Assert.assertNotNull(result);
+        Assert.assertEquals(new Integer(integerStringValue), result);
+    }
+
+    @Test
+    public final void shouldReturnNullIntegerValueFromEmptyStringUsingIntegerType() throws Exception {
+        // given
+        final String integerStringValue = "";
+        defaultEntity.setField(INTEGER_FIELD_NAME, integerStringValue);
+
+        // when
+        Integer result = defaultEntity.getIntegerField(INTEGER_FIELD_NAME);
+
+        // then
+        Assert.assertNull(result);
+    }
+
+    @Test
+    public final void shouldReturnNullIntegerValueFromBlankStringUsingIntegerType() throws Exception {
+        // given
+        final String integerStringValue = "   ";
+        defaultEntity.setField(INTEGER_FIELD_NAME, integerStringValue);
+
+        // when
+        Integer result = defaultEntity.getIntegerField(INTEGER_FIELD_NAME);
+
+        // then
+        Assert.assertNull(result);
+    }
+
+    @Test
+    public final void shouldThrowExceptionWhenGettingIntegerValueFromInvalidStringUsingIntegerType() throws Exception {
+        // given
+        final String integerStringValue = "invalid integer value";
+        final String integerFieldName = "integerField";
+        defaultEntity.setField(integerFieldName, integerStringValue);
+
+        given(dataDefinition.getField(integerFieldName)).willReturn(integerFieldDefinition);
+
+        // when & then
+        try {
+            defaultEntity.getIntegerField(integerFieldName);
+        } catch (Exception e) {
+            assertTrue(e instanceof IllegalArgumentException);
+        }
+
+    }
+
+    @Test
+    public final void shouldReturnNullIfIntegerFieldIsNull() throws Exception {
+        // given
+        final String integerFieldName = "integerField";
+        defaultEntity.setField(integerFieldName, null);
+
+        // when
+        Integer result = defaultEntity.getIntegerField(integerFieldName);
+
+        // then
+        Assert.assertNull(result);
+    }           
+    
     @Test
     public final void shouldReturnDetachedEntityListImpl() throws Exception {
         // given

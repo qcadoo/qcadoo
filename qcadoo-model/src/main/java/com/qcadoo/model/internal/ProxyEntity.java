@@ -172,6 +172,11 @@ public final class ProxyEntity implements Entity, EntityAwareCopyPerformers, Ent
     public BigDecimal getDecimalField(final String fieldName) {
         return getEntity().getDecimalField(fieldName);
     }
+    
+	@Override
+	public Integer getIntegerField(String fieldName) {
+		return getEntity().getIntegerField(fieldName);
+	}    
 
     @Override
     public Entity getBelongsToField(final String fieldName) {
