@@ -44,12 +44,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.qcadoo.localization.api.TranslationService;
+import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.aop.Monitorable;
+import com.qcadoo.model.api.search.SearchCriteriaBuilder;
 import com.qcadoo.model.api.search.SearchOrders;
 import com.qcadoo.model.api.search.SearchRestrictions;
 import com.qcadoo.model.api.search.SearchResult;
+import com.qcadoo.model.constants.DictionaryFields;
+import com.qcadoo.model.constants.QcadooModelConstants;
 import com.qcadoo.model.internal.api.InternalDictionaryService;
 
 @Service
@@ -159,12 +163,16 @@ public final class DictionaryServiceImpl implements InternalDictionaryService {
     @Transactional
     @Monitorable
     public void disable(final String pluginIdentifier, final String name) {
-        SearchResult serachResult = dataDefinitionService.get(PLUGIN_IDENTIFIER, MODEL_DICTIONARY).find()
-                .add(SearchRestrictions.eq(NAME, name)).list();
-        if (serachResult.getTotalNumberOfEntities() > 0) {
-            Entity dictionaryEntity = serachResult.getEntities().get(0);
-            dictionaryEntity.setField(ACTIVE, false);
-            dataDefinitionService.get(PLUGIN_IDENTIFIER, MODEL_DICTIONARY).save(dictionaryEntity);
+        final DataDefinition dictionaryDataDefinition = dataDefinitionService.get(QcadooModelConstants.PLUGIN_IDENTIFIER,
+                QcadooModelConstants.MODEL_DICTIONARY);
+        final SearchCriteriaBuilder searchCriteriaBuilder = dictionaryDataDefinition.find();
+        searchCriteriaBuilder.add(SearchRestrictions.eq(DictionaryFields.NAME, name));
+        searchCriteriaBuilder.add(SearchRestrictions.eq(DictionaryFields.ACTIVE, true));
+        searchCriteriaBuilder.setMaxResults(1);
+        final Entity dictionaryEntity = searchCriteriaBuilder.uniqueResult();
+        if (dictionaryEntity != null) {
+            dictionaryEntity.setField(DictionaryFields.ACTIVE, false);
+            dictionaryDataDefinition.save(dictionaryEntity);
         }
     }
 
