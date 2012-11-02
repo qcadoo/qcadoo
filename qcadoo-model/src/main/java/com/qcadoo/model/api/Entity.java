@@ -103,7 +103,7 @@ public interface Entity {
      * 
      * @param fieldName
      *            field's name
-     * @return the field's integer value
+     * @return the field's integer value, when it's empty null is returned (not 0) 
      * 
      * @throws IllegalArgumentException
      *             if given field is not Integer type
