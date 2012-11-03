@@ -23,17 +23,24 @@
  */
 package com.qcadoo.model.constants;
 
-public interface QcadooModelConstants {
+public final class QcadooModelConstants {
 
-    String PLUGIN_IDENTIFIER = "qcadooModel";
+    private QcadooModelConstants() {
+    }
+
+    public static final String PLUGIN_IDENTIFIER = "qcadooModel";
 
     // MODEL
-    String MODEL_DICTIONARY = "dictionary";
+    public static final String MODEL_DICTIONARY = "dictionary";
 
-    String MODEL_DICTIONARY_ITEM = "dictionaryItem";
+    public static final String MODEL_DICTIONARY_ITEM = "dictionaryItem";
 
-    String MODEL_UNIT_CONVERSION_ITEM = "unitConversionItem";
+    public static final String MODEL_UNIT_CONVERSION_ITEM = "unitConversionItem";
 
-    String MODEL_GLOBAL_UNIT_CONVERSIONS_AGGREGATE = "globalUnitConversionsAggregate";
+    public static final String MODEL_GLOBAL_UNIT_CONVERSIONS_AGGREGATE = "globalUnitConversionsAggregate";
+
+    // DICTIONARIES
+
+    public static final String DICTIONARY_UNITS = "units";
 
 }
