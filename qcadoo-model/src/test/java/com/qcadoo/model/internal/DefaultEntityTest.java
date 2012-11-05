@@ -522,14 +522,14 @@ public class DefaultEntityTest {
     public final void shouldThrowExceptionWhenGettingIntegerValueFromInvalidStringUsingIntegerType() throws Exception {
         // given
         final String integerStringValue = "invalid integer value";
-        final String integerFieldName = "integerField";
-        defaultEntity.setField(integerFieldName, integerStringValue);
+        defaultEntity.setField(INTEGER_FIELD_NAME, integerStringValue);
 
-        given(dataDefinition.getField(integerFieldName)).willReturn(integerFieldDefinition);
+        given(dataDefinition.getField(INTEGER_FIELD_NAME)).willReturn(integerFieldDefinition);
 
         // when & then
         try {
-            defaultEntity.getIntegerField(integerFieldName);
+            defaultEntity.getIntegerField(INTEGER_FIELD_NAME);
+            Assert.fail("should throw exception"); 
         } catch (Exception e) {
             assertTrue(e instanceof IllegalArgumentException);
         }
@@ -539,11 +539,10 @@ public class DefaultEntityTest {
     @Test
     public final void shouldReturnNullIfIntegerFieldIsNull() throws Exception {
         // given
-        final String integerFieldName = "integerField";
-        defaultEntity.setField(integerFieldName, null);
+        defaultEntity.setField(INTEGER_FIELD_NAME, null);
 
         // when
-        Integer result = defaultEntity.getIntegerField(integerFieldName);
+        Integer result = defaultEntity.getIntegerField(INTEGER_FIELD_NAME);
 
         // then
         Assert.assertNull(result);
