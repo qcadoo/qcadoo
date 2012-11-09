@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 1.1.7
+ * Version: 1.2.0-SNAPSHOT
  *
  * This file is part of Qcadoo.
  *
@@ -186,8 +186,9 @@ public final class DefaultEntity implements Entity, EntityAwareCopyPerformers, E
 
     @Override
     public boolean equals(final Entity otherEntity, final PerformerEntitiesChain performersChain) {
-        return otherEntity == performersChain.getLast() || definitionsAndIdsAreEqual(otherEntity)
-                && fieldsAreEquals(otherEntity, performersChain, false);
+        return otherEntity != null
+                && (otherEntity == performersChain.getLast() || definitionsAndIdsAreEqual(otherEntity)
+                        && fieldsAreEquals(otherEntity, performersChain, false));
     }
 
     private boolean definitionsAndIdsAreEqual(final Entity otherEntity) {
@@ -311,6 +312,29 @@ public final class DefaultEntity implements Entity, EntityAwareCopyPerformers, E
         throw new IllegalArgumentException("Field " + fieldName + " in " + dataDefinition.getPluginIdentifier() + '.'
                 + dataDefinition.getName() + " does not contain correct BigDecimal value");
     }
+    
+    @Override
+    public Integer getIntegerField(final String fieldName) {
+        final Object fieldValue = getField(fieldName);
+        if (fieldValue == null) {
+            return null;
+        }
+        if (fieldValue instanceof Integer) {
+            return (Integer) fieldValue;
+        }
+        final FieldDefinition fieldDefinition = dataDefinition.getField(fieldName);
+        if (fieldValue instanceof String && Integer.class.equals(fieldDefinition.getType().getType())) {
+            if (StringUtils.isBlank((String) fieldValue)) {
+                return null;
+            }
+            final ValueAndError valueAndError = fieldDefinition.getType().toObject(fieldDefinition, fieldValue);
+            if (valueAndError.isValid()) {
+                return (Integer) valueAndError.getValue();
+            }
+        }
+        throw new IllegalArgumentException("Field " + fieldName + " in " + dataDefinition.getPluginIdentifier() + '.'
+                + dataDefinition.getName() + " does not contain correct Integer value");
+    }   
 
     @SuppressWarnings("unchecked")
     @Override

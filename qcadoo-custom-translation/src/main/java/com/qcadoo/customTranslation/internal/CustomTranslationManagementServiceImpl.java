@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 1.1.7
+ * Version: 1.2.0-SNAPSHOT
  *
  * This file is part of Qcadoo.
  *
@@ -97,7 +97,21 @@ public class CustomTranslationManagementServiceImpl implements CustomTranslation
                 .createQuery(
                         "UPDATE com.qcadoo.model.beans.qcadooCustomTranslation.QcadooCustomTranslationCustomTranslation "
                                 + "SET active = false WHERE pluginIdentifier = :pluginIdentifier AND active = true")
-                .setString("pluginIdenfitier", pluginIdentifier).executeUpdate();
+                .setString("pluginIdentifier", pluginIdentifier).executeUpdate();
+    }
+
+    @Override
+    @Transactional
+    @SuppressWarnings("unchecked")
+    public List<String> getCustomTranslationKeys(final String pluginIdentifier) {
+        DataDefinition customTranslationDD = getCustomTranslationDD();
+        Session currentSession = getCurrentSession(customTranslationDD);
+
+        return currentSession
+                .createQuery(
+                        "SELECT key FROM com.qcadoo.model.beans.qcadooCustomTranslation.QcadooCustomTranslationCustomTranslation "
+                                + "WHERE pluginIdentifier = :pluginIdentifier").setString("pluginIdentifier", pluginIdentifier)
+                .list();
     }
 
     @Override

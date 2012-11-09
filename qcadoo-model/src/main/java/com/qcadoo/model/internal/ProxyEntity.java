@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 1.1.7
+ * Version: 1.2.0-SNAPSHOT
  *
  * This file is part of Qcadoo.
  *
@@ -172,6 +172,11 @@ public final class ProxyEntity implements Entity, EntityAwareCopyPerformers, Ent
     public BigDecimal getDecimalField(final String fieldName) {
         return getEntity().getDecimalField(fieldName);
     }
+    
+	@Override
+	public Integer getIntegerField(String fieldName) {
+		return getEntity().getIntegerField(fieldName);
+	}    
 
     @Override
     public Entity getBelongsToField(final String fieldName) {

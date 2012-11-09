@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 1.1.7
+ * Version: 1.2.0-SNAPSHOT
  *
  * This file is part of Qcadoo.
  *
@@ -55,6 +55,16 @@ public interface CustomTranslationManagementService {
      *            plugin identifier
      */
     void removeCustomTranslations(final String pluginIdentifier);
+
+    /**
+     * Gets list of custom translation keys with given plugin identifier
+     * 
+     * @param pluginIdentifier
+     *            plugin identifier
+     * 
+     * @return the list of custom translation keys
+     */
+    List<String> getCustomTranslationKeys(final String pluginIdentifier);
 
     /**
      * Gets custom translation with given plugin identifier, locale and key

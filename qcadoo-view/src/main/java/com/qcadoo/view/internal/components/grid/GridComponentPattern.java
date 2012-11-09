@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 1.1.7
+ * Version: 1.2.0-SNAPSHOT
  *
  * This file is part of Qcadoo.
  *
@@ -89,6 +89,8 @@ public class GridComponentPattern extends AbstractComponentPattern {
     private boolean multiselect = false;
 
     private boolean hasPredefinedFilters = false;
+
+    private boolean filtersDefaultVisible = true;
 
     private boolean weakRelation = false;
 
@@ -177,6 +179,7 @@ public class GridComponentPattern extends AbstractComponentPattern {
         json.put("weakRelation", weakRelation);
 
         json.put("hasPredefinedFilters", hasPredefinedFilters);
+        json.put("filtersDefaultVisible", filtersDefaultVisible);
 
         JSONArray predefinedFiltersArray = new JSONArray();
         for (PredefinedFilter predefinedFilter : predefinedFilters) {
@@ -409,6 +412,8 @@ public class GridComponentPattern extends AbstractComponentPattern {
                 multiselect = Boolean.parseBoolean(option.getValue());
             } else if ("hasPredefinedFilters".equals(option.getType())) {
                 hasPredefinedFilters = Boolean.parseBoolean(option.getValue());
+            } else if ("filtersDefaultVisible".equals(option.getType())) {
+                filtersDefaultVisible = Boolean.parseBoolean(option.getValue());
             } else if ("deletable".equals(option.getType())) {
                 deletable = Boolean.parseBoolean(option.getValue());
             } else if ("height".equals(option.getType())) {

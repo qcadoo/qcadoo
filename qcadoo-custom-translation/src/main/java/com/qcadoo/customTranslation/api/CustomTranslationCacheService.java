@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 1.1.7
+ * Version: 1.2.0-SNAPSHOT
  *
  * This file is part of Qcadoo.
  *
@@ -72,6 +72,15 @@ public interface CustomTranslationCacheService {
      * 
      */
     void manageCustomTranslation(final String key, final String locale, final String customTranslation);
+
+    /**
+     * Removes custom translations with given keys
+     * 
+     * @param keys
+     *            translation keys
+     * 
+     */
+    void removeCustomTranslations(final List<String> keys);
 
     /**
      * Gets custom translation with given key and locale

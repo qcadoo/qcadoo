@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 1.1.7
+ * Version: 1.2.0-SNAPSHOT
  *
  * This file is part of Qcadoo.
  *
@@ -97,6 +97,18 @@ public interface Entity {
      *             if given field is not BigDecimal (sub)type
      */
     BigDecimal getDecimalField(String fieldName);
+    
+    /**
+     * Return the Integer value of the field with given name
+     * 
+     * @param fieldName
+     *            field's name
+     * @return the field's integer value, when it's empty null is returned (not 0) 
+     * 
+     * @throws IllegalArgumentException
+     *             if given field is not Integer type
+     */    
+    Integer getIntegerField(final String fieldName);
 
     /**
      * Return the value, casted to entity, of the field with given name.

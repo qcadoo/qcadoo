@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 1.1.7
+ * Version: 1.2.0-SNAPSHOT
  *
  * This file is part of Qcadoo.
  *
@@ -75,12 +75,12 @@ public class TranslationModule extends Module implements TranslationPropertiesHo
 
     @Override
     public void multiTenantEnable() {
-        super.multiTenantEnable();
+
     }
 
     @Override
     public void multiTenantDisable() {
-        super.multiTenantDisable();
+
     }
 
     @Override

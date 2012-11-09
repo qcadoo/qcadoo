@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 1.1.7
+ * Version: 1.2.0-SNAPSHOT
  *
  * This file is part of Qcadoo.
  *
@@ -110,7 +110,9 @@ public class ReportDevelopmentController {
         try {
             List<Entity> entities = dataDefinitionService.get("qcadooPlugin", "plugin").find(hql).list().getEntities();
 
-            if (!entities.isEmpty()) {
+            if (entities.isEmpty()) {
+                return new ModelAndView(L_QCADOO_REPORT_HQL).addObject(L_HQL, hql).addObject("isEmpty", true);
+            } else {
                 DataDefinition dataDefinition = entities.get(0).getDataDefinition();
 
                 List<String> headers = new ArrayList<String>();
@@ -145,8 +147,6 @@ public class ReportDevelopmentController {
 
                 return new ModelAndView(L_QCADOO_REPORT_HQL).addObject(L_HQL, hql).addObject("headers", headers)
                         .addObject("rows", rows).addObject("isOk", true);
-            } else {
-                return new ModelAndView(L_QCADOO_REPORT_HQL).addObject(L_HQL, hql).addObject("isEmpty", true);
             }
         } catch (Exception e) {
             return showException(L_QCADOO_REPORT_HQL, e).addObject(L_HQL, hql);

@@ -4,7 +4,7 @@
     ***************************************************************************
     Copyright (c) 2010 Qcadoo Limited
     Project: Qcadoo Framework
-    Version: 1.1.7
+    Version: 1.2.0-SNAPSHOT
 
     This file is part of Qcadoo.
 
@@ -27,14 +27,16 @@
 <plugin plugin="qcadooModel" version="${qcadoo.plugin.version}"
 	system="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns="http://schema.qcadoo.org/plugin" xmlns:model="http://schema.qcadoo.org/modules/model"
-	xmlns:view="http://schema.qcadoo.org/modules/view"
+	xmlns:view="http://schema.qcadoo.org/modules/view" xmlns:custom="http://schema.qcadoo.org/modules/custom"
 	xsi:schemaLocation="
 		http://schema.qcadoo.org/plugin 
 		http://schema.qcadoo.org/plugin.xsd 
 		http://schema.qcadoo.org/modules/model 
 		http://schema.qcadoo.org/modules/model.xsd 
 		http://schema.qcadoo.org/modules/view 
-		http://schema.qcadoo.org/modules/view.xsd">
+		http://schema.qcadoo.org/modules/view.xsd
+		http://schema.qcadoo.org/modules/custom 
+		http://schema.qcadoo.org/modules/custom.xsd">
 
 	<information>
 		<name>Qcadoo Framework Model</name>
@@ -59,6 +61,7 @@
 		<model:model model="unitConversionItem" resource="model/unitConversionItem.xml" />
 		
 		<model:dictionary name="units" />
+		<custom:custom class="com.qcadoo.model.internal.units.UnitDictionaryModule" />
 	</modules>
 
 </plugin>

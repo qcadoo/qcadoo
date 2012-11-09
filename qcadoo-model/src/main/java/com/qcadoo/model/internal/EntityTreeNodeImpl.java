@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 1.1.7
+ * Version: 1.2.0-SNAPSHOT
  *
  * This file is part of Qcadoo.
  *
@@ -97,6 +97,11 @@ public final class EntityTreeNodeImpl implements EntityTreeNode, EntityAwareCopy
     public BigDecimal getDecimalField(final String fieldName) {
         return entity.getDecimalField(fieldName);
     }
+    
+	@Override
+	public Integer getIntegerField(final String fieldName) {
+		return entity.getIntegerField(fieldName);
+	}    
 
     @Override
     public Entity getBelongsToField(final String fieldName) {
