@@ -34,7 +34,7 @@
 
 	<link rel="shortcut icon" href="/qcadooView/public/img/core/icons/favicon.png">
 	
-	<title>QCADOO :: login</title>
+	<title>${applicationDisplayName}</title>
 	
 	<style type="text/css">
 	
@@ -103,6 +103,7 @@
 			color: black;
 		}
 	</style>
+	<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/core/custom.css" type="text/css" />
 	
 </head>
 <body >

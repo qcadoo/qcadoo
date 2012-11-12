@@ -27,7 +27,6 @@ import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
@@ -52,14 +51,15 @@ public final class PasswordResetController {
     @Autowired
     private PasswordReminderService passwordReminderService;
 
-    @Value("${useCompressedStaticResources}")
-    private boolean useCompressedStaticResources;
+    @Autowired
+    private ViewParametersAppender viewParametersAppender;
 
     @RequestMapping(value = "passwordReset", method = RequestMethod.GET)
     public ModelAndView getForgotPasswordFormView(@RequestParam(required = false, defaultValue = FALSE) final Boolean iframe,
             @RequestParam(required = false, defaultValue = FALSE) final Boolean popup, final Locale locale) {
 
         ModelAndView mav = new ModelAndView();
+        viewParametersAppender.appendCommonViewObjects(mav);
         mav.setViewName("qcadooView/passwordReset");
         mav.addObject("translation", translationService.getMessagesGroup("security", locale));
         mav.addObject("currentLanguage", locale.getLanguage());
@@ -67,8 +67,6 @@ public final class PasswordResetController {
 
         mav.addObject("iframe", iframe);
         mav.addObject("popup", popup);
-
-        mav.addObject("useCompressedStaticResources", useCompressedStaticResources);
 
         return mav;
     }

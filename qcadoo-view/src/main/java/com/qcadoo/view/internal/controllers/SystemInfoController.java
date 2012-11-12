@@ -65,12 +65,13 @@ public final class SystemInfoController {
     @Value("${buildRevision}")
     private String buildRevision;
 
-    @Value("${useCompressedStaticResources}")
-    private boolean useCompressedStaticResources;
+    @Autowired
+    private ViewParametersAppender viewParametersAppender;
 
     @RequestMapping(value = "systemInfo", method = RequestMethod.GET)
     public ModelAndView getSystemInfoView(@RequestParam final Map<String, String> arguments, final Locale locale) {
         ModelAndView mav = crudController.prepareView("qcadooView", "systemInfo", arguments, locale);
+        viewParametersAppender.appendCommonViewObjects(mav);
 
         Map<String, String> translationsMap = new HashMap<String, String>();
         translationsMap.put("qcadooView.systemInfo.header", translationService.translate("qcadooView.systemInfo.header", locale));
@@ -94,7 +95,6 @@ public final class SystemInfoController {
         mav.addObject("buildNumber", buildNumber);
         mav.addObject("buildTime", buildTime);
         mav.addObject("buildRevision", buildRevision);
-        mav.addObject("useCompressedStaticResources", useCompressedStaticResources);
 
         return mav;
     }

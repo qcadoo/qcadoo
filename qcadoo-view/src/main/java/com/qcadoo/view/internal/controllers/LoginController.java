@@ -27,7 +27,6 @@ import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -50,8 +49,8 @@ public final class LoginController {
     @Autowired
     private TranslationService translationService;
 
-    @Value("${useCompressedStaticResources}")
-    private boolean useCompressedStaticResources;
+    @Autowired
+    private ViewParametersAppender viewParametersAppender;
 
     @RequestMapping(value = "login", method = RequestMethod.GET)
     public ModelAndView getLoginPageView(@RequestParam(required = false) final String loginError,
@@ -64,6 +63,7 @@ public final class LoginController {
 
         ModelAndView mav = new ModelAndView();
         mav.setViewName("qcadooView/login");
+        viewParametersAppender.appendCommonViewObjects(mav);
         mav.addObject("translation", translationService.getMessagesGroup("security", locale));
         mav.addObject("currentLanguage", locale.getLanguage());
         mav.addObject("locales", translationService.getLocales());
@@ -90,14 +90,13 @@ public final class LoginController {
             mav.addObject(MESSAGE_CONTENT, "security.message.passwordReset.successContent");
         }
 
-        mav.addObject("useCompressedStaticResources", useCompressedStaticResources);
-
         return mav;
     }
 
     @RequestMapping(value = "accessDenied", method = RequestMethod.GET)
     public ModelAndView getAccessDeniedPageView(final Locale locale) {
         ModelAndView mav = new ModelAndView();
+        viewParametersAppender.appendCommonViewObjects(mav);
         mav.setViewName("qcadooView/accessDenied");
 
         mav.addObject("translation", translationService.getMessagesGroup("security", locale));
@@ -108,6 +107,7 @@ public final class LoginController {
     @RequestMapping(value = "browserNotSupported", method = RequestMethod.GET)
     public ModelAndView getBrowserNotSupportedView(final Locale locale) {
         ModelAndView mav = new ModelAndView();
+        viewParametersAppender.appendCommonViewObjects(mav);
         mav.setViewName("qcadooView/browserNotSupported");
 
         mav.addObject("locales", translationService.getLocales());
