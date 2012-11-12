@@ -225,10 +225,12 @@
 
 #q_row3_out_container #q_row3_out_main.align-right {
 	text-align: right;
+	margin-right: 26px;
 }
 
 #q_row3_out_container #q_row3_out_main.align-center {
 	text-align: center;
+	margin-right: 26px;
 }
 
 #q_row3_out_container #q_row3_out_tabs_left {
