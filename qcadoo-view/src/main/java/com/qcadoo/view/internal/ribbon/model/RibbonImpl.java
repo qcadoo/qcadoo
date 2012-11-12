@@ -39,6 +39,8 @@ public class RibbonImpl implements InternalRibbon {
 
     private String name;
 
+    private String alignment;
+
     private final List<RibbonGroupsPack> groupPacks = new LinkedList<RibbonGroupsPack>();
 
     @Override
@@ -87,6 +89,7 @@ public class RibbonImpl implements InternalRibbon {
         JSONObject ribbonJson = new JSONObject();
         try {
             ribbonJson.put("name", name);
+            ribbonJson.put("alignment", alignment);
             JSONArray groupsArray = new JSONArray();
             for (InternalRibbonGroup group : getAllGroups()) {
                 if (group.getExtensionPluginIdentifier() == null || PluginUtils.isEnabled(group.getExtensionPluginIdentifier())) {
@@ -165,5 +168,12 @@ public class RibbonImpl implements InternalRibbon {
             }
         }
         return true;
+    }
+
+    @Override
+    public void setAlignment(final String alignment) {
+        if (!StringUtils.isBlank(alignment)) {
+            this.alignment = alignment;
+        }
     }
 }

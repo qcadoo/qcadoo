@@ -23,6 +23,7 @@
  */
 package com.qcadoo.view.internal.ribbon.model;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.json.JSONObject;
@@ -35,7 +36,7 @@ public interface InternalRibbon extends Ribbon {
     /**
      * List of items which should not be permanently disabled.
      */
-    List<String> EXCLUDE_FROM_DISABLING = Lists.newArrayList("navigation.back", "actions.refresh");
+    List<String> EXCLUDE_FROM_DISABLING = Collections.unmodifiableList(Lists.newArrayList("navigation.back", "actions.refresh"));
 
     /**
      * Set identifier of this ribbon
@@ -43,7 +44,7 @@ public interface InternalRibbon extends Ribbon {
      * @param name
      *            identifier of this ribbon
      */
-    void setName(String name);
+    void setName(final String name);
 
     /**
      * Add group to this ribbon
@@ -51,7 +52,7 @@ public interface InternalRibbon extends Ribbon {
      * @param group
      *            group to add
      */
-    void addGroupsPack(RibbonGroupsPack groupPack);
+    void addGroupsPack(final RibbonGroupsPack groupPack);
 
     /**
      * Add group to this ribbon as first
@@ -59,7 +60,7 @@ public interface InternalRibbon extends Ribbon {
      * @param group
      *            group to add
      */
-    void addGroupPackAsFirst(RibbonGroupsPack groupPack);
+    void addGroupPackAsFirst(final RibbonGroupsPack groupPack);
 
     /**
      * Removes group from this ribbon
@@ -67,7 +68,7 @@ public interface InternalRibbon extends Ribbon {
      * @param group
      *            group to remove
      */
-    void removeGroupsPack(RibbonGroupsPack groupPack);
+    void removeGroupsPack(final RibbonGroupsPack groupPack);
 
     /**
      * generates JSON string that contains all ribbon definition
@@ -97,6 +98,14 @@ public interface InternalRibbon extends Ribbon {
      * @param permanentlyDisabled
      *            true if items in this ribbon should be permanently disabled
      */
-    void setPermanentlyDisabled(boolean permanentlyDisabled);
+    void setPermanentlyDisabled(final boolean permanentlyDisabled);
+
+    /**
+     * Set horizontal alignment.
+     * 
+     * @param alignment
+     *            alignment value
+     */
+    void setAlignment(final String alignment);
 
 }

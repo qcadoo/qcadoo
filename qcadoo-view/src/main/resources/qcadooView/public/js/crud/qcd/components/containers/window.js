@@ -91,6 +91,10 @@ QCD.components.containers.Window = function(_element, _mainController) {
 			row3Element.append(ribbonLeftElement);
 			
 			ribbonMainElement = $("<div>").attr("id", "q_row3_out_main");
+			var ribbonAlignment = _this.options.ribbon.alignment;
+			if (ribbonAlignment) {
+				ribbonMainElement.addClass("align-" + ribbonAlignment);
+			}
 			row3Element.append(ribbonMainElement);
 			if (ribbon) {
 				ribbonMainElement.append(ribbon.constructElementContent());
@@ -307,7 +311,8 @@ QCD.components.containers.Window = function(_element, _mainController) {
 		
 		height = null;
 		if (this.options.fixedHeight) {
-			var containerHeight = Math.round(_height - 2 * margin - 70);
+			var ribbonHeight = $(".windowContainer .windowContainerRibbon").height() || 70;
+			var containerHeight = Math.round(_height - 2 * margin - ribbonHeight);
 			height = containerHeight;
 			if (this.options.header) {
 				height -= 24;

@@ -223,6 +223,14 @@
 	vertical-align: top;
 }
 
+#q_row3_out_container #q_row3_out_main.align-right {
+	text-align: right;
+}
+
+#q_row3_out_container #q_row3_out_main.align-center {
+	text-align: center;
+}
+
 #q_row3_out_container #q_row3_out_tabs_left {
 	display: inline-block;
 	vertical-align: top;
