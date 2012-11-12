@@ -108,6 +108,8 @@ public class GridComponentPattern extends AbstractComponentPattern {
 
     private boolean activable = false;
 
+    private GridRowStyleResolver gridRowStyleResolver = null;
+
     public GridComponentPattern(final ComponentDefinition componentDefinition) {
         super(componentDefinition);
     }
@@ -328,13 +330,14 @@ public class GridComponentPattern extends AbstractComponentPattern {
     @Override
     public void parse(final Node componentNode, final ViewDefinitionParser parser) throws ViewDefinitionParserNodeException {
         super.parse(componentNode, parser);
-        NodeList childNodes = componentNode.getChildNodes();
+        final NodeList childNodes = componentNode.getChildNodes();
         for (int i = 0; i < childNodes.getLength(); i++) {
-            Node child = childNodes.item(i);
+            final Node child = childNodes.item(i);
             if ("predefinedFilters".equals(child.getNodeName())) {
                 NodeList predefinedFilterChildNodes = child.getChildNodes();
                 parsePredefinedFilterChildNodes(predefinedFilterChildNodes, parser);
-                break;
+            } else if ("rowStyleResolver".equals(child.getNodeName())) {
+                gridRowStyleResolver = GridRowStyleResolver.build(child, parser, getApplicationContext());
             }
         }
     }
@@ -524,5 +527,13 @@ public class GridComponentPattern extends AbstractComponentPattern {
 
     public FieldDefinition getBelongsToFieldDefinition() {
         return belongsToFieldDefinition;
+    }
+
+    public void setGridRowStyleResolver(final GridRowStyleResolver gridRowStyleResolver) {
+        this.gridRowStyleResolver = gridRowStyleResolver;
+    }
+
+    public GridRowStyleResolver getGridRowStyleResolver() {
+        return gridRowStyleResolver;
     }
 }

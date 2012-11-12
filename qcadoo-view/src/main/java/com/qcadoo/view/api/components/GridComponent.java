@@ -38,6 +38,10 @@ import com.qcadoo.view.api.ComponentState;
  */
 public interface GridComponent extends ComponentState {
 
+    String CSS_RED_BG = "redBg";
+
+    String CSS_BOLD_FONT = "boldFont";
+
     /**
      * Gets ids of all selected entities
      * 

@@ -558,6 +558,19 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 				}
 			}
 		}
+		
+		if (value.entitiesToMarkWithCssClass) {
+			for (var styledEntityId in value.entitiesToMarkWithCssClass) {
+				var row = $("#" + elementSearchName + " #" + styledEntityId);
+				if (row) {
+					var entityCssClasses = value.entitiesToMarkWithCssClass[styledEntityId];
+					var entityCssClassesLen = entityCssClasses.length;
+					for (var i = 0; i < entityCssClassesLen; i++) {
+						row.addClass(entityCssClasses[i]);
+					}
+				}
+			}
+		}
 
 		if (addedEntityId) {
 			var row = $("#" + elementSearchName + " #" + addedEntityId);

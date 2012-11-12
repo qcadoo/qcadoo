@@ -97,6 +97,8 @@ public final class GridComponentState extends AbstractComponentState implements 
 
     public static final String JSON_ENTITIES_TO_MARK_AS_NEW = "entitiesToMarkAsNew";
 
+    public static final String JSON_ENTITIES_TO_MARK_WITH_CSS_CLASS = "entitiesToMarkWithCssClass";
+
     private final GridEventPerformer eventPerformer = new GridEventPerformer();
 
     private final Map<String, GridComponentColumn> columns;
@@ -141,6 +143,8 @@ public final class GridComponentState extends AbstractComponentState implements 
 
     private final DataDefinition scopeFieldDataDefinition;
 
+    private GridRowStyleResolver gridRowStyleResolver;
+
     public GridComponentState(final DataDefinition dataDefinition, final GridComponentPattern pattern) {
         super(pattern);
         this.belongsToFieldDefinition = pattern.getBelongsToFieldDefinition();
@@ -150,6 +154,7 @@ public final class GridComponentState extends AbstractComponentState implements 
         this.activable = pattern.isActivable();
         this.weakRelation = pattern.isWeakRelation();
         this.scopeFieldDataDefinition = dataDefinition;
+        this.gridRowStyleResolver = pattern.getGridRowStyleResolver();
         registerEvent("refresh", eventPerformer, "refresh");
         registerEvent("select", eventPerformer, "selectEntity");
         registerEvent("addExistingEntity", eventPerformer, "addExistingEntity");
@@ -338,6 +343,10 @@ public final class GridComponentState extends AbstractComponentState implements 
             json.put(JSON_ENTITIES_TO_MARK_AS_NEW, entitiesToMarkAsNewJson);
         }
 
+        if (gridRowStyleResolver != null) {
+            json.put(JSON_ENTITIES_TO_MARK_WITH_CSS_CLASS, getStylesForEntities());
+        }
+
         if (orderColumn != null) {
             JSONObject jsonOrder = new JSONObject();
             jsonOrder.put(JSON_ORDER_COLUMN, orderColumn);
@@ -360,6 +369,14 @@ public final class GridComponentState extends AbstractComponentState implements 
         json.put(JSON_ENTITIES, jsonEntities);
 
         return json;
+    }
+
+    private JSONObject getStylesForEntities() throws JSONException {
+        final JSONObject stylesForEntities = new JSONObject();
+        for (Map.Entry<Long, Set<String>> entityToStyles : gridRowStyleResolver.resolve(entities).entrySet()) {
+            stylesForEntities.put(entityToStyles.getKey().toString(), new JSONArray(entityToStyles.getValue()));
+        }
+        return stylesForEntities;
     }
 
     private JSONObject convertEntityToJson(final Entity entity) throws JSONException {
