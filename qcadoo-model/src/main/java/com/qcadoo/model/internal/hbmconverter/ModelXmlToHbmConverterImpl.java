@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -38,6 +39,7 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
@@ -53,11 +55,16 @@ public class ModelXmlToHbmConverterImpl implements ModelXmlToHbmConverter {
 
     private static final Logger LOG = LoggerFactory.getLogger(ModelXmlToHbmConverterImpl.class);
 
-    private final Resource xsl = new ClassPathResource(Constants.XSL);
+    @Value("${hibernateDialect}")
+    private String hibernateDialect;
 
-    private final Transformer transformer;
+    private Resource xsl;
 
-    public ModelXmlToHbmConverterImpl() {
+    private Transformer transformer;
+
+    @PostConstruct
+    public final void init() {
+        xsl = resolveXslResource();
         if (!xsl.isReadable()) {
             throw new IllegalStateException("Failed to read " + xsl.getFilename());
         }
@@ -68,6 +75,14 @@ public class ModelXmlToHbmConverterImpl implements ModelXmlToHbmConverter {
         } catch (IOException e) {
             throw new IllegalStateException("Failed to initialize xsl transformer", e);
         }
+    }
+
+    private Resource resolveXslResource() {
+        String xslFileName = Constants.XSL;
+        if (hibernateDialect != null && "org.hibernate.dialect.Oracle10gDialect".equalsIgnoreCase(hibernateDialect.trim())) {
+            xslFileName = Constants.XSL_ORACLE_10G;
+        }
+        return new ClassPathResource(xslFileName);
     }
 
     @Override

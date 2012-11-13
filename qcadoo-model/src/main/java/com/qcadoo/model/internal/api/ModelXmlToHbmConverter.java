@@ -27,6 +27,8 @@ import org.springframework.core.io.Resource;
 
 public interface ModelXmlToHbmConverter {
 
+    void init();
+
     Resource[] convert(Resource... resources);
 
 }

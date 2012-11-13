@@ -94,7 +94,7 @@ public class HibernateServiceImpl implements HibernateService {
         CriteriaJoinWalker walker = new CriteriaJoinWalker((OuterJoinLoadable) factory.getEntityPersister(implementors[0]),
                 translator, factory, criteriaImpl, criteriaImpl.getEntityOrClassName(), session.getLoadQueryInfluencers());
 
-        String sql = "select count(*) as cnt from (" + walker.getSQLString() + ") as sq";
+        final String sql = "select count(*) as cnt from (" + walker.getSQLString() + ") sq";
 
         getCurrentSession().flush(); // is this safe?
 
