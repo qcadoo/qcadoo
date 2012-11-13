@@ -142,7 +142,7 @@
 				
 			}
 		</style>
-		<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/core/custom.css" type="text/css" />
+		<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/custom.css" type="text/css" />
 		
 		<script type="text/javascript">
 
