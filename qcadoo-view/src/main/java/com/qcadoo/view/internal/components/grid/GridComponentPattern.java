@@ -46,6 +46,7 @@ import com.qcadoo.model.api.types.JoinFieldHolder;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.internal.ComponentDefinition;
 import com.qcadoo.view.internal.ComponentOption;
+import com.qcadoo.view.internal.RowStyleResolver;
 import com.qcadoo.view.internal.patterns.AbstractComponentPattern;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
 import com.qcadoo.view.internal.xml.ViewDefinitionParserNodeException;
@@ -108,7 +109,7 @@ public class GridComponentPattern extends AbstractComponentPattern {
 
     private boolean activable = false;
 
-    private GridRowStyleResolver gridRowStyleResolver = null;
+    private RowStyleResolver rowStyleResolver = null;
 
     public GridComponentPattern(final ComponentDefinition componentDefinition) {
         super(componentDefinition);
@@ -337,7 +338,7 @@ public class GridComponentPattern extends AbstractComponentPattern {
                 NodeList predefinedFilterChildNodes = child.getChildNodes();
                 parsePredefinedFilterChildNodes(predefinedFilterChildNodes, parser);
             } else if ("rowStyleResolver".equals(child.getNodeName())) {
-                gridRowStyleResolver = GridRowStyleResolver.build(child, parser, getApplicationContext());
+                rowStyleResolver = RowStyleResolver.build(child, parser, getApplicationContext());
             }
         }
     }
@@ -529,11 +530,11 @@ public class GridComponentPattern extends AbstractComponentPattern {
         return belongsToFieldDefinition;
     }
 
-    public void setGridRowStyleResolver(final GridRowStyleResolver gridRowStyleResolver) {
-        this.gridRowStyleResolver = gridRowStyleResolver;
+    public void setRowStyleResolver(final RowStyleResolver rowStyleResolver) {
+        this.rowStyleResolver = rowStyleResolver;
     }
 
-    public GridRowStyleResolver getGridRowStyleResolver() {
-        return gridRowStyleResolver;
+    public RowStyleResolver getRowStyleResolver() {
+        return rowStyleResolver;
     }
 }

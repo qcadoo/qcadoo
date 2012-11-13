@@ -23,23 +23,13 @@
  */
 package com.qcadoo.view.constants;
 
-public final class QcadooViewConstants {
+public final class RowStyle {
 
-    private QcadooViewConstants() {
+    private RowStyle() {
     }
 
-    public static final String PLUGIN_IDENTIFIER = "qcadooView";
+    public static final String RED_BACKGROUND = "redBg";
 
-    // MODEL
-    public static final String MODEL_CATEGORY = "category";
-
-    public static final String MODEL_ITEM = "item";
-
-    public static final String MODEL_VIEW = "view";
-
-    // VIEW
-    public static final String VIEW_SYSTEM_INFO = "systemInfo";
-
-    public static final String VIEW_FILE_UPLOAD = "fileUpload";
+    public static final String BOLD_FONT = "boldFont";
 
 }

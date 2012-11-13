@@ -44,12 +44,12 @@ import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.ribbon.RibbonActionItem.Type;
 import com.qcadoo.view.internal.ComponentDefinition;
 import com.qcadoo.view.internal.ComponentOption;
+import com.qcadoo.view.internal.RowStyleResolver;
 import com.qcadoo.view.internal.api.InternalViewDefinition;
 import com.qcadoo.view.internal.api.InternalViewDefinitionService;
 import com.qcadoo.view.internal.api.ViewDefinition;
 import com.qcadoo.view.internal.components.FieldComponentPattern;
 import com.qcadoo.view.internal.components.grid.GridComponentPattern;
-import com.qcadoo.view.internal.components.grid.GridRowStyleResolver;
 import com.qcadoo.view.internal.components.window.WindowComponentPattern;
 import com.qcadoo.view.internal.internal.ViewDefinitionImpl;
 import com.qcadoo.view.internal.ribbon.model.InternalRibbon;
@@ -84,7 +84,7 @@ public class LookupComponentPattern extends FieldComponentPattern {
 
     private InternalViewDefinition lookupViewDefinition;
 
-    private GridRowStyleResolver gridRowStyleResolver;
+    private RowStyleResolver rowStyleResolver;
 
     public LookupComponentPattern(final ComponentDefinition componentDefinition) {
         super(componentDefinition);
@@ -126,7 +126,7 @@ public class LookupComponentPattern extends FieldComponentPattern {
         for (int i = 0; i < childNodes.getLength(); i++) {
             Node child = childNodes.item(i);
             if ("rowStyleResolver".equals(child.getNodeName())) {
-                gridRowStyleResolver = GridRowStyleResolver.build(child, parser, getApplicationContext());
+                rowStyleResolver = RowStyleResolver.build(child, parser, getApplicationContext());
             }
         }
     }
@@ -270,7 +270,7 @@ public class LookupComponentPattern extends FieldComponentPattern {
         }
 
         GridComponentPattern grid = new GridComponentPattern(gridComponentDefinition);
-        grid.setGridRowStyleResolver(gridRowStyleResolver);
+        grid.setRowStyleResolver(rowStyleResolver);
         grid.addOption(new ComponentOption("lookup", ImmutableMap.of(L_VALUE, L_TRUE)));
         grid.addOption(new ComponentOption("fullscreen", ImmutableMap.of(L_VALUE, L_TRUE)));
         grid.addOption(new ComponentOption("orderable", ImmutableMap.of(L_VALUE, L_LOOKUP_CODE)));

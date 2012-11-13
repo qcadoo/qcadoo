@@ -1,4 +1,4 @@
-package com.qcadoo.view.internal.components.grid;
+package com.qcadoo.view.internal;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -19,12 +19,12 @@ import com.qcadoo.model.api.Entity;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
 
 /**
- * CSS classes resolver for grid rows.
+ * CSS classes resolver for components with rows.
  * 
  * @author marcinkubala
  * @since 1.2.0
  */
-public final class GridRowStyleResolver {
+public final class RowStyleResolver {
 
     private final Object bean;
 
@@ -37,13 +37,13 @@ public final class GridRowStyleResolver {
      *            view definition parser
      * @param applicationContext
      *            spring container's application context
-     * @return new instance of {@link GridRowStyleResolver} based on class and method fetched from view XML.
+     * @return new instance of {@link RowStyleResolver} based on class and method fetched from view XML.
      */
-    public static GridRowStyleResolver build(final Node styleResoverNode, final ViewDefinitionParser parser,
+    public static RowStyleResolver build(final Node styleResoverNode, final ViewDefinitionParser parser,
             final ApplicationContext applicationContext) {
         final String resolverClass = parser.getStringAttribute(styleResoverNode, "class");
         final String resolverMethod = parser.getStringAttribute(styleResoverNode, "method");
-        return new GridRowStyleResolver(resolverClass, resolverMethod, applicationContext);
+        return new RowStyleResolver(resolverClass, resolverMethod, applicationContext);
     }
 
     /**
@@ -54,7 +54,7 @@ public final class GridRowStyleResolver {
      *            resolver method name
      * @param applicationContext
      */
-    public GridRowStyleResolver(final String className, final String methodName, final ApplicationContext applicationContext) {
+    public RowStyleResolver(final String className, final String methodName, final ApplicationContext applicationContext) {
         Preconditions.checkArgument(!StringUtils.isBlank(className), "class name is not specified!");
         Preconditions.checkArgument(!StringUtils.isBlank(methodName), "method name is not specified!");
 

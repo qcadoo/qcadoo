@@ -57,6 +57,7 @@ import com.qcadoo.model.api.types.ManyToManyType;
 import com.qcadoo.model.api.validators.ErrorMessage;
 import com.qcadoo.model.internal.ProxyEntity;
 import com.qcadoo.view.api.components.GridComponent;
+import com.qcadoo.view.internal.RowStyleResolver;
 import com.qcadoo.view.internal.states.AbstractComponentState;
 
 public final class GridComponentState extends AbstractComponentState implements GridComponent {
@@ -143,7 +144,7 @@ public final class GridComponentState extends AbstractComponentState implements 
 
     private final DataDefinition scopeFieldDataDefinition;
 
-    private GridRowStyleResolver gridRowStyleResolver;
+    private RowStyleResolver rowStyleResolver;
 
     public GridComponentState(final DataDefinition dataDefinition, final GridComponentPattern pattern) {
         super(pattern);
@@ -154,7 +155,7 @@ public final class GridComponentState extends AbstractComponentState implements 
         this.activable = pattern.isActivable();
         this.weakRelation = pattern.isWeakRelation();
         this.scopeFieldDataDefinition = dataDefinition;
-        this.gridRowStyleResolver = pattern.getGridRowStyleResolver();
+        this.rowStyleResolver = pattern.getRowStyleResolver();
         registerEvent("refresh", eventPerformer, "refresh");
         registerEvent("select", eventPerformer, "selectEntity");
         registerEvent("addExistingEntity", eventPerformer, "addExistingEntity");
@@ -343,8 +344,8 @@ public final class GridComponentState extends AbstractComponentState implements 
             json.put(JSON_ENTITIES_TO_MARK_AS_NEW, entitiesToMarkAsNewJson);
         }
 
-        if (gridRowStyleResolver != null) {
-            json.put(JSON_ENTITIES_TO_MARK_WITH_CSS_CLASS, getStylesForEntities());
+        if (rowStyleResolver != null) {
+            json.put(JSON_ENTITIES_TO_MARK_WITH_CSS_CLASS, getRowStyles());
         }
 
         if (orderColumn != null) {
@@ -371,9 +372,9 @@ public final class GridComponentState extends AbstractComponentState implements 
         return json;
     }
 
-    private JSONObject getStylesForEntities() throws JSONException {
+    private JSONObject getRowStyles() throws JSONException {
         final JSONObject stylesForEntities = new JSONObject();
-        for (Map.Entry<Long, Set<String>> entityToStyles : gridRowStyleResolver.resolve(entities).entrySet()) {
+        for (Map.Entry<Long, Set<String>> entityToStyles : rowStyleResolver.resolve(entities).entrySet()) {
             stylesForEntities.put(entityToStyles.getKey().toString(), new JSONArray(entityToStyles.getValue()));
         }
         return stylesForEntities;
