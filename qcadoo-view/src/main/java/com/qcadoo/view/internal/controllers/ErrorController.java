@@ -45,6 +45,9 @@ public class ErrorController {
     @Value("${showExceptionDetails}")
     private boolean showExceptionDetails;
 
+    @Autowired
+    private ViewParametersAppender viewParametersAppender;
+
     @RequestMapping(value = "error")
     public ModelAndView getAccessDeniedPageView(@RequestParam final int code, final Locale locale) {
         return getAccessDeniedPageView(code, null, null, null, locale);
@@ -54,6 +57,7 @@ public class ErrorController {
             final String predefinedExceptionMessageHeader, final String predefinedExceptionMessageExplanation, final Locale locale) {
         ModelAndView mav = new ModelAndView();
         mav.setViewName("qcadooView/error");
+        viewParametersAppender.appendCommonViewObjects(mav);
 
         mav.addObject("code", code);
 

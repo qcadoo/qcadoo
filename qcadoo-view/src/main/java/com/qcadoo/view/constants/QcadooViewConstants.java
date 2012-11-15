@@ -23,20 +23,23 @@
  */
 package com.qcadoo.view.constants;
 
-public interface QcadooViewConstants {
+public final class QcadooViewConstants {
 
-    String PLUGIN_IDENTIFIER = "qcadooView";
+    private QcadooViewConstants() {
+    }
+
+    public static final String PLUGIN_IDENTIFIER = "qcadooView";
 
     // MODEL
-    String MODEL_CATEGORY = "category";
+    public static final String MODEL_CATEGORY = "category";
 
-    String MODEL_ITEM = "item";
+    public static final String MODEL_ITEM = "item";
 
-    String MODEL_VIEW = "view";
+    public static final String MODEL_VIEW = "view";
 
     // VIEW
-    String VIEW_SYSTEM_INFO = "systemInfo";
+    public static final String VIEW_SYSTEM_INFO = "systemInfo";
 
-    String VIEW_FILE_UPLOAD = "fileUpload";
+    public static final String VIEW_FILE_UPLOAD = "fileUpload";
 
 }

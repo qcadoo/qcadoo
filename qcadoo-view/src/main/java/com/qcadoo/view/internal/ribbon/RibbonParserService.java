@@ -53,6 +53,8 @@ public class RibbonParserService {
 
     private static final String NAME = "name";
 
+    private static final String ALIGNMENT = "alignment";
+
     @Autowired
     private RibbonTemplatesService ribbonTemplatesService;
 
@@ -77,6 +79,7 @@ public class RibbonParserService {
                 throw new ViewDefinitionParserNodeException(child, "Wrong node type - 'group' or 'temlplate' expected");
             }
         }
+        ribbon.setAlignment(parser.getStringAttribute(ribbonNode, ALIGNMENT));
 
         return ribbon;
     }

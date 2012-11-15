@@ -21,14 +21,15 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * ***************************************************************************
  */
-package com.qcadoo.model.internal.api;
+package com.qcadoo.view.constants;
 
-import org.springframework.core.io.Resource;
+public final class RowStyle {
 
-public interface ModelXmlToHbmConverter {
+    private RowStyle() {
+    }
 
-    void init();
+    public static final String RED_BACKGROUND = "redBg";
 
-    Resource[] convert(Resource... resources);
+    public static final String BOLD_FONT = "boldFont";
 
 }

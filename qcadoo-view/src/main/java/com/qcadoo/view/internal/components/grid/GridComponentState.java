@@ -57,6 +57,7 @@ import com.qcadoo.model.api.types.ManyToManyType;
 import com.qcadoo.model.api.validators.ErrorMessage;
 import com.qcadoo.model.internal.ProxyEntity;
 import com.qcadoo.view.api.components.GridComponent;
+import com.qcadoo.view.internal.RowStyleResolver;
 import com.qcadoo.view.internal.states.AbstractComponentState;
 
 public final class GridComponentState extends AbstractComponentState implements GridComponent {
@@ -96,6 +97,8 @@ public final class GridComponentState extends AbstractComponentState implements 
     public static final String JSON_SELECTED_ENTITIES = "selectedEntities";
 
     public static final String JSON_ENTITIES_TO_MARK_AS_NEW = "entitiesToMarkAsNew";
+
+    public static final String JSON_ENTITIES_TO_MARK_WITH_CSS_CLASS = "entitiesToMarkWithCssClass";
 
     private final GridEventPerformer eventPerformer = new GridEventPerformer();
 
@@ -141,6 +144,8 @@ public final class GridComponentState extends AbstractComponentState implements 
 
     private final DataDefinition scopeFieldDataDefinition;
 
+    private RowStyleResolver rowStyleResolver;
+
     public GridComponentState(final DataDefinition dataDefinition, final GridComponentPattern pattern) {
         super(pattern);
         this.belongsToFieldDefinition = pattern.getBelongsToFieldDefinition();
@@ -150,6 +155,7 @@ public final class GridComponentState extends AbstractComponentState implements 
         this.activable = pattern.isActivable();
         this.weakRelation = pattern.isWeakRelation();
         this.scopeFieldDataDefinition = dataDefinition;
+        this.rowStyleResolver = pattern.getRowStyleResolver();
         registerEvent("refresh", eventPerformer, "refresh");
         registerEvent("select", eventPerformer, "selectEntity");
         registerEvent("addExistingEntity", eventPerformer, "addExistingEntity");
@@ -338,6 +344,10 @@ public final class GridComponentState extends AbstractComponentState implements 
             json.put(JSON_ENTITIES_TO_MARK_AS_NEW, entitiesToMarkAsNewJson);
         }
 
+        if (rowStyleResolver != null) {
+            json.put(JSON_ENTITIES_TO_MARK_WITH_CSS_CLASS, getRowStyles());
+        }
+
         if (orderColumn != null) {
             JSONObject jsonOrder = new JSONObject();
             jsonOrder.put(JSON_ORDER_COLUMN, orderColumn);
@@ -360,6 +370,14 @@ public final class GridComponentState extends AbstractComponentState implements 
         json.put(JSON_ENTITIES, jsonEntities);
 
         return json;
+    }
+
+    private JSONObject getRowStyles() throws JSONException {
+        final JSONObject stylesForEntities = new JSONObject();
+        for (Map.Entry<Long, Set<String>> entityToStyles : rowStyleResolver.resolve(entities).entrySet()) {
+            stylesForEntities.put(entityToStyles.getKey().toString(), new JSONArray(entityToStyles.getValue()));
+        }
+        return stylesForEntities;
     }
 
     private JSONObject convertEntityToJson(final Entity entity) throws JSONException {

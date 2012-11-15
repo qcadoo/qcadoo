@@ -238,8 +238,6 @@ div.filterButton {
 .multiselectMode .gridContainer .darkRow.ui-state-highlight,
 .multiselectMode .gridContainer .lightRow.lastAdded.ui-state-highlight,
 .multiselectMode .gridContainer .darkRow.lastAdded.ui-state-highlight {
-	//background: #ffe799;
-	//border-color: #ffc200;
 	background: #FDEDA2;
 	border-color: #E2D59A;
 }
@@ -253,7 +251,6 @@ div.filterButton {
 .multiselectMode .gridContainer .darkRow.ui-state-highlight.ui-state-hover,
 .multiselectMode .gridContainer .lightRow.lastAdded.ui-state-highlight.ui-state-hover,
 .multiselectMode .gridContainer .darkRow.lastAdded.ui-state-highlight.ui-state-hover {
-	//background: #FAD66C;
 	background: #EBD77D;
 }
 
@@ -330,30 +327,24 @@ div.filterButton {
 }
 .gridContainer .ui-search-toolbar th:hover {
 }
-
 .gridContainer .inactive, .gridContainer .inactive a, .gridContainer .inactive a:hover {
 	color: #8A8A8A;
 }
-
-/*.gridContainer .inactive, .gridContainer .inactive.lastAdded {
-	//background: #BABABA;	
+.gridContainer .redBg {
+	background: #FFDBD9;
+	border-color: #E3B1AF;
 }
-
-.gridContainer .inactive.lastAdded.ui-state-hover,
-.gridContainer .inactive.ui-state-hover {
-	//background: #ADADAD;
+.gridContainer .ui-state-highlight.redBg {
+	background: #FFBDBA !important;
+	border-color: #D19592 !important;
 }
-
-.multiselectMode .gridContainer .inactive.lastAdded.ui-state-highlight,
-.multiselectMode .gridContainer .inactive.ui-state-highlight,
-.gridContainer .inactive.lastAdded.ui-state-highlight,
-.gridContainer .inactive.ui-state-highlight {
-	//background: #8A8A8A;
+.gridContainer .ui-state-hover.redBg {
+	background: #D4B1B0;
+	border-color: #D19592;
 }
-
-.multiselectMode .gridContainer .inactive.lastAdded.ui-state-highlight.ui-state-hover,
-.multiselectMode .gridContainer .inactive.ui-state-highlight.ui-state-hover,
-.gridContainer .inactive.lastAdded.ui-state-highlight.ui-state-hover,
-.gridContainer .inactive.ui-state-highlight.ui-state-hover {
-	//background: #7A7A7A;
-}*/
+.gridContainer .ui-state-highlight.ui-state-hover.redBg {
+	background: #D9A3A0 !important;
+}
+.gridContainer .ui-jqgrid tr.jqgrow.boldFont td {
+	font-weight: bold;
+}

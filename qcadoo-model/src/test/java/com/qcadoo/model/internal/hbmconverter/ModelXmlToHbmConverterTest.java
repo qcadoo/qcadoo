@@ -60,6 +60,7 @@ public class ModelXmlToHbmConverterTest {
     @BeforeClass
     public static void init() throws Exception {
 
+        MODEL_XML_TO_HBM_CONVERTER.init();
         hbmInputStream = MODEL_XML_TO_HBM_CONVERTER.convert(Utils.FULL_FIRST_ENTITY_XML_RESOURCE)[0].getInputStream();
         hbmInputSource = new InputSource(
                 MODEL_XML_TO_HBM_CONVERTER.convert(Utils.FULL_FIRST_ENTITY_XML_RESOURCE)[0].getInputStream());

@@ -54,9 +54,13 @@ public class FileUploadController {
     @Autowired
     private CrudService crudController;
 
+    @Autowired
+    private ViewParametersAppender viewParametersAppender;
+
     @RequestMapping(value = "fileUpload", method = RequestMethod.GET)
     public ModelAndView upload(final Locale locale) {
         ModelAndView mav = getCrudPopupView(QcadooViewConstants.VIEW_FILE_UPLOAD, locale);
+        viewParametersAppender.appendCommonViewObjects(mav);
 
         mav.addObject("headerLabel", translationService.translate("qcadooView.fileUpload.header", locale));
         mav.addObject("buttonLabel", translationService.translate("qcadooView.fileUpload.button", locale));

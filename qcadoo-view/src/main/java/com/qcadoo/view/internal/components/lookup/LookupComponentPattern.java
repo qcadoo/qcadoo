@@ -33,6 +33,8 @@ import java.util.Map;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import com.google.common.collect.ImmutableMap;
 import com.qcadoo.model.api.DataDefinition;
@@ -42,6 +44,7 @@ import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.ribbon.RibbonActionItem.Type;
 import com.qcadoo.view.internal.ComponentDefinition;
 import com.qcadoo.view.internal.ComponentOption;
+import com.qcadoo.view.internal.RowStyleResolver;
 import com.qcadoo.view.internal.api.InternalViewDefinition;
 import com.qcadoo.view.internal.api.InternalViewDefinitionService;
 import com.qcadoo.view.internal.api.ViewDefinition;
@@ -56,6 +59,8 @@ import com.qcadoo.view.internal.ribbon.model.RibbonActionItemImpl;
 import com.qcadoo.view.internal.ribbon.model.RibbonGroupImpl;
 import com.qcadoo.view.internal.ribbon.model.RibbonImpl;
 import com.qcadoo.view.internal.ribbon.model.SingleRibbonGroupPack;
+import com.qcadoo.view.internal.xml.ViewDefinitionParser;
+import com.qcadoo.view.internal.xml.ViewDefinitionParserNodeException;
 
 public class LookupComponentPattern extends FieldComponentPattern {
 
@@ -78,6 +83,8 @@ public class LookupComponentPattern extends FieldComponentPattern {
     private String fieldCode;
 
     private InternalViewDefinition lookupViewDefinition;
+
+    private RowStyleResolver rowStyleResolver;
 
     public LookupComponentPattern(final ComponentDefinition componentDefinition) {
         super(componentDefinition);
@@ -110,6 +117,18 @@ public class LookupComponentPattern extends FieldComponentPattern {
     @Override
     public String getJsObjectName() {
         return JS_OBJECT;
+    }
+
+    @Override
+    public void parse(final Node componentNode, final ViewDefinitionParser parser) throws ViewDefinitionParserNodeException {
+        super.parse(componentNode, parser);
+        final NodeList childNodes = componentNode.getChildNodes();
+        for (int i = 0; i < childNodes.getLength(); i++) {
+            Node child = childNodes.item(i);
+            if ("rowStyleResolver".equals(child.getNodeName())) {
+                rowStyleResolver = RowStyleResolver.build(child, parser, getApplicationContext());
+            }
+        }
     }
 
     @Override
@@ -251,6 +270,7 @@ public class LookupComponentPattern extends FieldComponentPattern {
         }
 
         GridComponentPattern grid = new GridComponentPattern(gridComponentDefinition);
+        grid.setRowStyleResolver(rowStyleResolver);
         grid.addOption(new ComponentOption("lookup", ImmutableMap.of(L_VALUE, L_TRUE)));
         grid.addOption(new ComponentOption("fullscreen", ImmutableMap.of(L_VALUE, L_TRUE)));
         grid.addOption(new ComponentOption("orderable", ImmutableMap.of(L_VALUE, L_LOOKUP_CODE)));

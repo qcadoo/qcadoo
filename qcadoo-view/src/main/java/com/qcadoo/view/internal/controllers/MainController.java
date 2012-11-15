@@ -27,7 +27,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -55,18 +54,18 @@ public final class MainController {
     @Autowired
     private SecurityService securityService;
 
-    @Value("${useCompressedStaticResources}")
-    private boolean useCompressedStaticResources;
+    @Autowired
+    private ViewParametersAppender viewParametersAppender;
 
     @RequestMapping(value = "main", method = RequestMethod.GET)
     public ModelAndView getMainView(@RequestParam final Map<String, String> arguments, final Locale locale) {
         ModelAndView mav = new ModelAndView();
         mav.setViewName("qcadooView/main");
+        viewParametersAppender.appendCommonViewObjects(mav);
         mav.addObject("viewsList", viewDefinitionService.list());
         mav.addObject("commonTranslations", translationService.getMessagesGroup("commons", locale));
         mav.addObject("menuStructure", menuService.getMenu(locale).getAsJson());
         mav.addObject("userLogin", securityService.getCurrentUserName());
-        mav.addObject("useCompressedStaticResources", useCompressedStaticResources);
         mav.addObject("languageCode", LocaleContextHolder.getLocale().getLanguage());
         return mav;
     }
@@ -75,9 +74,9 @@ public final class MainController {
     public ModelAndView getStartViewWhenNoDashboard(@RequestParam final Map<String, String> arguments, final Locale locale) {
         ModelAndView mav = new ModelAndView();
         mav.setViewName("qcadooView/noDashboard");
+        viewParametersAppender.appendCommonViewObjects(mav);
         mav.addObject("userLogin", securityService.getCurrentUserName());
         mav.addObject("translationsMap", translationService.getMessagesGroup("noDashboard", locale));
-        mav.addObject("useCompressedStaticResources", useCompressedStaticResources);
         return mav;
     }
 }
