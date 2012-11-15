@@ -108,7 +108,7 @@
 									<goal>upload-single</goal>
 								</goals>
 								<configuration>
-									<serverId>qcadoo-schema</serverId>
+									<serverId>qcadoo-javadoc-public</serverId>
 									<fromFile>${basedir}/target/${project.artifactId}.zip</fromFile>
 									<url>scp://91.217.182.199/home/javadoc/</url>
 								</configuration>
