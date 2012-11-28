@@ -26,6 +26,7 @@ package com.qcadoo.customTranslation.internal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,12 +44,16 @@ public class CustomTranslationsOnStartupService extends Module {
     @Autowired
     private CustomTranslationCacheService customTranslationCacheService;
 
+    @Value("${useCustomTranslations}")
+    private boolean useCustomTranslations;
+
     @Override
     @Transactional
     public void multiTenantEnableOnStartup() {
-        List<Entity> customTranslations = customTranslationManagementService.getCustomTranslations();
-
-        customTranslationCacheService.loadCustomTranslations(customTranslations);
+        if (useCustomTranslations) {
+            final List<Entity> customTranslations = customTranslationManagementService.getCustomTranslations();
+            customTranslationCacheService.loadCustomTranslations(customTranslations);
+        }
     }
 
 }
