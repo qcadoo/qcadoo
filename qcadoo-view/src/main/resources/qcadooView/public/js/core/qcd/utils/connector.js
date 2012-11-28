@@ -26,7 +26,7 @@ var QCDConnector = {};
 QCDConnector.windowName = null;
 QCDConnector.mainController = null;
 
-QCDConnector.sendGet = function(type, parameters, responseFunction, errorFunction) {
+QCDConnector.sendGet = function(type, parameters, responseFunction, errorFunction, isSynchronized) {
 	if (!QCDConnector.windowName) {
 		throw("no window name defined in conector");
 	}
@@ -51,6 +51,7 @@ QCDConnector.sendGet = function(type, parameters, responseFunction, errorFunctio
 		type: 'GET',
 		dataType: 'json',
 		contentType: 'application/json; charset=utf-8',
+		async : !isSynchronized,
 		complete: function(XMLHttpRequest, textStatus) {
 			if (XMLHttpRequest.status == 200) {
 				var responseText = $.trim(XMLHttpRequest.responseText); 
@@ -83,7 +84,7 @@ QCDConnector.sendGet = function(type, parameters, responseFunction, errorFunctio
 	});
 }
 
-QCDConnector.sendPost = function(parameters, responseFunction, errorFunction, type) {
+QCDConnector.sendPost = function(parameters, responseFunction, errorFunction, type, isSynchronized) {
 	if (!QCDConnector.windowName) {
 		throw("no window name defined in conector");
 	}
@@ -100,6 +101,7 @@ QCDConnector.sendPost = function(parameters, responseFunction, errorFunction, ty
 		data: parameters,
 		dataType: 'json',
 		contentType: 'application/json; charset=utf-8',
+		async : !isSynchronized,
 		complete: function(XMLHttpRequest, textStatus) {
 			if (XMLHttpRequest.status == 200) {
 				var responseText = $.trim(XMLHttpRequest.responseText); 
@@ -107,7 +109,6 @@ QCDConnector.sendPost = function(parameters, responseFunction, errorFunction, ty
 					QCDConnector.mainController.onSessionExpired();
 					return;
 				}
-				//alert(responseText);
 				if (responseText.substring(0, 20) == "<![CDATA[ERROR PAGE:") {
 					var messageBody = responseText.substring(20, responseText.search("]]>"));
 					QCDConnector.showErrorMessage(messageBody,errorFunction);
