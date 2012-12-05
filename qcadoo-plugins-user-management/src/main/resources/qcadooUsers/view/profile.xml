@@ -71,8 +71,4 @@
 			<option type="expression" value="' '" />
 		</component>
 	</component>
-	<hooks>
-		<beforeRender class="com.qcadoo.plugins.users.internal.UserService"
-			method="removeChangePasswordButtonWhenNotAllowed" />
-	</hooks>
 </view>
