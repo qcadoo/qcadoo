@@ -57,6 +57,7 @@ import com.qcadoo.model.api.types.ManyToManyType;
 import com.qcadoo.model.api.validators.ErrorMessage;
 import com.qcadoo.model.internal.ProxyEntity;
 import com.qcadoo.view.api.components.GridComponent;
+import com.qcadoo.view.internal.CriteriaModifier;
 import com.qcadoo.view.internal.RowStyleResolver;
 import com.qcadoo.view.internal.states.AbstractComponentState;
 
@@ -144,7 +145,9 @@ public final class GridComponentState extends AbstractComponentState implements 
 
     private final DataDefinition scopeFieldDataDefinition;
 
-    private RowStyleResolver rowStyleResolver;
+    private final RowStyleResolver rowStyleResolver;
+
+    private final CriteriaModifier criteriaModifier;
 
     public GridComponentState(final DataDefinition dataDefinition, final GridComponentPattern pattern) {
         super(pattern);
@@ -156,6 +159,7 @@ public final class GridComponentState extends AbstractComponentState implements 
         this.weakRelation = pattern.isWeakRelation();
         this.scopeFieldDataDefinition = dataDefinition;
         this.rowStyleResolver = pattern.getRowStyleResolver();
+        this.criteriaModifier = pattern.getCriteriaModifier();
         registerEvent("refresh", eventPerformer, "refresh");
         registerEvent("select", eventPerformer, "selectEntity");
         registerEvent("addExistingEntity", eventPerformer, "addExistingEntity");
@@ -650,6 +654,10 @@ public final class GridComponentState extends AbstractComponentState implements 
 
                     addOrder(criteria);
                     addPaging(criteria);
+
+                    if (criteriaModifier != null) {
+                        criteriaModifier.modifyCriteria(criteria);
+                    }
 
                     SearchResult result = criteria.list();
 

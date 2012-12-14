@@ -44,6 +44,7 @@ import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.ribbon.RibbonActionItem.Type;
 import com.qcadoo.view.internal.ComponentDefinition;
 import com.qcadoo.view.internal.ComponentOption;
+import com.qcadoo.view.internal.CriteriaModifier;
 import com.qcadoo.view.internal.RowStyleResolver;
 import com.qcadoo.view.internal.api.InternalViewDefinition;
 import com.qcadoo.view.internal.api.InternalViewDefinitionService;
@@ -86,6 +87,8 @@ public class LookupComponentPattern extends FieldComponentPattern {
 
     private RowStyleResolver rowStyleResolver;
 
+    private CriteriaModifier criteriaModifier;
+
     public LookupComponentPattern(final ComponentDefinition componentDefinition) {
         super(componentDefinition);
     }
@@ -125,8 +128,10 @@ public class LookupComponentPattern extends FieldComponentPattern {
         final NodeList childNodes = componentNode.getChildNodes();
         for (int i = 0; i < childNodes.getLength(); i++) {
             Node child = childNodes.item(i);
-            if ("rowStyleResolver".equals(child.getNodeName())) {
-                rowStyleResolver = RowStyleResolver.build(child, parser, getApplicationContext());
+            if (RowStyleResolver.NODE_NAME.equals(child.getNodeName())) {
+                rowStyleResolver = new RowStyleResolver(child, parser, getApplicationContext());
+            } else if (CriteriaModifier.NODE_NAME.equals(child.getNodeName())) {
+                criteriaModifier = new CriteriaModifier(child, parser, getApplicationContext());
             }
         }
     }
@@ -257,7 +262,7 @@ public class LookupComponentPattern extends FieldComponentPattern {
 
     private GridComponentPattern createGridComponentPattern(final ViewDefinition lookupViewDefinition,
             final WindowComponentPattern window) {
-        ComponentDefinition gridComponentDefinition = new ComponentDefinition();
+        final ComponentDefinition gridComponentDefinition = new ComponentDefinition();
         gridComponentDefinition.setName("grid");
         gridComponentDefinition.setTranslationService(getTranslationService());
         gridComponentDefinition.setViewDefinition(lookupViewDefinition);
@@ -269,8 +274,9 @@ public class LookupComponentPattern extends FieldComponentPattern {
             gridComponentDefinition.setSourceFieldPath(getScopeFieldDefinition().getName());
         }
 
-        GridComponentPattern grid = new GridComponentPattern(gridComponentDefinition);
+        final GridComponentPattern grid = new GridComponentPattern(gridComponentDefinition);
         grid.setRowStyleResolver(rowStyleResolver);
+        grid.setCriteriaModifier(criteriaModifier);
         grid.addOption(new ComponentOption("lookup", ImmutableMap.of(L_VALUE, L_TRUE)));
         grid.addOption(new ComponentOption("fullscreen", ImmutableMap.of(L_VALUE, L_TRUE)));
         grid.addOption(new ComponentOption("orderable", ImmutableMap.of(L_VALUE, L_LOOKUP_CODE)));

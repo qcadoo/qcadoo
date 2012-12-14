@@ -84,6 +84,8 @@
 			<xs:element name="component" type="componentType" minOccurs="0" maxOccurs="unbounded"/>
 			<xs:element name="option" type="optionType" minOccurs="0" maxOccurs="unbounded"/>
 			<xs:element name="listener" type="listenerType" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="rowStyleResolver" type="hookType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="criteriaModifier" type="hookType" minOccurs="0" maxOccurs="1" />
 		</xs:sequence>
 		<xs:attribute name="type" type="identifierType" use="required" />
 		<xs:attribute name="name" type="identifierType" use="required" />
@@ -126,7 +128,7 @@
 	</xs:complexType>
 
 	<xs:complexType name="hookType">
-		<xs:attribute name="bean" use="required">
+		<xs:attribute name="class" use="required">
 			<xs:simpleType>
 				<xs:restriction base="xs:string">
 					<xs:pattern value="[a-z][a-z0-9.]*.[a-zA-Z0-9]+" />

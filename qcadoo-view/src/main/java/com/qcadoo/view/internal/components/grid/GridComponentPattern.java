@@ -46,6 +46,7 @@ import com.qcadoo.model.api.types.JoinFieldHolder;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.internal.ComponentDefinition;
 import com.qcadoo.view.internal.ComponentOption;
+import com.qcadoo.view.internal.CriteriaModifier;
 import com.qcadoo.view.internal.RowStyleResolver;
 import com.qcadoo.view.internal.patterns.AbstractComponentPattern;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
@@ -110,6 +111,8 @@ public class GridComponentPattern extends AbstractComponentPattern {
     private boolean activable = false;
 
     private RowStyleResolver rowStyleResolver = null;
+
+    private CriteriaModifier criteriaModifier = null;
 
     public GridComponentPattern(final ComponentDefinition componentDefinition) {
         super(componentDefinition);
@@ -337,8 +340,10 @@ public class GridComponentPattern extends AbstractComponentPattern {
             if ("predefinedFilters".equals(child.getNodeName())) {
                 NodeList predefinedFilterChildNodes = child.getChildNodes();
                 parsePredefinedFilterChildNodes(predefinedFilterChildNodes, parser);
-            } else if ("rowStyleResolver".equals(child.getNodeName())) {
-                rowStyleResolver = RowStyleResolver.build(child, parser, getApplicationContext());
+            } else if (RowStyleResolver.NODE_NAME.equals(child.getNodeName())) {
+                rowStyleResolver = new RowStyleResolver(child, parser, getApplicationContext());
+            } else if (CriteriaModifier.NODE_NAME.equals(child.getNodeName())) {
+                criteriaModifier = new CriteriaModifier(child, parser, getApplicationContext());
             }
         }
     }
@@ -536,5 +541,13 @@ public class GridComponentPattern extends AbstractComponentPattern {
 
     public RowStyleResolver getRowStyleResolver() {
         return rowStyleResolver;
+    }
+
+    public void setCriteriaModifier(final CriteriaModifier criteriaModifier) {
+        this.criteriaModifier = criteriaModifier;
+    }
+
+    public CriteriaModifier getCriteriaModifier() {
+        return criteriaModifier;
     }
 }
