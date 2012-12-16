@@ -29,6 +29,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.json.JSONArray;
@@ -37,6 +38,10 @@ import org.json.JSONObject;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.google.common.base.Function;
+import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
+import com.google.common.collect.Maps;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.types.DataDefinitionHolder;
@@ -65,6 +70,22 @@ public class GridComponentPattern extends AbstractComponentPattern {
     private static final int DEFAULT_GRID_HEIGHT = 300;
 
     private static final int DEFAULT_GRID_WIDTH = 300;
+
+    private static final Predicate<GridComponentColumn> COLUMNS_VISIBLE_FOR_TENANT_PREDICATE = new Predicate<GridComponentColumn>() {
+
+        @Override
+        public boolean apply(final GridComponentColumn column) {
+            return column.isVisibleForCurrentTenant();
+        }
+    };
+
+    private static final Function<Entry<String, GridComponentColumn>, GridComponentColumn> VALUE_FROM_MAP_ENTRY_FUNCTION = new Function<Entry<String, GridComponentColumn>, GridComponentColumn>() {
+
+        @Override
+        public GridComponentColumn apply(final Entry<String, GridComponentColumn> from) {
+            return from.getValue();
+        }
+    };
 
     private final Set<String> searchableColumns = new HashSet<String>();
 
@@ -248,7 +269,12 @@ public class GridComponentPattern extends AbstractComponentPattern {
 
     public void addColumn(final String name, final String fields, final String expression, final Boolean isLink,
             final Integer width, final boolean isOrderable, final boolean isSearchable) {
-        GridComponentColumn column = new GridComponentColumn(name);
+        addColumn(name, fields, expression, isLink, width, isOrderable, isSearchable, null);
+    }
+
+    public void addColumn(final String name, final String fields, final String expression, final Boolean isLink,
+            final Integer width, final boolean isOrderable, final boolean isSearchable, final String extendingPluginIdentifier) {
+        final GridComponentColumn column = new GridComponentColumn(name, extendingPluginIdentifier);
         for (FieldDefinition field : parseFields(fields, column)) {
             column.addField(field);
         }
@@ -283,6 +309,9 @@ public class GridComponentPattern extends AbstractComponentPattern {
         JSONArray jsonColumns = new JSONArray();
         String nameTranslation = null;
         for (GridComponentColumn column : columns.values()) {
+            if (!COLUMNS_VISIBLE_FOR_TENANT_PREDICATE.apply(column)) {
+                continue;
+            }
             if (column.getFields().size() == 1) {
                 String fieldCode = getDataDefinition().getPluginIdentifier() + "." + getDataDefinition().getName() + "."
                         + column.getFields().get(0).getName();
@@ -524,7 +553,10 @@ public class GridComponentPattern extends AbstractComponentPattern {
     }
 
     public Map<String, GridComponentColumn> getColumns() {
-        return columns;
+        // FIXME MAKU -> KRNA: I think we should return an unmodifable (immutable) map or (if mutability were intended) pack them
+        // into SynchronizedMap.
+        return Maps.filterEntries(columns,
+                Predicates.compose(COLUMNS_VISIBLE_FOR_TENANT_PREDICATE, VALUE_FROM_MAP_ENTRY_FUNCTION));
     }
 
     public boolean isActivable() {

@@ -32,10 +32,13 @@ import org.springframework.util.StringUtils;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.expression.ExpressionUtils;
+import com.qcadoo.plugin.api.PluginUtils;
 
 public final class GridComponentColumn {
 
     private static final int DEFAULT_COLUMN_WIDTH = 100;
+
+    private final String extendingPluginIdentifier;
 
     private final String name;
 
@@ -50,7 +53,12 @@ public final class GridComponentColumn {
     private boolean hidden;
 
     public GridComponentColumn(final String name) {
+        this(name, null);
+    }
+
+    public GridComponentColumn(final String name, final String extendingPluginIdentifier) {
         this.name = name;
+        this.extendingPluginIdentifier = extendingPluginIdentifier;
     }
 
     public String getName() {
@@ -115,6 +123,10 @@ public final class GridComponentColumn {
             }
             return value;
         }
+    }
+
+    public boolean isVisibleForCurrentTenant() {
+        return extendingPluginIdentifier == null || PluginUtils.isEnabled(extendingPluginIdentifier);
     }
 
 }

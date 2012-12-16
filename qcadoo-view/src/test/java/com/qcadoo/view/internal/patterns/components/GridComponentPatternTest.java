@@ -23,9 +23,10 @@
  */
 package com.qcadoo.view.internal.patterns.components;
 
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -33,6 +34,7 @@ import static org.springframework.test.util.ReflectionTestUtils.getField;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 import java.util.Locale;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -41,6 +43,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -54,6 +57,8 @@ import com.qcadoo.model.api.types.HasManyType;
 import com.qcadoo.model.internal.types.EnumType;
 import com.qcadoo.model.internal.types.IntegerType;
 import com.qcadoo.model.internal.types.StringType;
+import com.qcadoo.plugin.api.PluginStateResolver;
+import com.qcadoo.plugin.internal.PluginUtilsService;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.components.GridComponent;
 import com.qcadoo.view.internal.ComponentDefinition;
@@ -61,6 +66,7 @@ import com.qcadoo.view.internal.ComponentOption;
 import com.qcadoo.view.internal.api.InternalViewDefinition;
 import com.qcadoo.view.internal.api.InternalViewDefinitionState;
 import com.qcadoo.view.internal.components.TextInputComponentPattern;
+import com.qcadoo.view.internal.components.grid.GridComponentColumn;
 import com.qcadoo.view.internal.components.grid.GridComponentPattern;
 import com.qcadoo.view.internal.patterns.AbstractComponentPattern;
 import com.qcadoo.view.internal.patterns.AbstractPatternTest;
@@ -391,6 +397,62 @@ public class GridComponentPatternTest extends AbstractPatternTest {
         assertEquals(2, filtersArray.getJSONObject(1).getJSONObject("filter").length());
         assertEquals("testVal1", filtersArray.getJSONObject(1).getJSONObject("filter").getString("testCol1"));
         assertEquals("testVal2", filtersArray.getJSONObject(1).getJSONObject("filter").getString("testCol2"));
+    }
+
+    @Test
+    public void shouldFilterOutColumnsInvisibleForTenant() throws Exception {
+        // given
+        PluginStateResolver pluginStateResolver = mock(PluginStateResolver.class);
+        PluginUtilsService pluginUtil = new PluginUtilsService();
+        ReflectionTestUtils.setField(pluginUtil, "pluginStateResolver", pluginStateResolver);
+        pluginUtil.init();
+
+        given(pluginStateResolver.isEnabled("disabledPlugin")).willReturn(false);
+
+        InternalViewDefinitionState viewDefinitionState = mock(InternalViewDefinitionState.class);
+        DataDefinition dataDefinition = mock(DataDefinition.class);
+        InternalViewDefinition viewDefinition = mock(InternalViewDefinition.class);
+        TranslationService translationService = mock(TranslationService.class);
+        given(viewDefinition.getDataDefinition()).willReturn(dataDefinition);
+        ComponentDefinition componentDefinition = getComponentDefinition("grid", viewDefinition);
+        componentDefinition.setTranslationService(translationService);
+        componentDefinition.setDataDefinition(dataDefinition);
+        GridComponentPattern pattern = new GridComponentPattern(componentDefinition);
+
+        FieldDefinition nameFieldDefinition = mock(FieldDefinition.class);
+        given(nameFieldDefinition.getType()).willReturn(new EnumType(translationService, "", "v1", "v2"));
+
+        given(dataDefinition.getField("name")).willReturn(nameFieldDefinition);
+
+        pattern.addOption(new ComponentOption("column", ImmutableMap.of("name", "name", "fields", "name", "hidden", "true")));
+        pattern.addOption(new ComponentOption("order", ImmutableMap.of("column", "name", "direction", "asc")));
+
+        pattern.addColumn("invisible", "name", null, false, 100, false, false, "disabledPlugin");
+
+        pattern.initialize();
+
+        // when
+        ComponentState state = pattern.createComponentState(viewDefinitionState);
+
+        // then
+        assertTrue(state instanceof GridComponent);
+        @SuppressWarnings("unchecked")
+        final Map<String, GridComponentColumn> patternColumns = (Map<String, GridComponentColumn>) getField(pattern, "columns");
+        @SuppressWarnings("unchecked")
+        final Map<String, GridComponentColumn> stateColumns = (Map<String, GridComponentColumn>) getField(state, "columns");
+        assertEquals(2, patternColumns.size());
+        assertEquals(1, stateColumns.size());
+
+        assertTrue(patternColumns.keySet().contains("name"));
+        assertNotNull(patternColumns.get("name"));
+        assertTrue(patternColumns.keySet().contains("invisible"));
+        assertNotNull(patternColumns.get("invisible"));
+
+        assertTrue(stateColumns.keySet().contains("name"));
+        assertNotNull(stateColumns.get("name"));
+        assertFalse(stateColumns.keySet().contains("invisible"));
+        assertNull(stateColumns.get("invisible"));
+
     }
 
 }

@@ -69,7 +69,7 @@ public class ViewGridColumnModule extends Module {
         GridComponentPattern grid = getGrid();
         for (ViewGridColumnModuleColumnModel columnModel : columns) {
             grid.addColumn(columnModel.getName(), columnModel.getFields(), columnModel.getExpression(), columnModel.getLink(),
-                    columnModel.getWidth(), columnModel.getOrderable(), columnModel.getSearchable());
+                    columnModel.getWidth(), columnModel.getOrderable(), columnModel.getSearchable(), pluginIdentifier);
         }
     }
 
