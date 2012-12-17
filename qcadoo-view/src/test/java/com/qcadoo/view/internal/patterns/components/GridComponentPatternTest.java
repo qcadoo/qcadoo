@@ -455,4 +455,60 @@ public class GridComponentPatternTest extends AbstractPatternTest {
 
     }
 
+    @Test
+    public void shouldNotFilterOutColumnsVisibleForTenant() throws Exception {
+        // given
+        PluginStateResolver pluginStateResolver = mock(PluginStateResolver.class);
+        PluginUtilsService pluginUtil = new PluginUtilsService();
+        ReflectionTestUtils.setField(pluginUtil, "pluginStateResolver", pluginStateResolver);
+        pluginUtil.init();
+
+        given(pluginStateResolver.isEnabled("disabledPlugin")).willReturn(true);
+
+        InternalViewDefinitionState viewDefinitionState = mock(InternalViewDefinitionState.class);
+        DataDefinition dataDefinition = mock(DataDefinition.class);
+        InternalViewDefinition viewDefinition = mock(InternalViewDefinition.class);
+        TranslationService translationService = mock(TranslationService.class);
+        given(viewDefinition.getDataDefinition()).willReturn(dataDefinition);
+        ComponentDefinition componentDefinition = getComponentDefinition("grid", viewDefinition);
+        componentDefinition.setTranslationService(translationService);
+        componentDefinition.setDataDefinition(dataDefinition);
+        GridComponentPattern pattern = new GridComponentPattern(componentDefinition);
+
+        FieldDefinition nameFieldDefinition = mock(FieldDefinition.class);
+        given(nameFieldDefinition.getType()).willReturn(new EnumType(translationService, "", "v1", "v2"));
+
+        given(dataDefinition.getField("name")).willReturn(nameFieldDefinition);
+
+        pattern.addOption(new ComponentOption("column", ImmutableMap.of("name", "name", "fields", "name", "hidden", "true")));
+        pattern.addOption(new ComponentOption("order", ImmutableMap.of("column", "name", "direction", "asc")));
+
+        pattern.addColumn("invisible", "name", null, false, 100, false, false, "disabledPlugin");
+
+        pattern.initialize();
+
+        // when
+        ComponentState state = pattern.createComponentState(viewDefinitionState);
+
+        // then
+        assertTrue(state instanceof GridComponent);
+        @SuppressWarnings("unchecked")
+        final Map<String, GridComponentColumn> patternColumns = (Map<String, GridComponentColumn>) getField(pattern, "columns");
+        @SuppressWarnings("unchecked")
+        final Map<String, GridComponentColumn> stateColumns = (Map<String, GridComponentColumn>) getField(state, "columns");
+        assertEquals(2, patternColumns.size());
+        assertEquals(2, stateColumns.size());
+
+        assertTrue(patternColumns.keySet().contains("name"));
+        assertNotNull(patternColumns.get("name"));
+        assertTrue(patternColumns.keySet().contains("invisible"));
+        assertNotNull(patternColumns.get("invisible"));
+
+        assertTrue(stateColumns.keySet().contains("name"));
+        assertNotNull(stateColumns.get("name"));
+        assertTrue(stateColumns.keySet().contains("invisible"));
+        assertNotNull(stateColumns.get("invisible"));
+
+    }
+
 }
