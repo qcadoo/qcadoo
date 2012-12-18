@@ -80,7 +80,7 @@ public final class CustomMethodHolder {
         Preconditions.checkArgument(expectedParameterTypes != null, "expected parameter types are not specified!");
 
         this.expectedReturnType = expectedReturnType;
-        this.expectedParameterTypes = expectedParameterTypes;
+        this.expectedParameterTypes = Arrays.copyOf(expectedParameterTypes, expectedParameterTypes.length);
 
         final Class<?> clazz = getCustomMethodClass(className);
 
