@@ -50,11 +50,10 @@ import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 import com.qcadoo.localization.api.TranslationService;
-import com.qcadoo.model.api.DataDefinitionService;
-import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.aop.Monitorable;
 import com.qcadoo.model.api.file.FileService;
 import com.qcadoo.report.api.FontUtils;
+import com.qcadoo.report.api.FooterResolverFactory;
 import com.qcadoo.report.api.pdf.PdfHelper;
 import com.qcadoo.report.api.pdf.PdfPageNumbering;
 import com.qcadoo.security.api.SecurityService;
@@ -84,10 +83,10 @@ public class ExportToPDFController {
     private SecurityService securityService;
 
     @Autowired
-    private DataDefinitionService dataDefinitionService;
+    private PdfHelper pdfHelper;
 
     @Autowired
-    private PdfHelper pdfHelper;
+    private FooterResolverFactory footerResolverFactory;
 
     @Monitorable(threshold = 500)
     @ResponseBody
@@ -103,12 +102,8 @@ public class ExportToPDFController {
             File file = fileService.createExportFile("export_" + grid.getName() + "_" + date + ".pdf");
             FileOutputStream fileOutputStream = new FileOutputStream(file);
             PdfWriter writer = PdfWriter.getInstance(document, fileOutputStream);
-            Entity parameter = dataDefinitionService.get("basic", "parameter").find().uniqueResult();
-            Entity company = parameter.getBelongsToField("company");
 
-            writer.setPageEvent(new PdfPageNumbering(translationService.translate("qcadooReport.commons.page.label", locale),
-                    translationService.translate("qcadooReport.commons.of.label", locale), "phone", company, translationService
-                            .translate("qcadooReport.commons.generatedBy.label", locale), securityService.getCurrentUserName()));
+            writer.setPageEvent(new PdfPageNumbering(footerResolverFactory.getResolver().resolveFooter(locale)));
 
             document.setMargins(40, 40, 60, 60);
 
@@ -147,9 +142,6 @@ public class ExportToPDFController {
                 }
             }
             document.add(table);
-
-            pdfHelper.addEndOfDocument(document, writer,
-                    translationService.translate("qcadooReport.commons.endOfPrint.label", locale));
             document.close();
 
             state.redirectTo(fileService.getUrl(file.getAbsolutePath()) + "?clean", true, false);

@@ -30,7 +30,6 @@ import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Font;
 import com.lowagie.text.pdf.PdfPTable;
-import com.lowagie.text.pdf.PdfWriter;
 
 /**
  * Helper for PDF.
@@ -56,15 +55,6 @@ public interface PdfHelper {
      */
     void addDocumentHeader(final Document document, final String name, final String documenTitle, final String documentAuthor,
             final Date date, final String username) throws DocumentException;
-
-    /**
-     * Add text to end of given document.
-     * 
-     * @param document
-     * @param writer
-     * @param text
-     */
-    void addEndOfDocument(final Document document, final PdfWriter writer, final String text);
 
     /**
      * Add metadata to given document.

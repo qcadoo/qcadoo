@@ -37,10 +37,8 @@ import org.springframework.web.servlet.view.document.AbstractPdfView;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.pdf.PdfWriter;
-import com.qcadoo.localization.api.TranslationService;
-import com.qcadoo.model.api.Entity;
+import com.qcadoo.report.api.FooterResolverFactory;
 import com.qcadoo.report.api.ReportService;
-import com.qcadoo.security.api.SecurityService;
 
 /**
  * Abstract superclass for report PDF views, using Bruno Lowagie's <a href="http://www.lowagie.com/iText">iText</a> package.
@@ -50,13 +48,10 @@ import com.qcadoo.security.api.SecurityService;
 public abstract class ReportPdfView extends AbstractPdfView {
 
     @Autowired
-    private TranslationService translationService;
-
-    @Autowired
-    private SecurityService securityService;
-
-    @Autowired
     private PdfHelper pdfHelper;
+
+    @Autowired
+    private FooterResolverFactory footerResolverFactory;
 
     @Override
     protected final void buildPdfDocument(final Map<String, Object> model, final Document document, final PdfWriter writer,
@@ -85,11 +80,8 @@ public abstract class ReportPdfView extends AbstractPdfView {
     protected void prepareWriter(final Map<String, Object> model, final PdfWriter writer, final HttpServletRequest request)
             throws DocumentException {
         super.prepareWriter(model, writer, request);
-        writer.setPageEvent(new PdfPageNumbering(translationService.translate("qcadooReport.commons.page.label",
-                LocaleContextHolder.getLocale()), translationService.translate("qcadooReport.commons.of.label",
-                LocaleContextHolder.getLocale()), translationService.translate("basic.company.phone.label",
-                LocaleContextHolder.getLocale()), (Entity) model.get("company"), translationService.translate(
-                "qcadooReport.commons.generatedBy.label", LocaleContextHolder.getLocale()), securityService.getCurrentUserName()));
+        writer.setPageEvent(new PdfPageNumbering(footerResolverFactory.getResolver().resolveFooter(
+                LocaleContextHolder.getLocale())));
     }
 
     @Override

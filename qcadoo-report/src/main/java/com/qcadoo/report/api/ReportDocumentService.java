@@ -42,25 +42,23 @@ public interface ReportDocumentService {
      * Generate report document
      * 
      * @param entity
-     * @param company
      * @param locale
      * @throws IOException
      * @throws DocumentException
      */
-    void generateDocument(final Entity entity, final Entity company, final Locale locale) throws IOException, DocumentException;
+    void generateDocument(final Entity entity, final Locale locale) throws IOException, DocumentException;
 
     /**
      * Generate report document
      * 
      * @param entity
-     * @param company
      * @param locale
      * @param pageSize
      * @throws IOException
      * @throws DocumentException
      */
-    void generateDocument(final Entity entity, final Entity company, final Locale locale, final Rectangle pageSize)
-            throws IOException, DocumentException;
+    void generateDocument(final Entity entity, final Locale locale, final Rectangle pageSize) throws IOException,
+            DocumentException;
 
     /**
      * Get report title

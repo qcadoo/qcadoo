@@ -45,9 +45,7 @@ import com.lowagie.text.Image;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.Rectangle;
-import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfPTable;
-import com.lowagie.text.pdf.PdfWriter;
 import com.lowagie.text.pdf.draw.LineSeparator;
 import com.qcadoo.localization.api.utils.DateUtils;
 import com.qcadoo.report.api.ColorUtils;
@@ -83,21 +81,6 @@ public final class PdfHelperImpl implements PdfHelper {
         userAndDate.addCell(dateParagraph);
         userAndDate.setSpacingAfter(14f);
         document.add(userAndDate);
-    }
-
-    @Override
-    public void addEndOfDocument(final Document document, final PdfWriter writer, final String text) {
-        PdfContentByte cb = writer.getDirectContent();
-        cb.saveState();
-        cb.setColorFill(ColorUtils.getLightColor());
-        float textBase = document.bottom() - 55;
-        float textSize = FontUtils.getDejavu().getWidthPoint(text, 7);
-        cb.beginText();
-        cb.setFontAndSize(FontUtils.getDejavu(), 7);
-        cb.setTextMatrix(document.right() - textSize, textBase);
-        cb.showText(text);
-        cb.endText();
-        cb.restoreState();
     }
 
     @Override

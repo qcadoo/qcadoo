@@ -53,13 +53,12 @@ public abstract class XlsDocumentService implements ReportDocumentService {
     private FileService fileService;
 
     @Override
-    public final void generateDocument(final Entity entity, final Entity company, final Locale locale) throws IOException {
-        generateDocument(entity, company, locale, PageSize.A4);
+    public final void generateDocument(final Entity entity, final Locale locale) throws IOException {
+        generateDocument(entity, locale, PageSize.A4);
     }
 
     @Override
-    public final void generateDocument(final Entity entity, final Entity company, final Locale locale, final Rectangle pageSize)
-            throws IOException {
+    public final void generateDocument(final Entity entity, final Locale locale, final Rectangle pageSize) throws IOException {
         HSSFWorkbook workbook = new HSSFWorkbook();
         HSSFSheet sheet = workbook.createSheet(getReportTitle(locale));
         addHeader(sheet, locale, entity);

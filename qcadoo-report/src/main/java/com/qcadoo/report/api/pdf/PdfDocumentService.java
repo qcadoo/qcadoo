@@ -39,9 +39,9 @@ import com.lowagie.text.pdf.PdfWriter;
 import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.file.FileService;
+import com.qcadoo.report.api.FooterResolverFactory;
 import com.qcadoo.report.api.ReportDocumentService;
 import com.qcadoo.report.api.ReportService;
-import com.qcadoo.security.api.SecurityService;
 
 /**
  * Service for creating PDF report documents.
@@ -52,9 +52,6 @@ import com.qcadoo.security.api.SecurityService;
 public abstract class PdfDocumentService implements ReportDocumentService {
 
     @Autowired
-    SecurityService securityService;
-
-    @Autowired
     private TranslationService translationService;
 
     @Autowired
@@ -63,29 +60,31 @@ public abstract class PdfDocumentService implements ReportDocumentService {
     @Autowired
     private PdfHelper pdfHelper;
 
+    @Autowired
+    private FooterResolverFactory footerResolverFactory;
+
     private static final Logger LOG = LoggerFactory.getLogger(PdfDocumentService.class);
 
     @Override
-    public void generateDocument(final Entity entity, final Entity company, final Locale locale, final Rectangle pageSize)
-            throws IOException, DocumentException {
+    public void generateDocument(final Entity entity, final Locale locale, final Rectangle pageSize) throws IOException,
+            DocumentException {
         String path = entity.getStringField("fileName").split(",")[0];
 
-        generate(entity, company, locale, path, pageSize);
+        generate(entity, locale, path, pageSize);
     }
 
     @Override
-    public void generateDocument(final Entity entity, final Entity company, final Locale locale) throws IOException,
+    public void generateDocument(final Entity entity, final Locale locale) throws IOException, DocumentException {
+        generateDocument(entity, locale, PageSize.A4);
+    }
+
+    public void generateDocument(final Entity entity, final Locale locale, final String localePrefixToMatch) throws IOException,
             DocumentException {
-        generateDocument(entity, company, locale, PageSize.A4);
+        generateDocument(entity, locale, localePrefixToMatch, PageSize.A4);
     }
 
-    public void generateDocument(final Entity entity, final Entity company, final Locale locale, final String localePrefixToMatch)
-            throws IOException, DocumentException {
-        generateDocument(entity, company, locale, localePrefixToMatch, PageSize.A4);
-    }
-
-    public void generateDocument(final Entity entity, final Entity company, final Locale locale,
-            final String localePrefixToMatch, final Rectangle pageSize) throws IOException, DocumentException {
+    public void generateDocument(final Entity entity, final Locale locale, final String localePrefixToMatch,
+            final Rectangle pageSize) throws IOException, DocumentException {
 
         String prefix = translationService.translate(localePrefixToMatch, locale);
 
@@ -100,27 +99,22 @@ public abstract class PdfDocumentService implements ReportDocumentService {
             throw new IllegalStateException("filename pattern not found");
         }
 
-        generate(entity, company, locale, path, pageSize);
+        generate(entity, locale, path, pageSize);
     }
 
-    private void generate(final Entity entity, final Entity company, final Locale locale, final String filename,
-            final Rectangle pageSize) throws IOException, DocumentException {
+    private void generate(final Entity entity, final Locale locale, final String filename, final Rectangle pageSize)
+            throws IOException, DocumentException {
         Document document = new Document(pageSize);
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(fileService.createReportFile(filename + "."
                     + ReportService.ReportType.PDF.getExtension()));
             PdfWriter writer = PdfWriter.getInstance(document, fileOutputStream);
-            writer.setPageEvent(new PdfPageNumbering(translationService.translate("qcadooReport.commons.page.label", locale),
-                    translationService.translate("qcadooReport.commons.of.label", locale), translationService.translate(
-                            "basic.company.phone.label", locale), company, translationService.translate(
-                            "qcadooReport.commons.generatedBy.label", locale), securityService.getCurrentUserName()));
+            writer.setPageEvent(new PdfPageNumbering(footerResolverFactory.getResolver().resolveFooter(locale)));
             document.setMargins(40, 40, 60, 60);
             buildPdfMetadata(document, locale);
             writer.createXmpMetadata();
             document.open();
             buildPdfContent(document, entity, locale);
-            pdfHelper.addEndOfDocument(document, writer,
-                    translationService.translate("qcadooReport.commons.endOfPrint.label", locale));
             document.close();
         } catch (DocumentException e) {
             LOG.error("Problem with generating document - " + e.getMessage());
