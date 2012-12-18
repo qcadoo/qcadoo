@@ -125,7 +125,7 @@ public interface RibbonActionItem {
      * sets message connected to this item
      * 
      * @param message
-     *            new message connected to this item
+     *            <b>translation key</b> for new message connected to this item
      */
     void setMessage(String message);
 

@@ -75,7 +75,7 @@ public class GridComponentPattern extends AbstractComponentPattern {
 
         @Override
         public boolean apply(final GridComponentColumn column) {
-            return column.isVisibleForCurrentTenant();
+            return column != null && column.isVisibleForCurrentTenant();
         }
     };
 
@@ -83,7 +83,11 @@ public class GridComponentPattern extends AbstractComponentPattern {
 
         @Override
         public GridComponentColumn apply(final Entry<String, GridComponentColumn> from) {
-            return from.getValue();
+            if (from == null) {
+                return null;
+            } else {
+                return from.getValue();
+            }
         }
     };
 
