@@ -128,11 +128,11 @@ public class DefaultPluginDescriptorResolver implements PluginDescriptorResolver
             throw new PluginException("Plugin descriptor " + descriptor + " not found in " + file.getAbsolutePath(), e);
         } finally {
             if (jarFile != null) {
-                try {
-                    jarFile.close();
-                } catch (IOException e) {
-                    throw new PluginException("Plugin descriptor " + descriptor + " not found in " + file.getAbsolutePath(), e);
-                }
+                // try {
+                // jarFile.close();
+                // } catch (IOException e) {
+                // throw new PluginException("Plugin descriptor " + descriptor + " not found in " + file.getAbsolutePath(), e);
+                // }
             }
         }
     }
