@@ -167,7 +167,9 @@ public class ReportServiceImpl implements ReportService {
         } catch (JRException e) {
             throw new ReportException(ReportException.Type.GENERATE_REPORT_EXCEPTION, e);
         } finally {
-            session.close();
+            if (session != null) {
+                session.close();
+            }
         }
     }
 

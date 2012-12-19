@@ -104,9 +104,9 @@ public class DefaultPluginDescriptorResolver implements PluginDescriptorResolver
 
     @Override
     public JarEntryResource getDescriptor(final File file) {
+        JarFile jarFile = null;
         try {
-
-            JarFile jarFile = new JarFile(file);
+            jarFile = new JarFile(file);
             JarEntry descriptorEntry = null;
 
             Enumeration<JarEntry> jarEntries = jarFile.entries();
@@ -126,6 +126,14 @@ public class DefaultPluginDescriptorResolver implements PluginDescriptorResolver
 
         } catch (IOException e) {
             throw new PluginException("Plugin descriptor " + descriptor + " not found in " + file.getAbsolutePath(), e);
+        } finally {
+            if (jarFile != null) {
+                try {
+                    jarFile.close();
+                } catch (IOException e) {
+                    throw new PluginException("Plugin descriptor " + descriptor + " not found in " + file.getAbsolutePath(), e);
+                }
+            }
         }
     }
 
