@@ -25,27 +25,38 @@ package com.qcadoo.plugin.internal.descriptorparser;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.jdom.Element;
 import org.jdom.input.DOMBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.util.AntPathMatcher;
+import org.springframework.util.PathMatcher;
+import org.springframework.util.ResourceUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -56,7 +67,6 @@ import com.qcadoo.plugin.api.Module;
 import com.qcadoo.plugin.api.ModuleFactory;
 import com.qcadoo.plugin.api.PluginState;
 import com.qcadoo.plugin.internal.DefaultPlugin.Builder;
-import com.qcadoo.plugin.internal.JarEntryResource;
 import com.qcadoo.plugin.internal.PluginException;
 import com.qcadoo.plugin.internal.api.InternalPlugin;
 import com.qcadoo.plugin.internal.api.ModuleFactoryAccessor;
@@ -75,6 +85,14 @@ public class DefaultPluginDescriptorParser implements PluginDescriptorParser {
     private PluginDescriptorResolver pluginDescriptorResolver;
 
     private DocumentBuilder documentBuilder;
+
+    @Value("#{plugin.pluginsTmpPath}")
+    private String pluginsTmpPath;
+
+    @Value("#{plugin.descriptors}")
+    private String descriptor;
+
+    private final PathMatcher matcher = new AntPathMatcher();
 
     public DefaultPluginDescriptorParser() {
         try {
@@ -104,16 +122,6 @@ public class DefaultPluginDescriptorParser implements PluginDescriptorParser {
     @Override
     public InternalPlugin parse(final Resource resource, final boolean ignoreModules) {
         try {
-            return parse(new JarEntryResource(resource), ignoreModules);
-
-        } catch (IOException e) {
-            throw new PluginException(e.getMessage(), e);
-        }
-    }
-
-    @Override
-    public InternalPlugin parse(final JarEntryResource resource, final boolean ignoreModules) {
-        try {
             LOG.info("Parsing descriptor for:" + resource);
 
             Document document = documentBuilder.parse(resource.getInputStream());
@@ -122,7 +130,9 @@ public class DefaultPluginDescriptorParser implements PluginDescriptorParser {
 
             Builder pluginBuilder = parsePluginNode(root, ignoreModules);
 
-            InternalPlugin plugin = pluginBuilder.withFileName(resource.getJarFileName()).build();
+            URL url = ResourceUtils.extractJarFileURL(resource.getURL());
+
+            InternalPlugin plugin = pluginBuilder.withFileName(FilenameUtils.getName(url.toString())).build();
 
             LOG.info("Parse complete");
 
@@ -135,6 +145,58 @@ public class DefaultPluginDescriptorParser implements PluginDescriptorParser {
         } catch (Exception e) {
             throw new PluginException(e.getMessage(), e);
         }
+    }
+
+    @Override
+    public InternalPlugin parse(final File file, final boolean ignoreModules) {
+        JarFile jarFile = null;
+        try {
+            LOG.info("Parsing descriptor for:" + file.getAbsolutePath());
+
+            jarFile = new JarFile(file);
+
+            JarEntry descriptorEntry = findDescriptorEntry(jarFile.entries());
+
+            if (descriptorEntry == null) {
+                throw new PluginException("Plugin descriptor " + descriptor + " not found in " + file.getAbsolutePath());
+            }
+
+            Document document = documentBuilder.parse(jarFile.getInputStream(descriptorEntry));
+
+            Node root = document.getDocumentElement();
+
+            Builder pluginBuilder = parsePluginNode(root, ignoreModules);
+
+            InternalPlugin plugin = pluginBuilder.withFileName(file.getName()).build();
+
+            LOG.info("Parse complete");
+
+            return plugin;
+        } catch (SAXException e) {
+            throw new PluginException(e.getMessage(), e);
+        } catch (IOException e) {
+            throw new PluginException("Plugin descriptor " + descriptor + " not found in " + file.getAbsolutePath(), e);
+        } catch (Exception e) {
+            throw new PluginException(e.getMessage(), e);
+        } finally {
+            if (jarFile != null) {
+                try {
+                    jarFile.close();
+                } catch (IOException e) {
+                    throw new PluginException("Plugin descriptor " + descriptor + " not found in " + file.getAbsolutePath(), e);
+                }
+            }
+        }
+    }
+
+    private JarEntry findDescriptorEntry(final Enumeration<JarEntry> jarEntries) {
+        while (jarEntries.hasMoreElements()) {
+            JarEntry jarEntry = jarEntries.nextElement();
+            if (matcher.match(descriptor, jarEntry.getName())) {
+                return jarEntry;
+            }
+        }
+        return null;
     }
 
     @Override
@@ -155,14 +217,31 @@ public class DefaultPluginDescriptorParser implements PluginDescriptorParser {
 
     @Override
     public Set<InternalPlugin> getTemporaryPlugins() {
-        JarEntryResource[] resources = pluginDescriptorResolver.getTemporaryDescriptors();
         Set<InternalPlugin> plugins = new HashSet<InternalPlugin>();
-        for (JarEntryResource resource : resources) {
-            InternalPlugin plugin = parse(resource, true);
-            plugin.changeStateTo(PluginState.TEMPORARY);
-            plugins.add(plugin);
+        if (pluginsTmpPath == null || pluginsTmpPath.trim().isEmpty()) {
+            return plugins;
         }
-        return plugins;
+        File pluginsTmpFile = new File(pluginsTmpPath);
+        if (!pluginsTmpFile.exists()) {
+            LOG.warn("Plugins temporary directory does not exist: " + pluginsTmpPath);
+            return plugins;
+        }
+        try {
+            FilenameFilter jarsFilter = new WildcardFileFilter("*.jar");
+            if (!pluginsTmpFile.exists()) {
+                throw new IOException();
+            }
+            File[] pluginJars = pluginsTmpFile.listFiles(jarsFilter);
+            for (int i = 0; i < pluginJars.length; ++i) {
+                File jarRes = pluginJars[i];
+                InternalPlugin plugin = parse(jarRes, true);
+                plugin.changeStateTo(PluginState.TEMPORARY);
+                plugins.add(plugin);
+            }
+            return plugins;
+        } catch (IOException e) {
+            throw new IllegalStateException("Failed to reading plugins from " + pluginsTmpPath, e);
+        }
     }
 
     private Builder parsePluginNode(final Node pluginNode, final boolean ignoreModules) {

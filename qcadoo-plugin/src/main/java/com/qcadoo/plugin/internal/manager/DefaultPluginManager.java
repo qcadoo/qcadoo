@@ -44,14 +44,12 @@ import com.qcadoo.plugin.api.PluginManager;
 import com.qcadoo.plugin.api.PluginOperationResult;
 import com.qcadoo.plugin.api.PluginState;
 import com.qcadoo.plugin.api.artifact.PluginArtifact;
-import com.qcadoo.plugin.internal.JarEntryResource;
 import com.qcadoo.plugin.internal.PluginException;
 import com.qcadoo.plugin.internal.api.InternalPlugin;
 import com.qcadoo.plugin.internal.api.InternalPluginAccessor;
 import com.qcadoo.plugin.internal.api.PluginDao;
 import com.qcadoo.plugin.internal.api.PluginDependencyManager;
 import com.qcadoo.plugin.internal.api.PluginDescriptorParser;
-import com.qcadoo.plugin.internal.api.PluginDescriptorResolver;
 import com.qcadoo.plugin.internal.api.PluginFileManager;
 import com.qcadoo.plugin.internal.api.PluginOperationResultImpl;
 import com.qcadoo.plugin.internal.dependencymanager.PluginStatusResolver;
@@ -78,9 +76,6 @@ public class DefaultPluginManager implements PluginManager {
 
     @Autowired
     private PluginDescriptorParser pluginDescriptorParser;
-
-    @Autowired
-    private PluginDescriptorResolver pluginDescriptorResolver;
 
     private final PluginStatusResolver pluginStatusResolver = new SimplePluginStatusResolver();
 
@@ -249,8 +244,7 @@ public class DefaultPluginManager implements PluginManager {
         }
         Plugin plugin = null;
         try {
-            JarEntryResource descriptor = pluginDescriptorResolver.getDescriptor(pluginFile);
-            plugin = pluginDescriptorParser.parse(descriptor, true);
+            plugin = pluginDescriptorParser.parse(pluginFile, true);
         } catch (PluginException e) {
             LOG.error(e.getMessage());
             pluginFileManager.uninstallPlugin(pluginFile.getName());
@@ -387,10 +381,6 @@ public class DefaultPluginManager implements PluginManager {
 
     void setPluginDescriptorParser(final PluginDescriptorParser pluginDescriptorParser) {
         this.pluginDescriptorParser = pluginDescriptorParser;
-    }
-
-    void setPluginDescriptorResolver(final PluginDescriptorResolver pluginDescriptorResolver) {
-        this.pluginDescriptorResolver = pluginDescriptorResolver;
     }
 
     @Override

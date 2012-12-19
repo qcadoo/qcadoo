@@ -23,11 +23,10 @@
  */
 package com.qcadoo.plugin.internal.api;
 
+import java.io.File;
 import java.util.Set;
 
 import org.springframework.core.io.Resource;
-
-import com.qcadoo.plugin.internal.JarEntryResource;
 
 public interface PluginDescriptorParser {
 
@@ -42,10 +41,10 @@ public interface PluginDescriptorParser {
     /**
      * Parse a plugin from outside the classpath
      * 
-     * @param resource
-     *            jar entry with the plugin descriptor
+     * @param file
+     *            plugin file
      */
-    InternalPlugin parse(JarEntryResource resource, final boolean ignoreModules);
+    InternalPlugin parse(final File file, final boolean ignoreModules);
 
     /**
      * Load enabled plugins
