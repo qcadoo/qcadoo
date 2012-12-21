@@ -244,7 +244,7 @@ public class DefaultPluginManager implements PluginManager {
         }
         Plugin plugin = null;
         try {
-            plugin = pluginDescriptorParser.parse(pluginFile, true);
+            plugin = pluginDescriptorParser.parse(pluginFile);
         } catch (PluginException e) {
             LOG.error(e.getMessage());
             pluginFileManager.uninstallPlugin(pluginFile.getName());

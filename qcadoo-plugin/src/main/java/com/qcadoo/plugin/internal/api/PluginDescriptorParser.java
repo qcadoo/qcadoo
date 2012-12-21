@@ -36,7 +36,7 @@ public interface PluginDescriptorParser {
      * @param resource
      *            plugins descriptor in the classpath
      */
-    InternalPlugin parse(final Resource resource, final boolean ignoreModules);
+    InternalPlugin parse(final Resource resource);
 
     /**
      * Parse a plugin from outside the classpath
@@ -44,7 +44,7 @@ public interface PluginDescriptorParser {
      * @param file
      *            plugin file
      */
-    InternalPlugin parse(final File file, final boolean ignoreModules);
+    InternalPlugin parse(final File file);
 
     /**
      * Load enabled plugins

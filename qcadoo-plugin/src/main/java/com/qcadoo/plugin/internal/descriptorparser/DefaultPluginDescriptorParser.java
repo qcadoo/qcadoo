@@ -28,6 +28,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.Enumeration;
@@ -120,26 +121,16 @@ public class DefaultPluginDescriptorParser implements PluginDescriptorParser {
     }
 
     @Override
-    public InternalPlugin parse(final Resource resource, final boolean ignoreModules) {
+    public InternalPlugin parse(final Resource resource) {
         try {
             LOG.info("Parsing descriptor for:" + resource);
 
-            Document document = documentBuilder.parse(resource.getInputStream());
-
-            Node root = document.getDocumentElement();
-
-            Builder pluginBuilder = parsePluginNode(root, ignoreModules);
+            boolean ignoreModules = false;
 
             URL url = ResourceUtils.extractJarFileURL(resource.getURL());
 
-            InternalPlugin plugin = pluginBuilder.withFileName(FilenameUtils.getName(url.toString())).build();
+            return parse(resource.getInputStream(), ignoreModules, FilenameUtils.getName(url.toString()));
 
-            LOG.info("Parse complete");
-
-            return plugin;
-
-        } catch (SAXException e) {
-            throw new PluginException(e.getMessage(), e);
         } catch (IOException e) {
             throw new PluginException(e.getMessage(), e);
         } catch (Exception e) {
@@ -148,32 +139,18 @@ public class DefaultPluginDescriptorParser implements PluginDescriptorParser {
     }
 
     @Override
-    public InternalPlugin parse(final File file, final boolean ignoreModules) {
+    public InternalPlugin parse(final File file) {
         JarFile jarFile = null;
         try {
             LOG.info("Parsing descriptor for:" + file.getAbsolutePath());
 
+            boolean ignoreModules = true;
+
             jarFile = new JarFile(file);
 
-            JarEntry descriptorEntry = findDescriptorEntry(jarFile.entries());
+            JarEntry descriptorEntry = findDescriptorEntry(jarFile.entries(), file.getAbsolutePath());
 
-            if (descriptorEntry == null) {
-                throw new PluginException("Plugin descriptor " + descriptor + " not found in " + file.getAbsolutePath());
-            }
-
-            Document document = documentBuilder.parse(jarFile.getInputStream(descriptorEntry));
-
-            Node root = document.getDocumentElement();
-
-            Builder pluginBuilder = parsePluginNode(root, ignoreModules);
-
-            InternalPlugin plugin = pluginBuilder.withFileName(file.getName()).build();
-
-            LOG.info("Parse complete");
-
-            return plugin;
-        } catch (SAXException e) {
-            throw new PluginException(e.getMessage(), e);
+            return parse(jarFile.getInputStream(descriptorEntry), ignoreModules, file.getName());
         } catch (IOException e) {
             throw new PluginException("Plugin descriptor " + descriptor + " not found in " + file.getAbsolutePath(), e);
         } catch (Exception e) {
@@ -189,14 +166,33 @@ public class DefaultPluginDescriptorParser implements PluginDescriptorParser {
         }
     }
 
-    private JarEntry findDescriptorEntry(final Enumeration<JarEntry> jarEntries) {
+    private JarEntry findDescriptorEntry(final Enumeration<JarEntry> jarEntries, final String fileName) {
         while (jarEntries.hasMoreElements()) {
             JarEntry jarEntry = jarEntries.nextElement();
             if (matcher.match(descriptor, jarEntry.getName())) {
                 return jarEntry;
             }
         }
-        return null;
+        throw new PluginException("Plugin descriptor " + descriptor + " not found in " + fileName);
+    }
+
+    private InternalPlugin parse(final InputStream inputStream, final boolean ignoreModules, final String fileName)
+            throws IOException {
+        try {
+            Document document = documentBuilder.parse(inputStream);
+
+            Node root = document.getDocumentElement();
+
+            Builder pluginBuilder = parsePluginNode(root, ignoreModules);
+
+            InternalPlugin plugin = pluginBuilder.withFileName(fileName).build();
+
+            LOG.info("Parse complete");
+
+            return plugin;
+        } catch (SAXException e) {
+            throw new PluginException(e.getMessage(), e);
+        }
     }
 
     @Override
@@ -204,7 +200,7 @@ public class DefaultPluginDescriptorParser implements PluginDescriptorParser {
         Map<String, InternalPlugin> loadedplugins = new HashMap<String, InternalPlugin>();
         Resource[] resources = pluginDescriptorResolver.getDescriptors();
         for (Resource resource : resources) {
-            InternalPlugin plugin = parse(resource, false);
+            InternalPlugin plugin = parse(resource);
 
             if (loadedplugins.containsKey(plugin.getIdentifier())) {
                 throw new PluginException("Duplicated plugin identifier: " + plugin.getIdentifier());
@@ -234,7 +230,7 @@ public class DefaultPluginDescriptorParser implements PluginDescriptorParser {
             File[] pluginJars = pluginsTmpFile.listFiles(jarsFilter);
             for (int i = 0; i < pluginJars.length; ++i) {
                 File jarRes = pluginJars[i];
-                InternalPlugin plugin = parse(jarRes, true);
+                InternalPlugin plugin = parse(jarRes);
                 plugin.changeStateTo(PluginState.TEMPORARY);
                 plugins.add(plugin);
             }
