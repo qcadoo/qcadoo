@@ -106,7 +106,7 @@ public class PluginManagerInstallTest {
 
         given(plugin.hasState(PluginState.TEMPORARY)).willReturn(true);
         given(plugin.getState()).willReturn(PluginState.TEMPORARY);
-        given(pluginDescriptorParser.parse(file, true)).willReturn(anotherPlugin);
+        given(pluginDescriptorParser.parse(file)).willReturn(anotherPlugin);
         given(pluginFileManager.uploadPlugin(pluginArtifact)).willReturn(file);
 
         given(plugin.getFilename()).willReturn("filename");
@@ -134,7 +134,7 @@ public class PluginManagerInstallTest {
     @Test
     public void shouldFailureWithCorruptedPluginOnInstall() throws Exception {
         // given
-        given(pluginDescriptorParser.parse(file, true)).willThrow(new PluginException(""));
+        given(pluginDescriptorParser.parse(file)).willThrow(new PluginException(""));
         given(pluginFileManager.uploadPlugin(pluginArtifact)).willReturn(file);
         given(file.getName()).willReturn("filename");
 
@@ -170,7 +170,7 @@ public class PluginManagerInstallTest {
 
         given(plugin.hasState(PluginState.TEMPORARY)).willReturn(true);
         given(plugin.getState()).willReturn(PluginState.TEMPORARY);
-        given(pluginDescriptorParser.parse(file, true)).willReturn(anotherPlugin);
+        given(pluginDescriptorParser.parse(file)).willReturn(anotherPlugin);
         given(pluginFileManager.uploadPlugin(pluginArtifact)).willReturn(file);
 
         given(plugin.getFilename()).willReturn("filename");
@@ -206,7 +206,7 @@ public class PluginManagerInstallTest {
 
         given(plugin.hasState(PluginState.DISABLED)).willReturn(true);
         given(plugin.getState()).willReturn(PluginState.DISABLED);
-        given(pluginDescriptorParser.parse(file, true)).willReturn(anotherPlugin);
+        given(pluginDescriptorParser.parse(file)).willReturn(anotherPlugin);
         given(pluginFileManager.uploadPlugin(pluginArtifact)).willReturn(file);
 
         given(plugin.getFilename()).willReturn("filename");
@@ -238,7 +238,7 @@ public class PluginManagerInstallTest {
         // given
 
         given(plugin.hasState(PluginState.DISABLED)).willReturn(true);
-        given(pluginDescriptorParser.parse(file, true)).willReturn(anotherPlugin);
+        given(pluginDescriptorParser.parse(file)).willReturn(anotherPlugin);
         given(pluginFileManager.uploadPlugin(pluginArtifact)).willReturn(file);
 
         given(anotherPlugin.getFilename()).willReturn("filename");
@@ -271,7 +271,7 @@ public class PluginManagerInstallTest {
         // given
         given(plugin.hasState(PluginState.ENABLED)).willReturn(true);
         given(plugin.getState()).willReturn(PluginState.ENABLED);
-        given(pluginDescriptorParser.parse(file, true)).willReturn(anotherPlugin);
+        given(pluginDescriptorParser.parse(file)).willReturn(anotherPlugin);
         given(pluginFileManager.uploadPlugin(pluginArtifact)).willReturn(file);
 
         given(pluginFileManager.installPlugin("anotherFilename")).willReturn(true);
@@ -332,7 +332,7 @@ public class PluginManagerInstallTest {
         // given
         given(plugin.hasState(PluginState.ENABLED)).willReturn(true);
         given(plugin.getState()).willReturn(PluginState.ENABLED);
-        given(pluginDescriptorParser.parse(file, true)).willReturn(anotherPlugin);
+        given(pluginDescriptorParser.parse(file)).willReturn(anotherPlugin);
         given(pluginFileManager.uploadPlugin(pluginArtifact)).willReturn(file);
 
         given(pluginFileManager.installPlugin("anotherFilename")).willReturn(true);
@@ -373,7 +373,7 @@ public class PluginManagerInstallTest {
         // given
 
         given(plugin.hasState(PluginState.ENABLED)).willReturn(true);
-        given(pluginDescriptorParser.parse(file, true)).willReturn(anotherPlugin);
+        given(pluginDescriptorParser.parse(file)).willReturn(anotherPlugin);
         given(pluginFileManager.uploadPlugin(pluginArtifact)).willReturn(file);
 
         given(anotherPlugin.getFilename()).willReturn("filename");
@@ -405,7 +405,7 @@ public class PluginManagerInstallTest {
         // given
 
         given(plugin.hasState(PluginState.ENABLED)).willReturn(true);
-        given(pluginDescriptorParser.parse(file, true)).willReturn(anotherPlugin);
+        given(pluginDescriptorParser.parse(file)).willReturn(anotherPlugin);
         given(pluginFileManager.uploadPlugin(pluginArtifact)).willReturn(file);
 
         given(anotherPlugin.getFilename()).willReturn("filename");
@@ -439,7 +439,7 @@ public class PluginManagerInstallTest {
         // given
 
         given(plugin.hasState(PluginState.DISABLED)).willReturn(true);
-        given(pluginDescriptorParser.parse(file, true)).willReturn(anotherPlugin);
+        given(pluginDescriptorParser.parse(file)).willReturn(anotherPlugin);
         given(pluginFileManager.uploadPlugin(pluginArtifact)).willReturn(file);
 
         given(plugin.getFilename()).willReturn("filename");
@@ -471,7 +471,7 @@ public class PluginManagerInstallTest {
         // given
 
         given(plugin.hasState(PluginState.ENABLED)).willReturn(true);
-        given(pluginDescriptorParser.parse(file, true)).willReturn(anotherPlugin);
+        given(pluginDescriptorParser.parse(file)).willReturn(anotherPlugin);
         given(pluginFileManager.uploadPlugin(pluginArtifact)).willReturn(file);
 
         given(plugin.getFilename()).willReturn("filename");
@@ -501,7 +501,7 @@ public class PluginManagerInstallTest {
     @Test
     public void shouldNotInstallSystemPlugin() throws Exception {
         // given
-        given(pluginDescriptorParser.parse(file, true)).willReturn(anotherPlugin);
+        given(pluginDescriptorParser.parse(file)).willReturn(anotherPlugin);
         given(pluginFileManager.uploadPlugin(pluginArtifact)).willReturn(file);
         given(anotherPlugin.isSystemPlugin()).willReturn(true);
         given(anotherPlugin.getFilename()).willReturn("anotherFilename");
@@ -521,7 +521,7 @@ public class PluginManagerInstallTest {
     @Test
     public void shouldInstallNotExistingPlugin() throws Exception {
         // given
-        given(pluginDescriptorParser.parse(file, true)).willReturn(anotherPlugin);
+        given(pluginDescriptorParser.parse(file)).willReturn(anotherPlugin);
         given(pluginFileManager.uploadPlugin(pluginArtifact)).willReturn(file);
         given(anotherPlugin.getIdentifier()).willReturn("notExistingPluginname");
         given(file.getName()).willReturn("tempFileName");
@@ -548,7 +548,7 @@ public class PluginManagerInstallTest {
     @Test
     public void shouldInstallNotExistingPluginAndNotifyAboutMissingDependencies() throws Exception {
         // given
-        given(pluginDescriptorParser.parse(file, true)).willReturn(anotherPlugin);
+        given(pluginDescriptorParser.parse(file)).willReturn(anotherPlugin);
         given(pluginFileManager.uploadPlugin(pluginArtifact)).willReturn(file);
         given(anotherPlugin.getIdentifier()).willReturn("notExistingPluginname");
         given(file.getName()).willReturn("tempFileName");
@@ -577,7 +577,7 @@ public class PluginManagerInstallTest {
     @Test
     public void shouldNotInstallPluginWithIncorrectVersion() throws Exception {
         // given
-        given(pluginDescriptorParser.parse(file, true)).willReturn(anotherPlugin);
+        given(pluginDescriptorParser.parse(file)).willReturn(anotherPlugin);
         given(pluginFileManager.uploadPlugin(pluginArtifact)).willReturn(file);
         given(anotherPlugin.getVersion()).willReturn(new Version("1.2.0"));
         given(anotherPlugin.getFilename()).willReturn("anotherFilename");
@@ -601,7 +601,7 @@ public class PluginManagerInstallTest {
     @Test
     public void shouldNotInstallPluginWithCyclicDependencies() throws Exception {
         // given
-        given(pluginDescriptorParser.parse(file, true)).willReturn(anotherPlugin);
+        given(pluginDescriptorParser.parse(file)).willReturn(anotherPlugin);
         given(pluginFileManager.uploadPlugin(pluginArtifact)).willReturn(file);
         given(anotherPlugin.getFilename()).willReturn("anotherFilename");
         given(file.getName()).willReturn("tempFileName");
