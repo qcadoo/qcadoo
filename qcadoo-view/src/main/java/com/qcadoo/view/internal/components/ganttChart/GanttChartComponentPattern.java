@@ -30,6 +30,8 @@ import org.json.JSONObject;
 
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.components.ganttChart.GanttChartItemResolver;
+import com.qcadoo.view.api.components.ganttChart.GanttChartItemStrip;
+import com.qcadoo.view.api.components.ganttChart.GanttChartItemStrip.Orientation;
 import com.qcadoo.view.internal.ComponentDefinition;
 import com.qcadoo.view.internal.ComponentOption;
 import com.qcadoo.view.internal.components.ganttChart.GanttChartScaleImpl.ZoomLevel;
@@ -43,6 +45,8 @@ public class GanttChartComponentPattern extends AbstractComponentPattern {
 
     private String resolver;
 
+    private GanttChartItemStrip.Orientation stripOrientation;
+
     private int defaultStartDay = 0;
 
     private int defaultEndDay = 21;
@@ -52,6 +56,10 @@ public class GanttChartComponentPattern extends AbstractComponentPattern {
     private boolean hasPopupInfo = true;
 
     private ZoomLevel defaultZoomLevel = ZoomLevel.H3;
+
+    private int itemsBorderWidth;
+
+    private String itemsBorderColor;
 
     public GanttChartComponentPattern(final ComponentDefinition componentDefinition) {
         super(componentDefinition);
@@ -86,6 +94,12 @@ public class GanttChartComponentPattern extends AbstractComponentPattern {
                 hasPopupInfo = Boolean.valueOf(option.getValue());
             } else if ("allowDateSelection".equals(option.getType())) {
                 allowDateSelection = Boolean.valueOf(option.getValue());
+            } else if ("stripsOrientation".equals(option.getType())) {
+                stripOrientation = Orientation.parseString(option.getValue());
+            } else if ("itemsBorderWidth".equals(option.getType())) {
+                itemsBorderWidth = Integer.valueOf(option.getValue());
+            } else if ("itemsBorderColor".equals(option.getType())) {
+                itemsBorderColor = option.getValue();
             }
         }
         if (resolver == null) {
@@ -150,6 +164,18 @@ public class GanttChartComponentPattern extends AbstractComponentPattern {
 
     public final ZoomLevel getDefaultZoomLevel() {
         return defaultZoomLevel;
+    }
+
+    public final Orientation getStripOrientation() {
+        return stripOrientation;
+    }
+
+    public int getItemsBorderWidth() {
+        return itemsBorderWidth;
+    }
+
+    public String getItemsBorderColor() {
+        return itemsBorderColor;
     }
 
 }

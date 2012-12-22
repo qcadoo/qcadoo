@@ -47,18 +47,20 @@
 
 .ganttContainer .ganttCenterConteiner {
 	display: inline-block;
-	overflow: auto;
+	overflow: hidden;
 	position: absolute;
 	top: 0;
 	border-right: solid #666666 1px;
 	z-index: 30;
 }
 
-.ganttContainer .ganttCenterConteiner .ganttCenterContentWrapper {
+.ganttContainer .ganttCenterConteiner {
 }
 
-.ganttContainer .ganttCenterConteiner .ganttCenterContentWrapper .ganttTopRow {
+.ganttContainer .ganttCenterConteiner .ganttTopRow {
 	border-bottom: solid #666666 1px;
+	border-right: solid #666666 1px;
+	overflow: hidden;
 }
 .ganttTopRow .ganttTopRow1 {
 	border-bottom: solid #999999 1px;
@@ -83,15 +85,15 @@
 	border-color: #666666;
 }
 
-.ganttContainer .ganttCenterConteiner .ganttCenterContentWrapper .rowsContainerWrapper {
-	overflow: hidden;
+.ganttContainer .ganttCenterConteiner .rowsContainerWrapper {
+	overflow: auto;
 }	
 
-.ganttContainer .ganttCenterConteiner .ganttCenterContentWrapper .rowsContainerWrapper .rowsContainer {
+.ganttContainer .ganttCenterConteiner .rowsContainerWrapper .rowsContainer {
 	background: white;
 }
 
-.ganttContainer .ganttCenterConteiner .ganttCenterContentWrapper .rowsContainerWrapper .rowsContainer .ganttRowElement {
+.ganttContainer .ganttCenterConteiner .rowsContainerWrapper .rowsContainer .ganttRowElement {
 	border-bottom: solid #999999 1px;
 	position: relative;
 }
@@ -106,29 +108,17 @@
 	overflow-y: auto;
 	word-wrap: break-word;
 }
-.ganttContainer .ganttCenterConteiner .ganttCenterContentWrapper .rowsContainerWrapper .rowsContainer .ganttRowElement.ganttFirstRow,
+.ganttContainer .ganttCenterConteiner .rowsContainerWrapper .rowsContainer .ganttRowElement.ganttFirstRow,
 .ganttContainer .ganttRowNamesConteiner .ganttRowNameElement.ganttFirstRow {
 	border-bottom: none;
-}
-
-.ganttContainer .ganttScrollWrapper {
-	display: inline-block;
-	position: absolute;
-	top: 0;
-	right: 0;
-	z-index: 100;
-}
-
-.ganttContainer .ganttScrollWrapper .ganttScrollConteiner {
-	overflow: auto;
 }
 
 .ganttItem {
 	position: absolute;
 	background-color: #FFDB67;
 	border: 1px solid #c0c0c0;
-	padding-left: 5px;
-	padding-right: 5px;
+	padding-left: 0;
+	padding-right: 0;
 	cursor: default;
 	border-radius: 3px;
 	-moz-border-radius: 3px;
@@ -137,7 +127,6 @@
 	opacity: 0.7;
 	-moz-opacity: 0.7;
 	overflow:hidden;
-	//visibility: hidden;
 }
 .ganttItem.ganttItemHovered {
 	filter: alpha(opacity=100);
@@ -147,6 +136,20 @@
 }
 .ganttItem.ganttItemSelected {
 	background-color: #FC9B2B;
+}
+.ganttItem .ganttItemStrip.verticalStrip {
+	width: 100%;
+}
+.ganttItem .ganttItemStrip.horizontalStrip {
+	display: inline-block;
+	height: 100%;
+}
+.ganttItem .ganttItemContent {
+	padding: 0 5px;
+	display: inline-block;
+	position: absolute;
+	left: 0;
+	top: 0;
 }
 .ganttItem.ganttCollisionItem {
 	background-color: red;
@@ -216,10 +219,27 @@
 }
 .ganttItem.ganttCollisionItem.withIcon {
 	background-image: url('/qcadooView/public/img/core/icons/warningIcon24.png');
+}
+.ganttItem.ganttCollisionItem.withIcon .ganttItemContent {
 	padding-left: 32px;
 }
 .ganttItem.ganttItemType_disabled {
 	background-color: #888888;
+}
+
+.ganttChartTooltip {
+	z-index: 300;
+	background-color: #ffffff;
+	border: 1px solid #666666;
+	border-radius: 5px;
+	box-shadow: 0 0 6px #888;
+	padding: 5px;
+	max-width: 300px;
+	font-family: 'Trebuchet MS',Arial;
+	font-size: 11px;
+	font-weight: normal;
+	color: black;
+	text-align: center;
 }
 
 .ganttItemDescriptionName {

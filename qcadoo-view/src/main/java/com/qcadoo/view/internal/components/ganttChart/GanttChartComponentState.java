@@ -41,6 +41,7 @@ import com.qcadoo.model.internal.api.ValueAndError;
 import com.qcadoo.model.internal.types.DateType;
 import com.qcadoo.view.api.components.ganttChart.GanttChartItem;
 import com.qcadoo.view.api.components.ganttChart.GanttChartItemResolver;
+import com.qcadoo.view.api.components.ganttChart.GanttChartItemStrip.Orientation;
 import com.qcadoo.view.internal.components.ganttChart.GanttChartScaleImpl.ZoomLevel;
 import com.qcadoo.view.internal.states.AbstractComponentState;
 
@@ -49,6 +50,8 @@ public class GanttChartComponentState extends AbstractComponentState {
     public final GanttChartComponentEventPerformer eventPerformer = new GanttChartComponentEventPerformer();
 
     private GanttChartScaleImpl scale;
+
+    private Orientation stripsOrientation;
 
     private String dateFromErrorMessage;
 
@@ -74,12 +77,19 @@ public class GanttChartComponentState extends AbstractComponentState {
 
     private JSONObject context;
 
+    private final int itemsBorderWidth;
+
+    private final String itemsBorderColor;
+
     public GanttChartComponentState(final GanttChartItemResolver itemResolver, final GanttChartComponentPattern pattern) {
         super(pattern);
         this.itemResolver = itemResolver;
         this.defaultZoomLevel = pattern.getDefaultZoomLevel();
         this.defaultStartDay = pattern.getDefaultStartDay();
         this.defaultEndDay = pattern.getDefaultEndDay();
+        this.stripsOrientation = pattern.getStripOrientation();
+        this.itemsBorderWidth = pattern.getItemsBorderWidth();
+        this.itemsBorderColor = pattern.getItemsBorderColor();
         registerEvent("refresh", eventPerformer, "refresh");
         registerEvent("initialize", eventPerformer, "initialize");
         registerEvent("select", eventPerformer, "selectEntity");
@@ -182,6 +192,9 @@ public class GanttChartComponentState extends AbstractComponentState {
                 }
             }
 
+            json.put("stripsOrientation", getStripsOrientation().getStringValue());
+            json.put("itemsBorderColor", itemsBorderColor);
+            json.put("itemsBorderWidth", itemsBorderWidth);
             json.put("rows", rowsArray);
             json.put("items", itemsArray);
 
@@ -199,6 +212,14 @@ public class GanttChartComponentState extends AbstractComponentState {
         }
 
         return json;
+    }
+
+    private Orientation getStripsOrientation() {
+        if (stripsOrientation == null) {
+            return Orientation.HORIZONTAL;
+        } else {
+            return stripsOrientation;
+        }
     }
 
     protected String translate(final String suffix, final String... args) {
@@ -240,8 +261,8 @@ public class GanttChartComponentState extends AbstractComponentState {
                 Collections.sort(sortedItems, new Comparator<GanttChartItem>() {
 
                     @Override
-                    public int compare(final GanttChartItem arg0, final GanttChartItem arg1) {
-                        return Double.valueOf(arg0.getFrom()).compareTo(Double.valueOf(arg1.getFrom()));
+                    public int compare(final GanttChartItem itemA, final GanttChartItem itemB) {
+                        return Double.valueOf(itemA.getFrom()).compareTo(Double.valueOf(itemB.getFrom()));
                     }
                 });
 
@@ -267,7 +288,7 @@ public class GanttChartComponentState extends AbstractComponentState {
                     if (collisionItem != null && item.getFrom() < collisionItem.getTo()) { // same collision
 
                         if (item.getTo() > collisionItem.getTo()) { // not entirely included in existing collision
-                            if (item.getTo() < previousItem.getTo()) { // entirely included in previous item
+                            if (item.getTo() > previousItem.getTo()) { // entirely included in previous item
                                 collisionItem.setTo(item.getTo());
                                 collisionItem.setDateTo(item.getDateTo());
                             } else {

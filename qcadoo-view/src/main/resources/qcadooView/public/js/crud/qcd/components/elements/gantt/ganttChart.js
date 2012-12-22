@@ -47,11 +47,16 @@ QCD.components.elements.GanttChart = function(_element, _mainController) {
 	
 	var currentCellSettings;
 	
+	var stripsOrientation;
+	var itemsBorderWidth;
+	var itemsBorderColor;
+	
 	var rowsByName = {};
 	var rowsByIndex = [];
 	
 	var currentWidth;
-	var isScrollVisible = false;
+	var isVScrollVisible = false;
+	var isHScrollVisible = false;
 	
 	var header;
 	
@@ -60,8 +65,11 @@ QCD.components.elements.GanttChart = function(_element, _mainController) {
 	var collisionInfoBoxContent;
 	var collisionInfoBoxOverlay;
 	
+	var ganttTooltip;
+	
 	function constructor() {
-		createGrantt();
+		createGantt();
+		createGanttTooltip();
 		QCD.components.elements.utils.LoadingIndicator.blockElement(element);
 		header.init();
 	}
@@ -138,24 +146,26 @@ QCD.components.elements.GanttChart = function(_element, _mainController) {
 		if (! cellSettings.scale) {
 			return;
 		}
-		// TODO mina remove old items when scale or rows wasn't changed 
-		//if (currentCellSettings && hasSameScaleAndRows(currentCellSettings, cellSettings)) {
-		//	updateItems(cellSettings.items);
-		//	return;
-		//}
+
 		updateHeader(cellSettings);
+		
+		stripsOrientation = cellSettings.stripsOrientation;
+		itemsBorderWidth = cellSettings.itemsBorderWidth || 1;
+		itemsBorderColor = cellSettings.itemsBorderColor || "silver";
 		
 		htmlElements.rowNamesConteiner.children().remove();
 		htmlElements.rowsContainer.children().remove();
 		
-		htmlElements.centerContentWrapper.width(constants.CELL_WIDTH * getTotalNumberOfCells(cellSettings));
+		var contentWidth = constants.CELL_WIDTH * getTotalNumberOfCells(cellSettings);
+		htmlElements.topRow1.width(contentWidth);
+		htmlElements.topRow2.width(contentWidth);
+		htmlElements.rowsContainer.width(contentWidth);
 		
 		rowsByName = {};
 		rowsByIndex = [];
 		for (var i=0; i<cellSettings.rows.length; i++) {
 			rowsByIndex[i] = addRow(cellSettings, cellSettings.rows[i]);
 		}
-		htmlElements.scrollElement.height(cellSettings.rows.length * constants.CELL_HEIGHT);
 		updateScroll();
 		
 		updateItems(cellSettings.items, cellSettings.collisions);
@@ -228,7 +238,7 @@ QCD.components.elements.GanttChart = function(_element, _mainController) {
 		}
 	}
 	
-	function createGrantt() {
+	function createGantt() {
 		header = new QCD.components.elements.GanttChartHeader(_this, _this.elementPath+"_header", _this.options.translations, _this.options);
 		element.append(header.getHeaderElement());
 		
@@ -244,11 +254,7 @@ QCD.components.elements.GanttChart = function(_element, _mainController) {
 		htmlElements.centerContainer.css("left",constants.ROW_NAMES_WIDTH+"px");
 		htmlElements.wrapper.append(htmlElements.centerContainer);
 		
-		htmlElements.scrollWrapper = $("<div>").addClass("ganttScrollWrapper").hide();
-		htmlElements.scrollWrapper.width("100%");
-		htmlElements.wrapper.append(htmlElements.scrollWrapper);
-		
-		// NAMES
+		// ROW NAMES
 		htmlElements.rowNamesButtonsConteiner = $("<div>").addClass("ganttRowNamesButtonsConteiner");
 		htmlElements.rowNamesButtonsConteiner.height(constants.HEADER_HEIGHT-1);
 		htmlElements.rowNamesWrapper.append(htmlElements.rowNamesButtonsConteiner);		
@@ -257,12 +263,9 @@ QCD.components.elements.GanttChart = function(_element, _mainController) {
 		htmlElements.rowNamesWrapper.append(htmlElements.rowNamesConteiner);
 		
 		// CENTER
-		htmlElements.centerContentWrapper = $("<div>").addClass("ganttCenterContentWrapper");
-		htmlElements.centerContainer.append(htmlElements.centerContentWrapper);
-		
 		htmlElements.topRow = $("<div>").addClass("ganttTopRow");
 		htmlElements.topRow.height(constants.HEADER_HEIGHT-1);
-		htmlElements.centerContentWrapper.append(htmlElements.topRow);
+		htmlElements.centerContainer.append(htmlElements.topRow);
 		
 		htmlElements.topRow1 = $("<div>").addClass("ganttTopRow1");
 		htmlElements.topRow1.height((constants.HEADER_HEIGHT/2)-1);
@@ -274,24 +277,17 @@ QCD.components.elements.GanttChart = function(_element, _mainController) {
 		htmlElements.topRow.append(htmlElements.topRow2);
 		
 		htmlElements.rowsContainerWrapper = $("<div>").addClass("rowsContainerWrapper");
-		htmlElements.centerContentWrapper.append(htmlElements.rowsContainerWrapper);
+		htmlElements.centerContainer.append(htmlElements.rowsContainerWrapper);
 		
 		htmlElements.rowsContainer = $("<div>").addClass("rowsContainer");
 		htmlElements.rowsContainerWrapper.append(htmlElements.rowsContainer);
 	
 		// SCROLL
-		htmlElements.scrollContainer = $("<div>").addClass("ganttScrollConteiner");
-		htmlElements.scrollContainer.css("margin-top",(constants.HEADER_HEIGHT-1)+"px");
-		htmlElements.scrollWrapper.append(htmlElements.scrollContainer);
-		
-		htmlElements.scrollElement = $("<div>");
-		htmlElements.scrollElement.width(1);
-		htmlElements.scrollElement.height(0);
-		htmlElements.scrollContainer.append(htmlElements.scrollElement);
-		
-		htmlElements.scrollContainer.scroll(function(eventObject) {
-			var scrollTop = htmlElements.scrollContainer.scrollTop();
-			htmlElements.rowsContainerWrapper.scrollTop(scrollTop);
+		htmlElements.rowsContainerWrapper.scroll(function(eventObject) {
+			var scrollLeft = htmlElements.rowsContainerWrapper.scrollLeft();
+			htmlElements.topRow.scrollLeft(scrollLeft);
+			
+			var scrollTop = htmlElements.rowsContainerWrapper.scrollTop();
 			htmlElements.rowNamesConteiner.scrollTop(scrollTop);
 		});
 		
@@ -315,16 +311,26 @@ QCD.components.elements.GanttChart = function(_element, _mainController) {
 		collisionInfoBox.append(collisionInfoBoxContent);
 	}
 	
-	function showLeftScroll() {
-		isScrollVisible = true;
-		htmlElements.scrollWrapper.show();
-		htmlElements.centerContainer.width(currentWidth - constants.ROW_NAMES_WIDTH - constants.RIGHT_SCROLL_WIDTH - 1);
+	function createGanttTooltip() {
+		ganttTooltip = new QCD.components.elements.GanttChartTooltip(element);
 	}
 	
-	function hideLeftScroll() {
-		isScrollVisible = false;
-		htmlElements.scrollWrapper.hide();
-		htmlElements.centerContainer.width(currentWidth - constants.ROW_NAMES_WIDTH -1);
+	function setVerticalScrollVisible(visible) {
+		isVScrollVisible = visible;
+		var topRowWidth = currentWidth - constants.ROW_NAMES_WIDTH;
+		if (visible) {
+			topRowWidth -= constants.RIGHT_SCROLL_WIDTH;
+		}
+		htmlElements.topRow.width(topRowWidth);
+	}
+	
+	function setHorizontalScrollVisible(visible) {
+		isHScrollVisible = visible;
+		var rowNamesHeight = htmlElements.rowNamesWrapper.height() - htmlElements.topRow.height() - 1;
+		if (visible) {
+			rowNamesHeight -= constants.BOTTOM_SCROLL_HEIGHT;
+		}
+		htmlElements.rowNamesConteiner.height(rowNamesHeight);
 	}
 	
 	function updateHeader(cellSettings) {
@@ -417,25 +423,36 @@ QCD.components.elements.GanttChart = function(_element, _mainController) {
 	function addItem(item, isCollision) {
 		var row = rowsByName[item.row];
 		var itemElement = $("<div>").addClass("ganttItem");
-		itemElement.css("line-height", (constants.CELL_HEIGHT - 5)+"px");
+		itemElement.css("line-height", (constants.CELL_HEIGHT - 4 - (2 * itemsBorderWidth))+"px");
 		var left = (constants.CELL_WIDTH * item.from);
 		var right = (constants.CELL_WIDTH * item.to);
-		var width = right-left - 10;
-		itemElement.width(width - 1);
-		itemElement.height(constants.CELL_HEIGHT - 5);
+		var width = right-left;
+		itemElement.width(width - (2 * itemsBorderWidth) + 1);
+		itemElement.height(constants.CELL_HEIGHT - 3 - (2 * itemsBorderWidth));
 		itemElement.css("top","1px");
 		itemElement.css("left",(left-1)+"px");
+		itemElement.css("border-width", itemsBorderWidth + "px");
+		itemElement.css("border-color", itemsBorderColor);
 		row.append(itemElement);
 		if (item.type) {
 			itemElement.addClass("ganttItemType_"+item.type);
 		}	
 		
+		if (item.strips) {
+			for (var stripIdx = 0; stripIdx < item.strips.length; stripIdx++) {
+				var strip = item.strips[stripIdx];
+				itemElement.append(createStripElement(strip));
+			}
+		}
+		
+		var itemElementContent = $("<div>").addClass("ganttItemContent");
+		
 		if (isCollision) {
 			itemElement.addClass("ganttCollisionItem");
 			if (width > 30) {
 				itemElement.addClass("withIcon");
-				itemElement.html(_this.options.translations["colisionElementName"]);
-				itemElement.shorten({width: width, tail: "...", tooltip: false});
+				itemElementContent.html(_this.options.translations["colisionElementName"]);
+				itemElementContent.shorten({width: width, tail: "...", tooltip: false});
 			} else if (width > 15) {
 				itemElement.addClass("withIcon");
 			}
@@ -443,20 +460,29 @@ QCD.components.elements.GanttChart = function(_element, _mainController) {
 			itemElement[0].ganttItem = item; // add item element to DOM
 		} else {
 			if (width > 30) {
-				itemElement.html(item.info.name);
-				itemElement.shorten({width: width, tail: "...", tooltip: false});
+				itemElementContent.html(item.info.name);
+				itemElementContent.shorten({width: width, tail: "...", tooltip: false});
 			}			
 		}
+		itemElement.append(itemElementContent);
 
 		if (_this.options.hasPopupInfo) {
-			var description = "<div class='ganttItemDescriptionName'>"+item.info.name+"</div>";
+			var description = item.info.name ? "<div class='ganttItemDescriptionName'>"+item.info.name+"</div>" : "";
 			description += "<div class='ganttItemDescriptionInfo'>";
 			description += "<div class='ganttItemDescriptionLabel'>"+_this.options.translations["description.dateFrom"]+"</div>";
 			description += "<div class='ganttItemDescriptionValue'>"+item.info.dateFrom+"</div></div>";
 			description += "<div class='ganttItemDescriptionInfo'>";
 			description += "<div class='ganttItemDescriptionLabel'>"+_this.options.translations["description.dateTo"]+"</div>";
 			description += "<div class='ganttItemDescriptionValue'>"+item.info.dateTo+"</div></div>";
-			itemElement.CreateBubblePopup({ innerHtml: description, themePath: "/qcadooView/public/css/core/lib/jquerybubblepopup-theme" });
+			
+			itemElement.bind({
+				"mousemove" : function(eventObj) {
+					ganttTooltip.show(eventObj.clientX, eventObj.clientY, description);
+				},
+				"mouseleave" : function(eventObj) {
+					ganttTooltip.hide();
+				}
+			});
 		}
 		
 		if (item.id || isCollision) {
@@ -485,31 +511,127 @@ QCD.components.elements.GanttChart = function(_element, _mainController) {
 		});
 	}
 	
+	function createStripElement(strip) {
+		var stripElement = $("<div>").addClass("ganttItemStrip");
+		if (stripsOrientation == 'vertical') {
+			stripElement.addClass("verticalStrip");
+			stripElement.css("height", strip.size + '%');
+		} else {
+			stripElement.addClass("horizontalStrip");
+			stripElement.css("width", strip.size + '%');
+		}
+		stripElement.css("background-color", strip.color);
+		return stripElement;
+	}
+	
 	this.updateSize = function(_width, _height) {
 		_width = _width - 22;
 		_height = _height - 50;
 		currentWidth = _width;
 		htmlElements.wrapper.width(_width);
 		htmlElements.wrapper.height(_height);
-		if (isScrollVisible) {
-			htmlElements.centerContainer.width(_width - constants.ROW_NAMES_WIDTH - constants.RIGHT_SCROLL_WIDTH-1);
-		} else {
-			htmlElements.centerContainer.width(_width - constants.ROW_NAMES_WIDTH);
+		var centerAreaWidth = _width - constants.ROW_NAMES_WIDTH;
+		var topRowWidth = centerAreaWidth;
+		if (isVScrollVisible) {
+			topRowWidth = topRowWidth - constants.RIGHT_SCROLL_WIDTH - 1;
 		}
+		htmlElements.centerContainer.width(centerAreaWidth);
+		htmlElements.topRow.width(topRowWidth);
+		htmlElements.rowsContainerWrapper.width(centerAreaWidth);
+		
 		htmlElements.centerContainer.height(_height);
-		htmlElements.scrollWrapper.height(_height);
 		htmlElements.rowNamesConteiner.height(_height - constants.HEADER_HEIGHT - constants.BOTTOM_SCROLL_HEIGHT);
-		htmlElements.centerContentWrapper.height(_height - constants.BOTTOM_SCROLL_HEIGHT - 2);	
-		htmlElements.rowsContainerWrapper.height(_height - constants.HEADER_HEIGHT - constants.BOTTOM_SCROLL_HEIGHT - 2);
-		htmlElements.scrollContainer.height(_height - constants.HEADER_HEIGHT - constants.BOTTOM_SCROLL_HEIGHT+1);
+		htmlElements.rowsContainerWrapper.height(_height - constants.HEADER_HEIGHT);// - constants.BOTTOM_SCROLL_HEIGHT - 2);
 		updateScroll();
 	}
 	
 	function updateScroll() {
-		if (rowsByIndex.length * constants.CELL_HEIGHT > htmlElements.rowsContainerWrapper.height()+3) {
-			showLeftScroll();
-		} else {
-			hideLeftScroll();
+		setVerticalScrollVisible(rowsByIndex.length * constants.CELL_HEIGHT > htmlElements.rowsContainerWrapper.height());
+		setHorizontalScrollVisible(htmlElements.rowsContainer.width() > htmlElements.rowsContainerWrapper.width());
+	}
+	
+	constructor();
+}
+
+QCD.components.elements.GanttChartTooltip = function(_element) {
+	
+	var element = _element;
+	
+	var visible = false;
+	
+	var htmlElements = {};
+	
+	function constructor() {
+		createTooltip();
+	}
+	
+	function createTooltip() {
+		htmlElements.tooltipElement = $("<div>").addClass("ganttChartTooltip");
+		htmlElements.tooltipElement.css("opacity", "0");
+		htmlElements.tooltipElement.css("position", "fixed");
+		htmlElements.tooltipElement.css("z-index", "100");
+		htmlElements.tooltipElement.css("top", "-1000px");		
+		
+		htmlElements.tooltipBodyWrapper = $("<div>").addClass("ganttChartTooltipBody");
+		
+		htmlElements.tooltipElement.append(htmlElements.tooltipBodyWrapper);
+		element.append(htmlElements.tooltipElement);
+	}
+	
+	this.show = function(x, y, body) {
+		if (!visible) {
+			htmlElements.tooltipBodyWrapper.html(body);
+		}
+		var position = calculatePosition(x, y);
+		htmlElements.tooltipElement.css("left", position.x).css("top", position.y);
+		if (!visible) {
+			htmlElements.tooltipElement.animate({
+				opacity : 0.8
+			}, {
+				duration : 100,
+				queue : false,
+				complete : function() {
+					visible = true;
+				}
+			}); 
+		}
+	}
+	
+	this.hide = function() {
+		htmlElements.tooltipElement.css("opacity", "0.0").css("top", "-1000px");
+		visible = false;
+	}
+	
+	function calculatePosition(x, y) {
+		var spacing = {
+			top : 20,
+			right : 40,
+			bottom : 20,
+			left : 20
+		}
+		
+		var windowWidth = $(window).width();
+		var windowHeight = $(window).height();
+		
+		var tooltipWidth = htmlElements.tooltipElement.width();
+		var tooltipHeight = htmlElements.tooltipElement.height();
+		
+		var calcX = x - (tooltipWidth / 2);
+		var calcY = y + 20;
+		
+		if (calcX < spacing.left) {
+			calcX = spacing.left;
+		} else if (calcX + tooltipWidth > windowWidth - spacing.right) {
+			calcX = windowWidth - tooltipWidth - spacing.right;
+		}
+		
+		if (calcY + tooltipHeight > windowHeight - spacing.bottom) {
+			calcY = y - tooltipHeight - 20;
+		}
+		
+		return {
+			x : calcX,
+			y : calcY
 		}
 	}
 	

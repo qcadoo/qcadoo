@@ -23,8 +23,14 @@
  */
 package com.qcadoo.view.internal.components.ganttChart;
 
+import java.util.List;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.google.common.collect.Lists;
+import com.qcadoo.view.api.components.ganttChart.GanttChartItemStrip;
 
 public class GanttChartItemImpl implements GanttChartModifiableItem {
 
@@ -42,8 +48,11 @@ public class GanttChartItemImpl implements GanttChartModifiableItem {
 
     private String dateTo;
 
+    private final List<GanttChartItemStrip> bgStrips;
+
     public GanttChartItemImpl(final String row, final String name, final Long entityId, final String dateFrom,
             final String dateTo, final double from, final double to) {
+        this.bgStrips = Lists.newLinkedList();
         this.rowName = row;
         this.name = name;
         this.entityId = entityId;
@@ -114,18 +123,29 @@ public class GanttChartItemImpl implements GanttChartModifiableItem {
     }
 
     @Override
+    public void addBackgroundStrip(final GanttChartItemStrip bgStrip) {
+        bgStrips.add(bgStrip);
+    }
+
+    @Override
     public JSONObject getAsJson() throws JSONException {
-        JSONObject json = new JSONObject();
+        final JSONObject json = new JSONObject();
         json.put("row", getRowName());
         json.put("id", getEntityId());
         json.put("from", getFrom());
         json.put("to", getTo());
 
-        JSONObject info = new JSONObject();
+        final JSONObject info = new JSONObject();
         info.put("name", getName());
         info.put("dateFrom", getDateFrom());
         info.put("dateTo", getDateTo());
         json.put("info", info);
+
+        final JSONArray strips = new JSONArray();
+        for (final GanttChartItemStrip strip : bgStrips) {
+            strips.put(strip.getAsJson());
+        }
+        json.put("strips", strips);
 
         return json;
     }

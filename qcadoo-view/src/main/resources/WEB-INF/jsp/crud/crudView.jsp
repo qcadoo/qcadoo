@@ -48,7 +48,6 @@
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/jquery.jqGrid.min.js"></script>
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/jquery.shorten.min.js"></script>
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/jquery.maskedinput-1.3.min.js"></script>
-			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/jquery.bubblepopup.v2.3.1.min.js"></script>
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/qcadoo-min.js"></script>
 		</c:when>
 		<c:otherwise>
@@ -85,7 +84,6 @@
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/jquery.maskedinput-1.3.min.js"></script>
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/encoder.js"></script>
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/jquery.shorten.min.js"></script>
-			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/jquery.bubblepopup.v2.3.1.min.js"></script>
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/qcd/utils/logger.js"></script>
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/qcd/utils/serializator.js"></script>
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/qcd/utils/connector.js"></script>

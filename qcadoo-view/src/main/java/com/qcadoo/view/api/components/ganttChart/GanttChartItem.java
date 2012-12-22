@@ -45,6 +45,8 @@ public interface GanttChartItem {
 
     double getTo();
 
+    void addBackgroundStrip(final GanttChartItemStrip bgStrip);
+
     JSONObject getAsJson() throws JSONException;
 
 }
