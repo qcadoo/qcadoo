@@ -89,9 +89,9 @@ QCD.PageController = function() {
 	
 	this.init = function(serializationObject) {
 		if (isPopup) {
-			if (isPopup && window.parent.changeModalSize) {
-				var modalWidth = pageOptions.windowWidth ? pageOptions.windowWidth : 600;
-				var modalHeight = pageOptions.windowHeight ? pageOptions.windowHeight : 400;
+			if (window.parent.changeModalSize) {
+				var modalWidth = pageOptions.windowWidth || 600;
+				var modalHeight = pageOptions.windowHeight || 400;
 				window.parent.changeModalSize(modalWidth, modalHeight);
 			}
 			updateSize();
@@ -475,13 +475,6 @@ QCD.PageController = function() {
 		}
 	}
 	
-	this.refreshView = function() {
-		if(canClose()) {
-			QCD.components.elements.utils.LoadingIndicator.blockElement($("body"));
-			window.parent.refreshView();
-		}
-	}
-	
 	function getSerializationObject() {
 		return {
 			url: windowUrl,
@@ -548,5 +541,4 @@ QCD.PageController = function() {
 	}
 	this.updateSize = updateSize;
 	
-	//constructor(this);
 }

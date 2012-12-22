@@ -1076,6 +1076,13 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 	}
 	var performNew = this.performNew;
 
+	this.performRefresh = function(actionsPerformer) {
+		blockGrid();
+		mainController.callEvent('refresh', elementPath, function() {
+			unblockGrid();
+		});
+	}
+
 	this.showModalForAddExistingEntity = function(actionsPerformer) {
 		currentState.addExistingButtonClickedBefore = true;
 		currentState.selectedEntities = null;

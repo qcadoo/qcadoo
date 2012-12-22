@@ -67,7 +67,7 @@
 			]]></script>
 		</smallButton>
 		<smallButton name="cancel" icon="cancelIcon16.png" state="enabled" action="#{form}.performCancel;" />
-		<smallButton name="refresh" icon="updateIcon16.png" state="enabled" action="#{window}.performRefresh;" />
+		<smallButton name="refresh" icon="updateIcon16.png" state="enabled" action="#{form}.performRefresh;" />
 	</group>
 	
 	<group name="statuses" if="#view.getComponentByReference('form').dataDefinition.activable">

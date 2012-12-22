@@ -149,6 +149,12 @@ QCD.components.containers.Form = function(_element, _mainController) {
 		}
 	}
 	
+	this.performRefresh = function(actionsPerformer) {
+		if (mainController.canClose()) {
+			callEvent("reset", actionsPerformer);
+		}
+	}
+	
 	this.generateReportForEntity = function(actionsPerformer, arg1, args) {
 		if (formValue) {
 			mainController.generateReportForEntity(actionsPerformer, arg1, args, [formValue]);

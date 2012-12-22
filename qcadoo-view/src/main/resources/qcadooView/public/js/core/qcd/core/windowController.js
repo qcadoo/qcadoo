@@ -107,6 +107,7 @@ QCD.WindowController = function(_menuStructure) {
 		if (onCloseListener) {
 			modalObjects[id].onCloseListener = onCloseListener;
 		}
+		
 		modalsStack.push(modalObjects[id]);
 
 		if (url.indexOf("?") != -1) {
@@ -143,20 +144,6 @@ QCD.WindowController = function(_menuStructure) {
 		modal.changeSize(width, height);
 	}
 	
-	window.refreshView = function() {
-		if (messagesController.isInitialized()) {
-			messagesController.clearMessager();
-		}
-		loadingIndicator.show();
-		if (modalsStack.length > 0) {
-			var modal = modalsStack[modalsStack.length - 1];
-			var modalUrl = modal.iframe.attr('src');
-			modal.iframe.attr('src', modalUrl);
-		} else {
-			iframe.attr('src', currentPage);
-		}
-	}
-
 	this.onLoginSuccess = function() {
 		this.goToLastPage();
 	}

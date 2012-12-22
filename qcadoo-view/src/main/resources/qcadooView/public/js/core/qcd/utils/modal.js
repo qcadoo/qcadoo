@@ -46,7 +46,6 @@ QCD.utils.Modal.createModal = function() {
 		iframe: iframe,
 		
 		showStatic: function(src) {
-//			this.iframe.hide();
 			this.dialog.jqmShow();
 			this.iframe.attr("src", src);
 		},
@@ -62,10 +61,6 @@ QCD.utils.Modal.createModal = function() {
 				QCD.components.elements.utils.LoadingIndicator.unblockElement(dialog);
 			});
 			this.iframe.attr("src", src);
-		},
-		
-		refresh: function() {
-			this.iframe.attr("src", this.iframe.attr("src"));
 		},
 		
 		hide: function() {
