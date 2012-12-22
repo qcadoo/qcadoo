@@ -366,7 +366,7 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 
 	function redirectToCorrespondingPage(params) {
 		if (gridParameters.correspondingViewName
-				&& gridParameters.correspondingViewName != '') {
+				&& gridParameters.correspondingViewName != '' && mainController.canClose()) {
 			setPermanentlyDisableParam(params);
 			params[gridParameters.correspondingComponent + "."
 					+ belongsToFieldName] = currentState.belongsToEntityId;
@@ -382,7 +382,7 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 	
 	function showCorrespondingLookupGridModal(params) {
 		if (gridParameters.correspondingLookup
-				&& gridParameters.correspondingLookup != '') {
+				&& gridParameters.correspondingLookup != '' && mainController.canClose()) {
 			setPermanentlyDisableParam(params);
 			var correspondingLookupComponent = mainController.getComponentByReferenceName(gridParameters.correspondingLookup);
 			var url = pluginIdentifier + "/" + correspondingLookupComponent.options.viewName + ".html?context="

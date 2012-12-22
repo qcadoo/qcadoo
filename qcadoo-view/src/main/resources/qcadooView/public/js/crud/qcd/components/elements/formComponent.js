@@ -104,7 +104,7 @@ QCD.components.elements.FormComponent = function(_element, _mainController) {
 		baseValue = this.getComponentData().value;
 	}
 	this.isComponentChanged = function() {
-		if (!baseValue) {
+		if (typeof baseValue === 'undefined') {
 			return false;
 		}
 		if (! (baseValue == this.getComponentData().value)) {
