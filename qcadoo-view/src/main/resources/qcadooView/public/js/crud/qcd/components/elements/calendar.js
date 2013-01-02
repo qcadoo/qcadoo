@@ -94,7 +94,7 @@ QCD.components.elements.Calendar = function(_element, _mainController) {
 			inputDataChanged();
 		}
 		
-		datepickerElement = $("<div>").css("position", "absolute").css("zIndex", 300).css("right", "15px").css("line-height", "14px");
+		datepickerElement = $("<div>").css("position", "fixed").css("zIndex", 300).css("left", "15px").css("line-height", "14px");
 		containerElement.css("position", "relative");
 		datepickerElement.hide();
 		
@@ -117,6 +117,35 @@ QCD.components.elements.Calendar = function(_element, _mainController) {
 			}
 		});
 		
+		function updatePosition() {
+			var top = input.offset().top;
+					
+			datepickerElement.css("left", input.offset().left + "px");
+					
+			var calendarHeight = datepickerElement.outerHeight();
+			var inputHeight = input.outerHeight() + 5;
+			var viewHeight = document.documentElement.clientHeight + $(document).scrollTop();
+					
+			var topPosition = top - calendarHeight - 5;
+					
+			if (topPosition > 0) {
+				if (topPosition + calendarHeight > viewHeight) {
+					var offsetBottom = viewHeight - (top + inputHeight + calendarHeight)
+					datepickerElement.css("top", topPosition + offsetBottom + "px");
+				} else {
+					datepickerElement.css("top", topPosition + "px");
+				}
+				isOnTop = true;
+			} else {
+				datepickerElement.css("top", top + inputHeight +"px");
+				isOnTop = false;
+			}
+		}
+		
+		datepickerElement.closest("div.windowContainerContentBody").scroll(function(eventObject) {
+			updatePosition();
+		});
+		
 		calendar.hover(function() {isTriggerBootonHovered = true;}, function() {isTriggerBootonHovered = false;})
 		calendar.click(function() {
 			if(calendar.hasClass("enabled")) {
@@ -135,20 +164,7 @@ QCD.components.elements.Calendar = function(_element, _mainController) {
 						}
 					}
 					
-					var top = input.offset().top;
-					var calendarHeight = datepickerElement.outerHeight();
-					var inputHeight = input.outerHeight() + 10;
-					var viewHeight = document.documentElement.clientHeight + $(document).scrollTop();
-					
-					if ((top+calendarHeight+inputHeight) > viewHeight) {
-						datepickerElement.css("top", "");
-						datepickerElement.css("bottom", inputHeight +"px");
-						isOnTop = true;
-					} else {
-						datepickerElement.css("top", inputHeight +"px");
-						datepickerElement.css("bottom", "");
-						isOnTop = false;
-					}
+					updatePosition();
 					
 					datepickerElement.slideDown(ANIMATION_LENGTH).show();
 					opened = true;
