@@ -53,7 +53,7 @@ import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.api.aop.Monitorable;
 import com.qcadoo.model.api.file.FileService;
 import com.qcadoo.report.api.FontUtils;
-import com.qcadoo.report.api.FooterResolverFactory;
+import com.qcadoo.report.api.FooterResolver;
 import com.qcadoo.report.api.pdf.PdfHelper;
 import com.qcadoo.report.api.pdf.PdfPageNumbering;
 import com.qcadoo.security.api.SecurityService;
@@ -86,7 +86,7 @@ public class ExportToPDFController {
     private PdfHelper pdfHelper;
 
     @Autowired
-    private FooterResolverFactory footerResolverFactory;
+    private FooterResolver footerResolver;
 
     @Monitorable(threshold = 500)
     @ResponseBody
@@ -103,7 +103,7 @@ public class ExportToPDFController {
             FileOutputStream fileOutputStream = new FileOutputStream(file);
             PdfWriter writer = PdfWriter.getInstance(document, fileOutputStream);
 
-            writer.setPageEvent(new PdfPageNumbering(footerResolverFactory.getResolver().resolveFooter(locale)));
+            writer.setPageEvent(new PdfPageNumbering(footerResolver.resolveFooter(locale)));
 
             document.setMargins(40, 40, 60, 60);
 

@@ -39,7 +39,7 @@ import com.lowagie.text.pdf.PdfWriter;
 import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.file.FileService;
-import com.qcadoo.report.api.FooterResolverFactory;
+import com.qcadoo.report.api.FooterResolver;
 import com.qcadoo.report.api.ReportDocumentService;
 import com.qcadoo.report.api.ReportService;
 
@@ -61,7 +61,7 @@ public abstract class PdfDocumentService implements ReportDocumentService {
     private PdfHelper pdfHelper;
 
     @Autowired
-    private FooterResolverFactory footerResolverFactory;
+    private FooterResolver footerResolver;
 
     private static final Logger LOG = LoggerFactory.getLogger(PdfDocumentService.class);
 
@@ -109,7 +109,7 @@ public abstract class PdfDocumentService implements ReportDocumentService {
             FileOutputStream fileOutputStream = new FileOutputStream(fileService.createReportFile(filename + "."
                     + ReportService.ReportType.PDF.getExtension()));
             PdfWriter writer = PdfWriter.getInstance(document, fileOutputStream);
-            writer.setPageEvent(new PdfPageNumbering(footerResolverFactory.getResolver().resolveFooter(locale)));
+            writer.setPageEvent(new PdfPageNumbering(footerResolver.resolveFooter(locale)));
             document.setMargins(40, 40, 60, 60);
             buildPdfMetadata(document, locale);
             writer.createXmpMetadata();

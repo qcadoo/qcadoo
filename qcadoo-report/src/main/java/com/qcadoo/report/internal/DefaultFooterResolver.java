@@ -3,20 +3,18 @@ package com.qcadoo.report.internal;
 import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.qcadoo.localization.api.TranslationService;
-import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.report.api.Footer;
 import com.qcadoo.report.api.FooterResolver;
 import com.qcadoo.security.api.SecurityService;
 
+@Component
 public class DefaultFooterResolver implements FooterResolver {
 
     @Autowired
     private TranslationService translationService;
-
-    @Autowired
-    private DataDefinitionService dataDefinitionService;
 
     @Autowired
     private SecurityService securityService;

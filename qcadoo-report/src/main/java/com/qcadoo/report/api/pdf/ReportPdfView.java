@@ -37,7 +37,7 @@ import org.springframework.web.servlet.view.document.AbstractPdfView;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.pdf.PdfWriter;
-import com.qcadoo.report.api.FooterResolverFactory;
+import com.qcadoo.report.api.FooterResolver;
 import com.qcadoo.report.api.ReportService;
 
 /**
@@ -51,7 +51,7 @@ public abstract class ReportPdfView extends AbstractPdfView {
     private PdfHelper pdfHelper;
 
     @Autowired
-    private FooterResolverFactory footerResolverFactory;
+    private FooterResolver footerResolver;
 
     @Override
     protected final void buildPdfDocument(final Map<String, Object> model, final Document document, final PdfWriter writer,
@@ -80,8 +80,7 @@ public abstract class ReportPdfView extends AbstractPdfView {
     protected void prepareWriter(final Map<String, Object> model, final PdfWriter writer, final HttpServletRequest request)
             throws DocumentException {
         super.prepareWriter(model, writer, request);
-        writer.setPageEvent(new PdfPageNumbering(footerResolverFactory.getResolver().resolveFooter(
-                LocaleContextHolder.getLocale())));
+        writer.setPageEvent(new PdfPageNumbering(footerResolver.resolveFooter(LocaleContextHolder.getLocale())));
     }
 
     @Override
