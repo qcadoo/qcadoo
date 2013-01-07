@@ -260,6 +260,10 @@ public class LookupComponentPattern extends FieldComponentPattern {
         viewDefinitionService.delete(lookupViewDefinition);
     }
 
+    public CriteriaModifier getCriteriaModifier() {
+        return criteriaModifier;
+    }
+
     private GridComponentPattern createGridComponentPattern(final ViewDefinition lookupViewDefinition,
             final WindowComponentPattern window) {
         final ComponentDefinition gridComponentDefinition = new ComponentDefinition();

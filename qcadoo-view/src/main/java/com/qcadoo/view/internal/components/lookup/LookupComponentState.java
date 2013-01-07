@@ -41,6 +41,7 @@ import com.qcadoo.model.api.search.SearchRestrictions.SearchMatchMode;
 import com.qcadoo.model.api.search.SearchResult;
 import com.qcadoo.model.api.types.BelongsToType;
 import com.qcadoo.view.api.components.LookupComponent;
+import com.qcadoo.view.internal.CriteriaModifier;
 import com.qcadoo.view.internal.components.FieldComponentState;
 
 public final class LookupComponentState extends FieldComponentState implements LookupComponent {
@@ -95,12 +96,15 @@ public final class LookupComponentState extends FieldComponentState implements L
 
     private int autocompleteEntitiesNumber;
 
+    private final CriteriaModifier criteriaModifier;
+
     public LookupComponentState(final FieldDefinition scopeField, final String fieldCode, final String expression,
             final LookupComponentPattern pattern) {
         super(pattern);
         this.belongsToFieldDefinition = scopeField;
         this.fieldCode = fieldCode;
         this.expression = expression;
+        this.criteriaModifier = pattern.getCriteriaModifier();
         registerEvent("initialize", eventPerformer, "initialize");
         registerEvent("autompleteSearch", eventPerformer, "autompleteSearch");
         registerEvent("onSelectedEntityChange", eventPerformer, "onSelectedEntityChange");
@@ -253,6 +257,10 @@ public final class LookupComponentState extends FieldComponentState implements L
                 }
 
                 searchCriteriaBuilder.addOrder(SearchOrders.asc(fieldCode));
+
+                if (criteriaModifier != null) {
+                    criteriaModifier.modifyCriteria(searchCriteriaBuilder);
+                }
 
                 SearchResult results = searchCriteriaBuilder.list();
 
