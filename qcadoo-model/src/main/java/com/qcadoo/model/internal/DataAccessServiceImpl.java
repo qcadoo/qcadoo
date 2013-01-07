@@ -107,6 +107,7 @@ public class DataAccessServiceImpl implements DataAccessService {
     @Auditable
     @Override
     @Transactional
+    @Monitorable
     public Entity save(final InternalDataDefinition dataDefinition, final Entity genericEntity) {
         Set<Entity> newlySavedEntities = new HashSet<Entity>();
 
