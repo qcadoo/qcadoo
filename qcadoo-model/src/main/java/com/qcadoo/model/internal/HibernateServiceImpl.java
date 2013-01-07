@@ -26,6 +26,7 @@ package com.qcadoo.model.internal;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
@@ -56,6 +57,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.google.common.base.Preconditions;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.types.FieldType;
@@ -142,8 +144,9 @@ public class HibernateServiceImpl implements HibernateService {
     }
 
     private InternalDataDefinition resolveDataDefinitionFromClassType(final String classType) {
-        String[] tmp = classType.replaceAll("com.qcadoo.model.beans.", "").split("\\.");
-        String model = tmp[1].replaceAll(tmp[0].substring(0, 1).toUpperCase(Locale.ENGLISH) + tmp[0].substring(1), "");
+        String[] tmp = classType.replaceFirst("com.qcadoo.model.beans.", "").split("\\.");
+        String model = tmp[1].replaceFirst(tmp[0].substring(0, 1).toUpperCase(Locale.ENGLISH) + tmp[0].substring(1), "");
+        Preconditions.checkState(StringUtils.isNotBlank(model), "Can't parse model name from class' binary name.");
         model = model.substring(0, 1).toLowerCase(Locale.ENGLISH) + model.substring(1);
         return (InternalDataDefinition) dataDefinitionService.get(tmp[0], model);
     }
