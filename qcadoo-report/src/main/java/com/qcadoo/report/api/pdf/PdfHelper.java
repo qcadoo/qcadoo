@@ -25,6 +25,8 @@ package com.qcadoo.report.api.pdf;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -160,4 +162,21 @@ public interface PdfHelper {
      */
     PdfPTable createTableWithHeader(final int numOfColumns, final List<String> header, final boolean lastColumnAligmentToLeft);
 
+    /**
+     * Add cell to current dynamin header table with exists value or empty.
+     * 
+     * @param headerTable
+     * @param column
+     * @param locale
+     * @return PdfPTable with added column
+     */
+    PdfPTable addDynamicHeaderTableCell(final PdfPTable headerTable, final Map<String, Object> column, final Locale locale);
+
+    /**
+     * Return max size of columns rows
+     * 
+     * @param columnsListSize
+     * @return
+     */
+    int getMaxSizeOfColumnsRows(final List<Integer> columnsListSize);
 }

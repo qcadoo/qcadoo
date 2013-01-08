@@ -30,6 +30,8 @@ import java.net.MalformedURLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,6 +49,7 @@ import com.lowagie.text.Phrase;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.draw.LineSeparator;
+import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.localization.api.utils.DateUtils;
 import com.qcadoo.report.api.ColorUtils;
 import com.qcadoo.report.api.FontUtils;
@@ -57,6 +60,8 @@ import com.qcadoo.report.api.pdf.TableBorderEvent;
 public final class PdfHelperImpl implements PdfHelper {
 
     private static final Logger LOG = LoggerFactory.getLogger(PdfHelperImpl.class);
+
+    private TranslationService translationService;
 
     @Override
     public void addDocumentHeader(final Document document, final String name, final String documenTitle,
@@ -171,6 +176,29 @@ public final class PdfHelperImpl implements PdfHelper {
             final boolean lastColumnAligmentToLeft) {
         PdfPTable table = new PdfPTable(numOfColumns);
         return setTableProperties(header, lastColumnAligmentToLeft, table);
+    }
+
+    @Override
+    public int getMaxSizeOfColumnsRows(final List<Integer> columnsListSize) {
+        int size = 0;
+        for (int columnSize : columnsListSize) {
+            if (columnSize > size) {
+                size = columnSize;
+            }
+        }
+        return size;
+    }
+
+    @Override
+    public PdfPTable addDynamicHeaderTableCell(final PdfPTable headerTable, final Map<String, Object> column, final Locale locale) {
+        if (column.keySet().size() == 0) {
+            addTableCellAsOneColumnTable(headerTable, "", "");
+        } else {
+            Object key = column.keySet().iterator().next();
+            addTableCellAsOneColumnTable(headerTable, translationService.translate(key.toString(), locale), column.get(key));
+            column.remove(key);
+        }
+        return headerTable;
     }
 
     private PdfPTable setTableProperties(final List<String> header, final boolean lastColumnAligmentToLeft, final PdfPTable table) {
