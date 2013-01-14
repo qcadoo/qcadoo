@@ -50,6 +50,10 @@
 
 	<dependencies>
 		<dependency>
+			<plugin>qcadooCustomTranslation</plugin>
+			<version>[1.1.8</version>
+		</dependency>
+		<dependency>
 			<plugin>qcadooView</plugin>
 			<version>[1.1.8</version>
 		</dependency>
