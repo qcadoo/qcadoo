@@ -355,6 +355,15 @@ QCD.components.containers.Window = function(_element, _mainController) {
 		
 	}
 	
+	this.performRefresh = function() {
+		var mainViewComponent = mainController.getComponentByReferenceName("form") || mainController.getComponentByReferenceName("grid");
+		if (mainViewComponent) {
+			mainViewComponent.performRefresh();
+		} else {
+			QCD.error("Can't find component #{form} or #{grid}!");
+		}
+	}
+	
 	this.performBack = function(actionsPerformer) {
 		mainController.goBack();
 		if (actionsPerformer) {
