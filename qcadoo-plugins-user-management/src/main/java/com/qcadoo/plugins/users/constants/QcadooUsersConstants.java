@@ -37,4 +37,7 @@ public interface QcadooUsersConstants {
     String VIEW_USER_DETAILS = "userDetails";
 
     String VIEW_USERS_LIST = "usersList";
+
+    // ROLE
+    String ROLE_SUPERADMIN = "04superAdmins";
 }

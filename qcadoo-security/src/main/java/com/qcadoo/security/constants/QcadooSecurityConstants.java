@@ -32,4 +32,6 @@ public interface QcadooSecurityConstants {
 
     String MODEL_USER = "user";
 
+    // ROLE
+    String ROLE_SUPERADMIN = "04superAdmins";
 }

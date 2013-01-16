@@ -25,6 +25,7 @@ package com.qcadoo.plugins.users.internal;
 
 import org.springframework.stereotype.Service;
 
+import com.qcadoo.plugins.users.constants.QcadooUsersConstants;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.api.components.FieldComponent;
@@ -72,6 +73,15 @@ public final class UserService {
             password.setVisible(false);
             passwordConfirmation.setVisible(false);
             changePasswordButton.setVisible(true);
+        }
+    }
+
+    public void disableWhenRoleIsSuperadmin(final ViewDefinitionState state) {
+        FieldComponent role = (FieldComponent) state.getComponentByReference("role");
+        if (QcadooUsersConstants.ROLE_SUPERADMIN.equals(role.getFieldValue())) {
+            role.setEnabled(false);
+        } else {
+            role.setEnabled(true);
         }
     }
 

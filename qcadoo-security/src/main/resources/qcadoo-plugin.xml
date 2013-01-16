@@ -63,6 +63,7 @@
 		<security:user-group name="01admins" role="ROLE_ADMIN" />
 		<security:user-group name="02supervisors" role="ROLE_SUPERVISOR" />
 		<security:user-group name="03users" role="ROLE_USER" />
+		<security:user-group name="04superAdmins" role="ROLE_SUPERADMIN" />
 		<security:user login="admin" password="admin" lastName="generated admin"
 			groupName="01admins" />
 		<!-- <security:user login="demo" password="demo" lastName="generated demo" 

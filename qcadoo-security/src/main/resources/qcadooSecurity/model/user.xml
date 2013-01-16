@@ -52,6 +52,8 @@
 	<hooks>
 		<validatesWith class="com.qcadoo.security.internal.validators.PasswordValidationService"
 			method="checkPassword" />
+		<validatesWith class="com.qcadoo.security.internal.validators.UserRoleValidationService"
+			method="checkUserCreatingSuperadmin" />
 	</hooks>
 	<identifier expression="#userName" />
 </model>

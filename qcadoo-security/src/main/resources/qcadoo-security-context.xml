@@ -117,6 +117,7 @@
 
 	<util:properties id="defaultSecurityConfiguration">
 		<prop key="rolesHierarchy">
+		    ROLE_SUPERADMIN > ROLE_ADMIN
 			ROLE_ADMIN > ROLE_SUPERVISOR
 			ROLE_SUPERVISOR > ROLE_USER
 		</prop>
