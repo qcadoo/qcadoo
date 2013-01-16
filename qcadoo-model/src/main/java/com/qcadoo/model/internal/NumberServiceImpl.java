@@ -49,7 +49,6 @@ public class NumberServiceImpl implements NumberService {
     private static void initialise() {
         decimalFormat = (DecimalFormat) DecimalFormat.getInstance(getLocale());
         decimalFormat.setMaximumFractionDigits(5);
-        decimalFormat.setMinimumFractionDigits(5);
         decimalFormat.setRoundingMode(HALF_EVEN);
     }
 

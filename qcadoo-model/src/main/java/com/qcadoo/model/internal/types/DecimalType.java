@@ -64,7 +64,6 @@ public final class DecimalType implements FieldType {
         } else {
             format = NumberFormat.getNumberInstance(locale);
         }
-        format.setMinimumFractionDigits(5);
         format.setMaximumFractionDigits(5);
         return format.format(value);
     }
