@@ -43,10 +43,12 @@ public class GanttChartItemStripImpl implements GanttChartItemStrip {
 
     @Override
     public boolean equals(final Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null || getClass() != obj.getClass())
+        }
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
+        }
         final GanttChartItemStripImpl other = (GanttChartItemStripImpl) obj;
         return new EqualsBuilder().append(color, other.color).append(size, other.size).isEquals();
     }
