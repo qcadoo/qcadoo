@@ -97,7 +97,7 @@
 					select="concat('com.qcadoo.model.beans.', @plugin, '.', translate(substring(@plugin, 1, 1),  $smallcase, $uppercase), substring(@plugin, 2), translate(substring(@name, 1, 1),  $smallcase, $uppercase), substring(@name, 2))" />
 				</xsl:attribute>
 				<id column="id" name="id" type="long">
-					<generator class="increment" />
+					<generator class="sequence" />
 				</id>
 				<xsl:apply-templates />
 				<xsl:if test="@activable='true'">
