@@ -31,6 +31,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,12 +51,14 @@ public class TranslationModuleService {
     @Autowired
     private ApplicationContext applicationContext;
 
-    private Set<String> basenames = new LinkedHashSet<String>();
+    private final Set<String> basenames = new LinkedHashSet<String>();
 
     public void addTranslationModule(final Collection<? extends String> moduleBasenames) {
         basenames.addAll(moduleBasenames);
         messageSource.clearCache();
-        messageSource.setBasenames(basenames.toArray(new String[basenames.size()]));
+        String[] basenamesArray = basenames.toArray(new String[basenames.size()]);
+        ArrayUtils.reverse(basenamesArray);
+        messageSource.setBasenames(basenamesArray);
     }
 
     public void removeTranslationModule(final Collection<? extends String> moduleBasenames) {
