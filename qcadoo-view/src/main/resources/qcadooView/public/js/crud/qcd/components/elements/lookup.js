@@ -65,6 +65,11 @@ QCD.components.elements.Lookup = function(_element, _mainController) {
 		error : null
 	};
 
+	var modalDimensions = this.options.modalDimensions || {
+		width : 600,
+		height : 400
+	};
+
 	var dataState = {
 		currentCode : null,
 		selectedEntity : {
@@ -418,8 +423,7 @@ QCD.components.elements.Lookup = function(_element, _mainController) {
 			params["window.grid.belongsToEntityId"] = dataState.contextEntityId;
 			url += "?context=" + JSON.stringify(params);
 		}
-		
-		lookupWindow = mainController.openModal(elementPath + "_lookup", window.pluginIdentifier + "/" + url, false, onModalClose, onModalRender);
+		lookupWindow = mainController.openModal(elementPath + "_lookup", window.pluginIdentifier + "/" + url, false, onModalClose, onModalRender, modalDimensions);
 	}
 
 	function onModalClose() {

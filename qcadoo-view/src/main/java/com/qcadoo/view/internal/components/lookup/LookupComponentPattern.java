@@ -45,6 +45,7 @@ import com.qcadoo.view.api.ribbon.RibbonActionItem.Type;
 import com.qcadoo.view.internal.ComponentDefinition;
 import com.qcadoo.view.internal.ComponentOption;
 import com.qcadoo.view.internal.CriteriaModifier;
+import com.qcadoo.view.internal.ModalDimensions;
 import com.qcadoo.view.internal.RowStyleResolver;
 import com.qcadoo.view.internal.api.InternalViewDefinition;
 import com.qcadoo.view.internal.api.InternalViewDefinitionService;
@@ -82,6 +83,8 @@ public class LookupComponentPattern extends FieldComponentPattern {
     private String expression;
 
     private String fieldCode;
+
+    private ModalDimensions modalDimensions;
 
     private InternalViewDefinition lookupViewDefinition;
 
@@ -154,6 +157,8 @@ public class LookupComponentPattern extends FieldComponentPattern {
             }
         }
 
+        modalDimensions = ModalDimensions.parseFromOptions(getOptions());
+
         checkState(hasText(fieldCode), "Missing fieldCode for lookup");
         checkState(hasText(expression), "Missing expression for lookup");
 
@@ -208,6 +213,8 @@ public class LookupComponentPattern extends FieldComponentPattern {
     protected JSONObject getJsOptions(final Locale locale) throws JSONException {
         JSONObject json = new JSONObject();
         json.put("viewName", getViewName());
+
+        json.put("modalDimensions", modalDimensions.toJson());
 
         JSONObject translations = new JSONObject();
 

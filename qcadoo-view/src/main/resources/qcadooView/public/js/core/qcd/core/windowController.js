@@ -95,7 +95,7 @@ QCD.WindowController = function(_menuStructure) {
 	}
 	
 	window.openModal = function(id, url, serializationObject, onCloseListener,
-			afterInitListener) {
+			afterInitListener, dimensions) {
 		if (serializationObject != null) {
 			serializationObject.openedModal = true;
 			statesStack.push(serializationObject);
@@ -106,6 +106,9 @@ QCD.WindowController = function(_menuStructure) {
 		}
 		if (onCloseListener) {
 			modalObjects[id].onCloseListener = onCloseListener;
+		}
+		if (dimensions) {
+			modalObjects[id].changeSize(dimensions.width || 600, dimensions.height || 400);
 		}
 		
 		modalsStack.push(modalObjects[id]);
@@ -125,7 +128,7 @@ QCD.WindowController = function(_menuStructure) {
 
 		modalObjects[id].show(url, function() {
 			if (this.src != "" && this.contentWindow.init) {
-				this.contentWindow.init(serializationObjectToInsert);
+				this.contentWindow.init(serializationObjectToInsert, dimensions);
 				serializationObjectToInsert = null;
 			}
 			if (afterInitListener) {
