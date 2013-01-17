@@ -137,6 +137,13 @@
 .ganttItem.ganttItemSelected {
 	background-color: #FC9B2B;
 }
+
+.ganttItem.ganttItemSelected .ganttItemStrip {
+	filter: alpha(opacity=22);
+	opacity: 0.22;
+	-moz-opacity: 0.22;
+}
+
 .ganttItem .ganttItemStrip.verticalStrip {
 	width: 100%;
 }
