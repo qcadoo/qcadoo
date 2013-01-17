@@ -87,11 +87,11 @@ QCD.PageController = function() {
 		blockButtons();
 	}
 	
-	this.init = function(serializationObject) {
+	this.init = function(serializationObject, dimensions) {
 		if (isPopup) {
 			if (window.parent.changeModalSize) {
-				var modalWidth = pageOptions.windowWidth || 600;
-				var modalHeight = pageOptions.windowHeight || 400;
+				var modalWidth = (dimensions ? dimensions.width : pageOptions.windowWidth) || 600;
+				var modalHeight = (dimensions ? dimensions.height : pageOptions.windowHeight) || 400;
 				window.parent.changeModalSize(modalWidth, modalHeight);
 			}
 			updateSize();
@@ -458,13 +458,13 @@ QCD.PageController = function() {
 	}
 	var goToPage = this.goToPage;
 	
-	function openModal(id, url, shouldSerialize, onCloseListener, afterInitListener) {
+	function openModal(id, url, shouldSerialize, onCloseListener, afterInitListener, dimensions) {
 		shouldSerialize = (shouldSerialize == undefined) ? true : shouldSerialize;
 		var serializationObject = null;
 		if (shouldSerialize) {
 			serializationObject = getSerializationObject();	
 		}
-		return window.parent.openModal(id, url, serializationObject, onCloseListener, afterInitListener);
+		return window.parent.openModal(id, url, serializationObject, onCloseListener, afterInitListener, dimensions);
 	}
 	this.openModal = openModal
 	

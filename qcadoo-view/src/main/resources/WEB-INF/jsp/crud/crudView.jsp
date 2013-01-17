@@ -148,8 +148,8 @@
 
 	var controller = null;
 
-	window.init = function(serializationObject) {
-		controller.init(serializationObject);
+	window.init = function(serializationObject, dimensions) {
+		controller.init(serializationObject, dimensions);
 	}
 
 	window.canClose = function() {
