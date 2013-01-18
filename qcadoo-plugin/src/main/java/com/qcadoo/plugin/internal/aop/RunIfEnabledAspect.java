@@ -34,23 +34,23 @@ import com.qcadoo.plugin.api.RunIfEnabled;
 @Aspect
 public class RunIfEnabledAspect {
 
-    @Around("(execution(* *(..)) || (adviceexecution() && !args(org.aspectj.lang.ProceedingJoinPoint))) && @annotation(annotation)")
+    @Around("(execution(* *(..)) || (adviceexecution() && !args(org.aspectj.lang.ProceedingJoinPoint, ..))) && @annotation(annotation)")
     public Object runMethodIfEnabledAdvice(final ProceedingJoinPoint pjp, final RunIfEnabled annotation) throws Throwable {
         return runIfEnabled(pjp, null, annotation);
     }
 
-    @Around("(execution(* *(..)) || (adviceexecution() && !args(org.aspectj.lang.ProceedingJoinPoint))) && @within(annotation) && !@annotation(com.qcadoo.plugin.api.RunIfEnabled)")
+    @Around("(execution(* *(..)) || (adviceexecution() && !args(org.aspectj.lang.ProceedingJoinPoint, ..))) && @within(annotation) && !@annotation(com.qcadoo.plugin.api.RunIfEnabled)")
     public Object runClassMethodIfEnabledAdvice(final ProceedingJoinPoint pjp, final RunIfEnabled annotation) throws Throwable {
         return runIfEnabled(pjp, null, annotation);
     }
 
-    @Around("adviceexecution() && args(innerPjp) && @annotation(annotation)")
+    @Around("adviceexecution() && args(innerPjp, ..) && @annotation(annotation)")
     public Object runAroundAdviceIfEnabledAdvice(final ProceedingJoinPoint pjp, final ProceedingJoinPoint innerPjp,
             final RunIfEnabled annotation) throws Throwable {
         return runIfEnabled(pjp, innerPjp, annotation);
     }
 
-    @Around("adviceexecution() && args(innerPjp) && @within(annotation) && !@annotation(com.qcadoo.plugin.api.RunIfEnabled)")
+    @Around("adviceexecution() && args(innerPjp, ..) && @within(annotation) && !@annotation(com.qcadoo.plugin.api.RunIfEnabled)")
     public Object runAspectAroundIfEnabledAdvice(final ProceedingJoinPoint pjp, final ProceedingJoinPoint innerPjp,
             final RunIfEnabled annotation) throws Throwable {
         return runIfEnabled(pjp, innerPjp, annotation);

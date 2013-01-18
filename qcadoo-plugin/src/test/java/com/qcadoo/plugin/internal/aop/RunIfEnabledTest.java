@@ -159,12 +159,25 @@ public class RunIfEnabledTest {
         public void runSecond() {
             dependencyMock.run();
         }
+
+        public void runThird(final Object arg) {
+            dependencyMock.run();
+        }
+
+        public void runFourth() {
+            dependencyMock.run();
+        }
     }
 
     private static class ClassWithRegularMethodExpectingPjpArgument {
 
         @RunIfEnabled(PLUGIN_NAME)
         public void doSthg(final ProceedingJoinPoint pjp) throws Throwable {
+            pjp.proceed();
+        }
+
+        @RunIfEnabled(PLUGIN_NAME)
+        public void doSthgWithManyArgs(final ProceedingJoinPoint pjp, final Object secondArg) throws Throwable {
             pjp.proceed();
         }
 
@@ -364,6 +377,33 @@ public class RunIfEnabledTest {
     }
 
     @Test
+    public final void shouldRunAnnotatedMethodWithPjpAsFirstOfManyArgument() throws Throwable {
+        // given
+        enablePlugin(PLUGIN_NAME);
+        final ProceedingJoinPoint pjpMock = mock(ProceedingJoinPoint.class);
+        final ClassWithRegularMethodExpectingPjpArgument object = new ClassWithRegularMethodExpectingPjpArgument();
+
+        // when
+        object.doSthgWithManyArgs(pjpMock, "some arbitrary second arg");
+
+        // then
+        verify(pjpMock).proceed();
+    }
+
+    @Test
+    public final void shouldNotRunAnnotatedMethodWithPjpAsFirstOfManyArgument() throws Throwable {
+        // given
+        final ProceedingJoinPoint pjpMock = mock(ProceedingJoinPoint.class);
+        final ClassWithRegularMethodExpectingPjpArgument object = new ClassWithRegularMethodExpectingPjpArgument();
+
+        // when
+        object.doSthgWithManyArgs(pjpMock, "some arbitrary second arg");
+
+        // then
+        verify(pjpMock, never()).proceed();
+    }
+
+    @Test
     public final void shouldRunAnnotatedAroundAdviceButPerformJoinPointExecution() {
         // given
         enablePlugin(PLUGIN_NAME);
@@ -395,6 +435,33 @@ public class RunIfEnabledTest {
     }
 
     @Test
+    public final void shouldRunAnnotatedAroundAdviceWithManyArgumentsButPerformJoinPointExecution() {
+        // given
+        enablePlugin(PLUGIN_NAME);
+        ClassWithoutAnnotations object = new ClassWithoutAnnotations(dependencyMock);
+
+        // when
+        object.runThird("someArg");
+
+        // then
+        verify(dependencyMock).run();
+        verify(aspectDependencyMock).runAround();
+    }
+
+    @Test
+    public final void shouldNotRunAnnotatedAroundAdviceWithManyArgumentsButPerformJoinPointExecution() {
+        // given
+        ClassWithoutAnnotations object = new ClassWithoutAnnotations(dependencyMock);
+
+        // when
+        object.runThird("someArg");
+
+        // then
+        verify(dependencyMock).run();
+        verify(aspectDependencyMock, never()).runAround();
+    }
+
+    @Test
     public final void shouldRunAspectAnnotatedAroundAdviceButPerformJoinPointExecution() {
         // given
         enablePlugin(PLUGIN_NAME);
@@ -423,6 +490,33 @@ public class RunIfEnabledTest {
         verify(aspectDependencyMock, never()).runBefore();
         verify(aspectDependencyMock, never()).runAround();
         verify(aspectDependencyMock, never()).runAfter();
+    }
+
+    @Test
+    public final void shouldRunAspectAnnotatedAroundAdviceButNotPerformJoinPointExecution() {
+        // given
+        enablePlugin(PLUGIN_NAME);
+        ClassWithoutAnnotations object = new ClassWithoutAnnotations(dependencyMock);
+
+        // when
+        object.runFourth();
+
+        // then
+        verify(dependencyMock, never()).run();
+        verify(aspectDependencyMock).runAround();
+    }
+
+    @Test
+    public final void shouldNotRunAspectAnnotatedAroundAdviceButPerformJoinPointExecutionEvenIfAdviceBodyDoseNotPerformThem() {
+        // given
+        ClassWithoutAnnotations object = new ClassWithoutAnnotations(dependencyMock);
+
+        // when
+        object.runFourth();
+
+        // then
+        verify(dependencyMock).run();
+        verify(aspectDependencyMock, never()).runAround();
     }
 
     @Aspect
@@ -462,6 +556,17 @@ public class RunIfEnabledTest {
         public void around(final ProceedingJoinPoint pjp) throws Throwable {
             aspectDependencyMock.runAround();
             pjp.proceed();
+        }
+
+        @Around("execution(* ClassWithoutAnnotations.runThird(..)) && args(someArg)")
+        public void aroundWithManyArgs(final ProceedingJoinPoint pjp, final Object someArg) throws Throwable {
+            aspectDependencyMock.runAround();
+            pjp.proceed();
+        }
+
+        @Around("execution(* ClassWithoutAnnotations.runFourth())")
+        public void aroundWithoutPjpProceedInBody(final ProceedingJoinPoint pjp) throws Throwable {
+            aspectDependencyMock.runAround();
         }
 
         @After("execution(* ClassWithoutAnnotations.runSecond())")
