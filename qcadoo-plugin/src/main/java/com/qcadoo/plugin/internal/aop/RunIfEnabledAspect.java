@@ -34,20 +34,35 @@ import com.qcadoo.plugin.api.RunIfEnabled;
 @Aspect
 public class RunIfEnabledAspect {
 
-    @Around("(execution(* *(..)) || adviceexecution()) && @annotation(annotation)")
+    @Around("(execution(* *(..)) || (adviceexecution() && !args(org.aspectj.lang.ProceedingJoinPoint))) && @annotation(annotation)")
     public Object runMethodIfEnabledAdvice(final ProceedingJoinPoint pjp, final RunIfEnabled annotation) throws Throwable {
-        return runIfEnabled(pjp, annotation);
+        return runIfEnabled(pjp, null, annotation);
     }
 
-    @Around("(execution(* *(..)) || adviceexecution()) && @within(annotation) && !@annotation(com.qcadoo.plugin.api.RunIfEnabled)")
+    @Around("(execution(* *(..)) || (adviceexecution() && !args(org.aspectj.lang.ProceedingJoinPoint))) && @within(annotation) && !@annotation(com.qcadoo.plugin.api.RunIfEnabled)")
     public Object runClassMethodIfEnabledAdvice(final ProceedingJoinPoint pjp, final RunIfEnabled annotation) throws Throwable {
-        return runIfEnabled(pjp, annotation);
+        return runIfEnabled(pjp, null, annotation);
     }
 
-    private Object runIfEnabled(final ProceedingJoinPoint pjp, final RunIfEnabled annotation) throws Throwable {
+    @Around("adviceexecution() && args(innerPjp) && @annotation(annotation)")
+    public Object runAroundAdviceIfEnabledAdvice(final ProceedingJoinPoint pjp, final ProceedingJoinPoint innerPjp,
+            final RunIfEnabled annotation) throws Throwable {
+        return runIfEnabled(pjp, innerPjp, annotation);
+    }
+
+    @Around("adviceexecution() && args(innerPjp) && @within(annotation) && !@annotation(com.qcadoo.plugin.api.RunIfEnabled)")
+    public Object runAspectAroundIfEnabledAdvice(final ProceedingJoinPoint pjp, final ProceedingJoinPoint innerPjp,
+            final RunIfEnabled annotation) throws Throwable {
+        return runIfEnabled(pjp, innerPjp, annotation);
+    }
+
+    private Object runIfEnabled(final ProceedingJoinPoint pjp, final ProceedingJoinPoint innerPjp, final RunIfEnabled annotation)
+            throws Throwable {
         Object result = null;
         if (pluginsAreEnabled(annotation.value())) {
             result = pjp.proceed();
+        } else if (innerPjp != null) {
+            result = innerPjp.proceed();
         }
         return result;
     }

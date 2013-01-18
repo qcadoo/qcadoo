@@ -28,6 +28,10 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.After;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -48,11 +52,24 @@ public class RunIfEnabledTest {
     @Mock
     private DependencyMock dependencyMock;
 
+    private static AspectDependencyMock aspectDependencyMock;
+
     private PluginStateResolver pluginStateResolver;
 
     private interface DependencyMock {
 
         void run();
+
+    }
+
+    private interface AspectDependencyMock {
+
+        void runBefore();
+
+        void runAround();
+
+        void runAfter();
+
     }
 
     private static class MethodLevelAnnotatedClass {
@@ -127,6 +144,32 @@ public class RunIfEnabledTest {
         }
     }
 
+    private static class ClassWithoutAnnotations {
+
+        private DependencyMock dependencyMock;
+
+        public ClassWithoutAnnotations(final DependencyMock dependencyMock) {
+            this.dependencyMock = dependencyMock;
+        }
+
+        public void runFirst() {
+            dependencyMock.run();
+        }
+
+        public void runSecond() {
+            dependencyMock.run();
+        }
+    }
+
+    private static class ClassWithRegularMethodExpectingPjpArgument {
+
+        @RunIfEnabled(PLUGIN_NAME)
+        public void doSthg(final ProceedingJoinPoint pjp) throws Throwable {
+            pjp.proceed();
+        }
+
+    }
+
     @SuppressWarnings("deprecation")
     @Before
     public final void init() {
@@ -137,6 +180,8 @@ public class RunIfEnabledTest {
         given(pluginStateResolver.isEnabledOrEnabling(Mockito.anyString())).willReturn(false);
         ReflectionTestUtils.setField(pluginUtilsService, "pluginStateResolver", pluginStateResolver);
         pluginUtilsService.init();
+
+        aspectDependencyMock = mock(AspectDependencyMock.class);
     }
 
     @Test
@@ -289,6 +334,141 @@ public class RunIfEnabledTest {
         verify(pluginStateResolver, never()).isEnabled(PLUGIN_NAME);
         verify(pluginStateResolver).isEnabled(SECOND_PLUGIN_NAME);
         verify(dependencyMock, never()).run();
+    }
+
+    @Test
+    public final void shouldRunAnnotatedMethodWithPjpAsArgument() throws Throwable {
+        // given
+        enablePlugin(PLUGIN_NAME);
+        final ProceedingJoinPoint pjpMock = mock(ProceedingJoinPoint.class);
+        final ClassWithRegularMethodExpectingPjpArgument object = new ClassWithRegularMethodExpectingPjpArgument();
+
+        // when
+        object.doSthg(pjpMock);
+
+        // then
+        verify(pjpMock).proceed();
+    }
+
+    @Test
+    public final void shouldNotRunAnnotatedMethodWithPjpAsArgument() throws Throwable {
+        // given
+        final ProceedingJoinPoint pjpMock = mock(ProceedingJoinPoint.class);
+        final ClassWithRegularMethodExpectingPjpArgument object = new ClassWithRegularMethodExpectingPjpArgument();
+
+        // when
+        object.doSthg(pjpMock);
+
+        // then
+        verify(pjpMock, never()).proceed();
+    }
+
+    @Test
+    public final void shouldRunAnnotatedAroundAdviceButPerformJoinPointExecution() {
+        // given
+        enablePlugin(PLUGIN_NAME);
+        ClassWithoutAnnotations object = new ClassWithoutAnnotations(dependencyMock);
+
+        // when
+        object.runFirst();
+
+        // then
+        verify(dependencyMock).run();
+        verify(aspectDependencyMock).runBefore();
+        verify(aspectDependencyMock).runAround();
+        verify(aspectDependencyMock).runAfter();
+    }
+
+    @Test
+    public final void shouldNotRunAnnotatedAroundAdviceButPerformJoinPointExecution() {
+        // given
+        ClassWithoutAnnotations object = new ClassWithoutAnnotations(dependencyMock);
+
+        // when
+        object.runFirst();
+
+        // then
+        verify(dependencyMock).run();
+        verify(aspectDependencyMock, never()).runBefore();
+        verify(aspectDependencyMock, never()).runAround();
+        verify(aspectDependencyMock, never()).runAfter();
+    }
+
+    @Test
+    public final void shouldRunAspectAnnotatedAroundAdviceButPerformJoinPointExecution() {
+        // given
+        enablePlugin(PLUGIN_NAME);
+        ClassWithoutAnnotations object = new ClassWithoutAnnotations(dependencyMock);
+
+        // when
+        object.runSecond();
+
+        // then
+        verify(dependencyMock).run();
+        verify(aspectDependencyMock).runBefore();
+        verify(aspectDependencyMock).runAround();
+        verify(aspectDependencyMock).runAfter();
+    }
+
+    @Test
+    public final void shouldNotRunAspectAnnotatedAroundAdviceButPerformJoinPointExecution() {
+        // given
+        ClassWithoutAnnotations object = new ClassWithoutAnnotations(dependencyMock);
+
+        // when
+        object.runSecond();
+
+        // then
+        verify(dependencyMock).run();
+        verify(aspectDependencyMock, never()).runBefore();
+        verify(aspectDependencyMock, never()).runAround();
+        verify(aspectDependencyMock, never()).runAfter();
+    }
+
+    @Aspect
+    public static final class AspectWithMethodLevelAnnotation {
+
+        @RunIfEnabled(PLUGIN_NAME)
+        @org.aspectj.lang.annotation.Before("execution(* ClassWithoutAnnotations.runFirst())")
+        public void before() {
+            aspectDependencyMock.runBefore();
+        }
+
+        @RunIfEnabled(PLUGIN_NAME)
+        @Around("execution(* ClassWithoutAnnotations.runFirst())")
+        public void around(final ProceedingJoinPoint pjp) throws Throwable {
+            aspectDependencyMock.runAround();
+            pjp.proceed();
+        }
+
+        @RunIfEnabled(PLUGIN_NAME)
+        @After("execution(* ClassWithoutAnnotations.runFirst())")
+        public void after() {
+            aspectDependencyMock.runAfter();
+        }
+
+    }
+
+    @Aspect
+    @RunIfEnabled(PLUGIN_NAME)
+    public static final class AspectWithClassLevelAnnotation {
+
+        @org.aspectj.lang.annotation.Before("execution(* ClassWithoutAnnotations.runSecond())")
+        public void before() {
+            aspectDependencyMock.runBefore();
+        }
+
+        @Around("execution(* ClassWithoutAnnotations.runSecond())")
+        public void around(final ProceedingJoinPoint pjp) throws Throwable {
+            aspectDependencyMock.runAround();
+            pjp.proceed();
+        }
+
+        @After("execution(* ClassWithoutAnnotations.runSecond())")
+        public void after() {
+            aspectDependencyMock.runAfter();
+        }
+
     }
 
     @SuppressWarnings("deprecation")
