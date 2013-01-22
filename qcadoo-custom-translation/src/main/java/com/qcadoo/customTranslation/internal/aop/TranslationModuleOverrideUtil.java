@@ -73,7 +73,7 @@ public class TranslationModuleOverrideUtil {
     private CustomTranslationCacheService customTranslationCacheService;
 
     public boolean shouldOverride() {
-        return pluginStateResolver.isEnabled(CustomTranslationContants.PLUGIN_IDENTIFIER) && useCustomTranslations;
+        return useCustomTranslations && pluginStateResolver.isEnabled(CustomTranslationContants.PLUGIN_IDENTIFIER);
     }
 
     public void addTranslationKeysForPlugin(final String pluginIdentifier, final Set<String> basenames) {

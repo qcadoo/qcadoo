@@ -46,7 +46,7 @@ public class TranslationServiceOverrideUtil {
     private CustomTranslationResolver customTranslationResolver;
 
     public boolean shouldOverrideTranslation(final String key, final Locale locale) {
-        return pluginStateResolver.isEnabled(CustomTranslationContants.PLUGIN_IDENTIFIER) && useCustomTranslations
+        return useCustomTranslations && pluginStateResolver.isEnabled(CustomTranslationContants.PLUGIN_IDENTIFIER)
                 && customTranslationResolver.isCustomTranslationActive(key, locale);
     }
 
