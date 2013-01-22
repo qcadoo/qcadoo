@@ -79,8 +79,8 @@ public class ViewHookModule extends Module {
     private InternalViewDefinition getViewDefinition() {
         InternalViewDefinition extendsView = (InternalViewDefinition) viewDefinitionService.getWithoutSession(extendsViewPlugin,
                 extendsViewName);
-        Preconditions.checkNotNull(extendsView, "extension referes to view which not exists (" + extendsViewPlugin + " - "
-                + extendsViewName + ")");
+        Preconditions.checkNotNull(extendsView, String.format("extension from %s: referes to view which not exists (%s - %s)",
+                pluginIdentifier, extendsViewPlugin, extendsViewName));
         return extendsView;
     }
 
