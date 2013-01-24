@@ -23,7 +23,6 @@
  */
 package com.qcadoo.view.internal.components.grid;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -668,14 +667,18 @@ public final class GridComponentState extends AbstractComponentState implements 
 
                     entities = result.getEntities();
                     totalEntities = result.getTotalNumberOfEntities();
-                } catch (ParseException e) {
-                    entities = Collections.emptyList();
-                    totalEntities = 0;
+                } catch (GridComponentFilterException gcfe) {
+                    addMessage("qcadooView.grid.filter.incorrectValue", MessageType.FAILURE, gcfe.getFilterValue());
+                    clear();
                 }
             } else {
-                entities = Collections.emptyList();
-                totalEntities = 0;
+                clear();
             }
+        }
+
+        private void clear() {
+            entities = Collections.emptyList();
+            totalEntities = 0;
         }
 
         private void addPaging(final SearchCriteriaBuilder criteria) {

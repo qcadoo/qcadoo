@@ -47,30 +47,34 @@ public final class GridComponentFilterUtils {
     }
 
     public static void addFilters(final Map<String, String> filters, final Map<String, GridComponentColumn> columns,
-            final DataDefinition dataDefinition, final SearchCriteriaBuilder criteria) throws ParseException {
+            final DataDefinition dataDefinition, final SearchCriteriaBuilder criteria) throws GridComponentFilterException {
         for (Map.Entry<String, String> filter : filters.entrySet()) {
 
             String field = getFieldNameByColumnName(columns, filter.getKey());
 
             if (field != null) {
-                FieldDefinition fieldDefinition = getFieldDefinition(dataDefinition, field);
+                try {
+                    FieldDefinition fieldDefinition = getFieldDefinition(dataDefinition, field);
 
-                Map.Entry<GridComponentFilterOperator, String> filterValue = parseFilterValue(filter.getValue());
+                    Map.Entry<GridComponentFilterOperator, String> filterValue = parseFilterValue(filter.getValue());
 
-                if ("".equals(filterValue.getValue())) {
-                    continue;
-                }
+                    if ("".equals(filterValue.getValue())) {
+                        continue;
+                    }
 
-                field = addAliases(criteria, field);
+                    field = addAliases(criteria, field);
 
-                if (fieldDefinition != null && String.class.isAssignableFrom(fieldDefinition.getType().getType())) {
-                    addStringFilter(criteria, filterValue, field);
-                } else if (fieldDefinition != null && Boolean.class.isAssignableFrom(fieldDefinition.getType().getType())) {
-                    addSimpleFilter(criteria, filterValue, field, "1".equals(filterValue.getValue()));
-                } else if (fieldDefinition != null && Date.class.isAssignableFrom(fieldDefinition.getType().getType())) {
-                    addDateFilter(criteria, filterValue, field);
-                } else {
-                    addSimpleFilter(criteria, filterValue, field, filterValue.getValue());
+                    if (fieldDefinition != null && String.class.isAssignableFrom(fieldDefinition.getType().getType())) {
+                        addStringFilter(criteria, filterValue, field);
+                    } else if (fieldDefinition != null && Boolean.class.isAssignableFrom(fieldDefinition.getType().getType())) {
+                        addSimpleFilter(criteria, filterValue, field, "1".equals(filterValue.getValue()));
+                    } else if (fieldDefinition != null && Date.class.isAssignableFrom(fieldDefinition.getType().getType())) {
+                        addDateFilter(criteria, filterValue, field);
+                    } else {
+                        addSimpleFilter(criteria, filterValue, field, filterValue.getValue());
+                    }
+                } catch (ParseException pe) {
+                    throw new GridComponentFilterException(filter.getValue());
                 }
             }
         }
@@ -149,10 +153,10 @@ public final class GridComponentFilterUtils {
 
         switch (filterValue.getKey()) {
             case EQ:
-                criteria.add(SearchRestrictions.or(SearchRestrictions.ge(field, minDate), SearchRestrictions.le(field, maxDate)));
+                criteria.add(SearchRestrictions.between(field, minDate, maxDate));
                 break;
             case NE:
-                criteria.add(SearchRestrictions.or(SearchRestrictions.le(field, minDate), SearchRestrictions.gt(field, maxDate)));
+                criteria.add(SearchRestrictions.not(SearchRestrictions.between(field, minDate, maxDate)));
                 break;
             case GT:
                 criteria.add(SearchRestrictions.gt(field, maxDate));
