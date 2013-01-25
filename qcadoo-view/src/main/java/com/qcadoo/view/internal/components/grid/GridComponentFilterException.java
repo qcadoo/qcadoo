@@ -15,7 +15,11 @@ public class GridComponentFilterException extends Exception {
      *            value of column's filter
      */
     public GridComponentFilterException(final String filterValue) {
-        super();
+        this(filterValue, null);
+    }
+
+    public GridComponentFilterException(final String filterValue, final Throwable cause) {
+        super(cause);
         this.filterValue = filterValue;
     }
 

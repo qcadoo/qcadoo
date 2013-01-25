@@ -23,6 +23,7 @@
  */
 package com.qcadoo.view.internal.components.grid;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.Collections;
 import java.util.Date;
@@ -70,6 +71,8 @@ public final class GridComponentFilterUtils {
                         addSimpleFilter(criteria, filterValue, field, "1".equals(filterValue.getValue()));
                     } else if (fieldDefinition != null && Date.class.isAssignableFrom(fieldDefinition.getType().getType())) {
                         addDateFilter(criteria, filterValue, field);
+                    } else if (fieldDefinition != null && BigDecimal.class.isAssignableFrom(fieldDefinition.getType().getType())) {
+                        addDecimalFilter(criteria, filterValue, field);
                     } else {
                         addSimpleFilter(criteria, filterValue, field, filterValue.getValue());
                     }
@@ -99,6 +102,16 @@ public final class GridComponentFilterUtils {
         }
 
         return lastAlias + path[path.length - 1];
+    }
+
+    private static void addDecimalFilter(final SearchCriteriaBuilder criteria,
+            final Entry<GridComponentFilterOperator, String> filterValue, final String field) throws GridComponentFilterException {
+        try {
+            final BigDecimal decimalValue = new BigDecimal(filterValue.getValue());
+            addSimpleFilter(criteria, filterValue, field, decimalValue);
+        } catch (NumberFormatException nfe) {
+            throw new GridComponentFilterException(filterValue.getValue(), nfe);
+        }
     }
 
     private static void addSimpleFilter(final SearchCriteriaBuilder criteria,
