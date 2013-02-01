@@ -151,7 +151,7 @@ public final class GridComponentFilterUtils {
             case NE:
             case GT:
             case LE:
-                criteria.add(SearchRestrictions.ne(field, value += "*"));
+                criteria.add(SearchRestrictions.ne(field, value));
                 break;
             default:
                 throw new IllegalStateException("Unknown filter operator");
