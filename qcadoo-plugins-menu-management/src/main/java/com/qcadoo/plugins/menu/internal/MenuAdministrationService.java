@@ -92,16 +92,17 @@ public class MenuAdministrationService {
 
     public void translateCategoryForm(final ViewDefinitionState viewDefinitionState) {
         FormComponent categoryForm = (FormComponent) viewDefinitionState.getComponentByReference("form");
-        Entity categoryEntity = null;
-        if (categoryForm.getEntity() != null) {
-            categoryEntity = dataDefinitionService.get(QcadooViewConstants.PLUGIN_IDENTIFIER, QcadooViewConstants.MODEL_CATEGORY)
-                    .get(categoryForm.getEntity().getId());
+        Entity categoryFormEntity = categoryForm.getEntity();
+        Entity categoryDbEntity = null;
+        if (categoryFormEntity != null && categoryFormEntity.getId() != null) {
+            categoryDbEntity = dataDefinitionService.get(QcadooViewConstants.PLUGIN_IDENTIFIER,
+                    QcadooViewConstants.MODEL_CATEGORY).get(categoryFormEntity.getId());
         }
 
-        if (categoryEntity != null && categoryEntity.getStringField(L_PLUGIN_IDENTIFIER) != null) {
+        if (categoryDbEntity != null && categoryDbEntity.getStringField(L_PLUGIN_IDENTIFIER) != null) {
             ComponentState categoryNameField = viewDefinitionState.getComponentByReference("categoryName");
             categoryNameField.setEnabled(false);
-            categoryNameField.setFieldValue(translationUtilsService.getCategoryTranslation(categoryEntity,
+            categoryNameField.setFieldValue(translationUtilsService.getCategoryTranslation(categoryDbEntity,
                     viewDefinitionState.getLocale()));
         }
 
