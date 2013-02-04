@@ -27,6 +27,7 @@ import java.text.ParseException;
 import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateFormatUtils;
 import org.joda.time.DateTime;
 
 /**
@@ -149,6 +150,69 @@ public final class DateUtils {
             roundedDate = roundedDate.withSecondOfMinute(59);
         }
         return roundedDate;
+    }
+
+    /**
+     * Get date's String value in {@value DateUtils#L_DATE_TIME_FORMAT} format
+     * 
+     * @param date
+     *            date to be formatted
+     * @return date as String in {@value DateUtils#L_DATE_TIME_FORMAT} format or empty string if date is null
+     */
+    public static String toDateTimeString(final Date date) {
+        return formatDate(date, DateUtils.L_DATE_TIME_FORMAT);
+    }
+
+    /**
+     * Get date's String value in {@value DateUtils#L_DATE_FORMAT} format
+     * 
+     * @param date
+     *            date to be formatted
+     * @return date as String in {@value DateUtils#L_DATE_FORMAT} format or empty string if date is null
+     */
+    public static String toDateString(final Date date) {
+        return formatDate(date, DateUtils.L_DATE_FORMAT);
+    }
+
+    private static String formatDate(final Date date, final String pattern) {
+        if (date == null) {
+            return "";
+        }
+        return DateFormatUtils.format(date, pattern);
+    }
+
+    /**
+     * Parse date from object
+     * 
+     * @param value
+     *            object to be parsed. Supported argument types:
+     *            <ul>
+     *            <li>String - representing date in {@value DateUtils#L_DATE_TIME_FORMAT} or {@value DateUtils#L_DATE_FORMAT}
+     *            format</li>
+     *            <li>Date</li>
+     *            <li>Number - containing number of milliseconds from 1st January 1970 00:00:00.000 GMT</li>
+     *            </ul>
+     * @return Date parsed from given object or null if object is null
+     * @throws IllegalArgumentException
+     *             if value is unsupported or has incorrect format
+     */
+    public static Date parseDate(final Object value) {
+        Date date = null;
+        if (value instanceof String) {
+            try {
+                date = org.apache.commons.lang.time.DateUtils.parseDateStrictly((String) value, new String[] {
+                        DateUtils.L_DATE_TIME_FORMAT, DateUtils.L_DATE_FORMAT });
+            } catch (ParseException e) {
+                throw new IllegalArgumentException(e.getMessage(), e);
+            }
+        } else if (value instanceof Date) {
+            date = new Date(((Date) value).getTime());
+        } else if (value instanceof Number) {
+            date = new Date(((Number) value).longValue());
+        } else if (value != null) {
+            throw new IllegalArgumentException(String.format("Can't parse value '%s' to date", value));
+        }
+        return date;
     }
 
 }

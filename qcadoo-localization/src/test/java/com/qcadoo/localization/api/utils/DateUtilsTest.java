@@ -1,7 +1,9 @@
 package com.qcadoo.localization.api.utils;
 
+import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.assertEquals;
 
+import java.math.BigInteger;
 import java.text.ParseException;
 import java.util.Date;
 
@@ -11,6 +13,155 @@ import org.joda.time.DateTime;
 import org.junit.Test;
 
 public class DateUtilsTest {
+
+    @Test
+    public final void shouldParseDateFromNullAsNull() {
+        // given
+        final Object input = null;
+
+        // when
+        final Date result = DateUtils.parseDate(input);
+
+        // then
+        assertNull(result);
+    }
+
+    @Test
+    public final void shouldParseDateFromDateString() {
+        // given
+        final Object input = "2013-01-01";
+
+        // when
+        final Date result = DateUtils.parseDate(input);
+
+        // then
+        assertDateEquals(new DateTime(2013, 1, 1, 0, 0, 0, 0), result);
+    }
+
+    @Test
+    public final void shouldParseDateFromDateTimeString() {
+        // given
+        final Object input = "2013-01-01 12:30:45";
+
+        // when
+        final Date result = DateUtils.parseDate(input);
+
+        // then
+        assertDateEquals(new DateTime(2013, 1, 1, 12, 30, 45, 0), result);
+    }
+
+    @Test
+    public final void shouldParseDateFromLongTimestamp() {
+        // given
+        final DateTime dateTime = new DateTime(2013, 1, 1, 12, 30, 45, 0);
+        final Object input = dateTime.getMillis();
+
+        // when
+        final Date result = DateUtils.parseDate(input);
+
+        // then
+        assertDateEquals(dateTime, result);
+    }
+
+    @Test
+    public final void shouldParseDateFromBigIntegerTimestamp() {
+        // given
+        final DateTime dateTime = new DateTime(2013, 1, 1, 12, 30, 45, 0);
+        final Object input = BigInteger.valueOf(dateTime.getMillis());
+
+        // when
+        final Date result = DateUtils.parseDate(input);
+
+        // then
+        assertDateEquals(dateTime, result);
+    }
+
+    @Test
+    public final void shouldParseDateFromDate() {
+        // given
+        final DateTime dateTime = new DateTime(2013, 1, 1, 12, 30, 45, 0);
+        final Object input = dateTime.toDate();
+
+        // when
+        final Date result = DateUtils.parseDate(input);
+
+        // then
+        assertDateEquals(dateTime, result);
+    }
+
+    @Test
+    public final void shouldThrowExceptionIfInputTypeIsUnsupported() {
+        // given
+        final Object input = new Object();
+
+        // when & then
+        try {
+            DateUtils.parseDate(input);
+            Assert.fail();
+        } catch (IllegalArgumentException iae) {
+            // success
+        } catch (Exception e) {
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public final void shouldThrowExceptionIfInputStringHasIncorrectFormat() {
+        // given
+        final Object input = "123 or some text";
+
+        // when & then
+        try {
+            DateUtils.parseDate(input);
+            Assert.fail();
+        } catch (IllegalArgumentException iae) {
+            // success
+        } catch (Exception e) {
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public final void shouldFormatDate() {
+        // given
+        final Date date = new DateTime(2013, 1, 1, 12, 30, 45, 0).toDate();
+
+        // when
+        final String result = DateUtils.toDateString(date);
+
+        // then
+        assertEquals("2013-01-01", result);
+    }
+
+    @Test
+    public final void shouldFormatDateReturnEmptyStringForNull() {
+        // when
+        final String result = DateUtils.toDateString(null);
+
+        // then
+        assertEquals("", result);
+    }
+
+    @Test
+    public final void shouldFormatDateTime() {
+        // given
+        final Date date = new DateTime(2013, 1, 1, 12, 30, 45, 0).toDate();
+
+        // when
+        final String result = DateUtils.toDateTimeString(date);
+
+        // then
+        assertEquals("2013-01-01 12:30:45", result);
+    }
+
+    @Test
+    public final void shouldFormatDateTimeReturnEmptyStringForNull() {
+        // when
+        final String result = DateUtils.toDateTimeString(null);
+
+        // then
+        assertEquals("", result);
+    }
 
     @Test
     public final void shouldNotParseYearLessThan1500AndThrowParseException() throws ParseException {
