@@ -35,7 +35,7 @@ public class UserRoleValidationService {
 
     private boolean checkUserCreatingSuperadmin(final DataDefinition dataDefinition, final FieldDefinition fieldDefinition,
             final Entity entity, final Object oldValue, final Object newValue) {
-        if (Objects.equal(oldValue, newValue) || isCurrentUserShopOrSuperAdmin(entity, dataDefinition)
+        if (Objects.equal(oldValue, newValue) || isCurrentUserShopOrSuperAdmin(dataDefinition)
                 || !QcadooSecurityConstants.ROLE_SUPERADMIN.equals(newValue)) {
             return true;
         }
@@ -43,7 +43,7 @@ public class UserRoleValidationService {
         return false;
     }
 
-    private boolean isCurrentUserShopOrSuperAdmin(final Entity savingUserEntity, final DataDefinition userDataDefinition) {
+    private boolean isCurrentUserShopOrSuperAdmin(final DataDefinition userDataDefinition) {
         if (isCalledFromShop()) {
             return true;
         }
