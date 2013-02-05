@@ -27,6 +27,30 @@ public class DateUtilsTest {
     }
 
     @Test
+    public final void shouldParseDateFromEmptyStringAsNull() {
+        // given
+        final Object input = "";
+
+        // when
+        final Date result = DateUtils.parseDate(input);
+
+        // then
+        assertNull(result);
+    }
+
+    @Test
+    public final void shouldParseDateFromBlankStringAsNull() {
+        // given
+        final Object input = "  ";
+
+        // when
+        final Date result = DateUtils.parseDate(input);
+
+        // then
+        assertNull(result);
+    }
+
+    @Test
     public final void shouldParseDateFromDateString() {
         // given
         final Object input = "2013-01-01";

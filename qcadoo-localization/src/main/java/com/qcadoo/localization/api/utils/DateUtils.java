@@ -37,6 +37,8 @@ import org.joda.time.DateTime;
  */
 public final class DateUtils {
 
+    private static final String PARSE_EXCEPTION_MSG = "Can't parse date from value '%s'";
+
     private static final String L_WRONG_DATE = "wrong date";
 
     /**
@@ -199,18 +201,21 @@ public final class DateUtils {
     public static Date parseDate(final Object value) {
         Date date = null;
         if (value instanceof String) {
-            try {
-                date = org.apache.commons.lang.time.DateUtils.parseDateStrictly((String) value, new String[] {
-                        DateUtils.L_DATE_TIME_FORMAT, DateUtils.L_DATE_FORMAT });
-            } catch (ParseException e) {
-                throw new IllegalArgumentException(e.getMessage(), e);
+            if (StringUtils.isNotBlank((String) value)) {
+                try {
+                    date = org.apache.commons.lang.time.DateUtils.parseDateStrictly((String) value, new String[] {
+                            DateUtils.L_DATE_TIME_FORMAT, DateUtils.L_DATE_FORMAT });
+                } catch (ParseException e) {
+                    throw new IllegalArgumentException(String.format(PARSE_EXCEPTION_MSG, value), e);
+                }
             }
         } else if (value instanceof Date) {
+            // Date is mutable, make defensive copy to disallow implicit ('silent') modifications of the original one
             date = new Date(((Date) value).getTime());
         } else if (value instanceof Number) {
             date = new Date(((Number) value).longValue());
         } else if (value != null) {
-            throw new IllegalArgumentException(String.format("Can't parse value '%s' to date", value));
+            throw new IllegalArgumentException(String.format(PARSE_EXCEPTION_MSG, value));
         }
         return date;
     }
