@@ -73,6 +73,8 @@ public final class GridComponentFilterUtils {
                         addDateFilter(criteria, filterValue, field);
                     } else if (fieldDefinition != null && BigDecimal.class.isAssignableFrom(fieldDefinition.getType().getType())) {
                         addDecimalFilter(criteria, filterValue, field);
+                    } else if (fieldDefinition != null && Integer.class.isAssignableFrom(fieldDefinition.getType().getType())) {
+                        addIntegerFilter(criteria, filterValue, field);
                     } else {
                         addSimpleFilter(criteria, filterValue, field, filterValue.getValue());
                     }
@@ -102,6 +104,16 @@ public final class GridComponentFilterUtils {
         }
 
         return lastAlias + path[path.length - 1];
+    }
+
+    private static void addIntegerFilter(final SearchCriteriaBuilder criteria,
+            final Entry<GridComponentFilterOperator, String> filterValue, final String field) throws GridComponentFilterException {
+        try {
+            final Integer integerValue = Integer.valueOf(filterValue.getValue());
+            addSimpleFilter(criteria, filterValue, field, integerValue);
+        } catch (NumberFormatException nfe) {
+            throw new GridComponentFilterException(filterValue.getValue(), nfe);
+        }
     }
 
     private static void addDecimalFilter(final SearchCriteriaBuilder criteria,
