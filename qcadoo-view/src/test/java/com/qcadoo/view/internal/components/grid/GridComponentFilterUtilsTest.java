@@ -1,5 +1,7 @@
 package com.qcadoo.view.internal.components.grid;
 
+import static junit.framework.Assert.assertNull;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -26,6 +28,7 @@ import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.search.SearchCriteriaBuilder;
 import com.qcadoo.model.api.search.SearchRestrictions;
 import com.qcadoo.model.api.search.SearchRestrictions.SearchMatchMode;
+import com.qcadoo.model.api.types.BelongsToType;
 import com.qcadoo.model.api.types.FieldType;
 
 @RunWith(PowerMockRunner.class)
@@ -142,17 +145,901 @@ public class GridComponentFilterUtilsTest {
                 SearchRestrictions.like(Mockito.eq(TEST_FIELD), Mockito.anyString(), Mockito.any(SearchMatchMode.class)));
     }
 
-    private void performFiltering(final String filterValue, final Class<?> clazz) throws GridComponentFilterException {
-        final Map<String, String> filters = ImmutableMap.of(TEST_COL, filterValue);
-        final FieldDefinition fieldDefinition = mockFieldDefinition(TEST_FIELD, clazz);
+    @Test
+    public final void shouldReturnFieldNameUsingFieldNameAttribute() {
+        // given
+        final FieldDefinition fieldDefinition = mockFieldDefinition(TEST_FIELD, Object.class);
         final Map<String, GridComponentColumn> columns = ImmutableMap.of(TEST_COL,
                 buildGridComponentColumn(TEST_COL, fieldDefinition));
+
+        // when
+        final String fieldName = GridComponentFilterUtils.getFieldNameByColumnName(columns, TEST_COL);
+
+        // then
+        assertEquals(TEST_FIELD, fieldName);
+
+    }
+
+    @Test
+    public final void shouldReturnFieldNameUsingSimpleExpressionWithSquareBracket() {
+        // given
+        final FieldDefinition fieldDefinition = mockFieldDefinition(TEST_FIELD, Object.class);
+        final Map<String, GridComponentColumn> columns = ImmutableMap.of(TEST_COL,
+                buildGridComponentColumn(TEST_COL, fieldDefinition, "#belongsTo['field']"));
+
+        // when
+        final String fieldName = GridComponentFilterUtils.getFieldNameByColumnName(columns, TEST_COL);
+
+        // then
+        assertEquals("belongsTo.field", fieldName);
+    }
+
+    @Test
+    public final void shouldReturnFieldNameUsingExpressionWithSquareBracketAndOneGet() {
+        // given
+        final FieldDefinition fieldDefinition = mockFieldDefinition(TEST_FIELD, Object.class);
+        final Map<String, GridComponentColumn> columns = ImmutableMap.of(TEST_COL,
+                buildGridComponentColumn(TEST_COL, fieldDefinition, "#belongsTo['secondBelongsTo'].get('field')"));
+
+        // when
+        final String fieldName = GridComponentFilterUtils.getFieldNameByColumnName(columns, TEST_COL);
+
+        // then
+        assertEquals("belongsTo.secondBelongsTo.field", fieldName);
+    }
+
+    @Test
+    public final void shouldReturnFieldNameUsingExpressionWithSquareBracketAndTwoGet() {
+        // given
+        final FieldDefinition fieldDefinition = mockFieldDefinition(TEST_FIELD, Object.class);
+        final Map<String, GridComponentColumn> columns = ImmutableMap.of(
+                TEST_COL,
+                buildGridComponentColumn(TEST_COL, fieldDefinition,
+                        "#belongsTo['secondBelongsTo'].get('thirdBelongsTo').get('field')"));
+
+        // when
+        final String fieldName = GridComponentFilterUtils.getFieldNameByColumnName(columns, TEST_COL);
+
+        // then
+        assertEquals("belongsTo.secondBelongsTo.thirdBelongsTo.field", fieldName);
+    }
+
+    @Test
+    public final void shouldReturnFieldNameUsingSimpleExpressionWithOneGet() {
+        // given
+        final FieldDefinition fieldDefinition = mockFieldDefinition(TEST_FIELD, Object.class);
+        final Map<String, GridComponentColumn> columns = ImmutableMap.of(TEST_COL,
+                buildGridComponentColumn(TEST_COL, fieldDefinition, "#belongsTo.get('field')"));
+
+        // when
+        final String fieldName = GridComponentFilterUtils.getFieldNameByColumnName(columns, TEST_COL);
+
+        // then
+        assertEquals("belongsTo.field", fieldName);
+    }
+
+    @Test
+    public final void shouldReturnFieldNameUsingExpressionWithTwoGet() {
+        // given
+        final FieldDefinition fieldDefinition = mockFieldDefinition(TEST_FIELD, Object.class);
+        final Map<String, GridComponentColumn> columns = ImmutableMap.of(TEST_COL,
+                buildGridComponentColumn(TEST_COL, fieldDefinition, "#belongsTo.get('secondBelongsTo').get('field')"));
+
+        // when
+        final String fieldName = GridComponentFilterUtils.getFieldNameByColumnName(columns, TEST_COL);
+
+        // then
+        assertEquals("belongsTo.secondBelongsTo.field", fieldName);
+    }
+
+    @Test
+    public final void shouldReturnFieldNameUsingExpressionWithThreeGet() {
+        // given
+        final FieldDefinition fieldDefinition = mockFieldDefinition(TEST_FIELD, Object.class);
+        final Map<String, GridComponentColumn> columns = ImmutableMap.of(
+                TEST_COL,
+                buildGridComponentColumn(TEST_COL, fieldDefinition,
+                        "#belongsTo.get('secondBelongsTo').get('thirdBelongsTo').get('field')"));
+
+        // when
+        final String fieldName = GridComponentFilterUtils.getFieldNameByColumnName(columns, TEST_COL);
+
+        // then
+        assertEquals("belongsTo.secondBelongsTo.thirdBelongsTo.field", fieldName);
+    }
+
+    @Test
+    public final void shouldReturnFieldNameUsingExpressionWithSaveNavOperator1() {
+        // given
+        final FieldDefinition fieldDefinition = mockFieldDefinition(TEST_FIELD, Object.class);
+        final Map<String, GridComponentColumn> columns = ImmutableMap.of(
+                TEST_COL,
+                buildGridComponentColumn(TEST_COL, fieldDefinition,
+                        "#belongsTo?.get('secondBelongsTo').get('thirdBelongsTo').get('field')"));
+
+        // when
+        final String fieldName = GridComponentFilterUtils.getFieldNameByColumnName(columns, TEST_COL);
+
+        // then
+        assertEquals("belongsTo.secondBelongsTo.thirdBelongsTo.field", fieldName);
+    }
+
+    @Test
+    public final void shouldReturnFieldNameUsingExpressionWithSaveNavOperator2() {
+        // given
+        final FieldDefinition fieldDefinition = mockFieldDefinition(TEST_FIELD, Object.class);
+        final Map<String, GridComponentColumn> columns = ImmutableMap.of(
+                TEST_COL,
+                buildGridComponentColumn(TEST_COL, fieldDefinition,
+                        "#belongsTo['secondBelongsTo']?.get('thirdBelongsTo').get('field')"));
+
+        // when
+        final String fieldName = GridComponentFilterUtils.getFieldNameByColumnName(columns, TEST_COL);
+
+        // then
+        assertEquals("belongsTo.secondBelongsTo.thirdBelongsTo.field", fieldName);
+    }
+
+    @Test
+    public final void shouldReturnFieldNameUsingExpressionWithSaveNavOperator3() {
+        // given
+        final FieldDefinition fieldDefinition = mockFieldDefinition(TEST_FIELD, Object.class);
+        final Map<String, GridComponentColumn> columns = ImmutableMap.of(
+                TEST_COL,
+                buildGridComponentColumn(TEST_COL, fieldDefinition,
+                        "#belongsTo['secondBelongsTo']?.get('thirdBelongsTo')?.get('field')"));
+
+        // when
+        final String fieldName = GridComponentFilterUtils.getFieldNameByColumnName(columns, TEST_COL);
+
+        // then
+        assertEquals("belongsTo.secondBelongsTo.thirdBelongsTo.field", fieldName);
+    }
+
+    @Test
+    public final void shouldReturnFieldNameUsingExpressionWithSaveNavOperator4() {
+        // given
+        final FieldDefinition fieldDefinition = mockFieldDefinition(TEST_FIELD, Object.class);
+        final Map<String, GridComponentColumn> columns = ImmutableMap.of(
+                TEST_COL,
+                buildGridComponentColumn(TEST_COL, fieldDefinition,
+                        "#belongsTo['secondBelongsTo'].get('thirdBelongsTo')?.get('field')"));
+
+        // when
+        final String fieldName = GridComponentFilterUtils.getFieldNameByColumnName(columns, TEST_COL);
+
+        // then
+        assertEquals("belongsTo.secondBelongsTo.thirdBelongsTo.field", fieldName);
+    }
+
+    @Test
+    public final void shouldReturnFieldNameUsingExpressionWithSaveNavOperator5() {
+        // given
+        final FieldDefinition fieldDefinition = mockFieldDefinition(TEST_FIELD, Object.class);
+        final Map<String, GridComponentColumn> columns = ImmutableMap.of(
+                TEST_COL,
+                buildGridComponentColumn(TEST_COL, fieldDefinition,
+                        "#belongsTo?.get('secondBelongsTo').get('thirdBelongsTo')?.get('field')"));
+
+        // when
+        final String fieldName = GridComponentFilterUtils.getFieldNameByColumnName(columns, TEST_COL);
+
+        // then
+        assertEquals("belongsTo.secondBelongsTo.thirdBelongsTo.field", fieldName);
+    }
+
+    @Test
+    public final void shouldReturnNullForUnsupportedExpression1() {
+        // given
+        final FieldDefinition fieldDefinition = mockFieldDefinition(TEST_FIELD, Object.class);
+        final Map<String, GridComponentColumn> columns = ImmutableMap.of(
+                TEST_COL,
+                buildGridComponentColumn(TEST_COL, fieldDefinition,
+                        "#belongsTo['secondBelongsTo'].get('thirdBelongsTo')[0].get('field')"));
+
+        // when
+        final String fieldName = GridComponentFilterUtils.getFieldNameByColumnName(columns, TEST_COL);
+
+        // then
+        assertNull(fieldName);
+    }
+
+    @Test
+    public final void shouldReturnNullForUnsupportedExpression2() {
+        // given
+        final FieldDefinition fieldDefinition = mockFieldDefinition(TEST_FIELD, Object.class);
+        final Map<String, GridComponentColumn> columns = ImmutableMap.of(TEST_COL,
+                buildGridComponentColumn(TEST_COL, fieldDefinition, "'some' + ' concatenated ' + 'value'"));
+
+        // when
+        final String fieldName = GridComponentFilterUtils.getFieldNameByColumnName(columns, TEST_COL);
+
+        // then
+        assertNull(fieldName);
+    }
+
+    @Test
+    public final void shouldReturnNullForUnsupportedExpression3() {
+        // given
+        final FieldDefinition fieldDefinition = mockFieldDefinition(TEST_FIELD, Object.class);
+        final Map<String, GridComponentColumn> columns = ImmutableMap.of(TEST_COL,
+                buildGridComponentColumn(TEST_COL, fieldDefinition, "#belongsTo['field1'] + ' ' + #belongsTo['field2']"));
+
+        // when
+        final String fieldName = GridComponentFilterUtils.getFieldNameByColumnName(columns, TEST_COL);
+
+        // then
+        assertNull(fieldName);
+    }
+
+    @Test
+    public final void shouldReturnNullForUnsupportedExpression4() {
+        // given
+        final FieldDefinition fieldDefinition = mockFieldDefinition(TEST_FIELD, Object.class);
+        final Map<String, GridComponentColumn> columns = ImmutableMap.of(TEST_COL,
+                buildGridComponentColumn(TEST_COL, fieldDefinition, "#belongsTo == null ? '' : #belongsTo['field']"));
+
+        // when
+        final String fieldName = GridComponentFilterUtils.getFieldNameByColumnName(columns, TEST_COL);
+
+        // then
+        assertNull(fieldName);
+    }
+
+    @Test
+    public final void shouldReturnNullForUnsupportedExpression5() {
+        // given
+        final FieldDefinition fieldDefinition = mockFieldDefinition(TEST_FIELD, Object.class);
+        final Map<String, GridComponentColumn> columns = ImmutableMap.of(TEST_COL,
+                buildGridComponentColumn(TEST_COL, fieldDefinition, "T(SomeHelper).nullToBlank(#belongsTo['field'])"));
+
+        // when
+        final String fieldName = GridComponentFilterUtils.getFieldNameByColumnName(columns, TEST_COL);
+
+        // then
+        assertNull(fieldName);
+    }
+
+    @Test
+    public final void shouldReturnFieldDefinitionForSimplePath() {
+        // given
+        FieldDefinition fieldDefinition = mockFieldDefinition("fieldName", String.class);
+        String field = "fieldName";
+
+        // when
+        final FieldDefinition res = GridComponentFilterUtils.getFieldDefinition(dataDefinition, field);
+
+        // then
+        assertEquals(fieldDefinition, res);
+    }
+
+    @Test
+    public final void shouldReturnFieldDefinitionForOneLevelDeepPath() {
+        // given
+        DataDefinition firstBtDataDef = mock(DataDefinition.class);
+        mockBelongsToField("firstBelongsTo", dataDefinition, firstBtDataDef);
+
+        FieldDefinition fieldDefinition = mockFieldDefinition("fieldName", String.class, firstBtDataDef);
+        String field = "firstBelongsTo.fieldName";
+
+        // when
+        final FieldDefinition res = GridComponentFilterUtils.getFieldDefinition(dataDefinition, field);
+
+        // then
+        assertEquals(fieldDefinition, res);
+    }
+
+    @Test
+    public final void shouldReturnFieldDefinitionForTwoLevelsDeepPath() {
+        // given
+        DataDefinition firstBtDataDef = mock(DataDefinition.class);
+        mockBelongsToField("firstBelongsTo", dataDefinition, firstBtDataDef);
+
+        DataDefinition secondBtDataDef = mock(DataDefinition.class);
+        mockBelongsToField("secondBelongsTo", firstBtDataDef, secondBtDataDef);
+
+        FieldDefinition fieldDefinition = mockFieldDefinition("fieldName", String.class, secondBtDataDef);
+        String field = "firstBelongsTo.secondBelongsTo.fieldName";
+
+        // when
+        final FieldDefinition res = GridComponentFilterUtils.getFieldDefinition(dataDefinition, field);
+
+        // then
+        assertEquals(fieldDefinition, res);
+    }
+
+    @Test
+    public final void shouldReturnFieldDefinitionForThreeLevelsDeepPath() {
+        // given
+        DataDefinition firstBtDataDef = mock(DataDefinition.class);
+        mockBelongsToField("firstBelongsTo", dataDefinition, firstBtDataDef);
+
+        DataDefinition secondBtDataDef = mock(DataDefinition.class);
+        mockBelongsToField("secondBelongsTo", firstBtDataDef, secondBtDataDef);
+
+        DataDefinition thirdBtDataDef = mock(DataDefinition.class);
+        mockBelongsToField("thirdBelongsTo", secondBtDataDef, thirdBtDataDef);
+
+        FieldDefinition fieldDefinition = mockFieldDefinition("fieldName", String.class, thirdBtDataDef);
+        String field = "firstBelongsTo.secondBelongsTo.thirdBelongsTo.fieldName";
+
+        // when
+        final FieldDefinition res = GridComponentFilterUtils.getFieldDefinition(dataDefinition, field);
+
+        // then
+        assertEquals(fieldDefinition, res);
+    }
+
+    @Test
+    public final void shouldReturnFieldDefinitionForFourLevelsDeepPath() {
+        // given
+        DataDefinition firstBtDataDef = mock(DataDefinition.class);
+        mockBelongsToField("firstBelongsTo", dataDefinition, firstBtDataDef);
+
+        DataDefinition secondBtDataDef = mock(DataDefinition.class);
+        mockBelongsToField("secondBelongsTo", firstBtDataDef, secondBtDataDef);
+
+        DataDefinition thirdBtDataDef = mock(DataDefinition.class);
+        mockBelongsToField("thirdBelongsTo", secondBtDataDef, thirdBtDataDef);
+
+        DataDefinition fourthBtDataDef = mock(DataDefinition.class);
+        mockBelongsToField("fourthBelongsTo", thirdBtDataDef, fourthBtDataDef);
+
+        FieldDefinition fieldDefinition = mockFieldDefinition("fieldName", String.class, fourthBtDataDef);
+        String field = "firstBelongsTo.secondBelongsTo.thirdBelongsTo.fourthBelongsTo.fieldName";
+
+        // when
+        final FieldDefinition res = GridComponentFilterUtils.getFieldDefinition(dataDefinition, field);
+
+        // then
+        assertEquals(fieldDefinition, res);
+    }
+
+    @Test
+    public final void shouldNotCreateAliasForSimplePath() {
+        // given
+        String field = "fieldName";
+
+        // when
+        GridComponentFilterUtils.addAliases(criteria, field);
+
+        // then
+        verify(criteria, never()).createAlias(Mockito.anyString(), Mockito.anyString());
+    }
+
+    @Test
+    public final void shouldCreateAliasForOneLevelDeepPath() {
+        // given
+        String field = "firstBelongsTo.fieldName";
+
+        // when
+        GridComponentFilterUtils.addAliases(criteria, field);
+
+        // then
+        verify(criteria).createAlias("firstBelongsTo", "firstBelongsTo_a");
+    }
+
+    @Test
+    public final void shouldCreateAliasForTwoLevelDeepPath() {
+        // given
+        String field = "firstBelongsTo.secondBelongsTo.fieldName";
+
+        // when
+        GridComponentFilterUtils.addAliases(criteria, field);
+
+        // then
+        verify(criteria).createAlias("firstBelongsTo", "firstBelongsTo_a");
+        verify(criteria).createAlias("firstBelongsTo_a.secondBelongsTo", "secondBelongsTo_a");
+    }
+
+    @Test
+    public final void shouldCreateAliasForThreeLevelDeepPath() {
+        // given
+        String field = "firstBelongsTo.secondBelongsTo.thirdBelongsTo.fieldName";
+
+        // when
+        GridComponentFilterUtils.addAliases(criteria, field);
+
+        // then
+        verify(criteria).createAlias("firstBelongsTo", "firstBelongsTo_a");
+        verify(criteria).createAlias("firstBelongsTo_a.secondBelongsTo", "secondBelongsTo_a");
+        verify(criteria).createAlias("secondBelongsTo_a.thirdBelongsTo", "thirdBelongsTo_a");
+    }
+
+    @Test
+    public final void shouldCreateAliasForFourLevelDeepPath() {
+        // given
+        String field = "firstBelongsTo.secondBelongsTo.thirdBelongsTo.fourthBelongsTo.fieldName";
+
+        // when
+        GridComponentFilterUtils.addAliases(criteria, field);
+
+        // then
+        verify(criteria).createAlias("firstBelongsTo", "firstBelongsTo_a");
+        verify(criteria).createAlias("firstBelongsTo_a.secondBelongsTo", "secondBelongsTo_a");
+        verify(criteria).createAlias("secondBelongsTo_a.thirdBelongsTo", "thirdBelongsTo_a");
+        verify(criteria).createAlias("thirdBelongsTo_a.fourthBelongsTo", "fourthBelongsTo_a");
+    }
+
+    @Test
+    public final void shouldFilterColumnWithSimplePathInExpression() throws GridComponentFilterException {
+        // given
+        FieldDefinition fieldDefinition = mockFieldDefinition(TEST_FIELD, Integer.class);
+
+        // when
+        performFiltering("3", buildGridComponentColumn(TEST_COL, fieldDefinition, "#" + TEST_FIELD));
+
+        // then
+        PowerMockito.verifyStatic();
+        SearchRestrictions.eq(TEST_FIELD, 3);
+    }
+
+    @Test
+    public final void shouldFilterColumnWithOneLevelDeepPathInExpressionWithBrackets() throws GridComponentFilterException {
+        // given
+        DataDefinition firstBtDataDef = mock(DataDefinition.class);
+        FieldDefinition firstBtFieldDef = mockBelongsToField("firstBt", dataDefinition, firstBtDataDef);
+
+        mockFieldDefinition(TEST_FIELD, Integer.class, firstBtDataDef);
+
+        // when
+        performFiltering("3", buildGridComponentColumn(TEST_COL, firstBtFieldDef, "#firstBt['" + TEST_FIELD + "']"));
+
+        // then
+        PowerMockito.verifyStatic();
+        SearchRestrictions.eq("firstBt_a." + TEST_FIELD, 3);
+
+        PowerMockito.verifyStatic(never());
+        SearchRestrictions.eq(TEST_FIELD, 3);
+    }
+
+    @Test
+    public final void shouldFilterColumnWithTwoLevelsDeepPathInExpressionWithBrackets() throws GridComponentFilterException {
+        // given
+        DataDefinition firstBtDataDef = mock(DataDefinition.class);
+        FieldDefinition firstBtFieldDef = mockBelongsToField("firstBt", dataDefinition, firstBtDataDef);
+
+        DataDefinition secondBtDataDef = mock(DataDefinition.class);
+        mockBelongsToField("secondBt", firstBtDataDef, secondBtDataDef);
+
+        mockFieldDefinition(TEST_FIELD, Integer.class, secondBtDataDef);
+
+        // when
+        performFiltering("3",
+                buildGridComponentColumn(TEST_COL, firstBtFieldDef, "#firstBt['secondBt'].get('" + TEST_FIELD + "')"));
+
+        // then
+        PowerMockito.verifyStatic();
+        SearchRestrictions.eq("secondBt_a." + TEST_FIELD, 3);
+
+        PowerMockito.verifyStatic(never());
+        SearchRestrictions.eq(TEST_FIELD, 3);
+        SearchRestrictions.eq("firstBt_a." + TEST_FIELD, 3);
+    }
+
+    @Test
+    public final void shouldFilterColumnWithThreeLevelsDeepPathInExpressionWithBrackets() throws GridComponentFilterException {
+        // given
+        DataDefinition firstBtDataDef = mock(DataDefinition.class);
+        FieldDefinition firstBtFieldDef = mockBelongsToField("firstBt", dataDefinition, firstBtDataDef);
+
+        DataDefinition secondBtDataDef = mock(DataDefinition.class);
+        mockBelongsToField("secondBt", firstBtDataDef, secondBtDataDef);
+
+        DataDefinition thirdBtDataDef = mock(DataDefinition.class);
+        mockBelongsToField("thirdBt", secondBtDataDef, thirdBtDataDef);
+
+        mockFieldDefinition(TEST_FIELD, Integer.class, thirdBtDataDef);
+
+        // when
+        performFiltering(
+                "3",
+                buildGridComponentColumn(TEST_COL, firstBtFieldDef, "#firstBt['secondBt'].get('thirdBt').get('" + TEST_FIELD
+                        + "')"));
+
+        // then
+        PowerMockito.verifyStatic();
+        SearchRestrictions.eq("thirdBt_a." + TEST_FIELD, 3);
+
+        PowerMockito.verifyStatic(never());
+        SearchRestrictions.eq(TEST_FIELD, 3);
+        SearchRestrictions.eq("firstBt_a." + TEST_FIELD, 3);
+        SearchRestrictions.eq("secondBt_a." + TEST_FIELD, 3);
+    }
+
+    @Test
+    public final void shouldFilterColumnWithFourLevelsDeepPathInExpressionWithBrackets() throws GridComponentFilterException {
+        // given
+        DataDefinition firstBtDataDef = mock(DataDefinition.class);
+        FieldDefinition firstBtFieldDef = mockBelongsToField("firstBt", dataDefinition, firstBtDataDef);
+
+        DataDefinition secondBtDataDef = mock(DataDefinition.class);
+        mockBelongsToField("secondBt", firstBtDataDef, secondBtDataDef);
+
+        DataDefinition thirdBtDataDef = mock(DataDefinition.class);
+        mockBelongsToField("thirdBt", secondBtDataDef, thirdBtDataDef);
+
+        DataDefinition fourthBtDataDef = mock(DataDefinition.class);
+        mockBelongsToField("fourthBt", thirdBtDataDef, fourthBtDataDef);
+
+        mockFieldDefinition(TEST_FIELD, Integer.class, fourthBtDataDef);
+
+        // when
+        performFiltering(
+                "3",
+                buildGridComponentColumn(TEST_COL, firstBtFieldDef, "#firstBt['secondBt'].get('thirdBt').get('fourthBt').get('"
+                        + TEST_FIELD + "')"));
+
+        // then
+        PowerMockito.verifyStatic();
+        SearchRestrictions.eq("fourthBt_a." + TEST_FIELD, 3);
+
+        PowerMockito.verifyStatic(never());
+        SearchRestrictions.eq(TEST_FIELD, 3);
+        SearchRestrictions.eq("firstBt_a." + TEST_FIELD, 3);
+        SearchRestrictions.eq("secondBt_a." + TEST_FIELD, 3);
+        SearchRestrictions.eq("thirdBt_a." + TEST_FIELD, 3);
+    }
+
+    @Test
+    public final void shouldFilterColumnWithOneLevelDeepPathInExpression() throws GridComponentFilterException {
+        // given
+        DataDefinition firstBtDataDef = mock(DataDefinition.class);
+        FieldDefinition firstBtFieldDef = mockBelongsToField("firstBt", dataDefinition, firstBtDataDef);
+
+        mockFieldDefinition(TEST_FIELD, Integer.class, firstBtDataDef);
+
+        // when
+        performFiltering("3", buildGridComponentColumn(TEST_COL, firstBtFieldDef, "#firstBt.get('" + TEST_FIELD + "')"));
+
+        // then
+        PowerMockito.verifyStatic();
+        SearchRestrictions.eq("firstBt_a." + TEST_FIELD, 3);
+
+        PowerMockito.verifyStatic(never());
+        SearchRestrictions.eq(TEST_FIELD, 3);
+    }
+
+    @Test
+    public final void shouldFilterColumnWithTwoLevelsDeepPathInExpression() throws GridComponentFilterException {
+        // given
+        DataDefinition firstBtDataDef = mock(DataDefinition.class);
+        FieldDefinition firstBtFieldDef = mockBelongsToField("firstBt", dataDefinition, firstBtDataDef);
+
+        DataDefinition secondBtDataDef = mock(DataDefinition.class);
+        mockBelongsToField("secondBt", firstBtDataDef, secondBtDataDef);
+
+        mockFieldDefinition(TEST_FIELD, Integer.class, secondBtDataDef);
+
+        // when
+        performFiltering("3",
+                buildGridComponentColumn(TEST_COL, firstBtFieldDef, "#firstBt.get('secondBt').get('" + TEST_FIELD + "')"));
+
+        // then
+        PowerMockito.verifyStatic();
+        SearchRestrictions.eq("secondBt_a." + TEST_FIELD, 3);
+
+        PowerMockito.verifyStatic(never());
+        SearchRestrictions.eq(TEST_FIELD, 3);
+        SearchRestrictions.eq("firstBt_a." + TEST_FIELD, 3);
+    }
+
+    @Test
+    public final void shouldFilterColumnWithThreeLevelsDeepPathInExpression() throws GridComponentFilterException {
+        // given
+        DataDefinition firstBtDataDef = mock(DataDefinition.class);
+        FieldDefinition firstBtFieldDef = mockBelongsToField("firstBt", dataDefinition, firstBtDataDef);
+
+        DataDefinition secondBtDataDef = mock(DataDefinition.class);
+        mockBelongsToField("secondBt", firstBtDataDef, secondBtDataDef);
+
+        DataDefinition thirdBtDataDef = mock(DataDefinition.class);
+        mockBelongsToField("thirdBt", secondBtDataDef, thirdBtDataDef);
+
+        mockFieldDefinition(TEST_FIELD, Integer.class, thirdBtDataDef);
+
+        // when
+        performFiltering(
+                "3",
+                buildGridComponentColumn(TEST_COL, firstBtFieldDef, "#firstBt.get('secondBt').get('thirdBt').get('" + TEST_FIELD
+                        + "')"));
+
+        // then
+        PowerMockito.verifyStatic();
+        SearchRestrictions.eq("thirdBt_a." + TEST_FIELD, 3);
+
+        PowerMockito.verifyStatic(never());
+        SearchRestrictions.eq(TEST_FIELD, 3);
+        SearchRestrictions.eq("firstBt_a." + TEST_FIELD, 3);
+        SearchRestrictions.eq("secondBt_a." + TEST_FIELD, 3);
+    }
+
+    @Test
+    public final void shouldFilterColumnWithFourLevelsDeepPathInExpression() throws GridComponentFilterException {
+        // given
+        DataDefinition firstBtDataDef = mock(DataDefinition.class);
+        FieldDefinition firstBtFieldDef = mockBelongsToField("firstBt", dataDefinition, firstBtDataDef);
+
+        DataDefinition secondBtDataDef = mock(DataDefinition.class);
+        mockBelongsToField("secondBt", firstBtDataDef, secondBtDataDef);
+
+        DataDefinition thirdBtDataDef = mock(DataDefinition.class);
+        mockBelongsToField("thirdBt", secondBtDataDef, thirdBtDataDef);
+
+        DataDefinition fourthBtDataDef = mock(DataDefinition.class);
+        mockBelongsToField("fourthBt", thirdBtDataDef, fourthBtDataDef);
+
+        mockFieldDefinition(TEST_FIELD, Integer.class, fourthBtDataDef);
+
+        // when
+        performFiltering(
+                "3",
+                buildGridComponentColumn(TEST_COL, firstBtFieldDef,
+                        "#firstBt.get('secondBt').get('thirdBt').get('fourthBt').get('" + TEST_FIELD + "')"));
+
+        // then
+        PowerMockito.verifyStatic();
+        SearchRestrictions.eq("fourthBt_a." + TEST_FIELD, 3);
+
+        PowerMockito.verifyStatic(never());
+        SearchRestrictions.eq(TEST_FIELD, 3);
+        SearchRestrictions.eq("firstBt_a." + TEST_FIELD, 3);
+        SearchRestrictions.eq("secondBt_a." + TEST_FIELD, 3);
+        SearchRestrictions.eq("thirdBt_a." + TEST_FIELD, 3);
+    }
+
+    @Test
+    public final void shouldNotFilterColumnWithOneLevelDeepPathInExpressionWithBracketsAndSafetyNavOp()
+            throws GridComponentFilterException {
+        // given
+        DataDefinition firstBtDataDef = mock(DataDefinition.class);
+        FieldDefinition firstBtFieldDef = mockBelongsToField("firstBt", dataDefinition, firstBtDataDef);
+
+        mockFieldDefinition(TEST_FIELD, Integer.class, firstBtDataDef);
+
+        // when
+        performFiltering("3", buildGridComponentColumn(TEST_COL, firstBtFieldDef, "#firstBt?['" + TEST_FIELD + "']"));
+
+        // then
+        PowerMockito.verifyStatic(never());
+        SearchRestrictions.eq("firstBt_a." + TEST_FIELD, 3);
+
+        PowerMockito.verifyStatic(never());
+        SearchRestrictions.eq(TEST_FIELD, 3);
+    }
+
+    @Test
+    public final void shouldFilterColumnWithTwoLevelsDeepPathInExpressionWithBracketsAndSafetyNavOp()
+            throws GridComponentFilterException {
+        // given
+        DataDefinition firstBtDataDef = mock(DataDefinition.class);
+        FieldDefinition firstBtFieldDef = mockBelongsToField("firstBt", dataDefinition, firstBtDataDef);
+
+        DataDefinition secondBtDataDef = mock(DataDefinition.class);
+        mockBelongsToField("secondBt", firstBtDataDef, secondBtDataDef);
+
+        mockFieldDefinition(TEST_FIELD, Integer.class, secondBtDataDef);
+
+        // when
+        performFiltering("3",
+                buildGridComponentColumn(TEST_COL, firstBtFieldDef, "#firstBt['secondBt']?.get('" + TEST_FIELD + "')"));
+
+        // then
+        PowerMockito.verifyStatic();
+        SearchRestrictions.eq("secondBt_a." + TEST_FIELD, 3);
+
+        PowerMockito.verifyStatic(never());
+        SearchRestrictions.eq(TEST_FIELD, 3);
+        SearchRestrictions.eq("firstBt_a." + TEST_FIELD, 3);
+    }
+
+    @Test
+    public final void shouldFilterColumnWithThreeLevelsDeepPathInExpressionWithBracketsAndSafetyNavOp()
+            throws GridComponentFilterException {
+        // given
+        DataDefinition firstBtDataDef = mock(DataDefinition.class);
+        FieldDefinition firstBtFieldDef = mockBelongsToField("firstBt", dataDefinition, firstBtDataDef);
+
+        DataDefinition secondBtDataDef = mock(DataDefinition.class);
+        mockBelongsToField("secondBt", firstBtDataDef, secondBtDataDef);
+
+        DataDefinition thirdBtDataDef = mock(DataDefinition.class);
+        mockBelongsToField("thirdBt", secondBtDataDef, thirdBtDataDef);
+
+        mockFieldDefinition(TEST_FIELD, Integer.class, thirdBtDataDef);
+
+        // when
+        performFiltering(
+                "3",
+                buildGridComponentColumn(TEST_COL, firstBtFieldDef, "#firstBt['secondBt']?.get('thirdBt')?.get('" + TEST_FIELD
+                        + "')"));
+
+        // then
+        PowerMockito.verifyStatic();
+        SearchRestrictions.eq("thirdBt_a." + TEST_FIELD, 3);
+
+        PowerMockito.verifyStatic(never());
+        SearchRestrictions.eq(TEST_FIELD, 3);
+        SearchRestrictions.eq("firstBt_a." + TEST_FIELD, 3);
+        SearchRestrictions.eq("secondBt_a." + TEST_FIELD, 3);
+    }
+
+    @Test
+    public final void shouldFilterColumnWithFourLevelsDeepPathInExpressionWithBracketsAndSafetyNavOp()
+            throws GridComponentFilterException {
+        // given
+        DataDefinition firstBtDataDef = mock(DataDefinition.class);
+        FieldDefinition firstBtFieldDef = mockBelongsToField("firstBt", dataDefinition, firstBtDataDef);
+
+        DataDefinition secondBtDataDef = mock(DataDefinition.class);
+        mockBelongsToField("secondBt", firstBtDataDef, secondBtDataDef);
+
+        DataDefinition thirdBtDataDef = mock(DataDefinition.class);
+        mockBelongsToField("thirdBt", secondBtDataDef, thirdBtDataDef);
+
+        DataDefinition fourthBtDataDef = mock(DataDefinition.class);
+        mockBelongsToField("fourthBt", thirdBtDataDef, fourthBtDataDef);
+
+        mockFieldDefinition(TEST_FIELD, Integer.class, fourthBtDataDef);
+
+        // when
+        performFiltering(
+                "3",
+                buildGridComponentColumn(TEST_COL, firstBtFieldDef,
+                        "#firstBt['secondBt']?.get('thirdBt')?.get('fourthBt')?.get('" + TEST_FIELD + "')"));
+
+        // then
+        PowerMockito.verifyStatic();
+        SearchRestrictions.eq("fourthBt_a." + TEST_FIELD, 3);
+
+        PowerMockito.verifyStatic(never());
+        SearchRestrictions.eq(TEST_FIELD, 3);
+        SearchRestrictions.eq("firstBt_a." + TEST_FIELD, 3);
+        SearchRestrictions.eq("secondBt_a." + TEST_FIELD, 3);
+        SearchRestrictions.eq("thirdBt_a." + TEST_FIELD, 3);
+    }
+
+    @Test
+    public final void shouldFilterColumnWithOneLevelDeepPathInExpressionWithSafetyNavOp() throws GridComponentFilterException {
+        // given
+        DataDefinition firstBtDataDef = mock(DataDefinition.class);
+        FieldDefinition firstBtFieldDef = mockBelongsToField("firstBt", dataDefinition, firstBtDataDef);
+
+        mockFieldDefinition(TEST_FIELD, Integer.class, firstBtDataDef);
+
+        // when
+        performFiltering("3", buildGridComponentColumn(TEST_COL, firstBtFieldDef, "#firstBt?.get('" + TEST_FIELD + "')"));
+
+        // then
+        PowerMockito.verifyStatic();
+        SearchRestrictions.eq("firstBt_a." + TEST_FIELD, 3);
+
+        PowerMockito.verifyStatic(never());
+        SearchRestrictions.eq(TEST_FIELD, 3);
+    }
+
+    @Test
+    public final void shouldFilterColumnWithTwoLevelsDeepPathInExpressionWithSafetyNavOp() throws GridComponentFilterException {
+        // given
+        DataDefinition firstBtDataDef = mock(DataDefinition.class);
+        FieldDefinition firstBtFieldDef = mockBelongsToField("firstBt", dataDefinition, firstBtDataDef);
+
+        DataDefinition secondBtDataDef = mock(DataDefinition.class);
+        mockBelongsToField("secondBt", firstBtDataDef, secondBtDataDef);
+
+        mockFieldDefinition(TEST_FIELD, Integer.class, secondBtDataDef);
+
+        // when
+        performFiltering("3",
+                buildGridComponentColumn(TEST_COL, firstBtFieldDef, "#firstBt?.get('secondBt')?.get('" + TEST_FIELD + "')"));
+
+        // then
+        PowerMockito.verifyStatic();
+        SearchRestrictions.eq("secondBt_a." + TEST_FIELD, 3);
+
+        PowerMockito.verifyStatic(never());
+        SearchRestrictions.eq(TEST_FIELD, 3);
+        SearchRestrictions.eq("firstBt_a." + TEST_FIELD, 3);
+    }
+
+    @Test
+    public final void shouldFilterColumnWithThreeLevelsDeepPathInExpressionWithSafetyNavOp() throws GridComponentFilterException {
+        // given
+        DataDefinition firstBtDataDef = mock(DataDefinition.class);
+        FieldDefinition firstBtFieldDef = mockBelongsToField("firstBt", dataDefinition, firstBtDataDef);
+
+        DataDefinition secondBtDataDef = mock(DataDefinition.class);
+        mockBelongsToField("secondBt", firstBtDataDef, secondBtDataDef);
+
+        DataDefinition thirdBtDataDef = mock(DataDefinition.class);
+        mockBelongsToField("thirdBt", secondBtDataDef, thirdBtDataDef);
+
+        mockFieldDefinition(TEST_FIELD, Integer.class, thirdBtDataDef);
+
+        // when
+        performFiltering(
+                "3",
+                buildGridComponentColumn(TEST_COL, firstBtFieldDef, "#firstBt?.get('secondBt')?.get('thirdBt')?.get('"
+                        + TEST_FIELD + "')"));
+
+        // then
+        PowerMockito.verifyStatic();
+        SearchRestrictions.eq("thirdBt_a." + TEST_FIELD, 3);
+
+        PowerMockito.verifyStatic(never());
+        SearchRestrictions.eq(TEST_FIELD, 3);
+        SearchRestrictions.eq("firstBt_a." + TEST_FIELD, 3);
+        SearchRestrictions.eq("secondBt_a." + TEST_FIELD, 3);
+    }
+
+    @Test
+    public final void shouldFilterColumnWithFourLevelsDeepPathInExpressionWithSafetyNavOp() throws GridComponentFilterException {
+        // given
+        DataDefinition firstBtDataDef = mock(DataDefinition.class);
+        FieldDefinition firstBtFieldDef = mockBelongsToField("firstBt", dataDefinition, firstBtDataDef);
+
+        DataDefinition secondBtDataDef = mock(DataDefinition.class);
+        mockBelongsToField("secondBt", firstBtDataDef, secondBtDataDef);
+
+        DataDefinition thirdBtDataDef = mock(DataDefinition.class);
+        mockBelongsToField("thirdBt", secondBtDataDef, thirdBtDataDef);
+
+        DataDefinition fourthBtDataDef = mock(DataDefinition.class);
+        mockBelongsToField("fourthBt", thirdBtDataDef, fourthBtDataDef);
+
+        mockFieldDefinition(TEST_FIELD, Integer.class, fourthBtDataDef);
+
+        // when
+        performFiltering(
+                "3",
+                buildGridComponentColumn(TEST_COL, firstBtFieldDef,
+                        "#firstBt?.get('secondBt')?.get('thirdBt')?.get('fourthBt')?.get('" + TEST_FIELD + "')"));
+
+        // then
+        PowerMockito.verifyStatic();
+        SearchRestrictions.eq("fourthBt_a." + TEST_FIELD, 3);
+
+        PowerMockito.verifyStatic(never());
+        SearchRestrictions.eq(TEST_FIELD, 3);
+        SearchRestrictions.eq("firstBt_a." + TEST_FIELD, 3);
+        SearchRestrictions.eq("secondBt_a." + TEST_FIELD, 3);
+        SearchRestrictions.eq("thirdBt_a." + TEST_FIELD, 3);
+    }
+
+    private void performFiltering(final String filterValue, final Class<?> clazz) throws GridComponentFilterException {
+        final FieldDefinition fieldDefinition = mockFieldDefinition(TEST_FIELD, clazz);
+        performFiltering(filterValue, buildGridComponentColumn(TEST_COL, fieldDefinition));
+    }
+
+    private void performFiltering(final String filterValue, final GridComponentColumn gridComponentColumn)
+            throws GridComponentFilterException {
+        final Map<String, String> filters = ImmutableMap.of(TEST_COL, filterValue);
+        final Map<String, GridComponentColumn> columns = ImmutableMap.of(TEST_COL, gridComponentColumn);
 
         GridComponentFilterUtils.addFilters(filters, columns, dataDefinition, criteria);
     }
 
-    @SuppressWarnings("unchecked")
+    private FieldDefinition mockBelongsToField(final String fieldName, final DataDefinition sourceDataDefinition,
+            final DataDefinition targetDataDefinition) {
+        final FieldDefinition belongsToField = mock(FieldDefinition.class);
+        given(belongsToField.getName()).willReturn(fieldName);
+
+        final BelongsToType belongsToType = mock(BelongsToType.class);
+        given(belongsToField.getType()).willReturn(belongsToType);
+        given(belongsToType.getDataDefinition()).willReturn(targetDataDefinition);
+
+        given(sourceDataDefinition.getField(fieldName)).willReturn(belongsToField);
+
+        return belongsToField;
+    }
+
     private FieldDefinition mockFieldDefinition(final String fieldName, @SuppressWarnings("rawtypes") final Class typeClass) {
+        return mockFieldDefinition(fieldName, typeClass, null);
+    }
+
+    @SuppressWarnings("unchecked")
+    private FieldDefinition mockFieldDefinition(final String fieldName, @SuppressWarnings("rawtypes") final Class typeClass,
+            final DataDefinition dataDefinition) {
         final FieldDefinition fieldDefinition = mock(FieldDefinition.class);
         given(fieldDefinition.getName()).willReturn(fieldName);
 
@@ -160,13 +1047,26 @@ public class GridComponentFilterUtilsTest {
         given(fieldType.getType()).willReturn(typeClass);
         given(fieldDefinition.getType()).willReturn(fieldType);
 
-        given(dataDefinition.getField(fieldName)).willReturn(fieldDefinition);
+        DataDefinition ddMock = this.dataDefinition;
+        if (dataDefinition != null) {
+            ddMock = dataDefinition;
+        }
+        given(ddMock.getField(fieldName)).willReturn(fieldDefinition);
+
         return fieldDefinition;
     }
 
     private GridComponentColumn buildGridComponentColumn(final String name, final FieldDefinition fieldDefinition) {
+        return buildGridComponentColumn(name, fieldDefinition, null);
+    }
+
+    private GridComponentColumn buildGridComponentColumn(final String name, final FieldDefinition fieldDefinition,
+            final String expression) {
         final GridComponentColumn gridComponentColumn = new GridComponentColumn(name);
         gridComponentColumn.addField(fieldDefinition);
+        if (expression != null) {
+            gridComponentColumn.setExpression(expression);
+        }
         return gridComponentColumn;
 
     }
