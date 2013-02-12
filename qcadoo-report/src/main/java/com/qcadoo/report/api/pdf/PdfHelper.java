@@ -179,4 +179,16 @@ public interface PdfHelper {
      * @return
      */
     int getMaxSizeOfColumnsRows(final List<Integer> columnsListSize);
+
+    /**
+     * Return column sizes
+     * 
+     * @param availableWidth
+     * @param column
+     * @param all
+     *            column
+     * @return
+     */
+    int[] getReportColumnWidths(final Integer availableWidth, final Map<String, Integer> fixedColumns,
+            final List<String> allColumns);
 }

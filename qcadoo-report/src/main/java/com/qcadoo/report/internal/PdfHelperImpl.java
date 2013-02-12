@@ -28,7 +28,9 @@ import static org.springframework.context.i18n.LocaleContextHolder.getLocale;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -61,6 +63,10 @@ import com.qcadoo.report.api.pdf.TableBorderEvent;
 public final class PdfHelperImpl implements PdfHelper {
 
     private static final Logger LOG = LoggerFactory.getLogger(PdfHelperImpl.class);
+
+    private static final Integer MINIMUM_ALLOWABLE_SIZE_COLUMN_IN_PIXEL = 100;
+
+    private static final Integer DEFAULT_REPORT_WIDTH = 515;
 
     @Autowired
     private TranslationService translationService;
@@ -233,5 +239,35 @@ public final class PdfHelperImpl implements PdfHelper {
         table.getDefaultCell().disableBorderSide(Rectangle.RIGHT);
         table.getDefaultCell().setBorderColor(ColorUtils.getLineLightColor());
         return table;
+    }
+
+    @Override
+    public int[] getReportColumnWidths(Integer availableWidth, Map<String, Integer> fixedColumns, List<String> allColumns) {
+        int[] reportColumnWidths = new int[allColumns.size()];
+        Integer remainedAvailableWidth = availableWidth;
+        Map<Integer, Integer> columnWithFixedWidth = new HashMap<Integer, Integer>();
+        int i = 0;
+        for (String entryColumn : allColumns) {
+            for (Map.Entry<String, Integer> entryFixedColumn : fixedColumns.entrySet()) {
+                if (entryColumn.toLowerCase().contains(entryFixedColumn.getKey().toLowerCase())) {
+                    remainedAvailableWidth = remainedAvailableWidth - entryFixedColumn.getValue();
+                    columnWithFixedWidth.put(i, entryFixedColumn.getValue());
+                }
+            }
+            i++;
+        }
+        Integer columnWithoutFixedWidth = allColumns.size() - columnWithFixedWidth.size();
+        if (remainedAvailableWidth >= 0
+                && remainedAvailableWidth > columnWithFixedWidth.size() * MINIMUM_ALLOWABLE_SIZE_COLUMN_IN_PIXEL) {
+            Integer columnSize = remainedAvailableWidth / columnWithoutFixedWidth;
+            Arrays.fill(reportColumnWidths, columnSize);
+            for (Map.Entry<Integer, Integer> entry : columnWithFixedWidth.entrySet()) {
+                reportColumnWidths[entry.getKey()] = entry.getValue();
+            }
+        } else {
+            Integer columnSize = availableWidth / allColumns.size();
+            Arrays.fill(reportColumnWidths, columnSize);
+        }
+        return reportColumnWidths;
     }
 }
