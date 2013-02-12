@@ -64,9 +64,7 @@ public final class PdfHelperImpl implements PdfHelper {
 
     private static final Logger LOG = LoggerFactory.getLogger(PdfHelperImpl.class);
 
-    private static final Integer MINIMUM_ALLOWABLE_SIZE_COLUMN_IN_PIXEL = 100;
-
-    private static final Integer DEFAULT_REPORT_WIDTH = 515;
+    private static final Integer MINIMUM_ALLOWABLE_SIZE_COLUMN_IN_PIXEL = 63;
 
     @Autowired
     private TranslationService translationService;
