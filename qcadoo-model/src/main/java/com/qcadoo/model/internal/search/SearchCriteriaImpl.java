@@ -66,6 +66,8 @@ public final class SearchCriteriaImpl implements SearchCriteriaBuilder, SearchCr
 
     private final Map<String, String> aliases = new HashMap<String, String>();
 
+    private boolean cacheable = false;
+
     public SearchCriteriaImpl(final DataDefinition dataDefinition) {
         checkNotNull(dataDefinition);
         sourceDataDefinition = dataDefinition;
@@ -127,6 +129,13 @@ public final class SearchCriteriaImpl implements SearchCriteriaBuilder, SearchCr
     }
 
     @Override
+    public void addCacheable(Criteria criteria) {
+        if (cacheable) {
+            criteria.setCacheable(cacheable);
+        }
+    }
+
+    @Override
     public void addOrders(final Criteria criteria) {
         if (orders.isEmpty()) {
             if (sourceDataDefinition != null && sourceDataDefinition.isPrioritizable()) {
@@ -144,6 +153,12 @@ public final class SearchCriteriaImpl implements SearchCriteriaBuilder, SearchCr
     @Override
     public SearchCriteriaBuilder setMaxResults(final int maxResults) {
         this.maxResults = maxResults;
+        return this;
+    }
+
+    @Override
+    public SearchCriteriaBuilder setCacheable(final boolean cacheable) {
+        this.cacheable = cacheable;
         return this;
     }
 

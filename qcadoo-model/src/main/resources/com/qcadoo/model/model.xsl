@@ -96,6 +96,9 @@
 					<xsl:value-of
 					select="concat('com.qcadoo.model.beans.', @plugin, '.', translate(substring(@plugin, 1, 1),  $smallcase, $uppercase), substring(@plugin, 2), translate(substring(@name, 1, 1),  $smallcase, $uppercase), substring(@name, 2))" />
 				</xsl:attribute>
+				<xsl:if test="@cacheable='true'">
+					<cache usage="read-write"/>
+				</xsl:if>
 				<id column="id" name="id" type="long">
 					<generator class="increment" />
 				</id>
@@ -182,6 +185,11 @@
 			    </xsl:otherwise>
 			    </xsl:choose>
 			</xsl:attribute>
+			<xsl:if test="@name='tenantId'">
+				<xsl:attribute name="index">
+					<xsl:value-of select="concat(concat(/qcd:model/@plugin, '_', /qcd:model/@name), '_tenantId')" />
+				</xsl:attribute>
+			</xsl:if>
 			<xsl:choose>
 				<xsl:when test="./qcd:validatesLength[@is]">
 					<xsl:attribute name="length">

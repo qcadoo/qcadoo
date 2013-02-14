@@ -30,6 +30,7 @@ import static com.qcadoo.security.constants.QcadooSecurityConstants.MODEL_USER;
 import static com.qcadoo.security.constants.QcadooSecurityConstants.PLUGIN_IDENTIFIER;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -74,9 +75,14 @@ public class SecurityServiceImpl implements InternalSecurityService, UserDetails
     public void onApplicationEvent(final AuthorizedEvent event) {
         UserDetails userDetails = (UserDetails) event.getAuthentication().getPrincipal();
         Entity entity = dataDefinitionService.get(PLUGIN_IDENTIFIER, MODEL_USER).find()
-                .add(SearchRestrictions.eq(L_USER_NAME, userDetails.getUsername())).uniqueResult();
-        entity.setField("lastActivity", new Date());
-        dataDefinitionService.get(PLUGIN_IDENTIFIER, MODEL_USER).save(entity);
+                .add(SearchRestrictions.eq(L_USER_NAME, userDetails.getUsername())).setCacheable(true).uniqueResult();
+        Calendar now = Calendar.getInstance();
+        now.add(Calendar.DAY_OF_YEAR, -1);
+        if (entity.getField("lastActivity") == null || now.getTime().after((Date) entity.getField("lastActivity"))) {
+            entity.setField("lastActivity", new Date());
+
+            dataDefinitionService.get(PLUGIN_IDENTIFIER, MODEL_USER).save(entity);
+        }
     }
 
     @Override

@@ -157,6 +157,14 @@ public interface SearchCriteriaBuilder {
     SearchCriteriaBuilder createCriteria(String association, String alias);
 
     /**
+     * Enable caching of this query result, provided query caching is enabled for the underlying session factory.
+     * 
+     * @param cacheable
+     * @return this search builder
+     */
+    SearchCriteriaBuilder setCacheable(boolean cacheable);
+
+    /**
      * Adds the "equals to" restriction. If field has string type and value contains "%", "*", "_" or "?" the "like" restriction
      * will be used.
      * 

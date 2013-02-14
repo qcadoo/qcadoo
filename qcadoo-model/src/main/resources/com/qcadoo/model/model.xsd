@@ -55,6 +55,7 @@
 			<xs:attribute name="updatable" type="xs:boolean" />
 			<xs:attribute name="activable" type="xs:boolean" />
 			<xs:attribute name="auditable" type="xs:boolean" />
+			<xs:attribute name="cacheable" type="xs:boolean" />
 		</xs:complexType>
 	</xs:element>
 

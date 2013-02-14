@@ -157,13 +157,11 @@ public class DataAccessServiceImpl implements DataAccessService {
 
             LOG.info(genericEntityToSave + " hasn't been saved, bacause of validation errors");
 
-            if (LOG.isDebugEnabled()) {
-                for (ErrorMessage error : genericEntityToSave.getGlobalErrors()) {
-                    LOG.debug(" --- " + error.getMessage());
-                }
-                for (Map.Entry<String, ErrorMessage> error : genericEntityToSave.getErrors().entrySet()) {
-                    LOG.debug(" --- " + error.getKey() + ": " + error.getValue().getMessage());
-                }
+            for (ErrorMessage error : genericEntityToSave.getGlobalErrors()) {
+                LOG.info(" --- " + error.getMessage());
+            }
+            for (Map.Entry<String, ErrorMessage> error : genericEntityToSave.getErrors().entrySet()) {
+                LOG.info(" --- " + error.getKey() + ": " + error.getValue().getMessage());
             }
 
             return genericEntityToSave;
@@ -178,7 +176,9 @@ public class DataAccessServiceImpl implements DataAccessService {
 
         Entity savedEntity = entityService.convertToGenericEntity(dataDefinition, databaseEntity);
 
-        LOG.info(savedEntity + " has been saved");
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(savedEntity + " has been saved");
+        }
 
         for (Entry<String, FieldDefinition> fieldEntry : dataDefinition.getFields().entrySet()) {
             if (fieldEntry.getValue().getType() instanceof HasManyType) {
@@ -540,7 +540,9 @@ public class DataAccessServiceImpl implements DataAccessService {
 
         Entity entity = entityService.convertToGenericEntity(dataDefinition, databaseEntity);
 
-        LOG.info(entity + " has been retrieved");
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(entity + " has been retrieved");
+        }
 
         return entity;
     }
@@ -604,7 +606,9 @@ public class DataAccessServiceImpl implements DataAccessService {
             }
         }
 
-        LOG.info("There are " + totalNumberOfEntities + " entities matching criteria " + searchQuery);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("There are " + totalNumberOfEntities + " entities matching criteria " + searchQuery);
+        }
 
         InternalDataDefinition searchQueryDataDefinition = (InternalDataDefinition) searchQuery.getDataDefinition();
 
@@ -632,10 +636,13 @@ public class DataAccessServiceImpl implements DataAccessService {
 
         searchCriteria.addFirstAndMaxResults(criteria);
         searchCriteria.addOrders(criteria);
+        searchCriteria.addCacheable(criteria);
 
         List<?> results = hibernateService.list(criteria);
 
-        LOG.info("There are " + totalNumberOfEntities + " entities matching criteria " + searchCriteria);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("There are " + totalNumberOfEntities + " entities matching criteria " + searchCriteria);
+        }
 
         InternalDataDefinition searchQueryDataDefinition = (InternalDataDefinition) searchCriteria.getDataDefinition();
 

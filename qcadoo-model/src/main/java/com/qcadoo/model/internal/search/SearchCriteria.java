@@ -47,6 +47,8 @@ public interface SearchCriteria {
 
     void addFirstAndMaxResults(Criteria criteria);
 
+    void addCacheable(Criteria criteria);
+
     void addOrders(Criteria criteria);
 
     DetachedCriteria getHibernateDetachedCriteria();
