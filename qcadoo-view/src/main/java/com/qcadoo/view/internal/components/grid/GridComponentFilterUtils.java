@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 1.2.0-SNAPSHOT
+ * Version: 1.2.0
  *
  * This file is part of Qcadoo.
  *
@@ -23,6 +23,7 @@
  */
 package com.qcadoo.view.internal.components.grid;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.Collections;
 import java.util.Date;
@@ -31,7 +32,7 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.springframework.util.StringUtils;
+import org.apache.commons.lang.StringUtils;
 
 import com.qcadoo.localization.api.utils.DateUtils;
 import com.qcadoo.model.api.DataDefinition;
@@ -47,30 +48,38 @@ public final class GridComponentFilterUtils {
     }
 
     public static void addFilters(final Map<String, String> filters, final Map<String, GridComponentColumn> columns,
-            final DataDefinition dataDefinition, final SearchCriteriaBuilder criteria) throws ParseException {
+            final DataDefinition dataDefinition, final SearchCriteriaBuilder criteria) throws GridComponentFilterException {
         for (Map.Entry<String, String> filter : filters.entrySet()) {
 
             String field = getFieldNameByColumnName(columns, filter.getKey());
 
             if (field != null) {
-                FieldDefinition fieldDefinition = getFieldDefinition(dataDefinition, field);
+                try {
+                    FieldDefinition fieldDefinition = getFieldDefinition(dataDefinition, field);
 
-                Map.Entry<GridComponentFilterOperator, String> filterValue = parseFilterValue(filter.getValue());
+                    Map.Entry<GridComponentFilterOperator, String> filterValue = parseFilterValue(filter.getValue());
 
-                if ("".equals(filterValue.getValue())) {
-                    continue;
-                }
+                    if ("".equals(filterValue.getValue())) {
+                        continue;
+                    }
 
-                field = addAliases(criteria, field);
+                    field = addAliases(criteria, field);
 
-                if (fieldDefinition != null && String.class.isAssignableFrom(fieldDefinition.getType().getType())) {
-                    addStringFilter(criteria, filterValue, field);
-                } else if (fieldDefinition != null && Boolean.class.isAssignableFrom(fieldDefinition.getType().getType())) {
-                    addSimpleFilter(criteria, filterValue, field, "1".equals(filterValue.getValue()));
-                } else if (fieldDefinition != null && Date.class.isAssignableFrom(fieldDefinition.getType().getType())) {
-                    addDateFilter(criteria, filterValue, field);
-                } else {
-                    addSimpleFilter(criteria, filterValue, field, filterValue.getValue());
+                    if (fieldDefinition != null && String.class.isAssignableFrom(fieldDefinition.getType().getType())) {
+                        addStringFilter(criteria, filterValue, field);
+                    } else if (fieldDefinition != null && Boolean.class.isAssignableFrom(fieldDefinition.getType().getType())) {
+                        addSimpleFilter(criteria, filterValue, field, "1".equals(filterValue.getValue()));
+                    } else if (fieldDefinition != null && Date.class.isAssignableFrom(fieldDefinition.getType().getType())) {
+                        addDateFilter(criteria, filterValue, field);
+                    } else if (fieldDefinition != null && BigDecimal.class.isAssignableFrom(fieldDefinition.getType().getType())) {
+                        addDecimalFilter(criteria, filterValue, field);
+                    } else if (fieldDefinition != null && Integer.class.isAssignableFrom(fieldDefinition.getType().getType())) {
+                        addIntegerFilter(criteria, filterValue, field);
+                    } else {
+                        addSimpleFilter(criteria, filterValue, field, filterValue.getValue());
+                    }
+                } catch (ParseException pe) {
+                    throw new GridComponentFilterException(filter.getValue());
                 }
             }
         }
@@ -95,6 +104,26 @@ public final class GridComponentFilterUtils {
         }
 
         return lastAlias + path[path.length - 1];
+    }
+
+    private static void addIntegerFilter(final SearchCriteriaBuilder criteria,
+            final Entry<GridComponentFilterOperator, String> filterValue, final String field) throws GridComponentFilterException {
+        try {
+            final Integer integerValue = Integer.valueOf(filterValue.getValue());
+            addSimpleFilter(criteria, filterValue, field, integerValue);
+        } catch (NumberFormatException nfe) {
+            throw new GridComponentFilterException(filterValue.getValue(), nfe);
+        }
+    }
+
+    private static void addDecimalFilter(final SearchCriteriaBuilder criteria,
+            final Entry<GridComponentFilterOperator, String> filterValue, final String field) throws GridComponentFilterException {
+        try {
+            final BigDecimal decimalValue = new BigDecimal(filterValue.getValue());
+            addSimpleFilter(criteria, filterValue, field, decimalValue);
+        } catch (NumberFormatException nfe) {
+            throw new GridComponentFilterException(filterValue.getValue(), nfe);
+        }
     }
 
     private static void addSimpleFilter(final SearchCriteriaBuilder criteria,
@@ -134,7 +163,7 @@ public final class GridComponentFilterUtils {
             case NE:
             case GT:
             case LE:
-                criteria.add(SearchRestrictions.ne(field, value += "*"));
+                criteria.add(SearchRestrictions.ne(field, value));
                 break;
             default:
                 throw new IllegalStateException("Unknown filter operator");
@@ -149,10 +178,10 @@ public final class GridComponentFilterUtils {
 
         switch (filterValue.getKey()) {
             case EQ:
-                criteria.add(SearchRestrictions.or(SearchRestrictions.ge(field, minDate), SearchRestrictions.le(field, maxDate)));
+                criteria.add(SearchRestrictions.between(field, minDate, maxDate));
                 break;
             case NE:
-                criteria.add(SearchRestrictions.or(SearchRestrictions.le(field, minDate), SearchRestrictions.gt(field, maxDate)));
+                criteria.add(SearchRestrictions.not(SearchRestrictions.between(field, minDate, maxDate)));
                 break;
             case GT:
                 criteria.add(SearchRestrictions.gt(field, maxDate));
@@ -214,7 +243,7 @@ public final class GridComponentFilterUtils {
         return Collections.singletonMap(operator, value.trim()).entrySet().iterator().next();
     }
 
-    private static FieldDefinition getFieldDefinition(DataDefinition dataDefinition, final String field) {
+    protected static FieldDefinition getFieldDefinition(DataDefinition dataDefinition, final String field) {
         String[] path = field.split("\\.");
 
         for (int i = 0; i < path.length; i++) {
@@ -242,21 +271,35 @@ public final class GridComponentFilterUtils {
 
     public static String getFieldNameByColumnName(final Map<String, GridComponentColumn> columns, final String columnName) {
         GridComponentColumn column = columns.get(columnName);
-
         if (column == null) {
             return null;
         }
 
-        if (StringUtils.hasText(column.getExpression())) {
-            Matcher matcher = Pattern.compile("#(\\w+)\\['(\\w+)'\\]").matcher(column.getExpression());
-            if (matcher.matches()) {
-                return matcher.group(1) + "." + matcher.group(2);
-            }
+        final String expression = column.getExpression();
+        if (StringUtils.isNotBlank(expression)) {
+            return getFieldNameFromExpression(expression);
         } else if (column.getFields().size() == 1) {
             return column.getFields().get(0).getName();
         }
-
         return null;
     }
 
+    private static String getFieldNameFromExpression(final String expression) {
+        String pattern = "#(\\w+)(\\['(\\w+)'\\])?([[?]?.get\\('\\w+'\\)]*)";
+        Matcher matcher = Pattern.compile(pattern).matcher(StringUtils.trim(expression));
+        if (matcher.matches()) {
+            final StringBuilder fieldNameBuilder = new StringBuilder(matcher.group(1));
+            if (StringUtils.isNotBlank(matcher.group(3))) {
+                fieldNameBuilder.append(".");
+                fieldNameBuilder.append(matcher.group(3));
+            }
+            if (StringUtils.isNotBlank(matcher.group(4))) {
+                final String[] searchList = new String[] { "get('", "?.get('", "')" };
+                final String[] replacementList = new String[] { "", ".", "" };
+                fieldNameBuilder.append(StringUtils.replaceEach(matcher.group(4), searchList, replacementList));
+            }
+            return fieldNameBuilder.toString();
+        }
+        return null;
+    }
 }

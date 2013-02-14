@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 1.2.0-SNAPSHOT
+ * Version: 1.2.0
  *
  * This file is part of Qcadoo.
  *
@@ -77,8 +77,10 @@ public final class UserService {
     }
 
     public void disableWhenRoleIsSuperadmin(final ViewDefinitionState state) {
+        FormComponent form = (FormComponent) state.getComponentByReference("form");
         FieldComponent role = (FieldComponent) state.getComponentByReference("role");
-        if (QcadooUsersConstants.ROLE_SUPERADMIN.equals(role.getFieldValue())) {
+
+        if ((form.getEntityId() != null) && QcadooUsersConstants.ROLE_SUPERADMIN.equals(role.getFieldValue())) {
             role.setEnabled(false);
         } else {
             role.setEnabled(true);

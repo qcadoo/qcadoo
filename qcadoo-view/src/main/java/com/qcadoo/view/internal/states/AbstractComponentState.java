@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 1.2.0-SNAPSHOT
+ * Version: 1.2.0
  *
  * This file is part of Qcadoo.
  *
@@ -235,15 +235,16 @@ public abstract class AbstractComponentState implements InternalComponentState, 
         json.put(JSON_ENABLED, isEnabled());
         json.put(JSON_PERMANENTLY_DISABLED, permanentlyDisabled);
         json.put(JSON_VISIBLE, isVisible());
-        if (messageHolder != null) {
-            json.put(JSON_MESSAGES, messageHolder.renderMessages());
-        }
 
         if (requestRender) {
             json.put(JSON_CONTENT, renderContent());
             json.put(JSON_UPDATE_STATE, requestUpdateState);
         } else {
             json.put(JSON_UPDATE_STATE, false);
+        }
+
+        if (messageHolder != null) {
+            json.put(JSON_MESSAGES, messageHolder.renderMessages());
         }
 
         return json;

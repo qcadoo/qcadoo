@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 1.2.0-SNAPSHOT
+ * Version: 1.2.0
  *
  * This file is part of Qcadoo.
  *
@@ -23,15 +23,25 @@
  */
 package com.qcadoo.security.constants;
 
-public interface QcadooSecurityConstants {
+public final class QcadooSecurityConstants {
 
-    String PLUGIN_IDENTIFIER = "qcadooSecurity";
+    private QcadooSecurityConstants() {
+    }
+
+    public static final String PLUGIN_IDENTIFIER = "qcadooSecurity";
 
     // MODEL
-    String MODEL_PERSISTENT_TOKEN = "persistentToken";
+    public static final String MODEL_PERSISTENT_TOKEN = "persistentToken";
 
-    String MODEL_USER = "user";
+    public static final String MODEL_USER = "user";
 
     // ROLE
-    String ROLE_SUPERADMIN = "04superAdmins";
+    public static final String ROLE_SUPERADMIN = "04superAdmins";
+
+    public static final String ROLE_USER = "03users";
+
+    public static final String ROLE_SUPERVISOR = "02supervisors";
+
+    public static final String ROLE_ADMIN = "01admins";
+
 }

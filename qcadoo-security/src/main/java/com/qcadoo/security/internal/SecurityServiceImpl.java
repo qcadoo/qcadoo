@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 1.2.0-SNAPSHOT
+ * Version: 1.2.0
  *
  * This file is part of Qcadoo.
  *
@@ -119,7 +119,7 @@ public class SecurityServiceImpl implements InternalSecurityService, UserDetails
     @Monitorable
     public Long getCurrentUserId() {
         String login = SecurityContextHolder.getContext().getAuthentication().getName();
-        Entity entity = getUserEntity(SecurityContextHolder.getContext().getAuthentication().getName());
+        Entity entity = getUserEntity(login);
         checkNotNull(entity, "Current user with login %s cannot be found", login);
         return entity.getId();
     }

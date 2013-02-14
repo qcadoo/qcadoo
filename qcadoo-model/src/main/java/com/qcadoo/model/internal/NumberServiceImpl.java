@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 1.2.0-SNAPSHOT
+ * Version: 1.2.0
  *
  * This file is part of Qcadoo.
  *
@@ -23,33 +23,43 @@
  */
 package com.qcadoo.model.internal;
 
-import static java.math.RoundingMode.HALF_EVEN;
-import static org.springframework.context.i18n.LocaleContextHolder.getLocale;
-
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.util.Locale;
+import java.util.Map;
 
-import javax.annotation.PostConstruct;
-
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 
+import com.google.common.collect.Maps;
 import com.qcadoo.model.api.NumberService;
 
 @Component
-public class NumberServiceImpl implements NumberService {
+public final class NumberServiceImpl implements NumberService {
 
-    private static DecimalFormat decimalFormat = null;
+    public static final int PRECISION = 5;
 
-    @PostConstruct
-    public void init() {
-        initialise();
+    public static final RoundingMode ROUNDING_MODE = RoundingMode.HALF_EVEN;
+
+    private static final Map<Locale, DecimalFormat> DECIMAL_FORMATS = Maps.newConcurrentMap();
+
+    private DecimalFormat getDecimalFormat() {
+        final Locale locale = LocaleContextHolder.getLocale();
+        DecimalFormat decimalFormat = DECIMAL_FORMATS.get(locale);
+        if (decimalFormat == null) {
+            decimalFormat = buildDecimalFormat(locale);
+            DECIMAL_FORMATS.put(locale, decimalFormat);
+        }
+        return decimalFormat;
     }
 
-    private static void initialise() {
-        decimalFormat = (DecimalFormat) DecimalFormat.getInstance(getLocale());
-        decimalFormat.setMaximumFractionDigits(5);
-        decimalFormat.setRoundingMode(HALF_EVEN);
+    private DecimalFormat buildDecimalFormat(final Locale locale) {
+        final DecimalFormat decimalFormat = (DecimalFormat) DecimalFormat.getInstance(locale);
+        decimalFormat.setMaximumFractionDigits(PRECISION);
+        decimalFormat.setRoundingMode(ROUNDING_MODE);
+        return decimalFormat;
     }
 
     @Override
@@ -59,11 +69,15 @@ public class NumberServiceImpl implements NumberService {
 
     @Override
     public String format(final Object obj) {
-        return (obj == null) ? null : decimalFormat.format(obj);
+        String formattedNumber = null;
+        if (obj != null) {
+            formattedNumber = getDecimalFormat().format(obj);
+        }
+        return formattedNumber;
     }
 
     @Override
     public BigDecimal setScale(final BigDecimal decimal) {
-        return decimal.setScale(5, HALF_EVEN);
+        return decimal.setScale(PRECISION, ROUNDING_MODE);
     }
 }

@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 1.2.0-SNAPSHOT
+ * Version: 1.2.0
  *
  * This file is part of Qcadoo.
  *
@@ -80,11 +80,11 @@ public class ViewListenerModule extends Module {
     private ComponentPattern getComponent() {
         InternalViewDefinition extendsView = (InternalViewDefinition) viewDefinitionService.getWithoutSession(extendsViewPlugin,
                 extendsViewName);
-        Preconditions.checkNotNull(extendsView, "extension referes to view which not exists (" + extendsViewPlugin + " - "
-                + extendsViewName + ")");
+        Preconditions.checkNotNull(extendsView, String.format("extension in %s: referes to view which not exists (%s - %s)",
+                pluginIdentifier, extendsViewPlugin, extendsViewName));
         ComponentPattern component = extendsView.getComponentByReference(extendsComponentName);
-        Preconditions.checkNotNull(component, "component '" + extendsComponentName + "' not exists in view " + extendsViewPlugin
-                + " - " + extendsViewName + ")");
+        Preconditions.checkNotNull(component, String.format("extension in %s: component '%s' not exists in view (%s - %s)",
+                pluginIdentifier, extendsComponentName, extendsViewPlugin, extendsViewName));
         return component;
     }
 

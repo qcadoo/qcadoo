@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 1.2.0-SNAPSHOT
+ * Version: 1.2.0
  *
  * This file is part of Qcadoo.
  *
@@ -98,11 +98,13 @@ public class TimeConverterService {
     /**
      * Converts value from data field to Date
      * 
+     * @deprecated This method will be removed soon. Please use {@link DateUtils#parseDate(Object)}
+     * 
      * @param dateFromField
      *            value from view field
      * @return date value in format dd:mm:rrrr hh:mm
      */
-
+    @Deprecated
     public Date getDateTimeFromField(final Object dateFromField) {
         try {
             return new SimpleDateFormat(DateUtils.L_DATE_TIME_FORMAT, Locale.getDefault()).parse((String) dateFromField);
@@ -114,10 +116,13 @@ public class TimeConverterService {
     /**
      * Converts value from field to Object
      * 
+     * @deprecated This method will be removed soon. Please use {@link DateUtils#toDateTimeString(Date)}
+     * 
      * @param date
      *            value from entity
      * @return date to view field
      */
+    @Deprecated
     public Object setDateTimeToField(final Date date) {
         return new SimpleDateFormat(DateUtils.L_DATE_TIME_FORMAT, Locale.getDefault()).format(date);
     }
@@ -125,11 +130,13 @@ public class TimeConverterService {
     /**
      * Converts value from data field to Date
      * 
+     * @deprecated This method will be removed soon. Please use {@link DateUtils#parseDate(Object)}
+     * 
      * @param dateFromField
      *            value from view field
      * @return date value in format dd:mm:rrrr
      */
-
+    @Deprecated
     public Date getDateFromField(final Object dateFromField) {
         try {
             return new SimpleDateFormat(DateUtils.L_DATE_FORMAT, Locale.getDefault()).parse((String) dateFromField);
@@ -141,10 +148,13 @@ public class TimeConverterService {
     /**
      * Converts value from field to Object
      * 
+     * @deprecated This method will be removed soon. Please use {@link DateUtils#toDateString(Date)}
+     * 
      * @param date
      *            value from entity
      * @return date to view field
      */
+    @Deprecated
     public Object setDateToField(final Date date) {
         return new SimpleDateFormat(DateUtils.L_DATE_FORMAT, Locale.getDefault()).format(date);
     }

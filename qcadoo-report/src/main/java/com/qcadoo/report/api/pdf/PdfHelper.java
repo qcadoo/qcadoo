@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 1.2.0-SNAPSHOT
+ * Version: 1.2.0
  *
  * This file is part of Qcadoo.
  *
@@ -146,6 +146,33 @@ public interface PdfHelper {
      *            header labels
      * @param lastColumnAligmentToLeft
      * @param columnWidths
+     * @param headerAlignment
+     * @return table
+     */
+    PdfPTable createTableWithHeader(final int numOfColumns, final List<String> header, final boolean lastColumnAligmentToLeft,
+            final int[] columnWidths, final HeaderAlignment headerAlignment);
+
+    /**
+     * Create new table with header.
+     * 
+     * @param numOfColumns
+     * @param header
+     *            header labels
+     * @param lastColumnAligmentToLeft
+     * @param headerAlignment
+     * @return table
+     */
+    PdfPTable createTableWithHeader(final int numOfColumns, final List<String> header, final boolean lastColumnAligmentToLeft,
+            final HeaderAlignment headerAlignment);
+
+    /**
+     * Create new table with header and given column widths.
+     * 
+     * @param numOfColumns
+     * @param header
+     *            header labels
+     * @param lastColumnAligmentToLeft
+     * @param columnWidths
      * @return table
      */
     PdfPTable createTableWithHeader(final int numOfColumns, final List<String> header, final boolean lastColumnAligmentToLeft,
@@ -179,4 +206,16 @@ public interface PdfHelper {
      * @return
      */
     int getMaxSizeOfColumnsRows(final List<Integer> columnsListSize);
+
+    /**
+     * Return column sizes
+     * 
+     * @param availableWidth
+     * @param column
+     * @param all
+     *            column
+     * @return
+     */
+    int[] getReportColumnWidths(final Integer availableWidth, final Map<String, Integer> fixedColumns,
+            final List<String> allColumns);
 }

@@ -2,7 +2,7 @@
 # ***************************************************************************
 # Copyright (c) 2010 Qcadoo Limited
 # Project: Qcadoo Framework
-# Version: 1.2.0-SNAPSHOT
+# Version: 1.2.0
 #
 # This file is part of Qcadoo.
 #

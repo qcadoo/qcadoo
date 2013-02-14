@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 1.2.0-SNAPSHOT
+ * Version: 1.2.0
  *
  * This file is part of Qcadoo.
  *
@@ -142,6 +142,8 @@ public final class ValidationServiceImpl implements ValidationService {
                 continue;
             }
 
+            // FIXME MAKU / KRNA - old Value should not be null - should be fetched from existingGenericEntity [which is currently
+            // out of scope :'( ]
             ((InternalFieldDefinition) fieldDefinitionEntry.getValue()).callValidators(genericEntity, null,
                     genericEntity.getField(fieldDefinitionEntry.getKey()));
         }
