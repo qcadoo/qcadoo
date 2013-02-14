@@ -56,6 +56,7 @@ import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.localization.api.utils.DateUtils;
 import com.qcadoo.report.api.ColorUtils;
 import com.qcadoo.report.api.FontUtils;
+import com.qcadoo.report.api.pdf.HeaderAlignment;
 import com.qcadoo.report.api.pdf.PdfHelper;
 import com.qcadoo.report.api.pdf.TableBorderEvent;
 
@@ -167,6 +168,25 @@ public final class PdfHelperImpl implements PdfHelper {
 
     @Override
     public PdfPTable createTableWithHeader(final int numOfColumns, final List<String> header,
+            final boolean lastColumnAligmentToLeft, final int[] columnWidths, final HeaderAlignment headerAlignment) {
+        PdfPTable table = new PdfPTable(numOfColumns);
+        try {
+            table.setWidths(columnWidths);
+        } catch (DocumentException e) {
+            LOG.error(e.getMessage(), e);
+        }
+        return setTableProperties(header, lastColumnAligmentToLeft, table, headerAlignment);
+    }
+
+    @Override
+    public PdfPTable createTableWithHeader(final int numOfColumns, final List<String> header,
+            final boolean lastColumnAligmentToLeft, final HeaderAlignment headerAlignment) {
+        PdfPTable table = new PdfPTable(numOfColumns);
+        return setTableProperties(header, lastColumnAligmentToLeft, table, headerAlignment);
+    }
+
+    @Override
+    public PdfPTable createTableWithHeader(final int numOfColumns, final List<String> header,
             final boolean lastColumnAligmentToLeft, final int[] columnWidths) {
         PdfPTable table = new PdfPTable(numOfColumns);
         try {
@@ -174,14 +194,14 @@ public final class PdfHelperImpl implements PdfHelper {
         } catch (DocumentException e) {
             LOG.error(e.getMessage(), e);
         }
-        return setTableProperties(header, lastColumnAligmentToLeft, table);
+        return setTableProperties(header, lastColumnAligmentToLeft, table, HeaderAlignment.CENTER);
     }
 
     @Override
     public PdfPTable createTableWithHeader(final int numOfColumns, final List<String> header,
             final boolean lastColumnAligmentToLeft) {
         PdfPTable table = new PdfPTable(numOfColumns);
-        return setTableProperties(header, lastColumnAligmentToLeft, table);
+        return setTableProperties(header, lastColumnAligmentToLeft, table, HeaderAlignment.CENTER);
     }
 
     @Override
@@ -207,7 +227,8 @@ public final class PdfHelperImpl implements PdfHelper {
         return headerTable;
     }
 
-    private PdfPTable setTableProperties(final List<String> header, final boolean lastColumnAligmentToLeft, final PdfPTable table) {
+    private PdfPTable setTableProperties(final List<String> header, final boolean lastColumnAligmentToLeft,
+            final PdfPTable table, final HeaderAlignment aligment) {
         table.setWidthPercentage(100f);
         table.setHorizontalAlignment(Element.ALIGN_LEFT);
         table.setSpacingBefore(7.0f);
@@ -216,6 +237,15 @@ public final class PdfHelperImpl implements PdfHelper {
         table.getDefaultCell().setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.getDefaultCell().setPadding(5.0f);
         table.getDefaultCell().disableBorderSide(Rectangle.RIGHT);
+
+        if (HeaderAlignment.LEFT.equals(aligment)) {
+            table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_LEFT);
+        } else if (HeaderAlignment.CENTER.equals(aligment)) {
+            table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
+        } else if (HeaderAlignment.RIGHT.equals(aligment)) {
+            table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_RIGHT);
+        }
+
         int i = 0;
         for (String element : header) {
             i++;
@@ -233,6 +263,7 @@ public final class PdfHelperImpl implements PdfHelper {
                 table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_LEFT);
             }
         }
+        table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_LEFT);
         table.getDefaultCell().setBackgroundColor(null);
         table.getDefaultCell().disableBorderSide(Rectangle.RIGHT);
         table.getDefaultCell().setBorderColor(ColorUtils.getLineLightColor());

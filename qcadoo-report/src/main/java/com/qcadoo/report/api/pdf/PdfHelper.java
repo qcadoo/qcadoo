@@ -146,6 +146,33 @@ public interface PdfHelper {
      *            header labels
      * @param lastColumnAligmentToLeft
      * @param columnWidths
+     * @param headerAlignment
+     * @return table
+     */
+    PdfPTable createTableWithHeader(final int numOfColumns, final List<String> header, final boolean lastColumnAligmentToLeft,
+            final int[] columnWidths, final HeaderAlignment headerAlignment);
+
+    /**
+     * Create new table with header.
+     * 
+     * @param numOfColumns
+     * @param header
+     *            header labels
+     * @param lastColumnAligmentToLeft
+     * @param headerAlignment
+     * @return table
+     */
+    PdfPTable createTableWithHeader(final int numOfColumns, final List<String> header, final boolean lastColumnAligmentToLeft,
+            final HeaderAlignment headerAlignment);
+
+    /**
+     * Create new table with header and given column widths.
+     * 
+     * @param numOfColumns
+     * @param header
+     *            header labels
+     * @param lastColumnAligmentToLeft
+     * @param columnWidths
      * @return table
      */
     PdfPTable createTableWithHeader(final int numOfColumns, final List<String> header, final boolean lastColumnAligmentToLeft,
