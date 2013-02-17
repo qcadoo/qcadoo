@@ -32,13 +32,13 @@
 
 	<c:choose>
 		<c:when test="${useCompressedStaticResources}">
-			<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/qcadoo-min.css" type="text/css" />
-			<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/custom.css" type="text/css" />
+			<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/qcadoo-min.css?ver=${buildNumber}" type="text/css" />
+			<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/custom.css?ver=${buildNumber}" type="text/css" />
 		</c:when>
 		<c:otherwise>
-			<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/core/dashboard.css" type="text/css" />
-			<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/core/menu/style.css" type="text/css" />
-			<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/custom.css" type="text/css" />
+			<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/core/dashboard.css?ver=${buildNumber}" type="text/css" />
+			<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/core/menu/style.css?ver=${buildNumber}" type="text/css" />
+			<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/custom.css?ver=${buildNumber}" type="text/css" />
 		</c:otherwise>
 	</c:choose>
 	

@@ -31,7 +31,7 @@
 String ctx = request.getContextPath();
 %>
 
-<link rel="stylesheet" href="${ctx}/qcadooPlugins/public/css/pluginInfo.css" type="text/css" />
+<link rel="stylesheet" href="${ctx}/qcadooPlugins/public/css/pluginInfo.css?ver=${buildNumber}" type="text/css" />
 
 <script type="text/JavaScript">
 

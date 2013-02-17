@@ -30,7 +30,7 @@
 <html>
 <head>
 	
-	<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/_jquery-1.4.2.min.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/_jquery-1.4.2.min.js?ver=${buildNumber}"></script>
 
 	<link rel="shortcut icon" href="/qcadooView/public/img/core/icons/favicon.png">
 	
@@ -103,7 +103,7 @@
 			color: black;
 		}
 	</style>
-	<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/custom.css" type="text/css" />
+	<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/custom.css?ver=${buildNumber}" type="text/css" />
 	
 </head>
 <body >

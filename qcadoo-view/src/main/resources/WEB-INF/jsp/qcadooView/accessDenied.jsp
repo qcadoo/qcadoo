@@ -30,8 +30,8 @@
 <html>
 <head>
 	
-	<link rel="stylesheet" href="css/login.css" type="text/css" />
-	<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/custom.css" type="text/css" />
+	<link rel="stylesheet" href="css/login.css?ver=${buildNumber}" type="text/css" />
+	<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/custom.css?ver=${buildNumber}" type="text/css" />
 	
 </head>
 <body>
