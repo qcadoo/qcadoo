@@ -68,7 +68,7 @@
 	</div>
 	<div class="systemInfoItem">
 		<span class="systemInfoItemLabel">${translationsMap['qcadooView.systemInfo.buildNumber.label']}</span>
-		<span class="systemInfoItemValue">ver=${buildNumber}</span>
+		<span class="systemInfoItemValue">${buildNumber}</span>
 	</div>
 	<div class="systemInfoItem">
 		<span class="systemInfoItemLabel">${translationsMap['qcadooView.systemInfo.buildTime.label']}</span>
