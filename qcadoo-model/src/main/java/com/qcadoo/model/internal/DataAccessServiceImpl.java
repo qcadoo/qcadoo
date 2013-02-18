@@ -176,8 +176,8 @@ public class DataAccessServiceImpl implements DataAccessService {
 
         Entity savedEntity = entityService.convertToGenericEntity(dataDefinition, databaseEntity);
 
-        if (LOG.isDebugEnabled()) {
-            LOG.debug(savedEntity + " has been saved");
+        if (LOG.isInfoEnabled()) {
+            LOG.info(savedEntity + " has been saved");
         }
 
         for (Entry<String, FieldDefinition> fieldEntry : dataDefinition.getFields().entrySet()) {
