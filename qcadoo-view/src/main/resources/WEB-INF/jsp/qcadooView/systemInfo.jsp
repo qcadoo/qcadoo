@@ -67,10 +67,6 @@
 		<span class="systemInfoItemValue">${buildFrameworkVersion}</span>
 	</div>
 	<div class="systemInfoItem">
-		<span class="systemInfoItemLabel">${translationsMap['qcadooView.systemInfo.buildNumber.label']}</span>
-		<span class="systemInfoItemValue">${buildNumber}</span>
-	</div>
-	<div class="systemInfoItem">
 		<span class="systemInfoItemLabel">${translationsMap['qcadooView.systemInfo.buildTime.label']}</span>
 		<span class="systemInfoItemValue">${buildTime}</span>
 	</div>
