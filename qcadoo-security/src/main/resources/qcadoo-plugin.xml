@@ -24,7 +24,7 @@
     ***************************************************************************
 
 -->
-<plugin plugin="qcadooSecurity" version="${qcadoo.plugin.version}"
+<plugin plugin="qcadooSecurity" group="framework" version="${qcadoo.plugin.version}"
 	system="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns="http://schema.qcadoo.org/plugin" xmlns:model="http://schema.qcadoo.org/modules/model"
 	xmlns:view="http://schema.qcadoo.org/modules/view" xmlns:security="http://schema.qcadoo.org/modules/security"
@@ -47,6 +47,8 @@
 			<name>Qcadoo Limited</name>
 			<url>http://www.qcadoo.com/</url>
 		</vendor>
+		<description>System plugin responsible for security. Security mechanism is described above in Layers Description chapter.</description>
+		<license>AGPL</license>
 	</information>
 
 	<dependencies>
@@ -74,5 +76,9 @@
 			prefix="security" />
 
 	</modules>
+	
+	<features>
+		<dev-library />
+	</features>
 
 </plugin>

@@ -24,7 +24,7 @@
     ***************************************************************************
 
 -->
-<plugin plugin="qcadooView" version="${qcadoo.plugin.version}"
+<plugin plugin="qcadooView" group="framework" version="${qcadoo.plugin.version}"
 	system="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns="http://schema.qcadoo.org/plugin" xmlns:model="http://schema.qcadoo.org/modules/model"
 	xmlns:view="http://schema.qcadoo.org/modules/view" xmlns:menu="http://schema.qcadoo.org/modules/menu"
@@ -47,6 +47,8 @@
 			<name>Qcadoo Limited</name>
 			<url>http://www.qcadoo.com/</url>
 		</vendor>
+		<description>System plugin responsible for creation and management views and menu definitions which are deployed in the plugins.</description>
+		<license>AGPL</license>
 	</information>
 
 	<dependencies>
@@ -138,6 +140,10 @@
 
 		<view:resource uri="public/**/*" />
 	</modules>
+	
+	<features>
+		<dev-library />
+	</features>
 
 
 </plugin>

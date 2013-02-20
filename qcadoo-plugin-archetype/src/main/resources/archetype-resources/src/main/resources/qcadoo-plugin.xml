@@ -2,7 +2,7 @@
 #set( $symbol_dollar = '$' )
 #set( $symbol_escape = '\' )
 <?xml version="1.0" encoding="UTF-8"?>
-<plugin plugin="${identifier}" version="${version}"
+<plugin plugin="${identifier}" group="framework" version="${version}"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schema.qcadoo.org/plugin"
 	xmlns:model="http://schema.qcadoo.org/modules/model" xmlns:view="http://schema.qcadoo.org/modules/view"
 	xmlns:menu="http://schema.qcadoo.org/modules/menu" xmlns:localization="http://schema.qcadoo.org/modules/localization"
@@ -27,6 +27,7 @@
 			<name>${vendorName}</name>
 			<url>${vendorUrl}</url>
 		</vendor>
+		<license>AGPL</license>
 	</information>
 
 

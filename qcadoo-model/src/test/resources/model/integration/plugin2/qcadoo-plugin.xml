@@ -24,7 +24,7 @@
     ***************************************************************************
 
 -->
-<plugin plugin="machines" version="1.0.0"
+<plugin plugin="machines" group="framework" version="1.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schema.qcadoo.org/plugin"
 	xmlns:model="http://schema.qcadoo.org/modules/model"
 	xsi:schemaLocation="

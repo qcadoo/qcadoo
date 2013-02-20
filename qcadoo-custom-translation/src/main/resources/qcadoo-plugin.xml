@@ -24,7 +24,7 @@
     ***************************************************************************
 
 -->
-<plugin plugin="qcadooCustomTranslation" version="${qcadoo.plugin.version}"
+<plugin plugin="qcadooCustomTranslation" group="framework" version="${qcadoo.plugin.version}"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schema.qcadoo.org/plugin"
 	xmlns:model="http://schema.qcadoo.org/modules/model" xmlns:view="http://schema.qcadoo.org/modules/view"
 	xmlns:menu="http://schema.qcadoo.org/modules/menu" xmlns:localization="http://schema.qcadoo.org/modules/localization"
@@ -49,6 +49,8 @@
 			<name>Qcadoo Limited</name>
 			<url>http://www.qcadoo.com/</url>
 		</vendor>
+		<description>Plugin responsible for overriding tranaslations from resources.</description>
+		<license>AGPL</license>
 	</information>
 
 	<dependencies>
@@ -65,5 +67,9 @@
 		
 		<custom:custom class="com.qcadoo.customTranslation.internal.CustomTranslationsOnStartupService" />
 	</modules>
+	
+	<features>
+		<dev-library />
+	</features>
 
 </plugin>

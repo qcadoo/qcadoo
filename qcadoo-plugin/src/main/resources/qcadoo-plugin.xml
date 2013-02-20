@@ -24,7 +24,7 @@
     ***************************************************************************
 
 -->
-<plugin plugin="qcadooPlugin" version="${qcadoo.plugin.version}"
+<plugin plugin="qcadooPlugin" group="framework" version="${qcadoo.plugin.version}"
 	system="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns="http://schema.qcadoo.org/plugin" xmlns:model="http://schema.qcadoo.org/modules/model"
 	xmlns:view="http://schema.qcadoo.org/modules/view"
@@ -42,10 +42,16 @@
 			<name>Qcadoo Limited</name>
 			<url>http://www.qcadoo.com/</url>
 		</vendor>
+		<description>System plugin which provided functionality to manage plugins state flow and every operations connected with this functionality.</description>
+		<license>AGPL</license>
 	</information>
 
 	<modules>
 		<model:model model="plugin" resource="model/plugin.xml" />
 	</modules>
+	
+	<features>
+		<dev-library />
+	</features>
 
 </plugin>

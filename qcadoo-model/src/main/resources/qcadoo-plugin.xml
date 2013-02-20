@@ -24,7 +24,7 @@
     ***************************************************************************
 
 -->
-<plugin plugin="qcadooModel" version="${qcadoo.plugin.version}"
+<plugin plugin="qcadooModel" group="framework" version="${qcadoo.plugin.version}"
 	system="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns="http://schema.qcadoo.org/plugin" xmlns:model="http://schema.qcadoo.org/modules/model"
 	xmlns:view="http://schema.qcadoo.org/modules/view" xmlns:custom="http://schema.qcadoo.org/modules/custom"
@@ -44,6 +44,8 @@
 			<name>Qcadoo Limited</name>
 			<url>http://www.qcadoo.com/</url>
 		</vendor>
+		<description>System plugin responsible for Hibernate entities and mappings preparation based on our model defintions.</description>
+		<license>AGPL</license>
 	</information>
 
 	<dependencies>
@@ -63,5 +65,9 @@
 		<model:dictionary name="units" />
 		<custom:custom class="com.qcadoo.model.internal.units.UnitDictionaryModule" />
 	</modules>
+	
+	<features>
+		<dev-library />
+	</features>
 
 </plugin>

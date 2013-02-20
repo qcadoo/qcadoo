@@ -268,6 +268,8 @@ public class DefaultPluginDescriptorParser implements PluginDescriptorParser {
                 if (!ignoreModules) {
                     addModules(child, pluginBuilder, pluginIdentifier);
                 }
+            } else if ("features".equals(child.getNodeName())) {
+                // TODO KRNA
             } else {
                 throw new IllegalStateException("Wrong plugin tag: " + child.getNodeName());
             }
@@ -284,6 +286,8 @@ public class DefaultPluginDescriptorParser implements PluginDescriptorParser {
                 pluginBuilder.withDescription(getTextContent(child));
             } else if ("vendor".equals(child.getNodeName())) {
                 addPluginVendorInformation(child, pluginBuilder);
+            } else if ("license".equals(child.getNodeName())) {
+                // TODO KRNA
             } else {
                 throw new IllegalStateException("Wrong plugin information tag: " + child.getNodeName());
             }

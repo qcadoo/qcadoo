@@ -24,7 +24,7 @@
     ***************************************************************************
 
 -->
-<plugin plugin="qcadooLocalization" version="${qcadoo.plugin.version}"
+<plugin plugin="qcadooLocalization" group="framework" version="${qcadoo.plugin.version}"
 	system="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns="http://schema.qcadoo.org/plugin" xmlns:model="http://schema.qcadoo.org/modules/model"
 	xmlns:view="http://schema.qcadoo.org/modules/view" xmlns:menu="http://schema.qcadoo.org/modules/menu"
@@ -47,6 +47,8 @@
 			<name>Qcadoo Limited</name>
 			<url>http://www.qcadoo.com/</url>
 		</vendor>
+		<description>System plugin responsible for message transaltion and number or date format localization.</description>
+		<license>AGPL</license>
 	</information>
 
 	<dependencies>
@@ -62,5 +64,9 @@
 		<localization:translation-locale
 			locale="pl" label="Polski" />
 	</modules>
+	
+	<features>
+		<dev-library />
+	</features>
 
 </plugin>

@@ -24,7 +24,7 @@
     ***************************************************************************
 
 -->
-<plugin plugin="qcadooUnitConversions" version="${qcadoo.plugin.version}"
+<plugin plugin="qcadooUnitConversions" group="framework" version="${qcadoo.plugin.version}"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schema.qcadoo.org/plugin"
 	xmlns:model="http://schema.qcadoo.org/modules/model" xmlns:view="http://schema.qcadoo.org/modules/view"
 	xmlns:menu="http://schema.qcadoo.org/modules/menu" xmlns:localization="http://schema.qcadoo.org/modules/localization"
@@ -46,6 +46,8 @@
 			<name>Qcadoo Limited</name>
 			<url>http://www.qcadoo.com/</url>
 		</vendor>
+		<description>Provides views of management conversions (like qcadooDictionaries). Implementation of conversions (like the dictionary) is in qcadooModel.</description>
+		<license>AGPL</license>
 	</information>
 
 	<dependencies>
@@ -67,5 +69,9 @@
 
 		<view:view resource="view/unitConversions.xml" />
 	</modules>
+	
+	<features>
+		<dev-library />
+	</features>
 
 </plugin>
