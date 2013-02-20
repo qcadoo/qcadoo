@@ -977,6 +977,22 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 		if (!_height) {
 			_height = 300;
 		}
+		
+		if (this.options.fixedHeight) {
+			var margin = Math.round(_width * 0.02);
+			if (margin < 20) {
+				margin = 20;
+			}
+			var height = $(window).height();
+			var childrenElement = $("#"+"window_windowContent");
+			var ribbonHeight = $(".windowContainer .windowContainerRibbon").height() || 70;
+			var containerHeight = Math.round(height - 2 * margin - ribbonHeight);
+			_height = containerHeight;
+			if($("#window_windowHeader").length > 0){
+				_height -= 35;
+			}
+			_height -= 55;
+		}
 
 		element.css("height", _height + "px")
 

@@ -135,6 +135,8 @@ public class GridComponentPattern extends AbstractComponentPattern {
 
     private boolean activable = false;
 
+    private Boolean fixedHeight;
+
     private RowStyleResolver rowStyleResolver = null;
 
     private CriteriaModifier criteriaModifier = null;
@@ -230,6 +232,8 @@ public class GridComponentPattern extends AbstractComponentPattern {
         json.put("prioritizable", getDataDefinition().isPrioritizable());
         json.put("searchableColumns", new JSONArray(searchableColumns));
         json.put("orderableColumns", new JSONArray(orderableColumns));
+
+        json.put("fixedHeight", fixedHeight);
 
         if (belongsToFieldDefinition != null) {
             json.put("belongsToFieldName", belongsToFieldDefinition.getName());
@@ -486,6 +490,8 @@ public class GridComponentPattern extends AbstractComponentPattern {
                 parseColumnOption(option);
             } else if ("weakRelation".equals(option.getType())) {
                 weakRelation = Boolean.parseBoolean(option.getValue());
+            } else if ("fixedHeight".equals(option.getType())) {
+                fixedHeight = Boolean.parseBoolean(option.getValue());
             }
         }
         if (defaultOrderColumn == null) {
@@ -585,5 +591,9 @@ public class GridComponentPattern extends AbstractComponentPattern {
 
     public CriteriaModifier getCriteriaModifier() {
         return criteriaModifier;
+    }
+
+    public void setFixedHeight(final Boolean fixedHeight) {
+        this.fixedHeight = fixedHeight;
     }
 }
