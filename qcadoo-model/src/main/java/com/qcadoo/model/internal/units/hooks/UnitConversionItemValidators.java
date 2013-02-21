@@ -45,4 +45,15 @@ public class UnitConversionItemValidators {
         return false;
     }
 
+    public boolean validateUnits(final DataDefinition dataDefinition, final Entity unitConversionItem) {
+        String unitFrom = unitConversionItem.getStringField(UnitConversionItemFields.UNIT_FROM);
+        String unitTo = unitConversionItem.getStringField(UnitConversionItemFields.UNIT_TO);
+        if (unitFrom.equals(unitTo)) {
+            unitConversionItem.addError(dataDefinition.getField(UnitConversionItemFields.UNIT_TO),
+                    "qcadooUnitConversions.unitConversionItem.validateError.theSameUnit");
+            return false;
+        }
+        return true;
+    }
+
 }
