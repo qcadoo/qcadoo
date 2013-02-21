@@ -175,6 +175,10 @@ QCD.components.elements.Calendar = function(_element, _mainController) {
 			checkTimeFormat(timeInput.val());
 		});
 		
+		timeInput.change(function() {
+			inputDataChanged();
+		});
+		
 		input.change(function() {
 			inputDataChanged();
 		});
@@ -315,7 +319,7 @@ QCD.components.elements.Calendar = function(_element, _mainController) {
 			return null;
 		}
 		try {
-			return $.datepicker.parseDate("yy-mm-dd", dateString);
+			return new Date(dateString + ' ' + timeInput.val());
 		} catch (e) {
 			return null;
 		}
@@ -325,6 +329,10 @@ QCD.components.elements.Calendar = function(_element, _mainController) {
 	this.setDate = function(date) {
 		var dateString = $.datepicker.formatDate("yy-mm-dd", date);
 		input.val(dateString);
+		if (withTimePicker) {
+			var timeString = getNormalizedTime(date);
+			timeInput.val(timeString);
+		}
 		inputDataChanged();
 	}
 	
