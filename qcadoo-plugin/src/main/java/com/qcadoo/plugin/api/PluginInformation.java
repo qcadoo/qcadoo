@@ -36,6 +36,8 @@ public class PluginInformation {
 
     private final String vendorUrl;
 
+    private final String license;
+
     private final String name;
 
     /**
@@ -49,13 +51,25 @@ public class PluginInformation {
      *            vendor
      * @param vendorUrl
      *            verdor's URL
+     * @param license
      */
-    public PluginInformation(final String name, final String description, final String vendor, final String vendorUrl) {
+    public PluginInformation(final String name, final String description, final String vendor, final String vendorUrl,
+            final String license) {
         super();
         this.name = name;
         this.description = description;
         this.vendor = vendor;
         this.vendorUrl = vendorUrl;
+        this.license = license;
+    }
+
+    /**
+     * Returns plugin's license
+     * 
+     * @return license
+     */
+    public String getLicense() {
+        return license;
     }
 
     /**
@@ -105,6 +119,7 @@ public class PluginInformation {
         result = prime * result + ((name == null) ? 0 : name.hashCode());
         result = prime * result + ((vendor == null) ? 0 : vendor.hashCode());
         result = prime * result + ((vendorUrl == null) ? 0 : vendorUrl.hashCode());
+        result = prime * result + ((license == null) ? 0 : license.hashCode());
         return result;
     }
 
@@ -149,6 +164,13 @@ public class PluginInformation {
                 return false;
             }
         } else if (!vendorUrl.equals(other.vendorUrl)) {
+            return false;
+        }
+        if (license == null) {
+            if (other.license != null) {
+                return false;
+            }
+        } else if (!license.equals(other.license)) {
             return false;
         }
         return true;

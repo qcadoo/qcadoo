@@ -236,6 +236,8 @@ public final class DefaultPlugin implements InternalPlugin {
 
         private String name;
 
+        private String license;
+
         private boolean system;
 
         private final Map<ModuleFactory<?>, List<Module>> modulesByFactories = new LinkedHashMap<ModuleFactory<?>, List<Module>>();
@@ -276,6 +278,11 @@ public final class DefaultPlugin implements InternalPlugin {
             return this;
         }
 
+        public Builder withFeature(final String featureName, final String systemName) {
+            // TODO KRNA add features
+            return this;
+        }
+
         public Builder withName(final String name) {
             this.name = name;
             return this;
@@ -296,13 +303,18 @@ public final class DefaultPlugin implements InternalPlugin {
             return this;
         }
 
+        public Builder withLicense(final String license) {
+            this.license = license;
+            return this;
+        }
+
         public Builder asSystem() {
             this.system = true;
             return this;
         }
 
         public InternalPlugin build() {
-            PluginInformation pluginInformation = new PluginInformation(name, description, vendor, vendorUrl);
+            PluginInformation pluginInformation = new PluginInformation(name, description, vendor, vendorUrl, license);
             return new DefaultPlugin(identifier, fileName, system, version, unmodifiableList(factories),
                     unmodifiableMap(modulesByFactories), pluginInformation, unmodifiableSet(dependencyInformations));
         }

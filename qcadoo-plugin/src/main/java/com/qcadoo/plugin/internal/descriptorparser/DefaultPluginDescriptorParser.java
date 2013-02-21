@@ -269,7 +269,7 @@ public class DefaultPluginDescriptorParser implements PluginDescriptorParser {
                     addModules(child, pluginBuilder, pluginIdentifier);
                 }
             } else if ("features".equals(child.getNodeName())) {
-                // TODO KRNA
+                addFeturesInformation(child, pluginBuilder);
             } else {
                 throw new IllegalStateException("Wrong plugin tag: " + child.getNodeName());
             }
@@ -287,7 +287,7 @@ public class DefaultPluginDescriptorParser implements PluginDescriptorParser {
             } else if ("vendor".equals(child.getNodeName())) {
                 addPluginVendorInformation(child, pluginBuilder);
             } else if ("license".equals(child.getNodeName())) {
-                // TODO KRNA
+                pluginBuilder.withLicense(getTextContent(child));
             } else {
                 throw new IllegalStateException("Wrong plugin information tag: " + child.getNodeName());
             }
@@ -332,6 +332,19 @@ public class DefaultPluginDescriptorParser implements PluginDescriptorParser {
 
         checkNotNull(dependencyPluginIdentifier, "No plugin dependency identifier");
         pluginBuilder.withDependency(dependencyPluginIdentifier, dependencyPluginVersion);
+    }
+
+    private void addFeturesInformation(final Node featuresNode, final Builder pluginBuilder) {
+        for (Node child : getChildNodes(featuresNode)) {
+            addFeatureInformation(child, pluginBuilder);
+        }
+    }
+
+    private void addFeatureInformation(final Node featureNode, final Builder pluginBuilder) {
+        String featureName = featureNode.getNodeName();
+        String systemName = getStringAttribute(featureNode, "system");
+
+        pluginBuilder.withFeature(featureName, systemName);
     }
 
     private void addModules(final Node modulesNode, final Builder pluginBuilder, final String pluginIdentifier) {
