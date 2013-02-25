@@ -401,6 +401,10 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 	this.getComponentValue = function() {
 		return currentState;
 	}
+	
+	function getColumnFilterElement(name) {
+	    return _this.element.find("#gs_" + name);
+	}
 
 	this.setComponentState = function(state) {
 		currentState.selectedEntityId = state.selectedEntityId;
@@ -438,7 +442,7 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 		if (state.filters) {
 			currentState.filters = state.filters;
 			for ( var filterIndex in currentState.filters) {
-				$("#gs_" + filterIndex).val(currentState.filters[filterIndex]);
+			    getColumnFilterElement(filterIndex).val(currentState.filters[filterIndex]);
 			}
 			findMatchingPredefiniedFilter();
 			onFiltersStateChange();
@@ -680,7 +684,7 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 		if (gridParameters.isLookup || gridParameters.filtersDefaultEnabled) {
 			headerController.setFilterActive();
 			currentState.filtersEnabled = true;
-			$("#gs_" + options.columns[0].name).focus();
+			getColumnFilterElement(options.columns[0].name).focus();
 		} else {
 			grid[0].toggleToolbar();
 			currentState.filtersEnabled = false;
@@ -795,7 +799,7 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 			for ( var i in columnModel) {
 				var column = columnModel[i];
 				if (column.isSerchable) {
-					var filterValue = $("#gs_" + column.name).val();
+					var filterValue = getColumnFilterElement(column.name).val();
 					filterValue = $.trim(filterValue);
 					if (filterValue && filterValue != "") {
 						currentState.filters[column.name] = filterValue;
@@ -815,7 +819,7 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 		if (currentState.filtersEnabled) {
 			currentGridHeight -= 23;
 			updateSearchFields();
-			$("#gs_" + options.columns[0].name).focus();
+			getColumnFilterElement(options.columns[0].name).focus();
 		} else {
 			currentGridHeight += 23;
 		}
@@ -828,7 +832,7 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 		currentState.filters = new Object();
 		for ( var i in columnModel) {
 			var column = columnModel[i];
-			$("#gs_" + column.name).val("");
+			getColumnFilterElement(column.name).val("");
 		}
 		onFiltersStateChange();
 		onCurrentStateChange();
@@ -838,7 +842,7 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 		for ( var i in columnModel) {
 			var column = columnModel[i];
 			if (column.isSerchable) {
-				var columnElement = $("#gs_" + column.name);
+				var columnElement = getColumnFilterElement(column.name);
 				columnElement.unbind('change keyup');
 				if (column.filterValues) {
 					columnElement.change(onFilterChange);
@@ -863,7 +867,7 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 					});
 				}
 			} else {
-				$("#gs_" + column.name).hide();
+			    getColumnFilterElement(column.name).hide();
 			}
 		}
 	}
@@ -880,8 +884,9 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 		}
 		currentState.filters = new Object();
 		currentState.filters[column] = filterText;
-		$("#gs_" + column).val(filterText);
-		$("#gs_" + column).focus();
+		var columnFilterElement = getColumnFilterElement(column);
+		columnFilterElement.val(filterText);
+		columnFilterElement.focus();
 		updateSearchFields();
 		onFiltersStateChange();
 	}
@@ -898,12 +903,12 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 		var filterObject = filter.filter
 		for ( var i in columnModel) {
 			var column = columnModel[i];
-			$("#gs_" + column.name).val("");
+			getColumnFilterElement(column.name).val("");
 		}
 		var fieldsNo = 0;
 		for ( var col in filterObject) {
 			filterObject[col] = Encoder.htmlDecode(filterObject[col]);
-			$("#gs_" + col).val(filterObject[col]);
+			getColumnFilterElement(col).val(filterObject[col]);
 			fieldsNo++;
 		}
 		currentState.filters = filterObject;
@@ -923,7 +928,7 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 				currentGridHeight -= 23;
 				grid.setGridHeight(currentGridHeight);
 				$(grid[0]).find('.ui-search-toolbar').show();
-				$("#gs_" + options.columns[0].name).focus();
+				getColumnFilterElement(options.columns[0].name).focus();
 			
 				headerController.setFilterActive();
 				currentState.filtersEnabled = true;
