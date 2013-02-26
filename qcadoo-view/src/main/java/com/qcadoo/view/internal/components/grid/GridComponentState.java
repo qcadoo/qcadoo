@@ -136,6 +136,8 @@ public final class GridComponentState extends AbstractComponentState implements 
 
     private final Map<String, String> filters = new HashMap<String, String>();
 
+    private final PredefinedFilter defaultPredefinedFilter;
+
     private boolean onlyActive = true;
 
     private final boolean activable;
@@ -159,6 +161,7 @@ public final class GridComponentState extends AbstractComponentState implements 
         this.scopeFieldDataDefinition = dataDefinition;
         this.rowStyleResolver = pattern.getRowStyleResolver();
         this.criteriaModifier = pattern.getCriteriaModifier();
+        this.defaultPredefinedFilter = pattern.getDefaultPredefinedFilter();
         registerEvent("refresh", eventPerformer, "refresh");
         registerEvent("select", eventPerformer, "selectEntity");
         registerEvent("addExistingEntity", eventPerformer, "addExistingEntity");
@@ -241,6 +244,15 @@ public final class GridComponentState extends AbstractComponentState implements 
         requestUpdateState();
     }
 
+    private void applyPredefinedFilter(final PredefinedFilter predefinedFilter) {
+        if (predefinedFilter == null) {
+            return;
+        }
+        orderColumn = predefinedFilter.getOrderColumn();
+        orderDirection = predefinedFilter.getOrderDirection();
+        filters.putAll(predefinedFilter.getParsedFilterRestrictions());
+    }
+
     @SuppressWarnings("unchecked")
     private void passFiltersFromJson(final JSONObject json) throws JSONException {
         if (json.has(JSON_FILTERS_ENABLED) && !json.isNull(JSON_FILTERS_ENABLED)) {
@@ -254,6 +266,8 @@ public final class GridComponentState extends AbstractComponentState implements 
                 String column = filtersKeys.next();
                 filters.put(column, filtersJson.getString(column).trim());
             }
+        } else {
+            applyPredefinedFilter(defaultPredefinedFilter);
         }
     }
 
@@ -358,12 +372,7 @@ public final class GridComponentState extends AbstractComponentState implements 
             json.put(JSON_ORDER, jsonOrder);
         }
 
-        JSONObject jsonFilters = new JSONObject();
-        for (Map.Entry<String, String> entry : filters.entrySet()) {
-            jsonFilters.put(entry.getKey(), entry.getValue());
-        }
-
-        json.put(JSON_FILTERS, jsonFilters);
+        json.put(JSON_FILTERS, new JSONObject(filters));
 
         JSONArray jsonEntities = new JSONArray();
         for (Entity entity : entities) {

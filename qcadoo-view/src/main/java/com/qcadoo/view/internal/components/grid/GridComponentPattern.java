@@ -25,8 +25,6 @@ package com.qcadoo.view.internal.components.grid;
 
 import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -121,7 +119,9 @@ public class GridComponentPattern extends AbstractComponentPattern {
 
     private boolean weakRelation = false;
 
-    private final List<PredefinedFilter> predefinedFilters = new LinkedList<PredefinedFilter>();
+    private String defaultPredefinedFilterName = "";
+
+    private final Map<String, PredefinedFilter> predefinedFilters = Maps.newLinkedHashMap();
 
     private int height = DEFAULT_GRID_HEIGHT;
 
@@ -215,7 +215,7 @@ public class GridComponentPattern extends AbstractComponentPattern {
         json.put("filtersDefaultVisible", filtersDefaultVisible);
 
         JSONArray predefinedFiltersArray = new JSONArray();
-        for (PredefinedFilter predefinedFilter : predefinedFilters) {
+        for (PredefinedFilter predefinedFilter : predefinedFilters.values()) {
             predefinedFiltersArray.put(predefinedFilter.toJson());
         }
 
@@ -264,7 +264,7 @@ public class GridComponentPattern extends AbstractComponentPattern {
         addTranslation(translations, "diselectAll", locale);
 
         addTranslation(translations, "customPredefinedFilter", locale);
-        for (PredefinedFilter filter : predefinedFilters) {
+        for (PredefinedFilter filter : predefinedFilters.values()) {
             addTranslation(translations, "filter." + filter.getName(), locale);
         }
 
@@ -375,6 +375,10 @@ public class GridComponentPattern extends AbstractComponentPattern {
         for (int i = 0; i < childNodes.getLength(); i++) {
             final Node child = childNodes.item(i);
             if ("predefinedFilters".equals(child.getNodeName())) {
+                String defaultValue = parser.getStringAttribute(child, "default");
+                if (defaultValue != null) {
+                    defaultPredefinedFilterName = defaultValue;
+                }
                 NodeList predefinedFilterChildNodes = child.getChildNodes();
                 parsePredefinedFilterChildNodes(predefinedFilterChildNodes, parser);
             } else if (RowStyleResolver.NODE_NAME.equals(child.getNodeName())) {
@@ -383,6 +387,7 @@ public class GridComponentPattern extends AbstractComponentPattern {
                 criteriaModifier = new CriteriaModifier(child, parser, getApplicationContext());
             }
         }
+
     }
 
     private void parsePredefinedFilterChildNodes(final NodeList componentNodes, final ViewDefinitionParser parser)
@@ -392,7 +397,8 @@ public class GridComponentPattern extends AbstractComponentPattern {
             if (child.getNodeType() == Node.ELEMENT_NODE) {
                 if ("predefinedFilter".equals(child.getNodeName())) {
                     PredefinedFilter predefinedFilter = new PredefinedFilter();
-                    predefinedFilter.setName(parser.getStringAttribute(child, "name"));
+                    String predefinedFilterName = parser.getStringAttribute(child, "name");
+                    predefinedFilter.setName(predefinedFilterName);
 
                     NodeList restrictionNodes = child.getChildNodes();
                     for (int restrictionNodesIndex = 0; restrictionNodesIndex < restrictionNodes.getLength(); restrictionNodesIndex++) {
@@ -430,7 +436,7 @@ public class GridComponentPattern extends AbstractComponentPattern {
                         predefinedFilter.setOrderDirection(defaultOrderDirection);
                     }
 
-                    predefinedFilters.add(predefinedFilter);
+                    predefinedFilters.put(predefinedFilterName, predefinedFilter);
                 } else {
                     throwIllegalStateException("predefinedFilters can only contain 'predefinedFilter' tag");
                     throw new ViewDefinitionParserNodeException(child,
@@ -479,7 +485,7 @@ public class GridComponentPattern extends AbstractComponentPattern {
                 defaultOrderColumn = option.getAtrributeValue(L_COLUMN);
                 defaultOrderDirection = option.getAtrributeValue("direction");
                 if (predefinedFilters != null) {
-                    for (PredefinedFilter predefinedFilter : predefinedFilters) {
+                    for (PredefinedFilter predefinedFilter : predefinedFilters.values()) {
                         if (predefinedFilter.getOrderColumn() == null) {
                             predefinedFilter.setOrderColumn(defaultOrderColumn);
                             predefinedFilter.setOrderDirection(defaultOrderDirection);
@@ -595,5 +601,9 @@ public class GridComponentPattern extends AbstractComponentPattern {
 
     public void setFixedHeight(final Boolean fixedHeight) {
         this.fixedHeight = fixedHeight;
+    }
+
+    public PredefinedFilter getDefaultPredefinedFilter() {
+        return predefinedFilters.get(defaultPredefinedFilterName);
     }
 }

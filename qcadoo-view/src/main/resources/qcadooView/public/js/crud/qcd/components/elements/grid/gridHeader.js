@@ -207,21 +207,25 @@ QCD.components.elements.grid.GridHeaderController = function(_gridController, _m
 		}
 		if (gridParameters.hasPredefinedFilters) {
 			var options = new Array();
-			for (var i in gridParameters.predefinedFilters) {
-				options[i] = {
-					value: i,
-					label: translations["filter."+gridParameters.predefinedFilters[i].label]
-				};
-			}
+			
+            for (var i = 0, j = gridParameters.predefinedFilters.length; i < j; i++) {
+                var predefinedFilter = gridParameters.predefinedFilters[i];
+                options.push({
+                    value : i,
+                    label : translations["filter." + predefinedFilter.label]
+                });
+            }
+			
 			headerElements.predefiniedFiltersCombo = QCD.components.elements.utils.HeaderUtils.createHeaderComboBox(options, function(selectedItem) {
 				if (selectedItem < 0) {
 					return;
 				}
 				headerElements.predefiniedFiltersCustomOption_line1.css("display","none");
-				headerElements.predefiniedFiltersCustomOption_line2.css("display","none");
-				var filterObj = gridParameters.predefinedFilters[selectedItem];
-				gridController.setFilterObject(filterObj);	
+                headerElements.predefiniedFiltersCustomOption_line2.css("display","none");
+                var filterObj = gridParameters.predefinedFilters[selectedItem];
+                gridController.setFilterObject(filterObj);
 			});
+
 			if (gridParameters.hasFilterableColumns) {
 				headerElements.predefiniedFiltersCombo.append(headerElements.predefiniedFiltersCustomOption_line1);
 				headerElements.predefiniedFiltersCombo.append(headerElements.predefiniedFiltersCustomOption_line2);
