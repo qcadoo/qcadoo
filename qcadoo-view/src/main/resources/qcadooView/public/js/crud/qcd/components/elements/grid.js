@@ -647,7 +647,11 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 				headerController.getFooterElement());
 
 		currentState.firstEntity = headerController.getPagingParameters()[0];
-		currentState.maxEntities = headerController.getPagingParameters()[1];
+		
+		if(gridParameters.paging){
+			currentState.maxEntities = headerController.getPagingParameters()[1];
+		}
+		
 
 		gridParameters.onCellSelect = function(rowId, iCol, cellcontent, e) {
 			rowClicked(rowId, iCol);
