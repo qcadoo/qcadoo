@@ -38,6 +38,7 @@ import org.hibernate.criterion.DetachedCriteria;
 
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
+import com.qcadoo.model.api.search.JoinType;
 import com.qcadoo.model.api.search.SearchCriteriaBuilder;
 import com.qcadoo.model.api.search.SearchCriterion;
 import com.qcadoo.model.api.search.SearchOrder;
@@ -189,13 +190,18 @@ public final class SearchCriteriaImpl implements SearchCriteriaBuilder, SearchCr
 
     @Override
     public SearchCriteriaBuilder createAlias(final String associationPath, final String alias) {
+        return createAlias(associationPath, alias, null);
+    }
+
+    @Override
+    public SearchCriteriaBuilder createAlias(final String associationPath, final String alias, final JoinType joinType) {
         if (aliases.containsKey(alias)) {
             if (!associationPath.equals(aliases.get(alias))) {
                 throw new IllegalStateException("Cannot register alias " + alias + " for " + associationPath
                         + ", already exists for " + aliases.get(alias));
             }
         } else {
-            criteria.createAlias(associationPath, alias);
+            criteria.createAlias(associationPath, alias, getIntValueForJoinType(joinType));
             aliases.put(alias, associationPath);
         }
         return this;
@@ -203,8 +209,20 @@ public final class SearchCriteriaImpl implements SearchCriteriaBuilder, SearchCr
 
     @Override
     public SearchCriteriaBuilder createCriteria(final String associationPath, final String alias) {
-        DetachedCriteria subcriteria = criteria.createCriteria(associationPath, alias);
+        return createCriteria(associationPath, alias, null);
+    }
+
+    @Override
+    public SearchCriteriaBuilder createCriteria(final String associationPath, final String alias, final JoinType joinType) {
+        DetachedCriteria subcriteria = criteria.createCriteria(associationPath, alias, getIntValueForJoinType(joinType));
         return new SearchCriteriaImpl(subcriteria);
+    }
+
+    private int getIntValueForJoinType(final JoinType joinType) {
+        if (joinType == null) {
+            return JoinType.INNER.getIntValue();
+        }
+        return joinType.getIntValue();
     }
 
     @Override

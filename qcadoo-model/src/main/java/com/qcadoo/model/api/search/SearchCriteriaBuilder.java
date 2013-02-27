@@ -73,7 +73,7 @@ public interface SearchCriteriaBuilder {
      * @deprecated
      */
     @Deprecated
-    SearchCriteriaBuilder orderAscBy(String fieldName);
+    SearchCriteriaBuilder orderAscBy(final String fieldName);
 
     /**
      * Sets the descending order by given field, by default there is an order by id.
@@ -82,7 +82,7 @@ public interface SearchCriteriaBuilder {
      * @deprecated
      */
     @Deprecated
-    SearchCriteriaBuilder orderDescBy(String fieldName);
+    SearchCriteriaBuilder orderDescBy(final String fieldName);
 
     /**
      * Sets the max results, by default there is no limit.
@@ -91,7 +91,7 @@ public interface SearchCriteriaBuilder {
      *            max results
      * @return this search builder
      */
-    SearchCriteriaBuilder setMaxResults(int maxResults);
+    SearchCriteriaBuilder setMaxResults(final int maxResults);
 
     /**
      * Sets the first result, by default the first result is equal to zero.
@@ -100,7 +100,7 @@ public interface SearchCriteriaBuilder {
      *            first result
      * @return this search builder
      */
-    SearchCriteriaBuilder setFirstResult(int firstResult);
+    SearchCriteriaBuilder setFirstResult(final int firstResult);
 
     /**
      * Adds projection to the criteria.
@@ -110,7 +110,7 @@ public interface SearchCriteriaBuilder {
      * @return this search builder
      * @since 0.4.1
      */
-    SearchCriteriaBuilder setProjection(SearchProjection projection);
+    SearchCriteriaBuilder setProjection(final SearchProjection projection);
 
     /**
      * Adds restriction to the criteria.
@@ -120,7 +120,7 @@ public interface SearchCriteriaBuilder {
      * @return this search builder
      * @since 0.4.1
      */
-    SearchCriteriaBuilder add(SearchCriterion criterion);
+    SearchCriteriaBuilder add(final SearchCriterion criterion);
 
     /**
      * Adds order to the criteria.
@@ -130,10 +130,10 @@ public interface SearchCriteriaBuilder {
      * @return this search builder
      * @since 0.4.1
      */
-    SearchCriteriaBuilder addOrder(SearchOrder order);
+    SearchCriteriaBuilder addOrder(final SearchOrder order);
 
     /**
-     * Create alias for the association to the criteria.
+     * Create alias for the association to the criteria (using inner join).
      * 
      * @param association
      *            association
@@ -142,10 +142,24 @@ public interface SearchCriteriaBuilder {
      * @return this search builder
      * @since 0.4.1
      */
-    SearchCriteriaBuilder createAlias(String association, String alias);
+    SearchCriteriaBuilder createAlias(final String association, final String alias);
 
     /**
-     * Create create for the association to the criteria.
+     * Create alias for the association to the criteria using the specified join-type.
+     * 
+     * @param association
+     *            association
+     * @param alias
+     *            alias
+     * @param joinType
+     *            the type of join to use. If given joinType is not specified then {@link JoinType#INNER} will be used.
+     * @return this search builder
+     * @since 1.2.1
+     */
+    SearchCriteriaBuilder createAlias(final String association, final String alias, final JoinType joinType);
+
+    /**
+     * Create a new SearchCriteriaBuilder, "rooted" at the associated entity, assigning the given alias and using the inner join.
      * 
      * @param association
      *            association
@@ -154,7 +168,22 @@ public interface SearchCriteriaBuilder {
      * @return search builder for the subcriteria
      * @since 0.4.1
      */
-    SearchCriteriaBuilder createCriteria(String association, String alias);
+    SearchCriteriaBuilder createCriteria(final String association, final String alias);
+
+    /**
+     * Create a new SearchCriteriaBuilder, "rooted" at the associated entity, assigning the given alias and using the specified
+     * join-type.
+     * 
+     * @param association
+     *            association
+     * @param alias
+     *            alias
+     * @param joinType
+     *            the type of join to use. If given joinType is not specified then {@link JoinType#INNER} will be used.
+     * @return search builder for the subcriteria
+     * @since 1.2.1
+     */
+    SearchCriteriaBuilder createCriteria(final String association, final String alias, final JoinType joinType);
 
     /**
      * Enable caching of this query result, provided query caching is enabled for the underlying session factory.
@@ -162,7 +191,7 @@ public interface SearchCriteriaBuilder {
      * @param cacheable
      * @return this search builder
      */
-    SearchCriteriaBuilder setCacheable(boolean cacheable);
+    SearchCriteriaBuilder setCacheable(final boolean cacheable);
 
     /**
      * Adds the "equals to" restriction. If field has string type and value contains "%", "*", "_" or "?" the "like" restriction
@@ -177,7 +206,7 @@ public interface SearchCriteriaBuilder {
      * @deprecated
      */
     @Deprecated
-    SearchCriteriaBuilder isEq(String fieldName, Object value);
+    SearchCriteriaBuilder isEq(final String fieldName, final Object value);
 
     /**
      * Adds the "like" restriction.
@@ -190,7 +219,7 @@ public interface SearchCriteriaBuilder {
      * @deprecated
      */
     @Deprecated
-    SearchCriteriaBuilder like(String fieldName, String value);
+    SearchCriteriaBuilder like(final String fieldName, final String value);
 
     /**
      * Adds the "less than or equals to" restriction.
@@ -203,7 +232,7 @@ public interface SearchCriteriaBuilder {
      * @deprecated
      */
     @Deprecated
-    SearchCriteriaBuilder isLe(String fieldName, Object value);
+    SearchCriteriaBuilder isLe(final String fieldName, final Object value);
 
     /**
      * Adds the "less than" restriction.
@@ -216,7 +245,7 @@ public interface SearchCriteriaBuilder {
      * @deprecated
      */
     @Deprecated
-    SearchCriteriaBuilder isLt(String fieldName, Object value);
+    SearchCriteriaBuilder isLt(final String fieldName, final Object value);
 
     /**
      * Adds the "greater than or equals to" restriction.
@@ -229,7 +258,7 @@ public interface SearchCriteriaBuilder {
      * @deprecated
      */
     @Deprecated
-    SearchCriteriaBuilder isGe(String fieldName, Object value);
+    SearchCriteriaBuilder isGe(final String fieldName, final Object value);
 
     /**
      * Adds the "greater than" restriction.
@@ -242,7 +271,7 @@ public interface SearchCriteriaBuilder {
      * @deprecated
      */
     @Deprecated
-    SearchCriteriaBuilder isGt(String fieldName, Object value);
+    SearchCriteriaBuilder isGt(final String fieldName, final Object value);
 
     /**
      * Adds the "not equals to" restriction. If field has string type and value contains "%", "*", "_" or "?" the "not like"
@@ -257,7 +286,7 @@ public interface SearchCriteriaBuilder {
      * @deprecated
      */
     @Deprecated
-    SearchCriteriaBuilder isNe(String fieldName, Object value);
+    SearchCriteriaBuilder isNe(final String fieldName, final Object value);
 
     /**
      * Adds the "not null" restriction.
@@ -268,7 +297,7 @@ public interface SearchCriteriaBuilder {
      * @deprecated
      */
     @Deprecated
-    SearchCriteriaBuilder isNotNull(String fieldName);
+    SearchCriteriaBuilder isNotNull(final String fieldName);
 
     /**
      * Adds the "null" restriction.
@@ -279,7 +308,7 @@ public interface SearchCriteriaBuilder {
      * @deprecated
      */
     @Deprecated
-    SearchCriteriaBuilder isNull(String fieldName);
+    SearchCriteriaBuilder isNull(final String fieldName);
 
     /**
      * Open "not" section. The next restriction will be negated.
@@ -352,7 +381,7 @@ public interface SearchCriteriaBuilder {
      * @deprecated
      */
     @Deprecated
-    SearchCriteriaBuilder belongsTo(String fieldName, Object entityOrId);
+    SearchCriteriaBuilder belongsTo(final String fieldName, final Object entityOrId);
 
     /**
      * Adds the "equals to" restriction for id field.
@@ -364,7 +393,7 @@ public interface SearchCriteriaBuilder {
      * @deprecated
      */
     @Deprecated
-    SearchCriteriaBuilder isIdEq(Long id);
+    SearchCriteriaBuilder isIdEq(final Long id);
 
     /**
      * Adds the "less than or equals to" restriction for id field.
@@ -376,7 +405,7 @@ public interface SearchCriteriaBuilder {
      * @deprecated
      */
     @Deprecated
-    SearchCriteriaBuilder isIdLe(Long id);
+    SearchCriteriaBuilder isIdLe(final Long id);
 
     /**
      * Adds the "less than" restriction for id field.
@@ -388,7 +417,7 @@ public interface SearchCriteriaBuilder {
      * @deprecated
      */
     @Deprecated
-    SearchCriteriaBuilder isIdLt(Long id);
+    SearchCriteriaBuilder isIdLt(final Long id);
 
     /**
      * Adds the "greater than or equals to" restriction for id field.
@@ -400,7 +429,7 @@ public interface SearchCriteriaBuilder {
      * @deprecated
      */
     @Deprecated
-    SearchCriteriaBuilder isIdGe(Long id);
+    SearchCriteriaBuilder isIdGe(final Long id);
 
     /**
      * Adds the "greater than" restriction for id field.
@@ -412,7 +441,7 @@ public interface SearchCriteriaBuilder {
      * @deprecated
      */
     @Deprecated
-    SearchCriteriaBuilder isIdGt(Long id);
+    SearchCriteriaBuilder isIdGt(final Long id);
 
     /**
      * Adds the "not equals to" restriction for id field.
@@ -424,6 +453,6 @@ public interface SearchCriteriaBuilder {
      * @deprecated
      */
     @Deprecated
-    SearchCriteriaBuilder isIdNe(Long id);
+    SearchCriteriaBuilder isIdNe(final Long id);
 
 }
