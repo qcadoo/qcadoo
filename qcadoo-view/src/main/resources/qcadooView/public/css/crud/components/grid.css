@@ -189,17 +189,18 @@ div.filterButton {
 	text-align: center;
 }
 
-.gridContainer a.gridLink {
+.gridContainer .gridLink {
 	color: #005ec5;
 	font-size: 11px;
 	font-family:"Lucida Grande",Tahoma, Arial, Helvetica, sans-serif;
 	text-decoration: none;
 }
-.gridContainer a.gridLink:hover {
+.gridContainer .gridLink:hover {
 	text-decoration: underline;
+	cursor: pointer;
 }
-.componentNotEditable a.gridLink,
-.componentNotEditable a.gridLink:hover,
+.componentNotEditable .gridLink,
+.componentNotEditable .gridLink:hover,
 .componentNotEditable .ui-widget-content {
 	color: #999999;
 	text-decoration: none;

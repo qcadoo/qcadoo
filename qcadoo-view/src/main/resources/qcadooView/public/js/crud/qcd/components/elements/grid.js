@@ -36,7 +36,6 @@ QCD.components.elements.Grid = function(_element, _mainController) {
     var headerController;
 
     var elementPath = this.elementPath;
-    var elementName = this.elementName;
     var elementSearchName = this.elementSearchName;
 
     var gridParameters;
@@ -59,12 +58,11 @@ QCD.components.elements.Grid = function(_element, _mainController) {
         selectedEntities : new Object(),
         filtersEnabled : true,
         newButtonClickedBefore : false,
+        rowLinkClickedBefore : false,
         addExistingButtonClickedBefore : false,
         multiselectMode : true,
         isEditable : true
-    }
-
-    var RESIZE_COLUMNS_ON_UPDATE_SIZE = true;
+    };
 
     var columnModel = new Object();
 
@@ -82,14 +80,9 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 
     var noRecordsDiv;
 
-    var FILTER_TIMEOUT = 200;
-    var filterRefreshTimeout = null;
-
     var fireOnChangeListeners = this.fireOnChangeListeners;
 
     var _this = this;
-
-    var lookupWindow;
 
     var addedEntityId;
 
@@ -137,7 +130,7 @@ QCD.components.elements.Grid = function(_element, _mainController) {
                 var possibleValues = new Object();
                 if (column.filterValues) {
                     possibleValues[""] = "";
-                    var possibleValuesString = ":"
+                    var possibleValuesString = ":";
                     for (var i in column.filterValues) {
                         possibleValues[i] = column.filterValues[i];
                         possibleValuesString += ";" + i + ":" + column.filterValues[i];
@@ -162,7 +155,7 @@ QCD.components.elements.Grid = function(_element, _mainController) {
                     globalColumnTranslations[column.name] = possibleValues;
                     col.formatter = function(cellvalue, options, rowObject) {
                         return globalColumnTranslations[options.colModel.name][cellvalue];
-                    }
+                    };
                 }
 
                 colModel.push(col);
@@ -348,11 +341,13 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 
     this.setLinkListener = function(_linkListener) {
         linkListener = _linkListener;
-    }
+    };
+    
     function linkClicked(selectedEntities) {
         if (!currentState.isEditable) {
             return;
         }
+        currentState.rowLinkClickedBefore = true;
         if (linkListener) {
             linkListener.onGridLinkClicked(selectedEntities);
         } else {
@@ -393,13 +388,15 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 
     this.getComponentValue = function() {
         return currentState;
-    }
+    };
+    
     function getColumnFilterElement(name) {
         return _this.element.find("#gs_" + name);
     }
 
 
     this.setComponentState = function(state) {
+        currentState.rowLinkClickedBefore = false;
         currentState.selectedEntityId = state.selectedEntityId;
         currentState.selectedEntities = state.selectedEntities;
         currentState.multiselectMode = state.multiselectMode;
@@ -447,9 +444,10 @@ QCD.components.elements.Grid = function(_element, _mainController) {
                 addedEntityId = lastCorrespondingComponent.getComponentValue().entityId;
             }
         }
-    }
+    };
 
     this.setComponentValue = function(value) {
+        currentState.rowLinkClickedBefore = false;
         currentState.selectedEntityId = value.selectedEntityId;
 
         if (value.belongsToEntityId) {
@@ -484,7 +482,10 @@ QCD.components.elements.Grid = function(_element, _mainController) {
                     hiddenColumnValues[fieldName][entity.id] = entity.fields[fieldName];
                 } else {
                     if (columnModel[fieldName].link && entity.fields[fieldName] && entity.fields[fieldName] != "") {
-                        fields[fieldName] = "<a href=# id='" + elementPath + "_" + fieldName + "_" + entity.id + "' class='" + elementPath + "_link gridLink'>" + entity.fields[fieldName] + "</a>";
+                        var linkElem = $("<span />").addClass('gridLink').addClass(elementPath + '_link');
+                        linkElem.attr('id', elementPath + "_" + fieldName + "_" + entity.id);
+                        linkElem.append(entity.fields[fieldName]);
+                        fields[fieldName] = linkElem.wrap('<div />').parent().html();
 
                     } else {
                         if (entity.fields[fieldName] && entity.fields[fieldName] != "") {
@@ -524,7 +525,7 @@ QCD.components.elements.Grid = function(_element, _mainController) {
         currentState.selectedEntities = value.selectedEntities;
         for (var i in currentState.selectedEntities) {
             if (currentState.selectedEntities[i]) {
-                var row = grid.getRowData(i)
+                var row = grid.getRowData(i);
                 if (!row || jQuery.isEmptyObject(row)) {
                     currentState.selectedEntities[i] = false;
                 } else {
@@ -583,7 +584,7 @@ QCD.components.elements.Grid = function(_element, _mainController) {
         }
 
         unblockGrid();
-    }
+    };
 
     this.setComponentEnabled = function(isEnabled) {
         componentEnabled = isEnabled;
@@ -596,7 +597,7 @@ QCD.components.elements.Grid = function(_element, _mainController) {
         } else {
             unblockGrid();
         }
-    }
+    };
 
     this.setComponentEditable = function(_isEditable) {
         currentState.isEditable = _isEditable;
@@ -606,7 +607,8 @@ QCD.components.elements.Grid = function(_element, _mainController) {
             grid.addClass("componentNotEditable");
         }
         headerController.setEnabled(currentState.isEditable && componentEnabled);
-    }
+    };
+
     function blockGrid() {
         QCD.components.elements.utils.LoadingIndicator.blockElement(element);
     }
@@ -638,11 +640,13 @@ QCD.components.elements.Grid = function(_element, _mainController) {
         }
 
         gridParameters.onCellSelect = function(rowId, iCol, cellcontent, e) {
-            rowClicked(rowId, iCol);
-        }
+            if (!currentState.rowLinkClickedBefore) {
+                rowClicked(rowId, iCol);
+            }
+        };
 
         gridParameters.ondblClickRow = function(id) {
-        }
+        };
         gridParameters.onSortCol = onSortColumnChange;
 
         grid = $("#" + gridParameters.element).jqGrid(gridParameters);
@@ -692,7 +696,8 @@ QCD.components.elements.Grid = function(_element, _mainController) {
         currentState.firstEntity = headerController.getPagingParameters()[0];
         currentState.maxEntities = headerController.getPagingParameters()[1];
         onCurrentStateChange();
-    }
+    };
+
     function setSortColumnAndDirection(order) {
         if (currentOrder && currentOrder.column == order.column) {
             if (order.direction == "asc") {
@@ -806,7 +811,7 @@ QCD.components.elements.Grid = function(_element, _mainController) {
         grid.setGridHeight(currentGridHeight);
         onCurrentStateChange(true);
         onFiltersStateChange();
-    }
+    };
 
     this.onClearFilterClicked = function() {
         currentState.filters = new Object();
@@ -816,7 +821,8 @@ QCD.components.elements.Grid = function(_element, _mainController) {
         }
         onFiltersStateChange();
         onCurrentStateChange();
-    }
+    };
+
     function updateSearchFields() {
         for (var i in columnModel) {
             var column = columnModel[i];
@@ -868,18 +874,18 @@ QCD.components.elements.Grid = function(_element, _mainController) {
         columnFilterElement.focus();
         updateSearchFields();
         onFiltersStateChange();
-    }
+    };
 
     this.setOnlyActive = function(onlyActive) {
         blockGrid();
         currentState.onlyActive = onlyActive;
         onCurrentStateChange(gridParameters.hasPredefinedFilters);
-    }
+    };
 
     this.setFilterObject = function(filter) {
         blockGrid();
 
-        var filterObject = filter.filter
+        var filterObject = filter.filter;
         for (var i in columnModel) {
             var column = columnModel[i];
             getColumnFilterElement(column.name).val("");
@@ -922,37 +928,37 @@ QCD.components.elements.Grid = function(_element, _mainController) {
         updateSearchFields();
         onFiltersStateChange();
         onCurrentStateChange(true);
-    }
+    };
 
     this.onNewButtonClicked = function() {
         performNew();
-    }
+    };
 
     this.onAddExistingButtonClicked = function() {
         showModalForAddExistingEntity();
-    }
+    };
 
     this.onDeleteButtonClicked = function() {
         performDelete();
-    }
+    };
 
     this.setDeleteEnabled = function(enabled) {
         headerController.setDeleteEnabled(enabled);
-    }
+    };
 
     this.onUpButtonClicked = function() {
         blockGrid();
         mainController.callEvent("moveUp", elementPath, function() {
             unblockGrid();
         });
-    }
+    };
 
     this.onDownButtonClicked = function() {
         blockGrid();
         mainController.callEvent("moveDown", elementPath, function() {
             unblockGrid();
         });
-    }
+    };
 
     this.updateSize = function(_width, _height) {
         if (!_width) {
@@ -978,7 +984,7 @@ QCD.components.elements.Grid = function(_element, _mainController) {
             _height -= 55;
         }
 
-        element.css("height", _height + "px")
+        element.css("height", _height + "px");
 
         var HEIGHT_DIFF = 120;
         currentGridHeight = _height - HEIGHT_DIFF;
@@ -990,7 +996,8 @@ QCD.components.elements.Grid = function(_element, _mainController) {
         }
         grid.setGridHeight(currentGridHeight);
         grid.setGridWidth(_width - 24, true);
-    }
+    };
+
     function onFiltersStateChange() {
         var hasFiltersValues = false;
         for (var i in currentState.filters) {
@@ -1073,7 +1080,8 @@ QCD.components.elements.Grid = function(_element, _mainController) {
         if (actionsPerformer) {
             actionsPerformer.performNext();
         }
-    }
+    };
+
     var performNew = this.performNew;
 
     this.performRefresh = function(actionsPerformer) {
@@ -1081,7 +1089,7 @@ QCD.components.elements.Grid = function(_element, _mainController) {
         mainController.callEvent('refresh', elementPath, function() {
             unblockGrid();
         });
-    }
+    };
 
     this.showModalForAddExistingEntity = function(actionsPerformer) {
         currentState.addExistingButtonClickedBefore = true;
@@ -1094,18 +1102,18 @@ QCD.components.elements.Grid = function(_element, _mainController) {
         if (actionsPerformer) {
             actionsPerformer.performNext();
         }
-    }
+    };
     var showModalForAddExistingEntity = this.showModalForAddExistingEntity;
 
     function onModalRender(modalWindow) {
         modalWindow.getComponent("window.grid").setLinkListener(_this);
     }
 
-
     this.onGridLinkClicked = function(selectedEntities) {
         performAddExistingEntity(null, selectedEntities);
         mainController.closeThisModalWindow();
-    }
+    };
+
     function onModalClose() {
         lookupWindow = null;
     }
@@ -1120,13 +1128,13 @@ QCD.components.elements.Grid = function(_element, _mainController) {
         return selectionCounter;
     }
 
-
     this.performAddExistingEntity = function(actionsPerformer, selectedEntities) {
         blockGrid();
         mainController.callEvent("addExistingEntity", elementPath, function() {
             unblockGrid();
         }, [selectedEntities], actionsPerformer);
-    }
+    };
+
     var performAddExistingEntity = this.performAddExistingEntity;
 
     this.performDelete = function(actionsPerformer) {
@@ -1143,7 +1151,8 @@ QCD.components.elements.Grid = function(_element, _mainController) {
                 content : translations.noRowSelectedError
             });
         }
-    }
+    };
+
     var performDelete = this.performDelete;
 
     this.performCopy = function(actionsPerformer) {
@@ -1158,7 +1167,8 @@ QCD.components.elements.Grid = function(_element, _mainController) {
                 content : translations.noRowSelectedError
             });
         }
-    }
+    };
+
     var performCopy = this.performCopy;
 
     this.performActivate = function(actionsPerformer) {
@@ -1173,7 +1183,8 @@ QCD.components.elements.Grid = function(_element, _mainController) {
                 content : translations.noRowSelectedError
             });
         }
-    }
+    };
+
     var performActivate = this.performActivate;
 
     this.performDeactivate = function(actionsPerformer) {
@@ -1188,7 +1199,8 @@ QCD.components.elements.Grid = function(_element, _mainController) {
                 content : translations.noRowSelectedError
             });
         }
-    }
+    };
+
     var performDeactivate = this.performDeactivate;
 
     this.generateReportForEntity = function(actionsPerformer, arg1, args) {
@@ -1206,18 +1218,18 @@ QCD.components.elements.Grid = function(_element, _mainController) {
                 content : translations.noRowSelectedError
             });
         }
-    }
+    };
 
     this.performEvent = function(eventName, args, type) {
         this.fireEvent(null, eventName, args, type);
-    }
+    };
 
     this.fireEvent = function(actionsPerformer, eventName, args, type) {
         blockGrid();
         mainController.callEvent(eventName, elementPath, function() {
             unblockGrid();
         }, args, actionsPerformer, type);
-    }
+    };
 
     this.performLinkClicked = function(actionsPerformer) {
         if (currentState.selectedEntities) {
@@ -1242,7 +1254,7 @@ QCD.components.elements.Grid = function(_element, _mainController) {
                 content : translations.noRowSelectedError
             });
         }
-    }
+    };
 
     this.getLookupData = function(entityId) {
         var result = Object();
@@ -1253,7 +1265,8 @@ QCD.components.elements.Grid = function(_element, _mainController) {
         lookupCodeLink = lookupCodeLink.replace(/<\/a>$/, "");
         result.lookupCode = lookupCodeLink;
         return result;
-    }
+    };
+
     constructor(this);
 
 }
