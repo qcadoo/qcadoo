@@ -28,7 +28,6 @@ import static org.springframework.context.i18n.LocaleContextHolder.getLocale;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -36,9 +35,20 @@ import org.joda.time.DateTime;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Maps;
 import com.qcadoo.localization.api.utils.DateUtils;
 
 public class PredefinedFilter {
+
+    private static final Function<String, String> PARSE_FILTER_VALUE_FUNC = new Function<String, String>() {
+
+        @Override
+        public String apply(final String rawFilterValue) {
+            return parseRestriction(rawFilterValue);
+        }
+
+    };
 
     private String name;
 
@@ -60,6 +70,10 @@ public class PredefinedFilter {
         return filterRestrictions;
     }
 
+    public Map<String, String> getParsedFilterRestrictions() {
+        return Maps.transformValues(filterRestrictions, PARSE_FILTER_VALUE_FUNC);
+    }
+
     public void addFilterRestriction(final String column, final String restriction) {
         filterRestrictions.put(column, restriction);
     }
@@ -69,15 +83,11 @@ public class PredefinedFilter {
         object.put("label", name);
         object.put("orderColumn", orderColumn);
         object.put("orderDirection", orderDirection);
-        JSONObject filterRestrictionsObject = new JSONObject();
-        for (Entry<String, String> filterRestriction : filterRestrictions.entrySet()) {
-            filterRestrictionsObject.put(filterRestriction.getKey(), parseRestriction(filterRestriction.getValue()));
-        }
-        object.put("filter", filterRestrictionsObject);
+        object.put("filter", new JSONObject(getParsedFilterRestrictions()));
         return object;
     }
 
-    private String parseRestriction(final String restriction) {
+    private static String parseRestriction(final String restriction) {
         Pattern p = Pattern.compile("@\\{.*?\\}");
         Matcher m = p.matcher(restriction);
         int lastEnd = 0;
@@ -95,7 +105,7 @@ public class PredefinedFilter {
         }
     }
 
-    private String evalExpression(final String expression) {
+    private static String evalExpression(final String expression) {
         DateTime today = new DateTime();
         DateTime date;
         if ("today".equals(expression)) {

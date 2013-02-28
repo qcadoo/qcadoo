@@ -111,6 +111,12 @@ QCD.components.elements.utils.HeaderUtils.createHeaderComboBox = function(option
 		$(this).attr("disabled", "true");
 	}
 	
+	select.setSelectedValue = function(value) {
+	    $(this).find("option").filter(function () {
+            return $(this).attr('value') == value; 
+        }).attr('selected', true);
+	};
+	
 	select.disable();
 	
 	return select;
