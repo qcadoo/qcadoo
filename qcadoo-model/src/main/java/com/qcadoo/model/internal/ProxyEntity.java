@@ -26,6 +26,7 @@ package com.qcadoo.model.internal;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -172,11 +173,11 @@ public final class ProxyEntity implements Entity, EntityAwareCopyPerformers, Ent
     public BigDecimal getDecimalField(final String fieldName) {
         return getEntity().getDecimalField(fieldName);
     }
-    
-	@Override
-	public Integer getIntegerField(String fieldName) {
-		return getEntity().getIntegerField(fieldName);
-	}    
+
+    @Override
+    public Integer getIntegerField(String fieldName) {
+        return getEntity().getIntegerField(fieldName);
+    }
 
     @Override
     public Entity getBelongsToField(final String fieldName) {
@@ -259,6 +260,11 @@ public final class ProxyEntity implements Entity, EntityAwareCopyPerformers, Ent
             isEquals = entity.equals(obj);
         }
         return isEquals;
+    }
+
+    @Override
+    public Date getDateField(String fieldName) {
+        return getEntity().getDateField(fieldName);
     }
 
 }

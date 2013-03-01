@@ -34,6 +34,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -65,8 +66,8 @@ public class DefaultEntityTest {
     private DataDefinition belongsToFieldDataDefinition;
 
     private FieldDefinition decimalFieldDefinition;
-    
-    private FieldDefinition integerFieldDefinition;    
+
+    private FieldDefinition integerFieldDefinition;
 
     private FieldDefinition manyToManyFieldDefinition;
 
@@ -91,8 +92,8 @@ public class DefaultEntityTest {
     private static final String BOOLEAN_FIELD_NAME = "booleanField";
 
     private static final String DECIMAL_FIELD_NAME = "decimalField";
-    
-    private static final String INTEGER_FIELD_NAME = "integerField";    
+
+    private static final String INTEGER_FIELD_NAME = "integerField";
 
     private static final String MANY_TO_MANY_FIELD_NAME = "manyToMany";
 
@@ -110,6 +111,8 @@ public class DefaultEntityTest {
 
     private static final String L_DIFFERENCE = "difference";
 
+    private static final String DATE_FIELD_NAME = "dateField";
+
     @Before
     public final void init() {
         belongsToFieldDefinition = mock(FieldDefinition.class);
@@ -121,10 +124,10 @@ public class DefaultEntityTest {
         decimalFieldDefinition = mock(FieldDefinition.class);
         final DecimalType decimalType = new DecimalType();
         when(decimalFieldDefinition.getType()).thenReturn(decimalType);
-        
+
         integerFieldDefinition = mock(FieldDefinition.class);
         final IntegerType integerType = new IntegerType();
-        when(integerFieldDefinition.getType()).thenReturn(integerType);        
+        when(integerFieldDefinition.getType()).thenReturn(integerType);
 
         manyToManyFieldDefinition = mock(FieldDefinition.class);
         final ManyToManyType manyToManyType = mock(ManyToManyType.class);
@@ -157,7 +160,7 @@ public class DefaultEntityTest {
         fieldsMap.put(STRING_FIELD_NAME, stringFieldDefinition);
         fieldsMap.put(BOOLEAN_FIELD_NAME, booleanFieldDefinition);
         fieldsMap.put(DECIMAL_FIELD_NAME, decimalFieldDefinition);
-        fieldsMap.put(INTEGER_FIELD_NAME, integerFieldDefinition);        
+        fieldsMap.put(INTEGER_FIELD_NAME, integerFieldDefinition);
         fieldsMap.put(MANY_TO_MANY_FIELD_NAME, manyToManyFieldDefinition);
         fieldsMap.put(SECOND_MANY_TO_MANY_FIELD_NAME, secondManyToManyFieldDefinition);
         fieldsMap.put(HAS_MANY_FIELD_NAME, hasManyFieldDefinition);
@@ -467,7 +470,7 @@ public class DefaultEntityTest {
     @Test
     public final void shouldReturnIntegerValue() throws Exception {
         // given
-    	Integer integer = Integer.MAX_VALUE;
+        Integer integer = Integer.MAX_VALUE;
         defaultEntity.setField(INTEGER_FIELD_NAME, integer);
 
         // when
@@ -529,7 +532,7 @@ public class DefaultEntityTest {
         // when & then
         try {
             defaultEntity.getIntegerField(INTEGER_FIELD_NAME);
-            Assert.fail("should throw exception"); 
+            Assert.fail("should throw exception");
         } catch (Exception e) {
             assertTrue(e instanceof IllegalArgumentException);
         }
@@ -546,8 +549,8 @@ public class DefaultEntityTest {
 
         // then
         Assert.assertNull(result);
-    }           
-    
+    }
+
     @Test
     public final void shouldReturnDetachedEntityListImpl() throws Exception {
         // given
@@ -2636,5 +2639,44 @@ public class DefaultEntityTest {
         when(e3.getId()).thenReturn(3L);
 
         return Lists.newArrayList(e1, e2, e3);
+    }
+
+    @Test
+    public final void shouldReturnDateValue() throws Exception {
+        // given
+        Date date = new Date();
+        defaultEntity.setField(DATE_FIELD_NAME, date);
+
+        // when
+        Date result = defaultEntity.getDateField(DATE_FIELD_NAME);
+        // then
+        Assert.assertNotNull(result);
+        Assert.assertEquals(date, result);
+    }
+
+    @Test
+    public final void shouldReturnNullIfDateFieldIsNull() throws Exception {
+        // given
+        defaultEntity.setField(DATE_FIELD_NAME, null);
+
+        // when
+        Date result = defaultEntity.getDateField(DATE_FIELD_NAME);
+
+        // then
+        Assert.assertNull(result);
+    }
+
+    @Test
+    public final void shouldReturnDateValueFromLong() throws Exception {
+        // given
+        Date date = new Date((Long) 600000l);
+        defaultEntity.setField(DATE_FIELD_NAME, date);
+
+        // when
+        Date result = defaultEntity.getDateField(DATE_FIELD_NAME);
+
+        // then
+        Assert.assertNotNull(result);
+        Assert.assertEquals(date, result);
     }
 }
