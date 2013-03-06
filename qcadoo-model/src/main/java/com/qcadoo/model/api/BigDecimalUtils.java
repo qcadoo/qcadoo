@@ -28,7 +28,7 @@ import java.math.MathContext;
 
 public final class BigDecimalUtils {
 
-    private static BigDecimal ONE_HUNDRED = BigDecimal.valueOf(100L);
+    private static final BigDecimal ONE_HUNDRED = BigDecimal.valueOf(100L);
 
     private BigDecimalUtils() {
 

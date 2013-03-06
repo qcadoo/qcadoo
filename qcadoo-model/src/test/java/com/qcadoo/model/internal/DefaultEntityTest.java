@@ -2669,7 +2669,7 @@ public class DefaultEntityTest {
     @Test
     public final void shouldReturnDateValueFromLong() throws Exception {
         // given
-        Date date = new Date((Long) 600000l);
+        Date date = new Date((Long) 600000L);
         defaultEntity.setField(DATE_FIELD_NAME, date);
 
         // when
