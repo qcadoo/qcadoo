@@ -86,7 +86,7 @@ public class AwesomeDynamicListState extends FieldComponentState implements Awes
     public void setFieldValue(final Object value) {
         requestRender();
         forms = new LinkedList<FormComponentState>();
-        if (value != null) {
+        if ((value != null) && (value instanceof List)) {
             List<Entity> entities = (List<Entity>) value;
             for (Entity entity : entities) {
                 InternalViewDefinitionState innerFormState = new ViewDefinitionStateImpl();
