@@ -53,7 +53,7 @@ public class LabelComponentPattern extends AbstractComponentPattern {
         for (ComponentOption option : getOptions()) {
             if ("labelStyle".equals(option.getType())) {
                 labelStyle = option.getValue();
-                if (!"normal".equals(labelStyle) && !"text".equals(labelStyle)) {
+                if (!"normal".equals(labelStyle) && !"text".equals(labelStyle) && !"label".equals(labelStyle)) {
                     throw new IllegalStateException("unknown label style: " + labelStyle);
                 }
             }

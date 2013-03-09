@@ -35,6 +35,6 @@
 		<belongsTo name="globalUnitConversionsAggregate" model="globalUnitConversionsAggregate"/>
 	</fields>
 	<hooks>
-		<validatesWith class="com.qcadoo.model.internal.units.hooks.UnitConversionItemValidators" method="validateQuantityFrom"/>	
+		<validatesWith class="com.qcadoo.model.internal.units.hooks.UnitConversionItemValidators" method="validateUnits"/>	
 	</hooks>
 </model>	

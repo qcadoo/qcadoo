@@ -25,6 +25,7 @@ package com.qcadoo.model.internal;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -97,11 +98,11 @@ public final class EntityTreeNodeImpl implements EntityTreeNode, EntityAwareCopy
     public BigDecimal getDecimalField(final String fieldName) {
         return entity.getDecimalField(fieldName);
     }
-    
-	@Override
-	public Integer getIntegerField(final String fieldName) {
-		return entity.getIntegerField(fieldName);
-	}    
+
+    @Override
+    public Integer getIntegerField(final String fieldName) {
+        return entity.getIntegerField(fieldName);
+    }
 
     @Override
     public Entity getBelongsToField(final String fieldName) {
@@ -234,6 +235,11 @@ public final class EntityTreeNodeImpl implements EntityTreeNode, EntityAwareCopy
             isEquals = entity.equals(obj);
         }
         return isEquals;
+    }
+
+    @Override
+    public Date getDateField(String fieldName) {
+        return entity.getDateField(fieldName);
     }
 
 }

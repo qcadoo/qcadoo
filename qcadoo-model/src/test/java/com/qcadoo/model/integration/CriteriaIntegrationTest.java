@@ -25,10 +25,12 @@ package com.qcadoo.model.integration;
 
 import static org.junit.Assert.assertEquals;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
+import com.qcadoo.model.api.search.JoinType;
 import com.qcadoo.model.api.search.SearchCriteriaBuilder;
 import com.qcadoo.model.api.search.SearchOrders;
 import com.qcadoo.model.api.search.SearchProjections;
@@ -166,7 +168,28 @@ public class CriteriaIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    public void shouldFindByQueryWithBelongsToSubqueries() throws Exception {
+    public void shouldFindByQueryWithBelongsToSubqueriesUsingDefaultJoinType() throws Exception {
+        findByQueryWithBelongsToSubqueries(null);
+    }
+
+    @Test
+    public void shouldFindByQueryWithBelongsToSubqueriesExplicitlyUsingInnerJoin() throws Exception {
+        findByQueryWithBelongsToSubqueries(JoinType.INNER);
+    }
+
+    @Test
+    public void shouldFindByQueryWithBelongsToSubqueriesExplicitlyUsingLeftJoin() throws Exception {
+        findByQueryWithBelongsToSubqueries(JoinType.LEFT);
+    }
+
+    // TODO MAKU & KRNA - check after upgrade hibernate version
+    @Ignore
+    @Test
+    public void shouldFindByQueryWithBelongsToSubqueriesExplicitlyUsingFullJoin() throws Exception {
+        findByQueryWithBelongsToSubqueries(JoinType.FULL);
+    }
+
+    private void findByQueryWithBelongsToSubqueries(final JoinType joinType) throws Exception {
         // given
         DataDefinition productDao = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PRODUCT);
         DataDefinition partDao = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PART);
@@ -177,7 +200,7 @@ public class CriteriaIntegrationTest extends IntegrationTest {
 
         // when
         SearchCriteriaBuilder criteria = partDao.find();
-        criteria.createCriteria("product", "product").add(SearchRestrictions.eq("name", "asd"));
+        criteria.createCriteria("product", "product", joinType).add(SearchRestrictions.eq("name", "asd"));
         Entity part = criteria.uniqueResult();
 
         // then
@@ -186,7 +209,28 @@ public class CriteriaIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    public void shouldFindByQueryWithHasManySubqueries() throws Exception {
+    public void shouldFindByQueryWithHasManySubqueriesUsingDefaultJoinType() throws Exception {
+        findByQueryWithHasManySubqueries(null);
+    }
+
+    @Test
+    public void shouldFindByQueryWithHasManySubqueriesExplicitlyUsingInnerJoin() throws Exception {
+        findByQueryWithHasManySubqueries(JoinType.INNER);
+    }
+
+    @Test
+    public void shouldFindByQueryWithHasManySubqueriesExplicitlyUsingLeftJoin() throws Exception {
+        findByQueryWithHasManySubqueries(JoinType.LEFT);
+    }
+
+    // TODO MAKU & KRNA - check after upgrade hibernate version
+    @Ignore
+    @Test
+    public void shouldFindByQueryWithHasManySubqueriesExplicitlyUsingFullJoin() throws Exception {
+        findByQueryWithHasManySubqueries(JoinType.FULL);
+    }
+
+    private void findByQueryWithHasManySubqueries(final JoinType joinType) throws Exception {
         // given
         DataDefinition productDao = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PRODUCT);
         DataDefinition partDao = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PART);
@@ -197,7 +241,7 @@ public class CriteriaIntegrationTest extends IntegrationTest {
 
         // when
         SearchCriteriaBuilder criteria = productDao.find();
-        criteria.createCriteria("parts", "parts").add(SearchRestrictions.eq("name", "name"));
+        criteria.createCriteria("parts", "parts", joinType).add(SearchRestrictions.eq("name", "name"));
         Entity product = criteria.uniqueResult();
 
         // then
@@ -206,7 +250,28 @@ public class CriteriaIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    public void shouldFindByQueryWithSubqueries() throws Exception {
+    public void shouldFindByQueryWithSubqueriesUsingDefaultJoinType() throws Exception {
+        findByQueryWithSubqueries(null);
+    }
+
+    @Test
+    public void shouldFindByQueryWithSubqueriesExplicitlyUsingInnerJoin() throws Exception {
+        findByQueryWithSubqueries(JoinType.INNER);
+    }
+
+    @Test
+    public void shouldFindByQueryWithSubqueriesExplicitlyUsingLeftJoin() throws Exception {
+        findByQueryWithSubqueries(JoinType.LEFT);
+    }
+
+    // TODO MAKU & KRNA - check after upgrade hibernate version
+    @Ignore
+    @Test
+    public void shouldFindByQueryWithSubqueriesExplicitlyUsingFullJoin() throws Exception {
+        findByQueryWithSubqueries(JoinType.FULL);
+    }
+
+    private void findByQueryWithSubqueries(final JoinType joinType) throws Exception {
         // given
         DataDefinition productDao = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PRODUCT);
         DataDefinition partDao = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PART);
@@ -217,7 +282,7 @@ public class CriteriaIntegrationTest extends IntegrationTest {
 
         // when
         SearchCriteriaBuilder criteria = productDao.find();
-        criteria.createCriteria("parts", "parts").add(SearchRestrictions.isNotNull("parts.id"));
+        criteria.createCriteria("parts", "parts", joinType).add(SearchRestrictions.isNotNull("parts.id"));
         Entity product = criteria.uniqueResult();
 
         // then
@@ -299,7 +364,28 @@ public class CriteriaIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    public void shouldFindByQueryWithBelongsToField() throws Exception {
+    public void shouldFindByQueryWithBelongsToFieldUsingDefaultJoinType() throws Exception {
+        findByQueryWithBelongsToField(null);
+    }
+
+    @Test
+    public void shouldFindByQueryWithBelongsToFieldExplicitlyUsingInnerJoin() throws Exception {
+        findByQueryWithBelongsToField(JoinType.INNER);
+    }
+
+    @Test
+    public void shouldFindByQueryWithBelongsToFieldExplicitlyUsingLeftJoin() throws Exception {
+        findByQueryWithBelongsToField(JoinType.LEFT);
+    }
+
+    // TODO MAKU & KRNA - check after upgrade hibernate version
+    @Ignore
+    @Test
+    public void shouldFindByQueryWithBelongsToFieldExplicitlyUsingFullJoin() throws Exception {
+        findByQueryWithBelongsToField(JoinType.FULL);
+    }
+
+    private void findByQueryWithBelongsToField(final JoinType joinType) throws Exception {
         // given
         DataDefinition productDao = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PRODUCT);
         DataDefinition partDao = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PART);
@@ -314,7 +400,7 @@ public class CriteriaIntegrationTest extends IntegrationTest {
         Entity result = partDao
                 .find()
                 .add(SearchRestrictions.like("product.name", "asd"))
-                .createAlias("product", "product")
+                .createAlias("product", "product", joinType)
                 .setProjection(
                         SearchProjections.list().add(SearchProjections.field("product.quantity"))
                                 .add(SearchProjections.field("name")).add(SearchProjections.field("product"))).uniqueResult();

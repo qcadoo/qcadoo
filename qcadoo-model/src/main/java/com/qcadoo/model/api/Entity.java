@@ -24,6 +24,7 @@
 package com.qcadoo.model.api;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -97,18 +98,29 @@ public interface Entity {
      *             if given field is not BigDecimal (sub)type
      */
     BigDecimal getDecimalField(String fieldName);
-    
+
     /**
      * Return the Integer value of the field with given name
      * 
      * @param fieldName
      *            field's name
-     * @return the field's integer value, when it's empty null is returned (not 0) 
+     * @return the field's integer value, when it's empty null is returned (not 0)
      * 
      * @throws IllegalArgumentException
      *             if given field is not Integer type
-     */    
+     */
     Integer getIntegerField(final String fieldName);
+
+    /**
+     * Return the Date value of the field with given name
+     * 
+     * @param fieldName
+     *            field's name
+     * @return the field's date value, when it's empty null is returned (not 0)
+     * 
+     * @throws IllegalArgumentException
+     */
+    Date getDateField(final String fieldName);
 
     /**
      * Return the value, casted to entity, of the field with given name.

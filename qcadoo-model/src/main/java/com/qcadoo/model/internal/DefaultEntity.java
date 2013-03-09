@@ -28,6 +28,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -312,7 +313,7 @@ public final class DefaultEntity implements Entity, EntityAwareCopyPerformers, E
         throw new IllegalArgumentException("Field " + fieldName + " in " + dataDefinition.getPluginIdentifier() + '.'
                 + dataDefinition.getName() + " does not contain correct BigDecimal value");
     }
-    
+
     @Override
     public Integer getIntegerField(final String fieldName) {
         final Object fieldValue = getField(fieldName);
@@ -334,7 +335,7 @@ public final class DefaultEntity implements Entity, EntityAwareCopyPerformers, E
         }
         throw new IllegalArgumentException("Field " + fieldName + " in " + dataDefinition.getPluginIdentifier() + '.'
                 + dataDefinition.getName() + " does not contain correct Integer value");
-    }   
+    }
 
     @SuppressWarnings("unchecked")
     @Override
@@ -415,6 +416,23 @@ public final class DefaultEntity implements Entity, EntityAwareCopyPerformers, E
             }
         }
         return entity.append("]").toString();
+    }
+
+    @Override
+    public Date getDateField(final String fieldName) {
+        final Object fieldValue = getField(fieldName);
+        if (fieldValue == null) {
+            return null;
+        }
+        if (fieldValue instanceof Long) {
+            return new Date((Long) fieldValue);
+        }
+        if (fieldValue instanceof Date) {
+            Date fieldDateValue = (Date) fieldValue;
+            return new Date(fieldDateValue.getTime());
+        }
+        throw new IllegalArgumentException("Field " + fieldName + " in " + dataDefinition.getPluginIdentifier() + '.'
+                + dataDefinition.getName() + " does not contain correct Date value");
     }
 
 }

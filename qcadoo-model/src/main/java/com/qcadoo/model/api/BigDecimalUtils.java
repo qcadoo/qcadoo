@@ -21,26 +21,43 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * ***************************************************************************
  */
-package com.qcadoo.model.internal.units.hooks;
+package com.qcadoo.model.api;
 
-import org.springframework.stereotype.Service;
+import java.math.BigDecimal;
+import java.math.MathContext;
 
-import com.qcadoo.model.api.DataDefinition;
-import com.qcadoo.model.api.Entity;
-import com.qcadoo.model.constants.UnitConversionItemFields;
+public final class BigDecimalUtils {
 
-@Service
-public class UnitConversionItemValidators {
+    private static final BigDecimal ONE_HUNDRED = BigDecimal.valueOf(100L);
 
-    public boolean validateUnits(final DataDefinition dataDefinition, final Entity unitConversionItem) {
-        String unitFrom = unitConversionItem.getStringField(UnitConversionItemFields.UNIT_FROM);
-        String unitTo = unitConversionItem.getStringField(UnitConversionItemFields.UNIT_TO);
-        if (unitFrom.equals(unitTo)) {
-            unitConversionItem.addError(dataDefinition.getField(UnitConversionItemFields.UNIT_TO),
-                    "qcadooUnitConversions.unitConversionItem.validateError.theSameUnit");
-            return false;
+    private BigDecimalUtils() {
+
+    }
+
+    public static BigDecimal convertNullToZero(final Object value) {
+        if (value == null) {
+            return BigDecimal.ZERO;
         }
-        return true;
+        if (value instanceof BigDecimal) {
+            return (BigDecimal) value;
+        }
+        return BigDecimal.valueOf(Double.valueOf(value.toString()));
+    }
+
+    public static BigDecimal convertNullToOne(final Object value) {
+        if (value == null) {
+            return BigDecimal.ONE;
+        }
+        if (value instanceof BigDecimal) {
+            return (BigDecimal) value;
+        }
+        return BigDecimal.valueOf(Double.valueOf(value.toString()));
+
+    }
+
+    public static BigDecimal toPercent(final BigDecimal decimalValue, final MathContext mathCntext) {
+        return convertNullToZero(decimalValue).divide(ONE_HUNDRED, mathCntext);
+
     }
 
 }
