@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+	
+	<parent>
+    	<groupId>com.qcadoo.maven</groupId>
+    	<artifactId>qcadoo-super-pom</artifactId>
+    	<version>0.0.1</version>
+	</parent>
 
 	<groupId>com.qcadoo</groupId>
 	<artifactId>qcadoo-plugin-archetype</artifactId>
@@ -45,33 +51,6 @@
 			</plugins>
 		</pluginManagement>
 	</build>
-	
-	<pluginRepositories>
-		<pluginRepository>
-			<id>qcadoo-releases-plugin-repository</id>
-			<url>http://nexus.qcadoo.org/content/repositories/releases</url>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-				<updatePolicy>never</updatePolicy>
-			</snapshots>
-		</pluginRepository>
-		<pluginRepository>
-			<id>qcadoo-snapshots-plugin-repository</id>
-			<url>http://emhyr.local/nexus/content/repositories/snapshots</url>
-			<releases>
-				<enabled>false</enabled>
-				<updatePolicy>never</updatePolicy>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>interval:5</updatePolicy>
-			</snapshots>
-		</pluginRepository>
-	</pluginRepositories>
 	
 	<distributionManagement>
 		<repository>

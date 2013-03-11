@@ -21,7 +21,7 @@
 				<plugins>
 					<plugin>
 						<artifactId>maven-javadoc-plugin</artifactId>
-						<version>2.7</version>
+						<version>${maven.javadoc.plugin.version}</version>
 						<executions>
 							<execution>
 								<id>buildJavadoc</id>
@@ -77,7 +77,7 @@
 					</plugin>
 					<plugin>
 						<artifactId>maven-assembly-plugin</artifactId>
-						<version>2.2.1</version>
+						<version>${maven.assembly.plugin.version}</version>
 						<configuration>
 							<descriptors>
 								<descriptor>javadoc.xml</descriptor>
@@ -99,7 +99,7 @@
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>wagon-maven-plugin</artifactId>
-						<version>1.0-beta-4</version>
+						<version>${wagon.maven.plugin.version}</version>
 						<executions>
 							<execution>
 								<id>deployJavadoc</id>
@@ -118,7 +118,7 @@
 							<dependency>
 								<groupId>org.apache.maven.wagon</groupId>
 								<artifactId>wagon-ssh</artifactId>
-								<version>2.2</version>
+								<version>${wagon.ssh.version}</version>
 							</dependency>
 						</dependencies>
 					</plugin>
