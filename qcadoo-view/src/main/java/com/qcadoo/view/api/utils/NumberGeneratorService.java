@@ -29,9 +29,7 @@ import org.springframework.util.StringUtils;
 
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.DataDefinitionService;
-import com.qcadoo.model.api.search.SearchOrders;
 import com.qcadoo.model.api.search.SearchRestrictions;
-import com.qcadoo.model.api.search.SearchResult;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.api.components.FieldComponent;
 import com.qcadoo.view.api.components.FormComponent;
@@ -126,17 +124,17 @@ public class NumberGeneratorService {
      */
     public String generateNumber(final String plugin, final String entityName, final int digitsNumber) {
         DataDefinition dataDefinition = dataDefinitionService.get(plugin, entityName);
-        SearchResult results = dataDefinition.find().setMaxResults(1)
-                .addOrder(SearchOrders.desc("id")).list();
 
-        long longValue = 0;
+        String sql = "select count(*) as volume from #" + plugin + "_" + entityName;
 
-        if (results.getEntities().isEmpty()) {
+        long longValue = (Long) dataDefinition.find(sql).uniqueResult().getField("volume");
+
+        if (longValue == 0) {
             longValue++;
         } else {
-            longValue = results.getEntities().get(0).getId();
-            while (numberAlreadyExist(dataDefinition, longValue, digitsNumber)) { 
-                longValue++; 
+
+            while (numberAlreadyExist(dataDefinition, longValue, digitsNumber)) {
+                longValue++;
             }
         }
 
@@ -144,6 +142,7 @@ public class NumberGeneratorService {
     }
 
     private boolean numberAlreadyExist(final DataDefinition dataDefinition, final long longValue, final int digitsNumber) {
-        return dataDefinition.find().add(SearchRestrictions.eq("number", String.format("%0" + digitsNumber + "d", longValue))).setMaxResults(1).uniqueResult() != null;
-   }
+        return dataDefinition.find().add(SearchRestrictions.eq("number", String.format("%0" + digitsNumber + "d", longValue)))
+                .setMaxResults(1).uniqueResult() != null;
+    }
 }
