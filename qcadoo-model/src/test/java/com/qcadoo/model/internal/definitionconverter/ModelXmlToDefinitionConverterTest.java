@@ -322,7 +322,7 @@ public class ModelXmlToDefinitionConverterTest extends TransactionMockAwareTest 
 
         validators = ((FieldDefinitionImpl) dataDefinition.getField("fieldDecimalWithoutValidators")).getValidators();
 
-        assertEquals(0, validators.size());
+        assertEquals(2, validators.size());
     }
 
     @Test

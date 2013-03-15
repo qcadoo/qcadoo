@@ -24,7 +24,6 @@
 package com.qcadoo.model.internal.units;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +34,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
+import com.qcadoo.model.api.NumberService;
 import com.qcadoo.model.api.units.UnitConversion;
 import com.qcadoo.model.constants.UnitConversionItemFields;
 
@@ -44,18 +44,18 @@ public final class PossibleUnitConversionsImpl implements InternalPossibleUnitCo
 
     private final String unitFrom;
 
-    private final MathContext mathContext;
+    private final NumberService numberService;
 
     private final DataDefinition unitConversionItemDD;
 
-    public PossibleUnitConversionsImpl(final String unitFrom, final MathContext mathContext,
+    public PossibleUnitConversionsImpl(final String unitFrom, final NumberService numberService,
             final DataDefinition unitConversionItemDD) {
         Preconditions.checkNotNull(unitFrom);
-        Preconditions.checkNotNull(mathContext);
+        Preconditions.checkNotNull(numberService);
         Preconditions.checkNotNull(unitConversionItemDD);
 
         this.unitFrom = unitFrom;
-        this.mathContext = mathContext;
+        this.numberService = numberService;
         this.unitConversionItemDD = unitConversionItemDD;
         this.targetUnitToFactor = Maps.newHashMap();
     }
@@ -65,12 +65,8 @@ public final class PossibleUnitConversionsImpl implements InternalPossibleUnitCo
         Preconditions.checkArgument(unitFrom.equals(unitConversion.getUnitFrom()), "Wrong source unit!");
         final String unit = unitConversion.getUnitTo();
         if (!isDefinedFor(unit)) {
-            targetUnitToFactor.put(unitConversion.getUnitTo(), applyMathContext(unitConversion.getRatio()));
+            targetUnitToFactor.put(unitConversion.getUnitTo(), unitConversion.getRatio());
         }
-    }
-
-    private BigDecimal applyMathContext(final BigDecimal value) {
-        return value.setScale(mathContext.getPrecision(), mathContext.getRoundingMode());
     }
 
     @Override
@@ -92,7 +88,7 @@ public final class PossibleUnitConversionsImpl implements InternalPossibleUnitCo
     public BigDecimal convertTo(final BigDecimal quantityFrom, final String unitTo) {
         final BigDecimal ratio = targetUnitToFactor.get(unitTo);
         Preconditions.checkNotNull(ratio, "Conversion " + unitFrom + " --> " + unitTo + " is not defined!");
-        return quantityFrom.multiply(ratio);
+        return numberService.setScale(quantityFrom.multiply(ratio));
     }
 
     @Override
@@ -120,8 +116,8 @@ public final class PossibleUnitConversionsImpl implements InternalPossibleUnitCo
         final Entity unitConversionItem = unitConversionItemDD.create();
         unitConversionItem.setField(UnitConversionItemFields.UNIT_FROM, unitFrom);
         unitConversionItem.setField(UnitConversionItemFields.UNIT_TO, unitTo);
-        unitConversionItem.setField(UnitConversionItemFields.QUANTITY_FROM, BigDecimal.ONE);
-        unitConversionItem.setField(UnitConversionItemFields.QUANTITY_TO, BigDecimal.ONE.multiply(ratio, mathContext));
+        unitConversionItem.setField(UnitConversionItemFields.QUANTITY_FROM, numberService.setScale(BigDecimal.ONE));
+        unitConversionItem.setField(UnitConversionItemFields.QUANTITY_TO, numberService.setScale(BigDecimal.ONE.multiply(ratio)));
         return unitConversionItem;
     }
 

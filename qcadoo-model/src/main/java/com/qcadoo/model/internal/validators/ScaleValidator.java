@@ -76,15 +76,15 @@ public final class ScaleValidator implements FieldHookDefinition, ErrorMessageDe
         int scale = ((BigDecimal) value).scale();
 
         if (max != null && scale > max) {
-            validatedEntity.addError(fieldDefinition, errorMessage);
+            validatedEntity.addError(fieldDefinition, errorMessage + ".max", max.toString());
             return false;
         }
         if (min != null && scale < min) {
-            validatedEntity.addError(fieldDefinition, errorMessage);
+            validatedEntity.addError(fieldDefinition, errorMessage + ".min", min.toString());
             return false;
         }
         if (is != null && !is.equals(scale)) {
-            validatedEntity.addError(fieldDefinition, errorMessage);
+            validatedEntity.addError(fieldDefinition, errorMessage + ".is", is.toString());
             return false;
         }
 
@@ -94,6 +94,10 @@ public final class ScaleValidator implements FieldHookDefinition, ErrorMessageDe
     @Override
     public void setErrorMessage(final String errorMessage) {
         this.errorMessage = errorMessage;
+    }
+
+    public Integer getMax() {
+        return max;
     }
 
 }
