@@ -46,6 +46,10 @@ public final class ButtonComponentPattern extends AbstractComponentPattern {
 
     private String correspondingComponent;
 
+    private int modalWidth;
+
+    private int modalHeight;
+
     private boolean correspondingViewInModal = false;
 
     public ButtonComponentPattern(final ComponentDefinition componentDefinition) {
@@ -64,6 +68,10 @@ public final class ButtonComponentPattern extends AbstractComponentPattern {
                 correspondingComponent = option.getValue();
             } else if ("correspondingViewInModal".equals(option.getType())) {
                 correspondingViewInModal = Boolean.parseBoolean(option.getValue());
+            } else if ("modalWidth".equals(option.getType())) {
+                modalWidth = new Integer(option.getValue());
+            } else if ("modalHeight".equals(option.getType())) {
+                modalHeight = new Integer(option.getValue());
             } else {
                 throw new IllegalStateException("Unknown option for button: " + option.getType());
             }
@@ -125,5 +133,13 @@ public final class ButtonComponentPattern extends AbstractComponentPattern {
 
     public boolean isCorrespondingViewInModal() {
         return correspondingViewInModal;
+    }
+
+    public int getModalWidth() {
+        return modalWidth;
+    }
+
+    public int getModalHeight() {
+        return modalHeight;
     }
 }
