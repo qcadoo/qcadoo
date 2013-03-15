@@ -591,7 +591,9 @@ public class DataAccessServiceImpl implements DataAccessService {
         }
 
         if (totalNumberOfEntities == 0) {
-            LOG.info("There is no entity matching criteria " + searchQuery);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("There is no entity matching criteria " + searchQuery);
+            }
             return getResultSet(null, totalNumberOfEntities, Collections.emptyList());
         }
 
@@ -601,7 +603,9 @@ public class DataAccessServiceImpl implements DataAccessService {
             totalNumberOfEntities = results.size();
 
             if (totalNumberOfEntities == 0) {
-                LOG.info("There is no entity matching criteria " + searchQuery);
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("There is no entity matching criteria " + searchQuery);
+                }
                 return getResultSet(null, totalNumberOfEntities, Collections.emptyList());
             }
         }

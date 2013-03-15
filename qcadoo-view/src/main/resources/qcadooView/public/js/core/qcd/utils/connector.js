@@ -39,7 +39,7 @@ QCDConnector.sendGet = function(type, parameters, responseFunction, errorFunctio
 			if (first) {
 				url+="?";
 			} else {
-				url += "&"
+				url += "&";
 			}
 			url += i+"="+parameters[i];
 			first = false;
@@ -82,7 +82,7 @@ QCDConnector.sendGet = function(type, parameters, responseFunction, errorFunctio
 			}
 		}
 	});
-}
+};
 
 QCDConnector.sendPost = function(parameters, responseFunction, errorFunction, type, isSynchronized) {
 	if (!QCDConnector.windowName) {
@@ -92,7 +92,11 @@ QCDConnector.sendPost = function(parameters, responseFunction, errorFunction, ty
 	var url = QCDConnector.windowName+".html";
 	
 	if(type !== undefined) {
-		url = url.replace("/page/", "/" + type + "/")
+        if (type.indexOf(".html") === -1) {
+            url = url.replace("/page/", "/" + type + "/");
+        } else {
+            url = type;
+        }
 	}
 	
 	$.ajax({
@@ -130,7 +134,7 @@ QCDConnector.sendPost = function(parameters, responseFunction, errorFunction, ty
 			}
 		}
 	});
-}
+};
 
 QCDConnector.showErrorMessage = function(messageBody, errorFunction) {
 	var messageBodyParts = messageBody.split("##");
@@ -146,4 +150,4 @@ QCDConnector.showErrorMessage = function(messageBody, errorFunction) {
 	if (errorFunction) {
 		errorFunction(message);
 	}
-}
+};

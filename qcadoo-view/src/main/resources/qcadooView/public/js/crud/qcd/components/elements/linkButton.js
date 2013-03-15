@@ -27,6 +27,10 @@ QCD.components.elements = QCD.components.elements || {};
 
 QCD.components.elements.LinkButton = function(_element, _mainController) {
 	$.extend(this, new QCD.components.Component(_element, _mainController));
+	
+	if (!(this instanceof QCD.components.elements.LinkButton)) {
+	    return new QCD.components.elements.LinkButton(_element, _mainController);
+	}
 
 	var mainController = _mainController;
 	
@@ -35,8 +39,12 @@ QCD.components.elements.LinkButton = function(_element, _mainController) {
 	var elementPath = this.elementPath;
 	var elementName = this.elementName;
 	
-	var pageUrl;
-	var openInModal;
+	var pageUrl = "";
+	var openInModal = true;
+	var modalDimensions = {
+	    width: 600,
+	    height: 400
+	};
 	
 	var button = $("#"+this.elementSearchName+"_buttonDiv");
 	var buttonLink = $("#"+this.elementSearchName+"_buttonLink");
@@ -46,20 +54,29 @@ QCD.components.elements.LinkButton = function(_element, _mainController) {
 	}
 	
 	this.getComponentValue = function() {
-		return { value: {}};
-	}
+		return { 
+		    value : pageUrl,
+		    openInModal : openInModal,
+		    modalWidth : modalDimensions.width,
+		    modalHeight : modalDimensions.height
+		};
+	};
 	
 	this.setComponentValue = function(value) {
 		insertValue(value);
-	}
+	};
 	
 	this.setComponentState = function(state) {
 		insertValue(state);
-	}
+	};
 	
 	function insertValue(value) {
 		pageUrl = value.value;
 		openInModal = value.openInModal;
+		modalDimensions = {
+			width : value.modalWidth,
+			height : value.modalHeight
+		};
 	}
 	
 	this.setComponentEnabled = function(isEnabled) {
@@ -68,17 +85,17 @@ QCD.components.elements.LinkButton = function(_element, _mainController) {
 		} else {
 			button.removeClass('activeButton');
 		}
-	}
+	};
 	
 	this.setComponentLoading = function(isLoadingVisible) {
 
-	}
+	};
 	
 	function onButtonClick(e) {
 		buttonLink.blur();
 		if (button.hasClass('activeButton')) {
 			if (openInModal) {
-				mainController.openModal(elementPath, pageUrl);
+				mainController.openModal(elementPath, pageUrl, null, null, null, modalDimensions);
 			} else {
 				mainController.goToPage(pageUrl);
 			}
