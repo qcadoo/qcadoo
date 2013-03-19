@@ -310,17 +310,24 @@ QCD.components.elements.Calendar = function(_element, _mainController) {
 	}
 	
 	function getDate() {
-		var dateString = input.val();
-		if ($.trim(dateString) == "") {
+		var dateString = input.val(),
+            parts,
+            timeString = timeInput.val();
+		if ($.trim(dateString) === "") {
 			return 0;
 		}
-		var parts = dateString.split("-");
+		parts = dateString.split("-");
 		if (parts.length != 3 || parts[0].length != 4 || parts[1].length != 2 || parts[2].length != 2) {
 			return null;
 		}
+        if ($.trim(timeString) !== "") {
+            dateString += 'T' + timeString;
+        }
+		
 		try {
-			return new Date(dateString + ' ' + timeInput.val());
+			return new Date(dateString);
 		} catch (e) {
+		    console.error("Can't build date from string: '" + dateString + "'");
 			return null;
 		}
 	}
