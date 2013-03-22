@@ -39,7 +39,7 @@
 						</xs:sequence>
 					</xs:complexType>
 				</xs:element>
-				<xs:element name="hooks" minOccurs="1" maxOccurs="1">
+				<xs:element name="hooks" minOccurs="0" maxOccurs="1">
 					<xs:complexType>
 						<xs:sequence minOccurs="0" maxOccurs="unbounded">
 							<xs:group ref="hooksType" />
