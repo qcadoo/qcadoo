@@ -285,9 +285,14 @@ public final class PdfHelperImpl implements PdfHelper {
             }
             i++;
         }
+
         Integer columnWithoutFixedWidth = allColumns.size() - columnWithFixedWidth.size();
-        if (remainedAvailableWidth >= 0
-                && remainedAvailableWidth > columnWithFixedWidth.size() * MINIMUM_ALLOWABLE_SIZE_COLUMN_IN_PIXEL) {
+        if (allColumns.size() == columnWithFixedWidth.size() && remainedAvailableWidth >= 0) {
+            for (Map.Entry<Integer, Integer> entry : columnWithFixedWidth.entrySet()) {
+                reportColumnWidths[entry.getKey()] = entry.getValue();
+            }
+        } else if (remainedAvailableWidth >= 0
+                && remainedAvailableWidth > columnWithoutFixedWidth * MINIMUM_ALLOWABLE_SIZE_COLUMN_IN_PIXEL) {
             Integer columnSize = remainedAvailableWidth / columnWithoutFixedWidth;
             Arrays.fill(reportColumnWidths, columnSize);
             for (Map.Entry<Integer, Integer> entry : columnWithFixedWidth.entrySet()) {
