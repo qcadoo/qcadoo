@@ -374,6 +374,12 @@ QCD.components.elements.Grid = function(_element, _mainController) {
         if (gridParameters.correspondingLookup && gridParameters.correspondingLookup != '' && mainController.canClose()) {
             setPermanentlyDisableParam(params);
             var correspondingLookupComponent = mainController.getComponentByReferenceName(gridParameters.correspondingLookup);
+			var lookupComponentData = correspondingLookupComponent.getComponentData();
+			if (lookupComponentData.criteriaModifierParameter) {
+				params["window.grid.options"] = {
+					criteriaModifierParameter: lookupComponentData.criteriaModifierParameter
+				};
+			}
             var url = pluginIdentifier + "/" + correspondingLookupComponent.options.viewName + ".html?context=" + JSON.stringify(params);
             lookupWindow = mainController.openModal(elementPath + "_editWindow", url, false, onModalClose, onModalRender);
         }

@@ -74,7 +74,10 @@ public final class CustomMethodHolder {
      *            view definition parser
      * @param applicationContext
      *            spring container's application context
-     * @return new instance of {@link RowStyleResolver} based on class and method fetched from view XML.
+     * @param expectedReturnType
+     *            return type
+     * @param expectedParameterTypes
+     *            parameter types
      */
     public CustomMethodHolder(final Node holderNode, final ViewDefinitionParser parser,
             final ApplicationContext applicationContext, final Class<?> expectedReturnType,
@@ -169,4 +172,23 @@ public final class CustomMethodHolder {
         }
     }
 
+    public static boolean methodExists(final String className, final String methodName,
+            final ApplicationContext applicationContext, final Class<?>[] expectedParameterTypes) {
+        Preconditions.checkArgument(!StringUtils.isBlank(className), "class name attribute is not specified!");
+        Preconditions.checkArgument(!StringUtils.isBlank(methodName), "method name attribute is not specified!");
+        Preconditions.checkArgument(expectedParameterTypes != null, "expected parameter types are not specified!");
+
+        try {
+            final Class<?> clazz = Thread.currentThread().getContextClassLoader().loadClass(className);
+
+            for (Method method : clazz.getMethods()) {
+                if (method.getName().equals(methodName) && Arrays.deepEquals(method.getParameterTypes(), expectedParameterTypes)) {
+                    return true;
+                }
+            }
+            return false;
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
+    }
 }

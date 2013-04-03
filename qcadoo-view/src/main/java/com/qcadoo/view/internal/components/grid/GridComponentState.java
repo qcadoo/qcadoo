@@ -56,7 +56,9 @@ import com.qcadoo.model.api.types.ManyToManyType;
 import com.qcadoo.model.api.validators.ErrorMessage;
 import com.qcadoo.model.internal.ProxyEntity;
 import com.qcadoo.view.api.components.GridComponent;
+import com.qcadoo.view.api.components.lookup.FilterValueHolder;
 import com.qcadoo.view.internal.CriteriaModifier;
+import com.qcadoo.view.internal.FilterValueHolderImpl;
 import com.qcadoo.view.internal.RowStyleResolver;
 import com.qcadoo.view.internal.states.AbstractComponentState;
 
@@ -99,6 +101,8 @@ public final class GridComponentState extends AbstractComponentState implements 
     public static final String JSON_ENTITIES_TO_MARK_AS_NEW = "entitiesToMarkAsNew";
 
     public static final String JSON_ENTITIES_TO_MARK_WITH_CSS_CLASS = "entitiesToMarkWithCssClass";
+
+    public static final String JSON_CRITERIA_MODIFIER_PARAMETER = "criteriaModifierParameter";
 
     private final GridEventPerformer eventPerformer = new GridEventPerformer();
 
@@ -150,6 +154,8 @@ public final class GridComponentState extends AbstractComponentState implements 
 
     private final CriteriaModifier criteriaModifier;
 
+    private final FilterValueHolder criteriaModifierParameter;
+
     public GridComponentState(final DataDefinition dataDefinition, final GridComponentPattern pattern) {
         super(pattern);
         this.belongsToFieldDefinition = pattern.getBelongsToFieldDefinition();
@@ -161,6 +167,7 @@ public final class GridComponentState extends AbstractComponentState implements 
         this.scopeFieldDataDefinition = dataDefinition;
         this.rowStyleResolver = pattern.getRowStyleResolver();
         this.criteriaModifier = pattern.getCriteriaModifier();
+        this.criteriaModifierParameter = new FilterValueHolderImpl();
         this.defaultPredefinedFilter = pattern.getDefaultPredefinedFilter();
         registerEvent("refresh", eventPerformer, "refresh");
         registerEvent("select", eventPerformer, "selectEntity");
@@ -189,6 +196,7 @@ public final class GridComponentState extends AbstractComponentState implements 
                 passSelectedEntityIdFromJson(jsonOptions);
                 passSelectedEntitiesFromJson(jsonOptions);
                 passEntitiesFromJson(jsonOptions);
+                passCriteriaModifierParameterFromJson(jsonOptions);
             }
         }
     }
@@ -299,6 +307,12 @@ public final class GridComponentState extends AbstractComponentState implements 
         }
     }
 
+    private void passCriteriaModifierParameterFromJson(JSONObject json) throws JSONException {
+        if (json.has(JSON_CRITERIA_MODIFIER_PARAMETER) && !json.isNull(JSON_CRITERIA_MODIFIER_PARAMETER)) {
+            criteriaModifierParameter.initialize(json.getJSONObject(JSON_CRITERIA_MODIFIER_PARAMETER));
+        }
+    }
+
     private boolean gridIsEmpty() {
         return belongsToEntityId == null;
     }
@@ -380,6 +394,10 @@ public final class GridComponentState extends AbstractComponentState implements 
         }
 
         json.put(JSON_ENTITIES, jsonEntities);
+
+        if (criteriaModifierParameter != null) {
+            json.put(JSON_CRITERIA_MODIFIER_PARAMETER, criteriaModifierParameter);
+        }
 
         return json;
     }
@@ -664,7 +682,7 @@ public final class GridComponentState extends AbstractComponentState implements 
                     addPaging(criteria);
 
                     if (criteriaModifier != null) {
-                        criteriaModifier.modifyCriteria(criteria);
+                        criteriaModifier.modifyCriteria(criteria, criteriaModifierParameter);
                     }
 
                     SearchResult result = criteria.list();
