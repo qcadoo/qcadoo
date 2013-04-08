@@ -59,6 +59,21 @@ public interface PdfHelper {
             final Date date, final String username) throws DocumentException;
 
     /**
+     * Add header to the document
+     * 
+     * @param document
+     * @param name
+     *            document name
+     * @param documenTitle
+     * @param documentAuthor
+     * @param date
+     *            actual date
+     * @throws DocumentException
+     */
+    void addDocumentHeader(final Document document, final String name, final String documenTitle, final String documentAuthor,
+            final Date date) throws DocumentException;
+
+    /**
      * Add metadata to given document.
      * 
      * @param document
@@ -218,4 +233,11 @@ public interface PdfHelper {
      */
     int[] getReportColumnWidths(final Integer availableWidth, final Map<String, Integer> fixedColumns,
             final List<String> allColumns);
+
+    /**
+     * Return document author
+     * 
+     * @return document author
+     */
+    String getDocumentAuthor();
 }

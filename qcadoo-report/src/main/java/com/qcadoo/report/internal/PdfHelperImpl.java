@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,11 +55,14 @@ import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.draw.LineSeparator;
 import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.localization.api.utils.DateUtils;
+import com.qcadoo.model.api.DataDefinitionService;
+import com.qcadoo.model.api.Entity;
 import com.qcadoo.report.api.ColorUtils;
 import com.qcadoo.report.api.FontUtils;
 import com.qcadoo.report.api.pdf.HeaderAlignment;
 import com.qcadoo.report.api.pdf.PdfHelper;
 import com.qcadoo.report.api.pdf.TableBorderEvent;
+import com.qcadoo.security.api.SecurityService;
 
 @Component
 public final class PdfHelperImpl implements PdfHelper {
@@ -67,8 +71,24 @@ public final class PdfHelperImpl implements PdfHelper {
 
     private static final Integer MINIMUM_ALLOWABLE_SIZE_COLUMN_IN_PIXEL = 63;
 
+    private static final String QCADOO_SECURITY = "qcadooSecurity";
+
+    private static final String USER = "user";
+
+    private static final String FIRST_NAME = "firstName";
+
+    private static final String LAST_NAME = "lastName";
+
+    private static final String USER_NAME = "userName";
+
+    @Autowired
+    private DataDefinitionService dataDefinitionService;
+
     @Autowired
     private TranslationService translationService;
+
+    @Autowired
+    private SecurityService securityService;
 
     @Override
     public void addDocumentHeader(final Document document, final String name, final String documenTitle,
@@ -87,6 +107,31 @@ public final class PdfHelperImpl implements PdfHelper {
         userAndDate.getDefaultCell().setBorderWidth(0);
         Paragraph userParagraph = new Paragraph(new Phrase(documentAuthor, FontUtils.getDejavuRegular9Light()));
         userParagraph.add(new Phrase(" " + username, FontUtils.getDejavuRegular9Dark()));
+        Paragraph dateParagraph = new Paragraph(df.format(date), FontUtils.getDejavuRegular9Light());
+        userAndDate.addCell(userParagraph);
+        userAndDate.getDefaultCell().setHorizontalAlignment(Element.ALIGN_RIGHT);
+        userAndDate.addCell(dateParagraph);
+        userAndDate.setSpacingAfter(14f);
+        document.add(userAndDate);
+    }
+
+    @Override
+    public void addDocumentHeader(final Document document, final String name, final String documenTitle,
+            final String documentAuthor, final Date date) throws DocumentException {
+        SimpleDateFormat df = new SimpleDateFormat(DateUtils.L_DATE_TIME_FORMAT, getLocale());
+        LineSeparator line = new LineSeparator(3, 100f, ColorUtils.getLineDarkColor(), Element.ALIGN_LEFT, 0);
+        document.add(Chunk.NEWLINE);
+        Paragraph title = new Paragraph(new Phrase(documenTitle, FontUtils.getDejavuBold19Light()));
+        title.add(new Phrase(" " + name, FontUtils.getDejavuBold19Dark()));
+        title.setSpacingAfter(7f);
+        document.add(title);
+        document.add(line);
+        PdfPTable userAndDate = new PdfPTable(2);
+        userAndDate.setWidthPercentage(100f);
+        userAndDate.setHorizontalAlignment(Element.ALIGN_LEFT);
+        userAndDate.getDefaultCell().setBorderWidth(0);
+        Paragraph userParagraph = new Paragraph(new Phrase(documentAuthor, FontUtils.getDejavuRegular9Light()));
+        userParagraph.add(new Phrase(" " + getDocumentAuthor(), FontUtils.getDejavuRegular9Dark()));
         Paragraph dateParagraph = new Paragraph(df.format(date), FontUtils.getDejavuRegular9Light());
         userAndDate.addCell(userParagraph);
         userAndDate.getDefaultCell().setHorizontalAlignment(Element.ALIGN_RIGHT);
@@ -303,5 +348,32 @@ public final class PdfHelperImpl implements PdfHelper {
             Arrays.fill(reportColumnWidths, columnSize);
         }
         return reportColumnWidths;
+    }
+
+    @Override
+    public String getDocumentAuthor() {
+        Entity user = dataDefinitionService.get(QCADOO_SECURITY, USER).get(securityService.getCurrentUserId());
+        String firstName = user.getStringField(FIRST_NAME);
+        String lastName = user.getStringField(LAST_NAME);
+        String userName = user.getStringField(USER_NAME);
+        String documentAuthor = "";
+
+        if (!StringUtils.isEmpty(firstName)) {
+            documentAuthor += firstName;
+        }
+        if (!StringUtils.isEmpty(lastName)) {
+            if (StringUtils.isEmpty(documentAuthor)) {
+                documentAuthor += lastName;
+            } else {
+                documentAuthor += " " + lastName;
+            }
+        }
+        if (StringUtils.isEmpty(documentAuthor)) {
+            documentAuthor = userName;
+        } else {
+            documentAuthor += " (" + userName + ")";
+        }
+
+        return documentAuthor;
     }
 }
