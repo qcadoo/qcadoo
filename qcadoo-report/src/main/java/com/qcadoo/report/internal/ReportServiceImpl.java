@@ -62,6 +62,7 @@ import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.report.api.ReportException;
 import com.qcadoo.report.api.ReportService;
+import com.qcadoo.report.api.pdf.PdfHelper;
 import com.qcadoo.report.internal.templates.ReportTemplateService;
 import com.qcadoo.report.internal.util.ReportFormatFactory;
 import com.qcadoo.security.api.SecurityService;
@@ -89,6 +90,9 @@ public class ReportServiceImpl implements ReportService {
 
     @Autowired
     private DataDefinitionService dataDefinitionService;
+
+    @Autowired
+    private PdfHelper pdfHelper;
 
     @Override
     public byte[] generateReportForEntity(final String templatePlugin, final String templateName, final ReportType type,
@@ -144,7 +148,7 @@ public class ReportServiceImpl implements ReportService {
         try {
             session = sessionFactory.openSession();
             parameters.put(JRParameter.REPORT_LOCALE, locale);
-            parameters.put("Author", securityService.getCurrentUserName());
+            parameters.put("Author", pdfHelper.getDocumentAuthor());
             parameters.put(JRHibernateQueryExecuterFactory.PARAMETER_HIBERNATE_SESSION, session);
 
             ResourceBundle resourceBundle = new MessageSourceResourceBundle(messageSource, locale);
