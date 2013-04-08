@@ -262,9 +262,7 @@ public final class PdfHelperImpl implements PdfHelper {
 
     @Override
     public PdfPTable addDynamicHeaderTableCell(final PdfPTable headerTable, final Map<String, Object> column, final Locale locale) {
-        if (column.keySet().size() == 0) {
-            addTableCellAsOneColumnTable(headerTable, "", "");
-        } else {
+        if (column.keySet().size() != 0) {
             Object key = column.keySet().iterator().next();
             addTableCellAsOneColumnTable(headerTable, translationService.translate(key.toString(), locale), column.get(key));
             column.remove(key);
