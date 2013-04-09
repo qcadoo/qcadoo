@@ -165,7 +165,7 @@
 							break;
 						case "userNotFound":
 							showMessageBox("error", errorHeaderText, userNotFoundText);
-							$('#usernameInput').css("border-co.css, "#ec1c24");
+							$('#usernameInput').css("border-co.css", "#ec1c24");
 							break;
 						case "loginIsBlank":
 							hideMessageBox();
