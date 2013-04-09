@@ -37,6 +37,10 @@ public class ButtonComponentState extends AbstractComponentState {
 
     public static final String JSON_OPEN_IN_MODAL = "openInModal";
 
+    public static final String JSON_MODAL_WIDTH = "modalWidth";
+
+    public static final String JSON_MODAL_HEIGHT = "modalHeight";
+
     private final String correspondingView;
 
     private final String correspondingComponent;
@@ -46,6 +50,10 @@ public class ButtonComponentState extends AbstractComponentState {
     private final String correspondingField;
 
     private final String url;
+
+    private final int modalWidth;
+
+    private final int modalHeight;
 
     private String value;
 
@@ -58,6 +66,8 @@ public class ButtonComponentState extends AbstractComponentState {
         this.correspondingComponent = null;
         this.correspondingField = null;
         this.correspondingViewInModal = false;
+        this.modalWidth = 600;
+        this.modalHeight = 400;
         registerEvents();
     }
 
@@ -68,6 +78,8 @@ public class ButtonComponentState extends AbstractComponentState {
         this.correspondingView = pattern.getCorrespondingView();
         this.correspondingComponent = pattern.getCorrespondingComponent();
         this.correspondingViewInModal = pattern.isCorrespondingViewInModal();
+        this.modalWidth = pattern.getModalWidth();
+        this.modalHeight = pattern.getModalHeight();
         registerEvents();
     }
 
@@ -99,6 +111,8 @@ public class ButtonComponentState extends AbstractComponentState {
         json.put(JSON_VALUE, value);
         json.put(JSON_OPEN_IN_MODAL, correspondingViewInModal);
         json.put(JSON_BELONGS_TO_ENTITY_ID, belongsToEntityId);
+        json.put(JSON_MODAL_WIDTH, modalWidth);
+        json.put(JSON_MODAL_HEIGHT, modalHeight);
         return json;
     }
 

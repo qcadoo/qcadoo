@@ -220,4 +220,11 @@ public final class DateUtils {
         return date;
     }
 
+    public static Date copy(final Date date) {
+        if (date == null) {
+            return null;
+        }
+        return new Date(date.getTime());
+    }
+
 }

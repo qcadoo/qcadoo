@@ -30,6 +30,10 @@ QCD.components.elements.Calendar = function(_element, _mainController) {
 	
 	var ANIMATION_LENGTH = 200;
 	
+	var SECOND_IN_MILLIS = 1000,
+	    MINUTE_IN_MILLIS = 60 * SECOND_IN_MILLIS,
+	    HOUR_IN_MILLIS = 60 * MINUTE_IN_MILLIS; 
+	
 	var containerElement = _element;
 	
 	var calendar = $("#"+this.elementSearchName+"_calendar");
@@ -90,12 +94,12 @@ QCD.components.elements.Calendar = function(_element, _mainController) {
 			if (isTriggerBootonHovered) {
 				skipButtonClick = true;
 			}
-		}
+		};
 		options.onSelect = function(dateText, inst) {
 			datepickerElement.slideUp(ANIMATION_LENGTH);
 			opened = false;
 			inputDataChanged();
-		}
+		};
 		
 		datepickerElement = $("<div>").css("position", "absolute").css("zIndex", 300).css("right", "15px").css("line-height", "14px");
 		containerElement.css("position", "relative");
@@ -120,18 +124,18 @@ QCD.components.elements.Calendar = function(_element, _mainController) {
 			}
 		});
 		
-		calendar.hover(function() {isTriggerBootonHovered = true;}, function() {isTriggerBootonHovered = false;})
+		calendar.hover(function() {isTriggerBootonHovered = true;}, function() {isTriggerBootonHovered = false;});
 		calendar.click(function() {
 			if(calendar.hasClass("enabled")) {
 				if (skipButtonClick) {
 					skipButtonClick = false;
 					return;
 				}
-				if(!opened) {
+				if (!opened) {
 					
 					if (input.val()) {
 						try {
-							$.datepicker.parseDate( "yy-mm-dd", input.val());
+							$.datepicker.parseDate("yy-mm-dd", input.val());
 							datepickerElement.datepicker("setDate", input.val());
 						} catch (e) {
 							// do nothing
@@ -158,7 +162,7 @@ QCD.components.elements.Calendar = function(_element, _mainController) {
 					datepickerElement.slideDown(ANIMATION_LENGTH).show();
 					opened = true;
 				} else {
-					datepickerElement.slideUp(ANIMATION_LENGTH)
+					datepickerElement.slideUp(ANIMATION_LENGTH);
 					opened = false;
 				}
 			}
@@ -184,7 +188,7 @@ QCD.components.elements.Calendar = function(_element, _mainController) {
 		});
 		
 		$("#ui-datepicker-div").hide();
-	}
+	};
 	
 	function checkTimeFormat(value){
 		var fragmentaryValues = [ value.substr(0,2), value.substr(3,2), value.substr(6,2) ];
@@ -207,28 +211,28 @@ QCD.components.elements.Calendar = function(_element, _mainController) {
 	this.setComponentData = function(data) {
 		if (data.value) {
 			this.input.val(getNormalizedDate(data.value));
-			if(withTimePicker) {
+			if (withTimePicker) {
 				timeInput.val(getNormalizedTime(data.value));
 			}
 		} else {
 			this.input.val("");
-			if(withTimePicker) {
+			if (withTimePicker) {
 				timeInput.val("");
 			}
 		}
-	}
+	};
 	
 	this.getComponentData = function() {
 		if(withTimePicker) {
 			return {
 				value : this.input.val() ? (this.input.val() + ' ' + (timeInput.val() ? timeInput.val() : '00:00:00')) : '' 
-			}
+			};
 		} else {
 			return {
 				value : this.input.val()
-			}
+			};
 		}
-	}
+	};
 	
 	function getNormalizedDate(date) {
 		var date = $.trim(date);
@@ -282,7 +286,7 @@ QCD.components.elements.Calendar = function(_element, _mainController) {
 		} else {
 			element.removeClass("error");
 		}
-	}
+	};
 	
 	this.setFormComponentEnabled = function(isEnabled) {
 		if (isEnabled) {
@@ -302,27 +306,60 @@ QCD.components.elements.Calendar = function(_element, _mainController) {
 				timeInput.unmask();
 			}
 		}
-	}
+	};
 	
 	this.updateSize = function(_width, _height) {
 		var height = _height ? _height-10 : 40;
 		this.input.parent().parent().parent().parent().parent().height(height);
+	};
+	
+	function getTimeInMillis(timeString) {
+	    var timeInMillis = 0,
+	        parts;
+	    timeString = $.trim(timeString);
+	    if (timeString !== "") {
+            parts = timeString.split(':');
+            if (parts.length != 3 || parts[0].length != 2 || parts[1].length != 2 || parts[2].length != 2) {
+                console.error("Can't parse time from string: '" + timeString + "'");
+                return null;
+            }    
+            try {
+                timeInMillis = parseInt(parts[0], 10) * HOUR_IN_MILLIS + parseInt(parts[1], 10) * MINUTE_IN_MILLIS + parseInt(parts[2], 10) * SECOND_IN_MILLIS;
+            } catch (e) {
+                console.error("Can't parse time from string: '" + timeString + "'");
+                return null;
+            }
+        }
+        return timeInMillis;
 	}
 	
 	function getDate() {
-		var dateString = input.val();
-		if ($.trim(dateString) == "") {
+		var dateString = input.val(),
+            parts,
+            date,
+            timeInMillis = getTimeInMillis(timeInput.val());
+		if ($.trim(dateString) === "") {
 			return 0;
 		}
-		var parts = dateString.split("-");
+		parts = dateString.split("-");
 		if (parts.length != 3 || parts[0].length != 4 || parts[1].length != 2 || parts[2].length != 2) {
+			console.error("Can't build date from string: '" + dateString + "'");
 			return null;
 		}
+		
 		try {
-			return new Date(dateString + ' ' + timeInput.val());
-		} catch (e) {
-			return null;
+            date = new Date(dateString);
+        } catch (e) {
+            console.error("Can't build date from string: '" + dateString + "'");
+            return null;
+        }
+		
+		if (timeInMillis) {
+		    date = new Date(date.getTime() + timeInMillis);
 		}
+        
+		return date;
+		
 	}
 	this.getDate = getDate;
 	
@@ -334,7 +371,7 @@ QCD.components.elements.Calendar = function(_element, _mainController) {
 			timeInput.val(timeString);
 		}
 		inputDataChanged();
-	}
+	};
 	
 	constructor(this);
-}
+};

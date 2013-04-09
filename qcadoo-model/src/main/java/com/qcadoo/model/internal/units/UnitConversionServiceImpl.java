@@ -61,8 +61,8 @@ public final class UnitConversionServiceImpl implements UnitConversionService {
 
     private PossibleUnitConversions getPossibleConversions(final String unit, final List<Entity> matchingDomain) {
         Preconditions.checkNotNull(unit);
-        final InternalPossibleUnitConversions possibleUnitConversions = new PossibleUnitConversionsImpl(unit,
-                numberService.getMathContext(), unitConversionModelService.getDataDefinition());
+        final InternalPossibleUnitConversions possibleUnitConversions = new PossibleUnitConversionsImpl(unit, numberService,
+                unitConversionModelService.getDataDefinition());
         final UnitConversion root = UnitConversionImpl.build(unit, numberService.getMathContext());
         traverse(possibleUnitConversions, root, convertEntities(matchingDomain));
         return possibleUnitConversions;

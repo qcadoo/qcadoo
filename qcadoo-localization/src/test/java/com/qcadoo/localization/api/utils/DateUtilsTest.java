@@ -25,6 +25,7 @@ package com.qcadoo.localization.api.utils;
 
 import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 import java.math.BigInteger;
 import java.text.ParseException;
@@ -801,5 +802,24 @@ public class DateUtilsTest {
         assertEquals(expected.getDayOfMonth(), actual.getDayOfMonth());
         assertEquals(expected.getMonthOfYear(), actual.getMonthOfYear());
         assertEquals(expected.getYear(), actual.getYear());
+    }
+
+    @Test
+    public final void shouldCopyReturnNullForNullArgument() {
+        assertNull(DateUtils.copy(null));
+    }
+
+    @Test
+    public final void shouldCopyReturnNewInstanceOfDate() {
+        // given
+        Date originalDate = new DateTime(2013, 1, 1, 0, 0, 0, 0).toDate();
+
+        // when
+        Date date = DateUtils.copy(originalDate);
+
+        // then
+        assertEquals(originalDate, date);
+        originalDate.setTime(originalDate.getTime() - 10000);
+        assertFalse(originalDate.equals(date));
     }
 }

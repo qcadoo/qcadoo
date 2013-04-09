@@ -77,15 +77,15 @@ public final class UnscaledValueValidator implements FieldHookDefinition, ErrorM
 
     private boolean validatePresicion(final FieldDefinition fieldDefinition, final Entity validatedEntity, final int presicion) {
         if (max != null && presicion > max) {
-            validatedEntity.addError(fieldDefinition, errorMessage);
+            validatedEntity.addError(fieldDefinition, errorMessage + ".max", max.toString());
             return false;
         }
         if (min != null && presicion < min) {
-            validatedEntity.addError(fieldDefinition, errorMessage);
+            validatedEntity.addError(fieldDefinition, errorMessage + ".min", min.toString());
             return false;
         }
         if (is != null && !is.equals(presicion)) {
-            validatedEntity.addError(fieldDefinition, errorMessage);
+            validatedEntity.addError(fieldDefinition, errorMessage + ".is", is.toString());
             return false;
         }
 
@@ -95,6 +95,10 @@ public final class UnscaledValueValidator implements FieldHookDefinition, ErrorM
     @Override
     public void setErrorMessage(final String errorMessage) {
         this.errorMessage = errorMessage;
+    }
+
+    public Integer getMax() {
+        return max;
     }
 
 }

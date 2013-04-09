@@ -45,10 +45,12 @@
 			<script>
 				<![CDATA[
 					var deleteButton = #{window}.getRibbonItem("actions.delete");
+					var copyButton = #{window}.getRibbonItem("actions.copy");
 					var listener = {
 						onChange: function(selectedEntitiesArray) {
 							if (!selectedEntitiesArray || selectedEntitiesArray.length == 0) {
 								deleteButton.disable();
+								copyButton.disable();
 							} else {
 								var hasExternal = false;
 								var hasTechnicalCode = false;
@@ -64,13 +66,17 @@
 								}
 								if (hasExternal) {
 									deleteButton.disable("#{translate(qcadooDictionaries.dictionaryItems.ribbon.message.someDictionaryItemIsExternal)}");
+									copyButton.disable("#{translate(qcadooDictionaries.dictionaryItems.ribbon.message.someDictionaryItemIsExternal)}");
 								} else {
 									deleteButton.enable();
+									copyButton.enable();
 								}
-								if(hasTechnicalCode){
+								if (hasTechnicalCode) {
 									deleteButton.disable();
+									copyButton.disable();
 								} else {
 									deleteButton.enable();
+									copyButton.enable();
 								}
 							}
 						}
