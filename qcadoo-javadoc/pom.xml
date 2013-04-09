@@ -110,6 +110,7 @@
 								<configuration>
 									<serverId>qcadoo-public-javadoc</serverId>
 									<fromFile>${basedir}/target/${project.artifactId}.zip</fromFile>
+									<url>${wagon.url}</url>
 								</configuration>
 							</execution>
 						</executions>
