@@ -66,7 +66,6 @@ public abstract class ReportPdfView extends AbstractPdfView {
         }
         response.setHeader("Content-disposition",
                 "inline; filename=" + fileName + "." + ReportService.ReportType.PDF.getExtension());
-        // writer.addJavaScript("this.print(false);", false);
     }
 
     @Override
