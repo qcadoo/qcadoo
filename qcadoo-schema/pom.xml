@@ -51,7 +51,7 @@
 								<configuration>
 									<serverId>qcadoo-public-schema</serverId>
 									<fromFile>${basedir}/target/${project.artifactId}.zip</fromFile>
-									<url>scp://91.217.182.199/home/schema/</url>
+									<url>${wagon.url}</url>
 								</configuration>
 							</execution>
 						</executions>
