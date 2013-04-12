@@ -118,8 +118,7 @@ public class ExportToPDFController {
             Date generationDate = new Date();
 
             pdfHelper.addDocumentHeader(document, "", title,
-                    translationService.translate("qcadooReport.commons.generatedBy.label", locale), generationDate,
-                    securityService.getCurrentUserName());
+                    translationService.translate("qcadooReport.commons.generatedBy.label", locale), generationDate);
 
             int columns = 0;
             List<String> exportToPDFTableHeader = new ArrayList<String>();
