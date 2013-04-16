@@ -23,40 +23,44 @@
  */
 var QCD = QCD || {};
 
-var pnotify_stack = {"dir1": "up", "dir2": "left", "firstpos1": 15, "firstpos2": 30};
+QCD.MessagesController = function () {
+    "use strict";
 
-QCD.MessagesController = function() {
+    if (!(this instanceof QCD.MessagesController)) {
+        return new QCD.MessagesController();
+    }
 
-	var initialized = false;
+	var initialized = false,
+        pnotify_stack = {"dir1": "up", "dir2": "left", "firstpos1": 15, "firstpos2": 30};
 	
-	this.clearMessager = function() {
+	this.clearMessager = function () {
 		$.pnotify_remove_all();
-	}
+	};
 	
-	this.addMessage = function(message) { // type = [info|error|success]
-		
-		if (message.autoClose == undefined) {
+	this.addMessage = function (message) { // type = [info|error|success]
+		var type = message.type.toLowerCase(),
+		    messageOptionsObject = null;
+            
+		if (typeof message.autoClose === 'undefined' || message.autoClose === null) {
 			message.autoClose = true;
 		}
 		
-		type = message.type.toLowerCase();
-		if (type == "failure") {
+		if (type === "failure") {
 			type = "error";
 		}
 		
-		var messageOptionsObject = {
+		messageOptionsObject = {
 				pnotify_title: message.title,
 				pnotify_text: message.content,
 				pnotify_stack: pnotify_stack,
 				pnotify_history: false,
 				pnotify_width: "300px",
 				pnotify_type: type,
-				pnotify_addclass: type == 'success' ? 'ui-state-success' : '',
-				pnotify_notice_icon: type == 'success' ? 'ui-icon ui-icon-success' : 'ui-icon ui-icon-notify',
+				pnotify_addclass: type === 'success' ? 'ui-state-success' : '',
+				pnotify_notice_icon: type === 'success' ? 'ui-icon ui-icon-success' : 'ui-icon ui-icon-notify',
 				pnotify_error_icon: 'ui-icon ui-icon-error',
-				pnotify_opacity: .9,
+				pnotify_opacity: 0.9,
 				pnotify_delay: 4000,
-				//pnotify_hide: true // type == 'error' ? false : true
 				pnotify_hide: message.autoClose
 			}; 
 		
@@ -67,11 +71,11 @@ QCD.MessagesController = function() {
 		
 		$.pnotify(messageOptionsObject);
 		initialized = true;
-	}
+	};
 	
-	this.isInitialized = function() {
+	this.isInitialized = function () {
 		return initialized;
-	}
+	};
 
-}
+};
 
