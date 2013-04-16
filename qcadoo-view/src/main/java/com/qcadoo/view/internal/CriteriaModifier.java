@@ -23,10 +23,13 @@
  */
 package com.qcadoo.view.internal;
 
+import java.util.Arrays;
+
 import org.springframework.context.ApplicationContext;
 import org.w3c.dom.Node;
 
 import com.qcadoo.model.api.search.SearchCriteriaBuilder;
+import com.qcadoo.view.api.components.lookup.FilterValueHolder;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
 
 /**
@@ -37,17 +40,44 @@ import com.qcadoo.view.internal.xml.ViewDefinitionParser;
  */
 public class CriteriaModifier {
 
+    private static final String NO_SUCH_METHOD_MSG = "Failed to find method '%s.%s', "
+            + "please make sure that there is no typo, method returns %s and parameters' types are (%s) or (%s)";
+
     public static final String NODE_NAME = "criteriaModifier";
+
+    private static final String CLASS_ATTRIBUTE = "class";
+
+    private static final String METHOD_ATTRIBUTE = "method";
 
     private final CustomMethodHolder customMethodHolder;
 
+    private final boolean sigleParameter;
+
     public CriteriaModifier(final Node holderNode, final ViewDefinitionParser parser, final ApplicationContext applicationContext) {
-        customMethodHolder = new CustomMethodHolder(holderNode, parser, applicationContext, Void.TYPE,
-                new Class[] { SearchCriteriaBuilder.class });
+        String className = parser.getStringAttribute(holderNode, CLASS_ATTRIBUTE);
+        String methodName = parser.getStringAttribute(holderNode, METHOD_ATTRIBUTE);
+        Class<?>[] singleParamter = new Class[] { SearchCriteriaBuilder.class };
+        Class<?>[] multibleParamters = new Class[] { SearchCriteriaBuilder.class, FilterValueHolder.class };
+
+        if (CustomMethodHolder.methodExists(className, methodName, applicationContext, singleParamter)) {
+            customMethodHolder = new CustomMethodHolder(holderNode, parser, applicationContext, Void.TYPE, singleParamter);
+            sigleParameter = true;
+        } else if (CustomMethodHolder.methodExists(className, methodName, applicationContext, multibleParamters)) {
+            customMethodHolder = new CustomMethodHolder(holderNode, parser, applicationContext, Void.TYPE, multibleParamters);
+            sigleParameter = false;
+        } else {
+            throw new IllegalStateException(String.format(NO_SUCH_METHOD_MSG, className, methodName, Void.TYPE,
+                    Arrays.toString(singleParamter), Arrays.toString(multibleParamters)));
+        }
     }
 
-    public void modifyCriteria(final SearchCriteriaBuilder searchCriteriaBuilder) {
-        customMethodHolder.invoke(searchCriteriaBuilder);
+    public void modifyCriteria(final SearchCriteriaBuilder searchCriteriaBuilder,
+            final FilterValueHolder criteriaModifierParamters) {
+        if (sigleParameter) {
+            customMethodHolder.invoke(searchCriteriaBuilder);
+        } else {
+            customMethodHolder.invoke(searchCriteriaBuilder, criteriaModifierParamters);
+        }
     }
 
 }

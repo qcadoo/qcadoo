@@ -109,7 +109,7 @@ public class PluginManagmentUrlController {
         }
         mav.addObject("content",
                 translationService.translate("qcadooPlugins.pluginInfo.content." + arguments.get("status"), locale));
-        mav.addObject("dependencies", createDependenciesMap(arguments, locale));
+        mav.addObject("deps", createDependenciesMap(arguments, locale));
 
         return mav;
     }

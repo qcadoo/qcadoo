@@ -25,72 +25,71 @@ var QCD = QCD || {};
 QCD.components = QCD.components || {};
 QCD.components.elements = QCD.components.elements || {};
 
-QCD.components.elements.DynamicComboBox = function(_element, _mainController) {
-	$.extend(this, new QCD.components.elements.FormComponent(_element, _mainController));
+QCD.components.elements.DynamicComboBox = function (element, mainController) {
+    "use strict";
+    
+    if (!(this instanceof QCD.components.elements.DynamicComboBox)) {
+        return new QCD.components.elements.DynamicComboBox(element, mainController);
+    }
+    
+	$.extend(this, new QCD.components.elements.FormComponent(element, mainController));
 
-	var element = _element;
-	var mainController = _mainController;
-	var elementPath = this.elementPath;
-	
-	var input = this.input;
-	var values = new Array();
-	
-	var hasListeners = (this.options.listeners.length > 0) ? true : false;
+    var that = this,
+        values = [],
+        hasListeners = (this.options.listeners.length > 0) ? true : false;
 	
 	if (this.options.referenceName) {
 		mainController.registerReferenceName(this.options.referenceName, this);
 	}
 	
-	function constructor(_this) {
-		input.change(function() {
-			setTitle();
-			inputDataChanged();
-		});
-	}
-	
 	function inputDataChanged() {
+	    that.fireOnChangeListeners("onChange", [that.input.val()]);
 		if (hasListeners) {
-			mainController.callEvent("onSelectedEntityChange", elementPath, null, null, null);
+			mainController.callEvent("onSelectedEntityChange", that.elementPath, null, null, null);
 		}
 	}
 	
 	function setTitle() {
-		title = input.find(':selected').text();
-		value = input.val();
+		var title = that.input.find(':selected').text(),
+		    value = that.input.val();
 		
-		if(title && value) {		
-			input.attr('title', title);
+		if (title && value) {		
+			that.input.attr('title', title);
 		} else {
-			input.removeAttr('title');
+			that.input.removeAttr('title');
 		}
 	}
 	
-	this.getComponentData = function() {
+	this.getComponentData = function () {
 		var selected = this.input.val();
 		return {
 			value: selected,
 			values: values
-		}
-	}
-	
-	this.setComponentData = function(data) {
-		setData(data);
-	}
+		};
+	};
 	
 	function setData(data) {
+	    var availableValuesLen = 0,
+	        availableValue = null,
+	        i = 0;
 		if (data.values) {
 			values = data.values;
-			input.children().remove();
-			for (var i in data.values) {
-				var value = data.values[i];
-				input.append("<option value='"+value.key+"'>"+value.value+"</option>");
+			availableValuesLen = values.length;
+			that.input.children().remove();
+			for (i = 0; i < availableValuesLen; i++) {
+				availableValue = values[i];
+				that.input.append("<option value='" + availableValue.key + "'>" + availableValue.value + "</option>");
 			}
 		}
-		input.val(data.value);
+		that.input.val(data.value);
 		setTitle();
 	}
 	
-	this.setComponentEnabled = function(isEnabled) {
+	this.setComponentData = function (data) {
+        setData(data);
+    };
+	
+	this.setComponentEnabled = function (isEnabled) {
 		if (isEnabled) {
 			element.removeClass("disabled");
 			this.input.removeAttr('disabled');
@@ -101,13 +100,20 @@ QCD.components.elements.DynamicComboBox = function(_element, _mainController) {
 		if (this.setFormComponentEnabled) {
 			this.setFormComponentEnabled(isEnabled);
 		}
-	}
+	};
 	
-	this.updateSize = function(_width, _height) {
-		var height = _height ? _height-10 : 40;
+	this.updateSize = function (width, height) {
+		height = height ? height - 10 : 40;
 		this.input.parent().parent().height(height);
-	}
+	};
 		
-	constructor(this);
+
+    function constructor() {
+        that.input.change(function () {
+            setTitle();
+            inputDataChanged();
+        });
+    }
+	constructor();
 	
-}
+};

@@ -41,7 +41,9 @@ import com.qcadoo.model.api.search.SearchRestrictions.SearchMatchMode;
 import com.qcadoo.model.api.search.SearchResult;
 import com.qcadoo.model.api.types.BelongsToType;
 import com.qcadoo.view.api.components.LookupComponent;
+import com.qcadoo.view.api.components.lookup.FilterValueHolder;
 import com.qcadoo.view.internal.CriteriaModifier;
+import com.qcadoo.view.internal.FilterValueHolderImpl;
 import com.qcadoo.view.internal.components.FieldComponentState;
 
 public final class LookupComponentState extends FieldComponentState implements LookupComponent {
@@ -67,6 +69,10 @@ public final class LookupComponentState extends FieldComponentState implements L
     public static final String JSON_AUTOCOMPLETE_CODE = "autocompleteCode";
 
     public static final String JSON_AUTOCOMPLETE_ENTITIES_NUMBER = "autocompleteEntitiesNumber";
+
+    public static final String JSON_CRITERIA_MODIFIER_PARAMETER = "criteriaModifierParameter";
+
+    private static final String CRITERIA_MODIFIER_NOT_PRESENT = "There is no critieria modifier. Filter value is not present.";
 
     private final LookupEventPerformer eventPerformer = new LookupEventPerformer();
 
@@ -98,6 +104,8 @@ public final class LookupComponentState extends FieldComponentState implements L
 
     private final CriteriaModifier criteriaModifier;
 
+    private final FilterValueHolder criteriaModifierParameter;
+
     public LookupComponentState(final FieldDefinition scopeField, final String fieldCode, final String expression,
             final LookupComponentPattern pattern) {
         super(pattern);
@@ -105,6 +113,7 @@ public final class LookupComponentState extends FieldComponentState implements L
         this.fieldCode = fieldCode;
         this.expression = expression;
         this.criteriaModifier = pattern.getCriteriaModifier();
+        this.criteriaModifierParameter = this.criteriaModifier != null ? new FilterValueHolderImpl() : null;
         registerEvent("initialize", eventPerformer, "initialize");
         registerEvent("autompleteSearch", eventPerformer, "autompleteSearch");
         registerEvent("onSelectedEntityChange", eventPerformer, "onSelectedEntityChange");
@@ -133,6 +142,10 @@ public final class LookupComponentState extends FieldComponentState implements L
 
         if (json.has(JSON_AUTOCOMPLETE_CODE) && !json.isNull(JSON_AUTOCOMPLETE_CODE)) {
             autocompleteCode = json.getString(JSON_AUTOCOMPLETE_CODE);
+        }
+
+        if (json.has(JSON_CRITERIA_MODIFIER_PARAMETER) && !json.isNull(JSON_CRITERIA_MODIFIER_PARAMETER)) {
+            criteriaModifierParameter.initialize(json.getJSONObject(JSON_CRITERIA_MODIFIER_PARAMETER));
         }
 
         if (belongsToFieldDefinition != null && belongsToEntityId == null) {
@@ -166,6 +179,10 @@ public final class LookupComponentState extends FieldComponentState implements L
             json.put(JSON_AUTOCOMPLETE_CODE, autocompleteCode);
             json.put(JSON_AUTOCOMPLETE_ENTITIES_NUMBER, autocompleteEntitiesNumber);
 
+        }
+
+        if (criteriaModifierParameter != null && !criteriaModifierParameter.isEmpty()) {
+            json.put(JSON_CRITERIA_MODIFIER_PARAMETER, criteriaModifierParameter.toJSON());
         }
 
         return json;
@@ -259,7 +276,7 @@ public final class LookupComponentState extends FieldComponentState implements L
                 searchCriteriaBuilder.addOrder(SearchOrders.asc(fieldCode));
 
                 if (criteriaModifier != null) {
-                    criteriaModifier.modifyCriteria(searchCriteriaBuilder);
+                    criteriaModifier.modifyCriteria(searchCriteriaBuilder, criteriaModifierParameter);
                 }
 
                 SearchResult results = searchCriteriaBuilder.list();
@@ -304,6 +321,25 @@ public final class LookupComponentState extends FieldComponentState implements L
             }
         }
 
+    }
+
+    @Override
+    public FilterValueHolder getFilterValue() {
+        if (criteriaModifier == null) {
+            throw new IllegalStateException(CRITERIA_MODIFIER_NOT_PRESENT);
+        }
+
+        FilterValueHolder holder = new FilterValueHolderImpl(criteriaModifierParameter);
+        return holder;
+    }
+
+    @Override
+    public void setFilterValue(FilterValueHolder value) {
+        if (criteriaModifier == null) {
+            throw new IllegalStateException(CRITERIA_MODIFIER_NOT_PRESENT);
+        }
+        criteriaModifierParameter.initialize(value.toJSON());
+        requestRender();
     }
 
 }

@@ -82,7 +82,8 @@ QCD.components.elements.Lookup = function(_element, _mainController) {
 			code : null,
 			entitiesNumber : null
 		},
-		contextEntityId : null
+		contextEntityId : null,
+		criteriaModifierParameter: null
 	}
 
 	var autocompleteRefreshTimeout = null;
@@ -184,7 +185,8 @@ QCD.components.elements.Lookup = function(_element, _mainController) {
 			selectedEntityActive : dataState.selectedEntity.active,
 			currentCode : dataState.currentCode,
 			autocompleteCode : dataState.autocomplete.code,
-			contextEntityId : dataState.contextEntityId
+			contextEntityId : dataState.contextEntityId,
+			criteriaModifierParameter : dataState.criteriaModifierParameter
 		};
 	}
 
@@ -204,6 +206,7 @@ QCD.components.elements.Lookup = function(_element, _mainController) {
 		dataState.autocomplete.code = data.autocompleteCode ? data.autocompleteCode
 				: "";
 		dataState.autocomplete.entitiesNumber = data.autocompleteEntitiesNumber;
+		dataState.criteriaModifierParameter = data.criteriaModifierParameter;
 		if (dataState.contextEntityId != data.contextEntityId) {
 			dataState.contextEntityId = data.contextEntityId;
 			dataState.currentCode = "";
@@ -418,9 +421,16 @@ QCD.components.elements.Lookup = function(_element, _mainController) {
 			return;
 		}
 		var url = _this.options.viewName + ".html";
+		
+		var params = new Object();
 		if (dataState.contextEntityId) {
-			var params = new Object();
 			params["window.grid.belongsToEntityId"] = dataState.contextEntityId;
+			url += "?context=" + JSON.stringify(params);
+		}
+		else if (dataState.criteriaModifierParameter) {
+			params["window.grid.options"] = {
+					criteriaModifierParameter: dataState.criteriaModifierParameter
+				};
 			url += "?context=" + JSON.stringify(params);
 		}
 		lookupWindow = mainController.openModal(elementPath + "_lookup", window.pluginIdentifier + "/" + url, false, onModalClose, onModalRender, modalDimensions);
