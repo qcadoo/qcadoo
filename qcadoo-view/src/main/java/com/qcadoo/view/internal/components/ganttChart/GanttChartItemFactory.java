@@ -35,7 +35,7 @@ import com.qcadoo.view.api.components.ganttChart.GanttChartItem;
 
 public class GanttChartItemFactory {
 
-    private static final int precision = 10;
+    private static final int PRECISION = 10;
 
     private final int interval;
 
@@ -92,7 +92,7 @@ public class GanttChartItemFactory {
 
         long tmRegion = tmFrom + (tmInterval * region);
 
-        return ((int) ((region + ((double) (tmItem - tmRegion)) / tmInterval) * precision)) / (double) precision;
+        return ((int) ((region + ((double) (tmItem - tmRegion)) / tmInterval) * PRECISION)) / (double) PRECISION;
     }
 
 }
