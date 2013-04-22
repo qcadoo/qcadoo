@@ -1262,17 +1262,14 @@ QCD.components.elements.Grid = function(_element, _mainController) {
         }
     };
 
-    this.getLookupData = function(entityId) {
-        var result = Object();
-        result.entityId = entityId;
-        result.lookupValue = hiddenColumnValues["lookupValue"][entityId];
-        var lookupCodeLink = grid.getRowData(entityId).lookupCode;
-        lookupCodeLink = lookupCodeLink.replace(/^<a[^>]*>/, "");
-        lookupCodeLink = lookupCodeLink.replace(/<\/a>$/, "");
-        result.lookupCode = lookupCodeLink;
-        return result;
+    this.getLookupData = function (entityId) {
+        return {
+            entityId : entityId,
+            lookupValue : hiddenColumnValues.lookupValue[entityId],
+            lookupCode : grid.getRowData(entityId).lookupCode.replace(/<[\/]{0,1}[a|span|b|i|u|br][^>]*>/g, '')
+        };
     };
 
     constructor(this);
 
-}
+};
