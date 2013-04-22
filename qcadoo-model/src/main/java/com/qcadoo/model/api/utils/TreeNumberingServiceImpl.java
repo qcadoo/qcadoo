@@ -48,10 +48,10 @@ import com.qcadoo.model.internal.api.PriorityService;
 @Service
 public class TreeNumberingServiceImpl implements TreeNumberingService {
 
+    private static final String ROOT_NODE_NUMBER = "1";
+
     @Autowired
     private PriorityService priorityService;
-
-    private static final String ROOT_NODE_NUMBER = "1";
 
     @Override
     public final void generateTreeNumbers(final EntityTree tree) {
@@ -109,17 +109,25 @@ public class TreeNumberingServiceImpl implements TreeNumberingService {
 
     }
 
-    private void incrementLastChainNumber(final Deque<String> chain) {
+    public static void incrementLastChainNumber(final Deque<String> chain) {
         Integer nextNumber = Integer.valueOf(chain.pollLast()) + 1;
         chain.addLast(nextNumber.toString());
     }
 
-    private void incrementLastChainCharacter(final Deque<String> chain, final int charNumber) {
-        chain.addLast(String.valueOf((char) (65 + charNumber)));
+    public static void incrementLastChainCharacter(final Deque<String> chain, final int charNumber) {
+        int quotient = charNumber / 26;
+        int modulo = charNumber % 26;
+
+        if (quotient <= 0) {
+            chain.addLast(String.valueOf((char) (65 + charNumber)));
+        } else {
+            chain.addLast(String.valueOf((char) (65 + (quotient - 1))).concat(String.valueOf((char) (65 + modulo))));
+        }
+
         chain.addLast("1");
     }
 
-    private String convertCollectionToString(final Collection<String> collection) {
+    public static String convertCollectionToString(final Collection<String> collection) {
         return StringUtils.join(collection, '.') + '.';
     }
 
@@ -141,4 +149,5 @@ public class TreeNumberingServiceImpl implements TreeNumberingService {
             return n1.compareTo(n2);
         }
     }
+
 }

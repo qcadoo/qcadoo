@@ -26,7 +26,6 @@ package com.qcadoo.view.internal.components.tree;
 import static com.qcadoo.model.api.types.TreeType.NODE_NUMBER_FIELD;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
@@ -34,7 +33,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -48,6 +46,7 @@ import com.qcadoo.model.api.expression.ExpressionUtils;
 import com.qcadoo.model.api.search.SearchCriteriaBuilder;
 import com.qcadoo.model.api.search.SearchRestrictions;
 import com.qcadoo.model.api.types.TreeType;
+import com.qcadoo.model.api.utils.TreeNumberingServiceImpl;
 import com.qcadoo.model.internal.DetachedEntityTreeImpl;
 import com.qcadoo.view.api.components.TreeComponent;
 import com.qcadoo.view.internal.components.FieldComponentState;
@@ -218,16 +217,16 @@ public final class TreeComponentState extends FieldComponentState implements Tre
     private void reorganize(final Entity parent, final JSONArray childrens, final Deque<String> nodeNumberChain)
             throws JSONException {
 
-        parent.setField(TreeType.NODE_NUMBER_FIELD, collectionToString(nodeNumberChain));
+        parent.setField(TreeType.NODE_NUMBER_FIELD, TreeNumberingServiceImpl.convertCollectionToString(nodeNumberChain));
 
         int charNumber = 0;
         for (int i = 0; i < childrens.length(); i++) {
             Deque<String> newNodeNumberBranch = Lists.newLinkedList(nodeNumberChain);
 
             if (childrens.length() == 1) {
-                incrementLastChainNumber(newNodeNumberBranch);
+                TreeNumberingServiceImpl.incrementLastChainNumber(newNodeNumberBranch);
             } else {
-                incrementLastChainCharacter(newNodeNumberBranch, charNumber++);
+                TreeNumberingServiceImpl.incrementLastChainCharacter(newNodeNumberBranch, charNumber++);
             }
 
             Entity nodeEntity = nodes.get(childrens.getJSONObject(i).getLong("id"));
@@ -236,20 +235,6 @@ public final class TreeComponentState extends FieldComponentState implements Tre
                 reorganize(nodeEntity, childrens.getJSONObject(i).getJSONArray(CHILDREN), newNodeNumberBranch);
             }
         }
-    }
-
-    private String collectionToString(final Collection<String> collection) {
-        return StringUtils.join(collection, '.') + '.';
-    }
-
-    private void incrementLastChainNumber(final Deque<String> chain) {
-        Integer nextNumber = Integer.valueOf(chain.pollLast()) + 1;
-        chain.addLast(nextNumber.toString());
-    }
-
-    private void incrementLastChainCharacter(final Deque<String> chain, final int charNumber) {
-        chain.addLast(String.valueOf((char) (65 + charNumber)));
-        chain.addLast(INITIAL_NODE_NUMBER_VALUE);
     }
 
     @Override
@@ -331,7 +316,7 @@ public final class TreeComponentState extends FieldComponentState implements Tre
     }
 
     private TreeNode createNode(final EntityTreeNode entityTreeNode, final Deque<String> nodeNumberChain) {
-        entityTreeNode.setField(NODE_NUMBER_FIELD, collectionToString(nodeNumberChain));
+        entityTreeNode.setField(NODE_NUMBER_FIELD, TreeNumberingServiceImpl.convertCollectionToString(nodeNumberChain));
 
         List<EntityTreeNode> childs = entityTreeNode.getChildren();
         TreeDataType entityType = dataTypes.get(entityTreeNode.getEntityNoteType());
@@ -342,9 +327,9 @@ public final class TreeComponentState extends FieldComponentState implements Tre
         for (EntityTreeNode childEntityTreeNode : childs) {
             Deque<String> newNodeNumberBranch = Lists.newLinkedList(nodeNumberChain);
             if (childs.size() == 1) {
-                incrementLastChainNumber(newNodeNumberBranch);
+                TreeNumberingServiceImpl.incrementLastChainNumber(newNodeNumberBranch);
             } else {
-                incrementLastChainCharacter(newNodeNumberBranch, charNumber++);
+                TreeNumberingServiceImpl.incrementLastChainCharacter(newNodeNumberBranch, charNumber++);
             }
             node.addChild(createNode(childEntityTreeNode, newNodeNumberBranch));
         }
@@ -412,4 +397,5 @@ public final class TreeComponentState extends FieldComponentState implements Tre
         }
 
     }
+
 }
