@@ -138,7 +138,7 @@ public final class ValidationServiceImpl implements ValidationService {
             final Object oldValue = getOldFieldValue(existingGenericEntity, fieldName);
             final InternalFieldDefinition fieldDefinition = (InternalFieldDefinition) fieldDefinitionEntry.getValue();
 
-            final Object validatedFieldValue = parseAndValidateField(fieldDefinition, newValue, genericEntity, oldValue);
+            final Object validatedFieldValue = parseAndValidateField(fieldDefinition, oldValue, newValue, genericEntity);
             genericEntity.setField(fieldName, validatedFieldValue);
         }
 
@@ -155,8 +155,7 @@ public final class ValidationServiceImpl implements ValidationService {
         }
     }
 
-    private Object parseValue(final InternalFieldDefinition fieldDefinition, final Object value, final Entity validatedEntity,
-            final Object oldValue) {
+    private Object parseFieldValue(final InternalFieldDefinition fieldDefinition, final Object value, final Entity validatedEntity) {
         ValueAndError valueAndError = ValueAndError.empty();
         if (value != null) {
             valueAndError = fieldDefinition.getType().toObject(fieldDefinition, value);
@@ -168,14 +167,14 @@ public final class ValidationServiceImpl implements ValidationService {
         return valueAndError.getValue();
     }
 
-    private Object parseAndValidateField(final InternalFieldDefinition fieldDefinition, final Object newValue,
-            final Entity validatedEntity, final Object oldValue) {
+    private Object parseAndValidateField(final InternalFieldDefinition fieldDefinition, final Object oldValue,
+            final Object newValue, final Entity validatedEntity) {
         FieldType fieldType = fieldDefinition.getType();
         Object parsedValue;
         if (fieldType instanceof HasManyType || fieldType instanceof TreeType || fieldType instanceof ManyToManyType) {
             parsedValue = newValue;
         } else {
-            parsedValue = parseValue(fieldDefinition, trimAndNullIfEmpty(newValue), validatedEntity, oldValue);
+            parsedValue = parseFieldValue(fieldDefinition, trimAndNullIfEmpty(newValue), validatedEntity);
         }
 
         if (validatedEntity.isFieldValid(fieldDefinition.getName())
