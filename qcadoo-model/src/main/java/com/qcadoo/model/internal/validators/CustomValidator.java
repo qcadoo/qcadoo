@@ -51,14 +51,12 @@ public final class CustomValidator implements FieldHookDefinition, ErrorMessageD
 
     @Override
     public boolean call(final Entity entity, final Object oldValue, final Object newValue) {
-        boolean result = fieldHook.call(entity, oldValue, newValue);
-
-        if (result) {
+        if (fieldHook.call(entity, oldValue, newValue)) {
             return true;
         }
-
-        entity.addError(fieldDefinition, errorMessage);
-
+        if (entity.getError(fieldDefinition.getName()) == null) {
+            entity.addError(fieldDefinition, errorMessage);
+        }
         return false;
     }
 
