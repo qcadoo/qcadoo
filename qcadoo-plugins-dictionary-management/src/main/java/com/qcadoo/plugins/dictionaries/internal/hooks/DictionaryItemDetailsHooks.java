@@ -26,16 +26,22 @@ package com.qcadoo.plugins.dictionaries.internal.hooks;
 import static com.qcadoo.model.constants.DictionaryItemFields.TECHNICAL_CODE;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.Entity;
+import com.qcadoo.model.constants.QcadooModelConstants;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.api.components.FormComponent;
 import com.qcadoo.view.api.components.WindowComponent;
 import com.qcadoo.view.api.ribbon.RibbonActionItem;
 
 @Service
-public class DictionaryDetailsHooks {
+public class DictionaryItemDetailsHooks {
+
+    @Autowired
+    private DataDefinitionService dataDefinitionService;
 
     public void blockedDeleteOptionWhenDictionaryWasAddFromSystem(final ViewDefinitionState view) {
         FormComponent form = (FormComponent) view.getComponentByReference("form");
@@ -53,5 +59,29 @@ public class DictionaryDetailsHooks {
         RibbonActionItem deleteButton = window.getRibbon().getGroupByName("actions").getItemByName("delete");
         deleteButton.setEnabled(enabled);
         deleteButton.requestUpdate(true);
+    }
+
+    public void disableDictionaryItemFormForExternalItems(final ViewDefinitionState state) {
+        FormComponent form = (FormComponent) state.getComponentByReference("form");
+
+        if (form.getEntityId() == null) {
+            form.setFormEnabled(true);
+            return;
+        }
+
+        Entity entity = dataDefinitionService.get(QcadooModelConstants.PLUGIN_IDENTIFIER,
+                QcadooModelConstants.MODEL_DICTIONARY_ITEM).get(form.getEntityId());
+
+        if (entity == null) {
+            return;
+        }
+
+        String externalNumber = entity.getStringField("externalNumber");
+
+        if (externalNumber != null) {
+            form.setFormEnabled(false);
+        } else {
+            form.setFormEnabled(true);
+        }
     }
 }
