@@ -50,6 +50,8 @@ public class GanttChartScaleImpl implements GanttChartScale {
 
     private Date dateTo;
 
+    private Boolean isDatesSet;
+
     private static final String JSON_ELEMENTS_IN_CATEGORY = "elementsInCategory";
 
     private static final String JSON_ELEMENT_LABELS_INTERVAL = "elementLabelsInterval";
@@ -232,6 +234,14 @@ public class GanttChartScaleImpl implements GanttChartScale {
     public GanttChartItem createGanttChartItem(final String rowName, final String name, final Long entityId,
             final Date itemDateFrom, final Date itemDateTo) {
         return ganttChartItemFactory.createGanttChartItem(rowName, name, entityId, dateFrom, dateTo, itemDateFrom, itemDateTo);
+    }
+
+    public Boolean getIsDatesSet() {
+        return isDatesSet;
+    }
+
+    public void setIsDatesSet(Boolean isDatesSet) {
+        this.isDatesSet = isDatesSet;
     }
 
 }

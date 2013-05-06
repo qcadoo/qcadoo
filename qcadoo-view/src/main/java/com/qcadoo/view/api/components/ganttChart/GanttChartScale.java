@@ -41,4 +41,8 @@ public interface GanttChartScale {
     GanttChartItem createGanttChartItem(final String rowName, final String name, final Long entityId, final Date dateFrom,
             final Date dateTo);
 
+    Boolean getIsDatesSet();
+
+    void setIsDatesSet(Boolean isDatesSet);
+
 }
