@@ -77,4 +77,9 @@ public final class PriorityType implements FieldType {
         return scopeFieldDefinition;
     }
 
+    @Override
+    public boolean isCopyable() {
+        return true;
+    }
+
 }

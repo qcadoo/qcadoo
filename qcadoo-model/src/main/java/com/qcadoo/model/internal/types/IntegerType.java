@@ -33,6 +33,16 @@ import com.qcadoo.model.internal.api.ValueAndError;
 
 public final class IntegerType implements FieldType {
 
+    private final boolean copyable;
+
+    public IntegerType() {
+        copyable = true;
+    }
+
+    public IntegerType(final boolean copyable) {
+        this.copyable = copyable;
+    }
+
     @Override
     public Class<?> getType() {
         return Integer.class;
@@ -64,6 +74,11 @@ public final class IntegerType implements FieldType {
             return parsedValue;
         }
         return value;
+    }
+
+    @Override
+    public boolean isCopyable() {
+        return copyable;
     }
 
 }

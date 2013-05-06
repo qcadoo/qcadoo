@@ -35,6 +35,16 @@ import com.qcadoo.model.internal.api.ValueAndError;
 
 public final class DecimalType implements FieldType {
 
+    private final boolean copyable;
+
+    public DecimalType() {
+        copyable = true;
+    }
+
+    public DecimalType(final boolean copyable) {
+        this.copyable = copyable;
+    }
+
     @Override
     public Class<?> getType() {
         return BigDecimal.class;
@@ -81,6 +91,11 @@ public final class DecimalType implements FieldType {
         }
 
         return value;
+    }
+
+    @Override
+    public boolean isCopyable() {
+        return copyable;
     }
 
 }

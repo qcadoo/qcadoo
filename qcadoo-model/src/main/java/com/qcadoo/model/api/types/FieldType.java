@@ -74,4 +74,10 @@ public interface FieldType {
      */
     Object fromString(String value, Locale locale);
 
+    /**
+     * Returns true if field should be copied.
+     * 
+     * @return true if should be copied
+     */
+    boolean isCopyable();
 }

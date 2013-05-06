@@ -39,6 +39,16 @@ import com.qcadoo.model.internal.api.ValueAndError;
 
 public final class DateType implements FieldType {
 
+    private final boolean copyable;
+
+    public DateType() {
+        copyable = true;
+    }
+
+    public DateType(final boolean copyable) {
+        this.copyable = copyable;
+    }
+
     @Override
     public Class<?> getType() {
         return Date.class;
@@ -86,6 +96,11 @@ public final class DateType implements FieldType {
     @Override
     public Object fromString(final String value, final Locale locale) {
         return value;
+    }
+
+    @Override
+    public boolean isCopyable() {
+        return copyable;
     }
 
 }

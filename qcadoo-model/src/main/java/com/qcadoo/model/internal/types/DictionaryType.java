@@ -38,9 +38,12 @@ public final class DictionaryType implements EnumeratedType {
 
     private final DictionaryService dictionaryService;
 
-    public DictionaryType(final String dictionary, final DictionaryService dictionaryService) {
+    private final boolean copyable;
+
+    public DictionaryType(final String dictionary, final DictionaryService dictionaryService, final boolean copyable) {
         this.dictionary = dictionary;
         this.dictionaryService = dictionaryService;
+        this.copyable = copyable;
     }
 
     @Override
@@ -71,6 +74,11 @@ public final class DictionaryType implements EnumeratedType {
     @Override
     public Object fromString(final String value, final Locale locale) {
         return value;
+    }
+
+    @Override
+    public boolean isCopyable() {
+        return copyable;
     }
 
 }
