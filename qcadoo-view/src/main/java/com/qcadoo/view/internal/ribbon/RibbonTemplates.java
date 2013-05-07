@@ -161,7 +161,7 @@ public class RibbonTemplates {
         ribbonSaveAction.setAction(RibbonUtils
                 .translateRibbonAction("#{form}.performSave; #{window}.performBack", viewDefinition));
         ribbonSaveAction.setIcon("saveBackIcon24.png");
-        ribbonSaveAction.setName("save");
+        ribbonSaveAction.setName("saveBack");
         ribbonSaveAction.setType(RibbonActionItem.Type.BIG_BUTTON);
         ribbonSaveAction.setEnabled(true);
         InternalRibbonGroup ribbonGroup = new RibbonGroupImpl(ACTIONS);
