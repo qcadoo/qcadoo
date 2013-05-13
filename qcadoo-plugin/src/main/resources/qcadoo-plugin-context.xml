@@ -93,6 +93,7 @@
 		<bean class="com.qcadoo.plugin.internal.module.DefaultModuleFactoryAccessor">
 			<property name="moduleFactories">
 				<list>
+					<!-- Beware! Order matters -->
 					<bean class="com.qcadoo.model.internal.module.ModelModuleFactory" />
 					<bean class="com.qcadoo.model.internal.module.FieldModuleFactory" />
 					<bean class="com.qcadoo.model.internal.module.HookModuleFactory" />
@@ -109,10 +110,10 @@
 					<bean class="com.qcadoo.view.internal.ribbon.templates.module.RibbonTemplateExtensionModuleFactory" />
 					<bean class="com.qcadoo.view.internal.module.ViewComponentModuleFactory" />
 					<bean class="com.qcadoo.view.internal.module.ViewModuleFactory" />
+					<bean class="com.qcadoo.view.internal.module.ViewTabModuleFactory" />
 					<bean class="com.qcadoo.view.internal.module.ViewHookModuleFactory" />
 					<bean class="com.qcadoo.view.internal.module.ViewListenerModuleFactory" />
 					<bean class="com.qcadoo.view.internal.module.ViewRibbonModuleFactory" />
-					<bean class="com.qcadoo.view.internal.module.ViewTabModuleFactory" />
 					<bean class="com.qcadoo.view.internal.module.gridColumn.ViewGridColumnModuleFactory" />
 					<bean class="com.qcadoo.view.internal.resource.module.UniversalResourceModuleFactory" />
 					<bean class="com.qcadoo.view.internal.menu.module.MenuCategoryModuleFactory" />
