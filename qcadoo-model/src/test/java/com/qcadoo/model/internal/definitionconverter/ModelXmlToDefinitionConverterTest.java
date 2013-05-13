@@ -44,6 +44,7 @@ import java.util.Locale;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.CustomHook;
@@ -299,8 +300,15 @@ public class ModelXmlToDefinitionConverterTest extends TransactionMockAwareTest 
 
         validators = ((FieldDefinitionImpl) dataDefinition.getField("fieldString")).getValidators();
 
+        assertEquals(4, validators.size());
+
         assertThat(validators.get(3), instanceOf(RegexValidator.class));
         assertEquals("d??p", getField(validators.get(3), "regex"));
+
+        validators = ((FieldDefinitionImpl) dataDefinition.getField("fieldStringWithoutValidators")).getValidators();
+        assertEquals(1, validators.size());
+        assertThat(validators.get(0), instanceOf(LengthValidator.class));
+        assertEquals(255, ReflectionTestUtils.getField(validators.get(0), "max"));
 
         validators = ((FieldDefinitionImpl) dataDefinition.getField("fieldDecimal")).getValidators();
 

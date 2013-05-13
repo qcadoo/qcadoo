@@ -149,7 +149,7 @@ public class ModelXmlToHbmConverterTest {
 
     @Test
     public void shouldDefineProperties() throws Exception {
-        assertNodeCount(19, "/hibernate-mapping/class[1]/property", hbmFirstEntity);
+        assertNodeCount(20, "/hibernate-mapping/class[1]/property", hbmFirstEntity);
         assertNodeCount(0, "/hibernate-mapping/class[1]/property", hbmSecondEntity);
         assertNodeCount(2, "/hibernate-mapping/class[1]/property", hbmThirdEntity);
         assertNodeExists("/hibernate-mapping/class[1]/property[@name='fieldInteger' and @type='integer']", hbmFirstEntity);

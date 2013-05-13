@@ -23,6 +23,9 @@
  */
 package com.qcadoo.model.internal.validators;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.FieldDefinition;
@@ -36,6 +39,8 @@ public final class RegexValidator implements FieldHookDefinition, ErrorMessageDe
     private String errorMessage = REGEX_ERROR;
 
     private final String regex;
+
+    private transient Integer hashCode = null;
 
     private FieldDefinition fieldDefinition;
 
@@ -65,6 +70,26 @@ public final class RegexValidator implements FieldHookDefinition, ErrorMessageDe
     @Override
     public void setErrorMessage(final String errorMessage) {
         this.errorMessage = errorMessage;
+    }
+
+    @Override
+    public int hashCode() {
+        if (hashCode == null) {
+            hashCode = new HashCodeBuilder(1, 31).append(regex).toHashCode();
+        }
+        return hashCode;
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        RegexValidator other = (RegexValidator) obj;
+        return new EqualsBuilder().append(regex, other.regex).append(errorMessage, other.errorMessage).isEquals();
     }
 
 }

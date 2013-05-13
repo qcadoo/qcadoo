@@ -36,12 +36,12 @@
 			<validatesUnscaledValue min="2" max="4" />
 			<validatesRange from="18" exclusively="true" />
 		</integer>
-		<string name="fieldString" default="ala" required="true"
-			unique="false">
+		<string name="fieldString" default="ala" required="true" unique="false">
 			<validatesLength is="2" />
 			<validatesRange from="daap" to="dzzp" />
 			<validatesRegex pattern="d??p" />
 		</string>
+		<string name="fieldStringWithoutValidators" />
 		<text name="fieldText" readonly="true" />
 		<string name="fieldStringNotPersistent" persistent="false" />
 		<string name="fieldStringWithExpression" expression="#fString" />

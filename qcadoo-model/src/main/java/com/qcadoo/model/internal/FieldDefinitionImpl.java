@@ -34,6 +34,7 @@ import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.types.FieldType;
+import com.qcadoo.model.internal.api.DefaultValidatorsProvider;
 import com.qcadoo.model.internal.api.FieldHookDefinition;
 import com.qcadoo.model.internal.api.InternalFieldDefinition;
 import com.qcadoo.model.internal.validators.RequiredValidator;
@@ -112,6 +113,16 @@ public final class FieldDefinitionImpl implements InternalFieldDefinition {
             unique = true;
         }
         this.validators.add(validator);
+        return this;
+    }
+
+    public FieldDefinitionImpl withMissingDefaultValidators() {
+        if (type instanceof DefaultValidatorsProvider) {
+            DefaultValidatorsProvider resolver = (DefaultValidatorsProvider) type;
+            for (FieldHookDefinition missingValidator : resolver.getMissingValidators(getValidators())) {
+                withValidator(missingValidator);
+            }
+        }
         return this;
     }
 

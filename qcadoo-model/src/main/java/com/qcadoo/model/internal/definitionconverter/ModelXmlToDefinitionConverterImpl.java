@@ -57,6 +57,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import com.google.common.collect.Lists;
 import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.localization.api.utils.DateUtils;
 import com.qcadoo.model.api.DataDefinition;
@@ -409,46 +410,37 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
         if (getBooleanAttribute(reader, "required", false)) {
             fieldDefinition.withValidator(getValidatorDefinition(reader, new RequiredValidator()));
         }
-
         if (getBooleanAttribute(reader, "unique", false)) {
             fieldDefinition.withValidator(getValidatorDefinition(reader, new UniqueValidator()));
         }
-        boolean shouldSetUnscaledValueValidatorMaxValue = true;
-        boolean shouldSetScaleValidatorMaxValue = true;
-        while (reader.hasNext() && reader.next() > 0) {
-            if (isTagEnded(reader, fieldType)) {
-                break;
-            }
 
-            String tag = getTagStarted(reader);
-
-            if (tag == null) {
-                continue;
-            }
-            FieldHookDefinition fieldHookDefinition = createFieldElement(reader, fieldDefinition, type, tag);
-            if (fieldHookDefinition instanceof UnscaledValueValidator) {
-                UnscaledValueValidator fieldHook = (UnscaledValueValidator) fieldHookDefinition;
-                shouldSetUnscaledValueValidatorMaxValue = fieldHook.getMax() == null;
-            }
-            if (fieldHookDefinition instanceof ScaleValidator) {
-                ScaleValidator fieldHook = (ScaleValidator) fieldHookDefinition;
-                shouldSetScaleValidatorMaxValue = fieldHook.getMax() == null;
-            }
-            fieldDefinition.withValidator(fieldHookDefinition);
-
+        for (FieldHookDefinition validator : parseFieldValidators(reader, fieldType, fieldDefinition)) {
+            fieldDefinition.withValidator(validator);
         }
-        if ("decimal".equals(fieldType) && shouldSetUnscaledValueValidatorMaxValue) {
-            fieldDefinition.withValidator(new UnscaledValueValidator(null, null, Integer.valueOf(7)));
-        }
-        if ("decimal".equals(fieldType) && shouldSetScaleValidatorMaxValue) {
-            fieldDefinition.withValidator(new ScaleValidator(null, null, Integer.valueOf(5)));
-        }
+        fieldDefinition.withMissingDefaultValidators();
 
         return fieldDefinition;
     }
 
-    private FieldHookDefinition createFieldElement(final XMLStreamReader reader, final FieldDefinitionImpl fieldDefinition,
-            final FieldType type, final String tag) throws HookInitializationException, ModelXmlParsingException {
+    private Collection<FieldHookDefinition> parseFieldValidators(final XMLStreamReader reader, final String fieldType,
+            final FieldDefinition fieldDefinition) throws XMLStreamException, HookInitializationException,
+            ModelXmlParsingException {
+        List<FieldHookDefinition> fieldValidators = Lists.newArrayList();
+        while (reader.hasNext() && reader.next() > 0) {
+            if (isTagEnded(reader, fieldType)) {
+                break;
+            }
+            String tag = getTagStarted(reader);
+            if (tag == null) {
+                continue;
+            }
+            fieldValidators.add(createFieldElement(reader, fieldDefinition, tag));
+        }
+        return fieldValidators;
+    }
+
+    private FieldHookDefinition createFieldElement(final XMLStreamReader reader, final FieldDefinition fieldDefinition,
+            final String tag) throws HookInitializationException, ModelXmlParsingException {
         FieldHookDefinition fieldHookDefinition;
         switch (FieldTag.valueOf(tag.toUpperCase(Locale.ENGLISH))) {
             case VALIDATESLENGTH:
@@ -465,6 +457,7 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
                         getIntegerAttribute(reader, "is"), getIntegerAttribute(reader, "max")));
                 break;
             case VALIDATESRANGE:
+                final FieldType type = fieldDefinition.getType();
                 Object from = getRangeForType(getStringAttribute(reader, "from"), type);
                 Object to = getRangeForType(getStringAttribute(reader, "to"), type);
                 boolean exclusively = getBooleanAttribute(reader, "exclusively", false);

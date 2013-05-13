@@ -25,8 +25,12 @@ package com.qcadoo.model.integration;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+
+import java.math.BigDecimal;
+
 import junit.framework.Assert;
 
+import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -150,4 +154,143 @@ public class FieldModuleIntegrationTest extends IntegrationTest {
         // then
         Assert.assertTrue(component.isValid());
     }
+
+    @Test
+    public void shouldCallAndPassMaxStringLenFieldValidators() throws Exception {
+        // given
+        final String stringWith300Characters = StringUtils.repeat("a", 300);
+        DataDefinition productDao = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PRODUCT);
+
+        PluginStateResolver pluginStateResolver = mock(PluginStateResolver.class);
+        PluginUtilsService pluginUtil = new PluginUtilsService();
+        ReflectionTestUtils.setField(pluginUtil, "pluginStateResolver", pluginStateResolver);
+        pluginUtil.init();
+        given(pluginStateResolver.isEnabled(PLUGIN_PRODUCTS_NAME)).willReturn(true);
+
+        Entity product = createProduct(stringWith300Characters, "asd");
+
+        // when
+        Entity savedProduct = productDao.save(product);
+
+        // then
+        Assert.assertTrue(savedProduct.isValid());
+        Assert.assertEquals(stringWith300Characters, savedProduct.getStringField("name"));
+    }
+
+    @Test
+    public void shouldCallAndFailDefaultMaxStringLenFieldValidators() throws Exception {
+        // given
+        final String stringWith300Characters = StringUtils.repeat("a", 300);
+        DataDefinition partDao = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PART);
+
+        PluginStateResolver pluginStateResolver = mock(PluginStateResolver.class);
+        PluginUtilsService pluginUtil = new PluginUtilsService();
+        ReflectionTestUtils.setField(pluginUtil, "pluginStateResolver", pluginStateResolver);
+        pluginUtil.init();
+        given(pluginStateResolver.isEnabled(PLUGIN_PRODUCTS_NAME)).willReturn(true);
+
+        Entity part = createPart(stringWith300Characters, null);
+
+        // when
+        Entity savedPart = partDao.save(part);
+
+        // then
+        Assert.assertFalse(savedPart.isValid());
+        Assert.assertEquals("qcadooView.validate.field.error.invalidLength", savedPart.getError("name").getMessage());
+    }
+
+    @Test
+    public void shouldCallAndPassDefaultDecimalFieldValidators() throws Exception {
+        // given
+        BigDecimal decimal = new BigDecimal("0.5");
+
+        DataDefinition partDao = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PART);
+
+        PluginStateResolver pluginStateResolver = mock(PluginStateResolver.class);
+        PluginUtilsService pluginUtil = new PluginUtilsService();
+        ReflectionTestUtils.setField(pluginUtil, "pluginStateResolver", pluginStateResolver);
+        pluginUtil.init();
+        given(pluginStateResolver.isEnabled(PLUGIN_PRODUCTS_NAME)).willReturn(true);
+
+        Entity part = createPart("somePart", null);
+        part.setField("price", decimal);
+
+        // when
+        Entity savedPart = partDao.save(part);
+
+        // then
+        Assert.assertTrue(savedPart.isValid());
+    }
+
+    @Test
+    public void shouldCallAndFailDefaultMaxScaleValueLenFieldValidators() throws Exception {
+        // given
+        BigDecimal tooPreciseDecimal = new BigDecimal("0." + StringUtils.repeat("9", 20));
+
+        DataDefinition partDao = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PART);
+
+        PluginStateResolver pluginStateResolver = mock(PluginStateResolver.class);
+        PluginUtilsService pluginUtil = new PluginUtilsService();
+        ReflectionTestUtils.setField(pluginUtil, "pluginStateResolver", pluginStateResolver);
+        pluginUtil.init();
+        given(pluginStateResolver.isEnabled(PLUGIN_PRODUCTS_NAME)).willReturn(true);
+
+        Entity part = createPart("somePart", null);
+        part.setField("price", tooPreciseDecimal);
+
+        // when
+        Entity savedPart = partDao.save(part);
+
+        // then
+        Assert.assertFalse(savedPart.isValid());
+        Assert.assertEquals("qcadooView.validate.field.error.invalidScale.max", savedPart.getError("price").getMessage());
+    }
+
+    @Test
+    public void shouldCallAndFailDefaultMaxUnscaledValueLenFieldValidators() throws Exception {
+        // given
+        BigDecimal tooPreciseDecimal = new BigDecimal(StringUtils.repeat("9", 20) + ".0");
+
+        DataDefinition partDao = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PART);
+
+        PluginStateResolver pluginStateResolver = mock(PluginStateResolver.class);
+        PluginUtilsService pluginUtil = new PluginUtilsService();
+        ReflectionTestUtils.setField(pluginUtil, "pluginStateResolver", pluginStateResolver);
+        pluginUtil.init();
+        given(pluginStateResolver.isEnabled(PLUGIN_PRODUCTS_NAME)).willReturn(true);
+
+        Entity part = createPart("somePart", null);
+        part.setField("price", tooPreciseDecimal);
+
+        // when
+        Entity savedPart = partDao.save(part);
+
+        // then
+        Assert.assertFalse(savedPart.isValid());
+        Assert.assertEquals("qcadooView.validate.field.error.invalidPrecision.max", savedPart.getError("price").getMessage());
+    }
+
+    @Test
+    public void shouldCallAndPassDefaultIntegerFieldValidators() throws Exception {
+        // given
+        Integer integer = Integer.parseInt(StringUtils.repeat("1", 10));
+
+        DataDefinition partDao = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PART);
+
+        PluginStateResolver pluginStateResolver = mock(PluginStateResolver.class);
+        PluginUtilsService pluginUtil = new PluginUtilsService();
+        ReflectionTestUtils.setField(pluginUtil, "pluginStateResolver", pluginStateResolver);
+        pluginUtil.init();
+        given(pluginStateResolver.isEnabled(PLUGIN_PRODUCTS_NAME)).willReturn(true);
+
+        Entity part = createPart("somePart", null);
+        part.setField("weight", integer);
+
+        // when
+        Entity savedPart = partDao.save(part);
+
+        // then
+        Assert.assertTrue(savedPart.isValid());
+    }
+
 }

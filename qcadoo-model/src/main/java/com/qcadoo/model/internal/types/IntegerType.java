@@ -25,13 +25,20 @@ package com.qcadoo.model.internal.types;
 
 import java.text.NumberFormat;
 import java.text.ParsePosition;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Locale;
 
+import com.google.common.collect.Lists;
 import com.qcadoo.model.api.FieldDefinition;
+import com.qcadoo.model.api.NumberService;
 import com.qcadoo.model.api.types.FieldType;
+import com.qcadoo.model.internal.api.DefaultValidatorsProvider;
+import com.qcadoo.model.internal.api.FieldHookDefinition;
 import com.qcadoo.model.internal.api.ValueAndError;
+import com.qcadoo.model.internal.validators.UnscaledValueValidator;
 
-public final class IntegerType implements FieldType {
+public final class IntegerType implements FieldType, DefaultValidatorsProvider {
 
     @Override
     public Class<?> getType() {
@@ -64,6 +71,19 @@ public final class IntegerType implements FieldType {
             return parsedValue;
         }
         return value;
+    }
+
+    @Override
+    public Collection<FieldHookDefinition> getMissingValidators(final Iterable<FieldHookDefinition> validators) {
+        for (FieldHookDefinition validator : validators) {
+            if (validator instanceof UnscaledValueValidator) {
+                if (((UnscaledValueValidator) validator).hasUppuerBoundDefined()) {
+                    return Collections.emptyList();
+                }
+            }
+        }
+        return Lists.<FieldHookDefinition> newArrayList(new UnscaledValueValidator(null, null,
+                NumberService.DEFAULT_INTEGER_UNSCALED_VALUE_MAX_LEN));
     }
 
 }

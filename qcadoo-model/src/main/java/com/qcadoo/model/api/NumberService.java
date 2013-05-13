@@ -34,6 +34,21 @@ import java.math.MathContext;
 public interface NumberService {
 
     /**
+     * Default maximum number of digits for scale (decimal fraction) in decimal number
+     */
+    int DEFAULT_DECIMAL_SCALE_VALUE_MAX_LEN = 5;
+
+    /**
+     * Default maximum number of digits for unscaled (integer) value in decimal number
+     */
+    int DEFAULT_DECIMAL_UNSCALED_VALUE_MAX_LEN = 7;
+
+    /**
+     * Default maximum number of digits for unscaled (integer) value in integer number
+     */
+    int DEFAULT_INTEGER_UNSCALED_VALUE_MAX_LEN = 10;
+
+    /**
      * Provide global MathContext.
      * 
      * @return {@link MathContext}
