@@ -40,6 +40,16 @@ import com.qcadoo.model.internal.validators.UnscaledValueValidator;
 
 public final class IntegerType implements FieldType, DefaultValidatorsProvider {
 
+    private final boolean copyable;
+
+    public IntegerType() {
+        copyable = true;
+    }
+
+    public IntegerType(final boolean copyable) {
+        this.copyable = copyable;
+    }
+
     @Override
     public Class<?> getType() {
         return Integer.class;
@@ -84,6 +94,10 @@ public final class IntegerType implements FieldType, DefaultValidatorsProvider {
         }
         return Lists.<FieldHookDefinition> newArrayList(new UnscaledValueValidator(null, null,
                 NumberService.DEFAULT_INTEGER_UNSCALED_VALUE_MAX_LEN));
+    }
+
+    public boolean isCopyable() {
+        return copyable;
     }
 
 }

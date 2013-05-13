@@ -31,6 +31,16 @@ import com.qcadoo.model.internal.api.ValueAndError;
 
 public final class BooleanType implements FieldType {
 
+    private final boolean copyable;
+
+    public BooleanType() {
+        copyable = true;
+    }
+
+    public BooleanType(final boolean copyable) {
+        this.copyable = copyable;
+    }
+
     @Override
     public Class<?> getType() {
         return Boolean.class;
@@ -68,6 +78,11 @@ public final class BooleanType implements FieldType {
     @Override
     public Object fromString(final String value, final Locale locale) {
         return parseStringToBoolean(value);
+    }
+
+    @Override
+    public boolean isCopyable() {
+        return copyable;
     }
 
 }

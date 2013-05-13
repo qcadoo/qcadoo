@@ -181,7 +181,7 @@ public class HibernateServiceImpl implements HibernateService {
                 LOG.warn("Cannot find dataDefinition for class " + ((EntityType) type).getName());
             } else {
                 return new BelongsToEntityType(dataDefinition.getPluginIdentifier(), dataDefinition.getName(),
-                        dataDefinitionService, false);
+                        dataDefinitionService, false, true);
             }
         }
 

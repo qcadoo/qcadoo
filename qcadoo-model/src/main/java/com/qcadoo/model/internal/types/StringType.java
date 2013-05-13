@@ -37,6 +37,16 @@ import com.qcadoo.model.internal.validators.LengthValidator;
 
 public final class StringType implements FieldType, DefaultValidatorsProvider {
 
+    private final boolean copyable;
+
+    public StringType() {
+        copyable = true;
+    }
+
+    public StringType(final boolean copyable) {
+        this.copyable = copyable;
+    }
+
     @Override
     public Class<?> getType() {
         return String.class;
@@ -68,6 +78,10 @@ public final class StringType implements FieldType, DefaultValidatorsProvider {
             }
         }
         return Lists.<FieldHookDefinition> newArrayList(new LengthValidator(null, null, 255));
+    }
+
+    public boolean isCopyable() {
+        return copyable;
     }
 
 }

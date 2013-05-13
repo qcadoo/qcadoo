@@ -49,6 +49,16 @@ public final class DecimalType implements FieldType, DefaultValidatorsProvider {
     private static final UnscaledValueValidator DEFAULT_UNSCALED_VALUE_VALIDATOR = new UnscaledValueValidator(null, null,
             NumberService.DEFAULT_DECIMAL_UNSCALED_VALUE_MAX_LEN);
 
+    private final boolean copyable;
+
+    public DecimalType() {
+        copyable = true;
+    }
+
+    public DecimalType(final boolean copyable) {
+        this.copyable = copyable;
+    }
+
     @Override
     public Class<?> getType() {
         return BigDecimal.class;
@@ -111,4 +121,9 @@ public final class DecimalType implements FieldType, DefaultValidatorsProvider {
         }
         return missingValidators;
     }
+
+    public boolean isCopyable() {
+        return copyable;
+    }
+
 }

@@ -42,12 +42,15 @@ public final class BelongsToEntityType implements BelongsToType {
 
     private final boolean lazyLoading;
 
+    private final boolean copyable;
+
     public BelongsToEntityType(final String pluginIdentifier, final String entityName,
-            final DataDefinitionService dataDefinitionService, final boolean lazyLoading) {
+            final DataDefinitionService dataDefinitionService, final boolean lazyLoading, final boolean copyable) {
         this.pluginIdentifier = pluginIdentifier;
         this.entityName = entityName;
         this.dataDefinitionService = dataDefinitionService;
         this.lazyLoading = lazyLoading;
+        this.copyable = copyable;
     }
 
     @Override
@@ -86,6 +89,11 @@ public final class BelongsToEntityType implements BelongsToType {
     @Override
     public boolean isLazyLoading() {
         return lazyLoading;
+    }
+
+    @Override
+    public boolean isCopyable() {
+        return copyable;
     }
 
 }

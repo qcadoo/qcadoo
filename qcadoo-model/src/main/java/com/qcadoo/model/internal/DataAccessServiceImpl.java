@@ -392,7 +392,12 @@ public class DataAccessServiceImpl implements DataAccessService {
         Entity targetEntity = dataDefinition.create();
 
         for (String fieldName : dataDefinition.getFields().keySet()) {
-            targetEntity.setField(fieldName, getCopyValueOfSimpleField(sourceEntity, dataDefinition, fieldName));
+            FieldDefinition fieldDefinition = dataDefinition.getField(fieldName);
+            boolean copy = fieldDefinition.getType().isCopyable();
+            if (copy) {
+                targetEntity.setField(fieldName, getCopyValueOfSimpleField(sourceEntity, dataDefinition, fieldName));
+            }
+
         }
 
         if (!dataDefinition.callCopyHook(targetEntity)) {

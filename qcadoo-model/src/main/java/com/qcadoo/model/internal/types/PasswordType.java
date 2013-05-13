@@ -68,4 +68,9 @@ public final class PasswordType implements FieldType {
         return Pattern.matches("[0-9a-f]{64}", value);
     }
 
+    @Override
+    public boolean isCopyable() {
+        return true;
+    }
+
 }
