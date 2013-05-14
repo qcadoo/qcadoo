@@ -64,13 +64,15 @@ public final class SelectComponentPattern extends FieldComponentPattern {
                     getTranslationService().translate(getTranslationPath() + ".blankValue", coreBlankTranslationKey, locale));
         }
 
-        if (EnumeratedType.class.isAssignableFrom(getFieldDefinition().getType().getClass())) {
-            values.putAll(((EnumeratedType) getFieldDefinition().getType()).values(locale));
-        } else if (BelongsToType.class.isAssignableFrom(getFieldDefinition().getType().getClass())) {
-            throw new IllegalStateException("Select for belongsTo type is not supported");
-        } else {
-            throw new IllegalStateException("Select for " + getFieldDefinition().getType().getClass().getSimpleName()
-                    + " type is not supported");
+        if (getFieldDefinition() != null) {
+            if (EnumeratedType.class.isAssignableFrom(getFieldDefinition().getType().getClass())) {
+                values.putAll(((EnumeratedType) getFieldDefinition().getType()).values(locale));
+            } else if (BelongsToType.class.isAssignableFrom(getFieldDefinition().getType().getClass())) {
+                throw new IllegalStateException("Select for belongsTo type is not supported");
+            } else {
+                throw new IllegalStateException("Select for " + getFieldDefinition().getType().getClass().getSimpleName()
+                        + " type is not supported");
+            }
         }
         return values;
     }

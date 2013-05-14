@@ -47,9 +47,9 @@ String ctx = request.getContextPath();
 		${content}
 	</div>
 	
-	<c:if test="${dependencies != null}">
+	<c:if test="${deps != null}">
 		<div class="dependencies">
-			<c:forEach var="dependency" items="${dependencies}">
+			<c:forEach var="dependency" items="${deps}">
 				<div class="dependency">
 					- <span class="dependencyIdentifier">${dependency.key}</span>
 					<c:if test="${dependency.value != null}">

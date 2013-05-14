@@ -23,15 +23,29 @@
  */
 package com.qcadoo.model.internal.types;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Locale;
 
-import org.apache.commons.lang.StringUtils;
-
+import com.google.common.collect.Lists;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.types.FieldType;
+import com.qcadoo.model.internal.api.DefaultValidatorsProvider;
+import com.qcadoo.model.internal.api.FieldHookDefinition;
 import com.qcadoo.model.internal.api.ValueAndError;
+import com.qcadoo.model.internal.validators.LengthValidator;
 
-public final class StringType implements FieldType {
+public final class StringType implements FieldType, DefaultValidatorsProvider {
+
+    private final boolean copyable;
+
+    public StringType() {
+        copyable = true;
+    }
+
+    public StringType(final boolean copyable) {
+        this.copyable = copyable;
+    }
 
     @Override
     public Class<?> getType() {
@@ -41,9 +55,6 @@ public final class StringType implements FieldType {
     @Override
     public ValueAndError toObject(final FieldDefinition fieldDefinition, final Object value) {
         String stringValue = String.valueOf(value);
-        if (StringUtils.length(stringValue) > 255) {
-            return ValueAndError.withError("qcadooView.validate.field.error.invalidLength", String.valueOf(255));
-        }
         return ValueAndError.withoutError(stringValue);
     }
 
@@ -55,6 +66,22 @@ public final class StringType implements FieldType {
     @Override
     public Object fromString(final String value, final Locale locale) {
         return value;
+    }
+
+    @Override
+    public Collection<FieldHookDefinition> getMissingValidators(final Iterable<FieldHookDefinition> validators) {
+        for (FieldHookDefinition validator : validators) {
+            if (validator instanceof LengthValidator) {
+                if (((LengthValidator) validator).hasUppuerBoundDefined()) {
+                    return Collections.emptyList();
+                }
+            }
+        }
+        return Lists.<FieldHookDefinition> newArrayList(new LengthValidator(null, null, 255));
+    }
+
+    public boolean isCopyable() {
+        return copyable;
     }
 
 }

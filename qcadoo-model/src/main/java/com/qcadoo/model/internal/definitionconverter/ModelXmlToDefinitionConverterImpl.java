@@ -57,6 +57,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import com.google.common.collect.Lists;
 import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.localization.api.utils.DateUtils;
 import com.qcadoo.model.api.DataDefinition;
@@ -335,15 +336,16 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
     private FieldType getDictionaryType(final XMLStreamReader reader) {
         String dictionaryName = getStringAttribute(reader, "dictionary");
         checkState(hasText(dictionaryName), "Dictionary name is required");
-        return new DictionaryType(dictionaryName, dictionaryService);
+        return new DictionaryType(dictionaryName, dictionaryService, getBooleanAttribute(reader, "copyable", true));
     }
 
     private FieldType getEnumType(final XMLStreamReader reader, final String translationPath) throws XMLStreamException {
         String values = getStringAttribute(reader, "values");
         if (hasText(values)) {
-            return new EnumType(translationService, translationPath, values.split(","));
+            return new EnumType(translationService, translationPath, getBooleanAttribute(reader, "copyable", true),
+                    values.split(","));
         } else {
-            return new EnumType(translationService, translationPath);
+            return new EnumType(translationService, translationPath, getBooleanAttribute(reader, "copyable", true));
         }
     }
 
@@ -374,14 +376,48 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
                 dataDefinitionService);
     }
 
+    private FieldType getStringType(final XMLStreamReader reader) {
+        return new StringType(getBooleanAttribute(reader, "copyable", true));
+    }
+
+    private FieldType getIntegerType(final XMLStreamReader reader) {
+        return new IntegerType(getBooleanAttribute(reader, "copyable", true));
+    }
+
+    private FieldType getFileType(final XMLStreamReader reader) {
+        return new FileType(getBooleanAttribute(reader, "copyable", true));
+    }
+
+    private FieldType getTextType(final XMLStreamReader reader) {
+        return new TextType(getBooleanAttribute(reader, "copyable", true));
+    }
+
+    private FieldType getDecimalType(final XMLStreamReader reader) {
+        return new DecimalType(getBooleanAttribute(reader, "copyable", true));
+    }
+
+    private FieldType getDateTimeType(final XMLStreamReader reader) {
+        return new DateTimeType(getBooleanAttribute(reader, "copyable", true));
+    }
+
+    private FieldType getDateType(final XMLStreamReader reader) {
+        return new DateType(getBooleanAttribute(reader, "copyable", true));
+    }
+
+    private FieldType getBooleanType(final XMLStreamReader reader) {
+        return new BooleanType(getBooleanAttribute(reader, "copyable", true));
+    }
+
     private FieldType getBelongsToType(final XMLStreamReader reader, final String pluginIdentifier) {
         boolean lazy = getBooleanAttribute(reader, "lazy", true);
         String plugin = getStringAttribute(reader, L_PLUGIN);
         String modelName = getStringAttribute(reader, TAG_MODEL);
         if (lazy) {
-            return new BelongsToEntityType(plugin == null ? pluginIdentifier : plugin, modelName, dataDefinitionService, true);
+            return new BelongsToEntityType(plugin == null ? pluginIdentifier : plugin, modelName, dataDefinitionService, true,
+                    getBooleanAttribute(reader, "copyable", true));
         } else {
-            return new BelongsToEntityType(plugin == null ? pluginIdentifier : plugin, modelName, dataDefinitionService, false);
+            return new BelongsToEntityType(plugin == null ? pluginIdentifier : plugin, modelName, dataDefinitionService, false,
+                    getBooleanAttribute(reader, "copyable", true));
         }
     }
 
@@ -409,46 +445,37 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
         if (getBooleanAttribute(reader, "required", false)) {
             fieldDefinition.withValidator(getValidatorDefinition(reader, new RequiredValidator()));
         }
-
         if (getBooleanAttribute(reader, "unique", false)) {
             fieldDefinition.withValidator(getValidatorDefinition(reader, new UniqueValidator()));
         }
-        boolean shouldSetUnscaledValueValidatorMaxValue = true;
-        boolean shouldSetScaleValidatorMaxValue = true;
-        while (reader.hasNext() && reader.next() > 0) {
-            if (isTagEnded(reader, fieldType)) {
-                break;
-            }
 
-            String tag = getTagStarted(reader);
-
-            if (tag == null) {
-                continue;
-            }
-            FieldHookDefinition fieldHookDefinition = createFieldElement(reader, fieldDefinition, type, tag);
-            if (fieldHookDefinition instanceof UnscaledValueValidator) {
-                UnscaledValueValidator fieldHook = (UnscaledValueValidator) fieldHookDefinition;
-                shouldSetUnscaledValueValidatorMaxValue = fieldHook.getMax() == null;
-            }
-            if (fieldHookDefinition instanceof ScaleValidator) {
-                ScaleValidator fieldHook = (ScaleValidator) fieldHookDefinition;
-                shouldSetScaleValidatorMaxValue = fieldHook.getMax() == null;
-            }
-            fieldDefinition.withValidator(fieldHookDefinition);
-
+        for (FieldHookDefinition validator : parseFieldValidators(reader, fieldType, fieldDefinition)) {
+            fieldDefinition.withValidator(validator);
         }
-        if ("decimal".equals(fieldType) && shouldSetUnscaledValueValidatorMaxValue) {
-            fieldDefinition.withValidator(new UnscaledValueValidator(null, null, Integer.valueOf(7)));
-        }
-        if ("decimal".equals(fieldType) && shouldSetScaleValidatorMaxValue) {
-            fieldDefinition.withValidator(new ScaleValidator(null, null, Integer.valueOf(5)));
-        }
+        fieldDefinition.withMissingDefaultValidators();
 
         return fieldDefinition;
     }
 
-    private FieldHookDefinition createFieldElement(final XMLStreamReader reader, final FieldDefinitionImpl fieldDefinition,
-            final FieldType type, final String tag) throws HookInitializationException, ModelXmlParsingException {
+    private Collection<FieldHookDefinition> parseFieldValidators(final XMLStreamReader reader, final String fieldType,
+            final FieldDefinition fieldDefinition) throws XMLStreamException, HookInitializationException,
+            ModelXmlParsingException {
+        List<FieldHookDefinition> fieldValidators = Lists.newArrayList();
+        while (reader.hasNext() && reader.next() > 0) {
+            if (isTagEnded(reader, fieldType)) {
+                break;
+            }
+            String tag = getTagStarted(reader);
+            if (tag == null) {
+                continue;
+            }
+            fieldValidators.add(createFieldElement(reader, fieldDefinition, tag));
+        }
+        return fieldValidators;
+    }
+
+    private FieldHookDefinition createFieldElement(final XMLStreamReader reader, final FieldDefinition fieldDefinition,
+            final String tag) throws HookInitializationException, ModelXmlParsingException {
         FieldHookDefinition fieldHookDefinition;
         switch (FieldTag.valueOf(tag.toUpperCase(Locale.ENGLISH))) {
             case VALIDATESLENGTH:
@@ -465,6 +492,7 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
                         getIntegerAttribute(reader, "is"), getIntegerAttribute(reader, "max")));
                 break;
             case VALIDATESRANGE:
+                final FieldType type = fieldDefinition.getType();
                 Object from = getRangeForType(getStringAttribute(reader, "from"), type);
                 Object to = getRangeForType(getStringAttribute(reader, "to"), type);
                 boolean exclusively = getBooleanAttribute(reader, "exclusively", false);
@@ -486,21 +514,21 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
             final FieldsTag fieldTag, final String fieldType) throws XMLStreamException, ModelXmlParsingException {
         switch (fieldTag) {
             case INTEGER:
-                return new IntegerType();
+                return getIntegerType(reader);
             case STRING:
-                return new StringType();
+                return getStringType(reader);
             case FILE:
-                return new FileType();
+                return getFileType(reader);
             case TEXT:
-                return new TextType();
+                return getTextType(reader);
             case DECIMAL:
-                return new DecimalType();
+                return getDecimalType(reader);
             case DATETIME:
-                return new DateTimeType();
+                return getDateTimeType(reader);
             case DATE:
-                return new DateType();
+                return getDateType(reader);
             case BOOLEAN:
-                return new BooleanType();
+                return getBooleanType(reader);
             case BELONGSTO:
                 return getBelongsToType(reader, dataDefinition.getPluginIdentifier());
             case HASMANY:

@@ -110,9 +110,17 @@
 		<xs:attribute name="unique" type="xs:boolean" default="false" />
 	</xs:complexType>
 
-	<xs:complexType name="dateFieldType">
+	<xs:complexType name="primitiveValueFieldType">
 		<xs:complexContent>
 			<xs:extension base="fieldType">
+				<xs:attribute name="copyable" type="xs:boolean" default="true" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="dateFieldType">
+		<xs:complexContent>
+			<xs:extension base="primitiveValueFieldType">
 				<xs:choice minOccurs="0" maxOccurs="unbounded">
 					<xs:element name="validatesWith" type="hookType" />
 					<xs:element name="validatesRegex" type="validatesRegexType" />
@@ -125,7 +133,7 @@
 		
 	<xs:complexType name="integerFieldType">
 		<xs:complexContent>
-			<xs:extension base="fieldType">
+			<xs:extension base="primitiveValueFieldType">
 				<xs:choice minOccurs="0" maxOccurs="unbounded">
 					<xs:element name="validatesWith" type="hookType" />
 					<xs:element name="validatesRegex" type="validatesRegexType" />
@@ -139,7 +147,7 @@
 	
 	<xs:complexType name="decimalFieldType">
 		<xs:complexContent>
-			<xs:extension base="fieldType">
+			<xs:extension base="primitiveValueFieldType">
 				<xs:choice minOccurs="0" maxOccurs="unbounded">
 					<xs:element name="validatesWith" type="hookType" />
 					<xs:element name="validatesRegex" type="validatesRegexType" />
@@ -154,7 +162,7 @@
 
 	<xs:complexType name="characterFieldType">
 		<xs:complexContent>
-			<xs:extension base="fieldType">
+			<xs:extension base="primitiveValueFieldType">
 				<xs:choice minOccurs="0" maxOccurs="unbounded">
 					<xs:element name="validatesWith" type="hookType" />
 					<xs:element name="validatesRegex" type="validatesRegexType" />
@@ -176,7 +184,7 @@
 	
 	<xs:complexType name="belongsToFieldType">
 		<xs:complexContent>
-			<xs:extension base="fieldType">
+			<xs:extension base="primitiveValueFieldType">
 				<xs:attribute name="model" type="identifier" use="required" />
 				<xs:attribute name="plugin" type="identifier" />
 				<xs:attribute name="lazy" type="xs:boolean" default="true" />
@@ -234,7 +242,7 @@
 
 	<xs:complexType name="enumFieldType">
 		<xs:complexContent>
-			<xs:extension base="fieldType">
+			<xs:extension base="primitiveValueFieldType">
 				<xs:attribute name="values" use="required">
 					<xs:simpleType>
 						<xs:restriction base="xs:string">

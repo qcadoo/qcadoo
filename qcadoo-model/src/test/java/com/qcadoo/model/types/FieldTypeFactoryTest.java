@@ -82,7 +82,7 @@ public class FieldTypeFactoryTest extends DataAccessTest {
         given(translationService.translate("path.value.val3", Locale.ENGLISH)).willReturn("i18nVal3");
 
         // when
-        EnumeratedType fieldType = new EnumType(translationService, "path", "val1", "val2", "val3");
+        EnumeratedType fieldType = new EnumType(translationService, "path", true, "val1", "val2", "val3");
 
         // then
         assertThat(fieldType, is(EnumType.class));
@@ -111,7 +111,7 @@ public class FieldTypeFactoryTest extends DataAccessTest {
         given(dictionaryService.getKeys("dictionary")).willReturn(Lists.newArrayList("val1", "val2", "val3"));
 
         // when
-        EnumeratedType fieldType = new DictionaryType("dictionary", dictionaryService);
+        EnumeratedType fieldType = new DictionaryType("dictionary", dictionaryService, true);
 
         // then
         assertThat(fieldType, is(DictionaryType.class));
@@ -196,12 +196,7 @@ public class FieldTypeFactoryTest extends DataAccessTest {
         assertEquals(String.class, fieldType.getType());
         assertTrue(fieldType.toObject(fieldDefinition, "test").isValid());
         assertTrue(fieldType.toObject(fieldDefinition, StringUtils.repeat("a", 255)).isValid());
-
-        ValueAndError valueAndError = fieldType.toObject(fieldDefinition, StringUtils.repeat("a", 256));
-
-        assertFalse(valueAndError.isValid());
-        assertEquals("qcadooView.validate.field.error.invalidLength", valueAndError.getMessage());
-        assertEquals("255", valueAndError.getArgs()[0]);
+        assertTrue(fieldType.toObject(fieldDefinition, StringUtils.repeat("a", 300)).isValid());
     }
 
     @Test
@@ -225,7 +220,7 @@ public class FieldTypeFactoryTest extends DataAccessTest {
     @Test
     public void shouldReturnBelongToType() throws Exception {
         // when
-        FieldType fieldType = new BelongsToEntityType("parent", "entity", dataDefinitionService, false);
+        FieldType fieldType = new BelongsToEntityType("parent", "entity", dataDefinitionService, false, true);
 
         // then
         assertThat(fieldType, is(BelongsToEntityType.class));

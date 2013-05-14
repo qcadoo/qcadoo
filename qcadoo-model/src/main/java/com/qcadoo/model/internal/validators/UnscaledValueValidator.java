@@ -25,6 +25,9 @@ package com.qcadoo.model.internal.validators;
 
 import java.math.BigDecimal;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.FieldDefinition;
@@ -40,6 +43,8 @@ public final class UnscaledValueValidator implements FieldHookDefinition, ErrorM
     private final Integer min;
 
     private final Integer is;
+
+    private transient Integer hashCode = null;
 
     private String errorMessage = INVALID_PRECISION_ERROR;
 
@@ -97,8 +102,29 @@ public final class UnscaledValueValidator implements FieldHookDefinition, ErrorM
         this.errorMessage = errorMessage;
     }
 
-    public Integer getMax() {
-        return max;
+    public boolean hasUppuerBoundDefined() {
+        return max != null || is != null;
+    }
+
+    @Override
+    public int hashCode() {
+        if (hashCode == null) {
+            hashCode = new HashCodeBuilder(1, 31).append(min).append(is).append(max).toHashCode();
+        }
+        return hashCode;
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        UnscaledValueValidator other = (UnscaledValueValidator) obj;
+        return new EqualsBuilder().append(min, other.min).append(is, other.is).append(max, other.max)
+                .append(errorMessage, other.errorMessage).isEquals();
     }
 
 }

@@ -63,6 +63,10 @@
 
 		<menu:menu-item name="dictionaries" category="administration"
 			view="dictionariesList" />
+			
+		<model:model-hook model="dictionaryItem" plugin="qcadooModel">
+			<model:onCopy method="onCopy" class="com.qcadoo.plugins.dictionaries.internal.hooks.DictionaryItemHooks" />
+		</model:model-hook>
 
 		<view:view resource="view/dictionariesList.xml" />
 		<view:view resource="view/dictionaryDetails.xml" />

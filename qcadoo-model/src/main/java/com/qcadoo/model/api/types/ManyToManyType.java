@@ -44,11 +44,4 @@ public interface ManyToManyType extends FieldType, DataDefinitionHolder, JoinFie
      */
     Cascade getCascade();
 
-    /**
-     * Returns true if field should be copied.
-     * 
-     * @return true if should be copied
-     */
-    boolean isCopyable();
-
 }

@@ -233,6 +233,7 @@ public class GanttChartComponentState extends AbstractComponentState {
             DateTime now = new DateTime().withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0);
             scale = new GanttChartScaleImpl(GanttChartComponentState.this, defaultZoomLevel, now.plusDays(defaultStartDay)
                     .toDate(), now.plusDays(defaultEndDay).toDate());
+            scale.setIsDatesSet(true);
             dateFromErrorMessage = null;
             dateToErrorMessage = null;
             globalErrorMessage = null;

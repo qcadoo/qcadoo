@@ -54,9 +54,9 @@ public final class ValidationServiceImpl implements ValidationService {
 
         if (genericEntity.getId() == null) {
             dataDefinition.callCreateHook(genericEntity);
-            parseAndValidateEntity(dataDefinition, genericEntity);
+            parseAndValidateEntity(dataDefinition, genericEntity, existingGenericEntity);
         } else {
-            parseAndValidateEntity(dataDefinition, genericEntity);
+            parseAndValidateEntity(dataDefinition, genericEntity, existingGenericEntity);
             dataDefinition.callUpdateHook(genericEntity);
         }
         dataDefinition.callSaveHook(genericEntity);
@@ -130,22 +130,16 @@ public final class ValidationServiceImpl implements ValidationService {
         return referencedEntity;
     }
 
-    private void parseAndValidateEntity(final InternalDataDefinition dataDefinition, final Entity genericEntity) {
+    private void parseAndValidateEntity(final InternalDataDefinition dataDefinition, final Entity genericEntity,
+            final Entity existingGenericEntity) {
         for (Entry<String, FieldDefinition> fieldDefinitionEntry : dataDefinition.getFields().entrySet()) {
-            Object validateFieldValue = parseAndValidateField((InternalFieldDefinition) fieldDefinitionEntry.getValue(),
-                    genericEntity.getField(fieldDefinitionEntry.getKey()), genericEntity);
-            genericEntity.setField(fieldDefinitionEntry.getKey(), validateFieldValue);
-        }
+            final String fieldName = fieldDefinitionEntry.getKey();
+            final Object newValue = genericEntity.getField(fieldName);
+            final Object oldValue = getOldFieldValue(existingGenericEntity, fieldName);
+            final InternalFieldDefinition fieldDefinition = (InternalFieldDefinition) fieldDefinitionEntry.getValue();
 
-        for (Entry<String, FieldDefinition> fieldDefinitionEntry : dataDefinition.getFields().entrySet()) {
-            if (!genericEntity.isFieldValid(fieldDefinitionEntry.getKey())) {
-                continue;
-            }
-
-            // FIXME MAKU / KRNA - old Value should not be null - should be fetched from existingGenericEntity [which is currently
-            // out of scope :'( ]
-            ((InternalFieldDefinition) fieldDefinitionEntry.getValue()).callValidators(genericEntity, null,
-                    genericEntity.getField(fieldDefinitionEntry.getKey()));
+            final Object validatedFieldValue = parseAndValidateField(fieldDefinition, oldValue, newValue, genericEntity);
+            genericEntity.setField(fieldName, validatedFieldValue);
         }
 
         if (genericEntity.isValid()) {
@@ -153,8 +147,15 @@ public final class ValidationServiceImpl implements ValidationService {
         }
     }
 
-    private Object parseAndValidateValue(final InternalFieldDefinition fieldDefinition, final Object value,
-            final Entity validatedEntity) {
+    private Object getOldFieldValue(final Entity existingEntityOrNull, final String fieldName) {
+        if (existingEntityOrNull == null) {
+            return null;
+        } else {
+            return existingEntityOrNull.getField(fieldName);
+        }
+    }
+
+    private Object parseFieldValue(final InternalFieldDefinition fieldDefinition, final Object value, final Entity validatedEntity) {
         ValueAndError valueAndError = ValueAndError.empty();
         if (value != null) {
             valueAndError = fieldDefinition.getType().toObject(fieldDefinition, value);
@@ -163,21 +164,24 @@ public final class ValidationServiceImpl implements ValidationService {
                 return null;
             }
         }
-
-        if (fieldDefinition.callValidators(validatedEntity, null, valueAndError.getValue())) {
-            return valueAndError.getValue();
-        } else {
-            return null;
-        }
+        return valueAndError.getValue();
     }
 
-    private Object parseAndValidateField(final InternalFieldDefinition fieldDefinition, final Object value,
-            final Entity validatedEntity) {
+    private Object parseAndValidateField(final InternalFieldDefinition fieldDefinition, final Object oldValue,
+            final Object newValue, final Entity validatedEntity) {
         FieldType fieldType = fieldDefinition.getType();
+        Object parsedValue;
         if (fieldType instanceof HasManyType || fieldType instanceof TreeType || fieldType instanceof ManyToManyType) {
-            return value;
+            parsedValue = newValue;
         } else {
-            return parseAndValidateValue(fieldDefinition, trimAndNullIfEmpty(value), validatedEntity);
+            parsedValue = parseFieldValue(fieldDefinition, trimAndNullIfEmpty(newValue), validatedEntity);
+        }
+
+        if (validatedEntity.isFieldValid(fieldDefinition.getName())
+                && fieldDefinition.callValidators(validatedEntity, oldValue, parsedValue)) {
+            return parsedValue;
+        } else {
+            return null;
         }
     }
 

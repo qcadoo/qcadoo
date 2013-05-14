@@ -23,6 +23,9 @@
  */
 package com.qcadoo.model.internal.validators;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.FieldDefinition;
@@ -38,6 +41,8 @@ public final class LengthValidator implements FieldHookDefinition, ErrorMessageD
     private final Integer min;
 
     private final Integer is;
+
+    private transient Integer hashCode = null;
 
     private String errorMessage = INVALID_LENGTH_ERROR;
 
@@ -91,6 +96,31 @@ public final class LengthValidator implements FieldHookDefinition, ErrorMessageD
     @Override
     public void setErrorMessage(final String errorMessage) {
         this.errorMessage = errorMessage;
+    }
+
+    public boolean hasUppuerBoundDefined() {
+        return max != null || is != null;
+    }
+
+    @Override
+    public int hashCode() {
+        if (hashCode == null) {
+            hashCode = new HashCodeBuilder(1, 31).append(min).append(is).append(max).toHashCode();
+        }
+        return hashCode;
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        LengthValidator other = (LengthValidator) obj;
+        return new EqualsBuilder().append(min, other.min).append(is, other.is).append(max, other.max)
+                .append(errorMessage, other.errorMessage).isEquals();
     }
 
 }

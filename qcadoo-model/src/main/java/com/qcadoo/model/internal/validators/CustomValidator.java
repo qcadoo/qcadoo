@@ -23,6 +23,9 @@
  */
 package com.qcadoo.model.internal.validators;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.FieldDefinition;
@@ -34,6 +37,8 @@ public final class CustomValidator implements FieldHookDefinition, ErrorMessageD
     private static final String CUSTOM_ERROR = "qcadooView.validate.field.error.custom";
 
     private final FieldHookDefinition fieldHook;
+
+    private transient Integer hashCode = null;
 
     private String errorMessage = CUSTOM_ERROR;
 
@@ -51,20 +56,38 @@ public final class CustomValidator implements FieldHookDefinition, ErrorMessageD
 
     @Override
     public boolean call(final Entity entity, final Object oldValue, final Object newValue) {
-        boolean result = fieldHook.call(entity, oldValue, newValue);
-
-        if (result) {
+        if (fieldHook.call(entity, oldValue, newValue)) {
             return true;
         }
-
-        entity.addError(fieldDefinition, errorMessage);
-
+        if (entity.getError(fieldDefinition.getName()) == null) {
+            entity.addError(fieldDefinition, errorMessage);
+        }
         return false;
     }
 
     @Override
     public void setErrorMessage(final String errorMessage) {
         this.errorMessage = errorMessage;
+    }
+
+    @Override
+    public int hashCode() {
+        if (hashCode == null) {
+            hashCode = new HashCodeBuilder(1, 31).append(fieldHook).toHashCode();
+        }
+        return hashCode;
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        CustomValidator other = (CustomValidator) obj;
+        return new EqualsBuilder().append(fieldHook, other.fieldHook).append(errorMessage, other.errorMessage).isEquals();
     }
 
 }

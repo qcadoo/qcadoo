@@ -25,190 +25,88 @@ var QCD = QCD || {};
 QCD.components = QCD.components || {};
 QCD.components.elements = QCD.components.elements || {};
 
-QCD.components.elements.Calendar = function(_element, _mainController) {
-	$.extend(this, new QCD.components.elements.FormComponent(_element, _mainController));
+QCD.components.elements.Calendar = function (element, mainController) {
+    "use strict";
+    
+    if (!(this instanceof QCD.components.elements.Calendar)) {
+        return new QCD.components.elements.Calendar(element, mainController);
+    }
+    
+	$.extend(this, new QCD.components.elements.FormComponent(element, mainController));
 	
-	var ANIMATION_LENGTH = 200;
-	
-	var SECOND_IN_MILLIS = 1000,
+	var ANIMATION_LENGTH = 200,
+        SECOND_IN_MILLIS = 1000,
 	    MINUTE_IN_MILLIS = 60 * SECOND_IN_MILLIS,
-	    HOUR_IN_MILLIS = 60 * MINUTE_IN_MILLIS; 
-	
-	var containerElement = _element;
-	
-	var calendar = $("#"+this.elementSearchName+"_calendar");
-	
-	var timeInput = $("#"+this.elementSearchName+"_timeInput");
-
-	var input = this.input;
-	
-	var withTimePicker = timeInput.length > 0;
-	
-	var datepicker;
-	var datepickerElement;
-	
-	var element = this.element;
-	var elementPath = this.elementPath;
-	
-	var opened = false;
-	
-	var skipButtonClick = false;
-	
-	var isTriggerBootonHovered = false;
-	
-	var hasListeners = (this.options.listeners && this.options.listeners.length > 0) ? true : false;
-	
-	var fireOnChangeListeners = this.fireOnChangeListeners;
-	
-	var addMessage = this.addMessage; 
-	
-	var isValidationError = false;
+	    HOUR_IN_MILLIS = 60 * MINUTE_IN_MILLIS,
+	    that = this,
+	    calendar = $("#" + this.elementSearchName + "_calendar"),
+	    timeInput = $("#" + this.elementSearchName + "_timeInput"),
+	    input = this.input,
+	    withTimePicker = timeInput.length > 0,
+	    datepicker = null,
+	    datepickerElement = null,
+	    elementPath = this.elementPath,
+	    opened = false,
+	    skipButtonClick = false,
+	    isTriggerBootonHovered = false,
+	    hasListeners = (this.options.listeners && this.options.listeners.length > 0),
+	    isValidationError = false;
 	
 	if (this.options.referenceName) {
-		_mainController.registerReferenceName(this.options.referenceName, this);
+		mainController.registerReferenceName(this.options.referenceName, this);
 	}
 	
-	var constructor = function(_this) {
-		var closestWindowContent = containerElement.closest("div.windowContent");
-		var closestWindowContainerBody = containerElement.closest("div.windowContainerContentBody");
+	function checkTimeFormat(inputValue) {
+		var fragmentaryValues = [ inputValue.substr(0, 2), inputValue.substr(3, 2), inputValue.substr(6, 2) ],
+            fragmentaryValuesLen = fragmentaryValues.length,
+            i = 0,
+            fragmentValue = null,
+            intIndexOfMatch = null;
 		
-		$.mask.definitions['1']='[0-1]';
-		$.mask.definitions['2']='[0-2]';
-		$.mask.definitions['3']='[0-3]';
-		$.mask.definitions['6']='[0-5]';
-		
-		options = $.datepicker.regional[locale];
-		
-		if(!options) {
-			options = $.datepicker.regional[''];
-		}
-		
-		options.changeMonth = true;
-		options.changeYear = true;
-		options.showOn = 'button';
-		options.dateFormat = 'yy-mm-dd';
-		options.showAnim = 'show';
-		options.altField = input;
-		options.onClose = function(dateText, inst) {
-			opened = false;
-			if (isTriggerBootonHovered) {
-				skipButtonClick = true;
-			}
-		};
-		options.onSelect = function(dateText, inst) {
-			datepickerElement.slideUp(ANIMATION_LENGTH);
-			opened = false;
-			inputDataChanged();
-		};
-		
-		datepickerElement = $("<div>").css("position", "absolute").css("zIndex", 300).css("right", "15px").css("line-height", "14px");
-		containerElement.css("position", "relative");
-		datepickerElement.hide();
-		
-		containerElement.append(datepickerElement);
-		
-		datepickerElement.datepicker(options);
-		
-		input.val("");
-		timeInput.val("");
-		
-		$(document).mousedown(function(event) {
-			if(!opened) {
-				return;
-			}
-			var target = $(event.target);
-			if (target.attr("id") != input.attr("id") && target.attr("id") != calendar.attr("id")
-					&& target.parents('.ui-datepicker').length == 0) {
-				datepickerElement.slideUp(ANIMATION_LENGTH);
-				opened = false;
-			}
-		});
-		
-		calendar.hover(function() {isTriggerBootonHovered = true;}, function() {isTriggerBootonHovered = false;});
-		calendar.click(function() {
-			if(calendar.hasClass("enabled")) {
-				if (skipButtonClick) {
-					skipButtonClick = false;
-					return;
-				}
-				if (!opened) {
-					
-					if (input.val()) {
-						try {
-							$.datepicker.parseDate("yy-mm-dd", input.val());
-							datepickerElement.datepicker("setDate", input.val());
-						} catch (e) {
-							// do nothing
-						}
-					}
-					
-					var top = input.offset().top + closestWindowContainerBody.scrollTop();
-					var calendarHeight = datepickerElement.outerHeight();
-					var inputHeight = input.outerHeight() + 10;
-					
-					var viewHeight = closestWindowContent.outerHeight();
-					var ribbonHeight = closestWindowContent.offset().top;
-					
-					if (top - 5 - calendarHeight > ribbonHeight && top + inputHeight + 5 + calendarHeight > viewHeight) {
-						datepickerElement.css("top", "");
-						datepickerElement.css("bottom", "0px");
-						isOnTop = true;
-					} else {
-						datepickerElement.css("top", inputHeight + 5 + "px");
-						datepickerElement.css("bottom", "");
-						isOnTop = false;
-					}
-					
-					datepickerElement.slideDown(ANIMATION_LENGTH).show();
-					opened = true;
-				} else {
-					datepickerElement.slideUp(ANIMATION_LENGTH);
-					opened = false;
-				}
-			}
-		});
-		
-		input.focus(function() {
-			calendar.addClass("lightHover");
-		}).blur(function() {
-			calendar.removeClass("lightHover");
-		});
-		
-		timeInput.focus(function() {
-		}).blur(function() {
-			checkTimeFormat(timeInput.val());
-		});
-		
-		timeInput.change(function() {
-			inputDataChanged();
-		});
-		
-		input.change(function() {
-			inputDataChanged();
-		});
-		
-		$("#ui-datepicker-div").hide();
-	};
-	
-	function checkTimeFormat(value){
-		var fragmentaryValues = [ value.substr(0,2), value.substr(3,2), value.substr(6,2) ];
-		for (var i = 0; i < fragmentaryValues.length; i++) {
-			var value = fragmentaryValues[i]; 
-			if (value.charAt(0) != '_' && value.charAt(1) == '_') {
-				value = "0" + value.charAt(0); 
+		for (i = 0; i < fragmentaryValuesLen; i++) {
+			fragmentValue = fragmentaryValues[i];
+			if (fragmentValue.charAt(0) !== '_' && fragmentValue.charAt(1) === '_') {
+				fragmentValue = "0" + fragmentValue.charAt(0); 
 			} else {
-				var intIndexOfMatch = value.indexOf( "_" );
-				while (intIndexOfMatch!=-1) {
-					value = value.replace( "_", "0" );
-					intIndexOfMatch = value.indexOf( "_" );
+				intIndexOfMatch = fragmentValue.indexOf("_");
+				// FIXME MAKU replace below loop with /<pattern>/g regExp
+				while (intIndexOfMatch !== -1) {
+					fragmentValue = fragmentValue.replace("_", "0");
+					intIndexOfMatch = fragmentValue.indexOf("_");
 				}
 			}
-			fragmentaryValues[i] = value;
+			fragmentaryValues[i] = fragmentValue;
 		}
 		timeInput.val(fragmentaryValues.join(":"));
 	}
 	
-	this.setComponentData = function(data) {
+	function getNormalizedDate(date) {
+        date = $.trim(date);
+        if (date.length === 10) {
+            return date;
+        } else if (date.length === 16 || date.length === 19) {
+            return date.substring(0, 10);
+        } else {
+            return '';
+        }
+    }
+    
+    function getNormalizedTime(date) {
+        var res = null;
+        date = $.trim(date);
+        if (withTimePicker) {
+            if (date.length === 16) {
+                res = date.substring(11, 16) + ':00';
+            } else if (date.length === 19) {
+                res = date.substring(11, 19);
+            } else {
+                res = '00:00:00';
+            }
+        }
+        return res;
+    }
+	
+	this.setComponentData = function (data) {
 		if (data.value) {
 			this.input.val(getNormalizedDate(data.value));
 			if (withTimePicker) {
@@ -222,8 +120,8 @@ QCD.components.elements.Calendar = function(_element, _mainController) {
 		}
 	};
 	
-	this.getComponentData = function() {
-		if(withTimePicker) {
+	this.getComponentData = function () {
+		if (withTimePicker) {
 			return {
 				value : this.input.val() ? (this.input.val() + ' ' + (timeInput.val() ? timeInput.val() : '00:00:00')) : '' 
 			};
@@ -234,52 +132,83 @@ QCD.components.elements.Calendar = function(_element, _mainController) {
 		}
 	};
 	
-	function getNormalizedDate(date) {
-		var date = $.trim(date);
-		if(date.length == 10) {
-			return date;
-		} else if(date.length == 16 || date.length == 19) {
-			return date.substring(0,10);
-		} else {
-			return '';
-		}
-	}
-	
-	function getNormalizedTime(date) {
-		var date = $.trim(date);
-		if(withTimePicker) {
-			if(date.length == 10) {
-				return '00:00:00';
-			} else if(date.length == 16) {
-				return date.substring(11,16) + ':00';
-			} else if(date.length == 19) {
-				return date.substring(11,19);
-			} else {
-				return '00:00:00';
-			}
-		}
-	}
-		
+    function getTimeInMillis(timeString) {
+        var timeInMillis = 0,
+            parts;
+        timeString = $.trim(timeString);
+        if (timeString !== "") {
+            parts = timeString.split(':');
+            if (parts.length !== 3 || parts[0].length !== 2 || parts[1].length !== 2 || parts[2].length !== 2) {
+                QCD.error("Can't parse time from string: '" + timeString + "'");
+                return null;
+            }    
+            try {
+                timeInMillis = parseInt(parts[0], 10) * HOUR_IN_MILLIS + parseInt(parts[1], 10) * MINUTE_IN_MILLIS + parseInt(parts[2], 10) * SECOND_IN_MILLIS;
+            } catch (e) {
+                QCD.error("Can't parse time from string: '" + timeString + "'");
+                return null;
+            }
+        }
+        return timeInMillis;
+    }
+    
+    function parseDate() {
+        var dateString = input.val(),
+            parts,
+            date,
+            timeInMillis = getTimeInMillis(timeInput.val());
+        if ($.trim(dateString) === "") {
+            return null;
+        }
+        parts = dateString.split("-");
+        if (parts.length !== 3 || parts[0].length !== 4 || parts[1].length !== 2 || parts[2].length !== 2) {
+            throw "Can't build date from string: '" + dateString + "'";
+        }
+        date = new Date(dateString);
+        if (timeInMillis) {
+            date = new Date(date.getTime() + timeInMillis);
+        }
+        
+        return date;
+    }
+    
+    function getDate() {
+        try {
+            return parseDate();
+        } catch (e) {
+            QCD.error(e);
+            return null;
+        }
+    }
+    this.getDate = getDate;
+
 	function inputDataChanged() {
-		var date = getDate();
+	    var hasParseError = false,
+	        date = null;
+	    try {
+            date = parseDate();
+		} catch (e) {
+		    QCD.error(e);
+            hasParseError = true;  
+		}
 		if (!isValidationError) {
-			if (date == null) {
-				addMessage({
+			if (hasParseError) {
+				that.addMessage({
 					title: "",
 					content: ""
 				});
 				element.addClass("error");
 			} else {
-					element.removeClass("error");
+                element.removeClass("error");
 			}
 		}
-		fireOnChangeListeners("onChange", [date]);
+		that.fireOnChangeListeners("onChange", [date]);
 		if (hasListeners) {
 			mainController.callEvent("onChange", elementPath, null, null, null);
 		}
 	}
 	
-	this.setComponentError = function(isError) {
+	this.setComponentError = function (isError) {
 		isValidationError = isError;
 		if (isError) {
 			element.addClass("error");
@@ -288,12 +217,12 @@ QCD.components.elements.Calendar = function(_element, _mainController) {
 		}
 	};
 	
-	this.setFormComponentEnabled = function(isEnabled) {
+	this.setFormComponentEnabled = function (isEnabled) {
 		if (isEnabled) {
 			calendar.addClass("enabled");
 			input.datepicker("enable");
 			input.mask("2999-19-39");
-			if(withTimePicker) {
+			if (withTimePicker) {
 				timeInput.mask("29:69:69");
 			}
 			input.removeAttr("disabled");
@@ -302,76 +231,155 @@ QCD.components.elements.Calendar = function(_element, _mainController) {
 			input.datepicker("disable");
 			input.unmask();
 			input.attr("disabled", "disabled");
-			if(withTimePicker) {
+			if (withTimePicker) {
 				timeInput.unmask();
 			}
 		}
 	};
 	
-	this.updateSize = function(_width, _height) {
-		var height = _height ? _height-10 : 40;
+	this.updateSize = function (width, height) {
+		height = height ? height - 10 : 40;
 		this.input.parent().parent().parent().parent().parent().height(height);
 	};
 	
-	function getTimeInMillis(timeString) {
-	    var timeInMillis = 0,
-	        parts;
-	    timeString = $.trim(timeString);
-	    if (timeString !== "") {
-            parts = timeString.split(':');
-            if (parts.length != 3 || parts[0].length != 2 || parts[1].length != 2 || parts[2].length != 2) {
-                console.error("Can't parse time from string: '" + timeString + "'");
-                return null;
-            }    
-            try {
-                timeInMillis = parseInt(parts[0], 10) * HOUR_IN_MILLIS + parseInt(parts[1], 10) * MINUTE_IN_MILLIS + parseInt(parts[2], 10) * SECOND_IN_MILLIS;
-            } catch (e) {
-                console.error("Can't parse time from string: '" + timeString + "'");
-                return null;
-            }
-        }
-        return timeInMillis;
-	}
-	
-	function getDate() {
-		var dateString = input.val(),
-            parts,
-            date,
-            timeInMillis = getTimeInMillis(timeInput.val());
-		if ($.trim(dateString) === "") {
-			return 0;
-		}
-		parts = dateString.split("-");
-		if (parts.length != 3 || parts[0].length != 4 || parts[1].length != 2 || parts[2].length != 2) {
-			console.error("Can't build date from string: '" + dateString + "'");
-			return null;
-		}
+	this.setDate = function (date) {
+		var dateString = $.datepicker.formatDate("yy-mm-dd", date),
+            timeString = null;
 		
-		try {
-            date = new Date(dateString);
-        } catch (e) {
-            console.error("Can't build date from string: '" + dateString + "'");
-            return null;
-        }
-		
-		if (timeInMillis) {
-		    date = new Date(date.getTime() + timeInMillis);
-		}
-        
-		return date;
-		
-	}
-	this.getDate = getDate;
-	
-	this.setDate = function(date) {
-		var dateString = $.datepicker.formatDate("yy-mm-dd", date);
 		input.val(dateString);
 		if (withTimePicker) {
-			var timeString = getNormalizedTime(date);
+			timeString = getNormalizedTime(date);
 			timeInput.val(timeString);
 		}
 		inputDataChanged();
 	};
 	
-	constructor(this);
+	function constructor() {
+        var containerElement = element,
+            closestWindowContent = containerElement.closest("div.windowContent"),
+            closestWindowContainerBody = containerElement.closest("div.windowContainerContentBody"),
+            options = null;
+        
+        $.mask.definitions['1'] = '[0-1]';
+        $.mask.definitions['2'] = '[0-2]';
+        $.mask.definitions['3'] = '[0-3]';
+        $.mask.definitions['6'] = '[0-5]';
+        
+        options = $.datepicker.regional[window.locale];
+        if (!options) {
+            options = $.datepicker.regional[''];
+        }
+        
+        options.changeMonth = true;
+        options.changeYear = true;
+        options.showOn = 'button';
+        options.dateFormat = 'yy-mm-dd';
+        options.showAnim = 'show';
+        options.altField = input;
+        options.onClose = function (dateText, inst) {
+            opened = false;
+            if (isTriggerBootonHovered) {
+                skipButtonClick = true;
+            }
+        };
+        options.onSelect = function (dateText, inst) {
+            datepickerElement.slideUp(ANIMATION_LENGTH);
+            opened = false;
+            inputDataChanged();
+        };
+        
+        datepickerElement = $("<div>").css("position", "absolute").css("zIndex", 300).css("right", "15px").css("line-height", "14px");
+        containerElement.css("position", "relative");
+        datepickerElement.hide();
+        
+        containerElement.append(datepickerElement);
+        
+        datepickerElement.datepicker(options);
+        
+        input.val("");
+        timeInput.val("");
+        
+        $(document).mousedown(function (event) {
+            var target = null;
+            if (!opened) {
+                return;
+            }
+            target = $(event.target);
+            if (target.attr("id") !== input.attr("id") && 
+                target.attr("id") !== calendar.attr("id") && 
+                target.parents('.ui-datepicker').length === 0) {
+                
+                datepickerElement.slideUp(ANIMATION_LENGTH);
+                opened = false;
+            }
+        });
+        
+        calendar.hover(function () {
+                isTriggerBootonHovered = true;
+            }, function () {
+                isTriggerBootonHovered = false;
+            });
+        calendar.click(function () {
+            if (calendar.hasClass("enabled")) {
+                if (skipButtonClick) {
+                    skipButtonClick = false;
+                    return;
+                }
+                if (!opened) {
+                    
+                    if (input.val()) {
+                        try {
+                            $.datepicker.parseDate("yy-mm-dd", input.val());
+                            datepickerElement.datepicker("setDate", input.val());
+                        } catch (e) {
+                            // do nothing
+                        }
+                    }
+                    
+                    var top = input.offset().top + closestWindowContainerBody.scrollTop(),
+                        calendarHeight = datepickerElement.outerHeight(),
+                        inputHeight = input.outerHeight() + 10,
+                        viewHeight = closestWindowContent.outerHeight(),
+                        ribbonHeight = closestWindowContent.offset().top;
+                    
+                    if (top - 5 - calendarHeight > ribbonHeight && top + inputHeight + 5 + calendarHeight > viewHeight) {
+                        datepickerElement.css("top", "");
+                        datepickerElement.css("bottom", "0px");
+                    } else {
+                        datepickerElement.css("top", inputHeight + 5 + "px");
+                        datepickerElement.css("bottom", "");
+                    }
+                    
+                    datepickerElement.slideDown(ANIMATION_LENGTH).show();
+                    opened = true;
+                } else {
+                    datepickerElement.slideUp(ANIMATION_LENGTH);
+                    opened = false;
+                }
+            }
+        });
+        
+        input.focus(function () {
+            calendar.addClass("lightHover");
+        }).blur(function () {
+            calendar.removeClass("lightHover");
+        });
+        
+        timeInput.focus(function () {
+        }).blur(function () {
+            checkTimeFormat(timeInput.val());
+        });
+        
+        timeInput.change(function () {
+            inputDataChanged();
+        });
+        
+        input.change(function () {
+            inputDataChanged();
+        });
+        
+        $("#ui-datepicker-div").hide();
+    }
+	
+	constructor();
 };

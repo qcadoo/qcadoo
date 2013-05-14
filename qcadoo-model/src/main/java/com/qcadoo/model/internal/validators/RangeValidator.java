@@ -26,6 +26,9 @@ package com.qcadoo.model.internal.validators;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.FieldDefinition;
@@ -47,6 +50,8 @@ public final class RangeValidator implements FieldHookDefinition, ErrorMessageDe
     private final Object to;
 
     private final boolean inclusively;
+
+    private transient Integer hashCode = null;
 
     private FieldDefinition fieldDefinition;
 
@@ -135,4 +140,26 @@ public final class RangeValidator implements FieldHookDefinition, ErrorMessageDe
         this.errorMessageLarge = errorMessage;
         this.errorMessageSmall = errorMessage;
     }
+
+    @Override
+    public int hashCode() {
+        if (hashCode == null) {
+            hashCode = new HashCodeBuilder(1, 31).append(from).append(to).append(inclusively).toHashCode();
+        }
+        return hashCode;
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        RangeValidator other = (RangeValidator) obj;
+        return new EqualsBuilder().append(from, other.from).append(to, other.to).append(inclusively, other.inclusively)
+                .append(errorMessageLarge, other.errorMessageLarge).append(errorMessageSmall, other.errorMessageSmall).isEquals();
+    }
+
 }

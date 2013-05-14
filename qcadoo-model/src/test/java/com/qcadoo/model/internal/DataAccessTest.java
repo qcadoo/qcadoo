@@ -202,10 +202,10 @@ public abstract class DataAccessTest extends TransactionMockAwareTest {
                 false, dataDefinitionService));
 
         treeFieldDefinitionParent = new FieldDefinitionImpl(null, "parent");
-        treeFieldDefinitionParent.withType(new BelongsToEntityType("tree", "entity", dataDefinitionService, false));
+        treeFieldDefinitionParent.withType(new BelongsToEntityType("tree", "entity", dataDefinitionService, false, true));
 
         treeFieldDefinitionOwner = new FieldDefinitionImpl(null, "owner");
-        treeFieldDefinitionOwner.withType(new BelongsToEntityType("parent", "entity", dataDefinitionService, false));
+        treeFieldDefinitionOwner.withType(new BelongsToEntityType("parent", "entity", dataDefinitionService, false, true));
 
         treeDataDefinition.withField(treeFieldDefinitionName);
         treeDataDefinition.withField(treeFieldDefinitionChildren);
@@ -214,13 +214,13 @@ public abstract class DataAccessTest extends TransactionMockAwareTest {
         treeDataDefinition.setFullyQualifiedClassName(SampleTreeDatabaseObject.class.getCanonicalName());
 
         fieldDefinitionBelongsTo = new FieldDefinitionImpl(null, "belongsTo");
-        fieldDefinitionBelongsTo.withType(new BelongsToEntityType("parent", "entity", dataDefinitionService, false));
+        fieldDefinitionBelongsTo.withType(new BelongsToEntityType("parent", "entity", dataDefinitionService, false, true));
 
         fieldDefinitionBelongsToSimple = new FieldDefinitionImpl(null, "belongsToSimple");
-        fieldDefinitionBelongsToSimple.withType(new BelongsToEntityType("simple", "entity", dataDefinitionService, false));
+        fieldDefinitionBelongsToSimple.withType(new BelongsToEntityType("simple", "entity", dataDefinitionService, false, true));
 
         fieldDefinitionLazyBelongsTo = new FieldDefinitionImpl(null, "lazyBelongsTo");
-        fieldDefinitionLazyBelongsTo.withType(new BelongsToEntityType("parent", "entity", dataDefinitionService, true));
+        fieldDefinitionLazyBelongsTo.withType(new BelongsToEntityType("parent", "entity", dataDefinitionService, true, true));
 
         fieldDefinitionName = new FieldDefinitionImpl(null, "name");
         fieldDefinitionName.withType(new StringType());

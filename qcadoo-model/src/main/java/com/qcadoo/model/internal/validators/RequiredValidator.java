@@ -25,6 +25,9 @@ package com.qcadoo.model.internal.validators;
 
 import java.util.List;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.FieldDefinition;
@@ -73,6 +76,23 @@ public final class RequiredValidator implements FieldHookDefinition, ErrorMessag
     public void setErrorMessage(final String errorMessage) {
         this.errorMessage = errorMessage;
         this.errorRelationMessage = errorMessage;
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(1, 31).append(errorMessage).toHashCode();
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        RequiredValidator other = (RequiredValidator) obj;
+        return new EqualsBuilder().append(errorMessage, other.errorMessage).isEquals();
     }
 
 }

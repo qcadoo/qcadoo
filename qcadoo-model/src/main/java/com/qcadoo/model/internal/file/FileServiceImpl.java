@@ -64,7 +64,7 @@ public class FileServiceImpl implements FileService {
 
     private static FileService instance;
 
-    private static final String fileUrlPrefix = "/files/";
+    private static final String L_FILE_URL_PREFIX = "/files/";
 
     private File uploadDirectory;
 
@@ -100,7 +100,7 @@ public class FileServiceImpl implements FileService {
         if (!StringUtils.hasText(path)) {
             return null;
         }
-        return fileUrlPrefix + normalizeSeparators(path.substring(uploadDirectory.getAbsolutePath().length() + 1));
+        return L_FILE_URL_PREFIX + normalizeSeparators(path.substring(uploadDirectory.getAbsolutePath().length() + 1));
     }
 
     private String normalizeSeparators(final String string) {
@@ -123,7 +123,7 @@ public class FileServiceImpl implements FileService {
     public String getPathFromUrl(final String url) {
         String denormalizedUrl = denormalizeSeparators(url);
         return uploadDirectory.getAbsolutePath() + File.separator
-                + denormalizedUrl.substring(denormalizedUrl.indexOf(File.separatorChar) + fileUrlPrefix.length() - 1);
+                + denormalizedUrl.substring(denormalizedUrl.indexOf(File.separatorChar) + L_FILE_URL_PREFIX.length() - 1);
     }
 
     @Override

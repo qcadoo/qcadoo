@@ -44,11 +44,4 @@ public interface HasManyType extends FieldType, DataDefinitionHolder, JoinFieldH
      */
     Cascade getCascade();
 
-    /**
-     * Returns true if field should be copied.
-     * 
-     * @return true if should be copied
-     */
-    boolean isCopyable();
-
 }

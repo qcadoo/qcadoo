@@ -90,7 +90,7 @@
 		</component>
 	</component>
 	<hooks>
-		<beforeRender class="com.qcadoo.plugins.dictionaries.internal.ViewDictionaryService" method="disableDictionaryItemFormForExternalItems" />
-		<beforeRender class="com.qcadoo.plugins.dictionaries.internal.hooks.DictionaryDetailsHooks" method="blockedDeleteOptionWhenDictionaryWasAddFromSystem" />
+		<beforeRender class="com.qcadoo.plugins.dictionaries.internal.hooks.DictionaryItemDetailsHooks" method="disableDictionaryItemFormForExternalItems" />
+		<beforeRender class="com.qcadoo.plugins.dictionaries.internal.hooks.DictionaryItemDetailsHooks" method="blockedDeleteOptionWhenDictionaryWasAddFromSystem" />
 	</hooks>
 </view>

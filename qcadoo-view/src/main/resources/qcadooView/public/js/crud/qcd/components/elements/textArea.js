@@ -25,31 +25,32 @@ var QCD = QCD || {};
 QCD.components = QCD.components || {};
 QCD.components.elements = QCD.components.elements || {};
 
-QCD.components.elements.TextArea = function(_element, _mainController) {
-	$.extend(this, new QCD.components.elements.FormComponent(_element, _mainController));
+QCD.components.elements.TextArea = function (element, mainController) {
+    "use strict";
+    
+    if (!(this instanceof QCD.components.elements.TextArea)) {
+        return new QCD.components.elements.TextArea(element, mainController);
+    }
+    
+	$.extend(this, new QCD.components.elements.FormComponent(element, mainController));
 
-	var _this = this;
-	
-	var hasListeners = (this.options.listeners && this.options.listeners.length > 0)
+	var that = this,
+	    hasListeners = (this.options.listeners && this.options.listeners.length > 0);
 
 	if (this.options.referenceName) {
-		_mainController.registerReferenceName(this.options.referenceName, this);
+		mainController.registerReferenceName(this.options.referenceName, this);
 	}
 
-	if (this.input) {
-		this.input.change(inputDataChanged);
-	}
+    function inputDataChanged() {
+        var inputData = that.getComponentData();
+        that.fireOnChangeListeners("onChange", [inputData.value]);
+        if (hasListeners) {
+            mainController.callEvent("onChange", that.elementPath, null, null, null);
+        }
+    }
 
-	function inputDataChanged() {
-		var inputData = _this.getComponentData();
-		_this.fireOnChangeListeners("onChange", [inputData.value]);
-		if (hasListeners) {
-			_mainController.callEvent("onChange", elementPath, null, null, null);
-		}
-	}
-
-	this.updateSize = function(_width, _height) {
-		var height = _height ? _height - 10 : 90;
+	this.updateSize = function (width, height) {
+		height = height ? height - 10 : 90;
 		if (height < 50) {
 		    // same as input['text']
 			this.input.height(22);
@@ -57,5 +58,13 @@ QCD.components.elements.TextArea = function(_element, _mainController) {
 			this.input.height(height - 23);
 		}
 		this.input.parent().parent().parent().height(height);
-	}
-}
+	};
+	
+	function construct() {
+        if (that.input) {
+            that.input.change(inputDataChanged);
+        }
+    }
+    
+    construct();
+};

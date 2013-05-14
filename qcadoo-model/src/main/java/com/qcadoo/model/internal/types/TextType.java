@@ -33,6 +33,16 @@ import com.qcadoo.model.internal.api.ValueAndError;
 
 public final class TextType implements FieldType {
 
+    private final boolean copyable;
+
+    public TextType() {
+        copyable = true;
+    }
+
+    public TextType(final boolean copyable) {
+        this.copyable = copyable;
+    }
+
     @Override
     public Class<?> getType() {
         return String.class;
@@ -55,6 +65,11 @@ public final class TextType implements FieldType {
     @Override
     public Object fromString(final String value, final Locale locale) {
         return value;
+    }
+
+    @Override
+    public boolean isCopyable() {
+        return copyable;
     }
 
 }

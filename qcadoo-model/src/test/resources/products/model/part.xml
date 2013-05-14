@@ -32,6 +32,8 @@
 		<belongsTo name="product" model="product" required="false"
 			lazy="false" />
 		<manyToMany name="products" model="product" plugin="products" joinField="partsManyToMany" />
+		<decimal name="price" />
+		<integer name="weight" />
 	</fields>
 	<hooks />
 </model>

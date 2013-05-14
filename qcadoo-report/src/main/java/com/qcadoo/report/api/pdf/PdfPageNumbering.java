@@ -147,7 +147,7 @@ public final class PdfPageNumbering extends PdfPageEventHelper {
         textSize = FontUtils.getDejavu().getWidthPoint(generationDate, 7);
         cb.setTextMatrix(document.right() - textSize, textBase - 20);
         cb.showText(generationDate);
-
+        cb.endText();
         try {
             textSize = FontUtils.getDejavu().getWidthPoint(footer.getAdditionalText(), 7);
             ColumnText ct = new ColumnText(cb);
@@ -173,7 +173,6 @@ public final class PdfPageNumbering extends PdfPageEventHelper {
             LOG.warn("Problem with company text generation in report footer.");
         }
 
-        cb.endText();
         cb.addTemplate(total, document.right() - adjust, textBase);
         cb.restoreState();
     }
