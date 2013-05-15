@@ -23,16 +23,22 @@
  */
 package com.qcadoo.model.internal.types;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
 import org.springframework.security.authentication.encoding.PasswordEncoder;
 
+import com.google.common.collect.Lists;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.types.FieldType;
+import com.qcadoo.model.internal.api.DefaultValidatorsProvider;
+import com.qcadoo.model.internal.api.FieldHookDefinition;
 import com.qcadoo.model.internal.api.ValueAndError;
+import com.qcadoo.model.internal.validators.LengthValidator;
 
-public final class PasswordType implements FieldType {
+public final class PasswordType implements FieldType, DefaultValidatorsProvider {
 
     private final PasswordEncoder passwordEncoder;
 
@@ -66,6 +72,18 @@ public final class PasswordType implements FieldType {
 
     private boolean isHashedPassword(final String value) {
         return Pattern.matches("[0-9a-f]{64}", value);
+    }
+
+    @Override
+    public Collection<FieldHookDefinition> getMissingValidators(final Iterable<FieldHookDefinition> validators) {
+        for (FieldHookDefinition validator : validators) {
+            if (validator instanceof LengthValidator) {
+                if (((LengthValidator) validator).hasUppuerBoundDefined()) {
+                    return Collections.emptyList();
+                }
+            }
+        }
+        return Lists.<FieldHookDefinition> newArrayList(new LengthValidator(null, null, 255));
     }
 
     @Override

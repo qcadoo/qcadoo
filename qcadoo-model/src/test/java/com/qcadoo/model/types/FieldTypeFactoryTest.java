@@ -209,12 +209,7 @@ public class FieldTypeFactoryTest extends DataAccessTest {
         assertEquals(String.class, fieldType.getType());
         assertTrue(fieldType.toObject(fieldDefinition, "test").isValid());
         assertTrue(fieldType.toObject(fieldDefinition, StringUtils.repeat("a", 2048)).isValid());
-
-        ValueAndError valueAndError = fieldType.toObject(fieldDefinition, StringUtils.repeat("a", 2049));
-
-        assertFalse(valueAndError.isValid());
-        assertEquals("qcadooView.validate.field.error.invalidLength", valueAndError.getMessage());
-        assertEquals("2048", valueAndError.getArgs()[0]);
+        assertTrue(fieldType.toObject(fieldDefinition, StringUtils.repeat("a", 2049)).isValid());
     }
 
     @Test

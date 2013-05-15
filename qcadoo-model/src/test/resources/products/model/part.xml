@@ -34,6 +34,14 @@
 		<manyToMany name="products" model="product" plugin="products" joinField="partsManyToMany" />
 		<decimal name="price" />
 		<integer name="weight" />
+		<text name="description" />
+		<text name="longDescription">
+			<validatesLength max="4096" />
+		</text>
+		<password name="discountCode" />
+		<password name="longDiscountCode">
+			<validatesLength max="512"/>
+		</password>
 	</fields>
 	<hooks />
 </model>

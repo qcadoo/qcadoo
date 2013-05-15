@@ -181,21 +181,9 @@ public class FieldModuleIntegrationTest extends IntegrationTest {
     public void shouldCallAndFailDefaultMaxStringLenFieldValidators() throws Exception {
         // given
         final String stringWith300Characters = StringUtils.repeat("a", 300);
-        DataDefinition partDao = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PART);
 
-        PluginStateResolver pluginStateResolver = mock(PluginStateResolver.class);
-        PluginUtilsService pluginUtil = new PluginUtilsService();
-        ReflectionTestUtils.setField(pluginUtil, "pluginStateResolver", pluginStateResolver);
-        pluginUtil.init();
-        given(pluginStateResolver.isEnabled(PLUGIN_PRODUCTS_NAME)).willReturn(true);
-
-        Entity part = createPart(stringWith300Characters, null);
-
-        // when
-        Entity savedPart = partDao.save(part);
-
-        // then
-        Assert.assertFalse(savedPart.isValid());
+        // when & then
+        Entity savedPart = performFieldValidationTestOnPart("name", stringWith300Characters, false);
         Assert.assertEquals("qcadooView.validate.field.error.invalidLength", savedPart.getError("name").getMessage());
     }
 
@@ -204,22 +192,8 @@ public class FieldModuleIntegrationTest extends IntegrationTest {
         // given
         BigDecimal decimal = new BigDecimal("0.5");
 
-        DataDefinition partDao = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PART);
-
-        PluginStateResolver pluginStateResolver = mock(PluginStateResolver.class);
-        PluginUtilsService pluginUtil = new PluginUtilsService();
-        ReflectionTestUtils.setField(pluginUtil, "pluginStateResolver", pluginStateResolver);
-        pluginUtil.init();
-        given(pluginStateResolver.isEnabled(PLUGIN_PRODUCTS_NAME)).willReturn(true);
-
-        Entity part = createPart("somePart", null);
-        part.setField("price", decimal);
-
-        // when
-        Entity savedPart = partDao.save(part);
-
-        // then
-        Assert.assertTrue(savedPart.isValid());
+        // when & then
+        performFieldValidationTestOnPart("price", decimal, true);
     }
 
     @Test
@@ -227,22 +201,8 @@ public class FieldModuleIntegrationTest extends IntegrationTest {
         // given
         BigDecimal tooPreciseDecimal = new BigDecimal("0." + StringUtils.repeat("9", 20));
 
-        DataDefinition partDao = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PART);
-
-        PluginStateResolver pluginStateResolver = mock(PluginStateResolver.class);
-        PluginUtilsService pluginUtil = new PluginUtilsService();
-        ReflectionTestUtils.setField(pluginUtil, "pluginStateResolver", pluginStateResolver);
-        pluginUtil.init();
-        given(pluginStateResolver.isEnabled(PLUGIN_PRODUCTS_NAME)).willReturn(true);
-
-        Entity part = createPart("somePart", null);
-        part.setField("price", tooPreciseDecimal);
-
-        // when
-        Entity savedPart = partDao.save(part);
-
-        // then
-        Assert.assertFalse(savedPart.isValid());
+        // when & then
+        Entity savedPart = performFieldValidationTestOnPart("price", tooPreciseDecimal, false);
         Assert.assertEquals("qcadooView.validate.field.error.invalidScale.max", savedPart.getError("price").getMessage());
     }
 
@@ -251,22 +211,8 @@ public class FieldModuleIntegrationTest extends IntegrationTest {
         // given
         BigDecimal tooPreciseDecimal = new BigDecimal(StringUtils.repeat("9", 20) + ".0");
 
-        DataDefinition partDao = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PART);
-
-        PluginStateResolver pluginStateResolver = mock(PluginStateResolver.class);
-        PluginUtilsService pluginUtil = new PluginUtilsService();
-        ReflectionTestUtils.setField(pluginUtil, "pluginStateResolver", pluginStateResolver);
-        pluginUtil.init();
-        given(pluginStateResolver.isEnabled(PLUGIN_PRODUCTS_NAME)).willReturn(true);
-
-        Entity part = createPart("somePart", null);
-        part.setField("price", tooPreciseDecimal);
-
-        // when
-        Entity savedPart = partDao.save(part);
-
-        // then
-        Assert.assertFalse(savedPart.isValid());
+        // when & then
+        Entity savedPart = performFieldValidationTestOnPart("price", tooPreciseDecimal, false);
         Assert.assertEquals("qcadooView.validate.field.error.invalidPrecision.max", savedPart.getError("price").getMessage());
     }
 
@@ -275,6 +221,83 @@ public class FieldModuleIntegrationTest extends IntegrationTest {
         // given
         Integer integer = Integer.parseInt(StringUtils.repeat("1", 10));
 
+        // when & then
+        performFieldValidationTestOnPart("weight", integer, true);
+    }
+
+    @Test
+    public void shouldCallAndPassDefaultTextFieldValidators() throws Exception {
+        // given
+        String textValue = StringUtils.repeat("a", 2048);
+
+        // when & then
+        performFieldValidationTestOnPart("description", textValue, true);
+    }
+
+    @Test
+    public void shouldCallAndFailDefaultTextFieldValidators() throws Exception {
+        // given
+        String textValue = StringUtils.repeat("a", 2049);
+
+        // when & then
+        performFieldValidationTestOnPart("description", textValue, false);
+    }
+
+    @Test
+    public void shouldCallAndPassTextFieldMaxLenValidators() throws Exception {
+        // given
+        String textValue = StringUtils.repeat("a", 4096);
+
+        // when & then
+        performFieldValidationTestOnPart("longDescription", textValue, true);
+    }
+
+    @Test
+    public void shouldCallAndFailTextFieldMaxLenValidators() throws Exception {
+        // given
+        String textValue = StringUtils.repeat("a", 4097);
+
+        // when & then
+        performFieldValidationTestOnPart("longDescription", textValue, false);
+    }
+
+    @Test
+    public void shouldCallAndPassDefaultPasswordFieldValidators() throws Exception {
+        // given
+        String textValue = StringUtils.repeat("a", 255);
+
+        // when & then
+        performFieldValidationTestOnPart("discountCode", textValue, true);
+    }
+
+    @Test
+    public void shouldCallAndFailDefaultPasswordFieldValidators() throws Exception {
+        // given
+        String textValue = StringUtils.repeat("a", 256);
+
+        // when & then
+        performFieldValidationTestOnPart("discountCode", textValue, false);
+    }
+
+    @Test
+    public void shouldCallAndPassPasswordFieldMaxLenValidators() throws Exception {
+        // given
+        String textValue = StringUtils.repeat("a", 512);
+
+        // when & then
+        performFieldValidationTestOnPart("longDiscountCode", textValue, true);
+    }
+
+    @Test
+    public void shouldCallAndFailPasswordFieldMaxLenValidators() throws Exception {
+        // given
+        String textValue = StringUtils.repeat("a", 513);
+
+        // when & then
+        performFieldValidationTestOnPart("longDiscountCode", textValue, false);
+    }
+
+    private Entity performFieldValidationTestOnPart(final String fieldName, final Object fieldValue, final boolean shouldPass) {
         DataDefinition partDao = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PART);
 
         PluginStateResolver pluginStateResolver = mock(PluginStateResolver.class);
@@ -284,13 +307,15 @@ public class FieldModuleIntegrationTest extends IntegrationTest {
         given(pluginStateResolver.isEnabled(PLUGIN_PRODUCTS_NAME)).willReturn(true);
 
         Entity part = createPart("somePart", null);
-        part.setField("weight", integer);
+        part.setField(fieldName, fieldValue);
 
         // when
         Entity savedPart = partDao.save(part);
 
         // then
-        Assert.assertTrue(savedPart.isValid());
+        Assert.assertEquals(shouldPass, savedPart.isValid());
+
+        return savedPart;
     }
 
 }

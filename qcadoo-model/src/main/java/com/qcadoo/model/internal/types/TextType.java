@@ -23,15 +23,19 @@
  */
 package com.qcadoo.model.internal.types;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Locale;
 
-import org.apache.commons.lang.StringUtils;
-
+import com.google.common.collect.Lists;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.types.FieldType;
+import com.qcadoo.model.internal.api.DefaultValidatorsProvider;
+import com.qcadoo.model.internal.api.FieldHookDefinition;
 import com.qcadoo.model.internal.api.ValueAndError;
+import com.qcadoo.model.internal.validators.LengthValidator;
 
-public final class TextType implements FieldType {
+public final class TextType implements FieldType, DefaultValidatorsProvider {
 
     private final boolean copyable;
 
@@ -51,9 +55,6 @@ public final class TextType implements FieldType {
     @Override
     public ValueAndError toObject(final FieldDefinition fieldDefinition, final Object value) {
         String stringValue = String.valueOf(value);
-        if (StringUtils.length(stringValue) > 2048) {
-            return ValueAndError.withError("qcadooView.validate.field.error.invalidLength", String.valueOf(2048));
-        }
         return ValueAndError.withoutError(stringValue);
     }
 
@@ -65,6 +66,18 @@ public final class TextType implements FieldType {
     @Override
     public Object fromString(final String value, final Locale locale) {
         return value;
+    }
+
+    @Override
+    public Collection<FieldHookDefinition> getMissingValidators(final Iterable<FieldHookDefinition> validators) {
+        for (FieldHookDefinition validator : validators) {
+            if (validator instanceof LengthValidator) {
+                if (((LengthValidator) validator).hasUppuerBoundDefined()) {
+                    return Collections.emptyList();
+                }
+            }
+        }
+        return Lists.<FieldHookDefinition> newArrayList(new LengthValidator(null, null, 2048));
     }
 
     @Override
