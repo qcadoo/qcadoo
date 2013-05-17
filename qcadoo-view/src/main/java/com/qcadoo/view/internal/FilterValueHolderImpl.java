@@ -230,12 +230,9 @@ public class FilterValueHolderImpl implements FilterValueHolder {
 
     private void clearHolder() {
         Iterator<?> iterator = filterValue.keys();
-        List<String> entrysToRemove = Lists.newArrayList();
         while (iterator.hasNext()) {
-            entrysToRemove.add(iterator.next().toString());
-        }
-        for (String key : entrysToRemove) {
-            filterValue.remove(key);
+            iterator.next();
+            iterator.remove();
         }
         empty = true;
     }
