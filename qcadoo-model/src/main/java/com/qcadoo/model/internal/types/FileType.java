@@ -27,19 +27,16 @@ import java.io.File;
 import java.util.Locale;
 
 import com.qcadoo.model.api.FieldDefinition;
-import com.qcadoo.model.api.types.FieldType;
 import com.qcadoo.model.internal.api.ValueAndError;
 
-public final class FileType implements FieldType {
-
-    private final boolean copyable;
+public final class FileType extends AbstractFieldType {
 
     public FileType() {
-        copyable = true;
+        this(true);
     }
 
     public FileType(final boolean copyable) {
-        this.copyable = copyable;
+        super(copyable);
     }
 
     @Override
@@ -72,11 +69,6 @@ public final class FileType implements FieldType {
     @Override
     public Object fromString(final String value, final Locale locale) {
         return value;
-    }
-
-    @Override
-    public boolean isCopyable() {
-        return copyable;
     }
 
 }

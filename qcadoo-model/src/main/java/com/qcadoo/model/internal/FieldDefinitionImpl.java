@@ -37,6 +37,8 @@ import com.qcadoo.model.api.types.FieldType;
 import com.qcadoo.model.internal.api.DefaultValidatorsProvider;
 import com.qcadoo.model.internal.api.FieldHookDefinition;
 import com.qcadoo.model.internal.api.InternalFieldDefinition;
+import com.qcadoo.model.internal.types.StringType;
+import com.qcadoo.model.internal.types.TextType;
 import com.qcadoo.model.internal.validators.RequiredValidator;
 import com.qcadoo.model.internal.validators.UniqueValidator;
 import com.qcadoo.plugin.internal.PluginUtilsService;
@@ -235,6 +237,11 @@ public final class FieldDefinitionImpl implements InternalFieldDefinition {
     @Override
     public void disable() {
         enabled = false;
+    }
+
+    @Override
+    public boolean canBeBothCopyableAndUnique() {
+        return type instanceof StringType || type instanceof TextType;
     }
 
 }

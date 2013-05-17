@@ -28,14 +28,14 @@ import java.util.Locale;
 import org.springframework.util.StringUtils;
 
 import com.qcadoo.model.api.FieldDefinition;
-import com.qcadoo.model.api.types.FieldType;
 import com.qcadoo.model.internal.api.ValueAndError;
 
-public final class PriorityType implements FieldType {
+public final class PriorityType extends AbstractFieldType {
 
     private final FieldDefinition scopeFieldDefinition;
 
     public PriorityType(final FieldDefinition scopeFieldDefinition) {
+        super(true);
         this.scopeFieldDefinition = scopeFieldDefinition;
     }
 
@@ -75,11 +75,6 @@ public final class PriorityType implements FieldType {
 
     public FieldDefinition getScopeFieldDefinition() {
         return scopeFieldDefinition;
-    }
-
-    @Override
-    public boolean isCopyable() {
-        return true;
     }
 
 }

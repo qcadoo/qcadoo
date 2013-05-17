@@ -29,22 +29,19 @@ import java.util.Locale;
 
 import com.google.common.collect.Lists;
 import com.qcadoo.model.api.FieldDefinition;
-import com.qcadoo.model.api.types.FieldType;
 import com.qcadoo.model.internal.api.DefaultValidatorsProvider;
 import com.qcadoo.model.internal.api.FieldHookDefinition;
 import com.qcadoo.model.internal.api.ValueAndError;
 import com.qcadoo.model.internal.validators.LengthValidator;
 
-public final class StringType implements FieldType, DefaultValidatorsProvider {
-
-    private final boolean copyable;
+public final class StringType extends AbstractFieldType implements DefaultValidatorsProvider {
 
     public StringType() {
-        copyable = true;
+        this(true);
     }
 
     public StringType(final boolean copyable) {
-        this.copyable = copyable;
+        super(copyable);
     }
 
     @Override
@@ -78,10 +75,6 @@ public final class StringType implements FieldType, DefaultValidatorsProvider {
             }
         }
         return Lists.<FieldHookDefinition> newArrayList(new LengthValidator(null, null, 255));
-    }
-
-    public boolean isCopyable() {
-        return copyable;
     }
 
 }

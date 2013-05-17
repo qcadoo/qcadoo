@@ -32,18 +32,16 @@ import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.types.EnumeratedType;
 import com.qcadoo.model.internal.api.ValueAndError;
 
-public final class DictionaryType implements EnumeratedType {
+public final class DictionaryType extends AbstractFieldType implements EnumeratedType {
 
     private final String dictionary;
 
     private final DictionaryService dictionaryService;
 
-    private final boolean copyable;
-
     public DictionaryType(final String dictionary, final DictionaryService dictionaryService, final boolean copyable) {
+        super(copyable);
         this.dictionary = dictionary;
         this.dictionaryService = dictionaryService;
-        this.copyable = copyable;
     }
 
     @Override
@@ -74,11 +72,6 @@ public final class DictionaryType implements EnumeratedType {
     @Override
     public Object fromString(final String value, final Locale locale) {
         return value;
-    }
-
-    @Override
-    public boolean isCopyable() {
-        return copyable;
     }
 
 }

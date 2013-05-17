@@ -36,4 +36,6 @@ public interface InternalFieldDefinition extends FieldDefinition {
 
     void disable();
 
+    boolean canBeBothCopyableAndUnique();
+
 }

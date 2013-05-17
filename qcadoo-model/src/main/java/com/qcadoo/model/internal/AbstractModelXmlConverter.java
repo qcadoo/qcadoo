@@ -52,6 +52,8 @@ public abstract class AbstractModelXmlConverter {
 
     protected static final String TAG_PLUGIN = "plugin";
 
+    protected static final String TAG_JOIN_FIELD = "joinField";
+
     protected String getPluginIdentifier(final XMLStreamReader reader) {
         return getStringAttribute(reader, "plugin");
     }
@@ -77,7 +79,15 @@ public abstract class AbstractModelXmlConverter {
     }
 
     protected String getStringAttribute(final XMLStreamReader reader, final String name) {
-        return reader.getAttributeValue(null, name);
+        return getStringAttribute(reader, name, null);
+    }
+
+    protected String getStringAttribute(final XMLStreamReader reader, final String name, final String defaultValue) {
+        String value = reader.getAttributeValue(null, name);
+        if (value == null) {
+            return defaultValue;
+        }
+        return value;
     }
 
     protected String getTagStarted(final XMLStreamReader reader) {

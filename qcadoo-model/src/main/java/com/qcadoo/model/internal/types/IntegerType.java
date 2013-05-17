@@ -32,22 +32,19 @@ import java.util.Locale;
 import com.google.common.collect.Lists;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.NumberService;
-import com.qcadoo.model.api.types.FieldType;
 import com.qcadoo.model.internal.api.DefaultValidatorsProvider;
 import com.qcadoo.model.internal.api.FieldHookDefinition;
 import com.qcadoo.model.internal.api.ValueAndError;
 import com.qcadoo.model.internal.validators.UnscaledValueValidator;
 
-public final class IntegerType implements FieldType, DefaultValidatorsProvider {
-
-    private final boolean copyable;
+public final class IntegerType extends AbstractFieldType implements DefaultValidatorsProvider {
 
     public IntegerType() {
-        copyable = true;
+        this(true);
     }
 
     public IntegerType(final boolean copyable) {
-        this.copyable = copyable;
+        super(copyable);
     }
 
     @Override
@@ -94,10 +91,6 @@ public final class IntegerType implements FieldType, DefaultValidatorsProvider {
         }
         return Lists.<FieldHookDefinition> newArrayList(new UnscaledValueValidator(null, null,
                 NumberService.DEFAULT_INTEGER_UNSCALED_VALUE_MAX_LEN));
-    }
-
-    public boolean isCopyable() {
-        return copyable;
     }
 
 }

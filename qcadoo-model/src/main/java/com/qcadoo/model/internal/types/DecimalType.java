@@ -34,14 +34,13 @@ import java.util.Set;
 import com.google.common.collect.Sets;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.NumberService;
-import com.qcadoo.model.api.types.FieldType;
 import com.qcadoo.model.internal.api.DefaultValidatorsProvider;
 import com.qcadoo.model.internal.api.FieldHookDefinition;
 import com.qcadoo.model.internal.api.ValueAndError;
 import com.qcadoo.model.internal.validators.ScaleValidator;
 import com.qcadoo.model.internal.validators.UnscaledValueValidator;
 
-public final class DecimalType implements FieldType, DefaultValidatorsProvider {
+public final class DecimalType extends AbstractFieldType implements DefaultValidatorsProvider {
 
     private static final ScaleValidator DEFAULT_SCALE_VALIDATOR = new ScaleValidator(null, null,
             NumberService.DEFAULT_DECIMAL_SCALE_VALUE_MAX_LEN);
@@ -49,14 +48,12 @@ public final class DecimalType implements FieldType, DefaultValidatorsProvider {
     private static final UnscaledValueValidator DEFAULT_UNSCALED_VALUE_VALIDATOR = new UnscaledValueValidator(null, null,
             NumberService.DEFAULT_DECIMAL_UNSCALED_VALUE_MAX_LEN);
 
-    private final boolean copyable;
-
     public DecimalType() {
-        copyable = true;
+        this(true);
     }
 
     public DecimalType(final boolean copyable) {
-        this.copyable = copyable;
+        super(copyable);
     }
 
     @Override
@@ -120,10 +117,6 @@ public final class DecimalType implements FieldType, DefaultValidatorsProvider {
             }
         }
         return missingValidators;
-    }
-
-    public boolean isCopyable() {
-        return copyable;
     }
 
 }

@@ -483,17 +483,17 @@
 				</xsl:otherwise>
 			</xsl:choose>
 			<xsl:attribute name="cascade">
-			<xsl:choose>
-				<xsl:when test="@cascade='delete'">delete</xsl:when>
-				<xsl:otherwise>none</xsl:otherwise>
-			</xsl:choose>
-		</xsl:attribute>
+				<xsl:choose>
+					<xsl:when test="@cascade='delete'">delete</xsl:when>
+					<xsl:otherwise>none</xsl:otherwise>
+				</xsl:choose>
+			</xsl:attribute>
 			<xsl:attribute name="lazy">
-			<xsl:choose>
-				<xsl:when test="@lazy='false'">false</xsl:when>
-				<xsl:otherwise>proxy</xsl:otherwise>
-			</xsl:choose>
-		</xsl:attribute>
+				<xsl:choose>
+					<xsl:when test="@lazy='false'">false</xsl:when>
+					<xsl:otherwise>proxy</xsl:otherwise>
+				</xsl:choose>
+			</xsl:attribute>
 			<xsl:call-template name="property" />
 		</many-to-one>
 	</xsl:template>

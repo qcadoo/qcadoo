@@ -26,19 +26,16 @@ package com.qcadoo.model.internal.types;
 import java.util.Locale;
 
 import com.qcadoo.model.api.FieldDefinition;
-import com.qcadoo.model.api.types.FieldType;
 import com.qcadoo.model.internal.api.ValueAndError;
 
-public final class BooleanType implements FieldType {
-
-    private final boolean copyable;
+public final class BooleanType extends AbstractFieldType {
 
     public BooleanType() {
-        copyable = true;
+        this(true);
     }
 
     public BooleanType(final boolean copyable) {
-        this.copyable = copyable;
+        super(copyable);
     }
 
     @Override
@@ -78,11 +75,6 @@ public final class BooleanType implements FieldType {
     @Override
     public Object fromString(final String value, final Locale locale) {
         return parseStringToBoolean(value);
-    }
-
-    @Override
-    public boolean isCopyable() {
-        return copyable;
     }
 
 }

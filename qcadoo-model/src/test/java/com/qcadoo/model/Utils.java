@@ -59,6 +59,12 @@ public class Utils {
     public static final Resource OTHER_SECOND_ENTITY_XML_RESOURCE = new FileSystemResource(
             "src/test/resources/model/other/secondEntity.xml");
 
+    public static final Resource UNIQUE_COPYABLE_ENTITY_XML_RESOURCE = new FileSystemResource(
+            "src/test/resources/model/other/uniqueCopyableEntity.xml");
+
+    public static final Resource UNIQUE_COPYABLE_BROKEN_ENTITY_XML_RESOURCE = new FileSystemResource(
+            "src/test/resources/model/other/uniqueCopyableBrokenEntity.xml");
+
     public static final Resource MODEL_XML_INVALID_RESOURCE = new FileSystemResource("src/test/resources/spring.xml");
 
     public static final Resource FULL_HBM_RESOURCE = new FileSystemResource("src/test/resources/full.hbm.xml");

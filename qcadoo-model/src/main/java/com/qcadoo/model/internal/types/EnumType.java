@@ -38,7 +38,7 @@ import com.qcadoo.model.api.types.EnumeratedType;
 import com.qcadoo.model.internal.api.ValueAndError;
 import com.qcadoo.plugin.api.PluginUtils;
 
-public final class EnumType implements EnumeratedType {
+public final class EnumType extends AbstractFieldType implements EnumeratedType {
 
     private static final EnumTypeComparator ENUM_TYPE_COMPARATOR = new EnumTypeComparator();
 
@@ -48,13 +48,11 @@ public final class EnumType implements EnumeratedType {
 
     private final String translationPath;
 
-    private final boolean copyable;
-
     public EnumType(final TranslationService translationService, final String translationPath, final boolean copyable,
             final String... keys) {
+        super(copyable);
         this.translationService = translationService;
         this.translationPath = translationPath;
-        this.copyable = copyable;
         this.keys = new ArrayList<EnumTypeKey>();
         for (String key : keys) {
             this.keys.add(new EnumTypeKey(key, null));
@@ -118,11 +116,6 @@ public final class EnumType implements EnumeratedType {
             return arg0.getValue().compareTo(arg1.getValue());
         }
 
-    }
-
-    @Override
-    public boolean isCopyable() {
-        return copyable;
     }
 
 }

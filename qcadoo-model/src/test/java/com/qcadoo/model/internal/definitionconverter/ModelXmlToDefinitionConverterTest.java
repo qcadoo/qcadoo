@@ -41,16 +41,21 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
+import junit.framework.Assert;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
+import org.springframework.core.io.Resource;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import com.google.common.collect.Lists;
 import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.CustomHook;
 import com.qcadoo.model.TransactionMockAwareTest;
 import com.qcadoo.model.Utils;
 import com.qcadoo.model.api.DataDefinition;
+import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.types.BelongsToType;
 import com.qcadoo.model.api.types.HasManyType;
 import com.qcadoo.model.api.types.ManyToManyType;
@@ -105,6 +110,8 @@ public class ModelXmlToDefinitionConverterTest extends TransactionMockAwareTest 
 
     private static Collection<DataDefinition> dataDefinitions;
 
+    private static ModelXmlToClassConverter modelXmlToClassConverter;
+
     @BeforeClass
     public static void init() throws Exception {
         applicationContext = mock(ApplicationContext.class);
@@ -121,21 +128,49 @@ public class ModelXmlToDefinitionConverterTest extends TransactionMockAwareTest 
 
         given(applicationContext.getBean(CustomHook.class)).willReturn(new CustomHook());
 
-        ModelXmlToClassConverter modelXmlToClassConverter = new ModelXmlToClassConverterImpl();
+        modelXmlToClassConverter = new ModelXmlToClassConverterImpl();
         ((ModelXmlToClassConverterImpl) modelXmlToClassConverter).setBeanClassLoader(ClassLoader.getSystemClassLoader());
-        modelXmlToClassConverter.convert(Utils.FULL_FIRST_ENTITY_XML_RESOURCE, Utils.FULL_SECOND_ENTITY_XML_RESOURCE,
+
+        dataDefinitions = performConvert(Utils.FULL_FIRST_ENTITY_XML_RESOURCE, Utils.FULL_SECOND_ENTITY_XML_RESOURCE,
                 Utils.FULL_THIRD_ENTITY_XML_RESOURCE, Utils.OTHER_FIRST_ENTITY_XML_RESOURCE,
                 Utils.OTHER_SECOND_ENTITY_XML_RESOURCE);
-
-        dataDefinitions = modelXmlToDefinitionConverter.convert(Utils.FULL_FIRST_ENTITY_XML_RESOURCE,
-                Utils.FULL_SECOND_ENTITY_XML_RESOURCE, Utils.FULL_THIRD_ENTITY_XML_RESOURCE,
-                Utils.OTHER_FIRST_ENTITY_XML_RESOURCE, Utils.OTHER_SECOND_ENTITY_XML_RESOURCE);
 
         for (DataDefinition dd : dataDefinitions.toArray(new DataDefinition[dataDefinitions.size()])) {
             if (dd.getName().equals("firstEntity") && dd.getPluginIdentifier().equals("full")) {
                 dataDefinition = (InternalDataDefinition) dd;
             }
         }
+    }
+
+    @Test
+    public final void shouldThrowExceptionForFieldWhichCanNotBeBothCopyableAndUnique() {
+        // when & then
+        try {
+            performConvert(Utils.UNIQUE_COPYABLE_BROKEN_ENTITY_XML_RESOURCE);
+            Assert.fail();
+        } catch (IllegalStateException ise) {
+            assertTrue(ise.getMessage().contains("Unique field can not have the copyable attribute set to true."));
+            assertTrue(ise.getMessage().contains("#other_uniqueCopyableBrokenEntity.uniqueAndCopyableInteger"));
+        }
+    }
+
+    @Test
+    public final void shouldBuildDataDefinitionWithFieldWhichIsAllowedToBeBothCopyableAndUnique() {
+        // when
+        DataDefinition convertedDataDefinition = performConvert(Utils.UNIQUE_COPYABLE_ENTITY_XML_RESOURCE).iterator().next();
+
+        // then
+        for (String fieldName : Lists.newArrayList("stringField", "textField")) {
+            FieldDefinition fieldDefinition = convertedDataDefinition.getField(fieldName);
+            assertNotNull(String.format("Field '%s' is missing", fieldName), fieldDefinition);
+            assertTrue(String.format("Field '%s' should be unique", fieldName), fieldDefinition.isUnique());
+            assertTrue(String.format("Field '%s' should be copyable", fieldName), fieldDefinition.getType().isCopyable());
+        }
+    }
+
+    private static Collection<DataDefinition> performConvert(final Resource... resources) {
+        modelXmlToClassConverter.convert(resources);
+        return modelXmlToDefinitionConverter.convert(resources);
     }
 
     @Test

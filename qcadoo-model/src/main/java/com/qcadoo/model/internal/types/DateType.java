@@ -34,19 +34,16 @@ import org.joda.time.format.DateTimeFormatter;
 
 import com.qcadoo.localization.api.utils.DateUtils;
 import com.qcadoo.model.api.FieldDefinition;
-import com.qcadoo.model.api.types.FieldType;
 import com.qcadoo.model.internal.api.ValueAndError;
 
-public final class DateType implements FieldType {
-
-    private final boolean copyable;
+public final class DateType extends AbstractFieldType {
 
     public DateType() {
-        copyable = true;
+        this(true);
     }
 
     public DateType(final boolean copyable) {
-        this.copyable = copyable;
+        super(copyable);
     }
 
     @Override
@@ -96,11 +93,6 @@ public final class DateType implements FieldType {
     @Override
     public Object fromString(final String value, final Locale locale) {
         return value;
-    }
-
-    @Override
-    public boolean isCopyable() {
-        return copyable;
     }
 
 }

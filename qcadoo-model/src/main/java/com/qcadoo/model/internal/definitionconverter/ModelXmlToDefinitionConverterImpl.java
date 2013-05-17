@@ -63,10 +63,8 @@ import com.qcadoo.localization.api.utils.DateUtils;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.DictionaryService;
 import com.qcadoo.model.api.FieldDefinition;
+import com.qcadoo.model.api.types.Cascadeable;
 import com.qcadoo.model.api.types.FieldType;
-import com.qcadoo.model.api.types.HasManyType;
-import com.qcadoo.model.api.types.ManyToManyType;
-import com.qcadoo.model.api.types.TreeType;
 import com.qcadoo.model.internal.AbstractModelXmlConverter;
 import com.qcadoo.model.internal.DataDefinitionImpl;
 import com.qcadoo.model.internal.FieldDefinitionImpl;
@@ -110,8 +108,6 @@ import com.qcadoo.model.internal.validators.UnscaledValueValidator;
 public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlConverter implements ModelXmlToDefinitionConverter {
 
     private static final Logger LOG = LoggerFactory.getLogger(ModelXmlToDefinitionConverterImpl.class);
-
-    private static final String L_PLUGIN = "plugin";
 
     private static final String L_PARSE_ERROR = "Error while parsing model.xml: ";
 
@@ -339,86 +335,81 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
         return new DictionaryType(dictionaryName, dictionaryService, getBooleanAttribute(reader, "copyable", true));
     }
 
-    private FieldType getEnumType(final XMLStreamReader reader, final String translationPath) throws XMLStreamException {
+    private FieldType getEnumType(final XMLStreamReader reader, final boolean copyable, final String translationPath)
+            throws XMLStreamException {
         String values = getStringAttribute(reader, "values");
         if (hasText(values)) {
-            return new EnumType(translationService, translationPath, getBooleanAttribute(reader, "copyable", true),
-                    values.split(","));
+            return new EnumType(translationService, translationPath, copyable, values.split(","));
         } else {
-            return new EnumType(translationService, translationPath, getBooleanAttribute(reader, "copyable", true));
+            return new EnumType(translationService, translationPath, copyable);
         }
     }
 
     private FieldType getHasManyType(final XMLStreamReader reader, final String pluginIdentifier) {
-        String plugin = getStringAttribute(reader, L_PLUGIN);
-        HasManyType.Cascade cascade = "delete".equals(getStringAttribute(reader, "cascade")) ? HasManyType.Cascade.DELETE
-                : HasManyType.Cascade.NULLIFY;
-        return new HasManyEntitiesType(plugin == null ? pluginIdentifier : plugin, getStringAttribute(reader, TAG_MODEL),
-                getStringAttribute(reader, "joinField"), cascade, getBooleanAttribute(reader, "copyable", false),
-                dataDefinitionService);
+        CollectionTypeCommonParams params = new CollectionTypeCommonParams(reader, pluginIdentifier);
+        return new HasManyEntitiesType(params.getPluginName(), params.getModelName(), params.getJoinFieldName(),
+                params.getCascade(), params.isCopyable(), dataDefinitionService);
     }
 
     private FieldType getManyToManyType(final XMLStreamReader reader, final String pluginIdentifier) {
-        String plugin = getStringAttribute(reader, L_PLUGIN);
-        ManyToManyType.Cascade cascade = "delete".equals(getStringAttribute(reader, "cascade")) ? ManyToManyType.Cascade.DELETE
-                : ManyToManyType.Cascade.NULLIFY;
-        return new ManyToManyEntitiesType(plugin == null ? pluginIdentifier : plugin, getStringAttribute(reader, TAG_MODEL),
-                getStringAttribute(reader, "joinField"), cascade, getBooleanAttribute(reader, "copyable", false),
-                dataDefinitionService);
+        CollectionTypeCommonParams params = new CollectionTypeCommonParams(reader, pluginIdentifier);
+        return new ManyToManyEntitiesType(params.getPluginName(), params.getModelName(), params.getJoinFieldName(),
+                params.getCascade(), params.isCopyable(), dataDefinitionService);
     }
 
     private FieldType getTreeType(final XMLStreamReader reader, final String pluginIdentifier) {
-        String plugin = getStringAttribute(reader, L_PLUGIN);
-        TreeType.Cascade cascade = "delete".equals(getStringAttribute(reader, "cascade")) ? TreeType.Cascade.DELETE
-                : TreeType.Cascade.NULLIFY;
-        return new TreeEntitiesType(plugin == null ? pluginIdentifier : plugin, getStringAttribute(reader, TAG_MODEL),
-                getStringAttribute(reader, "joinField"), cascade, getBooleanAttribute(reader, "copyable", false),
-                dataDefinitionService);
+        CollectionTypeCommonParams params = new CollectionTypeCommonParams(reader, pluginIdentifier);
+        return new TreeEntitiesType(params.getPluginName(), params.getModelName(), params.getJoinFieldName(),
+                params.getCascade(), params.isCopyable(), dataDefinitionService);
     }
 
-    private FieldType getStringType(final XMLStreamReader reader) {
-        return new StringType(getBooleanAttribute(reader, "copyable", true));
-    }
+    private final class CollectionTypeCommonParams {
 
-    private FieldType getIntegerType(final XMLStreamReader reader) {
-        return new IntegerType(getBooleanAttribute(reader, "copyable", true));
-    }
+        private final String pluginName;
 
-    private FieldType getFileType(final XMLStreamReader reader) {
-        return new FileType(getBooleanAttribute(reader, "copyable", true));
-    }
+        private final String modelName;
 
-    private FieldType getTextType(final XMLStreamReader reader) {
-        return new TextType(getBooleanAttribute(reader, "copyable", true));
-    }
+        private final String joinFieldName;
 
-    private FieldType getDecimalType(final XMLStreamReader reader) {
-        return new DecimalType(getBooleanAttribute(reader, "copyable", true));
-    }
+        private final Cascadeable.Cascade cascade;
 
-    private FieldType getDateTimeType(final XMLStreamReader reader) {
-        return new DateTimeType(getBooleanAttribute(reader, "copyable", true));
-    }
+        private final boolean isCopyable;
 
-    private FieldType getDateType(final XMLStreamReader reader) {
-        return new DateType(getBooleanAttribute(reader, "copyable", true));
-    }
+        private CollectionTypeCommonParams(final XMLStreamReader reader, final String pluginIdentifier) {
+            pluginName = getStringAttribute(reader, TAG_PLUGIN, pluginIdentifier);
+            modelName = getStringAttribute(reader, TAG_MODEL);
+            joinFieldName = getStringAttribute(reader, TAG_JOIN_FIELD);
+            cascade = Cascadeable.Cascade.parse(getStringAttribute(reader, "cascade"));
+            isCopyable = getBooleanAttribute(reader, "copyable", false);
+        }
 
-    private FieldType getBooleanType(final XMLStreamReader reader) {
-        return new BooleanType(getBooleanAttribute(reader, "copyable", true));
+        public String getPluginName() {
+            return pluginName;
+        }
+
+        public String getModelName() {
+            return modelName;
+        }
+
+        public String getJoinFieldName() {
+            return joinFieldName;
+        }
+
+        public Cascadeable.Cascade getCascade() {
+            return cascade;
+        }
+
+        public boolean isCopyable() {
+            return isCopyable;
+        }
     }
 
     private FieldType getBelongsToType(final XMLStreamReader reader, final String pluginIdentifier) {
-        boolean lazy = getBooleanAttribute(reader, "lazy", true);
-        String plugin = getStringAttribute(reader, L_PLUGIN);
+        String pluginName = getStringAttribute(reader, TAG_PLUGIN, pluginIdentifier);
         String modelName = getStringAttribute(reader, TAG_MODEL);
-        if (lazy) {
-            return new BelongsToEntityType(plugin == null ? pluginIdentifier : plugin, modelName, dataDefinitionService, true,
-                    getBooleanAttribute(reader, "copyable", true));
-        } else {
-            return new BelongsToEntityType(plugin == null ? pluginIdentifier : plugin, modelName, dataDefinitionService, false,
-                    getBooleanAttribute(reader, "copyable", true));
-        }
+        boolean lazy = getBooleanAttribute(reader, "lazy", true);
+        boolean isCopyable = getBooleanAttribute(reader, "copyable", true);
+        return new BelongsToEntityType(pluginName, modelName, dataDefinitionService, lazy, isCopyable);
     }
 
     private FieldDefinition getAuditFieldDefinition(final DataDefinitionImpl dataDefinition, final String name,
@@ -446,6 +437,12 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
             fieldDefinition.withValidator(getValidatorDefinition(reader, new RequiredValidator()));
         }
         if (getBooleanAttribute(reader, "unique", false)) {
+            if (type.isCopyable() && !fieldDefinition.canBeBothCopyableAndUnique()) {
+                String message = String
+                        .format("Unique field can not have the copyable attribute set to true. Add 'copyable=\"false\"' to #%s_%s.%s to fix it.",
+                                dataDefinition.getPluginIdentifier(), dataDefinition.getName(), name);
+                throw new IllegalStateException(message);
+            }
             fieldDefinition.withValidator(getValidatorDefinition(reader, new UniqueValidator()));
         }
 
@@ -512,23 +509,25 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
 
     private FieldType getFieldType(final XMLStreamReader reader, final DataDefinition dataDefinition, final String fieldName,
             final FieldsTag fieldTag, final String fieldType) throws XMLStreamException, ModelXmlParsingException {
+        // TODO DEV_TEAM consider move default value resolving from converter into concrete field type's constructor.
+        Boolean isCopyable = getBooleanAttribute(reader, "copyable", true);
         switch (fieldTag) {
             case INTEGER:
-                return getIntegerType(reader);
+                return new IntegerType(isCopyable);
             case STRING:
-                return getStringType(reader);
+                return new StringType(isCopyable);
             case FILE:
-                return getFileType(reader);
+                return new FileType(isCopyable);
             case TEXT:
-                return getTextType(reader);
+                return new TextType(isCopyable);
             case DECIMAL:
-                return getDecimalType(reader);
+                return new DecimalType(isCopyable);
             case DATETIME:
-                return getDateTimeType(reader);
+                return new DateTimeType(isCopyable);
             case DATE:
-                return getDateType(reader);
+                return new DateType(isCopyable);
             case BOOLEAN:
-                return getBooleanType(reader);
+                return new BooleanType(isCopyable);
             case BELONGSTO:
                 return getBelongsToType(reader, dataDefinition.getPluginIdentifier());
             case HASMANY:
@@ -538,12 +537,12 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
             case TREE:
                 return getTreeType(reader, dataDefinition.getPluginIdentifier());
             case ENUM:
-                return getEnumType(reader, dataDefinition.getPluginIdentifier() + "." + dataDefinition.getName() + "."
-                        + fieldName);
+                String translationPath = dataDefinition.getPluginIdentifier() + "." + dataDefinition.getName() + "." + fieldName;
+                return getEnumType(reader, isCopyable, translationPath);
             case DICTIONARY:
                 return getDictionaryType(reader);
             case PASSWORD:
-                return new PasswordType(passwordEncoder);
+                return new PasswordType(passwordEncoder, isCopyable);
             default:
                 throw new ModelXmlParsingException("Illegal type of field '" + fieldType + "'");
         }

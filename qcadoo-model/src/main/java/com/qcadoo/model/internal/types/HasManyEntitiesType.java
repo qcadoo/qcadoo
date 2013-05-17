@@ -32,7 +32,7 @@ import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.types.HasManyType;
 import com.qcadoo.model.internal.api.ValueAndError;
 
-public final class HasManyEntitiesType implements HasManyType {
+public final class HasManyEntitiesType extends AbstractFieldType implements HasManyType {
 
     private final String entityName;
 
@@ -44,15 +44,14 @@ public final class HasManyEntitiesType implements HasManyType {
 
     private final Cascade cascade;
 
-    private final boolean copyable;
-
+    // TODO MAKU reduce arguments length using parameter object
     public HasManyEntitiesType(final String pluginIdentifier, final String entityName, final String joinFieldName,
             final Cascade cascade, final boolean copyable, final DataDefinitionService dataDefinitionService) {
+        super(copyable);
         this.pluginIdentifier = pluginIdentifier;
         this.entityName = entityName;
         this.joinFieldName = joinFieldName;
         this.cascade = cascade;
-        this.copyable = copyable;
         this.dataDefinitionService = dataDefinitionService;
     }
 
@@ -89,11 +88,6 @@ public final class HasManyEntitiesType implements HasManyType {
     @Override
     public DataDefinition getDataDefinition() {
         return dataDefinitionService.get(pluginIdentifier, entityName);
-    }
-
-    @Override
-    public boolean isCopyable() {
-        return copyable;
     }
 
 }

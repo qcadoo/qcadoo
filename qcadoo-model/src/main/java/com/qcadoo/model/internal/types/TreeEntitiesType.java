@@ -32,7 +32,7 @@ import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.types.TreeType;
 import com.qcadoo.model.internal.api.ValueAndError;
 
-public final class TreeEntitiesType implements TreeType {
+public final class TreeEntitiesType extends AbstractFieldType implements TreeType {
 
     private final String entityName;
 
@@ -44,15 +44,14 @@ public final class TreeEntitiesType implements TreeType {
 
     private final Cascade cascade;
 
-    private final boolean copyable;
-
+    // TODO MAKU reduce arguments length using parameter object
     public TreeEntitiesType(final String pluginIdentifier, final String entityName, final String joinFieldName,
             final Cascade cascade, final boolean copyable, final DataDefinitionService dataDefinitionService) {
+        super(copyable);
         this.pluginIdentifier = pluginIdentifier;
         this.entityName = entityName;
         this.joinFieldName = joinFieldName;
         this.cascade = cascade;
-        this.copyable = copyable;
         this.dataDefinitionService = dataDefinitionService;
     }
 
@@ -89,11 +88,6 @@ public final class TreeEntitiesType implements TreeType {
     @Override
     public DataDefinition getDataDefinition() {
         return dataDefinitionService.get(pluginIdentifier, entityName);
-    }
-
-    @Override
-    public boolean isCopyable() {
-        return copyable;
     }
 
 }

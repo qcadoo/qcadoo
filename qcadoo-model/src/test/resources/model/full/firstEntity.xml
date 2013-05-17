@@ -29,7 +29,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schema.qcadoo.org/model"
 	xsi:schemaLocation="http://schema.qcadoo.org/model http://schema.qcadoo.org/model.xsd">
 	<fields>
-		<integer name="fieldInteger" required="true" unique="true">
+		<integer name="fieldInteger" required="true" unique="true" copyable="false">
 			<validatesWith class="com.qcadoo.model.CustomHook"
 				method="validateField" />
 			<validatesLength min="1" max="3" />

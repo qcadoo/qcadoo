@@ -32,17 +32,21 @@ import org.springframework.security.authentication.encoding.PasswordEncoder;
 
 import com.google.common.collect.Lists;
 import com.qcadoo.model.api.FieldDefinition;
-import com.qcadoo.model.api.types.FieldType;
 import com.qcadoo.model.internal.api.DefaultValidatorsProvider;
 import com.qcadoo.model.internal.api.FieldHookDefinition;
 import com.qcadoo.model.internal.api.ValueAndError;
 import com.qcadoo.model.internal.validators.LengthValidator;
 
-public final class PasswordType implements FieldType, DefaultValidatorsProvider {
+public final class PasswordType extends AbstractFieldType implements DefaultValidatorsProvider {
 
     private final PasswordEncoder passwordEncoder;
 
     public PasswordType(final PasswordEncoder passwordEncoder) {
+        this(passwordEncoder, true);
+    }
+
+    public PasswordType(final PasswordEncoder passwordEncoder, final boolean isCopyable) {
+        super(isCopyable);
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -84,11 +88,6 @@ public final class PasswordType implements FieldType, DefaultValidatorsProvider 
             }
         }
         return Lists.<FieldHookDefinition> newArrayList(new LengthValidator(null, null, 255));
-    }
-
-    @Override
-    public boolean isCopyable() {
-        return true;
     }
 
 }

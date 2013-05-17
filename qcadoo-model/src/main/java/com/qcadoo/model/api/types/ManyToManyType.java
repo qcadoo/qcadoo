@@ -28,20 +28,6 @@ package com.qcadoo.model.api.types;
  * 
  * @since 0.4.9
  */
-public interface ManyToManyType extends FieldType, DataDefinitionHolder, JoinFieldHolder {
-
-    /**
-     * Cascade type.
-     */
-    enum Cascade {
-        NULLIFY, DELETE
-    }
-
-    /**
-     * Returns cascade type.
-     * 
-     * @return cascade type
-     */
-    Cascade getCascade();
+public interface ManyToManyType extends FieldType, DataDefinitionHolder, JoinFieldHolder, Cascadeable {
 
 }

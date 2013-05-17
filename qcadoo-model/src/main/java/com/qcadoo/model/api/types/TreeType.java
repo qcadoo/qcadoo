@@ -28,22 +28,8 @@ package com.qcadoo.model.api.types;
  * 
  * @since 0.4.0
  */
-public interface TreeType extends FieldType, DataDefinitionHolder, JoinFieldHolder {
+public interface TreeType extends FieldType, DataDefinitionHolder, JoinFieldHolder, Cascadeable {
 
     String NODE_NUMBER_FIELD = "nodeNumber";
-
-    /**
-     * Cascade type.
-     */
-    enum Cascade {
-        NULLIFY, DELETE
-    }
-
-    /**
-     * Returns cascade type.
-     * 
-     * @return cascade type
-     */
-    Cascade getCascade();
 
 }

@@ -69,6 +69,7 @@ import com.qcadoo.model.internal.api.DataAccessService;
 import com.qcadoo.model.internal.api.EntityService;
 import com.qcadoo.model.internal.api.HibernateService;
 import com.qcadoo.model.internal.api.InternalDataDefinition;
+import com.qcadoo.model.internal.api.InternalFieldDefinition;
 import com.qcadoo.model.internal.api.PriorityService;
 import com.qcadoo.model.internal.api.ValidationService;
 import com.qcadoo.model.internal.search.SearchCriteria;
@@ -391,8 +392,9 @@ public class DataAccessServiceImpl implements DataAccessService {
     public Entity copy(final InternalDataDefinition dataDefinition, final Entity sourceEntity) {
         Entity targetEntity = dataDefinition.create();
 
-        for (String fieldName : dataDefinition.getFields().keySet()) {
-            FieldDefinition fieldDefinition = dataDefinition.getField(fieldName);
+        for (Entry<String, FieldDefinition> fieldEntry : dataDefinition.getFields().entrySet()) {
+            FieldDefinition fieldDefinition = fieldEntry.getValue();
+            String fieldName = fieldEntry.getKey();
             boolean copy = fieldDefinition.getType().isCopyable();
             if (copy) {
                 targetEntity.setField(fieldName, getCopyValueOfSimpleField(sourceEntity, dataDefinition, fieldName));
@@ -481,9 +483,9 @@ public class DataAccessServiceImpl implements DataAccessService {
 
     private Object getCopyValueOfSimpleField(final Entity sourceEntity, final DataDefinition dataDefinition,
             final String fieldName) {
-        FieldDefinition fieldDefinition = dataDefinition.getField(fieldName);
+        InternalFieldDefinition fieldDefinition = (InternalFieldDefinition) dataDefinition.getField(fieldName);
         if (fieldDefinition.isUnique()) {
-            if (fieldDefinition.getType().getType().equals(String.class)) {
+            if (fieldDefinition.canBeBothCopyableAndUnique()) {
                 return getCopyValueOfUniqueField(dataDefinition, fieldDefinition, sourceEntity.getStringField(fieldName));
             } else {
                 sourceEntity.addError(fieldDefinition, "qcadooView.validate.field.error.invalidUniqueType");
