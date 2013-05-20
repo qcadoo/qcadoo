@@ -34,19 +34,25 @@ import java.math.MathContext;
 public interface NumberService {
 
     /**
-     * Default maximum number of digits for scale (decimal fraction) in decimal number
+     * Default maximum number of fraction digits in decimal number
+     * 
+     * @since 1.2.1
      */
-    int DEFAULT_DECIMAL_SCALE_VALUE_MAX_LEN = 5;
+    int DEFAULT_MAX_FRACTION_DIGITS_IN_DECIMAL = 5;
 
     /**
-     * Default maximum number of digits for unscaled (integer) value in decimal number
+     * Default maximum number of integer digits in decimal number
+     * 
+     * @since 1.2.1
      */
-    int DEFAULT_DECIMAL_UNSCALED_VALUE_MAX_LEN = 7;
+    int DEFAULT_MAX_INTEGER_DIGITS_IN_DECIMAL = 7;
 
     /**
-     * Default maximum number of digits for unscaled (integer) value in integer number
+     * Default maximum number of digits in integer number
+     * 
+     * @since 1.2.1
      */
-    int DEFAULT_INTEGER_UNSCALED_VALUE_MAX_LEN = 10;
+    int DEFAULT_MAX_DIGITS_IN_INTEGER = 10;
 
     /**
      * Provide global MathContext.
@@ -62,7 +68,7 @@ public interface NumberService {
      * 
      * @return Formatted string.
      */
-    String format(Object obj);
+    String format(final Object obj);
 
     /**
      * Set scale 5 to {@link BigDecimal} with RoundingMode HALF_EVEN.
@@ -71,6 +77,6 @@ public interface NumberService {
      * 
      * @return BigDecimal with scale 5.
      */
-    BigDecimal setScale(BigDecimal decimal);
+    BigDecimal setScale(final BigDecimal decimal);
 
 }

@@ -78,7 +78,7 @@ public final class ScaleValidator implements FieldHookDefinition, ErrorMessageDe
     }
 
     private boolean validateScale(final FieldDefinition fieldDefinition, final Object value, final Entity validatedEntity) {
-        int scale = ((BigDecimal) value).scale();
+        int scale = ((BigDecimal) value).stripTrailingZeros().scale();
 
         if (max != null && scale > max) {
             validatedEntity.addError(fieldDefinition, errorMessage + ".max", max.toString());

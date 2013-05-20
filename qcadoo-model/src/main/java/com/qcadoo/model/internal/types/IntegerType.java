@@ -90,7 +90,7 @@ public final class IntegerType extends AbstractFieldType implements DefaultValid
             }
         }
         return Lists.<FieldHookDefinition> newArrayList(new UnscaledValueValidator(null, null,
-                NumberService.DEFAULT_INTEGER_UNSCALED_VALUE_MAX_LEN));
+                NumberService.DEFAULT_MAX_DIGITS_IN_INTEGER));
     }
 
 }

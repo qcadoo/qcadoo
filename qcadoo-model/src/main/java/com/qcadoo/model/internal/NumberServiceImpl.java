@@ -39,7 +39,7 @@ import com.qcadoo.model.api.NumberService;
 @Component
 public final class NumberServiceImpl implements NumberService {
 
-    public static final int PRECISION = DEFAULT_DECIMAL_SCALE_VALUE_MAX_LEN;
+    public static final int PRECISION = DEFAULT_MAX_FRACTION_DIGITS_IN_DECIMAL;
 
     public static final RoundingMode ROUNDING_MODE = RoundingMode.HALF_EVEN;
 

@@ -407,7 +407,7 @@ public class DefaultEntityTest {
 
         // then
         Assert.assertNotNull(result);
-        Assert.assertEquals(new BigDecimal(decimalStringValue), result);
+        Assert.assertEquals(new BigDecimal(decimalStringValue).stripTrailingZeros(), result);
     }
 
     @Test

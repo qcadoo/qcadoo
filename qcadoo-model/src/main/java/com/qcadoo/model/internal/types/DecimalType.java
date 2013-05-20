@@ -34,6 +34,7 @@ import java.util.Set;
 import com.google.common.collect.Sets;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.NumberService;
+import com.qcadoo.model.internal.NumberServiceImpl;
 import com.qcadoo.model.internal.api.DefaultValidatorsProvider;
 import com.qcadoo.model.internal.api.FieldHookDefinition;
 import com.qcadoo.model.internal.api.ValueAndError;
@@ -43,10 +44,10 @@ import com.qcadoo.model.internal.validators.UnscaledValueValidator;
 public final class DecimalType extends AbstractFieldType implements DefaultValidatorsProvider {
 
     private static final ScaleValidator DEFAULT_SCALE_VALIDATOR = new ScaleValidator(null, null,
-            NumberService.DEFAULT_DECIMAL_SCALE_VALUE_MAX_LEN);
+            NumberService.DEFAULT_MAX_FRACTION_DIGITS_IN_DECIMAL);
 
     private static final UnscaledValueValidator DEFAULT_UNSCALED_VALUE_VALIDATOR = new UnscaledValueValidator(null, null,
-            NumberService.DEFAULT_DECIMAL_UNSCALED_VALUE_MAX_LEN);
+            NumberService.DEFAULT_MAX_INTEGER_DIGITS_IN_DECIMAL);
 
     public DecimalType() {
         this(true);
@@ -66,10 +67,10 @@ public final class DecimalType extends AbstractFieldType implements DefaultValid
         BigDecimal decimal = null;
 
         if (value instanceof BigDecimal) {
-            decimal = (BigDecimal) value;
+            decimal = ((BigDecimal) value).stripTrailingZeros();
         } else {
             try {
-                decimal = new BigDecimal(String.valueOf(value));
+                decimal = new BigDecimal(String.valueOf(value)).stripTrailingZeros();
             } catch (NumberFormatException e) {
                 return ValueAndError.withError("qcadooView.validate.field.error.invalidNumericFormat");
             }
@@ -79,14 +80,25 @@ public final class DecimalType extends AbstractFieldType implements DefaultValid
 
     @Override
     public String toString(final Object value, final Locale locale) {
+        if (value == null) {
+            return "";
+        }
         NumberFormat format = null;
         if (locale == null) {
             format = NumberFormat.getNumberInstance();
         } else {
             format = NumberFormat.getNumberInstance(locale);
         }
-        format.setMaximumFractionDigits(5);
+
+        format.setMaximumFractionDigits(getMaxFractionDigits(value));
         return format.format(value);
+    }
+
+    private int getMaxFractionDigits(final Object value) {
+        if (value instanceof BigDecimal) {
+            return ((BigDecimal) value).stripTrailingZeros().scale();
+        }
+        return NumberServiceImpl.PRECISION;
     }
 
     @Override
