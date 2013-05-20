@@ -25,91 +25,108 @@ var QCD = QCD || {};
 QCD.components = QCD.components || {};
 QCD.components.elements = QCD.components.elements || {};
 
-QCD.components.elements.Grid = function(_element, _mainController) {
-    $.extend(this, new QCD.components.Component(_element, _mainController));
+QCD.components.elements.Grid = function (element, mainController) {
+    "use strict";
+    
+    if (!(this instanceof QCD.components.elements.Grid)) {
+        return new QCD.components.elements.Grid(element, mainController);
+    }
+    
+    $.extend(this, new QCD.components.Component(element, mainController));
 
-    var mainController = _mainController;
-    var element = _element;
+    var options = this.options,
+        headerController = null,
+        
+        elementPath = this.elementPath,
+        elementSearchName = this.elementSearchName,
 
-    var options = this.options;
+        gridParameters = {
+            paging : true,
+            fullScreen : false,
+            shrinkToFit : false
+        },
+        
+        grid = null,
+        belongsToFieldName = null,
+        currentOrder = {},
 
-    var headerController;
+        translations = {},
 
-    var elementPath = this.elementPath;
-    var elementSearchName = this.elementSearchName;
+        componentEnabled = false,
 
-    var gridParameters;
-    var grid;
-    var belongsToFieldName;
-    var currentOrder;
+        currentGridHeight = 0,
 
-    var translations;
+        linkListener = null,
 
-    var componentEnabled = false;
+        selectAllCheckBox = null,
 
-    var currentGridHeight;
+        currentState = {
+            selectedEntityId : null,
+            selectedEntities : {},
+            filtersEnabled : true,
+            newButtonClickedBefore : false,
+            rowLinkClickedBefore : false,
+            addExistingButtonClickedBefore : false,
+            multiselectMode : true,
+            isEditable : true
+        },
 
-    var linkListener;
+        columnModel = {},
 
-    var selectAllCheckBox;
+        hiddenColumnValues = {},
 
-    var currentState = {
-        selectedEntityId : null,
-        selectedEntities : new Object(),
-        filtersEnabled : true,
-        newButtonClickedBefore : false,
-        rowLinkClickedBefore : false,
-        addExistingButtonClickedBefore : false,
-        multiselectMode : true,
-        isEditable : true
-    };
+        globalColumnTranslations = {},
 
-    var columnModel = new Object();
+        currentEntities = {},
 
-    var hiddenColumnValues = new Object();
+        noRecordsDiv = null,
 
-    var defaultOptions = {
-        paging : true,
-        fullScreen : false,
-        shrinkToFit : false
-    };
+        fireOnChangeListeners = this.fireOnChangeListeners,
 
-    var globalColumnTranslations = {};
+        that = this,
 
-    var currentEntities;
-
-    var noRecordsDiv;
-
-    var fireOnChangeListeners = this.fireOnChangeListeners;
-
-    var _this = this;
-
-    var addedEntityId;
+        addedEntityId = null;
 
     if (this.options.referenceName) {
         mainController.registerReferenceName(this.options.referenceName, this);
     }
 
+    function cellFormatter(cellvalue, options, rowObject) {
+        if (options.colModel.stype === 'select') {
+            // translate enumerable value
+            cellvalue = globalColumnTranslations[options.colModel.name][cellvalue];
+        }
+        if (options.colModel.link) {
+            // wrap cell value with link-like span element
+            var linkElem = $("<span />").addClass('gridLink').addClass(elementPath + '_link');
+            linkElem.attr('id', elementPath + "_" + options.colModel.name + "_" + rowObject.id);
+            linkElem.append(cellvalue);
+            cellvalue = linkElem.wrap('<div />').parent().html();
+        }
+        return cellvalue; 
+    }
+
     function parseOptions(options) {
-        gridParameters = new Object();
+        var colNames = [],
+            colModel = [],
+            hasFilterableColumns = false,
+            i = null;
 
-        var colNames = new Array();
-        var colModel = new Array();
-        var hasFilterableColumns = false;
-
-        for (var i in options.columns) {
-            var column = options.columns[i];
+        for (i in options.columns) {
+            var column = options.columns[i],
+                isSortable = false,
+                isSerchable = false;
+            
             columnModel[column.name] = column;
-            var isSortable = false;
-            var isSerchable = false;
+            
             for (var sortColIter in options.orderableColumns) {
-                if (options.orderableColumns[sortColIter] == column.name) {
+                if (options.orderableColumns[sortColIter] === column.name) {
                     isSortable = true;
                     break;
                 }
             }
             for (var sortColIter in options.searchableColumns) {
-                if (options.searchableColumns[sortColIter] == column.name) {
+                if (options.searchableColumns[sortColIter] === column.name) {
                     isSerchable = true;
                     hasFilterableColumns = true;
                     break;
@@ -125,15 +142,18 @@ QCD.components.elements.Grid = function(_element, _mainController) {
                     colNames.push(column.label);
                 }
 
-                var stype = 'text';
-                var searchoptions = {};
-                var possibleValues = new Object();
+                var stype = 'text',
+                    searchoptions = {},
+                    possibleValues = {};
+
                 if (column.filterValues) {
                     possibleValues[""] = "";
-                    var possibleValuesString = ":";
-                    for (var i in column.filterValues) {
-                        possibleValues[i] = column.filterValues[i];
-                        possibleValuesString += ";" + i + ":" + column.filterValues[i];
+                    var possibleValuesString = ":",
+                        j = null;
+                        
+                    for (j in column.filterValues) {
+                        possibleValues[j] = column.filterValues[j];
+                        possibleValuesString += ";" + j + ":" + column.filterValues[j];
                     }
                     stype = 'select';
                     searchoptions.value = possibleValuesString;
@@ -148,19 +168,19 @@ QCD.components.elements.Grid = function(_element, _mainController) {
                     resizable : true,
                     align : column.align,
                     stype : stype,
-                    searchoptions : searchoptions
+                    searchoptions : searchoptions,
+                    link : column.link
                 };
 
-                if (searchoptions.value) {
-                    globalColumnTranslations[column.name] = possibleValues;
-                    col.formatter = function(cellvalue, options, rowObject) {
-                        return globalColumnTranslations[options.colModel.name][cellvalue];
-                    };
+                globalColumnTranslations[column.name] = possibleValues;
+
+                if (searchoptions.value || column.link) {
+                    col.formatter = cellFormatter;
                 }
 
                 colModel.push(col);
             } else {
-                hiddenColumnValues[column.name] = new Object();
+                hiddenColumnValues[column.name] = {};
             }
         }
 
@@ -173,7 +193,7 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 
         gridParameters.colNames = colNames;
         gridParameters.colModel = colModel;
-        gridParameters.datatype = function(postdata) {
+        gridParameters.datatype = function (postdata) {
         };
         gridParameters.multiselect = true;
         gridParameters.shrinkToFit = true;
@@ -190,13 +210,13 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 
         gridParameters.fullScreen = options.fullscreen;
         if (options.height) {
-            gridParameters.height = parseInt(options.height);
+            gridParameters.height = parseInt(options.height, 10);
             if (gridParameters.height <= 0) {
                 gridParameters.height = null;
             }
         }
         if (options.width) {
-            gridParameters.width = parseInt(options.width);
+            gridParameters.width = parseInt(options.width, 10);
         }
         if (!gridParameters.width && !gridParameters.fullScreen) {
             gridParameters.width = 300;
@@ -206,67 +226,17 @@ QCD.components.elements.Grid = function(_element, _mainController) {
         gridParameters.correspondingLookup = options.correspondingLookup;
         gridParameters.correspondingViewInModal = options.correspondingViewInModal;
         gridParameters.weakRelation = options.weakRelation;
-
-        for (var opName in defaultOptions) {
-            if (gridParameters[opName] == undefined) {
-                gridParameters[opName] = defaultOptions[opName];
-            }
-        }
-
-    }
-
-    function rowClicked(rowId, col) {
-
-        if (!componentEnabled || !currentState.isEditable) {
-            grid.setSelection(rowId, false);
-            return;
-        }
-
-        if (currentState.selectedEntities[rowId]) {
-            if (col == 0 && currentState.multiselectMode) {
-                currentState.selectedEntities[rowId] = null;
-            } else if (currentState.multiselectMode) {
-                // diselect all but this
-                for (var i in currentState.selectedEntities) {
-                    if (currentState.selectedEntities[i]) {
-                        grid.setSelection(i, false);
-                        currentState.selectedEntities[i] = null;
-                    }
-                }
-                currentState.selectedEntities[rowId] = true;
-            } else {
-                currentState.selectedEntities[rowId] = null;
-            }
-        } else {
-            if (col == 0 && gridParameters.allowMultiselect) {
-                // do nothing
-            } else {
-                // diselect all
-                for (var i in currentState.selectedEntities) {
-                    if (currentState.selectedEntities[i]) {
-                        grid.setSelection(i, false);
-                        currentState.selectedEntities[i] = null;
-                    }
-                }
-            }
-            currentState.selectedEntities[rowId] = true;
-        }
-
-        aferSelectionUpdate();
-
-        // FIRE JAVA LISTENERS
-        if (gridParameters.listeners.length > 0) {
-            onSelectChange();
-        }
     }
 
     function aferSelectionUpdate() {
-        var selectionCounter = 0;
-        var lastSelectedRow = null;
-        var selectedArray = new Array();
-        var selectedEntitiesArray = new Array();
-        for (var i in currentState.selectedEntities) {
-            if (i == "undefined") {
+        var selectionCounter = 0,
+            lastSelectedRow = null,
+            selectedArray = [],
+            selectedEntitiesArray = [],
+            i = null;
+            
+        for (i in currentState.selectedEntities) {
+            if (typeof i === "undefined") {
                 currentState.selectedEntities = false;
                 continue;
             }
@@ -278,16 +248,20 @@ QCD.components.elements.Grid = function(_element, _mainController) {
             }
         }
 
-        if (selectionCounter == 0) {
-            currentState.selectedEntities = new Object();
+        switch (selectionCounter) {
+        case 0:
+            currentState.selectedEntities = {};
             currentState.multiselectMode = false;
             currentState.selectedEntityId = null;
-        } else if (selectionCounter == 1) {
+            break;
+        case 1:
             currentState.multiselectMode = false;
             currentState.selectedEntityId = lastSelectedRow;
-        } else {
+            break;
+        default:
             currentState.multiselectMode = true;
             currentState.selectedEntityId = null;
+            break;
         }
 
         // UPDATE SELECTION COLOR
@@ -299,11 +273,12 @@ QCD.components.elements.Grid = function(_element, _mainController) {
 
         // UPDATE SELECT ALL BUTTON
         if (selectAllCheckBox) {
-            var isAllSelected = true;
-            var isEmpty = true;
-            for (var i in currentEntities) {
+            var isAllSelected = true,
+                isEmpty = true,
+                j = null;
+            for (j in currentEntities) {
                 isEmpty = false;
-                if (currentState.selectedEntities[i] != true) {
+                if (!currentState.selectedEntities[j]) {
                     isAllSelected = false;
                     break;
                 }
@@ -327,7 +302,7 @@ QCD.components.elements.Grid = function(_element, _mainController) {
             var rowIndex = null;
             if (currentState.selectedEntityId) {
                 rowIndex = grid.jqGrid('getInd', currentState.selectedEntityId);
-                if (rowIndex == false) {
+                if (rowIndex === false) {
                     rowIndex = null;
                 }
             }
@@ -337,11 +312,29 @@ QCD.components.elements.Grid = function(_element, _mainController) {
         // FIRE ON CHANGE LISTENERS
         fireOnChangeListeners("onChange", [selectedEntitiesArray]);
     }
-
-
-    this.setLinkListener = function(_linkListener) {
-        linkListener = _linkListener;
+    
+    this.setLinkListener = function (listener) {
+        linkListener = listener;
     };
+    
+    function setPermanentlyDisableParam(params) {
+        if (!componentEnabled) {
+            params["window.permanentlyDisabled"] = true;
+        }
+    }
+
+    function redirectToCorrespondingPage(params) {
+        if (gridParameters.correspondingViewName && gridParameters.correspondingViewName !== '' && mainController.canClose()) {
+            setPermanentlyDisableParam(params);
+            params[gridParameters.correspondingComponent + "." + belongsToFieldName] = currentState.belongsToEntityId;
+            var url = gridParameters.correspondingViewName + ".html?context=" + JSON.stringify(params);
+            if (gridParameters.correspondingViewInModal) {
+                mainController.openModal(elementPath + "_editWindow", url);
+            } else {
+                mainController.goToPage(url);
+            }
+        }
+    }
     
     function linkClicked(selectedEntities) {
         if (!currentState.isEditable) {
@@ -356,52 +349,42 @@ QCD.components.elements.Grid = function(_element, _mainController) {
             redirectToCorrespondingPage(params);
         }
     }
+    
+    function onModalRender(modalWindow) {
+        modalWindow.getComponent("window.grid").setLinkListener(that);
+    }
 
-    function redirectToCorrespondingPage(params) {
-        if (gridParameters.correspondingViewName && gridParameters.correspondingViewName != '' && mainController.canClose()) {
-            setPermanentlyDisableParam(params);
-            params[gridParameters.correspondingComponent + "." + belongsToFieldName] = currentState.belongsToEntityId;
-            var url = gridParameters.correspondingViewName + ".html?context=" + JSON.stringify(params);
-            if (gridParameters.correspondingViewInModal) {
-                mainController.openModal(elementPath + "_editWindow", url);
-            } else {
-                mainController.goToPage(url);
-            }
-        }
+    function onModalClose() {
     }
 
     function showCorrespondingLookupGridModal(params) {
-        if (gridParameters.correspondingLookup && gridParameters.correspondingLookup != '' && mainController.canClose()) {
+        if (gridParameters.correspondingLookup && gridParameters.correspondingLookup !== '' && mainController.canClose()) {
             setPermanentlyDisableParam(params);
-            var correspondingLookupComponent = mainController.getComponentByReferenceName(gridParameters.correspondingLookup);
-			var lookupComponentData = correspondingLookupComponent.getComponentData();
+            var correspondingLookupComponent = mainController.getComponentByReferenceName(gridParameters.correspondingLookup),
+                lookupComponentData = correspondingLookupComponent.getComponentData(),
+                url = "";
+                
 			if (lookupComponentData.criteriaModifierParameter) {
 				params["window.grid.options"] = {
 					criteriaModifierParameter: lookupComponentData.criteriaModifierParameter
 				};
 			}
-            var url = pluginIdentifier + "/" + correspondingLookupComponent.options.viewName + ".html?context=" + JSON.stringify(params);
-            lookupWindow = mainController.openModal(elementPath + "_editWindow", url, false, onModalClose, onModalRender);
+            
+            url = pluginIdentifier + "/" + correspondingLookupComponent.options.viewName + ".html?context=" + JSON.stringify(params);
+            mainController.openModal(elementPath + "_editWindow", url, false, onModalClose, onModalRender);
         }
     }
 
-    function setPermanentlyDisableParam(params) {
-        if (!componentEnabled) {
-            params["window.permanentlyDisabled"] = true;
-        }
-    }
-
-
-    this.getComponentValue = function() {
+    this.getComponentValue = function () {
         return currentState;
     };
     
     function getColumnFilterElement(name) {
-        return _this.element.find("#gs_" + name);
+        return that.element.find("#gs_" + name);
     }
 
 
-    this.setComponentState = function(state) {
+    this.setComponentState = function (state) {
         currentState.rowLinkClickedBefore = false;
         currentState.selectedEntityId = state.selectedEntityId;
         currentState.selectedEntities = state.selectedEntities;
@@ -419,7 +402,7 @@ QCD.components.elements.Grid = function(_element, _mainController) {
         if (state.maxEntities) {
             currentState.maxEntities = state.maxEntities;
         }
-        if (currentState.filtersEnabled != state.filtersEnabled) {
+        if (currentState.filtersEnabled !== state.filtersEnabled) {
             currentState.filtersEnabled = state.filtersEnabled;
             grid[0].toggleToolbar();
             updateSearchFields();
@@ -451,8 +434,98 @@ QCD.components.elements.Grid = function(_element, _mainController) {
             }
         }
     };
+    
+    function setSortColumnAndDirection(order) {
+        if (currentOrder && currentOrder.column === order.column) {
+            if (order.direction === "asc") {
+                $("#" + elementSearchName + "_sortArrow_" + order.column).removeClass("downArrow");
+                $("#" + elementSearchName + "_sortArrow_" + order.column).addClass("upArrow");
+                currentState.order.direction = "asc";
+            } else {
+                $("#" + elementSearchName + "_sortArrow_" + order.column).removeClass("upArrow");
+                $("#" + elementSearchName + "_sortArrow_" + order.column).addClass("downArrow");
+                currentState.order.direction = "desc";
+            }
+        } else {
+            if (currentOrder) {
+                $("#" + gridParameters.modifiedPath + "_grid_" + currentOrder.column).removeClass("sortColumn");
+            }
 
-    this.setComponentValue = function(value) {
+            $("#" + gridParameters.modifiedPath + "_grid_" + order.column).addClass("sortColumn");
+
+            currentState.order = {
+                column : order.column
+            };
+
+            if (order.direction === "asc") {
+                $("#" + elementSearchName + "_sortArrow_" + order.column).addClass("upArrow");
+                currentState.order.direction = "asc";
+            } else {
+                $("#" + elementSearchName + "_sortArrow_" + order.column).addClass("downArrow");
+                currentState.order.direction = "desc";
+            }
+        }
+        currentOrder = {
+            column : order.column,
+            direction : order.direction
+        };
+    }
+    
+    function findMatchingPredefiniedFilter() {
+        var filterToSearch = {},
+            isIdentical = true;
+        if (currentState.filtersEnabled && currentState.filters) {
+            filterToSearch = currentState.filters;
+        }
+        for (var i in gridParameters.predefinedFilters) {
+            var predefiniedFilter = gridParameters.predefinedFilters[i].filter;
+            isIdentical = true;
+
+            if (gridParameters.predefinedFilters[i].orderColumn) {
+                if (currentState.order.column !== gridParameters.predefinedFilters[i].orderColumn) {
+                    isIdentical = false;
+                    continue;
+                }
+                if (currentState.order.direction !== gridParameters.predefinedFilters[i].orderDirection) {
+                    isIdentical = false;
+                    continue;
+                }
+            }
+
+            for (var col in columnModel) {
+                var column = columnModel[col];
+                if (predefiniedFilter[column.name] !== filterToSearch[column.name]) {
+                    isIdentical = false;
+                    break;
+                }
+            }
+            if (isIdentical) {
+                headerController.setPredefinedFilter(i);
+                break;
+            }
+        }
+        if (!isIdentical) {
+            headerController.setPredefinedFilter(null);
+        }
+    }
+    
+    function onFiltersStateChange() {
+        var hasFiltersValues = false,
+            i = null;
+        for (i in currentState.filters) {
+            if (currentState.filters[i] && currentState.filters[i] !== "") {
+                hasFiltersValues = true;
+                break;
+            }
+        }
+        if (hasFiltersValues) {
+            headerController.setFiltersValuesNotEmpty();
+        } else {
+            headerController.setFiltersValuesEmpty();
+        }
+    }
+    
+    this.setComponentValue = function (value) {
         currentState.rowLinkClickedBefore = false;
         currentState.selectedEntityId = value.selectedEntityId;
 
@@ -472,38 +545,32 @@ QCD.components.elements.Grid = function(_element, _mainController) {
             currentState.isEditable = value.isEditable;
         }
 
-        if (value.entities == null) {
+        if (value.entities === null) {
             return;
         }
 
         grid.jqGrid('clearGridData');
         var rowCounter = 1;
-        currentEntities = new Object();
+        currentEntities = {};
         for (var entityNo in value.entities) {
             var entity = value.entities[entityNo];
             currentEntities[entity.id] = entity;
-            var fields = new Object();
+            var fields = {
+                id : entity.id
+            };
             for (var fieldName in columnModel) {
                 if (hiddenColumnValues[fieldName]) {
                     hiddenColumnValues[fieldName][entity.id] = entity.fields[fieldName];
                 } else {
-                    if (columnModel[fieldName].link && entity.fields[fieldName] && entity.fields[fieldName] != "") {
-                        var linkElem = $("<span />").addClass('gridLink').addClass(elementPath + '_link');
-                        linkElem.attr('id', elementPath + "_" + fieldName + "_" + entity.id);
-                        linkElem.append(entity.fields[fieldName]);
-                        fields[fieldName] = linkElem.wrap('<div />').parent().html();
-
+                    if (entity.fields[fieldName] && entity.fields[fieldName] !== "") {
+                        fields[fieldName] = entity.fields[fieldName];
                     } else {
-                        if (entity.fields[fieldName] && entity.fields[fieldName] != "") {
-                            fields[fieldName] = entity.fields[fieldName];
-                        } else {
-                            fields[fieldName] = "";
-                        }
+                        fields[fieldName] = "";
                     }
                 }
             }
             grid.jqGrid('addRowData', entity.id, fields);
-            if (rowCounter % 2 == 0) {
+            if (rowCounter % 2 === 0) {
                 grid.jqGrid('setRowData', entity.id, false, "darkRow");
             } else {
                 grid.jqGrid('setRowData', entity.id, false, "lightRow");
@@ -514,15 +581,15 @@ QCD.components.elements.Grid = function(_element, _mainController) {
             rowCounter++;
         }
 
-        if (rowCounter == 1) {
+        if (rowCounter === 1) {
             noRecordsDiv.show();
         } else {
             noRecordsDiv.hide();
         }
 
-        $("." + elementSearchName + "_link").click(function(e) {
-            var idArr = e.target.id.split("_");
-            var entityId = idArr[idArr.length - 1];
+        $("." + elementSearchName + "_link").click(function (e) {
+            var idArr = e.target.id.split("_"),
+                entityId = idArr[idArr.length - 1];
             linkClicked(entityId);
         });
 
@@ -583,36 +650,18 @@ QCD.components.elements.Grid = function(_element, _mainController) {
             }
         }
 
-        if (currentState.isEditable == false) {
+        if (currentState.isEditable === false) {
             this.setComponentEditable(false);
-        } else if (value.isEditable != undefined && value.isEditable != null) {
+        } else if (typeof value.isEditable !== 'undefined' && value.isEditable !== null) {
             this.setComponentEditable(value.isEditable);
         }
 
         unblockGrid();
     };
 
-    this.setComponentEnabled = function(isEnabled) {
+    this.setComponentEnabled = function (isEnabled) {
         componentEnabled = isEnabled;
         headerController.setEnabled(currentState.isEditable && isEnabled);
-    }
-
-    this.setComponentLoading = function(isLoadingVisible) {
-        if (isLoadingVisible) {
-            blockGrid();
-        } else {
-            unblockGrid();
-        }
-    };
-
-    this.setComponentEditable = function(_isEditable) {
-        currentState.isEditable = _isEditable;
-        if (currentState.isEditable) {
-            grid.removeClass("componentNotEditable");
-        } else {
-            grid.addClass("componentNotEditable");
-        }
-        headerController.setEnabled(currentState.isEditable && componentEnabled);
     };
 
     function blockGrid() {
@@ -623,19 +672,548 @@ QCD.components.elements.Grid = function(_element, _mainController) {
         QCD.components.elements.utils.LoadingIndicator.unblockElement(element);
     }
 
-    function constructor(_this) {
+    this.setComponentLoading = function (isLoadingVisible) {
+        if (isLoadingVisible) {
+            blockGrid();
+        } else {
+            unblockGrid();
+        }
+    };
 
-        parseOptions(_this.options, _this);
+    this.setComponentEditable = function (isEditable) {
+        currentState.isEditable = isEditable;
+        if (currentState.isEditable) {
+            grid.removeClass("componentNotEditable");
+        } else {
+            grid.addClass("componentNotEditable");
+        }
+        headerController.setEnabled(currentState.isEditable && componentEnabled);
+    };
+
+    function onCurrentStateChange(forceUpdate) {
+        currentState.selectedEntities = null;
+        currentState.multiselectMode = false;
+        currentState.selectedEntityId = null;
+        if (!forceUpdate) {
+            findMatchingPredefiniedFilter();
+        }
+        mainController.callEvent("refresh", elementPath, function () {
+            unblockGrid();
+        });
+    }
+    
+    function onSortColumnChange(index, iCol, sortorder) {
+        blockGrid();
+        currentState.order.column = index;
+        if (currentState.order.direction === "asc") {
+            currentState.order.direction = "desc";
+        } else {
+            currentState.order.direction = "asc";
+        }
+        onCurrentStateChange();
+        return 'stop';
+    }
+
+    this.onPagingParametersChange = function () {
+        blockGrid();
+        currentState.firstEntity = headerController.getPagingParameters()[0];
+        currentState.maxEntities = headerController.getPagingParameters()[1];
+        onCurrentStateChange();
+    };
+
+    function onSelectAllClicked() {
+        if (selectAllCheckBox.is(':checked')) {
+            for (var i in currentEntities) {
+                if (!currentState.selectedEntities[i]) {
+                    grid.setSelection(i, false);
+                    currentState.selectedEntities[i] = true;
+                }
+            }
+        } else {
+            for (var i in currentState.selectedEntities) {
+                if (currentState.selectedEntities[i]) {
+                    grid.setSelection(i, false);
+                    currentState.selectedEntities[i] = null;
+                }
+            }
+        }
+        aferSelectionUpdate();
+        if (gridParameters.listeners.length > 0) {
+            onSelectChange();
+        }
+    }
+
+    function applytFilters() {
+        if (currentState.filtersEnabled) {
+            currentState.filters = {};
+            for (var i in columnModel) {
+                var column = columnModel[i];
+                if (column.isSerchable) {
+                    var filterValue = getColumnFilterElement(column.name).val();
+                    filterValue = $.trim(filterValue);
+                    if (filterValue && filterValue !== "") {
+                        currentState.filters[column.name] = filterValue;
+                    }
+                }
+            }
+        } else {
+            currentState.filters = null;
+        }
+    }
+    
+    function performFilter() {
+        blockGrid();
+        applytFilters();
+        onCurrentStateChange();
+        onFiltersStateChange();
+    }
+    
+    function onFilterChange() {
+        performFilter();
+    }
+
+    function isEnterKeyPressed(ev) {
+        var key = ev.keyCode || ev.which;
+        return key === 13;
+    }
+
+    function getColumnKeyUpCallback(columnFilterElement) {
+        return function (e) {
+            if (!isEnterKeyPressed(e)) {
+                return;
+            }
+    
+            var val = columnFilterElement.val(),
+                columnName = columnFilterElement.attr("id").substring(3),
+                currentFilter = "";
+                
+            if (currentState.filters && currentState.filters[columnName]) {
+                currentFilter = currentState.filters[columnName];
+            }
+            if (currentState.filters && val === currentFilter) {
+                return;
+            }
+            onFilterChange();
+        };
+    }
+
+    function updateSearchFields() {
+        var i = null,
+            column,
+            columnElement;
+
+        for (i in columnModel) {
+            column = columnModel[i];
+            if (column.isSerchable) {
+                columnElement = getColumnFilterElement(column.name);
+                columnElement.unbind('change keyup');
+                if (column.filterValues) {
+                    columnElement.change(onFilterChange);
+                } else {
+                    columnElement.keyup(getColumnKeyUpCallback(columnElement));
+                }
+            } else {
+                getColumnFilterElement(column.name).hide();
+            }
+        }
+    }
+
+    this.onFilterButtonClicked = function () {
+        grid[0].toggleToolbar();
+        currentState.filtersEnabled = !currentState.filtersEnabled;
+        if (currentState.filtersEnabled) {
+            currentGridHeight -= 23;
+            updateSearchFields();
+            getColumnFilterElement(options.columns[0].name).focus();
+        } else {
+            currentGridHeight += 23;
+        }
+        grid.setGridHeight(currentGridHeight);
+        onCurrentStateChange(true);
+        onFiltersStateChange();
+    };
+
+    this.onClearFilterClicked = function () {
+        currentState.filters = {};
+        var i = null,
+            column;
+        for (i in columnModel) {
+            column = columnModel[i];
+            getColumnFilterElement(column.name).val("");
+        }
+        onFiltersStateChange();
+        onCurrentStateChange();
+    };
+
+    this.setFilterState = function (column, filterText) {
+        if (!currentState.filtersEnabled) {
+            grid[0].toggleToolbar();
+            currentState.filtersEnabled = true;
+            headerController.setFilterActive();
+            currentGridHeight -= 21;
+            if (currentGridHeight) {
+                grid.setGridHeight(currentGridHeight);
+            }
+        }
+        currentState.filters = {};
+        currentState.filters[column] = filterText;
+        var columnFilterElement = getColumnFilterElement(column);
+        columnFilterElement.val(filterText);
+        columnFilterElement.focus();
+        updateSearchFields();
+        onFiltersStateChange();
+    };
+
+    this.setOnlyActive = function (onlyActive) {
+        blockGrid();
+        currentState.onlyActive = onlyActive;
+        onCurrentStateChange(gridParameters.hasPredefinedFilters);
+    };
+
+    this.setFilterObject = function (filter) {
+        blockGrid();
+
+        var filterObject = filter.filter,
+            i = null,
+            column = null,
+            fieldsNo = 0,
+            col = null;
+
+        for (i in columnModel) {
+            column = columnModel[i];
+            getColumnFilterElement(column.name).val("");
+        }
+        
+        for (col in filterObject) {
+            filterObject[col] = Encoder.htmlDecode(filterObject[col]);
+            getColumnFilterElement(col).val(filterObject[col]);
+            fieldsNo++;
+        }
+        currentState.filters = filterObject;
+
+        if (fieldsNo === 0) {
+            if (!gridParameters.filtersDefaultEnabled) {
+                if (currentState.filtersEnabled) {
+                    currentGridHeight += 23;
+                    grid.setGridHeight(currentGridHeight);
+                    $(grid[0]).find('.ui-search-toolbar').hide();
+                }
+                headerController.setFilterNotActive();
+                currentState.filtersEnabled = false;
+            }
+        } else {
+            if (!currentState.filtersEnabled) {
+                currentGridHeight -= 23;
+                grid.setGridHeight(currentGridHeight);
+                $(grid[0]).find('.ui-search-toolbar').show();
+                getColumnFilterElement(options.columns[0].name).focus();
+
+                headerController.setFilterActive();
+                currentState.filtersEnabled = true;
+            }
+        }
+
+        setSortColumnAndDirection({
+            column : filter.orderColumn,
+            direction : filter.orderDirection
+        });
+
+        updateSearchFields();
+        onFiltersStateChange();
+        onCurrentStateChange(true);
+    };
+
+    this.onNewButtonClicked = function () {
+        that.performNew();
+    };
+
+    this.onAddExistingButtonClicked = function () {
+        that.showModalForAddExistingEntity();
+    };
+
+    this.onDeleteButtonClicked = function () {
+        that.performDelete();
+    };
+
+    this.setDeleteEnabled = function (enabled) {
+        headerController.setDeleteEnabled(enabled);
+    };
+
+    this.onUpButtonClicked = function () {
+        blockGrid();
+        mainController.callEvent("moveUp", elementPath, function () {
+            unblockGrid();
+        });
+    };
+
+    this.onDownButtonClicked = function () {
+        blockGrid();
+        mainController.callEvent("moveDown", elementPath, function () {
+            unblockGrid();
+        });
+    };
+
+    function getMargin(width) {
+        var margin = Math.round(width * 0.02);
+        if (margin < 20) {
+            margin = 20;
+        }
+        return margin;
+    }
+
+    this.updateSize = function (width, height) {
+        if (!width) {
+            width = 300;
+        }
+        if (!height) {
+            height = 300;
+        }
+
+        if (this.options.fixedHeight) {
+            var windowHeight = $(window).height(),
+                ribbonHeight = $(".windowContainer .windowContainerRibbon").height() || 70,
+                containerHeight = Math.round(windowHeight - 2 * getMargin(width) - ribbonHeight);
+                
+            height = containerHeight;
+            if ($("#window_windowHeader").length > 0) {
+                height -= 35;
+            }
+            height -= 55;
+        }
+
+        element.css("height", height + "px");
+
+        var HEIGHT_DIFF = 120;
+        currentGridHeight = height - HEIGHT_DIFF;
+        if (currentState.filtersEnabled) {
+            currentGridHeight -= 21;
+        }
+        if (!gridParameters.paging) {
+            currentGridHeight += 35;
+        }
+        grid.setGridHeight(currentGridHeight);
+        grid.setGridWidth(width - 24, true);
+    };
+
+    function onSelectChange() {
+        if (componentEnabled) {
+            mainController.callEvent("select", elementPath, null);
+        }
+    }
+    
+    function rowClicked(rowId, col) {
+        if (!componentEnabled || !currentState.isEditable) {
+            grid.setSelection(rowId, false);
+            return;
+        }
+
+        if (currentState.selectedEntities[rowId]) {
+            if (col === 0 && currentState.multiselectMode) {
+                currentState.selectedEntities[rowId] = null;
+            } else if (currentState.multiselectMode) {
+                // diselect all but this
+                for (var i in currentState.selectedEntities) {
+                    if (currentState.selectedEntities[i]) {
+                        grid.setSelection(i, false);
+                        currentState.selectedEntities[i] = null;
+                    }
+                }
+                currentState.selectedEntities[rowId] = true;
+            } else {
+                currentState.selectedEntities[rowId] = null;
+            }
+        } else {
+            if (col !== 0 || !gridParameters.allowMultiselect) {
+                // diselect all
+                for (var i in currentState.selectedEntities) {
+                    if (currentState.selectedEntities[i]) {
+                        grid.setSelection(i, false);
+                        currentState.selectedEntities[i] = null;
+                    }
+                }
+            }
+            currentState.selectedEntities[rowId] = true;
+        }
+
+        aferSelectionUpdate();
+
+        // FIRE JAVA LISTENERS
+        if (gridParameters.listeners.length > 0) {
+            onSelectChange();
+        }
+    }
+
+
+    this.performNew = function (actionsPerformer) {
+        currentState.newButtonClickedBefore = true;
+        currentState.selectedEntities = null;
+        currentState.multiselectMode = false;
+        currentState.selectedEntityId = null;
+
+        redirectToCorrespondingPage({});
+        if (actionsPerformer) {
+            actionsPerformer.performNext();
+        }
+    };
+
+    this.performRefresh = function (actionsPerformer) {
+        blockGrid();
+        mainController.callEvent('refresh', elementPath, function () {
+            unblockGrid();
+        });
+    };
+
+    this.showModalForAddExistingEntity = function (actionsPerformer) {
+        currentState.addExistingButtonClickedBefore = true;
+        currentState.selectedEntities = null;
+        currentState.multiselectMode = false;
+        currentState.selectedEntityId = null;
+
+        showCorrespondingLookupGridModal({});
+
+        if (actionsPerformer) {
+            actionsPerformer.performNext();
+        }
+    };
+
+    this.onGridLinkClicked = function (selectedEntities) {
+        that.performAddExistingEntity(null, selectedEntities);
+        mainController.closeThisModalWindow();
+    };
+
+    function getSelectedRowsCount() {
+        var selectionCounter = 0,
+            i = null;
+        for (i in currentState.selectedEntities) {
+            if (currentState.selectedEntities[i]) {
+                selectionCounter++;
+            }
+        }
+        return selectionCounter;
+    }
+
+    this.performAddExistingEntity = function (actionsPerformer, selectedEntities) {
+        blockGrid();
+        mainController.callEvent("addExistingEntity", elementPath, function () {
+            unblockGrid();
+        }, [selectedEntities], actionsPerformer);
+    };
+
+    function performOnSelectedEntities(eventName, actionsPerformer, requireConfirmMsg) {
+        if (currentState.selectedEntityId || getSelectedRowsCount() > 0) {
+            if (!requireConfirmMsg || window.confirm(requireConfirmMsg)) {
+                blockGrid();
+                mainController.callEvent(eventName, elementPath, function () {
+                    unblockGrid();
+                }, null, actionsPerformer);
+            }
+        } else {
+            mainController.showMessage({
+                type : "error",
+                content : translations.noRowSelectedError
+            });
+        }
+    }
+
+    this.performDelete = function (actionsPerformer) {
+        performOnSelectedEntities("remove", actionsPerformer, translations.confirmDeleteMessage);
+    };
+
+    this.performCopy = function (actionsPerformer) {
+        performOnSelectedEntities("copy", actionsPerformer);
+    };
+
+    this.performActivate = function (actionsPerformer) {
+        performOnSelectedEntities("activate", actionsPerformer);
+    };
+
+    this.performDeactivate = function (actionsPerformer) {
+        performOnSelectedEntities("deactivate", actionsPerformer);
+    };
+
+    this.generateReportForEntity = function (actionsPerformer, arg1, args) {
+        var selectedItems = [],
+            i = null;
+        for (i in currentState.selectedEntities) {
+            if (currentState.selectedEntities[i]) {
+                selectedItems.push(i);
+            }
+        }
+        if (selectedItems.length > 0) {
+            mainController.generateReportForEntity(actionsPerformer, arg1, args, selectedItems);
+        } else {
+            mainController.showMessage({
+                type : "error",
+                content : translations.noRowSelectedError
+            });
+        }
+    };
+
+    this.performEvent = function (eventName, args, type) {
+        this.fireEvent(null, eventName, args, type);
+    };
+
+    this.fireEvent = function (actionsPerformer, eventName, args, type) {
+        blockGrid();
+        mainController.callEvent(eventName, elementPath, function () {
+            unblockGrid();
+        }, args, actionsPerformer, type);
+    };
+
+    this.performLinkClicked = function (actionsPerformer) {
+        if (currentState.selectedEntities) {
+            var selectedEntitiesId = [],
+                key = null;
+            for (key in currentState.selectedEntities) {
+                if (currentState.selectedEntities[key]) {
+                    selectedEntitiesId.push(key);
+                }
+            }
+            if (selectedEntitiesId.length === 1) {
+                linkClicked(selectedEntitiesId[0]);
+            } else {
+                linkClicked(selectedEntitiesId);
+            }
+
+            if (actionsPerformer) {
+                actionsPerformer.performNext();
+            }
+        } else {
+            mainController.showMessage({
+                type : "error",
+                content : translations.noRowSelectedError
+            });
+        }
+    };
+    
+    function stripTags(value) {
+        if (typeof value === 'string') {
+            return value.replace(/<[\/]{0,1}[a|span|b|i|u|br][^>]*>/g, '');
+        }
+        return value;
+    }
+
+    this.getLookupData = function (entityId) {
+        return {
+            entityId : entityId,
+            lookupValue : hiddenColumnValues.lookupValue[entityId],
+            lookupCode : stripTags(grid.getRowData(entityId).lookupCode)
+        };
+    };
+    
+    function constructor() {
+
+        parseOptions(that.options, that);
 
         gridParameters.modifiedPath = elementPath.replace(/\./g, "_");
         gridParameters.element = gridParameters.modifiedPath + "_grid";
 
         $("#" + elementSearchName + "_grid").attr('id', gridParameters.element);
 
-        translations = _this.options.translations;
-        belongsToFieldName = _this.options.belongsToFieldName;
+        translations = that.options.translations;
+        belongsToFieldName = that.options.belongsToFieldName;
 
-        headerController = new QCD.components.elements.grid.GridHeaderController(_this, mainController, gridParameters, _this.options.translations);
+        headerController = new QCD.components.elements.grid.GridHeaderController(that, mainController, gridParameters, that.options.translations);
 
         $("#" + elementSearchName + "_gridHeader").append(headerController.getHeaderElement());
         $("#" + elementSearchName + "_gridFooter").append(headerController.getFooterElement());
@@ -645,25 +1223,24 @@ QCD.components.elements.Grid = function(_element, _mainController) {
             currentState.maxEntities = headerController.getPagingParameters()[1];
         }
 
-        gridParameters.onCellSelect = function(rowId, iCol, cellcontent, e) {
+        gridParameters.onCellSelect = function (rowId, iCol, cellcontent, e) {
             if (!currentState.rowLinkClickedBefore) {
                 rowClicked(rowId, iCol);
             }
         };
 
-        gridParameters.ondblClickRow = function(id) {
+        gridParameters.ondblClickRow = function (id) {
         };
         gridParameters.onSortCol = onSortColumnChange;
 
         grid = $("#" + gridParameters.element).jqGrid(gridParameters);
 
         $("#cb_" + gridParameters.element).hide();
-        // hide 'select add'
-        // checkbox
+        // hide 'select all' check-box
         if (gridParameters.allowMultiselect) {
             selectAllCheckBox = $("<input type='checkbox'>");
             $("#" + elementSearchName + " #jqgh_cb").append(selectAllCheckBox);
-            selectAllCheckBox.change(function() {
+            selectAllCheckBox.change(function () {
                 onSelectAllClicked();
             });
         }
@@ -696,580 +1273,6 @@ QCD.components.elements.Grid = function(_element, _mainController) {
         $("#" + gridParameters.element).parent().append(noRecordsDiv);
     }
 
-
-    this.onPagingParametersChange = function() {
-        blockGrid();
-        currentState.firstEntity = headerController.getPagingParameters()[0];
-        currentState.maxEntities = headerController.getPagingParameters()[1];
-        onCurrentStateChange();
-    };
-
-    function setSortColumnAndDirection(order) {
-        if (currentOrder && currentOrder.column == order.column) {
-            if (order.direction == "asc") {
-                $("#" + elementSearchName + "_sortArrow_" + order.column).removeClass("downArrow");
-                $("#" + elementSearchName + "_sortArrow_" + order.column).addClass("upArrow");
-                currentState.order.direction = "asc";
-            } else {
-                $("#" + elementSearchName + "_sortArrow_" + order.column).removeClass("upArrow");
-                $("#" + elementSearchName + "_sortArrow_" + order.column).addClass("downArrow");
-                currentState.order.direction = "desc";
-            }
-        } else {
-            if (currentOrder) {
-                $("#" + gridParameters.modifiedPath + "_grid_" + currentOrder.column).removeClass("sortColumn");
-            }
-
-            $("#" + gridParameters.modifiedPath + "_grid_" + order.column).addClass("sortColumn");
-
-            currentState.order = {
-                column : order.column
-            }
-
-            if (order.direction == "asc") {
-                $("#" + elementSearchName + "_sortArrow_" + order.column).addClass("upArrow");
-                currentState.order.direction = "asc";
-            } else {
-                $("#" + elementSearchName + "_sortArrow_" + order.column).addClass("downArrow");
-                currentState.order.direction = "desc";
-            }
-        }
-        currentOrder = {
-            column : order.column,
-            direction : order.direction
-        };
-    }
-
-    function onSelectAllClicked() {
-        if (selectAllCheckBox.is(':checked')) {
-            for (var i in currentEntities) {
-                if (currentState.selectedEntities[i] != true) {
-                    grid.setSelection(i, false);
-                    currentState.selectedEntities[i] = true;
-                }
-            }
-        } else {
-            for (var i in currentState.selectedEntities) {
-                if (currentState.selectedEntities[i]) {
-                    grid.setSelection(i, false);
-                    currentState.selectedEntities[i] = null;
-                }
-            }
-        }
-        aferSelectionUpdate();
-        if (gridParameters.listeners.length > 0) {
-            onSelectChange();
-        }
-    }
-
-    function onSortColumnChange(index, iCol, sortorder) {
-        blockGrid();
-        currentState.order.column = index;
-        if (currentState.order.direction == "asc") {
-            currentState.order.direction = "desc";
-        } else {
-            currentState.order.direction = "asc";
-        }
-        onCurrentStateChange();
-        return 'stop';
-    }
-
-    function onFilterChange() {
-        performFilter();
-    }
-
-    function applytFilters() {
-        if (currentState.filtersEnabled) {
-            currentState.filters = new Object();
-            for (var i in columnModel) {
-                var column = columnModel[i];
-                if (column.isSerchable) {
-                    var filterValue = getColumnFilterElement(column.name).val();
-                    filterValue = $.trim(filterValue);
-                    if (filterValue && filterValue != "") {
-                        currentState.filters[column.name] = filterValue;
-                    }
-                }
-            }
-        } else {
-            currentState.filters = null;
-        }
-    }
-
-    function performFilter() {
-        blockGrid();
-        applytFilters();
-        onCurrentStateChange();
-        onFiltersStateChange();
-    }
-
-
-    this.onFilterButtonClicked = function() {
-        grid[0].toggleToolbar();
-        currentState.filtersEnabled = !currentState.filtersEnabled;
-        if (currentState.filtersEnabled) {
-            currentGridHeight -= 23;
-            updateSearchFields();
-            getColumnFilterElement(options.columns[0].name).focus();
-        } else {
-            currentGridHeight += 23;
-        }
-        grid.setGridHeight(currentGridHeight);
-        onCurrentStateChange(true);
-        onFiltersStateChange();
-    };
-
-    this.onClearFilterClicked = function() {
-        currentState.filters = new Object();
-        for (var i in columnModel) {
-            var column = columnModel[i];
-            getColumnFilterElement(column.name).val("");
-        }
-        onFiltersStateChange();
-        onCurrentStateChange();
-    };
-
-    function updateSearchFields() {
-        for (var i in columnModel) {
-            var column = columnModel[i];
-            if (column.isSerchable) {
-                var columnElement = getColumnFilterElement(column.name);
-                columnElement.unbind('change keyup');
-                if (column.filterValues) {
-                    columnElement.change(onFilterChange);
-                } else {
-                    columnElement.keyup(function(e) {
-                        var key = e.keyCode || e.which;
-                        if (key != 13) {
-                            return;
-                        }
-
-                        var val = $(this).val();
-                        var columnName = $(this).attr("id").substring(3);
-                        var currentFilter = "";
-                        if (currentState.filters && currentState.filters[columnName]) {
-                            currentFilter = currentState.filters[columnName];
-                        }
-                        if (currentState.filters && val == currentFilter) {
-                            return;
-                        }
-                        onFilterChange();
-                    });
-                }
-            } else {
-                getColumnFilterElement(column.name).hide();
-            }
-        }
-    }
-
-
-    this.setFilterState = function(column, filterText) {
-        if (!currentState.filtersEnabled) {
-            grid[0].toggleToolbar();
-            currentState.filtersEnabled = true;
-            headerController.setFilterActive();
-            currentGridHeight -= 21;
-            if (currentGridHeight) {
-                grid.setGridHeight(currentGridHeight);
-            }
-        }
-        currentState.filters = new Object();
-        currentState.filters[column] = filterText;
-        var columnFilterElement = getColumnFilterElement(column);
-        columnFilterElement.val(filterText);
-        columnFilterElement.focus();
-        updateSearchFields();
-        onFiltersStateChange();
-    };
-
-    this.setOnlyActive = function(onlyActive) {
-        blockGrid();
-        currentState.onlyActive = onlyActive;
-        onCurrentStateChange(gridParameters.hasPredefinedFilters);
-    };
-
-    this.setFilterObject = function(filter) {
-        blockGrid();
-
-        var filterObject = filter.filter;
-        for (var i in columnModel) {
-            var column = columnModel[i];
-            getColumnFilterElement(column.name).val("");
-        }
-        var fieldsNo = 0;
-        for (var col in filterObject) {
-            filterObject[col] = Encoder.htmlDecode(filterObject[col]);
-            getColumnFilterElement(col).val(filterObject[col]);
-            fieldsNo++;
-        }
-        currentState.filters = filterObject;
-
-        if (fieldsNo == 0) {
-            if (!gridParameters.filtersDefaultEnabled) {
-                if (currentState.filtersEnabled) {
-                    currentGridHeight += 23;
-                    grid.setGridHeight(currentGridHeight);
-                    $(grid[0]).find('.ui-search-toolbar').hide();
-                }
-                headerController.setFilterNotActive();
-                currentState.filtersEnabled = false;
-            }
-        } else {
-            if (!currentState.filtersEnabled) {
-                currentGridHeight -= 23;
-                grid.setGridHeight(currentGridHeight);
-                $(grid[0]).find('.ui-search-toolbar').show();
-                getColumnFilterElement(options.columns[0].name).focus();
-
-                headerController.setFilterActive();
-                currentState.filtersEnabled = true;
-            }
-        }
-
-        setSortColumnAndDirection({
-            column : filter.orderColumn,
-            direction : filter.orderDirection
-        });
-
-        updateSearchFields();
-        onFiltersStateChange();
-        onCurrentStateChange(true);
-    };
-
-    this.onNewButtonClicked = function() {
-        performNew();
-    };
-
-    this.onAddExistingButtonClicked = function() {
-        showModalForAddExistingEntity();
-    };
-
-    this.onDeleteButtonClicked = function() {
-        performDelete();
-    };
-
-    this.setDeleteEnabled = function(enabled) {
-        headerController.setDeleteEnabled(enabled);
-    };
-
-    this.onUpButtonClicked = function() {
-        blockGrid();
-        mainController.callEvent("moveUp", elementPath, function() {
-            unblockGrid();
-        });
-    };
-
-    this.onDownButtonClicked = function() {
-        blockGrid();
-        mainController.callEvent("moveDown", elementPath, function() {
-            unblockGrid();
-        });
-    };
-
-    this.updateSize = function(_width, _height) {
-        if (!_width) {
-            _width = 300;
-        }
-        if (!_height) {
-            _height = 300;
-        }
-
-        if (this.options.fixedHeight) {
-            var margin = Math.round(_width * 0.02);
-            if (margin < 20) {
-                margin = 20;
-            }
-            var height = $(window).height();
-            var childrenElement = $("#" + "window_windowContent");
-            var ribbonHeight = $(".windowContainer .windowContainerRibbon").height() || 70;
-            var containerHeight = Math.round(height - 2 * margin - ribbonHeight);
-            _height = containerHeight;
-            if ($("#window_windowHeader").length > 0) {
-                _height -= 35;
-            }
-            _height -= 55;
-        }
-
-        element.css("height", _height + "px");
-
-        var HEIGHT_DIFF = 120;
-        currentGridHeight = _height - HEIGHT_DIFF;
-        if (currentState.filtersEnabled) {
-            currentGridHeight -= 21;
-        }
-        if (!gridParameters.paging) {
-            currentGridHeight += 35;
-        }
-        grid.setGridHeight(currentGridHeight);
-        grid.setGridWidth(_width - 24, true);
-    };
-
-    function onFiltersStateChange() {
-        var hasFiltersValues = false;
-        for (var i in currentState.filters) {
-            if (currentState.filters[i] && currentState.filters[i] != "") {
-                hasFiltersValues = true;
-                break;
-            }
-        }
-        if (hasFiltersValues) {
-            headerController.setFiltersValuesNotEmpty();
-        } else {
-            headerController.setFiltersValuesEmpty();
-        }
-    }
-
-    function onCurrentStateChange(forceUpdate) {
-        currentState.selectedEntities = null;
-        currentState.multiselectMode = false;
-        currentState.selectedEntityId = null;
-        if (!forceUpdate) {
-            findMatchingPredefiniedFilter();
-        }
-        mainController.callEvent("refresh", elementPath, function() {
-            unblockGrid();
-        });
-    }
-
-    function findMatchingPredefiniedFilter() {
-        var filterToSearch = {};
-        if (currentState.filtersEnabled && currentState.filters) {
-            filterToSearch = currentState.filters;
-        }
-        var isIdentical = true;
-        for (var i in gridParameters.predefinedFilters) {
-            var predefiniedFilter = gridParameters.predefinedFilters[i].filter;
-            isIdentical = true;
-
-            if (gridParameters.predefinedFilters[i].orderColumn) {
-                if (currentState.order.column != gridParameters.predefinedFilters[i].orderColumn) {
-                    isIdentical = false;
-                    continue;
-                }
-                if (currentState.order.direction != gridParameters.predefinedFilters[i].orderDirection) {
-                    isIdentical = false;
-                    continue;
-                }
-            }
-
-            for (var col in columnModel) {
-                var column = columnModel[col];
-                if (predefiniedFilter[column.name] != filterToSearch[column.name]) {
-                    isIdentical = false;
-                    break;
-                }
-            }
-            if (isIdentical) {
-                headerController.setPredefinedFilter(i);
-                break;
-            }
-        }
-        if (!isIdentical) {
-            headerController.setPredefinedFilter(null);
-        }
-    }
-
-    function onSelectChange() {
-        if (componentEnabled) {
-            mainController.callEvent("select", elementPath, null);
-        }
-    }
-
-
-    this.performNew = function(actionsPerformer) {
-        currentState.newButtonClickedBefore = true;
-        currentState.selectedEntities = null;
-        currentState.multiselectMode = false;
-        currentState.selectedEntityId = null;
-
-        redirectToCorrespondingPage({});
-        if (actionsPerformer) {
-            actionsPerformer.performNext();
-        }
-    };
-
-    var performNew = this.performNew;
-
-    this.performRefresh = function(actionsPerformer) {
-        blockGrid();
-        mainController.callEvent('refresh', elementPath, function() {
-            unblockGrid();
-        });
-    };
-
-    this.showModalForAddExistingEntity = function(actionsPerformer) {
-        currentState.addExistingButtonClickedBefore = true;
-        currentState.selectedEntities = null;
-        currentState.multiselectMode = false;
-        currentState.selectedEntityId = null;
-
-        showCorrespondingLookupGridModal({});
-
-        if (actionsPerformer) {
-            actionsPerformer.performNext();
-        }
-    };
-    var showModalForAddExistingEntity = this.showModalForAddExistingEntity;
-
-    function onModalRender(modalWindow) {
-        modalWindow.getComponent("window.grid").setLinkListener(_this);
-    }
-
-    this.onGridLinkClicked = function(selectedEntities) {
-        performAddExistingEntity(null, selectedEntities);
-        mainController.closeThisModalWindow();
-    };
-
-    function onModalClose() {
-        lookupWindow = null;
-    }
-
-    function getSelectedRowsCount() {
-        var selectionCounter = 0;
-        for (var i in currentState.selectedEntities) {
-            if (currentState.selectedEntities[i]) {
-                selectionCounter++;
-            }
-        }
-        return selectionCounter;
-    }
-
-    this.performAddExistingEntity = function(actionsPerformer, selectedEntities) {
-        blockGrid();
-        mainController.callEvent("addExistingEntity", elementPath, function() {
-            unblockGrid();
-        }, [selectedEntities], actionsPerformer);
-    };
-
-    var performAddExistingEntity = this.performAddExistingEntity;
-
-    this.performDelete = function(actionsPerformer) {
-        if (currentState.selectedEntityId || getSelectedRowsCount() > 0) {
-            if (window.confirm(translations.confirmDeleteMessage)) {
-                blockGrid();
-                mainController.callEvent("remove", elementPath, function() {
-                    unblockGrid();
-                }, null, actionsPerformer);
-            }
-        } else {
-            mainController.showMessage({
-                type : "error",
-                content : translations.noRowSelectedError
-            });
-        }
-    };
-
-    var performDelete = this.performDelete;
-
-    this.performCopy = function(actionsPerformer) {
-        if (currentState.selectedEntityId || getSelectedRowsCount() > 0) {
-            blockGrid();
-            mainController.callEvent("copy", elementPath, function() {
-                unblockGrid();
-            }, null, actionsPerformer);
-        } else {
-            mainController.showMessage({
-                type : "error",
-                content : translations.noRowSelectedError
-            });
-        }
-    };
-
-    var performCopy = this.performCopy;
-
-    this.performActivate = function(actionsPerformer) {
-        if (currentState.selectedEntityId || getSelectedRowsCount() > 0) {
-            blockGrid();
-            mainController.callEvent("activate", elementPath, function() {
-                unblockGrid();
-            }, null, actionsPerformer);
-        } else {
-            mainController.showMessage({
-                type : "error",
-                content : translations.noRowSelectedError
-            });
-        }
-    };
-
-    var performActivate = this.performActivate;
-
-    this.performDeactivate = function(actionsPerformer) {
-        if (currentState.selectedEntityId || getSelectedRowsCount() > 0) {
-            blockGrid();
-            mainController.callEvent("deactivate", elementPath, function() {
-                unblockGrid();
-            }, null, actionsPerformer);
-        } else {
-            mainController.showMessage({
-                type : "error",
-                content : translations.noRowSelectedError
-            });
-        }
-    };
-
-    var performDeactivate = this.performDeactivate;
-
-    this.generateReportForEntity = function(actionsPerformer, arg1, args) {
-        var selectedItems = new Array();
-        for (var i in currentState.selectedEntities) {
-            if (currentState.selectedEntities[i]) {
-                selectedItems.push(i);
-            }
-        }
-        if (selectedItems.length > 0) {
-            mainController.generateReportForEntity(actionsPerformer, arg1, args, selectedItems);
-        } else {
-            mainController.showMessage({
-                type : "error",
-                content : translations.noRowSelectedError
-            });
-        }
-    };
-
-    this.performEvent = function(eventName, args, type) {
-        this.fireEvent(null, eventName, args, type);
-    };
-
-    this.fireEvent = function(actionsPerformer, eventName, args, type) {
-        blockGrid();
-        mainController.callEvent(eventName, elementPath, function() {
-            unblockGrid();
-        }, args, actionsPerformer, type);
-    };
-
-    this.performLinkClicked = function(actionsPerformer) {
-        if (currentState.selectedEntities) {
-            var selectedEntitiesId = new Array();
-            for (var key in currentState.selectedEntities) {
-                if (currentState.selectedEntities[key]) {
-                    selectedEntitiesId.push(key);
-                }
-            }
-            if (selectedEntitiesId.length == 1) {
-                linkClicked(selectedEntitiesId[0]);
-            } else {
-                linkClicked(selectedEntitiesId);
-            }
-
-            if (actionsPerformer) {
-                actionsPerformer.performNext();
-            }
-        } else {
-            mainController.showMessage({
-                type : "error",
-                content : translations.noRowSelectedError
-            });
-        }
-    };
-
-    this.getLookupData = function (entityId) {
-        return {
-            entityId : entityId,
-            lookupValue : hiddenColumnValues.lookupValue[entityId],
-            lookupCode : grid.getRowData(entityId).lookupCode.replace(/<[\/]{0,1}[a|span|b|i|u|br][^>]*>/g, '')
-        };
-    };
-
-    constructor(this);
+    constructor();
 
 };

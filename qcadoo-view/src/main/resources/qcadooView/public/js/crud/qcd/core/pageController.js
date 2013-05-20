@@ -402,6 +402,7 @@ QCD.PageController = function() {
 		}
 	}
 	
+	// TODO MAKU remove old pop-up code
 	this.openPopup = function(url, parentComponent, title) {
 		if (url.indexOf("?") != -1) {
 			url+="&";
