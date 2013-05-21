@@ -689,7 +689,6 @@ public final class GridComponentState extends AbstractComponentState implements 
 
                     if (repeatWithFixedFirstResult(result)) {
                         addPaging(criteria);
-                        // FIXME MAKU it looks like performing the same query two times..
                         result = criteria.list();
                     }
 

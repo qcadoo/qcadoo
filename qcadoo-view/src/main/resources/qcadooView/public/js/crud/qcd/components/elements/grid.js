@@ -621,9 +621,9 @@ QCD.components.elements.Grid = function (element, mainController) {
         }
 
         if (value.entitiesToMarkAsNew) {
-            for (var i in value.entitiesToMarkAsNew) {
-                var row = $("#" + elementSearchName + " #" + i);
-                if (row) {
+            for (var id in value.entitiesToMarkAsNew) {
+                var row = element.find("#" + id);
+                if (row.length > 0) {
                     row.addClass("lastAdded");
                 }
             }
@@ -631,8 +631,8 @@ QCD.components.elements.Grid = function (element, mainController) {
 
         if (value.entitiesToMarkWithCssClass) {
             for (var styledEntityId in value.entitiesToMarkWithCssClass) {
-                var row = $("#" + elementSearchName + " #" + styledEntityId);
-                if (row) {
+                var row = element.find("#" + styledEntityId);
+                if (row.length > 0) {
                     var entityCssClasses = value.entitiesToMarkWithCssClass[styledEntityId];
                     var entityCssClassesLen = entityCssClasses.length;
                     for (var i = 0; i < entityCssClassesLen; i++) {
@@ -643,8 +643,8 @@ QCD.components.elements.Grid = function (element, mainController) {
         }
 
         if (addedEntityId) {
-            var row = $("#" + elementSearchName + " #" + addedEntityId);
-            if (row) {
+            var row = element.find("#" + addedEntityId);
+            if (row.length > 0) {
                 row.addClass("lastAdded");
                 addedEntityId = null;
             }
