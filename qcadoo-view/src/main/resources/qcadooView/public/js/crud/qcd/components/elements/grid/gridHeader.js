@@ -45,6 +45,7 @@ QCD.components.elements.grid.GridHeaderController = function(_gridController, _m
 	
 	var headerElements = new Object();
 	headerElements.filterButton = null;
+	headerElements.multiSearchButton = null;
 	headerElements.predefiniedFiltersCombo = null;
 	headerElements.predefiniedFiltersCustomOption_line1 = $("<option>").attr("value",-1).html("--------------").css("display", "none");
 	headerElements.predefiniedFiltersCustomOption_line2 = $("<option>").attr("value",-1).html(translations.customPredefinedFilter).css("display", "none");
@@ -56,6 +57,8 @@ QCD.components.elements.grid.GridHeaderController = function(_gridController, _m
 	
 	var headerPagingController = null;
 	var footerPagingController = null;
+	
+	var multiSearchDialog = null;
 	
 	var entitiesNumberSpan;
 	
@@ -292,6 +295,15 @@ QCD.components.elements.grid.GridHeaderController = function(_gridController, _m
 			headerElement.append(headerElements.downButton);
 			setEnabledButton(headerElements.downButton, false);
 		}
+		if (gridParameters.hasMultiSearchColumns && gridParameters.multiSearchColumns){
+			headerElements.multiSearchButton = QCD.components.elements.utils.HeaderUtils.createHeaderButton(translations.multiSearchButton, function(e) {
+				if (headerElements.filterButton.hasClass("headerButtonEnabled")) {
+					multiSearchClicked();
+				}
+			}, "searchIcon16.png");
+			headerElement.append(headerElements.multiSearchButton);
+			setEnabledButton(headerElements.multiSearchButton, false);
+		}
 		if (gridParameters.paging) {
 			headerPagingController = new QCD.components.elements.grid.GridPagingElement(this, mainController, translations);
 			headerElement.append(headerPagingController.getPagingElement(pagingVars));
@@ -322,6 +334,82 @@ QCD.components.elements.grid.GridHeaderController = function(_gridController, _m
 			}
 		}
 		refreshButtons();
+	}
+
+	function getRulesToSet(data){
+		var rulesToSet = [];
+		for(var ruleIterator in data.rules){		
+			var ruleData = {
+			    fieldIndex:null ,
+			    operatorIndex : null ,
+			    dataValue:null
+			};
+			var rule = data.rules[ruleIterator];
+			for(i = 0; i < gridParameters.multiSearchColumns.length; ++i){
+				var column = gridParameters.multiSearchColumns[i];
+				
+				if(rule.field === column.itemval){
+					ruleData.fieldIndex = i;
+					ruleData.dataValue = rule.data;
+					if(column.dataValues){
+						for(var j=0; j < column.dataValues.length; ++j){
+							if(rule.data === column.dataValues[j].value){
+								ruleData.dataIndex = j;
+								break;
+							}
+						}
+					}
+					var operators;
+					if(column.ops){
+						operators = column.ops;
+					}
+					else{
+						operators = gridParameters.defaultOperators;
+					}
+					for(var j=0; j< operators.length; ++j){
+						if(operators[j].op === rule.op){
+							ruleData.operatorIndex = j;
+							break;
+						}
+					}
+					break;
+				}
+			}
+			rulesToSet.push(ruleData);
+		}
+		return rulesToSet;
+	}
+	this.initializeMultiSearchFilter = function(data){		
+		headerElements.multiSearchButton.addClass("headerButtonActive");
+		if(multiSearchDialog == null){
+			createMultiSearchDialog();
+		}
+		var i;
+		for(i=0; i < data.rules.length -1; ++i){
+			multiSearchDialog.add();
+		}
+		
+		var groupOpIndex = 0;
+		if(data.groupOp === "OR"){
+			groupOpIndex = 1;
+		}
+		$("#multiSearchDialog").find("select[name='groupOp']")[0].selectedIndex = groupOpIndex;
+		
+		var rulesToSet = getRulesToSet(data);
+		
+		for(i=0; i < rulesToSet.length; ++i){
+			if ( rulesToSet[i].fieldIndex != null && rulesToSet[i].operatorIndex != null && rulesToSet[i].dataValue != null) {
+				var htmlRule = $("#multiSearchDialog").find("tr.sf")[i];
+				$(htmlRule).find("select[name='field']")[0].selectedIndex = rulesToSet[i].fieldIndex;
+				$(htmlRule).find("select[name='field']").change();
+				$(htmlRule).find("select[name='op']")[0].selectedIndex = rulesToSet[i].operatorIndex;
+				$(htmlRule).find("input.vdata").val(rulesToSet[i].dataValue); 
+				var select = $(htmlRule).find("select.vdata")[0];
+				if (select) {
+					select.selectedIndex = rulesToSet[i].dataIndex;
+				}
+			}
+		}
 	}
 	
 	this.setDeleteEnabled = function(enabled) {
@@ -354,6 +442,9 @@ QCD.components.elements.grid.GridHeaderController = function(_gridController, _m
 			}
 			if (headerElements.downButton != null) {
 				setEnabledButton(headerElements.downButton, false);
+			}
+			if (headerElements.multiSearchButton != null) {
+				setEnabledButton(headerElements.multiSearchButton, false);
 			}
 		} else {
 			if (headerElements.filterButton != null) {
@@ -388,6 +479,9 @@ QCD.components.elements.grid.GridHeaderController = function(_gridController, _m
 				} else {
 					setEnabledButton(headerElements.downButton, true);
 				}
+			}
+			if (headerElements.multiSearchButton != null) {
+				setEnabledButton(headerElements.multiSearchButton, true);
 			}
 		}
 		
@@ -426,7 +520,44 @@ QCD.components.elements.grid.GridHeaderController = function(_gridController, _m
 		gridController.onFilterButtonClicked();
 	}
 	
-	function clearFilterClicked() {
+	function multiSearchClicked(){
+		if(multiSearchDialog == null){
+			createMultiSearchDialog();
+		}
+		
+		$("#multiSearchDialog").show();	
+	}
+	
+	function createMultiSearchDialog(){
+		$("<div id='multiSearchDialog' role='dialog' tabindex='-1' style='display: block; left: 50px; top: 125px;'></div>").insertBefore("#window");	
+		$("#multiSearchDialog").hide();
+			var groupOps =[
+			    { op: "AND", text: translations.matchAllRules },
+				{ op: "OR",  text: translations.matchAnyRules }
+			];
+			multiSearchDialog = $("#multiSearchDialog").searchFilter(gridParameters.multiSearchColumns, {operators: gridParameters.defaultOperators, groupOps: groupOps, rulesText: '',matchText: translations.match,resetText: translations.resetButton, searchText: translations.searchButton, windowTitle: translations.multiSearchTitle, onSearch: onMultiSearchDialogSearchClicked, onReset: onMuliSearchDialogResetClicked,stringResult:false, clone: true});
+			$(".ui-widget-overlay","#multiSearchDialog").remove();
+				$("#multiSearchDialog table thead tr:first td:first").css('cursor','move');
+				if(jQuery.fn.jqDrag) {
+					$("#multiSearchDialog").jqDrag($("#multiSearchDialog table thead tr:first td:first"));
+				} else {
+					try {
+						$("#multiSearchDialog").draggable({handle: $("#multiSearchDialog table thead tr:first td:first")});
+					} catch (e) {}
+				}
+	}
+	
+	function onMultiSearchDialogSearchClicked(data){
+		headerElements.multiSearchButton.addClass("headerButtonActive");
+		gridController.onMultiSearchClicked(data);
+	}
+	
+	function onMuliSearchDialogResetClicked(data){
+		headerElements.multiSearchButton.removeClass("headerButtonActive");
+		gridController.onMultiSearchReset(data);
+	}
+	
+	function clearFilterClicked(data) {
 		gridController.onClearFilterClicked();
 	}
 	

@@ -90,6 +90,10 @@ public final class GridComponentState extends AbstractComponentState implements 
 
     public static final String JSON_FILTERS_ENABLED = "filtersEnabled";
 
+    public static final String JSON_MULTI_SEARCH_FILTER = "multiSearchFilter";
+
+    public static final String JSON_MULTI_SEARCH_ENABLED = "multiSearchEnabled";
+
     public static final String JSON_ENTITIES = "entities";
 
     public static final String JSON_EDITABLE = "isEditable";
@@ -124,6 +128,8 @@ public final class GridComponentState extends AbstractComponentState implements 
 
     private boolean filtersEnabled = true;
 
+    private boolean multiSearchEnabled = false;
+
     private String orderColumn;
 
     private String orderDirection;
@@ -139,6 +145,8 @@ public final class GridComponentState extends AbstractComponentState implements 
     private CustomRestriction customRestriction;
 
     private final Map<String, String> filters = new HashMap<String, String>();
+
+    private final GridComponentMultiSearchFilter multiSearchFilter = new GridComponentMultiSearchFilter();
 
     private final PredefinedFilter defaultPredefinedFilter;
 
@@ -193,6 +201,7 @@ public final class GridComponentState extends AbstractComponentState implements 
             } else if (JSON_COMPONENT_OPTIONS.equals(field)) {
                 JSONObject jsonOptions = json.getJSONObject(JSON_COMPONENT_OPTIONS);
                 passFiltersFromJson(jsonOptions);
+                passMultiSearchFilterFromJson(jsonOptions);
                 passSelectedEntityIdFromJson(jsonOptions);
                 passSelectedEntitiesFromJson(jsonOptions);
                 passEntitiesFromJson(jsonOptions);
@@ -247,6 +256,7 @@ public final class GridComponentState extends AbstractComponentState implements 
         }
 
         passFiltersFromJson(json);
+        passMultiSearchFilterFromJson(json);
 
         requestRender();
         requestUpdateState();
@@ -276,6 +286,34 @@ public final class GridComponentState extends AbstractComponentState implements 
             }
         } else {
             applyPredefinedFilter(defaultPredefinedFilter);
+        }
+    }
+
+    private void passMultiSearchFilterFromJson(final JSONObject json) throws JSONException {
+        if (json.has(JSON_MULTI_SEARCH_ENABLED) && !json.isNull(JSON_MULTI_SEARCH_ENABLED)) {
+            multiSearchEnabled = json.getBoolean(JSON_MULTI_SEARCH_ENABLED);
+        }
+        if (json.has(JSON_MULTI_SEARCH_FILTER) && !json.isNull(JSON_MULTI_SEARCH_FILTER)) {
+            multiSearchFilter.clear();
+            JSONObject jsonMultiSearchFilter = json.getJSONObject(JSON_MULTI_SEARCH_FILTER);
+            if (jsonMultiSearchFilter.has(GridComponentMultiSearchFilter.JSON_GROUP_OPERATOR_FIELD)
+                    && !jsonMultiSearchFilter.isNull(GridComponentMultiSearchFilter.JSON_GROUP_OPERATOR_FIELD)) {
+                multiSearchFilter.setGroupOperator(jsonMultiSearchFilter
+                        .getString(GridComponentMultiSearchFilter.JSON_GROUP_OPERATOR_FIELD));
+            }
+            if (jsonMultiSearchFilter.has(GridComponentMultiSearchFilter.JSON_RULES_FIELD)
+                    && !jsonMultiSearchFilter.isNull(GridComponentMultiSearchFilter.JSON_RULES_FIELD)) {
+                JSONArray jsonMultiSearchFilterRules = jsonMultiSearchFilter
+                        .getJSONArray(GridComponentMultiSearchFilter.JSON_RULES_FIELD);
+                for (int i = 0; i < jsonMultiSearchFilterRules.length(); ++i) {
+                    JSONObject jsonRule = jsonMultiSearchFilterRules.getJSONObject(i);
+                    multiSearchFilter.addRule(
+                            jsonRule.getString(GridComponentMultiSearchFilterRule.JSON_FIELD_FIELD),
+                            jsonRule.getString(GridComponentMultiSearchFilterRule.JSON_OPERATOR_FIELD),
+                            jsonRule.isNull(GridComponentMultiSearchFilterRule.JSON_DATA_FIELD) ? null : jsonRule
+                                    .getString(GridComponentMultiSearchFilterRule.JSON_DATA_FIELD));
+                }
+            }
         }
     }
 
@@ -353,6 +391,7 @@ public final class GridComponentState extends AbstractComponentState implements 
         json.put(JSON_FIRST_ENTITY, firstResult);
         json.put(JSON_MAX_ENTITIES, maxResults);
         json.put(JSON_FILTERS_ENABLED, filtersEnabled);
+        json.put(JSON_MULTI_SEARCH_ENABLED, multiSearchEnabled);
         json.put(JSON_TOTAL_ENTITIES, totalEntities);
         json.put(JSON_ONLY_ACTIVE, onlyActive);
 
@@ -387,6 +426,7 @@ public final class GridComponentState extends AbstractComponentState implements 
         }
 
         json.put(JSON_FILTERS, new JSONObject(filters));
+        json.put(JSON_MULTI_SEARCH_FILTER, multiSearchFilter.toJson());
 
         JSONArray jsonEntities = new JSONArray();
         for (Entity entity : entities) {
@@ -668,6 +708,10 @@ public final class GridComponentState extends AbstractComponentState implements 
                 try {
                     if (filtersEnabled) {
                         GridComponentFilterUtils.addFilters(filters, columns, getDataDefinition(), criteria);
+                    }
+
+                    if (multiSearchEnabled) {
+                        GridComponentFilterUtils.addMultiSearchFilter(multiSearchFilter, columns, getDataDefinition(), criteria);
                     }
 
                     if (customRestriction != null) {

@@ -68,7 +68,8 @@ QCD.components.elements.Grid = function (element, mainController) {
             rowLinkClickedBefore : false,
             addExistingButtonClickedBefore : false,
             multiselectMode : true,
-            isEditable : true
+            isEditable : true,
+			multiSearchEnabled : false
         },
 
         columnModel = {},
@@ -110,13 +111,34 @@ QCD.components.elements.Grid = function (element, mainController) {
         var colNames = [],
             colModel = [],
             hasFilterableColumns = false,
-            i = null;
-
+			hasMultiSearchColumns = false,
+			multiSearchColumns=[],
+            i = null;	
+			
+		var selectOperators = [
+				{ op: "eq", text: options.translations.operator_eq },
+				{ op: "ne", text: options.translations.operator_ne }
+			];
+		
+		gridParameters.defaultOperators = [
+				{ op: "eq", text: options.translations.operator_eq },
+				{ op: "ne", text: options.translations.operator_ne },
+				{ op: "gt", text: options.translations.operator_gt },
+				{ op: "ge", text: options.translations.operator_ge },
+				{ op: "lt", text: options.translations.operator_lt },
+				{ op: "le", text: options.translations.operator_le },
+				{ op: "in", text: options.translations.operator_in },
+				{ op: "cn", text: options.translations.operator_cn },
+				{ op: "bw", text: options.translations.operator_bw },
+				{ op: "ew", text: options.translations.operator_ew }
+		];
+			
         for (i in options.columns) {
             var column = options.columns[i],
                 isSortable = false,
-                isSerchable = false;
-            
+                isSerchable = false,
+				multiSearchColumn = null;
+
             columnModel[column.name] = column;
             
             for (var sortColIter in options.orderableColumns) {
@@ -132,6 +154,16 @@ QCD.components.elements.Grid = function (element, mainController) {
                     break;
                 }
             }
+			
+			for(var multiSearchColIter in options.multiSearchColumns){
+				if(options.multiSearchColumns[multiSearchColIter] === column.name){
+					hasMultiSearchColumns = true;
+					multiSearchColumn = {
+							text : column.label,
+							itemval : column.name
+						};
+				}
+			}
 
             column.isSerchable = isSerchable;
 
@@ -147,6 +179,20 @@ QCD.components.elements.Grid = function (element, mainController) {
                     possibleValues = {};
 
                 if (column.filterValues) {
+					
+					if(multiSearchColumn){
+					    var multiSearchFilterValues = [];
+					    var iter = null;
+					    for (iter in column.filterValues) {
+					        var multiSearchFilterValue = {
+					            text: column.filterValues[iter],
+					            value: iter
+					        };
+					        multiSearchFilterValues.push(multiSearchFilterValue);   
+					    }
+					    multiSearchColumn.dataValues = multiSearchFilterValues;
+						multiSearchColumn.ops = selectOperators;
+				    }
                     possibleValues[""] = "";
                     var possibleValuesString = ":",
                         j = null;
@@ -182,9 +228,15 @@ QCD.components.elements.Grid = function (element, mainController) {
             } else {
                 hiddenColumnValues[column.name] = {};
             }
+			if(multiSearchColumn != null){
+				multiSearchColumns.push(multiSearchColumn);
+				multiSearchColumn = null;
+			}
         }
 
-        gridParameters.hasFilterableColumns = hasFilterableColumns;
+        gridParameters.hasMultiSearchColumns = hasMultiSearchColumns;
+		gridParameters.multiSearchColumns = multiSearchColumns;
+		gridParameters.hasFilterableColumns = hasFilterableColumns;
         gridParameters.filtersDefaultEnabled = options.filtersDefaultVisible && hasFilterableColumns;
         gridParameters.hasPredefinedFilters = options.hasPredefinedFilters;
         gridParameters.predefinedFilters = options.predefinedFilters;
@@ -415,6 +467,9 @@ QCD.components.elements.Grid = function (element, mainController) {
             }
             grid.setGridHeight(currentGridHeight);
         }
+		if(currentState.multiSearchEnabled !== state.multiSearchEnabled){
+			currentState.multiSearchEnabled = state.multiSearchEnabled;
+		}
         if (state.order) {
             setSortColumnAndDirection(state.order);
         }
@@ -426,6 +481,10 @@ QCD.components.elements.Grid = function (element, mainController) {
             findMatchingPredefiniedFilter();
             onFiltersStateChange();
         }
+		if(state.multiSearchFilter){
+			currentState.multiSearchFilter = state.multiSearchFilter;
+			headerController.initializeMultiSearchFilter(state.multiSearchFilter);
+		}
         if (state.newButtonClickedBefore || state.addExistingButtonClickedBefore) {
             var lastPageController = mainController.getLastPageController();
             if (lastPageController && lastPageController.getViewName() == gridParameters.correspondingViewName) {
@@ -922,6 +981,20 @@ QCD.components.elements.Grid = function (element, mainController) {
         onFiltersStateChange();
         onCurrentStateChange(true);
     };
+	
+	this.onMultiSearchClicked = function(data){
+        blockGrid();
+		currentState.multiSearchEnabled = true;
+		currentState.multiSearchFilter = data;
+        onCurrentStateChange();
+	}
+	
+	this.onMultiSearchReset = function(data){
+        blockGrid();
+		currentState.multiSearchEnabled = false;
+		currentState.multiSearchFilter = null;
+        onCurrentStateChange();
+	}
 
     this.onNewButtonClicked = function () {
         that.performNew();

@@ -349,3 +349,17 @@ div.filterButton {
 .gridContainer .ui-jqgrid tr.jqgrow.boldFont td {
 	font-weight: bold;
 }
+.ui-widget-header {
+border: 1px solid #aaaaaa;
+background: url(/qcadooView/public/css/crud/images/grid/gradientygrid/gradient_header.png) 50% 50% repeat-x;
+color: #ffffff;
+padding: .3em .2em !important;
+
+}
+.ui-corner-all {
+-moz-border-radius: 4px;
+-webkit-border-radius: 1px;
+border-radius: 1px;
+}
+
+
