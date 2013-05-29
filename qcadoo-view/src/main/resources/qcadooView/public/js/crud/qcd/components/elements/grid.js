@@ -121,16 +121,16 @@ QCD.components.elements.Grid = function (element, mainController) {
 			];
 		
 		gridParameters.defaultOperators = [
+				{ op: "cn", text: options.translations.operator_cn },
+				{ op: "bw", text: options.translations.operator_bw },
+				{ op: "ew", text: options.translations.operator_ew },
 				{ op: "eq", text: options.translations.operator_eq },
 				{ op: "ne", text: options.translations.operator_ne },
 				{ op: "gt", text: options.translations.operator_gt },
 				{ op: "ge", text: options.translations.operator_ge },
 				{ op: "lt", text: options.translations.operator_lt },
 				{ op: "le", text: options.translations.operator_le },
-				{ op: "in", text: options.translations.operator_in },
-				{ op: "cn", text: options.translations.operator_cn },
-				{ op: "bw", text: options.translations.operator_bw },
-				{ op: "ew", text: options.translations.operator_ew }
+				{ op: "in", text: options.translations.operator_in }
 		];
 			
         for (i in options.columns) {

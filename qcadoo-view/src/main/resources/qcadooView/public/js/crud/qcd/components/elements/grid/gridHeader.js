@@ -548,6 +548,17 @@ QCD.components.elements.grid.GridHeaderController = function(_gridController, _m
 	}
 	
 	function onMultiSearchDialogSearchClicked(data){
+		var isEmpty = true;
+		for( var iterator in data.rules){
+			if(data.rules[iterator] != null  && $.trim(data.rules[iterator].data) != ""){
+				 isEmpty = false;
+				 break;
+			}
+		}
+		if(isEmpty){
+			headerElements.multiSearchButton.removeClass("headerButtonActive");
+		    return;
+		}
 		headerElements.multiSearchButton.addClass("headerButtonActive");
 		gridController.onMultiSearchClicked(data);
 	}
