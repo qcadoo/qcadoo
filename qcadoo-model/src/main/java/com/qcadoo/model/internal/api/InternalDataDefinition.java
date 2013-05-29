@@ -82,6 +82,14 @@ public interface InternalDataDefinition extends DataDefinition {
     boolean callSaveHook(final Entity entity);
 
     /**
+     * Call delete hooks on given entity.
+     * 
+     * @param entity
+     *            entity
+     */
+    boolean callDeleteHook(Entity entity);
+
+    /**
      * Get class representing given data definition.
      * 
      * @see #getFullyQualifiedClassName()

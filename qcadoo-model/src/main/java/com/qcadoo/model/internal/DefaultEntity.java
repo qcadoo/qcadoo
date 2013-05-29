@@ -26,7 +26,6 @@ package com.qcadoo.model.internal;
 import static com.google.common.base.Preconditions.checkArgument;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -41,6 +40,7 @@ import com.google.common.collect.Lists;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.EntityList;
+import com.qcadoo.model.api.EntityMessagesHolder;
 import com.qcadoo.model.api.EntityTree;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.types.BelongsToType;
@@ -58,9 +58,7 @@ public final class DefaultEntity implements Entity, EntityAwareCopyPerformers, E
 
     private final Map<String, Object> fields;
 
-    private final List<ErrorMessage> globalErrors = new ArrayList<ErrorMessage>();
-
-    private final Map<String, ErrorMessage> errors = new HashMap<String, ErrorMessage>();
+    private final EntityMessagesHolder messagesHolder = new EntityMessagesHolderImpl();
 
     private boolean notValidFlag = false;
 
@@ -107,37 +105,37 @@ public final class DefaultEntity implements Entity, EntityAwareCopyPerformers, E
 
     @Override
     public void addGlobalError(final String message, final String... vars) {
-        globalErrors.add(new ErrorMessage(message, vars));
+        messagesHolder.addGlobalError(message, vars);
     }
 
     @Override
     public void addError(final FieldDefinition fieldDefinition, final String message, final String... vars) {
-        errors.put(fieldDefinition.getName(), new ErrorMessage(message, vars));
+        messagesHolder.addError(fieldDefinition, message, vars);
     }
 
     @Override
     public List<ErrorMessage> getGlobalErrors() {
-        return globalErrors;
+        return messagesHolder.getGlobalErrors();
     }
 
     @Override
     public Map<String, ErrorMessage> getErrors() {
-        return errors;
+        return messagesHolder.getErrors();
     }
 
     @Override
     public ErrorMessage getError(final String fieldName) {
-        return errors.get(fieldName);
+        return messagesHolder.getError(fieldName);
     }
 
     @Override
     public boolean isValid() {
-        return !notValidFlag && errors.isEmpty() && globalErrors.isEmpty();
+        return !notValidFlag && getErrors().isEmpty() && getGlobalErrors().isEmpty();
     }
 
     @Override
     public boolean isFieldValid(final String fieldName) {
-        return errors.get(fieldName) == null;
+        return messagesHolder.getError(fieldName) == null;
     }
 
     @Override

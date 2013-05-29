@@ -33,7 +33,7 @@ public abstract class AbstractModelXmlConverter {
     }
 
     public static enum HooksTag {
-        ONVIEW, ONCREATE, ONUPDATE, ONSAVE, ONCOPY, VALIDATESWITH
+        ONVIEW, ONCREATE, ONUPDATE, ONSAVE, ONCOPY, VALIDATESWITH, ONDELETE
     }
 
     public static enum OtherTag {

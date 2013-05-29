@@ -94,7 +94,7 @@ public final class DataAccessServiceCopyTest extends DataAccessTest {
     public void shouldCopyEntityWithUniqueField() throws Exception {
         // given
         FieldHookDefinition fieldHook = new UniqueValidator();
-        fieldHook.initialize(dataDefinition, fieldDefinitionName);
+        // fieldHook.initialize(dataDefinition, fieldDefinitionName);
 
         fieldDefinitionName.withValidator(fieldHook);
 
@@ -121,7 +121,7 @@ public final class DataAccessServiceCopyTest extends DataAccessTest {
     public void shouldCopyEntityWithUniqueField2() throws Exception {
         // given
         FieldHookDefinition fieldHook = new UniqueValidator();
-        fieldHook.initialize(dataDefinition, fieldDefinitionName);
+        // fieldHook.initialize(dataDefinition, fieldDefinitionName);
 
         fieldDefinitionName.withValidator(fieldHook);
 
@@ -148,7 +148,7 @@ public final class DataAccessServiceCopyTest extends DataAccessTest {
     public void shouldCopyEntityWithUniqueFieldWhenNull() throws Exception {
         // given
         FieldHookDefinition fieldHook = new UniqueValidator();
-        fieldHook.initialize(dataDefinition, fieldDefinitionName);
+        // fieldHook.initialize(dataDefinition, fieldDefinitionName);
 
         fieldDefinitionName.withValidator(fieldHook);
 

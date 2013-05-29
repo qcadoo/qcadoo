@@ -26,13 +26,15 @@ package com.qcadoo.model.internal;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Criteria;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
+import com.google.common.collect.Lists;
 import com.qcadoo.model.api.types.HasManyType;
 import com.qcadoo.model.beans.sample.SampleParentDatabaseObject;
 import com.qcadoo.model.beans.sample.SampleSimpleDatabaseObject;
@@ -66,25 +68,34 @@ public class DataAccessServiceDeleteTest extends DataAccessTest {
         dataDefinition.delete(1L);
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Test
     public void shouldProperlyDeleteAndNullifyChildren() throws Exception {
         // given
         SampleParentDatabaseObject parentDatabaseEntity = new SampleParentDatabaseObject(1L);
         parentDatabaseEntity.setName("Mr X");
-        SampleSimpleDatabaseObject simpleDatabaseObject = new SampleSimpleDatabaseObject(1L);
+        final SampleSimpleDatabaseObject simpleDatabaseObject = new SampleSimpleDatabaseObject(1L);
         simpleDatabaseObject.setName("Mr T");
         simpleDatabaseObject.setAge(66);
         simpleDatabaseObject.setBelongsTo(parentDatabaseEntity);
-        List<SampleSimpleDatabaseObject> entities = new ArrayList<SampleSimpleDatabaseObject>();
-        entities.add(simpleDatabaseObject);
         parentFieldDefinitionHasMany.withType(new HasManyEntitiesType("simple", "entity", "belongsTo",
                 HasManyType.Cascade.NULLIFY, false, dataDefinitionService));
         parentDataDefinition.withField(parentFieldDefinitionHasMany);
 
         given(session.get(SampleParentDatabaseObject.class, 1L)).willReturn(parentDatabaseEntity);
         given(hibernateService.getTotalNumberOfEntities(Mockito.any(Criteria.class))).willReturn(1);
-        given(hibernateService.list(Mockito.any(Criteria.class))).willReturn((List) entities);
+
+        given(hibernateService.list(Mockito.any(Criteria.class))).willAnswer(new Answer<List<Object>>() {
+
+            @Override
+            public List<Object> answer(final InvocationOnMock invocation) throws Throwable {
+                Criteria criteria = (Criteria) invocation.getArguments()[0];
+                if (criteria.toString().contains("belongsTo.id=")) {
+                    return Lists.<Object> newArrayList(simpleDatabaseObject);
+                }
+                return Lists.newArrayList();
+            }
+        });
+
         given(session.get(SampleSimpleDatabaseObject.class, 1L)).willReturn(simpleDatabaseObject);
 
         // when

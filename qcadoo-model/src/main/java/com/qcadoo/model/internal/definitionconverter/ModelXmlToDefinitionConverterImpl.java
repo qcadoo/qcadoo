@@ -176,124 +176,102 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
 
     private DataDefinition getDataDefinition(final XMLStreamReader reader, final String pluginIdentifier)
             throws XMLStreamException, HookInitializationException, ModelXmlParsingException {
-        DataDefinitionImpl dataDefinition = getModelDefinition(reader, pluginIdentifier);
+        final DataDefinitionImpl dataDefinition = getModelDefinition(reader, pluginIdentifier);
 
         LOG.info("Creating dataDefinition " + dataDefinition);
 
-        while (reader.hasNext() && reader.next() > 0) {
-            if (isTagEnded(reader, TAG_MODEL)) {
-                break;
-            }
+        parseElementChildren(reader, TAG_MODEL, new ParseElementChildrenAction() {
 
-            if (TAG_FIELDS.equals(getTagStarted(reader))) {
-                while (reader.hasNext() && reader.next() > 0) {
-                    if (isTagEnded(reader, TAG_FIELDS)) {
-                        break;
-                    }
+            @Override
+            public void apply(final String childTag) throws XMLStreamException, HookInitializationException,
+                    ModelXmlParsingException {
+                if (TAG_FIELDS.equals(getTagStarted(reader))) {
+                    parseFields(reader, dataDefinition);
+                }
 
-                    String tag = getTagStarted(reader);
+                if (TAG_HOOKS.equals(getTagStarted(reader))) {
+                    parseHooks(reader, dataDefinition);
+                }
 
-                    if (tag == null) {
-                        continue;
-                    }
-
-                    addFieldElement(reader, dataDefinition, tag);
+                String tag = getTagStarted(reader);
+                if (tag != null) {
+                    addOtherElement(reader, dataDefinition, tag);
                 }
             }
 
-            if (dataDefinition.isAuditable()) {
-                dataDefinition.withField(getAuditFieldDefinition(dataDefinition, "createDate", new DateTimeType()));
-                dataDefinition.withField(getAuditFieldDefinition(dataDefinition, "updateDate", new DateTimeType()));
-                dataDefinition.withField(getAuditFieldDefinition(dataDefinition, "createUser", new StringType()));
-                dataDefinition.withField(getAuditFieldDefinition(dataDefinition, "updateUser", new StringType()));
-            }
-
-            if (TAG_HOOKS.equals(getTagStarted(reader))) {
-                while (reader.hasNext() && reader.next() > 0) {
-                    if (isTagEnded(reader, TAG_HOOKS)) {
-                        break;
-                    }
-
-                    String tag = getTagStarted(reader);
-
-                    if (tag == null) {
-                        continue;
-                    }
-
-                    addHookElement(reader, dataDefinition, tag);
-                }
-            }
-
-            String tag = getTagStarted(reader);
-
-            if (tag == null) {
-                continue;
-            }
-
-            addOtherElement(reader, dataDefinition, tag);
-        }
-
-        for (EntityHookDefinition hook : dataDefinition.getViewHooks()) {
-            hook.initialize(dataDefinition);
-        }
-
-        for (EntityHookDefinition hook : dataDefinition.getCopyHooks()) {
-            hook.initialize(dataDefinition);
-        }
-
-        for (EntityHookDefinition hook : dataDefinition.getSaveHooks()) {
-            hook.initialize(dataDefinition);
-        }
-
-        for (EntityHookDefinition hook : dataDefinition.getUpdateHooks()) {
-            hook.initialize(dataDefinition);
-        }
-
-        for (EntityHookDefinition hook : dataDefinition.getCreateHooks()) {
-            hook.initialize(dataDefinition);
-        }
-
-        for (EntityHookDefinition hook : dataDefinition.getValidators()) {
-            hook.initialize(dataDefinition);
-        }
-
-        for (FieldDefinition field : dataDefinition.getFields().values()) {
-            for (FieldHookDefinition hook : ((FieldDefinitionImpl) field).getValidators()) {
-                hook.initialize(dataDefinition, field);
-            }
-        }
+        });
 
         dataDefinitionService.save(dataDefinition);
 
         return dataDefinition;
     }
 
+    private void addAuditFields(final DataDefinitionImpl dataDefinition) {
+        dataDefinition.withField(getAuditFieldDefinition(dataDefinition, "createDate", new DateTimeType()));
+        dataDefinition.withField(getAuditFieldDefinition(dataDefinition, "updateDate", new DateTimeType()));
+        dataDefinition.withField(getAuditFieldDefinition(dataDefinition, "createUser", new StringType()));
+        dataDefinition.withField(getAuditFieldDefinition(dataDefinition, "updateUser", new StringType()));
+    }
+
+    private void parseFields(final XMLStreamReader reader, final DataDefinitionImpl dataDefinition) throws XMLStreamException,
+            HookInitializationException, ModelXmlParsingException {
+        parseElementChildren(reader, TAG_FIELDS, new ParseElementChildrenAction() {
+
+            @Override
+            public void apply(final String childTag) throws XMLStreamException, HookInitializationException,
+                    ModelXmlParsingException {
+                addFieldElement(reader, dataDefinition, childTag);
+            }
+        });
+    }
+
+    private void parseHooks(final XMLStreamReader reader, final DataDefinitionImpl dataDefinition) throws XMLStreamException,
+            HookInitializationException, ModelXmlParsingException {
+        parseElementChildren(reader, TAG_HOOKS, new ParseElementChildrenAction() {
+
+            @Override
+            public void apply(final String childTag) throws XMLStreamException, HookInitializationException,
+                    ModelXmlParsingException {
+                addHookElement(reader, dataDefinition, childTag);
+            }
+        });
+    }
+
+    public interface ParseElementChildrenAction {
+
+        void apply(final String childTag) throws XMLStreamException, HookInitializationException, ModelXmlParsingException;
+    }
+
+    private void parseElementChildren(final XMLStreamReader reader, final String tag, final ParseElementChildrenAction strategy)
+            throws XMLStreamException, HookInitializationException, ModelXmlParsingException {
+        while (reader.hasNext() && reader.next() > 0) {
+            if (isTagEnded(reader, tag)) {
+                break;
+            }
+
+            String childTag = getTagStarted(reader);
+            if (childTag != null) {
+                strategy.apply(childTag);
+            }
+        }
+    }
+
     private void addHookElement(final XMLStreamReader reader, final DataDefinitionImpl dataDefinition, final String tag)
             throws XMLStreamException, HookInitializationException, ModelXmlParsingException {
-        HooksTag hooksTag = HooksTag.valueOf(tag.toUpperCase(Locale.ENGLISH));
 
-        switch (hooksTag) {
-            case ONVIEW:
-                dataDefinition.addViewHook(getHookDefinition(reader));
-                break;
-            case ONCREATE:
-                dataDefinition.addCreateHook(getHookDefinition(reader));
-                break;
-            case ONUPDATE:
-                dataDefinition.addUpdateHook(getHookDefinition(reader));
-                break;
-            case ONSAVE:
-                dataDefinition.addSaveHook(getHookDefinition(reader));
-                break;
-            case ONCOPY:
-                dataDefinition.addCopyHook(getHookDefinition(reader));
-                break;
-            case VALIDATESWITH:
-                dataDefinition.addValidatorHook(new CustomEntityValidator(getHookDefinition(reader)));
-                break;
-            default:
-                throw new ModelXmlParsingException("Illegal type of model's hook '" + hooksTag + "'");
+        final HooksTag hooksTag;
+        try {
+            hooksTag = HooksTag.valueOf(tag.toUpperCase(Locale.ENGLISH));
+        } catch (Exception e) {
+            throw new ModelXmlParsingException("Illegal type of model's hook '" + tag + "'");
         }
+
+        EntityHookDefinition hookDefinition = getHookDefinition(reader);
+        if (HooksTag.VALIDATESWITH.equals(hooksTag)) {
+            hookDefinition = new CustomEntityValidator(hookDefinition);
+        }
+
+        dataDefinition.addHook(hooksTag, hookDefinition);
     }
 
     private void addOtherElement(final XMLStreamReader reader, final DataDefinitionImpl dataDefinition, final String tag)
@@ -325,6 +303,9 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
         dataDefinition.setUpdatable(getBooleanAttribute(reader, "updatable", true));
         dataDefinition.setActivable(getBooleanAttribute(reader, "activable", false));
         dataDefinition.setAuditable(getBooleanAttribute(reader, "auditable", false));
+        if (dataDefinition.isAuditable()) {
+            addAuditFields(dataDefinition);
+        }
         dataDefinition.setFullyQualifiedClassName(ClassNameUtils.getFullyQualifiedClassName(pluginIdentifier, modelName));
         return dataDefinition;
     }

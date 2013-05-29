@@ -32,7 +32,7 @@
 		<decimal name="fieldDecimal" />
 		<belongsTo name="fieldFirstEntity" model="firstEntity" />
 		<manyToMany name="fieldManyToMany" model="firstEntity"
-			cascade="nullify" />
+			cascade="delete" joinField="fieldManyToMany" />
 	</fields>
 	<hooks />
 </model>

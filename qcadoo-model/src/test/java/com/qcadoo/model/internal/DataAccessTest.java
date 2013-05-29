@@ -29,9 +29,6 @@ import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
 
-import org.aspectj.lang.annotation.AfterReturning;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Pointcut;
 import org.hibernate.Criteria;
 import org.hibernate.classic.Session;
 import org.hibernate.criterion.Criterion;
@@ -45,9 +42,11 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.aspectj.AnnotationTransactionAspect;
 
 import com.qcadoo.model.TransactionMockAwareTest;
+import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.DictionaryService;
 import com.qcadoo.model.api.search.SearchRestrictions;
+import com.qcadoo.model.api.types.FieldType;
 import com.qcadoo.model.api.types.HasManyType;
 import com.qcadoo.model.api.types.TreeType;
 import com.qcadoo.model.beans.sample.SampleParentDatabaseObject;
@@ -169,92 +168,11 @@ public abstract class DataAccessTest extends TransactionMockAwareTest {
         SearchRestrictions restrictions = new SearchRestrictions();
         ReflectionTestUtils.setField(restrictions, "dataAccessService", dataAccessService);
 
-        treeDataDefinition = new DataDefinitionImpl("tree", "tree.entity", dataAccessService);
-        given(dataDefinitionService.get("tree", "entity")).willReturn(treeDataDefinition);
+        buildParentDataDefinition();
 
-        parentDataDefinition = new DataDefinitionImpl("parent", "parent.entity", dataAccessService);
-        given(dataDefinitionService.get("parent", "entity")).willReturn(parentDataDefinition);
+        buildTreeDataDefinition();
 
-        dataDefinition = new DataDefinitionImpl("simple", "simple.entity", dataAccessService);
-        given(dataDefinitionService.get("simple", "entity")).willReturn(dataDefinition);
-
-        parentFieldDefinitionName = new FieldDefinitionImpl(null, "name");
-        parentFieldDefinitionName.withType(new StringType());
-
-        parentFieldDefinitionHasMany = new FieldDefinitionImpl(null, "entities");
-        parentFieldDefinitionHasMany.withType(new HasManyEntitiesType("simple", "entity", "belongsTo",
-                HasManyType.Cascade.DELETE, false, dataDefinitionService));
-
-        parentFieldDefinitionTree = new FieldDefinitionImpl(null, "tree");
-        parentFieldDefinitionTree.withType(new TreeEntitiesType("tree", "entity", "owner", TreeType.Cascade.DELETE, false,
-                dataDefinitionService));
-
-        parentDataDefinition.withField(parentFieldDefinitionName);
-        parentDataDefinition.withField(parentFieldDefinitionHasMany);
-        parentDataDefinition.withField(parentFieldDefinitionTree);
-        parentDataDefinition.setFullyQualifiedClassName(SampleParentDatabaseObject.class.getCanonicalName());
-
-        treeFieldDefinitionName = new FieldDefinitionImpl(null, "name");
-        treeFieldDefinitionName.withType(new StringType());
-
-        treeFieldDefinitionChildren = new FieldDefinitionImpl(null, "children");
-        treeFieldDefinitionChildren.withType(new HasManyEntitiesType("tree", "entity", "parent", HasManyType.Cascade.DELETE,
-                false, dataDefinitionService));
-
-        treeFieldDefinitionParent = new FieldDefinitionImpl(null, "parent");
-        treeFieldDefinitionParent.withType(new BelongsToEntityType("tree", "entity", dataDefinitionService, false, true));
-
-        treeFieldDefinitionOwner = new FieldDefinitionImpl(null, "owner");
-        treeFieldDefinitionOwner.withType(new BelongsToEntityType("parent", "entity", dataDefinitionService, false, true));
-
-        treeDataDefinition.withField(treeFieldDefinitionName);
-        treeDataDefinition.withField(treeFieldDefinitionChildren);
-        treeDataDefinition.withField(treeFieldDefinitionParent);
-        treeDataDefinition.withField(treeFieldDefinitionOwner);
-        treeDataDefinition.setFullyQualifiedClassName(SampleTreeDatabaseObject.class.getCanonicalName());
-
-        fieldDefinitionBelongsTo = new FieldDefinitionImpl(null, "belongsTo");
-        fieldDefinitionBelongsTo.withType(new BelongsToEntityType("parent", "entity", dataDefinitionService, false, true));
-
-        fieldDefinitionBelongsToSimple = new FieldDefinitionImpl(null, "belongsToSimple");
-        fieldDefinitionBelongsToSimple.withType(new BelongsToEntityType("simple", "entity", dataDefinitionService, false, true));
-
-        fieldDefinitionLazyBelongsTo = new FieldDefinitionImpl(null, "lazyBelongsTo");
-        fieldDefinitionLazyBelongsTo.withType(new BelongsToEntityType("parent", "entity", dataDefinitionService, true, true));
-
-        fieldDefinitionName = new FieldDefinitionImpl(null, "name");
-        fieldDefinitionName.withType(new StringType());
-
-        fieldDefinitionReadOnly = new FieldDefinitionImpl(null, "readOnly");
-        fieldDefinitionReadOnly.withType(new StringType());
-        fieldDefinitionReadOnly.withReadOnly(true);
-
-        fieldDefinitionAge = new FieldDefinitionImpl(null, "age");
-        fieldDefinitionAge.withType(new IntegerType());
-
-        fieldDefinitionPriority = new FieldDefinitionImpl(null, "priority");
-        fieldDefinitionPriority.withType(new PriorityType(fieldDefinitionBelongsTo));
-        fieldDefinitionPriority.withReadOnly(true);
-
-        fieldDefinitionMoney = new FieldDefinitionImpl(null, "money");
-        fieldDefinitionMoney.withType(new DecimalType());
-
-        fieldDefinitionRetired = new FieldDefinitionImpl(null, "retired");
-        fieldDefinitionRetired.withType(new BooleanType());
-
-        fieldDefinitionBirthDate = new FieldDefinitionImpl(null, "birthDate");
-        fieldDefinitionBirthDate.withType(new DateType());
-
-        dataDefinition.withField(fieldDefinitionReadOnly);
-        dataDefinition.withField(fieldDefinitionName);
-        dataDefinition.withField(fieldDefinitionAge);
-        dataDefinition.withField(fieldDefinitionMoney);
-        dataDefinition.withField(fieldDefinitionRetired);
-        dataDefinition.withField(fieldDefinitionBirthDate);
-        dataDefinition.withField(fieldDefinitionBelongsTo);
-        dataDefinition.withField(fieldDefinitionBelongsToSimple);
-        dataDefinition.withField(fieldDefinitionLazyBelongsTo);
-        dataDefinition.setFullyQualifiedClassName(SampleSimpleDatabaseObject.class.getCanonicalName());
+        buildDataDefinition();
 
         given(hibernateService.getCurrentSession()).willReturn(session);
 
@@ -268,18 +186,92 @@ public abstract class DataAccessTest extends TransactionMockAwareTest {
 
     }
 
-    @Aspect
-    public static class DefaultPluginIdentifierAspect {
+    private void buildParentDataDefinition() {
+        parentDataDefinition = new DataDefinitionImpl("parent", "parent.entity", dataAccessService);
+        given(dataDefinitionService.get("parent", "entity")).willReturn(parentDataDefinition);
 
-        @Pointcut("call(com.qcadoo.model.internal.FieldDefinitionImpl+.new(..)) && within(DataAccessTest+)")
-        public void fieldDefinitionInstantiation() {
-        }
+        parentFieldDefinitionName = buildFieldDefinition("name", parentDataDefinition, new StringType());
 
-        @AfterReturning(value = "fieldDefinitionInstantiation()", returning = "fieldDefinition")
-        public void applyDefaultPluginIdentifier(final FieldDefinitionImpl fieldDefinition) {
-            fieldDefinition.setPluginIdentifier(PLUGIN_IDENTIFIER);
-        }
+        parentFieldDefinitionHasMany = buildFieldDefinition("entities", parentDataDefinition, new HasManyEntitiesType("simple",
+                "entity", "belongsTo", HasManyType.Cascade.DELETE, false, dataDefinitionService));
 
+        parentFieldDefinitionTree = buildFieldDefinition("tree", parentDataDefinition, new TreeEntitiesType("tree", "entity",
+                "owner", TreeType.Cascade.DELETE, false, dataDefinitionService));
+
+        parentDataDefinition.withField(parentFieldDefinitionName);
+        parentDataDefinition.withField(parentFieldDefinitionHasMany);
+        parentDataDefinition.withField(parentFieldDefinitionTree);
+        parentDataDefinition.setFullyQualifiedClassName(SampleParentDatabaseObject.class.getCanonicalName());
+    }
+
+    private void buildDataDefinition() {
+        dataDefinition = new DataDefinitionImpl("simple", "simple.entity", dataAccessService);
+        given(dataDefinitionService.get("simple", "entity")).willReturn(dataDefinition);
+
+        fieldDefinitionBelongsTo = buildFieldDefinition("belongsTo", dataDefinition, new BelongsToEntityType("parent", "entity",
+                dataDefinitionService, false, true));
+
+        fieldDefinitionBelongsToSimple = buildFieldDefinition("belongsToSimple", dataDefinition, new BelongsToEntityType(
+                "simple", "entity", dataDefinitionService, false, true));
+
+        fieldDefinitionLazyBelongsTo = buildFieldDefinition("lazyBelongsTo", dataDefinition, new BelongsToEntityType("parent",
+                "entity", dataDefinitionService, true, true));
+
+        fieldDefinitionName = buildFieldDefinition("name", dataDefinition, new StringType());
+
+        fieldDefinitionReadOnly = buildFieldDefinition("readOnly", dataDefinition, new StringType());
+        fieldDefinitionReadOnly.withReadOnly(true);
+
+        fieldDefinitionAge = buildFieldDefinition("age", dataDefinition, new IntegerType());
+
+        fieldDefinitionPriority = buildFieldDefinition("priority", dataDefinition, new PriorityType(fieldDefinitionBelongsTo));
+        fieldDefinitionPriority.withReadOnly(true);
+
+        fieldDefinitionMoney = buildFieldDefinition("money", dataDefinition, new DecimalType());
+
+        fieldDefinitionRetired = buildFieldDefinition("retired", dataDefinition, new BooleanType());
+
+        fieldDefinitionBirthDate = buildFieldDefinition("birthDate", dataDefinition, new DateType());
+
+        dataDefinition.withField(fieldDefinitionReadOnly);
+        dataDefinition.withField(fieldDefinitionName);
+        dataDefinition.withField(fieldDefinitionAge);
+        dataDefinition.withField(fieldDefinitionMoney);
+        dataDefinition.withField(fieldDefinitionRetired);
+        dataDefinition.withField(fieldDefinitionBirthDate);
+        dataDefinition.withField(fieldDefinitionBelongsTo);
+        dataDefinition.withField(fieldDefinitionBelongsToSimple);
+        dataDefinition.withField(fieldDefinitionLazyBelongsTo);
+        dataDefinition.setFullyQualifiedClassName(SampleSimpleDatabaseObject.class.getCanonicalName());
+    }
+
+    private void buildTreeDataDefinition() {
+        treeDataDefinition = new DataDefinitionImpl("tree", "tree.entity", dataAccessService);
+        given(dataDefinitionService.get("tree", "entity")).willReturn(treeDataDefinition);
+
+        treeFieldDefinitionName = buildFieldDefinition("name", treeDataDefinition, new StringType());
+
+        treeFieldDefinitionChildren = buildFieldDefinition("children", treeDataDefinition, new HasManyEntitiesType("tree",
+                "entity", "parent", HasManyType.Cascade.DELETE, false, dataDefinitionService));
+
+        treeFieldDefinitionParent = buildFieldDefinition("parent", treeDataDefinition, new BelongsToEntityType("tree", "entity",
+                dataDefinitionService, false, true));
+
+        treeFieldDefinitionOwner = buildFieldDefinition("owner", treeDataDefinition, new BelongsToEntityType("parent", "entity",
+                dataDefinitionService, false, true));
+
+        treeDataDefinition.withField(treeFieldDefinitionName);
+        treeDataDefinition.withField(treeFieldDefinitionChildren);
+        treeDataDefinition.withField(treeFieldDefinitionParent);
+        treeDataDefinition.withField(treeFieldDefinitionOwner);
+        treeDataDefinition.setFullyQualifiedClassName(SampleTreeDatabaseObject.class.getCanonicalName());
+    }
+
+    private FieldDefinitionImpl buildFieldDefinition(final String name, final DataDefinition owningDataDefinition,
+            final FieldType type) {
+        FieldDefinitionImpl fieldDefinition = new FieldDefinitionImpl(owningDataDefinition, name).withType(type);
+        fieldDefinition.setPluginIdentifier(PLUGIN_IDENTIFIER);
+        return fieldDefinition;
     }
 
 }

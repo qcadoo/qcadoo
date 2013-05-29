@@ -24,6 +24,7 @@
 package com.qcadoo.model.integration;
 
 import static com.qcadoo.model.integration.VerifyHooks.HookType.CREATE;
+import static com.qcadoo.model.integration.VerifyHooks.HookType.DELETE;
 
 import java.util.Map;
 
@@ -36,25 +37,40 @@ public class VerifyHooks {
     private static final String READ_ONLY_FIELD_NAME = "readOnly";
 
     public enum HookType {
-        SAVE, CREATE, UPDATE, COPY;
+        SAVE, CREATE, UPDATE, COPY, DELETE;
     }
 
     private Map<HookType, Integer> interactions = Maps.newHashMapWithExpectedSize(HookType.values().length);
 
     public void onSave(final DataDefinition dataDefinition, final Entity entity) {
-        noticeInteraction(HookType.SAVE);
+        registerInteraction(HookType.SAVE);
     }
 
     public void onUpdate(final DataDefinition dataDefinition, final Entity entity) {
-        noticeInteraction(HookType.UPDATE);
+        registerInteraction(HookType.UPDATE);
     }
 
     public void onCopy(final DataDefinition dataDefinition, final Entity entity) {
-        noticeInteraction(HookType.COPY);
+        registerInteraction(HookType.COPY);
     }
 
     public void onCreate(final DataDefinition dataDefinition, final Entity entity) {
-        noticeInteraction(CREATE);
+        registerInteraction(CREATE);
+    }
+
+    public boolean onDeleteReturningFalse(final DataDefinition dataDefinition, final Entity entity) {
+        registerInteraction(DELETE);
+        return false;
+    }
+
+    public boolean onDeleteUsingBooleanField(final DataDefinition dataDefinition, final Entity entity) {
+        registerInteraction(DELETE);
+        return entity.getBooleanField("deletionIsAllowed");
+    }
+
+    public boolean onDeleteUsingBooleanField2(final DataDefinition dataDefinition, final Entity entity) {
+        registerInteraction(DELETE);
+        return !entity.getBooleanField("deletionIsProhibited");
     }
 
     public void changeReadOnlyFieldOnSave(final DataDefinition dataDefinition, final Entity entity) {
@@ -84,7 +100,7 @@ public class VerifyHooks {
         return interactions.get(type);
     }
 
-    private void noticeInteraction(final HookType type) {
+    private void registerInteraction(final HookType type) {
         interactions.put(type, interactions.get(type) + 1);
     }
 }

@@ -43,13 +43,10 @@ import org.junit.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import com.qcadoo.model.api.Entity;
-import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.beans.sample.CustomEntityService;
 import com.qcadoo.model.beans.sample.SampleSimpleDatabaseObject;
 import com.qcadoo.model.internal.DataAccessTest;
 import com.qcadoo.model.internal.DefaultEntity;
-import com.qcadoo.model.internal.api.EntityHookDefinition;
-import com.qcadoo.model.internal.api.FieldHookDefinition;
 import com.qcadoo.model.internal.hooks.EntityHookDefinitionImpl;
 import com.qcadoo.model.internal.hooks.FieldHookDefinitionImpl;
 import com.qcadoo.model.internal.validators.CustomEntityValidator;
@@ -94,7 +91,7 @@ public class ValidatorTest extends DataAccessTest {
         Entity entity = new DefaultEntity(dataDefinition);
         entity.setField("age", "");
 
-        fieldDefinitionAge.withValidator(initializeValidator(new RequiredValidator(), fieldDefinitionAge));
+        fieldDefinitionAge.withValidator(new RequiredValidator());
 
         // when
         entity = dataDefinition.save(entity);
@@ -116,7 +113,7 @@ public class ValidatorTest extends DataAccessTest {
         RequiredValidator requiredValidator = new RequiredValidator();
         requiredValidator.setErrorMessage("missing age");
 
-        fieldDefinitionAge.withValidator(initializeValidator(requiredValidator, fieldDefinitionAge));
+        fieldDefinitionAge.withValidator(requiredValidator);
 
         // when
         entity = dataDefinition.save(entity);
@@ -222,8 +219,8 @@ public class ValidatorTest extends DataAccessTest {
         entity.setField("name", "");
         entity.setField("age", null);
 
-        fieldDefinitionName.withValidator(initializeValidator(new RequiredValidator(), fieldDefinitionName));
-        fieldDefinitionAge.withValidator(initializeValidator(new RequiredValidator(), fieldDefinitionAge));
+        fieldDefinitionName.withValidator(new RequiredValidator());
+        fieldDefinitionAge.withValidator(new RequiredValidator());
 
         // when
         entity = dataDefinition.save(entity);
@@ -239,7 +236,7 @@ public class ValidatorTest extends DataAccessTest {
         Entity entity = new DefaultEntity(dataDefinition);
         entity.setField("name", "qwerty");
 
-        fieldDefinitionName.withValidator(initializeValidator(new LengthValidator(null, null, 5), fieldDefinitionName));
+        fieldDefinitionName.withValidator(new LengthValidator(null, null, 5));
 
         // when
         entity = dataDefinition.save(entity);
@@ -255,7 +252,7 @@ public class ValidatorTest extends DataAccessTest {
         Entity entity = new DefaultEntity(dataDefinition);
         entity.setField("name", "ddd");
 
-        fieldDefinitionName.withValidator(initializeValidator(new RangeValidator("a", "c", true), fieldDefinitionName));
+        fieldDefinitionName.withValidator(new RangeValidator("a", "c", true));
 
         // when
         entity = dataDefinition.save(entity);
@@ -271,7 +268,7 @@ public class ValidatorTest extends DataAccessTest {
         Entity entity = new DefaultEntity(dataDefinition);
         entity.setField("name", "bbb");
 
-        fieldDefinitionName.withValidator(initializeValidator(new RangeValidator("a", "c", true), fieldDefinitionName));
+        fieldDefinitionName.withValidator(new RangeValidator("a", "c", true));
 
         // when
         entity = dataDefinition.save(entity);
@@ -287,7 +284,7 @@ public class ValidatorTest extends DataAccessTest {
         Entity entity = new DefaultEntity(dataDefinition);
         entity.setField("age", "11");
 
-        fieldDefinitionAge.withValidator(initializeValidator(new RangeValidator(null, 10, true), fieldDefinitionAge));
+        fieldDefinitionAge.withValidator(new RangeValidator(null, 10, true));
 
         // when
         entity = dataDefinition.save(entity);
@@ -303,7 +300,7 @@ public class ValidatorTest extends DataAccessTest {
         Entity entity = new DefaultEntity(dataDefinition);
         entity.setField("age", 5);
 
-        fieldDefinitionAge.withValidator(initializeValidator(new RangeValidator(4, null, true), fieldDefinitionAge));
+        fieldDefinitionAge.withValidator(new RangeValidator(4, null, true));
 
         // when
         entity = dataDefinition.save(entity);
@@ -319,7 +316,7 @@ public class ValidatorTest extends DataAccessTest {
         Entity entity = new DefaultEntity(dataDefinition);
         entity.setField("money", "31.22");
 
-        fieldDefinitionMoney.withValidator(initializeValidator(new RangeValidator(40, 50, true), fieldDefinitionMoney));
+        fieldDefinitionMoney.withValidator(new RangeValidator(40, 50, true));
 
         // when
         entity = dataDefinition.save(entity);
@@ -335,7 +332,7 @@ public class ValidatorTest extends DataAccessTest {
         Entity entity = new DefaultEntity(dataDefinition);
         entity.setField("money", "31.22");
 
-        fieldDefinitionMoney.withValidator(initializeValidator(new RangeValidator(30, 40, true), fieldDefinitionMoney));
+        fieldDefinitionMoney.withValidator(new RangeValidator(30, 40, true));
 
         // when
         entity = dataDefinition.save(entity);
@@ -351,8 +348,7 @@ public class ValidatorTest extends DataAccessTest {
         Entity entity = new DefaultEntity(dataDefinition);
         entity.setField("birthDate", "2010-01-01");
 
-        fieldDefinitionBirthDate.withValidator(initializeValidator(new RangeValidator(new Date(), new Date(), true),
-                fieldDefinitionBirthDate));
+        fieldDefinitionBirthDate.withValidator(new RangeValidator(new Date(), new Date(), true));
 
         // when
         entity = dataDefinition.save(entity);
@@ -368,8 +364,7 @@ public class ValidatorTest extends DataAccessTest {
         Entity entity = new DefaultEntity(dataDefinition);
         entity.setField("birthDate", "2010-01-01");
 
-        fieldDefinitionBirthDate.withValidator(initializeValidator(new RangeValidator(null, new Date(), true),
-                fieldDefinitionBirthDate));
+        fieldDefinitionBirthDate.withValidator(new RangeValidator(null, new Date(), true));
 
         // when
         entity = dataDefinition.save(entity);
@@ -385,7 +380,7 @@ public class ValidatorTest extends DataAccessTest {
         Entity entity = new DefaultEntity(dataDefinition);
         entity.setField("retired", "false");
 
-        fieldDefinitionRetired.withValidator(initializeValidator(new RangeValidator(true, true, true), fieldDefinitionRetired));
+        fieldDefinitionRetired.withValidator(new RangeValidator(true, true, true));
 
         // when
         entity = dataDefinition.save(entity);
@@ -401,7 +396,7 @@ public class ValidatorTest extends DataAccessTest {
         Entity entity = new DefaultEntity(dataDefinition);
         entity.setField("age", 123456);
 
-        fieldDefinitionAge.withValidator(initializeValidator(new UnscaledValueValidator(null, null, 5), fieldDefinitionAge));
+        fieldDefinitionAge.withValidator(new UnscaledValueValidator(null, null, 5));
 
         // when
         entity = dataDefinition.save(entity);
@@ -417,7 +412,7 @@ public class ValidatorTest extends DataAccessTest {
         Entity entity = new DefaultEntity(dataDefinition);
         entity.setField("name", "Qcadoo Framework RLZ!");
 
-        fieldDefinitionName.withValidator(initializeValidator(new UnscaledValueValidator(null, 1, null), fieldDefinitionName));
+        fieldDefinitionName.withValidator(new UnscaledValueValidator(null, 1, null));
 
         // when
         entity = dataDefinition.save(entity);
@@ -433,7 +428,7 @@ public class ValidatorTest extends DataAccessTest {
         Entity entity = new DefaultEntity(dataDefinition);
         entity.setField("name", "Qcadoo Framework RLZ!");
 
-        fieldDefinitionName.withValidator(initializeValidator(new ScaleValidator(null, 1, null), fieldDefinitionName));
+        fieldDefinitionName.withValidator(new ScaleValidator(null, 1, null));
 
         // when
         entity = dataDefinition.save(entity);
@@ -449,7 +444,7 @@ public class ValidatorTest extends DataAccessTest {
         Entity entity = new DefaultEntity(dataDefinition);
         entity.setField("money", new BigDecimal("123.456"));
 
-        fieldDefinitionMoney.withValidator(initializeValidator(new LengthValidator(null, 1, null), fieldDefinitionMoney));
+        fieldDefinitionMoney.withValidator(new LengthValidator(null, 1, null));
 
         // when
         entity = dataDefinition.save(entity);
@@ -465,7 +460,7 @@ public class ValidatorTest extends DataAccessTest {
         Entity entity = new DefaultEntity(dataDefinition);
         entity.setField("age", new Integer("123456"));
 
-        fieldDefinitionAge.withValidator(initializeValidator(new LengthValidator(null, 1, null), fieldDefinitionAge));
+        fieldDefinitionAge.withValidator(new LengthValidator(null, 1, null));
 
         // when
         entity = dataDefinition.save(entity);
@@ -481,8 +476,8 @@ public class ValidatorTest extends DataAccessTest {
         Entity entity = new DefaultEntity(dataDefinition);
         entity.setField("money", new BigDecimal("123.456"));
 
-        fieldDefinitionMoney.withValidator(initializeValidator(new ScaleValidator(null, null, 2), fieldDefinitionMoney))
-                .withValidator(initializeValidator(new UnscaledValueValidator(null, null, 4), fieldDefinitionMoney));
+        fieldDefinitionMoney.withValidator(new ScaleValidator(null, null, 2)).withValidator(
+                new UnscaledValueValidator(null, null, 4));
 
         // when
         entity = dataDefinition.save(entity);
@@ -498,7 +493,7 @@ public class ValidatorTest extends DataAccessTest {
         Entity entity = new DefaultEntity(dataDefinition);
         entity.setField("money", new BigDecimal("123.45"));
 
-        fieldDefinitionMoney.withValidator(initializeValidator(new UnscaledValueValidator(5, null, null), fieldDefinitionMoney));
+        fieldDefinitionMoney.withValidator(new UnscaledValueValidator(5, null, null));
 
         // when
         entity = dataDefinition.save(entity);
@@ -514,7 +509,7 @@ public class ValidatorTest extends DataAccessTest {
         Entity entity = new DefaultEntity(dataDefinition);
         entity.setField("age", new Integer("123"));
 
-        fieldDefinitionAge.withValidator(initializeValidator(new UnscaledValueValidator(5, null, null), fieldDefinitionAge));
+        fieldDefinitionAge.withValidator(new UnscaledValueValidator(5, null, null));
 
         // when
         entity = dataDefinition.save(entity);
@@ -530,7 +525,7 @@ public class ValidatorTest extends DataAccessTest {
         Entity entity = new DefaultEntity(dataDefinition);
         entity.setField("money", new BigDecimal("123.45"));
 
-        fieldDefinitionMoney.withValidator(initializeValidator(new ScaleValidator(3, null, null), fieldDefinitionMoney));
+        fieldDefinitionMoney.withValidator(new ScaleValidator(3, null, null));
 
         // when
         entity = dataDefinition.save(entity);
@@ -546,7 +541,7 @@ public class ValidatorTest extends DataAccessTest {
         Entity entity = new DefaultEntity(dataDefinition);
         entity.setField("money", new BigDecimal("123.45"));
 
-        fieldDefinitionMoney.withValidator(initializeValidator(new ScaleValidator(null, 4, null), fieldDefinitionMoney));
+        fieldDefinitionMoney.withValidator(new ScaleValidator(null, 4, null));
 
         // when
         entity = dataDefinition.save(entity);
@@ -562,7 +557,7 @@ public class ValidatorTest extends DataAccessTest {
         Entity entity = new DefaultEntity(dataDefinition);
         entity.setField("age", new Integer("123"));
 
-        fieldDefinitionAge.withValidator(initializeValidator(new UnscaledValueValidator(null, 4, null), fieldDefinitionAge));
+        fieldDefinitionAge.withValidator(new UnscaledValueValidator(null, 4, null));
 
         // when
         entity = dataDefinition.save(entity);
@@ -578,7 +573,7 @@ public class ValidatorTest extends DataAccessTest {
         Entity entity = new DefaultEntity(dataDefinition);
         entity.setField("money", new BigDecimal("123.45"));
 
-        fieldDefinitionMoney.withValidator(initializeValidator(new UnscaledValueValidator(null, 4, null), fieldDefinitionMoney));
+        fieldDefinitionMoney.withValidator(new UnscaledValueValidator(null, 4, null));
 
         // when
         entity = dataDefinition.save(entity);
@@ -594,8 +589,8 @@ public class ValidatorTest extends DataAccessTest {
         Entity entity = new DefaultEntity(dataDefinition);
         entity.setField("money", new BigDecimal("123.4"));
 
-        fieldDefinitionMoney.withValidator(initializeValidator(new UnscaledValueValidator(null, null, 3), fieldDefinitionMoney))
-                .withValidator(initializeValidator(new ScaleValidator(null, null, 1), fieldDefinitionMoney));
+        fieldDefinitionMoney.withValidator(new UnscaledValueValidator(null, null, 3)).withValidator(
+                new ScaleValidator(null, null, 1));
 
         // when
         entity = dataDefinition.save(entity);
@@ -611,7 +606,7 @@ public class ValidatorTest extends DataAccessTest {
         Entity entity = new DefaultEntity(dataDefinition);
         entity.setField("name", "Qcadoo Framework RLZ!");
 
-        fieldDefinitionName.withValidator(initializeValidator(new LengthValidator(null, 4, null), fieldDefinitionName));
+        fieldDefinitionName.withValidator(new LengthValidator(null, 4, null));
 
         // when
         entity = dataDefinition.save(entity);
@@ -627,7 +622,7 @@ public class ValidatorTest extends DataAccessTest {
         Entity entity = new DefaultEntity(dataDefinition);
         entity.setField("name", "Qcadoo Framework RLZ!");
 
-        fieldDefinitionName.withValidator(initializeValidator(new LengthValidator(50, null, null), fieldDefinitionName));
+        fieldDefinitionName.withValidator(new LengthValidator(50, null, null));
 
         // when
         entity = dataDefinition.save(entity);
@@ -643,7 +638,7 @@ public class ValidatorTest extends DataAccessTest {
         Entity entity = new DefaultEntity(dataDefinition);
         entity.setField("retired", false);
 
-        fieldDefinitionRetired.withValidator(initializeValidator(new LengthValidator(null, null, 0), fieldDefinitionRetired));
+        fieldDefinitionRetired.withValidator(new LengthValidator(null, null, 0));
 
         // when
         entity = dataDefinition.save(entity);
@@ -659,7 +654,7 @@ public class ValidatorTest extends DataAccessTest {
         Entity entity = new DefaultEntity(dataDefinition);
         entity.setField("birthDate", "2010-01-01");
 
-        fieldDefinitionBirthDate.withValidator(initializeValidator(new LengthValidator(null, null, 0), fieldDefinitionBirthDate));
+        fieldDefinitionBirthDate.withValidator(new LengthValidator(null, null, 0));
 
         // when
         entity = dataDefinition.save(entity);
@@ -675,7 +670,7 @@ public class ValidatorTest extends DataAccessTest {
         Entity entity = new DefaultEntity(dataDefinition);
         entity.setField("name", "qwert");
 
-        fieldDefinitionName.withValidator(initializeValidator(new LengthValidator(null, null, 5), fieldDefinitionName));
+        fieldDefinitionName.withValidator(new LengthValidator(null, null, 5));
 
         // when
         entity = dataDefinition.save(entity);
@@ -693,7 +688,7 @@ public class ValidatorTest extends DataAccessTest {
 
         given(criteria.uniqueResult()).willReturn(0);
 
-        fieldDefinitionName.withValidator(initializeValidator(new UniqueValidator(), fieldDefinitionName));
+        fieldDefinitionName.withValidator(new UniqueValidator());
 
         // when
         entity = dataDefinition.save(entity);
@@ -714,7 +709,7 @@ public class ValidatorTest extends DataAccessTest {
         given(session.get(SampleSimpleDatabaseObject.class, 1L)).willReturn(databaseObject);
         given(criteria.uniqueResult()).willReturn(0);
 
-        fieldDefinitionName.withValidator(initializeValidator(new UniqueValidator(), fieldDefinitionName));
+        fieldDefinitionName.withValidator(new UniqueValidator());
 
         // when
         entity = dataDefinition.save(entity);
@@ -734,7 +729,7 @@ public class ValidatorTest extends DataAccessTest {
         given(hibernateService.getTotalNumberOfEntities(any(Criteria.class))).willReturn(1);
         given(hibernateService.list(any(Criteria.class))).willReturn((List) Collections.singletonList(entity));
 
-        fieldDefinitionName.withValidator(initializeValidator(new UniqueValidator(), fieldDefinitionName));
+        fieldDefinitionName.withValidator(new UniqueValidator());
 
         // when
         entity = dataDefinition.save(entity);
@@ -750,9 +745,8 @@ public class ValidatorTest extends DataAccessTest {
         Entity entity = new DefaultEntity(dataDefinition);
         entity.setField("name", "qwerty");
 
-        fieldDefinitionName.withValidator(initializeValidator(new CustomValidator(new FieldHookDefinitionImpl(
-                CustomEntityService.class.getName(), "isEqualToQwerty", PLUGIN_IDENTIFIER, applicationContext)),
-                fieldDefinitionName));
+        fieldDefinitionName.withValidator(new CustomValidator(new FieldHookDefinitionImpl(CustomEntityService.class.getName(),
+                "isEqualToQwerty", PLUGIN_IDENTIFIER, applicationContext)));
 
         // when
         entity = dataDefinition.save(entity);
@@ -768,9 +762,8 @@ public class ValidatorTest extends DataAccessTest {
         Entity entity = new DefaultEntity(dataDefinition);
         entity.setField("name", "qwert");
 
-        fieldDefinitionName.withValidator(initializeValidator(new CustomValidator(new FieldHookDefinitionImpl(
-                CustomEntityService.class.getName(), "isEqualToQwerty", PLUGIN_IDENTIFIER, applicationContext)),
-                fieldDefinitionName));
+        fieldDefinitionName.withValidator(new CustomValidator(new FieldHookDefinitionImpl(CustomEntityService.class.getName(),
+                "isEqualToQwerty", PLUGIN_IDENTIFIER, applicationContext)));
 
         // when
         entity = dataDefinition.save(entity);
@@ -808,8 +801,8 @@ public class ValidatorTest extends DataAccessTest {
         entity.setField("name", "Mr");
         entity.setField("age", "18");
 
-        dataDefinition.addValidatorHook(initializeValidator(new CustomEntityValidator(new EntityHookDefinitionImpl(
-                CustomEntityService.class.getName(), "hasAge18AndNameMrT", PLUGIN_IDENTIFIER, applicationContext))));
+        dataDefinition.addValidatorHook(new CustomEntityValidator(new EntityHookDefinitionImpl(CustomEntityService.class
+                .getName(), "hasAge18AndNameMrT", PLUGIN_IDENTIFIER, applicationContext)));
 
         // when
         entity = dataDefinition.save(entity);
@@ -825,7 +818,7 @@ public class ValidatorTest extends DataAccessTest {
         Entity entity = new DefaultEntity(dataDefinition);
         entity.setField("name", "Qcadoo Framework RLZ!");
 
-        fieldDefinitionName.withValidator(initializeValidator(new RegexValidator(".*MES.*"), fieldDefinitionName));
+        fieldDefinitionName.withValidator(new RegexValidator(".*MES.*"));
 
         // when
         entity = dataDefinition.save(entity);
@@ -841,7 +834,7 @@ public class ValidatorTest extends DataAccessTest {
         Entity entity = new DefaultEntity(dataDefinition);
         entity.setField("name", "Qcadoo Framework RLZ!");
 
-        fieldDefinitionName.withValidator(initializeValidator(new RegexValidator("^Qcadoo.*"), fieldDefinitionName));
+        fieldDefinitionName.withValidator(new RegexValidator("^Qcadoo.*"));
 
         // when
         entity = dataDefinition.save(entity);
@@ -855,8 +848,8 @@ public class ValidatorTest extends DataAccessTest {
     public final void shouldNotCallEntityValidatorIfSourcePluginIsNotEnabled() throws Exception {
         // given
         Entity entity = new DefaultEntity(dataDefinition);
-        dataDefinition.addValidatorHook(initializeValidator(new CustomEntityValidator(new EntityHookDefinitionImpl(
-                CustomEntityService.class.getName(), "hasAge18AndNameMrT", PLUGIN_IDENTIFIER, applicationContext))));
+        dataDefinition.addValidatorHook(new CustomEntityValidator(new EntityHookDefinitionImpl(CustomEntityService.class
+                .getName(), "hasAge18AndNameMrT", PLUGIN_IDENTIFIER, applicationContext)));
 
         PluginStateResolver pluginStateResolver = mock(PluginStateResolver.class);
         PluginUtilsService pluginUtil = new PluginUtilsService();
@@ -879,8 +872,8 @@ public class ValidatorTest extends DataAccessTest {
         entity.setField("age", 24);
         entity.setField("name", "Fantomas");
 
-        dataDefinition.addValidatorHook(initializeValidator(new CustomEntityValidator(new EntityHookDefinitionImpl(
-                CustomEntityService.class.getName(), "hasAge18AndNameMrT", PLUGIN_IDENTIFIER, applicationContext))));
+        dataDefinition.addValidatorHook(new CustomEntityValidator(new EntityHookDefinitionImpl(CustomEntityService.class
+                .getName(), "hasAge18AndNameMrT", PLUGIN_IDENTIFIER, applicationContext)));
 
         PluginStateResolver pluginStateResolver = mock(PluginStateResolver.class);
         PluginUtilsService pluginUtil = new PluginUtilsService();
@@ -901,9 +894,8 @@ public class ValidatorTest extends DataAccessTest {
         // given
         Entity entity = new DefaultEntity(dataDefinition);
         entity.setField("name", "EverythingButNotQWERTY :)");
-        fieldDefinitionName.withValidator(initializeValidator(new CustomValidator(new FieldHookDefinitionImpl(
-                CustomEntityService.class.getName(), "isEqualToQwerty", PLUGIN_IDENTIFIER, applicationContext)),
-                fieldDefinitionName));
+        fieldDefinitionName.withValidator(new CustomValidator(new FieldHookDefinitionImpl(CustomEntityService.class.getName(),
+                "isEqualToQwerty", PLUGIN_IDENTIFIER, applicationContext)));
 
         PluginStateResolver pluginStateResolver = mock(PluginStateResolver.class);
         PluginUtilsService pluginUtil = new PluginUtilsService();
@@ -925,9 +917,8 @@ public class ValidatorTest extends DataAccessTest {
         Entity entity = new DefaultEntity(dataDefinition);
         entity.setField("name", "not equals to qwerty string");
 
-        fieldDefinitionName.withValidator(initializeValidator(new CustomValidator(new FieldHookDefinitionImpl(
-                CustomEntityService.class.getName(), "isEqualToQwerty", PLUGIN_IDENTIFIER, applicationContext)),
-                fieldDefinitionName));
+        fieldDefinitionName.withValidator(new CustomValidator(new FieldHookDefinitionImpl(CustomEntityService.class.getName(),
+                "isEqualToQwerty", PLUGIN_IDENTIFIER, applicationContext)));
 
         PluginStateResolver pluginStateResolver = mock(PluginStateResolver.class);
         PluginUtilsService pluginUtil = new PluginUtilsService();
@@ -942,16 +933,6 @@ public class ValidatorTest extends DataAccessTest {
         // then
         verify(session, never()).save(any(SampleSimpleDatabaseObject.class));
         assertFalse(entity.isValid());
-    }
-
-    private FieldHookDefinition initializeValidator(final FieldHookDefinition fieldHook, final FieldDefinition fieldDefinition) {
-        fieldHook.initialize(dataDefinition, fieldDefinition);
-        return fieldHook;
-    }
-
-    private EntityHookDefinition initializeValidator(final EntityHookDefinition entityHook) {
-        entityHook.initialize(dataDefinition);
-        return entityHook;
     }
 
 }

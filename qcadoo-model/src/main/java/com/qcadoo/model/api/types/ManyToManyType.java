@@ -28,6 +28,6 @@ package com.qcadoo.model.api.types;
  * 
  * @since 0.4.9
  */
-public interface ManyToManyType extends FieldType, DataDefinitionHolder, JoinFieldHolder, Cascadeable {
+public interface ManyToManyType extends CollectionFieldType {
 
 }

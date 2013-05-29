@@ -28,15 +28,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import com.qcadoo.model.api.validators.ErrorMessage;
-
 /**
  * Object represents data from the database tables. All fields are aggregated into key-value map. The key is the name of the field
  * from its definition - {@link com.qcadoo.model.api.FieldDefinition#getName()}.
  * 
  * @since 0.4.0
  */
-public interface Entity {
+public interface Entity extends EntityMessagesHolder {
 
     /**
      * Set the entity's id.
@@ -180,51 +178,6 @@ public interface Entity {
      * @return field's values - name - value pairs
      */
     Map<String, Object> getFields();
-
-    /**
-     * Set global error, not related with fields.
-     * 
-     * @param message
-     *            message
-     * @param vars
-     *            message's vars
-     */
-    void addGlobalError(String message, String... vars);
-
-    /**
-     * Set error for given field.
-     * 
-     * @param fieldDefinition
-     *            field's definition
-     * @param message
-     *            message
-     * @param vars
-     *            message's vars
-     */
-    void addError(FieldDefinition fieldDefinition, String message, String... vars);
-
-    /**
-     * Return all global errors.
-     * 
-     * @return errors
-     */
-    List<ErrorMessage> getGlobalErrors();
-
-    /**
-     * Return all field's errors.
-     * 
-     * @return fields' errors
-     */
-    Map<String, ErrorMessage> getErrors();
-
-    /**
-     * Return error for given field.
-     * 
-     * @param fieldName
-     *            field's name
-     * @return field's error
-     */
-    ErrorMessage getError(String fieldName);
 
     /**
      * Return true if there is no global and field's errors.

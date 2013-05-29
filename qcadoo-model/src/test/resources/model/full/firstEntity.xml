@@ -66,7 +66,7 @@
 		<hasMany name="fieldHasMany" model="thirdEntity" cascade="nullify"
 			joinField="fieldFirstEntity" />
 		<manyToMany name="fieldManyToMany" model="thirdEntity"
-			cascade="nullify" />
+			cascade="delete" joinField="fieldManyToMany" />
 		<dictionary name="fieldDictionary" dictionary="categories" />
 		<dictionary name="fieldOtherDictionary" dictionary="categories" />
 		<enum name="fieldEnum" values="one,two,three" />
@@ -80,6 +80,7 @@
 		<onUpdate class="com.qcadoo.model.CustomHook" method="updateHook" />
 		<onCreate class="com.qcadoo.model.CustomHook" method="createHook" />
 		<onCopy class="com.qcadoo.model.CustomHook" method="copyHook" />
+		<onDelete class="com.qcadoo.model.CustomHook" method="deleteHook" />
 	</hooks>
 	<identifier expression="#fieldString" />
 </model>

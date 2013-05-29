@@ -43,6 +43,11 @@ public class CustomEntityService {
         entity.setField("name", "create");
     }
 
+    public boolean onDelete(final DataDefinition dataDefinition, final Entity entity) {
+        entity.setField("name", "delete");
+        return true;
+    }
+
     public void rewriteReadOnlyField(final DataDefinition dataDefinition, final Entity entity) {
         entity.setField("name", entity.getField(READ_ONLY_FIELD_NAME));
     }
@@ -63,6 +68,23 @@ public class CustomEntityService {
             entity.addError(dataDefinition.getField("name"), "xxx");
             return false;
         }
+    }
+
+    public void appendC(final DataDefinition dataDefinition, final Entity entity) {
+        appendToName(entity, "c");
+    }
+
+    public void appendB(final DataDefinition dataDefinition, final Entity entity) {
+        appendToName(entity, "b");
+    }
+
+    public void appendD(final DataDefinition dataDefinition, final Entity entity) {
+        appendToName(entity, "d");
+    }
+
+    private void appendToName(final Entity entity, final String valueToAppend) {
+        String name = entity.getStringField("name");
+        entity.setField("name", name + valueToAppend);
     }
 
 }

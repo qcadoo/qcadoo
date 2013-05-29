@@ -36,6 +36,7 @@
 			<xs:element name="onCreate" type="hookType" />
 			<xs:element name="onCopy" type="hookType" />
 			<xs:element name="onView" type="hookType" />
+			<xs:element name="onDelete" type="hookType" />
 		</xs:choice>
 	</xs:group>
 

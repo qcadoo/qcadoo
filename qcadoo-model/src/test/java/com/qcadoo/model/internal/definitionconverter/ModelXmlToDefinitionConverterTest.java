@@ -249,7 +249,7 @@ public class ModelXmlToDefinitionConverterTest extends TransactionMockAwareTest 
                 .getName());
         assertEquals("full", getField(dataDefinition.getField("fieldManyToMany").getType(), "pluginIdentifier"));
         assertEquals("thirdEntity", getField(dataDefinition.getField("fieldManyToMany").getType(), "entityName"));
-        assertEquals(ManyToManyType.Cascade.NULLIFY, getField(dataDefinition.getField("fieldManyToMany").getType(), "cascade"));
+        assertEquals(ManyToManyType.Cascade.DELETE, getField(dataDefinition.getField("fieldManyToMany").getType(), "cascade"));
 
         assertNotNull(dataDefinition.getField("fieldTree"));
         assertThat(dataDefinition.getField("fieldTree").getType(), instanceOf(TreeEntitiesType.class));
@@ -379,20 +379,19 @@ public class ModelXmlToDefinitionConverterTest extends TransactionMockAwareTest 
 
     @Test
     public void shouldSetHooks() {
-        testListHookDefinition(dataDefinition, "createHooks", CustomHook.class, "createHook");
-        testListHookDefinition(dataDefinition, "updateHooks", CustomHook.class, "updateHook");
-        testListHookDefinition(dataDefinition, "saveHooks", CustomHook.class, "hook");
-        testListHookDefinition(dataDefinition, "copyHooks", CustomHook.class, "copyHook");
+        DataDefinitionImpl dataDefImpl = (DataDefinitionImpl) dataDefinition;
+        testListHookDefinition(dataDefImpl.getCreateHooks(), CustomHook.class, "createHook");
+        testListHookDefinition(dataDefImpl.getUpdateHooks(), CustomHook.class, "updateHook");
+        testListHookDefinition(dataDefImpl.getSaveHooks(), CustomHook.class, "hook");
+        testListHookDefinition(dataDefImpl.getCopyHooks(), CustomHook.class, "copyHook");
+        testListHookDefinition(dataDefImpl.getDeleteHooks(), CustomHook.class, "deleteHook");
     }
 
-    @SuppressWarnings("unchecked")
-    private void testListHookDefinition(final Object object, final String hookFieldName, final Class<?> hookBeanClass,
+    private void testListHookDefinition(final List<EntityHookDefinition> hooks, final Class<?> hookBeanClass,
             final String hookMethodName) {
-        List<EntityHookDefinition> hook = (List<EntityHookDefinition>) getField(object, hookFieldName);
-
-        assertEquals(1, hook.size());
-        assertThat(getField(hook.get(0), "bean"), instanceOf(hookBeanClass));
-        assertEquals(hookMethodName, ((Method) getField(hook.get(0), "method")).getName());
+        assertEquals(1, hooks.size());
+        assertThat(getField(hooks.get(0), "bean"), instanceOf(hookBeanClass));
+        assertEquals(hookMethodName, ((Method) getField(hooks.get(0), "method")).getName());
     }
 
     private void testHookDefinition(final Object object, final String hookFieldName, final Class<?> hookBeanClass,

@@ -37,6 +37,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 
 import com.qcadoo.model.api.Entity;
+import com.qcadoo.model.api.EntityOpResult;
 import com.qcadoo.model.internal.api.InternalDataDefinitionService;
 import com.qcadoo.plugin.api.PluginManager;
 import com.qcadoo.tenant.api.MultiTenantUtil;
@@ -56,6 +57,10 @@ public abstract class IntegrationTest {
 
     protected static final String ENTITY_NAME_COMPONENT = "component";
 
+    protected static final String ENTITY_NAME_FACTORY = "factory";
+
+    protected static final String ENTITY_NAME_DIVISION = "division";
+
     protected static final String TABLE_NAME_PRODUCT = PLUGIN_PRODUCTS_NAME + "_" + ENTITY_NAME_PRODUCT;
 
     protected static final String TABLE_NAME_MACHINE = PLUGIN_MACHINES_NAME + "_" + ENTITY_NAME_MACHINE;
@@ -63,6 +68,10 @@ public abstract class IntegrationTest {
     protected static final String TABLE_NAME_COMPONENT = PLUGIN_PRODUCTS_NAME + "_" + ENTITY_NAME_COMPONENT;
 
     protected static final String TABLE_NAME_PART = PLUGIN_PRODUCTS_NAME + "_" + ENTITY_NAME_PART;
+
+    protected static final String TABLE_NAME_FACTORY = PLUGIN_PRODUCTS_NAME + "_" + ENTITY_NAME_FACTORY;
+
+    protected static final String TABLE_NAME_DIVISION = PLUGIN_PRODUCTS_NAME + "_" + ENTITY_NAME_DIVISION;
 
     protected static final String TABLE_NAME_JOIN_PRODUCT_PART = "JOINTABLE_" + ENTITY_NAME_PART.toUpperCase() + "_"
             + ENTITY_NAME_PRODUCT.toUpperCase();
@@ -100,19 +109,22 @@ public abstract class IntegrationTest {
     }
 
     @Before
-    public void init() throws Exception {
+    public void mainInit() throws Exception {
         pluginManager = applicationContext.getBean(PluginManager.class);
         pluginManager.enablePlugin("machines");
         verifyHooks.clear();
     }
 
     @After
-    public void destroy() {
+    public void mainDestroy() {
         jdbcTemplate.execute("delete from " + TABLE_NAME_JOIN_PRODUCT_PART);
         jdbcTemplate.execute("delete from " + TABLE_NAME_PART);
         jdbcTemplate.execute("delete from " + TABLE_NAME_COMPONENT);
         jdbcTemplate.execute("delete from " + TABLE_NAME_MACHINE);
         jdbcTemplate.execute("delete from " + TABLE_NAME_PRODUCT);
+
+        jdbcTemplate.execute("delete from " + TABLE_NAME_DIVISION);
+        jdbcTemplate.execute("delete from " + TABLE_NAME_FACTORY);
     }
 
     @AfterClass
@@ -153,6 +165,37 @@ public abstract class IntegrationTest {
         entity.setField("name", name);
         entity.setField("number", number);
         return entity;
+    }
+
+    protected Entity createComponentPart(final String name, final Entity component) {
+        Entity part = createPart(name, null);
+        part.setField("component", component);
+        return part.getDataDefinition().save(part);
+    }
+
+    protected Entity createFactory(final String name) {
+        Entity factory = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_FACTORY).create();
+        factory.setField("name", name);
+        return factory;
+    }
+
+    protected Entity createDivision(final String name, final Entity factory) {
+        Entity division = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_DIVISION).create();
+        division.setField("name", name);
+        division.setField("factory", factory);
+        return division;
+    }
+
+    protected EntityOpResult delete(final Entity entity) {
+        return entity.getDataDefinition().delete(entity.getId());
+    }
+
+    protected Entity save(final Entity entity) {
+        return entity.getDataDefinition().save(entity);
+    }
+
+    protected Entity fromDb(final Entity entity) {
+        return entity.getDataDefinition().get(entity.getId());
     }
 
 }

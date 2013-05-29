@@ -39,10 +39,10 @@
 		</integer>
 		<dictionary name="category" dictionary="categories" />
 		<hasMany name="components" model="component" joinField="product"
-			cascade="nullify" />
+			cascade="delete" />
 		<hasMany name="parts" model="part" joinField="product"
-			cascade="nullify" />
-		<manyToMany name="partsManyToMany" model="part" plugin="products" joinField="products" copyable="true"/>
+			cascade="delete" />
+		<manyToMany name="partsManyToMany" model="part" plugin="products" joinField="products" copyable="true" cascade="delete" />
 		<string name="readOnly" readonly="true" />
 	</fields>
 	<hooks>

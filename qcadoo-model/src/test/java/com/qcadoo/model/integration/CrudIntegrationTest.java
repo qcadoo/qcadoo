@@ -37,6 +37,7 @@ import org.junit.Test;
 import com.google.common.collect.Lists;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
+import com.qcadoo.model.api.EntityOpResult;
 import com.qcadoo.model.api.search.SearchOrders;
 import com.qcadoo.model.api.search.SearchRestrictions;
 import com.qcadoo.model.integration.VerifyHooks.HookType;
@@ -72,6 +73,7 @@ public class CrudIntegrationTest extends IntegrationTest {
         assertEquals(1, verifyHooks.getNumOfInvocations(HookType.CREATE));
         assertEquals(0, verifyHooks.getNumOfInvocations(HookType.COPY));
         assertEquals(0, verifyHooks.getNumOfInvocations(HookType.UPDATE));
+        assertEquals(0, verifyHooks.getNumOfInvocations(HookType.DELETE));
     }
 
     @Test
@@ -110,6 +112,7 @@ public class CrudIntegrationTest extends IntegrationTest {
         assertEquals(0, verifyHooks.getNumOfInvocations(HookType.CREATE));
         assertEquals(1, verifyHooks.getNumOfInvocations(HookType.COPY));
         assertEquals(0, verifyHooks.getNumOfInvocations(HookType.UPDATE));
+        assertEquals(0, verifyHooks.getNumOfInvocations(HookType.DELETE));
     }
 
     @Test
@@ -152,6 +155,7 @@ public class CrudIntegrationTest extends IntegrationTest {
         assertEquals(0, verifyHooks.getNumOfInvocations(HookType.CREATE));
         assertEquals(0, verifyHooks.getNumOfInvocations(HookType.COPY));
         assertEquals(1, verifyHooks.getNumOfInvocations(HookType.UPDATE));
+        assertEquals(0, verifyHooks.getNumOfInvocations(HookType.DELETE));
     }
 
     @Test
@@ -178,6 +182,7 @@ public class CrudIntegrationTest extends IntegrationTest {
         assertEquals(1, verifyHooks.getNumOfInvocations(HookType.CREATE));
         assertEquals(0, verifyHooks.getNumOfInvocations(HookType.COPY));
         assertEquals(0, verifyHooks.getNumOfInvocations(HookType.UPDATE));
+        assertEquals(0, verifyHooks.getNumOfInvocations(HookType.DELETE));
     }
 
     @Test
@@ -215,6 +220,7 @@ public class CrudIntegrationTest extends IntegrationTest {
         assertEquals(1, verifyHooks.getNumOfInvocations(HookType.CREATE));
         assertEquals(0, verifyHooks.getNumOfInvocations(HookType.COPY));
         assertEquals(0, verifyHooks.getNumOfInvocations(HookType.UPDATE));
+        assertEquals(0, verifyHooks.getNumOfInvocations(HookType.DELETE));
     }
 
     @Test
@@ -246,6 +252,7 @@ public class CrudIntegrationTest extends IntegrationTest {
         assertEquals(0, verifyHooks.getNumOfInvocations(HookType.CREATE));
         assertEquals(0, verifyHooks.getNumOfInvocations(HookType.COPY));
         assertEquals(0, verifyHooks.getNumOfInvocations(HookType.UPDATE));
+        assertEquals(0, verifyHooks.getNumOfInvocations(HookType.DELETE));
     }
 
     @Test
@@ -401,6 +408,93 @@ public class CrudIntegrationTest extends IntegrationTest {
         assertEquals(0, verifyHooks.getNumOfInvocations(HookType.CREATE));
         assertEquals(0, verifyHooks.getNumOfInvocations(HookType.COPY));
         assertEquals(0, verifyHooks.getNumOfInvocations(HookType.UPDATE));
+        assertEquals(0, verifyHooks.getNumOfInvocations(HookType.DELETE));
+    }
+
+    @Test
+    public final void shouldOnDeleteHookAllowDeleteEntity() {
+        // given
+        DataDefinition componentDataDefinition = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_COMPONENT);
+
+        Entity component = createComponent("name", null, null);
+        component.setField("deletionIsAllowed", true);
+        component = componentDataDefinition.save(component);
+
+        verifyHooks.clear();
+
+        // when
+        componentDataDefinition.delete(component.getId());
+
+        // then
+        int total = jdbcTemplate.queryForInt("select count(*) from " + TABLE_NAME_COMPONENT);
+
+        assertEquals(0, total);
+
+        assertEquals(0, verifyHooks.getNumOfInvocations(HookType.SAVE));
+        assertEquals(0, verifyHooks.getNumOfInvocations(HookType.CREATE));
+        assertEquals(0, verifyHooks.getNumOfInvocations(HookType.COPY));
+        assertEquals(0, verifyHooks.getNumOfInvocations(HookType.UPDATE));
+        assertEquals(1, verifyHooks.getNumOfInvocations(HookType.DELETE));
+    }
+
+    @Test
+    public void shouldOnDeleteHookRejectHardDeleteEntity() throws Exception {
+        // given
+        DataDefinition componentDataDefinition = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_COMPONENT);
+
+        Entity component = createComponent("name", null, null);
+        component.setField("deletionIsAllowed", false);
+        component = componentDataDefinition.save(component);
+
+        verifyHooks.clear();
+
+        // when
+        componentDataDefinition.delete(component.getId());
+
+        // then
+        int total = jdbcTemplate.queryForInt("select count(*) from " + TABLE_NAME_COMPONENT);
+
+        assertEquals(1, total);
+
+        assertEquals(0, verifyHooks.getNumOfInvocations(HookType.SAVE));
+        assertEquals(0, verifyHooks.getNumOfInvocations(HookType.CREATE));
+        assertEquals(0, verifyHooks.getNumOfInvocations(HookType.COPY));
+        assertEquals(0, verifyHooks.getNumOfInvocations(HookType.UPDATE));
+        assertEquals(1, verifyHooks.getNumOfInvocations(HookType.DELETE));
+    }
+
+    @Test
+    public void shouldFieldRequirementRejectHardDeleteEntity() throws Exception {
+        // given
+        Entity factory = save(createFactory("factory"));
+        Entity division1 = save(createDivision("firstDivision", factory));
+        Entity division2 = save(createDivision("secondDivision", factory));
+
+        verifyHooks.clear();
+
+        // when
+        EntityOpResult result = delete(factory);
+
+        // then
+        assertFalse(result.isSuccessfull());
+        assertNotNull(fromDb(factory));
+
+        Entity division1fromDb = fromDb(division1);
+        assertNotNull(division1fromDb);
+        assertNotNull(division1fromDb.getField("factory"));
+
+        Entity division2fromDb = fromDb(division2);
+        assertNotNull(division2fromDb);
+        assertNotNull(division2fromDb.getField("factory"));
+
+        int total = jdbcTemplate.queryForInt("select count(*) from " + TABLE_NAME_FACTORY);
+        assertEquals(1, total);
+
+        assertEquals(0, verifyHooks.getNumOfInvocations(HookType.SAVE));
+        assertEquals(0, verifyHooks.getNumOfInvocations(HookType.CREATE));
+        assertEquals(0, verifyHooks.getNumOfInvocations(HookType.COPY));
+        assertEquals(0, verifyHooks.getNumOfInvocations(HookType.UPDATE));
+        assertEquals(0, verifyHooks.getNumOfInvocations(HookType.DELETE));
     }
 
     @Test

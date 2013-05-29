@@ -108,6 +108,7 @@ public final class FieldDefinitionImpl implements InternalFieldDefinition {
     }
 
     public FieldDefinitionImpl withValidator(final FieldHookDefinition validator) {
+        validator.initialize(dataDefinition, this);
         if (validator instanceof RequiredValidator) {
             required = true;
         }

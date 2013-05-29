@@ -39,6 +39,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
+import com.qcadoo.model.api.EntityOpResult;
 import com.qcadoo.model.internal.ProxyEntity;
 
 public class ManyToManyIntegrationTest extends IntegrationTest {
@@ -156,8 +157,8 @@ public class ManyToManyIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
-    public void shouldCopyManyToManyField() throws Exception {
+    public void shouldCopyManyToManyField() {
+        // given
         DataDefinition productDataDefinition = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PRODUCT);
         DataDefinition partDataDefinition = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PART);
 
@@ -178,15 +179,135 @@ public class ManyToManyIntegrationTest extends IntegrationTest {
         Entity copyFirstPart = partDataDefinition.copy(firstPart.getId()).get(0);
         copyFirstPart = partDataDefinition.get(copyFirstPart.getId());
 
-        Collection<Entity> firstProductParts = (Collection<Entity>) copyFirstProduct.getField("partsManyToMany");
+        // then
+        Collection<Entity> firstProductParts = copyFirstProduct.getManyToManyField("partsManyToMany");
         assertNotNull(firstProductParts);
         assertEquals(3, firstProductParts.size());
         checkProxyCollection(partDataDefinition, firstProductParts, Lists.newArrayList(firstPart, secondPart, thirdPart));
 
-        Collection<Entity> firstPartsCopied = (Collection<Entity>) copyFirstPart.getField("products");
+        Collection<Entity> firstPartsCopied = copyFirstPart.getManyToManyField("products");
         assertNotNull(firstPartsCopied);
         assertEquals(0, firstPartsCopied.size());
+    }
 
+    @Test
+    public final void shouldPerformCascadeDeletion() {
+        // given
+        DataDefinition productDataDefinition = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PRODUCT);
+        DataDefinition partDataDefinition = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PART);
+
+        Entity firstProduct = productDataDefinition.save(createProduct("asd", "00001"));
+        Entity secondProduct = productDataDefinition.save(createProduct("fgh", "00002"));
+        Entity thirdProduct = productDataDefinition.save(createProduct("jkl", "00003"));
+        Entity anotherProduct = productDataDefinition.save(createProduct("qwertyuiop", "00004"));
+
+        Entity firstPart = partDataDefinition.save(createPart("qwe", anotherProduct,
+                Lists.newArrayList(firstProduct, secondProduct)));
+        Entity secondPart = partDataDefinition.save(createPart("rty", anotherProduct,
+                Lists.newArrayList(firstProduct, thirdProduct)));
+        Entity thirdPart = partDataDefinition.save(createPart("uiop", anotherProduct,
+                Lists.newArrayList(firstProduct, secondProduct, thirdProduct)));
+
+        // when
+        EntityOpResult result = productDataDefinition.delete(secondProduct.getId());
+
+        // then
+        Assert.assertTrue(result.isSuccessfull());
+
+        Assert.assertNull(fromDb(firstPart));
+        Assert.assertNotNull(fromDb(secondPart));
+        Assert.assertNull(fromDb(thirdPart));
+
+        Assert.assertNotNull(fromDb(firstProduct));
+        Assert.assertNull(fromDb(secondProduct));
+        Assert.assertNotNull(fromDb(thirdProduct));
+    }
+
+    @Test
+    public final void shouldOnDeleteHookRejectCascadeDeletion() {
+        // given
+        DataDefinition productDataDefinition = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PRODUCT);
+        DataDefinition partDataDefinition = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PART);
+
+        Entity firstProduct = productDataDefinition.save(createProduct("asd", "00001"));
+        Entity secondProduct = productDataDefinition.save(createProduct("fgh", "00002"));
+        Entity thirdProduct = productDataDefinition.save(createProduct("jkl", "00003"));
+        Entity anotherProduct = productDataDefinition.save(createProduct("qwertyuiop", "00004"));
+
+        Entity firstPart = partDataDefinition.save(createPart("qwe", anotherProduct,
+                Lists.newArrayList(firstProduct, secondProduct)));
+        Entity secondPart = partDataDefinition.save(createPart("rty", anotherProduct,
+                Lists.newArrayList(firstProduct, thirdProduct)));
+        Entity thirdPart = partDataDefinition.save(createPart("uiop", anotherProduct,
+                Lists.newArrayList(firstProduct, secondProduct, thirdProduct)));
+
+        thirdPart.setField("deletionIsProhibited", true);
+        thirdPart = partDataDefinition.save(thirdPart);
+
+        // when
+        EntityOpResult result = productDataDefinition.delete(secondProduct.getId());
+
+        // then
+        Assert.assertFalse(result.isSuccessfull());
+
+        Assert.assertNotNull(fromDb(firstPart));
+        Assert.assertNotNull(fromDb(secondPart));
+        Assert.assertNotNull(fromDb(thirdPart));
+
+        Assert.assertNotNull(fromDb(firstProduct));
+        Assert.assertNotNull(fromDb(secondProduct));
+        Assert.assertNotNull(fromDb(thirdProduct));
+    }
+
+    @Test
+    public final void shouldPerformCascadeNullification() {
+        // given
+        DataDefinition productDataDefinition = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PRODUCT);
+        DataDefinition partDataDefinition = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PART);
+
+        Entity firstProduct = productDataDefinition.save(createProduct("asd", "00001"));
+        Entity secondProduct = productDataDefinition.save(createProduct("fgh", "00002"));
+        Entity thirdProduct = productDataDefinition.save(createProduct("jkl", "00003"));
+        Entity anotherProduct = productDataDefinition.save(createProduct("qwertyuiop", "00004"));
+
+        Entity firstPart = partDataDefinition.save(createPart("qwe", anotherProduct,
+                Lists.newArrayList(firstProduct, secondProduct)));
+        Entity secondPart = partDataDefinition.save(createPart("rty", anotherProduct,
+                Lists.newArrayList(firstProduct, thirdProduct)));
+        Entity thirdPart = partDataDefinition.save(createPart("uiop", anotherProduct,
+                Lists.newArrayList(firstProduct, secondProduct, thirdProduct)));
+
+        // when
+        partDataDefinition.delete(secondPart.getId());
+
+        // then
+        Entity firstProductFromDb = fromDb(firstProduct);
+        Assert.assertNotNull(firstProductFromDb);
+        Collection<Entity> firstProductParts = firstProductFromDb.getManyToManyField("partsManyToMany");
+        Assert.assertEquals(2, firstProductParts.size());
+        Assert.assertTrue(firstProductParts.contains(fromDb(firstPart)));
+        Assert.assertFalse(firstProductParts.contains(fromDb(secondPart)));
+        Assert.assertTrue(firstProductParts.contains(fromDb(thirdPart)));
+
+        Entity secondProductFromDb = fromDb(secondProduct);
+        Assert.assertNotNull(secondProductFromDb);
+        Collection<Entity> secondProductParts = secondProductFromDb.getManyToManyField("partsManyToMany");
+        Assert.assertEquals(2, secondProductParts.size());
+        Assert.assertTrue(secondProductParts.contains(fromDb(firstPart)));
+        Assert.assertFalse(secondProductParts.contains(fromDb(secondPart)));
+        Assert.assertTrue(secondProductParts.contains(fromDb(thirdPart)));
+
+        Entity thirdProductFromDb = fromDb(thirdProduct);
+        Assert.assertNotNull(thirdProductFromDb);
+        Collection<Entity> thirdProductParts = thirdProductFromDb.getManyToManyField("partsManyToMany");
+        Assert.assertEquals(1, thirdProductParts.size());
+        Assert.assertFalse(thirdProductParts.contains(fromDb(firstPart)));
+        Assert.assertFalse(thirdProductParts.contains(fromDb(secondPart)));
+        Assert.assertTrue(thirdProductParts.contains(fromDb(thirdPart)));
+
+        Assert.assertNotNull(fromDb(firstPart));
+        Assert.assertNull(fromDb(secondPart));
+        Assert.assertNotNull(fromDb(thirdPart));
     }
 
 }

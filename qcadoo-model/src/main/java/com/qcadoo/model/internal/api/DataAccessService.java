@@ -26,6 +26,7 @@ package com.qcadoo.model.internal.api;
 import java.util.List;
 
 import com.qcadoo.model.api.Entity;
+import com.qcadoo.model.api.EntityOpResult;
 import com.qcadoo.model.api.search.SearchResult;
 import com.qcadoo.model.internal.search.SearchCriteria;
 import com.qcadoo.model.internal.search.SearchQuery;
@@ -79,8 +80,9 @@ public interface DataAccessService {
      * 
      * @param dataDefinition
      * @param entityId
+     * @return {@link EntityOpResult} which represent deletion results
      */
-    void delete(InternalDataDefinition dataDefinition, Long... entityId);
+    EntityOpResult delete(InternalDataDefinition dataDefinition, Long... entityId);
 
     /**
      * Find search result for given search criteria.

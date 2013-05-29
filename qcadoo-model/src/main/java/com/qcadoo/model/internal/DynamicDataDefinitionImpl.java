@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.qcadoo.model.api.Entity;
+import com.qcadoo.model.api.EntityOpResult;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.search.SearchCriteriaBuilder;
 import com.qcadoo.model.api.search.SearchQueryBuilder;
@@ -80,7 +81,7 @@ public class DynamicDataDefinitionImpl implements InternalDataDefinition {
     }
 
     @Override
-    public void delete(final Long... id) {
+    public EntityOpResult delete(final Long... id) {
         throw new UnsupportedOperationException("Cannot delete entity for dynamic data definition");
 
     }
@@ -181,6 +182,11 @@ public class DynamicDataDefinitionImpl implements InternalDataDefinition {
 
     @Override
     public boolean callSaveHook(final Entity entity) {
+        return true;
+    }
+
+    @Override
+    public boolean callDeleteHook(final Entity entity) {
         return true;
     }
 

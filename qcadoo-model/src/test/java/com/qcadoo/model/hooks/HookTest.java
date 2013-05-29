@@ -37,7 +37,9 @@ import com.qcadoo.model.beans.sample.CustomEntityService;
 import com.qcadoo.model.beans.sample.SampleSimpleDatabaseObject;
 import com.qcadoo.model.internal.DataAccessTest;
 import com.qcadoo.model.internal.DefaultEntity;
+import com.qcadoo.model.internal.api.EntityHookDefinition;
 import com.qcadoo.model.internal.hooks.EntityHookDefinitionImpl;
+import com.qcadoo.model.internal.hooks.HookInitializationException;
 
 public class HookTest extends DataAccessTest {
 
@@ -310,6 +312,49 @@ public class HookTest extends DataAccessTest {
 
         // then
         assertEquals("overrided", entity.getField("readOnly"));
+    }
+
+    @Test
+    public final void shouldBeTriggeredInOrderOfAdding() {
+        // given
+        Entity entity = new DefaultEntity(dataDefinition);
+        entity.setField("name", "a");
+
+        dataDefinition.addSaveHook(buildHook("appendB"));
+        dataDefinition.addSaveHook(buildHook("appendC"));
+        dataDefinition.addSaveHook(buildHook("appendD"));
+
+        // when
+        entity = dataDefinition.save(entity);
+
+        // then
+        assertEquals("abcd", entity.getStringField("name"));
+    }
+
+    @Test
+    public final void shouldBeTriggeredInOrderOfAdding2() {
+        // given
+        Entity entity = new DefaultEntity(dataDefinition);
+        entity.setField("name", "a");
+
+        dataDefinition.addSaveHook(buildHook("appendC"));
+        dataDefinition.addSaveHook(buildHook("appendB"));
+        dataDefinition.addSaveHook(buildHook("appendD"));
+
+        // when
+        entity = dataDefinition.save(entity);
+
+        // then
+        assertEquals("acbd", entity.getStringField("name"));
+    }
+
+    private EntityHookDefinition buildHook(final String methodName) {
+        try {
+            return new EntityHookDefinitionImpl(CustomEntityService.class.getName(), methodName, PLUGIN_IDENTIFIER,
+                    applicationContext);
+        } catch (HookInitializationException hie) {
+            throw new IllegalStateException(hie);
+        }
     }
 
 }

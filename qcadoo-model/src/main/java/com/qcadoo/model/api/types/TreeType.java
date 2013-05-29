@@ -28,7 +28,7 @@ package com.qcadoo.model.api.types;
  * 
  * @since 0.4.0
  */
-public interface TreeType extends FieldType, DataDefinitionHolder, JoinFieldHolder, Cascadeable {
+public interface TreeType extends CollectionFieldType {
 
     String NODE_NUMBER_FIELD = "nodeNumber";
 

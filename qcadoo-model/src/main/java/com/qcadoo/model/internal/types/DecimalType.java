@@ -43,12 +43,6 @@ import com.qcadoo.model.internal.validators.UnscaledValueValidator;
 
 public final class DecimalType extends AbstractFieldType implements DefaultValidatorsProvider {
 
-    private static final ScaleValidator DEFAULT_SCALE_VALIDATOR = new ScaleValidator(null, null,
-            NumberService.DEFAULT_MAX_FRACTION_DIGITS_IN_DECIMAL);
-
-    private static final UnscaledValueValidator DEFAULT_UNSCALED_VALUE_VALIDATOR = new UnscaledValueValidator(null, null,
-            NumberService.DEFAULT_MAX_INTEGER_DIGITS_IN_DECIMAL);
-
     public DecimalType() {
         this(true);
     }
@@ -118,14 +112,19 @@ public final class DecimalType extends AbstractFieldType implements DefaultValid
 
     @Override
     public Collection<FieldHookDefinition> getMissingValidators(final Iterable<FieldHookDefinition> validators) {
-        Set<FieldHookDefinition> missingValidators = Sets.<FieldHookDefinition> newHashSet(DEFAULT_SCALE_VALIDATOR,
-                DEFAULT_UNSCALED_VALUE_VALIDATOR);
+        FieldHookDefinition defaultScaleValidator = new ScaleValidator(null, null,
+                NumberService.DEFAULT_MAX_FRACTION_DIGITS_IN_DECIMAL);
+        FieldHookDefinition defaultUnscaledValueValidator = new UnscaledValueValidator(null, null,
+                NumberService.DEFAULT_MAX_INTEGER_DIGITS_IN_DECIMAL);
+        Set<FieldHookDefinition> missingValidators = Sets.<FieldHookDefinition> newHashSet(defaultScaleValidator,
+                defaultUnscaledValueValidator);
+
         for (FieldHookDefinition validator : validators) {
             if (validator instanceof UnscaledValueValidator && ((UnscaledValueValidator) validator).hasUppuerBoundDefined()) {
-                missingValidators.remove(DEFAULT_UNSCALED_VALUE_VALIDATOR);
+                missingValidators.remove(defaultUnscaledValueValidator);
             }
             if (validator instanceof ScaleValidator && ((ScaleValidator) validator).hasUppuerBoundDefined()) {
-                missingValidators.remove(DEFAULT_SCALE_VALIDATOR);
+                missingValidators.remove(defaultScaleValidator);
             }
         }
         return missingValidators;

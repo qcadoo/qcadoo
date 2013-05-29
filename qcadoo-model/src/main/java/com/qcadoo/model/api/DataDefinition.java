@@ -73,8 +73,9 @@ public interface DataDefinition {
      * 
      * @param id
      *            id
+     * @return {@link EntityOpResult}, an object containing operation's results
      */
-    void delete(final Long... id);
+    EntityOpResult delete(final Long... id);
 
     /**
      * Save the entity related with this data definition.

@@ -27,7 +27,6 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -38,11 +37,15 @@ import java.util.Map;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
+import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.ListMultimap;
 import com.qcadoo.model.api.Entity;
+import com.qcadoo.model.api.EntityOpResult;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.search.SearchCriteriaBuilder;
 import com.qcadoo.model.api.search.SearchQueryBuilder;
 import com.qcadoo.model.api.search.SearchResult;
+import com.qcadoo.model.internal.AbstractModelXmlConverter.HooksTag;
 import com.qcadoo.model.internal.api.DataAccessService;
 import com.qcadoo.model.internal.api.EntityHookDefinition;
 import com.qcadoo.model.internal.api.InternalDataDefinition;
@@ -65,19 +68,9 @@ public final class DataDefinitionImpl implements InternalDataDefinition {
 
     private FieldDefinition priorityField;
 
-    private final Map<String, EntityHookDefinition> hooks = new HashMap<String, EntityHookDefinition>();
+    private final Map<String, EntityHookDefinition> hooksByMethodPath = new HashMap<String, EntityHookDefinition>();
 
-    private final List<EntityHookDefinition> validators = new ArrayList<EntityHookDefinition>();
-
-    private final List<EntityHookDefinition> viewHooks = new ArrayList<EntityHookDefinition>();
-
-    private final List<EntityHookDefinition> createHooks = new ArrayList<EntityHookDefinition>();
-
-    private final List<EntityHookDefinition> updateHooks = new ArrayList<EntityHookDefinition>();
-
-    private final List<EntityHookDefinition> saveHooks = new ArrayList<EntityHookDefinition>();
-
-    private final List<EntityHookDefinition> copyHooks = new ArrayList<EntityHookDefinition>();
+    private final ListMultimap<HooksTag, EntityHookDefinition> entityHooks = LinkedListMultimap.create();
 
     private boolean deletable = true;
 
@@ -112,8 +105,8 @@ public final class DataDefinitionImpl implements InternalDataDefinition {
     }
 
     @Override
-    public void delete(final Long... id) {
-        dataAccessService.delete(this, id);
+    public EntityOpResult delete(final Long... id) {
+        return dataAccessService.delete(this, id);
     }
 
     @Override
@@ -216,64 +209,72 @@ public final class DataDefinitionImpl implements InternalDataDefinition {
 
     @Override
     public EntityHookDefinition getHook(final String type, final String className, final String methodName) {
-        EntityHookDefinition hook = hooks.get(type.toUpperCase(Locale.ENGLISH) + "." + className + "." + methodName);
+        EntityHookDefinition hook = hooksByMethodPath.get(type.toUpperCase(Locale.ENGLISH) + "." + className + "." + methodName);
         checkNotNull(hook, "Cannot find hook " + type.toUpperCase(Locale.ENGLISH) + "." + className + "." + methodName
                 + " for dataDefinition " + this);
         return hook;
     }
 
     public List<EntityHookDefinition> getValidators() {
-        return validators;
+        return entityHooks.get(HooksTag.VALIDATESWITH);
     }
 
     public List<EntityHookDefinition> getViewHooks() {
-        return viewHooks;
+        return entityHooks.get(HooksTag.ONVIEW);
     }
 
     public List<EntityHookDefinition> getCopyHooks() {
-        return copyHooks;
+        return entityHooks.get(HooksTag.ONCOPY);
     }
 
     public List<EntityHookDefinition> getCreateHooks() {
-        return createHooks;
+        return entityHooks.get(HooksTag.ONCREATE);
     }
 
     public List<EntityHookDefinition> getSaveHooks() {
-        return saveHooks;
+        return entityHooks.get(HooksTag.ONSAVE);
     }
 
     public List<EntityHookDefinition> getUpdateHooks() {
-        return updateHooks;
+        return entityHooks.get(HooksTag.ONUPDATE);
+    }
+
+    public List<EntityHookDefinition> getDeleteHooks() {
+        return entityHooks.get(HooksTag.ONDELETE);
     }
 
     public void addValidatorHook(final EntityHookDefinition validator) {
-        hooks.put(AbstractModelXmlConverter.HooksTag.VALIDATESWITH.toString() + "." + validator.getName(), validator);
-        validators.add(validator);
+        addHook(HooksTag.VALIDATESWITH, validator);
     }
 
     public void addViewHook(final EntityHookDefinition viewHook) {
-        hooks.put(AbstractModelXmlConverter.HooksTag.ONVIEW.toString() + "." + viewHook.getName(), viewHook);
-        viewHooks.add(viewHook);
+        addHook(HooksTag.ONVIEW, viewHook);
     }
 
     public void addCreateHook(final EntityHookDefinition createHook) {
-        hooks.put(AbstractModelXmlConverter.HooksTag.ONCREATE.toString() + "." + createHook.getName(), createHook);
-        createHooks.add(createHook);
+        addHook(HooksTag.ONCREATE, createHook);
     }
 
     public void addUpdateHook(final EntityHookDefinition updateHook) {
-        hooks.put(AbstractModelXmlConverter.HooksTag.ONUPDATE.toString() + "." + updateHook.getName(), updateHook);
-        updateHooks.add(updateHook);
+        addHook(HooksTag.ONUPDATE, updateHook);
     }
 
     public void addSaveHook(final EntityHookDefinition saveHook) {
-        hooks.put(AbstractModelXmlConverter.HooksTag.ONSAVE.toString() + "." + saveHook.getName(), saveHook);
-        saveHooks.add(saveHook);
+        addHook(HooksTag.ONSAVE, saveHook);
     }
 
     public void addCopyHook(final EntityHookDefinition copyHook) {
-        hooks.put(AbstractModelXmlConverter.HooksTag.ONCOPY.toString() + "." + copyHook.getName(), copyHook);
-        copyHooks.add(copyHook);
+        addHook(HooksTag.ONCOPY, copyHook);
+    }
+
+    public void addDeleteHook(final EntityHookDefinition deleteHook) {
+        addHook(HooksTag.ONDELETE, deleteHook);
+    }
+
+    public void addHook(final HooksTag tag, final EntityHookDefinition hook) {
+        hook.initialize(this);
+        hooksByMethodPath.put(tag.toString() + "." + hook.getName(), hook);
+        entityHooks.put(tag, hook);
     }
 
     public void setIdentifierExpression(final String identifierExpression) {
@@ -287,32 +288,37 @@ public final class DataDefinitionImpl implements InternalDataDefinition {
 
     @Override
     public boolean callViewHook(final Entity entity) {
-        return callHooks(entity, viewHooks);
+        return callHooks(entity, getViewHooks());
     }
 
     @Override
     public boolean callCreateHook(final Entity entity) {
-        return callHooks(entity, createHooks);
+        return callHooks(entity, getCreateHooks());
     }
 
     @Override
     public boolean callUpdateHook(final Entity entity) {
-        return entity.isValid() && callHooks(entity, updateHooks);
+        return entity.isValid() && callHooks(entity, getUpdateHooks());
     }
 
     @Override
     public boolean callSaveHook(final Entity entity) {
-        return entity.isValid() && callHooks(entity, saveHooks);
+        return entity.isValid() && callHooks(entity, getSaveHooks());
     }
 
     @Override
     public boolean callCopyHook(final Entity entity) {
-        return callHooks(entity, copyHooks);
+        return callHooks(entity, getCopyHooks());
     }
 
     @Override
     public boolean callValidators(final Entity entity) {
-        return callHooks(entity, validators);
+        return callHooks(entity, getValidators());
+    }
+
+    @Override
+    public boolean callDeleteHook(final Entity entity) {
+        return callHooks(entity, getDeleteHooks());
     }
 
     private boolean callHooks(final Entity entity, final List<EntityHookDefinition> hooksToCall) {

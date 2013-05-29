@@ -24,17 +24,19 @@
     ***************************************************************************
 
 -->
-<model name="component" 
+<model plugin="cycles" name="modelA" 
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schema.qcadoo.org/model"
 	xsi:schemaLocation="http://schema.qcadoo.org/model http://schema.qcadoo.org/model.xsd">
 	<fields>
-		<string name="name" required="true" />
-		<belongsTo name="product" model="product" required="false"
-			lazy="false" />
-		<hasMany name="parts" model="part" joinField="component" cascade="nullify" />
-		<boolean name="deletionIsAllowed" />
+		<manyToMany name="manyToManyB" joinField="manyToManyA" model="modelB" cascade="delete" />
+		<manyToMany name="manyToManyC" joinField="manyToManyA" model="modelC" cascade="delete" />
+		
+		<belongsTo name="belongsToC" model="modelC" lazy="false" />
+		<hasMany name="hasManyB" joinField="belongsToA" model="modelB" cascade="delete" />
+		
+		<belongsTo name="nullifyBelongsToC" model="modelC" />
+		<hasMany name="nullifyHasManyB" joinField="nullifyBelongsToA" model="modelB" cascade="nullify" />
+		
 	</fields>
-	<hooks>
-		<onDelete class="com.qcadoo.model.integration.VerifyHooks" method="onDeleteUsingBooleanField" />
-	</hooks>
+	<hooks />
 </model>

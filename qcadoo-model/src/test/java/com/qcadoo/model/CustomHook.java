@@ -52,6 +52,10 @@ public class CustomHook {
 
     }
 
+    public boolean deleteHook(final DataDefinition dataDefinition, final Entity entity) {
+        return true;
+    }
+
     public void validate(final DataDefinition dataDefinition, final Entity entity) {
 
     }

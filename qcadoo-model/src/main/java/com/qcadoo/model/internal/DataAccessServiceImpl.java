@@ -28,6 +28,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -38,6 +39,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.exception.ConstraintViolationException;
@@ -49,21 +51,31 @@ import org.springframework.transaction.NoTransactionException;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Sets;
 import com.qcadoo.model.api.CopyException;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.EntityList;
-import com.qcadoo.model.api.EntityTree;
+import com.qcadoo.model.api.EntityMessagesHolder;
+import com.qcadoo.model.api.EntityOpResult;
 import com.qcadoo.model.api.ExpressionService;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.aop.Auditable;
 import com.qcadoo.model.api.aop.Monitorable;
 import com.qcadoo.model.api.search.SearchRestrictions;
 import com.qcadoo.model.api.search.SearchResult;
+import com.qcadoo.model.api.types.Cascadeable;
+import com.qcadoo.model.api.types.CollectionFieldType;
+import com.qcadoo.model.api.types.DataDefinitionHolder;
+import com.qcadoo.model.api.types.FieldType;
 import com.qcadoo.model.api.types.HasManyType;
+import com.qcadoo.model.api.types.JoinFieldHolder;
 import com.qcadoo.model.api.types.ManyToManyType;
 import com.qcadoo.model.api.types.TreeType;
+import com.qcadoo.model.api.utils.EntityUtils;
 import com.qcadoo.model.api.validators.ErrorMessage;
 import com.qcadoo.model.internal.api.DataAccessService;
 import com.qcadoo.model.internal.api.EntityService;
@@ -75,6 +87,7 @@ import com.qcadoo.model.internal.api.ValidationService;
 import com.qcadoo.model.internal.search.SearchCriteria;
 import com.qcadoo.model.internal.search.SearchQuery;
 import com.qcadoo.model.internal.search.SearchResultImpl;
+import com.qcadoo.model.internal.utils.EntitySignature;
 import com.qcadoo.tenant.api.Standalone;
 
 @Service
@@ -155,16 +168,7 @@ public class DataAccessServiceImpl implements DataAccessService {
             if (existingGenericEntity != null) {
                 copyMissingFields(genericEntityToSave, existingGenericEntity);
             }
-
-            LOG.info(genericEntityToSave + " hasn't been saved, bacause of validation errors");
-
-            for (ErrorMessage error : genericEntityToSave.getGlobalErrors()) {
-                LOG.info(" --- " + error.getMessage());
-            }
-            for (Map.Entry<String, ErrorMessage> error : genericEntityToSave.getErrors().entrySet()) {
-                LOG.info(" --- " + error.getKey() + ": " + error.getValue().getMessage());
-            }
-
+            logValidationErrors(genericEntityToSave);
             return genericEntityToSave;
         }
         Object databaseEntity = entityService.convertToDatabaseEntity(dataDefinition, genericEntity, existingDatabaseEntity);
@@ -176,10 +180,6 @@ public class DataAccessServiceImpl implements DataAccessService {
         saveDatabaseEntity(dataDefinition, databaseEntity);
 
         Entity savedEntity = entityService.convertToGenericEntity(dataDefinition, databaseEntity);
-
-        if (LOG.isInfoEnabled()) {
-            LOG.info(savedEntity + " has been saved");
-        }
 
         for (Entry<String, FieldDefinition> fieldEntry : dataDefinition.getFields().entrySet()) {
             if (fieldEntry.getValue().getType() instanceof HasManyType) {
@@ -197,9 +197,12 @@ public class DataAccessServiceImpl implements DataAccessService {
                         (InternalDataDefinition) hasManyType.getDataDefinition());
 
                 EntityList dbEntities = savedEntity.getHasManyField(fieldEntry.getKey());
-
-                removeOrphans(savedEntities, (InternalDataDefinition) hasManyType.getDataDefinition(), dbEntities);
-
+                EntityOpResult results = removeOrphans(hasManyType, findOrphans(savedEntities, dbEntities));
+                if (!results.isSuccessfull()) {
+                    copyValidationErrors(dataDefinition, savedEntity, results.getMessagesHolder());
+                    savedEntity.setField(fieldEntry.getKey(), existingGenericEntity.getField(fieldEntry.getKey()));
+                    return savedEntity;
+                }
                 savedEntity.setField(fieldEntry.getKey(), savedEntities);
             } else if (fieldEntry.getValue().getType() instanceof TreeType) {
                 List<Entity> entities = (List<Entity>) genericEntity.getField(fieldEntry.getKey());
@@ -219,6 +222,10 @@ public class DataAccessServiceImpl implements DataAccessService {
             }
         }
 
+        if (LOG.isInfoEnabled()) {
+            LOG.info(savedEntity + " has been saved");
+        }
+
         alreadySavedEntities.add(savedEntity);
 
         if (genericEntity.getId() == null && savedEntity.getId() != null) {
@@ -226,6 +233,35 @@ public class DataAccessServiceImpl implements DataAccessService {
         }
 
         return savedEntity;
+    }
+
+    private void logDeletionErrors(final Entity entity) {
+        logEntityErrors(entity, entity + " hasn't been deleted, bacause of onDelete hook rejection");
+    }
+
+    private void logValidationErrors(final Entity entity) {
+        logEntityErrors(entity, entity + " hasn't been saved, bacause of validation errors");
+    }
+
+    private void logEntityErrors(final Entity entity, final String msg) {
+        if (!LOG.isDebugEnabled()) {
+            return;
+        }
+
+        StringBuilder sb = new StringBuilder();
+        if (StringUtils.isNotEmpty(msg)) {
+            sb.append(msg);
+            sb.append('\n');
+        }
+        for (ErrorMessage error : entity.getGlobalErrors()) {
+            sb.append(" --- " + error.getMessage());
+            sb.append('\n');
+        }
+        for (Map.Entry<String, ErrorMessage> error : entity.getErrors().entrySet()) {
+            sb.append(" --- " + error.getKey() + ": " + error.getValue().getMessage());
+            sb.append('\n');
+        }
+        LOG.info(sb.toString());
     }
 
     @Override
@@ -278,20 +314,51 @@ public class DataAccessServiceImpl implements DataAccessService {
         return savedEntities;
     }
 
-    private void removeOrphans(final List<Entity> savedEntities, final InternalDataDefinition dataDefinition,
-            final List<Entity> dbEntities) {
-        for (Entity dbEntity : dbEntities) {
-            boolean exists = false;
-            for (Entity exisingEntity : savedEntities) {
-                if (dbEntity.getId().equals(exisingEntity.getId())) {
-                    exists = true;
-                    break;
-                }
-            }
-            if (!exists) {
-                delete(dataDefinition, dbEntity.getId());
+    private EntityOpResult removeOrphans(final CollectionFieldType fieldType, final Iterable<Entity> orphans) {
+        switch (fieldType.getCascade()) {
+            case NULLIFY:
+                return nullifyOrphans(fieldType.getJoinFieldName(), orphans);
+            case DELETE:
+                return deleteOrphans((InternalDataDefinition) fieldType.getDataDefinition(), orphans);
+            default:
+                throw new IllegalArgumentException(String.format("Unsupported cascade value '%s'", fieldType.getCascade()));
+        }
+    }
+
+    private EntityOpResult deleteOrphans(final InternalDataDefinition dataDefinition, final Iterable<Entity> orphans) {
+        checkNotNull(dataDefinition, L_DATA_DEFINITION_MUST_BE_GIVEN);
+        checkState(dataDefinition.isDeletable(), "Entity must be deletable");
+        checkState(dataDefinition.isEnabled(), L_DATA_DEFINITION_BELONGS_TO_DISABLED_PLUGIN);
+
+        for (Entity orphan : orphans) {
+            EntityOpResult result = deleteEntity(dataDefinition, orphan.getId());
+            if (!result.isSuccessfull()) {
+                return result;
             }
         }
+        return EntityOpResult.successfull();
+    }
+
+    private EntityOpResult nullifyOrphans(final String fieldName, final Iterable<Entity> entities) {
+        for (Entity entity : entities) {
+            entity.setField(fieldName, null);
+            Entity savedEntity = entity.getDataDefinition().save(entity);
+            if (!savedEntity.isValid()) {
+                return EntityOpResult.failure(savedEntity);
+            }
+        }
+        return EntityOpResult.successfull();
+    }
+
+    private Collection<Entity> findOrphans(final List<Entity> savedEntities, final List<Entity> dbEntities) {
+        final Set<Long> savedEntityIds = Sets.newHashSet(EntityUtils.getIdsView(savedEntities));
+        return Collections2.filter(dbEntities, new Predicate<Entity>() {
+
+            @Override
+            public boolean apply(final Entity entity) {
+                return !savedEntityIds.contains(entity.getId());
+            }
+        });
     }
 
     @Override
@@ -557,15 +624,19 @@ public class DataAccessServiceImpl implements DataAccessService {
     @Override
     @Transactional
     @Monitorable
-    public void delete(final InternalDataDefinition dataDefinition, final Long... entityIds) {
+    public EntityOpResult delete(final InternalDataDefinition dataDefinition, final Long... entityIds) {
         checkNotNull(dataDefinition, L_DATA_DEFINITION_MUST_BE_GIVEN);
         checkState(dataDefinition.isDeletable(), "Entity must be deletable");
         checkState(dataDefinition.isEnabled(), L_DATA_DEFINITION_BELONGS_TO_DISABLED_PLUGIN);
         checkState(entityIds.length > 0, "EntityIds must be given");
 
         for (Long entityId : entityIds) {
-            deleteEntity(dataDefinition, entityId);
+            EntityOpResult result = deleteEntity(dataDefinition, entityId);
+            if (!result.isSuccessfull()) {
+                return result;
+            }
         }
+        return EntityOpResult.successfull();
     }
 
     @Override
@@ -665,46 +736,32 @@ public class DataAccessServiceImpl implements DataAccessService {
     }
 
     @Override
-    @Transactional
-    @Monitorable
     public void moveTo(final InternalDataDefinition dataDefinition, final Long entityId, final int position) {
-        checkNotNull(dataDefinition, L_DATA_DEFINITION_MUST_BE_GIVEN);
-        checkState(dataDefinition.isPrioritizable(), "Entity must be prioritizable");
-        checkState(dataDefinition.isEnabled(), L_DATA_DEFINITION_BELONGS_TO_DISABLED_PLUGIN);
-        checkNotNull(entityId, "EntityId must be given");
         checkState(position > 0, "Position must be greaten than 0");
-
-        Object databaseEntity = getDatabaseEntity(dataDefinition, entityId);
-
-        if (databaseEntity == null) {
-            logEntityInfo(dataDefinition, entityId, "hasn't been prioritized, because it doesn't exist");
-            return;
-        }
-
-        priorityService.move(dataDefinition, databaseEntity, position, 0);
-
-        logEntityInfo(dataDefinition, entityId, "has been prioritized");
+        move(dataDefinition, entityId, position, 0);
     }
 
     @Override
+    public void move(final InternalDataDefinition dataDefinition, final Long entityId, final int offset) {
+        checkState(offset != 0, "Offset must be different than 0");
+        move(dataDefinition, entityId, 0, offset);
+    }
+
     @Transactional
     @Monitorable
-    public void move(final InternalDataDefinition dataDefinition, final Long entityId, final int offset) {
+    private void move(final InternalDataDefinition dataDefinition, final Long entityId, final int position, final int offset) {
         checkNotNull(dataDefinition, L_DATA_DEFINITION_MUST_BE_GIVEN);
         checkState(dataDefinition.isPrioritizable(), "Entity must be prioritizable");
         checkState(dataDefinition.isEnabled(), L_DATA_DEFINITION_BELONGS_TO_DISABLED_PLUGIN);
         checkNotNull(entityId, "EntityId must be given");
-        checkState(offset != 0, "Offset must be different than 0");
 
         Object databaseEntity = getDatabaseEntity(dataDefinition, entityId);
-
         if (databaseEntity == null) {
             logEntityInfo(dataDefinition, entityId, "hasn't been prioritized, because it doesn't exist");
             return;
         }
 
-        priorityService.move(dataDefinition, databaseEntity, 0, offset);
-
+        priorityService.move(dataDefinition, databaseEntity, position, offset);
         logEntityInfo(dataDefinition, entityId, "has been prioritized");
     }
 
@@ -720,7 +777,12 @@ public class DataAccessServiceImpl implements DataAccessService {
         return existingDatabaseEntity;
     }
 
-    private void deleteEntity(final InternalDataDefinition dataDefinition, final Long entityId) {
+    private EntityOpResult deleteEntity(final InternalDataDefinition dataDefinition, final Long entityId) {
+        return deleteEntity(dataDefinition, entityId, Sets.<EntitySignature> newHashSet());
+    }
+
+    private EntityOpResult deleteEntity(final InternalDataDefinition dataDefinition, final Long entityId,
+            final Set<EntitySignature> traversedEntities) {
 
         Object databaseEntity = getDatabaseEntity(dataDefinition, entityId);
 
@@ -729,59 +791,114 @@ public class DataAccessServiceImpl implements DataAccessService {
 
         Entity entity = get(dataDefinition, entityId);
 
-        priorityService.deprioritizeEntity(dataDefinition, databaseEntity);
-        Map<String, FieldDefinition> fields = dataDefinition.getFields();
+        if (!dataDefinition.callDeleteHook(entity)) {
+            logDeletionErrors(entity);
+            entity.addGlobalError("test.deletion.error");
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return EntityOpResult.failure(entity);
+        }
 
+        priorityService.deprioritizeEntity(dataDefinition, databaseEntity);
+
+        Map<String, FieldDefinition> fields = dataDefinition.getFields();
         for (FieldDefinition fieldDefinition : fields.values()) {
-            if (fieldDefinition.getType() instanceof HasManyType) {
-                HasManyType hasManyFieldType = (HasManyType) fieldDefinition.getType();
-                EntityList children = entity.getHasManyField(fieldDefinition.getName());
-                InternalDataDefinition childDataDefinition = (InternalDataDefinition) hasManyFieldType.getDataDefinition();
-                if (HasManyType.Cascade.NULLIFY.equals(hasManyFieldType.getCascade()) && children != null) {
+            if (fieldDefinition.getType() instanceof ManyToManyType) {
+                ManyToManyType manyToManyType = (ManyToManyType) fieldDefinition.getType();
+                Collection<Entity> children = entity.getManyToManyField(fieldDefinition.getName());
+                InternalDataDefinition childrenDataDefinition = (InternalDataDefinition) manyToManyType.getDataDefinition();
+                if (Cascadeable.Cascade.DELETE.equals(manyToManyType.getCascade())) {
                     for (Entity child : children) {
-                        child.setField(hasManyFieldType.getJoinFieldName(), null);
-                        child = save(childDataDefinition, child);
-                        if (!child.isValid()) {
-                            throw new IllegalStateException(getConstraintViolationMessage(dataDefinition, entity));
+                        if (!childrenDataDefinition.callDeleteHook(child)) {
+                            return EntityOpResult.failure(child);
                         }
                     }
                 }
-            }
-
-            if (fieldDefinition.getType() instanceof TreeType) {
-                TreeType treeFieldType = (TreeType) fieldDefinition.getType();
-                EntityTree children = entity.getTreeField(fieldDefinition.getName());
-                InternalDataDefinition childDataDefinition = (InternalDataDefinition) treeFieldType.getDataDefinition();
-                if (TreeType.Cascade.NULLIFY.equals(treeFieldType.getCascade()) && children != null) {
-                    for (Entity child : children) {
-                        child.setField(treeFieldType.getJoinFieldName(), null);
-                        child = save(childDataDefinition, child);
-                        if (!child.isValid()) {
-                            throw new IllegalStateException(getConstraintViolationMessage(dataDefinition, entity));
-                        }
-                    }
+            } else if (fieldDefinition.getType() instanceof CollectionFieldType) {
+                CollectionFieldType collectionFieldType = (CollectionFieldType) fieldDefinition.getType();
+                @SuppressWarnings("unchecked")
+                Collection<Entity> children = (Collection<Entity>) entity.getField(fieldDefinition.getName());
+                if (!performCascadeStrategy(entity, collectionFieldType, children, traversedEntities).isSuccessfull()) {
+                    return EntityOpResult.failure(entity);
                 }
             }
         }
+
         try {
-            hibernateService.getCurrentSession().delete(databaseEntity);
-            hibernateService.getCurrentSession().flush();
+            databaseEntity = getDatabaseEntity(dataDefinition, entityId);
+            if (databaseEntity != null) {
+                hibernateService.getCurrentSession().delete(databaseEntity);
+                hibernateService.getCurrentSession().flush();
+            }
         } catch (ConstraintViolationException e) {
-            throw new IllegalStateException(getConstraintViolationMessage(dataDefinition, entity), e);
+            throw new IllegalStateException(getConstraintViolationMessage(entity), e);
         }
 
         logEntityInfo(dataDefinition, entityId, "has been deleted");
+        return new EntityOpResult(true, entity);
     }
 
-    private String getConstraintViolationMessage(final InternalDataDefinition dataDefinition, final Entity entity) {
+    private EntityOpResult performCascadeStrategy(final Entity entity, final FieldType fieldType,
+            final Collection<Entity> children, final Set<EntitySignature> traversedEntities) {
+        if (children == null || children.isEmpty()) {
+            return EntityOpResult.successfull();
+        }
+        InternalDataDefinition childDataDefinition = (InternalDataDefinition) ((DataDefinitionHolder) fieldType)
+                .getDataDefinition();
+        Cascadeable.Cascade cascade = ((Cascadeable) fieldType).getCascade();
+
+        if (Cascadeable.Cascade.NULLIFY.equals(cascade)) {
+            return performCascadeNullification(entity, fieldType, children, childDataDefinition);
+        } else if (Cascadeable.Cascade.DELETE.equals(cascade)) {
+            return performCascadeDelete(children, traversedEntities, childDataDefinition);
+        } else {
+            throw new IllegalArgumentException(String.format("Unsupported cascade value '%s'", cascade));
+        }
+    }
+
+    private EntityOpResult performCascadeNullification(final Entity entity, final FieldType fieldType,
+            final Collection<Entity> children, InternalDataDefinition childDataDefinition) {
+        String joinFieldName = ((JoinFieldHolder) fieldType).getJoinFieldName();
+        for (Entity child : children) {
+            child.setField(joinFieldName, null);
+            child = save(childDataDefinition, child);
+            if (!child.isValid()) {
+                String msg = String.format("Can not nullify field '%s' in %s because of following validation errors:",
+                        joinFieldName, child);
+                logEntityErrors(child, msg);
+                return EntityOpResult.failure(child);
+            }
+        }
+        return EntityOpResult.successfull();
+    }
+
+    private EntityOpResult performCascadeDelete(final Collection<Entity> children, final Set<EntitySignature> traversedEntities,
+            InternalDataDefinition childDataDefinition) {
+        for (Entity child : children) {
+            EntitySignature childSignature = EntitySignature.of(child);
+            if (!traversedEntities.contains(childSignature)) {
+                traversedEntities.add(childSignature);
+                EntityOpResult result = deleteEntity(childDataDefinition, child.getId(), traversedEntities);
+                if (!result.isSuccessfull()) {
+                    return result;
+                }
+            }
+        }
+        return EntityOpResult.successfull();
+    }
+
+    private String getConstraintViolationMessage(final Entity entity) {
         String message = null;
         try {
-            message = String.format("Entity [ENTITY.%s] is in use",
-                    expressionService.getValue(entity, dataDefinition.getIdentifierExpression(), Locale.ENGLISH));
+            message = String.format("Entity [ENTITY.%s] is in use", getIdentifierExpression(entity));
         } catch (Exception e) {
             message = "Entity is in use";
         }
         return message;
+    }
+
+    private String getIdentifierExpression(final Entity entity) {
+        InternalDataDefinition dataDef = (InternalDataDefinition) entity.getDataDefinition();
+        return expressionService.getValue(entity, dataDef.getIdentifierExpression(), Locale.ENGLISH);
     }
 
     private SearchResultImpl getResultSet(final InternalDataDefinition dataDefinition, final int totalNumberOfEntities,
@@ -815,14 +932,13 @@ public class DataAccessServiceImpl implements DataAccessService {
         }
     }
 
-    private void copyValidationErrors(final DataDefinition dataDefinition, final Entity genericEntityToSave,
-            final Entity genericEntity) {
-        for (ErrorMessage error : genericEntity.getGlobalErrors()) {
-            genericEntityToSave.addGlobalError(error.getMessage(), error.getVars());
+    private void copyValidationErrors(final DataDefinition dataDefinition, final EntityMessagesHolder target,
+            final EntityMessagesHolder source) {
+        for (ErrorMessage error : source.getGlobalErrors()) {
+            target.addGlobalError(error.getMessage(), error.getVars());
         }
-        for (Map.Entry<String, ErrorMessage> error : genericEntity.getErrors().entrySet()) {
-            genericEntityToSave.addError(dataDefinition.getField(error.getKey()), error.getValue().getMessage(), error.getValue()
-                    .getVars());
+        for (Map.Entry<String, ErrorMessage> error : source.getErrors().entrySet()) {
+            target.addError(dataDefinition.getField(error.getKey()), error.getValue().getMessage(), error.getValue().getVars());
         }
     }
 
