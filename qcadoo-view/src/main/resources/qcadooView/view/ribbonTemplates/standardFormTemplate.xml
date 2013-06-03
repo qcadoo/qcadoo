@@ -51,7 +51,7 @@
 				});
 			]]></script>
 		</smallButton>
-		<smallButton name="delete" icon="deleteIcon16.png" state="disabled" action="#{form}.performDelete; #{window}.performBack">
+		<smallButton name="delete" icon="deleteIcon16.png" state="disabled" action="#{form}.performDelete;">
 			<script><![CDATA[
                 #{form}.addOnChangeListener({
 					onSetValue: function(value) {

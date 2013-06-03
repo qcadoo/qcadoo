@@ -33,6 +33,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.qcadoo.model.api.Entity;
+import com.qcadoo.model.api.EntityMessagesHolder;
+import com.qcadoo.model.api.EntityOpResult;
 import com.qcadoo.model.api.EntityTree;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.expression.ExpressionUtils;
@@ -55,6 +57,8 @@ public class FormComponentState extends AbstractContainerState implements FormCo
     public static final String JSON_IS_ACTIVE = "isActive";
 
     public static final String JSON_VALID = "valid";
+
+    public static final String JSON_BACK_REQUIRED = "performBackRequired";
 
     public static final String JSON_HEADER = "header";
 
@@ -79,6 +83,8 @@ public class FormComponentState extends AbstractContainerState implements FormCo
     private Map<String, FieldComponentState> fieldComponents;
 
     private final String expressionNew;
+
+    private boolean performBackRequired = false;
 
     public FormComponentState(final FormComponentPattern pattern) {
         super(pattern);
@@ -202,17 +208,23 @@ public class FormComponentState extends AbstractContainerState implements FormCo
     }
 
     @Override
+    public JSONObject render() throws JSONException {
+        JSONObject json = super.render();
+        json.put(JSON_BACK_REQUIRED, performBackRequired);
+        return json;
+    }
+
+    @Override
     protected JSONObject renderContent() throws JSONException {
         JSONObject json = new JSONObject();
         json.put(JSON_VALID, isValid());
+        json.put(JSON_IS_ACTIVE, active);
         if (entityId == null) {
             json.put(JSON_ENTITY_ID, JSONObject.NULL);
-            json.put(JSON_IS_ACTIVE, active);
             json.put(JSON_HEADER, getTranslationService().translate(getTranslationPath() + ".headerNew", getLocale()));
             json.put(JSON_HEADER_ENTITY_IDENTIFIER, getHeaderNew());
         } else {
             json.put(JSON_ENTITY_ID, entityId);
-            json.put(JSON_IS_ACTIVE, active);
             json.put(JSON_HEADER, getTranslationService().translate(getTranslationPath() + ".headerEdit", getLocale()));
             json.put(JSON_HEADER_ENTITY_IDENTIFIER, getHeaderEdit());
         }
@@ -313,18 +325,17 @@ public class FormComponentState extends AbstractContainerState implements FormCo
         }
     }
 
-    private void copyMessages(final List<ErrorMessage> messages) {
-        for (ErrorMessage message : messages) {
-            copyMessage(FormComponentState.this, message);
+    private void copyFieldMessages(final EntityMessagesHolder messagesHolder) {
+        for (Map.Entry<String, FieldComponentState> fieldComponentEntry : getFieldComponents().entrySet()) {
+            ErrorMessage message = messagesHolder.getError(fieldComponentEntry.getKey());
+            copyMessage(fieldComponentEntry.getValue(), message);
         }
     }
 
     private void copyEntityToFields(final Entity entity, final boolean requestUpdateState) {
         for (Map.Entry<String, FieldComponentState> field : getFieldComponents().entrySet()) {
             ErrorMessage message = entity.getError(field.getKey());
-            if (message != null) {
-                copyMessage(field.getValue(), message);
-            }
+            copyMessage(field.getValue(), message);
             if (fieldIsGridCorrespondingLookup(field.getValue(), field.getKey(), entity)) {
                 continue;
             }
@@ -366,12 +377,6 @@ public class FormComponentState extends AbstractContainerState implements FormCo
         return getDataDefinition().getField(field).getType().toString(value, getLocale());
     }
 
-    private void copyMessage(final ComponentState componentState, final ErrorMessage message) {
-        if (message != null) {
-            componentState.addMessage(message);
-        }
-    }
-
     @Override
     public void setFormEnabled(final boolean enabled) {
         for (Map.Entry<String, FieldComponentState> field : getFieldComponents().entrySet()) {
@@ -383,6 +388,10 @@ public class FormComponentState extends AbstractContainerState implements FormCo
             }
         }
         setEnabled(enabled);
+    }
+
+    private void setPerformBackRequired(final boolean backRequired) {
+        this.performBackRequired = backRequired;
     }
 
     protected final class FormEventPerformer {
@@ -475,9 +484,16 @@ public class FormComponentState extends AbstractContainerState implements FormCo
             if (entity == null) {
                 throw new IllegalStateException("Entity cannot be found");
             } else if (entityId != null) {
-                getDataDefinition().delete(entityId);
-                addTranslatedMessage(translateMessage("deleteMessage"), MessageType.SUCCESS);
-                clear(args);
+                EntityOpResult result = getDataDefinition().delete(entityId);
+                copyMessages(result.getMessagesHolder().getGlobalErrors());
+                copyFieldMessages(result.getMessagesHolder());
+                if (result.isSuccessfull()) {
+                    addTranslatedMessage(translateMessage("deleteMessage"), MessageType.SUCCESS);
+                    clear(args);
+                    setPerformBackRequired(true);
+                } else {
+                    setPerformBackRequired(false);
+                }
             }
         }
 

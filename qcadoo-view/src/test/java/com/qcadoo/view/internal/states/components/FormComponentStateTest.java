@@ -26,6 +26,7 @@ package com.qcadoo.view.internal.states.components;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
@@ -36,16 +37,22 @@ import static org.mockito.Mockito.verify;
 
 import java.util.Collections;
 import java.util.Locale;
+import java.util.Map;
 
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
+import com.qcadoo.model.api.EntityMessagesHolder;
+import com.qcadoo.model.api.EntityOpResult;
 import com.qcadoo.model.api.FieldDefinition;
+import com.qcadoo.model.api.validators.ErrorMessage;
 import com.qcadoo.model.internal.DefaultEntity;
 import com.qcadoo.model.internal.ExpressionServiceImpl;
 import com.qcadoo.model.internal.types.StringType;
@@ -96,6 +103,7 @@ public class FormComponentStateTest extends AbstractStateTest {
         given(dataDefinition.getPluginIdentifier()).willReturn("plugin");
         given(dataDefinition.getName()).willReturn("name");
         given(dataDefinition.getField("name")).willReturn(fieldDefinition);
+        given(dataDefinition.delete(any(Long.class))).willReturn(EntityOpResult.successfull());
 
         FieldComponentPattern namePattern = mock(FieldComponentPattern.class);
         given(namePattern.isRequired()).willReturn(false);
@@ -238,6 +246,8 @@ public class FormComponentStateTest extends AbstractStateTest {
     @Test
     public void shouldDeleteFormEntity() throws Exception {
         // given
+        name.setFieldValue("text");
+
         form.setFieldValue(13L);
 
         // when
@@ -247,6 +257,34 @@ public class FormComponentStateTest extends AbstractStateTest {
         assertNull(name.getFieldValue());
         verify(dataDefinition).delete(13L);
         assertNull(form.getFieldValue());
+    }
+
+    @Test
+    public void shouldNotDeleteFormEntity() throws Exception {
+        // given
+        EntityMessagesHolder messagesHolder = mock(EntityMessagesHolder.class);
+        final String message = "some.message";
+        ErrorMessage errorMessage = new ErrorMessage(message);
+        given(messagesHolder.getGlobalErrors()).willReturn(Lists.newArrayList(errorMessage));
+
+        Map<String, ErrorMessage> fieldErrors = Maps.newHashMap();
+        fieldErrors.put("name", errorMessage);
+        given(messagesHolder.getErrors()).willReturn(fieldErrors);
+
+        EntityOpResult result = EntityOpResult.failure(messagesHolder);
+        given(dataDefinition.delete(13L)).willReturn(result);
+
+        name.setFieldValue("text");
+
+        form.setFieldValue(13L);
+
+        // when
+        form.performEvent(viewDefinitionState, "delete", new String[0]);
+
+        // then
+        assertNotNull(name.getFieldValue());
+        verify(dataDefinition).delete(13L);
+        assertEquals(13L, form.getFieldValue());
     }
 
     @Test

@@ -33,6 +33,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.qcadoo.view.api.ComponentState;
+import com.qcadoo.view.api.components.FieldComponent;
 import com.qcadoo.view.internal.api.ComponentPattern;
 import com.qcadoo.view.internal.api.ContainerState;
 import com.qcadoo.view.internal.api.InternalComponentState;
@@ -107,6 +108,17 @@ public abstract class AbstractContainerState extends AbstractComponentState impl
             }
         }
         return false;
+    }
+
+    protected void requestUpdateStateRecursively() {
+        requestUpdateState();
+        for (InternalComponentState child : children.values()) {
+            if (child instanceof FieldComponent) {
+                ((FieldComponent) child).requestComponentUpdateState();
+            } else if (child instanceof AbstractContainerState) {
+                ((AbstractContainerState) child).requestUpdateStateRecursively();
+            }
+        }
     }
 
     @Override

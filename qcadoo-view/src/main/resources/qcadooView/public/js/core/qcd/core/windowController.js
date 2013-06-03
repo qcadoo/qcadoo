@@ -261,7 +261,7 @@ QCD.WindowController = function(_menuStructure) {
 		}
 		// TODO mina
 		if (modalsStack.length > 0) { // isModal
-			var modal = modalsStack[modalsStack.length - 1] // opened modal
+			var modal = modalsStack[modalsStack.length - 1]; // opened modal
 			modal.iframe.attr('src', url);
 		} else {
 			iframe.attr('src', url);

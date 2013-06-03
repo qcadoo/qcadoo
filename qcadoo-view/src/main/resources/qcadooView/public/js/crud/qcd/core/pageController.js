@@ -467,21 +467,36 @@ QCD.PageController = function() {
 		}
 		return window.parent.openModal(id, url, serializationObject, onCloseListener, afterInitListener, dimensions);
 	}
-	this.openModal = openModal
+	this.openModal = openModal;
 	
-	this.goBack = function() {
-		if(canClose()) {
+	function canClose() {
+        changed = false;
+        for (var i in pageComponents) {
+            if(pageComponents[i].isChanged()) {             
+                changed = true;
+            }
+        }
+        if(changed) {
+            return window.confirm(pageOptions.translations.backWithChangesConfirmation);
+        } else {
+            return true;
+        }
+    }
+    this.canClose = canClose;
+	
+	this.goBack = function (omitConfirm) {
+		if (omitConfirm || canClose()) {
 			QCD.components.elements.utils.LoadingIndicator.blockElement($("body"));
 			window.parent.goBack(this);
 		}
-	}
+	};
 	
 	function getSerializationObject() {
 		return {
 			url: windowUrl,
 			components: getValueData(),
 			currentMenuItem: null
-		}
+		};
 	}
 	
 	this.getLastPageController = function() {
@@ -493,21 +508,6 @@ QCD.PageController = function() {
 		}
 		return lastPageController;
 	}
-	
-	function canClose() {
-		changed = false;
-		for (var i in pageComponents) {
-			if(pageComponents[i].isChanged()) {				
-				changed = true;
-			}
-		}
-		if(changed) {
-			return window.confirm(pageOptions.translations.backWithChangesConfirmation);
-		} else {
-			return true;
-		}
-	}
-	this.canClose = canClose;
 	
 	this.closeWindow = function() {
 		window.close();

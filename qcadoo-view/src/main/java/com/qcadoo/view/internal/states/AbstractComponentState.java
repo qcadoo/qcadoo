@@ -23,6 +23,7 @@
  */
 package com.qcadoo.view.internal.states;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -32,6 +33,7 @@ import org.json.JSONObject;
 import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.validators.ErrorMessage;
+import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.internal.FieldEntityIdChangeListener;
 import com.qcadoo.view.internal.ScopeEntityIdChangeListener;
@@ -175,6 +177,18 @@ public abstract class AbstractComponentState implements InternalComponentState, 
     protected String translateMessage(final String key, final String... args) {
         return getTranslationService()
                 .translate(getTranslationPath() + "." + key, "qcadooView.message." + key, getLocale(), args);
+    }
+
+    protected void copyMessage(final ComponentState componentState, final ErrorMessage message) {
+        if (message != null) {
+            componentState.addMessage(message);
+        }
+    }
+
+    protected void copyMessages(final List<ErrorMessage> messages) {
+        for (ErrorMessage message : messages) {
+            copyMessage(this, message);
+        }
     }
 
     @Override

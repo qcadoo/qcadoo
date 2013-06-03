@@ -41,6 +41,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
+import com.qcadoo.model.api.EntityOpResult;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.search.CustomRestriction;
 import com.qcadoo.model.api.search.SearchCriteriaBuilder;
@@ -553,6 +554,7 @@ public final class GridComponentState extends AbstractComponentState implements 
         }
 
         public void removeSelectedEntity(final String[] args) {
+            EntityOpResult result = EntityOpResult.successfull();
             if (weakRelation) {
                 Entity entity = null;
                 boolean isManyToManyRelationType = belongsToFieldDefinition.getType() instanceof JoinFieldHolder;
@@ -578,17 +580,22 @@ public final class GridComponentState extends AbstractComponentState implements 
                     }
                 }
             } else {
-                getDataDefinition().delete(selectedEntities.toArray(new Long[selectedEntities.size()]));
+                result = getDataDefinition().delete(selectedEntities.toArray(new Long[selectedEntities.size()]));
             }
-            if (selectedEntities.size() == 1) {
-                addTranslatedMessage(translateMessage("deleteMessage"), MessageType.SUCCESS);
+
+            if (result.isSuccessfull()) {
+                if (selectedEntities.size() == 1) {
+                    addTranslatedMessage(translateMessage("deleteMessage"), MessageType.SUCCESS);
+                } else {
+                    addTranslatedMessage(translateMessage("deleteMessages", String.valueOf(selectedEntities.size())),
+                            MessageType.SUCCESS);
+                }
+                setSelectedEntityId(null);
+                multiselectMode = false;
+                selectedEntities = new HashSet<Long>();
             } else {
-                addTranslatedMessage(translateMessage("deleteMessages", String.valueOf(selectedEntities.size())),
-                        MessageType.SUCCESS);
+                copyMessages(result.getMessagesHolder().getGlobalErrors());
             }
-            setSelectedEntityId(null);
-            multiselectMode = false;
-            selectedEntities = new HashSet<Long>();
         }
 
         public void moveUpSelectedEntity(final String[] args) {

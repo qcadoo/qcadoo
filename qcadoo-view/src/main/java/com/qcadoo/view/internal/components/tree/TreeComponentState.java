@@ -39,6 +39,7 @@ import org.json.JSONObject;
 
 import com.google.common.collect.Lists;
 import com.qcadoo.model.api.Entity;
+import com.qcadoo.model.api.EntityOpResult;
 import com.qcadoo.model.api.EntityTree;
 import com.qcadoo.model.api.EntityTreeNode;
 import com.qcadoo.model.api.FieldDefinition;
@@ -364,11 +365,15 @@ public final class TreeComponentState extends FieldComponentState implements Tre
         }
 
         public void removeSelectedEntity(final String[] args) {
-            getDataDefinition().delete(selectedEntityId);
-            setSelectedEntityId(null);
-            addTranslatedMessage(translateMessage("deleteMessage"), MessageType.SUCCESS);
-            requestRender();
-            requestUpdateState();
+            EntityOpResult result = getDataDefinition().delete(selectedEntityId);
+            if (result.isSuccessfull()) {
+                setSelectedEntityId(null);
+                addTranslatedMessage(translateMessage("deleteMessage"), MessageType.SUCCESS);
+                requestRender();
+                requestUpdateState();
+            } else {
+                copyMessages(result.getMessagesHolder().getGlobalErrors());
+            }
         }
 
         public void save(final String[] args) {

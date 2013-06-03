@@ -27,7 +27,9 @@ QCD.components.containers = QCD.components.containers || {};
 
 QCD.components.containers.Form = function(_element, _mainController) {
 	$.extend(this, new QCD.components.Container(_element, _mainController));
-	
+
+    var that = this;	
+
 	var mainController = _mainController;
 	var element = _element;
 	
@@ -63,30 +65,28 @@ QCD.components.containers.Form = function(_element, _mainController) {
 		};
 	}
 	
-	this.setComponentValue = function(value) {
+    function setWindowHeader(value) {
+        if (hasHeader) {
+            if (value.headerEntityIdentifier) {
+                mainController.setWindowHeader(value.header + ' <span>' + value.headerEntityIdentifier + '</span>');
+            } else {
+                mainController.setWindowHeader(value.header);
+            }
+        }
+    }
+
+	this.setComponentValue = function (value) {
 		if(value.valid) {
-			if(hasHeader) {
-				if(value.headerEntityIdentifier) {
-					mainController.setWindowHeader(value.header + ' <span>' + value.headerEntityIdentifier + '</span>');
-				} else {
-					mainController.setWindowHeader(value.header);
-				}
-			}
+		    setWindowHeader(value);
 		}
 		headerEntityIdentifier = value.headerEntityIdentifier;
 		header = value.header;
 		formValue = value.entityId;
 		unblock();
-	}
+	};
 	
-	this.setComponentState = function(state) {
-		if(hasHeader) {
-			if(state.headerEntityIdentifier) {
-				mainController.setWindowHeader(state.header + ' <span>' + state.headerEntityIdentifier + '</span>');
-			} else {
-				mainController.setWindowHeader(state.header);
-			}
-		}
+	this.setComponentState = function (state) {
+		setWindowHeader(state);
 		headerEntityIdentifier = state.headerEntityIdentifier;
 		header = state.header;
 		formValue = state.entityId;
@@ -94,18 +94,18 @@ QCD.components.containers.Form = function(_element, _mainController) {
 			baseValue = state.baseValue;
 		}
 		unblock();
-	}
+	};
 	
-	this.setComponentEnabled = function(isEnabled) {
-	}
+	this.setComponentEnabled = function (isEnabled) {
+	};
 	
-	this.setComponentLoading = function(isLoadingVisible) {
+	this.setComponentLoading = function (isLoadingVisible) {
 		if (isLoadingVisible) {
 			block();
 		} else {
 			unblock();
 		}
-	}
+	};
 	
 	this.performUpdateState = function() {
 		baseValue = formValue;
@@ -132,16 +132,16 @@ QCD.components.containers.Form = function(_element, _mainController) {
 	}
 	
 	this.performCopy = function(actionsPerformer) {
-		if(mainController.canClose()) {
+		if (mainController.canClose()) {
 			callEvent("copy", actionsPerformer);
 		}
 	}
 	
-	this.performDelete = function(actionsPerformer) {
+	this.performDelete = function (actionsPerformer) {
 		if (window.confirm(translations.confirmDeleteMessage)) {
 			callEvent("delete", actionsPerformer);
 		}
-	}
+	};
 	
 	this.performCancel = function(actionsPerformer) {
 		if (window.confirm(translations.confirmCancelMessage)) {

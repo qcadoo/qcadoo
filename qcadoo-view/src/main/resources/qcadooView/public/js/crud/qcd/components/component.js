@@ -24,42 +24,30 @@
 var QCD = QCD || {};
 QCD.components = QCD.components || {};
 
-QCD.components.Component = function(_element, _mainController) {
+QCD.components.Component = function (element, mainController) {
+    "use strict";
+    
+    if (!(this instanceof QCD.components.Component)) {
+        return new QCD.components.Component(element, mainController);
+    }
 	
-	var mainController = _mainController;
-	var element = _element;
-	
-	var elementPath = element.attr('id');
-	var elementSearchName = elementPath.replace(/\./g,"\\.");
-	var elementName = elementPath.split(".")[elementPath.split(".").length - 1];
+	var elementPath = element.attr('id'),
+        elementSearchName = elementPath.replace(/\./g, "\\."),
+        elementName = elementPath.split(".")[elementPath.split(".").length - 1],
+        isVisible = true,
+        isEnabled = true,
+        isPermanentlyDisabled = false,
+        onChangeListeners = [];
 	
 	this.element = element;
 	this.elementPath = elementPath;
 	this.elementSearchName = elementSearchName;
 	this.elementName = elementName;
 	
-	var isVisible = true;
-	var isEnabled = true;
-	var isPermanentlyDisabled = false;
-	
 	this.contextObject = null;
 	
-	var onChangeListeners;
-	
-	function constructor(_this) {
-		var optionsElement = element.children(".element_options");
-		if (!optionsElement.html() || $.trim(optionsElement.html()) == "") {
-			_this.options = new Object();
-		} else {
-			_this.options = jsonParse(optionsElement.html());
-		}
-		optionsElement.remove();
-		isVisible = _this.options.defaultVisible;
-		isEnabled = _this.options.defaultEnabled;
-	}
-	
-	this.getValue = function() {
-		var valueObject = new Object();
+	this.getValue = function () {
+		var valueObject = {};
 		
 		valueObject.enabled = isEnabled;
 		valueObject.visible = isVisible;
@@ -77,9 +65,13 @@ QCD.components.Component = function(_element, _mainController) {
 			valueObject.components = this.getComponentsValue();
 		}
 		return valueObject;
-	}
+	};
 	
-	this.setValue = function(value) {
+	this.setValue = function (value) {
+	    if (value.performBackRequired) {
+            mainController.goBack(true);
+            return;
+        }
 		this.setPermanentlyDisabled(value.permanentlyDisabled);
 		this.setEnabled(value.enabled);
 		this.setVisible(value.visible);
@@ -88,111 +80,105 @@ QCD.components.Component = function(_element, _mainController) {
 		if (value.components) {
 			this.setComponentsValue(value);
 		}
-		if (value.content != null) {
+		if (typeof value.content !== 'undefined' && value.content !== null) {
 			this.setComponentValue(value.content);
 		}
 		if (value.updateState) {
 			this.performUpdateState();
 		}
-		if (onChangeListeners) {
-			this.fireOnChangeListeners("onSetValue", [value]);
-		}
-	}
+        this.fireOnChangeListeners("onSetValue", [value]);
+	};
 	
-	this.performUpdateState = function() {
-	}
+	this.performUpdateState = function () {
+	};
 	
-	this.performInitialize = function() {
-		
-	}
+	this.performInitialize = function () {
+	};
 	
-	this.addContext = function(contextField, contextValue) {
+	this.addContext = function (contextField, contextValue) {
 		if (! this.contextObject) {
-			this.contextObject = new Object;
+			this.contextObject = {};
 		}
 		this.contextObject[contextField] = contextValue;
-	}
+	};
 	
-	this.fireEvent = function(actionsPerformer, eventName, args) {
+	this.fireEvent = function (actionsPerformer, eventName, args) {
 		if (this.beforeEventFunction) {
 			this.beforeEventFunction();
 		}
 		mainController.callEvent(eventName, elementPath, null, args, actionsPerformer);
-	}
+	};
 	
-	this.setState = function(state) {
+	this.setState = function (state) {
 		this.setPermanentlyDisabled(state.permanentlyDisabled);
 		this.setEnabled(state.enabled);
 		this.setVisible(state.visible);
 		if (this.setComponentState) {
 			this.setComponentState(state.content);
 		} else {
-			QCD.error(this.elementPath+".setComponentState() no implemented");
+			QCD.error(this.elementPath + ".setComponentState() no implemented");
 		}
 		if (state.components) {
 			this.setComponentsState(state);
 		}
-		if (onChangeListeners) {
-			this.fireOnChangeListeners("onSetValue", [state]);
-		}
-	}
+        this.fireOnChangeListeners("onSetValue", [state]);
+	};
 	
-	this.setEditable = function(isEditable) {
+	this.setEditable = function (isEditable) {
 		this.setComponentEditable(isEditable);
-	}
+	};
 	
-	this.performScript = function() {
+	this.performScript = function () {
 		if (this.options.script) {
 			mainController.getActionEvaluator().performJsAction(this.options.script, this);
 		}
 		if (this.performComponentScript) {
 			this.performComponentScript();
 		}
-	}
+	};
 	
-	this.updateSize = function(width, height) {
-	}
+	this.updateSize = function (width, height) {
+	};
 
-	this.setMessages = function(messages) {
-		for ( var i in messages) {
+	this.setMessages = function (messages) {
+		for (var i in messages) {
 			mainController.showMessage(messages[i]);
 		}
-	}
+	};
 	
-	this.setPermanentlyDisabled = function(_isPermanentlyDisabled, isDeep) {
-		isPermanentlyDisabled = _isPermanentlyDisabled;
-		this.setComponentEnabled(!_isPermanentlyDisabled);
+	this.setPermanentlyDisabled = function (shouldBeDisabled, isDeep) {
+		isPermanentlyDisabled = shouldBeDisabled;
+		this.setComponentEnabled(!shouldBeDisabled);
 		if (isDeep && this.components) {
 			for (var i in this.components) {
-				this.components[i].setPermanentlyDisabled(_isPermanentlyDisabled, isDeep);
+				this.components[i].setPermanentlyDisabled(shouldBeDisabled, true);
 			}
 		}
-	}
+	};
 	
-	this.isPermanentlyDisabled = function() {
+	this.isPermanentlyDisabled = function () {
 		return isPermanentlyDisabled;
-	}
+	};
 
-	this.setEnabled = function(_isEnabled, isDeep) {
+	this.setEnabled = function (shouldBeEnabled, isDeep) {
 		if (isPermanentlyDisabled) {
 			isEnabled = false;
 		} else {
-			isEnabled = _isEnabled;
+			isEnabled = shouldBeEnabled;
 		}
 		this.setComponentEnabled(isEnabled);
 		if (isDeep && this.components) {
 			for (var i in this.components) {
-				this.components[i].setEnabled(_isEnabled, isDeep);
+				this.components[i].setEnabled(shouldBeEnabled, true);
 			}
 		}
-	}
+	};
 	
-	this.isEnabled = function() {
+	this.isEnabled = function () {
 		return isEnabled;
-	}
+	};
 	
-	this.setVisible = function(_isVisible) {
-		isVisible = _isVisible;
+	this.setVisible = function (isVisible) {
 		if (this.setComponentVisible) {
 			this.setComponentVisible(isVisible);
 		} else {
@@ -202,40 +188,52 @@ QCD.components.Component = function(_element, _mainController) {
 				element.hide();
 			}
 		}
-	}
+	};
 	
-	this.isVisible = function() {
+	this.isVisible = function () {
 		return isVisible;
-	}
+	};
 
-	this.addOnChangeListener = function(listener) {
-		if (!onChangeListeners) {
-			onChangeListeners = new Array();
-		}
+	this.addOnChangeListener = function (listener) {
 		onChangeListeners.push(listener);
-	}
+	};
 	
-	this.removeOnChangeListeners = function(listener) {
-		onChangeListeners = new Array();
-	}
+	this.removeOnChangeListeners = function (listener) {
+		onChangeListeners = [];
+	};
 	
-	this.fireOnChangeListeners = function(method, args) {
-		for (var i in onChangeListeners) {
-			var func = onChangeListeners[i][method];
-			if (func) {
-				func.apply(this, args);
+	this.fireOnChangeListeners = function (method, args) {
+	    var onChangeListenersLen = onChangeListeners.length,
+            i = 0,
+            listener = null;
+		for (i = 0; i < onChangeListenersLen; i++) {
+			listener = onChangeListeners[i][method];
+			if (typeof listener === 'function') {
+				listener.apply(this, args);
 			}
 		}
-	}
+	};
 	
-	this.isChanged = function() {
+	this.isChanged = function () {
 		return this.isComponentChanged();
-	}
+	};
 	
-	this.isComponentChanged = function() {
+	this.isComponentChanged = function () {
 		return false;
-	}
+	};
+	
+	function constructor(that) {
+        var optionsElement = element.children(".element_options");
+        if (!optionsElement.html() || $.trim(optionsElement.html()) === "") {
+            that.options = {};
+        } else {
+            that.options = jsonParse(optionsElement.html());
+        }
+        optionsElement.remove();
+        isVisible = that.options.defaultVisible;
+        isEnabled = that.options.defaultEnabled;
+    }
 	
 	constructor(this);
 
-}
+};
