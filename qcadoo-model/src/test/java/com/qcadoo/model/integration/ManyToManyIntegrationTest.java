@@ -57,12 +57,10 @@ public class ManyToManyIntegrationTest extends IntegrationTest {
         Entity secondProduct = productDataDefinition.save(createProduct("fgh", "00002"));
         Entity thirdProduct = productDataDefinition.save(createProduct("jkl", "00003"));
 
-        Entity firstPart = partDataDefinition.save(createPart("qwe", firstProduct,
-                Lists.newArrayList(firstProduct, secondProduct)));
-        Entity secondPart = partDataDefinition.save(createPart("rty", secondProduct,
-                Lists.newArrayList(firstProduct, thirdProduct)));
-        Entity thirdPart = partDataDefinition.save(createPart("uiop", thirdProduct,
-                Lists.newArrayList(firstProduct, secondProduct, thirdProduct)));
+        Entity firstPart = fromDb(save(createPart("qwe", firstProduct, Lists.newArrayList(firstProduct, secondProduct))));
+        Entity secondPart = fromDb(save(createPart("rty", secondProduct, Lists.newArrayList(firstProduct, thirdProduct))));
+        Entity thirdPart = fromDb(save(createPart("uiop", thirdProduct,
+                Lists.newArrayList(firstProduct, secondProduct, thirdProduct))));
 
         // when
         firstProduct = productDataDefinition.get(firstProduct.getId());
@@ -73,62 +71,56 @@ public class ManyToManyIntegrationTest extends IntegrationTest {
         Collection<Entity> firstProductParts = (Collection<Entity>) firstProduct.getField("partsManyToMany");
         assertNotNull(firstProductParts);
         assertEquals(3, firstProductParts.size());
-        checkProxyCollection(partDataDefinition, firstProductParts, Lists.newArrayList(firstPart, secondPart, thirdPart));
+        checkProxyCollection(firstProductParts, Lists.newArrayList(firstPart, secondPart, thirdPart));
 
         Collection<Entity> secondProductParts = (Collection<Entity>) secondProduct.getField("partsManyToMany");
         assertNotNull(secondProductParts);
         assertEquals(2, secondProductParts.size());
-        checkProxyCollection(partDataDefinition, secondProductParts, Lists.newArrayList(firstPart, thirdPart));
+        checkProxyCollection(secondProductParts, Lists.newArrayList(firstPart, thirdPart));
 
         Collection<Entity> thirdProductParts = (Collection<Entity>) thirdProduct.getField("partsManyToMany");
         assertNotNull(thirdProductParts);
         assertEquals(2, thirdProductParts.size());
-        checkProxyCollection(partDataDefinition, thirdProductParts, Lists.newArrayList(secondPart, thirdPart));
+        checkProxyCollection(thirdProductParts, Lists.newArrayList(secondPart, thirdPart));
     }
 
-    private void checkProxyCollection(final DataDefinition dataDefinition, final Collection<Entity> proxyEntitiesSet,
-            final List<Entity> entitiesList) {
+    private void checkProxyCollection(final Collection<Entity> proxyEntitiesSet, final List<Entity> entitiesList) {
         Set<Entity> loadedEntities = Sets.newHashSet();
         for (Entity proxyEntity : proxyEntitiesSet) {
             assertTrue(proxyEntity instanceof ProxyEntity);
             assertTrue(proxyEntity.isValid());
-            loadedEntities.add(dataDefinition.get(proxyEntity.getId()));
+            loadedEntities.add(fromDb(proxyEntity));
         }
+        assertEquals(entitiesList.size(), loadedEntities.size());
         assertTrue(loadedEntities.containsAll(entitiesList));
     }
 
     @Test
     public void shouldGeteManyToManyFieldReturnDistinctCollection() throws Exception {
         // given
-        DataDefinition productDataDefinition = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PRODUCT);
-        DataDefinition partDataDefinition = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PART);
+        Entity firstProduct = save(createProduct("asd", "00001"));
 
-        Entity firstProduct = productDataDefinition.save(createProduct("asd", "00001"));
+        Entity firstPart = fromDb(save(createPart("qwe", firstProduct,
+                Lists.newArrayList(firstProduct, firstProduct, firstProduct))));
 
-        Entity firstPart = partDataDefinition.save(createPart("qwe", firstProduct,
-                Lists.newArrayList(firstProduct, firstProduct, firstProduct)));
-
-        firstProduct = productDataDefinition.get(firstProduct.getId());
+        firstProduct = fromDb(firstProduct);
 
         // when
         List<Entity> firstProductParts = firstProduct.getManyToManyField("partsManyToMany");
 
         // then
         assertEquals(1, firstProductParts.size());
-        assertEquals(firstPart, firstProductParts.get(0));
+        assertEquals(firstPart, fromDb(firstProductParts.get(0)));
     }
 
     @Test
     public void shouldEntityWithManyToManyFieldHashCodeDoNotMakeInfinityCycle() throws Exception {
         // given
-        DataDefinition productDataDefinition = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PRODUCT);
-        DataDefinition partDataDefinition = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PART);
+        Entity firstProduct = save(createProduct("asd", "00001"));
 
-        Entity firstProduct = productDataDefinition.save(createProduct("asd", "00001"));
+        save(createPart("qwe", firstProduct, Lists.newArrayList(firstProduct)));
 
-        partDataDefinition.save(createPart("qwe", firstProduct, Lists.newArrayList(firstProduct)));
-
-        firstProduct = productDataDefinition.get(firstProduct.getId());
+        firstProduct = fromDb(firstProduct);
 
         // when
         try {
@@ -159,31 +151,26 @@ public class ManyToManyIntegrationTest extends IntegrationTest {
     @Test
     public void shouldCopyManyToManyField() {
         // given
-        DataDefinition productDataDefinition = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PRODUCT);
-        DataDefinition partDataDefinition = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PART);
+        Entity firstProduct = save(createProduct("asd", "00001"));
+        Entity secondProduct = save(createProduct("fgh", "00002"));
+        Entity thirdProduct = save(createProduct("jkl", "00003"));
 
-        Entity firstProduct = productDataDefinition.save(createProduct("asd", "00001"));
-        Entity secondProduct = productDataDefinition.save(createProduct("fgh", "00002"));
-        Entity thirdProduct = productDataDefinition.save(createProduct("jkl", "00003"));
-
-        Entity firstPart = partDataDefinition.save(createPart("qwe", firstProduct,
-                Lists.newArrayList(firstProduct, secondProduct)));
-        Entity secondPart = partDataDefinition.save(createPart("rty", secondProduct,
-                Lists.newArrayList(firstProduct, thirdProduct)));
-        Entity thirdPart = partDataDefinition.save(createPart("uiop", thirdProduct,
-                Lists.newArrayList(firstProduct, secondProduct, thirdProduct)));
+        Entity firstPart = fromDb(save(createPart("qwe", firstProduct, Lists.newArrayList(firstProduct, secondProduct))));
+        Entity secondPart = fromDb(save(createPart("rty", secondProduct, Lists.newArrayList(firstProduct, thirdProduct))));
+        Entity thirdPart = fromDb(save(createPart("uiop", thirdProduct,
+                Lists.newArrayList(firstProduct, secondProduct, thirdProduct))));
 
         // when
-        Entity copyFirstProduct = productDataDefinition.copy(firstProduct.getId()).get(0);
-        copyFirstProduct = productDataDefinition.get(copyFirstProduct.getId());
-        Entity copyFirstPart = partDataDefinition.copy(firstPart.getId()).get(0);
-        copyFirstPart = partDataDefinition.get(copyFirstPart.getId());
+        Entity copyFirstProduct = firstProduct.getDataDefinition().copy(firstProduct.getId()).get(0);
+        copyFirstProduct = fromDb(copyFirstProduct);
+        Entity copyFirstPart = firstPart.getDataDefinition().copy(firstPart.getId()).get(0);
+        copyFirstPart = fromDb(copyFirstPart);
 
         // then
         Collection<Entity> firstProductParts = copyFirstProduct.getManyToManyField("partsManyToMany");
         assertNotNull(firstProductParts);
         assertEquals(3, firstProductParts.size());
-        checkProxyCollection(partDataDefinition, firstProductParts, Lists.newArrayList(firstPart, secondPart, thirdPart));
+        checkProxyCollection(firstProductParts, Lists.newArrayList(firstPart, secondPart, thirdPart));
 
         Collection<Entity> firstPartsCopied = copyFirstPart.getManyToManyField("products");
         assertNotNull(firstPartsCopied);
@@ -193,23 +180,17 @@ public class ManyToManyIntegrationTest extends IntegrationTest {
     @Test
     public final void shouldPerformCascadeDeletion() {
         // given
-        DataDefinition productDataDefinition = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PRODUCT);
-        DataDefinition partDataDefinition = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PART);
+        Entity firstProduct = save(createProduct("asd", "00001"));
+        Entity secondProduct = save(createProduct("fgh", "00002"));
+        Entity thirdProduct = save(createProduct("jkl", "00003"));
+        Entity anotherProduct = save(createProduct("qwertyuiop", "00004"));
 
-        Entity firstProduct = productDataDefinition.save(createProduct("asd", "00001"));
-        Entity secondProduct = productDataDefinition.save(createProduct("fgh", "00002"));
-        Entity thirdProduct = productDataDefinition.save(createProduct("jkl", "00003"));
-        Entity anotherProduct = productDataDefinition.save(createProduct("qwertyuiop", "00004"));
-
-        Entity firstPart = partDataDefinition.save(createPart("qwe", anotherProduct,
-                Lists.newArrayList(firstProduct, secondProduct)));
-        Entity secondPart = partDataDefinition.save(createPart("rty", anotherProduct,
-                Lists.newArrayList(firstProduct, thirdProduct)));
-        Entity thirdPart = partDataDefinition.save(createPart("uiop", anotherProduct,
-                Lists.newArrayList(firstProduct, secondProduct, thirdProduct)));
+        Entity firstPart = save(createPart("qwe", anotherProduct, Lists.newArrayList(firstProduct, secondProduct)));
+        Entity secondPart = save(createPart("rty", anotherProduct, Lists.newArrayList(firstProduct, thirdProduct)));
+        Entity thirdPart = save(createPart("uiop", anotherProduct, Lists.newArrayList(firstProduct, secondProduct, thirdProduct)));
 
         // when
-        EntityOpResult result = productDataDefinition.delete(secondProduct.getId());
+        EntityOpResult result = delete(secondProduct);
 
         // then
         Assert.assertTrue(result.isSuccessfull());
@@ -224,28 +205,55 @@ public class ManyToManyIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    public final void shouldOnDeleteHookRejectCascadeDeletion() {
+    public final void shouldPerformCascadeDeletion_deeplyVariant() {
         // given
-        DataDefinition productDataDefinition = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PRODUCT);
-        DataDefinition partDataDefinition = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PART);
+        Entity firstProduct = save(createProduct("asd", "00001"));
+        Entity secondProduct = save(createProduct("fgh", "00002"));
+        Entity thirdProduct = save(createProduct("jkl", "00003"));
+        Entity anotherProduct = save(createProduct("qwertyuiop", "00004"));
 
-        Entity firstProduct = productDataDefinition.save(createProduct("asd", "00001"));
-        Entity secondProduct = productDataDefinition.save(createProduct("fgh", "00002"));
-        Entity thirdProduct = productDataDefinition.save(createProduct("jkl", "00003"));
-        Entity anotherProduct = productDataDefinition.save(createProduct("qwertyuiop", "00004"));
-
-        Entity firstPart = partDataDefinition.save(createPart("qwe", anotherProduct,
-                Lists.newArrayList(firstProduct, secondProduct)));
-        Entity secondPart = partDataDefinition.save(createPart("rty", anotherProduct,
-                Lists.newArrayList(firstProduct, thirdProduct)));
-        Entity thirdPart = partDataDefinition.save(createPart("uiop", anotherProduct,
-                Lists.newArrayList(firstProduct, secondProduct, thirdProduct)));
-
-        thirdPart.setField("deletionIsProhibited", true);
-        thirdPart = partDataDefinition.save(thirdPart);
+        Entity firstPart = save(createPart("qwe", anotherProduct, Lists.newArrayList(firstProduct, secondProduct)));
+        Entity secondPart = save(createPart("rty", anotherProduct, Lists.newArrayList(firstProduct, thirdProduct)));
+        Entity thirdPart = save(createPart("uiop", anotherProduct, Lists.newArrayList(firstProduct, secondProduct, thirdProduct)));
+        Entity factory1 = createFactory("factory1");
+        factory1.setField("parentPart", firstPart);
+        factory1.setField("deletionIsProhibited", false);
+        factory1 = save(factory1);
+        firstPart = fromDb(firstPart);
 
         // when
-        EntityOpResult result = productDataDefinition.delete(secondProduct.getId());
+        EntityOpResult result = delete(secondProduct);
+
+        // then
+        Assert.assertTrue(result.isSuccessfull());
+
+        Assert.assertNull(fromDb(firstPart));
+        Assert.assertNotNull(fromDb(secondPart));
+        Assert.assertNull(fromDb(thirdPart));
+        Assert.assertNull(fromDb(factory1));
+
+        Assert.assertNotNull(fromDb(firstProduct));
+        Assert.assertNull(fromDb(secondProduct));
+        Assert.assertNotNull(fromDb(thirdProduct));
+    }
+
+    @Test
+    public final void shouldOnDeleteHookRejectCascadeDeletion() {
+        // given
+        Entity firstProduct = save(createProduct("asd", "00001"));
+        Entity secondProduct = save(createProduct("fgh", "00002"));
+        Entity thirdProduct = save(createProduct("jkl", "00003"));
+        Entity anotherProduct = save(createProduct("qwertyuiop", "00004"));
+
+        Entity firstPart = save(createPart("qwe", anotherProduct, Lists.newArrayList(firstProduct, secondProduct)));
+        Entity secondPart = save(createPart("rty", anotherProduct, Lists.newArrayList(firstProduct, thirdProduct)));
+        Entity thirdPart = save(createPart("uiop", anotherProduct, Lists.newArrayList(firstProduct, secondProduct, thirdProduct)));
+
+        thirdPart.setField("deletionIsProhibited", true);
+        thirdPart = save(thirdPart);
+
+        // when
+        EntityOpResult result = delete(secondProduct);
 
         // then
         Assert.assertFalse(result.isSuccessfull());
@@ -260,25 +268,52 @@ public class ManyToManyIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    public final void shouldPerformCascadeNullification() {
+    public final void shouldOnDeleteHookRejectCascadeDeletion_deeplyVariant() {
         // given
-        DataDefinition productDataDefinition = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PRODUCT);
-        DataDefinition partDataDefinition = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PART);
+        Entity firstProduct = save(createProduct("asd", "00001"));
+        Entity secondProduct = save(createProduct("fgh", "00002"));
+        Entity thirdProduct = save(createProduct("jkl", "00003"));
+        Entity anotherProduct = save(createProduct("qwertyuiop", "00004"));
 
-        Entity firstProduct = productDataDefinition.save(createProduct("asd", "00001"));
-        Entity secondProduct = productDataDefinition.save(createProduct("fgh", "00002"));
-        Entity thirdProduct = productDataDefinition.save(createProduct("jkl", "00003"));
-        Entity anotherProduct = productDataDefinition.save(createProduct("qwertyuiop", "00004"));
-
-        Entity firstPart = partDataDefinition.save(createPart("qwe", anotherProduct,
-                Lists.newArrayList(firstProduct, secondProduct)));
-        Entity secondPart = partDataDefinition.save(createPart("rty", anotherProduct,
-                Lists.newArrayList(firstProduct, thirdProduct)));
-        Entity thirdPart = partDataDefinition.save(createPart("uiop", anotherProduct,
-                Lists.newArrayList(firstProduct, secondProduct, thirdProduct)));
+        Entity firstPart = save(createPart("qwe", anotherProduct, Lists.newArrayList(firstProduct, secondProduct)));
+        Entity secondPart = save(createPart("rty", anotherProduct, Lists.newArrayList(firstProduct, thirdProduct)));
+        Entity thirdPart = save(createPart("uiop", anotherProduct, Lists.newArrayList(firstProduct, secondProduct, thirdProduct)));
+        Entity factory1 = createFactory("factory1");
+        factory1.setField("parentPart", firstPart);
+        factory1.setField("deletionIsProhibited", true);
+        factory1 = save(factory1);
+        firstPart = fromDb(firstPart);
 
         // when
-        partDataDefinition.delete(secondPart.getId());
+        EntityOpResult result = delete(secondProduct);
+
+        // then
+        Assert.assertFalse(result.isSuccessfull());
+
+        Assert.assertNotNull(fromDb(firstPart));
+        Assert.assertNotNull(fromDb(secondPart));
+        Assert.assertNotNull(fromDb(thirdPart));
+        Assert.assertNotNull(fromDb(factory1));
+
+        Assert.assertNotNull(fromDb(firstProduct));
+        Assert.assertNotNull(fromDb(secondProduct));
+        Assert.assertNotNull(fromDb(thirdProduct));
+    }
+
+    @Test
+    public final void shouldPerformCascadeNullification() {
+        // given
+        Entity firstProduct = save(createProduct("asd", "00001"));
+        Entity secondProduct = save(createProduct("fgh", "00002"));
+        Entity thirdProduct = save(createProduct("jkl", "00003"));
+        Entity anotherProduct = save(createProduct("qwertyuiop", "00004"));
+
+        Entity firstPart = save(createPart("qwe", anotherProduct, Lists.newArrayList(firstProduct, secondProduct)));
+        Entity secondPart = save(createPart("rty", anotherProduct, Lists.newArrayList(firstProduct, thirdProduct)));
+        Entity thirdPart = save(createPart("uiop", anotherProduct, Lists.newArrayList(firstProduct, secondProduct, thirdProduct)));
+
+        // when
+        delete(secondPart);
 
         // then
         Entity firstProductFromDb = fromDb(firstProduct);

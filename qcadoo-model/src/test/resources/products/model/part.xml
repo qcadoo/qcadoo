@@ -45,6 +45,8 @@
 			<validatesLength max="512"/>
 		</password>
 		<boolean name="deletionIsProhibited" />
+		
+ 		<hasMany name="factories" joinField="parentPart" model="factory" cascade="delete" />
 	</fields>
 	<hooks>
 		<onDelete class="com.qcadoo.model.integration.VerifyHooks" method="onDeleteUsingBooleanField2" />

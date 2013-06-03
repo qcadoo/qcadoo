@@ -30,7 +30,12 @@
 	<fields>
 		<string name="name" required="true" />
 		<hasMany name="divisions" joinField="factory" model="division" />
+		
+		<belongsTo name="parentPart" model="part" />
+		<boolean name="deletionIsProhibited" />
 	</fields>
+	
 	<hooks>
+		<onDelete class="com.qcadoo.model.integration.VerifyHooks" method="onDeleteUsingBooleanField2" />
 	</hooks>
 </model>

@@ -783,6 +783,11 @@ public class DataAccessServiceImpl implements DataAccessService {
 
     private EntityOpResult deleteEntity(final InternalDataDefinition dataDefinition, final Long entityId,
             final Set<EntitySignature> traversedEntities) {
+        return deleteEntity(dataDefinition, entityId, false, traversedEntities);
+    }
+
+    private EntityOpResult deleteEntity(final InternalDataDefinition dataDefinition, final Long entityId, final boolean testOnly,
+            final Set<EntitySignature> traversedEntities) {
 
         Object databaseEntity = getDatabaseEntity(dataDefinition, entityId);
 
@@ -793,7 +798,7 @@ public class DataAccessServiceImpl implements DataAccessService {
 
         if (!dataDefinition.callDeleteHook(entity)) {
             logDeletionErrors(entity);
-            entity.addGlobalError("test.deletion.error");
+            entity.addGlobalError("qcadooView.message.deleteFailedMessage");
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return EntityOpResult.failure(entity);
         }
@@ -802,38 +807,32 @@ public class DataAccessServiceImpl implements DataAccessService {
 
         Map<String, FieldDefinition> fields = dataDefinition.getFields();
         for (FieldDefinition fieldDefinition : fields.values()) {
-            if (fieldDefinition.getType() instanceof ManyToManyType) {
-                ManyToManyType manyToManyType = (ManyToManyType) fieldDefinition.getType();
-                Collection<Entity> children = entity.getManyToManyField(fieldDefinition.getName());
-                InternalDataDefinition childrenDataDefinition = (InternalDataDefinition) manyToManyType.getDataDefinition();
-                if (Cascadeable.Cascade.DELETE.equals(manyToManyType.getCascade())) {
-                    for (Entity child : children) {
-                        if (!childrenDataDefinition.callDeleteHook(child)) {
-                            return EntityOpResult.failure(child);
-                        }
-                    }
-                }
-            } else if (fieldDefinition.getType() instanceof CollectionFieldType) {
+            if (fieldDefinition.getType() instanceof CollectionFieldType) {
                 CollectionFieldType collectionFieldType = (CollectionFieldType) fieldDefinition.getType();
                 @SuppressWarnings("unchecked")
                 Collection<Entity> children = (Collection<Entity>) entity.getField(fieldDefinition.getName());
-                if (!performCascadeStrategy(entity, collectionFieldType, children, traversedEntities).isSuccessfull()) {
-                    return EntityOpResult.failure(entity);
+                EntityOpResult cascadeDeletionRes = performCascadeStrategy(entity, collectionFieldType, children,
+                        traversedEntities);
+                if (!cascadeDeletionRes.isSuccessfull()) {
+                    return cascadeDeletionRes;
                 }
             }
         }
 
-        try {
-            databaseEntity = getDatabaseEntity(dataDefinition, entityId);
-            if (databaseEntity != null) {
-                hibernateService.getCurrentSession().delete(databaseEntity);
-                hibernateService.getCurrentSession().flush();
+        if (testOnly) {
+            logEntityInfo(dataDefinition, entityId, "may be cascade deleted");
+        } else {
+            try {
+                databaseEntity = getDatabaseEntity(dataDefinition, entityId);
+                if (databaseEntity != null) {
+                    hibernateService.getCurrentSession().delete(databaseEntity);
+                    hibernateService.getCurrentSession().flush();
+                }
+            } catch (ConstraintViolationException e) {
+                throw new IllegalStateException(getConstraintViolationMessage(entity), e);
             }
-        } catch (ConstraintViolationException e) {
-            throw new IllegalStateException(getConstraintViolationMessage(entity), e);
+            logEntityInfo(dataDefinition, entityId, "has been deleted");
         }
-
-        logEntityInfo(dataDefinition, entityId, "has been deleted");
         return new EntityOpResult(true, entity);
     }
 
@@ -842,21 +841,25 @@ public class DataAccessServiceImpl implements DataAccessService {
         if (children == null || children.isEmpty()) {
             return EntityOpResult.successfull();
         }
+        boolean isManyToManyType = fieldType instanceof ManyToManyType;
         InternalDataDefinition childDataDefinition = (InternalDataDefinition) ((DataDefinitionHolder) fieldType)
                 .getDataDefinition();
         Cascadeable.Cascade cascade = ((Cascadeable) fieldType).getCascade();
 
         if (Cascadeable.Cascade.NULLIFY.equals(cascade)) {
-            return performCascadeNullification(entity, fieldType, children, childDataDefinition);
+            if (!isManyToManyType) {
+                return performCascadeNullification(childDataDefinition, children, entity, fieldType);
+            }
+            return EntityOpResult.successfull();
         } else if (Cascadeable.Cascade.DELETE.equals(cascade)) {
-            return performCascadeDelete(children, traversedEntities, childDataDefinition);
+            return performCascadeDelete(childDataDefinition, children, isManyToManyType, traversedEntities);
         } else {
             throw new IllegalArgumentException(String.format("Unsupported cascade value '%s'", cascade));
         }
     }
 
-    private EntityOpResult performCascadeNullification(final Entity entity, final FieldType fieldType,
-            final Collection<Entity> children, InternalDataDefinition childDataDefinition) {
+    private EntityOpResult performCascadeNullification(final InternalDataDefinition childDataDefinition,
+            final Collection<Entity> children, final Entity entity, final FieldType fieldType) {
         String joinFieldName = ((JoinFieldHolder) fieldType).getJoinFieldName();
         for (Entity child : children) {
             child.setField(joinFieldName, null);
@@ -871,13 +874,13 @@ public class DataAccessServiceImpl implements DataAccessService {
         return EntityOpResult.successfull();
     }
 
-    private EntityOpResult performCascadeDelete(final Collection<Entity> children, final Set<EntitySignature> traversedEntities,
-            InternalDataDefinition childDataDefinition) {
+    private EntityOpResult performCascadeDelete(final InternalDataDefinition childDataDefinition,
+            final Collection<Entity> children, final boolean testOnly, final Set<EntitySignature> traversedEntities) {
         for (Entity child : children) {
             EntitySignature childSignature = EntitySignature.of(child);
             if (!traversedEntities.contains(childSignature)) {
                 traversedEntities.add(childSignature);
-                EntityOpResult result = deleteEntity(childDataDefinition, child.getId(), traversedEntities);
+                EntityOpResult result = deleteEntity(childDataDefinition, child.getId(), testOnly, traversedEntities);
                 if (!result.isSuccessfull()) {
                     return result;
                 }

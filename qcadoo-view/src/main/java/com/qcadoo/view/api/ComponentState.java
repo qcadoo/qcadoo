@@ -25,8 +25,6 @@ package com.qcadoo.view.api;
 
 import java.util.Locale;
 
-import com.qcadoo.model.api.validators.ErrorMessage;
-
 /**
  * ComponentState is instance of single view element. It is created by ComponentPattern in request scope.
  * <p>
@@ -37,7 +35,7 @@ import com.qcadoo.model.api.validators.ErrorMessage;
  * 
  * @see com.qcadoo.view.internal.api.ComponentPattern
  */
-public interface ComponentState {
+public interface ComponentState extends ComponentMessagesHolder {
 
     /**
      * Type of displayed message.
@@ -56,64 +54,6 @@ public interface ComponentState {
          */
         INFO
     }
-
-    /**
-     * Adds message to this component with type set to MessageType.FAILURE. Message will automatically close after some time.
-     * 
-     * @param errorMessage
-     *            validation error message
-     */
-    void addMessage(ErrorMessage errorMessage);
-
-    /**
-     * Adds message (translated using given key) to this component. Message will automatically close after some time.
-     * 
-     * @param messageTranslationKey
-     *            translation key for message content
-     * @param type
-     *            message type
-     * @param args
-     *            message's arguments
-     */
-    void addMessage(String messageTranslationKey, MessageType type, String... args);
-
-    /**
-     * Adds message (translated using given key) to this component.
-     * 
-     * @param messageTranslationKey
-     *            translation key for message content
-     * @param type
-     *            message type
-     * @param autoClose
-     *            true if this message should automatically close after some time
-     * @param args
-     *            message's arguments
-     */
-    void addMessage(String messageTranslationKey, MessageType type, boolean autoClose, String... args);
-
-    /**
-     * Adds already translated message to this component. Message will automatically close after some time.
-     * 
-     * @param translatedMessage
-     *            translated message content
-     * @param type
-     *            message type
-     * @param autoClose
-     *            true if this message should automatically close after some time
-     */
-    void addTranslatedMessage(String translatedMessage, MessageType type);
-
-    /**
-     * Adds already translated message to this component.
-     * 
-     * @param translatedMessage
-     *            translated message content
-     * @param type
-     *            message type
-     * @param autoClose
-     *            true if this message should automatically close after some time
-     */
-    void addTranslatedMessage(String translatedMessage, MessageType type, boolean autoClose);
 
     /**
      * Returns current localization

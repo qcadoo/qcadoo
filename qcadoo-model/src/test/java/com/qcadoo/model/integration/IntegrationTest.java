@@ -117,14 +117,14 @@ public abstract class IntegrationTest {
 
     @After
     public void mainDestroy() {
+        jdbcTemplate.execute("delete from " + TABLE_NAME_DIVISION);
+        jdbcTemplate.execute("delete from " + TABLE_NAME_FACTORY);
+
         jdbcTemplate.execute("delete from " + TABLE_NAME_JOIN_PRODUCT_PART);
         jdbcTemplate.execute("delete from " + TABLE_NAME_PART);
         jdbcTemplate.execute("delete from " + TABLE_NAME_COMPONENT);
         jdbcTemplate.execute("delete from " + TABLE_NAME_MACHINE);
         jdbcTemplate.execute("delete from " + TABLE_NAME_PRODUCT);
-
-        jdbcTemplate.execute("delete from " + TABLE_NAME_DIVISION);
-        jdbcTemplate.execute("delete from " + TABLE_NAME_FACTORY);
     }
 
     @AfterClass
