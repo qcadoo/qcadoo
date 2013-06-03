@@ -25,8 +25,10 @@ package com.qcadoo.view.internal.components.grid;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
@@ -34,10 +36,12 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.google.common.collect.Lists;
 import com.qcadoo.localization.api.utils.DateUtils;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.search.SearchCriteriaBuilder;
+import com.qcadoo.model.api.search.SearchCriterion;
 import com.qcadoo.model.api.search.SearchRestrictions;
 import com.qcadoo.model.api.search.SearchRestrictions.SearchMatchMode;
 import com.qcadoo.model.api.types.BelongsToType;
@@ -85,6 +89,212 @@ public final class GridComponentFilterUtils {
         }
     }
 
+    public static void addMultiSearchFilter(GridComponentMultiSearchFilter multiSearchFilter,
+            Map<String, GridComponentColumn> columns, DataDefinition dataDefinition, SearchCriteriaBuilder criteria)
+            throws GridComponentFilterException {
+
+        LinkedList<SearchCriterion> searchRules = Lists.newLinkedList();
+        for (GridComponentMultiSearchFilterRule rule : multiSearchFilter.getRules()) {
+            String field = getFieldNameByColumnName(columns, rule.getField());
+
+            if (field != null) {
+                try {
+                    FieldDefinition fieldDefinition = getFieldDefinition(dataDefinition, field);
+
+                    if ("".equals(rule.getData())) {
+                        continue;
+                    }
+
+                    field = addAliases(criteria, field);
+
+                    SearchCriterion searchRule;
+                    if (fieldDefinition != null && String.class.isAssignableFrom(fieldDefinition.getType().getType())) {
+                        searchRule = createStringCriterion(rule.getFilterOperator(), rule.getData(), field);
+                    } else if (fieldDefinition != null && Boolean.class.isAssignableFrom(fieldDefinition.getType().getType())) {
+                        searchRule = createSimpleCriterion(rule.getFilterOperator(), "1".equals(rule.getData()), field);
+                    } else if (fieldDefinition != null && Date.class.isAssignableFrom(fieldDefinition.getType().getType())) {
+                        searchRule = createDateCriterion(rule.getFilterOperator(), rule.getData(), field);
+                    } else if (fieldDefinition != null && BigDecimal.class.isAssignableFrom(fieldDefinition.getType().getType())) {
+                        searchRule = createDecimalCriterion(rule.getFilterOperator(), rule.getData(), field);
+                    } else if (fieldDefinition != null && Integer.class.isAssignableFrom(fieldDefinition.getType().getType())) {
+                        searchRule = createIntegerCriterion(rule.getFilterOperator(), rule.getData(), field);
+                    } else {
+                        searchRule = createSimpleCriterion(rule.getFilterOperator(), rule.getData(), field);
+                    }
+
+                    searchRules.add(searchRule);
+                } catch (Exception pe) {
+                    throw new GridComponentFilterException(rule.getData());
+                }
+            }
+        }
+
+        SearchCriterion groupedRules = null;
+        if (searchRules.size() == 1) {
+            groupedRules = searchRules.pollFirst();
+        } else if (searchRules.size() == 2) {
+            if (multiSearchFilter.getGroupOperator() == GridComponentFilterGroupOperator.AND) {
+                groupedRules = SearchRestrictions.and(searchRules.pollFirst(), searchRules.pollFirst());
+            } else if (multiSearchFilter.getGroupOperator() == GridComponentFilterGroupOperator.OR) {
+                groupedRules = SearchRestrictions.or(searchRules.pollFirst(), searchRules.pollFirst());
+            }
+        } else if (searchRules.size() > 2) {
+            SearchCriterion firstRule = searchRules.pollFirst();
+            SearchCriterion secondRule = searchRules.pollFirst();
+            SearchCriterion[] otherRules = new SearchCriterion[searchRules.size()];
+            searchRules.toArray(otherRules);
+            if (multiSearchFilter.getGroupOperator() == GridComponentFilterGroupOperator.AND) {
+                groupedRules = SearchRestrictions.and(firstRule, secondRule, otherRules);
+            } else if (multiSearchFilter.getGroupOperator() == GridComponentFilterGroupOperator.OR) {
+                groupedRules = SearchRestrictions.or(firstRule, secondRule, otherRules);
+            }
+        }
+        if (groupedRules != null) {
+            criteria.add(groupedRules);
+        }
+
+    }
+
+    private static SearchCriterion createSimpleCriterion(GridComponentFilterOperator filterOperator, Object data, String field) {
+        switch (filterOperator) {
+            case EQ:
+            case CN:
+            case BW:
+            case EW:
+                return SearchRestrictions.eq(field, data);
+            case NE:
+                return SearchRestrictions.ne(field, data);
+            case GT:
+                return SearchRestrictions.gt(field, data);
+            case GE:
+                return SearchRestrictions.ge(field, data);
+            case LT:
+                return SearchRestrictions.lt(field, data);
+            case LE:
+                return SearchRestrictions.le(field, data);
+            case IN:
+                if (data instanceof Collection<?>) {
+                    return SearchRestrictions.in(field, (Collection<?>) data);
+                } else {
+                    throw new IllegalStateException("Unknown filter value, collection required");
+                }
+            default:
+                throw new IllegalStateException("Unknown filter operator");
+        }
+    }
+
+    private static SearchCriterion createIntegerCriterion(GridComponentFilterOperator filterOperator, String data, String field)
+            throws GridComponentFilterException {
+        try {
+            final Object value;
+            if (filterOperator == GridComponentFilterOperator.IN) {
+                Collection<String> values = parseListValue(data);
+                Collection<Integer> integerValues = Lists.newArrayListWithCapacity(values.size());
+                for (String stringValue : values) {
+                    integerValues.add(Integer.valueOf(stringValue));
+                }
+                value = integerValues;
+
+            } else {
+                value = Integer.valueOf(data);
+            }
+
+            return createSimpleCriterion(filterOperator, value, field);
+        } catch (NumberFormatException nfe) {
+            throw new GridComponentFilterException(data, nfe);
+        }
+    }
+
+    private static SearchCriterion createDecimalCriterion(GridComponentFilterOperator filterOperator, String data, String field)
+            throws GridComponentFilterException {
+        try {
+            final Object value;
+            if (filterOperator == GridComponentFilterOperator.IN) {
+                Collection<String> values = parseListValue(data);
+                Collection<BigDecimal> decimalValues = Lists.newArrayListWithCapacity(values.size());
+                for (String stringValue : values) {
+                    decimalValues.add(new BigDecimal(stringValue));
+                }
+                value = decimalValues;
+
+            } else {
+                value = new BigDecimal(data);
+            }
+
+            return createSimpleCriterion(filterOperator, value, field);
+        } catch (NumberFormatException nfe) {
+            throw new GridComponentFilterException(data, nfe);
+        }
+    }
+
+    private static SearchCriterion createDateCriterion(GridComponentFilterOperator filterOperator, String data, String field)
+            throws ParseException {
+        if (filterOperator == GridComponentFilterOperator.IN) {
+            Collection<String> values = parseListValue(data);
+            Collection<Date> dates = Lists.newArrayListWithCapacity(values.size());
+            for (String value : values) {
+                dates.add(DateUtils.parseDate(value));
+            }
+            return SearchRestrictions.in(field, dates);
+        }
+
+        Date minDate = DateUtils.parseAndComplete(data, false);
+        Date maxDate = DateUtils.parseAndComplete(data, true);
+
+        switch (filterOperator) {
+            case EQ:
+            case CN:
+            case BW:
+            case EW:
+                return SearchRestrictions.between(field, minDate, maxDate);
+            case NE:
+                return SearchRestrictions.not(SearchRestrictions.between(field, minDate, maxDate));
+            case GT:
+                return SearchRestrictions.gt(field, maxDate);
+            case GE:
+                return SearchRestrictions.ge(field, minDate);
+            case LT:
+                return SearchRestrictions.lt(field, minDate);
+            case LE:
+                return SearchRestrictions.le(field, maxDate);
+            default:
+                throw new IllegalStateException("Unknown filter operator");
+        }
+    }
+
+    private static SearchCriterion createStringCriterion(GridComponentFilterOperator filterOperator, String data, String field) {
+        switch (filterOperator) {
+            case EQ:
+            case LE:
+            case GE:
+                return SearchRestrictions.eq(field, data);
+            case CN:
+                return SearchRestrictions.like(field, data, SearchMatchMode.ANYWHERE);
+            case BW:
+                return SearchRestrictions.like(field, data, SearchMatchMode.START);
+            case EW:
+                return SearchRestrictions.like(field, data, SearchMatchMode.END);
+            case IN:
+                Collection<String> values = parseListValue(data);
+                return SearchRestrictions.in(field, values);
+            case NE:
+            case GT:
+            case LT:
+                return SearchRestrictions.ne(field, data);
+            default:
+                throw new IllegalStateException("Unknown filter operator");
+        }
+    }
+
+    private static Collection<String> parseListValue(String data) {
+        String[] tokens = data.split(",");
+        Collection<String> values = Lists.newArrayListWithCapacity(tokens.length);
+        for (int i = 0; i < tokens.length; ++i) {
+            values.add(tokens[i].trim());
+        }
+        return values;
+    }
+
     public static String addAliases(final SearchCriteriaBuilder criteria, final String field) {
         if (field == null) {
             return null;
@@ -108,96 +318,39 @@ public final class GridComponentFilterUtils {
 
     private static void addIntegerFilter(final SearchCriteriaBuilder criteria,
             final Entry<GridComponentFilterOperator, String> filterValue, final String field) throws GridComponentFilterException {
-        try {
-            final Integer integerValue = Integer.valueOf(filterValue.getValue());
-            addSimpleFilter(criteria, filterValue, field, integerValue);
-        } catch (NumberFormatException nfe) {
-            throw new GridComponentFilterException(filterValue.getValue(), nfe);
-        }
+
+        criteria.add(createIntegerCriterion(filterValue.getKey(), filterValue.getValue(), field));
     }
 
     private static void addDecimalFilter(final SearchCriteriaBuilder criteria,
             final Entry<GridComponentFilterOperator, String> filterValue, final String field) throws GridComponentFilterException {
-        try {
-            final BigDecimal decimalValue = new BigDecimal(filterValue.getValue());
-            addSimpleFilter(criteria, filterValue, field, decimalValue);
-        } catch (NumberFormatException nfe) {
-            throw new GridComponentFilterException(filterValue.getValue(), nfe);
-        }
+
+        criteria.add(createDecimalCriterion(filterValue.getKey(), filterValue.getValue(), field));
     }
 
     private static void addSimpleFilter(final SearchCriteriaBuilder criteria,
             final Entry<GridComponentFilterOperator, String> filterValue, final String field, final Object value) {
-        switch (filterValue.getKey()) {
-            case EQ:
-                criteria.add(SearchRestrictions.eq(field, value));
-                break;
-            case NE:
-                criteria.add(SearchRestrictions.ne(field, value));
-                break;
-            case GT:
-                criteria.add(SearchRestrictions.gt(field, value));
-                break;
-            case GE:
-                criteria.add(SearchRestrictions.ge(field, value));
-                break;
-            case LT:
-                criteria.add(SearchRestrictions.lt(field, value));
-                break;
-            case LE:
-                criteria.add(SearchRestrictions.le(field, value));
-                break;
-            default:
-                throw new IllegalStateException("Unknown filter operator");
-        }
+
+        criteria.add(createSimpleCriterion(filterValue.getKey(), value, field));
     }
 
     private static void addStringFilter(final SearchCriteriaBuilder criteria,
             final Entry<GridComponentFilterOperator, String> filterValue, final String field) {
         String value = filterValue.getValue();
 
-        switch (filterValue.getKey()) {
-            case EQ:
-                criteria.add(SearchRestrictions.like(field, (String) value, SearchMatchMode.ANYWHERE));
-                break;
-            case NE:
-            case GT:
-            case LE:
-                criteria.add(SearchRestrictions.ne(field, value));
-                break;
-            default:
-                throw new IllegalStateException("Unknown filter operator");
+        GridComponentFilterOperator operator = filterValue.getKey();
+        if (filterValue.getKey() == GridComponentFilterOperator.EQ) {
+            operator = GridComponentFilterOperator.CN;
         }
+
+        criteria.add(createStringCriterion(operator, value, field));
 
     }
 
     private static void addDateFilter(final SearchCriteriaBuilder criteria,
             final Entry<GridComponentFilterOperator, String> filterValue, final String field) throws ParseException {
-        Date minDate = DateUtils.parseAndComplete(filterValue.getValue(), false);
-        Date maxDate = DateUtils.parseAndComplete(filterValue.getValue(), true);
 
-        switch (filterValue.getKey()) {
-            case EQ:
-                criteria.add(SearchRestrictions.between(field, minDate, maxDate));
-                break;
-            case NE:
-                criteria.add(SearchRestrictions.not(SearchRestrictions.between(field, minDate, maxDate)));
-                break;
-            case GT:
-                criteria.add(SearchRestrictions.gt(field, maxDate));
-                break;
-            case GE:
-                criteria.add(SearchRestrictions.ge(field, minDate));
-                break;
-            case LT:
-                criteria.add(SearchRestrictions.lt(field, minDate));
-                break;
-            case LE:
-                criteria.add(SearchRestrictions.le(field, maxDate));
-                break;
-            default:
-                throw new IllegalStateException("Unknown filter operator");
-        }
+        criteria.add(createDateCriterion(filterValue.getKey(), filterValue.getValue(), field));
     }
 
     private static Map.Entry<GridComponentFilterOperator, String> parseFilterValue(final String filterValue) {
@@ -237,6 +390,9 @@ public final class GridComponentFilterUtils {
             } else {
                 value = filterValue.substring(1);
             }
+        } else if (filterValue.charAt(0) == '[' && filterValue.charAt(filterValue.length() - 1) == ']') {
+            operator = GridComponentFilterOperator.IN;
+            value = filterValue.substring(1, filterValue.length() - 1);
         } else {
             value = filterValue;
         }
@@ -302,4 +458,5 @@ public final class GridComponentFilterUtils {
         }
         return null;
     }
+
 }

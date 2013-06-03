@@ -91,6 +91,8 @@ public class GridComponentPattern extends AbstractComponentPattern {
 
     private final Set<String> searchableColumns = new HashSet<String>();
 
+    private final Set<String> multiSearchColumns = new HashSet<String>();
+
     private final Set<String> orderableColumns = new HashSet<String>();
 
     private final Map<String, GridComponentColumn> columns = new LinkedHashMap<String, GridComponentColumn>();
@@ -231,6 +233,7 @@ public class GridComponentPattern extends AbstractComponentPattern {
         json.put("correspondingViewInModal", correspondingViewInModal);
         json.put("prioritizable", getDataDefinition().isPrioritizable());
         json.put("searchableColumns", new JSONArray(searchableColumns));
+        json.put("multiSearchColumns", new JSONArray(multiSearchColumns));
         json.put("orderableColumns", new JSONArray(orderableColumns));
 
         json.put("fixedHeight", fixedHeight);
@@ -246,6 +249,7 @@ public class GridComponentPattern extends AbstractComponentPattern {
         addTranslation(translations, "unactiveVisibleButton", locale);
         addTranslation(translations, "unactiveNotVisibleButton", locale);
         addTranslation(translations, "addFilterButton", locale);
+        addTranslation(translations, "multiSearchButton", locale);
         addTranslation(translations, "clearFilterButton", locale);
         addTranslation(translations, "noResults", locale);
         addTranslation(translations, "removeFilterButton", locale);
@@ -262,6 +266,22 @@ public class GridComponentPattern extends AbstractComponentPattern {
         addTranslation(translations, "header", locale);
         addTranslation(translations, "selectAll", locale);
         addTranslation(translations, "diselectAll", locale);
+        addTranslation(translations, "operator_eq", locale);
+        addTranslation(translations, "operator_gt", locale);
+        addTranslation(translations, "operator_ge", locale);
+        addTranslation(translations, "operator_lt", locale);
+        addTranslation(translations, "operator_le", locale);
+        addTranslation(translations, "operator_ne", locale);
+        addTranslation(translations, "operator_in", locale);
+        addTranslation(translations, "operator_cn", locale);
+        addTranslation(translations, "operator_bw", locale);
+        addTranslation(translations, "operator_ew", locale);
+        addTranslation(translations, "multiSearchTitle", locale);
+        addTranslation(translations, "searchButton", locale);
+        addTranslation(translations, "resetButton", locale);
+        addTranslation(translations, "match", locale);
+        addTranslation(translations, "matchAllRules", locale);
+        addTranslation(translations, "matchAnyRules", locale);
 
         addTranslation(translations, "customPredefinedFilter", locale);
         for (PredefinedFilter filter : predefinedFilters.values()) {
@@ -479,6 +499,8 @@ public class GridComponentPattern extends AbstractComponentPattern {
                 lookup = Boolean.parseBoolean(option.getValue());
             } else if ("searchable".equals(option.getType())) {
                 searchableColumns.addAll(parseColumns(option.getValue()));
+            } else if ("multiSearch".equals(option.getType())) {
+                multiSearchColumns.addAll(parseColumns(option.getValue()));
             } else if ("orderable".equals(option.getType())) {
                 orderableColumns.addAll(parseColumns(option.getValue()));
             } else if ("order".equals(option.getType())) {

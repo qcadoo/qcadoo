@@ -40,6 +40,7 @@
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/_jquery-1.4.2.min.js?ver=${buildNumber}"></script>
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/jquery-ui-1.8.5.custom.min.js?ver=${buildNumber}"></script>
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/jquery.jqGrid.min.js?ver=${buildNumber}"></script>
+			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/jquery.searchFilter.js?ver=${buildNumber}"></script>
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/jquery.shorten.min.js?ver=${buildNumber}"></script>
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/jquery.maskedinput-1.3.min.js?ver=${buildNumber}"></script>
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/qcadoo-min.js?ver=${buildNumber}"></script>
@@ -47,7 +48,7 @@
 		<c:otherwise>
 			<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/core/_jquery-ui-1.8.5.custom.css?ver=${buildNumber}" type="text/css" />
 			<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/crud/jquery.datepick.css?ver=${buildNumber}" type="text/css" /> 
-			<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/core/ui.jqgrid.css?ver=${buildNumber}" type="text/css" />
+			<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/core/ui.jqgrid.css?ver=${buildNumber}" type="text/css" /> 
 			<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/crud/jstree/style.css?ver=${buildNumber}" type="text/css" />
 			<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/core/qcd.css?ver=${buildNumber}" type="text/css" />
 			<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/core/menu/style.css?ver=${buildNumber}" type="text/css" />
@@ -69,6 +70,7 @@
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/json2.js?ver=${buildNumber}"></script>
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/jquery.blockUI.js?ver=${buildNumber}"></script>
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/jquery.jqGrid.min.js?ver=${buildNumber}"></script>
+			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/jquery.searchFilter.js?ver=${buildNumber}"></script>
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/jquery.jstree.js?ver=${buildNumber}"></script>
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/jquery.cookie.js?ver=${buildNumber}"></script>
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/jquery-ui-1.8.5.custom.min.js?ver=${buildNumber}"></script>

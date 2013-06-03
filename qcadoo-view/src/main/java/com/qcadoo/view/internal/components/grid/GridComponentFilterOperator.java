@@ -33,32 +33,52 @@ public enum GridComponentFilterOperator {
     /**
      * Equals.
      */
-    EQ("="),
+    EQ("eq"),
 
     /**
      * Greaten than or equals.
      */
-    GE(">="),
+    GE("ge"),
 
     /**
      * Greaten than.
      */
-    GT(">"),
+    GT("gt"),
 
     /**
      * Less than or equals.
      */
-    LE("<="),
+    LE("le"),
 
     /**
      * Less than.
      */
-    LT("<"),
+    LT("lt"),
 
     /**
      * Not equals.
      */
-    NE("<>");
+    NE("ne"),
+
+    /**
+     * Is in.
+     */
+    IN("in"),
+
+    /**
+     * Contains.
+     */
+    CN("cn"),
+
+    /**
+     * Begins with.
+     */
+    BW("bw"),
+
+    /**
+     * Ends with.
+     */
+    EW("ew");
 
     private String value;
 
@@ -67,7 +87,7 @@ public enum GridComponentFilterOperator {
     }
 
     /**
-     * HQL representation of operator.
+     * Operator shortcats in javascript components.
      * 
      * @return representation of operator
      */
