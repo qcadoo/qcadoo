@@ -23,14 +23,9 @@
  */
 package com.qcadoo.model.api;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
+public final class IntegerUtils {
 
-public final class BigDecimalUtils {
-
-    private static final BigDecimal ONE_HUNDRED = BigDecimal.valueOf(100L);
-
-    private BigDecimalUtils() {
+    private IntegerUtils() {
 
     }
 
@@ -42,14 +37,14 @@ public final class BigDecimalUtils {
      * 
      * @return value or zero
      */
-    public static BigDecimal convertNullToZero(final Object value) {
+    public static Integer convertNullToZero(final Object value) {
         if (value == null) {
-            return BigDecimal.ZERO;
+            return 0;
         }
-        if (value instanceof BigDecimal) {
-            return (BigDecimal) value;
+        if (value instanceof Integer) {
+            return (Integer) value;
         }
-        return BigDecimal.valueOf(Double.valueOf(value.toString()));
+        return Integer.valueOf(value.toString());
     }
 
     /**
@@ -60,28 +55,14 @@ public final class BigDecimalUtils {
      * 
      * @return value or one
      */
-    public static BigDecimal convertNullToOne(final Object value) {
+    public static Integer convertNullToOne(final Object value) {
         if (value == null) {
-            return BigDecimal.ONE;
+            return 1;
         }
-        if (value instanceof BigDecimal) {
-            return (BigDecimal) value;
+        if (value instanceof Integer) {
+            return (Integer) value;
         }
-        return BigDecimal.valueOf(Double.valueOf(value.toString()));
-
-    }
-
-    /**
-     * Converts decimal value to percent
-     * 
-     * @param decimalValue
-     *            decimal value
-     * 
-     * @return percent
-     */
-    public static BigDecimal toPercent(final BigDecimal decimalValue, final MathContext mathContext) {
-        return convertNullToZero(decimalValue).divide(ONE_HUNDRED, mathContext);
-
+        return Integer.valueOf(value.toString());
     }
 
 }
