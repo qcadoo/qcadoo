@@ -26,6 +26,7 @@ package com.qcadoo.model.api.search;
 import java.util.Collection;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.criterion.Conjunction;
 import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.MatchMode;
@@ -50,6 +51,10 @@ import com.qcadoo.model.internal.search.SearchDisjunctionImpl;
 public final class SearchRestrictions {
 
     private static DataAccessService dataAccessService;
+
+    private static final String[] QCADOO_WILDCARDS = new String[] { "*", "?" };
+
+    private static final String[] HIBERNATE_WILDCARDS = new String[] { "%", "_" };
 
     @Autowired
     private static void setStaticDataAccessService(final DataAccessService dataAccessService) {
@@ -200,7 +205,10 @@ public final class SearchRestrictions {
      * @return criterion
      */
     public static SearchCriterion like(final String field, final String value) {
-        return new SearchCriterionImpl(Restrictions.like(field, value.replace('*', '%').replace('?', '_')).ignoreCase());
+        if (value == null) {
+            return isNull(field);
+        }
+        return new SearchCriterionImpl(Restrictions.like(field, convertWildcards(value)).ignoreCase());
     }
 
     /**
@@ -215,8 +223,11 @@ public final class SearchRestrictions {
      * @return criterion
      */
     public static SearchCriterion like(final String field, final String value, final SearchMatchMode mode) {
-        return new SearchCriterionImpl(Restrictions.like(field, value.replace('*', '%').replace('?', '_'),
-                mode.getHibernateMatchMode()).ignoreCase());
+        if (value == null) {
+            return isNull(field);
+        }
+        return new SearchCriterionImpl(Restrictions.like(field, convertWildcards(value), mode.getHibernateMatchMode())
+                .ignoreCase());
     }
 
     /**
@@ -229,7 +240,10 @@ public final class SearchRestrictions {
      * @return criterion
      */
     public static SearchCriterion ilike(final String field, final String value) {
-        return new SearchCriterionImpl(Restrictions.ilike(field, value.replace('*', '%').replace('?', '_')));
+        if (value == null) {
+            return isNull(field);
+        }
+        return new SearchCriterionImpl(Restrictions.ilike(field, convertWildcards(value)));
     }
 
     /**
@@ -244,8 +258,14 @@ public final class SearchRestrictions {
      * @return criterion
      */
     public static SearchCriterion ilike(final String field, final String value, final SearchMatchMode mode) {
-        return new SearchCriterionImpl(Restrictions.ilike(field, value.replace('*', '%').replace('?', '_'),
-                mode.getHibernateMatchMode()));
+        if (value == null) {
+            return isNull(field);
+        }
+        return new SearchCriterionImpl(Restrictions.ilike(field, convertWildcards(value), mode.getHibernateMatchMode()));
+    }
+
+    private static String convertWildcards(final String value) {
+        return StringUtils.replaceEach(value, QCADOO_WILDCARDS, HIBERNATE_WILDCARDS);
     }
 
     /**
