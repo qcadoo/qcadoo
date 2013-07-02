@@ -213,19 +213,6 @@ div.filterButton {
 .gridContainer .darkRow {
 	background: #f5f5f5;
 }
-.gridContainer .yellowBg {
-	background: #FFFFA3;
-}
-.gridContainer .brownBg {
-	background: #CAB197;
-}
-.gridContainer .blueBg {
-	background: #A3E0FF;
-}
-.gridContainer .greenBg {
-	background: #ADEBAD;
-}
-
 .gridContainer .lightRow.lastAdded,
 .gridContainer .darkRow.lastAdded {
 	background: #BFF589;
@@ -294,7 +281,6 @@ div.filterButton {
 	height: 30px;
 	font-family:"Lucida Grande",Arial, Helvetica, sans-serif;
 }
-
 .gridContainer .ui-th-column,
 .gridContainer .ui-jqgrid-hdiv {
 	background: transparent url('/qcadooView/public/css/crud/images/grid/gradientygrid/gradient_header.png') repeat-x 0 0;
@@ -345,19 +331,79 @@ div.filterButton {
 	color: #8A8A8A;
 }
 .gridContainer .redBg {
-	background: #FFDBD9;
-	border-color: #E3B1AF;
+    background: #FFDBD9;
+    border-color: #E3B1AF;
 }
 .gridContainer .ui-state-highlight.redBg {
-	background: #FFBDBA !important;
-	border-color: #D19592 !important;
+    background: #FFBDBA !important;
+    border-color: #D19592 !important;
 }
 .gridContainer .ui-state-hover.redBg {
-	background: #D4B1B0;
-	border-color: #D19592;
+    background: #D4B1B0;
+    border-color: #D19592;
 }
 .gridContainer .ui-state-highlight.ui-state-hover.redBg {
-	background: #D9A3A0 !important;
+    background: #D9A3A0 !important;
+}
+.gridContainer .yellowBg {
+	background: #FFFFCC;
+	border-color: #BFBF8C;
+}
+.gridContainer .ui-state-highlight.yellowBg {
+	background: #FFFFA3 !important;
+	border-color: #A6A635 !important;
+}
+.gridContainer .ui-state-hover.yellowBg {
+	background: #FFFFBA;
+	border-color: #A6A635;
+}
+.gridContainer .ui-state-highlight.ui-state-hover.yellowBg {
+	background: #BFBF8C !important;
+}
+.gridContainer .brownBg {
+	background: #E4D5C5;
+	border-color: #988A7B;
+}
+.gridContainer .ui-state-highlight.brownBg {
+	background: #CAB197 !important;
+	border-color: #835B31 !important;
+}
+.gridContainer .ui-state-hover.brownBg {
+	background: #E4CFB9;
+	border-color: #835B31;
+}
+.gridContainer .ui-state-highlight.ui-state-hover.brownBg {
+	background: #988A7B !important;
+}
+.gridContainer .blueBg {
+	background: #CCEEFF;
+	border-color: #8CAEBF;
+}
+.gridContainer .ui-state-highlight.blueBg {
+	background: #A3E1FF !important;
+	border-color: #3581A6 !important;
+}
+.gridContainer .ui-state-hover.blueBg {
+	background: #BAE8FF;
+	border-color: #3581A6;
+}
+.gridContainer .ui-state-highlight.ui-state-hover.blueBg {
+	background: #8CAEBF !important;
+}
+.gridContainer .greenBg {
+	background: #D1F5D1;
+	border-color: #8DB08D;
+}
+.gridContainer .ui-state-highlight.greenBg {
+	background: #ADEBAD !important;
+	border-color: #389938 !important;
+}
+.gridContainer .ui-state-hover.greenBg {
+	background: #C5F5C5;
+	border-color: #389938;
+}
+.gridContainer .ui-state-highlight.ui-state-hover.greenBg {
+	background: #8DB08D !important;
 }
 .gridContainer .ui-jqgrid tr.jqgrow.boldFont td {
 	font-weight: bold;
