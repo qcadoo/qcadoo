@@ -213,6 +213,19 @@ div.filterButton {
 .gridContainer .darkRow {
 	background: #f5f5f5;
 }
+.gridContainer .yellowBg {
+	background: #FFFFA3;
+}
+.gridContainer .brownBg {
+	background: #CAB197;
+}
+.gridContainer .blueBg {
+	background: #A3E0FF;
+}
+.gridContainer .greenBg {
+	background: #ADEBAD;
+}
+
 .gridContainer .lightRow.lastAdded,
 .gridContainer .darkRow.lastAdded {
 	background: #BFF589;
