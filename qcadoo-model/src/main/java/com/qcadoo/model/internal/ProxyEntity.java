@@ -99,6 +99,11 @@ public final class ProxyEntity implements Entity, EntityAwareCopyPerformers, Ent
     }
 
     @Override
+    public void addGlobalError(final String message, final boolean autoClose, final String... vars) {
+        getEntity().addGlobalError(message, autoClose, vars);
+    }
+
+    @Override
     public void addError(final FieldDefinition fieldDefinition, final String message, final String... vars) {
         getEntity().addError(fieldDefinition, message, vars);
     }

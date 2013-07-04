@@ -140,6 +140,11 @@ public final class EntityTreeNodeImpl implements EntityTreeNode, EntityAwareCopy
     }
 
     @Override
+    public void addGlobalError(final String message, final boolean autoClose, final String... vars) {
+        entity.addGlobalError(message, autoClose, vars);
+    }
+
+    @Override
     public void addError(final FieldDefinition fieldDefinition, final String message, final String... vars) {
         entity.addError(fieldDefinition, message, vars);
     }

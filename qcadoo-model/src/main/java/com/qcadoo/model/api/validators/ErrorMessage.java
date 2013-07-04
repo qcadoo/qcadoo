@@ -38,6 +38,8 @@ public final class ErrorMessage {
 
     private final String[] vars;
 
+    private final boolean autoClose;
+
     /**
      * Create new validation error message.
      * 
@@ -48,6 +50,27 @@ public final class ErrorMessage {
      */
     public ErrorMessage(final String message, final String... vars) {
         this.message = message;
+        this.autoClose = true;
+        if (ArrayUtils.isEmpty(vars)) {
+            this.vars = ArrayUtils.EMPTY_STRING_ARRAY;
+        } else {
+            this.vars = vars;
+        }
+    }
+
+    /**
+     * Create new validation error message.
+     * 
+     * @param message
+     *            message
+     * @param autoClose
+     *            autoClose
+     * @param vars
+     *            message's vars
+     */
+    public ErrorMessage(final String message, final boolean autoClose, final String... vars) {
+        this.message = message;
+        this.autoClose = autoClose;
         if (ArrayUtils.isEmpty(vars)) {
             this.vars = ArrayUtils.EMPTY_STRING_ARRAY;
         } else {
@@ -71,6 +94,15 @@ public final class ErrorMessage {
      */
     public String[] getVars() {
         return Arrays.copyOf(vars, vars.length);
+    }
+
+    /**
+     * Return autoClose.
+     * 
+     * @return autoClose
+     */
+    public boolean getAutoClose() {
+        return autoClose;
     }
 
 }

@@ -18,6 +18,18 @@ public interface EntityMessagesHolder {
     void addGlobalError(final String message, final String... vars);
 
     /**
+     * Set global error, not related with fields.
+     * 
+     * @param message
+     *            message
+     * @param autoClose
+     *            autoClose
+     * @param vars
+     *            message's vars
+     */
+    void addGlobalError(final String message, final boolean autoClose, final String... vars);
+
+    /**
      * Set error for given field.
      * 
      * @param fieldDefinition

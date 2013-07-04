@@ -32,6 +32,11 @@ public final class EntityMessagesHolderImpl implements EntityMessagesHolder {
     }
 
     @Override
+    public void addGlobalError(final String message, final boolean autoClose, final String... vars) {
+        globalErrors.add(new ErrorMessage(message, autoClose, vars));
+    }
+
+    @Override
     public void addError(final FieldDefinition fieldDefinition, final String message, final String... vars) {
         fieldErrors.put(fieldDefinition.getName(), new ErrorMessage(message, vars));
     }

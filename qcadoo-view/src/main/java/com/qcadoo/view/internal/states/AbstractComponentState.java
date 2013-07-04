@@ -147,7 +147,7 @@ public abstract class AbstractComponentState implements InternalComponentState, 
 
     @Override
     public final void addMessage(final ErrorMessage errorMessage) {
-        addMessage(errorMessage.getMessage(), MessageType.FAILURE, true, errorMessage.getVars());
+        addMessage(errorMessage.getMessage(), MessageType.FAILURE, errorMessage.getAutoClose(), errorMessage.getVars());
     }
 
     @Override

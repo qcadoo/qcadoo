@@ -109,6 +109,11 @@ public final class DefaultEntity implements Entity, EntityAwareCopyPerformers, E
     }
 
     @Override
+    public void addGlobalError(String message, boolean autoClose, String... vars) {
+        messagesHolder.addGlobalError(message, autoClose, vars);
+    }
+
+    @Override
     public void addError(final FieldDefinition fieldDefinition, final String message, final String... vars) {
         messagesHolder.addError(fieldDefinition, message, vars);
     }
