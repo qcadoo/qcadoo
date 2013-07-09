@@ -105,20 +105,26 @@ public final class PossibleUnitConversionsImpl implements InternalPossibleUnitCo
     public List<Entity> asEntities(final String ownerFieldName, final Entity ownerEntity) {
         final List<Entity> entities = Lists.newArrayList();
         for (final Map.Entry<String, BigDecimal> unitToFactorMapEntry : targetUnitToFactor.entrySet()) {
-            final Entity entity = buildUnitConversionItem(unitToFactorMapEntry.getKey(), unitToFactorMapEntry.getValue());
+            final Entity entity = buildUnitConversionItem(unitToFactorMapEntry.getKey(), unitToFactorMapEntry.getValue(),
+                    ownerEntity);
             entity.setField(ownerFieldName, ownerEntity);
             entities.add(entity);
         }
         return entities;
     }
 
-    private Entity buildUnitConversionItem(final String unitTo, final BigDecimal ratio) {
+    private Entity buildUnitConversionItem(final String unitTo, final BigDecimal ratio, final Entity ownerEntity) {
         final Entity unitConversionItem = unitConversionItemDD.create();
         unitConversionItem.setField(UnitConversionItemFields.UNIT_FROM, unitFrom);
         unitConversionItem.setField(UnitConversionItemFields.UNIT_TO, unitTo);
         unitConversionItem.setField(UnitConversionItemFields.QUANTITY_FROM, numberService.setScale(BigDecimal.ONE));
-        unitConversionItem.setField(UnitConversionItemFields.QUANTITY_TO, numberService.setScale(BigDecimal.ONE.multiply(ratio)));
+        unitConversionItem.setField(UnitConversionItemFields.QUANTITY_TO,
+                calculateQuantityTo(unitFrom, unitTo, ratio, ownerEntity));
         return unitConversionItem;
     }
 
+    private BigDecimal calculateQuantityTo(final String unitFrom, final String unitTo, final BigDecimal ratio,
+            final Entity ownerEntity) {
+        return numberService.setScale(BigDecimal.ONE.multiply(ratio));
+    }
 }
