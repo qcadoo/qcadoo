@@ -29,7 +29,10 @@ import org.springframework.util.StringUtils;
 
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.DataDefinitionService;
+import com.qcadoo.model.api.Entity;
+import com.qcadoo.model.api.search.SearchOrders;
 import com.qcadoo.model.api.search.SearchRestrictions;
+import com.qcadoo.model.api.search.SearchResult;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.api.components.FieldComponent;
 import com.qcadoo.view.api.components.FormComponent;
@@ -125,16 +128,18 @@ public class NumberGeneratorService {
     public String generateNumber(final String plugin, final String entityName, final int digitsNumber) {
         DataDefinition dataDefinition = dataDefinitionService.get(plugin, entityName);
 
-        String sql = "select count(*) as volume from #" + plugin + "_" + entityName;
+        SearchResult results = dataDefinition.find().addOrder(SearchOrders.desc("number")).list();
 
-        long longValue = (Long) dataDefinition.find(sql).uniqueResult().getField("volume");
-
-        if (longValue == 0) {
-            longValue++;
-        } else {
-
-            while (numberAlreadyExist(dataDefinition, longValue, digitsNumber)) {
+        long longValue = 1;
+        for (Entity entity : results.getEntities()) {
+            String number = entity.getStringField("number");
+            if (!org.apache.commons.lang.StringUtils.isNumeric(number)) {
+                continue;
+            }
+            longValue = Long.valueOf(number);
+            if (numberAlreadyExist(dataDefinition, longValue, digitsNumber)) {
                 longValue++;
+                break;
             }
         }
 
