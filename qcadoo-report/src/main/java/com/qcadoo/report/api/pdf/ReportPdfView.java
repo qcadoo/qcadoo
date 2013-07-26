@@ -36,6 +36,8 @@ import org.springframework.web.servlet.view.document.AbstractPdfView;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
+import com.lowagie.text.pdf.PdfAction;
+import com.lowagie.text.pdf.PdfDestination;
 import com.lowagie.text.pdf.PdfWriter;
 import com.qcadoo.report.api.FooterResolver;
 import com.qcadoo.report.api.ReportService;
@@ -58,6 +60,8 @@ public abstract class ReportPdfView extends AbstractPdfView {
             final HttpServletRequest request, final HttpServletResponse response) {
         String fileName;
         try {
+            PdfAction ac = PdfAction.gotoLocalPage(1, new PdfDestination(PdfDestination.XYZ, -1, -1, 1f), writer);
+            writer.setOpenAction(ac);
             fileName = addContent(document, model, LocaleContextHolder.getLocale(), writer);
         } catch (DocumentException e) {
             throw new IllegalStateException(e.getMessage(), e);
