@@ -90,6 +90,15 @@ public interface PdfHelper {
     PdfPTable createPanelTable(final int column);
 
     /**
+     * Create panel table with given quantity of columns and with simple format without border.
+     * 
+     * @param column
+     *            quantity of columns
+     * @return panel table
+     */
+    PdfPTable createPanelTableWithSimpleFormat(final int column);
+
+    /**
      * Add cell with table to current table.
      * 
      * @param table

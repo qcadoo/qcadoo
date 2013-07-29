@@ -46,6 +46,10 @@ public final class FontUtils {
 
     private static Font dejavuBold19Dark;
 
+    private static Font dejavuBold17Light;
+
+    private static Font dejavuBold17Dark;
+
     private static Font dejavuBold11Dark;
 
     private static Font dejavuBold11Light;
@@ -61,6 +65,8 @@ public final class FontUtils {
     private static Font dejavuBold10Dark;
 
     private static Font dejavuRegular7Light;
+
+    private static Font dejavuBold7Dark;
 
     private static BaseFont dejavu;
 
@@ -91,6 +97,13 @@ public final class FontUtils {
             dejavuBold19Dark = new Font(dejavu, 19);
             dejavuBold19Dark.setStyle(Font.BOLD);
             dejavuBold19Dark.setColor(ColorUtils.getDarkColor());
+
+            dejavuBold17Light = new Font(dejavu, 17);
+            dejavuBold17Light.setStyle(Font.BOLD);
+            dejavuBold17Light.setColor(ColorUtils.getLightColor());
+            dejavuBold17Dark = new Font(dejavu, 17);
+            dejavuBold17Dark.setStyle(Font.BOLD);
+            dejavuBold17Dark.setColor(ColorUtils.getDarkColor());
             dejavuRegular9Light = new Font(dejavu, 9);
             dejavuRegular9Light.setColor(ColorUtils.getLightColor());
             dejavuRegular9Dark = new Font(dejavu, 9);
@@ -111,6 +124,9 @@ public final class FontUtils {
             dejavuBold10Dark.setStyle(Font.BOLD);
             dejavuRegular7Light = new Font(dejavu, 7);
             dejavuRegular7Light.setColor(ColorUtils.getLightColor());
+            dejavuBold7Dark = new Font(dejavu, 7);
+            dejavuBold7Dark.setColor(ColorUtils.getDarkColor());
+            dejavuBold7Dark.setStyle(Font.BOLD);
         }
     }
 
@@ -120,6 +136,14 @@ public final class FontUtils {
 
     public static Font getDejavuBold19Dark() {
         return dejavuBold19Dark;
+    }
+
+    public static Font getDejavuBold17Light() {
+        return dejavuBold17Light;
+    }
+
+    public static Font getDejavuBold17Dark() {
+        return dejavuBold17Dark;
     }
 
     public static Font getDejavuBold11Dark() {
@@ -152,6 +176,10 @@ public final class FontUtils {
 
     public static Font getDejavuRegular7Light() {
         return dejavuRegular7Light;
+    }
+
+    public static Font getDejavuBold7Dark() {
+        return dejavuBold7Dark;
     }
 
     public static BaseFont getDejavu() {

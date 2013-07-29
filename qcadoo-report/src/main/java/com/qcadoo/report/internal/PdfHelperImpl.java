@@ -51,6 +51,7 @@ import com.lowagie.text.Image;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.Rectangle;
+import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.draw.LineSeparator;
 import com.qcadoo.localization.api.TranslationService;
@@ -96,8 +97,8 @@ public final class PdfHelperImpl implements PdfHelper {
         SimpleDateFormat df = new SimpleDateFormat(DateUtils.L_DATE_TIME_FORMAT, getLocale());
         LineSeparator line = new LineSeparator(3, 100f, ColorUtils.getLineDarkColor(), Element.ALIGN_LEFT, 0);
         document.add(Chunk.NEWLINE);
-        Paragraph title = new Paragraph(new Phrase(documenTitle, FontUtils.getDejavuBold19Light()));
-        title.add(new Phrase(" " + name, FontUtils.getDejavuBold19Dark()));
+        Paragraph title = new Paragraph(new Phrase(documenTitle, FontUtils.getDejavuBold17Light()));
+        title.add(new Phrase(" " + name, FontUtils.getDejavuBold17Dark()));
         title.setSpacingAfter(7f);
         document.add(title);
         document.add(line);
@@ -119,10 +120,10 @@ public final class PdfHelperImpl implements PdfHelper {
     public void addDocumentHeader(final Document document, final String name, final String documenTitle,
             final String documentAuthor, final Date date) throws DocumentException {
         SimpleDateFormat df = new SimpleDateFormat(DateUtils.L_DATE_TIME_FORMAT, getLocale());
-        LineSeparator line = new LineSeparator(3, 100f, ColorUtils.getLineDarkColor(), Element.ALIGN_LEFT, 0);
+        LineSeparator line = new LineSeparator(2, 100f, ColorUtils.getLineDarkColor(), Element.ALIGN_LEFT, 0);
         document.add(Chunk.NEWLINE);
-        Paragraph title = new Paragraph(new Phrase(documenTitle, FontUtils.getDejavuBold19Light()));
-        title.add(new Phrase(" " + name, FontUtils.getDejavuBold19Dark()));
+        Paragraph title = new Paragraph(new Phrase(documenTitle, FontUtils.getDejavuBold17Light()));
+        title.add(new Phrase(" " + name, FontUtils.getDejavuBold17Dark()));
         title.setSpacingAfter(7f);
         document.add(title);
         document.add(line);
@@ -152,12 +153,20 @@ public final class PdfHelperImpl implements PdfHelper {
     public PdfPTable createPanelTable(final int column) {
         PdfPTable mainData = new PdfPTable(column);
         mainData.setWidthPercentage(100f);
-        mainData.getDefaultCell().setBackgroundColor(ColorUtils.getBackgroundColor());
         mainData.getDefaultCell().setBorder(Rectangle.NO_BORDER);
-        mainData.getDefaultCell().setVerticalAlignment(Element.ALIGN_MIDDLE);
-        mainData.getDefaultCell().setPadding(8.0f);
+        mainData.getDefaultCell().setVerticalAlignment(Element.ALIGN_TOP);
+        mainData.getDefaultCell().setPadding(4.0f);
         mainData.setTableEvent(new TableBorderEvent());
         return mainData;
+    }
+
+    @Override
+    public PdfPTable createPanelTableWithSimpleFormat(final int column) {
+        PdfPTable pdfPTable = new PdfPTable(column);
+        pdfPTable.getDefaultCell().setBorder(Rectangle.NO_BORDER);
+        pdfPTable.getDefaultCell().setPadding(6.0f);
+        pdfPTable.getDefaultCell().setVerticalAlignment(PdfPCell.ALIGN_TOP);
+        return pdfPTable;
     }
 
     @Override
@@ -187,7 +196,7 @@ public final class PdfHelperImpl implements PdfHelper {
 
     @Override
     public void addTableCellAsOneColumnTable(final PdfPTable table, final String label, final Object fieldValue) {
-        addTableCellAsTable(table, label, fieldValue, FontUtils.getDejavuBold10Dark(), FontUtils.getDejavuRegular10Dark(), 1);
+        addTableCellAsTable(table, label, fieldValue, FontUtils.getDejavuBold7Dark(), FontUtils.getDejavuRegular9Dark(), 1);
     }
 
     @Override
@@ -275,8 +284,9 @@ public final class PdfHelperImpl implements PdfHelper {
         table.setWidthPercentage(100f);
         table.setHorizontalAlignment(Element.ALIGN_LEFT);
         table.setSpacingBefore(7.0f);
-        table.getDefaultCell().setBackgroundColor(ColorUtils.getBackgroundColor());
+        // table.getDefaultCell().setBackgroundColor(ColorUtils.getBackgroundColor());
         table.getDefaultCell().setBorderColor(ColorUtils.getLineDarkColor());
+        table.getDefaultCell().setBorderWidth(1.0f);
         table.getDefaultCell().setVerticalAlignment(Element.ALIGN_MIDDLE);
         table.getDefaultCell().setPadding(5.0f);
         table.getDefaultCell().disableBorderSide(Rectangle.RIGHT);
