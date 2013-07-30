@@ -65,7 +65,6 @@ import com.qcadoo.report.api.ReportService;
 import com.qcadoo.report.api.pdf.PdfHelper;
 import com.qcadoo.report.internal.templates.ReportTemplateService;
 import com.qcadoo.report.internal.util.ReportFormatFactory;
-import com.qcadoo.security.api.SecurityService;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.ComponentState.MessageType;
 import com.qcadoo.view.api.ViewDefinitionState;
@@ -81,9 +80,6 @@ public class ReportServiceImpl implements ReportService {
 
     @Autowired
     private SessionFactory sessionFactory;
-
-    @Autowired
-    private SecurityService securityService;
 
     @Autowired
     private MessageSource messageSource;
