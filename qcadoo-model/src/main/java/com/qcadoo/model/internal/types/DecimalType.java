@@ -92,7 +92,7 @@ public final class DecimalType extends AbstractFieldType implements DefaultValid
         if (value instanceof BigDecimal) {
             return ((BigDecimal) value).stripTrailingZeros().scale();
         }
-        return NumberServiceImpl.PRECISION;
+        return NumberServiceImpl.MAX_PRECISION;
     }
 
     @Override

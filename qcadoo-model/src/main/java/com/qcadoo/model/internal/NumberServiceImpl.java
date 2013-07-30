@@ -39,7 +39,9 @@ import com.qcadoo.model.api.NumberService;
 @Component
 public final class NumberServiceImpl implements NumberService {
 
-    public static final int PRECISION = DEFAULT_MAX_FRACTION_DIGITS_IN_DECIMAL;
+    private static final int MIN_PRECISION = DEFAULT_MIN_FRACTION_DIGITS_IN_DECIMAL;
+
+    public static final int MAX_PRECISION = DEFAULT_MAX_FRACTION_DIGITS_IN_DECIMAL;
 
     public static final RoundingMode ROUNDING_MODE = RoundingMode.HALF_EVEN;
 
@@ -57,7 +59,8 @@ public final class NumberServiceImpl implements NumberService {
 
     private DecimalFormat buildDecimalFormat(final Locale locale) {
         final DecimalFormat decimalFormat = (DecimalFormat) DecimalFormat.getInstance(locale);
-        decimalFormat.setMaximumFractionDigits(PRECISION);
+        decimalFormat.setMinimumFractionDigits(MIN_PRECISION);
+        decimalFormat.setMaximumFractionDigits(MAX_PRECISION);
         decimalFormat.setRoundingMode(ROUNDING_MODE);
         return decimalFormat;
     }
@@ -78,6 +81,7 @@ public final class NumberServiceImpl implements NumberService {
 
     @Override
     public BigDecimal setScale(final BigDecimal decimal) {
-        return decimal.setScale(PRECISION, ROUNDING_MODE);
+        return decimal.setScale(MAX_PRECISION, ROUNDING_MODE);
     }
+
 }
