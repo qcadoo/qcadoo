@@ -205,7 +205,7 @@ public class ManyToManyIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    public final void shouldPerformCascadeDeletion_deeplyVariant() {
+    public final void shouldPerformCascadeDeletionDeeplyVariant() {
         // given
         Entity firstProduct = save(createProduct("asd", "00001"));
         Entity secondProduct = save(createProduct("fgh", "00002"));
@@ -268,7 +268,7 @@ public class ManyToManyIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    public final void shouldOnDeleteHookRejectCascadeDeletion_deeplyVariant() {
+    public final void shouldOnDeleteHookRejectCascadeDeletionDeeplyVariant() {
         // given
         Entity firstProduct = save(createProduct("asd", "00001"));
         Entity secondProduct = save(createProduct("fgh", "00002"));

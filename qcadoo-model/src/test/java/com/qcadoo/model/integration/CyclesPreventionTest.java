@@ -82,7 +82,7 @@ public class CyclesPreventionTest extends IntegrationTest {
     }
 
     @Test
-    public final void shouldNotFallIntoInfiniteCycleDuringCascadeManyToManyDeletion_2entities() {
+    public final void shouldNotFallIntoInfiniteCycleDuringCascadeManyToManyDeletion2entities() {
         // given
         Entity modelA = buildEntity(aDataDefinition);
         Entity modelB = buildEntity(bDataDefinition);
@@ -103,7 +103,7 @@ public class CyclesPreventionTest extends IntegrationTest {
     }
 
     @Test
-    public final void shouldNotFallIntoInfiniteCycleDuringCascadeManyToManyDeletion_3entities() {
+    public final void shouldNotFallIntoInfiniteCycleDuringCascadeManyToManyDeletion3entities() {
         // given
         Entity modelA = buildEntity(aDataDefinition);
         Entity modelB = buildEntity(bDataDefinition);
@@ -134,7 +134,7 @@ public class CyclesPreventionTest extends IntegrationTest {
     }
 
     @Test
-    public final void shouldNotFallIntoInfiniteCycleDuringCascadeHasManyDeletion_2entities() {
+    public final void shouldNotFallIntoInfiniteCycleDuringCascadeHasManyDeletion2entities() {
         // given
         Entity modelA = buildEntity(aDataDefinition);
         Entity modelB = buildEntity(bDataDefinition);
@@ -155,7 +155,7 @@ public class CyclesPreventionTest extends IntegrationTest {
     }
 
     @Test
-    public final void shouldNotFallIntoInfiniteCycleDuringCascadeHasManyDeletion_3entities() {
+    public final void shouldNotFallIntoInfiniteCycleDuringCascadeHasManyDeletion3entities() {
         // given
         Entity modelA = buildEntity(aDataDefinition);
         Entity modelB = buildEntity(bDataDefinition);
@@ -180,7 +180,7 @@ public class CyclesPreventionTest extends IntegrationTest {
     }
 
     @Test
-    public final void shouldNotFallIntoInfiniteCycleDuringCascadeHasManyNullification_2entities() {
+    public final void shouldNotFallIntoInfiniteCycleDuringCascadeHasManyNullification2entities() {
         // given
         Entity modelA = buildEntity(aDataDefinition);
         Entity modelB = buildEntity(bDataDefinition);
@@ -203,7 +203,7 @@ public class CyclesPreventionTest extends IntegrationTest {
     }
 
     @Test
-    public final void shouldNotFallIntoInfiniteCycleDuringCascadeHasManyNullification_3entities() {
+    public final void shouldNotFallIntoInfiniteCycleDuringCascadeHasManyNullification3entities() {
         // given
         Entity modelA = buildEntity(aDataDefinition);
         Entity modelB = buildEntity(bDataDefinition);

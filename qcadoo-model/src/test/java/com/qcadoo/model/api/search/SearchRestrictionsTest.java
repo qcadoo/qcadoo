@@ -70,7 +70,7 @@ public class SearchRestrictionsTest {
         performWildcardTest("*te?st", "%te_st");
     }
 
-    private final void performWildcardTest(final String input, final String expectedOutput) {
+    private void performWildcardTest(final String input, final String expectedOutput) {
         SearchCriterion res = SearchRestrictions.like(FIELD_NAME, input);
         String actual = res.getHibernateCriterion().toString();
         String expected = FIELD_NAME + " like " + expectedOutput;
