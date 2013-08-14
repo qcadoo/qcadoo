@@ -59,7 +59,7 @@
 		<bigButton name="refresh" icon="updateIcon24.png" state="enabled" action="#{grid}.performRefresh;" />
 	</group>
 	
-	<group name="statuses" if="#view.getComponentByReference('grid').dataDefinition.activable">
+	<group name="states" if="#view.getComponentByReference('grid').dataDefinition.activable">
 		<smallButton name="activate" icon="unactiveVisibleIcon.png" state="disabled" action="#{grid}.performActivate;">
 			<script><![CDATA[
                 #{grid}.addOnChangeListener({
