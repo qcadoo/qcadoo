@@ -29,7 +29,7 @@
 	name="userDetails"
 	modelPlugin="qcadooSecurity"
 	modelName="user"
-	defaultAuthorizationRole="ROLE_ADMIN">
+	defaultAuthorizationRole="ROLE_SUPERADMIN">
 	
 	<component type="window" name="window">
 		<ribbon>
