@@ -352,10 +352,29 @@ public final class PdfHelperImpl implements PdfHelper {
                 reportColumnWidths[entry.getKey()] = entry.getValue();
             }
         } else {
-            Integer columnSize = availableWidth / allColumns.size();
-            Arrays.fill(reportColumnWidths, columnSize);
+            Arrays.fill(reportColumnWidths, MINIMUM_ALLOWABLE_SIZE_COLUMN_IN_PIXEL);
+            for (Map.Entry<Integer, Integer> entry : columnWithFixedWidth.entrySet()) {
+                reportColumnWidths[entry.getKey()] = entry.getValue();
+            }
+            int sumColumnWidths = getSumColumnWidths(reportColumnWidths);
+            for (int k = 0; k < reportColumnWidths.length; k++) {
+                reportColumnWidths[k] = getScaledColumnWidth(sumColumnWidths, reportColumnWidths[k], availableWidth);
+            }
         }
         return reportColumnWidths;
+    }
+
+    private int getSumColumnWidths(final int[] reportColumnWidths) {
+        int sumColumnsWidth = 0;
+        for (int k = 0; k < reportColumnWidths.length; k++) {
+            sumColumnsWidth += reportColumnWidths[k];
+        }
+        return sumColumnsWidth;
+    }
+
+    private int getScaledColumnWidth(final int sumColumnWidths, final int columnWidth, int availableWidth) {
+        int scaledColumnWidth = (columnWidth * 100) / sumColumnWidths;
+        return (scaledColumnWidth * availableWidth) / 100;
     }
 
     @Override
