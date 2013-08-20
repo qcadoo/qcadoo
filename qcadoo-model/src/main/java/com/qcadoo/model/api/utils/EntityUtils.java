@@ -8,6 +8,10 @@ import com.qcadoo.model.api.Entity;
 
 public class EntityUtils {
 
+    private EntityUtils() {
+
+    }
+
     private static final Function<Entity, Long> FUNC_EXTRACT_ID = new Function<Entity, Long>() {
 
         @Override

@@ -17,7 +17,7 @@ public class DecimalTypeTest {
 
     private DecimalType decimalType;
 
-    private static final Locale locale = Locale.getDefault();
+    private Locale locale = Locale.getDefault();
 
     private NumberFormat numberFormat;
 
