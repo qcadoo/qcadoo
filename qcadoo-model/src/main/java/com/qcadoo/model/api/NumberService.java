@@ -86,4 +86,14 @@ public interface NumberService {
      */
     BigDecimal setScale(final BigDecimal decimal);
 
+    /**
+     * Formats an object with DecimalFormat to produce a String.
+     * 
+     * @param obj
+     * @param minimumFractionDigits
+     * 
+     * @return Formatted string.
+     */
+    String formatWithMinimumFractionDigits(Object obj, int minimumFractionDigits);
+
 }

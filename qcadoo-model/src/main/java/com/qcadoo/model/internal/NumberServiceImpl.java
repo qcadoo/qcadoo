@@ -57,9 +57,27 @@ public final class NumberServiceImpl implements NumberService {
         return decimalFormat;
     }
 
+    private DecimalFormat getDecimalFormat(final int minimumFractionDigits) {
+        final Locale locale = LocaleContextHolder.getLocale();
+        DecimalFormat decimalFormat = DECIMAL_FORMATS.get(locale);
+        if (decimalFormat == null) {
+            decimalFormat = buildDecimalFormat(locale, minimumFractionDigits);
+            DECIMAL_FORMATS.put(locale, decimalFormat);
+        }
+        return decimalFormat;
+    }
+
     private DecimalFormat buildDecimalFormat(final Locale locale) {
         final DecimalFormat decimalFormat = (DecimalFormat) DecimalFormat.getInstance(locale);
         decimalFormat.setMinimumFractionDigits(MIN_PRECISION);
+        decimalFormat.setMaximumFractionDigits(MAX_PRECISION);
+        decimalFormat.setRoundingMode(ROUNDING_MODE);
+        return decimalFormat;
+    }
+
+    private DecimalFormat buildDecimalFormat(final Locale locale, final int minimumFractionDigits) {
+        final DecimalFormat decimalFormat = (DecimalFormat) DecimalFormat.getInstance(locale);
+        decimalFormat.setMinimumFractionDigits(minimumFractionDigits);
         decimalFormat.setMaximumFractionDigits(MAX_PRECISION);
         decimalFormat.setRoundingMode(ROUNDING_MODE);
         return decimalFormat;
@@ -75,6 +93,15 @@ public final class NumberServiceImpl implements NumberService {
         String formattedNumber = null;
         if (obj != null) {
             formattedNumber = getDecimalFormat().format(obj);
+        }
+        return formattedNumber;
+    }
+
+    @Override
+    public String formatWithMinimumFractionDigits(final Object obj, final int minimumFractionDigits) {
+        String formattedNumber = null;
+        if (obj != null) {
+            formattedNumber = getDecimalFormat(minimumFractionDigits).format(obj);
         }
         return formattedNumber;
     }
