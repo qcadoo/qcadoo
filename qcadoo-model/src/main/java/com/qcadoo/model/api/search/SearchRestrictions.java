@@ -347,6 +347,19 @@ public final class SearchRestrictions {
     }
 
     /**
+     * Creates criterion which checks if field is equal  (using case-insensitive "eq" operator)  to given value.
+     * 
+     * @param field
+     *            field
+     * @param value
+     *            value
+     * @return criterion
+     */
+    public static SearchCriterion ieq(final String field, final Object value) {
+        return new SearchCriterionImpl(Restrictions.eq(field, value).ignoreCase());
+    }
+    
+    /**
      * Creates criterion which checks if field is less than or equal to other field.
      * 
      * @param field
