@@ -25,22 +25,47 @@ var QCD = QCD || {};
 QCD.components = QCD.components || {};
 QCD.components.elements = QCD.components.elements || {};
 
-QCD.components.elements.StaticComponent = function(_element, _mainController) {
-	$.extend(this, new QCD.components.Component(_element, _mainController));
+QCD.components.elements.StaticComponent = function (element, mainController) {
+    "use strict";
+    
+    if (!(this instanceof QCD.components.elements.StaticComponent)) {
+        return new QCD.components.elements.StaticComponent(element, mainController);
+    }
+    
+	$.extend(this, new QCD.components.Component(element, mainController));
+	
+	var changed = false;
 	
 	if (this.options.referenceName) {
-		_mainController.registerReferenceName(this.options.referenceName, this);
+		mainController.registerReferenceName(this.options.referenceName, this);
 	}
 
-	this.setComponentState = function(state) {
+	this.setComponentState = function (state) {
 	};
-	this.getComponentValue = function() {
+	
+	this.getComponentValue = function () {
 		return null;
 	};
-	this.setComponentValue = function(value) {
+	
+	this.setComponentValue = function (value) {
 	};
-	this.setComponentEnabled = function(_isEnabled) {
+	
+	this.setComponentEnabled = function (isEnabled) {
 	};
-	this.setComponentLoading = function(isLoadingVisible) {
+	
+	this.setComponentLoading = function (isLoadingVisible) {
 	};
-}
+	
+	this.performUpdateState = function () {
+        changed = false;
+    };
+    
+    this.setComponentChanged = function (isChanged) {
+        changed = isChanged;
+    };
+    
+    this.isComponentChanged = function () {
+        return changed;
+    };
+    
+};

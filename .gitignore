@@ -3,6 +3,8 @@
 .settings
 .DS_Store
 .pmd
+.idea
+**/*.iml
 target
 bin
 pom.xml.releaseBackup
