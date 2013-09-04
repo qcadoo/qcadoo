@@ -137,7 +137,7 @@ public class ExportToPDFController {
 
             for (Map<String, String> row : rows) {
                 for (String value : row.values()) {
-                    table.addCell(new Phrase(value, FontUtils.getDejavuRegular9Dark()));
+                    table.addCell(new Phrase(value, FontUtils.getDejavuRegular7Dark()));
                 }
             }
             document.add(table);

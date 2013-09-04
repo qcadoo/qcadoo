@@ -308,7 +308,7 @@ public final class PdfHelperImpl implements PdfHelper {
             if (i == header.size()) {
                 table.getDefaultCell().enableBorderSide(Rectangle.RIGHT);
             }
-            table.addCell(new Phrase(element, FontUtils.getDejavuRegular9Dark()));
+            table.addCell(new Phrase(element, FontUtils.getDejavuBold7Dark()));
             if (i == 1) {
                 table.getDefaultCell().disableBorderSide(Rectangle.LEFT);
             }
