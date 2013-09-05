@@ -59,11 +59,7 @@ public final class NumberServiceImpl implements NumberService {
 
     private DecimalFormat getDecimalFormat(final int minimumFractionDigits) {
         final Locale locale = LocaleContextHolder.getLocale();
-        DecimalFormat decimalFormat = DECIMAL_FORMATS.get(locale);
-        if (decimalFormat == null) {
-            decimalFormat = buildDecimalFormat(locale, minimumFractionDigits);
-            DECIMAL_FORMATS.put(locale, decimalFormat);
-        }
+        DecimalFormat decimalFormat = buildDecimalFormat(locale, minimumFractionDigits);
         return decimalFormat;
     }
 
