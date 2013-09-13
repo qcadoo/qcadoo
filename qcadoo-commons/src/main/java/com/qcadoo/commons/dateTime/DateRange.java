@@ -38,6 +38,24 @@ public final class DateRange {
     }
 
     /**
+     * Check if this date range contains given date.
+     * 
+     * @param date
+     *            date to be checked
+     * @return true if this date range contains given date
+     */
+    public boolean contains(final Date date) {
+        Long dateMillis = getMillis(date);
+        if (fromMillis == null) {
+            return toMillis == null || dateMillis <= toMillis;
+        }
+        if (toMillis == null) {
+            return dateMillis >= fromMillis;
+        }
+        return dateMillis >= fromMillis && dateMillis <= toMillis;
+    }
+
+    /**
      * Get lower bound date.
      * 
      * @return lower bound date or null
