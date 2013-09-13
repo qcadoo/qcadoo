@@ -23,6 +23,8 @@
  */
 package com.qcadoo.model.api;
 
+import org.apache.commons.lang.StringUtils;
+
 public final class IntegerUtils {
 
     private IntegerUtils() {
@@ -63,6 +65,22 @@ public final class IntegerUtils {
             return (Integer) value;
         }
         return Integer.valueOf(value.toString());
+    }
+
+    /**
+     * Parse integer value from string.
+     * 
+     * @param stringValue
+     *            value to be parsed
+     * @return parsed integer number or null if given string is empty or blank
+     * @throws NumberFormatException
+     *             if given string does not represent correct number.
+     */
+    public static Integer parse(final String stringValue) {
+        if (StringUtils.isBlank(stringValue)) {
+            return null;
+        }
+        return Integer.parseInt(StringUtils.trim(stringValue));
     }
 
 }
