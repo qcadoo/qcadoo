@@ -39,6 +39,7 @@ import java.io.File;
 import java.util.Collections;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
@@ -266,6 +267,7 @@ public class PluginManagerInstallTest {
                 .contains(new PluginDependencyInformation("unknownplugin", new VersionOfDependency(""))));
     }
 
+    @Ignore
     @Test
     public void shouldInstallEnabledPlugin() throws Exception {
         // given
