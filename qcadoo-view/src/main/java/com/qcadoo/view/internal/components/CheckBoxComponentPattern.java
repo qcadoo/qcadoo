@@ -49,7 +49,7 @@ public final class CheckBoxComponentPattern extends FieldComponentPattern {
 
     @Override
     public ComponentState getComponentStateInstance() {
-        return new FieldComponentState(this);
+        return new CheckBoxComponentState(this);
     }
 
     @Override
