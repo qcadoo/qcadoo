@@ -56,7 +56,6 @@ public final class SearchRestrictions {
 
     private static final String[] HIBERNATE_WILDCARDS = new String[] { "%", "_" };
 
-    @Autowired
     private static void setStaticDataAccessService(final DataAccessService dataAccessService) {
         SearchRestrictions.dataAccessService = dataAccessService;
     }
@@ -347,7 +346,7 @@ public final class SearchRestrictions {
     }
 
     /**
-     * Creates criterion which checks if field is equal  (using case-insensitive "eq" operator)  to given value.
+     * Creates criterion which checks if field is equal (using case-insensitive "eq" operator) to given value.
      * 
      * @param field
      *            field
@@ -358,7 +357,7 @@ public final class SearchRestrictions {
     public static SearchCriterion ieq(final String field, final Object value) {
         return new SearchCriterionImpl(Restrictions.eq(field, value).ignoreCase());
     }
-    
+
     /**
      * Creates criterion which checks if field is less than or equal to other field.
      * 
