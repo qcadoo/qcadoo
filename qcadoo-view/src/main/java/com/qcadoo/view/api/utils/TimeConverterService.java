@@ -40,6 +40,8 @@ import com.qcadoo.localization.api.utils.DateUtils;
 @Service
 public class TimeConverterService {
 
+    private static final String ERROR_STRING_VALUE = "###";
+
     /**
      * Convert string time value to string in format hh:mm:ss
      * 
@@ -73,6 +75,10 @@ public class TimeConverterService {
     }
 
     public static String durationToString(final Integer duration) {
+        if (duration == null) {
+            return ERROR_STRING_VALUE;
+        }
+        // rly? IMO this conversion doesn't make any sense in this specific case..
         long longValueFromDuration = duration.longValue();
         long hours = longValueFromDuration / 3600;
         long minutes = longValueFromDuration % 3600 / 60;

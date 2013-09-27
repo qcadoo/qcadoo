@@ -128,6 +128,7 @@ public class NumberGeneratorService {
     public String generateNumber(final String plugin, final String entityName, final int digitsNumber) {
         DataDefinition dataDefinition = dataDefinitionService.get(plugin, entityName);
 
+        // TODO MAKU add projection
         SearchResult results = dataDefinition.find().addOrder(SearchOrders.desc("number")).list();
 
         long longValue = 1;
@@ -147,6 +148,7 @@ public class NumberGeneratorService {
     }
 
     private boolean numberAlreadyExist(final DataDefinition dataDefinition, final long longValue, final int digitsNumber) {
+        // TODO MAKU add projection
         return dataDefinition.find().add(SearchRestrictions.eq("number", String.format("%0" + digitsNumber + "d", longValue)))
                 .setMaxResults(1).uniqueResult() != null;
     }
