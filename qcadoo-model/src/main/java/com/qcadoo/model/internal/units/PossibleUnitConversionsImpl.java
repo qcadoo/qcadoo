@@ -36,6 +36,7 @@ import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.NumberService;
 import com.qcadoo.model.api.units.UnitConversion;
+import com.qcadoo.model.api.units.UnsupportedUnitConversionException;
 import com.qcadoo.model.constants.UnitConversionItemFields;
 
 public final class PossibleUnitConversionsImpl implements InternalPossibleUnitConversions {
@@ -87,7 +88,9 @@ public final class PossibleUnitConversionsImpl implements InternalPossibleUnitCo
     @Override
     public BigDecimal convertTo(final BigDecimal quantityFrom, final String unitTo) {
         final BigDecimal ratio = targetUnitToFactor.get(unitTo);
-        Preconditions.checkNotNull(ratio, "Conversion " + unitFrom + " --> " + unitTo + " is not defined!");
+        if (ratio == null) {
+            throw new UnsupportedUnitConversionException(unitFrom, unitTo);
+        }
         return numberService.setScale(quantityFrom.multiply(ratio));
     }
 

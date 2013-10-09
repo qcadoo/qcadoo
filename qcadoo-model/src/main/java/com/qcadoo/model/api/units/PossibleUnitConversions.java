@@ -47,7 +47,7 @@ public interface PossibleUnitConversions {
      * @param value
      * @param unitTo
      * @return value in specified unit
-     * @throws NullPointerException
+     * @throws UnsupportedUnitConversionException
      *             if conversion is not defined
      */
     BigDecimal convertTo(final BigDecimal value, final String unitTo);
