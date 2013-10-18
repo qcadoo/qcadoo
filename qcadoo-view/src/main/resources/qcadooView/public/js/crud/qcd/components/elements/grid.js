@@ -1226,11 +1226,22 @@ QCD.components.elements.Grid = function (element, mainController) {
         this.fireEvent(null, eventName, args, type);
     };
 
-    this.fireEvent = function (actionsPerformer, eventName, args, type) {
+    var origSendEvent = this.sendEvent;
+    this.sendEvent = function (actionsPerformer, eventObj) {
+        var origCallback = eventObj.callback;
+        if (typeof origCallback === 'function') {
+            eventObj.callback = function () {
+                try {
+                    origCallback();
+                } finally {
+                    unblockGrid();
+                }
+            };
+        } else {
+            eventObj.callback = unblockGrid;
+        }
         blockGrid();
-        mainController.callEvent(eventName, elementPath, function () {
-            unblockGrid();
-        }, args, actionsPerformer, type);
+        origSendEvent.call(this, actionsPerformer, eventObj);
     };
 
     this.performLinkClicked = function (actionsPerformer) {

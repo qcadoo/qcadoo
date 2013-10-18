@@ -102,11 +102,31 @@ QCD.components.Component = function (element, mainController) {
 		this.contextObject[contextField] = contextValue;
 	};
 	
-	this.fireEvent = function (actionsPerformer, eventName, args) {
-		if (this.beforeEventFunction) {
-			this.beforeEventFunction();
-		}
-		mainController.callEvent(eventName, elementPath, null, args, actionsPerformer);
+	this.fireEvent = function (actionsPerformer, eventNameOrEventObj, args) {
+	    if (typeof eventNameOrEventObj === 'string') {
+	        this.sendEvent(actionsPerformer, {
+	            name : eventNameOrEventObj,
+	            args : args
+	        });
+	    } else if (typeof eventNameOrEventObj === 'object') {
+	        this.sendEvent(actionsPerformer, eventNameOrEventObj);
+	    } else {
+	        QCD.error("You have to pass an event's name [string] or definition object [json] as a second parameter.");
+	    }
+	};
+	
+	this.sendEvent = function (actionsPerformer, eventObj) {
+	    if (typeof eventObj !== 'object' || eventObj === null) {
+	        QCD.error("Second parameter of sendEvent should be an event's definition object.");
+	    } else if (typeof eventObj.name !== 'string') {
+            QCD.error("Missing event's name - it won't be send.");
+	    } else {
+	        // AFAIK it's never used - I'll remove this soon
+            if (this.beforeEventFunction) {
+                this.beforeEventFunction();
+            }
+            mainController.callEvent(eventObj.name, elementPath, eventObj.callback, eventObj.args, actionsPerformer);
+	    }
 	};
 	
 	this.setState = function (state) {
