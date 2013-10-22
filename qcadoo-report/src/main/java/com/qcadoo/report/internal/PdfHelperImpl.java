@@ -142,6 +142,30 @@ public final class PdfHelperImpl implements PdfHelper {
     }
 
     @Override
+    public void addDocumentHeaderThin(final Document document, final String name, final String documenTitle,
+            final String documentAuthor, final Date date) throws DocumentException {
+        SimpleDateFormat df = new SimpleDateFormat(DateUtils.L_DATE_TIME_FORMAT, getLocale());
+        LineSeparator line = new LineSeparator(2, 100f, ColorUtils.getLineDarkColor(), Element.ALIGN_LEFT, 0);
+        Paragraph title = new Paragraph(new Phrase(documenTitle, FontUtils.getDejavuBold14Light()));
+        title.add(new Phrase(" " + name, FontUtils.getDejavuBold14Dark()));
+        title.setSpacingAfter(7f);
+        document.add(title);
+        document.add(line);
+        PdfPTable userAndDate = new PdfPTable(2);
+        userAndDate.setWidthPercentage(100f);
+        userAndDate.setHorizontalAlignment(Element.ALIGN_LEFT);
+        userAndDate.getDefaultCell().setBorderWidth(0);
+        Paragraph userParagraph = new Paragraph(new Phrase(documentAuthor, FontUtils.getDejavuRegular9Light()));
+        userParagraph.add(new Phrase(" " + getDocumentAuthor(), FontUtils.getDejavuRegular9Dark()));
+        Paragraph dateParagraph = new Paragraph(df.format(date), FontUtils.getDejavuRegular9Light());
+        userAndDate.addCell(userParagraph);
+        userAndDate.getDefaultCell().setHorizontalAlignment(Element.ALIGN_RIGHT);
+        userAndDate.addCell(dateParagraph);
+        userAndDate.setSpacingAfter(10f);
+        document.add(userAndDate);
+    }
+
+    @Override
     public void addMetaData(final Document document) {
         document.addSubject("Using iText");
         document.addKeywords("Java, PDF, iText");
@@ -191,7 +215,7 @@ public final class PdfHelperImpl implements PdfHelper {
 
     @Override
     public void addTableCellAsTwoColumnsTable(final PdfPTable table, final String label, final Object fieldValue) {
-        addTableCellAsTable(table, label, fieldValue, FontUtils.getDejavuBold9Dark(), FontUtils.getDejavuBold9Dark(), 2);
+        addTableCellAsTable(table, label, fieldValue, FontUtils.getDejavuBold7Dark(), FontUtils.getDejavuRegular9Dark(), 2);
     }
 
     @Override
@@ -274,6 +298,17 @@ public final class PdfHelperImpl implements PdfHelper {
         if (column.keySet().size() != 0) {
             Object key = column.keySet().iterator().next();
             addTableCellAsOneColumnTable(headerTable, translationService.translate(key.toString(), locale), column.get(key));
+            column.remove(key);
+        }
+        return headerTable;
+    }
+
+    @Override
+    public PdfPTable addDynamicHeaderTableCellOneRow(final PdfPTable headerTable, final Map<String, Object> column,
+            final Locale locale) {
+        if (column.keySet().size() != 0) {
+            Object key = column.keySet().iterator().next();
+            addTableCellAsTwoColumnsTable(headerTable, translationService.translate(key.toString(), locale), column.get(key));
             column.remove(key);
         }
         return headerTable;

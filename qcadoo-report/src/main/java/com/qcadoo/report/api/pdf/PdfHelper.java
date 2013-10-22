@@ -249,4 +249,9 @@ public interface PdfHelper {
      * @return document author
      */
     String getDocumentAuthor();
+
+    void addDocumentHeaderThin(final Document document, final String name, final String documenTitle,
+            final String documentAuthor, final Date date) throws DocumentException;
+
+    PdfPTable addDynamicHeaderTableCellOneRow(PdfPTable firstColumnHeaderTable, Map<String, Object> firstColumn, Locale locale);
 }
