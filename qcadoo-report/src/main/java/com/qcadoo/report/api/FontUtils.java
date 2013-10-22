@@ -50,6 +50,8 @@ public final class FontUtils {
 
     private static Font dejavuBold17Light;
 
+    private static Font dejavuBold14Light;
+
     private static Font dejavuBold17Dark;
 
     private static Font dejavuBold11Dark;
@@ -111,6 +113,9 @@ public final class FontUtils {
             dejavuBold17Light = new Font(dejavu, 17);
             dejavuBold17Light.setStyle(Font.BOLD);
             dejavuBold17Light.setColor(ColorUtils.getLightColor());
+            dejavuBold14Light = new Font(dejavu, 17);
+            dejavuBold14Light.setStyle(Font.BOLD);
+            dejavuBold14Light.setColor(ColorUtils.getLightColor());
             dejavuBold17Dark = new Font(dejavu, 17);
             dejavuBold17Dark.setStyle(Font.BOLD);
             dejavuBold17Dark.setColor(ColorUtils.getDarkColor());
@@ -155,6 +160,10 @@ public final class FontUtils {
     }
 
     public static Font getDejavuBold17Light() {
+        return dejavuBold17Light;
+    }
+
+    public static Font getDejavuBold14Light() {
         return dejavuBold17Light;
     }
 
