@@ -350,7 +350,7 @@ public abstract class AbstractComponentState implements InternalComponentState, 
         }
     }
 
-    private void passVisibleFromJson(final JSONObject json) throws JSONException {
+    protected void passVisibleFromJson(final JSONObject json) throws JSONException {
         if (json.has(JSON_VISIBLE) && !json.isNull(JSON_VISIBLE)) {
             visible = json.getBoolean(JSON_VISIBLE);
         }

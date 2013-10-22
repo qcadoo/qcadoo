@@ -39,6 +39,7 @@ public class WindowTabComponentState extends AbstractContainerState {
 
     @Override
     protected void initializeContent(final JSONObject json) throws JSONException {
+        passVisibleFromJson(json);
         requestRender();
     }
 

@@ -44,4 +44,16 @@ public interface WindowComponent {
      */
     void requestRibbonRender();
 
+    /**
+     * Set tab with given name as active (focused).
+     * 
+     * @param tabName
+     *            name of the tab to be activated (focused). Note that this tab will be also mark as visible.
+     * 
+     * @throws IllegalArgumentException
+     *             If tab with given name doesn't exist inside of this window.
+     * @since 1.2.1
+     */
+    void setActiveTab(final String tabName) throws IllegalArgumentException;
+
 }

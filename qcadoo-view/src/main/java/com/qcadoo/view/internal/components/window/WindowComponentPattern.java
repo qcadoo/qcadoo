@@ -226,4 +226,9 @@ public class WindowComponentPattern extends AbstractContainerPattern {
     public String getJsObjectName() {
         return JS_OBJECT;
     }
+
+    public String getFirstTabName() {
+        return firstTabName;
+    }
+
 }

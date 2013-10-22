@@ -26,11 +26,11 @@ QCD.components = QCD.components || {};
 
 QCD.components.Component = function (element, mainController) {
     "use strict";
-    
+
     if (!(this instanceof QCD.components.Component)) {
         return new QCD.components.Component(element, mainController);
     }
-	
+
 	var elementPath = element.attr('id'),
         elementSearchName = elementPath.replace(/\./g, "\\."),
         elementName = elementPath.split(".")[elementPath.split(".").length - 1],
@@ -198,16 +198,17 @@ QCD.components.Component = function (element, mainController) {
 		return isEnabled;
 	};
 	
-	this.setVisible = function (isVisible) {
+	this.setVisible = function (shouldBeVisible) {
 		if (this.setComponentVisible) {
-			this.setComponentVisible(isVisible);
+			this.setComponentVisible(shouldBeVisible);
 		} else {
-			if (isVisible) {
+			if (shouldBeVisible) {
 				element.show();
 			} else {				
 				element.hide();
 			}
 		}
+		isVisible = shouldBeVisible;
 	};
 	
 	this.isVisible = function () {

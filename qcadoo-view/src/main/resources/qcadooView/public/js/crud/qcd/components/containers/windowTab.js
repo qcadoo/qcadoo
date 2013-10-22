@@ -25,30 +25,35 @@ var QCD = QCD || {};
 QCD.components = QCD.components || {};
 QCD.components.containers = QCD.components.containers || {};
 
-QCD.components.containers.WindowTab = function(_element, _mainController) {
-	$.extend(this, new QCD.components.Container(_element, _mainController));
+QCD.components.containers.WindowTab = function(element, mainController) {
+    "use strict";
+
+    if (!(this instanceof QCD.components.containers.WindowTab)) {
+        return new QCD.components.containers.WindowTab(element, mainController);
+    }
+
+	$.extend(this, new QCD.components.Container(element, mainController));
 	
-	var mainController = _mainController;
-	
-	var _this = this;
-	
-	var ribbon;
-	var ribbonElement;
-	
-	function constructor(_this) {
-		var childrenElement = $("#"+_this.elementSearchName+" > div");
-		_this.constructChildren(childrenElement.children());
-		
-		if (_this.options.ribbon) {
-			ribbon = new QCD.components.Ribbon(_this.options.ribbon, _this.elementName, mainController, _this.options.translations);
+	var that = this,
+	    ribbon = null,
+	    ribbonElement = null,
+	    tabHeaderElement = null,
+	    isVisible = true;
+
+	function constructor() {
+		var childrenElement = $("#"+that.elementSearchName+" > div");
+		that.constructChildren(childrenElement.children());
+
+		if (that.options.ribbon) {
+			ribbon = new QCD.components.Ribbon(that.options.ribbon, that.elementName, mainController, that.options.translations);
 			ribbonElement = ribbon.constructElementContent();
 		}
 		
-		if (_this.options.referenceName) {
-			mainController.registerReferenceName(_this.options.referenceName, _this);
+		if (that.options.referenceName) {
+			mainController.registerReferenceName(that.options.referenceName, that);
 		}
 	}
-	
+
 	this.getRibbonElement = function() {
 		return ribbonElement;
 	}
@@ -71,8 +76,10 @@ QCD.components.containers.WindowTab = function(_element, _mainController) {
 	}
 	
 	function setContextualHelpButton(url) {
-		var contentElement = _this.element.find("div:first");
-		var windowTabContextualHelpButton = $("#" + _this.elementSearchName + "_contextualHelpButton"); 
+		var contentElement = that.element.find("div:first"),
+		    windowTabContextualHelpButton = $("#" + that.elementSearchName + "_contextualHelpButton"),
+		    button = {};
+
 		if (windowTabContextualHelpButton.length) {
 			if (url) {
 				windowTabContextualHelpButton.find("a").attr("href", url);
@@ -87,8 +94,8 @@ QCD.components.containers.WindowTab = function(_element, _mainController) {
 			return;
 		}
 
-		var button = QCD.components.elements.ContextualHelpButton.createSmallButton(url, _this.options.translations["contextualHelpTooltip"]);
-		button.attr("id", _this.elementPath+"_contextualHelpButton");
+		button = QCD.components.elements.ContextualHelpButton.createSmallButton(url, that.options.translations["contextualHelpTooltip"]);
+		button.attr("id", that.elementPath+"_contextualHelpButton");
 		contentElement.addClass("hasContextualHelpButton");
 		contentElement.prepend(button);
 	}
@@ -104,10 +111,24 @@ QCD.components.containers.WindowTab = function(_element, _mainController) {
 	
 	this.setComponentLoading = function() {
 	}
-	
-	this.setVisible = function(isVisible) {
-		// do nothing
-	}
+
+	this.setHeaderElement = function (tabElement) {
+	    tabHeaderElement = tabElement;
+	};
+
+	this.setComponentVisible = function (shouldBeVisible) {
+	    if (typeof tabHeaderElement === 'undefined' || tabHeaderElement.length == 0) {
+	        QCD.error("Can't find header element for tab '" + that.elementName + "'");
+	        return;
+	    }
+        if (shouldBeVisible) {
+            tabHeaderElement.show();
+            element.show();
+        } else {
+            tabHeaderElement.hide();
+            element.hide();
+        }
+	};
 	
 	this.blockButtons = function() {
 		if (ribbon) {
@@ -128,5 +149,5 @@ QCD.components.containers.WindowTab = function(_element, _mainController) {
 		}
 	}
 	
-	constructor(this);
+	constructor();
 }

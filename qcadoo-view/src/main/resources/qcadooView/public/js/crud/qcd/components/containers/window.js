@@ -25,50 +25,50 @@ var QCD = QCD || {};
 QCD.components = QCD.components || {};
 QCD.components.containers = QCD.components.containers || {};
 
-QCD.components.containers.Window = function(_element, _mainController) {
-	$.extend(this, new QCD.components.Container(_element, _mainController));
-	
-	var mainController = _mainController;
-	
-	var _this = this;
-	
-	var ribbon;
-	var row3Element;
-	var ribbonLeftElement
-	var tabsLeftElement;
-	var ribbonMainElement;
-	var tabRibbonDiv;
-	var tabsRightElement;
-	var ribbonShadowElement;
-	
+QCD.components.containers.Window = function(element, mainController) {
+    "use strict";
+
+    if (!(this instanceof QCD.components.containers.Window)) {
+        return new QCD.components.containers.Window(element, mainController);
+    }
+
+	$.extend(this, new QCD.components.Container(element, mainController));
+
 	this.element.css("height","100%");
+
+	var that = this,
+	    ribbon,
+	    row3Element,
+	    ribbonLeftElement,
+	    tabsLeftElement,
+	    ribbonMainElement,
+	    tabRibbonDiv,
+	    tabsRightElement,
+	    ribbonShadowElement,
+	    currentWidth,
+	    currentHeight,
+	    tabs = {},
+	    tabHeaders = {},
+	    tabRibbonExists = false,
+	    oneTab = this.options.oneTab,
+	    currentTabName,
+	    innerWidthMarker = $("#"+this.elementSearchName+"_windowContainerContentBodyWidthMarker");
 	
-	var currentWidth;
-	var currentHeight;
-	
-	var tabs;
-	var tabHeaders = new Object();
-	var tabRibbonExists = false;
-	
-	var oneTab = this.options.oneTab;
-	
-	var currentTabName;
-	
-	var innerWidthMarker = $("#"+this.elementSearchName+"_windowContainerContentBodyWidthMarker");
-	
-	function constructor(_this) {
-		var childrenElement = $("#"+_this.elementSearchName+"_windowComponents");
-		_this.constructChildren(childrenElement.children());
-		
-		mainController.setWindowHeaderComponent(_this);
-		
-		tabs =  _this.getChildren();
-		var tabsElement = $("#"+_this.elementSearchName+"_windowTabs > div");
-		for (var tabName in tabs) {
-			var tabElement = $("<a>").attr("href","#").html(_this.options.translations["tab."+tabName]).bind('click', {tabName: tabName}, function(e) {
+	function constructor() {
+		var childrenElement = $("#"+that.elementSearchName+"_windowComponents"),
+		    tabsElement = $("#"+that.elementSearchName+"_windowTabs > div"),
+		    tabName = "";
+
+		that.constructChildren(childrenElement.children());
+		mainController.setWindowHeaderComponent(that);
+		tabs = that.getChildren();
+
+		for (tabName in tabs) {
+			var tabElement = $("<a>").attr("href","#").html(that.options.translations["tab."+tabName]).bind('click', {tabName: tabName}, function(e) {
 				e.target.blur();
 				showTab(e.data.tabName);
 			});
+			tabs[tabName].setHeaderElement(tabElement);
 			tabHeaders[tabName] = tabElement;
 			tabsElement.append(tabElement);
 			if (tabs[tabName].getRibbonElement && tabs[tabName].getRibbonElement()) {
@@ -76,10 +76,10 @@ QCD.components.containers.Window = function(_element, _mainController) {
 			}
 		}
 		
-		if (_this.options.hasRibbon) {
+		if (that.options.hasRibbon) {
 		
-			if (_this.options.ribbon) {
-				ribbon = new QCD.components.Ribbon(_this.options.ribbon, _this.elementName, mainController, _this.options.translations);
+			if (that.options.ribbon) {
+				ribbon = new QCD.components.Ribbon(that.options.ribbon, that.elementName, mainController, that.options.translations);
 			}
 				
 			element = $("<div>");
@@ -91,7 +91,7 @@ QCD.components.containers.Window = function(_element, _mainController) {
 			row3Element.append(ribbonLeftElement);
 			
 			ribbonMainElement = $("<div>").attr("id", "q_row3_out_main");
-			var ribbonAlignment = _this.options.ribbon.alignment;
+			var ribbonAlignment = that.options.ribbon.alignment;
 			if (ribbonAlignment) {
 				ribbonMainElement.addClass("align-" + ribbonAlignment);
 			}
@@ -125,18 +125,18 @@ QCD.components.containers.Window = function(_element, _mainController) {
 			ribbonShadowElement = $("<div>").attr("id", "q_row4_out");
 			element.append(ribbonShadowElement);
 			
-			var ribbonDiv = $("#"+_this.elementPath+"_windowContainerRibbon");
+			var ribbonDiv = $("#"+that.elementPath+"_windowContainerRibbon");
 			ribbonDiv.append(element);
 		} else {
-			$("#"+_this.elementPath+"_windowContainerContentBody").css("top","5px");
+			$("#"+that.elementPath+"_windowContainerContentBody").css("top","5px");
 		}
 		
-		if (_this.options.firstTabName) {
-			showTab(_this.options.firstTabName);
+		if (that.options.firstTabName) {
+			showTab(that.options.firstTabName);
 		}
 		
-		if (_this.options.referenceName) {
-			mainController.registerReferenceName(_this.options.referenceName, _this);
+		if (that.options.referenceName) {
+			mainController.registerReferenceName(that.options.referenceName, that);
 		}
 		
 	}
@@ -174,9 +174,36 @@ QCD.components.containers.Window = function(_element, _mainController) {
 	
 	this.getComponentValue = function() {
 		return {
-			selectedTab: currentTabName
+			activeTab: currentTabName
 		};
+	};
+
+    function tabExists(tabName) {
+        var tabObj = tabs[tabName];
+        return (typeof tabObj === 'object') && (tabObj !== null);
+    }
+
+    function tabIsVisible(tabName) {
+        var tabObj = tabs[tabName];
+        return tabExists(tabName) && tabObj.isVisible();
+    }
+
+	function showFirstVisibleTab() {
+	    if (tabs[currentTabName].isVisible()) {
+	        return;
+	    }
+	    var tabName = "";
+        for (tabName in tabs) {
+            if (!Object.prototype.hasOwnProperty.call(tabs, tabName)) {
+                continue;
+            }
+            if (tabIsVisible(tabName)) {
+                showTab(tabName);
+                break;
+            }
+        }
 	}
+
 	this.setComponentValue = function(value) {
 		for (var tabName in tabs) {
 			tabHeaders[tabName].removeClass("errorTab");
@@ -190,15 +217,19 @@ QCD.components.containers.Window = function(_element, _mainController) {
 		if (value.activeMenu) {
 			mainController.activateMenuPosition(value.activeMenu);
 		}
+		if (value.activeTab) {
+		    showTab(value.activeTab);
+		}
 		setContextualHelpButton(value.contextualHelpUrl);
-	}
-	
+		showFirstVisibleTab();
+	};
+
 	function setContextualHelpButton(url) {
-		var contentElement = $("#" + _this.elementPath + "_windowContent");
-		var windowTabs = contentElement.find("#" + _this.elementSearchName + "_windowTabs");
-		var windowHeader = contentElement.find("#" + _this.elementSearchName + "_windowHeader");
+		var contentElement = $("#" + that.elementPath + "_windowContent");
+		var windowTabs = contentElement.find("#" + that.elementSearchName + "_windowTabs");
+		var windowHeader = contentElement.find("#" + that.elementSearchName + "_windowHeader");
 		
-		var windowContextualHelpButton = $("#" + _this.elementSearchName + "_contextualHelpButton"); 
+		var windowContextualHelpButton = $("#" + that.elementSearchName + "_contextualHelpButton"); 
 		if (windowContextualHelpButton.length) {
 			if (url) {
 				windowContextualHelpButton.find("a").attr("href", url);
@@ -215,8 +246,8 @@ QCD.components.containers.Window = function(_element, _mainController) {
 			return;
 		}
 		
-		var button = QCD.components.elements.ContextualHelpButton.createBigButton(url, _this.options.translations["contextualHelpTooltip"]);
-		button.attr("id", _this.elementPath+"_contextualHelpButton");
+		var button = QCD.components.elements.ContextualHelpButton.createBigButton(url, that.options.translations["contextualHelpTooltip"]);
+		button.attr("id", that.elementPath+"_contextualHelpButton");
 			
 		if (windowHeader.length) {
 			if (!windowTabs.length) {
@@ -229,33 +260,46 @@ QCD.components.containers.Window = function(_element, _mainController) {
 			contentElement.prepend(button);
 		} else {
 			button.addClass('inComponentHeader');
-			var gridHeaderPaging = contentElement.find("#" + _this.elementSearchName + "\\.mainTab .gridWrapper:first .grid_header .grid_paging"); 
+			var gridHeaderPaging = contentElement.find("#" + that.elementSearchName + "\\.mainTab .gridWrapper:first .grid_header .grid_paging"); 
 			gridHeaderPaging.addClass("hasContextualHelpButton");
 			gridHeaderPaging.prepend(button);
 		}
 	}
 		
-	
+	this.setActiveTab = function (tabName) {
+        if (!tabExists(tabName)) {
+            QCD.error("tab with name '" + tabName + "' doesn't exist.");
+            return;
+        }
+        tabs[tabName].setVisible(true);
+	    showTab(tabName);
+	};
+
+	this.getTab = function (tabName) {
+	    return tabs[tabName];
+	};
 	
 	this.setComponentState = function(state) {
-		showTab(state.selectedTab);
-	}
+	    if (typeof state.activeTab === 'string') {
+	        setActiveTab(state.activeTab);
+	    }
+	};
 	
 	this.setMessages = function(messages) {
-	}
+	};
 	
 	this.setComponentEnabled = function(isEnabled) {
-	}
+	};
 	
 	this.setComponentLoading = function() {
-	}
+	};
 	
 	this.setHeader = function(header) {
 		var headerElement = $("#"+this.elementPath+"_windowHeader");
 		if (headerElement) {
 			headerElement.html(header);
 		}
-	}
+	};
 	
 	this.blockButtons = function() {
 		if (ribbon) {
@@ -266,7 +310,7 @@ QCD.components.containers.Window = function(_element, _mainController) {
 				tabs[tabName].blockButtons();
 			}
 		}
-	}
+	};
 	
 	this.unblockButtons = function() {
 		if (ribbon) {
@@ -277,7 +321,7 @@ QCD.components.containers.Window = function(_element, _mainController) {
 				tabs[tabName].unblockButtons();
 			}
 		}
-	}
+	};
 	
 	this.updateSize = function(_width, _height) {
 		currentWidth = _width;
@@ -292,7 +336,7 @@ QCD.components.containers.Window = function(_element, _mainController) {
 			margin = 20;
 		}
 		var ribbonWidth = _width - margin;
-		width = Math.round(_width - 2 * margin);
+		var width = Math.round(_width - 2 * margin);
 		if (width < 960 && isMinWidth) {
 			width = 960;
 			childrenElement.css("marginLeft", margin+"px");
@@ -309,7 +353,7 @@ QCD.components.containers.Window = function(_element, _mainController) {
 		var windowWidth = width +2*margin
 		var innerWidth = innerWidthMarker.innerWidth();
 		
-		height = null;
+		var height = null;
 		if (this.options.fixedHeight) {
 			var ribbonHeight = $(".windowContainer .windowContainerRibbon").height() || 70;
 			var containerHeight = Math.round(_height - 2 * margin - ribbonHeight);
@@ -353,7 +397,7 @@ QCD.components.containers.Window = function(_element, _mainController) {
 			}
 		}
 		
-	}
+	};
 	
 	this.performRefresh = function() {
 		var mainViewComponent = mainController.getComponentByReferenceName("form") || mainController.getComponentByReferenceName("grid");
@@ -362,39 +406,39 @@ QCD.components.containers.Window = function(_element, _mainController) {
 		} else {
 			QCD.error("Can't find component #{form} or #{grid}!");
 		}
-	}
+	};
 	
 	this.performBack = function(actionsPerformer) {
 		mainController.goBack();
 		if (actionsPerformer) {
 			actionsPerformer.performNext();
 		}
-	}
+	};
 	
 	this.updateMenu = function() {
 		mainController.updateMenu();
-	}
+	};
 	
 	this.performCloseWindow = function(actionsPerformer) {
 		mainController.closeWindow();
 		if (actionsPerformer) {
 			actionsPerformer.performNext();
 		}
-	}
+	};
 	
 	this.closeThisModalWindow = function(actionsPerformer, status) {
 		mainController.closeThisModalWindow(actionsPerformer, status);
-	}
+	};
 	
 	this.performComponentScript = function() {
 		if (ribbon) {
 			ribbon.performScripts();
 		}
-	}
+	};
 	
 	this.getRibbonItem = function(ribbonItemPath) {
 		return ribbon.getRibbonItem(ribbonItemPath);
-	}
+	};
 	
-	constructor(this);
+	constructor();
 }

@@ -31,6 +31,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.google.common.base.Preconditions;
 import com.qcadoo.view.api.components.WindowComponent;
 import com.qcadoo.view.api.ribbon.Ribbon;
 import com.qcadoo.view.internal.api.InternalComponentState;
@@ -46,17 +47,24 @@ public class WindowComponentState extends AbstractContainerState implements Wind
 
     public static final String JSON_ACTIVE_MENU = "activeMenu";
 
+    public static final String JSON_ACTIVE_TAB = "activeTab";
+
     private String activeMenu = null;
+
+    private String activeTab = null;
 
     public WindowComponentState(final WindowComponentPattern pattern) {
         super();
-
         this.pattern = pattern;
-        ribbon = pattern.getRibbon().getCopy();
+        this.ribbon = pattern.getRibbon().getCopy();
+        this.activeTab = pattern.getFirstTabName();
     }
 
     @Override
     protected void initializeContent(final JSONObject json) throws JSONException {
+        if (json.has(JSON_ACTIVE_TAB) && !json.isNull(JSON_ACTIVE_TAB)) {
+            this.activeTab = json.getString(JSON_ACTIVE_TAB);
+        }
         requestRender();
     }
 
@@ -75,6 +83,7 @@ public class WindowComponentState extends AbstractContainerState implements Wind
             errors.put(tabName);
         }
         json.put("errors", errors);
+        json.put(JSON_ACTIVE_TAB, activeTab);
 
         if (pattern.getContextualHelpUrl() != null) {
             json.put("contextualHelpUrl", pattern.getContextualHelpUrl());
@@ -109,6 +118,15 @@ public class WindowComponentState extends AbstractContainerState implements Wind
     @Override
     public void requestRibbonRender() {
         requestRender();
+    }
+
+    @Override
+    public void setActiveTab(final String tabName) {
+        InternalComponentState tabComponentState = getChild(tabName);
+        Preconditions.checkArgument(tabComponentState != null,
+                String.format("Can't activate WindowTab with name '%s' - it doesn't exist.", tabName));
+        tabComponentState.setVisible(true);
+        this.activeTab = tabName;
     }
 
 }
