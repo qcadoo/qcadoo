@@ -167,29 +167,43 @@ QCD.components.containers.Form = function(_element, _mainController) {
 		this.fireEvent(null, eventName, args);
 	}
 	
-	this.fireEvent = function(actionsPerformer, eventName, args) {
-		callEvent(eventName, actionsPerformer, args);
-	}
+	function block() {
+        QCD.components.elements.utils.LoadingIndicator.blockElement(element);
+    }
+    
+    function unblock() {
+        QCD.components.elements.utils.LoadingIndicator.unblockElement(element);
+    }
+	
+	var origSendEvent = this.sendEvent;
+    this.sendEvent = function (actionsPerformer, eventObj) {
+        var origCallback = eventObj.callback;
+        if (typeof origCallback === 'function') {
+            eventObj.callback = function () {
+                try {
+                    origCallback();
+                } finally {
+                    unblock();
+                }
+            };
+        } else {
+            eventObj.callback = unblock;
+        }
+        block();
+        origSendEvent.call(this, actionsPerformer, eventObj);
+    };
 	
 	function callEvent(eventName, actionsPerformer, args) {
-		block();
-		mainController.callEvent(eventName, elementPath, function() {
-			unblock();
-		}, args, actionsPerformer);
+	    that.sendEvent(actionsPerformer, {
+	        name : eventName,
+	        args : args
+	    });
 	}
 	
 	this.updateSize = function(_width, _height) {
 		for (var i in this.components) {
 			this.components[i].updateSize(_width, _height);
 		}
-	}
-	
-	function block() {
-		QCD.components.elements.utils.LoadingIndicator.blockElement(element);
-	}
-	
-	function unblock() {
-		QCD.components.elements.utils.LoadingIndicator.unblockElement(element);
 	}
 	
 	constructor(this);
