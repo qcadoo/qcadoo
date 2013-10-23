@@ -51,6 +51,7 @@ QCD.components.containers.Window = function(element, mainController) {
 	    tabHeaders = {},
 	    tabRibbonExists = false,
 	    oneTab = this.options.oneTab,
+	    hasTabs = false,
 	    currentTabName,
 	    innerWidthMarker = $("#"+this.elementSearchName+"_windowContainerContentBodyWidthMarker");
 	
@@ -64,10 +65,14 @@ QCD.components.containers.Window = function(element, mainController) {
 		tabs = that.getChildren();
 
 		for (tabName in tabs) {
+		    if (!(tabs[tabName] instanceof QCD.components.containers.WindowTab)) {
+		        continue;
+		    }
 			var tabElement = $("<a>").attr("href","#").html(that.options.translations["tab."+tabName]).bind('click', {tabName: tabName}, function(e) {
 				e.target.blur();
 				showTab(e.data.tabName);
 			});
+			hasTabs = true;
 			tabs[tabName].setHeaderElement(tabElement);
 			tabHeaders[tabName] = tabElement;
 			tabsElement.append(tabElement);
@@ -142,6 +147,9 @@ QCD.components.containers.Window = function(element, mainController) {
 	}
 	
 	function showTab(tabName) {
+	    if (!hasTabs) {
+	        return;
+	    }
 		if (currentTabName) {
 			tabs[currentTabName].element.children().hide();
 			tabHeaders[currentTabName].removeClass("activeTab");
@@ -189,7 +197,7 @@ QCD.components.containers.Window = function(element, mainController) {
     }
 
 	function showFirstVisibleTab() {
-	    if (tabs[currentTabName].isVisible()) {
+	    if (!hasTabs || tabs[currentTabName].isVisible()) {
 	        return;
 	    }
 	    var tabName = "";
@@ -205,11 +213,13 @@ QCD.components.containers.Window = function(element, mainController) {
 	}
 
 	this.setComponentValue = function(value) {
-		for (var tabName in tabs) {
-			tabHeaders[tabName].removeClass("errorTab");
-		}
-		for (var i in value.errors) {
-			tabHeaders[value.errors[i]].addClass("errorTab");
+	    if (hasTabs) {
+            for (var tabName in tabs) {
+                tabHeaders[tabName].removeClass("errorTab");
+            }
+            for (var i in value.errors) {
+                tabHeaders[value.errors[i]].addClass("errorTab");
+            }
 		}
 		if (value.ribbon) {
 			ribbon.updateRibbonState(value.ribbon);
