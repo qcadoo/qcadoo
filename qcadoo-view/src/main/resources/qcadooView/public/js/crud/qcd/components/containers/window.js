@@ -291,7 +291,7 @@ QCD.components.containers.Window = function(element, mainController) {
 	
 	this.setComponentState = function(state) {
 	    if (typeof state.activeTab === 'string') {
-	        setActiveTab(state.activeTab);
+	        that.setActiveTab(state.activeTab);
 	    }
 	};
 	

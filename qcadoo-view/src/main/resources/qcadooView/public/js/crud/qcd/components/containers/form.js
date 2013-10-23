@@ -182,6 +182,8 @@ QCD.components.containers.Form = function(_element, _mainController) {
             eventObj.callback = function () {
                 try {
                     origCallback();
+                } catch (e) {
+                    QCD.error(e);
                 } finally {
                     unblock();
                 }

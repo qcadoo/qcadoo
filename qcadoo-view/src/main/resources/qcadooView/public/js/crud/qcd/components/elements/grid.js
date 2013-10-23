@@ -1233,6 +1233,8 @@ QCD.components.elements.Grid = function (element, mainController) {
             eventObj.callback = function () {
                 try {
                     origCallback();
+                } catch (e) {
+                    QCD.error(e);
                 } finally {
                     unblockGrid();
                 }

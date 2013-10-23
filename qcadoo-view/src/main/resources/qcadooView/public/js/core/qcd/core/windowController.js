@@ -278,6 +278,8 @@ QCD.WindowController = function(_menuStructure) {
 				serializationObjectToInsert = null;
 			}
 		} catch (e) {
+		    // I swear that I'll chase each one who puts an empty catch statement!
+		    QCD.error(e);
 		}
 		loadingIndicator.hide();
 	}
