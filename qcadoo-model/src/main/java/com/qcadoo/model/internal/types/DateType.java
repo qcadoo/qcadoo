@@ -62,7 +62,7 @@ public final class DateType extends AbstractFieldType {
 
             int year = dt.getYear();
             if (year < 1500 || year > 2500) {
-                return ValueAndError.withoutError("qcadooView.validate.field.error.invalidDateFormat.range");
+                return ValueAndError.withError("qcadooView.validate.field.error.invalidDateFormat.range");
             }
 
             Date date = dt.toDate();
