@@ -24,20 +24,9 @@
 package com.qcadoo.model.internal.dictionaries;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.qcadoo.model.constants.DictionaryFields.ACTIVE;
-import static com.qcadoo.model.constants.DictionaryFields.NAME;
-import static com.qcadoo.model.constants.QcadooModelConstants.MODEL_DICTIONARY;
-import static com.qcadoo.model.constants.QcadooModelConstants.MODEL_DICTIONARY_ITEM;
-import static com.qcadoo.model.constants.QcadooModelConstants.PLUGIN_IDENTIFIER;
 import static org.springframework.util.StringUtils.hasText;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -53,6 +42,7 @@ import com.qcadoo.model.api.search.SearchOrders;
 import com.qcadoo.model.api.search.SearchRestrictions;
 import com.qcadoo.model.api.search.SearchResult;
 import com.qcadoo.model.constants.DictionaryFields;
+import com.qcadoo.model.constants.DictionaryItemFields;
 import com.qcadoo.model.constants.QcadooModelConstants;
 import com.qcadoo.model.internal.api.InternalDictionaryService;
 
@@ -71,14 +61,12 @@ public final class DictionaryServiceImpl implements InternalDictionaryService {
     public List<String> getKeys(final String dictionary) {
         checkArgument(hasText(dictionary), "dictionary name must be given");
 
-        List<Entity> items = dataDefinitionService.get(PLUGIN_IDENTIFIER, MODEL_DICTIONARY_ITEM).find()
-                .createAlias(MODEL_DICTIONARY, MODEL_DICTIONARY).add(SearchRestrictions.eq("dictionary.name", dictionary))
-                .addOrder(SearchOrders.asc(NAME)).list().getEntities();
-
+        List<Entity> items = createCriteriaForItemsFrom(dictionary).addOrder(SearchOrders.asc(DictionaryItemFields.NAME)).list()
+                .getEntities();
         List<String> keys = new ArrayList<String>();
 
         for (Entity item : items) {
-            keys.add(item.getStringField(NAME));
+            keys.add(item.getStringField(DictionaryItemFields.NAME));
         }
 
         return keys;
@@ -90,16 +78,14 @@ public final class DictionaryServiceImpl implements InternalDictionaryService {
     public Map<String, String> getValues(final String dictionary, final Locale locale) {
         checkArgument(hasText(dictionary), "dictionary name must be given");
 
-        List<Entity> items = dataDefinitionService.get(PLUGIN_IDENTIFIER, MODEL_DICTIONARY_ITEM).find()
-                .createAlias(MODEL_DICTIONARY, MODEL_DICTIONARY).add(SearchRestrictions.eq("dictionary.name", dictionary))
-                .addOrder(SearchOrders.asc(NAME)).list().getEntities();
+        List<Entity> items = createCriteriaForItemsFrom(dictionary).addOrder(SearchOrders.asc(DictionaryItemFields.NAME)).list()
+                .getEntities();
 
         Map<String, String> values = new LinkedHashMap<String, String>();
 
         // TODO MAKU translate dictionary values
-
         for (Entity item : items) {
-            values.put(item.getStringField(NAME), item.getStringField(NAME));
+            values.put(item.getStringField(DictionaryItemFields.NAME), item.getStringField(DictionaryItemFields.NAME));
         }
 
         return values;
@@ -109,14 +95,14 @@ public final class DictionaryServiceImpl implements InternalDictionaryService {
     @Transactional(readOnly = true)
     @Monitorable
     public Set<String> getDictionaries() {
-        List<Entity> dictionaries = dataDefinitionService.get(PLUGIN_IDENTIFIER, MODEL_DICTIONARY).find()
-                .addOrder(SearchOrders.asc(NAME)).list().getEntities();
+        List<Entity> dictionaries = getDictionaryDataDefinition().find().addOrder(SearchOrders.asc(DictionaryFields.NAME)).list()
+                .getEntities();
 
         Set<String> names = new HashSet<String>();
 
         for (Entity dictionary : dictionaries) {
-            if ((Boolean) dictionary.getField(ACTIVE)) {
-                names.add(dictionary.getStringField(NAME));
+            if ((Boolean) dictionary.getField(DictionaryFields.ACTIVE)) {
+                names.add(dictionary.getStringField(DictionaryFields.NAME));
             }
         }
 
@@ -127,44 +113,64 @@ public final class DictionaryServiceImpl implements InternalDictionaryService {
     @Transactional
     @Monitorable
     public void createIfNotExists(final String pluginIdentifier, final String name, final String... values) {
-        SearchResult serachResult = dataDefinitionService.get(PLUGIN_IDENTIFIER, MODEL_DICTIONARY).find()
-                .add(SearchRestrictions.eq(NAME, name)).list();
+        SearchResult serachResult = getDictionaryDataDefinition().find().add(SearchRestrictions.eq(DictionaryFields.NAME, name))
+                .list();
         if (serachResult.getTotalNumberOfEntities() > 0) {
             Entity dictionaryEntity = serachResult.getEntities().get(0);
-            dictionaryEntity.setField(ACTIVE, true);
-            dataDefinitionService.get(PLUGIN_IDENTIFIER, MODEL_DICTIONARY).save(dictionaryEntity);
+            dictionaryEntity.setField(DictionaryFields.ACTIVE, true);
+            getDictionaryDataDefinition().save(dictionaryEntity);
             return;
         }
 
-        Entity dictionary = dataDefinitionService.get(PLUGIN_IDENTIFIER, MODEL_DICTIONARY).create();
-        dictionary.setField("pluginIdentifier", pluginIdentifier);
-        dictionary.setField(NAME, name);
-        dictionary.setField(ACTIVE, true);
-        dictionary = dataDefinitionService.get(PLUGIN_IDENTIFIER, MODEL_DICTIONARY).save(dictionary);
+        Entity dictionary = getDictionaryDataDefinition().create();
+        dictionary.setField(DictionaryFields.PLUGIN_IDENTIFIER, pluginIdentifier);
+        dictionary.setField(DictionaryFields.NAME, name);
+        dictionary.setField(DictionaryFields.ACTIVE, true);
+        dictionary = getDictionaryDataDefinition().save(dictionary);
 
         for (String value : values) {
-            Entity item = dataDefinitionService.get(PLUGIN_IDENTIFIER, MODEL_DICTIONARY_ITEM).create();
-            item.setField(MODEL_DICTIONARY, dictionary);
-            item.setField("description", "");
-            item.setField(NAME, value);
-            dataDefinitionService.get(PLUGIN_IDENTIFIER, MODEL_DICTIONARY_ITEM).save(item);
+            Entity item = getItemDataDefinition().create();
+            item.setField(DictionaryItemFields.DICTIONARY, dictionary);
+            item.setField(DictionaryItemFields.DESCRIPTION, "");
+            item.setField(DictionaryItemFields.NAME, value);
+            getItemDataDefinition().save(item);
         }
     }
 
     @Override
     public String getName(final String dictionaryName, final Locale locale) {
-        Entity dictionary = dataDefinitionService.get(PLUGIN_IDENTIFIER, MODEL_DICTIONARY).find()
-                .add(SearchRestrictions.eq(NAME, dictionaryName)).setMaxResults(1).uniqueResult();
-        return translationService.translate(dictionary.getStringField("pluginIdentifier") + "." + dictionaryName + ".dictionary",
-                locale);
+        Entity dictionary = getDictionaryDataDefinition().find()
+                .add(SearchRestrictions.eq(DictionaryFields.NAME, dictionaryName)).setMaxResults(1).uniqueResult();
+        return translationService.translate(dictionary.getStringField(DictionaryFields.PLUGIN_IDENTIFIER) + "." + dictionaryName
+                + ".dictionary", locale);
+    }
+
+    @Override
+    public Entity getItemEntity(final String dictionaryName, final String itemName) {
+        return createCriteriaForItemsFrom(dictionaryName).add(SearchRestrictions.eq(DictionaryItemFields.NAME, itemName))
+                .setMaxResults(1).uniqueResult();
+    }
+
+    private static final String ITEM_DICTIONARY_NAME_PATH = DictionaryItemFields.DICTIONARY + '.' + DictionaryFields.NAME;
+
+    private SearchCriteriaBuilder createCriteriaForItemsFrom(final String dictionaryName) {
+        return getItemDataDefinition().find().createAlias(DictionaryItemFields.DICTIONARY, DictionaryItemFields.DICTIONARY)
+                .add(SearchRestrictions.eq(ITEM_DICTIONARY_NAME_PATH, dictionaryName));
+    }
+
+    private DataDefinition getDictionaryDataDefinition() {
+        return dataDefinitionService.get(QcadooModelConstants.PLUGIN_IDENTIFIER, QcadooModelConstants.MODEL_DICTIONARY);
+    }
+
+    private DataDefinition getItemDataDefinition() {
+        return dataDefinitionService.get(QcadooModelConstants.PLUGIN_IDENTIFIER, QcadooModelConstants.MODEL_DICTIONARY_ITEM);
     }
 
     @Override
     @Transactional
     @Monitorable
     public void disable(final String pluginIdentifier, final String name) {
-        final DataDefinition dictionaryDataDefinition = dataDefinitionService.get(QcadooModelConstants.PLUGIN_IDENTIFIER,
-                QcadooModelConstants.MODEL_DICTIONARY);
+        final DataDefinition dictionaryDataDefinition = getDictionaryDataDefinition();
         final SearchCriteriaBuilder searchCriteriaBuilder = dictionaryDataDefinition.find();
         searchCriteriaBuilder.add(SearchRestrictions.eq(DictionaryFields.NAME, name));
         searchCriteriaBuilder.add(SearchRestrictions.eq(DictionaryFields.ACTIVE, true));

@@ -64,4 +64,17 @@ public interface DictionaryService {
      */
     String getName(String dictionary, Locale locale);
 
+    /**
+     * Return dictionary item's entity
+     * 
+     * @since 1.2.1
+     * 
+     * @param dictionary
+     *            dictionary's name
+     * @param item
+     *            dictionary item's name
+     * @return dictionary item's entity
+     */
+    Entity getItemEntity(String dictionary, String item);
+
 }
