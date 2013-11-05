@@ -23,20 +23,12 @@
  */
 package com.qcadoo.view.internal.components.form;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.qcadoo.model.api.Entity;
-import com.qcadoo.model.api.EntityMessagesHolder;
-import com.qcadoo.model.api.EntityOpResult;
-import com.qcadoo.model.api.EntityTree;
-import com.qcadoo.model.api.FieldDefinition;
+import com.qcadoo.model.api.*;
 import com.qcadoo.model.api.expression.ExpressionUtils;
 import com.qcadoo.model.api.validators.ErrorMessage;
 import com.qcadoo.model.internal.DetachedEntityTreeImpl;
@@ -166,9 +158,26 @@ public class FormComponentState extends AbstractContainerState implements FormCo
     @Override
     public Entity getEntity() {
         Entity entity = getDataDefinition().create(entityId);
+        copyFieldsAndContextTo(entity);
+        return entity;
+    }
+
+    @Override
+    public Entity getPersistedEntityWithIncludedFormValues() {
+        if (entityId == null) {
+            return getEntity();
+        }
+        Entity entity = getDataDefinition().get(entityId);
+        if (entity == null) {
+            return getEntity();
+        }
+        copyFieldsAndContextTo(entity);
+        return entity;
+    }
+
+    private void copyFieldsAndContextTo(final Entity entity) {
         copyFieldsToEntity(entity);
         copyContextToEntity(entity);
-        return entity;
     }
 
     @Override
@@ -184,7 +193,6 @@ public class FormComponentState extends AbstractContainerState implements FormCo
         copyEntityToFields(entity, entity.isValid());
         setEntityId(entity.getId());
         setFieldsRequiredAndDisables();
-
     }
 
     @Override
@@ -404,7 +412,7 @@ public class FormComponentState extends AbstractContainerState implements FormCo
         }
 
         public void save(final String[] args) {
-            Entity databaseEntity = getFormEntity();
+            Entity databaseEntity = getDatabaseEntity();
 
             if (databaseEntity == null && entityId != null) {
                 throw new IllegalStateException("Entity cannot be found");
@@ -480,7 +488,7 @@ public class FormComponentState extends AbstractContainerState implements FormCo
         }
 
         public void delete(final String[] args) {
-            Entity entity = getFormEntity();
+            Entity entity = getDatabaseEntity();
             if (entity == null) {
                 throw new IllegalStateException("Entity cannot be found");
             } else if (entityId != null) {
@@ -502,7 +510,7 @@ public class FormComponentState extends AbstractContainerState implements FormCo
                 entityId = contextEntityId;
             }
 
-            Entity entity = getFormEntity();
+            Entity entity = getDatabaseEntity();
             if (entity != null) {
                 active = entity.isActive();
                 copyEntityToFields(entity, true);
@@ -530,7 +538,7 @@ public class FormComponentState extends AbstractContainerState implements FormCo
             setFieldsRequiredAndDisables();
         }
 
-        private Entity getFormEntity() {
+        private Entity getDatabaseEntity() {
             if (entityId == null) {
                 return null;
             }

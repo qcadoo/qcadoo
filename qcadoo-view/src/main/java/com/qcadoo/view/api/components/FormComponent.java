@@ -48,6 +48,16 @@ public interface FormComponent extends ComponentState {
     Entity getEntity();
 
     /**
+     * Returns entity from database updated with this form values. If persisted entity doesn't exist (for example during creation)
+     * then this method will behave exactly like FormComponent#getEntity. Otherwise persisted entity will be fetched and updated
+     * with this form children components values.
+     * 
+     * @return persisted entity with this forms values included
+     * @since 1.2.1
+     */
+    Entity getPersistedEntityWithIncludedFormValues();
+
+    /**
      * Checks if all fields of this form and entity itself are valid
      * 
      * @return false when at least one field is not valid, true otherwise

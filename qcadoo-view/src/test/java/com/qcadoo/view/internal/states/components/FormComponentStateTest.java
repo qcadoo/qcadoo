@@ -25,15 +25,11 @@ package com.qcadoo.view.internal.states.components;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 import java.util.Collections;
 import java.util.Locale;
@@ -42,30 +38,25 @@ import java.util.Map;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.qcadoo.localization.api.TranslationService;
-import com.qcadoo.model.api.DataDefinition;
-import com.qcadoo.model.api.Entity;
-import com.qcadoo.model.api.EntityMessagesHolder;
-import com.qcadoo.model.api.EntityOpResult;
-import com.qcadoo.model.api.FieldDefinition;
+import com.qcadoo.model.api.*;
 import com.qcadoo.model.api.validators.ErrorMessage;
 import com.qcadoo.model.internal.DefaultEntity;
 import com.qcadoo.model.internal.ExpressionServiceImpl;
 import com.qcadoo.model.internal.types.StringType;
 import com.qcadoo.view.api.ViewDefinitionState;
-import com.qcadoo.view.api.components.FormComponent;
-import com.qcadoo.view.internal.api.ContainerState;
 import com.qcadoo.view.internal.api.InternalComponentState;
 import com.qcadoo.view.internal.components.FieldComponentPattern;
 import com.qcadoo.view.internal.components.FieldComponentState;
 import com.qcadoo.view.internal.components.form.FormComponentPattern;
 import com.qcadoo.view.internal.components.form.FormComponentState;
 import com.qcadoo.view.internal.states.AbstractComponentState;
-import com.qcadoo.view.internal.states.AbstractContainerState;
 import com.qcadoo.view.internal.states.AbstractStateTest;
 
 public class FormComponentStateTest extends AbstractStateTest {
@@ -76,7 +67,7 @@ public class FormComponentStateTest extends AbstractStateTest {
 
     private FieldComponentState name;
 
-    private ContainerState form;
+    private FormComponentState form;
 
     private DataDefinition dataDefinition;
 
@@ -105,11 +96,20 @@ public class FormComponentStateTest extends AbstractStateTest {
         given(dataDefinition.getField("name")).willReturn(fieldDefinition);
         given(dataDefinition.delete(any(Long.class))).willReturn(EntityOpResult.successfull());
 
+        given(dataDefinition.create(anyLong())).willAnswer(new Answer<Entity>() {
+
+            @Override
+            public Entity answer(final InvocationOnMock invocation) throws Throwable {
+                Long id = (Long) invocation.getArguments()[0];
+                return new DefaultEntity(dataDefinition, id);
+            }
+        });
+
         FieldComponentPattern namePattern = mock(FieldComponentPattern.class);
         given(namePattern.isRequired()).willReturn(false);
         given(namePattern.isPersistent()).willReturn(true);
         name = new FieldComponentState(namePattern);
-        ((AbstractComponentState) name).setTranslationService(translationService);
+        name.setTranslationService(translationService);
         name.setName("name");
         name.initialize(new JSONObject(), Locale.ENGLISH);
 
@@ -117,11 +117,10 @@ public class FormComponentStateTest extends AbstractStateTest {
         given(pattern.getExpressionNew()).willReturn(null);
         given(pattern.getExpressionEdit()).willReturn("'static expression'");
         form = new FormComponentState(pattern);
-        ((AbstractContainerState) form).setDataDefinition(dataDefinition);
-        ((AbstractContainerState) form).setTranslationService(translationService);
-        ((AbstractContainerState) form).addFieldEntityIdChangeListener("name", name);
+        form.setDataDefinition(dataDefinition);
+        form.setTranslationService(translationService);
+        form.addFieldEntityIdChangeListener("name", name);
         form.initialize(new JSONObject(ImmutableMap.of("components", new JSONObject())), Locale.ENGLISH);
-
         new ExpressionServiceImpl().init();
     }
 
@@ -201,7 +200,7 @@ public class FormComponentStateTest extends AbstractStateTest {
         form.performEvent(viewDefinitionState, "initialize", new String[0]);
 
         // then
-        assertFalse(((FormComponent) form).isValid());
+        assertFalse(form.isValid());
         assertTrue(form.render().toString().contains("translated entityNotFound"));
 
     }
@@ -305,7 +304,7 @@ public class FormComponentStateTest extends AbstractStateTest {
         verify(dataDefinition).save(eq(entity));
         assertEquals("text2", name.getFieldValue());
         assertEquals(13L, form.getFieldValue());
-        assertTrue(((FormComponent) form).isValid());
+        assertTrue(form.isValid());
     }
 
     @Test
@@ -356,7 +355,7 @@ public class FormComponentStateTest extends AbstractStateTest {
         verify(dataDefinition).save(eq(entity));
         assertEquals("text2", name.getFieldValue());
         assertEquals(13L, form.getFieldValue());
-        assertTrue(((FormComponent) form).isValid());
+        assertTrue(form.isValid());
     }
 
     @Test
@@ -380,7 +379,141 @@ public class FormComponentStateTest extends AbstractStateTest {
 
         // then
         verify(dataDefinition).save(eq(entity));
-        assertFalse(((FormComponent) form).isValid());
+        assertFalse(form.isValid());
         assertTrue(form.render().toString().contains("translated global error"));
+    }
+
+    @Test
+    public void shouldReturnPersistedEntityWithIncludedFormValues() throws Exception {
+        // given
+        Long id = 14L;
+        String nameFieldName = "name";
+        String nameFieldFormValue = "new name";
+        String numberFieldName = "number";
+        String numberFieldValue = "0003";
+
+        Entity formEntity = new DefaultEntity(dataDefinition, id, Maps.<String, Object> newHashMap());
+        formEntity.setField(nameFieldName, nameFieldFormValue);
+
+        Entity alreadyPersistedEntity = new DefaultEntity(dataDefinition, id, Maps.<String, Object> newHashMap());
+        alreadyPersistedEntity.setField(nameFieldName, "old name value");
+        alreadyPersistedEntity.setField(numberFieldName, numberFieldValue);
+
+        given(dataDefinition.get(id)).willReturn(alreadyPersistedEntity);
+        form.setEntity(formEntity);
+
+        // when
+        Entity resultEntity = form.getPersistedEntityWithIncludedFormValues();
+
+        // then
+        verify(dataDefinition).get(id);
+        assertEquals(id, resultEntity.getId());
+        assertEquals(nameFieldFormValue, resultEntity.getStringField(nameFieldName));
+        assertEquals(numberFieldValue, resultEntity.getStringField(numberFieldName));
+        assertEquals(2, resultEntity.getFields().size());
+    }
+
+    @Test
+    public void shouldReturnEntityWithFormValuesIfEntityWasDeletedByAnotherUser() throws Exception {
+        // given
+        Long id = 14L;
+        String nameFieldName = "name";
+        String nameFieldFormValue = "new name";
+        String numberFieldName = "number";
+
+        Entity formEntity = new DefaultEntity(dataDefinition, id, Maps.<String, Object> newHashMap());
+        formEntity.setField(nameFieldName, nameFieldFormValue);
+
+        given(dataDefinition.get(id)).willReturn(null);
+        form.setEntity(formEntity);
+
+        // when
+        Entity resultEntity = form.getPersistedEntityWithIncludedFormValues();
+
+        // then
+        verify(dataDefinition).get(id);
+        assertEquals(id, resultEntity.getId());
+        assertEquals(nameFieldFormValue, resultEntity.getStringField(nameFieldName));
+        assertNull(resultEntity.getStringField(numberFieldName));
+        assertEquals(1, resultEntity.getFields().size());
+    }
+
+    @Test
+    public void shouldReturnEntityWithFormValuesIfEntityDoesNotHaveId() throws Exception {
+        // given
+        String nameFieldName = "name";
+        String nameFieldFormValue = "new name";
+        String numberFieldName = "number";
+
+        Entity formEntity = new DefaultEntity(dataDefinition, null, Maps.<String, Object> newHashMap());
+        formEntity.setField(nameFieldName, nameFieldFormValue);
+
+        given(dataDefinition.get(anyLong())).willReturn(null);
+        form.setEntity(formEntity);
+
+        // when
+        Entity resultEntity = form.getPersistedEntityWithIncludedFormValues();
+
+        // then
+        verify(dataDefinition, never()).get(anyLong());
+        verify(dataDefinition, never()).get(null);
+        assertNull(resultEntity.getId());
+        assertEquals(nameFieldFormValue, resultEntity.getStringField(nameFieldName));
+        assertNull(resultEntity.getStringField(numberFieldName));
+        assertEquals(1, resultEntity.getFields().size());
+    }
+
+    @Test
+    public void shouldReturnEntityWithOnlyFormValues() throws Exception {
+        // given
+        String nameFieldName = "name";
+        String nameFieldFormValue = "new name";
+        String numberFieldName = "number";
+
+        Entity formEntity = new DefaultEntity(dataDefinition, null, Maps.<String, Object> newHashMap());
+        formEntity.setField(nameFieldName, nameFieldFormValue);
+
+        form.setEntity(formEntity);
+
+        // when
+        Entity resultEntity = form.getEntity();
+
+        // then
+        verify(dataDefinition, never()).get(anyLong());
+        verify(dataDefinition, never()).get(null);
+        assertNull(resultEntity.getId());
+        assertEquals(nameFieldFormValue, resultEntity.getStringField(nameFieldName));
+        assertNull(resultEntity.getStringField(numberFieldName));
+        assertEquals(1, resultEntity.getFields().size());
+    }
+
+    @Test
+    public void shouldReturnEntityWithOnlyFormValuesEvenIfEntityIsAlreadyPersisted() throws Exception {
+        // given
+        Long id = 14L;
+        String nameFieldName = "name";
+        String nameFieldFormValue = "new name";
+        String numberFieldName = "number";
+        String numberFieldValue = "0003";
+
+        Entity formEntity = new DefaultEntity(dataDefinition, id, Maps.<String, Object> newHashMap());
+        formEntity.setField(nameFieldName, nameFieldFormValue);
+
+        Entity alreadyPersistedEntity = new DefaultEntity(dataDefinition, id, Maps.<String, Object> newHashMap());
+        alreadyPersistedEntity.setField(nameFieldName, "old name value");
+        alreadyPersistedEntity.setField(numberFieldName, numberFieldValue);
+
+        given(dataDefinition.get(id)).willReturn(alreadyPersistedEntity);
+        form.setEntity(formEntity);
+
+        // when
+        Entity resultEntity = form.getEntity();
+
+        // then
+        verify(dataDefinition, never()).get(id);
+        assertEquals(id, resultEntity.getId());
+        assertEquals(nameFieldFormValue, resultEntity.getStringField(nameFieldName));
+        assertNull(resultEntity.getStringField(numberFieldName));
+        assertEquals(1, resultEntity.getFields().size());
     }
 }
