@@ -23,14 +23,6 @@
  */
 package com.qcadoo.view.internal.components.lookup;
 
-import java.util.LinkedList;
-import java.util.List;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.springframework.util.StringUtils;
-
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.expression.ExpressionUtils;
@@ -45,6 +37,13 @@ import com.qcadoo.view.api.components.lookup.FilterValueHolder;
 import com.qcadoo.view.internal.CriteriaModifier;
 import com.qcadoo.view.internal.FilterValueHolderImpl;
 import com.qcadoo.view.internal.components.FieldComponentState;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.springframework.util.StringUtils;
+
+import java.util.LinkedList;
+import java.util.List;
 
 public final class LookupComponentState extends FieldComponentState implements LookupComponent {
 
@@ -191,6 +190,11 @@ public final class LookupComponentState extends FieldComponentState implements L
     @Override
     public Long getFieldValue() {
         return getFieldValueWithoutSearching();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return getFieldValue() == null;
     }
 
     public Long getFieldValueWithoutSearching() {

@@ -136,4 +136,56 @@ public class LookupComponentStateTest {
         // then
         Assert.assertEquals(entity, result);
     }
+
+    @Test
+    public void shouldIsEmptyReturnTrueForNullValue() throws Exception {
+        // given
+        lookup.setFieldValue(null);
+
+        // when
+        boolean result = lookup.isEmpty();
+
+        // then
+        Assert.assertTrue(result);
+    }
+
+    @Test
+    public void shouldIsEmptyReturnTrueForEmptyStringValue() throws Exception {
+        // given
+        lookup.setFieldValue("");
+
+        // when
+        boolean result = lookup.isEmpty();
+
+        // then
+        Assert.assertTrue(result);
+    }
+
+    @Test
+    public void shouldIsEmptyReturnFalseForLongValue() throws Exception {
+        // given
+        Long id = 1L;
+        when(dataDefinition.get(id)).thenReturn(entity);
+        lookup.setFieldValue(id);
+
+        // when
+        boolean result = lookup.isEmpty();
+
+        // then
+        Assert.assertFalse(result);
+    }
+
+    @Test
+    public void shouldIsEmptyReturnFalseForNumberStringValue() throws Exception {
+        // given
+        Long id = 1L;
+        when(dataDefinition.get(id)).thenReturn(entity);
+        lookup.setFieldValue("" + id);
+
+        // when
+        boolean result = lookup.isEmpty();
+
+        // then
+        Assert.assertFalse(result);
+    }
 }

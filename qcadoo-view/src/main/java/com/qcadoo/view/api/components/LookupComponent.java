@@ -52,4 +52,11 @@ public interface LookupComponent extends FieldComponent {
      */
     void setFilterValue(FilterValueHolder value);
 
+    /**
+     * Check if this lookup doesn't have selected any entity.
+     * 
+     * @return true if this lookup doesn't have selected any entity.
+     */
+    boolean isEmpty();
+
 }
