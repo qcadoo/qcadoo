@@ -38,30 +38,23 @@
 			<build>
 				<plugins>
 					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>wagon-maven-plugin</artifactId>
-						<version>${wagon.maven.plugin.version}</version>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<version>${maven.antrun.plugin.version}</version>
 						<executions>
 							<execution>
-								<id>deploy</id>
+								<id>deploySchema</id>
 								<phase>deploy</phase>
-								<goals>
-									<goal>upload-single</goal>
-								</goals>
 								<configuration>
-									<serverId>qcadoo-public-schema</serverId>
-									<fromFile>${basedir}/target/${project.artifactId}.zip</fromFile>
-									<url>${wagon.url}</url>
+									<target>
+										<copy file="${basedir}/target/${project.artifactId}.zip" tofile="/home/schema/${project.artifactId}.zip" />
+									</target>
 								</configuration>
+								<goals>
+									<goal>run</goal>
+								</goals>
 							</execution>
 						</executions>
-						<dependencies>
-							<dependency>
-								<groupId>org.apache.maven.wagon</groupId>
-								<artifactId>wagon-ssh</artifactId>
-								<version>${wagon.ssh.version}</version>
-							</dependency>
-						</dependencies>
 					</plugin>
 				</plugins>
 			</build>
