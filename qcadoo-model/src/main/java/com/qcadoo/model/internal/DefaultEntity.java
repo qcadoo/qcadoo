@@ -26,23 +26,14 @@ package com.qcadoo.model.internal;
 import static com.google.common.base.Preconditions.checkArgument;
 
 import java.math.BigDecimal;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import com.google.common.collect.Lists;
-import com.qcadoo.model.api.DataDefinition;
-import com.qcadoo.model.api.Entity;
-import com.qcadoo.model.api.EntityList;
-import com.qcadoo.model.api.EntityMessagesHolder;
-import com.qcadoo.model.api.EntityTree;
-import com.qcadoo.model.api.FieldDefinition;
+import com.qcadoo.model.api.*;
 import com.qcadoo.model.api.types.BelongsToType;
 import com.qcadoo.model.api.validators.ErrorMessage;
 import com.qcadoo.model.internal.api.EntityAwareCopyPerformers;
@@ -314,7 +305,8 @@ public final class DefaultEntity implements Entity, EntityAwareCopyPerformers, E
             }
         }
         throw new IllegalArgumentException("Field " + fieldName + " in " + dataDefinition.getPluginIdentifier() + '.'
-                + dataDefinition.getName() + " does not contain correct BigDecimal value");
+                + dataDefinition.getName()
+                + " does not contain correct BigDecimal value (current field value: \" + fieldValue + \")");
     }
 
     @Override
@@ -337,7 +329,7 @@ public final class DefaultEntity implements Entity, EntityAwareCopyPerformers, E
             }
         }
         throw new IllegalArgumentException("Field " + fieldName + " in " + dataDefinition.getPluginIdentifier() + '.'
-                + dataDefinition.getName() + " does not contain correct Integer value");
+                + dataDefinition.getName() + " does not contain correct Integer value (current field value: " + fieldValue + ")");
     }
 
     @SuppressWarnings("unchecked")
