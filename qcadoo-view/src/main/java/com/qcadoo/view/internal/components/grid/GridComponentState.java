@@ -879,4 +879,22 @@ public final class GridComponentState extends AbstractComponentState implements 
         }
     }
 
+    @Override
+    public FilterValueHolder getFilterValue() {
+        if (criteriaModifier == null) {
+            throw new IllegalStateException("There is no critieria modifier. Filter value is not present.");
+        }
+ 
+        FilterValueHolder holder = new FilterValueHolderImpl(criteriaModifierParameter);
+        return holder;
+    }
+
+    @Override
+    public void setFilterValue(FilterValueHolder value) {
+        if (criteriaModifier == null) {
+            throw new IllegalStateException("There is no critieria modifier, can't set filter value.");
+        }
+        criteriaModifierParameter.initialize(value.toJSON());
+        requestRender();
+    }
 }

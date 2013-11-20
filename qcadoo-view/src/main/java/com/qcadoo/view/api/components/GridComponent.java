@@ -30,6 +30,7 @@ import java.util.Set;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.search.CustomRestriction;
 import com.qcadoo.view.api.ComponentState;
+import com.qcadoo.view.api.components.lookup.FilterValueHolder;
 
 /**
  * Represents grid component
@@ -114,5 +115,23 @@ public interface GridComponent extends ComponentState {
      *            true if this grid should be editable, false if not
      */
     void setEditable(boolean isEditable);
+    
+
+    /**
+     * Gets current criteria modifier parameters value. To modify them use setFilterValue method.
+     * 
+     * @return Current criteria modifier parameters value.
+     * @since 1.2.1
+     */
+    FilterValueHolder getFilterValue();
+
+    /**
+     * Sets filter value which will be send to criteria modifier hook. Set this value in beforeRender hook to make it work
+     * correctly.
+     * 
+     * @param value
+     * @since 1.2.1
+     */
+    void setFilterValue(FilterValueHolder value);
 
 }
