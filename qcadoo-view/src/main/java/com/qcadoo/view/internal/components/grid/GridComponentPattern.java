@@ -23,13 +23,10 @@
  */
 package com.qcadoo.view.internal.components.grid;
 
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -47,6 +44,7 @@ import com.qcadoo.model.api.types.EnumeratedType;
 import com.qcadoo.model.api.types.FieldType;
 import com.qcadoo.model.api.types.JoinFieldHolder;
 import com.qcadoo.view.api.ComponentState;
+import com.qcadoo.view.constants.Alignment;
 import com.qcadoo.view.internal.ComponentDefinition;
 import com.qcadoo.view.internal.ComponentOption;
 import com.qcadoo.view.internal.CriteriaModifier;
@@ -302,10 +300,18 @@ public class GridComponentPattern extends AbstractComponentPattern {
 
     public void addColumn(final String name, final String fields, final String expression, final Boolean isLink,
             final Integer width, final boolean isOrderable, final boolean isSearchable, final String extendingPluginIdentifier) {
+        addColumn(name, fields, expression, isLink, width, isOrderable, isSearchable, extendingPluginIdentifier, null);
+    }
+
+    // FIXME maku replace this ugly chain of arguments with some kind of columnDefinition object..
+    public void addColumn(final String name, final String fields, final String expression, final Boolean isLink,
+            final Integer width, final boolean isOrderable, final boolean isSearchable, final String extendingPluginIdentifier,
+            final Alignment align) {
         final GridComponentColumn column = new GridComponentColumn(name, extendingPluginIdentifier);
         for (FieldDefinition field : parseFields(fields, column)) {
             column.addField(field);
         }
+        column.setAlign(align);
         column.setExpression(expression);
         if (isLink != null) {
             column.setLink(isLink);
@@ -354,7 +360,7 @@ public class GridComponentPattern extends AbstractComponentPattern {
             jsonColumn.put("link", column.isLink());
             jsonColumn.put("hidden", column.isHidden());
             jsonColumn.put(L_WIDTH, column.getWidth());
-            jsonColumn.put("align", column.getAlign());
+            jsonColumn.put("align", column.getAlign().getStringValue());
             jsonColumn.put("filterValues", getFilterValuesForColumn(column, locale));
             jsonColumns.put(jsonColumn);
         }
@@ -535,6 +541,7 @@ public class GridComponentPattern extends AbstractComponentPattern {
                 column.addField(field);
             }
         }
+        column.setAlign(parseColumnAlignOption(option));
         column.setExpression(option.getAtrributeValue("expression"));
         String columnWidth = option.getAtrributeValue(L_WIDTH);
         if (columnWidth != null) {
@@ -547,6 +554,14 @@ public class GridComponentPattern extends AbstractComponentPattern {
             column.setHidden(Boolean.parseBoolean(option.getAtrributeValue("hidden")));
         }
         columns.put(column.getName(), column);
+    }
+
+    private Alignment parseColumnAlignOption(final ComponentOption options) {
+        String alignStringVal = options.getAtrributeValue("align");
+        if (StringUtils.isNotEmpty(alignStringVal)) {
+            return Alignment.parseString(alignStringVal);
+        }
+        return null;
     }
 
     private Set<String> parseColumns(final String columns) {
@@ -628,4 +643,5 @@ public class GridComponentPattern extends AbstractComponentPattern {
     public PredefinedFilter getDefaultPredefinedFilter() {
         return predefinedFilters.get(defaultPredefinedFilterName);
     }
+
 }

@@ -23,6 +23,11 @@
  */
 package com.qcadoo.view.internal.module.gridColumn;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
+import com.qcadoo.view.constants.Alignment;
+
 public class ViewGridColumnModuleColumnModel {
 
     private final String name;
@@ -38,6 +43,8 @@ public class ViewGridColumnModuleColumnModel {
     private boolean searchable = false;
 
     private boolean orderable = false;
+
+    private Alignment align;
 
     public ViewGridColumnModuleColumnModel(final String name, final String fields) {
         this.name = name;
@@ -90,6 +97,36 @@ public class ViewGridColumnModuleColumnModel {
 
     public String getFields() {
         return fields;
+    }
+
+    public void setAlign(final Alignment align) {
+        this.align = align;
+    }
+
+    public Alignment getAlign() {
+        return this.align;
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder().append(getName()).append(getFields()).append(getLink()).append(getWidth())
+                .append(getExpression()).append(getAlign()).append(getOrderable()).append(getSearchable()).toHashCode();
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        ViewGridColumnModuleColumnModel that = (ViewGridColumnModuleColumnModel) o;
+        return new EqualsBuilder().append(this.getName(), that.getName()).append(this.getFields(), that.getFields())
+                .append(this.getLink(), that.getLink()).append(this.getWidth(), that.getWidth())
+                .append(this.getExpression(), that.getExpression()).append(this.getAlign(), that.getAlign())
+                .append(this.getOrderable(), that.getOrderable()).append(this.getSearchable(), that.getSearchable()).isEquals();
     }
 
 }

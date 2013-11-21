@@ -27,14 +27,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.springframework.util.StringUtils;
 
+import com.google.common.base.Preconditions;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.expression.ExpressionUtils;
 import com.qcadoo.plugin.api.PluginUtils;
+import com.qcadoo.view.constants.Alignment;
 
-public final class GridComponentColumn {
+public class GridComponentColumn {
 
     private static final int DEFAULT_COLUMN_WIDTH = 100;
 
@@ -51,6 +55,8 @@ public final class GridComponentColumn {
     private boolean link;
 
     private boolean hidden;
+
+    private Alignment align;
 
     public GridComponentColumn(final String name) {
         this(name, null);
@@ -85,12 +91,22 @@ public final class GridComponentColumn {
         return hidden;
     }
 
-    public String getAlign() {
-        if (fields.size() == 1 && Number.class.isAssignableFrom(fields.get(0).getType().getType())) {
-            return "right";
-        } else {
-            return "left";
+    public void setAlign(final Alignment align) {
+        this.align = align;
+    }
+
+    public Alignment getAlign() {
+        Alignment effectiveAlign = align;
+        if (effectiveAlign == null) {
+            if (fields.size() == 1 && Number.class.isAssignableFrom(fields.get(0).getType().getType())) {
+                effectiveAlign = Alignment.RIGHT;
+            } else {
+                effectiveAlign = Alignment.LEFT;
+            }
         }
+        Preconditions.checkState(effectiveAlign != null,
+                "getAlign() should never returns null. It seems to be race condition issue..");
+        return effectiveAlign;
     }
 
     public void setHidden(final boolean hidden) {
@@ -127,6 +143,27 @@ public final class GridComponentColumn {
 
     public boolean isVisibleForCurrentTenant() {
         return extendingPluginIdentifier == null || PluginUtils.isEnabled(extendingPluginIdentifier);
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder().append(name).append(fields).append(extendingPluginIdentifier).append(hidden).append(link)
+                .append(expression).append(width).append(getAlign()).toHashCode();
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        GridComponentColumn that = (GridComponentColumn) o;
+        return new EqualsBuilder().append(this.name, that.name).append(this.fields, that.fields)
+                .append(this.extendingPluginIdentifier, that.extendingPluginIdentifier).append(this.hidden, that.hidden)
+                .append(this.link, that.link).append(this.expression, that.expression).append(this.width, that.width)
+                .append(this.getAlign(), that.getAlign()).isEquals();
     }
 
 }

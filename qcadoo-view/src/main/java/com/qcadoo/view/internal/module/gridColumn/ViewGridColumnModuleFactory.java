@@ -26,10 +26,12 @@ package com.qcadoo.view.internal.module.gridColumn;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.jdom.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.qcadoo.plugin.api.ModuleFactory;
+import com.qcadoo.view.constants.Alignment;
 import com.qcadoo.view.internal.api.InternalViewDefinitionService;
 
 public class ViewGridColumnModuleFactory extends ModuleFactory<ViewGridColumnModule> {
@@ -55,6 +57,7 @@ public class ViewGridColumnModuleFactory extends ModuleFactory<ViewGridColumnMod
             String columnWidth = getAttribute(columnElement, "width");
             String columnSearchable = getAttribute(columnElement, "searchable");
             String columnOrderable = getAttribute(columnElement, "orderable");
+            String columnAlign = getAttribute(columnElement, "align");
 
             ViewGridColumnModuleColumnModel columnModel = new ViewGridColumnModuleColumnModel(columnName, columnFields);
             columnModel.setExpression(columnExpression);
@@ -69,6 +72,9 @@ public class ViewGridColumnModuleFactory extends ModuleFactory<ViewGridColumnMod
             }
             if (columnOrderable != null) {
                 columnModel.setOrderable(Boolean.parseBoolean(columnOrderable));
+            }
+            if (StringUtils.isNotEmpty(columnAlign)) {
+                columnModel.setAlign(Alignment.parseString(columnAlign));
             }
 
             columns.add(columnModel);
