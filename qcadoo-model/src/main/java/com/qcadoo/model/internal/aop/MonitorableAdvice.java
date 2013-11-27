@@ -23,24 +23,30 @@
  */
 package com.qcadoo.model.internal.aop;
 
-import java.util.Arrays;
-
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.Around;
-import org.aspectj.lang.annotation.Aspect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Configurable;
 
 import com.qcadoo.model.api.aop.Monitorable;
 
-@Aspect
-@Configurable
+/*
+ * FIXME MAKU resolve problem with logging method's arguments + move this aspect outside core framework.
+ * 
+ * Just only removing this aspect from META-INF/aop.xml will result in disabling it from Load-Time Weaving.
+ * Because our problem lies in DataAccessService, which is weaved during build
+ * I decided to hide this class from AspectJ compiler by removing @Aspect annotation.
+ *
+ * Unfortunately this prevent us from enabling @Monitorable annotations without recompiling whole qcadoo-model.
+ * This the reason why I want move such tools into separate JAR, outside qcadoo core. 
+ * Then We'll could use them as a "pluggable probes".
+ */
+//@Aspect
+//@Configurable
 public final class MonitorableAdvice {
 
     private static final Logger PERFORMANCE_LOG = LoggerFactory.getLogger("PERFORMANCE");
 
-    @Around("@annotation(monitorable)")
+    // @Around("@annotation(monitorable)")
     public Object doBasicProfiling(final ProceedingJoinPoint pjp, final Monitorable monitorable) throws Throwable {
         long start = System.currentTimeMillis();
 
@@ -50,14 +56,11 @@ public final class MonitorableAdvice {
             long end = System.currentTimeMillis();
             long difference = end - start;
 
-            if (difference > monitorable.threshold()) {
-                PERFORMANCE_LOG.warn("Call " + pjp.getSignature().toShortString() + " with " + Arrays.toString(pjp.getArgs())
-                        + " took " + difference + " ms ");
+            if (difference > monitorable.threshold() && PERFORMANCE_LOG.isWarnEnabled()) {
+                PERFORMANCE_LOG.warn("Call " + pjp.getSignature().toShortString() + " took " + difference + " ms ");
             } else if (PERFORMANCE_LOG.isDebugEnabled()) {
-                PERFORMANCE_LOG.debug("Call " + pjp.getSignature().toShortString() + " with " + Arrays.toString(pjp.getArgs())
-                        + " took " + difference + " ms ");
+                PERFORMANCE_LOG.debug("Call " + pjp.getSignature().toShortString() + " took " + difference + " ms ");
             }
-
         }
     }
 }

@@ -27,7 +27,7 @@
         "-//AspectJ//DTD//EN" "http://www.eclipse.org/aspectj/dtd/aspectj.dtd">
 <aspectj>
 	<aspects>
-		<aspect name="com.qcadoo.model.internal.aop.MonitorableAdvice" />
+		<!--<aspect name="com.qcadoo.model.internal.aop.MonitorableAdvice" />-->
 		<aspect name="com.qcadoo.model.internal.aop.OmitModelCreateHooksAspect" />
 		<aspect name="com.qcadoo.model.internal.definitionconverter.ModelXmlToDefinitionConverterImpl$PluginIdentifierInjectionAspect" />
 	</aspects>
