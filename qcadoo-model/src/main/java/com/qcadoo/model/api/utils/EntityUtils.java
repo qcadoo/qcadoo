@@ -16,7 +16,10 @@ public class EntityUtils {
 
         @Override
         public Long apply(final Entity entity) {
-            return entity.getId();
+            if (entity != null) {
+                return entity.getId();
+            }
+            return null;
         }
     };
 

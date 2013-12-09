@@ -31,7 +31,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.google.common.base.Preconditions;
 import com.qcadoo.view.api.components.WindowComponent;
 import com.qcadoo.view.api.ribbon.Ribbon;
 import com.qcadoo.view.internal.api.InternalComponentState;
@@ -123,10 +122,11 @@ public class WindowComponentState extends AbstractContainerState implements Wind
     @Override
     public void setActiveTab(final String tabName) {
         InternalComponentState tabComponentState = getChild(tabName);
-        Preconditions.checkArgument(tabComponentState != null,
-                String.format("Can't activate WindowTab with name '%s' - it doesn't exist.", tabName));
+        if (tabComponentState == null) {
+            String errorMsg = String.format("Can't activate WindowTab with name '%s' - it doesn't exist.", tabName);
+            throw new IllegalArgumentException(errorMsg);
+        }
         tabComponentState.setVisible(true);
         this.activeTab = tabName;
     }
-
 }

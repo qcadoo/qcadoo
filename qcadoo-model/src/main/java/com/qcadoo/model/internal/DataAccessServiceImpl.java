@@ -326,7 +326,7 @@ public class DataAccessServiceImpl implements DataAccessService {
 
             @Override
             public boolean apply(final Entity entity) {
-                return !savedEntityIds.contains(entity.getId());
+                return entity != null && !savedEntityIds.contains(entity.getId());
             }
         });
     }
