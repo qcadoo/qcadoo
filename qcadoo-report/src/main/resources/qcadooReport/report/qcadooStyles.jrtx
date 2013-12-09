@@ -8,9 +8,12 @@
 		</box>
 	</style>
 	<style name="qcadooLabel" fontSize="12" isBold="true"/>
+	<style name="qcadooLabel7" fontSize="7" isBold="true"/>
 	<style name="qcadooValue" fontSize="12"/>
+	<style name="qcadooValue9" fontSize="9"/>
 	<style name="qcadooLabelSmall" fontSize="9" isBold="false"/>
 	<style name="qcadooValueSmall" fontSize="9"/>
+	<style name="qcadooParagraph" fontSize="11" isBold="true"/>
 	<style name="qcadooPageNumber" forecolor="#464646" fontSize="8"/>
 	<style name="qcadooPageNumberLine" forecolor="#4D4D4D">
 		<pen lineStyle="Dashed"/>
