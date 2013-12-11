@@ -102,11 +102,12 @@ QCD.components.Component = function (element, mainController) {
 		this.contextObject[contextField] = contextValue;
 	};
 	
-	this.fireEvent = function (actionsPerformer, eventNameOrEventObj, args) {
+	this.fireEvent = function (actionsPerformer, eventNameOrEventObj, args, type) {
 	    if (typeof eventNameOrEventObj === 'string') {
 	        this.sendEvent(actionsPerformer, {
 	            name : eventNameOrEventObj,
-	            args : args
+	            args : args,
+	            type : type
 	        });
 	    } else if (typeof eventNameOrEventObj === 'object') {
 	        this.sendEvent(actionsPerformer, eventNameOrEventObj);
@@ -125,7 +126,7 @@ QCD.components.Component = function (element, mainController) {
             if (this.beforeEventFunction) {
                 this.beforeEventFunction();
             }
-            mainController.callEvent(eventObj.name, elementPath, eventObj.callback, eventObj.args, actionsPerformer);
+            mainController.callEvent(eventObj.name, elementPath, eventObj.callback, eventObj.args, actionsPerformer, eventObj.type);
 	    }
 	};
 	

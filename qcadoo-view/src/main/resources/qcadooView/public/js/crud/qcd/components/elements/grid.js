@@ -1223,7 +1223,11 @@ QCD.components.elements.Grid = function (element, mainController) {
     };
 
     this.performEvent = function (eventName, args, type) {
-        this.fireEvent(null, eventName, args, type);
+        this.fireEvent(null, {
+            name : eventName,
+            args : args,
+            type : type
+        });
     };
 
     var origSendEvent = this.sendEvent;
