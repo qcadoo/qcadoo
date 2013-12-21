@@ -182,7 +182,9 @@ QCD.components.containers.Window = function(element, mainController) {
 	
 	this.getComponentValue = function() {
 		return {
-			activeTab: currentTabName
+		    tabsSelectionState: {
+		        activeTab: currentTabName
+		    }
 		};
 	};
 
@@ -227,8 +229,8 @@ QCD.components.containers.Window = function(element, mainController) {
 		if (value.activeMenu) {
 			mainController.activateMenuPosition(value.activeMenu);
 		}
-		if (value.activeTab) {
-		    showTab(value.activeTab);
+		if (value.tabsSelectionState.updateRequired && value.tabsSelectionState.activeTab) {
+		    showTab(value.tabsSelectionState.activeTab);
 		}
 		setContextualHelpButton(value.contextualHelpUrl);
 		showFirstVisibleTab();
@@ -277,6 +279,10 @@ QCD.components.containers.Window = function(element, mainController) {
 	}
 		
 	this.setActiveTab = function (tabName) {
+	    if (!(typeof tabName === 'string')) {
+	        QCD.error("wrong argument type for setActiveTab - expected string, but given '" + tabName + "'");
+	        return;
+	    }
         if (!tabExists(tabName)) {
             QCD.error("tab with name '" + tabName + "' doesn't exist.");
             return;

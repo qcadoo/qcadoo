@@ -27,6 +27,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -46,23 +47,23 @@ public class WindowComponentState extends AbstractContainerState implements Wind
 
     public static final String JSON_ACTIVE_MENU = "activeMenu";
 
-    public static final String JSON_ACTIVE_TAB = "activeTab";
+    public static final String JSON_TABS_SELECTION_STATE = "tabsSelectionState";
 
     private String activeMenu = null;
 
-    private String activeTab = null;
+    private final TabsSelectionState tabsSelectionState;
 
     public WindowComponentState(final WindowComponentPattern pattern) {
         super();
         this.pattern = pattern;
         this.ribbon = pattern.getRibbon().getCopy();
-        this.activeTab = pattern.getFirstTabName();
+        this.tabsSelectionState = new TabsSelectionState(pattern.getFirstTabName());
     }
 
     @Override
     protected void initializeContent(final JSONObject json) throws JSONException {
-        if (json.has(JSON_ACTIVE_TAB) && !json.isNull(JSON_ACTIVE_TAB)) {
-            this.activeTab = json.getString(JSON_ACTIVE_TAB);
+        if (json.has(JSON_TABS_SELECTION_STATE) && !json.isNull(JSON_TABS_SELECTION_STATE)) {
+            tabsSelectionState.readActiveTab(json.getJSONObject(JSON_TABS_SELECTION_STATE));
         }
         requestRender();
     }
@@ -82,7 +83,7 @@ public class WindowComponentState extends AbstractContainerState implements Wind
             errors.put(tabName);
         }
         json.put("errors", errors);
-        json.put(JSON_ACTIVE_TAB, activeTab);
+        json.put(JSON_TABS_SELECTION_STATE, tabsSelectionState.toJson());
 
         if (pattern.getContextualHelpUrl() != null) {
             json.put("contextualHelpUrl", pattern.getContextualHelpUrl());
@@ -127,6 +128,56 @@ public class WindowComponentState extends AbstractContainerState implements Wind
             throw new IllegalArgumentException(errorMsg);
         }
         tabComponentState.setVisible(true);
-        this.activeTab = tabName;
+        tabsSelectionState.switchTab(tabName);
+    }
+
+    private static class TabsSelectionState {
+
+        public static final String JSON_ACTIVE_TAB = "activeTab";
+
+        public static final String JSON_UPDATE_REQUIRED = "updateRequired";
+
+        private boolean updateRequired = false;
+
+        private String activeTab;
+
+        private TabsSelectionState(final String tabName) {
+            this.activeTab = tabName;
+        }
+
+        public boolean isUpdateRequired() {
+            return updateRequired;
+        }
+
+        public String getActiveTab() {
+            return activeTab;
+        }
+
+        public void readActiveTab(final JSONObject tabsSelectionJson) throws JSONException {
+            if (tabsSelectionJson != null && tabsSelectionJson.has(JSON_ACTIVE_TAB) && !tabsSelectionJson.has(JSON_ACTIVE_TAB)) {
+                String activeTab = tabsSelectionJson.getString(JSON_ACTIVE_TAB);
+                setActiveTab(activeTab);
+            }
+        }
+
+        public void setActiveTab(final String tabName) {
+            if (StringUtils.isNotBlank(tabName)) {
+                this.activeTab = tabName;
+            }
+        }
+
+        public void switchTab(final String tabName) {
+            if (StringUtils.isNotBlank(tabName)) {
+                this.updateRequired = true;
+                this.activeTab = tabName;
+            }
+        }
+
+        public JSONObject toJson() throws JSONException {
+            JSONObject json = new JSONObject();
+            json.put(JSON_UPDATE_REQUIRED, isUpdateRequired());
+            json.put(JSON_ACTIVE_TAB, getActiveTab());
+            return json;
+        }
     }
 }
