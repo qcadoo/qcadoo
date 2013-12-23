@@ -1222,12 +1222,20 @@ QCD.components.elements.Grid = function (element, mainController) {
         }
     };
 
-    this.performEvent = function (eventName, args, type) {
-        this.fireEvent(null, {
-            name : eventName,
-            args : args,
-            type : type
-        });
+    this.performEvent = function (eventNameOrObj, args, type) {
+        var eventObj = null;
+        if (typeof eventNameOrObj === 'string') {
+            eventObj = {
+                name : eventNameOrObj,
+                args : args,
+                type : type
+            };
+        } else if (typeof eventNameOrObj === 'object') {
+            eventObj = eventNameOrObj;
+        } else {
+            QCD.error("Illegal first argument type - expected event's name or object, but given " + eventNameOrObj);
+        }
+        this.fireEvent(null, eventObj);
     };
 
     var origSendEvent = this.sendEvent;
