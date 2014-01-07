@@ -23,16 +23,17 @@
  */
 package com.qcadoo.view.api.utils;
 
+import java.util.Collection;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.qcadoo.model.api.DataDefinition;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Ordering;
 import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.Entity;
-import com.qcadoo.model.api.search.SearchOrders;
-import com.qcadoo.model.api.search.SearchRestrictions;
-import com.qcadoo.model.api.search.SearchResult;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.api.components.FieldComponent;
 import com.qcadoo.view.api.components.FormComponent;
@@ -45,8 +46,15 @@ import com.qcadoo.view.api.components.FormComponent;
 @Service
 public class NumberGeneratorService {
 
+    public static final int DEFAULT_NUM_OF_DIGITS = 6;
+
+    public static final String DEFAULT_NUMBER_FIELD_NAME = "number";
+
     @Autowired
     private DataDefinitionService dataDefinitionService;
+
+    @Autowired
+    private NumberGeneratorModelHelper numberGeneratorModelHelper;
 
     /**
      * Generates and inserts new number to entity's form
@@ -91,7 +99,7 @@ public class NumberGeneratorService {
             return false;
         }
         if (StringUtils.hasText((String) number.getFieldValue())) {
-            // number is already choosen
+            // number is already chosen
             return false;
         }
         if (number.isHasError()) {
@@ -104,52 +112,49 @@ public class NumberGeneratorService {
     /**
      * Generate new 6-digits number of entity
      * 
-     * @param plugin
+     * @param pluginIdentifier
      *            plugin identifier of entity
-     * @param entityName
+     * @param modelName
      *            name of entity
      * @return new number of entity
      */
-    public String generateNumber(final String plugin, final String entityName) {
-        return generateNumber(plugin, entityName, 6);
+    // TODO MAKU move this responsibility to the qcadoo-model
+    public String generateNumber(final String pluginIdentifier, final String modelName) {
+        return generateNumber(pluginIdentifier, modelName, DEFAULT_NUM_OF_DIGITS);
     }
 
     /**
      * Generate new number of entity with specified digits number
      * 
-     * @param plugin
+     * @param pluginIdentifier
      *            plugin identifier of entity
-     * @param entityName
+     * @param modelName
      *            name of entity
-     * @param digitsNumber
+     * @param numOfDigits
      *            number of digits of generated number
      * @return new number of entity
      */
-    public String generateNumber(final String plugin, final String entityName, final int digitsNumber) {
-        DataDefinition dataDefinition = dataDefinitionService.get(plugin, entityName);
+    // TODO MAKU move this responsibility to the qcadoo-model
+    public String generateNumber(final String pluginIdentifier, final String modelName, final int numOfDigits) {
+        Collection<Entity> numberProjections = numberGeneratorModelHelper.getNumbersProjection(pluginIdentifier, modelName,
+                DEFAULT_NUMBER_FIELD_NAME);
+        Collection<Long> numericValues = extractNumericValues(numberProjections);
+        Long greatestNumber = 0L;
+        if (!numericValues.isEmpty()) {
+            greatestNumber = Ordering.natural().max(numericValues);
+        }
+        return String.format("%0" + numOfDigits + "d", greatestNumber + 1);
+    }
 
-        // TODO MAKU add projection
-        SearchResult results = dataDefinition.find().addOrder(SearchOrders.desc("number")).list();
-
-        long longValue = 1;
-        for (Entity entity : results.getEntities()) {
-            String number = entity.getStringField("number");
-            if (!org.apache.commons.lang.StringUtils.isNumeric(number)) {
-                continue;
-            }
-            longValue = Long.valueOf(number);
-            if (numberAlreadyExist(dataDefinition, longValue, digitsNumber)) {
-                longValue++;
-                break;
+    private Collection<Long> extractNumericValues(final Iterable<Entity> numberProjections) {
+        List<Long> numericValues = Lists.newArrayList();
+        for (Entity projection : numberProjections) {
+            String numberFieldValue = projection.getStringField(NumberGeneratorModelHelper.NUM_PROJECTION_ALIAS);
+            if (org.apache.commons.lang.StringUtils.isNumeric(numberFieldValue)) {
+                numericValues.add(Long.valueOf(numberFieldValue));
             }
         }
-
-        return String.format("%0" + digitsNumber + "d", longValue);
+        return numericValues;
     }
 
-    private boolean numberAlreadyExist(final DataDefinition dataDefinition, final long longValue, final int digitsNumber) {
-        // TODO MAKU add projection
-        return dataDefinition.find().add(SearchRestrictions.eq("number", String.format("%0" + digitsNumber + "d", longValue)))
-                .setMaxResults(1).uniqueResult() != null;
-    }
 }
