@@ -119,4 +119,16 @@ public class NumberGeneratorServiceTest {
         // then
         Assert.assertEquals("000017", generated);
     }
+
+    @Test
+    public final void shouldReturnNextAvailableNumberGreaterThanMaxOneEvenIfThereIsSimilarValues() {
+        // given
+        stubExistingNumbers(Lists.newArrayList("0002", "1", "000001"));
+
+        // when
+        String generated = performGenerate();
+
+        // then
+        Assert.assertEquals("000003", generated);
+    }
 }
