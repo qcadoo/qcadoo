@@ -35,6 +35,7 @@
 		<module>qcadoo-plugins-custom-translation-management</module>
 		<module>qcadoo-plugins-unit-conversion-management</module>
 		<module>qcadoo-commons</module>
+        <module>qcadoo-testing</module>
 	</modules>
 
 	<name>Qcadoo Framework</name>
