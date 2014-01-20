@@ -29,14 +29,11 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 
-import com.qcadoo.model.api.DataDefinition;
-import com.qcadoo.model.api.Entity;
-import com.qcadoo.model.api.EntityList;
-import com.qcadoo.model.api.EntityTree;
-import com.qcadoo.model.api.FieldDefinition;
+import com.qcadoo.model.api.*;
 import com.qcadoo.model.api.validators.ErrorMessage;
 import com.qcadoo.model.internal.api.EntityAwareCopyPerformers;
 import com.qcadoo.model.internal.api.EntityAwareEqualsPerformers;
@@ -48,7 +45,7 @@ public final class ProxyEntity implements Entity, EntityAwareCopyPerformers, Ent
 
     private final Long id;
 
-    private Entity entity = null;
+    private AtomicReference<Entity> entity = new AtomicReference<Entity>(null);
 
     public ProxyEntity(final DataDefinition dataDefinition, final Long id) {
         checkNotNull(id, "missing id for proxied entity");
@@ -57,11 +54,11 @@ public final class ProxyEntity implements Entity, EntityAwareCopyPerformers, Ent
     }
 
     private Entity getEntity() {
-        if (entity == null) {
-            entity = dataDefinition.get(id);
-            checkNotNull(entity, "Proxy can't load entity");
+        if (entity.get() == null) {
+            entity.compareAndSet(null, dataDefinition.get(id));
+            checkNotNull(entity.get(), "Proxy can't load entity");
         }
-        return entity;
+        return entity.get();
     }
 
     @Override
@@ -71,10 +68,10 @@ public final class ProxyEntity implements Entity, EntityAwareCopyPerformers, Ent
 
     @Override
     public Long getId() {
-        if (entity == null) {
+        if (entity.get() == null) {
             return id;
         } else {
-            return entity.getId();
+            return entity.get().getId();
         }
     }
 
