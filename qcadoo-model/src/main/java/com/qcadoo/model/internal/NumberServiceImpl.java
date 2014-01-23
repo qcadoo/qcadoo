@@ -30,6 +30,8 @@ import java.text.DecimalFormat;
 import java.util.Locale;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 
@@ -38,6 +40,8 @@ import com.qcadoo.model.api.NumberService;
 
 @Component
 public final class NumberServiceImpl implements NumberService {
+
+    private static final Logger LOG = LoggerFactory.getLogger(NumberServiceImpl.class);
 
     private static final int MIN_PRECISION = DEFAULT_MIN_FRACTION_DIGITS_IN_DECIMAL;
 
@@ -104,7 +108,15 @@ public final class NumberServiceImpl implements NumberService {
 
     @Override
     public BigDecimal setScale(final BigDecimal decimal) {
-        return decimal.setScale(MAX_PRECISION, ROUNDING_MODE);
+        if (decimal == null) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("NumberService setScale - decimal is null!");
+            }
+
+            return decimal;
+        } else {
+            return decimal.setScale(MAX_PRECISION, ROUNDING_MODE);
+        }
     }
 
 }
