@@ -245,22 +245,41 @@ public final class PdfHelperImpl implements PdfHelper {
     }
 
     @Override
+    public PdfPTable createTableWithHeader(int numOfColumns, List<String> header, boolean lastColumnAligmentToLeft,
+            HeaderAlignment headerAlignment) {
+        PdfPTable table = new PdfPTable(numOfColumns);
+        return setTableProperties(header, lastColumnAligmentToLeft, table, null);
+    }
+
+    @Override
     public PdfPTable createTableWithHeader(final int numOfColumns, final List<String> header,
-            final boolean lastColumnAligmentToLeft, final int[] columnWidths, final HeaderAlignment headerAlignment) {
+            final boolean lastColumnAligmentToLeft, final int[] columnWidths, final Map<String, HeaderAlignment> alignments) {
         PdfPTable table = new PdfPTable(numOfColumns);
         try {
             table.setWidths(columnWidths);
         } catch (DocumentException e) {
             LOG.error(e.getMessage(), e);
         }
-        return setTableProperties(header, lastColumnAligmentToLeft, table, headerAlignment);
+        return setTableProperties(header, lastColumnAligmentToLeft, table, alignments);
     }
 
     @Override
     public PdfPTable createTableWithHeader(final int numOfColumns, final List<String> header,
-            final boolean lastColumnAligmentToLeft, final HeaderAlignment headerAlignment) {
+            final boolean lastColumnAligmentToLeft, final int[] columnWidths, final HeaderAlignment alignment) {
         PdfPTable table = new PdfPTable(numOfColumns);
-        return setTableProperties(header, lastColumnAligmentToLeft, table, headerAlignment);
+        try {
+            table.setWidths(columnWidths);
+        } catch (DocumentException e) {
+            LOG.error(e.getMessage(), e);
+        }
+        return setTableProperties(header, lastColumnAligmentToLeft, table, null);
+    }
+
+    @Override
+    public PdfPTable createTableWithHeader(final int numOfColumns, final List<String> header,
+            final boolean lastColumnAligmentToLeft, final Map<String, HeaderAlignment> alignments) {
+        PdfPTable table = new PdfPTable(numOfColumns);
+        return setTableProperties(header, lastColumnAligmentToLeft, table, alignments);
     }
 
     @Override
@@ -272,14 +291,14 @@ public final class PdfHelperImpl implements PdfHelper {
         } catch (DocumentException e) {
             LOG.error(e.getMessage(), e);
         }
-        return setTableProperties(header, lastColumnAligmentToLeft, table, HeaderAlignment.CENTER);
+        return setTableProperties(header, lastColumnAligmentToLeft, table, null);
     }
 
     @Override
     public PdfPTable createTableWithHeader(final int numOfColumns, final List<String> header,
             final boolean lastColumnAligmentToLeft) {
         PdfPTable table = new PdfPTable(numOfColumns);
-        return setTableProperties(header, lastColumnAligmentToLeft, table, HeaderAlignment.CENTER);
+        return setTableProperties(header, lastColumnAligmentToLeft, table, null);
     }
 
     @Override
@@ -315,7 +334,7 @@ public final class PdfHelperImpl implements PdfHelper {
     }
 
     private PdfPTable setTableProperties(final List<String> header, final boolean lastColumnAligmentToLeft,
-            final PdfPTable table, final HeaderAlignment aligment) {
+            final PdfPTable table, final Map<String, HeaderAlignment> alignments) {
         table.setWidthPercentage(100f);
         table.setHorizontalAlignment(Element.ALIGN_LEFT);
         table.setSpacingBefore(7.0f);
@@ -326,29 +345,37 @@ public final class PdfHelperImpl implements PdfHelper {
         table.getDefaultCell().setPadding(5.0f);
         table.getDefaultCell().disableBorderSide(Rectangle.RIGHT);
 
-        if (HeaderAlignment.LEFT.equals(aligment)) {
+        if (alignments == null || alignments.isEmpty()) {
             table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_LEFT);
-        } else if (HeaderAlignment.CENTER.equals(aligment)) {
-            table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_CENTER);
-        } else if (HeaderAlignment.RIGHT.equals(aligment)) {
-            table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_RIGHT);
-        }
+            int i = 0;
+            for (String element : header) {
+                i++;
+                if (i == header.size()) {
+                    table.getDefaultCell().enableBorderSide(Rectangle.RIGHT);
+                }
+                table.addCell(new Phrase(element, FontUtils.getDejavuBold7Dark()));
+                if (i == 1) {
+                    table.getDefaultCell().disableBorderSide(Rectangle.LEFT);
+                }
+            }
+        } else {
+            int i = 0;
 
-        int i = 0;
-        for (String element : header) {
-            i++;
-            if (i == header.size() && lastColumnAligmentToLeft) {
-                table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_RIGHT);
-            }
-            if (i == header.size()) {
-                table.getDefaultCell().enableBorderSide(Rectangle.RIGHT);
-            }
-            table.addCell(new Phrase(element, FontUtils.getDejavuBold7Dark()));
-            if (i == 1) {
-                table.getDefaultCell().disableBorderSide(Rectangle.LEFT);
-            }
-            if (i == header.size() && lastColumnAligmentToLeft) {
-                table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_LEFT);
+            for (String element : header) {
+                i++;
+                HeaderAlignment alignment = alignments.get(element);
+                if (HeaderAlignment.LEFT.equals(alignment)) {
+                    table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_LEFT);
+                } else if (HeaderAlignment.RIGHT.equals(alignment)) {
+                    table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_RIGHT);
+                }
+                if (i == header.size()) {
+                    table.getDefaultCell().enableBorderSide(Rectangle.RIGHT);
+                }
+                table.addCell(new Phrase(element, FontUtils.getDejavuBold7Dark()));
+                if (i == 1) {
+                    table.getDefaultCell().disableBorderSide(Rectangle.LEFT);
+                }
             }
         }
         table.getDefaultCell().setHorizontalAlignment(Element.ALIGN_LEFT);

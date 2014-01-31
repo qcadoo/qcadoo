@@ -23,10 +23,7 @@
  */
 package com.qcadoo.model.internal;
 
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertNotSame;
-import static junit.framework.Assert.assertNull;
-import static junit.framework.Assert.assertTrue;
+import static junit.framework.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.mockito.BDDMockito.given;
@@ -2627,6 +2624,30 @@ public class DefaultEntityTest {
 
         // then
         assertTrue(result);
+    }
+
+    @Test
+    public final void shouldEqualsReturnsFalseForNullArgument() {
+        // given
+        final Entity firstEntity = new DefaultEntity(dataDefinition);
+
+        // when
+        boolean areEquals = firstEntity.equals(null);
+
+        // then
+        assertFalse(areEquals);
+    }
+
+    @Test
+    public final void shouldFlatEqualsReturnsFalseForNullArgument() {
+        // given
+        final DefaultEntity firstEntity = new DefaultEntity(dataDefinition);
+
+        // when
+        boolean areEquals = firstEntity.flatEquals(null);
+
+        // then
+        assertFalse(areEquals);
     }
 
     private List<Entity> getListOfMockEntities() {

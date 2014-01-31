@@ -254,4 +254,10 @@ public interface PdfHelper {
             final String documentAuthor, final Date date) throws DocumentException;
 
     PdfPTable addDynamicHeaderTableCellOneRow(PdfPTable firstColumnHeaderTable, Map<String, Object> firstColumn, Locale locale);
+
+    PdfPTable createTableWithHeader(final int numOfColumns, final List<String> header, final boolean lastColumnAligmentToLeft,
+            final int[] columnWidths, final Map<String, HeaderAlignment> alignments);
+
+    PdfPTable createTableWithHeader(final int numOfColumns, List<String> header, final boolean lastColumnAligmentToLeft,
+            final Map<String, HeaderAlignment> alignments);
 }

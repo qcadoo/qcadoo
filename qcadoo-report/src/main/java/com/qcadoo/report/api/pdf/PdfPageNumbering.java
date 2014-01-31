@@ -95,26 +95,7 @@ public final class PdfPageNumbering extends PdfPageEventHelper {
      */
     @Override
     public void onStartPage(final PdfWriter writer, final Document document) {
-        PdfContentByte cb = writer.getDirectContent();
-        cb.saveState();
-        String text = footer.getPage() + " " + writer.getPageNumber() + " " + footer.getIn() + " ";
-        float textBase = document.top() + 22;
-        float textSize = FontUtils.getDejavu().getWidthPoint(text, 7);
-        cb.setColorFill(ColorUtils.getLightColor());
-        cb.setColorStroke(ColorUtils.getLightColor());
-        cb.beginText();
-        cb.setFontAndSize(FontUtils.getDejavu(), 7);
-        float adjust = FontUtils.getDejavu().getWidthPoint("0", 7);
-        cb.setTextMatrix(document.right() - textSize - adjust, textBase);
-        cb.showText(text);
-        cb.endText();
-        cb.addTemplate(total, document.right() - adjust, textBase);
-        cb.setLineWidth(1);
-        cb.setLineDash(2, 2, 1);
-        cb.moveTo(document.left(), document.top() + 12);
-        cb.lineTo(document.right(), document.top() + 12);
-        cb.stroke();
-        cb.restoreState();
+
     }
 
     /**
@@ -122,6 +103,12 @@ public final class PdfPageNumbering extends PdfPageEventHelper {
      */
     @Override
     public void onEndPage(final PdfWriter writer, final Document document) {
+        buildHeader(writer, document);
+        buildFooter(writer, document);
+
+    }
+
+    private void buildFooter(final PdfWriter writer, final Document document) {
         PdfContentByte cb = writer.getDirectContent();
         cb.saveState();
         String text = footer.getPage() + " " + writer.getPageNumber() + " " + footer.getIn() + " ";
@@ -175,6 +162,31 @@ public final class PdfPageNumbering extends PdfPageEventHelper {
 
         cb.addTemplate(total, document.right() - adjust, textBase);
         cb.restoreState();
+
+    }
+
+    private void buildHeader(final PdfWriter writer, final Document document) {
+        PdfContentByte cb = writer.getDirectContent();
+        cb.saveState();
+        String text = footer.getPage() + " " + writer.getPageNumber() + " " + footer.getIn() + " ";
+        float textBase = document.top() + 22;
+        float textSize = FontUtils.getDejavu().getWidthPoint(text, 7);
+        cb.setColorFill(ColorUtils.getLightColor());
+        cb.setColorStroke(ColorUtils.getLightColor());
+        cb.beginText();
+        cb.setFontAndSize(FontUtils.getDejavu(), 7);
+        float adjust = FontUtils.getDejavu().getWidthPoint("0", 7);
+        cb.setTextMatrix(document.right() - textSize - adjust, textBase);
+        cb.showText(text);
+        cb.endText();
+        cb.addTemplate(total, document.right() - adjust, textBase);
+        cb.setLineWidth(1);
+        cb.setLineDash(2, 2, 1);
+        cb.moveTo(document.left(), document.top() + 12);
+        cb.lineTo(document.right(), document.top() + 12);
+        cb.stroke();
+        cb.restoreState();
+
     }
 
     /**
