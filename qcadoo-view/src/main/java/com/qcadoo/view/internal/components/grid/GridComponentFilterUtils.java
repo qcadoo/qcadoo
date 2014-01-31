@@ -441,7 +441,7 @@ public final class GridComponentFilterUtils {
     }
 
     private static String getFieldNameFromExpression(final String expression) {
-        String pattern = "#(\\w+)(\\['(\\w+)'\\])?([[?]?.get\\('\\w+'\\)]*)";
+        String pattern = "#(\\w+)(\\['(\\w+)'\\])?([[?]?.[get|getStringField|getBooleanField|getDecimalField|getIntegerField|getDateField|getBelongsToField]\\('\\w+'\\)]*)";
         Matcher matcher = Pattern.compile(pattern).matcher(StringUtils.trim(expression));
         if (matcher.matches()) {
             final StringBuilder fieldNameBuilder = new StringBuilder(matcher.group(1));
@@ -450,8 +450,12 @@ public final class GridComponentFilterUtils {
                 fieldNameBuilder.append(matcher.group(3));
             }
             if (StringUtils.isNotBlank(matcher.group(4))) {
-                final String[] searchList = new String[] { "get('", "?.get('", "')" };
-                final String[] replacementList = new String[] { "", ".", "" };
+                final String[] searchList = new String[] { "get('", "?.get('", "getStringField('", "?.getStringField('",
+                        "getBooleanField('", "?.getBooleanField('", "getDecimalField('", "?.getDecimalField('",
+                        "getIntegerField('", "?.getIntegerField('", "getDateField('", "?.getDateField('", "getBelongsToField('",
+                        "?.getBelongsToField('", "')" };
+                final String[] replacementList = new String[] { "", ".", "", ".", "", ".", "", ".", "", ".", "", ".", "", ".", "" };
+
                 fieldNameBuilder.append(StringUtils.replaceEach(matcher.group(4), searchList, replacementList));
             }
             return fieldNameBuilder.toString();

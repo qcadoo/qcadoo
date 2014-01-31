@@ -242,6 +242,132 @@ public class GridComponentFilterUtilsTest {
     }
 
     @Test
+    public final void shouldReturnFieldNameUsingSimpleExpressionWithOneGetStringField() {
+        // given
+        final FieldDefinition fieldDefinition = mockFieldDefinition(TEST_FIELD, Object.class);
+        final Map<String, GridComponentColumn> columns = ImmutableMap.of(TEST_COL,
+                buildGridComponentColumn(TEST_COL, fieldDefinition, "#belongsTo.getStringField('field')"));
+
+        // when
+        final String fieldName = GridComponentFilterUtils.getFieldNameByColumnName(columns, TEST_COL);
+
+        // then
+        assertEquals("belongsTo.field", fieldName);
+    }
+
+    @Test
+    public final void shouldReturnFieldNameUsingSimpleExpressionWithOneGetBooleanField() {
+        // given
+        final FieldDefinition fieldDefinition = mockFieldDefinition(TEST_FIELD, Object.class);
+        final Map<String, GridComponentColumn> columns = ImmutableMap.of(TEST_COL,
+                buildGridComponentColumn(TEST_COL, fieldDefinition, "#belongsTo.getBooleanField('field')"));
+
+        // when
+        final String fieldName = GridComponentFilterUtils.getFieldNameByColumnName(columns, TEST_COL);
+
+        // then
+        assertEquals("belongsTo.field", fieldName);
+    }
+
+    @Test
+    public final void shouldReturnFieldNameUsingSimpleExpressionWithOneGetDecimalField() {
+        // given
+        final FieldDefinition fieldDefinition = mockFieldDefinition(TEST_FIELD, Object.class);
+        final Map<String, GridComponentColumn> columns = ImmutableMap.of(TEST_COL,
+                buildGridComponentColumn(TEST_COL, fieldDefinition, "#belongsTo.getDecimalField('field')"));
+
+        // when
+        final String fieldName = GridComponentFilterUtils.getFieldNameByColumnName(columns, TEST_COL);
+
+        // then
+        assertEquals("belongsTo.field", fieldName);
+    }
+
+    @Test
+    public final void shouldReturnFieldNameUsingSimpleExpressionWithOneGetIntegerField() {
+        // given
+        final FieldDefinition fieldDefinition = mockFieldDefinition(TEST_FIELD, Object.class);
+        final Map<String, GridComponentColumn> columns = ImmutableMap.of(TEST_COL,
+                buildGridComponentColumn(TEST_COL, fieldDefinition, "#belongsTo.getIntegerField('field')"));
+
+        // when
+        final String fieldName = GridComponentFilterUtils.getFieldNameByColumnName(columns, TEST_COL);
+
+        // then
+        assertEquals("belongsTo.field", fieldName);
+    }
+
+    @Test
+    public final void shouldReturnFieldNameUsingSimpleExpressionWithOneGetDateField() {
+        // given
+        final FieldDefinition fieldDefinition = mockFieldDefinition(TEST_FIELD, Object.class);
+        final Map<String, GridComponentColumn> columns = ImmutableMap.of(TEST_COL,
+                buildGridComponentColumn(TEST_COL, fieldDefinition, "#belongsTo.getDateField('field')"));
+
+        // when
+        final String fieldName = GridComponentFilterUtils.getFieldNameByColumnName(columns, TEST_COL);
+
+        // then
+        assertEquals("belongsTo.field", fieldName);
+    }
+
+    @Test
+    public final void shouldReturnFieldNameUsingSimpleExpressionWithOneGetBelongsToField() {
+        // given
+        final FieldDefinition fieldDefinition = mockFieldDefinition(TEST_FIELD, Object.class);
+        final Map<String, GridComponentColumn> columns = ImmutableMap.of(TEST_COL,
+                buildGridComponentColumn(TEST_COL, fieldDefinition, "#belongsTo.getBelongsToField('field')"));
+
+        // when
+        final String fieldName = GridComponentFilterUtils.getFieldNameByColumnName(columns, TEST_COL);
+
+        // then
+        assertEquals("belongsTo.field", fieldName);
+    }
+
+    @Test
+    public final void shouldReturnFieldNameUsingSimpleExpressionWithOneGetHasManyField() {
+        // given
+        final FieldDefinition fieldDefinition = mockFieldDefinition(TEST_FIELD, Object.class);
+        final Map<String, GridComponentColumn> columns = ImmutableMap.of(TEST_COL,
+                buildGridComponentColumn(TEST_COL, fieldDefinition, "#belongsTo.getHasManyField('field')"));
+
+        // when
+        final String fieldName = GridComponentFilterUtils.getFieldNameByColumnName(columns, TEST_COL);
+
+        // then
+        assertEquals("belongsTo.getHasManyField('field", fieldName);
+    }
+
+    @Test
+    public final void shouldReturnFieldNameUsingSimpleExpressionWithOneGetManyToManyField() {
+        // given
+        final FieldDefinition fieldDefinition = mockFieldDefinition(TEST_FIELD, Object.class);
+        final Map<String, GridComponentColumn> columns = ImmutableMap.of(TEST_COL,
+                buildGridComponentColumn(TEST_COL, fieldDefinition, "#belongsTo.getManyToManyField('field')"));
+
+        // when
+        final String fieldName = GridComponentFilterUtils.getFieldNameByColumnName(columns, TEST_COL);
+
+        // then
+        assertEquals("belongsTo.getManyToManyField('field", fieldName);
+    }
+
+    @Test
+    public final void shouldReturnFieldNameUsingSimpleExpressionWithOneGetTreeField() {
+        // given
+        final FieldDefinition fieldDefinition = mockFieldDefinition(TEST_FIELD, Object.class);
+        final Map<String, GridComponentColumn> columns = ImmutableMap.of(TEST_COL,
+                buildGridComponentColumn(TEST_COL, fieldDefinition, "#belongsTo.getTreeField('field')"));
+
+        // when
+        final String fieldName = GridComponentFilterUtils.getFieldNameByColumnName(columns, TEST_COL);
+
+        // then
+        assertEquals("belongsTo.getTreeField('field", fieldName);
+    }
+
+    @Test
     public final void shouldReturnFieldNameUsingExpressionWithTwoGet() {
         // given
         final FieldDefinition fieldDefinition = mockFieldDefinition(TEST_FIELD, Object.class);
