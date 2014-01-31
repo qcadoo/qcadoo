@@ -176,7 +176,7 @@ public final class DefaultEntity implements Entity, EntityAwareCopyPerformers, E
 
     @Override
     public boolean flatEquals(final Entity otherEntity) {
-        return definitionsAndIdsAreEqual(otherEntity) && fieldsAreEquals(otherEntity, null, true);
+        return otherEntity != null && definitionsAndIdsAreEqual(otherEntity) && fieldsAreEquals(otherEntity, null, true);
     }
 
     @Override
