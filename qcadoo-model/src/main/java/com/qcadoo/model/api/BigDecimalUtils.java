@@ -84,4 +84,22 @@ public final class BigDecimalUtils {
 
     }
 
+    /**
+     * Check if decimals represent the same numeric value, even if they have different precisions or contexts.
+     * 
+     * @param d1
+     *            first BigDecimal to compare
+     * @param d2
+     *            second decimal to compare
+     * @return true if decimals represent the same numeric value, even if they have different precisions or contexts.
+     */
+    public static boolean valueEquals(final BigDecimal d1, final BigDecimal d2) {
+        if (d1 == null) {
+            return d2 == null;
+        } else if (d2 == null) {
+            return false;
+        }
+        return d1.compareTo(d2) == 0;
+    }
+
 }
