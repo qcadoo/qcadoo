@@ -29,7 +29,7 @@
 	xsi:schemaLocation="http://schema.qcadoo.org/model http://schema.qcadoo.org/model.xsd">
 	<fields>
 		<string name="userName" required="true" unique="true">
-			<validatesRegex pattern="^[a-zA-Z0-9\\.]+$"
+			<validatesRegex pattern="^[a-zA-Z0-9\\.@]+$"
 				message="qcadooSecurity.validate.global.error.loginIllegalCharacters" />
 		</string>
 		<enum name="role" values="" required="true"/>
