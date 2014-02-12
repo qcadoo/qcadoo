@@ -260,4 +260,7 @@ public interface PdfHelper {
 
     PdfPTable createTableWithHeader(final int numOfColumns, List<String> header, final boolean lastColumnAligmentToLeft,
             final Map<String, HeaderAlignment> alignments);
+
+    boolean validateReportColumnWidths(final Integer availableWidth, final Map<String, Integer> fixedColumns,
+            final List<String> allColumns);
 }

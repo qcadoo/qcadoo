@@ -465,4 +465,20 @@ public final class PdfHelperImpl implements PdfHelper {
 
         return documentAuthor;
     }
+
+    @Override
+    public boolean validateReportColumnWidths(Integer availableWidth, Map<String, Integer> fixedColumns, List<String> allColumns) {
+        Integer remainedAvailableWidth = availableWidth;
+        for (String entryColumn : allColumns) {
+            for (Map.Entry<String, Integer> entryFixedColumn : fixedColumns.entrySet()) {
+                if (entryColumn.toLowerCase().contains(entryFixedColumn.getKey().toLowerCase())) {
+                    remainedAvailableWidth = remainedAvailableWidth - entryFixedColumn.getValue();
+                }
+            }
+        }
+        if (remainedAvailableWidth >= 0) {
+            return true;
+        }
+        return false;
+    }
 }
