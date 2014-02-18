@@ -48,6 +48,11 @@ public final class EntityTestUtils {
         BDDMockito.given(entity.getField(fieldName)).willAnswer(answer);
     }
 
+    public static void stubBooleanField(final Entity entity, final String fieldName, final boolean fieldValue) {
+        BDDMockito.given(entity.getBooleanField(fieldName)).willReturn(fieldValue);
+        stubField(entity, fieldName, fieldValue);
+    }
+
     public static void stubStringField(final Entity entity, final String fieldName, final String fieldValue) {
         BDDMockito.given(entity.getStringField(fieldName)).willReturn(fieldValue);
         stubField(entity, fieldName, fieldValue);

@@ -31,4 +31,17 @@ public class EntityUtils {
         return Collections2.transform(entities, getIdExtractor());
     }
 
+    public static <T> Collection<T> getFieldsView(final Collection<Entity> entities, final String fieldName) {
+        return Collections2.transform(entities, new Function<Entity, T>() {
+
+            @Override
+            public T apply(final Entity input) {
+                if (input != null) {
+                    return (T) input.getField(fieldName);
+                }
+                return null;
+            }
+        });
+    }
+
 }
