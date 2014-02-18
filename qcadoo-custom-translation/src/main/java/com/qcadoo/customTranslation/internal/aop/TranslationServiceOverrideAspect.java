@@ -32,8 +32,12 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import com.qcadoo.customTranslation.constants.CustomTranslationContants;
+import com.qcadoo.plugin.api.RunIfEnabled;
+
 @Aspect
 @Configurable
+@RunIfEnabled(CustomTranslationContants.PLUGIN_IDENTIFIER)
 public class TranslationServiceOverrideAspect {
 
     @Autowired
