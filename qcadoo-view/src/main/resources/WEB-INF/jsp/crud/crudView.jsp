@@ -37,7 +37,7 @@
 		<c:when test="${useCompressedStaticResources}">
 			<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/qcadoo-min.css?ver=${buildNumber}" type="text/css" />
 			<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/custom.css?ver=${buildNumber}" type="text/css" />
-			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/_jquery-1.4.2.min.js?ver=${buildNumber}"></script>
+			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/jquery-1.8.3.min.js?ver=${buildNumber}"></script>
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/jquery-ui-1.8.5.custom.min.js?ver=${buildNumber}"></script>
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/jquery.jqGrid.min.js?ver=${buildNumber}"></script>
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/jquery.searchFilter.js?ver=${buildNumber}"></script>
@@ -65,7 +65,7 @@
 			<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/crud/components/contextualHelpButton.css?ver=${buildNumber}" type="text/css" />
 			<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/custom.css?ver=${buildNumber}" type="text/css" />
 			
-			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/_jquery-1.4.2.min.js?ver=${buildNumber}"></script>
+			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/jquery-1.8.3.min.js?ver=${buildNumber}"></script>
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/json_sans_eval.js?ver=${buildNumber}"></script>
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/json2.js?ver=${buildNumber}"></script>
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/jquery.blockUI.js?ver=${buildNumber}"></script>

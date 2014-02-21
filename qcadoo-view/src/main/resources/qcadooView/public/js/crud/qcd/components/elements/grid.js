@@ -1038,7 +1038,7 @@ QCD.components.elements.Grid = function (element, mainController) {
         if (!width) {
             width = 300;
         }
-        if (!height) {
+        if (!height || height < 150) {
             height = 300;
         }
 
