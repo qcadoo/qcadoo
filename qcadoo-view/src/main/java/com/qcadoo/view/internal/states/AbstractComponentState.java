@@ -214,7 +214,7 @@ public abstract class AbstractComponentState implements InternalComponentState, 
             setVisible(json.getBoolean(JSON_VISIBLE));
         }
 
-        if (json.has(JSON_CONTENT)) {
+        if (json.has(JSON_CONTENT) && !json.isNull(JSON_CONTENT)) {
             initializeContent(json.getJSONObject(JSON_CONTENT));
         }
 
