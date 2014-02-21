@@ -17,7 +17,7 @@ public class BelongingTo implements CustomRestriction {
 
     private final ProxyEntity entity;
 
-    private transient final int hashCode;
+    private final transient int hashCode;
 
     public BelongingTo(final String fieldName, final Entity entity) {
         Preconditions.checkArgument(fieldName != null, "Field name can't be null.");
