@@ -24,11 +24,7 @@
 package com.qcadoo.view.internal.xml;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.springframework.test.util.ReflectionTestUtils.getField;
@@ -38,6 +34,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import junit.framework.Assert;
 
 import org.json.JSONObject;
 import org.junit.Before;
@@ -55,15 +53,12 @@ import com.qcadoo.model.api.types.BelongsToType;
 import com.qcadoo.model.api.types.HasManyType;
 import com.qcadoo.model.beans.sample.CustomEntityService;
 import com.qcadoo.model.internal.types.StringType;
+import com.qcadoo.security.api.SecurityRole;
+import com.qcadoo.security.api.SecurityRolesService;
 import com.qcadoo.view.api.ribbon.RibbonActionItem;
 import com.qcadoo.view.internal.HookDefinition;
 import com.qcadoo.view.internal.ViewDefinitionServiceImpl;
-import com.qcadoo.view.internal.api.ComponentCustomEvent;
-import com.qcadoo.view.internal.api.ComponentPattern;
-import com.qcadoo.view.internal.api.ContextualHelpService;
-import com.qcadoo.view.internal.api.InternalViewDefinition;
-import com.qcadoo.view.internal.api.ViewDefinition;
-import com.qcadoo.view.internal.api.ViewDefinitionService;
+import com.qcadoo.view.internal.api.*;
 import com.qcadoo.view.internal.components.ButtonComponentPattern;
 import com.qcadoo.view.internal.components.CheckBoxComponentPattern;
 import com.qcadoo.view.internal.components.TextAreaComponentPattern;
@@ -99,6 +94,10 @@ public class ViewDefinitionParserImplTest {
 
     private ContextualHelpService contextualHelpService;
 
+    private SecurityRolesService securityRolesService;
+
+    private SecurityRole userRoleMock, adminRoleMock;
+
     private static ViewComponentsResolverImpl viewComponentsResolver;
 
     @BeforeClass
@@ -123,6 +122,8 @@ public class ViewDefinitionParserImplTest {
 
         contextualHelpService = mock(ContextualHelpService.class);
 
+        securityRolesService = mock(SecurityRolesService.class);
+
         viewDefinitionService = new ViewDefinitionServiceImpl();
 
         hookFactory = new HookFactory();
@@ -136,6 +137,13 @@ public class ViewDefinitionParserImplTest {
         setField(viewDefinitionParser, "contextualHelpService", contextualHelpService);
         setField(viewDefinitionParser, "viewComponentsResolver", viewComponentsResolver);
         setField(viewDefinitionParser, "ribbonService", ribbonService);
+        setField(viewDefinitionParser, "securityRolesService", securityRolesService);
+
+        userRoleMock = mock(SecurityRole.class);
+        given(securityRolesService.getRoleByIdentifier("ROLE_USER")).willReturn(userRoleMock);
+
+        adminRoleMock = mock(SecurityRole.class);
+        given(securityRolesService.getRoleByIdentifier("ROLE_ADMIN")).willReturn(adminRoleMock);
 
         xml1 = "view/test1.xml";
         xml2 = "view/test2.xml";
@@ -180,7 +188,7 @@ public class ViewDefinitionParserImplTest {
 
     @Test
     public void shouldParseXml() {
-        // given
+        // when
         List<InternalViewDefinition> viewDefinitions = parseAndGetViewDefinitions();
 
         // then
@@ -191,13 +199,39 @@ public class ViewDefinitionParserImplTest {
 
     @Test
     public void shouldSetViewDefinitionAttributes() {
-        // given
+        // when
         InternalViewDefinition viewDefinition = parseAndGetViewDefinition();
 
         // then
         assertEquals("simpleView", viewDefinition.getName());
         assertEquals("sample", viewDefinition.getPluginIdentifier());
+        assertEquals(userRoleMock, viewDefinition.getAuthorizationRole());
         assertThat(viewDefinition.getComponentByReference("mainWindow"), instanceOf(WindowComponentPattern.class));
+    }
+
+    @Test
+    public void shouldSetCustomAuthorizationRole() {
+        // when
+        InternalViewDefinition viewDefinition = parseAndGetViewDefinition(xml2);
+
+        // then
+        assertEquals(adminRoleMock, viewDefinition.getAuthorizationRole());
+    }
+
+    @Test
+    public void shouldShouldThrowExceptionIfCustomAuthorizationRoleCannotBeFound() {
+        // given
+        given(securityRolesService.getRoleByIdentifier("ROLE_ADMIN")).willReturn(null);
+
+        // when & then
+        try {
+            parseAndGetViewDefinition(xml2);
+            Assert.fail();
+        } catch (ViewDefinitionParserException ignored) {
+            // Success
+        } catch (Exception ignored) {
+            Assert.fail();
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -267,7 +301,7 @@ public class ViewDefinitionParserImplTest {
 
     @Test
     public void shouldSetFields() {
-        // given
+        // when
         InternalViewDefinition vd = parseAndGetViewDefinition();
 
         // then
@@ -307,10 +341,8 @@ public class ViewDefinitionParserImplTest {
 
     @Test
     public final void shouldMarkComponentAsPermanentlyDisabled() {
-        // given
-        final InternalViewDefinition vd = parseAndGetViewDefinition();
-
         // when
+        final InternalViewDefinition vd = parseAndGetViewDefinition();
         final ComponentPattern component = vd.getComponentByReference("neverEnabledCheckbox");
 
         // then
@@ -320,10 +352,8 @@ public class ViewDefinitionParserImplTest {
 
     @Test
     public final void shouldMarkComponentAsNotEnabled() {
-        // given
-        final InternalViewDefinition vd = parseAndGetViewDefinition();
-
         // when
+        final InternalViewDefinition vd = parseAndGetViewDefinition();
         final ComponentPattern component = vd.getComponentByReference("active");
 
         // then
@@ -333,10 +363,8 @@ public class ViewDefinitionParserImplTest {
 
     @Test
     public final void shouldMarkComponentAsEnabled() {
-        // given
-        final InternalViewDefinition vd = parseAndGetViewDefinition();
-
         // when
+        final InternalViewDefinition vd = parseAndGetViewDefinition();
         final ComponentPattern component = vd.getComponentByReference("enabledCheckbox");
 
         // then
@@ -360,7 +388,7 @@ public class ViewDefinitionParserImplTest {
 
     @Test
     public void shouldSetHooks() {
-        // given
+        // when
         ViewDefinition viewDefinition = parseAndGetViewDefinition();
 
         // then
@@ -387,13 +415,17 @@ public class ViewDefinitionParserImplTest {
     }
 
     private InternalViewDefinition parseAndGetViewDefinition() {
-        return (InternalViewDefinition) viewDefinitionParser.parseViewXml(new ClassPathResource(xml1), "sample");
+        return parseAndGetViewDefinition(xml1);
+    }
+
+    private InternalViewDefinition parseAndGetViewDefinition(final String xmlPath) {
+        return viewDefinitionParser.parseViewXml(new ClassPathResource(xmlPath), "sample");
     }
 
     @SuppressWarnings("unchecked")
     @Test
     public void shouldSetListeners() throws Exception {
-        // given
+        // when
         ComponentPattern component = parseAndGetViewDefinition().getComponentByReference("beanBForm");
 
         // then

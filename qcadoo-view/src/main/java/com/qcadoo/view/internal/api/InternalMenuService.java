@@ -24,19 +24,21 @@
 package com.qcadoo.view.internal.api;
 
 import com.qcadoo.view.internal.menu.MenuService;
+import com.qcadoo.view.internal.menu.definitions.MenuCategoryDefinition;
+import com.qcadoo.view.internal.menu.definitions.MenuItemDefinition;
 
 public interface InternalMenuService extends MenuService {
 
-    void addView(String pluginIdentifier, String viewName, String view, String url);
+    void addView(MenuItemDefinition menuItemDefinition);
 
-    void removeView(String pluginIdentifier, String viewName);
+    void removeView(MenuItemDefinition menuItemDefinition);
 
-    void createCategory(String pluginIdentifier, String categoryName);
+    void createCategory(MenuCategoryDefinition menuCategoryDefinition);
 
-    void removeCategory(String pluginIdentifier, String categoryName);
+    void removeCategory(MenuCategoryDefinition menuCategoryDefinition);
 
-    void createItem(String pluginIdentifier, String name, String category, String viewPluginIdentifier, String viewName);
+    void createItem(MenuItemDefinition menuViewItemDefinition);
 
-    void removeItem(String pluginIdentifier, String name);
+    void removeItem(MenuItemDefinition menuItemDefinition);
 
 }

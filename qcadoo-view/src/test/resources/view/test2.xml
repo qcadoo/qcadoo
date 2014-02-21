@@ -24,6 +24,7 @@
     ***************************************************************************
 
 -->
-<view name="simpleView2" modelName="beanA">
+<view name="simpleView2" modelName="beanA" defaultAuthorizationRole="ROLE_ADMIN" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schema.qcadoo.org/view"
+      xsi:schemaLocation="http://schema.qcadoo.org/view http://schema.qcadoo.org/view.xsd">
 	<component type="window" name="mainWindow" />
 </view>

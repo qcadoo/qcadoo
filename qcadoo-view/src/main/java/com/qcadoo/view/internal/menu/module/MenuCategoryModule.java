@@ -25,31 +25,29 @@ package com.qcadoo.view.internal.menu.module;
 
 import com.qcadoo.plugin.api.Module;
 import com.qcadoo.view.internal.api.InternalMenuService;
+import com.qcadoo.view.internal.menu.definitions.MenuCategoryDefinition;
 
 public class MenuCategoryModule extends Module {
 
     private final InternalMenuService menuService;
 
-    private final String menuCategoryName;
+    private final MenuCategoryDefinition menuCategoryDefinition;
 
-    private final String pluginIdentifier;
-
-    public MenuCategoryModule(final InternalMenuService menuService, final String pluginIdentifier, final String menuCategoryName) {
+    public MenuCategoryModule(final InternalMenuService menuService, final MenuCategoryDefinition menuCategoryDefinition) {
         super();
 
         this.menuService = menuService;
-        this.pluginIdentifier = pluginIdentifier;
-        this.menuCategoryName = menuCategoryName;
+        this.menuCategoryDefinition = menuCategoryDefinition;
     }
 
     @Override
     public void multiTenantEnable() {
-        menuService.createCategory(pluginIdentifier, menuCategoryName);
+        menuService.createCategory(menuCategoryDefinition);
     }
 
     @Override
     public void multiTenantDisable() {
-        menuService.removeCategory(pluginIdentifier, menuCategoryName);
+        menuService.removeCategory(menuCategoryDefinition);
     }
 
 }

@@ -23,6 +23,8 @@
  */
 package com.qcadoo.view.internal.menu;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -114,5 +116,24 @@ public abstract class MenuItem {
         itemObject.put("page", getPage());
         itemObject.put("description", getDescription());
         return itemObject;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        MenuItem that = (MenuItem) o;
+        return new EqualsBuilder().append(name, that.name).append(label, that.label)
+                .append(pluginIdentifier, that.pluginIdentifier).append(description, that.description).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder().append(name).append(label).append(pluginIdentifier).toHashCode();
     }
 }
