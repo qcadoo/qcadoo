@@ -33,11 +33,11 @@ public interface SecurityRolesService {
     /**
      * Returns role with defined identifier or null if no such role found
      * 
-     * @param roleIdetifier
+     * @param roleIdentifier
      *            identifier of role
      * @return found role or null
      */
-    SecurityRole getRoleByIdentifier(String roleIdetifier);
+    SecurityRole getRoleByIdentifier(String roleIdentifier);
 
     /**
      * Returns role with defined name or null if no such role found
