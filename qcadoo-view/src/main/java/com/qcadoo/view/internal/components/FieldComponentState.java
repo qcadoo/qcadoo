@@ -99,7 +99,6 @@ public class FieldComponentState extends AbstractComponentState implements Field
     @Override
     public void setRequired(final boolean required) {
         this.required = required;
-        // requestRender();
     }
 
     @Override
