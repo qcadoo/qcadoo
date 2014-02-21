@@ -40,8 +40,6 @@ public final class QcadooSecurityConstants {
 
     public static final String ROLE_USER = "03users";
 
-    public static final String ROLE_SUPERVISOR = "02supervisors";
-
     public static final String ROLE_ADMIN = "01admins";
 
 }

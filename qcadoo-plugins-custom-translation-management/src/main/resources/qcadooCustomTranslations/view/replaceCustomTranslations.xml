@@ -29,7 +29,7 @@
 	name="replaceCustomTranslations"
 	modelPlugin="qcadooCustomTranslation"
 	modelName="customTranslation"
-	defaultAuthorizationRole="ROLE_SUPERVISOR">
+	defaultAuthorizationRole="ROLE_ADMIN">
 	
 	<component type="window" name="window" reference="window">
 		<ribbon>

@@ -25,23 +25,22 @@
 
 -->
 <plugin plugin="qcadooSecurity" group="framework" version="${qcadoo.plugin.version}"
-	system="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns="http://schema.qcadoo.org/plugin" xmlns:model="http://schema.qcadoo.org/modules/model"
-	xmlns:view="http://schema.qcadoo.org/modules/view" xmlns:security="http://schema.qcadoo.org/modules/security"
-	xmlns:localization="http://schema.qcadoo.org/modules/localization"
-	xsi:schemaLocation="
-		http://schema.qcadoo.org/plugin 
+        system="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://schema.qcadoo.org/plugin" xmlns:model="http://schema.qcadoo.org/modules/model"
+        xmlns:security="http://schema.qcadoo.org/modules/security"
+        xmlns:localization="http://schema.qcadoo.org/modules/localization"
+        xsi:schemaLocation="http://schema.qcadoo.org/plugin
 		http://schema.qcadoo.org/plugin.xsd 
 		http://schema.qcadoo.org/modules/model 
 		http://schema.qcadoo.org/modules/model.xsd 
-		http://schema.qcadoo.org/modules/view 
-		http://schema.qcadoo.org/modules/view.xsd 
+
+
 		http://schema.qcadoo.org/modules/security 
 		http://schema.qcadoo.org/modules/security.xsd 
 		http://schema.qcadoo.org/modules/localization 
 		http://schema.qcadoo.org/modules/localization.xsd">
 
-	<information>
+    <information>
 		<name>Qcadoo Framework Security</name>
 		<vendor>
 			<name>Qcadoo Limited</name>
@@ -63,13 +62,10 @@
 		<model:model model="persistentToken" resource="model/persistentToken.xml" />
 
 		<security:user-group name="01admins" role="ROLE_ADMIN" />
-		<security:user-group name="02supervisors" role="ROLE_SUPERVISOR" />
 		<security:user-group name="03users" role="ROLE_USER" />
 		<security:user-group name="04superAdmins" role="ROLE_SUPERADMIN" />
 		<security:user login="admin" password="admin" lastName="generated admin"
 			groupName="01admins" />
-		<!-- <security:user login="demo" password="demo" lastName="generated demo" 
-			groupName="02supervisors"/> -->
 
 		<localization:translation path="locales" />
 		<localization:translation-group name="security"

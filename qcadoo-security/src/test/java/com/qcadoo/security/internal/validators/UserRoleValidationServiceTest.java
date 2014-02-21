@@ -23,10 +23,7 @@
  */
 package com.qcadoo.security.internal.validators;
 
-import static com.qcadoo.security.constants.QcadooSecurityConstants.ROLE_ADMIN;
-import static com.qcadoo.security.constants.QcadooSecurityConstants.ROLE_SUPERADMIN;
-import static com.qcadoo.security.constants.QcadooSecurityConstants.ROLE_SUPERVISOR;
-import static com.qcadoo.security.constants.QcadooSecurityConstants.ROLE_USER;
+import static com.qcadoo.security.constants.QcadooSecurityConstants.*;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
@@ -371,20 +368,6 @@ public class UserRoleValidationServiceTest {
         // given
         stubSecurityContextWithAuthentication();
         stubRoleTransition(ROLE_ADMIN, ROLE_SUPERADMIN);
-
-        // when
-        final boolean isValid = userRoleValidationService.checkUserCreatingSuperadmin(userDataDefMock, userEntityMock);
-
-        // then
-        assertFalse(isValid);
-        verify(userEntityMock).addError(Mockito.eq(userRoleFieldDefMock), Mockito.anyString());
-    }
-
-    @Test
-    public final void shouldMarkTransitionFromSupervisorToSuperadminAsInvalid() {
-        // given
-        stubSecurityContextWithAuthentication();
-        stubRoleTransition(ROLE_SUPERVISOR, ROLE_SUPERADMIN);
 
         // when
         final boolean isValid = userRoleValidationService.checkUserCreatingSuperadmin(userDataDefMock, userEntityMock);

@@ -30,7 +30,7 @@
 	modelPlugin="qcadooCustomTranslation"
 	modelName="customTranslation"
 	menuAccessible="true"
-	defaultAuthorizationRole="ROLE_SUPERVISOR">
+	defaultAuthorizationRole="ROLE_ADMIN">
 	
 	<component type="window" name="window">
 		<ribbon>
