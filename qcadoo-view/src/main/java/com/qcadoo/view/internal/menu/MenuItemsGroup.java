@@ -26,6 +26,8 @@ package com.qcadoo.view.internal.menu;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -115,5 +117,24 @@ public final class MenuItemsGroup {
         itemObject.put("items", itemsArray);
         itemObject.put("description", description);
         return itemObject;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        MenuItemsGroup that = (MenuItemsGroup) o;
+        return new EqualsBuilder().append(label, that.label).append(name, that.name).append(description, that.description)
+                .append(items, that.items).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder().append(label).append(name).toHashCode();
     }
 }

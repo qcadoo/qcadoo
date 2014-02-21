@@ -23,26 +23,29 @@
  */
 package com.qcadoo.view.internal.menu;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.qcadoo.model.api.DataDefinition;
-import com.qcadoo.model.api.DataDefinitionService;
+import com.google.common.base.Preconditions;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.aop.Monitorable;
-import com.qcadoo.model.api.search.SearchOrders;
-import com.qcadoo.model.api.search.SearchRestrictions;
 import com.qcadoo.plugin.api.PluginUtils;
 import com.qcadoo.security.api.SecurityRole;
 import com.qcadoo.security.api.SecurityRolesService;
 import com.qcadoo.view.api.utils.TranslationUtilsService;
+import com.qcadoo.view.constants.MenuCategoryFields;
+import com.qcadoo.view.constants.MenuItemFields;
+import com.qcadoo.view.constants.QcadooViewConstants;
+import com.qcadoo.view.constants.ViewFields;
 import com.qcadoo.view.internal.api.InternalMenuService;
 import com.qcadoo.view.internal.api.ViewDefinitionService;
+import com.qcadoo.view.internal.menu.definitions.MenuCategoryDefinition;
+import com.qcadoo.view.internal.menu.definitions.MenuItemDefinition;
 import com.qcadoo.view.internal.menu.items.UrlMenuItem;
 import com.qcadoo.view.internal.menu.items.ViewDefinitionMenuItemItem;
 import com.qcadoo.view.internal.security.SecurityViewDefinitionRoleResolver;
@@ -50,8 +53,12 @@ import com.qcadoo.view.internal.security.SecurityViewDefinitionRoleResolver;
 @Service
 public final class MenuServiceImpl implements InternalMenuService {
 
+    private static final String ADMINISTRATION_CATEGORY = "administration";
+
+    private static final String HOME_CATEGORY = "home";
+
     @Autowired
-    private DataDefinitionService dataDefinitionService;
+    private MenuCrudService menuCrudService;
 
     @Autowired
     private SecurityRolesService securityRolesService;
@@ -65,73 +72,23 @@ public final class MenuServiceImpl implements InternalMenuService {
     @Autowired
     private ViewDefinitionService viewDefinitionService;
 
-    private static final String VIEW = "view";
-
-    private static final String ITEM = "item";
-
-    private static final String PLUGIN_IDENTIFIER = "pluginIdentifier";
-
-    private static final String NAME = "name";
-
-    private static final String CATEGORY = "category";
-
-    private static final String SUCCESSION = "succession";
-
-    private static final String URL = "url";
-
     @Override
     @Transactional(readOnly = true)
     @Monitorable
     public MenuDefinition getMenu(final Locale locale) {
-
         MenuDefinition menuDefinition = new MenuDefinition();
 
-        List<Entity> menuCategories = getDataDefinition(CATEGORY).find().addOrder(SearchOrders.asc(SUCCESSION)).list()
-                .getEntities();
-
+        List<Entity> menuCategories = menuCrudService.getSortedMenuCategories();
         for (Entity menuCategory : menuCategories) {
-            String label = menuCategory.getStringField(NAME);
-            String categoryDescription = translationUtilsService.getCategoryDescriptionTranslation(menuCategory, locale);
-
-            if (menuCategory.getStringField(PLUGIN_IDENTIFIER) != null) {
-                label = translationUtilsService.getCategoryTranslation(menuCategory, locale);
+            String authRoleIdentifier = menuCategory.getStringField(MenuCategoryFields.AUTH_ROLE);
+            if (!currentUserHasPrivilegesOf(authRoleIdentifier)) {
+                continue;
             }
 
-            MenuItemsGroup category = new MenuItemsGroup(menuCategory.getStringField(NAME), label, categoryDescription);
-
-            List<Entity> menuItems = getDataDefinition(ITEM).find().add(SearchRestrictions.belongsTo(CATEGORY, menuCategory))
-                    .addOrder(SearchOrders.asc(SUCCESSION)).list().getEntities();
-
-            for (Entity menuItem : menuItems) {
-                if (!(Boolean) menuItem.getField("active")) {
-                    continue;
-                }
-
-                Entity menuView = menuItem.getBelongsToField(VIEW);
-
-                String itemLabel = menuItem.getStringField(NAME);
-                String itemDescription = translationUtilsService.getItemDescriptionTranslation(menuItem, locale);
-
-                if (menuItem.getStringField(PLUGIN_IDENTIFIER) != null) {
-                    itemLabel = translationUtilsService.getItemTranslation(menuItem, locale);
-                }
-
-                if (canAccess(menuView.getStringField(PLUGIN_IDENTIFIER), menuView.getStringField(NAME))) {
-                    MenuItem newMenuItem = null;
-                    if (menuView.getStringField(URL) == null) {
-                        newMenuItem = new ViewDefinitionMenuItemItem(menuItem.getStringField(NAME), itemLabel, itemDescription,
-                                menuView.getStringField(PLUGIN_IDENTIFIER), menuView.getStringField(NAME));
-                    } else {
-                        newMenuItem = new UrlMenuItem(menuItem.getStringField(NAME), itemLabel, itemDescription, null,
-                                menuView.getStringField(URL));
-                    }
-                    category.addItem(newMenuItem);
-                }
-            }
-
-            if ("administration".equals(category.getName())) {
+            MenuItemsGroup category = buildCategoryWithItems(menuCategory, locale);
+            if (ADMINISTRATION_CATEGORY.equals(category.getName())) {
                 menuDefinition.setAdministrationCategory(category);
-            } else if ("home".equals(category.getName())) {
+            } else if (HOME_CATEGORY.equals(category.getName())) {
                 menuDefinition.setHomeCategory(category);
             } else if (!category.getItems().isEmpty()) {
                 menuDefinition.addItem(category);
@@ -141,165 +98,181 @@ public final class MenuServiceImpl implements InternalMenuService {
         return menuDefinition;
     }
 
-    private boolean canAccess(final String pluginIdentifier, final String viewName) {
+    private MenuItemsGroup buildCategoryWithItems(final Entity menuCategory, final Locale locale) {
+        MenuItemsGroup category = buildMenuCategory(menuCategory, locale);
+        Iterable<Entity> menuItems = menuCrudService.getSortedMenuCategoryItems(menuCategory);
+        for (Entity menuItem : menuItems) {
+            if (!menuItem.getBooleanField(MenuItemFields.ACTIVE)
+                    || !currentUserHasPrivilegesOf(menuItem.getStringField(MenuItemFields.AUTH_ROLE))) {
+                continue;
+            }
+            Entity menuView = menuItem.getBelongsToField(MenuItemFields.VIEW);
+            if (canAccessView(menuView.getStringField(ViewFields.PLUGIN_IDENTIFIER), menuView.getStringField(ViewFields.NAME))) {
+                category.addItem(buildMenuItem(menuItem, locale, menuView));
+            }
+        }
+        return category;
+    }
+
+    private MenuItemsGroup buildMenuCategory(final Entity menuCategory, final Locale locale) {
+        String categoryName = menuCategory.getStringField(MenuCategoryFields.NAME);
+        String categoryDescription = translationUtilsService.getCategoryDescriptionTranslation(menuCategory, locale);
+        String categoryLabel = categoryName;
+        if (menuCategory.getStringField(MenuCategoryFields.PLUGIN_IDENTIFIER) != null) {
+            categoryLabel = translationUtilsService.getCategoryTranslation(menuCategory, locale);
+        }
+
+        return new MenuItemsGroup(categoryName, categoryLabel, categoryDescription);
+    }
+
+    private SecurityRole getAuthorizationRole(final String roleIdentifierOrNull) {
+        String roleIdentifierOrDefault = (String) ObjectUtils.defaultIfNull(roleIdentifierOrNull, "ROLE_USER");
+        SecurityRole role = securityRolesService.getRoleByIdentifier(roleIdentifierOrDefault);
+        Preconditions.checkState(role != null, String.format("No such role: '%s'", roleIdentifierOrDefault));
+        return role;
+    }
+
+    private String getItemLabel(final Entity menuItem, final Locale locale) {
+        String itemLabel = menuItem.getStringField(MenuItemFields.NAME);
+        if (menuItem.getStringField(MenuItemFields.PLUGIN_IDENTIFIER) != null) {
+            itemLabel = translationUtilsService.getItemTranslation(menuItem, locale);
+        }
+        return itemLabel;
+    }
+
+    private MenuItem buildMenuItem(final Entity menuItem, final Locale locale, final Entity menuView) {
+        String itemDescription = translationUtilsService.getItemDescriptionTranslation(menuItem, locale);
+        String itemLabel = getItemLabel(menuItem, locale);
+        String itemName = menuItem.getStringField(MenuItemFields.NAME);
+        if (menuView.getStringField(ViewFields.URL) == null) {
+            String viewPlugin = menuView.getStringField(ViewFields.PLUGIN_IDENTIFIER);
+            String viewName = menuView.getStringField(ViewFields.NAME);
+            return new ViewDefinitionMenuItemItem(itemName, itemLabel, itemDescription, viewPlugin, viewName);
+        } else {
+            String viewUrl = menuView.getStringField(ViewFields.URL);
+            return new UrlMenuItem(itemName, itemLabel, itemDescription, null, viewUrl);
+        }
+    }
+
+    private boolean canAccessView(final String pluginIdentifier, final String viewName) {
         if (!PluginUtils.isEnabled(pluginIdentifier)) {
             return false;
         }
-
         SecurityRole viewRole = viewDefinitionRoleResolver.getRoleForView(pluginIdentifier, viewName);
-        if (!securityRolesService.canAccess(viewRole)) {
-            return false;
-        }
+        return securityRolesService.canAccess(viewRole);
+    }
 
-        return true;
+    private boolean currentUserHasPrivilegesOf(final String roleIdentifier) {
+        SecurityRole authRole = getAuthorizationRole(roleIdentifier);
+        return securityRolesService.canAccess(authRole);
     }
 
     @Override
     @Transactional
-    public void addView(final String pluginIdentifier, final String viewName, final String view, final String url) {
-        Entity menuView = getView(pluginIdentifier, viewName);
+    public void addView(final MenuItemDefinition itemDefinition) {
+        Entity menuView = menuCrudService.getView(itemDefinition);
 
         if (menuView != null) {
             return;
         }
 
-        if ((url == null) && !viewDefinitionService.viewExists(pluginIdentifier, viewName)) {
-            throw new IllegalStateException("View " + pluginIdentifier + "/" + view + " does not exist.");
-        }
+        boolean hasUrlOrViewExists = itemDefinition.getUrl() != null
+                || viewDefinitionService.viewExists(itemDefinition.getViewPluginIdentifier(), itemDefinition.getViewName());
 
-        menuView = getDataDefinition(VIEW).create();
-        menuView.setField(PLUGIN_IDENTIFIER, pluginIdentifier);
-        menuView.setField(NAME, viewName);
-        menuView.setField(URL, url);
-        menuView.setField(VIEW, view);
-        getDataDefinition(VIEW).save(menuView);
+        Preconditions.checkState(hasUrlOrViewExists, String.format("View %s/%s does not exist",
+                itemDefinition.getViewPluginIdentifier(), itemDefinition.getViewName()));
+
+        menuView = menuCrudService.createEntity(QcadooViewConstants.MODEL_VIEW);
+        menuView.setField(ViewFields.PLUGIN_IDENTIFIER, itemDefinition.getViewPluginIdentifier());
+        menuView.setField(ViewFields.NAME, itemDefinition.getViewName());
+        if (itemDefinition.getUrl() == null) {
+            menuView.setField(ViewFields.VIEW, itemDefinition.getViewName());
+        } else {
+            menuView.setField(ViewFields.URL, itemDefinition.getUrl());
+        }
+        menuCrudService.save(menuView);
     }
 
     @Override
     @Transactional
-    public void removeView(final String pluginIdentifier, final String viewName) {
-        Entity menuView = getView(pluginIdentifier, viewName);
+    public void removeView(final MenuItemDefinition itemDefinition) {
+        Entity menuView = menuCrudService.getView(itemDefinition);
         if (menuView == null) {
             return;
         }
-
-        Collection<Entity> itemsToThisView = getItemsToView(menuView);
-        for (Entity itemToThisView : itemsToThisView) {
-            getDataDefinition(ITEM).delete(itemToThisView.getId());
-        }
-
-        getDataDefinition(VIEW).delete(menuView.getId());
+        menuCrudService.delete(menuView);
     }
 
     @Override
     @Transactional
-    public void createCategory(final String pluginIdentifier, final String categoryName) {
-        Entity menuCategory = getCategory(pluginIdentifier, categoryName);
-
+    public void createCategory(final MenuCategoryDefinition menuCategoryDefinition) {
+        Entity menuCategory = menuCrudService.getCategory(menuCategoryDefinition);
         if (menuCategory != null) {
             return;
         }
 
-        menuCategory = getDataDefinition(CATEGORY).create();
-        menuCategory.setField(PLUGIN_IDENTIFIER, pluginIdentifier);
-        menuCategory.setField(NAME, categoryName);
+        menuCategory = menuCrudService.createEntity(QcadooViewConstants.MODEL_CATEGORY);
+        menuCategory.setField(MenuCategoryFields.PLUGIN_IDENTIFIER, menuCategoryDefinition.getPluginIdentifier());
+        menuCategory.setField(MenuCategoryFields.NAME, menuCategoryDefinition.getName());
         menuCategory.setField("accessible", true);
-        menuCategory.setField(SUCCESSION, getTotalNumberOfCategories());
-        getDataDefinition(CATEGORY).save(menuCategory);
+        menuCategory.setField(MenuCategoryFields.SUCCESSION, menuCrudService.getTotalNumberOfCategories());
+        menuCategory.setField(MenuCategoryFields.AUTH_ROLE, menuCategoryDefinition.getAuthRole());
+        menuCrudService.save(menuCategory);
     }
 
     @Override
     @Transactional
-    public void removeCategory(final String pluginIdentifier, final String categoryName) {
-        Entity menuCategory = getCategory(pluginIdentifier, categoryName);
-
+    public void removeCategory(final MenuCategoryDefinition menuCategoryDefinition) {
+        Entity menuCategory = menuCrudService.getCategory(menuCategoryDefinition);
         if (menuCategory == null) {
             return;
         }
-
-        if (menuCategory.getHasManyField("items").size() == 0) {
-            getDataDefinition(CATEGORY).delete(menuCategory.getId());
+        if (menuCategory.getHasManyField(MenuCategoryFields.ITEMS).size() == 0) {
+            menuCrudService.delete(menuCategory);
         }
     }
 
     @Override
     @Transactional
-    public void createItem(final String pluginIdentifier, final String name, final String category,
-            final String viewPluginIdentifier, final String viewName) {
-        Entity menuItem = getItem(pluginIdentifier, name);
+    public void createItem(final MenuItemDefinition itemDefinition) {
+        Entity menuItem = menuCrudService.getItem(itemDefinition);
 
-        Entity menuCategory = getCategory(category);
-        Entity menuView = getView(viewPluginIdentifier, viewName);
+        Entity menuCategory = menuCrudService.getCategory(itemDefinition);
+        Entity menuView = menuCrudService.getView(itemDefinition);
 
-        if (menuCategory == null) {
-            throw new IllegalStateException("Cannot find menu category " + category + " for item " + pluginIdentifier + "."
-                    + name);
-        }
+        Preconditions.checkState(
+                menuCategory != null,
+                String.format("Cannot find menu category %s for item %s.%s", itemDefinition.getCategoryName(),
+                        itemDefinition.getPluginIdentifier(), itemDefinition.getName()));
 
-        if (menuView == null) {
-            throw new IllegalStateException("Cannot find menu view " + viewPluginIdentifier + "." + viewName + " for item "
-                    + pluginIdentifier + "." + name);
-        }
+        Preconditions.checkState(menuView != null, String.format("Cannot find menu view %s.%s for item %s.%s",
+                itemDefinition.getViewPluginIdentifier(), itemDefinition.getViewName(), itemDefinition.getPluginIdentifier(),
+                itemDefinition.getName()));
 
         if (menuItem == null) {
-            menuItem = getDataDefinition(ITEM).create();
-            menuItem.setField(PLUGIN_IDENTIFIER, pluginIdentifier);
-            menuItem.setField(NAME, name);
-            menuItem.setField("active", true);
+            menuItem = menuCrudService.createEntity(QcadooViewConstants.MODEL_ITEM);
+            menuItem.setField(MenuItemFields.PLUGIN_IDENTIFIER, itemDefinition.getPluginIdentifier());
+            menuItem.setField(MenuItemFields.NAME, itemDefinition.getName());
+            menuItem.setField(MenuItemFields.ACTIVE, true);
         }
 
-        if (menuItem == null || !menuView.equals(menuItem.getField(VIEW))) {
-            menuItem.setField(VIEW, menuView);
-            menuItem.setField(CATEGORY, menuCategory);
-            menuItem.setField(SUCCESSION, getTotalNumberOfItems(menuCategory));
-            getDataDefinition(ITEM).save(menuItem);
+        if (menuItem == null || !menuView.equals(menuItem.getField(MenuItemFields.VIEW))) {
+            menuItem.setField(MenuItemFields.VIEW, menuView);
+            menuItem.setField(MenuItemFields.CATEGORY, menuCategory);
+            menuItem.setField(MenuItemFields.SUCCESSION, menuCategory.getHasManyField(MenuCategoryFields.ITEMS).size() + 1);
+            menuItem.setField(MenuItemFields.AUTH_ROLE, itemDefinition.getAuthRoleIdentifier());
+            menuCrudService.save(menuItem);
         }
     }
 
     @Override
     @Transactional
-    public void removeItem(final String pluginIdentifier, final String name) {
-        Entity menuItem = getItem(pluginIdentifier, name);
+    public void removeItem(final MenuItemDefinition itemDefinition) {
+        Entity menuItem = menuCrudService.getItem(itemDefinition);
         if (menuItem == null) {
             return;
         }
-        getDataDefinition(ITEM).delete(menuItem.getId());
-    }
-
-    private DataDefinition getDataDefinition(final String entityName) {
-        return dataDefinitionService.get("qcadooView", entityName);
-    }
-
-    private int getTotalNumberOfItems(final Entity category) {
-        return getDataDefinition(ITEM).find().add(SearchRestrictions.belongsTo(CATEGORY, category)).list()
-                .getTotalNumberOfEntities() + 1;
-    }
-
-    private int getTotalNumberOfCategories() {
-        return getDataDefinition(CATEGORY).find().list().getTotalNumberOfEntities() + 1;
-    }
-
-    private Entity getCategory(final String pluginIdentifier, final String categoryName) {
-        return getDataDefinition(CATEGORY).find().add(SearchRestrictions.eq(NAME, categoryName))
-                .add(SearchRestrictions.eq(PLUGIN_IDENTIFIER, pluginIdentifier)).setMaxResults(1).uniqueResult();
-    }
-
-    private Entity getCategory(final String categoryName) {
-        return getDataDefinition(CATEGORY).find().add(SearchRestrictions.eq(NAME, categoryName)).setMaxResults(1).uniqueResult();
-    }
-
-    private Entity getItem(final String pluginIdentifier, final String itemName) {
-        return getDataDefinition(ITEM).find().add(SearchRestrictions.eq(NAME, itemName))
-                .add(SearchRestrictions.eq(PLUGIN_IDENTIFIER, pluginIdentifier)).setMaxResults(1).uniqueResult();
-    }
-
-    private Collection<Entity> getItemsToView(final Entity view) {
-        return getDataDefinition(ITEM).find().add(SearchRestrictions.belongsTo(VIEW, view)).list().getEntities();
-    }
-
-    private Entity getView(final String pluginIdentifier, final String viewName) {
-        return getDataDefinition(VIEW).find().add(SearchRestrictions.eq(NAME, viewName))
-                .add(SearchRestrictions.eq(PLUGIN_IDENTIFIER, pluginIdentifier)).setMaxResults(1).uniqueResult();
+        menuCrudService.delete(menuItem);
     }
 
 }

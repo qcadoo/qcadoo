@@ -32,6 +32,7 @@
 		<string name="name" required="true" />
 		<string name="view" />
 		<string name="url" />
+        <hasMany name="menuItems" model="item" joinField="view" cascade="delete" />
 	</fields>
 	<hooks />
 </model>

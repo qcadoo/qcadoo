@@ -28,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.qcadoo.plugin.api.ModuleFactory;
 import com.qcadoo.view.internal.api.InternalMenuService;
+import com.qcadoo.view.internal.menu.definitions.MenuItemDefinition;
 
 public class MenuViewModuleFactory extends ModuleFactory<MenuModule> {
 
@@ -39,9 +40,12 @@ public class MenuViewModuleFactory extends ModuleFactory<MenuModule> {
         String menuName = getRequiredAttribute(element, "name");
         String menuCategory = getRequiredAttribute(element, "category");
         String menuViewName = getRequiredAttribute(element, "view");
+        String authRoleIdentifier = getAttribute(element, "defaultAuthorizationRole");
 
-        return new MenuModule(getIdentifier(), menuService, pluginIdentifier, menuName, menuCategory, pluginIdentifier,
-                menuViewName, null);
+        MenuItemDefinition menuItemDefinition = MenuItemDefinition.create(pluginIdentifier, menuName, menuCategory,
+                authRoleIdentifier).forView(pluginIdentifier, menuViewName);
+
+        return new MenuModule(getIdentifier(), menuService, menuItemDefinition);
     }
 
     @Override

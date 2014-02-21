@@ -33,6 +33,7 @@
 		<hasMany name="items" model="item" joinField="category"
 			cascade="delete" />
 		<priority name="succession" />
+        <string name="authRole" />
 	</fields>
 	<hooks />
 </model>

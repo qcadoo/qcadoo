@@ -34,6 +34,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,14 +57,7 @@ import com.qcadoo.security.api.SecurityRolesService;
 import com.qcadoo.view.internal.ComponentDefinition;
 import com.qcadoo.view.internal.ComponentOption;
 import com.qcadoo.view.internal.HookDefinition;
-import com.qcadoo.view.internal.api.ComponentCustomEvent;
-import com.qcadoo.view.internal.api.ComponentPattern;
-import com.qcadoo.view.internal.api.ContainerPattern;
-import com.qcadoo.view.internal.api.ContextualHelpService;
-import com.qcadoo.view.internal.api.EnabledAttribute;
-import com.qcadoo.view.internal.api.InternalViewDefinition;
-import com.qcadoo.view.internal.api.InternalViewDefinitionService;
-import com.qcadoo.view.internal.api.ViewDefinition;
+import com.qcadoo.view.internal.api.*;
 import com.qcadoo.view.internal.hooks.HookDefinitionImpl;
 import com.qcadoo.view.internal.hooks.HookFactory;
 import com.qcadoo.view.internal.internal.ViewComponentsResolverImpl;
@@ -121,11 +115,11 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
         }
     }
 
-    private InternalViewDefinition parse(final InputStream dataDefinitionInputStream, final String pluginIdentifier)
+    private InternalViewDefinition parse(final InputStream viewDefinitionInputStream, final String pluginIdentifier)
             throws ViewDefinitionParserNodeException {
         try {
             DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            Document document = documentBuilder.parse(dataDefinitionInputStream);
+            Document document = documentBuilder.parse(viewDefinitionInputStream);
 
             Node root = document.getDocumentElement();
 
@@ -163,22 +157,8 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
             windowHeight = Integer.parseInt(windowHeightStr);
         }
 
-        String authorizationRole = getStringAttribute(viewNode, "defaultAuthorizationRole");
-        SecurityRole role = null;
-        if (authorizationRole != null) {
-            role = securityRolesService.getRoleByIdentifier(authorizationRole);
-            if (role == null) {
-                throw new ViewDefinitionParserNodeException(viewNode, "no such role: '" + authorizationRole + "'");
-            }
-        }
-
-        DataDefinition dataDefinition = null;
-
-        if (getStringAttribute(viewNode, "modelName") != null) {
-            String modelPluginIdentifier = getStringAttribute(viewNode, "modelPlugin") == null ? pluginIdentifier
-                    : getStringAttribute(viewNode, "modelPlugin");
-            dataDefinition = dataDefinitionService.get(modelPluginIdentifier, getStringAttribute(viewNode, "modelName"));
-        }
+        SecurityRole role = getAuthorizationRole(viewNode);
+        DataDefinition dataDefinition = getDataDefinition(viewNode, pluginIdentifier);
 
         ViewDefinitionImpl viewDefinition = new ViewDefinitionImpl(name, pluginIdentifier, role, dataDefinition, menuAccessible,
                 translationService);
@@ -204,12 +184,36 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
         }
 
         viewDefinition.addComponentPattern(root);
-
         viewDefinition.initialize();
-
         viewDefinition.registerViews(viewDefinitionService);
 
         return viewDefinition;
+    }
+
+    private DataDefinition getDataDefinition(final Node viewNode, final String pluginIdentifier) {
+        String modelName = getStringAttribute(viewNode, "modelName");
+        if (modelName != null) {
+            // FIXME maku upgrade commons-lang to version in which defaultIfNull method is generic.
+            // Explicit type casts are so awful :(
+            String modelPluginIdentifier = (String) ObjectUtils.defaultIfNull(getStringAttribute(viewNode, "modelPlugin"),
+                    pluginIdentifier);
+            return dataDefinitionService.get(modelPluginIdentifier, modelName);
+        }
+        return null;
+    }
+
+    private SecurityRole getAuthorizationRole(final Node viewNode) throws ViewDefinitionParserNodeException {
+        String authorizationRole = getStringAttribute(viewNode, "defaultAuthorizationRole");
+        SecurityRole role;
+        if (authorizationRole != null) {
+            role = securityRolesService.getRoleByIdentifier(authorizationRole);
+            if (role == null) {
+                throw new ViewDefinitionParserNodeException(viewNode, "no such role: '" + authorizationRole + "'");
+            }
+        } else {
+            role = securityRolesService.getRoleByIdentifier("ROLE_USER");
+        }
+        return role;
     }
 
     @Override
