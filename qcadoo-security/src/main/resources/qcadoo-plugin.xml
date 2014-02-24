@@ -63,9 +63,9 @@
 		<model:model model="group" resource="model/group.xml" />
 		<model:model model="role" resource="model/role.xml" />
 
-		<security:role name="ROLE_ADMIN" />
-		<security:role name="ROLE_USER" />
-		<security:role name="ROLE_SUPERADMIN" />
+		<security:role identifier="ROLE_ADMIN" />
+		<security:role identifier="ROLE_USER" />
+		<security:role identifier="ROLE_SUPERADMIN" />
 		<security:user-group name="Admin" roles="ROLE_ADMIN" />
 		<security:user-group name="User" roles="ROLE_USER" />
 		<security:user-group name="Super admin" roles="ROLE_SUPERADMIN" />
