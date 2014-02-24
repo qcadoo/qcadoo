@@ -27,55 +27,49 @@ import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.search.SearchRestrictions;
 import com.qcadoo.plugin.api.Module;
+import com.qcadoo.security.internal.role.InternalSecurityRolesService;
+import com.qcadoo.security.internal.role.SimpleSecurityRole;
 
-public class UserModule extends Module {
+public class RoleModule extends Module {
 
-	private final String login;
+	private final String identifier;
 
-	private final String email;
-
-	private final String firstName;
-
-	private final String lastName;
-
-	private final String password;
-
-	private final String groupName;
+	private final String description;
 
 	private final DataDefinitionService dataDefinitionService;
 
-	public UserModule(final String login, final String email, final String firstName, final String lastName,
-	        final String password, final String groupName, final DataDefinitionService dataDefinitionService) {
+	private final InternalSecurityRolesService securityRolesService;
+
+	public RoleModule(final String identifier, final String description, final DataDefinitionService dataDefinitionService,
+	        final InternalSecurityRolesService securityRolesService) {
 		super();
 
-		this.login = login;
-		this.email = email;
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.password = password;
-		this.groupName = groupName;
+		this.identifier = identifier;
+		this.description = description;
 		this.dataDefinitionService = dataDefinitionService;
+		this.securityRolesService = securityRolesService;
 	}
 
 	@Override
 	public void multiTenantEnable() {
-		if (dataDefinitionService.get("qcadooSecurity", "user").find().add(SearchRestrictions.eq("userName", login)).list()
-		        .getTotalNumberOfEntities() > 0) {
+		if (dataDefinitionService.get("qcadooSecurity", "role").find().add(SearchRestrictions.eq("identifier", identifier))
+		        .list().getTotalNumberOfEntities() > 0) {
 			return;
 		}
 
-		Entity group = dataDefinitionService.get("qcadooSecurity", "group").find().add(SearchRestrictions.eq("name", groupName))
-		        .list().getEntities().get(0);
+		Entity entity = dataDefinitionService.get("qcadooSecurity", "role").create();
+		entity.setField("identifier", identifier);
+		entity.setField("description", description);
+		dataDefinitionService.get("qcadooSecurity", "role").save(entity);
+	}
 
-		Entity entity = dataDefinitionService.get("qcadooSecurity", "user").create();
-		entity.setField("userName", login);
-		entity.setField("email", email);
-		entity.setField("firstName", firstName);
-		entity.setField("lastName", lastName);
-		entity.setField("password", password);
-		entity.setField("passwordConfirmation", password);
-		entity.setField("enabled", true);
-		entity.setField("group", group);
-		dataDefinitionService.get("qcadooSecurity", "user").save(entity);
+	@Override
+	public void enableOnStartup() {
+		securityRolesService.addRole(new SimpleSecurityRole(identifier, true));
+	}
+
+	@Override
+	public void enable() {
+		enableOnStartup();
 	}
 }

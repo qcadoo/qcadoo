@@ -32,7 +32,6 @@
 			<validatesRegex pattern="^[a-zA-Z0-9\\.@]+$"
 				message="qcadooSecurity.validate.global.error.loginIllegalCharacters" />
 		</string>
-		<enum name="role" values="" required="true"/>
 		<string name="email">
 			<validatesWith class="com.qcadoo.security.internal.validators.EmailValidationService" method="checkEmail"/>
 		</string>
@@ -48,6 +47,7 @@
 		<password name="oldPassword" persistent="false" />
 		<string name="viewIdentifier" persistent="false" />
 		<datetime name="lastActivity" />
+		<belongsTo name="group" model="group" required="true"/>
 	</fields>
 	<hooks>
 		<validatesWith class="com.qcadoo.security.internal.validators.PasswordValidationService"

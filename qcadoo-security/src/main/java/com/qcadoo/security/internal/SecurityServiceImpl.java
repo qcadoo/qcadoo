@@ -63,145 +63,147 @@ import com.qcadoo.security.internal.api.QcadooUser;
 public class SecurityServiceImpl implements InternalSecurityService, UserDetailsService, PersistentTokenRepository,
         ApplicationListener<AuthorizedEvent> {
 
-    private static final String L_USER_NAME = "userName";
+	private static final String L_USER_NAME = "userName";
 
-    @Autowired
-    private DataDefinitionService dataDefinitionService;
+	@Autowired
+	private DataDefinitionService dataDefinitionService;
 
-    @Autowired
-    private SecurityRolesService securityRolesService;
+	@Autowired
+	private SecurityRolesService securityRolesService;
 
-    @Override
-    public void onApplicationEvent(final AuthorizedEvent event) {
-        UserDetails userDetails = (UserDetails) event.getAuthentication().getPrincipal();
-        Entity entity = dataDefinitionService.get(PLUGIN_IDENTIFIER, MODEL_USER).find()
-                .add(SearchRestrictions.eq(L_USER_NAME, userDetails.getUsername())).uniqueResult();
-        Calendar now = Calendar.getInstance();
-        now.add(Calendar.DAY_OF_YEAR, -1);
-        if (entity.getField("lastActivity") == null || now.getTime().after((Date) entity.getField("lastActivity"))) {
-            entity.setField("lastActivity", new Date());
+	@Override
+	public void onApplicationEvent(final AuthorizedEvent event) {
+		UserDetails userDetails = (UserDetails) event.getAuthentication().getPrincipal();
+		Entity entity = dataDefinitionService.get(PLUGIN_IDENTIFIER, MODEL_USER).find()
+		        .add(SearchRestrictions.eq(L_USER_NAME, userDetails.getUsername())).uniqueResult();
+		Calendar now = Calendar.getInstance();
+		now.add(Calendar.DAY_OF_YEAR, -1);
+		if (entity.getField("lastActivity") == null || now.getTime().after((Date) entity.getField("lastActivity"))) {
+			entity.setField("lastActivity", new Date());
 
-            dataDefinitionService.get(PLUGIN_IDENTIFIER, MODEL_USER).save(entity);
-        }
-    }
+			dataDefinitionService.get(PLUGIN_IDENTIFIER, MODEL_USER).save(entity);
+		}
+	}
 
-    @Override
-    @Monitorable
-    public String getCurrentUserName() {
-        if (SecurityContextHolder.getContext() == null || SecurityContextHolder.getContext().getAuthentication() == null
-                || SecurityContextHolder.getContext().getAuthentication().getName() == null) {
-            return null;
-        }
-        String login = SecurityContextHolder.getContext().getAuthentication().getName();
-        Entity entity = getUserEntity(SecurityContextHolder.getContext().getAuthentication().getName());
-        checkNotNull(entity, "Current user with login %s cannot be found", login);
-        return entity.getStringField(L_USER_NAME);
-    }
+	@Override
+	@Monitorable
+	public String getCurrentUserName() {
+		if (SecurityContextHolder.getContext() == null || SecurityContextHolder.getContext().getAuthentication() == null
+		        || SecurityContextHolder.getContext().getAuthentication().getName() == null) {
+			return null;
+		}
+		String login = SecurityContextHolder.getContext().getAuthentication().getName();
+		Entity entity = getUserEntity(SecurityContextHolder.getContext().getAuthentication().getName());
+		checkNotNull(entity, "Current user with login %s cannot be found", login);
+		return entity.getStringField(L_USER_NAME);
+	}
 
-    @Override
-    public List<QcadooUser> getUsers() {
-        List<Entity> userEntities = dataDefinitionService.get(PLUGIN_IDENTIFIER, MODEL_USER).find()
-                .addOrder(SearchOrders.asc(L_USER_NAME)).list().getEntities();
-        List<QcadooUser> users = new LinkedList<QcadooUser>();
-        for (Entity userEntity : userEntities) {
-            users.add(new QcadooUser(userEntity));
-        }
-        return users;
-    }
+	@Override
+	public List<QcadooUser> getUsers() {
+		List<Entity> userEntities = dataDefinitionService.get(PLUGIN_IDENTIFIER, MODEL_USER).find()
+		        .addOrder(SearchOrders.asc(L_USER_NAME)).list().getEntities();
+		List<QcadooUser> users = new LinkedList<QcadooUser>();
+		for (Entity userEntity : userEntities) {
+			users.add(new QcadooUser(userEntity));
+		}
+		return users;
+	}
 
-    @Override
-    public Entity getUserEntity(final String login) {
-        return dataDefinitionService.get(PLUGIN_IDENTIFIER, MODEL_USER).find().add(SearchRestrictions.eq(L_USER_NAME, login))
-                .setMaxResults(1).uniqueResult();
-    }
+	@Override
+	public Entity getUserEntity(final String login) {
+		return dataDefinitionService.get(PLUGIN_IDENTIFIER, MODEL_USER).find().add(SearchRestrictions.eq(L_USER_NAME, login))
+		        .setMaxResults(1).uniqueResult();
+	}
 
-    @Override
-    @Monitorable
-    public Long getCurrentUserId() {
-        String login = SecurityContextHolder.getContext().getAuthentication().getName();
-        Entity entity = getUserEntity(login);
-        checkNotNull(entity, "Current user with login %s cannot be found", login);
-        return entity.getId();
-    }
+	@Override
+	@Monitorable
+	public Long getCurrentUserId() {
+		String login = SecurityContextHolder.getContext().getAuthentication().getName();
+		Entity entity = getUserEntity(login);
+		checkNotNull(entity, "Current user with login %s cannot be found", login);
+		return entity.getId();
+	}
 
-    @Override
-    @Monitorable
-    public UserDetails loadUserByUsername(final String username) {
-        Entity entity = getUserEntity(username);
+	@Override
+	@Monitorable
+	public UserDetails loadUserByUsername(final String username) {
+		Entity entity = getUserEntity(username);
 
-        if (entity == null) {
-            throw new UsernameNotFoundException("Username " + username + " not found");
-        }
+		if (entity == null) {
+			throw new UsernameNotFoundException("Username " + username + " not found");
+		}
 
-        return convertEntityToUserDetails(entity);
-    }
+		return convertEntityToUserDetails(entity);
+	}
 
-    protected UserDetails convertEntityToUserDetails(final Entity entity) {
-        List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+	protected UserDetails convertEntityToUserDetails(final Entity entity) {
+		List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
 
-        SecurityRole role = securityRolesService.getRoleByName(entity.getStringField("role"));
+		for (Entity entityRole : entity.getBelongsToField("group").getManyToManyField("roles")) {
+			SecurityRole role = securityRolesService.getRoleByIdentifier(entityRole.getStringField("identifier"));
 
-        checkState(role != null, "Role '%s' not defined", entity.getStringField("role"));
+			checkState(role != null, "Role '%s' not defined", entityRole.getStringField("identifier"));
 
-        authorities.add(new GrantedAuthorityImpl(role.getRoleIdentifier()));
+			authorities.add(new GrantedAuthorityImpl(role.getRoleIdentifier()));
+		}
 
-        checkState(!authorities.isEmpty(), "Current user with login %s cannot be found", entity.getStringField(L_USER_NAME));
+		checkState(!authorities.isEmpty(), "Current user with login %s cannot be found", entity.getStringField(L_USER_NAME));
 
-        return new User(entity.getStringField(L_USER_NAME), entity.getStringField("password"), true, true, true, true,
-                authorities);
-    }
+		return new User(entity.getStringField(L_USER_NAME), entity.getStringField("password"), true, true, true, true,
+		        authorities);
+	}
 
-    @Override
-    public void createNewToken(final PersistentRememberMeToken token) {
-        Entity entity = dataDefinitionService.get(PLUGIN_IDENTIFIER, MODEL_PERSISTENT_TOKEN).create();
-        entity.setField(L_USER_NAME, token.getUsername());
-        entity.setField("series", token.getSeries());
-        entity.setField("token", token.getTokenValue());
-        entity.setField("lastUsed", token.getDate());
-        dataDefinitionService.get(PLUGIN_IDENTIFIER, MODEL_PERSISTENT_TOKEN).save(entity);
-    }
+	@Override
+	public void createNewToken(final PersistentRememberMeToken token) {
+		Entity entity = dataDefinitionService.get(PLUGIN_IDENTIFIER, MODEL_PERSISTENT_TOKEN).create();
+		entity.setField(L_USER_NAME, token.getUsername());
+		entity.setField("series", token.getSeries());
+		entity.setField("token", token.getTokenValue());
+		entity.setField("lastUsed", token.getDate());
+		dataDefinitionService.get(PLUGIN_IDENTIFIER, MODEL_PERSISTENT_TOKEN).save(entity);
+	}
 
-    @Override
-    public void updateToken(final String series, final String tokenValue, final Date lastUsed) {
-        Entity entity = getPersistentToken(series);
-        if (entity != null) {
-            entity.setField("token", tokenValue);
-            entity.setField("lastUsed", lastUsed);
-            dataDefinitionService.get(PLUGIN_IDENTIFIER, MODEL_PERSISTENT_TOKEN).save(entity);
-        }
-    }
+	@Override
+	public void updateToken(final String series, final String tokenValue, final Date lastUsed) {
+		Entity entity = getPersistentToken(series);
+		if (entity != null) {
+			entity.setField("token", tokenValue);
+			entity.setField("lastUsed", lastUsed);
+			dataDefinitionService.get(PLUGIN_IDENTIFIER, MODEL_PERSISTENT_TOKEN).save(entity);
+		}
+	}
 
-    @Override
-    public PersistentRememberMeToken getTokenForSeries(final String series) {
-        Entity entity = getPersistentToken(series);
+	@Override
+	public PersistentRememberMeToken getTokenForSeries(final String series) {
+		Entity entity = getPersistentToken(series);
 
-        if (entity == null || getUserEntity(entity.getStringField(L_USER_NAME)) == null) {
-            return null;
-        }
+		if (entity == null || getUserEntity(entity.getStringField(L_USER_NAME)) == null) {
+			return null;
+		}
 
-        return new PersistentRememberMeToken(entity.getStringField(L_USER_NAME), entity.getStringField("series"),
-                entity.getStringField("token"), (Date) entity.getField("lastUsed"));
-    }
+		return new PersistentRememberMeToken(entity.getStringField(L_USER_NAME), entity.getStringField("series"),
+		        entity.getStringField("token"), (Date) entity.getField("lastUsed"));
+	}
 
-    @Override
-    public void removeUserTokens(final String username) {
-        List<Entity> entities = dataDefinitionService.get(PLUGIN_IDENTIFIER, MODEL_PERSISTENT_TOKEN).find()
-                .add(SearchRestrictions.eq(L_USER_NAME, username)).list().getEntities();
+	@Override
+	public void removeUserTokens(final String username) {
+		List<Entity> entities = dataDefinitionService.get(PLUGIN_IDENTIFIER, MODEL_PERSISTENT_TOKEN).find()
+		        .add(SearchRestrictions.eq(L_USER_NAME, username)).list().getEntities();
 
-        for (Entity entity : entities) {
-            dataDefinitionService.get(PLUGIN_IDENTIFIER, MODEL_PERSISTENT_TOKEN).delete(entity.getId());
-        }
-    }
+		for (Entity entity : entities) {
+			dataDefinitionService.get(PLUGIN_IDENTIFIER, MODEL_PERSISTENT_TOKEN).delete(entity.getId());
+		}
+	}
 
-    private Entity getPersistentToken(final String series) {
-        List<Entity> entities = dataDefinitionService.get(PLUGIN_IDENTIFIER, MODEL_PERSISTENT_TOKEN).find()
-                .add(SearchRestrictions.eq("series", series)).list().getEntities();
+	private Entity getPersistentToken(final String series) {
+		List<Entity> entities = dataDefinitionService.get(PLUGIN_IDENTIFIER, MODEL_PERSISTENT_TOKEN).find()
+		        .add(SearchRestrictions.eq("series", series)).list().getEntities();
 
-        if (entities.size() == 1) {
-            return entities.get(0);
-        } else {
-            return null;
-        }
-    }
+		if (entities.size() == 1) {
+			return entities.get(0);
+		} else {
+			return null;
+		}
+	}
 
 }
