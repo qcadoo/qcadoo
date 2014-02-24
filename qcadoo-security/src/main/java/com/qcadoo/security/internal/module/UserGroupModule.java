@@ -23,48 +23,40 @@
  */
 package com.qcadoo.security.internal.module;
 
-import java.util.List;
-
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.DataDefinitionService;
-import com.qcadoo.model.internal.types.EnumType;
-import com.qcadoo.model.internal.types.EnumTypeKey;
+import com.qcadoo.model.api.Entity;
+import com.qcadoo.model.api.search.SearchRestrictions;
 import com.qcadoo.plugin.api.Module;
-import com.qcadoo.security.internal.role.InternalSecurityRolesService;
-import com.qcadoo.security.internal.role.SimpleSecurityRole;
 
 public class UserGroupModule extends Module {
 
-    private final String name;
+	private final String name;
 
-    private final String role;
+	private final String roles;
 
-    private final DataDefinitionService dataDefinitionService;
+	private final DataDefinitionService dataDefinitionService;
 
-    private final InternalSecurityRolesService securityRolesService;
+	public UserGroupModule(final String name, final String roles, final DataDefinitionService dataDefinitionService) {
+		super();
 
-    public UserGroupModule(final String name, final String role, final DataDefinitionService dataDefinitionService,
-            final InternalSecurityRolesService securityRolesService) {
-        super();
+		this.name = name;
+		this.roles = roles;
+		this.dataDefinitionService = dataDefinitionService;
+	}
 
-        this.name = name;
-        this.role = role;
-        this.dataDefinitionService = dataDefinitionService;
-        this.securityRolesService = securityRolesService;
-    }
+	@Override
+	public void multiTenantEnable() {
+		if (dataDefinitionService.get("qcadooSecurity", "group").find().add(SearchRestrictions.eq("name", name)).list()
+		        .getTotalNumberOfEntities() > 0) {
+			return;
+		}
 
-    @Override
-    public void enableOnStartup() {
-        DataDefinition userDataDefinition = dataDefinitionService.get("qcadooSecurity", "user");
-        List<EnumTypeKey> userModelRoles = ((EnumType) userDataDefinition.getField("role").getType()).getKeys();
-        userModelRoles.add(new EnumTypeKey(name, null));
-
-        securityRolesService.addRole(new SimpleSecurityRole(name, role, true));
-    }
-
-    @Override
-    public void enable() {
-        enableOnStartup();
-    }
-
+		Entity entity = dataDefinitionService.get("qcadooSecurity", "group").create();
+		entity.setField("name", name);
+		DataDefinition roleDD = dataDefinitionService.get("qcadooSecurity", "role");
+		entity.setField("roles", roleDD.find().add(SearchRestrictions.in("identifier", (Object[]) roles.split(","))).list()
+		        .getEntities());
+		dataDefinitionService.get("qcadooSecurity", "group").save(entity);
+	}
 }
