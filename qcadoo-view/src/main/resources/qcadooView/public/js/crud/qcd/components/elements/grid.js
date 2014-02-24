@@ -1189,7 +1189,7 @@ QCD.components.elements.Grid = function (element, mainController) {
     }
 
     this.performDelete = function (actionsPerformer) {
-        performOnSelectedEntities("remove", actionsPerformer, translations.confirmDeleteMessage);
+        performOnSelectedEntities("remove", actionsPerformer, translations.confirmDeleteMessage + " (" + getSelectedRowsCount() + ")?");
     };
 
     this.performCopy = function (actionsPerformer) {

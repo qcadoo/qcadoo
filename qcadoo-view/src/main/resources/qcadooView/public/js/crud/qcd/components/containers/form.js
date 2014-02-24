@@ -138,7 +138,7 @@ QCD.components.containers.Form = function(_element, _mainController) {
 	}
 	
 	this.performDelete = function (actionsPerformer) {
-		if (window.confirm(translations.confirmDeleteMessage)) {
+		if (window.confirm(translations.confirmDeleteMessage + (headerEntityIdentifier !== null ? " " + headerEntityIdentifier : "") + "?")) {
 			callEvent("delete", actionsPerformer);
 		}
 	};
