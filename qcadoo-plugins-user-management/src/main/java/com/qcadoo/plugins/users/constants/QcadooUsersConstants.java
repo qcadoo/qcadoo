@@ -25,19 +25,17 @@ package com.qcadoo.plugins.users.constants;
 
 public interface QcadooUsersConstants {
 
-    String PLUGIN_IDENTIFIER = "qcadooUsers";
+	String PLUGIN_IDENTIFIER = "qcadooUsers";
 
-    // VIEW
-    String VIEW_PROFILE = "profile";
+	// VIEW
+	String VIEW_PROFILE = "profile";
 
-    String VIEW_PROFILE_CHANGE_PASSWORD = "profileChangePassword";
+	String VIEW_PROFILE_CHANGE_PASSWORD = "profileChangePassword";
 
-    String VIEW_USER_CHANGE_PASSWORD = "userChangePassword";
+	String VIEW_USER_CHANGE_PASSWORD = "userChangePassword";
 
-    String VIEW_USER_DETAILS = "userDetails";
+	String VIEW_USER_DETAILS = "userDetails";
 
-    String VIEW_USERS_LIST = "usersList";
+	String VIEW_USERS_LIST = "usersList";
 
-    // ROLE
-    String ROLE_SUPERADMIN = "04superAdmins";
 }

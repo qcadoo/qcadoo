@@ -25,7 +25,6 @@ package com.qcadoo.plugins.users.internal;
 
 import org.springframework.stereotype.Service;
 
-import com.qcadoo.plugins.users.constants.QcadooUsersConstants;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.api.components.FieldComponent;
@@ -34,57 +33,46 @@ import com.qcadoo.view.api.components.FormComponent;
 @Service
 public final class UserService {
 
-    public void setPasswordAndOldPasswordAdRequired(final ViewDefinitionState state) {
-        FieldComponent viewIdentifier = (FieldComponent) state.getComponentByReference("viewIdentifierHiddenInput");
-        FieldComponent oldPassword = (FieldComponent) state.getComponentByReference("oldPasswordTextInput");
-        FieldComponent password = (FieldComponent) state.getComponentByReference("passwordTextInput");
-        FieldComponent passwordConfirmation = (FieldComponent) state.getComponentByReference("passwordConfirmationTextInput");
+	public void setPasswordAndOldPasswordAdRequired(final ViewDefinitionState state) {
+		FieldComponent viewIdentifier = (FieldComponent) state.getComponentByReference("viewIdentifierHiddenInput");
+		FieldComponent oldPassword = (FieldComponent) state.getComponentByReference("oldPasswordTextInput");
+		FieldComponent password = (FieldComponent) state.getComponentByReference("passwordTextInput");
+		FieldComponent passwordConfirmation = (FieldComponent) state.getComponentByReference("passwordConfirmationTextInput");
 
-        oldPassword.setRequired(true);
-        password.setRequired(true);
-        passwordConfirmation.setRequired(true);
-        viewIdentifier.setFieldValue("profileChangePassword");
-    }
+		oldPassword.setRequired(true);
+		password.setRequired(true);
+		passwordConfirmation.setRequired(true);
+		viewIdentifier.setFieldValue("profileChangePassword");
+	}
 
-    public void setPasswordAsRequired(final ViewDefinitionState state) {
-        FieldComponent viewIdentifier = (FieldComponent) state.getComponentByReference("viewIdentifierHiddenInput");
-        FieldComponent password = (FieldComponent) state.getComponentByReference("passwordTextInput");
-        FieldComponent passwordConfirmation = (FieldComponent) state.getComponentByReference("passwordConfirmationTextInput");
+	public void setPasswordAsRequired(final ViewDefinitionState state) {
+		FieldComponent viewIdentifier = (FieldComponent) state.getComponentByReference("viewIdentifierHiddenInput");
+		FieldComponent password = (FieldComponent) state.getComponentByReference("passwordTextInput");
+		FieldComponent passwordConfirmation = (FieldComponent) state.getComponentByReference("passwordConfirmationTextInput");
 
-        password.setRequired(true);
-        passwordConfirmation.setRequired(true);
-        viewIdentifier.setFieldValue("userChangePassword");
-    }
+		password.setRequired(true);
+		passwordConfirmation.setRequired(true);
+		viewIdentifier.setFieldValue("userChangePassword");
+	}
 
-    public void hidePasswordOnUpdateForm(final ViewDefinitionState state) {
-        FormComponent form = (FormComponent) state.getComponentByReference("form");
-        FieldComponent password = (FieldComponent) state.getComponentByReference("passwordTextInput");
-        FieldComponent passwordConfirmation = (FieldComponent) state.getComponentByReference("passwordConfirmationTextInput");
-        ComponentState changePasswordButton = state.getComponentByReference("changePasswordButton");
+	public void hidePasswordOnUpdateForm(final ViewDefinitionState state) {
+		FormComponent form = (FormComponent) state.getComponentByReference("form");
+		FieldComponent password = (FieldComponent) state.getComponentByReference("passwordTextInput");
+		FieldComponent passwordConfirmation = (FieldComponent) state.getComponentByReference("passwordConfirmationTextInput");
+		ComponentState changePasswordButton = state.getComponentByReference("changePasswordButton");
 
-        password.setRequired(true);
-        passwordConfirmation.setRequired(true);
+		password.setRequired(true);
+		passwordConfirmation.setRequired(true);
 
-        if (form.getEntityId() == null) {
-            password.setVisible(true);
-            passwordConfirmation.setVisible(true);
-            changePasswordButton.setVisible(false);
-        } else {
-            password.setVisible(false);
-            passwordConfirmation.setVisible(false);
-            changePasswordButton.setVisible(true);
-        }
-    }
-
-    public void disableWhenRoleIsSuperadmin(final ViewDefinitionState state) {
-        FormComponent form = (FormComponent) state.getComponentByReference("form");
-        FieldComponent role = (FieldComponent) state.getComponentByReference("role");
-
-        if ((form.getEntityId() != null) && QcadooUsersConstants.ROLE_SUPERADMIN.equals(role.getFieldValue())) {
-            role.setEnabled(false);
-        } else {
-            role.setEnabled(true);
-        }
-    }
+		if (form.getEntityId() == null) {
+			password.setVisible(true);
+			passwordConfirmation.setVisible(true);
+			changePasswordButton.setVisible(false);
+		} else {
+			password.setVisible(false);
+			passwordConfirmation.setVisible(false);
+			changePasswordButton.setVisible(true);
+		}
+	}
 
 }

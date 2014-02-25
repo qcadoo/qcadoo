@@ -25,21 +25,21 @@ package com.qcadoo.security.constants;
 
 public final class QcadooSecurityConstants {
 
-    private QcadooSecurityConstants() {
-    }
+	private QcadooSecurityConstants() {
+	}
 
-    public static final String PLUGIN_IDENTIFIER = "qcadooSecurity";
+	public static final String PLUGIN_IDENTIFIER = "qcadooSecurity";
 
-    // MODEL
-    public static final String MODEL_PERSISTENT_TOKEN = "persistentToken";
+	// MODEL
+	public static final String MODEL_PERSISTENT_TOKEN = "persistentToken";
 
-    public static final String MODEL_USER = "user";
+	public static final String MODEL_USER = "user";
 
-    // ROLE
-    public static final String ROLE_SUPERADMIN = "04superAdmins";
+	// ROLE
+	public static final String ROLE_SUPERADMIN = "ROLE_SUPERADMIN";
 
-    public static final String ROLE_USER = "03users";
+	public static final String ROLE_ADMIN = "ROLE_ADMIN";
 
-    public static final String ROLE_ADMIN = "01admins";
+	public static final String ROLE_USER = "ROLE_USER";
 
 }
