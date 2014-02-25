@@ -39,9 +39,10 @@ public class UserGroupModuleFactory extends ModuleFactory<UserGroupModule> {
 	@Override
 	protected UserGroupModule parseElement(final String pluginIdentifier, final Element element) {
 		String name = getRequiredAttribute(element, "name");
-		String roles = getAttribute(element, "roles");
+		String roles = getRequiredAttribute(element, "roles");
 
 		checkNotNull(name, "Missing name attribute of " + getIdentifier() + " module");
+		checkNotNull(roles, "Missing roles attribute of " + getIdentifier() + " module");
 
 		return new UserGroupModule(name, roles, dataDefinitionService);
 	}

@@ -23,6 +23,8 @@
  */
 package com.qcadoo.security.internal.validators;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -38,15 +40,15 @@ import com.qcadoo.security.constants.UserFields;
 @Service
 public class UserRoleValidationService {
 
+	// TODO KRNA check adding role super to group, eventually delete super user or group
+
 	@Autowired
 	private SecurityService securityService;
 
 	public boolean checkUserCreatingSuperadmin(final DataDefinition dataDefinition, final Entity entity) {
-		// final Object newValue = entity.getField(UserFields.ROLE);
-		// final Object oldValue = getOldValue(dataDefinition, entity);
-		// return checkUserCreatingSuperadmin(dataDefinition, dataDefinition.getField(UserFields.ROLE), entity, oldValue,
-		// newValue);
-		return true;
+		final Object newValue = entity.getBelongsToField(UserFields.GROUP);
+		final Object oldValue = getOldValue(dataDefinition, entity);
+		return checkUserCreatingSuperadmin(dataDefinition, dataDefinition.getField(UserFields.GROUP), entity, oldValue, newValue);
 	}
 
 	private Object getOldValue(final DataDefinition dataDefinition, final Entity entity) {
@@ -54,14 +56,14 @@ public class UserRoleValidationService {
 			return null;
 		} else {
 			final Entity existingEntity = dataDefinition.get(entity.getId());
-			return existingEntity.getField(UserFields.ROLE);
+			return existingEntity.getBelongsToField(UserFields.GROUP);
 		}
 	}
 
 	private boolean checkUserCreatingSuperadmin(final DataDefinition dataDefinition, final FieldDefinition fieldDefinition,
 	        final Entity entity, final Object oldValue, final Object newValue) {
 		if (Objects.equal(oldValue, newValue) || isCurrentUserShopOrSuperAdmin(dataDefinition)
-		        || !QcadooSecurityConstants.ROLE_SUPERADMIN.equals(newValue)) {
+		        || !isSuperAdmin(entity.getBelongsToField(UserFields.GROUP).getManyToManyField("roles"))) {
 			return true;
 		}
 		entity.addError(fieldDefinition, "qcadooUsers.validate.global.error.forbiddenRole");
@@ -74,11 +76,20 @@ public class UserRoleValidationService {
 		}
 		final Long currentUserId = securityService.getCurrentUserId();
 		final Entity currentUserEntity = userDataDefinition.get(currentUserId);
-		return QcadooSecurityConstants.ROLE_SUPERADMIN.equals(currentUserEntity.getStringField(UserFields.ROLE));
+		return isSuperAdmin(currentUserEntity.getBelongsToField(UserFields.GROUP).getManyToManyField("roles"));
 	}
 
 	private boolean isCalledFromShop() {
 		return SecurityContextHolder.getContext().getAuthentication() == null;
+	}
+
+	private boolean isSuperAdmin(final List<Entity> roles) {
+		for (Entity role : roles) {
+			if (QcadooSecurityConstants.ROLE_SUPERADMIN.equals(role.getStringField("identifier"))) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }
