@@ -33,6 +33,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.google.common.base.Preconditions;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.api.crud.CrudService;
 import com.qcadoo.view.internal.api.InternalComponentState;
@@ -50,6 +51,7 @@ public class CrudServiceImpl implements CrudService {
             final Locale locale) {
 
         InternalViewDefinition viewDefinition = (InternalViewDefinition) viewDefinitionService.get(pluginIdentifier, viewName);
+        Preconditions.checkState(viewDefinition != null, String.format("Can't find view '%s/%s'", pluginIdentifier, viewName));
 
         ModelAndView modelAndView = new ModelAndView("crud/crudView");
 
