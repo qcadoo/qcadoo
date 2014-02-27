@@ -56,6 +56,8 @@ import com.qcadoo.model.api.search.SearchOrders;
 import com.qcadoo.model.api.search.SearchRestrictions;
 import com.qcadoo.security.api.SecurityRole;
 import com.qcadoo.security.api.SecurityRolesService;
+import com.qcadoo.security.constants.GroupFields;
+import com.qcadoo.security.constants.UserFields;
 import com.qcadoo.security.internal.api.InternalSecurityService;
 import com.qcadoo.security.internal.api.QcadooUser;
 
@@ -64,6 +66,10 @@ public class SecurityServiceImpl implements InternalSecurityService, UserDetails
         ApplicationListener<AuthorizedEvent> {
 
 	private static final String L_USER_NAME = "userName";
+
+    private static final String L_TARGET_ROLE_IDENTIFIER_MUST_BE_GIVEN = "targetRoleIdetifier must be given";
+
+    private static final String L_USER_ENTITY_MUST_BE_GIVEN = "User entity must be given";;
 
 	@Autowired
 	private DataDefinitionService dataDefinitionService;
@@ -139,7 +145,7 @@ public class SecurityServiceImpl implements InternalSecurityService, UserDetails
 	protected UserDetails convertEntityToUserDetails(final Entity entity) {
 		List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
 
-		for (Entity entityRole : entity.getBelongsToField("group").getManyToManyField("roles")) {
+		for (Entity entityRole : entity.getBelongsToField(UserFields.GROUP).getManyToManyField(GroupFields.ROLES_FIELD)) {
 			SecurityRole role = securityRolesService.getRoleByIdentifier(entityRole.getStringField("identifier"));
 
 			checkState(role != null, "Role '%s' not defined", entityRole.getStringField("identifier"));
@@ -149,7 +155,7 @@ public class SecurityServiceImpl implements InternalSecurityService, UserDetails
 
 		checkState(!authorities.isEmpty(), "Current user with login %s cannot be found", entity.getStringField(L_USER_NAME));
 
-		return new User(entity.getStringField(L_USER_NAME), entity.getStringField("password"), true, true, true, true,
+		return new User(entity.getStringField(L_USER_NAME), entity.getStringField(UserFields.PASSWORD), true, true, true, true,
 		        authorities);
 	}
 
@@ -205,5 +211,19 @@ public class SecurityServiceImpl implements InternalSecurityService, UserDetails
 			return null;
 		}
 	}
+
+    @Override
+    public boolean hasRole(Entity userEntity, String targetRoleIdetifier) {
+        checkNotNull(targetRoleIdetifier, L_TARGET_ROLE_IDENTIFIER_MUST_BE_GIVEN);
+        checkNotNull(userEntity, L_USER_ENTITY_MUST_BE_GIVEN);
+        
+        List<Entity> roles = userEntity.getBelongsToField(UserFields.GROUP).getManyToManyField(GroupFields.ROLES_FIELD);
+        for (Entity role : roles) {
+            if (targetRoleIdetifier.equals(role.getStringField("identifier"))) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 }
