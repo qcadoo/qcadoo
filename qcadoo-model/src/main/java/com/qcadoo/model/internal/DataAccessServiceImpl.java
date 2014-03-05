@@ -249,6 +249,7 @@ public class DataAccessServiceImpl implements DataAccessService {
             Entity savedInnerEntity = performSave(dataDefinition, innerEntity, alreadySavedEntities, newlySavedEntities);
             savedEntities.add(savedInnerEntity);
             if (!savedInnerEntity.isValid()) {
+                // FIXME maku #QCADOO-388 missing errors propagation.
                 TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             }
         }
