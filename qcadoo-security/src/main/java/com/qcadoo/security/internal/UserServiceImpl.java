@@ -1,5 +1,6 @@
 package com.qcadoo.security.internal;
 
+import static com.qcadoo.model.api.search.SearchRestrictions.eq;
 import static com.qcadoo.model.api.search.SearchRestrictions.idEq;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,13 +24,18 @@ public class UserServiceImpl implements UserService {
     private SecurityService securityService;
 
     @Override
-    public Entity findUserEntity(final Long userId) {
+    public Entity find(final Long userId) {
         return getUserDataDefinition().find().add(idEq(userId)).uniqueResult();
     }
 
     @Override
+    public Entity find(final String userName) {
+        return getUserDataDefinition().find().add(eq(UserFields.USER_NAME, userName)).uniqueResult();
+    }
+
+    @Override
     public Entity getCurrentUserEntity() {
-        return findUserEntity(securityService.getCurrentUserId());
+        return find(securityService.getCurrentUserId());
     }
 
     @Override

@@ -16,7 +16,16 @@ public interface UserService {
      *            id of the user to find
      * @return matching user entity or null
      */
-    Entity findUserEntity(final Long userId);
+    Entity find(final Long userId);
+
+    /**
+     * Find user by name
+     * 
+     * @param userName
+     *            name of the user to find
+     * @return matching user entity or null
+     */
+    Entity find(final String userName);
 
     /**
      * Get current user entity
