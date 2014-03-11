@@ -36,8 +36,8 @@
 		<string name="email">
 			<validatesWith class="com.qcadoo.security.internal.validators.EmailValidationService" method="checkEmail"/>
 		</string>
-		<string name="firstName" />
-		<string name="lastName" />
+		<string name="firstName" required="true" />
+		<string name="lastName" required="true" />
 		<boolean name="enabled" default="true" />
 		<string name="description">
 			<validatesLength max="255" />
@@ -54,7 +54,10 @@
 			method="checkPassword" />
 		<validatesWith class="com.qcadoo.security.internal.validators.UserRoleValidationService"
 			method="checkUserCreatingSuperadmin" />
-		
+
+        <onCreate class="com.qcadoo.security.internal.hooks.UserModelHooks"
+            method="setDefaultNames" />
+
 		<onDelete class="com.qcadoo.security.internal.hooks.UserModelHooks" 
 			method="preventSelfDeletion" />
 	</hooks>

@@ -41,8 +41,8 @@
 		<xs:complexType>	
 			<xs:attribute name="login" type="notEmptyString" use="required" />
 			<xs:attribute name="email" type="notEmptyString" />
-			<xs:attribute name="firstName" type="notEmptyString" />
-			<xs:attribute name="lastName" type="notEmptyString" />
+			<xs:attribute name="firstName" type="notEmptyString" use="required" />
+			<xs:attribute name="lastName" type="notEmptyString" use="required" />
 			<xs:attribute name="password" type="notEmptyString" use="required" />
 			<xs:attribute name="groupName" type="notEmptyString" use="required" />
 		</xs:complexType>
