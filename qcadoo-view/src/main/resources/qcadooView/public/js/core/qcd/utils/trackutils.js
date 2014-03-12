@@ -24,9 +24,6 @@
 var QCDTrack = QCDTrack || {};
 QCDTrack.eventResolver = QCDTrack.eventResolver || {};
 
-
-QCDTrack.eventResolver = QCDTrack.eventResolver || {};
- 
 QCDTrack.eventResolver.formStateDependent = function (valueForNew, valueForExisting) {
     
     return function() {
@@ -40,7 +37,7 @@ QCDTrack.eventResolver.formStateDependent = function (valueForNew, valueForExist
 	    } else {
 	        return valueForNew;
 	    }
-    }
+    };
 };
 
 
