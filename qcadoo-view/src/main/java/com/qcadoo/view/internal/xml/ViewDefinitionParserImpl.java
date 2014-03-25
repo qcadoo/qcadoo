@@ -195,8 +195,8 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
         if (modelName != null) {
             // FIXME maku upgrade commons-lang to version in which defaultIfNull method is generic.
             // Explicit type casts are so awful :(
-            String modelPluginIdentifier = (String) ObjectUtils.defaultIfNull(getStringAttribute(viewNode, "modelPlugin"),
-                    pluginIdentifier);
+            String modelPluginIdentifier = (String) ObjectUtils
+                    .defaultIfNull(getStringAttribute(viewNode, "modelPlugin"), pluginIdentifier);
             return dataDefinitionService.get(modelPluginIdentifier, modelName);
         }
         return null;
@@ -278,7 +278,11 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
         for (int i = 0; i < attributesNodes.getLength(); i++) {
             attributes.put(attributesNodes.item(i).getNodeName(), attributesNodes.item(i).getNodeValue());
         }
-        return new ComponentOption(getStringAttribute(optionNode, "type"), attributes);
+        String type = getStringAttribute(optionNode, "type");
+        if (type == null) {
+            type = getStringAttribute(optionNode, "xsi:type");
+        }
+        return new ComponentOption(type, attributes);
     }
 
     public ComponentPattern parseComponent(final Node componentNode, final ViewDefinition viewDefinition,
@@ -290,8 +294,8 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
         }
 
         try {
-            ComponentPattern component = viewComponentsResolver.getComponentInstance(type,
-                    getComponentDefinition(componentNode, parent, viewDefinition));
+            ComponentPattern component = viewComponentsResolver
+                    .getComponentInstance(type, getComponentDefinition(componentNode, parent, viewDefinition));
             component.parse(componentNode, this);
             return component;
         } catch (IllegalStateException e) {
