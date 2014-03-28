@@ -94,7 +94,7 @@ QCD.PageController = function() {
                 if (typeof form === "undefined") {
                     return;
                 }
-                $(form.element).find("input, textarea").first().focus();
+                $(form.element).find("input, textarea").not(".lookupInputWrapper input").first().focus();
             } catch (e) {
                 console.error(e);
             }
