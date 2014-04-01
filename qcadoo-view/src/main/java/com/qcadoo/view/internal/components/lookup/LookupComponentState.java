@@ -194,7 +194,11 @@ public final class LookupComponentState extends FieldComponentState implements L
 
     @Override
     public boolean isEmpty() {
-        return getFieldValue() == null;
+        return org.apache.commons.lang.StringUtils.isEmpty(autocompleteCode) && !hasSelectedEntity();
+    }
+
+    private boolean hasSelectedEntity() {
+        return getFieldValue() != null;
     }
 
     public Long getFieldValueWithoutSearching() {

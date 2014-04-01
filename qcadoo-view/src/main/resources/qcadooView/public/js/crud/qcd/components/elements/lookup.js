@@ -313,8 +313,9 @@ QCD.components.elements.Lookup = function(_element, _mainController) {
 			return;
 		}
 
-		// awesomeDynamicList isn't so awesome - it steals the focus
-		if (!viewState.isFocused && dataState.autocomplete.code) {
+		// awesomeDynamicList isn't so awesome - it steals the focus.
+        // Focusing shouldn't be performed after back from lookup's modal window.
+		if (!lookupWindow && !viewState.isFocused && dataState.autocomplete.code) {
 			dataState.currentCode = dataState.autocomplete.code;
 			viewState.isFocused = true;
 			$(elements.input).trigger("focus");
@@ -421,7 +422,7 @@ QCD.components.elements.Lookup = function(_element, _mainController) {
 			return;
 		}
 		var url = _this.options.viewName + ".html";
-		
+
 		var params = new Object();
 		if (dataState.contextEntityId) {
 			params["window.grid.belongsToEntityId"] = dataState.contextEntityId;
@@ -439,7 +440,7 @@ QCD.components.elements.Lookup = function(_element, _mainController) {
 	function onModalClose() {
 		lookupWindow = null;
 	}
-	
+
 	function onModalRender(modalWindow) {
 		modalWindow.getComponent("window.grid").setLinkListener(_this);
 	}

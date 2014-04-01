@@ -30,14 +30,14 @@ public interface LookupComponent extends FieldComponent {
 
     /**
      * Returns entity which is selected in lookup
-     * 
+     *
      * @return entity which is selected in lookup or null when entity is not found in database
      */
     Entity getEntity();
 
     /**
      * Gets current criteria modifier parameters value. To modify them use setFilterValue method.
-     * 
+     *
      * @return Current criteria modifier parameters value.
      * @since 1.2.1
      */
@@ -46,16 +46,17 @@ public interface LookupComponent extends FieldComponent {
     /**
      * Sets filter value which will be send to criteria modifier hook. Set this value in beforeRender hook to make it work
      * correctly.
-     * 
+     *
      * @param value
      * @since 1.2.1
      */
     void setFilterValue(FilterValueHolder value);
 
     /**
-     * Check if this lookup doesn't have selected any entity.
-     * 
-     * @return true if this lookup doesn't have selected any entity.
+     * Check if this lookup doesn't have selected any entity and its input is empty.
+     *
+     * @return true if this lookup doesn't have selected any entity and its input is empty.
+     * @since 1.2.1
      */
     boolean isEmpty();
 
