@@ -105,10 +105,10 @@ QCD.components.elements.utils.HeaderUtils.createHeaderComboBox = function(option
 	}
 	
 	select.enable = function() {
-		$(this).attr("disabled", "");
+		$(this).attr("disabled", false);
 	}
 	select.disable = function() {
-		$(this).attr("disabled", "true");
+		$(this).attr("disabled", true);
 	}
 	
 	select.setSelectedValue = function(value) {

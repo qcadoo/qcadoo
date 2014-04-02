@@ -726,7 +726,7 @@ QCD.components.elements.Tree = function(_element, _mainController) {
 		if (! _width) {
 			_width = 300;
 		}
-		if (! _height) {
+		if (! _height || _height < 300) {
 			_height = 300;
 		}
 		contentElement.height(_height - 52);
