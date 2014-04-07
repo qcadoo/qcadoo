@@ -24,8 +24,8 @@
     ***************************************************************************
 
 -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://schema.qcadoo.org/view/component/grid"
-           xmlns="http://schema.qcadoo.org/view/component/grid">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://schema.qcadoo.org/view/components/grid"
+           xmlns="http://schema.qcadoo.org/view/components/grid">
 
     <xs:include schemaLocation="component.xsd"/>
 
