@@ -66,7 +66,7 @@ public class NumberGeneratorServiceTest {
 
     private void stubExistingNumbers(final Iterable<String> numbers) {
         final Collection<Entity> projectionEntities = mockProjectionEntities(numbers);
-        given(numberGeneratorModelHelper.getNumbersProjection(anyString(), anyString(), anyString())).willAnswer(
+        given(numberGeneratorModelHelper.getNumbersProjection(anyString(), anyString(), anyString(), anyString())).willAnswer(
                 new Answer<Collection<Entity>>() {
 
                     @Override
@@ -93,6 +93,11 @@ public class NumberGeneratorServiceTest {
 
     private String performGenerate() {
         return numberGeneratorService.generateNumber(PLUGIN_IDENTIFIER, MODEL_NAME, NumberGeneratorService.DEFAULT_NUM_OF_DIGITS);
+    }
+
+    private String performGenerate(final String prefix) {
+        return numberGeneratorService.generateNumberWithPrefix(PLUGIN_IDENTIFIER, MODEL_NAME,
+                NumberGeneratorService.DEFAULT_NUM_OF_DIGITS, prefix);
     }
 
     @Test
@@ -154,4 +159,53 @@ public class NumberGeneratorServiceTest {
         // then
         Assert.assertEquals("000003", generated);
     }
+
+    @Test
+    public final void shouldReturnNumberWithoutPrefix() {
+        // given
+        stubExistingNumbers(Lists.newArrayList("0002", "1", "000001"));
+
+        // when
+        String generated = performGenerate(null);
+
+        // then
+        Assert.assertEquals("000003", generated);
+    }
+
+    @Test
+    public final void shouldReturnNumberWithEmptyPrefix() {
+        // given
+        stubExistingNumbers(Lists.newArrayList("0002", "1", "000001"));
+
+        // when
+        String generated = performGenerate("");
+
+        // then
+        Assert.assertEquals("000003", generated);
+    }
+
+    @Test
+    public final void shouldReturnNumberWithBlankPrefix() {
+        // given
+        stubExistingNumbers(Lists.newArrayList("0002", "1", "000001"));
+
+        // when
+        String generated = performGenerate("  ");
+
+        // then
+        Assert.assertEquals("  000003", generated);
+    }
+
+    @Test
+    public final void shouldReturnNumberWithPrefix() {
+        // given
+        stubExistingNumbers(Lists.newArrayList("0002", "1", "000001"));
+
+        // when
+        String generated = performGenerate("QCD-1-");
+
+        // then
+        Assert.assertEquals("QCD-1-000003", generated);
+    }
+    
 }

@@ -24,10 +24,14 @@
 package com.qcadoo.view.api.utils;
 
 import java.util.Collection;
+import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.text.StrSubstitutor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.google.common.collect.Maps;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.Entity;
@@ -37,8 +41,14 @@ public class NumberGeneratorModelHelper {
 
     public static final String NUM_PROJECTION_ALIAS = "numProjection";
 
-    private static final String GET_NUMBERS_QUERY_TEMPLATE = "select distinct trim(LEADING '0' from %s) as "
-            + NUM_PROJECTION_ALIAS + " from #%s_%s order by " + NUM_PROJECTION_ALIAS + " desc";
+    private static final String GET_NUMBERS_QUERY_TEMPLATE = "select "
+            + "distinct trim(LEADING '0' from ${NUMBER_FIELD}) as ${NUM_PROJECTION_ALIAS} "
+            + "from #${PLUGIN_IDENTIFIER}_${MODEL_NAME} " + "order by ${NUM_PROJECTION_ALIAS} desc";
+
+    private static final String GET_PREFIX_AWARE_NUMBERS_QUERY_TEMPLATE = "select "
+            + "distinct trim(LEADING '0' from trim(LEADING '${PREFIX}' from ${NUMBER_FIELD})) as ${NUM_PROJECTION_ALIAS} "
+            + "from #${PLUGIN_IDENTIFIER}_${MODEL_NAME} " + "where number like '${PREFIX}%'"
+            + "order by ${NUM_PROJECTION_ALIAS} desc";
 
     @Autowired
     private DataDefinitionService dataDefinitionService;
@@ -53,14 +63,37 @@ public class NumberGeneratorModelHelper {
      *            name of the model
      * @param numberFieldName
      *            name of the field for which number will be generated
+     * @param prefix
+     *            number prefix
      * @return a list of projection entities containing NUM_PROJECTION_ALIAS field with numberFieldName values with trimmed out
      *         leading zeros. List is sorted descendant by numberFieldName.
      */
     public Collection<Entity> getNumbersProjection(final String pluginIdentifier, final String modelName,
-            final String numberFieldName) {
+            final String numberFieldName, final String prefix) {
         DataDefinition dd = dataDefinitionService.get(pluginIdentifier, modelName);
-        String hqlQuery = String.format(GET_NUMBERS_QUERY_TEMPLATE, numberFieldName, pluginIdentifier, modelName);
+        String hqlQuery = buildQuery(pluginIdentifier, modelName, numberFieldName, prefix);
         return dd.find(hqlQuery).list().getEntities();
+    }
+
+    private String buildQuery(final String pluginIdentifier, final String modelName, final String numberFieldName,
+            final String prefix) {
+        Map<String, String> placeholderValues = Maps.newHashMap();
+
+        placeholderValues.put("PLUGIN_IDENTIFIER", pluginIdentifier);
+        placeholderValues.put("MODEL_NAME", modelName);
+        placeholderValues.put("NUMBER_FIELD", numberFieldName);
+        placeholderValues.put("NUM_PROJECTION_ALIAS", NUM_PROJECTION_ALIAS);
+
+        String query;
+        if (StringUtils.isNotEmpty(prefix)) {
+            placeholderValues.put("PREFIX", prefix);
+            query = GET_PREFIX_AWARE_NUMBERS_QUERY_TEMPLATE;
+        } else {
+            query = GET_NUMBERS_QUERY_TEMPLATE;
+        }
+
+        StrSubstitutor substitutor = new StrSubstitutor(placeholderValues, "${", "}");
+        return substitutor.replace(query).toString();
     }
 
 }

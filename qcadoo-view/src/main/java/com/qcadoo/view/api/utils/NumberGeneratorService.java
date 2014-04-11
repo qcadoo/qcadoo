@@ -136,14 +136,39 @@ public class NumberGeneratorService {
      */
     // TODO MAKU move this responsibility to the qcadoo-model
     public String generateNumber(final String pluginIdentifier, final String modelName, final int numOfDigits) {
+        return generateNumberWithPrefix(pluginIdentifier, modelName, numOfDigits, null);
+    }
+
+    /**
+     * Generate new number of entity with specified digits number
+     * 
+     * @param pluginIdentifier
+     *            plugin identifier of entity
+     * @param modelName
+     *            name of entity
+     * @param numOfDigits
+     *            number of digits of generated number
+     * @return new number of entity
+     */
+    // TODO MAKU move this responsibility to the qcadoo-model
+    public String generateNumberWithPrefix(final String pluginIdentifier, final String modelName, final int numOfDigits,
+            final String prefix) {
         Collection<Entity> numberProjections = numberGeneratorModelHelper.getNumbersProjection(pluginIdentifier, modelName,
-                DEFAULT_NUMBER_FIELD_NAME);
+                DEFAULT_NUMBER_FIELD_NAME, prefix);
         Collection<Long> numericValues = extractNumericValues(numberProjections);
         Long greatestNumber = 0L;
         if (!numericValues.isEmpty()) {
             greatestNumber = Ordering.natural().max(numericValues);
         }
-        return String.format("%0" + numOfDigits + "d", greatestNumber + 1);
+        String generatedNumber = String.format("%0" + numOfDigits + "d", greatestNumber + 1);
+        return prependPrefix(prefix, generatedNumber);
+    }
+
+    private String prependPrefix(final String prefix, final String generatedNumber) {
+        if (prefix == null) {
+            return generatedNumber;
+        }
+        return prefix + generatedNumber;
     }
 
     private Collection<Long> extractNumericValues(final Iterable<Entity> numberProjections) {
