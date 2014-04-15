@@ -60,6 +60,7 @@
             </xs:choice>
         </xs:sequence>
         <xs:attribute name="name" type="identifierType" use="required"/>
+        <xs:attribute name="defaultAuthorizationRole" type="xs:string" use="optional"/>
     </xs:complexType>
 
     <xs:complexType name="ribbonComboType">

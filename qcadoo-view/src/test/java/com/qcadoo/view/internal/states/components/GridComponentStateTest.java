@@ -37,9 +37,11 @@ import static org.springframework.test.util.ReflectionTestUtils.getField;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
@@ -58,6 +60,7 @@ import com.qcadoo.model.internal.ExpressionServiceImpl;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.internal.FieldEntityIdChangeListener;
 import com.qcadoo.view.internal.components.grid.GridComponentColumn;
+import com.qcadoo.view.internal.components.grid.GridComponentOrderColumn;
 import com.qcadoo.view.internal.components.grid.GridComponentPattern;
 import com.qcadoo.view.internal.components.grid.GridComponentState;
 import com.qcadoo.view.internal.states.AbstractComponentState;
@@ -98,7 +101,8 @@ public class GridComponentStateTest extends AbstractStateTest {
         jsonContent.put(GridComponentState.JSON_MAX_ENTITIES, 30);
         jsonContent.put(GridComponentState.JSON_FILTERS_ENABLED, true);
 
-        JSONObject jsonOrder = new JSONObject(ImmutableMap.of("column", "asd", "direction", "asc"));
+        JSONArray jsonOrder = new JSONArray();
+        jsonOrder.put(ImmutableMap.of("column", "asd", "direction", "asc"));
 
         jsonContent.put(GridComponentState.JSON_ORDER, jsonOrder);
 
@@ -173,8 +177,9 @@ public class GridComponentStateTest extends AbstractStateTest {
         assertEquals(30, getField(grid, "maxResults"));
         assertTrue((Boolean) getField(grid, "filtersEnabled"));
 
-        assertEquals("asd", getField(grid, "orderColumn"));
-        assertEquals("asc", getField(grid, "orderDirection"));
+        List<GridComponentOrderColumn> orderColumns = (List<GridComponentOrderColumn>) getField(grid, "orderColumns");
+        assertEquals("asd", orderColumns.get(0).getName());
+        assertEquals("asc", orderColumns.get(0).getDirection());
 
         Map<String, String> filters = (Map<String, String>) getField(grid, "filters");
 
@@ -210,8 +215,9 @@ public class GridComponentStateTest extends AbstractStateTest {
         assertEquals(Integer.MAX_VALUE, getField(grid, "maxResults"));
         assertTrue((Boolean) getField(grid, "filtersEnabled"));
 
-        assertNull(getField(grid, "orderColumn"));
-        assertNull(getField(grid, "orderDirection"));
+        List<GridComponentOrderColumn> orderColumns = (List<GridComponentOrderColumn>) getField(grid, "orderColumns");
+
+        assertEquals(0, orderColumns.size());
 
         Map<String, String> filters = (Map<String, String>) getField(grid, "filters");
 

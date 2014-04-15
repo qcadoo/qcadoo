@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -131,9 +132,7 @@ public final class GridComponentState extends AbstractComponentState implements 
 
     private boolean multiSearchEnabled = false;
 
-    private String orderColumn;
-
-    private String orderDirection;
+    private final List<GridComponentOrderColumn> orderColumns = new LinkedList<GridComponentOrderColumn>();
 
     private boolean multiselectMode = false;
 
@@ -169,8 +168,10 @@ public final class GridComponentState extends AbstractComponentState implements 
         super(pattern);
         this.belongsToFieldDefinition = pattern.getBelongsToFieldDefinition();
         this.columns = pattern.getColumns();
-        this.orderColumn = pattern.getDefaultOrderColumn();
-        this.orderDirection = pattern.getDefaultOrderDirection();
+        if (pattern.getDefaultOrderColumn() != null) {
+            this.orderColumns.add(new GridComponentOrderColumn(pattern.getDefaultOrderColumn(), pattern
+                    .getDefaultOrderDirection()));
+        }
         this.activable = pattern.isActivable();
         this.weakRelation = pattern.isWeakRelation();
         this.scopeFieldDataDefinition = dataDefinition;
@@ -245,11 +246,15 @@ public final class GridComponentState extends AbstractComponentState implements 
         if (json.has(JSON_ONLY_ACTIVE) && !json.isNull(JSON_ONLY_ACTIVE) && activable) {
             onlyActive = json.getBoolean(JSON_ONLY_ACTIVE);
         }
-        if (json.has(JSON_ORDER) && !json.isNull(JSON_ORDER)) {
-            JSONObject orderJson = json.getJSONObject(JSON_ORDER);
-            if (orderJson.has(JSON_ORDER_COLUMN) && orderJson.has(JSON_ORDER_DIRECTION)) {
-                orderColumn = orderJson.getString(JSON_ORDER_COLUMN);
-                orderDirection = orderJson.getString(JSON_ORDER_DIRECTION);
+        if (json.has(JSON_ORDER)) {
+            JSONArray orderJson = json.getJSONArray(JSON_ORDER);
+            orderColumns.clear();
+            for (int i = 0; i < orderJson.length(); i++) {
+                JSONObject orderColumn = orderJson.getJSONObject(i);
+                if (orderColumn.has(JSON_ORDER_COLUMN) && orderColumn.has(JSON_ORDER_DIRECTION)) {
+                    orderColumns.add(new GridComponentOrderColumn(orderColumn.getString(JSON_ORDER_COLUMN), orderColumn
+                            .getString(JSON_ORDER_DIRECTION)));
+                }
             }
         }
         if (belongsToFieldDefinition != null && belongsToEntityId == null) {
@@ -267,8 +272,11 @@ public final class GridComponentState extends AbstractComponentState implements 
         if (predefinedFilter == null) {
             return;
         }
-        orderColumn = predefinedFilter.getOrderColumn();
-        orderDirection = predefinedFilter.getOrderDirection();
+        orderColumns.clear();
+        if (predefinedFilter.getOrderColumn() != null) {
+            orderColumns
+                    .add(new GridComponentOrderColumn(predefinedFilter.getOrderColumn(), predefinedFilter.getOrderDirection()));
+        }
         filters.putAll(predefinedFilter.getParsedFilterRestrictions());
     }
 
@@ -346,7 +354,7 @@ public final class GridComponentState extends AbstractComponentState implements 
         }
     }
 
-    private void passCriteriaModifierParameterFromJson(JSONObject json) throws JSONException {
+    private void passCriteriaModifierParameterFromJson(final JSONObject json) throws JSONException {
         if (json.has(JSON_CRITERIA_MODIFIER_PARAMETER) && !json.isNull(JSON_CRITERIA_MODIFIER_PARAMETER)) {
             criteriaModifierParameter.initialize(json.getJSONObject(JSON_CRITERIA_MODIFIER_PARAMETER));
         }
@@ -419,11 +427,15 @@ public final class GridComponentState extends AbstractComponentState implements 
             json.put(JSON_ENTITIES_TO_MARK_WITH_CSS_CLASS, getRowStyles());
         }
 
-        if (orderColumn != null) {
+        JSONArray jsonOrderList = new JSONArray();
+        for (GridComponentOrderColumn orderColumn : orderColumns) {
             JSONObject jsonOrder = new JSONObject();
-            jsonOrder.put(JSON_ORDER_COLUMN, orderColumn);
-            jsonOrder.put(JSON_ORDER_DIRECTION, orderDirection);
-            json.put(JSON_ORDER, jsonOrder);
+            jsonOrder.put(JSON_ORDER_COLUMN, orderColumn.getName());
+            jsonOrder.put(JSON_ORDER_DIRECTION, orderColumn.getDirection());
+            jsonOrderList.put(jsonOrder);
+        }
+        if (!orderColumns.isEmpty()) {
+            json.put(JSON_ORDER, jsonOrderList);
         }
 
         json.put(JSON_FILTERS, new JSONObject(filters));
@@ -765,13 +777,13 @@ public final class GridComponentState extends AbstractComponentState implements 
         }
 
         private void addOrder(final SearchCriteriaBuilder criteria) {
-            if (orderColumn != null) {
-                String field = GridComponentFilterUtils.getFieldNameByColumnName(columns, orderColumn);
+            for (GridComponentOrderColumn orderColumn : orderColumns) {
+                String field = GridComponentFilterUtils.getFieldNameByColumnName(columns, orderColumn.getName());
 
                 field = GridComponentFilterUtils.addAliases(criteria, field);
 
                 if (field != null) {
-                    if ("asc".equals(orderDirection)) {
+                    if ("asc".equals(orderColumn.getDirection())) {
                         criteria.addOrder(SearchOrders.asc(field));
                     } else {
                         criteria.addOrder(SearchOrders.desc(field));
@@ -884,13 +896,13 @@ public final class GridComponentState extends AbstractComponentState implements 
         if (criteriaModifier == null) {
             throw new IllegalStateException("There is no critieria modifier. Filter value is not present.");
         }
- 
+
         FilterValueHolder holder = new FilterValueHolderImpl(criteriaModifierParameter);
         return holder;
     }
 
     @Override
-    public void setFilterValue(FilterValueHolder value) {
+    public void setFilterValue(final FilterValueHolder value) {
         if (criteriaModifier == null) {
             throw new IllegalStateException("There is no critieria modifier, can't set filter value.");
         }

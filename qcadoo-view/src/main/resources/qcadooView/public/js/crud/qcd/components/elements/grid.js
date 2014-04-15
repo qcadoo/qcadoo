@@ -48,7 +48,7 @@ QCD.components.elements.Grid = function (element, mainController) {
         
         grid = null,
         belongsToFieldName = null,
-        currentOrder = {},
+        currentOrder = [],
 
         translations = {},
 
@@ -470,9 +470,9 @@ QCD.components.elements.Grid = function (element, mainController) {
 		if(currentState.multiSearchEnabled !== state.multiSearchEnabled){
 			currentState.multiSearchEnabled = state.multiSearchEnabled;
 		}
-        if (state.order) {
-            setSortColumnAndDirection(state.order);
-        }
+        
+		setSortColumnAndDirection(state.order);
+        
         if (state.filters) {
             currentState.filters = state.filters;
             for (var filterIndex in currentState.filters) {
@@ -495,39 +495,50 @@ QCD.components.elements.Grid = function (element, mainController) {
     };
     
     function setSortColumnAndDirection(order) {
-        if (currentOrder && currentOrder.column === order.column) {
-            if (order.direction === "asc") {
-                $("#" + elementSearchName + "_sortArrow_" + order.column).removeClass("downArrow");
-                $("#" + elementSearchName + "_sortArrow_" + order.column).addClass("upArrow");
-                currentState.order.direction = "asc";
-            } else {
-                $("#" + elementSearchName + "_sortArrow_" + order.column).removeClass("upArrow");
-                $("#" + elementSearchName + "_sortArrow_" + order.column).addClass("downArrow");
-                currentState.order.direction = "desc";
-            }
-        } else {
-            if (currentOrder) {
-                $("#" + gridParameters.modifiedPath + "_grid_" + currentOrder.column).removeClass("sortColumn");
-            }
-
-            $("#" + gridParameters.modifiedPath + "_grid_" + order.column).addClass("sortColumn");
-
-            currentState.order = {
-                column : order.column
-            };
-
-            if (order.direction === "asc") {
-                $("#" + elementSearchName + "_sortArrow_" + order.column).addClass("upArrow");
-                currentState.order.direction = "asc";
-            } else {
-                $("#" + elementSearchName + "_sortArrow_" + order.column).addClass("downArrow");
-                currentState.order.direction = "desc";
-            }
-        }
-        currentOrder = {
-            column : order.column,
-            direction : order.direction
-        };
+    	var stillOrderIndexes = [];
+    	currentState.order = [];
+    	if(order){
+	    	$.each(order, function (i, orderItem){
+	    		var newOrder = true;
+	    		currentState.order.push({
+	    			column : orderItem.column,
+	    			direction : orderItem.direction
+	    		});
+	    		$.each(currentOrder, function (j, currentOrderItem){
+	        		if(currentOrderItem.column === orderItem.column){
+	        			stillOrderIndexes.push(j);
+	        			newOrder = false;
+	        			if(currentOrderItem.direction === "asc" && orderItem.direction === "desc"){
+	        				$("#" + elementSearchName + "_sortArrow_" + orderItem.column).removeClass("upArrow");
+	        				$("#" + elementSearchName + "_sortArrow_" + orderItem.column).addClass("downArrow");
+	        			}
+	        			return;
+	        		}
+	        	});
+	    		if(newOrder){
+	    			$("#" + gridParameters.modifiedPath + "_grid_" + orderItem.column).addClass("sortColumn");
+	    			$("#" + elementSearchName + "_sortArrow_" + orderItem.column).addClass("upArrow");
+	    		}
+	    	});
+    	}
+    	
+    	$.each(currentOrder, function (j, currentOrderItem){
+    		if(stillOrderIndexes.indexOf(j) === -1){
+	    		$("#" + gridParameters.modifiedPath + "_grid_" + currentOrderItem.column).removeClass("sortColumn");
+	    		$("#" + elementSearchName + "_sortArrow_" + currentOrderItem.column).removeClass("downArrow");
+	    	}
+    	});
+    	
+    	currentOrder = [];
+    	if(order){
+    		$.each(order, function (i, orderItem){
+	    		currentOrder.push({
+	    			column : orderItem.column,
+	    			direction : orderItem.direction
+	    		});
+	    	});
+    	}
+    	
     }
     
     function findMatchingPredefiniedFilter() {
@@ -541,14 +552,17 @@ QCD.components.elements.Grid = function (element, mainController) {
             isIdentical = true;
 
             if (gridParameters.predefinedFilters[i].orderColumn) {
-                if (currentState.order.column !== gridParameters.predefinedFilters[i].orderColumn) {
-                    isIdentical = false;
-                    continue;
-                }
-                if (currentState.order.direction !== gridParameters.predefinedFilters[i].orderDirection) {
-                    isIdentical = false;
-                    continue;
-                }
+            	isIdentical = false;
+            	$.each(currentState.order, function (j, currentStateOrderItem){
+	                if (currentStateOrderItem.column === gridParameters.predefinedFilters[i].orderColumn && 
+	                		currentStateOrderItem.direction === gridParameters.predefinedFilters[i].orderDirection) {
+	                    isIdentical = true;
+	                    return;
+	                }
+            	});
+            	if (!isIdentical) {
+            		continue;
+            	}
             }
 
             for (var col in columnModel) {
@@ -667,9 +681,8 @@ QCD.components.elements.Grid = function (element, mainController) {
         }
         aferSelectionUpdate();
 
-        if (value.order) {
-            setSortColumnAndDirection(value.order);
-        }
+        setSortColumnAndDirection(value.order);
+        
         if (value.filters) {
             currentState.filters = value.filters;
             for (var filterIndex in currentState.filters) {
@@ -763,12 +776,25 @@ QCD.components.elements.Grid = function (element, mainController) {
     
     function onSortColumnChange(index, iCol, sortorder) {
         blockGrid();
-        currentState.order.column = index;
-        if (currentState.order.direction === "asc") {
-            currentState.order.direction = "desc";
-        } else {
-            currentState.order.direction = "asc";
-        }
+        var orderIndex = -1;
+        $.each(currentState.order, function (i, currentStateOrderItem){
+    		if(currentStateOrderItem.column === index){
+    			orderIndex = i;
+    			return;
+    		}
+    	});
+    	if(orderIndex === -1){
+    		currentState.order.push({
+    			column: index,
+    			direction: "asc"
+    		});
+    	} else {
+    		if (currentState.order[orderIndex].direction === "asc") {
+    			currentState.order[orderIndex].direction = "desc";
+    		} else {
+    			currentState.order.splice(orderIndex, 1);
+    		}
+    	}
         onCurrentStateChange();
         return 'stop';
     }
@@ -972,10 +998,10 @@ QCD.components.elements.Grid = function (element, mainController) {
             }
         }
 
-        setSortColumnAndDirection({
+        setSortColumnAndDirection(filter.orderColumn ? [{
             column : filter.orderColumn,
             direction : filter.orderDirection
-        });
+        }] : []);
 
         updateSearchFields();
         onFiltersStateChange();

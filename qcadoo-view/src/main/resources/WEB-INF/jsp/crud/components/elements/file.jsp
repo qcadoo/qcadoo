@@ -50,3 +50,6 @@
 		<input type="text" id="${component['path']}_input" tabindex="${component['indexOrder']}" style="display:none" />
 	</tiles:putAttribute>
 </tiles:insertTemplate>
+<c:if test="${component['jspOptions']['thumbnail']}">
+	<img id="${component['path']}_thumbnail" src="#" height="70" style="padding: 5px; float: right;"/>
+</c:if>

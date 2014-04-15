@@ -25,6 +25,8 @@ package com.qcadoo.view.api.ribbon;
 
 import java.util.List;
 
+import com.qcadoo.security.api.SecurityRole;
+
 /**
  * Represents ribbon items group
  * 
@@ -40,6 +42,13 @@ public interface RibbonGroup {
     String getName();
 
     /**
+     * Returns default authorization role necessary to be able to see this ribbon group or null if no such role defined
+     * 
+     * @return default authorization role
+     */
+    SecurityRole getAuthorizationRole();
+
+    /**
      * Get items of this group
      * 
      * @return items of this group
@@ -51,6 +60,6 @@ public interface RibbonGroup {
      * 
      * @return item or null when no item witch such name
      */
-    RibbonActionItem getItemByName(String itemName);
+    RibbonActionItem getItemByName(final String itemName);
 
 }
