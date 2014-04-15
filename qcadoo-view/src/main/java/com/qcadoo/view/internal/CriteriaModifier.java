@@ -72,11 +72,11 @@ public class CriteriaModifier {
     }
 
     public void modifyCriteria(final SearchCriteriaBuilder searchCriteriaBuilder,
-            final FilterValueHolder criteriaModifierParamters) {
+            final FilterValueHolder criteriaModifierParameters) {
         if (sigleParameter) {
             customMethodHolder.invoke(searchCriteriaBuilder);
         } else {
-            customMethodHolder.invoke(searchCriteriaBuilder, criteriaModifierParamters);
+            customMethodHolder.invoke(searchCriteriaBuilder, criteriaModifierParameters);
         }
     }
 

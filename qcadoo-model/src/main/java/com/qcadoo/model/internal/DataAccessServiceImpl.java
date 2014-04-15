@@ -214,7 +214,7 @@ public class DataAccessServiceImpl implements DataAccessService {
     }
 
     private void logEntityErrors(final Entity entity, final String msg) {
-        if (!LOG.isDebugEnabled()) {
+        if (!LOG.isInfoEnabled()) {
             return;
         }
 
@@ -249,6 +249,7 @@ public class DataAccessServiceImpl implements DataAccessService {
             Entity savedInnerEntity = performSave(dataDefinition, innerEntity, alreadySavedEntities, newlySavedEntities);
             savedEntities.add(savedInnerEntity);
             if (!savedInnerEntity.isValid()) {
+                // FIXME maku #QCADOO-388 missing errors propagation.
                 TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             }
         }
@@ -272,8 +273,8 @@ public class DataAccessServiceImpl implements DataAccessService {
             Entity savedInnerEntity = performSave(dataDefinition, innerEntity, alreadySavedEntities, newlySavedEntities);
             savedEntities.add(savedInnerEntity);
             if (children != null) {
-                children = saveTreeEntities(alreadySavedEntities, newlySavedEntities, joinFieldName, id, children,
-                        dataDefinition, savedInnerEntity.getId());
+                children = saveTreeEntities(alreadySavedEntities, newlySavedEntities, joinFieldName, id, children, dataDefinition,
+                        savedInnerEntity.getId());
                 savedInnerEntity.setField("children", children);
             }
             if (!savedInnerEntity.isValid()) {
@@ -512,7 +513,8 @@ public class DataAccessServiceImpl implements DataAccessService {
             final String fieldName) {
         FieldDefinition fieldDefinition = dataDefinition.getField(fieldName);
 
-        if (!(fieldDefinition.getType() instanceof ManyToManyType) || !((ManyToManyType) fieldDefinition.getType()).isCopyable()) {
+        if (!(fieldDefinition.getType() instanceof ManyToManyType) || !((ManyToManyType) fieldDefinition.getType())
+                .isCopyable()) {
             return;
         }
         targetEntity.setField(fieldName, sourceEntity.getField(fieldName));
@@ -740,15 +742,15 @@ public class DataAccessServiceImpl implements DataAccessService {
 
         if (entity.getId() != null) {
             existingDatabaseEntity = getDatabaseEntity(dataDefinition, entity.getId());
-            checkState(existingDatabaseEntity != null, "Entity[%s][id=%s] cannot be found", dataDefinition.getPluginIdentifier()
-                    + "." + dataDefinition.getName(), entity.getId());
+            checkState(existingDatabaseEntity != null, "Entity[%s][id=%s] cannot be found",
+                    dataDefinition.getPluginIdentifier() + "." + dataDefinition.getName(), entity.getId());
         }
 
         return existingDatabaseEntity;
     }
 
     private EntityOpResult deleteEntity(final InternalDataDefinition dataDefinition, final Long entityId) {
-        return deleteEntity(dataDefinition, entityId, Sets.<EntitySignature> newHashSet());
+        return deleteEntity(dataDefinition, entityId, Sets.<EntitySignature>newHashSet());
     }
 
     private EntityOpResult deleteEntity(final InternalDataDefinition dataDefinition, final Long entityId,
@@ -761,8 +763,8 @@ public class DataAccessServiceImpl implements DataAccessService {
 
         Object databaseEntity = getDatabaseEntity(dataDefinition, entityId);
 
-        checkNotNull(databaseEntity, "Entity[%s][id=%s] cannot be found", dataDefinition.getPluginIdentifier() + "."
-                + dataDefinition.getName(), entityId);
+        checkNotNull(databaseEntity, "Entity[%s][id=%s] cannot be found",
+                dataDefinition.getPluginIdentifier() + "." + dataDefinition.getName(), entityId);
 
         Entity entity = get(dataDefinition, entityId);
 
@@ -835,8 +837,8 @@ public class DataAccessServiceImpl implements DataAccessService {
             child.setField(joinFieldName, null);
             child = save(childDataDefinition, child);
             if (!child.isValid()) {
-                String msg = String.format("Can not nullify field '%s' in %s because of following validation errors:",
-                        joinFieldName, child);
+                String msg = String
+                        .format("Can not nullify field '%s' in %s because of following validation errors:", joinFieldName, child);
                 logEntityErrors(child, msg);
                 return EntityOpResult.failure(child);
             }

@@ -1,12 +1,14 @@
 package com.qcadoo.security.internal.hooks;
 
 import org.apache.commons.lang.ObjectUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.security.api.SecurityService;
+import com.qcadoo.security.constants.UserFields;
 
 @Service
 public class UserModelHooks {
@@ -22,6 +24,18 @@ public class UserModelHooks {
             return false;
         }
         return true;
+    }
+
+    public void setDefaultNames(final DataDefinition userDD, final Entity user) {
+        replaceByUserNameIfBlank(user, UserFields.FIRST_NAME);
+        replaceByUserNameIfBlank(user, UserFields.LAST_NAME);
+    }
+
+    private void replaceByUserNameIfBlank(final Entity user, final String fieldName) {
+        String fieldValue = user.getStringField(fieldName);
+        if (StringUtils.isBlank(fieldValue)) {
+            user.setField(fieldName, user.getStringField(UserFields.USER_NAME));
+        }
     }
 
 }

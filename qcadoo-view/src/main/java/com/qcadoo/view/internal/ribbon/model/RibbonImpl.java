@@ -32,6 +32,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.qcadoo.plugin.api.PluginUtils;
+import com.qcadoo.security.api.SecurityRolesService;
 import com.qcadoo.view.api.ribbon.RibbonActionItem;
 import com.qcadoo.view.api.ribbon.RibbonGroup;
 
@@ -85,14 +86,15 @@ public class RibbonImpl implements InternalRibbon {
     }
 
     @Override
-    public JSONObject getAsJson() {
+    public JSONObject getAsJson(final SecurityRolesService securityRolesService) {
         JSONObject ribbonJson = new JSONObject();
         try {
             ribbonJson.put("name", name);
             ribbonJson.put("alignment", alignment);
             JSONArray groupsArray = new JSONArray();
             for (InternalRibbonGroup group : getAllGroups()) {
-                if (group.getExtensionPluginIdentifier() == null || PluginUtils.isEnabled(group.getExtensionPluginIdentifier())) {
+                if ((group.getExtensionPluginIdentifier() == null || PluginUtils.isEnabled(group.getExtensionPluginIdentifier()))
+                        && securityRolesService.canAccess(group.getAuthorizationRole())) {
                     groupsArray.put(group.getAsJson());
                 }
             }

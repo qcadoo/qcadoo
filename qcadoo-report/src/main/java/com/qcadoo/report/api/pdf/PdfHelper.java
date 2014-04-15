@@ -255,6 +255,7 @@ public interface PdfHelper {
 
     PdfPTable addDynamicHeaderTableCellOneRow(PdfPTable firstColumnHeaderTable, Map<String, Object> firstColumn, Locale locale);
 
+    // FIXME dev_team: What if table has many columns with the same label?
     PdfPTable createTableWithHeader(final int numOfColumns, final List<String> header, final boolean lastColumnAligmentToLeft,
             final int[] columnWidths, final Map<String, HeaderAlignment> alignments);
 

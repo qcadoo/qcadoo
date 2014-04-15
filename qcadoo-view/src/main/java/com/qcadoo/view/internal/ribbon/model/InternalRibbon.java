@@ -29,6 +29,7 @@ import java.util.List;
 import org.json.JSONObject;
 
 import com.google.common.collect.Lists;
+import com.qcadoo.security.api.SecurityRolesService;
 import com.qcadoo.view.api.ribbon.Ribbon;
 
 public interface InternalRibbon extends Ribbon {
@@ -73,9 +74,11 @@ public interface InternalRibbon extends Ribbon {
     /**
      * generates JSON string that contains all ribbon definition
      * 
+     * @param securityRolesService
+     * 
      * @return JSON ribbon definition
      */
-    JSONObject getAsJson();
+    JSONObject getAsJson(final SecurityRolesService securityRolesService);
 
     /**
      * Gets copy of this robbon - internal usage only

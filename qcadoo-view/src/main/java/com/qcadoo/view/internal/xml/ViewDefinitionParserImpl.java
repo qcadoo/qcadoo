@@ -57,7 +57,14 @@ import com.qcadoo.security.api.SecurityRolesService;
 import com.qcadoo.view.internal.ComponentDefinition;
 import com.qcadoo.view.internal.ComponentOption;
 import com.qcadoo.view.internal.HookDefinition;
-import com.qcadoo.view.internal.api.*;
+import com.qcadoo.view.internal.api.ComponentCustomEvent;
+import com.qcadoo.view.internal.api.ComponentPattern;
+import com.qcadoo.view.internal.api.ContainerPattern;
+import com.qcadoo.view.internal.api.ContextualHelpService;
+import com.qcadoo.view.internal.api.EnabledAttribute;
+import com.qcadoo.view.internal.api.InternalViewDefinition;
+import com.qcadoo.view.internal.api.InternalViewDefinitionService;
+import com.qcadoo.view.internal.api.ViewDefinition;
 import com.qcadoo.view.internal.hooks.HookDefinitionImpl;
 import com.qcadoo.view.internal.hooks.HookFactory;
 import com.qcadoo.view.internal.internal.ViewComponentsResolverImpl;
@@ -202,13 +209,13 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
         return null;
     }
 
-    private SecurityRole getAuthorizationRole(final Node viewNode) throws ViewDefinitionParserNodeException {
-        String authorizationRole = getStringAttribute(viewNode, "defaultAuthorizationRole");
+    public SecurityRole getAuthorizationRole(final Node node) throws ViewDefinitionParserNodeException {
+        String authorizationRole = getStringAttribute(node, "defaultAuthorizationRole");
         SecurityRole role;
         if (authorizationRole != null) {
             role = securityRolesService.getRoleByIdentifier(authorizationRole);
             if (role == null) {
-                throw new ViewDefinitionParserNodeException(viewNode, "no such role: '" + authorizationRole + "'");
+                throw new ViewDefinitionParserNodeException(node, "no such role: '" + authorizationRole + "'");
             }
         } else {
             role = securityRolesService.getRoleByIdentifier("ROLE_USER");
@@ -278,7 +285,11 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
         for (int i = 0; i < attributesNodes.getLength(); i++) {
             attributes.put(attributesNodes.item(i).getNodeName(), attributesNodes.item(i).getNodeValue());
         }
-        return new ComponentOption(getStringAttribute(optionNode, "type"), attributes);
+        String type = getStringAttribute(optionNode, "type");
+        if (type == null) {
+            type = getStringAttribute(optionNode, "xsi:type");
+        }
+        return new ComponentOption(type, attributes);
     }
 
     public ComponentPattern parseComponent(final Node componentNode, final ViewDefinition viewDefinition,

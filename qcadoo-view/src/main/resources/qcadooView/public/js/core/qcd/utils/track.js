@@ -1,4 +1,4 @@
-/**
+/*
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
@@ -21,27 +21,40 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * ***************************************************************************
  */
-package com.qcadoo.view.internal.controllers;
-
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.ModelAndView;
-
-@Component
-public class ViewParametersAppender {
-
-    @Value("${applicationDisplayName}")
-    private String applicationDisplayName;
-
-    @Value("${useCompressedStaticResources}")
-    private boolean useCompressedStaticResources;
-    
-    @Value("${mixpanelToken}")
-    private String mixpanelToken;
-
-    public void appendCommonViewObjects(final ModelAndView mav) {
-        mav.addObject("applicationDisplayName", applicationDisplayName);
-        mav.addObject("useCompressedStaticResources", useCompressedStaticResources);
-        mav.addObject("mixpanelToken", mixpanelToken );
+var QCDTrack = QCDTrack || {};
+ 
+QCDTrack.track = function (component, eventName, trackEvent) {
+ 
+    function resolveEvent() {
+        if (typeof trackEvent === 'function') {
+            return trackEvent();
+        } else if (typeof trackEvent === 'string') {
+            return trackEvent;
+        } else {
+            throw "Unsupported event object: " + trackEvent;
+        }
     }
-}
+ 
+    if (parent.mixpanel) {
+        var listener = {};
+        listener[eventName] = function () {
+ 
+            var hostname = parent.window.location.hostname;
+ 
+            try {
+                parent.mixpanel.track(resolveEvent(),
+                    {
+                        'username' : parent.window.getCurrentUserLogin(),
+                        'url' : hostname
+                    }
+                );
+            } catch (e) {
+                console.error("Tracking for event '" + eventName + "' aborted. Cause: " + e);
+            }
+        };
+        component.addOnChangeListener(listener);
+ 
+    }
+};
+
+

@@ -24,7 +24,11 @@
 package com.qcadoo.view.internal.xml;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.springframework.test.util.ReflectionTestUtils.getField;
@@ -41,6 +45,7 @@ import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.ClassPathResource;
 
@@ -58,7 +63,12 @@ import com.qcadoo.security.api.SecurityRolesService;
 import com.qcadoo.view.api.ribbon.RibbonActionItem;
 import com.qcadoo.view.internal.HookDefinition;
 import com.qcadoo.view.internal.ViewDefinitionServiceImpl;
-import com.qcadoo.view.internal.api.*;
+import com.qcadoo.view.internal.api.ComponentCustomEvent;
+import com.qcadoo.view.internal.api.ComponentPattern;
+import com.qcadoo.view.internal.api.ContextualHelpService;
+import com.qcadoo.view.internal.api.InternalViewDefinition;
+import com.qcadoo.view.internal.api.ViewDefinition;
+import com.qcadoo.view.internal.api.ViewDefinitionService;
 import com.qcadoo.view.internal.components.ButtonComponentPattern;
 import com.qcadoo.view.internal.components.CheckBoxComponentPattern;
 import com.qcadoo.view.internal.components.TextAreaComponentPattern;
@@ -134,6 +144,7 @@ public class ViewDefinitionParserImplTest {
         setField(viewDefinitionParser, "viewDefinitionService", viewDefinitionService);
         setField(viewDefinitionParser, "hookFactory", hookFactory);
         setField(viewDefinitionParser, "translationService", translationService);
+        setField(viewDefinitionParser, "applicationContext", applicationContext);
         setField(viewDefinitionParser, "contextualHelpService", contextualHelpService);
         setField(viewDefinitionParser, "viewComponentsResolver", viewComponentsResolver);
         setField(viewDefinitionParser, "ribbonService", ribbonService);
@@ -241,6 +252,8 @@ public class ViewDefinitionParserImplTest {
         InternalViewDefinition viewDefinition = parseAndGetViewDefinition();
         TranslationService translationService = mock(TranslationService.class);
         setField(viewDefinition, "translationService", translationService);
+        given(applicationContext.getBean(SecurityRolesService.class)).willReturn(securityRolesService);
+        given(securityRolesService.canAccess(Mockito.any(SecurityRole.class))).willReturn(true);
 
         JSONObject jsOptions = (JSONObject) ((Map<String, Map<String, Object>>) viewDefinition.prepareView(new JSONObject(),
                 Locale.ENGLISH).get("components")).get("mainWindow").get("jsOptions");

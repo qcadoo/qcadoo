@@ -23,16 +23,10 @@
  */
 package com.qcadoo.model.internal;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import javax.annotation.PostConstruct;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.annotation.PostConstruct;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -61,6 +55,16 @@ import com.qcadoo.model.api.types.FieldType;
 public final class ExpressionServiceImpl implements ExpressionService {
 
     private static final Logger LOG = LoggerFactory.getLogger(ExpressionServiceImpl.class);
+
+    private static final int ENTITY_FLATTENING_DEPTH = 2;
+
+    private static final String TOO_MANY_GET_METHOD_INVOCATIONS_HINT = String
+            .format("Be sure tha you don't call .get(String) or [String] more than %s times in a single traverse expression.",
+                    ENTITY_FLATTENING_DEPTH);
+
+    private static final String EVALUATION_RESULT_DEBUG_MESSAGE = "Calculating value of expression \"%s\" for %s : %s";
+
+    private static final String EVALUATION_ERROR_MESSAGE = "Error while calculating value of expression \"%s\" for \"%s\".";
 
     private static ExpressionService instance = null;
 
@@ -113,40 +117,52 @@ public final class ExpressionServiceImpl implements ExpressionService {
             return null;
         }
 
-        ExpressionParser parser = new SpelExpressionParser();
-        Expression exp = parser.parseExpression(expression);
-        EvaluationContext context = new StandardEvaluationContext();
-
-        if (entity != null) {
-            Map<String, Object> values = getValuesForEntity(entity, locale, 2);
-
-            for (Map.Entry<String, Object> entry : values.entrySet()) {
-                context.setVariable(entry.getKey(), entry.getValue());
-            }
-        }
-
-        String value = null;
-
-        try {
-            value = String.valueOf(exp.getValue(context));
-
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Calculating value of expression \"" + expression + "\" for " + entity + " : " + value);
-            }
-        } catch (SpelEvaluationException e) {
-            if (SpelMessage.CANNOT_INDEX_INTO_NULL_VALUE.equals(e.getMessageCode())) {
-                return "";
-            } else {
-                LOG.error("Error while calculating value of expression \"" + expression + "\" for " + entity, e);
-                value = "!!!";
-            }
-        }
+        String value = evaluateExpression(expression, entity, locale);
 
         if (StringUtils.isEmpty(value) || "null".equals(value)) {
             return null;
         } else {
             return translate(value, locale);
         }
+    }
+
+    private String evaluateExpression(final String expression, final Entity entity, final Locale locale) {
+        ExpressionParser parser = new SpelExpressionParser();
+        Expression exp = parser.parseExpression(expression);
+        EvaluationContext evaluationContext = getEvaluationContext(entity, locale);
+        try {
+            String value = String.valueOf(exp.getValue(evaluationContext));
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(String.format(EVALUATION_RESULT_DEBUG_MESSAGE, expression, entity, value));
+            }
+            return value;
+        } catch (SpelEvaluationException e) {
+            if (SpelMessage.CANNOT_INDEX_INTO_NULL_VALUE.equals(e.getMessageCode())) {
+                return "";
+            }
+            logFailure(expression, entity, e);
+            return "!!!";
+        }
+    }
+
+    private EvaluationContext getEvaluationContext(final Entity entity, final Locale locale) {
+        EvaluationContext context = new StandardEvaluationContext();
+        if (entity != null) {
+            Map<String, Object> values = getValuesForEntity(entity, locale, ENTITY_FLATTENING_DEPTH);
+
+            for (Map.Entry<String, Object> entry : values.entrySet()) {
+                context.setVariable(entry.getKey(), entry.getValue());
+            }
+        }
+        return context;
+    }
+
+    private void logFailure(final String expression, final Entity entity, final SpelEvaluationException exception) {
+        String errorMsg = String.format(EVALUATION_ERROR_MESSAGE, expression, entity);
+        if (SpelMessage.METHOD_NOT_FOUND.equals(exception.getMessageCode())) {
+            errorMsg += TOO_MANY_GET_METHOD_INVOCATIONS_HINT;
+        }
+        LOG.error(errorMsg, exception);
     }
 
     private String translate(final String expression, final Locale locale) {

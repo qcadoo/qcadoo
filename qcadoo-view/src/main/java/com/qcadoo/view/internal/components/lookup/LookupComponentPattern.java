@@ -320,6 +320,7 @@ public class LookupComponentPattern extends FieldComponentPattern {
         ComponentDefinition windowComponentDefinition = new ComponentDefinition();
         windowComponentDefinition.setName("window");
         windowComponentDefinition.setTranslationService(getTranslationService());
+        windowComponentDefinition.setApplicationContext(getApplicationContext());
         windowComponentDefinition.setViewDefinition(lookupViewDefinition);
         windowComponentDefinition.setContextualHelpService(getContextualHelpService());
 

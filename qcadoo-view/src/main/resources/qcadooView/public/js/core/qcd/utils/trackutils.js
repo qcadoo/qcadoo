@@ -1,4 +1,4 @@
-/**
+/*
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
@@ -21,27 +21,24 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * ***************************************************************************
  */
-package com.qcadoo.view.internal.controllers;
+var QCDTrack = QCDTrack || {};
+QCDTrack.eventResolver = QCDTrack.eventResolver || {};
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.ModelAndView;
-
-@Component
-public class ViewParametersAppender {
-
-    @Value("${applicationDisplayName}")
-    private String applicationDisplayName;
-
-    @Value("${useCompressedStaticResources}")
-    private boolean useCompressedStaticResources;
+QCDTrack.eventResolver.formStateDependent = function (valueForNew, valueForExisting) {
     
-    @Value("${mixpanelToken}")
-    private String mixpanelToken;
+    return function() {
+    	var form = window.mainController.getComponentByReferenceName("form");
+        if (!form) {
+            throw "Can't find element with reference name 'form'";
+        }
+        
+	    if (form.getComponentValue().entityId > 0) {
+	        return valueForExisting;
+	    } else {
+	        return valueForNew;
+	    }
+    };
+};
 
-    public void appendCommonViewObjects(final ModelAndView mav) {
-        mav.addObject("applicationDisplayName", applicationDisplayName);
-        mav.addObject("useCompressedStaticResources", useCompressedStaticResources);
-        mav.addObject("mixpanelToken", mixpanelToken );
-    }
-}
+
+

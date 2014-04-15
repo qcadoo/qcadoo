@@ -133,7 +133,7 @@ public interface SearchCriteriaBuilder {
     SearchCriteriaBuilder addOrder(final SearchOrder order);
 
     /**
-     * Create alias for the association to the criteria (using inner join).
+     * Create alias for the association to the criteria (using inner join!).
      * 
      * @param association
      *            association
@@ -141,7 +141,9 @@ public interface SearchCriteriaBuilder {
      *            alias
      * @return this search builder
      * @since 0.4.1
+     * @deprecated use SearchCriteriaBuilder.createAlias(String, String, JoinType) instead.
      */
+    @Deprecated
     SearchCriteriaBuilder createAlias(final String association, final String alias);
 
     /**
