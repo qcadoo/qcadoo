@@ -61,6 +61,8 @@ public class RibbonTemplates {
             return createFormSaveAndBackAndRemoveActionsTemplate(viewDefinition, role);
         } else if ("formSaveAction".equals(templateName)) {
             return createFormSaveActionTemplate(viewDefinition, role);
+        } else if ("formActivateAndDeactivateAction".equals(templateName)) {
+            return createFormActivateAndDeactivateActionTemplate(viewDefinition, role);
         } else {
             throw new IllegalStateException("Unsupported ribbon template : " + templateName);
         }
@@ -247,6 +249,14 @@ public class RibbonTemplates {
         return ribbonGroup;
     }
 
+    private InternalRibbonGroup createFormActivateAndDeactivateActionTemplate(final ViewDefinition viewDefinition,
+            final SecurityRole role) {
+        InternalRibbonGroup ribbonGroup = new RibbonGroupImpl(STATES, role);
+        ribbonGroup.addItem(createFormActivateAction(viewDefinition));
+        ribbonGroup.addItem(createFormDeactivateAction(viewDefinition));
+        return ribbonGroup;
+    }
+
     private InternalRibbonActionItem createFormDeleteAction(final ViewDefinition viewDefinition) {
         InternalRibbonActionItem ribbonDeleteAction = new RibbonActionItemImpl();
         ribbonDeleteAction.setAction(RibbonUtils.translateRibbonAction("#{form}.performDelete; #{window}.performBack",
@@ -316,6 +326,32 @@ public class RibbonTemplates {
         ribbonSaveAction.setEnabled(true);
         ribbonSaveAction.setType(RibbonActionItem.Type.BIG_BUTTON);
         return ribbonSaveAction;
+    }
+
+    private InternalRibbonActionItem createFormActivateAction(final ViewDefinition viewDefinition) {
+        InternalRibbonActionItem ribbonActivateAction = new RibbonActionItemImpl();
+        ribbonActivateAction.setAction(RibbonUtils.translateRibbonAction("#{form}.performActivate;", viewDefinition));
+        ribbonActivateAction.setIcon("unactiveVisibleIcon.png");
+        ribbonActivateAction.setName("activate");
+        ribbonActivateAction.setEnabled(false);
+        ribbonActivateAction
+                .setScript("var listener = {onSetValue: function(value) {if (!value || !value.content) return; if (value.content.entityId "
+                        + "&& !value.content.isActive) {this.enable();} else {this.disable();}}}; #{form}.addOnChangeListener(listener);");
+        ribbonActivateAction.setType(RibbonActionItem.Type.SMALL_BUTTON);
+        return ribbonActivateAction;
+    }
+
+    private InternalRibbonActionItem createFormDeactivateAction(final ViewDefinition viewDefinition) {
+        InternalRibbonActionItem ribbonDeactivateAction = new RibbonActionItemImpl();
+        ribbonDeactivateAction.setAction(RibbonUtils.translateRibbonAction("#{form}.performDeactivate;", viewDefinition));
+        ribbonDeactivateAction.setIcon("unactiveNotVisibleIcon.png");
+        ribbonDeactivateAction.setName("deactivate");
+        ribbonDeactivateAction.setEnabled(false);
+        ribbonDeactivateAction
+                .setScript("var listener = {onSetValue: function(value) {if (!value || !value.content) return; if (value.content.entityId "
+                        + "&& value.content.isActive) {this.enable();} else {this.disable();}}}; #{form}.addOnChangeListener(listener);");
+        ribbonDeactivateAction.setType(RibbonActionItem.Type.SMALL_BUTTON);
+        return ribbonDeactivateAction;
     }
 
 }
