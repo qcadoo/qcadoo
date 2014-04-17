@@ -29,7 +29,7 @@
 	name="dictionaryItemDetails"
 	modelPlugin="qcadooModel"
 	modelName="dictionaryItem"
-	defaultAuthorizationRole="ROLE_USER">
+	defaultAuthorizationRole="ROLE_DICTIONARY_VIEW">
 	
 	<component type="window" name="window" reference="window">
 		<ribbon>

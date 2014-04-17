@@ -30,7 +30,7 @@
 	modelPlugin="qcadooModel"
 	modelName="dictionary"
 	menuAccessible="true"
-	defaultAuthorizationRole="ROLE_USER">
+	defaultAuthorizationRole="ROLE_DICTIONARY_VIEW">
 	
 	<component type="window" name="window">
 		<ribbon>

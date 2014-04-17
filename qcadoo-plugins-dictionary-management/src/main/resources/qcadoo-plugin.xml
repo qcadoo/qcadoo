@@ -28,7 +28,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schema.qcadoo.org/plugin"
 	xmlns:model="http://schema.qcadoo.org/modules/model" xmlns:view="http://schema.qcadoo.org/modules/view"
 	xmlns:menu="http://schema.qcadoo.org/modules/menu" xmlns:localization="http://schema.qcadoo.org/modules/localization"
-	xsi:schemaLocation="
+	xmlns:security="http://schema.qcadoo.org/modules/security" xsi:schemaLocation="
 		http://schema.qcadoo.org/plugin 
 		http://schema.qcadoo.org/plugin.xsd 
 		http://schema.qcadoo.org/modules/model 
@@ -37,6 +37,8 @@
 		http://schema.qcadoo.org/modules/view.xsd 
 		http://schema.qcadoo.org/modules/localization 
 		http://schema.qcadoo.org/modules/localization.xsd 
+		http://schema.qcadoo.org/modules/security 
+	    http://schema.qcadoo.org/modules/security.xsd 
 		http://schema.qcadoo.org/modules/menu 
 		http://schema.qcadoo.org/modules/menu.xsd">
 
@@ -71,6 +73,8 @@
 		<view:view resource="view/dictionariesList.xml" />
 		<view:view resource="view/dictionaryDetails.xml" />
 		<view:view resource="view/dictionaryItemDetails.xml" />
+		
+		<security:role identifier="ROLE_DICTIONARY_VIEW" />
 	</modules>
 
 </plugin>
