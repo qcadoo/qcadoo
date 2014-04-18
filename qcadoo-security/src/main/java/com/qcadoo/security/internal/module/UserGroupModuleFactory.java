@@ -33,23 +33,25 @@ import com.qcadoo.plugin.api.ModuleFactory;
 
 public class UserGroupModuleFactory extends ModuleFactory<UserGroupModule> {
 
-	@Autowired
-	private DataDefinitionService dataDefinitionService;
+    @Autowired
+    private DataDefinitionService dataDefinitionService;
 
-	@Override
-	protected UserGroupModule parseElement(final String pluginIdentifier, final Element element) {
-		String name = getRequiredAttribute(element, "name");
-		String roles = getRequiredAttribute(element, "roles");
+    @Override
+    protected UserGroupModule parseElement(final String pluginIdentifier, final Element element) {
+        String name = getRequiredAttribute(element, "name");
+        String identifier = getRequiredAttribute(element, "identifier");
+        String roles = getRequiredAttribute(element, "roles");
 
-		checkNotNull(name, "Missing name attribute of " + getIdentifier() + " module");
-		checkNotNull(roles, "Missing roles attribute of " + getIdentifier() + " module");
+        checkNotNull(name, "Missing name attribute of " + getIdentifier() + " module");
+        checkNotNull(identifier, "Missing identifier attribute of " + getIdentifier() + " module");
+        checkNotNull(roles, "Missing roles attribute of " + getIdentifier() + " module");
 
-		return new UserGroupModule(name, roles, dataDefinitionService);
-	}
+        return new UserGroupModule(name, identifier, roles, dataDefinitionService);
+    }
 
-	@Override
-	public String getIdentifier() {
-		return "user-group";
-	}
+    @Override
+    public String getIdentifier() {
+        return "user-group";
+    }
 
 }

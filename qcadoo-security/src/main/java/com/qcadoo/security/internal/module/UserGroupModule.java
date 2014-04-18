@@ -31,32 +31,37 @@ import com.qcadoo.plugin.api.Module;
 
 public class UserGroupModule extends Module {
 
-	private final String name;
+    private final String name;
 
-	private final String roles;
+    private final String identifier;
 
-	private final DataDefinitionService dataDefinitionService;
+    private final String roles;
 
-	public UserGroupModule(final String name, final String roles, final DataDefinitionService dataDefinitionService) {
-		super();
+    private final DataDefinitionService dataDefinitionService;
 
-		this.name = name;
-		this.roles = roles;
-		this.dataDefinitionService = dataDefinitionService;
-	}
+    public UserGroupModule(final String name, final String identifier, final String roles,
+            final DataDefinitionService dataDefinitionService) {
+        super();
 
-	@Override
-	public void multiTenantEnable() {
-		if (dataDefinitionService.get("qcadooSecurity", "group").find().add(SearchRestrictions.eq("name", name)).list()
-		        .getTotalNumberOfEntities() > 0) {
-			return;
-		}
+        this.name = name;
+        this.identifier = identifier;
+        this.roles = roles;
+        this.dataDefinitionService = dataDefinitionService;
+    }
 
-		Entity entity = dataDefinitionService.get("qcadooSecurity", "group").create();
-		entity.setField("name", name);
-		DataDefinition roleDD = dataDefinitionService.get("qcadooSecurity", "role");
-		entity.setField("roles", roleDD.find().add(SearchRestrictions.in("identifier", (Object[]) roles.split(","))).list()
-		        .getEntities());
-		dataDefinitionService.get("qcadooSecurity", "group").save(entity);
-	}
+    @Override
+    public void multiTenantEnable() {
+        if (dataDefinitionService.get("qcadooSecurity", "group").find().add(SearchRestrictions.eq("identifier", identifier))
+                .list().getTotalNumberOfEntities() > 0) {
+            return;
+        }
+
+        Entity entity = dataDefinitionService.get("qcadooSecurity", "group").create();
+        entity.setField("name", name);
+        entity.setField("identifier", identifier);
+        DataDefinition roleDD = dataDefinitionService.get("qcadooSecurity", "role");
+        entity.setField("roles", roleDD.find().add(SearchRestrictions.in("identifier", (Object[]) roles.split(","))).list()
+                .getEntities());
+        dataDefinitionService.get("qcadooSecurity", "group").save(entity);
+    }
 }

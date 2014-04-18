@@ -30,52 +30,52 @@ import com.qcadoo.plugin.api.Module;
 
 public class UserModule extends Module {
 
-	private final String login;
+    private final String login;
 
-	private final String email;
+    private final String email;
 
-	private final String firstName;
+    private final String firstName;
 
-	private final String lastName;
+    private final String lastName;
 
-	private final String password;
+    private final String password;
 
-	private final String groupName;
+    private final String groupIdentifier;
 
-	private final DataDefinitionService dataDefinitionService;
+    private final DataDefinitionService dataDefinitionService;
 
-	public UserModule(final String login, final String email, final String firstName, final String lastName,
-	        final String password, final String groupName, final DataDefinitionService dataDefinitionService) {
-		super();
+    public UserModule(final String login, final String email, final String firstName, final String lastName,
+            final String password, final String groupIdentifier, final DataDefinitionService dataDefinitionService) {
+        super();
 
-		this.login = login;
-		this.email = email;
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.password = password;
-		this.groupName = groupName;
-		this.dataDefinitionService = dataDefinitionService;
-	}
+        this.login = login;
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.password = password;
+        this.groupIdentifier = groupIdentifier;
+        this.dataDefinitionService = dataDefinitionService;
+    }
 
-	@Override
-	public void multiTenantEnable() {
-		if (dataDefinitionService.get("qcadooSecurity", "user").find().add(SearchRestrictions.eq("userName", login)).list()
-		        .getTotalNumberOfEntities() > 0) {
-			return;
-		}
+    @Override
+    public void multiTenantEnable() {
+        if (dataDefinitionService.get("qcadooSecurity", "user").find().add(SearchRestrictions.eq("userName", login)).list()
+                .getTotalNumberOfEntities() > 0) {
+            return;
+        }
 
-		Entity group = dataDefinitionService.get("qcadooSecurity", "group").find().add(SearchRestrictions.eq("name", groupName))
-		        .list().getEntities().get(0);
+        Entity group = dataDefinitionService.get("qcadooSecurity", "group").find()
+                .add(SearchRestrictions.eq("identifier", groupIdentifier)).list().getEntities().get(0);
 
-		Entity entity = dataDefinitionService.get("qcadooSecurity", "user").create();
-		entity.setField("userName", login);
-		entity.setField("email", email);
-		entity.setField("firstName", firstName);
-		entity.setField("lastName", lastName);
-		entity.setField("password", password);
-		entity.setField("passwordConfirmation", password);
-		entity.setField("enabled", true);
-		entity.setField("group", group);
-		dataDefinitionService.get("qcadooSecurity", "user").save(entity);
-	}
+        Entity entity = dataDefinitionService.get("qcadooSecurity", "user").create();
+        entity.setField("userName", login);
+        entity.setField("email", email);
+        entity.setField("firstName", firstName);
+        entity.setField("lastName", lastName);
+        entity.setField("password", password);
+        entity.setField("passwordConfirmation", password);
+        entity.setField("enabled", true);
+        entity.setField("group", group);
+        dataDefinitionService.get("qcadooSecurity", "user").save(entity);
+    }
 }

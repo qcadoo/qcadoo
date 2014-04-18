@@ -43,13 +43,13 @@ public class UserModuleFactory extends ModuleFactory<UserModule> {
         String firstName = getAttribute(element, "firstName");
         String lastName = getAttribute(element, "lastName");
         String password = getRequiredAttribute(element, "password");
-        String groupName = getRequiredAttribute(element, "groupName");
+        String groupIdentifier = getRequiredAttribute(element, "groupIdentifier");
 
         checkNotNull(login, "Missing login attribute of " + getIdentifier() + " module");
         checkNotNull(password, "Missing password attribute of " + getIdentifier() + " module");
-        checkNotNull(groupName, "Missing groupName attribute of " + getIdentifier() + " module");
+        checkNotNull(groupIdentifier, "Missing groupIdentifier attribute of " + getIdentifier() + " module");
 
-        return new UserModule(login, email, firstName, lastName, password, groupName, dataDefinitionService);
+        return new UserModule(login, email, firstName, lastName, password, groupIdentifier, dataDefinitionService);
     }
 
     @Override
