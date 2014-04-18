@@ -48,7 +48,6 @@ QCD.components.elements.Grid = function (element, mainController) {
         
         grid = null,
         belongsToFieldName = null,
-        currentOrder = [],
 
         translations = {},
 
@@ -495,50 +494,27 @@ QCD.components.elements.Grid = function (element, mainController) {
     };
     
     function setSortColumnAndDirection(order) {
-    	var stillOrderIndexes = [];
+        for (var col in columnModel) {
+            var column = columnModel[col];
+    		$("#" + gridParameters.modifiedPath + "_grid_" + column.name).removeClass("sortColumn");
+    		$("#" + elementSearchName + "_sortArrow_" + column.name).removeClass("downArrow");
+    	}
     	currentState.order = [];
     	if(order){
 	    	$.each(order, function (i, orderItem){
-	    		var newOrder = true;
 	    		currentState.order.push({
 	    			column : orderItem.column,
 	    			direction : orderItem.direction
 	    		});
-	    		$.each(currentOrder, function (j, currentOrderItem){
-	        		if(currentOrderItem.column === orderItem.column){
-	        			stillOrderIndexes.push(j);
-	        			newOrder = false;
-	        			if(currentOrderItem.direction === "asc" && orderItem.direction === "desc"){
-	        				$("#" + elementSearchName + "_sortArrow_" + orderItem.column).removeClass("upArrow");
-	        				$("#" + elementSearchName + "_sortArrow_" + orderItem.column).addClass("downArrow");
-	        			}
-	        			return;
-	        		}
-	        	});
-	    		if(newOrder){
-	    			$("#" + gridParameters.modifiedPath + "_grid_" + orderItem.column).addClass("sortColumn");
+	    		$("#" + gridParameters.modifiedPath + "_grid_" + orderItem.column).addClass("sortColumn");
+	    		if(orderItem.direction === "asc"){
 	    			$("#" + elementSearchName + "_sortArrow_" + orderItem.column).addClass("upArrow");
-	    		}
+	    		} else if(orderItem.direction === "desc"){
+    				$("#" + elementSearchName + "_sortArrow_" + orderItem.column).addClass("downArrow");
+    			}
 	    	});
     	}
-    	
-    	$.each(currentOrder, function (j, currentOrderItem){
-    		if(stillOrderIndexes.indexOf(j) === -1){
-	    		$("#" + gridParameters.modifiedPath + "_grid_" + currentOrderItem.column).removeClass("sortColumn");
-	    		$("#" + elementSearchName + "_sortArrow_" + currentOrderItem.column).removeClass("downArrow");
-	    	}
-    	});
-    	
-    	currentOrder = [];
-    	if(order){
-    		$.each(order, function (i, orderItem){
-	    		currentOrder.push({
-	    			column : orderItem.column,
-	    			direction : orderItem.direction
-	    		});
-	    	});
-    	}
-    	
+
     }
     
     function findMatchingPredefiniedFilter() {
