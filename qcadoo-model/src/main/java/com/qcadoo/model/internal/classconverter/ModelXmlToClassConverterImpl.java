@@ -231,9 +231,8 @@ public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverte
         List<String> fields = new ArrayList<String>();
         fields.add("id");
 
-        if (getBooleanAttribute(reader, "activable", false)) {
-            createField(ctClass, "active", Boolean.class.getCanonicalName());
-        }
+        boolean activable = getBooleanAttribute(reader, "activable", false);
+
         if (getBooleanAttribute(reader, "auditable", false)) {
             createField(ctClass, "createDate", Date.class.getCanonicalName());
             createField(ctClass, "updateDate", Date.class.getCanonicalName());
@@ -263,6 +262,9 @@ public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverte
                 break;
             }
 
+        }
+        if (activable && !fields.contains("active")) {
+            createField(ctClass, "active", Boolean.class.getCanonicalName());
         }
 
         buildToString(ctClass, fields);

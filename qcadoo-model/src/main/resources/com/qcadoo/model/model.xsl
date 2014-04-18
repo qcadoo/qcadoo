@@ -326,7 +326,7 @@
 	</xsl:template>
 
 	<xsl:template
-		match="//qcd:model/qcd:fields/qcd:boolean[not(@persistent='false')]">
+		match="//qcd:model/qcd:fields/qcd:boolean[not(@persistent='false') and not(@name='active' and /qcd:model/@activable='true')]">
 		<property>
 			<xsl:attribute name="type">boolean</xsl:attribute>
 			<xsl:call-template name="property" />
