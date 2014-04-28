@@ -26,9 +26,12 @@ package com.qcadoo.view.internal.states;
 import static org.junit.Assert.assertNull;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+import static org.springframework.test.util.ReflectionTestUtils.setField;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.springframework.context.ApplicationContext;
 
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.ViewDefinitionState;
@@ -36,6 +39,13 @@ import com.qcadoo.view.internal.components.form.FormComponentPattern;
 import com.qcadoo.view.internal.components.form.FormComponentState;
 
 public class EventHandlerTest {
+
+    private ApplicationContext applicationContext;
+
+    @Before
+    public void init() throws Exception {
+        applicationContext = mock(ApplicationContext.class);
+    }
 
     @Test
     public void shouldCallEventMethod() throws Exception {
@@ -45,6 +55,7 @@ public class EventHandlerTest {
         FormComponentPattern pattern = mock(FormComponentPattern.class);
         given(pattern.getExpressionNew()).willReturn(null);
         given(pattern.getExpressionEdit()).willReturn(null);
+        setField(pattern, "applicationContext", applicationContext);
         FormComponentState component = new FormComponentState(pattern);
         component.setFieldValue(13L);
 
@@ -65,6 +76,7 @@ public class EventHandlerTest {
         FormComponentPattern pattern = mock(FormComponentPattern.class);
         given(pattern.getExpressionNew()).willReturn(null);
         given(pattern.getExpressionEdit()).willReturn(null);
+        setField(pattern, "applicationContext", applicationContext);
         FormComponentState component = new FormComponentState(pattern);
         component.registerCustomEvent("custom", bean, "customMethod", null);
 
@@ -83,6 +95,7 @@ public class EventHandlerTest {
         FormComponentPattern pattern = mock(FormComponentPattern.class);
         given(pattern.getExpressionNew()).willReturn(null);
         given(pattern.getExpressionEdit()).willReturn(null);
+        setField(pattern, "applicationContext", applicationContext);
         FormComponentState component = new FormComponentState(pattern);
         component.setFieldValue(13L);
 
@@ -109,6 +122,7 @@ public class EventHandlerTest {
         FormComponentPattern pattern = mock(FormComponentPattern.class);
         given(pattern.getExpressionNew()).willReturn(null);
         given(pattern.getExpressionEdit()).willReturn(null);
+        setField(pattern, "applicationContext", applicationContext);
         FormComponentState component = new FormComponentState(pattern);
         component.setFieldValue(13L);
 
@@ -120,7 +134,7 @@ public class EventHandlerTest {
 
     private interface CustomEventBean {
 
-        void customMethod(ViewDefinitionState viewDefinitionState, ComponentState componentState, String[] args);
+        void customMethod(final ViewDefinitionState viewDefinitionState, final ComponentState componentState, final String[] args);
 
     }
 

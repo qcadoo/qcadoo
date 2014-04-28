@@ -30,13 +30,16 @@ import static org.junit.Assert.assertSame;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
 
 import org.json.JSONObject;
+import org.junit.Before;
 import org.junit.Test;
+import org.springframework.context.ApplicationContext;
 
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.internal.api.InternalComponentState;
@@ -45,12 +48,20 @@ import com.qcadoo.view.internal.components.form.FormComponentState;
 
 public class ContainerStateTest extends AbstractStateTest {
 
+    private ApplicationContext applicationContext;
+
+    @Before
+    public void init() throws Exception {
+        applicationContext = mock(ApplicationContext.class);
+    }
+
     @Test
     public void shouldHaveNoChildren() throws Exception {
         // given
         FormComponentPattern pattern = mock(FormComponentPattern.class);
         given(pattern.getExpressionNew()).willReturn(null);
         given(pattern.getExpressionEdit()).willReturn(null);
+        setField(pattern, "applicationContext", applicationContext);
         FormComponentState container = new FormComponentState(pattern);
 
         // when
@@ -70,6 +81,7 @@ public class ContainerStateTest extends AbstractStateTest {
         FormComponentPattern pattern = mock(FormComponentPattern.class);
         given(pattern.getExpressionNew()).willReturn(null);
         given(pattern.getExpressionEdit()).willReturn(null);
+        setField(pattern, "applicationContext", applicationContext);
         FormComponentState container = new FormComponentState(pattern);
         container.addChild(component1);
         container.addChild(component2);
@@ -90,6 +102,7 @@ public class ContainerStateTest extends AbstractStateTest {
         FormComponentPattern pattern = mock(FormComponentPattern.class);
         given(pattern.getExpressionNew()).willReturn(null);
         given(pattern.getExpressionEdit()).willReturn(null);
+        setField(pattern, "applicationContext", applicationContext);
         FormComponentState container = new FormComponentState(pattern);
         container.addChild(component);
 
@@ -106,6 +119,7 @@ public class ContainerStateTest extends AbstractStateTest {
         FormComponentPattern pattern = mock(FormComponentPattern.class);
         given(pattern.getExpressionNew()).willReturn(null);
         given(pattern.getExpressionEdit()).willReturn(null);
+        setField(pattern, "applicationContext", applicationContext);
         FormComponentState container = new FormComponentState(pattern);
 
         // when
@@ -124,6 +138,7 @@ public class ContainerStateTest extends AbstractStateTest {
         FormComponentPattern pattern = mock(FormComponentPattern.class);
         given(pattern.getExpressionNew()).willReturn(null);
         given(pattern.getExpressionEdit()).willReturn(null);
+        setField(pattern, "applicationContext", applicationContext);
         FormComponentState container = new FormComponentState(pattern);
         container.addChild(component1);
         container.addChild(component2);
@@ -163,6 +178,7 @@ public class ContainerStateTest extends AbstractStateTest {
         FormComponentPattern pattern = mock(FormComponentPattern.class);
         given(pattern.getExpressionNew()).willReturn(null);
         given(pattern.getExpressionEdit()).willReturn(null);
+        setField(pattern, "applicationContext", applicationContext);
         FormComponentState container = new FormComponentState(pattern);
         container.addChild(component1);
         container.addChild(component2);

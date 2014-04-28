@@ -276,6 +276,7 @@ public class LookupComponentPattern extends FieldComponentPattern {
         final ComponentDefinition gridComponentDefinition = new ComponentDefinition();
         gridComponentDefinition.setName("grid");
         gridComponentDefinition.setTranslationService(getTranslationService());
+        gridComponentDefinition.setApplicationContext(getApplicationContext());
         gridComponentDefinition.setViewDefinition(lookupViewDefinition);
         gridComponentDefinition.setParent(window);
         gridComponentDefinition.setContextualHelpService(getContextualHelpService());

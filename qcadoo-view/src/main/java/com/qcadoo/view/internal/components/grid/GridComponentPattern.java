@@ -23,8 +23,12 @@
  */
 package com.qcadoo.view.internal.components.grid;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
@@ -43,6 +47,7 @@ import com.qcadoo.model.api.types.DataDefinitionHolder;
 import com.qcadoo.model.api.types.EnumeratedType;
 import com.qcadoo.model.api.types.FieldType;
 import com.qcadoo.model.api.types.JoinFieldHolder;
+import com.qcadoo.security.api.SecurityRole;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.constants.Alignment;
 import com.qcadoo.view.internal.ComponentDefinition;
@@ -140,6 +145,8 @@ public class GridComponentPattern extends AbstractComponentPattern {
     private RowStyleResolver rowStyleResolver = null;
 
     private CriteriaModifier criteriaModifier = null;
+
+    private SecurityRole authorizationRole;
 
     public GridComponentPattern(final ComponentDefinition componentDefinition) {
         super(componentDefinition);
@@ -397,6 +404,7 @@ public class GridComponentPattern extends AbstractComponentPattern {
     @Override
     public void parse(final Node componentNode, final ViewDefinitionParser parser) throws ViewDefinitionParserNodeException {
         super.parse(componentNode, parser);
+        authorizationRole = parser.getAuthorizationRole(componentNode);
         final NodeList childNodes = componentNode.getChildNodes();
         for (int i = 0; i < childNodes.getLength(); i++) {
             final Node child = childNodes.item(i);
@@ -644,4 +652,7 @@ public class GridComponentPattern extends AbstractComponentPattern {
         return predefinedFilters.get(defaultPredefinedFilterName);
     }
 
+    public SecurityRole getAuthorizationRole() {
+        return authorizationRole;
+    }
 }

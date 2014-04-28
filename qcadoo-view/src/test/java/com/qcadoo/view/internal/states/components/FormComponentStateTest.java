@@ -25,11 +25,18 @@ package com.qcadoo.view.internal.states.components;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 import java.util.Collections;
 import java.util.Locale;
@@ -40,16 +47,22 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.springframework.context.ApplicationContext;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.qcadoo.localization.api.TranslationService;
-import com.qcadoo.model.api.*;
+import com.qcadoo.model.api.DataDefinition;
+import com.qcadoo.model.api.Entity;
+import com.qcadoo.model.api.EntityMessagesHolder;
+import com.qcadoo.model.api.EntityOpResult;
+import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.validators.ErrorMessage;
 import com.qcadoo.model.internal.DefaultEntity;
 import com.qcadoo.model.internal.ExpressionServiceImpl;
 import com.qcadoo.model.internal.types.StringType;
+import com.qcadoo.security.api.SecurityRolesService;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.internal.api.InternalComponentState;
 import com.qcadoo.view.internal.components.FieldComponentPattern;
@@ -74,6 +87,8 @@ public class FormComponentStateTest extends AbstractStateTest {
     private FieldDefinition fieldDefinition;
 
     private TranslationService translationService;
+
+    private ApplicationContext applicationContext;
 
     @Before
     public void init() throws Exception {
@@ -116,6 +131,10 @@ public class FormComponentStateTest extends AbstractStateTest {
         FormComponentPattern pattern = mock(FormComponentPattern.class);
         given(pattern.getExpressionNew()).willReturn(null);
         given(pattern.getExpressionEdit()).willReturn("'static expression'");
+        applicationContext = mock(ApplicationContext.class);
+        setField(pattern, "applicationContext", applicationContext);
+        SecurityRolesService securityRolesService = mock(SecurityRolesService.class);
+        given(applicationContext.getBean(SecurityRolesService.class)).willReturn(securityRolesService);
         form = new FormComponentState(pattern);
         form.setDataDefinition(dataDefinition);
         form.setTranslationService(translationService);
@@ -130,6 +149,7 @@ public class FormComponentStateTest extends AbstractStateTest {
         FormComponentPattern pattern = mock(FormComponentPattern.class);
         given(pattern.getExpressionNew()).willReturn(null);
         given(pattern.getExpressionEdit()).willReturn(null);
+        setField(pattern, "applicationContext", applicationContext);
         InternalComponentState componentState = new FormComponentState(pattern);
 
         JSONObject json = new JSONObject();
@@ -152,6 +172,7 @@ public class FormComponentStateTest extends AbstractStateTest {
         FormComponentPattern pattern = mock(FormComponentPattern.class);
         given(pattern.getExpressionNew()).willReturn(null);
         given(pattern.getExpressionEdit()).willReturn(null);
+        setField(pattern, "applicationContext", applicationContext);
         InternalComponentState componentState = new FormComponentState(pattern);
 
         JSONObject json = new JSONObject();
@@ -176,6 +197,7 @@ public class FormComponentStateTest extends AbstractStateTest {
         FormComponentPattern pattern = mock(FormComponentPattern.class);
         given(pattern.getExpressionNew()).willReturn(null);
         given(pattern.getExpressionEdit()).willReturn("2");
+        setField(pattern, "applicationContext", applicationContext);
         AbstractComponentState componentState = new FormComponentState(pattern);
         componentState.setTranslationService(translationService);
         componentState.setDataDefinition(dataDefinition);

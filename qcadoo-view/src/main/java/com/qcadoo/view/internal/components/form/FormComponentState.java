@@ -23,15 +23,25 @@
  */
 package com.qcadoo.view.internal.components.form;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.qcadoo.model.api.*;
+import com.qcadoo.model.api.Entity;
+import com.qcadoo.model.api.EntityMessagesHolder;
+import com.qcadoo.model.api.EntityOpResult;
+import com.qcadoo.model.api.EntityTree;
+import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.expression.ExpressionUtils;
 import com.qcadoo.model.api.validators.ErrorMessage;
 import com.qcadoo.model.internal.DetachedEntityTreeImpl;
+import com.qcadoo.security.api.SecurityRole;
+import com.qcadoo.security.api.SecurityRolesService;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.components.FieldComponent;
 import com.qcadoo.view.api.components.FormComponent;
@@ -78,10 +88,16 @@ public class FormComponentState extends AbstractContainerState implements FormCo
 
     private boolean performBackRequired = false;
 
+    private final SecurityRole authorizationRole;
+
+    private final SecurityRolesService securityRolesService;
+
     public FormComponentState(final FormComponentPattern pattern) {
         super(pattern);
         this.expressionNew = pattern.getExpressionNew();
         this.expressionEdit = pattern.getExpressionEdit();
+        this.authorizationRole = pattern.getAuthorizationRole();
+        this.securityRolesService = pattern.getApplicationContext().getBean(SecurityRolesService.class);
         registerEvent("clear", eventPerformer, "clear");
         registerEvent("save", eventPerformer, "save");
         registerEvent("saveAndClear", eventPerformer, "saveAndClear");
@@ -516,6 +532,9 @@ public class FormComponentState extends AbstractContainerState implements FormCo
                 copyEntityToFields(entity, true);
                 setFieldValue(entity.getId());
                 setFieldsRequiredAndDisables();
+                if (!securityRolesService.canAccess(authorizationRole)) {
+                    setFormEnabled(false);
+                }
                 return;
             }
 
@@ -528,6 +547,9 @@ public class FormComponentState extends AbstractContainerState implements FormCo
             }
 
             clear(args);
+            if (!securityRolesService.canAccess(authorizationRole)) {
+                setFormEnabled(false);
+            }
         }
 
         public void clear(final String[] args) {

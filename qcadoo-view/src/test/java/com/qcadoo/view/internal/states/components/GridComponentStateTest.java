@@ -34,6 +34,7 @@ import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.util.ReflectionTestUtils.getField;
+import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -46,6 +47,7 @@ import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.springframework.context.ApplicationContext;
 
 import com.google.common.collect.ImmutableMap;
 import com.qcadoo.localization.api.TranslationService;
@@ -57,6 +59,7 @@ import com.qcadoo.model.api.search.SearchResult;
 import com.qcadoo.model.api.types.HasManyType;
 import com.qcadoo.model.internal.DefaultEntity;
 import com.qcadoo.model.internal.ExpressionServiceImpl;
+import com.qcadoo.security.api.SecurityRolesService;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.internal.FieldEntityIdChangeListener;
 import com.qcadoo.view.internal.components.grid.GridComponentColumn;
@@ -154,6 +157,10 @@ public class GridComponentStateTest extends AbstractStateTest {
         given(pattern.getBelongsToFieldDefinition()).willReturn(substitutesFieldDefinition);
         given(pattern.isActivable()).willReturn(false);
         given(pattern.isWeakRelation()).willReturn(false);
+        ApplicationContext applicationContext = mock(ApplicationContext.class);
+        setField(pattern, "applicationContext", applicationContext);
+        SecurityRolesService securityRolesService = mock(SecurityRolesService.class);
+        given(applicationContext.getBean(SecurityRolesService.class)).willReturn(securityRolesService);
         grid = new GridComponentState(productDataDefinition, pattern);
         grid.setDataDefinition(substituteDataDefinition);
         grid.setTranslationService(translationService);
@@ -197,6 +204,10 @@ public class GridComponentStateTest extends AbstractStateTest {
         given(pattern.getBelongsToFieldDefinition()).willReturn(null);
         given(pattern.isActivable()).willReturn(false);
         given(pattern.isWeakRelation()).willReturn(false);
+        ApplicationContext applicationContext = mock(ApplicationContext.class);
+        setField(pattern, "applicationContext", applicationContext);
+        SecurityRolesService securityRolesService = mock(SecurityRolesService.class);
+        given(applicationContext.getBean(SecurityRolesService.class)).willReturn(securityRolesService);
         grid = new GridComponentState(productDataDefinition, pattern);
         grid.setDataDefinition(substituteDataDefinition);
 

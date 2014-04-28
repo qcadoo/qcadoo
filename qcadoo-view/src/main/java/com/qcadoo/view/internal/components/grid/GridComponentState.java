@@ -57,6 +57,8 @@ import com.qcadoo.model.api.types.JoinFieldHolder;
 import com.qcadoo.model.api.types.ManyToManyType;
 import com.qcadoo.model.api.validators.ErrorMessage;
 import com.qcadoo.model.internal.ProxyEntity;
+import com.qcadoo.security.api.SecurityRole;
+import com.qcadoo.security.api.SecurityRolesService;
 import com.qcadoo.view.api.components.GridComponent;
 import com.qcadoo.view.api.components.lookup.FilterValueHolder;
 import com.qcadoo.view.internal.CriteriaModifier;
@@ -164,6 +166,10 @@ public final class GridComponentState extends AbstractComponentState implements 
 
     private final FilterValueHolder criteriaModifierParameter;
 
+    private final SecurityRole authorizationRole;
+
+    private final SecurityRolesService securityRolesService;
+
     public GridComponentState(final DataDefinition dataDefinition, final GridComponentPattern pattern) {
         super(pattern);
         this.belongsToFieldDefinition = pattern.getBelongsToFieldDefinition();
@@ -179,6 +185,8 @@ public final class GridComponentState extends AbstractComponentState implements 
         this.criteriaModifier = pattern.getCriteriaModifier();
         this.criteriaModifierParameter = new FilterValueHolderImpl();
         this.defaultPredefinedFilter = pattern.getDefaultPredefinedFilter();
+        this.authorizationRole = pattern.getAuthorizationRole();
+        this.securityRolesService = pattern.getApplicationContext().getBean(SecurityRolesService.class);
         registerEvent("refresh", eventPerformer, "refresh");
         registerEvent("select", eventPerformer, "selectEntity");
         registerEvent("addExistingEntity", eventPerformer, "addExistingEntity");
@@ -257,7 +265,7 @@ public final class GridComponentState extends AbstractComponentState implements 
                 }
             }
         }
-        if (belongsToFieldDefinition != null && belongsToEntityId == null) {
+        if ((belongsToFieldDefinition != null && belongsToEntityId == null) || !securityRolesService.canAccess(authorizationRole)) {
             setEnabled(false);
         }
 
@@ -381,7 +389,7 @@ public final class GridComponentState extends AbstractComponentState implements 
             multiselectMode = false;
         }
         belongsToEntityId = scopeEntityId;
-        setEnabled(scopeEntityId != null);
+        setEnabled(scopeEntityId != null && securityRolesService.canAccess(authorizationRole));
     }
 
     @Override

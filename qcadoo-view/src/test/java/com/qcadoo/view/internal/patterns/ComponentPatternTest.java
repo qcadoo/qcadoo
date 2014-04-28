@@ -40,6 +40,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
+import org.springframework.context.ApplicationContext;
 
 import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.beans.sample.CustomEntityService;
@@ -64,9 +65,11 @@ public class ComponentPatternTest extends AbstractPatternTest {
         // given
         InternalViewDefinitionState viewDefinitionState = mock(InternalViewDefinitionState.class);
         TranslationService translationService = mock(TranslationService.class);
+        ApplicationContext applicationContext = mock(ApplicationContext.class);
         InternalViewDefinition viewDefinition = mock(InternalViewDefinition.class);
         ComponentDefinition componentDefinition = getComponentDefinition("testName", null);
         componentDefinition.setTranslationService(translationService);
+        componentDefinition.setApplicationContext(applicationContext);
         componentDefinition.setViewDefinition(viewDefinition);
         AbstractComponentPattern pattern = new FormComponentPattern(componentDefinition);
         CustomEntityService object = mock(CustomEntityService.class);

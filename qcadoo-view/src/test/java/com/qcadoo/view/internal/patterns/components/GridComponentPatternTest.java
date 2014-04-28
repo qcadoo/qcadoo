@@ -41,8 +41,10 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.springframework.context.ApplicationContext;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -59,6 +61,7 @@ import com.qcadoo.model.internal.types.IntegerType;
 import com.qcadoo.model.internal.types.StringType;
 import com.qcadoo.plugin.api.PluginStateResolver;
 import com.qcadoo.plugin.internal.PluginUtilsService;
+import com.qcadoo.security.api.SecurityRolesService;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.components.GridComponent;
 import com.qcadoo.view.internal.ComponentDefinition;
@@ -75,12 +78,22 @@ import com.qcadoo.view.internal.xml.ViewDefinitionParserImpl;
 
 public class GridComponentPatternTest extends AbstractPatternTest {
 
+    private ApplicationContext applicationContext;
+
+    private TranslationService translationService;
+
+    @Before
+    public void init() throws Exception {
+        applicationContext = mock(ApplicationContext.class);
+        translationService = mock(TranslationService.class);
+    }
+
     @Test
     public void shouldInitializeOptions() throws Exception {
         // given
         DataDefinition dataDefinition = mock(DataDefinition.class);
         InternalViewDefinition viewDefinition = mock(InternalViewDefinition.class);
-        TranslationService translationService = mock(TranslationService.class);
+
         given(translationService.translate(Mockito.anyString(), Mockito.any(Locale.class))).willReturn("i18n");
         FieldDefinition nameFieldDefinition = mock(FieldDefinition.class);
         given(nameFieldDefinition.getType()).willReturn(new EnumType(translationService, "", true, "v1", "v2"));
@@ -177,7 +190,7 @@ public class GridComponentPatternTest extends AbstractPatternTest {
         // given
         DataDefinition dataDefinition = mock(DataDefinition.class);
         InternalViewDefinition viewDefinition = mock(InternalViewDefinition.class);
-        TranslationService translationService = mock(TranslationService.class);
+
         given(viewDefinition.getDataDefinition()).willReturn(dataDefinition);
         ComponentDefinition componentDefinition = getComponentDefinition("grid", viewDefinition);
         componentDefinition.setTranslationService(translationService);
@@ -211,7 +224,7 @@ public class GridComponentPatternTest extends AbstractPatternTest {
         // given
         DataDefinition dataDefinition = mock(DataDefinition.class);
         InternalViewDefinition viewDefinition = mock(InternalViewDefinition.class);
-        TranslationService translationService = mock(TranslationService.class);
+
         given(viewDefinition.getDataDefinition()).willReturn(dataDefinition);
         ComponentDefinition componentDefinition = getComponentDefinition("grid", viewDefinition);
         componentDefinition.setTranslationService(translationService);
@@ -235,7 +248,6 @@ public class GridComponentPatternTest extends AbstractPatternTest {
     public void shouldHaveScopeFieldName() throws Exception {
         // given
         DataDefinition dataDefinition = mock(DataDefinition.class);
-        TranslationService translationService = mock(TranslationService.class);
 
         BelongsToType belongsToFieldType = mock(BelongsToType.class);
 
@@ -285,7 +297,6 @@ public class GridComponentPatternTest extends AbstractPatternTest {
         // given
         InternalViewDefinitionState viewDefinitionState = mock(InternalViewDefinitionState.class);
         DataDefinition dataDefinition = mock(DataDefinition.class);
-        TranslationService translationService = mock(TranslationService.class);
 
         BelongsToType belongsToFieldType = mock(BelongsToType.class);
 
@@ -315,6 +326,7 @@ public class GridComponentPatternTest extends AbstractPatternTest {
 
         ComponentDefinition componentDefinition = getComponentDefinition("grid", null, "#{component}.field", null, viewDefinition);
         componentDefinition.setTranslationService(translationService);
+        componentDefinition.setApplicationContext(applicationContext);
         GridComponentPattern pattern = new GridComponentPattern(componentDefinition);
 
         pattern.addOption(new ComponentOption("order", ImmutableMap.of("column", "name", "direction", "asc")));
@@ -337,7 +349,8 @@ public class GridComponentPatternTest extends AbstractPatternTest {
         // given
         DataDefinition dataDefinition = mock(DataDefinition.class);
         InternalViewDefinition viewDefinition = mock(InternalViewDefinition.class);
-        TranslationService translationService = mock(TranslationService.class);
+        SecurityRolesService securityRolesService = mock(SecurityRolesService.class);
+
         given(viewDefinition.getDataDefinition()).willReturn(dataDefinition);
         ComponentDefinition componentDefinition = getComponentDefinition("grid", viewDefinition);
         componentDefinition.setTranslationService(translationService);
@@ -346,6 +359,7 @@ public class GridComponentPatternTest extends AbstractPatternTest {
         pattern.addOption(new ComponentOption("order", ImmutableMap.of("column", "name", "direction", "asc")));
 
         ViewDefinitionParser parser = new ViewDefinitionParserImpl();
+        setField(parser, "securityRolesService", securityRolesService);
 
         DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         Document doc = builder.newDocument();
@@ -412,10 +426,11 @@ public class GridComponentPatternTest extends AbstractPatternTest {
         InternalViewDefinitionState viewDefinitionState = mock(InternalViewDefinitionState.class);
         DataDefinition dataDefinition = mock(DataDefinition.class);
         InternalViewDefinition viewDefinition = mock(InternalViewDefinition.class);
-        TranslationService translationService = mock(TranslationService.class);
+
         given(viewDefinition.getDataDefinition()).willReturn(dataDefinition);
         ComponentDefinition componentDefinition = getComponentDefinition("grid", viewDefinition);
         componentDefinition.setTranslationService(translationService);
+        componentDefinition.setApplicationContext(applicationContext);
         componentDefinition.setDataDefinition(dataDefinition);
         GridComponentPattern pattern = new GridComponentPattern(componentDefinition);
 
@@ -468,10 +483,11 @@ public class GridComponentPatternTest extends AbstractPatternTest {
         InternalViewDefinitionState viewDefinitionState = mock(InternalViewDefinitionState.class);
         DataDefinition dataDefinition = mock(DataDefinition.class);
         InternalViewDefinition viewDefinition = mock(InternalViewDefinition.class);
-        TranslationService translationService = mock(TranslationService.class);
+
         given(viewDefinition.getDataDefinition()).willReturn(dataDefinition);
         ComponentDefinition componentDefinition = getComponentDefinition("grid", viewDefinition);
         componentDefinition.setTranslationService(translationService);
+        componentDefinition.setApplicationContext(applicationContext);
         componentDefinition.setDataDefinition(dataDefinition);
         GridComponentPattern pattern = new GridComponentPattern(componentDefinition);
 
