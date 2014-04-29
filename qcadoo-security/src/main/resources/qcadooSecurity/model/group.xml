@@ -29,7 +29,7 @@
 	xsi:schemaLocation="http://schema.qcadoo.org/model http://schema.qcadoo.org/model.xsd">
 	<fields>
 		<string name="name" required="true" unique="true" />
-		<string name="identifier" required="true" unique="true" />
+		<string name="identifier" unique="true" />
 		<text name="description" />
 		<manyToMany name="roles" joinField="groups"
 			model="role" />
