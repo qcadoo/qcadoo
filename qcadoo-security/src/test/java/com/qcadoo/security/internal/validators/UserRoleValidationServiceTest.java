@@ -33,7 +33,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -43,357 +42,372 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import com.google.common.collect.Lists;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.security.api.SecurityService;
+import com.qcadoo.security.constants.GroupFields;
+import com.qcadoo.security.constants.QcadooSecurityConstants;
+import com.qcadoo.security.constants.RoleFields;
 import com.qcadoo.security.constants.UserFields;
 
-@Ignore
 public class UserRoleValidationServiceTest {
 
-	// TODO KRNA unignore tests
-	private UserRoleValidationService userRoleValidationService;
-
-	@Mock
-	private SecurityService securityService;
-
-	@Mock
-	private DataDefinition userDataDefMock;
-
-	@Mock
-	private FieldDefinition userRoleFieldDefMock;
-
-	@Mock
-	private Entity userEntityMock, currentUserEntityMock, existingUserEntityMock;
-
-	@Mock
-	private SecurityContext securityContext;
-
-	@Before
-	public final void init() {
-		MockitoAnnotations.initMocks(this);
-
-		given(securityService.getCurrentUserId()).willReturn(1L);
-
-		given(userDataDefMock.getField(UserFields.GROUP)).willReturn(userRoleFieldDefMock);
-		given(userDataDefMock.get(1L)).willReturn(currentUserEntityMock);
-
-		given(userEntityMock.getId()).willReturn(1000L);
-		given(userDataDefMock.get(1000L)).willReturn(existingUserEntityMock);
-
-		SecurityContextHolder.setContext(securityContext);
-
-		userRoleValidationService = new UserRoleValidationService();
-		ReflectionTestUtils.setField(userRoleValidationService, "securityService", securityService);
-	}
-
-	private void stubRoleTransition(final String from, final String to) {
-		given(existingUserEntityMock.getStringField(UserFields.GROUP)).willReturn(from);
-		given(existingUserEntityMock.getField(UserFields.GROUP)).willReturn(from);
-
-		given(userEntityMock.getStringField(UserFields.GROUP)).willReturn(to);
-		given(userEntityMock.getField(UserFields.GROUP)).willReturn(to);
-	}
-
-	private void stubCurrentUserRole(final String role) {
-		given(currentUserEntityMock.getStringField(UserFields.GROUP)).willReturn(role);
-		given(currentUserEntityMock.getField(UserFields.GROUP)).willReturn(role);
-	}
-
-	private void stubSecurityContextWithAuthentication() {
-		final Authentication authentication = mock(Authentication.class);
-		given(securityContext.getAuthentication()).willReturn(authentication);
-	}
-
-	@Test
-	public final void shouldMarkTransitionFromNullToSuperadminAsInvalidWhenPerformedByNonSuperadminDuringCreation() {
-		// given
-		stubSecurityContextWithAuthentication();
-		stubCurrentUserRole(ROLE_ADMIN);
-		stubRoleTransition(null, ROLE_SUPERADMIN);
-
-		given(userEntityMock.getId()).willReturn(null);
-
-		// when
-		final boolean isValid = userRoleValidationService.checkUserCreatingSuperadmin(userDataDefMock, userEntityMock);
-
-		// then
-		assertFalse(isValid);
-		verify(userEntityMock).addError(Mockito.eq(userRoleFieldDefMock), Mockito.anyString());
-	}
-
-	@Test
-	public final void shouldMarkTransitionFromNullToSuperadminAsValidWhenPerformedBySuperadminDuringCreation() {
-		// given
-		stubSecurityContextWithAuthentication();
-		stubCurrentUserRole(ROLE_SUPERADMIN);
-		stubRoleTransition(null, ROLE_SUPERADMIN);
-
-		given(userEntityMock.getId()).willReturn(null);
-
-		// when
-		final boolean isValid = userRoleValidationService.checkUserCreatingSuperadmin(userDataDefMock, userEntityMock);
-
-		// then
-		assertTrue(isValid);
-	}
-
-	@Test
-	public final void shouldMarkTransitionFromNullToSuperadminAsValidWhenPerformedByShopDuringCreation() {
-		// given
-		stubSecurityContextWithAuthentication();
-		stubCurrentUserRole(ROLE_SUPERADMIN);
-		stubRoleTransition(null, ROLE_SUPERADMIN);
-
-		given(userEntityMock.getId()).willReturn(null);
-
-		// when
-		final boolean isValid = userRoleValidationService.checkUserCreatingSuperadmin(userDataDefMock, userEntityMock);
-
-		// then
-		assertTrue(isValid);
-	}
-
-	@Test
-	public final void shouldMarkTransitionFromNullToSuperadminAsInvalidWhenPerformedByNonSuperadmin() {
-		// given
-		stubSecurityContextWithAuthentication();
-		stubCurrentUserRole(ROLE_ADMIN);
-		stubRoleTransition(null, ROLE_SUPERADMIN);
-
-		// when
-		final boolean isValid = userRoleValidationService.checkUserCreatingSuperadmin(userDataDefMock, userEntityMock);
-
-		// then
-		assertFalse(isValid);
-		verify(userEntityMock).addError(Mockito.eq(userRoleFieldDefMock), Mockito.anyString());
-	}
-
-	@Test
-	public final void shouldMarkTransitionFromNullToSuperadminAsValidWhenPerformedBySuperadmin() {
-		// given
-		stubSecurityContextWithAuthentication();
-		stubCurrentUserRole(ROLE_SUPERADMIN);
-		stubRoleTransition(null, ROLE_SUPERADMIN);
-
-		// when
-		final boolean isValid = userRoleValidationService.checkUserCreatingSuperadmin(userDataDefMock, userEntityMock);
-
-		// then
-		assertTrue(isValid);
-	}
-
-	@Test
-	public final void shouldMarkTransitionFromNullToSuperadminAsValidWhenPerformedByShop() {
-		// given
-		stubSecurityContextWithAuthentication();
-		stubCurrentUserRole(ROLE_SUPERADMIN);
-		stubRoleTransition(null, ROLE_SUPERADMIN);
-
-		// when
-		final boolean isValid = userRoleValidationService.checkUserCreatingSuperadmin(userDataDefMock, userEntityMock);
-
-		// then
-		assertTrue(isValid);
-	}
-
-	@Test
-	public final void shouldMarkTransitionFromBlankToSuperadminAsValidWhenPerformedByNonSuperadmin() {
-		// given
-		stubSecurityContextWithAuthentication();
-		stubCurrentUserRole(ROLE_ADMIN);
-		stubRoleTransition(" ", ROLE_SUPERADMIN);
-
-		// when
-		final boolean isValid = userRoleValidationService.checkUserCreatingSuperadmin(userDataDefMock, userEntityMock);
-
-		// then
-		assertFalse(isValid);
-		verify(userEntityMock).addError(Mockito.eq(userRoleFieldDefMock), Mockito.anyString());
-	}
-
-	@Test
-	public final void shouldMarkTransitionFromBlankToSuperadminAsValidWhenPerformedBySuperadmin() {
-		// given
-		stubSecurityContextWithAuthentication();
-		stubCurrentUserRole(ROLE_SUPERADMIN);
-		stubRoleTransition(" ", ROLE_SUPERADMIN);
-
-		// when
-		final boolean isValid = userRoleValidationService.checkUserCreatingSuperadmin(userDataDefMock, userEntityMock);
-
-		// then
-		assertTrue(isValid);
-	}
-
-	@Test
-	public final void shouldMarkTransitionFromBlankToSuperadminAsValidWhenPerformedByShop() {
-		stubRoleTransition(" ", ROLE_SUPERADMIN);
-
-		// when
-		final boolean isValid = userRoleValidationService.checkUserCreatingSuperadmin(userDataDefMock, userEntityMock);
-
-		// then
-		assertTrue(isValid);
-	}
-
-	@Test
-	public final void shouldMarkTransitionFromSuperadminToSuperadminAsValidWhenPerformedByNonSuperadmin() {
-		// given
-		stubSecurityContextWithAuthentication();
-		stubCurrentUserRole(ROLE_ADMIN);
-		stubRoleTransition(ROLE_SUPERADMIN, ROLE_SUPERADMIN);
-
-		// when
-		final boolean isValid = userRoleValidationService.checkUserCreatingSuperadmin(userDataDefMock, userEntityMock);
-
-		// then
-		assertTrue(isValid);
-	}
-
-	@Test
-	public final void shouldMarkTransitionFromSuperadminToSuperadminAsValidWhenPerformedBySuperadmin() {
-		// given
-		stubSecurityContextWithAuthentication();
-		stubCurrentUserRole(ROLE_SUPERADMIN);
-		stubRoleTransition(ROLE_SUPERADMIN, ROLE_SUPERADMIN);
-
-		// when
-		final boolean isValid = userRoleValidationService.checkUserCreatingSuperadmin(userDataDefMock, userEntityMock);
-
-		// then
-		assertTrue(isValid);
-	}
-
-	@Test
-	public final void shouldMarkTransitionFromSuperadminToSuperadminAsValidWhenPerformedByShop() {
-		stubRoleTransition(ROLE_SUPERADMIN, ROLE_SUPERADMIN);
-
-		// when
-		final boolean isValid = userRoleValidationService.checkUserCreatingSuperadmin(userDataDefMock, userEntityMock);
-
-		// then
-		assertTrue(isValid);
-	}
-
-	@Test
-	public final void shouldMarkTransitionFromSuperadminToAnyAsValid() {
-		// given
-		stubSecurityContextWithAuthentication();
-		stubRoleTransition(ROLE_SUPERADMIN, "99anyOtherRole");
-
-		// when
-		final boolean isValid = userRoleValidationService.checkUserCreatingSuperadmin(userDataDefMock, userEntityMock);
-
-		// then
-		assertTrue(isValid);
-	}
-
-	@Test
-	public final void shouldMarkTransitionFromNullToRegularAdminAsValid() {
-		// given
-		stubSecurityContextWithAuthentication();
-		stubRoleTransition(null, ROLE_ADMIN);
-
-		// when
-		final boolean isValid = userRoleValidationService.checkUserCreatingSuperadmin(userDataDefMock, userEntityMock);
-
-		// then
-		assertTrue(isValid);
-	}
-
-	@Test
-	public final void shouldMarkTransitionFromBlankToRegularAdminAsValid() {
-		// given
-		stubSecurityContextWithAuthentication();
-		stubRoleTransition(" ", ROLE_ADMIN);
-
-		// when
-		final boolean isValid = userRoleValidationService.checkUserCreatingSuperadmin(userDataDefMock, userEntityMock);
-
-		// then
-		assertTrue(isValid);
-	}
-
-	@Test
-	public final void shouldMarkTransitionFromNonSuperadminToNonSuperadminAsValid() {
-		// given
-		stubSecurityContextWithAuthentication();
-		stubRoleTransition("99anyOtherRole", "89anyOther");
-
-		// when
-		final boolean isValid = userRoleValidationService.checkUserCreatingSuperadmin(userDataDefMock, userEntityMock);
-
-		// then
-		assertTrue(isValid);
-	}
-
-	@Test
-	public final void shouldMarkTransitionFromNonSuperadminToSuperadminAsInvalid() {
-		// given
-		stubSecurityContextWithAuthentication();
-		stubRoleTransition("99anyOtherRole", ROLE_SUPERADMIN);
-
-		// when
-		final boolean isValid = userRoleValidationService.checkUserCreatingSuperadmin(userDataDefMock, userEntityMock);
-
-		// then
-		assertFalse(isValid);
-		verify(userEntityMock).addError(Mockito.eq(userRoleFieldDefMock), Mockito.anyString());
-	}
-
-	@Test
-	public final void shouldMarkTransitionFromNonSuperadminToSuperadminAsValidWhenPerformedByShop() {
-		// given
-		stubRoleTransition("99anyOtherRole", ROLE_SUPERADMIN);
-
-		// when
-		final boolean isValid = userRoleValidationService.checkUserCreatingSuperadmin(userDataDefMock, userEntityMock);
-
-		// then
-		assertTrue(isValid);
-	}
-
-	@Test
-	public final void shouldMarkTransitionFromNonSuperadminToSuperadminAsValidWhenPerformedBySuperAdmin() {
-		// given
-		stubCurrentUserRole(ROLE_SUPERADMIN);
-		stubRoleTransition("99anyOtherRole", ROLE_SUPERADMIN);
-
-		// when
-		final boolean isValid = userRoleValidationService.checkUserCreatingSuperadmin(userDataDefMock, userEntityMock);
-
-		// then
-		assertTrue(isValid);
-	}
-
-	@Test
-	public final void shouldMarkTransitionFromAdminToSuperadminAsInvalid() {
-		// given
-		stubSecurityContextWithAuthentication();
-		stubRoleTransition(ROLE_ADMIN, ROLE_SUPERADMIN);
-
-		// when
-		final boolean isValid = userRoleValidationService.checkUserCreatingSuperadmin(userDataDefMock, userEntityMock);
-
-		// then
-		assertFalse(isValid);
-		verify(userEntityMock).addError(Mockito.eq(userRoleFieldDefMock), Mockito.anyString());
-	}
-
-	@Test
-	public final void shouldMarkTransitionFromUserToSuperadminAsInvalid() {
-		// given
-		stubSecurityContextWithAuthentication();
-		stubRoleTransition(ROLE_USER, ROLE_SUPERADMIN);
-
-		// when
-		final boolean isValid = userRoleValidationService.checkUserCreatingSuperadmin(userDataDefMock, userEntityMock);
-
-		// then
-		assertFalse(isValid);
-		verify(userEntityMock).addError(Mockito.eq(userRoleFieldDefMock), Mockito.anyString());
-	}
+    private UserRoleValidationService userRoleValidationService;
+
+    @Mock
+    private SecurityService securityService;
+
+    @Mock
+    private DataDefinition userDataDefMock;
+
+    @Mock
+    private FieldDefinition userRoleFieldDefMock;
+
+    @Mock
+    private Entity userEntityMock, currentUserEntityMock, existingUserEntityMock, userGroupMock, existingUserGroupMock;
+
+    @Mock
+    private SecurityContext securityContext;
+
+    @Before
+    public final void init() {
+        MockitoAnnotations.initMocks(this);
+
+        given(securityService.getCurrentUserId()).willReturn(1L);
+
+        given(userDataDefMock.getField(UserFields.GROUP)).willReturn(userRoleFieldDefMock);
+        given(userDataDefMock.get(1L)).willReturn(currentUserEntityMock);
+
+        given(userEntityMock.getId()).willReturn(1000L);
+        given(userDataDefMock.get(1000L)).willReturn(existingUserEntityMock);
+
+        SecurityContextHolder.setContext(securityContext);
+
+        userRoleValidationService = new UserRoleValidationService();
+        ReflectionTestUtils.setField(userRoleValidationService, "securityService", securityService);
+    }
+
+    private void stubRoleTransition(final String from, final String to) {
+        Entity fromRole = mock(Entity.class);
+        given(fromRole.getStringField(RoleFields.IDENTIFIER_FIELD)).willReturn(from);
+        given(existingUserGroupMock.getManyToManyField(GroupFields.ROLES_FIELD)).willReturn(Lists.newArrayList(fromRole));
+        given(existingUserEntityMock.getBelongsToField(UserFields.GROUP)).willReturn(from == null ? null : existingUserGroupMock);
+        given(securityService.hasRole(existingUserEntityMock, QcadooSecurityConstants.ROLE_SUPERADMIN)).willReturn(
+                QcadooSecurityConstants.ROLE_SUPERADMIN.equals(from));
+
+        Entity toRole = mock(Entity.class);
+        given(toRole.getStringField(RoleFields.IDENTIFIER_FIELD)).willReturn(to);
+        given(userGroupMock.getManyToManyField(GroupFields.ROLES_FIELD)).willReturn(Lists.newArrayList(toRole));
+        given(userEntityMock.getBelongsToField(UserFields.GROUP)).willReturn(to == null ? null : userGroupMock);
+        given(securityService.hasRole(userEntityMock, QcadooSecurityConstants.ROLE_SUPERADMIN)).willReturn(
+                QcadooSecurityConstants.ROLE_SUPERADMIN.equals(to));
+    }
+
+    private void stubCurrentUserRole(final String role) {
+        Entity roleEntity = mock(Entity.class);
+        given(roleEntity.getStringField(RoleFields.IDENTIFIER_FIELD)).willReturn(role);
+        given(currentUserEntityMock.getManyToManyField(UserFields.GROUP)).willReturn(Lists.newArrayList(roleEntity));
+        given(securityService.hasRole(currentUserEntityMock, QcadooSecurityConstants.ROLE_SUPERADMIN)).willReturn(
+                QcadooSecurityConstants.ROLE_SUPERADMIN.equals(role));
+    }
+
+    private void stubSecurityContextWithAuthentication() {
+        final Authentication authentication = mock(Authentication.class);
+        given(securityContext.getAuthentication()).willReturn(authentication);
+    }
+
+    @Test
+    public final void shouldMarkTransitionFromNullToSuperadminAsInvalidWhenPerformedByNonSuperadminDuringCreation() {
+        // given
+        stubSecurityContextWithAuthentication();
+        stubCurrentUserRole(ROLE_ADMIN);
+        stubRoleTransition(null, ROLE_SUPERADMIN);
+
+        given(userEntityMock.getId()).willReturn(null);
+
+        // when
+        final boolean isValid = userRoleValidationService.checkUserCreatingSuperadmin(userDataDefMock, userEntityMock);
+
+        // then
+        assertFalse(isValid);
+        verify(userEntityMock).addError(Mockito.eq(userRoleFieldDefMock), Mockito.anyString());
+    }
+
+    @Test
+    public final void shouldMarkTransitionFromNullToSuperadminAsValidWhenPerformedBySuperadminDuringCreation() {
+        // given
+        stubSecurityContextWithAuthentication();
+        stubCurrentUserRole(ROLE_SUPERADMIN);
+        stubRoleTransition(null, ROLE_SUPERADMIN);
+
+        given(userEntityMock.getId()).willReturn(null);
+
+        // when
+        final boolean isValid = userRoleValidationService.checkUserCreatingSuperadmin(userDataDefMock, userEntityMock);
+
+        // then
+        assertTrue(isValid);
+    }
+
+    @Test
+    public final void shouldMarkTransitionFromNullToSuperadminAsValidWhenPerformedByShopDuringCreation() {
+        // given
+        stubSecurityContextWithAuthentication();
+        stubCurrentUserRole(ROLE_SUPERADMIN);
+        stubRoleTransition(null, ROLE_SUPERADMIN);
+
+        given(userEntityMock.getId()).willReturn(null);
+
+        // when
+        final boolean isValid = userRoleValidationService.checkUserCreatingSuperadmin(userDataDefMock, userEntityMock);
+
+        // then
+        assertTrue(isValid);
+    }
+
+    @Test
+    public final void shouldMarkTransitionFromNullToSuperadminAsInvalidWhenPerformedByNonSuperadmin() {
+        // given
+        stubSecurityContextWithAuthentication();
+        stubCurrentUserRole(ROLE_ADMIN);
+        stubRoleTransition(null, ROLE_SUPERADMIN);
+
+        // when
+        final boolean isValid = userRoleValidationService.checkUserCreatingSuperadmin(userDataDefMock, userEntityMock);
+
+        // then
+        assertFalse(isValid);
+        verify(userEntityMock).addError(Mockito.eq(userRoleFieldDefMock), Mockito.anyString());
+    }
+
+    @Test
+    public final void shouldMarkTransitionFromNullToSuperadminAsValidWhenPerformedBySuperadmin() {
+        // given
+        stubSecurityContextWithAuthentication();
+        stubCurrentUserRole(ROLE_SUPERADMIN);
+        stubRoleTransition(null, ROLE_SUPERADMIN);
+
+        // when
+        final boolean isValid = userRoleValidationService.checkUserCreatingSuperadmin(userDataDefMock, userEntityMock);
+
+        // then
+        assertTrue(isValid);
+    }
+
+    @Test
+    public final void shouldMarkTransitionFromNullToSuperadminAsValidWhenPerformedByShop() {
+        // given
+        stubSecurityContextWithAuthentication();
+        stubCurrentUserRole(ROLE_SUPERADMIN);
+        stubRoleTransition(null, ROLE_SUPERADMIN);
+
+        // when
+        final boolean isValid = userRoleValidationService.checkUserCreatingSuperadmin(userDataDefMock, userEntityMock);
+
+        // then
+        assertTrue(isValid);
+    }
+
+    @Test
+    public final void shouldMarkTransitionFromBlankToSuperadminAsInvalidWhenPerformedByNonSuperadmin() {
+        // given
+        stubSecurityContextWithAuthentication();
+        stubCurrentUserRole(ROLE_ADMIN);
+        stubRoleTransition(" ", ROLE_SUPERADMIN);
+
+        // when
+        final boolean isValid = userRoleValidationService.checkUserCreatingSuperadmin(userDataDefMock, userEntityMock);
+
+        // then
+        assertFalse(isValid);
+        verify(userEntityMock).addError(Mockito.eq(userRoleFieldDefMock), Mockito.anyString());
+    }
+
+    @Test
+    public final void shouldMarkTransitionFromBlankToSuperadminAsValidWhenPerformedBySuperadmin() {
+        // given
+        stubSecurityContextWithAuthentication();
+        stubCurrentUserRole(ROLE_SUPERADMIN);
+        stubRoleTransition(" ", ROLE_SUPERADMIN);
+
+        // when
+        final boolean isValid = userRoleValidationService.checkUserCreatingSuperadmin(userDataDefMock, userEntityMock);
+
+        // then
+        assertTrue(isValid);
+    }
+
+    @Test
+    public final void shouldMarkTransitionFromBlankToSuperadminAsValidWhenPerformedByShop() {
+        stubRoleTransition(" ", ROLE_SUPERADMIN);
+
+        // when
+        final boolean isValid = userRoleValidationService.checkUserCreatingSuperadmin(userDataDefMock, userEntityMock);
+
+        // then
+        assertTrue(isValid);
+    }
+
+    @Test
+    public final void shouldMarkTransitionFromSuperadminToSuperadminAsValidWhenPerformedByNonSuperadmin() {
+        // given
+        stubSecurityContextWithAuthentication();
+        stubCurrentUserRole(ROLE_ADMIN);
+        stubRoleTransition(ROLE_SUPERADMIN, ROLE_SUPERADMIN);
+
+        // when
+        final boolean isValid = userRoleValidationService.checkUserCreatingSuperadmin(userDataDefMock, userEntityMock);
+
+        // then
+        assertTrue(isValid);
+    }
+
+    @Test
+    public final void shouldMarkTransitionFromSuperadminToSuperadminAsValidWhenPerformedBySuperadmin() {
+        // given
+        stubSecurityContextWithAuthentication();
+        stubCurrentUserRole(ROLE_SUPERADMIN);
+        stubRoleTransition(ROLE_SUPERADMIN, ROLE_SUPERADMIN);
+
+        // when
+        final boolean isValid = userRoleValidationService.checkUserCreatingSuperadmin(userDataDefMock, userEntityMock);
+
+        // then
+        assertTrue(isValid);
+    }
+
+    @Test
+    public final void shouldMarkTransitionFromSuperadminToSuperadminAsValidWhenPerformedByShop() {
+        stubRoleTransition(ROLE_SUPERADMIN, ROLE_SUPERADMIN);
+
+        // when
+        final boolean isValid = userRoleValidationService.checkUserCreatingSuperadmin(userDataDefMock, userEntityMock);
+
+        // then
+        assertTrue(isValid);
+    }
+
+    @Test
+    public final void shouldMarkTransitionFromSuperadminToAnyAsInvalid() {
+        // given
+        stubSecurityContextWithAuthentication();
+        stubRoleTransition(ROLE_SUPERADMIN, "99anyOtherRole");
+
+        // when
+        final boolean isValid = userRoleValidationService.checkUserCreatingSuperadmin(userDataDefMock, userEntityMock);
+
+        // then
+        assertFalse(isValid);
+        verify(userEntityMock).addError(Mockito.eq(userRoleFieldDefMock), Mockito.anyString());
+    }
+
+    @Test
+    public final void shouldMarkTransitionFromNullToRegularAdminAsValid() {
+        // given
+        stubSecurityContextWithAuthentication();
+        stubRoleTransition(null, ROLE_ADMIN);
+
+        // when
+        final boolean isValid = userRoleValidationService.checkUserCreatingSuperadmin(userDataDefMock, userEntityMock);
+
+        // then
+        assertTrue(isValid);
+    }
+
+    @Test
+    public final void shouldMarkTransitionFromBlankToRegularAdminAsValid() {
+        // given
+        stubSecurityContextWithAuthentication();
+        stubRoleTransition(" ", ROLE_ADMIN);
+
+        // when
+        final boolean isValid = userRoleValidationService.checkUserCreatingSuperadmin(userDataDefMock, userEntityMock);
+
+        // then
+        assertTrue(isValid);
+    }
+
+    @Test
+    public final void shouldMarkTransitionFromNonSuperadminToNonSuperadminAsValid() {
+        // given
+        stubSecurityContextWithAuthentication();
+        stubRoleTransition("99anyOtherRole", "89anyOther");
+
+        // when
+        final boolean isValid = userRoleValidationService.checkUserCreatingSuperadmin(userDataDefMock, userEntityMock);
+
+        // then
+        assertTrue(isValid);
+    }
+
+    @Test
+    public final void shouldMarkTransitionFromNonSuperadminToSuperadminAsInvalid() {
+        // given
+        stubSecurityContextWithAuthentication();
+        stubRoleTransition("99anyOtherRole", ROLE_SUPERADMIN);
+
+        // when
+        final boolean isValid = userRoleValidationService.checkUserCreatingSuperadmin(userDataDefMock, userEntityMock);
+
+        // then
+        assertFalse(isValid);
+        verify(userEntityMock).addError(Mockito.eq(userRoleFieldDefMock), Mockito.anyString());
+    }
+
+    @Test
+    public final void shouldMarkTransitionFromNonSuperadminToSuperadminAsValidWhenPerformedByShop() {
+        // given
+        stubRoleTransition("99anyOtherRole", ROLE_SUPERADMIN);
+
+        // when
+        final boolean isValid = userRoleValidationService.checkUserCreatingSuperadmin(userDataDefMock, userEntityMock);
+
+        // then
+        assertTrue(isValid);
+    }
+
+    @Test
+    public final void shouldMarkTransitionFromNonSuperadminToSuperadminAsValidWhenPerformedBySuperAdmin() {
+        // given
+        stubCurrentUserRole(ROLE_SUPERADMIN);
+        stubRoleTransition("99anyOtherRole", ROLE_SUPERADMIN);
+
+        // when
+        final boolean isValid = userRoleValidationService.checkUserCreatingSuperadmin(userDataDefMock, userEntityMock);
+
+        // then
+        assertTrue(isValid);
+    }
+
+    @Test
+    public final void shouldMarkTransitionFromAdminToSuperadminAsInvalid() {
+
+        // given
+        stubSecurityContextWithAuthentication();
+        stubRoleTransition(ROLE_ADMIN, ROLE_SUPERADMIN);
+
+        // when
+        final boolean isValid = userRoleValidationService.checkUserCreatingSuperadmin(userDataDefMock, userEntityMock);
+
+        // then
+        assertFalse(isValid);
+        verify(userEntityMock).addError(Mockito.eq(userRoleFieldDefMock), Mockito.anyString());
+    }
+
+    @Test
+    public final void shouldMarkTransitionFromUserToSuperadminAsInvalid() {
+        // given
+        stubSecurityContextWithAuthentication();
+        stubRoleTransition(ROLE_USER, ROLE_SUPERADMIN);
+
+        // when
+        final boolean isValid = userRoleValidationService.checkUserCreatingSuperadmin(userDataDefMock, userEntityMock);
+
+        // then
+        assertFalse(isValid);
+        verify(userEntityMock).addError(Mockito.eq(userRoleFieldDefMock), Mockito.anyString());
+    }
 
 }

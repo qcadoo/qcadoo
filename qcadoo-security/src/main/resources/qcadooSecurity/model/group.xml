@@ -35,5 +35,7 @@
 			model="role" />
 		<hasMany name="users" joinField="group" model="user" cascade="delete"/>
 	</fields>
-	<hooks />
+	<hooks >
+	    <validatesWith class="com.qcadoo.security.internal.validators.GroupRolesValidationService" method="checkUserAddingRoleSuperadmin"/>
+	</hooks>
 </model>

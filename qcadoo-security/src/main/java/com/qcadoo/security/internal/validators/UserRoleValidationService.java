@@ -30,7 +30,6 @@ import org.springframework.stereotype.Service;
 import com.google.common.base.Objects;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
-import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.security.api.SecurityService;
 import com.qcadoo.security.constants.QcadooSecurityConstants;
 import com.qcadoo.security.constants.UserFields;
@@ -38,47 +37,34 @@ import com.qcadoo.security.constants.UserFields;
 @Service
 public class UserRoleValidationService {
 
-	// TODO KRNA check adding role super to group, eventually delete super user or group
+    @Autowired
+    private SecurityService securityService;
 
-	@Autowired
-	private SecurityService securityService;
+    public boolean checkUserCreatingSuperadmin(final DataDefinition dataDefinition, final Entity entity) {
 
-	public boolean checkUserCreatingSuperadmin(final DataDefinition dataDefinition, final Entity entity) {
-		final Object newValue = entity.getBelongsToField(UserFields.GROUP);
-		final Object oldValue = getOldValue(dataDefinition, entity);
-		return checkUserCreatingSuperadmin(dataDefinition, dataDefinition.getField(UserFields.GROUP), entity, oldValue, newValue);
-	}
+        Boolean isRoleSuperadminInNewGroup = securityService.hasRole(entity, QcadooSecurityConstants.ROLE_SUPERADMIN);
+        Boolean isRoleSuperadminInOldGroup = entity.getId() == null ? false : securityService.hasRole(
+                dataDefinition.get(entity.getId()), QcadooSecurityConstants.ROLE_SUPERADMIN);
 
-	private Object getOldValue(final DataDefinition dataDefinition, final Entity entity) {
-		if (entity.getId() == null) {
-			return null;
-		} else {
-			final Entity existingEntity = dataDefinition.get(entity.getId());
-			return existingEntity.getBelongsToField(UserFields.GROUP);
-		}
-	}
+        if (Objects.equal(isRoleSuperadminInOldGroup, isRoleSuperadminInNewGroup)
+                || isCurrentUserShopOrSuperAdmin(dataDefinition)) {
+            return true;
+        }
+        entity.addError(dataDefinition.getField(UserFields.GROUP), "qcadooUsers.validate.global.error.forbiddenRole");
+        return false;
+    }
 
-	private boolean checkUserCreatingSuperadmin(final DataDefinition dataDefinition, final FieldDefinition fieldDefinition,
-	        final Entity entity, final Object oldValue, final Object newValue) {
-		if (Objects.equal(oldValue, newValue) || isCurrentUserShopOrSuperAdmin(dataDefinition)
-		        || !securityService.hasRole(entity, QcadooSecurityConstants.ROLE_SUPERADMIN)) {
-			return true;
-		}
-		entity.addError(fieldDefinition, "qcadooUsers.validate.global.error.forbiddenRole");
-		return false;
-	}
+    private boolean isCurrentUserShopOrSuperAdmin(final DataDefinition userDataDefinition) {
+        if (isCalledFromShop()) {
+            return true;
+        }
+        final Long currentUserId = securityService.getCurrentUserId();
+        final Entity currentUserEntity = userDataDefinition.get(currentUserId);
+        return securityService.hasRole(currentUserEntity, QcadooSecurityConstants.ROLE_SUPERADMIN);
+    }
 
-	private boolean isCurrentUserShopOrSuperAdmin(final DataDefinition userDataDefinition) {
-		if (isCalledFromShop()) {
-			return true;
-		}
-		final Long currentUserId = securityService.getCurrentUserId();
-		final Entity currentUserEntity = userDataDefinition.get(currentUserId);
-		return securityService.hasRole(currentUserEntity, QcadooSecurityConstants.ROLE_SUPERADMIN);
-	}
-
-	private boolean isCalledFromShop() {
-		return SecurityContextHolder.getContext().getAuthentication() == null;
-	}
+    private boolean isCalledFromShop() {
+        return SecurityContextHolder.getContext().getAuthentication() == null;
+    }
 
 }
