@@ -520,6 +520,9 @@ public class GridComponentPattern extends AbstractComponentPattern {
             } else if ("order".equals(option.getType())) {
                 defaultOrderColumn = option.getAtrributeValue(L_COLUMN);
                 defaultOrderDirection = option.getAtrributeValue("direction");
+                if (defaultOrderDirection == null) {
+                    defaultOrderDirection = "asc";
+                }
                 if (predefinedFilters != null) {
                     for (PredefinedFilter predefinedFilter : predefinedFilters.values()) {
                         if (predefinedFilter.getOrderColumn() == null) {
