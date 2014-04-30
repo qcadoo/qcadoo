@@ -297,8 +297,7 @@ public class RibbonTemplates {
 
     private InternalRibbonActionItem createFormDeleteAction(final ViewDefinition viewDefinition) {
         InternalRibbonActionItem ribbonDeleteAction = new RibbonActionItemImpl();
-        ribbonDeleteAction.setAction(RibbonUtils.translateRibbonAction("#{form}.performDelete; #{window}.performBack",
-                viewDefinition));
+        ribbonDeleteAction.setAction(RibbonUtils.translateRibbonAction("#{form}.performDelete;", viewDefinition));
         ribbonDeleteAction.setIcon("deleteIcon16.png");
         ribbonDeleteAction.setName("delete");
         ribbonDeleteAction.setType(RibbonActionItem.Type.SMALL_BUTTON);
