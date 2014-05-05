@@ -54,7 +54,7 @@ public final class UniqueValidator implements FieldHookDefinition, ErrorMessageD
     @Override
     public boolean call(final Entity entity, final Object oldValue, final Object newValue) {
         SearchCriteriaBuilder searchCriteriaBuilder = dataDefinition.find()
-                .add(SearchRestrictions.eq(fieldDefinition.getName(), entity.getField(fieldDefinition.getName())))
+                .add(SearchRestrictions.ieq(fieldDefinition.getName(), entity.getField(fieldDefinition.getName())))
                 .setMaxResults(1);
         if (entity.getId() != null) {
             searchCriteriaBuilder.add(SearchRestrictions.idNe(entity.getId()));
