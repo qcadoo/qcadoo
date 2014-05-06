@@ -1,0 +1,351 @@
+---- AspectJ Properties ---
+AspectJ Compiler 1.6.12 built on Tuesday Oct 18, 2011 at 17:52:06 GMT
+---- Dump Properties ---
+Dump file: ajcore.20140505.144652.597.txt
+Dump reason: org.aspectj.apache.bcel.classfile.ClassFormatException
+Dump on exception: true
+Dump at exit condition: abort
+---- Exception Information ---
+org.aspectj.apache.bcel.classfile.ClassFormatException: File: 'java/lang/CharSequence.class': Invalid byte tag in constant pool: 18
+	at org.aspectj.apache.bcel.classfile.ClassParser.readConstantPool(ClassParser.java:192)
+	at org.aspectj.apache.bcel.classfile.ClassParser.parse(ClassParser.java:131)
+	at org.aspectj.weaver.bcel.BcelWorld.lookupJavaClass(BcelWorld.java:424)
+	at org.aspectj.weaver.bcel.BcelWorld.resolveDelegate(BcelWorld.java:376)
+	at org.aspectj.weaver.World.resolveToReferenceType(World.java:485)
+	at org.aspectj.weaver.World.resolve(World.java:326)
+	at org.aspectj.weaver.World.resolve(World.java:236)
+	at org.aspectj.weaver.bcel.BcelGenericSignatureToTypeXConverter.classTypeSignature2TypeX(BcelGenericSignatureToTypeXConverter.java:97)
+	at org.aspectj.weaver.bcel.BcelGenericSignatureToTypeXConverter.classTypeSignature2TypeX(BcelGenericSignatureToTypeXConverter.java:41)
+	at org.aspectj.weaver.bcel.BcelObjectType.ensureGenericSignatureUnpacked(BcelObjectType.java:810)
+	at org.aspectj.weaver.bcel.BcelObjectType.getDeclaredInterfaces(BcelObjectType.java:257)
+	at org.aspectj.weaver.ReferenceType.getDeclaredInterfaces(ReferenceType.java:626)
+	at org.aspectj.weaver.ResolvedType.getDirectSupertypes(ResolvedType.java:82)
+	at org.aspectj.weaver.patterns.TypePattern.matchesSubtypes(TypePattern.java:178)
+	at org.aspectj.weaver.patterns.ExactTypePattern.matchesSubtypes(ExactTypePattern.java:74)
+	at org.aspectj.weaver.patterns.TypePattern.matchesStatically(TypePattern.java:130)
+	at org.aspectj.weaver.patterns.DeclareParents.match(DeclareParents.java:63)
+	at org.aspectj.weaver.patterns.DeclareParents.findMatchingNewParents(DeclareParents.java:358)
+	at org.aspectj.ajdt.internal.compiler.lookup.AjLookupEnvironment.doDeclareParents(AjLookupEnvironment.java:880)
+	at org.aspectj.ajdt.internal.compiler.lookup.AjLookupEnvironment.weaveInterTypeDeclarations(AjLookupEnvironment.java:730)
+	at org.aspectj.ajdt.internal.compiler.lookup.AjLookupEnvironment.weaveInterTypeDeclarations(AjLookupEnvironment.java:652)
+	at org.aspectj.ajdt.internal.compiler.lookup.AjLookupEnvironment.doPendingWeaves(AjLookupEnvironment.java:427)
+	at org.aspectj.ajdt.internal.compiler.lookup.AjLookupEnvironment.completeTypeBindings(AjLookupEnvironment.java:213)
+	at org.aspectj.org.eclipse.jdt.internal.compiler.Compiler.internalBeginToCompile(Compiler.java:616)
+	at org.aspectj.org.eclipse.jdt.internal.compiler.Compiler.beginToCompile(Compiler.java:357)
+	at org.aspectj.org.eclipse.jdt.internal.compiler.Compiler.compile(Compiler.java:371)
+	at org.aspectj.ajdt.internal.core.builder.AjBuildManager.performCompilation(AjBuildManager.java:1027)
+	at org.aspectj.ajdt.internal.core.builder.AjBuildManager.performBuild(AjBuildManager.java:271)
+	at org.aspectj.ajdt.internal.core.builder.AjBuildManager.batchBuild(AjBuildManager.java:184)
+	at org.aspectj.ajdt.ajc.AjdtCommand.doCommand(AjdtCommand.java:112)
+	at org.aspectj.ajdt.ajc.AjdtCommand.runCommand(AjdtCommand.java:60)
+	at org.aspectj.tools.ajc.Main.run(Main.java:371)
+	at org.aspectj.tools.ajc.Main.runMain(Main.java:248)
+	at org.codehaus.mojo.aspectj.AbstractAjcCompiler.execute(AbstractAjcCompiler.java:405)
+	at org.apache.maven.plugin.DefaultBuildPluginManager.executeMojo(DefaultBuildPluginManager.java:101)
+	at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:209)
+	at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:153)
+	at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:145)
+	at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject(LifecycleModuleBuilder.java:84)
+	at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject(LifecycleModuleBuilder.java:59)
+	at org.apache.maven.lifecycle.internal.LifecycleStarter.singleThreadedBuild(LifecycleStarter.java:183)
+	at org.apache.maven.lifecycle.internal.LifecycleStarter.execute(LifecycleStarter.java:161)
+	at org.apache.maven.DefaultMaven.doExecute(DefaultMaven.java:320)
+	at org.apache.maven.DefaultMaven.execute(DefaultMaven.java:156)
+	at org.apache.maven.cli.MavenCli.execute(MavenCli.java:537)
+	at org.apache.maven.cli.MavenCli.doMain(MavenCli.java:196)
+	at org.apache.maven.cli.MavenCli.main(MavenCli.java:141)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:483)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.launchEnhanced(Launcher.java:290)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.launch(Launcher.java:230)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.mainWithExitCode(Launcher.java:409)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.main(Launcher.java:352)
+---- System Properties ---
+java.runtime.name=Java(TM) SE Runtime Environment
+sun.boot.library.path=/Library/Java/JavaVirtualMachines/jdk1.8.0_05.jdk/Contents/Home/jre/lib
+java.vm.version=25.5-b02
+gopherProxySet=false
+java.vm.vendor=Oracle Corporation
+java.vendor.url=http://java.oracle.com/
+guice.disable.misplaced.annotation.check=true
+path.separator=:
+java.vm.name=Java HotSpot(TM) 64-Bit Server VM
+file.encoding.pkg=sun.io
+user.country=PL
+sun.java.launcher=SUN_STANDARD
+sun.os.patch.level=unknown
+java.vm.specification.name=Java Virtual Machine Specification
+user.dir=/Users/krzysztofnadolski/Projects/sdt_workspace/qcadoo
+java.runtime.version=1.8.0_05-b13
+java.awt.graphicsenv=sun.awt.CGraphicsEnvironment
+java.endorsed.dirs=/Library/Java/JavaVirtualMachines/jdk1.8.0_05.jdk/Contents/Home/jre/lib/endorsed
+os.arch=x86_64
+java.io.tmpdir=/var/folders/4s/4svlq9c54x33k8lv1kq6mp9r0000gp/T/
+line.separator=
+
+java.vm.specification.vendor=Oracle Corporation
+os.name=Mac OS X
+classworlds.conf=/Library/apache-maven-3.0.4/bin/m2.conf
+sun.jnu.encoding=UTF-8
+java.library.path=/Users/krzysztofnadolski/Library/Java/Extensions:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java:.
+java.specification.name=Java Platform API Specification
+java.class.version=52.0
+sun.management.compiler=HotSpot 64-Bit Tiered Compilers
+os.version=10.9.2
+http.nonProxyHosts=local|*.local|169.254/16|*.169.254/16
+user.home=/Users/krzysztofnadolski
+user.timezone=Europe/Warsaw
+java.awt.printerjob=sun.lwawt.macosx.CPrinterJob
+file.encoding=UTF-8
+java.specification.version=1.8
+java.class.path=/Library/apache-maven-3.0.4/boot/plexus-classworlds-2.4.jar
+user.name=krzysztofnadolski
+java.vm.specification.version=1.8
+sun.java.command=org.codehaus.plexus.classworlds.launcher.Launcher clean install
+java.home=/Library/Java/JavaVirtualMachines/jdk1.8.0_05.jdk/Contents/Home/jre
+sun.arch.data.model=64
+user.language=pl
+java.specification.vendor=Oracle Corporation
+awt.toolkit=sun.lwawt.macosx.LWCToolkit
+java.vm.info=mixed mode
+java.version=1.8.0_05
+java.ext.dirs=/Users/krzysztofnadolski/Library/Java/Extensions:/Library/Java/JavaVirtualMachines/jdk1.8.0_05.jdk/Contents/Home/jre/lib/ext:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java
+sun.boot.class.path=/Library/Java/JavaVirtualMachines/jdk1.8.0_05.jdk/Contents/Home/jre/lib/resources.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_05.jdk/Contents/Home/jre/lib/rt.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_05.jdk/Contents/Home/jre/lib/sunrsasign.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_05.jdk/Contents/Home/jre/lib/jsse.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_05.jdk/Contents/Home/jre/lib/jce.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_05.jdk/Contents/Home/jre/lib/charsets.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_05.jdk/Contents/Home/jre/lib/jfr.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_05.jdk/Contents/Home/jre/classes
+java.vendor=Oracle Corporation
+maven.home=/Library/apache-maven-3.0.4
+file.separator=/
+java.vendor.url.bug=http://bugreport.sun.com/bugreport/
+sun.io.unicode.encoding=UnicodeBig
+sun.cpu.endian=little
+socksNonProxyHosts=local|*.local|169.254/16|*.169.254/16
+ftp.nonProxyHosts=local|*.local|169.254/16|*.169.254/16
+sun.cpu.isalist=
+---- Command Line ---
+-encoding
+UTF-8
+-showWeaveInfo
+-source
+1.6
+-target
+1.6
+-classpath
+/Users/krzysztofnadolski/.m2/repository/org/springframework/spring-aop/3.1.0.RELEASE/spring-aop-3.1.0.RELEASE.jar:/Users/krzysztofnadolski/.m2/repository/org/springframework/spring-beans/3.1.0.RELEASE/spring-beans-3.1.0.RELEASE.jar:/Users/krzysztofnadolski/.m2/repository/org/springframework/spring-context/3.1.0.RELEASE/spring-context-3.1.0.RELEASE.jar:/Users/krzysztofnadolski/.m2/repository/org/springframework/spring-context-support/3.1.0.RELEASE/spring-context-support-3.1.0.RELEASE.jar:/Users/krzysztofnadolski/.m2/repository/org/springframework/spring-expression/3.1.0.RELEASE/spring-expression-3.1.0.RELEASE.jar:/Users/krzysztofnadolski/.m2/repository/org/springframework/spring-orm/3.1.0.RELEASE/spring-orm-3.1.0.RELEASE.jar:/Users/krzysztofnadolski/.m2/repository/org/springframework/spring-tx/3.1.0.RELEASE/spring-tx-3.1.0.RELEASE.jar:/Users/krzysztofnadolski/.m2/repository/org/springframework/spring-web/3.1.0.RELEASE/spring-web-3.1.0.RELEASE.jar:/Users/krzysztofnadolski/.m2/repository/org/springframework/spring-webmvc/3.1.0.RELEASE/spring-webmvc-3.1.0.RELEASE.jar:/Users/krzysztofnadolski/.m2/repository/org/springframework/security/spring-security-core/3.0.7.RELEASE/spring-security-core-3.0.7.RELEASE.jar:/Users/krzysztofnadolski/.m2/repository/org/springframework/security/spring-security-config/3.0.7.RELEASE/spring-security-config-3.0.7.RELEASE.jar:/Users/krzysztofnadolski/.m2/repository/org/springframework/security/spring-security-web/3.0.7.RELEASE/spring-security-web-3.0.7.RELEASE.jar:/Users/krzysztofnadolski/.m2/repository/org/springframework/security/spring-security-aspects/3.0.7.RELEASE/spring-security-aspects-3.0.7.RELEASE.jar:/Users/krzysztofnadolski/.m2/repository/org/springframework/spring-aspects/3.1.0.RELEASE/spring-aspects-3.1.0.RELEASE.jar:/Users/krzysztofnadolski/.m2/repository/org/hibernate/hibernate-core/3.6.1.Final/hibernate-core-3.6.1.Final.jar:/Users/krzysztofnadolski/.m2/repository/commons-lang/commons-lang/2.5/commons-lang-2.5.jar:/Users/krzysztofnadolski/.m2/repository/commons-beanutils/commons-beanutils/1.8.3/commons-beanutils-1.8.3.jar:/Users/krzysztofnadolski/.m2/repository/commons-io/commons-io/2.0.1/commons-io-2.0.1.jar:/Users/krzysztofnadolski/.m2/repository/commons-validator/commons-validator/1.4.0/commons-validator-1.4.0.jar:/Users/krzysztofnadolski/.m2/repository/org/springframework/spring-test/3.1.0.RELEASE/spring-test-3.1.0.RELEASE.jar:/Users/krzysztofnadolski/.m2/repository/hsqldb/hsqldb/1.8.0.10/hsqldb-1.8.0.10.jar:/Users/krzysztofnadolski/.m2/repository/commons-dbcp/commons-dbcp/1.4/commons-dbcp-1.4.jar:/Users/krzysztofnadolski/.m2/repository/xmlunit/xmlunit/1.3/xmlunit-1.3.jar:/Users/krzysztofnadolski/.m2/repository/org/javassist/javassist/3.14.0-GA/javassist-3.14.0-GA.jar:/Users/krzysztofnadolski/.m2/repository/org/quartz-scheduler/quartz/1.8.5/quartz-1.8.5.jar:/Users/krzysztofnadolski/.m2/repository/org/aspectj/aspectjrt/1.6.12/aspectjrt-1.6.12.jar:/Users/krzysztofnadolski/.m2/repository/org/springframework/spring-core/3.1.0.RELEASE/spring-core-3.1.0.RELEASE.jar:/Users/krzysztofnadolski/.m2/repository/org/jdom/jdom/1.1/jdom-1.1.jar:/Users/krzysztofnadolski/.m2/repository/joda-time/joda-time/2.3/joda-time-2.3.jar:/Users/krzysztofnadolski/.m2/repository/com/google/guava/guava/14.0.1/guava-14.0.1.jar:/Users/krzysztofnadolski/.m2/repository/org/slf4j/slf4j-api/1.6.1/slf4j-api-1.6.1.jar:/Users/krzysztofnadolski/.m2/repository/org/slf4j/slf4j-log4j12/1.6.1/slf4j-log4j12-1.6.1.jar:/Users/krzysztofnadolski/.m2/repository/org/slf4j/jcl-over-slf4j/1.6.1/jcl-over-slf4j-1.6.1.jar:/Users/krzysztofnadolski/.m2/repository/javax/servlet/servlet-api/2.5/servlet-api-2.5.jar:/Users/krzysztofnadolski/.m2/repository/junit/junit/4.8.1/junit-4.8.1.jar:/Users/krzysztofnadolski/.m2/repository/org/mockito/mockito-all/1.8.5/mockito-all-1.8.5.jar:/Users/krzysztofnadolski/.m2/repository/org/powermock/powermock-module-junit4/1.4.8/powermock-module-junit4-1.4.8.jar:/Users/krzysztofnadolski/.m2/repository/org/powermock/powermock-api-mockito/1.4.8/powermock-api-mockito-1.4.8.jar:/Users/krzysztofnadolski/.m2/repository/aopalliance/aopalliance/1.0/aopalliance-1.0.jar:/Users/krzysztofnadolski/.m2/repository/org/springframework/spring-asm/3.1.0.RELEASE/spring-asm-3.1.0.RELEASE.jar:/Users/krzysztofnadolski/.m2/repository/org/springframework/spring-jdbc/3.1.0.RELEASE/spring-jdbc-3.1.0.RELEASE.jar:/Users/krzysztofnadolski/.m2/repository/org/aspectj/aspectjweaver/1.6.8/aspectjweaver-1.6.8.jar:/Users/krzysztofnadolski/.m2/repository/antlr/antlr/2.7.6/antlr-2.7.6.jar:/Users/krzysztofnadolski/.m2/repository/commons-collections/commons-collections/3.1/commons-collections-3.1.jar:/Users/krzysztofnadolski/.m2/repository/dom4j/dom4j/1.6.1/dom4j-1.6.1.jar:/Users/krzysztofnadolski/.m2/repository/org/hibernate/hibernate-commons-annotations/3.2.0.Final/hibernate-commons-annotations-3.2.0.Final.jar:/Users/krzysztofnadolski/.m2/repository/org/hibernate/javax/persistence/hibernate-jpa-2.0-api/1.0.0.Final/hibernate-jpa-2.0-api-1.0.0.Final.jar:/Users/krzysztofnadolski/.m2/repository/javax/transaction/jta/1.1/jta-1.1.jar:/Users/krzysztofnadolski/.m2/repository/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar:/Users/krzysztofnadolski/.m2/repository/commons-digester/commons-digester/1.8/commons-digester-1.8.jar:/Users/krzysztofnadolski/.m2/repository/log4j/log4j/1.2.16/log4j-1.2.16.jar:/Users/krzysztofnadolski/Projects/sdt_workspace/qcadoo/qcadoo-tenant/target/classes
+-aspectpath
+/Users/krzysztofnadolski/.m2/repository/org/springframework/spring-aspects/3.1.0.RELEASE/spring-aspects-3.1.0.RELEASE.jar:/Users/krzysztofnadolski/.m2/repository/org/springframework/security/spring-security-aspects/3.0.7.RELEASE/spring-security-aspects-3.0.7.RELEASE.jar
+-d
+/Users/krzysztofnadolski/Projects/sdt_workspace/qcadoo/qcadoo-tenant/target/classes
+/Users/krzysztofnadolski/Projects/sdt_workspace/qcadoo/qcadoo-tenant/src/main/java/com/qcadoo/tenant/api/DefaultLocaleResolver.java
+/Users/krzysztofnadolski/Projects/sdt_workspace/qcadoo/qcadoo-tenant/src/main/java/com/qcadoo/tenant/api/MultiTenantCallback.java
+/Users/krzysztofnadolski/Projects/sdt_workspace/qcadoo/qcadoo-tenant/src/main/java/com/qcadoo/tenant/api/MultiTenantService.java
+/Users/krzysztofnadolski/Projects/sdt_workspace/qcadoo/qcadoo-tenant/src/main/java/com/qcadoo/tenant/api/MultiTenantUtil.java
+/Users/krzysztofnadolski/Projects/sdt_workspace/qcadoo/qcadoo-tenant/src/main/java/com/qcadoo/tenant/api/SamplesDataset.java
+/Users/krzysztofnadolski/Projects/sdt_workspace/qcadoo/qcadoo-tenant/src/main/java/com/qcadoo/tenant/api/Standalone.java
+/Users/krzysztofnadolski/Projects/sdt_workspace/qcadoo/qcadoo-tenant/src/main/java/com/qcadoo/tenant/internal/DefaultLocaleResolverImpl.java
+/Users/krzysztofnadolski/Projects/sdt_workspace/qcadoo/qcadoo-tenant/src/main/java/com/qcadoo/tenant/internal/DefaultMultiTenantService.java
+---- Full Classpath ---
+/Library/Java/JavaVirtualMachines/jdk1.8.0_05.jdk/Contents/Home/jre/lib/resources.jar(3504786 bytes)
+/Library/Java/JavaVirtualMachines/jdk1.8.0_05.jdk/Contents/Home/jre/lib/rt.jar(66012787 bytes)
+/Library/Java/JavaVirtualMachines/jdk1.8.0_05.jdk/Contents/Home/jre/lib/sunrsasign.jar(missing)
+/Library/Java/JavaVirtualMachines/jdk1.8.0_05.jdk/Contents/Home/jre/lib/jsse.jar(618021 bytes)
+/Library/Java/JavaVirtualMachines/jdk1.8.0_05.jdk/Contents/Home/jre/lib/jce.jar(112397 bytes)
+/Library/Java/JavaVirtualMachines/jdk1.8.0_05.jdk/Contents/Home/jre/lib/charsets.jar(3131343 bytes)
+/Library/Java/JavaVirtualMachines/jdk1.8.0_05.jdk/Contents/Home/jre/lib/jfr.jar(508974 bytes)
+/Library/Java/JavaVirtualMachines/jdk1.8.0_05.jdk/Contents/Home/jre/classes(missing)
+/Users/krzysztofnadolski/.m2/repository/org/springframework/spring-aspects/3.1.0.RELEASE/spring-aspects-3.1.0.RELEASE.jar(50621 bytes)
+/Users/krzysztofnadolski/.m2/repository/org/springframework/security/spring-security-aspects/3.0.7.RELEASE/spring-security-aspects-3.0.7.RELEASE.jar(7353 bytes)
+/Library/Java/JavaVirtualMachines/jdk1.8.0_05.jdk/Contents/Home/jre/lib/ext/cldrdata.jar(3860522 bytes)
+/Library/Java/JavaVirtualMachines/jdk1.8.0_05.jdk/Contents/Home/jre/lib/ext/dnsns.jar(8286 bytes)
+/Library/Java/JavaVirtualMachines/jdk1.8.0_05.jdk/Contents/Home/jre/lib/ext/jfxrt.jar(18225657 bytes)
+/Library/Java/JavaVirtualMachines/jdk1.8.0_05.jdk/Contents/Home/jre/lib/ext/localedata.jar(1178786 bytes)
+/Library/Java/JavaVirtualMachines/jdk1.8.0_05.jdk/Contents/Home/jre/lib/ext/nashorn.jar(1580374 bytes)
+/Library/Java/JavaVirtualMachines/jdk1.8.0_05.jdk/Contents/Home/jre/lib/ext/sunec.jar(39793 bytes)
+/Library/Java/JavaVirtualMachines/jdk1.8.0_05.jdk/Contents/Home/jre/lib/ext/sunjce_provider.jar(277781 bytes)
+/Library/Java/JavaVirtualMachines/jdk1.8.0_05.jdk/Contents/Home/jre/lib/ext/sunpkcs11.jar(247688 bytes)
+/Library/Java/JavaVirtualMachines/jdk1.8.0_05.jdk/Contents/Home/jre/lib/ext/zipfs.jar(68835 bytes)
+/System/Library/Java/Extensions/AppleScriptEngine.jar(6476 bytes)
+/System/Library/Java/Extensions/dns_sd.jar(17780 bytes)
+/System/Library/Java/Extensions/j3daudio.jar(1223495 bytes)
+/System/Library/Java/Extensions/j3dcore.jar(1157355 bytes)
+/System/Library/Java/Extensions/j3dutils.jar(685307 bytes)
+/System/Library/Java/Extensions/jai_codec.jar(275500 bytes)
+/System/Library/Java/Extensions/jai_core.jar(1544543 bytes)
+/System/Library/Java/Extensions/mlibwrapper_jai.jar(41239 bytes)
+/System/Library/Java/Extensions/MRJToolkit.jar(12847 bytes)
+/System/Library/Java/Extensions/QTJava.zip(938719 bytes)
+/System/Library/Java/Extensions/vecmath.jar(127639 bytes)
+/Users/krzysztofnadolski/.m2/repository/org/springframework/spring-aop/3.1.0.RELEASE/spring-aop-3.1.0.RELEASE.jar(331474 bytes)
+/Users/krzysztofnadolski/.m2/repository/org/springframework/spring-beans/3.1.0.RELEASE/spring-beans-3.1.0.RELEASE.jar(589253 bytes)
+/Users/krzysztofnadolski/.m2/repository/org/springframework/spring-context/3.1.0.RELEASE/spring-context-3.1.0.RELEASE.jar(829601 bytes)
+/Users/krzysztofnadolski/.m2/repository/org/springframework/spring-context-support/3.1.0.RELEASE/spring-context-support-3.1.0.RELEASE.jar(106819 bytes)
+/Users/krzysztofnadolski/.m2/repository/org/springframework/spring-expression/3.1.0.RELEASE/spring-expression-3.1.0.RELEASE.jar(176283 bytes)
+/Users/krzysztofnadolski/.m2/repository/org/springframework/spring-orm/3.1.0.RELEASE/spring-orm-3.1.0.RELEASE.jar(378235 bytes)
+/Users/krzysztofnadolski/.m2/repository/org/springframework/spring-tx/3.1.0.RELEASE/spring-tx-3.1.0.RELEASE.jar(246036 bytes)
+/Users/krzysztofnadolski/.m2/repository/org/springframework/spring-web/3.1.0.RELEASE/spring-web-3.1.0.RELEASE.jar(540819 bytes)
+/Users/krzysztofnadolski/.m2/repository/org/springframework/spring-webmvc/3.1.0.RELEASE/spring-webmvc-3.1.0.RELEASE.jar(572266 bytes)
+/Users/krzysztofnadolski/.m2/repository/org/springframework/security/spring-security-core/3.0.7.RELEASE/spring-security-core-3.0.7.RELEASE.jar(312352 bytes)
+/Users/krzysztofnadolski/.m2/repository/org/springframework/security/spring-security-config/3.0.7.RELEASE/spring-security-config-3.0.7.RELEASE.jar(185754 bytes)
+/Users/krzysztofnadolski/.m2/repository/org/springframework/security/spring-security-web/3.0.7.RELEASE/spring-security-web-3.0.7.RELEASE.jar(244183 bytes)
+/Users/krzysztofnadolski/.m2/repository/org/springframework/security/spring-security-aspects/3.0.7.RELEASE/spring-security-aspects-3.0.7.RELEASE.jar(7353 bytes)
+/Users/krzysztofnadolski/.m2/repository/org/springframework/spring-aspects/3.1.0.RELEASE/spring-aspects-3.1.0.RELEASE.jar(50621 bytes)
+/Users/krzysztofnadolski/.m2/repository/org/hibernate/hibernate-core/3.6.1.Final/hibernate-core-3.6.1.Final.jar(3108236 bytes)
+/Users/krzysztofnadolski/.m2/repository/commons-lang/commons-lang/2.5/commons-lang-2.5.jar(279193 bytes)
+/Users/krzysztofnadolski/.m2/repository/commons-beanutils/commons-beanutils/1.8.3/commons-beanutils-1.8.3.jar(232019 bytes)
+/Users/krzysztofnadolski/.m2/repository/commons-io/commons-io/2.0.1/commons-io-2.0.1.jar(159509 bytes)
+/Users/krzysztofnadolski/.m2/repository/commons-validator/commons-validator/1.4.0/commons-validator-1.4.0.jar(176897 bytes)
+/Users/krzysztofnadolski/.m2/repository/org/springframework/spring-test/3.1.0.RELEASE/spring-test-3.1.0.RELEASE.jar(229729 bytes)
+/Users/krzysztofnadolski/.m2/repository/hsqldb/hsqldb/1.8.0.10/hsqldb-1.8.0.10.jar(706710 bytes)
+/Users/krzysztofnadolski/.m2/repository/commons-dbcp/commons-dbcp/1.4/commons-dbcp-1.4.jar(160519 bytes)
+/Users/krzysztofnadolski/.m2/repository/xmlunit/xmlunit/1.3/xmlunit-1.3.jar(96751 bytes)
+/Users/krzysztofnadolski/.m2/repository/org/javassist/javassist/3.14.0-GA/javassist-3.14.0-GA.jar(647917 bytes)
+/Users/krzysztofnadolski/.m2/repository/org/quartz-scheduler/quartz/1.8.5/quartz-1.8.5.jar(446447 bytes)
+/Users/krzysztofnadolski/.m2/repository/org/aspectj/aspectjrt/1.6.12/aspectjrt-1.6.12.jar(116219 bytes)
+/Users/krzysztofnadolski/.m2/repository/org/springframework/spring-core/3.1.0.RELEASE/spring-core-3.1.0.RELEASE.jar(442400 bytes)
+/Users/krzysztofnadolski/.m2/repository/org/jdom/jdom/1.1/jdom-1.1.jar(153115 bytes)
+/Users/krzysztofnadolski/.m2/repository/joda-time/joda-time/2.3/joda-time-2.3.jar(581571 bytes)
+/Users/krzysztofnadolski/.m2/repository/com/google/guava/guava/14.0.1/guava-14.0.1.jar(2189117 bytes)
+/Users/krzysztofnadolski/.m2/repository/org/slf4j/slf4j-api/1.6.1/slf4j-api-1.6.1.jar(25496 bytes)
+/Users/krzysztofnadolski/.m2/repository/org/slf4j/slf4j-log4j12/1.6.1/slf4j-log4j12-1.6.1.jar(9753 bytes)
+/Users/krzysztofnadolski/.m2/repository/org/slf4j/jcl-over-slf4j/1.6.1/jcl-over-slf4j-1.6.1.jar(17308 bytes)
+/Users/krzysztofnadolski/.m2/repository/javax/servlet/servlet-api/2.5/servlet-api-2.5.jar(105112 bytes)
+/Users/krzysztofnadolski/.m2/repository/junit/junit/4.8.1/junit-4.8.1.jar(237047 bytes)
+/Users/krzysztofnadolski/.m2/repository/org/mockito/mockito-all/1.8.5/mockito-all-1.8.5.jar(1419869 bytes)
+/Users/krzysztofnadolski/.m2/repository/org/powermock/powermock-module-junit4/1.4.8/powermock-module-junit4-1.4.8.jar(20576 bytes)
+/Users/krzysztofnadolski/.m2/repository/org/powermock/powermock-api-mockito/1.4.8/powermock-api-mockito-1.4.8.jar(49839 bytes)
+/Users/krzysztofnadolski/.m2/repository/aopalliance/aopalliance/1.0/aopalliance-1.0.jar(4467 bytes)
+/Users/krzysztofnadolski/.m2/repository/org/springframework/spring-asm/3.1.0.RELEASE/spring-asm-3.1.0.RELEASE.jar(53079 bytes)
+/Users/krzysztofnadolski/.m2/repository/org/springframework/spring-jdbc/3.1.0.RELEASE/spring-jdbc-3.1.0.RELEASE.jar(401762 bytes)
+/Users/krzysztofnadolski/.m2/repository/org/aspectj/aspectjweaver/1.6.8/aspectjweaver-1.6.8.jar(1627874 bytes)
+/Users/krzysztofnadolski/.m2/repository/antlr/antlr/2.7.6/antlr-2.7.6.jar(443432 bytes)
+/Users/krzysztofnadolski/.m2/repository/commons-collections/commons-collections/3.1/commons-collections-3.1.jar(559366 bytes)
+/Users/krzysztofnadolski/.m2/repository/dom4j/dom4j/1.6.1/dom4j-1.6.1.jar(313898 bytes)
+/Users/krzysztofnadolski/.m2/repository/org/hibernate/hibernate-commons-annotations/3.2.0.Final/hibernate-commons-annotations-3.2.0.Final.jar(71283 bytes)
+/Users/krzysztofnadolski/.m2/repository/org/hibernate/javax/persistence/hibernate-jpa-2.0-api/1.0.0.Final/hibernate-jpa-2.0-api-1.0.0.Final.jar(100884 bytes)
+/Users/krzysztofnadolski/.m2/repository/javax/transaction/jta/1.1/jta-1.1.jar(15071 bytes)
+/Users/krzysztofnadolski/.m2/repository/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar(60686 bytes)
+/Users/krzysztofnadolski/.m2/repository/commons-digester/commons-digester/1.8/commons-digester-1.8.jar(143602 bytes)
+/Users/krzysztofnadolski/.m2/repository/log4j/log4j/1.2.16/log4j-1.2.16.jar(481535 bytes)
+/Users/krzysztofnadolski/Projects/sdt_workspace/qcadoo/qcadoo-tenant/target/classes(3 entries)
+---- Compiler Messages ---
+info directory classpath entry does not exist: /Library/Java/JavaVirtualMachines/jdk1.8.0_05.jdk/Contents/Home/jre/lib/sunrsasign.jar
+info zipfile classpath entry does not exist: /Library/Java/JavaVirtualMachines/jdk1.8.0_05.jdk/Contents/Home/jre/classes
+info Pipelining compilation
+error at (no source information available)
+/Users/krzysztofnadolski/Projects/sdt_workspace/qcadoo/qcadoo-tenant/src/main/java/com/qcadoo/tenant/internal/DefaultMultiTenantService.java:0::0 Internal compiler error
+org.aspectj.apache.bcel.classfile.ClassFormatException: File: 'java/lang/CharSequence.class': Invalid byte tag in constant pool: 18
+	at org.aspectj.apache.bcel.classfile.ClassParser.readConstantPool(ClassParser.java:192)
+	at org.aspectj.apache.bcel.classfile.ClassParser.parse(ClassParser.java:131)
+	at org.aspectj.weaver.bcel.BcelWorld.lookupJavaClass(BcelWorld.java:424)
+	at org.aspectj.weaver.bcel.BcelWorld.resolveDelegate(BcelWorld.java:376)
+	at org.aspectj.weaver.World.resolveToReferenceType(World.java:485)
+	at org.aspectj.weaver.World.resolve(World.java:326)
+	at org.aspectj.weaver.World.resolve(World.java:236)
+	at org.aspectj.weaver.bcel.BcelGenericSignatureToTypeXConverter.classTypeSignature2TypeX(BcelGenericSignatureToTypeXConverter.java:97)
+	at org.aspectj.weaver.bcel.BcelGenericSignatureToTypeXConverter.classTypeSignature2TypeX(BcelGenericSignatureToTypeXConverter.java:41)
+	at org.aspectj.weaver.bcel.BcelObjectType.ensureGenericSignatureUnpacked(BcelObjectType.java:810)
+	at org.aspectj.weaver.bcel.BcelObjectType.getDeclaredInterfaces(BcelObjectType.java:257)
+	at org.aspectj.weaver.ReferenceType.getDeclaredInterfaces(ReferenceType.java:626)
+	at org.aspectj.weaver.ResolvedType.getDirectSupertypes(ResolvedType.java:82)
+	at org.aspectj.weaver.patterns.TypePattern.matchesSubtypes(TypePattern.java:178)
+	at org.aspectj.weaver.patterns.ExactTypePattern.matchesSubtypes(ExactTypePattern.java:74)
+	at org.aspectj.weaver.patterns.TypePattern.matchesStatically(TypePattern.java:130)
+	at org.aspectj.weaver.patterns.DeclareParents.match(DeclareParents.java:63)
+	at org.aspectj.weaver.patterns.DeclareParents.findMatchingNewParents(DeclareParents.java:358)
+	at org.aspectj.ajdt.internal.compiler.lookup.AjLookupEnvironment.doDeclareParents(AjLookupEnvironment.java:880)
+	at org.aspectj.ajdt.internal.compiler.lookup.AjLookupEnvironment.weaveInterTypeDeclarations(AjLookupEnvironment.java:730)
+	at org.aspectj.ajdt.internal.compiler.lookup.AjLookupEnvironment.weaveInterTypeDeclarations(AjLookupEnvironment.java:652)
+	at org.aspectj.ajdt.internal.compiler.lookup.AjLookupEnvironment.doPendingWeaves(AjLookupEnvironment.java:427)
+	at org.aspectj.ajdt.internal.compiler.lookup.AjLookupEnvironment.completeTypeBindings(AjLookupEnvironment.java:213)
+	at org.aspectj.org.eclipse.jdt.internal.compiler.Compiler.internalBeginToCompile(Compiler.java:616)
+	at org.aspectj.org.eclipse.jdt.internal.compiler.Compiler.beginToCompile(Compiler.java:357)
+	at org.aspectj.org.eclipse.jdt.internal.compiler.Compiler.compile(Compiler.java:371)
+	at org.aspectj.ajdt.internal.core.builder.AjBuildManager.performCompilation(AjBuildManager.java:1027)
+	at org.aspectj.ajdt.internal.core.builder.AjBuildManager.performBuild(AjBuildManager.java:271)
+	at org.aspectj.ajdt.internal.core.builder.AjBuildManager.batchBuild(AjBuildManager.java:184)
+	at org.aspectj.ajdt.ajc.AjdtCommand.doCommand(AjdtCommand.java:112)
+	at org.aspectj.ajdt.ajc.AjdtCommand.runCommand(AjdtCommand.java:60)
+	at org.aspectj.tools.ajc.Main.run(Main.java:371)
+	at org.aspectj.tools.ajc.Main.runMain(Main.java:248)
+	at org.codehaus.mojo.aspectj.AbstractAjcCompiler.execute(AbstractAjcCompiler.java:405)
+	at org.apache.maven.plugin.DefaultBuildPluginManager.executeMojo(DefaultBuildPluginManager.java:101)
+	at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:209)
+	at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:153)
+	at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:145)
+	at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject(LifecycleModuleBuilder.java:84)
+	at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject(LifecycleModuleBuilder.java:59)
+	at org.apache.maven.lifecycle.internal.LifecycleStarter.singleThreadedBuild(LifecycleStarter.java:183)
+	at org.apache.maven.lifecycle.internal.LifecycleStarter.execute(LifecycleStarter.java:161)
+	at org.apache.maven.DefaultMaven.doExecute(DefaultMaven.java:320)
+	at org.apache.maven.DefaultMaven.execute(DefaultMaven.java:156)
+	at org.apache.maven.cli.MavenCli.execute(MavenCli.java:537)
+	at org.apache.maven.cli.MavenCli.doMain(MavenCli.java:196)
+	at org.apache.maven.cli.MavenCli.main(MavenCli.java:141)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:483)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.launchEnhanced(Launcher.java:290)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.launch(Launcher.java:230)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.mainWithExitCode(Launcher.java:409)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.main(Launcher.java:352)
+
+abort ABORT -- (ClassFormatException) File: 'java/lang/CharSequence.class': Invalid byte tag in constant pool: 18
+File: 'java/lang/CharSequence.class': Invalid byte tag in constant pool: 18
+org.aspectj.apache.bcel.classfile.ClassFormatException: File: 'java/lang/CharSequence.class': Invalid byte tag in constant pool: 18
+	at org.aspectj.apache.bcel.classfile.ClassParser.readConstantPool(ClassParser.java:192)
+	at org.aspectj.apache.bcel.classfile.ClassParser.parse(ClassParser.java:131)
+	at org.aspectj.weaver.bcel.BcelWorld.lookupJavaClass(BcelWorld.java:424)
+	at org.aspectj.weaver.bcel.BcelWorld.resolveDelegate(BcelWorld.java:376)
+	at org.aspectj.weaver.World.resolveToReferenceType(World.java:485)
+	at org.aspectj.weaver.World.resolve(World.java:326)
+	at org.aspectj.weaver.World.resolve(World.java:236)
+	at org.aspectj.weaver.bcel.BcelGenericSignatureToTypeXConverter.classTypeSignature2TypeX(BcelGenericSignatureToTypeXConverter.java:97)
+	at org.aspectj.weaver.bcel.BcelGenericSignatureToTypeXConverter.classTypeSignature2TypeX(BcelGenericSignatureToTypeXConverter.java:41)
+	at org.aspectj.weaver.bcel.BcelObjectType.ensureGenericSignatureUnpacked(BcelObjectType.java:810)
+	at org.aspectj.weaver.bcel.BcelObjectType.getDeclaredInterfaces(BcelObjectType.java:257)
+	at org.aspectj.weaver.ReferenceType.getDeclaredInterfaces(ReferenceType.java:626)
+	at org.aspectj.weaver.ResolvedType.getDirectSupertypes(ResolvedType.java:82)
+	at org.aspectj.weaver.patterns.TypePattern.matchesSubtypes(TypePattern.java:178)
+	at org.aspectj.weaver.patterns.ExactTypePattern.matchesSubtypes(ExactTypePattern.java:74)
+	at org.aspectj.weaver.patterns.TypePattern.matchesStatically(TypePattern.java:130)
+	at org.aspectj.weaver.patterns.DeclareParents.match(DeclareParents.java:63)
+	at org.aspectj.weaver.patterns.DeclareParents.findMatchingNewParents(DeclareParents.java:358)
+	at org.aspectj.ajdt.internal.compiler.lookup.AjLookupEnvironment.doDeclareParents(AjLookupEnvironment.java:880)
+	at org.aspectj.ajdt.internal.compiler.lookup.AjLookupEnvironment.weaveInterTypeDeclarations(AjLookupEnvironment.java:730)
+	at org.aspectj.ajdt.internal.compiler.lookup.AjLookupEnvironment.weaveInterTypeDeclarations(AjLookupEnvironment.java:652)
+	at org.aspectj.ajdt.internal.compiler.lookup.AjLookupEnvironment.doPendingWeaves(AjLookupEnvironment.java:427)
+	at org.aspectj.ajdt.internal.compiler.lookup.AjLookupEnvironment.completeTypeBindings(AjLookupEnvironment.java:213)
+	at org.aspectj.org.eclipse.jdt.internal.compiler.Compiler.internalBeginToCompile(Compiler.java:616)
+	at org.aspectj.org.eclipse.jdt.internal.compiler.Compiler.beginToCompile(Compiler.java:357)
+	at org.aspectj.org.eclipse.jdt.internal.compiler.Compiler.compile(Compiler.java:371)
+	at org.aspectj.ajdt.internal.core.builder.AjBuildManager.performCompilation(AjBuildManager.java:1027)
+	at org.aspectj.ajdt.internal.core.builder.AjBuildManager.performBuild(AjBuildManager.java:271)
+	at org.aspectj.ajdt.internal.core.builder.AjBuildManager.batchBuild(AjBuildManager.java:184)
+	at org.aspectj.ajdt.ajc.AjdtCommand.doCommand(AjdtCommand.java:112)
+	at org.aspectj.ajdt.ajc.AjdtCommand.runCommand(AjdtCommand.java:60)
+	at org.aspectj.tools.ajc.Main.run(Main.java:371)
+	at org.aspectj.tools.ajc.Main.runMain(Main.java:248)
+	at org.codehaus.mojo.aspectj.AbstractAjcCompiler.execute(AbstractAjcCompiler.java:405)
+	at org.apache.maven.plugin.DefaultBuildPluginManager.executeMojo(DefaultBuildPluginManager.java:101)
+	at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:209)
+	at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:153)
+	at org.apache.maven.lifecycle.internal.MojoExecutor.execute(MojoExecutor.java:145)
+	at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject(LifecycleModuleBuilder.java:84)
+	at org.apache.maven.lifecycle.internal.LifecycleModuleBuilder.buildProject(LifecycleModuleBuilder.java:59)
+	at org.apache.maven.lifecycle.internal.LifecycleStarter.singleThreadedBuild(LifecycleStarter.java:183)
+	at org.apache.maven.lifecycle.internal.LifecycleStarter.execute(LifecycleStarter.java:161)
+	at org.apache.maven.DefaultMaven.doExecute(DefaultMaven.java:320)
+	at org.apache.maven.DefaultMaven.execute(DefaultMaven.java:156)
+	at org.apache.maven.cli.MavenCli.execute(MavenCli.java:537)
+	at org.apache.maven.cli.MavenCli.doMain(MavenCli.java:196)
+	at org.apache.maven.cli.MavenCli.main(MavenCli.java:141)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:483)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.launchEnhanced(Launcher.java:290)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.launch(Launcher.java:230)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.mainWithExitCode(Launcher.java:409)
+	at org.codehaus.plexus.classworlds.launcher.Launcher.main(Launcher.java:352)
+
