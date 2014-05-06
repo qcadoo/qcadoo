@@ -298,7 +298,7 @@ QCD.components.elements.grid.GridHeaderController = function(_gridController, _m
 		}
 		if (gridParameters.hasMultiSearchColumns && gridParameters.multiSearchColumns){
 			headerElements.multiSearchButton = QCD.components.elements.utils.HeaderUtils.createHeaderButton(translations.multiSearchButton, function(e) {
-				if (headerElements.filterButton.hasClass("headerButtonEnabled")) {
+				if (headerElements.multiSearchButton.hasClass("headerButtonEnabled")) {
 					multiSearchClicked();
 				}
 			}, "searchIcon16.png");
@@ -443,9 +443,6 @@ QCD.components.elements.grid.GridHeaderController = function(_gridController, _m
 			}
 			if (headerElements.downButton != null) {
 				setEnabledButton(headerElements.downButton, false);
-			}
-			if (headerElements.multiSearchButton != null) {
-				setEnabledButton(headerElements.multiSearchButton, false);
 			}
 		} else {
 			if (headerElements.filterButton != null) {
