@@ -147,12 +147,12 @@ public class GridComponentPatternTest extends AbstractPatternTest {
         assertEquals(200, options.getInt("width"));
         assertEquals(400, options.getInt("height"));
         assertEquals(2, options.getJSONArray("orderableColumns").length());
-        assertEquals("name", options.getJSONArray("orderableColumns").getString(0));
-        assertEquals("number", options.getJSONArray("orderableColumns").getString(1));
+        assertEquals("number", options.getJSONArray("orderableColumns").getString(0));
+        assertEquals("name", options.getJSONArray("orderableColumns").getString(1));
         assertEquals(3, options.getJSONArray("searchableColumns").length());
-        assertEquals("product", options.getJSONArray("searchableColumns").getString(0));
-        assertEquals("name", options.getJSONArray("searchableColumns").getString(1));
-        assertEquals("number", options.getJSONArray("searchableColumns").getString(2));
+        assertEquals("number", options.getJSONArray("searchableColumns").getString(0));
+        assertEquals("product", options.getJSONArray("searchableColumns").getString(1));
+        assertEquals("name", options.getJSONArray("searchableColumns").getString(2));
         assertFalse(options.has("belongsToFieldName"));
         assertEquals(3, options.getJSONArray("columns").length());
 

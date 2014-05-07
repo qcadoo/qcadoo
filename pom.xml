@@ -192,7 +192,7 @@
 		<dependency>
 			<groupId>org.javassist</groupId>
 			<artifactId>javassist</artifactId>
-			<version>3.14.0-GA</version>
+			<version>3.18.1-GA</version>
 		</dependency>
 		<dependency>
 			<groupId>org.quartz-scheduler</groupId>
@@ -202,7 +202,7 @@
 		<dependency>
 			<groupId>org.aspectj</groupId>
 			<artifactId>aspectjrt</artifactId>
-			<version>${aspectj.version}</version>
+			<version>1.8.0</version>
 		</dependency>
 	</dependencies>
 	
@@ -211,10 +211,11 @@
 	        <plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>aspectj-maven-plugin</artifactId>
-				<version>${aspectj.maven.plugin.version}</version>
+				<version>1.5</version>
 				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
+					<complianceLevel>1.8</complianceLevel>
+					<source>1.8</source>
+					<target>1.8</target>
 					<aspectLibraries>
            				<aspectLibrary>
                				<groupId>org.springframework</groupId>
@@ -231,7 +232,7 @@
 					<dependency>
 						<groupId>org.aspectj</groupId>
 						<artifactId>aspectjtools</artifactId>
-						<version>${aspectj.version}</version>
+						<version>1.8.0</version>
 					</dependency>
 				</dependencies>
 				<executions>
