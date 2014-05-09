@@ -39,6 +39,7 @@ import com.qcadoo.model.internal.api.FieldHookDefinition;
 
 public final class RequiredValidator implements FieldHookDefinition, ErrorMessageDefinition {
 
+    // TODO maku extract these two error messages into some public constants' class
     private static final String MISSING_ERROR = "qcadooView.validate.field.error.missing";
 
     private static final String MISSING_RELATION_ERROR = "qcadooView.validate.field.error.missingRelation";
