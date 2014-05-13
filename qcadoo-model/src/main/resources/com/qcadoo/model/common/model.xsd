@@ -186,6 +186,9 @@
 	<xs:complexType name="belongsToFieldType">
 		<xs:complexContent>
 			<xs:extension base="fieldType">
+				<xs:choice minOccurs="0" maxOccurs="unbounded">
+					<xs:element name="validatesWith" type="hookType" />
+				</xs:choice>
 				<xs:attribute name="model" type="identifier" use="required" />
 				<xs:attribute name="plugin" type="identifier" />
 				<xs:attribute name="lazy" type="xs:boolean" default="true" />
@@ -241,6 +244,9 @@
 	<xs:complexType name="enumFieldType">
 		<xs:complexContent>
 			<xs:extension base="primitiveValueFieldType">
+				<xs:choice minOccurs="0" maxOccurs="unbounded">
+					<xs:element name="validatesWith" type="hookType" />
+				</xs:choice>
 				<xs:attribute name="values" use="required">
 					<xs:simpleType>
 						<xs:restriction base="xs:string">
