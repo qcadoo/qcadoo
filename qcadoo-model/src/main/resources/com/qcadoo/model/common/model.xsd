@@ -64,7 +64,7 @@
 	<xs:complexType name="identifierExpressionType">
 		<xs:attribute name="expression" type="xs:string" />
 	</xs:complexType>
-	
+
 	<xs:complexType name="validatesType">
 		<xs:attribute name="message" type="xs:string" />
 	</xs:complexType>
@@ -78,7 +78,7 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-	
+
 	<xs:complexType name="validatesRangeType">
 		<xs:complexContent>
 			<xs:extension base="validatesType">
@@ -88,7 +88,7 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-	
+
 	<xs:complexType name="validatesRegexType">
 		<xs:complexContent>
 			<xs:extension base="validatesType">
@@ -96,7 +96,7 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-	
+
 	<xs:complexType name="hookType">
 		<xs:attribute name="class" type="classIdentifier" use="required" />
 		<xs:attribute name="method" type="identifier" use="required" />
@@ -118,41 +118,41 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-	
+
 	<xs:complexType name="dateFieldType">
 		<xs:complexContent>
 			<xs:extension base="primitiveValueFieldType">
 				<xs:choice minOccurs="0" maxOccurs="unbounded">
 					<xs:element name="validatesWith" type="hookType" />
 					<xs:element name="validatesRegex" type="validatesRegexType" />
-					
+
 					<xs:element name="validatesRange" type="validatesRangeType" />
 				</xs:choice>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-		
+
 	<xs:complexType name="integerFieldType">
 		<xs:complexContent>
 			<xs:extension base="primitiveValueFieldType">
 				<xs:choice minOccurs="0" maxOccurs="unbounded">
 					<xs:element name="validatesWith" type="hookType" />
 					<xs:element name="validatesRegex" type="validatesRegexType" />
-					
+
 					<xs:element name="validatesUnscaledValue" type="validatesLengthType" />
 					<xs:element name="validatesRange" type="validatesRangeType" />
 				</xs:choice>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-	
+
 	<xs:complexType name="decimalFieldType">
 		<xs:complexContent>
 			<xs:extension base="primitiveValueFieldType">
 				<xs:choice minOccurs="0" maxOccurs="unbounded">
 					<xs:element name="validatesWith" type="hookType" />
 					<xs:element name="validatesRegex" type="validatesRegexType" />
-			
+
 					<xs:element name="validatesUnscaledValue" type="validatesLengthType" />
 					<xs:element name="validatesScale" type="validatesLengthType" />
 					<xs:element name="validatesRange" type="validatesRangeType" />
@@ -167,7 +167,7 @@
 				<xs:choice minOccurs="0" maxOccurs="unbounded">
 					<xs:element name="validatesWith" type="hookType" />
 					<xs:element name="validatesRegex" type="validatesRegexType" />
-			
+
 					<xs:element name="validatesLength" type="validatesLengthType" />
 					<xs:element name="validatesRange" type="validatesRangeType" />
 				</xs:choice>
@@ -182,7 +182,7 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-	
+
 	<xs:complexType name="belongsToFieldType">
 		<xs:complexContent>
 			<xs:extension base="fieldType">
@@ -193,15 +193,16 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-	
+
 	<xs:complexType name="collectionValueFieldType">
 		<xs:complexContent>
 			<xs:extension base="fieldType">
 				<xs:attribute name="model" type="identifier" use="required" />
 				<xs:attribute name="plugin" type="identifier" />
 				<xs:attribute name="joinField" type="identifier"
-					use="required" />
-				<xs:attribute name="cascade" type="cascadeType" default="nullify" />
+				              use="required" />
+				<xs:attribute name="cascade" type="cascadeType" default="nullify"
+				              use="required" />
 				<xs:attribute name="copyable" type="xs:boolean" default="false" />
 			</xs:extension>
 		</xs:complexContent>
@@ -213,14 +214,14 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-	
+
 	<xs:complexType name="manyToManyFieldType">
 		<xs:complexContent>
 			<xs:extension base="collectionValueFieldType">
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-	
+
 	<xs:complexType name="treeFieldType">
 		<xs:complexContent>
 			<xs:extension base="collectionValueFieldType">
@@ -232,7 +233,7 @@
 		<xs:complexContent>
 			<xs:extension base="characterFieldType">
 				<xs:attribute name="dictionary" type="identifier"
-					use="required" />
+				              use="required" />
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -262,7 +263,7 @@
 			<xs:enumeration value="nullify" />
 		</xs:restriction>
 	</xs:simpleType>
-	
+
 	<xs:simpleType name="deletableType">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="false" />

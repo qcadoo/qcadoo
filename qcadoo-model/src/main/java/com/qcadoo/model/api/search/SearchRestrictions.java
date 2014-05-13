@@ -602,6 +602,12 @@ public final class SearchRestrictions {
     /**
      * Creates criterion which checks if "belongsTo" field is equal to given entity.
      * 
+     * Current implementation of this method performs Entity loading and may cause StackOverflowError when used (for example)
+     * within onView hook.
+     * 
+     * Therefore prefer belongsTo(String, Entity) and use this method only in case when you can't obtain reference to a whole
+     * Entity.
+     * 
      * @param field
      *            field
      * @param pluginIdentifier
@@ -619,6 +625,12 @@ public final class SearchRestrictions {
 
     /**
      * Creates criterion which checks if "belongsTo" field is equal to given entity.
+     * 
+     * Current implementation of this method performs Entity loading and may cause StackOverflowError when used (for example)
+     * within onView hook.
+     * 
+     * Therefore prefer belongsTo(String, Entity) and use this method only in case when you can't obtain reference to a whole
+     * Entity.
      * 
      * @param field
      *            field
