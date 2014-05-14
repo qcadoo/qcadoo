@@ -23,9 +23,9 @@
  */
 package com.qcadoo.view.api.exception;
 
-import java.util.Arrays;
+import org.apache.commons.lang3.ArrayUtils;
 
-import org.apache.commons.lang.ArrayUtils;
+import java.util.Arrays;
 
 public class ExceptionInfo {
 

@@ -23,15 +23,6 @@
  */
 package com.qcadoo.model.internal;
 
-import static com.google.common.base.Preconditions.checkArgument;
-
-import java.math.BigDecimal;
-import java.util.*;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-
 import com.google.common.collect.Lists;
 import com.qcadoo.model.api.*;
 import com.qcadoo.model.api.types.BelongsToType;
@@ -40,6 +31,14 @@ import com.qcadoo.model.internal.api.EntityAwareCopyPerformers;
 import com.qcadoo.model.internal.api.EntityAwareEqualsPerformers;
 import com.qcadoo.model.internal.api.PerformerEntitiesChain;
 import com.qcadoo.model.internal.api.ValueAndError;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
+import java.math.BigDecimal;
+import java.util.*;
+
+import static com.google.common.base.Preconditions.checkArgument;
 
 public final class DefaultEntity implements Entity, EntityAwareCopyPerformers, EntityAwareEqualsPerformers {
 

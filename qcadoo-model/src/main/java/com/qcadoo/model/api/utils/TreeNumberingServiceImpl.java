@@ -23,19 +23,6 @@
  */
 package com.qcadoo.model.api.utils;
 
-import static com.google.common.collect.Lists.newLinkedList;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Deque;
-import java.util.List;
-
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.google.common.collect.Lists;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
@@ -44,6 +31,14 @@ import com.qcadoo.model.api.EntityTreeNode;
 import com.qcadoo.model.api.types.TreeType;
 import com.qcadoo.model.internal.EntityTreeImpl;
 import com.qcadoo.model.internal.api.PriorityService;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.*;
+
+import static com.google.common.collect.Lists.newLinkedList;
 
 @Service
 public class TreeNumberingServiceImpl implements TreeNumberingService {

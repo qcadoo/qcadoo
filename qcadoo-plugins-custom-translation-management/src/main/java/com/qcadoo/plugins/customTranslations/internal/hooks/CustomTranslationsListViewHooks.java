@@ -23,12 +23,6 @@
  */
 package com.qcadoo.plugins.customTranslations.internal.hooks;
 
-import static com.qcadoo.customTranslation.constants.CustomTranslationFields.LOCALE;
-
-import org.apache.commons.lang.StringUtils;
-import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.stereotype.Service;
-
 import com.qcadoo.model.api.search.CustomRestriction;
 import com.qcadoo.model.api.search.SearchCriteriaBuilder;
 import com.qcadoo.model.api.search.SearchRestrictions;
@@ -39,6 +33,11 @@ import com.qcadoo.view.api.components.GridComponent;
 import com.qcadoo.view.api.components.WindowComponent;
 import com.qcadoo.view.api.ribbon.RibbonActionItem;
 import com.qcadoo.view.api.ribbon.RibbonGroup;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.stereotype.Service;
+
+import static com.qcadoo.customTranslation.constants.CustomTranslationFields.LOCALE;
 
 @Service
 public class CustomTranslationsListViewHooks {

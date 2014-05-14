@@ -23,9 +23,9 @@
  */
 package com.qcadoo.report.api;
 
-import java.util.Arrays;
+import org.apache.commons.lang3.ArrayUtils;
 
-import org.apache.commons.lang.ArrayUtils;
+import java.util.Arrays;
 
 public class ReportException extends Exception {
 

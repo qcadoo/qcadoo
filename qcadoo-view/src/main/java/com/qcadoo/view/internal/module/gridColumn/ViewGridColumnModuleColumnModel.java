@@ -23,8 +23,8 @@
  */
 package com.qcadoo.view.internal.module.gridColumn;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.qcadoo.view.constants.Alignment;
 

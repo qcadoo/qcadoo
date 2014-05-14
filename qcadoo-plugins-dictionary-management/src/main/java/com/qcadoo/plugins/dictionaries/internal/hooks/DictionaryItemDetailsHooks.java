@@ -23,12 +23,6 @@
  */
 package com.qcadoo.plugins.dictionaries.internal.hooks;
 
-import static com.qcadoo.model.constants.DictionaryItemFields.TECHNICAL_CODE;
-
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.constants.QcadooModelConstants;
@@ -36,6 +30,11 @@ import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.api.components.FormComponent;
 import com.qcadoo.view.api.components.WindowComponent;
 import com.qcadoo.view.api.ribbon.RibbonActionItem;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import static com.qcadoo.model.constants.DictionaryItemFields.TECHNICAL_CODE;
 
 @Service
 public class DictionaryItemDetailsHooks {

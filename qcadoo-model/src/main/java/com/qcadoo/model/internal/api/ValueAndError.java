@@ -25,7 +25,7 @@ package com.qcadoo.model.internal.api;
 
 import java.util.Arrays;
 
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 
 /**
  * Immutable class representing value and error

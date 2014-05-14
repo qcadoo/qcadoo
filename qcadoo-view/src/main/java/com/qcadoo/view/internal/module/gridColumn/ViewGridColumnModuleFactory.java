@@ -23,16 +23,15 @@
  */
 package com.qcadoo.view.internal.module.gridColumn;
 
-import java.util.LinkedList;
-import java.util.List;
-
-import org.apache.commons.lang.StringUtils;
-import org.jdom.Element;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.qcadoo.plugin.api.ModuleFactory;
 import com.qcadoo.view.constants.Alignment;
 import com.qcadoo.view.internal.api.InternalViewDefinitionService;
+import org.apache.commons.lang3.StringUtils;
+import org.jdom.Element;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.LinkedList;
+import java.util.List;
 
 public class ViewGridColumnModuleFactory extends ModuleFactory<ViewGridColumnModule> {
 

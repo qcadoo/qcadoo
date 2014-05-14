@@ -23,20 +23,6 @@
  */
 package com.qcadoo.model.internal;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.qcadoo.model.api.Entity;
@@ -53,6 +39,12 @@ import com.qcadoo.model.internal.search.SearchCriteria;
 import com.qcadoo.model.internal.search.SearchCriteriaImpl;
 import com.qcadoo.model.internal.search.SearchQueryImpl;
 import com.qcadoo.model.internal.types.PriorityType;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
+import java.util.*;
+
+import static com.google.common.base.Preconditions.*;
 
 public final class DataDefinitionImpl implements InternalDataDefinition {
 

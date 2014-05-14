@@ -23,16 +23,15 @@
  */
 package com.qcadoo.model.internal.units;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
-
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-
 import com.google.common.base.Preconditions;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.units.UnitConversion;
 import com.qcadoo.model.constants.UnitConversionItemFields;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
+import java.math.BigDecimal;
+import java.math.MathContext;
 
 public final class UnitConversionImpl implements UnitConversion {
 

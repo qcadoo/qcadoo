@@ -23,13 +23,6 @@
  */
 package com.qcadoo.view.api.utils;
 
-import java.util.Collection;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 import com.qcadoo.model.api.DataDefinitionService;
@@ -37,6 +30,12 @@ import com.qcadoo.model.api.Entity;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.api.components.FieldComponent;
 import com.qcadoo.view.api.components.FormComponent;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Helper service for automatically generating numbers for entities
@@ -150,7 +149,7 @@ public class NumberGeneratorService {
         List<Long> numericValues = Lists.newArrayList();
         for (Entity projection : numberProjections) {
             String numberFieldValue = projection.getStringField(NumberGeneratorModelHelper.NUM_PROJECTION_ALIAS);
-            if (org.apache.commons.lang.StringUtils.isNumeric(numberFieldValue)) {
+            if (org.apache.commons.lang3.StringUtils.isNumeric(numberFieldValue)) {
                 numericValues.add(Long.valueOf(numberFieldValue));
             }
         }

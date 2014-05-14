@@ -23,17 +23,16 @@
  */
 package com.qcadoo.view.internal.ribbon.model;
 
-import java.util.LinkedList;
-import java.util.List;
-
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
+import com.qcadoo.security.api.SecurityRole;
+import com.qcadoo.view.api.ribbon.RibbonActionItem;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.qcadoo.security.api.SecurityRole;
-import com.qcadoo.view.api.ribbon.RibbonActionItem;
+import java.util.LinkedList;
+import java.util.List;
 
 public class RibbonGroupImpl implements InternalRibbonGroup {
 

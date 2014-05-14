@@ -26,8 +26,8 @@ package com.qcadoo.localization.api.utils;
 import java.text.ParseException;
 import java.util.Date;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.time.DateFormatUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.joda.time.DateTime;
 
 /**
@@ -97,7 +97,7 @@ public final class DateUtils {
      */
     public static Date parseAndComplete(final String dateExpression, final boolean upComplete) throws ParseException {
         final String trimmedDateExpression = StringUtils.trim(dateExpression);
-        DateTime parsedDate = new DateTime(org.apache.commons.lang.time.DateUtils.parseDateStrictly(trimmedDateExpression,
+        DateTime parsedDate = new DateTime(org.apache.commons.lang3.time.DateUtils.parseDateStrictly(trimmedDateExpression,
                 SUPPORTED_PATTERNS));
 
         final String[] dateAndTime = trimmedDateExpression.split(" ");
@@ -203,7 +203,7 @@ public final class DateUtils {
         if (value instanceof String) {
             if (StringUtils.isNotBlank((String) value)) {
                 try {
-                    date = org.apache.commons.lang.time.DateUtils.parseDateStrictly((String) value, new String[] {
+                    date = org.apache.commons.lang3.time.DateUtils.parseDateStrictly((String) value, new String[] {
                             DateUtils.L_DATE_TIME_FORMAT, DateUtils.L_DATE_FORMAT });
                 } catch (ParseException e) {
                     throw new IllegalArgumentException(String.format(PARSE_EXCEPTION_MSG, value), e);

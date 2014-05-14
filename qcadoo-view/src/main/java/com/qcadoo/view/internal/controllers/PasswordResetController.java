@@ -23,9 +23,10 @@
  */
 package com.qcadoo.view.internal.controllers;
 
-import java.util.Locale;
-
-import org.apache.commons.lang.StringUtils;
+import com.qcadoo.localization.api.TranslationService;
+import com.qcadoo.mail.api.InvalidMailAddressException;
+import com.qcadoo.security.api.PasswordReminderService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -36,9 +37,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.qcadoo.localization.api.TranslationService;
-import com.qcadoo.mail.api.InvalidMailAddressException;
-import com.qcadoo.security.api.PasswordReminderService;
+import java.util.Locale;
 
 @Controller
 public final class PasswordResetController {

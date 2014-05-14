@@ -23,17 +23,6 @@
  */
 package com.qcadoo.model.api.search;
 
-import java.util.Collection;
-import java.util.Map;
-
-import org.apache.commons.lang.StringUtils;
-import org.hibernate.criterion.Conjunction;
-import org.hibernate.criterion.Disjunction;
-import org.hibernate.criterion.MatchMode;
-import org.hibernate.criterion.Restrictions;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.internal.api.DataAccessService;
@@ -41,6 +30,16 @@ import com.qcadoo.model.internal.api.InternalDataDefinition;
 import com.qcadoo.model.internal.search.SearchConjunctionImpl;
 import com.qcadoo.model.internal.search.SearchCriterionImpl;
 import com.qcadoo.model.internal.search.SearchDisjunctionImpl;
+import org.apache.commons.lang3.StringUtils;
+import org.hibernate.criterion.Conjunction;
+import org.hibernate.criterion.Disjunction;
+import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.util.Collection;
+import java.util.Map;
 
 /**
  * Utility with factory methods for {@link SearchCriterion}.

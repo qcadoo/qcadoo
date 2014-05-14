@@ -23,18 +23,26 @@
  */
 package com.qcadoo.view.internal.xml;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.apache.commons.lang.ObjectUtils;
+import com.google.common.base.Preconditions;
+import com.qcadoo.localization.api.TranslationService;
+import com.qcadoo.model.api.DataDefinition;
+import com.qcadoo.model.api.DataDefinitionService;
+import com.qcadoo.security.api.SecurityRole;
+import com.qcadoo.security.api.SecurityRolesService;
+import com.qcadoo.view.internal.ComponentDefinition;
+import com.qcadoo.view.internal.ComponentOption;
+import com.qcadoo.view.internal.HookDefinition;
+import com.qcadoo.view.internal.api.*;
+import com.qcadoo.view.internal.hooks.HookDefinitionImpl;
+import com.qcadoo.view.internal.hooks.HookFactory;
+import com.qcadoo.view.internal.internal.ViewComponentsResolverImpl;
+import com.qcadoo.view.internal.internal.ViewDefinitionImpl;
+import com.qcadoo.view.internal.patterns.AbstractComponentPattern;
+import com.qcadoo.view.internal.ribbon.RibbonParserService;
+import com.qcadoo.view.internal.ribbon.model.InternalRibbon;
+import com.qcadoo.view.internal.ribbon.model.InternalRibbonActionItem;
+import com.qcadoo.view.internal.ribbon.model.InternalRibbonGroup;
+import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,32 +56,15 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import com.google.common.base.Preconditions;
-import com.qcadoo.localization.api.TranslationService;
-import com.qcadoo.model.api.DataDefinition;
-import com.qcadoo.model.api.DataDefinitionService;
-import com.qcadoo.security.api.SecurityRole;
-import com.qcadoo.security.api.SecurityRolesService;
-import com.qcadoo.view.internal.ComponentDefinition;
-import com.qcadoo.view.internal.ComponentOption;
-import com.qcadoo.view.internal.HookDefinition;
-import com.qcadoo.view.internal.api.ComponentCustomEvent;
-import com.qcadoo.view.internal.api.ComponentPattern;
-import com.qcadoo.view.internal.api.ContainerPattern;
-import com.qcadoo.view.internal.api.ContextualHelpService;
-import com.qcadoo.view.internal.api.EnabledAttribute;
-import com.qcadoo.view.internal.api.InternalViewDefinition;
-import com.qcadoo.view.internal.api.InternalViewDefinitionService;
-import com.qcadoo.view.internal.api.ViewDefinition;
-import com.qcadoo.view.internal.hooks.HookDefinitionImpl;
-import com.qcadoo.view.internal.hooks.HookFactory;
-import com.qcadoo.view.internal.internal.ViewComponentsResolverImpl;
-import com.qcadoo.view.internal.internal.ViewDefinitionImpl;
-import com.qcadoo.view.internal.patterns.AbstractComponentPattern;
-import com.qcadoo.view.internal.ribbon.RibbonParserService;
-import com.qcadoo.view.internal.ribbon.model.InternalRibbon;
-import com.qcadoo.view.internal.ribbon.model.InternalRibbonActionItem;
-import com.qcadoo.view.internal.ribbon.model.InternalRibbonGroup;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public final class ViewDefinitionParserImpl implements ViewDefinitionParser {

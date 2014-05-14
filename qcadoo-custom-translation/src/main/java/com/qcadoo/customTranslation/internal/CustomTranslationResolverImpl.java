@@ -23,16 +23,15 @@
  */
 package com.qcadoo.customTranslation.internal;
 
-import java.text.MessageFormat;
-import java.util.Locale;
-
-import org.apache.commons.lang.ArrayUtils;
+import com.qcadoo.customTranslation.api.CustomTranslationCacheService;
+import com.qcadoo.customTranslation.api.CustomTranslationResolver;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
-import com.qcadoo.customTranslation.api.CustomTranslationCacheService;
-import com.qcadoo.customTranslation.api.CustomTranslationResolver;
+import java.text.MessageFormat;
+import java.util.Locale;
 
 @Service
 public class CustomTranslationResolverImpl implements CustomTranslationResolver {

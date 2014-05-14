@@ -23,10 +23,11 @@
  */
 package com.qcadoo.mail.internal;
 
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
-
-import org.apache.commons.lang.StringUtils;
+import com.google.common.base.Preconditions;
+import com.qcadoo.mail.api.InvalidMailAddressException;
+import com.qcadoo.mail.api.MailConfigurationException;
+import com.qcadoo.mail.api.MailService;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,10 +36,8 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
-import com.google.common.base.Preconditions;
-import com.qcadoo.mail.api.InvalidMailAddressException;
-import com.qcadoo.mail.api.MailConfigurationException;
-import com.qcadoo.mail.api.MailService;
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 
 @Service
 public class MailServiceImpl implements MailService {
