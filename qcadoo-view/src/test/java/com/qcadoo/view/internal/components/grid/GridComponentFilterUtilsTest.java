@@ -665,7 +665,7 @@ public class GridComponentFilterUtilsTest {
         GridComponentFilterUtils.addAliases(criteria, field);
 
         // then
-        verify(criteria).createAlias("firstBelongsTo", "firstBelongsTo_a");
+        verify(criteria).createAlias("firstBelongsTo", "firstBelongsTo_a", null);
     }
 
     @Test
@@ -677,8 +677,8 @@ public class GridComponentFilterUtilsTest {
         GridComponentFilterUtils.addAliases(criteria, field);
 
         // then
-        verify(criteria).createAlias("firstBelongsTo", "firstBelongsTo_a");
-        verify(criteria).createAlias("firstBelongsTo_a.secondBelongsTo", "secondBelongsTo_a");
+        verify(criteria).createAlias("firstBelongsTo", "firstBelongsTo_a", null);
+        verify(criteria).createAlias("firstBelongsTo_a.secondBelongsTo", "secondBelongsTo_a", null);
     }
 
     @Test
@@ -690,9 +690,9 @@ public class GridComponentFilterUtilsTest {
         GridComponentFilterUtils.addAliases(criteria, field);
 
         // then
-        verify(criteria).createAlias("firstBelongsTo", "firstBelongsTo_a");
-        verify(criteria).createAlias("firstBelongsTo_a.secondBelongsTo", "secondBelongsTo_a");
-        verify(criteria).createAlias("secondBelongsTo_a.thirdBelongsTo", "thirdBelongsTo_a");
+        verify(criteria).createAlias("firstBelongsTo", "firstBelongsTo_a", null);
+        verify(criteria).createAlias("firstBelongsTo_a.secondBelongsTo", "secondBelongsTo_a", null);
+        verify(criteria).createAlias("secondBelongsTo_a.thirdBelongsTo", "thirdBelongsTo_a", null);
     }
 
     @Test
@@ -704,10 +704,10 @@ public class GridComponentFilterUtilsTest {
         GridComponentFilterUtils.addAliases(criteria, field);
 
         // then
-        verify(criteria).createAlias("firstBelongsTo", "firstBelongsTo_a");
-        verify(criteria).createAlias("firstBelongsTo_a.secondBelongsTo", "secondBelongsTo_a");
-        verify(criteria).createAlias("secondBelongsTo_a.thirdBelongsTo", "thirdBelongsTo_a");
-        verify(criteria).createAlias("thirdBelongsTo_a.fourthBelongsTo", "fourthBelongsTo_a");
+        verify(criteria).createAlias("firstBelongsTo", "firstBelongsTo_a", null);
+        verify(criteria).createAlias("firstBelongsTo_a.secondBelongsTo", "secondBelongsTo_a", null);
+        verify(criteria).createAlias("secondBelongsTo_a.thirdBelongsTo", "thirdBelongsTo_a", null);
+        verify(criteria).createAlias("thirdBelongsTo_a.fourthBelongsTo", "fourthBelongsTo_a", null);
     }
 
     @Test

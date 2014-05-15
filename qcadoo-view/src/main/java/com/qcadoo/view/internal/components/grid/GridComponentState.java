@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.qcadoo.model.api.search.*;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -44,11 +45,6 @@ import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.EntityOpResult;
 import com.qcadoo.model.api.FieldDefinition;
-import com.qcadoo.model.api.search.CustomRestriction;
-import com.qcadoo.model.api.search.SearchCriteriaBuilder;
-import com.qcadoo.model.api.search.SearchOrders;
-import com.qcadoo.model.api.search.SearchRestrictions;
-import com.qcadoo.model.api.search.SearchResult;
 import com.qcadoo.model.api.types.BelongsToType;
 import com.qcadoo.model.api.types.DataDefinitionHolder;
 import com.qcadoo.model.api.types.EnumeratedType;
@@ -788,7 +784,7 @@ public final class GridComponentState extends AbstractComponentState implements 
             for (GridComponentOrderColumn orderColumn : orderColumns) {
                 String field = GridComponentFilterUtils.getFieldNameByColumnName(columns, orderColumn.getName());
 
-                field = GridComponentFilterUtils.addAliases(criteria, field);
+                field = GridComponentFilterUtils.addAliases(criteria, field, JoinType.LEFT);
 
                 if (field != null) {
                     if ("asc".equals(orderColumn.getDirection())) {
