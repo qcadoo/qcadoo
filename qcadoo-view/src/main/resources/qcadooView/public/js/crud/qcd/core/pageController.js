@@ -359,7 +359,7 @@ QCD.PageController = function() {
 		if (data.messages) {
 			for (var i in data.messages) {
 				var message = data.messages[i];
-				window.parent.addMessage(message.type, message.content);
+				window.parent.addMessage(message);
 			}
 		}
 		for (var i in data.components) {

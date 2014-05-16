@@ -62,8 +62,8 @@ QCD.WindowController = function(_menuStructure) {
 		updateSize();
 	}
 
-	this.addMessage = function(type, content) {
-		messagesController.addMessage(type, content);
+	this.addMessage = function(message) {
+		messagesController.addMessage(message);
 	}
 
 	this.performLogout = function() {
