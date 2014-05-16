@@ -98,6 +98,11 @@ public class DynamicDataDefinitionImpl implements InternalDataDefinition {
     }
 
     @Override
+    public long count(){
+        throw new UnsupportedOperationException("Cannot count all entities for dynamic data definition");
+    }
+
+    @Override
     public long count(final SearchCriterion criterion){
         throw new UnsupportedOperationException("Cannot count entities for dynamic data definition");
     }

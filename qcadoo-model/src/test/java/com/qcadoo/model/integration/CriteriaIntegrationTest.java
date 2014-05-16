@@ -457,7 +457,7 @@ public class CriteriaIntegrationTest extends IntegrationTest {
         productDao.save(createProduct("csd", "csd"));
 
         // when
-        long count = productDao.count(null);
+        long count = productDao.count();
 
         // then
         assertEquals(3L, count);

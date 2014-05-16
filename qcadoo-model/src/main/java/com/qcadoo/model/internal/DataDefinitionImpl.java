@@ -126,6 +126,11 @@ public final class DataDefinitionImpl implements InternalDataDefinition {
     }
 
     @Override
+    public long count(){
+        return count(null);
+    }
+
+    @Override
     public long count(final SearchCriterion criterion) {
         final String countAlias = "count";
         SearchCriteriaBuilder scb = find();

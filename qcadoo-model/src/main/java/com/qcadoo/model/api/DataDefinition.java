@@ -96,10 +96,18 @@ public interface DataDefinition {
     SearchCriteriaBuilder find();
 
     /**
+     * Counts all model entities.
+     *
+     * @return entities count
+     * @since 1.2.1
+     */
+    long count();
+
+    /**
      * Counts entities found by given criteria.
      *
      * @param criterion
-     *          criterion to restrict entities, if passed null will count all entities
+     *          criterion to restrict entities
      * @return entities count
      * @since 1.2.1
      */
