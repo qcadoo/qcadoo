@@ -30,13 +30,7 @@ import org.junit.Test;
 
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
-import com.qcadoo.model.api.search.JoinType;
-import com.qcadoo.model.api.search.SearchCriteriaBuilder;
-import com.qcadoo.model.api.search.SearchOrders;
-import com.qcadoo.model.api.search.SearchProjections;
-import com.qcadoo.model.api.search.SearchRestrictions;
-import com.qcadoo.model.api.search.SearchResult;
-import com.qcadoo.model.api.search.SearchSubqueries;
+import com.qcadoo.model.api.search.*;
 import com.qcadoo.model.internal.types.BelongsToEntityType;
 import com.qcadoo.model.internal.types.IntegerType;
 import com.qcadoo.model.internal.types.StringType;
@@ -451,6 +445,38 @@ public class CriteriaIntegrationTest extends IntegrationTest {
         assertEquals(2, result.getTotalNumberOfEntities());
         assertEquals("bsd", result.getEntities().get(0).getField("0"));
         assertEquals("asd", result.getEntities().get(1).getField("0"));
+    }
+
+    @Test
+    public void shouldCountAllEntities() {
+        // given
+        DataDefinition productDao = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PRODUCT);
+
+        productDao.save(createProduct("asd", "asd"));
+        productDao.save(createProduct("bsd", "bsd"));
+        productDao.save(createProduct("csd", "csd"));
+
+        // when
+        long count = productDao.count(null);
+
+        // then
+        assertEquals(3L, count);
+    }
+
+    @Test
+    public void shouldCountRestrictedEntities() {
+        // given
+        DataDefinition productDao = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PRODUCT);
+
+        productDao.save(createProduct("asd", "asd"));
+        productDao.save(createProduct("asd1", "asd1"));
+        productDao.save(createProduct("bsd", "bsd"));
+
+        // when
+        long count = productDao.count(SearchRestrictions.like("name", "asd", SearchRestrictions.SearchMatchMode.START));
+
+        // then
+        assertEquals(2L, count);
     }
 
 }

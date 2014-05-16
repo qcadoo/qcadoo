@@ -31,6 +31,7 @@ import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.EntityOpResult;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.search.SearchCriteriaBuilder;
+import com.qcadoo.model.api.search.SearchCriterion;
 import com.qcadoo.model.api.search.SearchQueryBuilder;
 import com.qcadoo.model.api.search.SearchResult;
 import com.qcadoo.model.api.types.FieldType;
@@ -94,6 +95,11 @@ public class DynamicDataDefinitionImpl implements InternalDataDefinition {
     @Override
     public SearchCriteriaBuilder find() {
         throw new UnsupportedOperationException(L_CANNOT_FIND_ENTITY_FOR_DYNAMIC_DATA_DEFINITION);
+    }
+
+    @Override
+    public long count(final SearchCriterion criterion){
+        throw new UnsupportedOperationException("Cannot count entities for dynamic data definition");
     }
 
     @Override

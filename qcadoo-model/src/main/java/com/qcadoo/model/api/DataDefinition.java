@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.qcadoo.model.api.search.SearchCriteriaBuilder;
+import com.qcadoo.model.api.search.SearchCriterion;
 import com.qcadoo.model.api.search.SearchQueryBuilder;
 
 /**
@@ -93,6 +94,16 @@ public interface DataDefinition {
      * @see #findWithAlias(String)
      */
     SearchCriteriaBuilder find();
+
+    /**
+     * Counts entities found by given criteria.
+     *
+     * @param criterion
+     *          criterion to restrict entities, if passed null will count all entities
+     * @return entities count
+     * @since 1.2.1
+     */
+    long count(final SearchCriterion criterion);
 
     /**
      * Create search criteria builder for this data definition. Root data definition will use given alias. This is usable for
