@@ -32,10 +32,11 @@
 }
 .awesomeDynamicList.noBorder .awesomeListLine {
 	margin: 0px;
+	border: none;
 }
 .awesomeDynamicList.noBorder .awesomeListLine.lastLine {
 	margin: 0px;
-	border-bottom: none;
+	border: none;
 }
 
 .awesomeDynamicList.hasButtons .awesomeListLine .awesomeListFormContainer {
