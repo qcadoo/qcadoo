@@ -34,7 +34,7 @@
 	<component type="window" name="window" reference="window">
 		<ribbon>
 			<template name="standardFormTemplate" includeItems="navigation.back"/>
-			<template name="standardGridTemplate" />
+			<template name="standardGridTemplate" excludeItems="actions.delete" />
 		</ribbon>
 		<component type="form" reference="form" name="dictionary">
 			<option type="header" value="true" />
@@ -44,12 +44,11 @@
 			source="#{form}.dictionaryItems">
 			<script>
 				<![CDATA[
-					var deleteButton = #{window}.getRibbonItem("actions.delete");
+
 					var copyButton = #{window}.getRibbonItem("actions.copy");
 					var listener = {
 						onChange: function(selectedEntitiesArray) {
 							if (!selectedEntitiesArray || selectedEntitiesArray.length == 0) {
-								deleteButton.disable();
 								copyButton.disable();
 							} else {
 								var hasExternal = false;
@@ -65,17 +64,13 @@
 									}
 								}
 								if (hasExternal) {
-									deleteButton.disable("#{translate(qcadooDictionaries.dictionaryItems.ribbon.message.someDictionaryItemIsExternal)}");
 									copyButton.disable("#{translate(qcadooDictionaries.dictionaryItems.ribbon.message.someDictionaryItemIsExternal)}");
 								} else {
-									deleteButton.enable();
 									copyButton.enable();
 								}
 								if (hasTechnicalCode) {
-									deleteButton.disable();
 									copyButton.disable();
 								} else {
-									deleteButton.enable();
 									copyButton.enable();
 								}
 							}

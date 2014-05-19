@@ -26,7 +26,8 @@
 -->
 <model name="dictionaryItem" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns="http://schema.qcadoo.org/model"
-	xsi:schemaLocation="http://schema.qcadoo.org/model http://schema.qcadoo.org/model.xsd">
+	xsi:schemaLocation="http://schema.qcadoo.org/model http://schema.qcadoo.org/model.xsd"
+    deletable="false" activable="true">
 	<fields>
 		<string name="name" required="true" unique="true">
 			<validatesLength max="255" />
@@ -38,5 +39,7 @@
 		<string name="technicalCode" />
 		<belongsTo name="dictionary" model="dictionary" required="true" />
 	</fields>
-	<hooks />
+    <hooks>
+        <validatesWith class="com.qcadoo.model.internal.dictionaries.hooks.DictionaryItemValidators" method="disallowNameChange" />
+	</hooks >
 </model>

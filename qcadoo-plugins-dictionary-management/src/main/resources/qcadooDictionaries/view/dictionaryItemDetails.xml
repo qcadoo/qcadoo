@@ -33,7 +33,7 @@
 	
 	<component type="window" name="window" reference="window">
 		<ribbon>
-			<template name="standardFormTemplate" />
+			<template name="standardFormTemplate" excludeItems="actions.delete" />
 		</ribbon>
 		<component type="form" name="dictionaryItem" reference="form">
 			<script>
@@ -42,7 +42,7 @@
 					var saveBack = #{window}.getRibbonItem("actions.saveBack");
 					var saveNew = #{window}.getRibbonItem("actions.saveNew");
 					var cancel = #{window}.getRibbonItem("actions.cancel");
-					var del = #{window}.getRibbonItem("actions.delete");
+
 					
 					this.addOnChangeListener({
 						onSetValue: function(value) {
@@ -55,12 +55,10 @@
 							
 							if (! value.content.entityId) {
 								cancel.disable();
-								del.disable();
 								return;
 							}
 							
 							cancel.enable();
-							del.enable();
 							
 							var externalNumber = #{externalNumber}.getValue().content.value;
 							
@@ -69,7 +67,6 @@
 								saveBack.disable("#{translate(qcadooDictionaries.dictionaryItem.ribbon.message.dictionaryItemIsExternal)}");
 								saveNew.disable("#{translate(qcadooDictionaries.dictionaryItem.ribbon.message.dictionaryItemIsExternal)}");
 								cancel.disable("#{translate(qcadooDictionaries.dictionaryItem.ribbon.message.dictionaryItemIsExternal)}");
-								del.disable("#{translate(qcadooDictionaries.dictionaryItem.ribbon.message.dictionaryItemIsExternal)}");
 							}
 						}
 					});
