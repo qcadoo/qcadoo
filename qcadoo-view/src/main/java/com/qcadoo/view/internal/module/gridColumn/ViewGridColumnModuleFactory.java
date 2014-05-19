@@ -55,7 +55,9 @@ public class ViewGridColumnModuleFactory extends ModuleFactory<ViewGridColumnMod
             String columnLink = getAttribute(columnElement, "link");
             String columnWidth = getAttribute(columnElement, "width");
             String columnSearchable = getAttribute(columnElement, "searchable");
+            String columnMultiSearch = getAttribute(columnElement, "multiSearch");
             String columnOrderable = getAttribute(columnElement, "orderable");
+            String columnHidden = getAttribute(columnElement, "hidden");
             String columnAlign = getAttribute(columnElement, "align");
 
             ViewGridColumnModuleColumnModel columnModel = new ViewGridColumnModuleColumnModel(columnName, columnFields);
@@ -69,8 +71,14 @@ public class ViewGridColumnModuleFactory extends ModuleFactory<ViewGridColumnMod
             if (columnSearchable != null) {
                 columnModel.setSearchable(Boolean.parseBoolean(columnSearchable));
             }
+            if (columnMultiSearch != null) {
+                columnModel.setMultiSearch(Boolean.parseBoolean(columnMultiSearch));
+            }
             if (columnOrderable != null) {
                 columnModel.setOrderable(Boolean.parseBoolean(columnOrderable));
+            }
+            if(columnHidden != null){
+                columnModel.setHidden(Boolean.parseBoolean(columnHidden));
             }
             if (StringUtils.isNotEmpty(columnAlign)) {
                 columnModel.setAlign(Alignment.parseString(columnAlign));

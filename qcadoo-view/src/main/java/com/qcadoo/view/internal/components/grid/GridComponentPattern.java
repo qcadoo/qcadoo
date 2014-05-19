@@ -23,12 +23,8 @@
  */
 package com.qcadoo.view.internal.components.grid;
 
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
@@ -307,17 +303,19 @@ public class GridComponentPattern extends AbstractComponentPattern {
 
     public void addColumn(final String name, final String fields, final String expression, final Boolean isLink,
             final Integer width, final boolean isOrderable, final boolean isSearchable, final String extendingPluginIdentifier) {
-        addColumn(name, fields, expression, isLink, width, isOrderable, isSearchable, extendingPluginIdentifier, null);
+        addColumn(name, fields, expression, isLink, width, isOrderable, isSearchable, false, false, extendingPluginIdentifier,
+                null);
     }
 
     // FIXME maku replace this ugly chain of arguments with some kind of columnDefinition object..
     public void addColumn(final String name, final String fields, final String expression, final Boolean isLink,
-            final Integer width, final boolean isOrderable, final boolean isSearchable, final String extendingPluginIdentifier,
-            final Alignment align) {
+            final Integer width, final boolean isOrderable, final boolean isSearchable, final boolean isHidden,
+            final boolean isMultiSearch, final String extendingPluginIdentifier, final Alignment align) {
         final GridComponentColumn column = new GridComponentColumn(name, extendingPluginIdentifier);
         for (FieldDefinition field : parseFields(fields, column)) {
             column.addField(field);
         }
+        column.setHidden(isHidden);
         column.setAlign(align);
         column.setExpression(expression);
         if (isLink != null) {
@@ -332,6 +330,9 @@ public class GridComponentPattern extends AbstractComponentPattern {
         }
         if (isSearchable) {
             searchableColumns.add(name);
+        }
+        if (isMultiSearch) {
+            multiSearchColumns.add(name);
         }
     }
 
