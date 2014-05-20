@@ -4,11 +4,15 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.util.ReflectionTestUtils.getField;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 
+import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
 
+import com.qcadoo.localization.api.TranslationService;
+import com.qcadoo.view.internal.ComponentOption;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Before;
@@ -34,9 +38,6 @@ public class SelectComponentStateTest {
     private SelectComponentState componentState;
 
     @Mock
-    private FieldDefinition fieldDefinition;
-
-    @Mock
     private DictionaryService dictionaryService;
 
     @Before
@@ -45,6 +46,9 @@ public class SelectComponentStateTest {
 
         DictionaryType dictionaryType = new DictionaryType(DICTIONARY_NAME, dictionaryService, false);
 
+        TranslationService translationService = mock(TranslationService.class);
+
+        FieldDefinition fieldDefinition = mock(FieldDefinition.class);
         when(fieldDefinition.getType()).thenReturn(dictionaryType);
         when(fieldDefinition.isRequired()).thenReturn(true);
         when(fieldDefinition.getDefaultValue()).thenReturn("asd");
@@ -55,10 +59,10 @@ public class SelectComponentStateTest {
         SelectComponentPattern pattern = new SelectComponentPattern(definition);
 
         setField(pattern, "fieldDefinition", fieldDefinition);
+        setField(pattern, "translationService", translationService);
         componentState = new SelectComponentState(pattern);
         setField(componentState, "locale", Locale.ENGLISH);
         setField(pattern, "defaultRequired", true);
-
     }
 
     private void stubValues(String... values) throws JSONException {
@@ -146,5 +150,59 @@ public class SelectComponentStateTest {
         assertEquals("cccc", content.getJSONArray(VALUES).getJSONObject(2).getString(KEY));
         assertEquals("dddd", content.getJSONArray(VALUES).getJSONObject(3).getString(KEY));
         assertEquals("eeee", content.getJSONArray(VALUES).getJSONObject(4).getString(KEY));
+    }
+
+    private void stubValuesOption(String optionValue) throws JSONException {
+        SelectComponentPattern pattern = (SelectComponentPattern)getField(componentState, "selectComponentPattern");
+
+        ComponentOption option = new ComponentOption("values", Collections.singletonMap("value", optionValue));
+
+        pattern.addOption(option);
+        pattern.initializeComponent();
+    }
+
+    @Test
+    public void shouldLoadValuesFromOption() throws JSONException {
+        // given
+        SelectComponentPattern pattern = (SelectComponentPattern)getField(componentState, "selectComponentPattern");
+        setField(pattern, "fieldDefinition", null);
+        stubValuesOption("yes,no");
+
+        // when
+        JSONObject content = componentState.renderContent();
+        // then
+        assertNotNull(content.getJSONArray("values"));
+        assertEquals(2, content.getJSONArray("values").length());
+        assertEquals("yes", content.getJSONArray(VALUES).getJSONObject(0).getString(KEY));
+        assertEquals("no", content.getJSONArray(VALUES).getJSONObject(1).getString(KEY));
+    }
+
+    @Test
+    public void shouldLoadValuesFromOptionAlsoIfOptionValueHasWhiteChars() throws JSONException {
+        // given
+        SelectComponentPattern pattern = (SelectComponentPattern)getField(componentState, "selectComponentPattern");
+        setField(pattern, "fieldDefinition", null);
+        stubValuesOption(" yes , no ,");
+
+        // when
+        JSONObject content = componentState.renderContent();
+        // then
+        assertNotNull(content.getJSONArray("values"));
+        assertEquals(2, content.getJSONArray("values").length());
+        assertEquals("yes", content.getJSONArray(VALUES).getJSONObject(0).getString(KEY));
+        assertEquals("no", content.getJSONArray(VALUES).getJSONObject(1).getString(KEY));
+    }
+
+    @Test
+    public void shouldNotLoadValuesFromOption() throws JSONException {
+        // given
+        // base on fact that fieldDefinition is set in select component by init method
+        stubValuesOption("yes,no");
+
+        // when
+        JSONObject content = componentState.renderContent();
+        // then
+        assertNotNull(content.getJSONArray("values"));
+        assertEquals(0, content.getJSONArray("values").length());
     }
 }
