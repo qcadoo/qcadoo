@@ -57,7 +57,7 @@ public final class UniqueValidator implements FieldHookDefinition, ErrorMessageD
             return true;
         }
         SearchCriteriaBuilder searchCriteriaBuilder = dataDefinition.find()
-                .add(SearchRestrictions.ieq(fieldDefinition.getName(), entity.getField(fieldDefinition.getName())))
+                .add(SearchRestrictions.iEq(fieldDefinition.getName(), entity.getField(fieldDefinition.getName())))
                 .setMaxResults(1);
         if (entity.getId() != null) {
             searchCriteriaBuilder.add(SearchRestrictions.idNe(entity.getId()));

@@ -23,13 +23,9 @@
  */
 package com.qcadoo.model.api.search;
 
-import com.qcadoo.model.api.DataDefinition;
-import com.qcadoo.model.api.Entity;
-import com.qcadoo.model.internal.api.DataAccessService;
-import com.qcadoo.model.internal.api.InternalDataDefinition;
-import com.qcadoo.model.internal.search.SearchConjunctionImpl;
-import com.qcadoo.model.internal.search.SearchCriterionImpl;
-import com.qcadoo.model.internal.search.SearchDisjunctionImpl;
+import java.util.Collection;
+import java.util.Map;
+
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.criterion.Conjunction;
 import org.hibernate.criterion.Disjunction;
@@ -38,8 +34,13 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Collection;
-import java.util.Map;
+import com.qcadoo.model.api.DataDefinition;
+import com.qcadoo.model.api.Entity;
+import com.qcadoo.model.internal.api.DataAccessService;
+import com.qcadoo.model.internal.api.InternalDataDefinition;
+import com.qcadoo.model.internal.search.SearchConjunctionImpl;
+import com.qcadoo.model.internal.search.SearchCriterionImpl;
+import com.qcadoo.model.internal.search.SearchDisjunctionImpl;
 
 /**
  * Utility with factory methods for {@link SearchCriterion}.
@@ -206,7 +207,7 @@ public final class SearchRestrictions {
         if (value == null) {
             return isNull(field);
         }
-        return new SearchCriterionImpl(Restrictions.like(field, convertWildcards(value)).ignoreCase());
+        return new SearchCriterionImpl(Restrictions.like(field, convertWildcards(value)));
     }
 
     /**
@@ -224,8 +225,7 @@ public final class SearchRestrictions {
         if (value == null) {
             return isNull(field);
         }
-        return new SearchCriterionImpl(Restrictions.like(field, convertWildcards(value), mode.getHibernateMatchMode())
-                .ignoreCase());
+        return new SearchCriterionImpl(Restrictions.like(field, convertWildcards(value), mode.getHibernateMatchMode()));
     }
 
     /**
@@ -353,7 +353,7 @@ public final class SearchRestrictions {
      *            value
      * @return criterion
      */
-    public static SearchCriterion ieq(final String field, final Object value) {
+    public static SearchCriterion iEq(final String field, final Object value) {
         return new SearchCriterionImpl(Restrictions.eq(field, value).ignoreCase());
     }
 

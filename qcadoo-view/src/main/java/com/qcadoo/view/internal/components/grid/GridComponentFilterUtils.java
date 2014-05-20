@@ -266,11 +266,11 @@ public final class GridComponentFilterUtils {
             case GE:
                 return SearchRestrictions.eq(field, data);
             case CN:
-                return SearchRestrictions.like(field, data, SearchMatchMode.ANYWHERE);
+                return SearchRestrictions.ilike(field, data, SearchMatchMode.ANYWHERE);
             case BW:
-                return SearchRestrictions.like(field, data, SearchMatchMode.START);
+                return SearchRestrictions.ilike(field, data, SearchMatchMode.START);
             case EW:
-                return SearchRestrictions.like(field, data, SearchMatchMode.END);
+                return SearchRestrictions.ilike(field, data, SearchMatchMode.END);
             case IN:
                 Collection<String> values = parseListValue(data);
                 return SearchRestrictions.in(field, values);
