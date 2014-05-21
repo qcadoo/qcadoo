@@ -39,6 +39,7 @@ import com.qcadoo.view.internal.FieldEntityIdChangeListener;
 import com.qcadoo.view.internal.ScopeEntityIdChangeListener;
 import com.qcadoo.view.internal.api.ComponentPattern;
 import com.qcadoo.view.internal.api.InternalComponentState;
+import com.qcadoo.view.internal.hooks.ViewEventListenerHook;
 import com.qcadoo.view.internal.internal.EntityIdChangeListenerHolder;
 import com.qcadoo.view.internal.internal.EventHandlerHolder;
 import com.qcadoo.view.internal.internal.MessageHolder;
@@ -230,12 +231,12 @@ public abstract class AbstractComponentState implements InternalComponentState, 
 
     protected abstract void initializeContent(final JSONObject json) throws JSONException;
 
-    public final void registerCustomEvent(final String name, final Object obj, final String method, final String pluginIdentifier) {
-        eventHandlerHolder.registemCustomEvent(name, obj, method, pluginIdentifier);
+    public final void registerCustomEvent(final ViewEventListenerHook eventListenerHook) {
+        eventHandlerHolder.registerCustomEvent(eventListenerHook);
     }
 
     protected final void registerEvent(final String name, final Object obj, final String method) {
-        eventHandlerHolder.registemEvent(name, obj, method);
+        eventHandlerHolder.registerEvent(name, obj, method);
     }
 
     @Override

@@ -28,6 +28,7 @@ import java.util.Map;
 
 import org.w3c.dom.Node;
 
+import com.qcadoo.view.internal.hooks.ViewEventListenerHook;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
 import com.qcadoo.view.internal.xml.ViewDefinitionParserNodeException;
 
@@ -149,18 +150,18 @@ public interface ComponentPattern {
     /**
      * Adds custom event to this component
      * 
-     * @param customEvent
-     *            event to add
+     * @param eventListenerHook
+     *            event listener to add
      */
-    void addCustomEvent(final ComponentCustomEvent customEvent);
+    void addCustomEvent(final ViewEventListenerHook eventListenerHook);
 
     /**
      * Removes custom event from this component
      * 
-     * @param customEvent
-     *            event to remove
+     * @param eventListenerHook
+     *            event listener to remove
      */
-    void removeCustomEvent(final ComponentCustomEvent customEvent);
+    void removeCustomEvent(final ViewEventListenerHook eventListenerHook);
 
     /**
      * Checks if field defined by this component is persistent

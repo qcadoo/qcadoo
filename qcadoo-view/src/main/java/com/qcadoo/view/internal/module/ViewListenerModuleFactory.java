@@ -27,10 +27,9 @@ import org.jdom.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.qcadoo.plugin.api.ModuleFactory;
-import com.qcadoo.view.internal.api.ComponentCustomEvent;
 import com.qcadoo.view.internal.api.InternalViewDefinitionService;
-import com.qcadoo.view.internal.hooks.HookDefinitionImpl;
 import com.qcadoo.view.internal.hooks.HookFactory;
+import com.qcadoo.view.internal.hooks.ViewEventListenerHook;
 
 public class ViewListenerModuleFactory extends ModuleFactory<ViewListenerModule> {
 
@@ -48,10 +47,9 @@ public class ViewListenerModuleFactory extends ModuleFactory<ViewListenerModule>
         String eventName = getRequiredAttribute(element, "event");
         String className = getRequiredAttribute(element, "class");
         String method = getRequiredAttribute(element, "method");
-        HookDefinitionImpl hook = (HookDefinitionImpl) hookFactory.getHook(className, method, pluginIdentifier);
-        ComponentCustomEvent event = new ComponentCustomEvent(eventName, hook.getObject(), method, pluginIdentifier);
+        ViewEventListenerHook hook = hookFactory.buildViewEventListener(eventName, className, method, pluginIdentifier);
 
-        return new ViewListenerModule(pluginIdentifier, viewDefinitionService, plugin, view, component, event);
+        return new ViewListenerModule(pluginIdentifier, viewDefinitionService, plugin, view, component, hook);
     }
 
     @Override

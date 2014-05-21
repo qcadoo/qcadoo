@@ -27,10 +27,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.springframework.test.util.ReflectionTestUtils.getField;
 
-import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -43,11 +43,9 @@ import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 
 import com.qcadoo.localization.api.TranslationService;
-import com.qcadoo.model.beans.sample.CustomEntityService;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.components.FormComponent;
 import com.qcadoo.view.internal.ComponentDefinition;
-import com.qcadoo.view.internal.api.ComponentCustomEvent;
 import com.qcadoo.view.internal.api.ComponentPattern;
 import com.qcadoo.view.internal.api.ContainerPattern;
 import com.qcadoo.view.internal.api.InternalViewDefinition;
@@ -55,6 +53,7 @@ import com.qcadoo.view.internal.api.InternalViewDefinitionState;
 import com.qcadoo.view.internal.components.TextInputComponentPattern;
 import com.qcadoo.view.internal.components.form.FormComponentPattern;
 import com.qcadoo.view.internal.components.window.WindowComponentPattern;
+import com.qcadoo.view.internal.hooks.ViewEventListenerHook;
 import com.qcadoo.view.internal.internal.EventHandlerHolder;
 
 public class ComponentPatternTest extends AbstractPatternTest {
@@ -72,8 +71,9 @@ public class ComponentPatternTest extends AbstractPatternTest {
         componentDefinition.setApplicationContext(applicationContext);
         componentDefinition.setViewDefinition(viewDefinition);
         AbstractComponentPattern pattern = new FormComponentPattern(componentDefinition);
-        CustomEntityService object = mock(CustomEntityService.class);
-        pattern.addCustomEvent(new ComponentCustomEvent("save", object, "saveForm", null));
+        ViewEventListenerHook viewEventListenerHook = mock(ViewEventListenerHook.class);
+        given(viewEventListenerHook.getEventName()).willReturn("save");
+        pattern.addCustomEvent(viewEventListenerHook);
 
         // when
         ComponentState state = pattern.createComponentState(viewDefinitionState);
@@ -82,14 +82,14 @@ public class ComponentPatternTest extends AbstractPatternTest {
         assertTrue(state instanceof FormComponent);
 
         EventHandlerHolder eventHandlerHolder = (EventHandlerHolder) getField(state, "eventHandlerHolder");
-        Map<String, List<Object>> eventHandlers = (Map<String, List<Object>>) getField(eventHandlerHolder, "eventHandlers");
+        Map<String, List<EventHandlerHolder.EventHandler>> eventHandlers = (Map<String, List<EventHandlerHolder.EventHandler>>) getField(
+                eventHandlerHolder, "eventHandlers");
 
-        List<Object> handlers = eventHandlers.get("save");
+        List<EventHandlerHolder.EventHandler> handlers = eventHandlers.get("save");
 
         assertNotNull(handlers);
         assertEquals(2, handlers.size());
-        assertEquals(object, getField(handlers.get(1), "obj"));
-        assertEquals("saveForm", ((Method) getField(handlers.get(1), "method")).getName());
+        assertEquals(viewEventListenerHook, handlers.get(1));
     }
 
     @Test
@@ -104,15 +104,15 @@ public class ComponentPatternTest extends AbstractPatternTest {
         Assert.assertEquals("testName", name);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void shouldFailWithoutName() throws Exception {
-        // given
-        InternalViewDefinitionState viewDefinitionState = mock(InternalViewDefinitionState.class);
-        ComponentDefinition componentDefinition = new ComponentDefinition();
-        ComponentPattern pattern = new FormComponentPattern(componentDefinition);
-
         // when
-        pattern.createComponentState(viewDefinitionState);
+        try {
+            new FormComponentPattern(new ComponentDefinition());
+            Assert.fail();
+        } catch (IllegalArgumentException ignored) {
+            // Success
+        }
     }
 
     @Test

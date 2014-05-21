@@ -23,36 +23,17 @@
  */
 package com.qcadoo.view.internal;
 
-import java.util.Locale;
-
-import org.json.JSONObject;
-
-import com.qcadoo.view.api.ViewDefinitionState;
-import com.qcadoo.view.internal.api.ViewDefinition;
+import java.lang.reflect.Method;
 
 /**
  * Defines hooks for validation/saving entities and generating views.
  */
-public interface HookDefinition {
+public interface ViewHookDefinition {
 
-    /**
-     * Call custom hook on view.
-     * 
-     * @param viewDefinitionState
-     *            view definition state
-     * @param locale
-     *            locale
-     */
-    void callWithViewState(ViewDefinitionState viewDefinitionState);
+    Object getBean();
 
-    /**
-     * Call custom hook on view.
-     * 
-     * @param object
-     *            json object
-     * @param locale
-     *            locale
-     */
-    void callWithJSONObject(ViewDefinition viewDefinition, JSONObject object, final Locale locale);
+    Method getMethod();
+
+    String getPluginIdentifier();
 
 }

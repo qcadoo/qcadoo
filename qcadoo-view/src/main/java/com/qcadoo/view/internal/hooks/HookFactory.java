@@ -27,7 +27,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
-import com.qcadoo.view.internal.HookDefinition;
+import com.google.common.base.Preconditions;
+import com.qcadoo.model.internal.hooks.HookInitializationException;
 
 @Service
 public final class HookFactory {
@@ -35,17 +36,31 @@ public final class HookFactory {
     @Autowired
     private ApplicationContext applicationContext;
 
-    public HookDefinition getHook(final String fullyQualifiedClassName, final String methodName, final String pluginIdentifier) {
-        Class<?> beanClass;
+    public ViewEventListenerHook buildViewEventListener(final String eventName, final String fullyQualifiedClassName,
+            final String methodName, final String pluginIdentifier) {
         try {
-            beanClass = Thread.currentThread().getContextClassLoader().loadClass(fullyQualifiedClassName);
-            Object bean = applicationContext.getBean(beanClass);
-            if (bean == null) {
-                throw new IllegalStateException("Cannot find bean for hook: " + fullyQualifiedClassName);
-            }
-            return new HookDefinitionImpl(bean, methodName, pluginIdentifier);
-        } catch (ClassNotFoundException e) {
-            throw new IllegalStateException("Cannot find mapping class for hook: " + fullyQualifiedClassName, e);
+            return new ViewEventListenerHook(eventName, fullyQualifiedClassName, methodName, pluginIdentifier, applicationContext);
+        } catch (HookInitializationException e) {
+            throw new IllegalArgumentException("Can't build view listener hook.", e);
+        }
+    }
+
+    public ViewLifecycleHook buildViewLifecycleHook(final String fullyQualifiedClassName, final String methodName,
+            final String pluginIdentifier, final HookType type) {
+        Preconditions.checkArgument(type != null, "View hook type have to be passed!");
+        try {
+            return new ViewLifecycleHook(fullyQualifiedClassName, methodName, pluginIdentifier, applicationContext, type);
+        } catch (HookInitializationException e) {
+            throw new IllegalArgumentException("Can't build view lifecycle hook.", e);
+        }
+    }
+
+    public ViewConstructionHook buildViewConstructionHook(final String fullyQualifiedClassName, final String methodName,
+            final String pluginIdentifier) {
+        try {
+            return new ViewConstructionHook(fullyQualifiedClassName, methodName, pluginIdentifier, applicationContext);
+        } catch (HookInitializationException e) {
+            throw new IllegalArgumentException("Can't build view construction hook.", e);
         }
     }
 

@@ -27,7 +27,6 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static org.springframework.util.StringUtils.hasText;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -42,6 +41,8 @@ import org.springframework.context.ApplicationContext;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.FieldDefinition;
@@ -53,7 +54,6 @@ import com.qcadoo.view.internal.ComponentDefinition;
 import com.qcadoo.view.internal.ComponentOption;
 import com.qcadoo.view.internal.FieldEntityIdChangeListener;
 import com.qcadoo.view.internal.ScopeEntityIdChangeListener;
-import com.qcadoo.view.internal.api.ComponentCustomEvent;
 import com.qcadoo.view.internal.api.ComponentPattern;
 import com.qcadoo.view.internal.api.ContextualHelpService;
 import com.qcadoo.view.internal.api.InternalComponentState;
@@ -61,6 +61,7 @@ import com.qcadoo.view.internal.api.InternalViewDefinition;
 import com.qcadoo.view.internal.api.InternalViewDefinitionService;
 import com.qcadoo.view.internal.api.InternalViewDefinitionState;
 import com.qcadoo.view.internal.api.ViewDefinition;
+import com.qcadoo.view.internal.hooks.ViewEventListenerHook;
 import com.qcadoo.view.internal.states.AbstractComponentState;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
 import com.qcadoo.view.internal.xml.ViewDefinitionParserImpl;
@@ -104,13 +105,13 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
 
     private final InternalViewDefinition viewDefinition;
 
-    private final Map<String, ComponentPattern> fieldEntityIdChangeListeners = new HashMap<String, ComponentPattern>();
+    private final Map<String, ComponentPattern> fieldEntityIdChangeListeners = Maps.newHashMap();
 
-    private final Map<String, ComponentPattern> scopeEntityIdChangeListeners = new HashMap<String, ComponentPattern>();
+    private final Map<String, ComponentPattern> scopeEntityIdChangeListeners = Maps.newHashMap();
 
-    private final List<ComponentOption> options = new ArrayList<ComponentOption>();
+    private final List<ComponentOption> options = Lists.newArrayList();
 
-    private final List<ComponentCustomEvent> customEvents = new ArrayList<ComponentCustomEvent>();
+    private final List<ViewEventListenerHook> customEventListeners = Lists.newArrayList();
 
     private String script;
 
@@ -218,9 +219,8 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
         state.setVisible(isDefaultVisible());
         state.setTranslationService(translationService);
         state.setTranslationPath(getTranslationPath());
-        for (ComponentCustomEvent customEvent : customEvents) {
-            state.registerCustomEvent(customEvent.getEvent(), customEvent.getObject(), customEvent.getMethod(),
-                    customEvent.getPluginIdentifier());
+        for (ViewEventListenerHook customEventListener : customEventListeners) {
+            state.registerCustomEvent(customEventListener);
         }
         if (viewDefinitionState != null) {
             viewDefinitionState.registerComponent(getReference(), state);
@@ -541,7 +541,7 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
                 }
             }
         }
-        if (!customEvents.isEmpty()) {
+        if (!customEventListeners.isEmpty()) {
             listeners.put(getPath());
         }
         jsOptions.put("listeners", listeners);
@@ -619,13 +619,13 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
     }
 
     @Override
-    public void addCustomEvent(final ComponentCustomEvent customEvent) {
-        customEvents.add(customEvent);
+    public void addCustomEvent(final ViewEventListenerHook eventListenerHook) {
+        customEventListeners.add(eventListenerHook);
     }
 
     @Override
-    public void removeCustomEvent(final ComponentCustomEvent customEvent) {
-        customEvents.remove(customEvent);
+    public void removeCustomEvent(final ViewEventListenerHook eventListenerHook) {
+        customEventListeners.remove(eventListenerHook);
     }
 
     @Override
@@ -642,7 +642,7 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
             if ("option".equals(child.getNodeName())) {
                 addOption(parser.parseOption(child));
             } else if ("listener".equals(child.getNodeName())) {
-                addCustomEvent(parser.parseCustomEvent(child));
+                addCustomEvent(parser.parseEventListener(child));
             } else if ("script".equals(child.getNodeName())) {
                 if (script == null) {
                     script = "";

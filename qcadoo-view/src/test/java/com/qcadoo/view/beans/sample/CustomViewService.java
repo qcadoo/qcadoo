@@ -21,24 +21,39 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * ***************************************************************************
  */
-package com.qcadoo.model.beans.sample;
+package com.qcadoo.view.beans.sample;
 
 import java.util.Locale;
 
+import org.json.JSONObject;
+
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.ViewDefinitionState;
+import com.qcadoo.view.internal.api.ViewDefinition;
 
-public class CustomEntityService {
-
-    public void onView(final ViewDefinitionState state, final Locale locale) {
-        // empty
-    }
+public class CustomViewService {
 
     public void saveForm(final ViewDefinitionState viewDefinitionState, final ComponentState state, final String[] args) {
         // empty
     }
 
     public void generate(final ViewDefinitionState viewDefinitionState, final ComponentState state, final String[] args) {
+        // empty
+    }
+
+    public void onBeforeInitialize(final ViewDefinitionState view) {
+        // empty
+    }
+
+    public void onAfterInitialize(final ViewDefinitionState view) {
+        // empty
+    }
+
+    public void onBeforeRender(final ViewDefinitionState view) {
+        // empty
+    }
+
+    public void onPostConstruct(final ViewDefinition view, final JSONObject json, final Locale locale) {
         // empty
     }
 

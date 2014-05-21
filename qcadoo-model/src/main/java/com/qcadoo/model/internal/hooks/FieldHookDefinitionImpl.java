@@ -30,7 +30,7 @@ import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.internal.api.FieldHookDefinition;
 
-public final class FieldHookDefinitionImpl extends HookDefinitionImpl implements FieldHookDefinition {
+public final class FieldHookDefinitionImpl extends AbstractModelHookDefinition implements FieldHookDefinition {
 
     public FieldHookDefinitionImpl(final String className, final String methodName, final String pluginIdentifier,
             final ApplicationContext applicationContext) throws HookInitializationException {

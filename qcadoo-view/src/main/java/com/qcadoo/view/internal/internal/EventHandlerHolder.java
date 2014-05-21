@@ -26,13 +26,14 @@ package com.qcadoo.view.internal.internal;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.collect.Maps;
 import com.qcadoo.plugin.api.PluginUtils;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.ViewDefinitionState;
+import com.qcadoo.view.internal.hooks.ViewEventListenerHook;
 
 public final class EventHandlerHolder {
 
@@ -42,17 +43,17 @@ public final class EventHandlerHolder {
         this.owner = owner;
     }
 
-    private final Map<String, List<EventHandler>> eventHandlers = new HashMap<String, List<EventHandler>>();
+    private final Map<String, List<EventHandler>> eventHandlers = Maps.newHashMap();
 
-    public void registemCustomEvent(final String event, final Object obj, final String method, final String pluginIdentifier) {
-        registemEvent(event, new EventHandler(obj, method, pluginIdentifier, true));
+    public void registerCustomEvent(final ViewEventListenerHook eventListenerHook) {
+        registerEvent(eventListenerHook.getEventName(), eventListenerHook);
     }
 
-    public void registemEvent(final String event, final Object obj, final String method) {
-        registemEvent(event, new EventHandler(obj, method, null, false));
+    public void registerEvent(final String event, final Object obj, final String method) {
+        registerEvent(event, new DefaultEventHandler(obj, method, null));
     }
 
-    private void registemEvent(final String event, final EventHandler eventHandler) {
+    private void registerEvent(final String event, final EventHandler eventHandler) {
         if (!eventHandlers.containsKey(event)) {
             eventHandlers.put(event, new ArrayList<EventHandler>());
         }
@@ -64,11 +65,16 @@ public final class EventHandlerHolder {
             return;
         }
         for (EventHandler eventHandler : eventHandlers.get(event)) {
-            eventHandler.invokeEvent(viewDefinitionState, args);
+            eventHandler.invokeEvent(viewDefinitionState, owner, args);
         }
     }
 
-    private class EventHandler {
+    public interface EventHandler {
+
+        void invokeEvent(final ViewDefinitionState viewDefinitionState, final ComponentState eventPerformer, final String[] args);
+    }
+
+    private class DefaultEventHandler implements EventHandler {
 
         private final Method method;
 
@@ -76,19 +82,11 @@ public final class EventHandlerHolder {
 
         private final String pluginIdentifier;
 
-        private final boolean isCustom;
-
-        public EventHandler(final Object obj, final String method, final String pluginIdentifier, final boolean isCustom) {
-            this.isCustom = isCustom;
+        public DefaultEventHandler(final Object obj, final String method, final String pluginIdentifier) {
             this.obj = obj;
             this.pluginIdentifier = pluginIdentifier;
             try {
-                if (isCustom) {
-                    this.method = obj.getClass().getMethod(method, ViewDefinitionState.class, ComponentState.class,
-                            String[].class);
-                } else {
-                    this.method = obj.getClass().getDeclaredMethod(method, String[].class);
-                }
+                this.method = obj.getClass().getDeclaredMethod(method, String[].class);
             } catch (SecurityException e) {
                 throw new IllegalStateException(e.getMessage(), e);
             } catch (NoSuchMethodException e) {
@@ -96,16 +94,14 @@ public final class EventHandlerHolder {
             }
         }
 
-        public void invokeEvent(final ViewDefinitionState viewDefinitionState, final String[] args) {
+        @Override
+        public void invokeEvent(final ViewDefinitionState viewDefinitionState, final ComponentState eventPerformer,
+                final String[] args) {
             if (pluginIdentifier != null && !PluginUtils.isEnabled(pluginIdentifier)) {
                 return;
             }
             try {
-                if (isCustom) {
-                    method.invoke(obj, viewDefinitionState, owner, args);
-                } else {
-                    method.invoke(obj, new Object[] { args });
-                }
+                method.invoke(obj, new Object[] { args });
             } catch (IllegalArgumentException e) {
                 throw new IllegalStateException(e.getMessage(), e);
             } catch (IllegalAccessException e) {

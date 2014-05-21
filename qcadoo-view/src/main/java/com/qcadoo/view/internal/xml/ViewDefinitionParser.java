@@ -32,11 +32,11 @@ import org.w3c.dom.Node;
 import com.qcadoo.security.api.SecurityRole;
 import com.qcadoo.view.internal.ComponentDefinition;
 import com.qcadoo.view.internal.ComponentOption;
-import com.qcadoo.view.internal.api.ComponentCustomEvent;
 import com.qcadoo.view.internal.api.ComponentPattern;
 import com.qcadoo.view.internal.api.ContainerPattern;
 import com.qcadoo.view.internal.api.InternalViewDefinition;
 import com.qcadoo.view.internal.api.ViewDefinition;
+import com.qcadoo.view.internal.hooks.ViewEventListenerHook;
 import com.qcadoo.view.internal.ribbon.model.InternalRibbon;
 import com.qcadoo.view.internal.ribbon.model.InternalRibbonActionItem;
 import com.qcadoo.view.internal.ribbon.model.InternalRibbonGroup;
@@ -51,7 +51,7 @@ public interface ViewDefinitionParser {
     ComponentDefinition getComponentDefinition(final Node componentNode, final ContainerPattern parent,
             final ViewDefinition viewDefinition);
 
-    ComponentCustomEvent parseCustomEvent(final Node listenerNode) throws ViewDefinitionParserNodeException;
+    ViewEventListenerHook parseEventListener(Node listenerNode) throws ViewDefinitionParserNodeException;
 
     String getStringAttribute(final Node groupNode, final String string);
 

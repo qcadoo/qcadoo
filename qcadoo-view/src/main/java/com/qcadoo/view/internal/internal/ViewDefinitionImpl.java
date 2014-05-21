@@ -23,26 +23,42 @@
  */
 package com.qcadoo.view.internal.internal;
 
-import com.qcadoo.localization.api.TranslationService;
-import com.qcadoo.model.api.DataDefinition;
-import com.qcadoo.security.api.SecurityRole;
-import com.qcadoo.view.api.ViewDefinitionState;
-import com.qcadoo.view.api.ribbon.RibbonActionItem.Type;
-import com.qcadoo.view.internal.HookDefinition;
-import com.qcadoo.view.internal.api.ComponentPattern;
-import com.qcadoo.view.internal.api.ContainerPattern;
-import com.qcadoo.view.internal.api.InternalViewDefinition;
-import com.qcadoo.view.internal.api.InternalViewDefinitionService;
-import com.qcadoo.view.internal.components.window.WindowComponentPattern;
-import com.qcadoo.view.internal.patterns.AbstractComponentPattern;
-import com.qcadoo.view.internal.ribbon.model.*;
-import com.qcadoo.view.internal.states.AbstractComponentState;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.util.StringUtils;
 
-import java.util.*;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import com.qcadoo.localization.api.TranslationService;
+import com.qcadoo.model.api.DataDefinition;
+import com.qcadoo.security.api.SecurityRole;
+import com.qcadoo.view.api.ViewDefinitionState;
+import com.qcadoo.view.api.ribbon.RibbonActionItem.Type;
+import com.qcadoo.view.internal.api.ComponentPattern;
+import com.qcadoo.view.internal.api.ContainerPattern;
+import com.qcadoo.view.internal.api.InternalViewDefinition;
+import com.qcadoo.view.internal.api.InternalViewDefinitionService;
+import com.qcadoo.view.internal.components.window.WindowComponentPattern;
+import com.qcadoo.view.internal.hooks.AbstractViewHookDefinition;
+import com.qcadoo.view.internal.hooks.HookType;
+import com.qcadoo.view.internal.patterns.AbstractComponentPattern;
+import com.qcadoo.view.internal.ribbon.model.InternalRibbon;
+import com.qcadoo.view.internal.ribbon.model.InternalRibbonActionItem;
+import com.qcadoo.view.internal.ribbon.model.InternalRibbonGroup;
+import com.qcadoo.view.internal.ribbon.model.RibbonActionItemImpl;
+import com.qcadoo.view.internal.ribbon.model.RibbonGroupImpl;
+import com.qcadoo.view.internal.ribbon.model.RibbonGroupsPack;
+import com.qcadoo.view.internal.ribbon.model.SingleRibbonGroupPack;
+import com.qcadoo.view.internal.states.AbstractComponentState;
 
 public final class ViewDefinitionImpl implements InternalViewDefinition {
 
@@ -60,19 +76,13 @@ public final class ViewDefinitionImpl implements InternalViewDefinition {
 
     private Integer windowHeight;
 
-    private final List<HookDefinition> postConstructHooks = new ArrayList<HookDefinition>();
+    private final ViewHooksHolder viewHooksHolder;
 
-    private final List<HookDefinition> afterInitializeHooks = new ArrayList<HookDefinition>();
+    private final Set<String> jsFilePaths = Sets.newHashSet();
 
-    private final List<HookDefinition> beforeInitializeHooks = new ArrayList<HookDefinition>();
+    private final Map<String, ComponentPattern> patterns = Maps.newLinkedHashMap();
 
-    private final List<HookDefinition> beforeRenderHooks = new ArrayList<HookDefinition>();
-
-    private final Set<String> jsFilePaths = new HashSet<String>();
-
-    private final Map<String, ComponentPattern> patterns = new LinkedHashMap<String, ComponentPattern>();
-
-    private final Map<String, ComponentPattern> registry = new LinkedHashMap<String, ComponentPattern>();
+    private final Map<String, ComponentPattern> registry = Maps.newLinkedHashMap();
 
     private final TranslationService translationService;
 
@@ -95,6 +105,7 @@ public final class ViewDefinitionImpl implements InternalViewDefinition {
         this.pluginIdentifier = pluginIdentifier;
         this.menuAccessible = menuAccessible;
         this.translationService = translationService;
+        this.viewHooksHolder = new ViewHooksHolder();
     }
 
     public void setWindowDimmension(final Integer windowWidth, final Integer windowHeight) {
@@ -133,10 +144,10 @@ public final class ViewDefinitionImpl implements InternalViewDefinition {
 
     @Override
     public Map<String, Object> prepareView(final JSONObject jsonObject, final Locale locale) {
-        callHooks(postConstructHooks, jsonObject, locale);
+        viewHooksHolder.callConstructionHooks(this, jsonObject, locale);
 
-        Map<String, Object> model = new HashMap<String, Object>();
-        Map<String, Object> childrenModels = new HashMap<String, Object>();
+        Map<String, Object> model = Maps.newHashMap();
+        Map<String, Object> childrenModels = Maps.newHashMap();
 
         toggleAdditionalNavigationGroup(getBooleanFromJson(jsonObject, "window.showBack"));
         permanentlyDisabled = getBooleanFromJson(jsonObject, "window." + AbstractComponentState.JSON_PERMANENTLY_DISABLED);
@@ -230,7 +241,7 @@ public final class ViewDefinitionImpl implements InternalViewDefinition {
 
     @Override
     public ViewDefinitionState performEvent(final JSONObject jsonObject, final Locale locale) throws JSONException {
-        callHooks(postConstructHooks, jsonObject, locale);
+        viewHooksHolder.callConstructionHooks(this, jsonObject, locale);
 
         ViewDefinitionStateImpl viewDefinitionState = new ViewDefinitionStateImpl();
         viewDefinitionState.setTranslationService(translationService);
@@ -239,7 +250,7 @@ public final class ViewDefinitionImpl implements InternalViewDefinition {
             viewDefinitionState.addChild(cp.createComponentState(viewDefinitionState));
         }
 
-        callHooks(beforeInitializeHooks, viewDefinitionState);
+        viewHooksHolder.callLifecycleHooks(HookType.BEFORE_INITIALIZE, viewDefinitionState);
 
         if (permanentlyDisabled) {
             jsonObject.put(AbstractComponentState.JSON_PERMANENTLY_DISABLED, true);
@@ -250,7 +261,7 @@ public final class ViewDefinitionImpl implements InternalViewDefinition {
             ((AbstractComponentPattern) cp).updateComponentStateListeners(viewDefinitionState);
         }
 
-        callHooks(afterInitializeHooks, viewDefinitionState);
+        viewHooksHolder.callLifecycleHooks(HookType.AFTER_INITIALIZE, viewDefinitionState);
 
         JSONObject eventJson = jsonObject.getJSONObject(JSON_EVENT);
         String eventName = eventJson.getString(JSON_EVENT_NAME);
@@ -263,7 +274,7 @@ public final class ViewDefinitionImpl implements InternalViewDefinition {
 
         viewDefinitionState.performEvent(eventComponent, eventName, eventArgs);
 
-        callHooks(beforeRenderHooks, viewDefinitionState);
+        viewHooksHolder.callLifecycleHooks(HookType.BEFORE_RENDER, viewDefinitionState);
 
         return viewDefinitionState;
     }
@@ -327,71 +338,13 @@ public final class ViewDefinitionImpl implements InternalViewDefinition {
     }
 
     @Override
-    public void addHook(final HookType type, final HookDefinition hookDefinition) {
-        switch (type) {
-            case BEFORE_INITIALIZE:
-                addBeforeInitializeHook(hookDefinition);
-                break;
-            case BEFORE_RENDER:
-                addBeforeRenderHook(hookDefinition);
-                break;
-            case AFTER_INITIALIZE:
-                addAfterInitializeHook(hookDefinition);
-                break;
-            case POST_CONSTRUCT:
-                addPostConstructHook(hookDefinition);
-                break;
-            default:
-                throw new IllegalArgumentException("Unknown hook type");
-        }
+    public void addHook(final AbstractViewHookDefinition viewHook) {
+        viewHooksHolder.addHook(viewHook);
     }
 
     @Override
-    public void removeHook(final HookType type, final HookDefinition hookDefinition) {
-        switch (type) {
-            case BEFORE_INITIALIZE:
-                beforeInitializeHooks.remove(hookDefinition);
-                break;
-            case BEFORE_RENDER:
-                beforeRenderHooks.remove(hookDefinition);
-                break;
-            case AFTER_INITIALIZE:
-                afterInitializeHooks.remove(hookDefinition);
-                break;
-            case POST_CONSTRUCT:
-                postConstructHooks.remove(hookDefinition);
-                break;
-            default:
-                throw new IllegalArgumentException("Unknown hook type");
-        }
-    }
-
-    public void addAfterInitializeHook(final HookDefinition hookDefinition) {
-        afterInitializeHooks.add(hookDefinition);
-    }
-
-    public void addBeforeRenderHook(final HookDefinition hookDefinition) {
-        beforeRenderHooks.add(hookDefinition);
-    }
-
-    public void addBeforeInitializeHook(final HookDefinition hookDefinition) {
-        beforeInitializeHooks.add(hookDefinition);
-    }
-
-    public void addPostConstructHook(final HookDefinition hookDefinition) {
-        postConstructHooks.add(hookDefinition);
-    }
-
-    private void callHooks(final List<HookDefinition> hooks, final ViewDefinitionState viewDefinitionState) {
-        for (HookDefinition hook : hooks) {
-            hook.callWithViewState(viewDefinitionState);
-        }
-    }
-
-    private void callHooks(final List<HookDefinition> hooks, final JSONObject jsonObject, final Locale locale) {
-        for (HookDefinition hook : hooks) {
-            hook.callWithJSONObject(this, jsonObject, locale);
-        }
+    public void removeHook(final AbstractViewHookDefinition viewHook) {
+        viewHooksHolder.removeHook(viewHook);
     }
 
     private List<ComponentPattern> getPatternsAsList(final Collection<ComponentPattern> patterns) {

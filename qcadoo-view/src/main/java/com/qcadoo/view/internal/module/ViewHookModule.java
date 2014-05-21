@@ -26,11 +26,12 @@ package com.qcadoo.view.internal.module;
 import com.google.common.base.Preconditions;
 import com.qcadoo.plugin.api.Module;
 import com.qcadoo.plugin.api.ModuleException;
-import com.qcadoo.view.internal.HookDefinition;
 import com.qcadoo.view.internal.api.InternalViewDefinition;
 import com.qcadoo.view.internal.api.InternalViewDefinitionService;
+import com.qcadoo.view.internal.hooks.AbstractViewHookDefinition;
+import com.qcadoo.view.internal.hooks.ViewLifecycleHook;
 
-public class ViewHookModule extends Module {
+public class ViewHookModule<T> extends Module {
 
     private final InternalViewDefinitionService viewDefinitionService;
 
@@ -38,22 +39,19 @@ public class ViewHookModule extends Module {
 
     private final String extendsViewName;
 
-    private final InternalViewDefinition.HookType hookType;
-
-    private final HookDefinition hook;
+    private final AbstractViewHookDefinition hook;
 
     private final String pluginIdentifier;
 
     public ViewHookModule(final String pluginIdentifier, final InternalViewDefinitionService viewDefinitionService,
-            final String extendsViewPlugin, final String extendsViewName, final InternalViewDefinition.HookType hookType,
-            final HookDefinition hook) {
+            final String extendsViewPlugin, final String extendsViewName,
+            final AbstractViewHookDefinition hook) {
         super();
 
         this.pluginIdentifier = pluginIdentifier;
         this.viewDefinitionService = viewDefinitionService;
         this.extendsViewPlugin = extendsViewPlugin;
         this.extendsViewName = extendsViewName;
-        this.hookType = hookType;
         this.hook = hook;
     }
 
@@ -65,7 +63,7 @@ public class ViewHookModule extends Module {
     @Override
     public void enable() {
         try {
-            getViewDefinition().addHook(hookType, hook);
+            getViewDefinition().addHook(hook);
         } catch (Exception e) {
             throw new ModuleException(pluginIdentifier, "view-hook", e);
         }
@@ -73,13 +71,12 @@ public class ViewHookModule extends Module {
 
     @Override
     public void disable() {
-        getViewDefinition().removeHook(hookType, hook);
+        getViewDefinition().removeHook(hook);
     }
 
     private InternalViewDefinition getViewDefinition() {
-        InternalViewDefinition extendsView = (InternalViewDefinition) viewDefinitionService.getWithoutSession(extendsViewPlugin,
-                extendsViewName);
-        Preconditions.checkNotNull(extendsView, String.format("extension from %s: referes to view which not exists (%s - %s)",
+        InternalViewDefinition extendsView = viewDefinitionService.getWithoutSession(extendsViewPlugin, extendsViewName);
+        Preconditions.checkNotNull(extendsView, String.format("extension from %s: refers to view which not exists (%s - %s)",
                 pluginIdentifier, extendsViewPlugin, extendsViewName));
         return extendsView;
     }

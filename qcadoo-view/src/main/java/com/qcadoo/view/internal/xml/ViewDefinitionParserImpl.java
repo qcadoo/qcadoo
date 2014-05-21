@@ -23,6 +23,30 @@
  */
 package com.qcadoo.view.internal.xml;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.apache.commons.lang3.ObjectUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.core.io.Resource;
+import org.springframework.stereotype.Service;
+import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
 import com.google.common.base.Preconditions;
 import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.api.DataDefinition;
@@ -31,10 +55,19 @@ import com.qcadoo.security.api.SecurityRole;
 import com.qcadoo.security.api.SecurityRolesService;
 import com.qcadoo.view.internal.ComponentDefinition;
 import com.qcadoo.view.internal.ComponentOption;
-import com.qcadoo.view.internal.HookDefinition;
-import com.qcadoo.view.internal.api.*;
-import com.qcadoo.view.internal.hooks.HookDefinitionImpl;
+import com.qcadoo.view.internal.api.ComponentPattern;
+import com.qcadoo.view.internal.api.ContainerPattern;
+import com.qcadoo.view.internal.api.ContextualHelpService;
+import com.qcadoo.view.internal.api.EnabledAttribute;
+import com.qcadoo.view.internal.api.InternalViewDefinition;
+import com.qcadoo.view.internal.api.InternalViewDefinitionService;
+import com.qcadoo.view.internal.api.ViewDefinition;
+import com.qcadoo.view.internal.hooks.AbstractViewHookDefinition;
 import com.qcadoo.view.internal.hooks.HookFactory;
+import com.qcadoo.view.internal.hooks.HookType;
+import com.qcadoo.view.internal.hooks.ViewConstructionHook;
+import com.qcadoo.view.internal.hooks.ViewEventListenerHook;
+import com.qcadoo.view.internal.hooks.ViewLifecycleHook;
 import com.qcadoo.view.internal.internal.ViewComponentsResolverImpl;
 import com.qcadoo.view.internal.internal.ViewDefinitionImpl;
 import com.qcadoo.view.internal.patterns.AbstractComponentPattern;
@@ -42,29 +75,6 @@ import com.qcadoo.view.internal.ribbon.RibbonParserService;
 import com.qcadoo.view.internal.ribbon.model.InternalRibbon;
 import com.qcadoo.view.internal.ribbon.model.InternalRibbonActionItem;
 import com.qcadoo.view.internal.ribbon.model.InternalRibbonGroup;
-import org.apache.commons.lang3.ObjectUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.core.io.Resource;
-import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
 @Service
 public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
@@ -193,8 +203,8 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
         if (modelName != null) {
             // FIXME maku upgrade commons-lang to version in which defaultIfNull method is generic.
             // Explicit type casts are so awful :(
-            String modelPluginIdentifier = (String) ObjectUtils
-                    .defaultIfNull(getStringAttribute(viewNode, "modelPlugin"), pluginIdentifier);
+            String modelPluginIdentifier = (String) ObjectUtils.defaultIfNull(getStringAttribute(viewNode, "modelPlugin"),
+                    pluginIdentifier);
             return dataDefinitionService.get(modelPluginIdentifier, modelName);
         }
         return null;
@@ -292,8 +302,8 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
         }
 
         try {
-            ComponentPattern component = viewComponentsResolver
-                    .getComponentInstance(type, getComponentDefinition(componentNode, parent, viewDefinition));
+            ComponentPattern component = viewComponentsResolver.getComponentInstance(type,
+                    getComponentDefinition(componentNode, parent, viewDefinition));
             component.parse(componentNode, this);
             return component;
         } catch (IllegalStateException e) {
@@ -351,10 +361,12 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
     }
 
     @Override
-    public ComponentCustomEvent parseCustomEvent(final Node listenerNode) throws ViewDefinitionParserNodeException {
-        HookDefinitionImpl hookDefinition = (HookDefinitionImpl) parseHook(listenerNode);
-        return new ComponentCustomEvent(getStringAttribute(listenerNode, "event"), hookDefinition.getObject(),
-                hookDefinition.getMethod(), null);
+    public ViewEventListenerHook parseEventListener(final Node listenerNode) throws ViewDefinitionParserNodeException {
+        try {
+            return parseEventListenerHook(listenerNode);
+        } catch (Exception e) {
+            throw new ViewDefinitionParserNodeException(listenerNode, e);
+        }
     }
 
     private void parseViewHooks(final Node hookNode, final ViewDefinitionImpl viewDefinition)
@@ -365,28 +377,43 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
             if (Node.ELEMENT_NODE != child.getNodeType()) {
                 continue;
             }
-            if ("beforeInitialize".equals(child.getNodeName())) {
-                viewDefinition.addBeforeInitializeHook(parseHook(child));
-            } else if ("afterInitialize".equals(child.getNodeName())) {
-                viewDefinition.addAfterInitializeHook(parseHook(child));
-            } else if ("beforeRender".equals(child.getNodeName())) {
-                viewDefinition.addBeforeRenderHook(parseHook(child));
-            } else {
-                throw new ViewDefinitionParserNodeException(hookNode, "Unknown hook type: " + child.getNodeName());
+            try {
+                viewDefinition.addHook(parseHook(child, viewDefinition, child));
+            } catch (Exception e) {
+                throw new ViewDefinitionParserNodeException(child, e);
             }
         }
     }
 
-    public HookDefinition parseHook(final Node hookNode) throws ViewDefinitionParserNodeException {
+    private AbstractViewHookDefinition parseHook(final Node hookNode, final ViewDefinitionImpl viewDefinition, final Node child) {
+        HookType hookType = HookType.parseString(hookNode.getNodeName());
+        HookType.Category hookCategory = hookType.getCategory();
+        if (hookCategory == HookType.Category.CONSTRUCTION_HOOK) {
+            return parseConstructionHook(child);
+        } else if (hookCategory == HookType.Category.LIFECYCLE_HOOK) {
+            return parseLifecycleHook(child);
+        }
+        throw new IllegalArgumentException("Unsupported hook type: " + hookType);
+    }
+
+    public ViewLifecycleHook parseLifecycleHook(final Node hookNode) {
         String fullyQualifiedClassName = getStringAttribute(hookNode, "class");
         String methodName = getStringAttribute(hookNode, "method");
-        checkState(StringUtils.hasText(fullyQualifiedClassName), hookNode, "Hook class name is required");
-        checkState(StringUtils.hasText(methodName), hookNode, "Hook method name is required");
-        try {
-            return hookFactory.getHook(fullyQualifiedClassName, methodName, null);
-        } catch (IllegalStateException e) {
-            throw new ViewDefinitionParserNodeException(hookNode, e);
-        }
+        HookType hookType = HookType.parseString(hookNode.getNodeName());
+        return hookFactory.buildViewLifecycleHook(fullyQualifiedClassName, methodName, null, hookType);
+    }
+
+    public ViewConstructionHook parseConstructionHook(final Node hookNode) {
+        String fullyQualifiedClassName = getStringAttribute(hookNode, "class");
+        String methodName = getStringAttribute(hookNode, "method");
+        return hookFactory.buildViewConstructionHook(fullyQualifiedClassName, methodName, null);
+    }
+
+    public ViewEventListenerHook parseEventListenerHook(final Node hookNode) {
+        String fullyQualifiedClassName = getStringAttribute(hookNode, "class");
+        String methodName = getStringAttribute(hookNode, "method");
+        String eventName = getStringAttribute(hookNode, "event");
+        return hookFactory.buildViewEventListener(eventName, fullyQualifiedClassName, methodName, null);
     }
 
     public int getCurrentIndexOrder() {

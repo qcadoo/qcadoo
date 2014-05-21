@@ -26,10 +26,10 @@ package com.qcadoo.view.internal.module;
 import com.google.common.base.Preconditions;
 import com.qcadoo.plugin.api.Module;
 import com.qcadoo.plugin.api.ModuleException;
-import com.qcadoo.view.internal.api.ComponentCustomEvent;
 import com.qcadoo.view.internal.api.ComponentPattern;
 import com.qcadoo.view.internal.api.InternalViewDefinition;
 import com.qcadoo.view.internal.api.InternalViewDefinitionService;
+import com.qcadoo.view.internal.hooks.ViewEventListenerHook;
 
 public class ViewListenerModule extends Module {
 
@@ -41,13 +41,13 @@ public class ViewListenerModule extends Module {
 
     private final String extendsComponentName;
 
-    private final ComponentCustomEvent event;
+    private final ViewEventListenerHook eventListenerHook;
 
     private final String pluginIdentifier;
 
     public ViewListenerModule(final String pluginIdentifier, final InternalViewDefinitionService viewDefinitionService,
             final String extendsViewPlugin, final String extendsViewName, final String extendsComponentName,
-            final ComponentCustomEvent event) {
+            final ViewEventListenerHook eventListenerHook) {
         super();
 
         this.pluginIdentifier = pluginIdentifier;
@@ -55,7 +55,7 @@ public class ViewListenerModule extends Module {
         this.extendsViewPlugin = extendsViewPlugin;
         this.extendsViewName = extendsViewName;
         this.extendsComponentName = extendsComponentName;
-        this.event = event;
+        this.eventListenerHook = eventListenerHook;
     }
 
     @Override
@@ -66,7 +66,7 @@ public class ViewListenerModule extends Module {
     @Override
     public void enable() {
         try {
-            getComponent().addCustomEvent(event);
+            getComponent().addCustomEvent(eventListenerHook);
         } catch (Exception e) {
             throw new ModuleException(pluginIdentifier, "view-listener", e);
         }
@@ -74,12 +74,11 @@ public class ViewListenerModule extends Module {
 
     @Override
     public void disable() {
-        getComponent().removeCustomEvent(event);
+        getComponent().removeCustomEvent(eventListenerHook);
     }
 
     private ComponentPattern getComponent() {
-        InternalViewDefinition extendsView = (InternalViewDefinition) viewDefinitionService.getWithoutSession(extendsViewPlugin,
-                extendsViewName);
+        InternalViewDefinition extendsView = viewDefinitionService.getWithoutSession(extendsViewPlugin, extendsViewName);
         Preconditions.checkNotNull(extendsView, String.format("extension in %s: referes to view which not exists (%s - %s)",
                 pluginIdentifier, extendsViewPlugin, extendsViewName));
         ComponentPattern component = extendsView.getComponentByReference(extendsComponentName);

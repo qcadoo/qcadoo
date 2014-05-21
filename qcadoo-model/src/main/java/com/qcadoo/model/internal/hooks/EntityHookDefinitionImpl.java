@@ -30,7 +30,7 @@ import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.internal.api.EntityHookDefinition;
 import com.qcadoo.plugin.api.PluginUtils;
 
-public final class EntityHookDefinitionImpl extends HookDefinitionImpl implements EntityHookDefinition {
+public final class EntityHookDefinitionImpl extends AbstractModelHookDefinition implements EntityHookDefinition {
 
     private boolean enabled = true;
 

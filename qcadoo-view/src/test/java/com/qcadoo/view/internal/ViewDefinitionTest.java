@@ -50,6 +50,8 @@ import com.qcadoo.view.internal.api.InternalComponentState;
 import com.qcadoo.view.internal.api.InternalViewDefinition;
 import com.qcadoo.view.internal.components.form.FormComponentPattern;
 import com.qcadoo.view.internal.components.window.WindowComponentPattern;
+import com.qcadoo.view.internal.hooks.HookType;
+import com.qcadoo.view.internal.hooks.ViewLifecycleHook;
 import com.qcadoo.view.internal.internal.ViewDefinitionImpl;
 import com.qcadoo.view.internal.patterns.AbstractContainerPattern;
 import com.qcadoo.view.internal.patterns.AbstractPatternTest;
@@ -222,17 +224,17 @@ public class ViewDefinitionTest extends AbstractPatternTest {
         // given
         ViewDefinitionImpl viewDefinition = new ViewDefinitionImpl("name", "plugin", mock(DataDefinition.class), true, null);
 
-        HookDefinition preInitializeHook = mock(HookDefinition.class);
-        viewDefinition.addBeforeInitializeHook(preInitializeHook);
+        ViewLifecycleHook preInitializeHook = mockLifecycleHook(HookType.BEFORE_INITIALIZE);
+        viewDefinition.addHook(preInitializeHook);
 
-        HookDefinition postInitializeHook1 = mock(HookDefinition.class);
-        viewDefinition.addAfterInitializeHook(postInitializeHook1);
+        ViewLifecycleHook postInitializeHook1 = mockLifecycleHook(HookType.AFTER_INITIALIZE);
+        viewDefinition.addHook(postInitializeHook1);
 
-        HookDefinition postInitializeHook2 = mock(HookDefinition.class);
-        viewDefinition.addAfterInitializeHook(postInitializeHook2);
+        ViewLifecycleHook postInitializeHook2 = mockLifecycleHook(HookType.AFTER_INITIALIZE);
+        viewDefinition.addHook(postInitializeHook2);
 
-        HookDefinition preRenderHook = mock(HookDefinition.class);
-        viewDefinition.addBeforeRenderHook(preRenderHook);
+        ViewLifecycleHook preRenderHook = mockLifecycleHook(HookType.BEFORE_RENDER);
+        viewDefinition.addHook(preRenderHook);
 
         JSONObject eventJson = new JSONObject();
         eventJson.put(InternalViewDefinition.JSON_EVENT_NAME, "eventName");
@@ -250,6 +252,12 @@ public class ViewDefinitionTest extends AbstractPatternTest {
         verify(postInitializeHook1).callWithViewState(any(ViewDefinitionState.class));
         verify(postInitializeHook2).callWithViewState(any(ViewDefinitionState.class));
         verify(preRenderHook).callWithViewState(any(ViewDefinitionState.class));
+    }
+
+    private ViewLifecycleHook mockLifecycleHook(final HookType type) {
+        ViewLifecycleHook preInitializeHook = mock(ViewLifecycleHook.class);
+        given(preInitializeHook.getType()).willReturn(type);
+        return preInitializeHook;
     }
 
 }

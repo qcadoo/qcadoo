@@ -27,10 +27,10 @@ import org.jdom.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.qcadoo.plugin.api.ModuleFactory;
-import com.qcadoo.view.internal.HookDefinition;
-import com.qcadoo.view.internal.api.InternalViewDefinition;
 import com.qcadoo.view.internal.api.InternalViewDefinitionService;
+import com.qcadoo.view.internal.hooks.AbstractViewHookDefinition;
 import com.qcadoo.view.internal.hooks.HookFactory;
+import com.qcadoo.view.internal.hooks.HookType;
 
 public class ViewHookModuleFactory extends ModuleFactory<ViewHookModule> {
 
@@ -48,20 +48,19 @@ public class ViewHookModuleFactory extends ModuleFactory<ViewHookModule> {
         String className = getRequiredAttribute(element, "class");
         String method = getRequiredAttribute(element, "method");
 
-        HookDefinition hook = hookFactory.getHook(className, method, pluginIdentifier);
+        HookType hookType = HookType.parseString(hookTypeStr);
+        AbstractViewHookDefinition hook = buildHook(pluginIdentifier, className, method, hookType);
 
-        InternalViewDefinition.HookType hookType;
-        if ("afterInitialize".equals(hookTypeStr)) {
-            hookType = InternalViewDefinition.HookType.AFTER_INITIALIZE;
-        } else if ("beforeInitialize".equals(hookTypeStr)) {
-            hookType = InternalViewDefinition.HookType.BEFORE_INITIALIZE;
-        } else if ("beforeRender".equals(hookTypeStr)) {
-            hookType = InternalViewDefinition.HookType.BEFORE_RENDER;
+        return new ViewHookModule(pluginIdentifier, viewDefinitionService, plugin, view, hook);
+    }
+
+    private AbstractViewHookDefinition buildHook(final String pluginIdentifier, final String className, final String method,
+            final HookType hookType) {
+        if (hookType == HookType.POST_CONSTRUCT) {
+            return hookFactory.buildViewConstructionHook(className, method, pluginIdentifier);
         } else {
-            throw new IllegalStateException("Unknow view extension hook type: " + hookTypeStr);
+            return hookFactory.buildViewLifecycleHook(className, method, pluginIdentifier, hookType);
         }
-
-        return new ViewHookModule(pluginIdentifier, viewDefinitionService, plugin, view, hookType, hook);
     }
 
     @Override

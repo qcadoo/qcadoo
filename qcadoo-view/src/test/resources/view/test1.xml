@@ -41,17 +41,17 @@
 		</ribbon>
 		<component type="form" name="beanBForm" reference="beanBForm">
 			<component type="checkbox" name="active" field="activeA"
-				defaultEnabled="false" defaultVisible="false" reference="active" />
+			           defaultEnabled="false" defaultVisible="false" reference="active" />
 			<component type="checkbox" name="neverEnabledCheckbox" field="activeB"
-				defaultEnabled="never" defaultVisible="false" reference="neverEnabledCheckbox" />
+			           defaultEnabled="never" defaultVisible="false" reference="neverEnabledCheckbox" />
 			<component type="checkbox" name="enabledCheckbox" field="activeC"
-				defaultEnabled="true" defaultVisible="false" reference="enabledCheckbox" />
+			           defaultEnabled="true" defaultVisible="false" reference="enabledCheckbox" />
 			<component type="input" name="selectBeanA" field="beanA"
-				reference="selectBeanA" />
+			           reference="selectBeanA" />
 			<component type="textarea" name="beanM" field="beanM"
-				reference="beanM" />
+			           reference="beanM" />
 			<component type="grid" name="beansBGrig" source="#{selectBeanA}.beansB"
-				reference="beansBInnerGrig">
+			           reference="beansBInnerGrig">
 				<option type="column" name="name" fields="name" />
 				<option type="orderable" value="name" />
 				<option type="order" column="name" direction="asc" />
@@ -59,23 +59,23 @@
 				<option type="correspondingComponent" value="window.form" />
 			</component>
 			<component type="form" name="beanAForm" field="beanA"
-				reference="beanAForm">
+			           reference="beanAForm">
 				<component type="input" name="name" field="name"
-					reference="beanAFormName" />
+				           reference="beanAFormName" />
 			</component>
 			<option type="header" value="false" />
 			<listener event="save"
-				class="com.qcadoo.model.beans.sample.CustomEntityService" method="saveForm" />
+			          class="com.qcadoo.view.beans.sample.CustomViewService" method="saveForm" />
 			<listener event="generate"
-				class="com.qcadoo.model.beans.sample.CustomEntityService" method="generate" />
+			          class="com.qcadoo.view.beans.sample.CustomViewService" method="generate" />
 		</component>
 		<component type="textarea" name="name" field="#{beanBForm}.name"
-			reference="referenceToTextarea" />
+		           reference="referenceToTextarea" />
 		<component type="grid" name="beansBGrig" source="#{selectBeanA}.beansB"
-			reference="beansBGrig">
+		           reference="beansBGrig">
 			<option type="column" name="name" fields="name" />
 			<option type="column" name="multicolumn" aggregation="sum"
-				expression="2 + 2" width="20" fields="name,beanA" />
+			        expression="2 + 2" width="20" fields="name,beanA" />
 			<option type="searchable" value="name,beanA" />
 			<option type="orderable" value="name" />
 			<option type="order" column="name" direction="asc" />
@@ -90,11 +90,13 @@
 		</component>
 	</component>
 	<hooks>
-		<beforeInitialize class="com.qcadoo.model.beans.sample.CustomEntityService"
-			method="onView" />
-		<afterInitialize class="com.qcadoo.model.beans.sample.CustomEntityService"
-			method="onView" />
-		<beforeRender class="com.qcadoo.model.beans.sample.CustomEntityService"
-			method="onView" />
+		<beforeInitialize class="com.qcadoo.view.beans.sample.CustomViewService"
+		                  method="onBeforeInitialize" />
+		<afterInitialize class="com.qcadoo.view.beans.sample.CustomViewService"
+		                 method="onAfterInitialize" />
+		<beforeRender class="com.qcadoo.view.beans.sample.CustomViewService"
+		              method="onBeforeRender" />
+		<postConstruct class="com.qcadoo.view.beans.sample.CustomViewService"
+		               method="onPostConstruct" />
 	</hooks>
 </view>

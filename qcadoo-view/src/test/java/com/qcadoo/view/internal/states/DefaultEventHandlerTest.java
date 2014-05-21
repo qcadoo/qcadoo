@@ -37,8 +37,9 @@ import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.internal.components.form.FormComponentPattern;
 import com.qcadoo.view.internal.components.form.FormComponentState;
+import com.qcadoo.view.internal.hooks.ViewEventListenerHook;
 
-public class EventHandlerTest {
+public class DefaultEventHandlerTest {
 
     private ApplicationContext applicationContext;
 
@@ -72,19 +73,20 @@ public class EventHandlerTest {
         // given
         ViewDefinitionState viewDefinitionState = mock(ViewDefinitionState.class);
 
-        CustomEventBean bean = mock(CustomEventBean.class);
         FormComponentPattern pattern = mock(FormComponentPattern.class);
         given(pattern.getExpressionNew()).willReturn(null);
         given(pattern.getExpressionEdit()).willReturn(null);
         setField(pattern, "applicationContext", applicationContext);
         FormComponentState component = new FormComponentState(pattern);
-        component.registerCustomEvent("custom", bean, "customMethod", null);
+        ViewEventListenerHook eventListener = mock(ViewEventListenerHook.class);
+        given(eventListener.getEventName()).willReturn("custom");
+        component.registerCustomEvent(eventListener);
 
         // when
         component.performEvent(viewDefinitionState, "custom", "arg0", "arg1");
 
         // then
-        Mockito.verify(bean).customMethod(viewDefinitionState, component, new String[] { "arg0", "arg1" });
+        Mockito.verify(eventListener).invokeEvent(viewDefinitionState, component, new String[] { "arg0", "arg1" });
     }
 
     @Test
@@ -99,19 +101,21 @@ public class EventHandlerTest {
         FormComponentState component = new FormComponentState(pattern);
         component.setFieldValue(13L);
 
-        CustomEventBean bean1 = mock(CustomEventBean.class);
-        component.registerCustomEvent("clear", bean1, "customMethod", null);
+        ViewEventListenerHook eventListener1 = mock(ViewEventListenerHook.class);
+        given(eventListener1.getEventName()).willReturn("clear");
+        component.registerCustomEvent(eventListener1);
 
-        CustomEventBean bean2 = mock(CustomEventBean.class);
-        component.registerCustomEvent("clear", bean2, "customMethod", null);
+        ViewEventListenerHook eventListener2 = mock(ViewEventListenerHook.class);
+        given(eventListener2.getEventName()).willReturn("clear");
+        component.registerCustomEvent(eventListener2);
 
         // when
         component.performEvent(viewDefinitionState, "clear");
 
         // then
         assertNull("value is " + component.getFieldValue(), component.getFieldValue());
-        Mockito.verify(bean1).customMethod(viewDefinitionState, component, new String[0]);
-        Mockito.verify(bean2).customMethod(viewDefinitionState, component, new String[0]);
+        Mockito.verify(eventListener1).invokeEvent(viewDefinitionState, component, new String[0]);
+        Mockito.verify(eventListener2).invokeEvent(viewDefinitionState, component, new String[0]);
     }
 
     @Test
@@ -128,14 +132,6 @@ public class EventHandlerTest {
 
         // when
         component.performEvent(viewDefinitionState, "noSuchMethod");
-    }
-
-    // shouldNotCallEventBeforeInitialazing
-
-    private interface CustomEventBean {
-
-        void customMethod(final ViewDefinitionState viewDefinitionState, final ComponentState componentState, final String[] args);
-
     }
 
 }

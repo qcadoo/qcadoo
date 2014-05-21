@@ -50,20 +50,21 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.ClassPathResource;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Multimap;
 import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.types.BelongsToType;
 import com.qcadoo.model.api.types.HasManyType;
-import com.qcadoo.model.beans.sample.CustomEntityService;
 import com.qcadoo.model.internal.types.StringType;
 import com.qcadoo.security.api.SecurityRole;
 import com.qcadoo.security.api.SecurityRolesService;
 import com.qcadoo.view.api.ribbon.RibbonActionItem;
-import com.qcadoo.view.internal.HookDefinition;
+import com.qcadoo.view.beans.sample.CustomViewService;
 import com.qcadoo.view.internal.ViewDefinitionServiceImpl;
-import com.qcadoo.view.internal.api.ComponentCustomEvent;
+import com.qcadoo.view.internal.ViewHookDefinition;
 import com.qcadoo.view.internal.api.ComponentPattern;
 import com.qcadoo.view.internal.api.ContextualHelpService;
 import com.qcadoo.view.internal.api.InternalViewDefinition;
@@ -77,7 +78,12 @@ import com.qcadoo.view.internal.components.form.FormComponentPattern;
 import com.qcadoo.view.internal.components.grid.GridComponentPattern;
 import com.qcadoo.view.internal.components.window.WindowComponentPattern;
 import com.qcadoo.view.internal.hooks.HookFactory;
+import com.qcadoo.view.internal.hooks.HookType;
+import com.qcadoo.view.internal.hooks.ViewConstructionHook;
+import com.qcadoo.view.internal.hooks.ViewEventListenerHook;
+import com.qcadoo.view.internal.hooks.ViewLifecycleHook;
 import com.qcadoo.view.internal.internal.ViewComponentsResolverImpl;
+import com.qcadoo.view.internal.internal.ViewHooksHolder;
 import com.qcadoo.view.internal.ribbon.RibbonParserService;
 
 public class ViewDefinitionParserImplTest {
@@ -159,7 +165,7 @@ public class ViewDefinitionParserImplTest {
         xml1 = "view/test1.xml";
         xml2 = "view/test2.xml";
 
-        given(applicationContext.getBean(CustomEntityService.class)).willReturn(new CustomEntityService());
+        given(applicationContext.getBean(CustomViewService.class)).willReturn(new CustomViewService());
 
         dataDefinitionA = mock(DataDefinition.class);
         dataDefinitionB = mock(DataDefinition.class);
@@ -405,19 +411,30 @@ public class ViewDefinitionParserImplTest {
         ViewDefinition viewDefinition = parseAndGetViewDefinition();
 
         // then
-        testHookDefinition(viewDefinition, "beforeInitializeHooks", 0, CustomEntityService.class, "onView");
-        testHookDefinition(viewDefinition, "afterInitializeHooks", 0, CustomEntityService.class, "onView");
-        testHookDefinition(viewDefinition, "beforeRenderHooks", 0, CustomEntityService.class, "onView");
+        assertHookDefinition(viewDefinition, HookType.BEFORE_INITIALIZE, 0, CustomViewService.class, "onBeforeInitialize");
+        assertHookDefinition(viewDefinition, HookType.AFTER_INITIALIZE, 0, CustomViewService.class, "onAfterInitialize");
+        assertHookDefinition(viewDefinition, HookType.BEFORE_RENDER, 0, CustomViewService.class, "onBeforeRender");
     }
 
-    private void testHookDefinition(final Object object, final String hookFieldName, final int hookPosition,
+    private void assertHookDefinition(final Object object, final HookType hookType, final int hookPosition,
             final Class<?> hookBeanClass, final String hookMethodName) {
-        @SuppressWarnings("unchecked")
-        HookDefinition hook = ((List<HookDefinition>) getField(object, hookFieldName)).get(hookPosition);
+        ViewHooksHolder hooksHolder = (ViewHooksHolder) getField(object, "viewHooksHolder");
+        ViewHookDefinition hook;
+        if (hookType.getCategory() == HookType.Category.LIFECYCLE_HOOK) {
+            Multimap<HookType, ViewLifecycleHook> lifecycleHooks = (Multimap<HookType, ViewLifecycleHook>) getField(hooksHolder,
+                    "lifecycleHooks");
+            hook = Lists.newArrayList(lifecycleHooks.get(hookType)).get(hookPosition);
+        } else if (hookType.getCategory() == HookType.Category.CONSTRUCTION_HOOK) {
+            List<ViewConstructionHook> constructionHooks = (List<ViewConstructionHook>) getField(hooksHolder, "constructionHooks");
+            hook = constructionHooks.get(hookPosition);
+        } else {
+            Assert.fail("Unsupported hook type: " + hookType);
+            return;
+        }
 
         assertNotNull(hook);
-        assertThat(getField(hook, "bean"), instanceOf(hookBeanClass));
-        assertEquals(hookMethodName, getField(hook, "methodName"));
+        assertThat(hook.getBean(), instanceOf(hookBeanClass));
+        assertEquals(hookMethodName, hook.getMethod().getName());
     }
 
     private List<InternalViewDefinition> parseAndGetViewDefinitions() {
@@ -442,15 +459,15 @@ public class ViewDefinitionParserImplTest {
         ComponentPattern component = parseAndGetViewDefinition().getComponentByReference("beanBForm");
 
         // then
-        List<ComponentCustomEvent> customEvents = (List<ComponentCustomEvent>) getField(component, "customEvents");
+        List<ViewEventListenerHook> customEvents = (List<ViewEventListenerHook>) getField(component, "customEventListeners");
 
-        assertEquals("save", customEvents.get(0).getEvent());
-        assertThat(customEvents.get(0).getObject(), instanceOf(CustomEntityService.class));
-        assertEquals("saveForm", customEvents.get(0).getMethod());
+        assertEquals("save", customEvents.get(0).getEventName());
+        assertThat(customEvents.get(0).getBean(), instanceOf(CustomViewService.class));
+        assertEquals("saveForm", customEvents.get(0).getMethod().getName());
 
-        assertEquals("generate", customEvents.get(1).getEvent());
-        assertThat(customEvents.get(1).getObject(), instanceOf(CustomEntityService.class));
-        assertEquals("generate", customEvents.get(1).getMethod());
+        assertEquals("generate", customEvents.get(1).getEventName());
+        assertThat(customEvents.get(1).getBean(), instanceOf(CustomViewService.class));
+        assertEquals("generate", customEvents.get(1).getMethod().getName());
     }
 
 }
