@@ -23,20 +23,12 @@
  */
 package com.qcadoo.view.internal.components.form;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.qcadoo.model.api.Entity;
-import com.qcadoo.model.api.EntityMessagesHolder;
-import com.qcadoo.model.api.EntityOpResult;
-import com.qcadoo.model.api.EntityTree;
-import com.qcadoo.model.api.FieldDefinition;
+import com.qcadoo.model.api.*;
 import com.qcadoo.model.api.expression.ExpressionUtils;
 import com.qcadoo.model.api.validators.ErrorMessage;
 import com.qcadoo.model.internal.DetachedEntityTreeImpl;
@@ -376,6 +368,15 @@ public class FormComponentState extends AbstractContainerState implements FormCo
         }
     }
 
+    private void copyContextToFields() {
+        for (String field : fieldComponents.keySet()) {
+            if (context.containsKey(field)) {
+                fieldComponents.get(field).setFieldValue(convertFieldFromString(context.get(field), field));
+                fieldComponents.get(field).requestComponentUpdateState();
+            }
+        }
+    }
+
     private boolean fieldIsGridCorrespondingLookup(final FieldComponentState field, final String databaseFieldName,
             final Entity entity) {
         return (field instanceof LookupComponentState) && (entity.getField(databaseFieldName) instanceof Collection);
@@ -557,6 +558,10 @@ public class FormComponentState extends AbstractContainerState implements FormCo
             clearFields();
             setFieldValue(null);
             copyDefaultValuesToFields();
+            // TODO: TOLA, MAKU, KRNA consider when fields should be initialized from context and why user modifications are
+            // overwritten by context in getEntity() method
+
+            // copyContextToFields();
             setFieldsRequiredAndDisables();
         }
 
