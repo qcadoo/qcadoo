@@ -23,20 +23,24 @@
  */
 package com.qcadoo.view.internal.components.select;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.util.StringUtils;
 
 import com.qcadoo.view.internal.components.FieldComponentState;
-import org.springframework.util.StringUtils;
 
 public final class SelectComponentState extends FieldComponentState {
 
     private final SelectComponentPattern selectComponentPattern;
 
-    public SelectComponentState(final SelectComponentPattern selectComponentPattern) {
+    public SelectComponentState(final SelectComponentPattern selectComponentPattern, final String[] values) {
         super(selectComponentPattern);
         this.selectComponentPattern = selectComponentPattern;
+        if (ArrayUtils.isNotEmpty(values)){
+            requestRender();
+        }
     }
 
     @Override

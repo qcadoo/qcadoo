@@ -71,7 +71,7 @@ public final class SelectComponentPattern extends FieldComponentPattern {
 
     @Override
     public ComponentState getComponentStateInstance() {
-        return new SelectComponentState(this);
+        return new SelectComponentState(this, values);
     }
 
     public Map<String, String> getValuesMap(final Locale locale) {

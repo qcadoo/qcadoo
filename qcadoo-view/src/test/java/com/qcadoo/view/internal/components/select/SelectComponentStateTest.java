@@ -60,7 +60,7 @@ public class SelectComponentStateTest {
 
         setField(pattern, "fieldDefinition", fieldDefinition);
         setField(pattern, "translationService", translationService);
-        componentState = new SelectComponentState(pattern);
+        componentState = new SelectComponentState(pattern, new String[]{});
         setField(componentState, "locale", Locale.ENGLISH);
         setField(pattern, "defaultRequired", true);
     }
