@@ -212,7 +212,7 @@ public class ComponentPatternTest extends AbstractPatternTest {
         // then
         JSONObject options = (JSONObject) model.get("jsOptions");
 
-        assertEquals(4, options.length());
+        assertEquals(5, options.length());
     }
 
     @Test
