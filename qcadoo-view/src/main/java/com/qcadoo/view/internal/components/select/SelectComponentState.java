@@ -23,7 +23,8 @@
  */
 package com.qcadoo.view.internal.components.select;
 
-import org.apache.commons.lang3.ArrayUtils;
+import java.util.List;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,10 +36,10 @@ public final class SelectComponentState extends FieldComponentState {
 
     private final SelectComponentPattern selectComponentPattern;
 
-    public SelectComponentState(final SelectComponentPattern selectComponentPattern, final String[] values) {
+    public SelectComponentState(final SelectComponentPattern selectComponentPattern, final List<String> values) {
         super(selectComponentPattern);
         this.selectComponentPattern = selectComponentPattern;
-        if (ArrayUtils.isNotEmpty(values)){
+        if (!values.isEmpty()){
             requestRender();
         }
     }
