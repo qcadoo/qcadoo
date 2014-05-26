@@ -161,7 +161,7 @@ QCD.WindowController = function(_menuStructure) {
 			if (modalsStack.length == 0) {
 				onIframeLoad();
 			} else {
-				onIframeLoad(modalsStack[modalsStack.length - 1]);
+				onIframeLoad(modalsStack[modalsStack.length - 1].iframe[0]);
 			}
 		} else {
 			currentPage = stateObject.url;
