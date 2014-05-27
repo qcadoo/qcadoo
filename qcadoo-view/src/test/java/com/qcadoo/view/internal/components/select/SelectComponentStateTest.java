@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
 
+import com.google.common.collect.Lists;
 import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.view.internal.ComponentOption;
 import org.json.JSONException;
@@ -60,7 +61,7 @@ public class SelectComponentStateTest {
 
         setField(pattern, "fieldDefinition", fieldDefinition);
         setField(pattern, "translationService", translationService);
-        componentState = new SelectComponentState(pattern, new String[]{});
+        componentState = new SelectComponentState(pattern, Lists.newArrayList());
         setField(componentState, "locale", Locale.ENGLISH);
         setField(pattern, "defaultRequired", true);
     }
