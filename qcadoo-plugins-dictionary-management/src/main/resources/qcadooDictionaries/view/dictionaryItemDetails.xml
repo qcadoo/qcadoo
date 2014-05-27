@@ -33,7 +33,7 @@
 	
 	<component type="window" name="window" reference="window">
 		<ribbon>
-			<template name="standardFormTemplate" excludeItems="actions.delete" />
+			<template name="standardFormTemplate" excludeItems="actions.delete,actions.copy" />
 		</ribbon>
 		<component type="form" name="dictionaryItem" reference="form">
 			<script>
@@ -42,6 +42,9 @@
 					var saveBack = #{window}.getRibbonItem("actions.saveBack");
 					var saveNew = #{window}.getRibbonItem("actions.saveNew");
 					var cancel = #{window}.getRibbonItem("actions.cancel");
+
+					var activateButton = #{window}.getRibbonItem("states.activate");
+					var deactivateButton = #{window}.getRibbonItem("states.deactivate");
 
 					
 					this.addOnChangeListener({
@@ -67,6 +70,8 @@
 								saveBack.disable("#{translate(qcadooDictionaries.dictionaryItem.ribbon.message.dictionaryItemIsExternal)}");
 								saveNew.disable("#{translate(qcadooDictionaries.dictionaryItem.ribbon.message.dictionaryItemIsExternal)}");
 								cancel.disable("#{translate(qcadooDictionaries.dictionaryItem.ribbon.message.dictionaryItemIsExternal)}");
+								activateButton.disable("#{translate(qcadooDictionaries.dictionaryItem.ribbon.message.dictionaryItemIsExternal)}");
+								deactivateButton.disable("#{translate(qcadooDictionaries.dictionaryItem.ribbon.message.dictionaryItemIsExternal)}");
 							}
 						}
 					});
@@ -75,7 +80,7 @@
 			<component type="gridLayout" name="gridLayout" columns="3"
 				rows="3">
 				<layoutElement column="1" row="1">
-					<component type="input" name="name" field="name" />
+					<component type="input" name="name" field="name" reference="name" />
 					<component type="hidden" name="externalNumber" field="externalNumber" reference="externalNumber" />
 				</layoutElement>
 				<layoutElement column="1" row="2" height="2">
@@ -88,6 +93,7 @@
 	</component>
 	<hooks>
 		<beforeRender class="com.qcadoo.plugins.dictionaries.internal.hooks.DictionaryItemDetailsHooks" method="disableDictionaryItemFormForExternalItems" />
-		<beforeRender class="com.qcadoo.plugins.dictionaries.internal.hooks.DictionaryItemDetailsHooks" method="blockedDeleteOptionWhenDictionaryWasAddFromSystem" />
+		<beforeRender class="com.qcadoo.plugins.dictionaries.internal.hooks.DictionaryItemDetailsHooks" method="blockedActivationOptionWhenDictionaryWasAddFromSystem" />
+        <beforeRender class="com.qcadoo.plugins.dictionaries.internal.hooks.DictionaryItemDetailsHooks" method="disableNameEdit" />
 	</hooks>
 </view>
