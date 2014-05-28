@@ -138,6 +138,7 @@ QCD.components.elements.AwesomeDynamicList = function (element, mainController) 
 	};
 	
 	this.setComponentState = function (state) {
+	    state.forms = state.forms.map(function (form) {return form.value;})
 		this.setComponentValue(state);
 	};
 	
