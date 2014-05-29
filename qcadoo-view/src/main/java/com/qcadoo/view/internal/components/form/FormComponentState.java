@@ -368,15 +368,6 @@ public class FormComponentState extends AbstractContainerState implements FormCo
         }
     }
 
-    private void copyContextToFields() {
-        for (String field : fieldComponents.keySet()) {
-            if (context.containsKey(field)) {
-                fieldComponents.get(field).setFieldValue(convertFieldFromString(context.get(field), field));
-                fieldComponents.get(field).requestComponentUpdateState();
-            }
-        }
-    }
-
     private boolean fieldIsGridCorrespondingLookup(final FieldComponentState field, final String databaseFieldName,
             final Entity entity) {
         return (field instanceof LookupComponentState) && (entity.getField(databaseFieldName) instanceof Collection);
@@ -558,10 +549,6 @@ public class FormComponentState extends AbstractContainerState implements FormCo
             clearFields();
             setFieldValue(null);
             copyDefaultValuesToFields();
-            // TODO: TOLA, MAKU, KRNA consider when fields should be initialized from context and why user modifications are
-            // overwritten by context in getEntity() method
-
-            // copyContextToFields();
             setFieldsRequiredAndDisables();
         }
 
