@@ -108,15 +108,18 @@ public final class NumberServiceImpl implements NumberService {
 
     @Override
     public BigDecimal setScale(final BigDecimal decimal) {
+        return setScale(decimal, MAX_PRECISION);
+    }
+
+    @Override
+    public BigDecimal setScale(final BigDecimal decimal, final int newScale) {
         if (decimal == null) {
             if (LOG.isDebugEnabled()) {
                 LOG.debug("NumberService setScale - decimal is null!");
             }
-
-            return decimal;
-        } else {
-            return decimal.setScale(MAX_PRECISION, ROUNDING_MODE);
+            return null;
         }
+        return decimal.setScale(newScale, ROUNDING_MODE);
     }
 
 }

@@ -78,13 +78,22 @@ public interface NumberService {
     String format(final Object obj);
 
     /**
-     * Set scale 5 to {@link BigDecimal} with RoundingMode HALF_EVEN.
+     * Set default (currently 5) decimal's scale (number of digits after coma) using default RoundingMode.
+     * 
+     * @param decimal
+     * 
+     * @return BigDecimal with default scale (currently 5).
+     */
+    BigDecimal setScale(final BigDecimal decimal);
+
+    /**
+     * Set given decimal's scale (number of digits after coma) using default RoundingMode.
      * 
      * @param decimal
      * 
      * @return BigDecimal with scale 5.
      */
-    BigDecimal setScale(final BigDecimal decimal);
+    BigDecimal setScale(final BigDecimal decimal, final int newScale);
 
     /**
      * Formats an object with DecimalFormat to produce a String.
