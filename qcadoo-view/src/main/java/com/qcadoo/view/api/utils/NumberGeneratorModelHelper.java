@@ -46,7 +46,7 @@ public class NumberGeneratorModelHelper {
             + "from #${PLUGIN_IDENTIFIER}_${MODEL_NAME} " + "order by ${NUM_PROJECTION_ALIAS} desc";
 
     private static final String GET_PREFIX_AWARE_NUMBERS_QUERY_TEMPLATE = "select "
-            + "distinct trim(LEADING '0' from trim(LEADING '${PREFIX}' from ${NUMBER_FIELD})) as ${NUM_PROJECTION_ALIAS} "
+            + "distinct trim(LEADING '0' from substring(${NUMBER_FIELD}, ${NUMBER_STARTS_AT})) as ${NUM_PROJECTION_ALIAS} "
             + "from #${PLUGIN_IDENTIFIER}_${MODEL_NAME} " + "where number like '${PREFIX}%'"
             + "order by ${NUM_PROJECTION_ALIAS} desc";
 
@@ -87,6 +87,8 @@ public class NumberGeneratorModelHelper {
         String query;
         if (StringUtils.isNotEmpty(prefix)) {
             placeholderValues.put("PREFIX", prefix);
+            int prefixLength = StringUtils.length(prefix);
+            placeholderValues.put("NUMBER_STARTS_AT", String.valueOf(prefixLength + 1));
             query = GET_PREFIX_AWARE_NUMBERS_QUERY_TEMPLATE;
         } else {
             query = GET_NUMBERS_QUERY_TEMPLATE;
