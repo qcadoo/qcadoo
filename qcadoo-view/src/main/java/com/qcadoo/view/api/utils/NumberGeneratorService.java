@@ -26,9 +26,9 @@ package com.qcadoo.view.api.utils;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
@@ -98,7 +98,7 @@ public class NumberGeneratorService {
             // form is already saved
             return false;
         }
-        if (StringUtils.hasText((String) number.getFieldValue())) {
+        if (StringUtils.isNotBlank((String) number.getFieldValue())) {
             // number is already chosen
             return false;
         }
@@ -175,7 +175,7 @@ public class NumberGeneratorService {
         List<Long> numericValues = Lists.newArrayList();
         for (Entity projection : numberProjections) {
             String numberFieldValue = projection.getStringField(NumberGeneratorModelHelper.NUM_PROJECTION_ALIAS);
-            if (org.apache.commons.lang.StringUtils.isNumeric(numberFieldValue)) {
+            if (StringUtils.isNotEmpty(numberFieldValue) && StringUtils.isNumeric(numberFieldValue)) {
                 numericValues.add(Long.valueOf(numberFieldValue));
             }
         }

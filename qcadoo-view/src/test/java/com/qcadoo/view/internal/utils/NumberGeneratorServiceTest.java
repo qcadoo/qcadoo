@@ -149,6 +149,18 @@ public class NumberGeneratorServiceTest {
     }
 
     @Test
+    public final void shouldIgnoreEmptyAndBlankValues() {
+        // given
+        stubExistingNumbers(Lists.newArrayList("", "  "));
+
+        // when
+        String generated = performGenerate();
+
+        // then
+        Assert.assertEquals("000001", generated);
+    }
+
+    @Test
     public final void shouldReturnNextAvailableNumberGreaterThanMaxOneEvenIfThereIsSimilarValues() {
         // given
         stubExistingNumbers(Lists.newArrayList("0002", "1", "000001"));
@@ -207,5 +219,5 @@ public class NumberGeneratorServiceTest {
         // then
         Assert.assertEquals("QCD-1-000003", generated);
     }
-    
+
 }
