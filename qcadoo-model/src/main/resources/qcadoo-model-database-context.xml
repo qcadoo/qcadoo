@@ -62,6 +62,7 @@
 					<prop key="hibernate.cache.use_second_level_cache">${hibernateUseSecondLevelCache}</prop>
 					<prop key="hibernate.cache.provider_class">${hibernateCacheProviderClass}</prop>
 					<prop key="hibernate.cache.use_query_cache">${hibernateUseQueryCache}</prop>
+                    <prop key="hibernate.hbm2ddl.import_files">${hibernateHbm2ddlImportFiles}</prop>
 					<prop key="hibernate.cache.use_minimal_puts">true</prop>
 					<prop key="hibernate.cache.use_structured_entries">true</prop>
 				</props>
