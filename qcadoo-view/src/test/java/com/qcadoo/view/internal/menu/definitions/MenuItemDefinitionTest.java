@@ -44,16 +44,19 @@ public class MenuItemDefinitionTest {
 
     private static final String VIEW_URL = "viewUrl";
 
+    private static final boolean ITEM_ACTIVE = true;
+
     @Test
     public final void shouldMenuItemDefinition() {
         // when
-        MenuItemDefinition itemDefinition = MenuItemDefinition.create(ITEM_PLUGIN, ITEM_NAME, CATEGORY_NAME, ROLE_IDENTIFIER);
+        MenuItemDefinition itemDefinition = MenuItemDefinition.create(ITEM_PLUGIN, ITEM_NAME, CATEGORY_NAME, ROLE_IDENTIFIER, ITEM_ACTIVE);
 
         // then
         assertEquals(ITEM_PLUGIN, itemDefinition.getPluginIdentifier());
         assertEquals(ITEM_NAME, itemDefinition.getName());
         assertEquals(CATEGORY_NAME, itemDefinition.getCategoryName());
         assertEquals(ROLE_IDENTIFIER, itemDefinition.getAuthRoleIdentifier());
+        assertEquals(ITEM_ACTIVE, itemDefinition.isActive());
 
         assertNull(itemDefinition.getViewPluginIdentifier());
         assertNull(itemDefinition.getViewName());
@@ -63,7 +66,7 @@ public class MenuItemDefinitionTest {
     @Test
     public final void shouldCreateMenuViewItemDefinition() {
         // when
-        MenuItemDefinition itemDefinition = MenuItemDefinition.create(ITEM_PLUGIN, ITEM_NAME, CATEGORY_NAME, ROLE_IDENTIFIER)
+        MenuItemDefinition itemDefinition = MenuItemDefinition.create(ITEM_PLUGIN, ITEM_NAME, CATEGORY_NAME, ROLE_IDENTIFIER, ITEM_ACTIVE)
                 .forView(VIEW_PLUGIN, VIEW_NAME);
 
         // then
@@ -74,13 +77,14 @@ public class MenuItemDefinitionTest {
 
         assertEquals(VIEW_PLUGIN, itemDefinition.getViewPluginIdentifier());
         assertEquals(VIEW_NAME, itemDefinition.getViewName());
+        assertEquals(ITEM_ACTIVE, itemDefinition.isActive());
         assertNull(itemDefinition.getUrl());
     }
 
     @Test
     public final void shouldMenuUrlItemDefinition() {
         // when
-        MenuItemDefinition itemDefinition = MenuItemDefinition.create(ITEM_PLUGIN, ITEM_NAME, CATEGORY_NAME, ROLE_IDENTIFIER)
+        MenuItemDefinition itemDefinition = MenuItemDefinition.create(ITEM_PLUGIN, ITEM_NAME, CATEGORY_NAME, ROLE_IDENTIFIER, ITEM_ACTIVE)
                 .forUrl(VIEW_URL);
 
         // then
@@ -92,6 +96,7 @@ public class MenuItemDefinitionTest {
         assertEquals(ITEM_PLUGIN, itemDefinition.getViewPluginIdentifier());
         assertEquals(ITEM_NAME, itemDefinition.getViewName());
         assertEquals(VIEW_URL, itemDefinition.getUrl());
+        assertEquals(ITEM_ACTIVE, itemDefinition.isActive());
     }
 
 }

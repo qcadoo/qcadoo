@@ -41,9 +41,11 @@ public class MenuViewModuleFactory extends ModuleFactory<MenuModule> {
         String menuCategory = getRequiredAttribute(element, "category");
         String menuViewName = getRequiredAttribute(element, "view");
         String authRoleIdentifier = getAttribute(element, "defaultAuthorizationRole");
+        String itemActiveAttribute = getAttribute(element, "active");
+        boolean itemActive = itemActiveAttribute == null ? true : Boolean.parseBoolean(itemActiveAttribute);
 
         MenuItemDefinition menuItemDefinition = MenuItemDefinition.create(pluginIdentifier, menuName, menuCategory,
-                authRoleIdentifier).forView(pluginIdentifier, menuViewName);
+                authRoleIdentifier, itemActive).forView(pluginIdentifier, menuViewName);
 
         return new MenuModule(getIdentifier(), menuService, menuItemDefinition);
     }

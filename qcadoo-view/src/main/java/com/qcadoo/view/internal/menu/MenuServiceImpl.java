@@ -253,7 +253,7 @@ public final class MenuServiceImpl implements InternalMenuService {
             menuItem = menuCrudService.createEntity(QcadooViewConstants.MODEL_ITEM);
             menuItem.setField(MenuItemFields.PLUGIN_IDENTIFIER, itemDefinition.getPluginIdentifier());
             menuItem.setField(MenuItemFields.NAME, itemDefinition.getName());
-            menuItem.setField(MenuItemFields.ACTIVE, true);
+            menuItem.setField(MenuItemFields.ACTIVE, itemDefinition.isActive());
         }
 
         if (menuItem == null || !menuView.equals(menuItem.getField(MenuItemFields.VIEW))) {

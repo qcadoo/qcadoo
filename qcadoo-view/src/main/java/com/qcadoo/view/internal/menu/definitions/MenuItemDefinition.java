@@ -42,21 +42,23 @@ public class MenuItemDefinition {
 
     private final String url;
 
+    private final boolean active;
+
     public static MenuItemDefinition create(final String pluginIdentifier, final String name, final String categoryName,
-            final String authRoleIdentifier) {
-        return new MenuItemDefinition(pluginIdentifier, name, categoryName, authRoleIdentifier, null, null, null);
+                                            final String authRoleIdentifier, boolean active) {
+        return new MenuItemDefinition(pluginIdentifier, name, categoryName, authRoleIdentifier, null, null, null, active);
     }
 
     public MenuItemDefinition forUrl(final String url) {
-        return new MenuItemDefinition(pluginIdentifier, name, categoryName, authRoleIdentifier, pluginIdentifier, name, url);
+        return new MenuItemDefinition(pluginIdentifier, name, categoryName, authRoleIdentifier, pluginIdentifier, name, url, active);
     }
 
     public MenuItemDefinition forView(final String viewPlugin, final String viewName) {
-        return new MenuItemDefinition(pluginIdentifier, name, categoryName, authRoleIdentifier, viewPlugin, viewName, null);
+        return new MenuItemDefinition(pluginIdentifier, name, categoryName, authRoleIdentifier, viewPlugin, viewName, null, active);
     }
 
     private MenuItemDefinition(final String pluginIdentifier, final String name, final String categoryName,
-            final String authRoleIdentifier, final String viewPluginIdentifier, final String viewName, final String url) {
+            final String authRoleIdentifier, final String viewPluginIdentifier, final String viewName, final String url, final boolean active) {
         this.pluginIdentifier = pluginIdentifier;
         this.name = name;
         this.categoryName = categoryName;
@@ -64,6 +66,7 @@ public class MenuItemDefinition {
         this.viewPluginIdentifier = viewPluginIdentifier;
         this.viewName = viewName;
         this.url = url;
+        this.active = active;
     }
 
     public String getAuthRoleIdentifier() {
@@ -92,6 +95,10 @@ public class MenuItemDefinition {
 
     public String getUrl() {
         return url;
+    }
+
+    public boolean isActive() {
+        return active;
     }
 
     @Override

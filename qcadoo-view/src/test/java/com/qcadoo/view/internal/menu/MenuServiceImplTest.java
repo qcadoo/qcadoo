@@ -128,7 +128,7 @@ public class MenuServiceImplTest {
     public final void shouldCreateItem() {
         // given
         MenuItemDefinition menuItemDefinition = MenuItemDefinition.create(PLUGIN_IDENTIFIER, "itemName", "categoryName",
-                ROLE_VISIBLE).forView(PLUGIN_IDENTIFIER, "viewName");
+                ROLE_VISIBLE, true).forView(PLUGIN_IDENTIFIER, "viewName");
         given(menuCrudService.getItem(menuItemDefinition)).willReturn(null);
 
         Entity categoryEntity = mockCategory(PLUGIN_IDENTIFIER, "categoryName", ROLE_VISIBLE, Collections.<Entity> emptyList());
@@ -162,10 +162,47 @@ public class MenuServiceImplTest {
     }
 
     @Test
+    public final void shouldCreateDeactivatedItem() {
+        // given
+        MenuItemDefinition menuItemDefinition = MenuItemDefinition.create(PLUGIN_IDENTIFIER, "itemName", "categoryName",
+                ROLE_VISIBLE, false).forView(PLUGIN_IDENTIFIER, "viewName");
+        given(menuCrudService.getItem(menuItemDefinition)).willReturn(null);
+
+        Entity categoryEntity = mockCategory(PLUGIN_IDENTIFIER, "categoryName", ROLE_VISIBLE, Collections.<Entity> emptyList());
+        given(menuCrudService.getCategory(menuItemDefinition)).willReturn(categoryEntity);
+
+        Entity viewEntity = mockViewEntity(PLUGIN_IDENTIFIER, "viewName");
+        given(menuCrudService.getView(menuItemDefinition)).willReturn(viewEntity);
+
+        given(menuCrudService.createEntity(QcadooViewConstants.MODEL_ITEM)).willAnswer(new Answer<Entity>() {
+
+            @Override
+            public Entity answer(final InvocationOnMock invocation) throws Throwable {
+                DataDefinition dataDefinition = mock(DataDefinition.class);
+                return new DefaultEntity(dataDefinition);
+            }
+        });
+
+        // when
+        menuService.createItem(menuItemDefinition);
+
+        // then
+        verify(menuCrudService).save(entityCaptor.capture());
+        Entity savedItem = entityCaptor.getValue();
+        assertEquals(PLUGIN_IDENTIFIER, savedItem.getStringField(MenuItemFields.PLUGIN_IDENTIFIER));
+        assertEquals("itemName", savedItem.getStringField(MenuItemFields.NAME));
+        assertFalse(savedItem.getBooleanField(MenuItemFields.ACTIVE));
+        assertEquals(viewEntity, savedItem.getField(MenuItemFields.VIEW));
+        assertEquals(categoryEntity, savedItem.getField(MenuItemFields.CATEGORY));
+        assertEquals(1, savedItem.getField(MenuItemFields.SUCCESSION));
+        assertEquals(ROLE_VISIBLE, savedItem.getStringField(MenuItemFields.AUTH_ROLE));
+    }
+
+    @Test
     public final void shouldUpdateItemIfExists() {
         // given
         MenuItemDefinition menuItemDefinition = MenuItemDefinition.create(PLUGIN_IDENTIFIER, "itemName", "categoryName",
-                ROLE_VISIBLE).forView(PLUGIN_IDENTIFIER, "viewName");
+                ROLE_VISIBLE, true).forView(PLUGIN_IDENTIFIER, "viewName");
 
         Entity itemEntity = mock(Entity.class);
         given(menuCrudService.getItem(menuItemDefinition)).willReturn(itemEntity);
@@ -192,7 +229,7 @@ public class MenuServiceImplTest {
     public final void shouldDoNothingIfItemExistsAndHasTheSameView() {
         // given
         MenuItemDefinition menuItemDefinition = MenuItemDefinition.create(PLUGIN_IDENTIFIER, "itemName", "categoryName",
-                ROLE_VISIBLE).forView(PLUGIN_IDENTIFIER, "viewName");
+                ROLE_VISIBLE, true).forView(PLUGIN_IDENTIFIER, "viewName");
 
         Entity itemEntity = mock(Entity.class);
         given(menuCrudService.getItem(menuItemDefinition)).willReturn(itemEntity);
@@ -292,7 +329,7 @@ public class MenuServiceImplTest {
     public final void shouldCreateViewForViewItem() {
         // given
         MenuItemDefinition menuViewItemDefinition = MenuItemDefinition.create(PLUGIN_IDENTIFIER, "itemName", "categoryName",
-                ROLE_VISIBLE).forView("viewPlugin", "viewName");
+                ROLE_VISIBLE, true).forView("viewPlugin", "viewName");
         given(menuCrudService.getView(menuViewItemDefinition)).willReturn(null);
         given(viewDefinitionService.viewExists("viewPlugin", "viewName")).willReturn(true);
         given(menuCrudService.createEntity(QcadooViewConstants.MODEL_VIEW)).willAnswer(new Answer<Entity>() {
@@ -320,7 +357,7 @@ public class MenuServiceImplTest {
     public final void shouldCreateViewForUrlItem() {
         // given
         MenuItemDefinition menuUrlItemDefinition = MenuItemDefinition.create(PLUGIN_IDENTIFIER, "itemName", "categoryName",
-                ROLE_VISIBLE).forUrl("someUrl");
+                ROLE_VISIBLE, true).forUrl("someUrl");
         given(menuCrudService.getView(menuUrlItemDefinition)).willReturn(null);
         given(menuCrudService.createEntity(QcadooViewConstants.MODEL_VIEW)).willAnswer(new Answer<Entity>() {
 
@@ -347,7 +384,7 @@ public class MenuServiceImplTest {
     public final void shouldAddViewThrowsAnExceptionIfViewDoesNotExistAndUrlIsNull() {
         // given
         MenuItemDefinition menuViewItemDefinition = MenuItemDefinition.create(PLUGIN_IDENTIFIER, "itemName", "categoryName",
-                ROLE_VISIBLE).forView("viewPlugin", "viewName");
+                ROLE_VISIBLE, true).forView("viewPlugin", "viewName");
         given(menuCrudService.getView(menuViewItemDefinition)).willReturn(null);
         given(viewDefinitionService.viewExists(PLUGIN_IDENTIFIER, "viewName")).willReturn(false);
 
