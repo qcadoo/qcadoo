@@ -45,20 +45,23 @@ public class MenuItemDefinition {
     private final boolean active;
 
     public static MenuItemDefinition create(final String pluginIdentifier, final String name, final String categoryName,
-                                            final String authRoleIdentifier, boolean active) {
+            final String authRoleIdentifier, boolean active) {
         return new MenuItemDefinition(pluginIdentifier, name, categoryName, authRoleIdentifier, null, null, null, active);
     }
 
     public MenuItemDefinition forUrl(final String url) {
-        return new MenuItemDefinition(pluginIdentifier, name, categoryName, authRoleIdentifier, pluginIdentifier, name, url, active);
+        return new MenuItemDefinition(pluginIdentifier, name, categoryName, authRoleIdentifier, pluginIdentifier, name, url,
+                active);
     }
 
     public MenuItemDefinition forView(final String viewPlugin, final String viewName) {
-        return new MenuItemDefinition(pluginIdentifier, name, categoryName, authRoleIdentifier, viewPlugin, viewName, null, active);
+        return new MenuItemDefinition(pluginIdentifier, name, categoryName, authRoleIdentifier, viewPlugin, viewName, null,
+                active);
     }
 
     private MenuItemDefinition(final String pluginIdentifier, final String name, final String categoryName,
-            final String authRoleIdentifier, final String viewPluginIdentifier, final String viewName, final String url, final boolean active) {
+            final String authRoleIdentifier, final String viewPluginIdentifier, final String viewName, final String url,
+            final boolean active) {
         this.pluginIdentifier = pluginIdentifier;
         this.name = name;
         this.categoryName = categoryName;
@@ -111,13 +114,14 @@ public class MenuItemDefinition {
         }
         MenuItemDefinition rhs = (MenuItemDefinition) obj;
         return new EqualsBuilder().append(this.pluginIdentifier, rhs.pluginIdentifier).append(this.name, rhs.name)
-                .append(this.categoryName, rhs.categoryName).append(this.authRoleIdentifier, rhs.authRoleIdentifier).isEquals();
+                .append(this.categoryName, rhs.categoryName).append(this.authRoleIdentifier, rhs.authRoleIdentifier)
+                .append(this.active, rhs.active).isEquals();
     }
 
     @Override
     public int hashCode() {
         return new HashCodeBuilder().append(pluginIdentifier).append(name).append(categoryName).append(authRoleIdentifier)
-                .toHashCode();
+                .append(active).toHashCode();
     }
 
 }
