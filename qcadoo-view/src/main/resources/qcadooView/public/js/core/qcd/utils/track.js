@@ -34,7 +34,12 @@ QCDTrack.track = function (component, eventName, trackEvent) {
             throw "Unsupported event object: " + trackEvent;
         }
     }
- 
+
+    if (typeof component === 'undefined' || component === null) {
+        QCD.error("Can't assign mixpanel's listener to an empty component ");
+        return;
+    }
+
     if (parent.mixpanel) {
         var listener = {};
         listener[eventName] = function () {

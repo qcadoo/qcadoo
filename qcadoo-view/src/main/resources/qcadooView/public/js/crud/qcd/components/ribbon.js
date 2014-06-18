@@ -500,6 +500,7 @@ QCD.components.Ribbon = function(_model, _elementName, _mainController, _transla
 			}
 		}
 		if (!group) {
+            QCD.error("cannot find ribbon item: '"+ribbonItemPath+"' - group doesn't exist");
 			return null;
 		}
 		var item = null;
@@ -510,10 +511,12 @@ QCD.components.Ribbon = function(_model, _elementName, _mainController, _transla
 			}
 		}
 		if (!item) {
+            QCD.error("cannot find ribbon item: '"+ribbonItemPath+"' - item doesn't exist");
 			return null;
 		}
 		if (pathParts.length == 3) {
 			if (! item.items) {
+                QCD.error("cannot find ribbon item: '"+ribbonItemPath+"' - item is not a drop down ribbon element");
 				return null;
 			}
 			var dropdownItem = null;
@@ -524,6 +527,7 @@ QCD.components.Ribbon = function(_model, _elementName, _mainController, _transla
 				}
 			}
 			if (! dropdownItem) {
+                QCD.error("cannot find ribbon item: '"+ribbonItemPath+"' - dropdown item doesn't exist");
 				return null;
 			}
 			return createJsObject(dropdownItem);
