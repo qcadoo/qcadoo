@@ -75,6 +75,7 @@
                             <xs:enumeration value="hasPredefinedFilters"/>
                             <xs:enumeration value="filtersDefaultVisible"/>
                             <xs:enumeration value="deletable"/>
+                            <xs:enumeration value="prioritizable"/>
                             <xs:enumeration value="height"/>
                             <xs:enumeration value="width"/>
                             <xs:enumeration value="lookup"/>

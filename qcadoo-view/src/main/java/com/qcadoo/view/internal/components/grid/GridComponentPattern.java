@@ -136,6 +136,8 @@ public class GridComponentPattern extends AbstractComponentPattern {
 
     private boolean activable = false;
 
+    private boolean prioritizable = true;
+
     private Boolean fixedHeight;
 
     private RowStyleResolver rowStyleResolver = null;
@@ -232,7 +234,7 @@ public class GridComponentPattern extends AbstractComponentPattern {
         json.put("correspondingComponent", correspondingComponent);
         json.put("correspondingLookup", correspondingLookup);
         json.put("correspondingViewInModal", correspondingViewInModal);
-        json.put("prioritizable", getDataDefinition().isPrioritizable());
+        json.put("prioritizable", getDataDefinition().isPrioritizable() && prioritizable);
         json.put("searchableColumns", new JSONArray(searchableColumns));
         json.put("multiSearchColumns", new JSONArray(multiSearchColumns));
         json.put("orderableColumns", new JSONArray(orderableColumns));
@@ -495,6 +497,8 @@ public class GridComponentPattern extends AbstractComponentPattern {
                 paginable = Boolean.parseBoolean(option.getValue());
             } else if ("creatable".equals(option.getType())) {
                 creatable = Boolean.parseBoolean(option.getValue());
+            } else if ("prioritizable".equals(option.getType())) {
+                prioritizable = Boolean.parseBoolean(option.getValue());
             } else if ("multiselect".equals(option.getType())) {
                 multiselect = Boolean.parseBoolean(option.getValue());
             } else if ("hasPredefinedFilters".equals(option.getType())) {

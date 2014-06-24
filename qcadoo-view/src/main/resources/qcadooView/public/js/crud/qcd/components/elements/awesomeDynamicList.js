@@ -184,16 +184,14 @@ QCD.components.elements.AwesomeDynamicList = function (element, mainController) 
 		currentHeight = height;
 		for (var i in formObjects) {
 			if (formObjects[i]) {
-			    $(".awesomeListFormContainer").attr("style", "width:" + (width - BUTTONS_WIDTH - 20) + "px;");
+                if(hasButtons){
+                    $("#" + elementSearchName + " .awesomeListFormContainer").attr("style", "min-width:" + (width - BUTTONS_WIDTH - 20) + "px; max-width:" + (width - BUTTONS_WIDTH - 20) + "px;");
+                }
 				formObjects[i].updateSize(width - BUTTONS_WIDTH, height);
 			}
 		}
 		if (awesomeDynamicListHeaderObject) {
-		    if(hasButtons){
-		        awesomeDynamicListHeader.width(width - ((BUTTONS_WIDTH > 0) ? BUTTONS_WIDTH - 20 : 0) + 1);
-		    } else {
-			    awesomeDynamicListHeader.width(width - ((BUTTONS_WIDTH > 0) ? BUTTONS_WIDTH - 20 : 0));
-		    }
+            awesomeDynamicListHeader.width(width - ((BUTTONS_WIDTH > 0) ? BUTTONS_WIDTH - 20 : 0));
 			awesomeDynamicListHeaderObject.updateSize(width - ((BUTTONS_WIDTH > 0) ? BUTTONS_WIDTH - 30 : 0), height);
 		}
 		
