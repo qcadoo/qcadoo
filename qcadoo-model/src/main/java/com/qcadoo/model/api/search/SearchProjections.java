@@ -158,6 +158,8 @@ public final class SearchProjections {
     /**
      * Creates projection which add "count(*)" to the "SELECT" clause.
      * 
+     * Value returned by this projection will be a Long number.
+     * 
      * @return projection
      */
     public static SearchProjection rowCount() {

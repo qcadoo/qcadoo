@@ -50,6 +50,19 @@ public class EntityUtils {
         }
     };
 
+    public static <T> Function<Entity, T> getFieldExtractor(final String fieldName) {
+        return new Function<Entity, T>() {
+
+            @Override
+            public T apply(final Entity entity) {
+                if (entity == null) {
+                    return null;
+                }
+                return (T) entity.getField(fieldName);
+            }
+        };
+    }
+
     public static Function<Entity, Long> getIdExtractor() {
         return FUNC_EXTRACT_ID;
     }
@@ -59,16 +72,7 @@ public class EntityUtils {
     }
 
     public static <T> Collection<T> getFieldsView(final Collection<Entity> entities, final String fieldName) {
-        return Collections2.transform(entities, new Function<Entity, T>() {
-
-            @Override
-            public T apply(final Entity input) {
-                if (input != null) {
-                    return (T) input.getField(fieldName);
-                }
-                return null;
-            }
-        });
+        return Collections2.transform(entities, (Function<Entity, T>) getFieldExtractor(fieldName));
     }
 
 }
