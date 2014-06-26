@@ -26,7 +26,9 @@ package com.qcadoo.model.api.utils;
 import java.util.Collection;
 
 import com.google.common.base.Function;
+import com.google.common.base.Optional;
 import com.google.common.collect.Collections2;
+import com.qcadoo.commons.functional.Optionals;
 import com.qcadoo.model.api.Entity;
 
 public class EntityUtils {
@@ -63,8 +65,17 @@ public class EntityUtils {
         };
     }
 
+    public static <T> Function<Entity, Optional<T>> getSafeFieldExtractor(final String fieldName) {
+        Function<Entity, T> getFieldFunc = getFieldExtractor(fieldName);
+        return Optionals.lift(getFieldFunc);
+    }
+
     public static Function<Entity, Long> getIdExtractor() {
         return FUNC_EXTRACT_ID;
+    }
+
+    public static Function<Entity, Optional<Long>> getSafeIdExtractor() {
+        return Optionals.lift(FUNC_EXTRACT_ID);
     }
 
     public static Collection<Long> getIdsView(final Collection<Entity> entities) {
