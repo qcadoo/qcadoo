@@ -24,10 +24,14 @@
 package com.qcadoo.model.api;
 
 import java.math.BigDecimal;
+import java.util.Locale;
 
 import junit.framework.Assert;
 
 import org.junit.Test;
+
+import com.google.common.base.Optional;
+import com.qcadoo.commons.functional.Either;
 
 public class BigDecimalUtilsTest {
 
@@ -66,6 +70,54 @@ public class BigDecimalUtilsTest {
         // then
         Assert.assertEquals(0, notNullDecimal.compareTo(fromNotNullRes));
         Assert.assertEquals(0, BigDecimal.ONE.compareTo(fromNullRes));
+    }
+
+    @Test
+    public final void shouldParseNotEmptyEnDecimalString() {
+        // given
+        String stringValue = "1.2";
+
+        // when
+        Either<Exception, Optional<BigDecimal>> res = BigDecimalUtils.tryParse(stringValue, Locale.ENGLISH);
+
+        // then
+        Assert.assertEquals(Either.right(Optional.of(new BigDecimal("1.2"))), res);
+    }
+
+    @Test
+    public final void shouldParseNotEmptyPlDecimalString() {
+        // given
+        String stringValue = "1,2";
+
+        // when
+        Either<Exception, Optional<BigDecimal>> res = BigDecimalUtils.tryParse(stringValue, new Locale("pl"));
+
+        // then
+        Assert.assertEquals(Either.right(Optional.of(new BigDecimal("1.2"))), res);
+    }
+
+    @Test
+    public final void shouldParseEmptyDecimalString() {
+        // given
+        String stringValue = "";
+
+        // when
+        Either<Exception, Optional<BigDecimal>> res = BigDecimalUtils.tryParse(stringValue, Locale.ENGLISH);
+
+        // then
+        Assert.assertEquals(Either.right(Optional.<BigDecimal> absent()), res);
+    }
+
+    @Test
+    public final void shouldReturnExceptionIfParseFail() {
+        // given
+        String incorrectDecimalString = "oops";
+
+        // when
+        Either<Exception, Optional<BigDecimal>> res = BigDecimalUtils.tryParse(incorrectDecimalString, Locale.ENGLISH);
+
+        // then
+        Assert.assertTrue(res.isLeft());
     }
 
 }

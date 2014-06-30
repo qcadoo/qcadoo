@@ -25,6 +25,13 @@ package com.qcadoo.model.api;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.text.DecimalFormat;
+import java.util.Locale;
+
+import org.apache.commons.lang.StringUtils;
+
+import com.google.common.base.Optional;
+import com.qcadoo.commons.functional.Either;
 
 public final class BigDecimalUtils {
 
@@ -100,6 +107,29 @@ public final class BigDecimalUtils {
             return false;
         }
         return d1.compareTo(d2) == 0;
+    }
+
+    /**
+     * Try parse string into BigDecimal.
+     * 
+     * @param maybeStringWithDecimal
+     *            String to be parsed as a BigDecimal number
+     * @param locale
+     *            locale to be used when parse.
+     * @return either Exception that occur during parsing or parsed BigDecimal, wrapped within Optional.
+     */
+    public static Either<Exception, Optional<BigDecimal>> tryParse(final String maybeStringWithDecimal, final Locale locale) {
+        if (StringUtils.isBlank(maybeStringWithDecimal)) {
+            return Either.right(Optional.<BigDecimal> absent());
+        }
+        try {
+            DecimalFormat format = (DecimalFormat) DecimalFormat.getInstance(locale);
+            format.setParseBigDecimal(true);
+            BigDecimal parsedDecimal = new BigDecimal(format.parse(maybeStringWithDecimal).toString());
+            return Either.right(Optional.fromNullable(parsedDecimal));
+        } catch (Exception e) {
+            return Either.left(e);
+        }
     }
 
 }
