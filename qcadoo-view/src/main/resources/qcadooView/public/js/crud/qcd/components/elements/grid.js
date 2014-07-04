@@ -1358,7 +1358,9 @@ QCD.components.elements.Grid = function (element, mainController) {
         if (gridParameters.isLookup || gridParameters.filtersDefaultEnabled) {
             headerController.setFilterActive();
             currentState.filtersEnabled = true;
-            getColumnFilterElement(options.columns[0].name).focus();
+            setTimeout(function(){
+                getColumnFilterElement(options.columns[0].name).focus();
+            }, 0);
         } else {
             grid[0].toggleToolbar();
             currentState.filtersEnabled = false;
