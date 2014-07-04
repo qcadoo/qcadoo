@@ -43,7 +43,7 @@ QCD.components.elements.LinkButton = function(_element, _mainController) {
 	var openInModal = true;
 	var modalDimensions = {
 	    width: 600,
-	    height: 400
+	    height: 600
 	};
 	
 	var button = $("#"+this.elementSearchName+"_buttonDiv");

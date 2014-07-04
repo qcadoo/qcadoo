@@ -31,10 +31,10 @@ QCD.utils.Modal.createModal = function() {
 	
 	var dialog = $("<div>").addClass("jqmWindow").width(600);
 	
-	var container = $("<div>").css("border", "solid red 0px").width(600).height(400);
+	var container = $("<div>").css("border", "solid red 0px").width(600).height(600);
 	dialog.append(container);
 	
-	var iframe = $('<iframe frameborder="0" src="" width="600" height="400">');
+	var iframe = $('<iframe frameborder="0" src="" width="600" height="600">');
 	container.append(iframe);
 	
 	$("body").append(dialog);
