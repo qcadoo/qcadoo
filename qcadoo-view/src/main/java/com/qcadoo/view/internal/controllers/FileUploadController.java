@@ -58,7 +58,7 @@ public class FileUploadController {
     @Autowired
     private ViewParametersAppender viewParametersAppender;
 
-    @Value("${maxUploadSize}")
+    @Value("${maxUploadSize:2000000}")
     private int maxUploadSize;
 
     @RequestMapping(value = "fileUpload", method = RequestMethod.GET)
@@ -70,7 +70,7 @@ public class FileUploadController {
         mav.addObject("buttonLabel", translationService.translate("qcadooView.fileUpload.button", locale));
         mav.addObject("chooseFileLabel", translationService.translate("qcadooView.fileUpload.chooseFileLabel", locale));
         mav.addObject("maxUploadSizeExceeded",
-                translationService.translate("qcadooView.errorPage.error.uploadException.maxSizeExceeded.explanation", locale, "" + (maxUploadSize != 0 ? maxUploadSize/1000000 : 2)));
+                translationService.translate("qcadooView.errorPage.error.uploadException.maxSizeExceeded.explanation", locale, "" + maxUploadSize/1000000));
 
         return mav;
     }

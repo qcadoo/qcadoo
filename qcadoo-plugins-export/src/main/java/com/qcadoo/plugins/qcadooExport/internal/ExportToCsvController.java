@@ -39,6 +39,7 @@ import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -62,7 +63,8 @@ public class ExportToCsvController {
 
     private static final String CONTROLLER_PATH = "exportToCsv/{" + PLUGIN_IDENTIFIER_VARIABLE + "}/{" + VIEW_NAME_VARIABLE + "}";
 
-    private static final String EXPORTED_DOCUMENT_SEPARATOR = ",";
+    @Value("${exportedCsvSeparator:','}")
+    private String exportedCsvSeparator;
 
     @Autowired
     private FileService fileService;
@@ -96,7 +98,7 @@ public class ExportToCsvController {
                     if (firstName) {
                         firstName = false;
                     } else {
-                        output.append(EXPORTED_DOCUMENT_SEPARATOR);
+                        output.append(exportedCsvSeparator);
                     }
                     output.append("\"").append(normalizeString(name)).append("\"");
                 }
@@ -116,7 +118,7 @@ public class ExportToCsvController {
                         if (firstValue) {
                             firstValue = false;
                         } else {
-                            output.append(EXPORTED_DOCUMENT_SEPARATOR);
+                            output.append(exportedCsvSeparator);
                         }
                         output.append("\"").append(normalizeString(value)).append("\"");
                     }

@@ -68,7 +68,7 @@ public final class DefaultExceptionResolver extends SimpleMappingExceptionResolv
     @Autowired
     private TranslationService translationService;
 
-    @Value("${maxUploadSize}")
+    @Value("${maxUploadSize:2000000}")
     private int maxUploadSize;
 
     private Map<Class<? extends Exception>, ExceptionInfoResolver<? extends Exception>> classResolversMap = new HashMap<Class<? extends Exception>, ExceptionInfoResolver<? extends Exception>>();
@@ -123,7 +123,7 @@ public final class DefaultExceptionResolver extends SimpleMappingExceptionResolv
             if (customExceptionMessage.getEntityIdentifier() == null) {
                 if("uploadException.maxSizeExceeded".equals(customExceptionMessage.getMessage())){
                     customExceptionMessageExplanation = translationService.translate("qcadooView.errorPage.error."
-                            + customExceptionMessage.getMessage() + ".explanation", LocaleContextHolder.getLocale(), "" + (maxUploadSize != 0 ? maxUploadSize/1000000 : 2));
+                            + customExceptionMessage.getMessage() + ".explanation", LocaleContextHolder.getLocale(), "" + maxUploadSize/1000000);
                 } else {
                     customExceptionMessageExplanation = translationService.translate("qcadooView.errorPage.error."
                             + customExceptionMessage.getMessage() + ".explanation", LocaleContextHolder.getLocale());
