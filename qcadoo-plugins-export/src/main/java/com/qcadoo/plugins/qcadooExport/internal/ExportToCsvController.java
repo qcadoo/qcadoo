@@ -90,7 +90,11 @@ public class ExportToCsvController {
             BufferedWriter output = null;
 
             try {
-                output = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), Charset.forName("UTF-8")));
+                FileOutputStream fos = new FileOutputStream(file);
+                fos.write(239);
+                fos.write(187);
+                fos.write(191);
+                output = new BufferedWriter(new OutputStreamWriter(fos, Charset.forName("UTF-8")));
 
                 boolean firstName = true;
 
