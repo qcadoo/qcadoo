@@ -316,7 +316,7 @@ public final class DefaultEntity implements Entity, EntityAwareCopyPerformers, E
         }
         throw new IllegalArgumentException("Field " + fieldName + " in " + dataDefinition.getPluginIdentifier() + '.'
                 + dataDefinition.getName()
-                + " does not contain correct BigDecimal value (current field value: \" + fieldValue + \")");
+                + " does not contain correct BigDecimal value (current field value: " + fieldValue + ")");
     }
 
     @Override

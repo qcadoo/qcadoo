@@ -65,6 +65,19 @@ public class EntityUtils {
         };
     }
 
+    public static Function<Entity, Entity> getBelongsToFieldExtractor(final String belongsToFieldName) {
+        return new Function<Entity, Entity>() {
+
+            @Override
+            public Entity apply(final Entity entity) {
+                if (entity == null) {
+                    return null;
+                }
+                return entity.getBelongsToField(belongsToFieldName);
+            }
+        };
+    }
+
     public static <T> Function<Entity, Optional<T>> getSafeFieldExtractor(final String fieldName) {
         Function<Entity, T> getFieldFunc = getFieldExtractor(fieldName);
         return Optionals.lift(getFieldFunc);
