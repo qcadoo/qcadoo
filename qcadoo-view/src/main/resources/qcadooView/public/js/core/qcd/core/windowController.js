@@ -108,7 +108,7 @@ QCD.WindowController = function(_menuStructure) {
 			modalObjects[id].onCloseListener = onCloseListener;
 		}
 		if (dimensions) {
-			modalObjects[id].changeSize(dimensions.width || 600, dimensions.height || 600);
+			modalObjects[id].changeSize(dimensions.width || 600, dimensions.height || 560);
 		}
 		
 		modalsStack.push(modalObjects[id]);

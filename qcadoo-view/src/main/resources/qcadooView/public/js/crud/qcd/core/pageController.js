@@ -103,7 +103,7 @@ QCD.PageController = function() {
 		if (isPopup) {
 			if (window.parent.changeModalSize) {
 				var modalWidth = (dimensions ? dimensions.width : pageOptions.windowWidth) || 600;
-				var modalHeight = (dimensions ? dimensions.height : pageOptions.windowHeight) || 600;
+				var modalHeight = (dimensions ? dimensions.height : pageOptions.windowHeight) || 560;
 				window.parent.changeModalSize(modalWidth, modalHeight);
 			}
 			updateSize();

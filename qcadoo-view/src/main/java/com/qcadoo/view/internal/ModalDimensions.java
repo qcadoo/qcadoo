@@ -44,7 +44,7 @@ public class ModalDimensions {
     /**
      * Default modal height
      */
-    public static final int DEFAULT_HEIGHT = 600;
+    public static final int DEFAULT_HEIGHT = 560;
 
     private static final String JSON_WIDTH = "width";
 
