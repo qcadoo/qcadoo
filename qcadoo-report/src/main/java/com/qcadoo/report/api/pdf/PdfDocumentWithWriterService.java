@@ -43,12 +43,7 @@ import com.qcadoo.report.api.FooterResolver;
 import com.qcadoo.report.api.ReportDocumentService;
 import com.qcadoo.report.api.ReportService;
 
-/**
- * Service for creating PDF report documents.
- *
- * @since 0.4.1
- */
-public abstract class PdfDocumentService implements ReportDocumentService {
+public abstract class PdfDocumentWithWriterService implements ReportDocumentService {
 
     @Autowired
     private TranslationService translationService;
@@ -62,7 +57,7 @@ public abstract class PdfDocumentService implements ReportDocumentService {
     @Autowired
     private FooterResolver footerResolver;
 
-    private static final Logger LOG = LoggerFactory.getLogger(PdfDocumentService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PdfDocumentWithWriterService.class);
 
     @Override
     public void generateDocument(final Entity entity, final Locale locale, final Rectangle pageSize) throws IOException,
@@ -113,7 +108,7 @@ public abstract class PdfDocumentService implements ReportDocumentService {
             buildPdfMetadata(document, locale);
             writer.createXmpMetadata();
             document.open();
-            buildPdfContent(document, entity, locale);
+            buildPdfContent(writer, document, entity, locale);
             document.close();
         } catch (DocumentException e) {
             LOG.error("Problem with generating document - " + e.getMessage());
@@ -127,7 +122,8 @@ public abstract class PdfDocumentService implements ReportDocumentService {
         pdfHelper.addMetaData(document);
     }
 
-    protected abstract void buildPdfContent(final Document document, final Entity entity, final Locale locale)
+    protected abstract void buildPdfContent(final PdfWriter writer, final Document document, final Entity entity,
+            final Locale locale)
             throws DocumentException;
 
 }
