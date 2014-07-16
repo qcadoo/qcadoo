@@ -168,12 +168,13 @@ public interface PdfHelper {
      * @param numOfColumns
      * @param header
      *            header labels
-     * @param lastColumnAligmentToLeft
+     * @param lastColumnAlignmentToLeft
      * @param columnWidths
+     *            relative column widths
      * @param headerAlignment
      * @return table
      */
-    PdfPTable createTableWithHeader(final int numOfColumns, final List<String> header, final boolean lastColumnAligmentToLeft,
+    PdfPTable createTableWithHeader(final int numOfColumns, final List<String> header, final boolean lastColumnAlignmentToLeft,
             final int[] columnWidths, final HeaderAlignment headerAlignment);
 
     /**
@@ -182,11 +183,11 @@ public interface PdfHelper {
      * @param numOfColumns
      * @param header
      *            header labels
-     * @param lastColumnAligmentToLeft
+     * @param lastColumnAlignmentToLeft
      * @param headerAlignment
      * @return table
      */
-    PdfPTable createTableWithHeader(final int numOfColumns, final List<String> header, final boolean lastColumnAligmentToLeft,
+    PdfPTable createTableWithHeader(final int numOfColumns, final List<String> header, final boolean lastColumnAlignmentToLeft,
             final HeaderAlignment headerAlignment);
 
     /**
@@ -195,11 +196,12 @@ public interface PdfHelper {
      * @param numOfColumns
      * @param header
      *            header labels
-     * @param lastColumnAligmentToLeft
+     * @param lastColumnAlignmentToLeft
      * @param columnWidths
+     *            relative column widths
      * @return table
      */
-    PdfPTable createTableWithHeader(final int numOfColumns, final List<String> header, final boolean lastColumnAligmentToLeft,
+    PdfPTable createTableWithHeader(final int numOfColumns, final List<String> header, final boolean lastColumnAlignmentToLeft,
             final int[] columnWidths);
 
     /**
@@ -208,10 +210,10 @@ public interface PdfHelper {
      * @param numOfColumns
      * @param header
      *            header labels
-     * @param lastColumnAligmentToLeft
+     * @param lastColumnAlignmentToLeft
      * @return table
      */
-    PdfPTable createTableWithHeader(final int numOfColumns, final List<String> header, final boolean lastColumnAligmentToLeft);
+    PdfPTable createTableWithHeader(final int numOfColumns, final List<String> header, final boolean lastColumnAlignmentToLeft);
 
     /**
      * Add cell to current dynamin header table with exists value or empty.
@@ -235,8 +237,8 @@ public interface PdfHelper {
      * Return column sizes
      * 
      * @param availableWidth
-     * @param column
-     * @param all
+     * @param fixedColumns
+     * @param allColumns
      *            column
      * @return
      */
@@ -250,16 +252,16 @@ public interface PdfHelper {
      */
     String getDocumentAuthor();
 
-    void addDocumentHeaderThin(final Document document, final String name, final String documenTitle,
+    void addDocumentHeaderThin(final Document document, final String name, final String documentTitle,
             final String documentAuthor, final Date date) throws DocumentException;
 
     PdfPTable addDynamicHeaderTableCellOneRow(PdfPTable firstColumnHeaderTable, Map<String, Object> firstColumn, Locale locale);
 
     // FIXME dev_team: What if table has many columns with the same label?
-    PdfPTable createTableWithHeader(final int numOfColumns, final List<String> header, final boolean lastColumnAligmentToLeft,
+    PdfPTable createTableWithHeader(final int numOfColumns, final List<String> header, final boolean lastColumnAlignmentToLeft,
             final int[] columnWidths, final Map<String, HeaderAlignment> alignments);
 
-    PdfPTable createTableWithHeader(final int numOfColumns, List<String> header, final boolean lastColumnAligmentToLeft,
+    PdfPTable createTableWithHeader(final int numOfColumns, List<String> header, final boolean lastColumnAlignmentToLeft,
             final Map<String, HeaderAlignment> alignments);
 
     boolean validateReportColumnWidths(final Integer availableWidth, final Map<String, Integer> fixedColumns,

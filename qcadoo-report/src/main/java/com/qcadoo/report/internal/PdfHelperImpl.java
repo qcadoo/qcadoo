@@ -142,11 +142,11 @@ public final class PdfHelperImpl implements PdfHelper {
     }
 
     @Override
-    public void addDocumentHeaderThin(final Document document, final String name, final String documenTitle,
+    public void addDocumentHeaderThin(final Document document, final String name, final String documentTitle,
             final String documentAuthor, final Date date) throws DocumentException {
         SimpleDateFormat df = new SimpleDateFormat(DateUtils.L_DATE_TIME_FORMAT, getLocale());
         LineSeparator line = new LineSeparator(2, 100f, ColorUtils.getLineDarkColor(), Element.ALIGN_LEFT, 0);
-        Paragraph title = new Paragraph(new Phrase(documenTitle, FontUtils.getDejavuBold14Light()));
+        Paragraph title = new Paragraph(new Phrase(documentTitle, FontUtils.getDejavuBold14Light()));
         title.add(new Phrase(" " + name, FontUtils.getDejavuBold14Dark()));
         title.setSpacingAfter(7f);
         document.add(title);
@@ -245,60 +245,60 @@ public final class PdfHelperImpl implements PdfHelper {
     }
 
     @Override
-    public PdfPTable createTableWithHeader(int numOfColumns, List<String> header, boolean lastColumnAligmentToLeft,
+    public PdfPTable createTableWithHeader(int numOfColumns, List<String> header, boolean lastColumnAlignmentToLeft,
             HeaderAlignment headerAlignment) {
         PdfPTable table = new PdfPTable(numOfColumns);
-        return setTableProperties(header, lastColumnAligmentToLeft, table, null);
+        return setTableProperties(header, lastColumnAlignmentToLeft, table, null);
     }
 
     @Override
     public PdfPTable createTableWithHeader(final int numOfColumns, final List<String> header,
-            final boolean lastColumnAligmentToLeft, final int[] columnWidths, final Map<String, HeaderAlignment> alignments) {
+            final boolean lastColumnAlignmentToLeft, final int[] columnWidths, final Map<String, HeaderAlignment> alignments) {
         PdfPTable table = new PdfPTable(numOfColumns);
         try {
             table.setWidths(columnWidths);
         } catch (DocumentException e) {
             LOG.error(e.getMessage(), e);
         }
-        return setTableProperties(header, lastColumnAligmentToLeft, table, alignments);
+        return setTableProperties(header, lastColumnAlignmentToLeft, table, alignments);
     }
 
     @Override
     public PdfPTable createTableWithHeader(final int numOfColumns, final List<String> header,
-            final boolean lastColumnAligmentToLeft, final int[] columnWidths, final HeaderAlignment alignment) {
+            final boolean lastColumnAlignmentToLeft, final int[] columnWidths, final HeaderAlignment alignment) {
         PdfPTable table = new PdfPTable(numOfColumns);
         try {
             table.setWidths(columnWidths);
         } catch (DocumentException e) {
             LOG.error(e.getMessage(), e);
         }
-        return setTableProperties(header, lastColumnAligmentToLeft, table, null);
+        return setTableProperties(header, lastColumnAlignmentToLeft, table, null);
     }
 
     @Override
     public PdfPTable createTableWithHeader(final int numOfColumns, final List<String> header,
-            final boolean lastColumnAligmentToLeft, final Map<String, HeaderAlignment> alignments) {
+            final boolean lastColumnAlignmentToLeft, final Map<String, HeaderAlignment> alignments) {
         PdfPTable table = new PdfPTable(numOfColumns);
-        return setTableProperties(header, lastColumnAligmentToLeft, table, alignments);
+        return setTableProperties(header, lastColumnAlignmentToLeft, table, alignments);
     }
 
     @Override
     public PdfPTable createTableWithHeader(final int numOfColumns, final List<String> header,
-            final boolean lastColumnAligmentToLeft, final int[] columnWidths) {
+            final boolean lastColumnAlignmentToLeft, final int[] columnWidths) {
         PdfPTable table = new PdfPTable(numOfColumns);
         try {
             table.setWidths(columnWidths);
         } catch (DocumentException e) {
             LOG.error(e.getMessage(), e);
         }
-        return setTableProperties(header, lastColumnAligmentToLeft, table, null);
+        return setTableProperties(header, lastColumnAlignmentToLeft, table, null);
     }
 
     @Override
     public PdfPTable createTableWithHeader(final int numOfColumns, final List<String> header,
-            final boolean lastColumnAligmentToLeft) {
+            final boolean lastColumnAlignmentToLeft) {
         PdfPTable table = new PdfPTable(numOfColumns);
-        return setTableProperties(header, lastColumnAligmentToLeft, table, null);
+        return setTableProperties(header, lastColumnAlignmentToLeft, table, null);
     }
 
     @Override
