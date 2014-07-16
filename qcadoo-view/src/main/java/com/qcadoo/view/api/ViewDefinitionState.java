@@ -25,6 +25,8 @@ package com.qcadoo.view.api;
 
 import java.util.Map;
 
+import com.google.common.base.Optional;
+
 /**
  * ViewDefinitionState is instance of single view. It is generated using ViewDefinition in request scope.
  * <p>
@@ -45,6 +47,18 @@ public interface ViewDefinitionState extends ComponentState {
      * @return component state with specified reference name
      */
     ComponentState getComponentByReference(String reference);
+
+    /**
+     * Returns Optional containing component with specified reference name or empty Optional if no such component found or found
+     * component has other type than demanded (see T type parameter).
+     * 
+     * @since 1.3
+     * @param reference
+     *            reference name of component
+     * @return component state with specified reference name wrapped within Optional, or Optional.absent() if no such component
+     *         found or found component has other type than demanded.
+     */
+    <T extends ComponentState> Optional<T> tryFindComponentByReference(String reference);
 
     /**
      * Informs client that should redirect to some url.

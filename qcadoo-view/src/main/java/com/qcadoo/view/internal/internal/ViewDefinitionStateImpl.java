@@ -32,6 +32,7 @@ import java.util.Map;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.google.common.base.Optional;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.internal.api.ContainerState;
 import com.qcadoo.view.internal.api.InternalComponentState;
@@ -50,10 +51,13 @@ public final class ViewDefinitionStateImpl extends AbstractContainerState implem
 
     private final Map<String, ComponentState> registry = new HashMap<String, ComponentState>();
 
+    private final ViewDefinitionStateLogger logger;
+
     public ViewDefinitionStateImpl() {
         super();
 
         requestRender();
+        logger = ViewDefinitionStateLogger.forView(this);
     }
 
     @Override
@@ -122,6 +126,22 @@ public final class ViewDefinitionStateImpl extends AbstractContainerState implem
     @Override
     public ComponentState getComponentByReference(final String reference) {
         return registry.get(reference);
+    }
+
+    @Override
+    public <T extends ComponentState> Optional<T> tryFindComponentByReference(final String reference) {
+        try {
+            Optional<T> maybeComponent = Optional.fromNullable((T) getComponentByReference(reference));
+            if (!maybeComponent.isPresent()) {
+                logger.logWarn(String.format("Cannot find component with reference name = '%s'", reference));
+            }
+            return maybeComponent;
+        } catch (ClassCastException cce) {
+            logger.logWarn(
+                    String.format("Component with reference name = '%s' isn't a kind of expected component type.", reference),
+                    cce);
+            return Optional.absent();
+        }
     }
 
     private void performEventOnChildren(final Collection<InternalComponentState> components, final String event,
