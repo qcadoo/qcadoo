@@ -23,12 +23,19 @@
  */
 package com.qcadoo.localization.api.utils;
 
+import static com.google.common.base.Optional.of;
+import static com.qcadoo.commons.functional.Either.left;
+import static com.qcadoo.commons.functional.Either.right;
+
 import java.text.ParseException;
 import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.joda.time.DateTime;
+
+import com.google.common.base.Optional;
+import com.qcadoo.commons.functional.Either;
 
 /**
  * Utility for date localization.
@@ -218,6 +225,27 @@ public final class DateUtils {
             throw new IllegalArgumentException(String.format(PARSE_EXCEPTION_MSG, value));
         }
         return date;
+    }
+
+    public static Either<? extends Exception, Optional<DateTime>> tryParse(final Object value) {
+        if (value instanceof String) {
+            if (StringUtils.isNotBlank((String) value)) {
+                try {
+                    Date date = org.apache.commons.lang.time.DateUtils.parseDateStrictly((String) value, new String[] {
+                            DateUtils.L_DATE_TIME_FORMAT, DateUtils.L_DATE_FORMAT });
+                    return right(of(new DateTime(date)));
+                } catch (ParseException e) {
+                    return left(new IllegalArgumentException(String.format(PARSE_EXCEPTION_MSG, value), e));
+                }
+            }
+        } else if (value instanceof Date) {
+            return right(of(new DateTime(value)));
+        } else if (value instanceof Number) {
+            return right(of(new DateTime(new Date(((Number) value).longValue()))));
+        } else if (value != null) {
+            return left(new IllegalArgumentException(String.format(PARSE_EXCEPTION_MSG, value)));
+        }
+        return right(Optional.<DateTime> absent());
     }
 
     public static Date copy(final Date date) {
