@@ -24,6 +24,7 @@
 package com.qcadoo.testing.model;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Set;
 
@@ -82,8 +83,18 @@ public final class EntityTestUtils {
     }
 
     public static void stubDateField(final Entity entity, final String fieldName, final Date fieldValue) {
-        BDDMockito.given(entity.getDateField(fieldName)).willReturn(fieldValue);
-        stubField(entity, fieldName, fieldValue);
+        Answer<Date> answer = new Answer<Date>() {
+
+            @Override
+            public Date answer(final InvocationOnMock invocation) throws Throwable {
+                if (fieldValue == null) {
+                    return null;
+                }
+                return new Date(fieldValue.getTime());
+            }
+        };
+        BDDMockito.given(entity.getDateField(fieldName)).willAnswer(answer);
+        stubField(entity, fieldName, answer);
     }
 
     public static void stubIntegerField(final Entity entity, final String fieldName, final Integer fieldValue) {
@@ -101,6 +112,9 @@ public final class EntityTestUtils {
 
             @Override
             public Set<Entity> answer(final InvocationOnMock invocation) throws Throwable {
+                if (fieldValue == null) {
+                    return Collections.emptySet();
+                }
                 return Sets.newHashSet(fieldValue);
             }
         };
@@ -114,8 +128,18 @@ public final class EntityTestUtils {
     }
 
     public static void stubHasManyField(final Entity entity, final String fieldName, final EntityList fieldValue) {
-        BDDMockito.given(entity.getHasManyField(fieldName)).willReturn(fieldValue);
-        stubField(entity, fieldName, fieldValue);
+        Answer<EntityList> answer = new Answer<EntityList>() {
+
+            @Override
+            public EntityList answer(final InvocationOnMock invocation) throws Throwable {
+                if (fieldValue == null) {
+                    return EntityListMock.create();
+                }
+                return EntityListMock.copyOf(fieldValue);
+            }
+        };
+        BDDMockito.given(entity.getHasManyField(fieldName)).willAnswer(answer);
+        stubField(entity, fieldName, answer);
     }
 
     public static void stubBelongsToField(final Entity entity, final String fieldName, final Entity fieldValue) {

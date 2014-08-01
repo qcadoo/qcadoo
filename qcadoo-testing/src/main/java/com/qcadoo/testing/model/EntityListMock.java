@@ -30,6 +30,7 @@ import java.util.LinkedList;
 import org.mockito.Mockito;
 
 import com.google.common.base.Supplier;
+import com.google.common.collect.Lists;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.EntityList;
 import com.qcadoo.model.api.search.SearchCriteriaBuilder;
@@ -86,7 +87,17 @@ public class EntityListMock extends LinkedList<Entity> implements EntityList {
      */
     public static EntityList create(final Collection<Entity> elements,
             final Supplier<SearchCriteriaBuilder> criteriaBuilderFactory) {
-        return new EntityListMock(elements, criteriaBuilderFactory);
+        return new EntityListMock(Lists.newLinkedList(elements), criteriaBuilderFactory);
+    }
+
+    public static EntityList copyOf(final EntityList entityList) {
+        return create(entityList, new Supplier<SearchCriteriaBuilder>() {
+
+            @Override
+            public SearchCriteriaBuilder get() {
+                return entityList.find();
+            }
+        });
     }
 
     private EntityListMock(final Collection<Entity> elements, final Supplier<SearchCriteriaBuilder> criteriaBuilderFactory) {
@@ -98,4 +109,5 @@ public class EntityListMock extends LinkedList<Entity> implements EntityList {
     public SearchCriteriaBuilder find() {
         return criteriaBuilderFactory.get();
     }
+
 }
