@@ -866,6 +866,17 @@ public final class GridComponentState extends AbstractComponentState implements 
                 localeString.append(fieldValue);
 
                 values.put(column.getName(), getTranslationService().translate(localeString.toString(), getLocale()));
+            } else if (column.getFields().get(0).getType().getType().equals(Boolean.class)) {
+                String fieldValue = column.getValue(entity, getLocale());
+                if (fieldValue != null) {
+                    if (fieldValue.equals("1")) {
+                        values.put(column.getName(), getTranslationService().translate("qcadooView.true", getLocale()));
+                    } else {
+                        values.put(column.getName(), getTranslationService().translate("qcadooView.false", getLocale()));
+                    }
+                } else {
+                    values.put(column.getName(), "");
+                }
             } else {
                 values.put(column.getName(), column.getValue(entity, getLocale()));
             }
@@ -884,7 +895,7 @@ public final class GridComponentState extends AbstractComponentState implements 
         if (criteriaModifier == null) {
             throw new IllegalStateException("There is no critieria modifier. Filter value is not present.");
         }
- 
+
         FilterValueHolder holder = new FilterValueHolderImpl(criteriaModifierParameter);
         return holder;
     }
