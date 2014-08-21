@@ -26,6 +26,7 @@ package com.qcadoo.model.api.file;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -138,4 +139,17 @@ public interface FileService {
      * @return updated entity
      */
     Entity updateReportFileName(Entity entity, String dateFieldName, String name);
+
+
+    /**
+     * Compress documents to newly created zip file.
+     *
+     * @param documents
+     *              documents to be compress
+     * @param removeCompressed
+     *              if true removes documents after compression
+     * @return created zip file
+     * @throws IOException
+     */
+    File compressToZipFile(List<File> documents, boolean removeCompressed) throws IOException;
 }

@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 1.3
+ * Version: 1.2.0
  *
  * This file is part of Qcadoo.
  *
@@ -27,9 +27,12 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
+import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -111,5 +114,22 @@ public class FileServiceImplTest {
 
         // then
         verify(entity).setField("fileName", "oldFilename,/0/newFileName.abc_1970_01_01_01_20_34");
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void shouldThrowNullPointerException(){
+        // when
+        try {
+            fileService.compressToZipFile(null, true);
+        } catch (IOException e) { }
+    }
+
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldThrowIllegalArgumentException(){
+        // when
+        try {
+            fileService.compressToZipFile(new ArrayList<File>(), true);
+        } catch (IOException e) { }
     }
 }

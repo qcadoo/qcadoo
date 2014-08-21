@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 1.3
+ * Version: 1.2.0
  *
  * This file is part of Qcadoo.
  *
@@ -34,9 +34,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import javax.activation.MimetypesFileTypeMap;
 
+import com.google.common.base.Preconditions;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -203,6 +207,35 @@ public class FileServiceImpl implements FileService {
         entity.setField("fileName", currentFiles + getReportFullPath(name, (Date) entity.getField(dateFieldName)));
 
         return entity.getDataDefinition().save(entity);
+    }
+
+    @Override
+    public File compressToZipFile(List<File> documents, boolean removeCompressed) throws IOException {
+        Preconditions.checkNotNull(documents, "documents argument is nullable.");
+        Preconditions.checkArgument(!documents.isEmpty(), "documents list can't be empty");
+
+        File zipFile = createExportFile("documents.zip");
+        FileOutputStream fos = new FileOutputStream(zipFile);
+        ZipOutputStream zos = new ZipOutputStream(fos);
+        try {
+
+            for (File document : documents) {
+                ZipEntry ze = new ZipEntry(document.getName());
+                zos.putNextEntry(ze);
+
+                FileInputStream in = new FileInputStream(document);
+                IOUtils.copy(in, zos);
+                IOUtils.closeQuietly(in);
+                zos.closeEntry();
+                if(removeCompressed) {
+                    remove(document.getAbsolutePath());
+                }
+            }
+
+        } finally {
+            IOUtils.closeQuietly(zos);
+        }
+        return zipFile;
     }
 
     private String getReportFullPath(final String name, final Date date) {
