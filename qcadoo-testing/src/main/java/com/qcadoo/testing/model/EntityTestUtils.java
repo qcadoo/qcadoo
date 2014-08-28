@@ -64,7 +64,9 @@ public final class EntityTestUtils {
 
     public static Entity mockEntity(final Long id, final DataDefinition dataDefinition) {
         Entity entityMock = mock(Entity.class);
-        stubId(entityMock, id);
+        if (id != null) {
+            stubId(entityMock, id);
+        }
         BDDMockito.given(entityMock.getDataDefinition()).willReturn(dataDefinition);
         return entityMock;
     }
