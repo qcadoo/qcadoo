@@ -34,6 +34,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.view.api.components.AwesomeDynamicListComponent;
@@ -105,6 +106,11 @@ public class AwesomeDynamicListState extends FieldComponentState implements Awes
 
     @Override
     public Object getFieldValue() {
+        return getEntities();
+    }
+
+    @Override
+    public List<Entity> getEntities() {
         List<Entity> entities = new LinkedList<Entity>();
         for (FormComponent form : forms) {
             Entity e = form.getEntity();

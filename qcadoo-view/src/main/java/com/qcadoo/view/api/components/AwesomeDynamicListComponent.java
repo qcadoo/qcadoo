@@ -25,6 +25,8 @@ package com.qcadoo.view.api.components;
 
 import java.util.List;
 
+import com.qcadoo.model.api.Entity;
+
 /**
  * Represents awesome dynamic list component
  * 
@@ -47,5 +49,14 @@ public interface AwesomeDynamicListComponent extends FieldComponent {
      * @return child form component with specified entity id
      */
     FormComponent getFormComponent(Long id);
+
+    /**
+     * Returns a list of underlying entities (entity proxies).
+     * 
+     * @return underlying entities (entity proxies).
+     * 
+     * @since 1.3.0
+     */
+    List<Entity> getEntities();
 
 }
