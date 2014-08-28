@@ -23,13 +23,14 @@
  */
 package com.qcadoo.testing.model;
 
+import static org.mockito.Mockito.mock;
+
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Set;
 
 import org.mockito.BDDMockito;
-import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -50,11 +51,20 @@ public final class EntityTestUtils {
     }
 
     public static Entity mockEntity() {
-        return Mockito.mock(Entity.class);
+        return mockEntity(null, mock(DataDefinition.class));
+    }
+
+    public static Entity mockEntity(final Long id) {
+        return mockEntity(id, mock(DataDefinition.class));
     }
 
     public static Entity mockEntity(final DataDefinition dataDefinition) {
-        Entity entityMock = mockEntity();
+        return mockEntity(null, dataDefinition);
+    }
+
+    public static Entity mockEntity(final Long id, final DataDefinition dataDefinition) {
+        Entity entityMock = mock(Entity.class);
+        stubId(entityMock, id);
         BDDMockito.given(entityMock.getDataDefinition()).willReturn(dataDefinition);
         return entityMock;
     }
