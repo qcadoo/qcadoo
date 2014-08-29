@@ -306,7 +306,7 @@ public final class TreeComponentState extends FieldComponentState implements Tre
 
         EntityTree tree = entity.getTreeField(belongsToFieldDefinition.getName());
 
-        if (tree.getRoot() == null) {
+        if (tree == null || tree.getRoot() == null) {
             return;
         }
 
