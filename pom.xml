@@ -61,7 +61,7 @@
 
 	<properties>
 		<qcadoo.plugin.version>1.3</qcadoo.plugin.version>
-		<qcadoo.maven.plugin.version>1.3-SNAPSHOT</qcadoo.maven.plugin.version>
+		<qcadoo.maven.plugin.version>1.3</qcadoo.maven.plugin.version>
 	</properties>
 
 	<dependencies>
