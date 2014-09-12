@@ -45,13 +45,14 @@ public class GanttChartItemFactory {
         this.interval = interval;
     }
 
-    public GanttChartItem createGanttChartItem(final String rowName, final String name, final Long entityId, final Date dateFrom,
-            final Date dateTo, final Date itemDateFrom, final Date itemDateTo) {
+    public GanttChartItem createGanttChartItem(final String rowName, final String name, final String description,
+            final Long entityId, final Date dateFrom, final Date dateTo, final Date itemDateFrom, final Date itemDateTo) {
 
         double from = getPosition(dateFrom, dateTo, itemDateFrom);
         double to = getPosition(dateFrom, dateTo, itemDateTo);
 
-        return new GanttChartItemImpl(rowName, name, entityId, format.format(itemDateFrom), format.format(itemDateTo), from, to);
+        return new GanttChartItemImpl(rowName, name, description, entityId, format.format(itemDateFrom),
+                format.format(itemDateTo), from, to);
     }
 
     private long getTimezoneOffset(final Date date) {

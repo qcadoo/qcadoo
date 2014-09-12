@@ -233,14 +233,21 @@ public class GanttChartScaleImpl implements GanttChartScale {
     @Override
     public GanttChartItem createGanttChartItem(final String rowName, final String name, final Long entityId,
             final Date itemDateFrom, final Date itemDateTo) {
-        return ganttChartItemFactory.createGanttChartItem(rowName, name, entityId, dateFrom, dateTo, itemDateFrom, itemDateTo);
+        return createGanttChartItem(rowName, name, name, entityId, itemDateFrom, itemDateTo);
+    }
+
+    @Override
+    public GanttChartItem createGanttChartItem(final String rowName, final String label, final String description,
+            final Long entityId, final Date itemDateFrom, final Date itemDateTo) {
+        return ganttChartItemFactory.createGanttChartItem(rowName, label, description, entityId, dateFrom, dateTo, itemDateFrom,
+                itemDateTo);
     }
 
     public Boolean getIsDatesSet() {
         return isDatesSet;
     }
 
-    public void setIsDatesSet(Boolean isDatesSet) {
+    public void setIsDatesSet(final Boolean isDatesSet) {
         this.isDatesSet = isDatesSet;
     }
 

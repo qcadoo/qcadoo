@@ -32,17 +32,53 @@ public interface GanttChartScale {
 
     Date getDateTo();
 
-    void setDateTo(Date dateTo);
+    void setDateTo(final Date dateTo);
 
     Date getDateFrom();
 
-    void setDateFrom(Date dateFrom);
+    void setDateFrom(final Date dateFrom);
 
+    /**
+     * Create a new chart item.
+     *
+     * @param rowName
+     *            name of a gantt chart's row to which this item belongs
+     * @param name
+     *            label displayed on both item's box and its tooltip (visible on mouse hover)
+     * @param entityId
+     *            id of a corresponding entity
+     * @param dateFrom
+     *            start date & time
+     * @param dateTo
+     *            finish date & time
+     * @return new chart item
+     */
     GanttChartItem createGanttChartItem(final String rowName, final String name, final Long entityId, final Date dateFrom,
             final Date dateTo);
 
+    /**
+     * Create a new chart item
+     * 
+     * @param rowName
+     *            name of a gantt chart's row to which this item belongs
+     * @param label
+     *            label displayed on this item's box
+     * @param description
+     *            description show in a tooltip (visible on mouse hover)
+     * @param entityId
+     *            id of a corresponding entity
+     * @param dateFrom
+     *            start date & time
+     * @param dateTo
+     *            finish date & time
+     * @return new chart item
+     * @since 1.4
+     */
+    GanttChartItem createGanttChartItem(final String rowName, final String label, final String description, final Long entityId,
+            final Date dateFrom, final Date dateTo);
+
     Boolean getIsDatesSet();
 
-    void setIsDatesSet(Boolean isDatesSet);
+    void setIsDatesSet(final Boolean isDatesSet);
 
 }

@@ -25,6 +25,8 @@ package com.qcadoo.view.internal.components.ganttChart;
 
 import java.util.List;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -44,6 +46,8 @@ public class GanttChartItemImpl implements GanttChartModifiableItem {
 
     private String name;
 
+    private String description;
+
     private String dateFrom;
 
     private String dateTo;
@@ -52,6 +56,11 @@ public class GanttChartItemImpl implements GanttChartModifiableItem {
 
     public GanttChartItemImpl(final String row, final String name, final Long entityId, final String dateFrom,
             final String dateTo, final double from, final double to) {
+        this(row, name, name, entityId, dateFrom, dateTo, from, to);
+    }
+
+    public GanttChartItemImpl(final String row, final String name, final String description, final Long entityId,
+            final String dateFrom, final String dateTo, final double from, final double to) {
         this.bgStrips = Lists.newLinkedList();
         this.rowName = row;
         this.name = name;
@@ -60,6 +69,7 @@ public class GanttChartItemImpl implements GanttChartModifiableItem {
         this.dateTo = dateTo;
         this.from = from;
         this.to = to;
+        this.description = description;
     }
 
     @Override
@@ -70,6 +80,11 @@ public class GanttChartItemImpl implements GanttChartModifiableItem {
     @Override
     public String getName() {
         return name;
+    }
+
+    @Override
+    public String getDescription() {
+        return description;
     }
 
     @Override
@@ -113,11 +128,6 @@ public class GanttChartItemImpl implements GanttChartModifiableItem {
     }
 
     @Override
-    public void setName(final String name) {
-        this.name = name;
-    }
-
-    @Override
     public Long getEntityId() {
         return entityId;
     }
@@ -137,6 +147,7 @@ public class GanttChartItemImpl implements GanttChartModifiableItem {
 
         final JSONObject info = new JSONObject();
         info.put("name", getName());
+        info.put("description", getDescription());
         info.put("dateFrom", getDateFrom());
         info.put("dateTo", getDateTo());
         json.put("info", info);
@@ -153,7 +164,30 @@ public class GanttChartItemImpl implements GanttChartModifiableItem {
     @Override
     public String toString() {
         return "GanttChartItemImpl [rowName=" + rowName + ", entityId=" + entityId + ", from=" + from + ", to=" + to + ", name="
-                + name + ", dateFrom=" + dateFrom + ", dateTo=" + dateTo + "]";
+                + name + ", dateFrom=" + dateFrom + ", dateTo=" + dateTo + ", description=" + description + "]";
     }
 
+    @Override
+    public boolean equals(final Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (obj == this) {
+            return true;
+        }
+        if (obj.getClass() != getClass()) {
+            return false;
+        }
+        GanttChartItemImpl rhs = (GanttChartItemImpl) obj;
+        return new EqualsBuilder().append(this.rowName, rhs.rowName).append(this.entityId, rhs.entityId)
+                .append(this.from, rhs.from).append(this.to, rhs.to).append(this.name, rhs.name)
+                .append(this.description, rhs.description).append(this.dateFrom, rhs.dateFrom).append(this.dateTo, rhs.dateTo)
+                .append(this.bgStrips, rhs.bgStrips).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder().append(rowName).append(entityId).append(from).append(to).append(name).append(description)
+                .append(dateFrom).append(dateTo).append(bgStrips).toHashCode();
+    }
 }
