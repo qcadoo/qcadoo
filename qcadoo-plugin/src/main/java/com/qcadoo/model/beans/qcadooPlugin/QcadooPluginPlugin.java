@@ -23,12 +23,16 @@
  */
 package com.qcadoo.model.beans.qcadooPlugin;
 
+import java.util.Locale;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import org.apache.commons.lang.StringUtils;
 
 import com.qcadoo.plugin.api.Plugin;
 
@@ -59,7 +63,7 @@ public class QcadooPluginPlugin {
     public QcadooPluginPlugin(final Plugin plugin) {
         identifier = plugin.getIdentifier();
         version = plugin.getVersion().toString();
-        state = plugin.getState().toString();
+        setState(plugin.getState().toString());
         isSystem = plugin.isSystemPlugin();
     }
 
@@ -76,7 +80,7 @@ public class QcadooPluginPlugin {
     }
 
     public void setState(final String state) {
-        this.state = state;
+        this.state = StringUtils.trim(StringUtils.upperCase(state, Locale.ENGLISH));
     }
 
     public String getVersion() {
