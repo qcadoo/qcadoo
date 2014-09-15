@@ -447,18 +447,31 @@ QCD.components.elements.GanttChart = function (_element, _mainController) {
         }
         itemElement.append(itemElementContent);
 
-        if (_this.options.hasPopupInfo) {
-            var description = item.info.name ? "<div class='ganttItemDescriptionName'>" + item.info.description + "</div>" : "";
+        function createTooltipContent(item) {
+            var tooltip = item.info.tooltip,
+                description = "",
+                content = tooltip.content || [],
+                contentLen = content.length,
+                i;
+            if (typeof tooltip.header === 'string') {
+                description += "<div class='ganttItemDescriptionName'>" + tooltip.header + "</div>"
+            }
+            for (i = 0; i < contentLen; i++) {
+                description += "<div class='ganttItemDescriptionInfo'>" + content[i] + "</div>";
+            }
             description += "<div class='ganttItemDescriptionInfo'>";
             description += "<div class='ganttItemDescriptionLabel'>" + _this.options.translations["description.dateFrom"] + "</div>";
             description += "<div class='ganttItemDescriptionValue'>" + item.info.dateFrom + "</div></div>";
             description += "<div class='ganttItemDescriptionInfo'>";
             description += "<div class='ganttItemDescriptionLabel'>" + _this.options.translations["description.dateTo"] + "</div>";
             description += "<div class='ganttItemDescriptionValue'>" + item.info.dateTo + "</div></div>";
+            return description;
+        }
 
+        if (_this.options.hasPopupInfo) {
             itemElement.bind({
                 "mousemove": function (eventObj) {
-                    ganttTooltip.show(eventObj.clientX, eventObj.clientY, description);
+                    ganttTooltip.show(eventObj.clientX, eventObj.clientY, createTooltipContent(item));
                 },
                 "mouseleave": function (eventObj) {
                     ganttTooltip.hide();

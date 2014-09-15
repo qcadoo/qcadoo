@@ -34,6 +34,8 @@ import org.json.JSONObject;
 
 import com.qcadoo.model.internal.types.DateType;
 import com.qcadoo.view.api.components.ganttChart.GanttChartItem;
+import com.qcadoo.view.api.components.ganttChart.GanttChartItemTooltip;
+import com.qcadoo.view.api.components.ganttChart.GanttChartItemTooltipBuilder;
 import com.qcadoo.view.api.components.ganttChart.GanttChartScale;
 
 public class GanttChartScaleImpl implements GanttChartScale {
@@ -233,13 +235,14 @@ public class GanttChartScaleImpl implements GanttChartScale {
     @Override
     public GanttChartItem createGanttChartItem(final String rowName, final String name, final Long entityId,
             final Date itemDateFrom, final Date itemDateTo) {
-        return createGanttChartItem(rowName, name, name, entityId, itemDateFrom, itemDateTo);
+        return createGanttChartItem(rowName, name, new GanttChartItemTooltipBuilder().withHeader(name).build(), entityId,
+                itemDateFrom, itemDateTo);
     }
 
     @Override
-    public GanttChartItem createGanttChartItem(final String rowName, final String label, final String description,
+    public GanttChartItem createGanttChartItem(final String rowName, final String label, final GanttChartItemTooltip tooltip,
             final Long entityId, final Date itemDateFrom, final Date itemDateTo) {
-        return ganttChartItemFactory.createGanttChartItem(rowName, label, description, entityId, dateFrom, dateTo, itemDateFrom,
+        return ganttChartItemFactory.createGanttChartItem(rowName, label, tooltip, entityId, dateFrom, dateTo, itemDateFrom,
                 itemDateTo);
     }
 

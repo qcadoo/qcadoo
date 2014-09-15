@@ -35,7 +35,7 @@ public interface GanttChartItem {
 
     String getName();
 
-    String getDescription();
+    GanttChartItemTooltip getTooltip();
 
     Long getEntityId();
 

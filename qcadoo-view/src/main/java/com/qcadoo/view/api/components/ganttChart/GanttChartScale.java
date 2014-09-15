@@ -63,8 +63,8 @@ public interface GanttChartScale {
      *            name of a gantt chart's row to which this item belongs
      * @param label
      *            label displayed on this item's box
-     * @param description
-     *            description show in a tooltip (visible on mouse hover)
+     * @param tooltip
+     *            tooltip contents, visible on mouse hover
      * @param entityId
      *            id of a corresponding entity
      * @param dateFrom
@@ -74,7 +74,7 @@ public interface GanttChartScale {
      * @return new chart item
      * @since 1.4
      */
-    GanttChartItem createGanttChartItem(final String rowName, final String label, final String description, final Long entityId,
+    GanttChartItem createGanttChartItem(final String rowName, final String label, final GanttChartItemTooltip tooltip, final Long entityId,
             final Date dateFrom, final Date dateTo);
 
     Boolean getIsDatesSet();
