@@ -25,6 +25,9 @@ package com.qcadoo.commons.dateTime;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.joda.time.DateTime;
+import org.joda.time.Interval;
+import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 
 import com.google.common.base.Preconditions;
@@ -46,10 +49,10 @@ public class TimeRange implements Comparable<TimeRange> {
     /**
      * Get new Time range
      * 
-     * Arguments order
+     * If time to is earlier than time from, range will be considered as ending at next day.
      * 
-     * @param from
-     * @param to
+     * @param from lower bound
+     * @param to upper bound
      */
     public TimeRange(final LocalTime from, final LocalTime to) {
         Preconditions.checkArgument(from != null, "Missing lower bound for time range.");
@@ -75,7 +78,7 @@ public class TimeRange implements Comparable<TimeRange> {
      */
     public boolean contains(final LocalTime time) {
         if (startsDayBefore()) {
-            return !time.isAfter(from) && time.isBefore(to);
+            return !time.isAfter(to) || !time.isBefore(from);
         }
         return !time.isAfter(to) && !time.isBefore(from);
     }
@@ -86,6 +89,20 @@ public class TimeRange implements Comparable<TimeRange> {
 
     public LocalTime getTo() {
         return to;
+    }
+
+    public Interval toInterval(final LocalDate date) {
+        DateTime start = date.toDateTime(getFrom());
+        DateTime end = date.toDateTime(getTo());
+        if (startsDayBefore()) {
+            end = end.plusDays(1);
+        }
+        return new Interval(start, end);
+    }
+
+    @Override
+    public int compareTo(final TimeRange other) {
+        return getFrom().compareTo(other.getFrom());
     }
 
     @Override
@@ -103,11 +120,6 @@ public class TimeRange implements Comparable<TimeRange> {
         }
         TimeRange other = (TimeRange) obj;
         return new EqualsBuilder().append(from, other.from).append(to, other.to).isEquals();
-    }
-
-    @Override
-    public int compareTo(final TimeRange other) {
-        return getFrom().compareTo(other.getFrom());
     }
 
 }

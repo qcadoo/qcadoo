@@ -33,7 +33,9 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  * 
  * @author Marcin Kubala
  * @since 1.2.1
+ * @deprecated use org.joda.time.Interval
  */
+@Deprecated
 public final class DateRange {
 
     private final Long fromMillis;

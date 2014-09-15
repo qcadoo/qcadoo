@@ -115,4 +115,22 @@ public class LazyStreamTest {
         Assert.assertEquals((Integer) 6, dropResult.head());
     }
 
+    @Test
+    public final void shouldTakeFirstNElementsThatMatchPredicate() {
+        // given
+        LazyStream<Integer> stream = LazyStream.create(1, INCREMENT_BY_ONE);
+
+        // when
+        List<Integer> takeResult = stream.takeWhile(new Predicate<Integer>() {
+
+            @Override
+            public boolean apply(final Integer input) {
+                return input <= 5;
+            }
+        });
+
+        // then
+        Assert.assertEquals(Lists.newArrayList(1, 2, 3, 4, 5), takeResult);
+    }
+
 }

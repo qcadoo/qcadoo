@@ -24,6 +24,7 @@
 package com.qcadoo.commons.functional;
 
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -31,6 +32,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
+import com.google.common.collect.Lists;
 
 /**
  * Infinite, lazy evaluated stream containing value of any arbitrary type. Stream will be immutable if their elements are
@@ -106,6 +108,16 @@ public class LazyStream<T> implements Iterable<T> {
         LazyStream<T> res = this;
         while (!predicate.apply(res.head())) {
             res = res.tail();
+        }
+        return res;
+    }
+
+    public List<T> takeWhile(final Predicate<T> predicate) {
+        List<T> res = Lists.newArrayList();
+        LazyStream<T> curr = this;
+        while (predicate.apply(curr.head)) {
+            res.add(curr.head);
+            curr = curr.tail();
         }
         return res;
     }
