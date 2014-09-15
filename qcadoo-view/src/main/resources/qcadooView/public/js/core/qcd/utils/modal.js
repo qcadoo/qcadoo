@@ -29,12 +29,12 @@ QCD.utils.Modal.zIndex = 3000;
 
 QCD.utils.Modal.createModal = function() {
 	
-	var dialog = $("<div>").addClass("jqmWindow").width(600);
+	var dialog = $("<div>").addClass("jqmWindow").width(1000);
 	
-	var container = $("<div>").css("border", "solid red 0px").width(600).height(560);
+	var container = $("<div>").css("border", "solid red 0px").width(1000).height(560);
 	dialog.append(container);
 	
-	var iframe = $('<iframe frameborder="0" src="" width="600" height="560">');
+	var iframe = $('<iframe frameborder="0" src="" width="1000" height="560">');
 	container.append(iframe);
 	
 	$("body").append(dialog);

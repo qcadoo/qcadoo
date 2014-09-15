@@ -42,7 +42,7 @@ QCD.components.elements.LinkButton = function(_element, _mainController) {
 	var pageUrl = "";
 	var openInModal = true;
 	var modalDimensions = {
-	    width: 600,
+	    width: 1000,
 	    height: 560
 	};
 	

@@ -39,7 +39,7 @@ public class ModalDimensions {
     /**
      * Default modal width
      */
-    public static final int DEFAULT_WIDTH = 600;
+    public static final int DEFAULT_WIDTH = 1000;
 
     /**
      * Default modal height

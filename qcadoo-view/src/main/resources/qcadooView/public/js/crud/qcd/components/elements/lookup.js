@@ -66,7 +66,7 @@ QCD.components.elements.Lookup = function(_element, _mainController) {
 	};
 
 	var modalDimensions = this.options.modalDimensions || {
-		width : 600,
+		width : 1000,
 		height : 560
 	};
 

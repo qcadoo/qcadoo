@@ -66,7 +66,7 @@ public class ButtonComponentState extends AbstractComponentState {
         this.correspondingComponent = null;
         this.correspondingField = null;
         this.correspondingViewInModal = false;
-        this.modalWidth = 600;
+        this.modalWidth = 1000;
         this.modalHeight = 560;
         registerEvents();
     }
