@@ -23,6 +23,7 @@
  */
 package com.qcadoo.testing.model;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 
 import java.math.BigDecimal;
@@ -31,6 +32,7 @@ import java.util.Date;
 import java.util.Set;
 
 import org.mockito.BDDMockito;
+import org.mockito.Matchers;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -39,6 +41,7 @@ import com.google.common.collect.Sets;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.EntityList;
+import com.qcadoo.model.api.EntityOpResult;
 
 /**
  * This is a set of common entity testing helpers.
@@ -50,12 +53,31 @@ public final class EntityTestUtils {
     private EntityTestUtils() {
     }
 
+    public static DataDefinition mockDataDefinition() {
+        DataDefinition dd = mock(DataDefinition.class);
+        BDDMockito.given(dd.save(any(Entity.class))).willAnswer(new Answer<Entity>() {
+
+            @Override
+            public Entity answer(final InvocationOnMock invocation) throws Throwable {
+                return (Entity) invocation.getArguments()[0];
+            }
+        });
+        BDDMockito.given(dd.delete(Matchers.<Long> anyVararg())).willAnswer(new Answer<EntityOpResult>() {
+
+            @Override
+            public EntityOpResult answer(final InvocationOnMock invocation) throws Throwable {
+                return EntityOpResult.successfull();
+            }
+        });
+        return dd;
+    }
+
     public static Entity mockEntity() {
-        return mockEntity(null, mock(DataDefinition.class));
+        return mockEntity(null, mockDataDefinition());
     }
 
     public static Entity mockEntity(final Long id) {
-        return mockEntity(id, mock(DataDefinition.class));
+        return mockEntity(id, mockDataDefinition());
     }
 
     public static Entity mockEntity(final DataDefinition dataDefinition) {
