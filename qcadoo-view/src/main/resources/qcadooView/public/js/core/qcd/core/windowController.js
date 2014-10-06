@@ -62,8 +62,8 @@ QCD.WindowController = function(_menuStructure) {
 		updateSize();
 	}
 
-	this.addMessage = function(type, content) {
-		messagesController.addMessage(type, content);
+	this.addMessage = function(message) {
+		messagesController.addMessage(message);
 	}
 
 	this.performLogout = function() {
@@ -108,7 +108,7 @@ QCD.WindowController = function(_menuStructure) {
 			modalObjects[id].onCloseListener = onCloseListener;
 		}
 		if (dimensions) {
-			modalObjects[id].changeSize(dimensions.width || 600, dimensions.height || 400);
+			modalObjects[id].changeSize(dimensions.width || 1000, dimensions.height || 560);
 		}
 		
 		modalsStack.push(modalObjects[id]);
@@ -161,7 +161,7 @@ QCD.WindowController = function(_menuStructure) {
 			if (modalsStack.length == 0) {
 				onIframeLoad();
 			} else {
-				onIframeLoad(modalsStack[modalsStack.length - 1]);
+				onIframeLoad(modalsStack[modalsStack.length - 1].iframe[0]);
 			}
 		} else {
 			currentPage = stateObject.url;

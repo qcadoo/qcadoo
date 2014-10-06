@@ -23,31 +23,23 @@
  */
 package com.qcadoo.model.internal.search;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import com.qcadoo.model.api.DataDefinition;
+import com.qcadoo.model.api.Entity;
+import com.qcadoo.model.api.search.*;
+import com.qcadoo.model.api.types.BelongsToType;
+import com.qcadoo.model.internal.api.InternalDataDefinition;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.hibernate.Criteria;
+import org.hibernate.classic.Session;
+import org.hibernate.criterion.DetachedCriteria;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.hibernate.Criteria;
-import org.hibernate.classic.Session;
-import org.hibernate.criterion.DetachedCriteria;
-
-import com.qcadoo.model.api.DataDefinition;
-import com.qcadoo.model.api.Entity;
-import com.qcadoo.model.api.search.JoinType;
-import com.qcadoo.model.api.search.SearchCriteriaBuilder;
-import com.qcadoo.model.api.search.SearchCriterion;
-import com.qcadoo.model.api.search.SearchOrder;
-import com.qcadoo.model.api.search.SearchOrders;
-import com.qcadoo.model.api.search.SearchProjection;
-import com.qcadoo.model.api.search.SearchRestrictions;
-import com.qcadoo.model.api.search.SearchResult;
-import com.qcadoo.model.api.types.BelongsToType;
-import com.qcadoo.model.internal.api.InternalDataDefinition;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 public final class SearchCriteriaImpl implements SearchCriteriaBuilder, SearchCriteria {
 

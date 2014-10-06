@@ -37,6 +37,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
@@ -66,6 +67,9 @@ public final class DefaultExceptionResolver extends SimpleMappingExceptionResolv
 
     @Autowired
     private TranslationService translationService;
+
+    @Value("${maxUploadSize:2000000}")
+    private int maxUploadSize;
 
     private Map<Class<? extends Exception>, ExceptionInfoResolver<? extends Exception>> classResolversMap = new HashMap<Class<? extends Exception>, ExceptionInfoResolver<? extends Exception>>();
 
@@ -117,8 +121,13 @@ public final class DefaultExceptionResolver extends SimpleMappingExceptionResolv
                     "qcadooView.errorPage.error." + customExceptionMessage.getMessage() + ".header",
                     LocaleContextHolder.getLocale());
             if (customExceptionMessage.getEntityIdentifier() == null) {
-                customExceptionMessageExplanation = translationService.translate("qcadooView.errorPage.error."
-                        + customExceptionMessage.getMessage() + ".explanation", LocaleContextHolder.getLocale());
+                if("uploadException.maxSizeExceeded".equals(customExceptionMessage.getMessage())){
+                    customExceptionMessageExplanation = translationService.translate("qcadooView.errorPage.error."
+                            + customExceptionMessage.getMessage() + ".explanation", LocaleContextHolder.getLocale(), "" + maxUploadSize/1000000);
+                } else {
+                    customExceptionMessageExplanation = translationService.translate("qcadooView.errorPage.error."
+                            + customExceptionMessage.getMessage() + ".explanation", LocaleContextHolder.getLocale());
+                }
             } else {
                 customExceptionMessageExplanation = translationService.translate("qcadooView.errorPage.error."
                         + customExceptionMessage.getMessage() + ".explanation", LocaleContextHolder.getLocale(),

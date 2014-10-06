@@ -868,9 +868,9 @@ public class PluginDependencyManagerTest {
         // then
         assertEquals(4, sortedPlugins.size());
         assertEquals(p2, sortedPlugins.get(0));
-        assertEquals(p1, sortedPlugins.get(1));
-        assertEquals(p5, sortedPlugins.get(2));
-        assertEquals(p4, sortedPlugins.get(3));
+        assertEquals(p4, sortedPlugins.get(1));
+        assertEquals(p1, sortedPlugins.get(2));
+        assertEquals(p5, sortedPlugins.get(3));
     }
 
     @Test

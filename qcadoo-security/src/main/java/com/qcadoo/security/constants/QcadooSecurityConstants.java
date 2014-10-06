@@ -35,11 +35,15 @@ public final class QcadooSecurityConstants {
 
     public static final String MODEL_USER = "user";
 
+    public static final String MODEL_GROUP = "group";
+
+    public static final String MODEL_ROLE = "role";
+
     // ROLE
-    public static final String ROLE_SUPERADMIN = "04superAdmins";
+    public static final String ROLE_SUPERADMIN = "ROLE_SUPERADMIN";
 
-    public static final String ROLE_USER = "03users";
+    public static final String ROLE_ADMIN = "ROLE_ADMIN";
 
-    public static final String ROLE_ADMIN = "01admins";
+    public static final String ROLE_USER = "ROLE_USER";
 
 }

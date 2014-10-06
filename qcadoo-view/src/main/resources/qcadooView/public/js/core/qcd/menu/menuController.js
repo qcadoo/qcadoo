@@ -170,6 +170,8 @@ QCD.menu.MenuController = function (menuStructure, windowController) {
             return;
         }
 
+        changeTitle(itemElement);
+
         var buttonName = itemElement.attr("id").substring(18);
 
         model.selectedItem.selectedItem = model.selectedItem.itemsMap[buttonName];
@@ -305,6 +307,12 @@ QCD.menu.MenuController = function (menuStructure, windowController) {
 
     function canChangePage() {
         return windowController.canChangePage();
+    }
+
+    function changeTitle(itemElement){
+        var indexOfDash = window.parent.document.title.indexOf("-");
+        var actualTitle = window.parent.document.title;
+        window.parent.document.title = (indexOfDash == -1 ? actualTitle : actualTitle.substr(0,indexOfDash - 1)) + " - " + itemElement.context.textContent;
     }
 
     constructor();

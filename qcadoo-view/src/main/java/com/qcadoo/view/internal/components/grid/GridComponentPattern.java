@@ -26,7 +26,7 @@ package com.qcadoo.view.internal.components.grid;
 import java.util.*;
 import java.util.Map.Entry;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -43,6 +43,7 @@ import com.qcadoo.model.api.types.DataDefinitionHolder;
 import com.qcadoo.model.api.types.EnumeratedType;
 import com.qcadoo.model.api.types.FieldType;
 import com.qcadoo.model.api.types.JoinFieldHolder;
+import com.qcadoo.security.api.SecurityRole;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.constants.Alignment;
 import com.qcadoo.view.internal.ComponentDefinition;
@@ -135,11 +136,15 @@ public class GridComponentPattern extends AbstractComponentPattern {
 
     private boolean activable = false;
 
+    private boolean prioritizable = true;
+
     private Boolean fixedHeight;
 
     private RowStyleResolver rowStyleResolver = null;
 
     private CriteriaModifier criteriaModifier = null;
+
+    private SecurityRole authorizationRole;
 
     public GridComponentPattern(final ComponentDefinition componentDefinition) {
         super(componentDefinition);
@@ -229,7 +234,7 @@ public class GridComponentPattern extends AbstractComponentPattern {
         json.put("correspondingComponent", correspondingComponent);
         json.put("correspondingLookup", correspondingLookup);
         json.put("correspondingViewInModal", correspondingViewInModal);
-        json.put("prioritizable", getDataDefinition().isPrioritizable());
+        json.put("prioritizable", getDataDefinition().isPrioritizable() && prioritizable);
         json.put("searchableColumns", new JSONArray(searchableColumns));
         json.put("multiSearchColumns", new JSONArray(multiSearchColumns));
         json.put("orderableColumns", new JSONArray(orderableColumns));
@@ -300,17 +305,19 @@ public class GridComponentPattern extends AbstractComponentPattern {
 
     public void addColumn(final String name, final String fields, final String expression, final Boolean isLink,
             final Integer width, final boolean isOrderable, final boolean isSearchable, final String extendingPluginIdentifier) {
-        addColumn(name, fields, expression, isLink, width, isOrderable, isSearchable, extendingPluginIdentifier, null);
+        addColumn(name, fields, expression, isLink, width, isOrderable, isSearchable, false, false, extendingPluginIdentifier,
+                null);
     }
 
     // FIXME maku replace this ugly chain of arguments with some kind of columnDefinition object..
     public void addColumn(final String name, final String fields, final String expression, final Boolean isLink,
-            final Integer width, final boolean isOrderable, final boolean isSearchable, final String extendingPluginIdentifier,
-            final Alignment align) {
+            final Integer width, final boolean isOrderable, final boolean isSearchable, final boolean isHidden,
+            final boolean isMultiSearch, final String extendingPluginIdentifier, final Alignment align) {
         final GridComponentColumn column = new GridComponentColumn(name, extendingPluginIdentifier);
         for (FieldDefinition field : parseFields(fields, column)) {
             column.addField(field);
         }
+        column.setHidden(isHidden);
         column.setAlign(align);
         column.setExpression(expression);
         if (isLink != null) {
@@ -325,6 +332,9 @@ public class GridComponentPattern extends AbstractComponentPattern {
         }
         if (isSearchable) {
             searchableColumns.add(name);
+        }
+        if (isMultiSearch) {
+            multiSearchColumns.add(name);
         }
     }
 
@@ -397,6 +407,7 @@ public class GridComponentPattern extends AbstractComponentPattern {
     @Override
     public void parse(final Node componentNode, final ViewDefinitionParser parser) throws ViewDefinitionParserNodeException {
         super.parse(componentNode, parser);
+        authorizationRole = parser.getAuthorizationRole(componentNode);
         final NodeList childNodes = componentNode.getChildNodes();
         for (int i = 0; i < childNodes.getLength(); i++) {
             final Node child = childNodes.item(i);
@@ -486,6 +497,8 @@ public class GridComponentPattern extends AbstractComponentPattern {
                 paginable = Boolean.parseBoolean(option.getValue());
             } else if ("creatable".equals(option.getType())) {
                 creatable = Boolean.parseBoolean(option.getValue());
+            } else if ("prioritizable".equals(option.getType())) {
+                prioritizable = Boolean.parseBoolean(option.getValue());
             } else if ("multiselect".equals(option.getType())) {
                 multiselect = Boolean.parseBoolean(option.getValue());
             } else if ("hasPredefinedFilters".equals(option.getType())) {
@@ -512,6 +525,9 @@ public class GridComponentPattern extends AbstractComponentPattern {
             } else if ("order".equals(option.getType())) {
                 defaultOrderColumn = option.getAtrributeValue(L_COLUMN);
                 defaultOrderDirection = option.getAtrributeValue("direction");
+                if (defaultOrderDirection == null) {
+                    defaultOrderDirection = "asc";
+                }
                 if (predefinedFilters != null) {
                     for (PredefinedFilter predefinedFilter : predefinedFilters.values()) {
                         if (predefinedFilter.getOrderColumn() == null) {
@@ -644,4 +660,7 @@ public class GridComponentPattern extends AbstractComponentPattern {
         return predefinedFilters.get(defaultPredefinedFilterName);
     }
 
+    public SecurityRole getAuthorizationRole() {
+        return authorizationRole;
+    }
 }

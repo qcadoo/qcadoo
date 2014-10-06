@@ -23,26 +23,6 @@
  */
 package com.qcadoo.model.types;
 
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertNull;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.matchers.JUnitMatchers.hasItems;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.Locale;
-import java.util.Set;
-
-import org.apache.commons.lang.StringUtils;
-import org.junit.Test;
-import org.springframework.security.authentication.encoding.PasswordEncoder;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.qcadoo.localization.api.TranslationService;
@@ -55,19 +35,23 @@ import com.qcadoo.model.internal.DataAccessTest;
 import com.qcadoo.model.internal.DefaultEntity;
 import com.qcadoo.model.internal.FieldDefinitionImpl;
 import com.qcadoo.model.internal.api.ValueAndError;
-import com.qcadoo.model.internal.types.BelongsToEntityType;
-import com.qcadoo.model.internal.types.BooleanType;
-import com.qcadoo.model.internal.types.DateTimeType;
-import com.qcadoo.model.internal.types.DateType;
-import com.qcadoo.model.internal.types.DecimalType;
-import com.qcadoo.model.internal.types.DictionaryType;
-import com.qcadoo.model.internal.types.EnumType;
-import com.qcadoo.model.internal.types.IntegerType;
-import com.qcadoo.model.internal.types.ManyToManyEntitiesType;
-import com.qcadoo.model.internal.types.PasswordType;
-import com.qcadoo.model.internal.types.PriorityType;
-import com.qcadoo.model.internal.types.StringType;
-import com.qcadoo.model.internal.types.TextType;
+import com.qcadoo.model.internal.types.*;
+import org.apache.commons.lang3.StringUtils;
+import org.junit.Test;
+import org.springframework.security.authentication.encoding.PasswordEncoder;
+
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.Locale;
+import java.util.Set;
+
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertNull;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.*;
+import static org.junit.matchers.JUnitMatchers.hasItems;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 
 public class FieldTypeFactoryTest extends DataAccessTest {
 

@@ -1,0 +1,64 @@
+package com.qcadoo.security.internal.validators;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+
+import com.google.common.base.Objects;
+import com.qcadoo.model.api.DataDefinition;
+import com.qcadoo.model.api.DataDefinitionService;
+import com.qcadoo.model.api.Entity;
+import com.qcadoo.security.api.SecurityService;
+import com.qcadoo.security.constants.GroupFields;
+import com.qcadoo.security.constants.QcadooSecurityConstants;
+
+@Service
+public class GroupRolesValidationService {
+
+    @Autowired
+    private SecurityService securityService;
+
+    @Autowired
+    private DataDefinitionService dataDefinitionService;
+
+    public boolean checkUserAddingRoleSuperadmin(final DataDefinition dataDefinition, final Entity entity) {
+
+        Boolean isRoleSuperadminInNewGroup = hasRoleSuperAdmin(entity);
+        Boolean isRoleSuperadminInOldGroup = entity.getId() == null ? false
+                : hasRoleSuperAdmin(dataDefinition.get(entity.getId()));
+
+        if (Objects.equal(isRoleSuperadminInNewGroup, isRoleSuperadminInOldGroup)
+                || isCurrentUserShopOrSuperAdmin(dataDefinitionService.get(QcadooSecurityConstants.PLUGIN_IDENTIFIER,
+                        QcadooSecurityConstants.MODEL_USER))) {
+            return true;
+        }
+
+        entity.addError(dataDefinition.getField(GroupFields.ROLES_FIELD), "qcadooUsers.validate.global.error.forbiddenRole");
+        return false;
+    }
+
+    private Boolean hasRoleSuperAdmin(final Entity entity) {
+        List<Entity> roles = entity.getManyToManyField(GroupFields.ROLES_FIELD);
+        for (Entity role : roles) {
+            if (QcadooSecurityConstants.ROLE_SUPERADMIN.equals(role.getStringField("identifier"))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isCurrentUserShopOrSuperAdmin(final DataDefinition userDataDefinition) {
+        if (isCalledFromShop()) {
+            return true;
+        }
+        final Long currentUserId = securityService.getCurrentUserId();
+        final Entity currentUserEntity = userDataDefinition.get(currentUserId);
+        return securityService.hasRole(currentUserEntity, QcadooSecurityConstants.ROLE_SUPERADMIN);
+    }
+
+    private boolean isCalledFromShop() {
+        return SecurityContextHolder.getContext().getAuthentication() == null;
+    }
+}

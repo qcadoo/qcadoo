@@ -23,8 +23,8 @@
  */
 package com.qcadoo.view.internal.module.gridColumn;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.qcadoo.view.constants.Alignment;
 
@@ -42,7 +42,11 @@ public class ViewGridColumnModuleColumnModel {
 
     private boolean searchable = false;
 
+    private boolean multiSearch = false;
+
     private boolean orderable = false;
+
+    private boolean hidden = false;
 
     private Alignment align;
 
@@ -83,12 +87,28 @@ public class ViewGridColumnModuleColumnModel {
         this.searchable = searchable;
     }
 
+    public boolean getMultiSearch() {
+        return this.multiSearch;
+    }
+
+    public void setMultiSearch(final boolean multiSearch) {
+        this.multiSearch = multiSearch;
+    }
+
     public boolean getOrderable() {
         return orderable;
     }
 
     public void setOrderable(final Boolean orderable) {
         this.orderable = orderable;
+    }
+
+    public boolean getHidden() {
+        return hidden;
+    }
+
+    public void setHidden(boolean hidden) {
+        this.hidden = hidden;
     }
 
     public String getName() {
@@ -110,7 +130,8 @@ public class ViewGridColumnModuleColumnModel {
     @Override
     public int hashCode() {
         return new HashCodeBuilder().append(getName()).append(getFields()).append(getLink()).append(getWidth())
-                .append(getExpression()).append(getAlign()).append(getOrderable()).append(getSearchable()).toHashCode();
+                .append(getExpression()).append(getAlign()).append(getOrderable()).append(getHidden()).append(getSearchable())
+                .append(getMultiSearch()).toHashCode();
     }
 
     @Override
@@ -126,7 +147,8 @@ public class ViewGridColumnModuleColumnModel {
         return new EqualsBuilder().append(this.getName(), that.getName()).append(this.getFields(), that.getFields())
                 .append(this.getLink(), that.getLink()).append(this.getWidth(), that.getWidth())
                 .append(this.getExpression(), that.getExpression()).append(this.getAlign(), that.getAlign())
-                .append(this.getOrderable(), that.getOrderable()).append(this.getSearchable(), that.getSearchable()).isEquals();
+                .append(this.getOrderable(), that.getOrderable()).append(this.getHidden(), that.getHidden())
+                .append(this.getMultiSearch(), that.getMultiSearch()).append(this.getSearchable(), that.getSearchable())
+                .isEquals();
     }
-
 }

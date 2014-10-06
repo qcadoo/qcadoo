@@ -23,8 +23,8 @@
  */
 package com.qcadoo.commons.dateTime;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import org.joda.time.LocalDate;
@@ -51,8 +51,10 @@ public class TimeRange implements Comparable<TimeRange> {
      * 
      * If time to is earlier than time from, range will be considered as ending at next day.
      * 
-     * @param from lower bound
-     * @param to upper bound
+     * @param from
+     *            lower bound
+     * @param to
+     *            upper bound
      */
     public TimeRange(final LocalTime from, final LocalTime to) {
         Preconditions.checkArgument(from != null, "Missing lower bound for time range.");

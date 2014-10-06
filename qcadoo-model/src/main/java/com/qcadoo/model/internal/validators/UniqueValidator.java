@@ -23,8 +23,8 @@
  */
 package com.qcadoo.model.internal.validators;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
@@ -53,8 +53,11 @@ public final class UniqueValidator implements FieldHookDefinition, ErrorMessageD
 
     @Override
     public boolean call(final Entity entity, final Object oldValue, final Object newValue) {
+        if (entity.getField(fieldDefinition.getName()) == null) {
+            return true;
+        }
         SearchCriteriaBuilder searchCriteriaBuilder = dataDefinition.find()
-                .add(SearchRestrictions.eq(fieldDefinition.getName(), entity.getField(fieldDefinition.getName())))
+                .add(SearchRestrictions.iEq(fieldDefinition.getName(), entity.getField(fieldDefinition.getName())))
                 .setMaxResults(1);
         if (entity.getId() != null) {
             searchCriteriaBuilder.add(SearchRestrictions.idNe(entity.getId()));

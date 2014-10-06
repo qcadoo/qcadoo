@@ -23,10 +23,16 @@
  */
 package com.qcadoo.view.internal.components.select;
 
+import static org.springframework.util.StringUtils.hasText;
+
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import com.google.common.base.Splitter;
+import com.google.common.collect.Lists;
+import org.apache.commons.lang3.ArrayUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,6 +41,7 @@ import com.qcadoo.model.api.types.BelongsToType;
 import com.qcadoo.model.api.types.EnumeratedType;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.internal.ComponentDefinition;
+import com.qcadoo.view.internal.ComponentOption;
 import com.qcadoo.view.internal.components.FieldComponentPattern;
 
 public final class SelectComponentPattern extends FieldComponentPattern {
@@ -43,19 +50,34 @@ public final class SelectComponentPattern extends FieldComponentPattern {
 
     private static final String JS_OBJECT = "QCD.components.elements.DynamicComboBox";
 
+    private List<String> values = Lists.newArrayList();
+
     public SelectComponentPattern(final ComponentDefinition componentDefinition) {
         super(componentDefinition);
     }
 
     @Override
+    protected void initializeComponent() throws JSONException {
+        super.initializeComponent();
+        for (ComponentOption option : getOptions()) {
+            if ("values".equals(option.getType())) {
+                String optionValue = option.getValue();
+                if (hasText(optionValue)) {
+                    values = Splitter.on(",").trimResults().omitEmptyStrings().splitToList(optionValue);
+                }
+            }
+        }
+    }
+
+    @Override
     public ComponentState getComponentStateInstance() {
-        return new SelectComponentState(this);
+        return new SelectComponentState(this, values);
     }
 
     public Map<String, String> getValuesMap(final Locale locale) {
         Map<String, String> values = new LinkedHashMap<String, String>();
 
-        if (!isRequired() || getFieldDefinition().getDefaultValue() == null) {
+        if (!isRequired() || (getFieldDefinition() != null && getFieldDefinition().getDefaultValue() == null)) {
             String coreBlankTranslationKey = "qcadooView.form.blankComboBoxValue";
             if (isRequired()) {
                 coreBlankTranslationKey = "qcadooView.form.requiredBlankComboBoxValue";
@@ -73,7 +95,12 @@ public final class SelectComponentPattern extends FieldComponentPattern {
                 throw new IllegalStateException("Select for " + getFieldDefinition().getType().getClass().getSimpleName()
                         + " type is not supported");
             }
+        } else if (!this.values.isEmpty()) {
+            for (String value : this.values) {
+                values.put(value, getTranslationService().translate(getTranslationPath() + ".values." + value, locale));
+            }
         }
+
         return values;
     }
 

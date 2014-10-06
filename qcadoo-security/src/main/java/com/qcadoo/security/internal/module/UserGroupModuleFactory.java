@@ -23,27 +23,30 @@
  */
 package com.qcadoo.security.internal.module;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import org.jdom.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.plugin.api.ModuleFactory;
-import com.qcadoo.security.internal.role.InternalSecurityRolesService;
 
 public class UserGroupModuleFactory extends ModuleFactory<UserGroupModule> {
 
     @Autowired
     private DataDefinitionService dataDefinitionService;
 
-    @Autowired
-    private InternalSecurityRolesService securityRolesService;
-
     @Override
     protected UserGroupModule parseElement(final String pluginIdentifier, final Element element) {
         String name = getRequiredAttribute(element, "name");
-        String role = getRequiredAttribute(element, "role");
+        String identifier = getRequiredAttribute(element, "identifier");
+        String roles = getRequiredAttribute(element, "roles");
 
-        return new UserGroupModule(name, role, dataDefinitionService, securityRolesService);
+        checkNotNull(name, "Missing name attribute of " + getIdentifier() + " module");
+        checkNotNull(identifier, "Missing identifier attribute of " + getIdentifier() + " module");
+        checkNotNull(roles, "Missing roles attribute of " + getIdentifier() + " module");
+
+        return new UserGroupModule(name, identifier, roles, dataDefinitionService);
     }
 
     @Override

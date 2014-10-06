@@ -402,7 +402,7 @@ QCD.components.containers.Window = function(element, mainController) {
 			ribbonLeftElement.width(margin);
 			ribbonShadowElement.width(innerWidth > windowWidth ? windowWidth : innerWidth);
 			if (tabRibbonDiv) {
-				var tabRibbonWidth = width - ribbonMainElement.width(); // TODO
+				var tabRibbonWidth = width - ribbonMainElement.width();
 				tabRibbonDiv.width(tabRibbonWidth);
 			}
 			if (! tabRibbonExists) {

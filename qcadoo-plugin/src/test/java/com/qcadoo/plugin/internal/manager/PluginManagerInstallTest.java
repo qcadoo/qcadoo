@@ -23,45 +23,24 @@
  */
 package com.qcadoo.plugin.internal.manager;
 
-import static com.google.common.collect.Lists.newArrayList;
-import static com.google.common.collect.Sets.newHashSet;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
-import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-
-import java.io.File;
-import java.util.Collections;
-
+import com.qcadoo.plugin.api.*;
+import com.qcadoo.plugin.api.artifact.PluginArtifact;
+import com.qcadoo.plugin.internal.PluginException;
+import com.qcadoo.plugin.internal.api.*;
+import com.qcadoo.plugin.internal.dependencymanager.SimplePluginStatusResolver;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
 
-import com.qcadoo.plugin.api.Plugin;
-import com.qcadoo.plugin.api.PluginDependencyInformation;
-import com.qcadoo.plugin.api.PluginDependencyResult;
-import com.qcadoo.plugin.api.PluginOperationResult;
-import com.qcadoo.plugin.api.PluginOperationStatus;
-import com.qcadoo.plugin.api.PluginState;
-import com.qcadoo.plugin.api.Version;
-import com.qcadoo.plugin.api.VersionOfDependency;
-import com.qcadoo.plugin.api.artifact.PluginArtifact;
-import com.qcadoo.plugin.internal.PluginException;
-import com.qcadoo.plugin.internal.api.InternalPlugin;
-import com.qcadoo.plugin.internal.api.InternalPluginAccessor;
-import com.qcadoo.plugin.internal.api.PluginDao;
-import com.qcadoo.plugin.internal.api.PluginDependencyManager;
-import com.qcadoo.plugin.internal.api.PluginDependencyResultImpl;
-import com.qcadoo.plugin.internal.api.PluginDescriptorParser;
-import com.qcadoo.plugin.internal.api.PluginFileManager;
-import com.qcadoo.plugin.internal.dependencymanager.SimplePluginStatusResolver;
+import java.io.File;
+import java.util.Collections;
+
+import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Sets.newHashSet;
+import static org.junit.Assert.*;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
 
 public class PluginManagerInstallTest {
 
@@ -267,7 +246,6 @@ public class PluginManagerInstallTest {
                 .contains(new PluginDependencyInformation("unknownplugin", new VersionOfDependency(""))));
     }
 
-    @Ignore
     @Test
     public void shouldInstallEnabledPlugin() throws Exception {
         // given

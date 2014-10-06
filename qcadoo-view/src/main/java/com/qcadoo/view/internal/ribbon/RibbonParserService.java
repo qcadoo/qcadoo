@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.qcadoo.security.api.SecurityRole;
 import com.qcadoo.view.api.ribbon.RibbonActionItem;
 import com.qcadoo.view.api.ribbon.RibbonComboBox;
 import com.qcadoo.view.api.ribbon.RibbonComboItem;
@@ -76,7 +77,7 @@ public class RibbonParserService {
             } else if ("template".equals(child.getNodeName())) {
                 applyTemplate(child, ribbon, parser, viewDefinition);
             } else {
-                throw new ViewDefinitionParserNodeException(child, "Wrong node type - 'group' or 'temlplate' expected");
+                throw new ViewDefinitionParserNodeException(child, "Wrong node type - 'group' or 'template' expected");
             }
         }
         ribbon.setAlignment(parser.getStringAttribute(ribbonNode, ALIGNMENT));
@@ -106,13 +107,14 @@ public class RibbonParserService {
     public InternalRibbonGroup parseRibbonGroup(final Node groupNode, final ViewDefinitionParser parser,
             final ViewDefinition viewDefinition) throws ViewDefinitionParserNodeException {
         String template = parser.getStringAttribute(groupNode, "template");
+        SecurityRole role = parser.getAuthorizationRole(groupNode);
 
         if (template == null) {
             String groupName = parser.getStringAttribute(groupNode, NAME);
             if (groupName == null) {
                 throw new ViewDefinitionParserNodeException(groupNode, "Name attribute cannot be empty");
             }
-            InternalRibbonGroup ribbonGroup = new RibbonGroupImpl(groupName);
+            InternalRibbonGroup ribbonGroup = new RibbonGroupImpl(groupName, role);
 
             NodeList childNodes = groupNode.getChildNodes();
 
@@ -127,7 +129,7 @@ public class RibbonParserService {
             return ribbonGroup;
         } else {
             try {
-                return ribbonTemplates.getGroupTemplate(template, viewDefinition);
+                return ribbonTemplates.getGroupTemplate(template, viewDefinition, role);
             } catch (IllegalStateException e) {
                 throw new ViewDefinitionParserNodeException(groupNode, e);
             }

@@ -26,7 +26,7 @@ package com.qcadoo.model.api.search;
 import java.util.Collection;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.criterion.Conjunction;
 import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.MatchMode;
@@ -207,7 +207,7 @@ public final class SearchRestrictions {
         if (value == null) {
             return isNull(field);
         }
-        return new SearchCriterionImpl(Restrictions.like(field, convertWildcards(value)).ignoreCase());
+        return new SearchCriterionImpl(Restrictions.like(field, convertWildcards(value)));
     }
 
     /**
@@ -225,8 +225,7 @@ public final class SearchRestrictions {
         if (value == null) {
             return isNull(field);
         }
-        return new SearchCriterionImpl(Restrictions.like(field, convertWildcards(value), mode.getHibernateMatchMode())
-                .ignoreCase());
+        return new SearchCriterionImpl(Restrictions.like(field, convertWildcards(value), mode.getHibernateMatchMode()));
     }
 
     /**
@@ -354,7 +353,7 @@ public final class SearchRestrictions {
      *            value
      * @return criterion
      */
-    public static SearchCriterion ieq(final String field, final Object value) {
+    public static SearchCriterion iEq(final String field, final Object value) {
         return new SearchCriterionImpl(Restrictions.eq(field, value).ignoreCase());
     }
 

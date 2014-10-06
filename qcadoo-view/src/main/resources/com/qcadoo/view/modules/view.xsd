@@ -154,6 +154,8 @@
                         <xs:attribute name="width" type="xs:integer" use="optional"/>
                         <xs:attribute name="searchable" type="xs:boolean" use="optional"/>
                         <xs:attribute name="orderable" type="xs:boolean" use="optional"/>
+                        <xs:attribute name="hidden" type="xs:boolean" use="optional"/>
+                        <xs:attribute name="multiSearch" type="xs:boolean" use="optional"/>
                         <xs:attribute name="align" type="alignType" use="optional"/>
                     </xs:complexType>
                 </xs:element>

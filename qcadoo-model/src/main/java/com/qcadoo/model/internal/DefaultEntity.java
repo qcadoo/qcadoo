@@ -32,9 +32,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.collect.Lists;
 import com.qcadoo.localization.api.utils.DateUtils;
@@ -315,8 +315,8 @@ public final class DefaultEntity implements Entity, EntityAwareCopyPerformers, E
             }
         }
         throw new IllegalArgumentException("Field " + fieldName + " in " + dataDefinition.getPluginIdentifier() + '.'
-                + dataDefinition.getName()
-                + " does not contain correct BigDecimal value (current field value: " + fieldValue + ")");
+                + dataDefinition.getName() + " does not contain correct BigDecimal value (current field value: " + fieldValue
+                + ")");
     }
 
     @Override

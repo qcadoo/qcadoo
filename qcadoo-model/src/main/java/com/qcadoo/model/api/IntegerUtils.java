@@ -23,7 +23,7 @@
  */
 package com.qcadoo.model.api;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public final class IntegerUtils {
 

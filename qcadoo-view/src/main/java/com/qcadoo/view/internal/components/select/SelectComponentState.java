@@ -23,8 +23,12 @@
  */
 package com.qcadoo.view.internal.components.select;
 
+import java.util.List;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.util.StringUtils;
 
 import com.qcadoo.view.internal.components.FieldComponentState;
 
@@ -32,16 +36,48 @@ public final class SelectComponentState extends FieldComponentState {
 
     private final SelectComponentPattern selectComponentPattern;
 
-    public SelectComponentState(final SelectComponentPattern selectComponentPattern) {
+    public SelectComponentState(final SelectComponentPattern selectComponentPattern, final List<String> values) {
         super(selectComponentPattern);
         this.selectComponentPattern = selectComponentPattern;
+        if (!values.isEmpty()){
+            requestRender();
+        }
     }
 
     @Override
     protected JSONObject renderContent() throws JSONException {
         JSONObject json = super.renderContent();
-        json.put("values", selectComponentPattern.getValuesJson(getLocale()));
+
+        JSONArray valuesJson = selectComponentPattern.getValuesJson(getLocale());
+        includeDeactivatedValue(valuesJson, getFieldValue());
+        json.put("values", valuesJson);
         return json;
+    }
+
+    private void includeDeactivatedValue(final JSONArray valuesJson, final Object fieldValue) throws JSONException {
+        if(StringUtils.isEmpty(fieldValue)){
+            return;
+        }
+
+        int targetIndex = -1;
+        String value = (String) fieldValue;
+        for(int i = 0 ; i < valuesJson.length(); ++i){
+            int result = value.compareTo(valuesJson.getJSONObject(i).getString("key"));
+            if(result == 0){
+                return;
+            } else if(result > 0) {
+                targetIndex = i;
+            }
+        }
+
+        for(int i = valuesJson.length() -1; i > targetIndex; --i ){
+            valuesJson.put(i+1, valuesJson.get(i));
+        }
+
+        JSONObject obj = new JSONObject();
+        obj.put("key", fieldValue);
+        obj.put("value", fieldValue);
+        valuesJson.put(targetIndex + 1, obj);
     }
 
 }

@@ -28,11 +28,13 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 import java.util.Locale;
 
 import org.json.JSONObject;
 import org.junit.Test;
+import org.springframework.context.ApplicationContext;
 
 import com.google.common.collect.ImmutableMap;
 import com.qcadoo.localization.api.TranslationService;
@@ -113,6 +115,8 @@ public class ComponentStateTest {
         FormComponentPattern pattern = mock(FormComponentPattern.class);
         given(pattern.getExpressionNew()).willReturn(null);
         given(pattern.getExpressionEdit()).willReturn("2");
+        ApplicationContext applicationContext = mock(ApplicationContext.class);
+        setField(pattern, "applicationContext", applicationContext);
         AbstractComponentState componentState = new FormComponentState(pattern);
         componentState.setTranslationService(translationService);
         componentState.setDataDefinition(dataDefinition);
@@ -133,6 +137,8 @@ public class ComponentStateTest {
         FormComponentPattern pattern = mock(FormComponentPattern.class);
         given(pattern.getExpressionNew()).willReturn(null);
         given(pattern.getExpressionEdit()).willReturn(null);
+        ApplicationContext applicationContext = mock(ApplicationContext.class);
+        setField(pattern, "applicationContext", applicationContext);
         AbstractComponentState componentState = new FormComponentState(pattern);
         componentState.setTranslationService(translationService);
         componentState.initialize(new JSONObject(ImmutableMap.of("components", new JSONObject())), Locale.ENGLISH);

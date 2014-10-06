@@ -23,19 +23,15 @@
  */
 package com.qcadoo.model.internal;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.base.Preconditions.*;
+import static com.qcadoo.model.api.search.SearchOrders.asc;
+import static com.qcadoo.model.api.search.SearchProjections.alias;
+import static com.qcadoo.model.api.search.SearchProjections.rowCount;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.ListMultimap;
@@ -43,6 +39,7 @@ import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.EntityOpResult;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.search.SearchCriteriaBuilder;
+import com.qcadoo.model.api.search.SearchCriterion;
 import com.qcadoo.model.api.search.SearchQueryBuilder;
 import com.qcadoo.model.api.search.SearchResult;
 import com.qcadoo.model.internal.AbstractModelXmlConverter.HooksTag;
@@ -126,6 +123,25 @@ public final class DataDefinitionImpl implements InternalDataDefinition {
     @Override
     public SearchCriteriaBuilder find() {
         return new SearchCriteriaImpl(this);
+    }
+
+    @Override
+    public long count(){
+        return count(null);
+    }
+
+    @Override
+    public long count(final SearchCriterion criterion) {
+        final String countAlias = "count";
+        SearchCriteriaBuilder scb = find();
+        if (criterion != null) {
+            scb.add(criterion);
+        }
+        scb.setProjection(alias(rowCount(), countAlias));
+        scb.addOrder(asc(countAlias));
+
+        Entity countProjection = scb.setMaxResults(1).uniqueResult();
+        return (Long) countProjection.getField(countAlias);
     }
 
     @Override

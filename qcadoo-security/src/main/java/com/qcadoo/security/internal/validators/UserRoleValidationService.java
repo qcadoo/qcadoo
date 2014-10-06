@@ -30,7 +30,6 @@ import org.springframework.stereotype.Service;
 import com.google.common.base.Objects;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
-import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.security.api.SecurityService;
 import com.qcadoo.security.constants.QcadooSecurityConstants;
 import com.qcadoo.security.constants.UserFields;
@@ -42,27 +41,16 @@ public class UserRoleValidationService {
     private SecurityService securityService;
 
     public boolean checkUserCreatingSuperadmin(final DataDefinition dataDefinition, final Entity entity) {
-        final Object newValue = entity.getField(UserFields.ROLE);
-        final Object oldValue = getOldValue(dataDefinition, entity);
-        return checkUserCreatingSuperadmin(dataDefinition, dataDefinition.getField(UserFields.ROLE), entity, oldValue, newValue);
-    }
 
-    private Object getOldValue(final DataDefinition dataDefinition, final Entity entity) {
-        if (entity.getId() == null) {
-            return null;
-        } else {
-            final Entity existingEntity = dataDefinition.get(entity.getId());
-            return existingEntity.getField(UserFields.ROLE);
-        }
-    }
+        Boolean isRoleSuperadminInNewGroup = securityService.hasRole(entity, QcadooSecurityConstants.ROLE_SUPERADMIN);
+        Boolean isRoleSuperadminInOldGroup = entity.getId() == null ? false : securityService.hasRole(
+                dataDefinition.get(entity.getId()), QcadooSecurityConstants.ROLE_SUPERADMIN);
 
-    private boolean checkUserCreatingSuperadmin(final DataDefinition dataDefinition, final FieldDefinition fieldDefinition,
-            final Entity entity, final Object oldValue, final Object newValue) {
-        if (Objects.equal(oldValue, newValue) || isCurrentUserShopOrSuperAdmin(dataDefinition)
-                || !QcadooSecurityConstants.ROLE_SUPERADMIN.equals(newValue)) {
+        if (Objects.equal(isRoleSuperadminInOldGroup, isRoleSuperadminInNewGroup)
+                || isCurrentUserShopOrSuperAdmin(dataDefinition)) {
             return true;
         }
-        entity.addError(fieldDefinition, "qcadooUsers.validate.global.error.forbiddenRole");
+        entity.addError(dataDefinition.getField(UserFields.GROUP), "qcadooUsers.validate.global.error.forbiddenRole");
         return false;
     }
 
@@ -72,7 +60,7 @@ public class UserRoleValidationService {
         }
         final Long currentUserId = securityService.getCurrentUserId();
         final Entity currentUserEntity = userDataDefinition.get(currentUserId);
-        return QcadooSecurityConstants.ROLE_SUPERADMIN.equals(currentUserEntity.getStringField(UserFields.ROLE));
+        return securityService.hasRole(currentUserEntity, QcadooSecurityConstants.ROLE_SUPERADMIN);
     }
 
     private boolean isCalledFromShop() {

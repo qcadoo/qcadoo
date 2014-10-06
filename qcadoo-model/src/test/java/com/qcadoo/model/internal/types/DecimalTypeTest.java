@@ -23,18 +23,17 @@
  */
 package com.qcadoo.model.internal.types;
 
-import static org.junit.Assert.assertEquals;
+import com.qcadoo.model.api.NumberService;
+import org.apache.commons.lang3.StringUtils;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.MockitoAnnotations;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.Locale;
 
-import org.apache.commons.lang.StringUtils;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.MockitoAnnotations;
-
-import com.qcadoo.model.api.NumberService;
+import static org.junit.Assert.assertEquals;
 
 public class DecimalTypeTest {
 

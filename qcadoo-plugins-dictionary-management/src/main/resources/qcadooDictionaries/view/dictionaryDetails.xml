@@ -29,12 +29,12 @@
 	name="dictionaryDetails"
 	modelPlugin="qcadooModel"
 	modelName="dictionary"
-	defaultAuthorizationRole="ROLE_USER">
+	defaultAuthorizationRole="ROLE_DICTIONARY_VIEW">
 	
 	<component type="window" name="window" reference="window">
 		<ribbon>
 			<template name="standardFormTemplate" includeItems="navigation.back"/>
-			<template name="standardGridTemplate" />
+			<template name="standardGridTemplate" excludeItems="actions.delete,actions.copy" />
 		</ribbon>
 		<component type="form" reference="form" name="dictionary">
 			<option type="header" value="true" />
@@ -44,13 +44,15 @@
 			source="#{form}.dictionaryItems">
 			<script>
 				<![CDATA[
-					var deleteButton = #{window}.getRibbonItem("actions.delete");
-					var copyButton = #{window}.getRibbonItem("actions.copy");
+
+					var activateButton = #{window}.getRibbonItem("states.activate");
+					var deactivateButton = #{window}.getRibbonItem("states.deactivate");
+
 					var listener = {
 						onChange: function(selectedEntitiesArray) {
 							if (!selectedEntitiesArray || selectedEntitiesArray.length == 0) {
-								deleteButton.disable();
-								copyButton.disable();
+								activateButton.disable();
+								deactivateButton.disable();
 							} else {
 								var hasExternal = false;
 								var hasTechnicalCode = false;
@@ -65,20 +67,22 @@
 									}
 								}
 								if (hasExternal) {
-									deleteButton.disable("#{translate(qcadooDictionaries.dictionaryItems.ribbon.message.someDictionaryItemIsExternal)}");
-									copyButton.disable("#{translate(qcadooDictionaries.dictionaryItems.ribbon.message.someDictionaryItemIsExternal)}");
+									activateButton.disable("#{translate(qcadooDictionaries.dictionaryItems.ribbon.message.someDictionaryItemIsExternal)}");
+									deactivateButton.disable("#{translate(qcadooDictionaries.dictionaryItems.ribbon.message.someDictionaryItemIsExternal)}");
+									return;
 								} else {
-									deleteButton.enable();
-									copyButton.enable();
+									activateButton.enable();
+									deactivateButton.enable();
 								}
 								if (hasTechnicalCode) {
-									deleteButton.disable();
-									copyButton.disable();
+									activateButton.disable();
+									deactivateButton.disable();
 								} else {
-									deleteButton.enable();
-									copyButton.enable();
+									activateButton.enable();
+									deactivateButton.enable();
 								}
 							}
+
 						}
 					}
 					this.addOnChangeListener(listener);

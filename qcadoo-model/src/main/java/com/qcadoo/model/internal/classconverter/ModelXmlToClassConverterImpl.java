@@ -23,39 +23,24 @@
  */
 package com.qcadoo.model.internal.classconverter;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import javassist.CannotCompileException;
-import javassist.ClassClassPath;
-import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.CtField;
-import javassist.CtNewMethod;
-import javassist.NotFoundException;
-
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-
-import org.apache.commons.lang.StringUtils;
+import com.qcadoo.model.internal.AbstractModelXmlConverter;
+import com.qcadoo.model.internal.api.ModelXmlToClassConverter;
+import com.qcadoo.model.internal.utils.ClassNameUtils;
+import javassist.*;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
-import com.qcadoo.model.internal.AbstractModelXmlConverter;
-import com.qcadoo.model.internal.api.ModelXmlToClassConverter;
-import com.qcadoo.model.internal.utils.ClassNameUtils;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigDecimal;
+import java.util.*;
 
 @Component
 public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverter implements ModelXmlToClassConverter,
@@ -231,9 +216,8 @@ public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverte
         List<String> fields = new ArrayList<String>();
         fields.add("id");
 
-        if (getBooleanAttribute(reader, "activable", false)) {
-            createField(ctClass, "active", Boolean.class.getCanonicalName());
-        }
+        boolean activable = getBooleanAttribute(reader, "activable", false);
+
         if (getBooleanAttribute(reader, "auditable", false)) {
             createField(ctClass, "createDate", Date.class.getCanonicalName());
             createField(ctClass, "updateDate", Date.class.getCanonicalName());
@@ -263,6 +247,9 @@ public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverte
                 break;
             }
 
+        }
+        if (activable && !fields.contains("active")) {
+            createField(ctClass, "active", Boolean.class.getCanonicalName());
         }
 
         buildToString(ctClass, fields);

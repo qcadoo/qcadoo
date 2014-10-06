@@ -254,6 +254,7 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
             jsOptions.put("defaultRequired", isDefaultRequired());
             jsOptions.put("defaultVisible", isDefaultVisible());
             jsOptions.put("referenceName", reference);
+            jsOptions.put("persistent", isPersistent());
             if (script != null) {
                 jsOptions.put("script", prepareScript(script, locale));
             }

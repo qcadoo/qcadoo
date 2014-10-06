@@ -144,6 +144,7 @@ QCD.components.elements.AwesomeDynamicList = function (element, mainController) 
 	};
 
 	this.setComponentState = function (state) {
+	    state.forms = state.forms.map(function (form) {return form.value;})
 		this.setComponentValue(state);
 	};
 
@@ -189,12 +190,15 @@ QCD.components.elements.AwesomeDynamicList = function (element, mainController) 
 		currentHeight = height;
 		for (var i in formObjects) {
 			if (formObjects[i]) {
+                if(hasButtons){
+                    $("#" + elementSearchName + " .awesomeListFormContainer").attr("style", "min-width:" + (width - BUTTONS_WIDTH - 20) + "px; max-width:" + (width - BUTTONS_WIDTH - 20) + "px;");
+                }
 				formObjects[i].updateSize(width - BUTTONS_WIDTH, height);
 			}
 		}
 		if (awesomeDynamicListHeaderObject) {
-			awesomeDynamicListHeader.width(width - BUTTONS_WIDTH - 20);
-			awesomeDynamicListHeaderObject.updateSize(width - BUTTONS_WIDTH - 30, height);
+            awesomeDynamicListHeader.width(width - ((BUTTONS_WIDTH > 0) ? BUTTONS_WIDTH - 20 : 0));
+			awesomeDynamicListHeaderObject.updateSize(width - ((BUTTONS_WIDTH > 0) ? BUTTONS_WIDTH - 30 : 0), height);
 		}
 
 		$(".awesomeListLine").addClass('forceRedraw').removeClass('forceRedraw'); // IE fix - force redraw
@@ -288,14 +292,18 @@ QCD.components.elements.AwesomeDynamicList = function (element, mainController) 
 				var removeButton = $("#"+elementSearchName+"_line_"+i+"_removeButton");
 				var addButton = $("#"+elementSearchName+"_line_"+i+"_addButton");
 				if (!(isRequired && objectCounter<=1)){
-					removeButton.show();
-					removeButton.css("display", "inline-block");
+				    if(enabled){
+					    removeButton.show();
+					    removeButton.css("display", "inline-block");
+                    }
 				} else {
 					removeButton.hide();
 				}
 				if (i == lastObject) {
-					addButton.show();
-					addButton.css("display", "inline-block");
+				    if(enabled){
+					    addButton.show();
+					    addButton.css("display", "inline-block");
+					}
 					line.addClass("lastLine");
 				} else {
 					addButton.hide();

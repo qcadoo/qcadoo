@@ -32,6 +32,8 @@ QCD.components.elements.File = function(_element, _mainController) {
 	
 	var link = $("#"+this.elementSearchName+"_fileList");
 	
+	var thumbnail = $("#"+this.elementSearchName+"_thumbnail");
+	
 	var modificationDate = $("#"+this.elementSearchName+"_fileLastModificationDate");
 	
 	var fileButton = $("#"+this.elementSearchName+"_fileButton");
@@ -149,6 +151,9 @@ QCD.components.elements.File = function(_element, _mainController) {
 		}
 		link.attr("href", fileUrl);
 		link.text(fileName);
+		if(thumbnail){
+			thumbnail.attr("src", fileUrl);
+		}
 		updateButtons();
 	}
 	

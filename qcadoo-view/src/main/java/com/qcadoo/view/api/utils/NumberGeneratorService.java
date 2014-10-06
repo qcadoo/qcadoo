@@ -26,7 +26,7 @@ package com.qcadoo.view.api.utils;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -175,7 +175,7 @@ public class NumberGeneratorService {
         List<Long> numericValues = Lists.newArrayList();
         for (Entity projection : numberProjections) {
             String numberFieldValue = projection.getStringField(NumberGeneratorModelHelper.NUM_PROJECTION_ALIAS);
-            if (StringUtils.isNotEmpty(numberFieldValue) && StringUtils.isNumeric(numberFieldValue)) {
+            if (StringUtils.isNumeric(numberFieldValue)) {
                 numericValues.add(Long.valueOf(numberFieldValue));
             }
         }

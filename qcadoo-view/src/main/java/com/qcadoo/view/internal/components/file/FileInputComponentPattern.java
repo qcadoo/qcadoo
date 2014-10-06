@@ -24,12 +24,14 @@
 package com.qcadoo.view.internal.components.file;
 
 import java.util.Locale;
+import java.util.Map;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.internal.ComponentDefinition;
+import com.qcadoo.view.internal.ComponentOption;
 import com.qcadoo.view.internal.components.FieldComponentPattern;
 
 public final class FileInputComponentPattern extends FieldComponentPattern {
@@ -38,8 +40,28 @@ public final class FileInputComponentPattern extends FieldComponentPattern {
 
     private static final String JS_OBJECT = "QCD.components.elements.File";
 
+    private boolean thumbnail = false;
+
     public FileInputComponentPattern(final ComponentDefinition componentDefinition) {
         super(componentDefinition);
+    }
+
+    @Override
+    protected void initializeComponent() throws JSONException {
+        super.initializeComponent();
+        for (ComponentOption option : getOptions()) {
+            if ("thumbnail".equals(option.getType())) {
+                thumbnail = Boolean.parseBoolean(option.getValue());
+                break;
+            }
+        }
+    }
+
+    @Override
+    protected Map<String, Object> getJspOptions(final Locale locale) {
+        Map<String, Object> options = super.getJspOptions(locale);
+        options.put("thumbnail", thumbnail);
+        return options;
     }
 
     @Override

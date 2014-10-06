@@ -102,8 +102,8 @@ QCD.PageController = function() {
 
 		if (isPopup) {
 			if (window.parent.changeModalSize) {
-				var modalWidth = (dimensions ? dimensions.width : pageOptions.windowWidth) || 600;
-				var modalHeight = (dimensions ? dimensions.height : pageOptions.windowHeight) || 400;
+				var modalWidth = (dimensions ? dimensions.width : pageOptions.windowWidth) || 1000;
+				var modalHeight = (dimensions ? dimensions.height : pageOptions.windowHeight) || 560;
 				window.parent.changeModalSize(modalWidth, modalHeight);
 			}
 			updateSize();
@@ -359,7 +359,7 @@ QCD.PageController = function() {
 		if (data.messages) {
 			for (var i in data.messages) {
 				var message = data.messages[i];
-				window.parent.addMessage(message.type, message.content);
+				window.parent.addMessage(message);
 			}
 		}
 		for (var i in data.components) {

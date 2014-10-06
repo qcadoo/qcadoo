@@ -25,10 +25,10 @@ package com.qcadoo.commons.functional;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
-import org.apache.commons.lang.ObjectUtils;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
@@ -190,11 +190,11 @@ class LazyStreamIterator<T> implements Iterator<T> {
             return false;
         }
         LazyStreamIterator rhs = (LazyStreamIterator) obj;
-        return ObjectUtils.equals(this.stream, rhs.stream);
+        return Objects.equals(this.stream, rhs.stream);
     }
 
     @Override
     public int hashCode() {
-        return ObjectUtils.hashCode(stream);
+        return Objects.hashCode(stream);
     }
 }

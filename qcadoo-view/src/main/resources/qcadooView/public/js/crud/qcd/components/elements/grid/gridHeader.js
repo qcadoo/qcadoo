@@ -68,7 +68,7 @@ QCD.components.elements.grid.GridHeaderController = function(_gridController, _m
 	
 	function constructor(_this) {
 		pagingVars.first = 0;
-		pagingVars.max = 30;
+		pagingVars.max = $.cookie("page_size") ? $.cookie("page_size") : 30;
 		pagingVars.totalNumberOfEntities = 0;
 	}
 	
@@ -134,6 +134,7 @@ QCD.components.elements.grid.GridHeaderController = function(_gridController, _m
 
 	this.paging_onRecordsNoSelectChange = function(recordsNoSelectElement) {
 		var recordsNoSelectValue = recordsNoSelectElement.val();
+		$.cookie("page_size", recordsNoSelectValue);
 		pagingVars.max = parseInt(recordsNoSelectValue);
 		pagingVars.first = 0;
 		onPagingEvent();
@@ -297,7 +298,7 @@ QCD.components.elements.grid.GridHeaderController = function(_gridController, _m
 		}
 		if (gridParameters.hasMultiSearchColumns && gridParameters.multiSearchColumns){
 			headerElements.multiSearchButton = QCD.components.elements.utils.HeaderUtils.createHeaderButton(translations.multiSearchButton, function(e) {
-				if (headerElements.filterButton.hasClass("headerButtonEnabled")) {
+				if (headerElements.multiSearchButton.hasClass("headerButtonEnabled")) {
 					multiSearchClicked();
 				}
 			}, "searchIcon16.png");
@@ -442,9 +443,6 @@ QCD.components.elements.grid.GridHeaderController = function(_gridController, _m
 			}
 			if (headerElements.downButton != null) {
 				setEnabledButton(headerElements.downButton, false);
-			}
-			if (headerElements.multiSearchButton != null) {
-				setEnabledButton(headerElements.multiSearchButton, false);
 			}
 		} else {
 			if (headerElements.filterButton != null) {
@@ -646,11 +644,11 @@ QCD.components.elements.grid.GridPagingElement = function(_gridHeaderController,
 		var onPageSpan = $("<span>").html(translations.perPage).addClass('onPageSpan');
 		pagingDiv.append(onPageSpan);
 		pagingElements.recordsNoSelect = $("<select>").addClass('recordsNoSelect');
-			pagingElements.recordsNoSelect.append("<option value=10>10</option>");
 			pagingElements.recordsNoSelect.append("<option value=20>20</option>");
 			pagingElements.recordsNoSelect.append("<option value=30>30</option>");
 			pagingElements.recordsNoSelect.append("<option value=50>50</option>");
 			pagingElements.recordsNoSelect.append("<option value=100>100</option>");
+			pagingElements.recordsNoSelect.append("<option value=200>200</option>");
 			pagingElements.recordsNoSelect.val(pagingVars.max);
 		pagingDiv.append(pagingElements.recordsNoSelect);
 		

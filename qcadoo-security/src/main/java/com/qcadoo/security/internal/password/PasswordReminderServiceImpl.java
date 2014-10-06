@@ -23,15 +23,6 @@
  */
 package com.qcadoo.security.internal.password;
 
-import static org.springframework.context.i18n.LocaleContextHolder.getLocale;
-
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.google.common.base.Preconditions;
 import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.mail.api.InvalidMailAddressException;
@@ -41,6 +32,14 @@ import com.qcadoo.model.api.Entity;
 import com.qcadoo.security.api.PasswordGeneratorService;
 import com.qcadoo.security.api.PasswordReminderService;
 import com.qcadoo.security.internal.api.InternalSecurityService;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import static org.springframework.context.i18n.LocaleContextHolder.getLocale;
 
 @Service
 public class PasswordReminderServiceImpl implements PasswordReminderService {

@@ -23,53 +23,36 @@
  */
 package com.qcadoo.security.internal.module;
 
-public class UserData {
+import static com.google.common.base.Preconditions.checkNotNull;
 
-    private final String userName;
+import org.jdom.Element;
+import org.springframework.beans.factory.annotation.Autowired;
 
-    private final String password;
+import com.qcadoo.model.api.DataDefinitionService;
+import com.qcadoo.plugin.api.ModuleFactory;
+import com.qcadoo.security.internal.role.InternalSecurityRolesService;
 
-    private final String role;
+public class RoleModuleFactory extends ModuleFactory<RoleModule> {
 
-    private final String firstName;
+	@Autowired
+	private DataDefinitionService dataDefinitionService;
 
-    private final String lastName;
+	@Autowired
+	private InternalSecurityRolesService securityRolesService;
 
-    private final String email;
+	@Override
+	protected RoleModule parseElement(final String pluginIdentifier, final Element element) {
+		String identifier = getRequiredAttribute(element, "identifier");
+		String description = getAttribute(element, "description");
 
-    public UserData(final String userName, final String password, final String role, final String firstName,
-            final String lastName, final String email) {
-        super();
-        this.userName = userName;
-        this.password = password;
-        this.role = role;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-    }
+		checkNotNull(identifier, "Missing identifier attribute of " + getIdentifier() + " module");
 
-    public String getUserName() {
-        return userName;
-    }
+		return new RoleModule(identifier, description, dataDefinitionService, securityRolesService);
+	}
 
-    public String getPassword() {
-        return password;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
+	@Override
+	public String getIdentifier() {
+		return "role";
+	}
 
 }

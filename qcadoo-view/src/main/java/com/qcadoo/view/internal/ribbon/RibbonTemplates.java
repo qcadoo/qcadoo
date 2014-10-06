@@ -23,6 +23,7 @@
  */
 package com.qcadoo.view.internal.ribbon;
 
+import com.qcadoo.security.api.SecurityRole;
 import com.qcadoo.view.api.ribbon.RibbonActionItem;
 import com.qcadoo.view.internal.api.ViewDefinition;
 import com.qcadoo.view.internal.ribbon.model.InternalRibbonActionItem;
@@ -34,29 +35,48 @@ public class RibbonTemplates {
 
     private static final String ACTIONS = "actions";
 
-    public InternalRibbonGroup getGroupTemplate(final String templateName, final ViewDefinition viewDefinition) {
+    private static final String STATES = "states";
+
+    private static final String GENERIC_EXPORT = "genericExport";
+
+    public InternalRibbonGroup getGroupTemplate(final String templateName, final ViewDefinition viewDefinition,
+            final SecurityRole role) {
         if ("navigation".equals(templateName)) {
-            return createNavigationTemplate(viewDefinition);
+            return createNavigationTemplate(viewDefinition, role);
         } else if ("gridNewAndRemoveAction".equals(templateName)) {
-            return createGridNewAndRemoveActionsTemplate(viewDefinition);
+            return createGridNewAndRemoveActionsTemplate(viewDefinition, role);
         } else if ("gridNewCopyAndRemoveAction".equals(templateName)) {
-            return createGridNewCopyAndRemoveActionTemplate(viewDefinition);
+            return createGridNewCopyAndRemoveActionsTemplate(viewDefinition, role);
         } else if ("gridNewAndCopyAction".equals(templateName)) {
-            return createGridNewAndCopyActionTemplate(viewDefinition);
+            return createGridNewAndCopyActionsTemplate(viewDefinition, role);
+        } else if ("gridNewAction".equals(templateName)) {
+            return createGridNewActionTemplate(viewDefinition, role);
+        } else if ("gridRemoveAction".equals(templateName)) {
+            return createGridRemoveActionTemplate(viewDefinition, role);
+        } else if ("gridActivateAndDeactivateAction".equals(templateName)) {
+            return createGridActivateAndDeactivateActionsTemplate(viewDefinition, role);
+        } else if ("gridGenericExportAction".equals(templateName)) {
+            return createGridGenericExportActionsTemplate(viewDefinition, role);
         } else if ("formSaveCopyAndRemoveActions".equals(templateName)) {
-            return createFormSaveCopyAndRemoveActionsTemplate(viewDefinition);
+            return createFormSaveCopyAndRemoveActionsTemplate(viewDefinition, role);
         } else if ("formSaveAndRemoveActions".equals(templateName)) {
-            return createFormSaveAndRemoveActionsTemplate(viewDefinition);
+            return createFormSaveAndRemoveActionsTemplate(viewDefinition, role);
+        } else if ("formCopyAndSaveNewActions".equals(templateName)) {
+            return createFormCopyAndSaveNewActionsTemplate(viewDefinition, role);
         } else if ("formSaveAndBackAndRemoveActions".equals(templateName)) {
-            return createFormSaveAndBackAndRemoveActionsTemplate(viewDefinition);
+            return createFormSaveAndBackAndRemoveActionsTemplate(viewDefinition, role);
+        } else if ("formSaveAndCancelActions".equals(templateName)) {
+            return createFormSaveAndCancelActionsTemplate(viewDefinition, role);
         } else if ("formSaveAction".equals(templateName)) {
-            return createFormSaveActionTemplate(viewDefinition);
+            return createFormSaveActionTemplate(viewDefinition, role);
+        } else if ("formActivateAndDeactivateAction".equals(templateName)) {
+            return createFormActivateAndDeactivateActionsTemplate(viewDefinition, role);
         } else {
             throw new IllegalStateException("Unsupported ribbon template : " + templateName);
         }
     }
 
-    private InternalRibbonGroup createNavigationTemplate(final ViewDefinition viewDefinition) {
+    private InternalRibbonGroup createNavigationTemplate(final ViewDefinition viewDefinition, final SecurityRole role) {
         InternalRibbonActionItem ribbonBackAction = new RibbonActionItemImpl();
         ribbonBackAction.setAction(RibbonUtils.translateRibbonAction("#{window}.performBack", viewDefinition));
         ribbonBackAction.setIcon("backIcon24.png");
@@ -64,31 +84,60 @@ public class RibbonTemplates {
         ribbonBackAction.setEnabled(true);
         ribbonBackAction.setType(RibbonActionItem.Type.BIG_BUTTON);
 
-        InternalRibbonGroup ribbonGroup = new RibbonGroupImpl("navigation");
+        InternalRibbonGroup ribbonGroup = new RibbonGroupImpl("navigation", role);
         ribbonGroup.addItem(ribbonBackAction);
 
         return ribbonGroup;
     }
 
-    private InternalRibbonGroup createGridNewAndRemoveActionsTemplate(final ViewDefinition viewDefinition) {
-        InternalRibbonGroup ribbonGroup = new RibbonGroupImpl(ACTIONS);
+    private InternalRibbonGroup createGridNewAndRemoveActionsTemplate(final ViewDefinition viewDefinition, final SecurityRole role) {
+        InternalRibbonGroup ribbonGroup = new RibbonGroupImpl(ACTIONS, role);
         ribbonGroup.addItem(createGridNewAction(viewDefinition));
         ribbonGroup.addItem(createGridDeleteAction(viewDefinition));
         return ribbonGroup;
     }
 
-    private InternalRibbonGroup createGridNewAndCopyActionTemplate(final ViewDefinition viewDefinition) {
-        InternalRibbonGroup ribbonGroup = new RibbonGroupImpl(ACTIONS);
+    private InternalRibbonGroup createGridRemoveActionTemplate(final ViewDefinition viewDefinition, final SecurityRole role) {
+        InternalRibbonGroup ribbonGroup = new RibbonGroupImpl(ACTIONS, role);
+        ribbonGroup.addItem(createGridDeleteAction(viewDefinition));
+        return ribbonGroup;
+    }
+
+    private InternalRibbonGroup createGridNewAndCopyActionsTemplate(final ViewDefinition viewDefinition, final SecurityRole role) {
+        InternalRibbonGroup ribbonGroup = new RibbonGroupImpl(ACTIONS, role);
         ribbonGroup.addItem(createGridNewAction(viewDefinition));
         ribbonGroup.addItem(createGridCopyAction(viewDefinition));
         return ribbonGroup;
     }
 
-    private InternalRibbonGroup createGridNewCopyAndRemoveActionTemplate(final ViewDefinition viewDefinition) {
-        InternalRibbonGroup ribbonGroup = new RibbonGroupImpl(ACTIONS);
+    private InternalRibbonGroup createGridNewActionTemplate(final ViewDefinition viewDefinition, final SecurityRole role) {
+        InternalRibbonGroup ribbonGroup = new RibbonGroupImpl(ACTIONS, role);
+        ribbonGroup.addItem(createGridNewAction(viewDefinition));
+        return ribbonGroup;
+    }
+
+    private InternalRibbonGroup createGridNewCopyAndRemoveActionsTemplate(final ViewDefinition viewDefinition,
+            final SecurityRole role) {
+        InternalRibbonGroup ribbonGroup = new RibbonGroupImpl(ACTIONS, role);
         ribbonGroup.addItem(createGridNewAction(viewDefinition));
         ribbonGroup.addItem(createGridCopyAction(viewDefinition));
         ribbonGroup.addItem(createGridDeleteAction(viewDefinition));
+        return ribbonGroup;
+    }
+
+    private InternalRibbonGroup createGridActivateAndDeactivateActionsTemplate(final ViewDefinition viewDefinition,
+            final SecurityRole role) {
+        InternalRibbonGroup ribbonGroup = new RibbonGroupImpl(STATES, role);
+        ribbonGroup.addItem(createGridActivateAction(viewDefinition));
+        ribbonGroup.addItem(createGridDeactivateAction(viewDefinition));
+        return ribbonGroup;
+    }
+
+    private InternalRibbonGroup createGridGenericExportActionsTemplate(final ViewDefinition viewDefinition,
+            final SecurityRole role) {
+        InternalRibbonGroup ribbonGroup = new RibbonGroupImpl(GENERIC_EXPORT, role);
+        ribbonGroup.addItem(createGridExportCsvAction(viewDefinition));
+        ribbonGroup.addItem(createGridExportPdfAction(viewDefinition));
         return ribbonGroup;
     }
 
@@ -128,8 +177,57 @@ public class RibbonTemplates {
         return ribbonNewAction;
     }
 
-    private InternalRibbonGroup createFormSaveCopyAndRemoveActionsTemplate(final ViewDefinition viewDefinition) {
-        InternalRibbonGroup ribbonGroup = new RibbonGroupImpl(ACTIONS);
+    private InternalRibbonActionItem createGridActivateAction(final ViewDefinition viewDefinition) {
+        InternalRibbonActionItem ribbonActivateAction = new RibbonActionItemImpl();
+        ribbonActivateAction.setAction(RibbonUtils.translateRibbonAction("#{grid}.performActivate;", viewDefinition));
+        ribbonActivateAction.setIcon("unactiveVisibleIcon.png");
+        ribbonActivateAction.setName("activate");
+        ribbonActivateAction.setEnabled(false);
+        ribbonActivateAction.setScript("var listener = {onChange: function(selectedArray) {if (selectedArray.length == 0) {"
+                + "this.disable();} else {this.enable();}}}; #{grid}.addOnChangeListener(listener);");
+        ribbonActivateAction.setType(RibbonActionItem.Type.SMALL_BUTTON);
+        return ribbonActivateAction;
+    }
+
+    private InternalRibbonActionItem createGridDeactivateAction(final ViewDefinition viewDefinition) {
+        InternalRibbonActionItem ribbonDeactivateAction = new RibbonActionItemImpl();
+        ribbonDeactivateAction.setAction(RibbonUtils.translateRibbonAction("#{grid}.performDeactivate;", viewDefinition));
+        ribbonDeactivateAction.setIcon("unactiveNotVisibleIcon.png");
+        ribbonDeactivateAction.setName("deactivate");
+        ribbonDeactivateAction.setEnabled(false);
+        ribbonDeactivateAction.setScript("var listener = {onChange: function(selectedArray) {if (selectedArray.length == 0) {"
+                + "this.disable();} else {this.enable();}}}; #{grid}.addOnChangeListener(listener);");
+        ribbonDeactivateAction.setType(RibbonActionItem.Type.SMALL_BUTTON);
+        return ribbonDeactivateAction;
+    }
+
+    private InternalRibbonActionItem createGridExportPdfAction(final ViewDefinition viewDefinition) {
+        InternalRibbonActionItem ribbonExportPdfAction = new RibbonActionItemImpl();
+        ribbonExportPdfAction.setIcon("pdfIcon16.png");
+        ribbonExportPdfAction.setName("pdf");
+        ribbonExportPdfAction.setEnabled(true);
+        ribbonExportPdfAction
+                .setScript("var listener = {onClick: function() {#{grid}.performEvent('exportToPdf', [], 'exportToPdf');}};"
+                        + " this.addOnChangeListener(listener);");
+        ribbonExportPdfAction.setType(RibbonActionItem.Type.SMALL_BUTTON);
+        return ribbonExportPdfAction;
+    }
+
+    private InternalRibbonActionItem createGridExportCsvAction(final ViewDefinition viewDefinition) {
+        InternalRibbonActionItem ribbonExportCsvAction = new RibbonActionItemImpl();
+        ribbonExportCsvAction.setIcon("exportToCsvIcon16.png");
+        ribbonExportCsvAction.setName("csv");
+        ribbonExportCsvAction.setEnabled(true);
+        ribbonExportCsvAction
+                .setScript("var listener = {onClick: function() {#{grid}.performEvent('exportToCsv', [], 'exportToCsv');}};"
+                        + " this.addOnChangeListener(listener);");
+        ribbonExportCsvAction.setType(RibbonActionItem.Type.SMALL_BUTTON);
+        return ribbonExportCsvAction;
+    }
+
+    private InternalRibbonGroup createFormSaveCopyAndRemoveActionsTemplate(final ViewDefinition viewDefinition,
+            final SecurityRole role) {
+        InternalRibbonGroup ribbonGroup = new RibbonGroupImpl(ACTIONS, role);
         ribbonGroup.addItem(createFormSaveAction(viewDefinition));
         ribbonGroup.addItem(createFormSaveAndBackAction(viewDefinition));
         ribbonGroup.addItem(createFormSaveAndNewAction(viewDefinition));
@@ -139,8 +237,17 @@ public class RibbonTemplates {
         return ribbonGroup;
     }
 
-    private InternalRibbonGroup createFormSaveAndRemoveActionsTemplate(final ViewDefinition viewDefinition) {
-        InternalRibbonGroup ribbonGroup = new RibbonGroupImpl(ACTIONS);
+    private InternalRibbonGroup createFormCopyAndSaveNewActionsTemplate(final ViewDefinition viewDefinition,
+            final SecurityRole role) {
+        InternalRibbonGroup ribbonGroup = new RibbonGroupImpl(ACTIONS, role);
+        ribbonGroup.addItem(createFormSaveAndNewAction(viewDefinition));
+        ribbonGroup.addItem(createFormCopyAction(viewDefinition));
+        return ribbonGroup;
+    }
+
+    private InternalRibbonGroup createFormSaveAndRemoveActionsTemplate(final ViewDefinition viewDefinition,
+            final SecurityRole role) {
+        InternalRibbonGroup ribbonGroup = new RibbonGroupImpl(ACTIONS, role);
         ribbonGroup.addItem(createFormSaveAction(viewDefinition));
         ribbonGroup.addItem(createFormSaveAndBackAction(viewDefinition));
         ribbonGroup.addItem(createFormCancelAction(viewDefinition));
@@ -148,15 +255,25 @@ public class RibbonTemplates {
         return ribbonGroup;
     }
 
-    private InternalRibbonGroup createFormSaveAndBackAndRemoveActionsTemplate(final ViewDefinition viewDefinition) {
-        InternalRibbonGroup ribbonGroup = new RibbonGroupImpl(ACTIONS);
+    private InternalRibbonGroup createFormSaveAndCancelActionsTemplate(final ViewDefinition viewDefinition,
+            final SecurityRole role) {
+        InternalRibbonGroup ribbonGroup = new RibbonGroupImpl(ACTIONS, role);
+        ribbonGroup.addItem(createFormSaveAction(viewDefinition));
+        ribbonGroup.addItem(createFormSaveAndBackAction(viewDefinition));
+        ribbonGroup.addItem(createFormCancelAction(viewDefinition));
+        return ribbonGroup;
+    }
+
+    private InternalRibbonGroup createFormSaveAndBackAndRemoveActionsTemplate(final ViewDefinition viewDefinition,
+            final SecurityRole role) {
+        InternalRibbonGroup ribbonGroup = new RibbonGroupImpl(ACTIONS, role);
         ribbonGroup.addItem(createFormSaveAndBackAction(viewDefinition));
         ribbonGroup.addItem(createFormCancelAction(viewDefinition));
         ribbonGroup.addItem(createFormDeleteAction(viewDefinition));
         return ribbonGroup;
     }
 
-    private InternalRibbonGroup createFormSaveActionTemplate(final ViewDefinition viewDefinition) {
+    private InternalRibbonGroup createFormSaveActionTemplate(final ViewDefinition viewDefinition, final SecurityRole role) {
         InternalRibbonActionItem ribbonSaveAction = new RibbonActionItemImpl();
         ribbonSaveAction.setAction(RibbonUtils
                 .translateRibbonAction("#{form}.performSave; #{window}.performBack", viewDefinition));
@@ -164,16 +281,23 @@ public class RibbonTemplates {
         ribbonSaveAction.setName("saveBack");
         ribbonSaveAction.setType(RibbonActionItem.Type.BIG_BUTTON);
         ribbonSaveAction.setEnabled(true);
-        InternalRibbonGroup ribbonGroup = new RibbonGroupImpl(ACTIONS);
+        InternalRibbonGroup ribbonGroup = new RibbonGroupImpl(ACTIONS, role);
         ribbonGroup.addItem(ribbonSaveAction);
 
         return ribbonGroup;
     }
 
+    private InternalRibbonGroup createFormActivateAndDeactivateActionsTemplate(final ViewDefinition viewDefinition,
+            final SecurityRole role) {
+        InternalRibbonGroup ribbonGroup = new RibbonGroupImpl(STATES, role);
+        ribbonGroup.addItem(createFormActivateAction(viewDefinition));
+        ribbonGroup.addItem(createFormDeactivateAction(viewDefinition));
+        return ribbonGroup;
+    }
+
     private InternalRibbonActionItem createFormDeleteAction(final ViewDefinition viewDefinition) {
         InternalRibbonActionItem ribbonDeleteAction = new RibbonActionItemImpl();
-        ribbonDeleteAction.setAction(RibbonUtils.translateRibbonAction("#{form}.performDelete; #{window}.performBack",
-                viewDefinition));
+        ribbonDeleteAction.setAction(RibbonUtils.translateRibbonAction("#{form}.performDelete;", viewDefinition));
         ribbonDeleteAction.setIcon("deleteIcon16.png");
         ribbonDeleteAction.setName("delete");
         ribbonDeleteAction.setType(RibbonActionItem.Type.SMALL_BUTTON);
@@ -239,6 +363,32 @@ public class RibbonTemplates {
         ribbonSaveAction.setEnabled(true);
         ribbonSaveAction.setType(RibbonActionItem.Type.BIG_BUTTON);
         return ribbonSaveAction;
+    }
+
+    private InternalRibbonActionItem createFormActivateAction(final ViewDefinition viewDefinition) {
+        InternalRibbonActionItem ribbonActivateAction = new RibbonActionItemImpl();
+        ribbonActivateAction.setAction(RibbonUtils.translateRibbonAction("#{form}.performActivate;", viewDefinition));
+        ribbonActivateAction.setIcon("unactiveVisibleIcon.png");
+        ribbonActivateAction.setName("activate");
+        ribbonActivateAction.setEnabled(false);
+        ribbonActivateAction
+                .setScript("var listener = {onSetValue: function(value) {if (!value || !value.content) return; if (value.content.entityId "
+                        + "&& !value.content.isActive) {this.enable();} else {this.disable();}}}; #{form}.addOnChangeListener(listener);");
+        ribbonActivateAction.setType(RibbonActionItem.Type.SMALL_BUTTON);
+        return ribbonActivateAction;
+    }
+
+    private InternalRibbonActionItem createFormDeactivateAction(final ViewDefinition viewDefinition) {
+        InternalRibbonActionItem ribbonDeactivateAction = new RibbonActionItemImpl();
+        ribbonDeactivateAction.setAction(RibbonUtils.translateRibbonAction("#{form}.performDeactivate;", viewDefinition));
+        ribbonDeactivateAction.setIcon("unactiveNotVisibleIcon.png");
+        ribbonDeactivateAction.setName("deactivate");
+        ribbonDeactivateAction.setEnabled(false);
+        ribbonDeactivateAction
+                .setScript("var listener = {onSetValue: function(value) {if (!value || !value.content) return; if (value.content.entityId "
+                        + "&& value.content.isActive) {this.enable();} else {this.disable();}}}; #{form}.addOnChangeListener(listener);");
+        ribbonDeactivateAction.setType(RibbonActionItem.Type.SMALL_BUTTON);
+        return ribbonDeactivateAction;
     }
 
 }

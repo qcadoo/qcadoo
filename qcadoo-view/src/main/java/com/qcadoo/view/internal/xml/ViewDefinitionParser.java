@@ -29,6 +29,7 @@ import java.util.List;
 import org.springframework.core.io.Resource;
 import org.w3c.dom.Node;
 
+import com.qcadoo.security.api.SecurityRole;
 import com.qcadoo.view.internal.ComponentDefinition;
 import com.qcadoo.view.internal.ComponentOption;
 import com.qcadoo.view.internal.api.ComponentCustomEvent;
@@ -42,35 +43,41 @@ import com.qcadoo.view.internal.ribbon.model.InternalRibbonGroup;
 
 public interface ViewDefinitionParser {
 
-    ComponentOption parseOption(Node option);
+    ComponentOption parseOption(final Node option);
 
-    ComponentPattern parseComponent(Node componentNode, ContainerPattern parent) throws ViewDefinitionParserNodeException;
-
-    ComponentDefinition getComponentDefinition(Node componentNode, ContainerPattern parent, ViewDefinition viewDefinition);
-
-    ComponentCustomEvent parseCustomEvent(Node listenerNode) throws ViewDefinitionParserNodeException;
-
-    String getStringAttribute(Node groupNode, String string);
-
-    String getStringNodeContent(Node node);
-
-    Boolean getBooleanAttribute(Node node, String name, boolean defaultValue);
-
-    List<Node> geElementChildren(Node node);
-
-    Node getRootOfXmlDocument(Resource xmlFile);
-
-    InternalViewDefinition parseViewXml(Resource viewXml, String pluginIdentifier);
-
-    ViewExtension getViewExtensionNode(InputStream resource, String tagType) throws ViewDefinitionParserNodeException;
-
-    InternalRibbon parseRibbon(Node groupNode, ViewDefinition viewDefinition) throws ViewDefinitionParserNodeException;
-
-    InternalRibbonGroup parseRibbonGroup(Node groupNode, ViewDefinition viewDefinition) throws ViewDefinitionParserNodeException;
-
-    InternalRibbonActionItem parseRibbonItem(Node itemNode, ViewDefinition viewDefinition)
+    ComponentPattern parseComponent(final Node componentNode, final ContainerPattern parent)
             throws ViewDefinitionParserNodeException;
 
-    void checkState(boolean state, Node node, String message) throws ViewDefinitionParserNodeException;
+    ComponentDefinition getComponentDefinition(final Node componentNode, final ContainerPattern parent,
+            final ViewDefinition viewDefinition);
+
+    ComponentCustomEvent parseCustomEvent(final Node listenerNode) throws ViewDefinitionParserNodeException;
+
+    String getStringAttribute(final Node groupNode, final String string);
+
+    String getStringNodeContent(final Node node);
+
+    Boolean getBooleanAttribute(final Node node, final String name, final boolean defaultValue);
+
+    List<Node> geElementChildren(final Node node);
+
+    Node getRootOfXmlDocument(final Resource xmlFile);
+
+    InternalViewDefinition parseViewXml(final Resource viewXml, final String pluginIdentifier);
+
+    ViewExtension getViewExtensionNode(final InputStream resource, final String tagType) throws ViewDefinitionParserNodeException;
+
+    InternalRibbon parseRibbon(final Node groupNode, final ViewDefinition viewDefinition)
+            throws ViewDefinitionParserNodeException;
+
+    InternalRibbonGroup parseRibbonGroup(final Node groupNode, final ViewDefinition viewDefinition)
+            throws ViewDefinitionParserNodeException;
+
+    InternalRibbonActionItem parseRibbonItem(final Node itemNode, final ViewDefinition viewDefinition)
+            throws ViewDefinitionParserNodeException;
+
+    void checkState(final boolean state, final Node node, final String message) throws ViewDefinitionParserNodeException;
+
+    SecurityRole getAuthorizationRole(final Node node) throws ViewDefinitionParserNodeException;
 
 }

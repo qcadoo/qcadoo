@@ -25,7 +25,7 @@ package com.qcadoo.model.api.validators;
 
 import java.util.Arrays;
 
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 
 /**
  * Object holds validation error message.

@@ -32,10 +32,11 @@
 }
 .awesomeDynamicList.noBorder .awesomeListLine {
 	margin: 0px;
+	border: none;
 }
 .awesomeDynamicList.noBorder .awesomeListLine.lastLine {
 	margin: 0px;
-	border-bottom: none;
+	border: none;
 }
 
 .awesomeDynamicList.hasButtons .awesomeListLine .awesomeListFormContainer {
@@ -50,12 +51,17 @@
 	border-bottom: solid #A7A7A7 1px;
 }
 
+.awesomeDynamicList.hasButtons .awesomeDynamicListHeader {
+	border-right: solid #A7A7A7 1px;
+}
+
 .awesomeDynamicListHeader {
 	border-bottom: solid #A7A7A7 1px;
 	vertical-align: middle;
 	height: 20px;
 	color: #ffffff;
 	background: transparent url('/qcadooView/public/css/crud/images/grid/gradientygrid/gradient_header.png') repeat-x 0 -5px;
+	display: inline-block;
 }
 
 .awesomeListLine .awesomeListFormContainer {

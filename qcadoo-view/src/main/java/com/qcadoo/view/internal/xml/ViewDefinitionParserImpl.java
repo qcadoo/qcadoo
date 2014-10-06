@@ -23,31 +23,6 @@
  */
 package com.qcadoo.view.internal.xml;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.apache.commons.lang.ObjectUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.core.io.Resource;
-import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-
 import com.google.common.base.Preconditions;
 import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.api.DataDefinition;
@@ -67,6 +42,29 @@ import com.qcadoo.view.internal.ribbon.RibbonParserService;
 import com.qcadoo.view.internal.ribbon.model.InternalRibbon;
 import com.qcadoo.view.internal.ribbon.model.InternalRibbonActionItem;
 import com.qcadoo.view.internal.ribbon.model.InternalRibbonGroup;
+import org.apache.commons.lang3.ObjectUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.core.io.Resource;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
@@ -202,13 +200,13 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
         return null;
     }
 
-    private SecurityRole getAuthorizationRole(final Node viewNode) throws ViewDefinitionParserNodeException {
-        String authorizationRole = getStringAttribute(viewNode, "defaultAuthorizationRole");
+    public SecurityRole getAuthorizationRole(final Node node) throws ViewDefinitionParserNodeException {
+        String authorizationRole = getStringAttribute(node, "defaultAuthorizationRole");
         SecurityRole role;
         if (authorizationRole != null) {
             role = securityRolesService.getRoleByIdentifier(authorizationRole);
             if (role == null) {
-                throw new ViewDefinitionParserNodeException(viewNode, "no such role: '" + authorizationRole + "'");
+                throw new ViewDefinitionParserNodeException(node, "no such role: '" + authorizationRole + "'");
             }
         } else {
             role = securityRolesService.getRoleByIdentifier("ROLE_USER");

@@ -78,8 +78,8 @@ public final class DictionaryServiceImpl implements InternalDictionaryService {
     public Map<String, String> getValues(final String dictionary, final Locale locale) {
         checkArgument(hasText(dictionary), "dictionary name must be given");
 
-        List<Entity> items = createCriteriaForItemsFrom(dictionary).addOrder(SearchOrders.asc(DictionaryItemFields.NAME)).list()
-                .getEntities();
+        List<Entity> items = createCriteriaForActiveItemsFrom(dictionary).addOrder(SearchOrders.asc(DictionaryItemFields.NAME))
+                .list().getEntities();
 
         Map<String, String> values = new LinkedHashMap<String, String>();
 
@@ -147,11 +147,15 @@ public final class DictionaryServiceImpl implements InternalDictionaryService {
 
     @Override
     public Entity getItemEntity(final String dictionaryName, final String itemName) {
-        return createCriteriaForItemsFrom(dictionaryName).add(SearchRestrictions.eq(DictionaryItemFields.NAME, itemName))
+        return createCriteriaForActiveItemsFrom(dictionaryName).add(SearchRestrictions.eq(DictionaryItemFields.NAME, itemName))
                 .setMaxResults(1).uniqueResult();
     }
 
     private static final String ITEM_DICTIONARY_NAME_PATH = DictionaryItemFields.DICTIONARY + '.' + DictionaryFields.NAME;
+
+    private SearchCriteriaBuilder createCriteriaForActiveItemsFrom(final String dictionaryName) {
+        return createCriteriaForItemsFrom(dictionaryName).add(SearchRestrictions.eq(DictionaryItemFields.ACTIVE, true));
+    }
 
     private SearchCriteriaBuilder createCriteriaForItemsFrom(final String dictionaryName) {
         return getItemDataDefinition().find().createAlias(DictionaryItemFields.DICTIONARY, DictionaryItemFields.DICTIONARY)

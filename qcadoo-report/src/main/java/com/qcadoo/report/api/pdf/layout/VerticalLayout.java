@@ -25,7 +25,7 @@ package com.qcadoo.report.api.pdf.layout;
 
 import java.util.List;
 
-import org.apache.commons.lang.ObjectUtils;
+import org.apache.commons.lang3.ObjectUtils;
 
 import com.google.common.collect.Lists;
 import com.lowagie.text.Document;

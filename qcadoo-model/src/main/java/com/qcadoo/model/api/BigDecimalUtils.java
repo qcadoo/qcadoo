@@ -28,7 +28,7 @@ import java.math.MathContext;
 import java.text.DecimalFormat;
 import java.util.Locale;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.base.Optional;
 import com.qcadoo.commons.functional.Either;

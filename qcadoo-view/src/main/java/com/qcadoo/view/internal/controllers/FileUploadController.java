@@ -33,6 +33,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -57,6 +58,9 @@ public class FileUploadController {
     @Autowired
     private ViewParametersAppender viewParametersAppender;
 
+    @Value("${maxUploadSize:2000000}")
+    private int maxUploadSize;
+
     @RequestMapping(value = "fileUpload", method = RequestMethod.GET)
     public ModelAndView upload(final Locale locale) {
         ModelAndView mav = getCrudPopupView(QcadooViewConstants.VIEW_FILE_UPLOAD, locale);
@@ -66,7 +70,7 @@ public class FileUploadController {
         mav.addObject("buttonLabel", translationService.translate("qcadooView.fileUpload.button", locale));
         mav.addObject("chooseFileLabel", translationService.translate("qcadooView.fileUpload.chooseFileLabel", locale));
         mav.addObject("maxUploadSizeExceeded",
-                translationService.translate("qcadooView.errorPage.error.uploadException.maxSizeExceeded.explanation", locale));
+                translationService.translate("qcadooView.errorPage.error.uploadException.maxSizeExceeded.explanation", locale, "" + maxUploadSize/1000000));
 
         return mav;
     }

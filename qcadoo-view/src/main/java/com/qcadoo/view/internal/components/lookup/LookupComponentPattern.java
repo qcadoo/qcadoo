@@ -84,6 +84,8 @@ public class LookupComponentPattern extends FieldComponentPattern {
 
     private String fieldCode;
 
+    private boolean prioritizable = true;
+
     private ModalDimensions modalDimensions;
 
     private InternalViewDefinition lookupViewDefinition;
@@ -148,6 +150,8 @@ public class LookupComponentPattern extends FieldComponentPattern {
                 expression = option.getValue();
             } else if ("fieldCode".equals(option.getType())) {
                 fieldCode = option.getValue();
+            } else if ("prioritizable".equals(option.getType())) {
+                prioritizable = Boolean.parseBoolean(option.getValue());
             } else if ("textRepresentationOnDisabled".equals(option.getType())) {
                 textRepresentationOnDisabled = Boolean.parseBoolean(option.getValue());
             } else if ("boldTextRepresentationOnDisabled".equals(option.getType())) {
@@ -276,6 +280,7 @@ public class LookupComponentPattern extends FieldComponentPattern {
         final ComponentDefinition gridComponentDefinition = new ComponentDefinition();
         gridComponentDefinition.setName("grid");
         gridComponentDefinition.setTranslationService(getTranslationService());
+        gridComponentDefinition.setApplicationContext(getApplicationContext());
         gridComponentDefinition.setViewDefinition(lookupViewDefinition);
         gridComponentDefinition.setParent(window);
         gridComponentDefinition.setContextualHelpService(getContextualHelpService());
@@ -293,8 +298,9 @@ public class LookupComponentPattern extends FieldComponentPattern {
         grid.addOption(new ComponentOption("orderable", ImmutableMap.of(L_VALUE, L_LOOKUP_CODE)));
         grid.addOption(new ComponentOption("order", ImmutableMap.of("column", L_LOOKUP_CODE, "direction", "asc")));
         grid.addOption(new ComponentOption("searchable", ImmutableMap.of(L_VALUE, L_LOOKUP_CODE)));
-        grid.addOption(createLookupValueColumn());
+        grid.addOption(new ComponentOption("prioritizable", ImmutableMap.of(L_VALUE, Boolean.toString(prioritizable))));
         grid.addOption(createLookupCodeColumn());
+        grid.addOption(createLookupValueColumn());
 
         return grid;
     }
@@ -320,6 +326,7 @@ public class LookupComponentPattern extends FieldComponentPattern {
         ComponentDefinition windowComponentDefinition = new ComponentDefinition();
         windowComponentDefinition.setName("window");
         windowComponentDefinition.setTranslationService(getTranslationService());
+        windowComponentDefinition.setApplicationContext(getApplicationContext());
         windowComponentDefinition.setViewDefinition(lookupViewDefinition);
         windowComponentDefinition.setContextualHelpService(getContextualHelpService());
 

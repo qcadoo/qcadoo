@@ -23,13 +23,6 @@
  */
 package com.qcadoo.model.internal.units;
 
-import java.util.List;
-import java.util.Set;
-
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
 import com.qcadoo.model.api.Entity;
@@ -39,6 +32,12 @@ import com.qcadoo.model.api.units.PossibleUnitConversions;
 import com.qcadoo.model.api.units.UnitConversion;
 import com.qcadoo.model.api.units.UnitConversionModelService;
 import com.qcadoo.model.api.units.UnitConversionService;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Set;
 
 @Service
 public final class UnitConversionServiceImpl implements UnitConversionService {

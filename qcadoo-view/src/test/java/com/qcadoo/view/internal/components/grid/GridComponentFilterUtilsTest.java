@@ -33,8 +33,6 @@ import static org.mockito.Mockito.verify;
 import java.math.BigDecimal;
 import java.util.Map;
 
-import junit.framework.Assert;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,6 +51,7 @@ import com.qcadoo.model.api.search.SearchRestrictions;
 import com.qcadoo.model.api.search.SearchRestrictions.SearchMatchMode;
 import com.qcadoo.model.api.types.BelongsToType;
 import com.qcadoo.model.api.types.FieldType;
+import junit.framework.Assert;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(SearchRestrictions.class)
@@ -153,9 +152,9 @@ public class GridComponentFilterUtilsTest {
 
         // then
         PowerMockito.verifyStatic();
-        SearchRestrictions.like(TEST_FIELD, "someValue", SearchMatchMode.ANYWHERE);
+        SearchRestrictions.ilike(TEST_FIELD, "someValue", SearchMatchMode.ANYWHERE);
 
-        verify(criteria).add(SearchRestrictions.like(TEST_FIELD, "someValue", SearchMatchMode.ANYWHERE));
+        verify(criteria).add(SearchRestrictions.ilike(TEST_FIELD, "someValue", SearchMatchMode.ANYWHERE));
     }
 
     @Test
@@ -165,7 +164,7 @@ public class GridComponentFilterUtilsTest {
 
         // then
         verify(criteria, never()).add(
-                SearchRestrictions.like(Mockito.eq(TEST_FIELD), Mockito.anyString(), Mockito.any(SearchMatchMode.class)));
+                SearchRestrictions.ilike(Mockito.eq(TEST_FIELD), Mockito.anyString(), Mockito.any(SearchMatchMode.class)));
     }
 
     @Test
@@ -665,7 +664,7 @@ public class GridComponentFilterUtilsTest {
         GridComponentFilterUtils.addAliases(criteria, field);
 
         // then
-        verify(criteria).createAlias("firstBelongsTo", "firstBelongsTo_a");
+        verify(criteria).createAlias("firstBelongsTo", "firstBelongsTo_a", null);
     }
 
     @Test
@@ -677,8 +676,8 @@ public class GridComponentFilterUtilsTest {
         GridComponentFilterUtils.addAliases(criteria, field);
 
         // then
-        verify(criteria).createAlias("firstBelongsTo", "firstBelongsTo_a");
-        verify(criteria).createAlias("firstBelongsTo_a.secondBelongsTo", "secondBelongsTo_a");
+        verify(criteria).createAlias("firstBelongsTo", "firstBelongsTo_a", null);
+        verify(criteria).createAlias("firstBelongsTo_a.secondBelongsTo", "secondBelongsTo_a", null);
     }
 
     @Test
@@ -690,9 +689,9 @@ public class GridComponentFilterUtilsTest {
         GridComponentFilterUtils.addAliases(criteria, field);
 
         // then
-        verify(criteria).createAlias("firstBelongsTo", "firstBelongsTo_a");
-        verify(criteria).createAlias("firstBelongsTo_a.secondBelongsTo", "secondBelongsTo_a");
-        verify(criteria).createAlias("secondBelongsTo_a.thirdBelongsTo", "thirdBelongsTo_a");
+        verify(criteria).createAlias("firstBelongsTo", "firstBelongsTo_a", null);
+        verify(criteria).createAlias("firstBelongsTo_a.secondBelongsTo", "secondBelongsTo_a", null);
+        verify(criteria).createAlias("secondBelongsTo_a.thirdBelongsTo", "thirdBelongsTo_a", null);
     }
 
     @Test
@@ -704,10 +703,10 @@ public class GridComponentFilterUtilsTest {
         GridComponentFilterUtils.addAliases(criteria, field);
 
         // then
-        verify(criteria).createAlias("firstBelongsTo", "firstBelongsTo_a");
-        verify(criteria).createAlias("firstBelongsTo_a.secondBelongsTo", "secondBelongsTo_a");
-        verify(criteria).createAlias("secondBelongsTo_a.thirdBelongsTo", "thirdBelongsTo_a");
-        verify(criteria).createAlias("thirdBelongsTo_a.fourthBelongsTo", "fourthBelongsTo_a");
+        verify(criteria).createAlias("firstBelongsTo", "firstBelongsTo_a", null);
+        verify(criteria).createAlias("firstBelongsTo_a.secondBelongsTo", "secondBelongsTo_a", null);
+        verify(criteria).createAlias("secondBelongsTo_a.thirdBelongsTo", "thirdBelongsTo_a", null);
+        verify(criteria).createAlias("thirdBelongsTo_a.fourthBelongsTo", "fourthBelongsTo_a", null);
     }
 
     @Test

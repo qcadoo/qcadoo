@@ -243,6 +243,10 @@ QCD.components.Component = function (element, mainController) {
 	this.isComponentChanged = function () {
 		return false;
 	};
+
+	this.isPersistent = function(){
+		return this.options.persistent;
+	};
 	
 	function constructor(that) {
         var optionsElement = element.children(".element_options");

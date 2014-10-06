@@ -100,6 +100,7 @@
 					<bean class="com.qcadoo.model.internal.module.HibernateModuleFactory" />
 					<bean class="com.qcadoo.model.internal.module.EnumValueModuleFactory" />
 					<bean class="com.qcadoo.model.internal.module.DictionaryModuleFactory" />
+					<bean class="com.qcadoo.security.internal.module.RoleModuleFactory" />
 					<bean class="com.qcadoo.security.internal.module.UserGroupModuleFactory" />
 					<bean class="com.qcadoo.security.internal.module.UserModuleFactory" />
 					<bean class="com.qcadoo.localization.internal.module.LocaleModuleFactory" />

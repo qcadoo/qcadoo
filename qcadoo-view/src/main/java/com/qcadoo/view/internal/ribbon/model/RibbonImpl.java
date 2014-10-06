@@ -23,17 +23,17 @@
  */
 package com.qcadoo.view.internal.ribbon.model;
 
-import java.util.LinkedList;
-import java.util.List;
-
-import org.apache.commons.lang.StringUtils;
+import com.qcadoo.plugin.api.PluginUtils;
+import com.qcadoo.security.api.SecurityRolesService;
+import com.qcadoo.view.api.ribbon.RibbonActionItem;
+import com.qcadoo.view.api.ribbon.RibbonGroup;
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.qcadoo.plugin.api.PluginUtils;
-import com.qcadoo.view.api.ribbon.RibbonActionItem;
-import com.qcadoo.view.api.ribbon.RibbonGroup;
+import java.util.LinkedList;
+import java.util.List;
 
 public class RibbonImpl implements InternalRibbon {
 
@@ -85,14 +85,15 @@ public class RibbonImpl implements InternalRibbon {
     }
 
     @Override
-    public JSONObject getAsJson() {
+    public JSONObject getAsJson(final SecurityRolesService securityRolesService) {
         JSONObject ribbonJson = new JSONObject();
         try {
             ribbonJson.put("name", name);
             ribbonJson.put("alignment", alignment);
             JSONArray groupsArray = new JSONArray();
             for (InternalRibbonGroup group : getAllGroups()) {
-                if (group.getExtensionPluginIdentifier() == null || PluginUtils.isEnabled(group.getExtensionPluginIdentifier())) {
+                if ((group.getExtensionPluginIdentifier() == null || PluginUtils.isEnabled(group.getExtensionPluginIdentifier()))
+                        && securityRolesService.canAccess(group.getAuthorizationRole())) {
                     groupsArray.put(group.getAsJson());
                 }
             }

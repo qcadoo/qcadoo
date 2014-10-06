@@ -23,16 +23,16 @@
  */
 package com.qcadoo.view.internal.ribbon.model;
 
-import java.util.LinkedList;
-import java.util.List;
-
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
+import com.qcadoo.security.api.SecurityRole;
+import com.qcadoo.view.api.ribbon.RibbonActionItem;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.qcadoo.view.api.ribbon.RibbonActionItem;
+import java.util.LinkedList;
+import java.util.List;
 
 public class RibbonGroupImpl implements InternalRibbonGroup {
 
@@ -40,15 +40,27 @@ public class RibbonGroupImpl implements InternalRibbonGroup {
 
     private String extensionPluginIdentifier;
 
+    private final SecurityRole authorizationRole;
+
     private final List<InternalRibbonActionItem> items = new LinkedList<InternalRibbonActionItem>();
 
     public RibbonGroupImpl(final String name) {
+        this(name, null);
+    }
+
+    public RibbonGroupImpl(final String name, final SecurityRole authorizationRole) {
         this.name = name;
+        this.authorizationRole = authorizationRole;
     }
 
     @Override
     public String getName() {
         return name;
+    }
+
+    @Override
+    public SecurityRole getAuthorizationRole() {
+        return authorizationRole;
     }
 
     @Override
@@ -85,7 +97,7 @@ public class RibbonGroupImpl implements InternalRibbonGroup {
 
     @Override
     public InternalRibbonGroup getCopy() {
-        InternalRibbonGroup copy = new RibbonGroupImpl(name);
+        InternalRibbonGroup copy = new RibbonGroupImpl(name, authorizationRole);
         copy.setExtensionPluginIdentifier(extensionPluginIdentifier);
         for (InternalRibbonActionItem item : items) {
             copy.addItem(item.getCopy());
@@ -95,7 +107,7 @@ public class RibbonGroupImpl implements InternalRibbonGroup {
 
     @Override
     public InternalRibbonGroup getUpdate() {
-        InternalRibbonGroup diff = new RibbonGroupImpl(name);
+        InternalRibbonGroup diff = new RibbonGroupImpl(name, authorizationRole);
         diff.setExtensionPluginIdentifier(extensionPluginIdentifier);
         boolean isDiffrence = false;
         for (InternalRibbonActionItem item : items) {

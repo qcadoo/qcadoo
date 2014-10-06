@@ -30,7 +30,7 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.exception.ConstraintViolationException;
@@ -162,7 +162,7 @@ public class DataAccessServiceImpl implements DataAccessService {
                 }
 
                 List<Entity> savedEntities = saveHasManyEntities(alreadySavedEntities, newlySavedEntities,
-                        hasManyType.getJoinFieldName(), savedEntity.getId(), entities,
+                        hasManyType.getJoinFieldName(), savedEntity, entities,
                         (InternalDataDefinition) hasManyType.getDataDefinition());
 
                 EntityList dbEntities = savedEntity.getHasManyField(fieldEntry.getKey());
@@ -185,7 +185,7 @@ public class DataAccessServiceImpl implements DataAccessService {
                 TreeType treeType = (TreeType) fieldEntry.getValue().getType();
 
                 List<Entity> savedEntities = saveTreeEntities(alreadySavedEntities, newlySavedEntities,
-                        treeType.getJoinFieldName(), savedEntity.getId(), entities,
+                        treeType.getJoinFieldName(), savedEntity, entities,
                         (InternalDataDefinition) treeType.getDataDefinition(), null);
 
                 savedEntity.setField(fieldEntry.getKey(), savedEntities);
@@ -241,16 +241,16 @@ public class DataAccessServiceImpl implements DataAccessService {
     }
 
     private List<Entity> saveHasManyEntities(final Set<Entity> alreadySavedEntities, final Set<Entity> newlySavedEntities,
-            final String joinFieldName, final Long id, final List<Entity> entities, final InternalDataDefinition dataDefinition) {
+            final String joinFieldName, final Entity parentEntity, final List<Entity> entities,
+            final InternalDataDefinition dataDefinition) {
         List<Entity> savedEntities = new ArrayList<Entity>();
 
         for (Entity innerEntity : entities) {
-            innerEntity.setField(joinFieldName, id);
+            innerEntity.setField(joinFieldName, parentEntity.getId());
             Entity savedInnerEntity = performSave(dataDefinition, innerEntity, alreadySavedEntities, newlySavedEntities);
             savedEntities.add(savedInnerEntity);
             if (!savedInnerEntity.isValid()) {
-                // FIXME maku #QCADOO-388 missing errors propagation.
-                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                rollbackAndAddGlobalError(parentEntity, savedInnerEntity);
             }
         }
 
@@ -259,13 +259,13 @@ public class DataAccessServiceImpl implements DataAccessService {
 
     @SuppressWarnings("unchecked")
     private List<Entity> saveTreeEntities(final Set<Entity> alreadySavedEntities, final Set<Entity> newlySavedEntities,
-            final String joinFieldName, final Long id, final List<Entity> entities, final InternalDataDefinition dataDefinition,
-            final Long parentId) {
+            final String joinFieldName, final Entity parentEntity, final List<Entity> entities,
+            final InternalDataDefinition dataDefinition, final Long parentId) {
         List<Entity> savedEntities = new ArrayList<Entity>();
         int i = 0;
 
         for (Entity innerEntity : entities) {
-            innerEntity.setField(joinFieldName, id);
+            innerEntity.setField(joinFieldName, parentEntity.getId());
             innerEntity.setField("parent", parentId);
             innerEntity.setField("priority", ++i);
             List<Entity> children = (List<Entity>) innerEntity.getField("children");
@@ -273,19 +273,28 @@ public class DataAccessServiceImpl implements DataAccessService {
             Entity savedInnerEntity = performSave(dataDefinition, innerEntity, alreadySavedEntities, newlySavedEntities);
             savedEntities.add(savedInnerEntity);
             if (children != null) {
-                children = saveTreeEntities(alreadySavedEntities, newlySavedEntities, joinFieldName, id, children, dataDefinition,
-                        savedInnerEntity.getId());
+                children = saveTreeEntities(alreadySavedEntities, newlySavedEntities, joinFieldName, parentEntity, children,
+                        dataDefinition, savedInnerEntity.getId());
                 savedInnerEntity.setField("children", children);
             }
             if (!savedInnerEntity.isValid()) {
-                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                rollbackAndAddGlobalError(parentEntity, savedInnerEntity);
             }
         }
 
         return savedEntities;
     }
 
-    private EntityOpResult removeOrphans(final CollectionFieldType fieldType, final Iterable<Entity> orphans) {
+
+    private void rollbackAndAddGlobalError(final Entity savedEntity, final Entity errorEntity) {
+        String msg = String.format("Can not save entity '%s' because related entity '%s' has following validation errors:",
+                savedEntity, errorEntity);
+        logEntityErrors(errorEntity, msg);
+        savedEntity.addGlobalError("qcadooView.validate.field.error.invalidRelatedObject");
+        TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+    }
+
+   private EntityOpResult removeOrphans(final CollectionFieldType fieldType, final Iterable<Entity> orphans) {
         switch (fieldType.getCascade()) {
             case NULLIFY:
                 return nullifyOrphans(fieldType.getJoinFieldName(), orphans);
@@ -513,8 +522,7 @@ public class DataAccessServiceImpl implements DataAccessService {
             final String fieldName) {
         FieldDefinition fieldDefinition = dataDefinition.getField(fieldName);
 
-        if (!(fieldDefinition.getType() instanceof ManyToManyType) || !((ManyToManyType) fieldDefinition.getType())
-                .isCopyable()) {
+        if (!(fieldDefinition.getType() instanceof ManyToManyType) || !((ManyToManyType) fieldDefinition.getType()).isCopyable()) {
             return;
         }
         targetEntity.setField(fieldName, sourceEntity.getField(fieldName));
@@ -742,15 +750,15 @@ public class DataAccessServiceImpl implements DataAccessService {
 
         if (entity.getId() != null) {
             existingDatabaseEntity = getDatabaseEntity(dataDefinition, entity.getId());
-            checkState(existingDatabaseEntity != null, "Entity[%s][id=%s] cannot be found",
-                    dataDefinition.getPluginIdentifier() + "." + dataDefinition.getName(), entity.getId());
+            checkState(existingDatabaseEntity != null, "Entity[%s][id=%s] cannot be found", dataDefinition.getPluginIdentifier()
+                    + "." + dataDefinition.getName(), entity.getId());
         }
 
         return existingDatabaseEntity;
     }
 
     private EntityOpResult deleteEntity(final InternalDataDefinition dataDefinition, final Long entityId) {
-        return deleteEntity(dataDefinition, entityId, Sets.<EntitySignature>newHashSet());
+        return deleteEntity(dataDefinition, entityId, Sets.<EntitySignature> newHashSet());
     }
 
     private EntityOpResult deleteEntity(final InternalDataDefinition dataDefinition, final Long entityId,
@@ -763,8 +771,8 @@ public class DataAccessServiceImpl implements DataAccessService {
 
         Object databaseEntity = getDatabaseEntity(dataDefinition, entityId);
 
-        checkNotNull(databaseEntity, "Entity[%s][id=%s] cannot be found",
-                dataDefinition.getPluginIdentifier() + "." + dataDefinition.getName(), entityId);
+        checkNotNull(databaseEntity, "Entity[%s][id=%s] cannot be found", dataDefinition.getPluginIdentifier() + "."
+                + dataDefinition.getName(), entityId);
 
         Entity entity = get(dataDefinition, entityId);
 
@@ -837,10 +845,12 @@ public class DataAccessServiceImpl implements DataAccessService {
             child.setField(joinFieldName, null);
             child = save(childDataDefinition, child);
             if (!child.isValid()) {
-                String msg = String
-                        .format("Can not nullify field '%s' in %s because of following validation errors:", joinFieldName, child);
+                String msg = String.format("Can not nullify field '%s' in %s because of following validation errors:",
+                        joinFieldName, child);
                 logEntityErrors(child, msg);
-                return EntityOpResult.failure(child);
+                EntityMessagesHolder msgHolder = new EntityMessagesHolderImpl(child);
+                msgHolder.addGlobalError("qcadooView.errorPage.error.dataIntegrityViolationException.objectInUse.explanation");
+                return EntityOpResult.failure(msgHolder);
             }
         }
         return EntityOpResult.successfull();

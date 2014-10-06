@@ -40,12 +40,12 @@ public class UserModule extends Module {
 
     private final String password;
 
-    private final String groupName;
+    private final String groupIdentifier;
 
     private final DataDefinitionService dataDefinitionService;
 
     public UserModule(final String login, final String email, final String firstName, final String lastName,
-            final String password, final String groupName, final DataDefinitionService dataDefinitionService) {
+            final String password, final String groupIdentifier, final DataDefinitionService dataDefinitionService) {
         super();
 
         this.login = login;
@@ -53,7 +53,7 @@ public class UserModule extends Module {
         this.firstName = firstName;
         this.lastName = lastName;
         this.password = password;
-        this.groupName = groupName;
+        this.groupIdentifier = groupIdentifier;
         this.dataDefinitionService = dataDefinitionService;
     }
 
@@ -64,6 +64,9 @@ public class UserModule extends Module {
             return;
         }
 
+        Entity group = dataDefinitionService.get("qcadooSecurity", "group").find()
+                .add(SearchRestrictions.eq("identifier", groupIdentifier)).list().getEntities().get(0);
+
         Entity entity = dataDefinitionService.get("qcadooSecurity", "user").create();
         entity.setField("userName", login);
         entity.setField("email", email);
@@ -72,8 +75,7 @@ public class UserModule extends Module {
         entity.setField("password", password);
         entity.setField("passwordConfirmation", password);
         entity.setField("enabled", true);
-        entity.setField("role", groupName);
+        entity.setField("group", group);
         dataDefinitionService.get("qcadooSecurity", "user").save(entity);
     }
-
 }

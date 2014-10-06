@@ -118,8 +118,8 @@
 			windowController.onSessionExpired(serializationObject, isModal);
 		}
 
-		window.addMessage = function(type, content) {
-			windowController.addMessage(type, content);
+		window.addMessage = function(message) {
+			windowController.addMessage(message);
 		}
 
 		window.onLoginSuccess = function() {

@@ -23,16 +23,15 @@
  */
 package com.qcadoo.view.internal.module.gridColumn;
 
-import java.util.LinkedList;
-import java.util.List;
-
-import org.apache.commons.lang.StringUtils;
-import org.jdom.Element;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.qcadoo.plugin.api.ModuleFactory;
 import com.qcadoo.view.constants.Alignment;
 import com.qcadoo.view.internal.api.InternalViewDefinitionService;
+import org.apache.commons.lang3.StringUtils;
+import org.jdom.Element;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.LinkedList;
+import java.util.List;
 
 public class ViewGridColumnModuleFactory extends ModuleFactory<ViewGridColumnModule> {
 
@@ -56,7 +55,9 @@ public class ViewGridColumnModuleFactory extends ModuleFactory<ViewGridColumnMod
             String columnLink = getAttribute(columnElement, "link");
             String columnWidth = getAttribute(columnElement, "width");
             String columnSearchable = getAttribute(columnElement, "searchable");
+            String columnMultiSearch = getAttribute(columnElement, "multiSearch");
             String columnOrderable = getAttribute(columnElement, "orderable");
+            String columnHidden = getAttribute(columnElement, "hidden");
             String columnAlign = getAttribute(columnElement, "align");
 
             ViewGridColumnModuleColumnModel columnModel = new ViewGridColumnModuleColumnModel(columnName, columnFields);
@@ -70,8 +71,14 @@ public class ViewGridColumnModuleFactory extends ModuleFactory<ViewGridColumnMod
             if (columnSearchable != null) {
                 columnModel.setSearchable(Boolean.parseBoolean(columnSearchable));
             }
+            if (columnMultiSearch != null) {
+                columnModel.setMultiSearch(Boolean.parseBoolean(columnMultiSearch));
+            }
             if (columnOrderable != null) {
                 columnModel.setOrderable(Boolean.parseBoolean(columnOrderable));
+            }
+            if(columnHidden != null){
+                columnModel.setHidden(Boolean.parseBoolean(columnHidden));
             }
             if (StringUtils.isNotEmpty(columnAlign)) {
                 columnModel.setAlign(Alignment.parseString(columnAlign));

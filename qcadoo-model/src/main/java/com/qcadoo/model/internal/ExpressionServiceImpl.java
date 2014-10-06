@@ -23,12 +23,13 @@
  */
 package com.qcadoo.model.internal;
 
-import javax.annotation.PostConstruct;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.apache.commons.lang.StringUtils;
+import com.qcadoo.localization.api.TranslationService;
+import com.qcadoo.model.api.Entity;
+import com.qcadoo.model.api.ExpressionService;
+import com.qcadoo.model.api.FieldDefinition;
+import com.qcadoo.model.api.types.BelongsToType;
+import com.qcadoo.model.api.types.FieldType;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,12 +42,10 @@ import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.stereotype.Component;
 
-import com.qcadoo.localization.api.TranslationService;
-import com.qcadoo.model.api.Entity;
-import com.qcadoo.model.api.ExpressionService;
-import com.qcadoo.model.api.FieldDefinition;
-import com.qcadoo.model.api.types.BelongsToType;
-import com.qcadoo.model.api.types.FieldType;
+import javax.annotation.PostConstruct;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Helper class that contains methods to evaluate expression value.

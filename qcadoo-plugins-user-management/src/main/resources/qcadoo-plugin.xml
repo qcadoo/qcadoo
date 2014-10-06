@@ -64,10 +64,20 @@
 			view="usersList" />
 		<menu:menu-item-url name="profile" category="administration"
 			url="/userProfile.html" />
+			
+		<menu:menu-item name="roles" category="administration"
+			view="rolesList" />
+			
+		<menu:menu-item name="groups" category="administration"
+			view="groupsList" />
 
 		<view:view resource="view/usersList.xml" />
 		<view:view resource="view/userDetails.xml" />
 		<view:view resource="view/userChangePassword.xml" />
+		<view:view resource="view/rolesList.xml" />
+		<view:view resource="view/roleDetails.xml" />
+		<view:view resource="view/groupsList.xml" />
+		<view:view resource="view/groupDetails.xml" />
 		<view:view resource="view/profile.xml" />
 		<view:view resource="view/profileChangePassword.xml" />
 	</modules>

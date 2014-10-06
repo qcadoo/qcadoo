@@ -23,13 +23,6 @@
  */
 package com.qcadoo.model.internal;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.FieldDefinition;
@@ -42,6 +35,12 @@ import com.qcadoo.model.internal.types.TextType;
 import com.qcadoo.model.internal.validators.RequiredValidator;
 import com.qcadoo.model.internal.validators.UniqueValidator;
 import com.qcadoo.plugin.internal.PluginUtilsService;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 public final class FieldDefinitionImpl implements InternalFieldDefinition {
 

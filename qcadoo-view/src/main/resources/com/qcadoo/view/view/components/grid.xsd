@@ -75,6 +75,7 @@
                             <xs:enumeration value="hasPredefinedFilters"/>
                             <xs:enumeration value="filtersDefaultVisible"/>
                             <xs:enumeration value="deletable"/>
+                            <xs:enumeration value="prioritizable"/>
                             <xs:enumeration value="height"/>
                             <xs:enumeration value="width"/>
                             <xs:enumeration value="lookup"/>
@@ -155,14 +156,7 @@
         <xs:complexContent>
             <xs:extension base="gridOption">
                 <xs:attribute name="column" use="required" type="identifierType"/>
-                <xs:attribute name="direction" use="required">
-                    <xs:simpleType>
-                        <xs:restriction>
-                            <xs:enumeration value="desc"/>
-                            <xs:enumeration value="asc"/>
-                        </xs:restriction>
-                    </xs:simpleType>
-                </xs:attribute>
+                <xs:attribute name="direction" use="required" type="directionType"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>

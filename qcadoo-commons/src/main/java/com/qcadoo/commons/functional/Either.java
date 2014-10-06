@@ -23,7 +23,7 @@
  */
 package com.qcadoo.commons.functional;
 
-import org.apache.commons.lang.ObjectUtils;
+import org.apache.commons.lang3.ObjectUtils;
 
 import com.google.common.base.Function;
 

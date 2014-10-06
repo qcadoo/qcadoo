@@ -30,6 +30,7 @@
 	padding: 0;
 	height: 30px;
 	vertical-align: middle;
+	overflow: hidden;
 }
 
 .elementHeader .elementHeaderTitle {

@@ -136,7 +136,7 @@ public interface InternalDataDefinition extends DataDefinition {
     /**
      * Call copy hooks on given entity.
      * 
-     * @param entity
+     * @param targetEntity
      *            entity
      */
     boolean callCopyHook(Entity targetEntity);

@@ -25,7 +25,7 @@ package com.qcadoo.plugins.dictionaries.internal.hooks;
 
 import static com.qcadoo.model.constants.DictionaryItemFields.TECHNICAL_CODE;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +33,7 @@ import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.constants.QcadooModelConstants;
 import com.qcadoo.view.api.ViewDefinitionState;
+import com.qcadoo.view.api.components.FieldComponent;
 import com.qcadoo.view.api.components.FormComponent;
 import com.qcadoo.view.api.components.WindowComponent;
 import com.qcadoo.view.api.ribbon.RibbonActionItem;
@@ -43,7 +44,7 @@ public class DictionaryItemDetailsHooks {
     @Autowired
     private DataDefinitionService dataDefinitionService;
 
-    public void blockedDeleteOptionWhenDictionaryWasAddFromSystem(final ViewDefinitionState view) {
+    public void blockedActivationOptionWhenDictionaryWasAddFromSystem(final ViewDefinitionState view) {
         FormComponent form = (FormComponent) view.getComponentByReference("form");
         if (form.getEntityId() == null) {
             return;
@@ -56,9 +57,22 @@ public class DictionaryItemDetailsHooks {
 
     protected void changedEnabledButton(final ViewDefinitionState view, final boolean enabled) {
         WindowComponent window = (WindowComponent) view.getComponentByReference("window");
-        RibbonActionItem deleteButton = window.getRibbon().getGroupByName("actions").getItemByName("delete");
-        deleteButton.setEnabled(enabled);
-        deleteButton.requestUpdate(true);
+        RibbonActionItem deactivateButton = window.getRibbon().getGroupByName("states").getItemByName("deactivate");
+        deactivateButton.setEnabled(enabled);
+        deactivateButton.requestUpdate(true);
+        RibbonActionItem activateButton = window.getRibbon().getGroupByName("states").getItemByName("activate");
+        activateButton.setEnabled(enabled);
+        activateButton.requestUpdate(true);
+    }
+
+    public void disableNameEdit(final ViewDefinitionState view) {
+        FormComponent form = (FormComponent) view.getComponentByReference("form");
+        if (form.getEntityId() == null) {
+            return;
+        } else {
+            FieldComponent nameFieldComponent = (FieldComponent) view.getComponentByReference("name");
+            nameFieldComponent.setEnabled(false);
+        }
     }
 
     public void disableDictionaryItemFormForExternalItems(final ViewDefinitionState state) {

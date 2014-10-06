@@ -26,8 +26,10 @@ package com.qcadoo.view.internal.states;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 import org.junit.Test;
+import org.springframework.context.ApplicationContext;
 
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.internal.FieldEntityIdChangeListener;
@@ -45,6 +47,8 @@ public class FieldEntityIdChangeListenerTest extends AbstractStateTest {
         FormComponentPattern pattern = mock(FormComponentPattern.class);
         given(pattern.getExpressionNew()).willReturn(null);
         given(pattern.getExpressionEdit()).willReturn(null);
+        ApplicationContext applicationContext = mock(ApplicationContext.class);
+        setField(pattern, "applicationContext", applicationContext);
         FormComponentState container = new FormComponentState(pattern);
         container.addFieldEntityIdChangeListener("field1", (FieldEntityIdChangeListener) component1);
         container.addFieldEntityIdChangeListener("field2", (FieldEntityIdChangeListener) component2);

@@ -23,7 +23,9 @@
  */
 package com.qcadoo.security.internal.validators;
 
-import static com.qcadoo.security.constants.QcadooSecurityConstants.*;
+import static com.qcadoo.security.constants.QcadooSecurityConstants.ROLE_ADMIN;
+import static com.qcadoo.security.constants.QcadooSecurityConstants.ROLE_SUPERADMIN;
+import static com.qcadoo.security.constants.QcadooSecurityConstants.ROLE_USER;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
@@ -40,10 +42,14 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import com.google.common.collect.Lists;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.security.api.SecurityService;
+import com.qcadoo.security.constants.GroupFields;
+import com.qcadoo.security.constants.QcadooSecurityConstants;
+import com.qcadoo.security.constants.RoleFields;
 import com.qcadoo.security.constants.UserFields;
 
 public class UserRoleValidationServiceTest {
@@ -60,7 +66,7 @@ public class UserRoleValidationServiceTest {
     private FieldDefinition userRoleFieldDefMock;
 
     @Mock
-    private Entity userEntityMock, currentUserEntityMock, existingUserEntityMock;
+    private Entity userEntityMock, currentUserEntityMock, existingUserEntityMock, userGroupMock, existingUserGroupMock;
 
     @Mock
     private SecurityContext securityContext;
@@ -71,7 +77,7 @@ public class UserRoleValidationServiceTest {
 
         given(securityService.getCurrentUserId()).willReturn(1L);
 
-        given(userDataDefMock.getField(UserFields.ROLE)).willReturn(userRoleFieldDefMock);
+        given(userDataDefMock.getField(UserFields.GROUP)).willReturn(userRoleFieldDefMock);
         given(userDataDefMock.get(1L)).willReturn(currentUserEntityMock);
 
         given(userEntityMock.getId()).willReturn(1000L);
@@ -84,16 +90,27 @@ public class UserRoleValidationServiceTest {
     }
 
     private void stubRoleTransition(final String from, final String to) {
-        given(existingUserEntityMock.getStringField(UserFields.ROLE)).willReturn(from);
-        given(existingUserEntityMock.getField(UserFields.ROLE)).willReturn(from);
+        Entity fromRole = mock(Entity.class);
+        given(fromRole.getStringField(RoleFields.IDENTIFIER_FIELD)).willReturn(from);
+        given(existingUserGroupMock.getManyToManyField(GroupFields.ROLES_FIELD)).willReturn(Lists.newArrayList(fromRole));
+        given(existingUserEntityMock.getBelongsToField(UserFields.GROUP)).willReturn(from == null ? null : existingUserGroupMock);
+        given(securityService.hasRole(existingUserEntityMock, QcadooSecurityConstants.ROLE_SUPERADMIN)).willReturn(
+                QcadooSecurityConstants.ROLE_SUPERADMIN.equals(from));
 
-        given(userEntityMock.getStringField(UserFields.ROLE)).willReturn(to);
-        given(userEntityMock.getField(UserFields.ROLE)).willReturn(to);
+        Entity toRole = mock(Entity.class);
+        given(toRole.getStringField(RoleFields.IDENTIFIER_FIELD)).willReturn(to);
+        given(userGroupMock.getManyToManyField(GroupFields.ROLES_FIELD)).willReturn(Lists.newArrayList(toRole));
+        given(userEntityMock.getBelongsToField(UserFields.GROUP)).willReturn(to == null ? null : userGroupMock);
+        given(securityService.hasRole(userEntityMock, QcadooSecurityConstants.ROLE_SUPERADMIN)).willReturn(
+                QcadooSecurityConstants.ROLE_SUPERADMIN.equals(to));
     }
 
     private void stubCurrentUserRole(final String role) {
-        given(currentUserEntityMock.getStringField(UserFields.ROLE)).willReturn(role);
-        given(currentUserEntityMock.getField(UserFields.ROLE)).willReturn(role);
+        Entity roleEntity = mock(Entity.class);
+        given(roleEntity.getStringField(RoleFields.IDENTIFIER_FIELD)).willReturn(role);
+        given(currentUserEntityMock.getManyToManyField(UserFields.GROUP)).willReturn(Lists.newArrayList(roleEntity));
+        given(securityService.hasRole(currentUserEntityMock, QcadooSecurityConstants.ROLE_SUPERADMIN)).willReturn(
+                QcadooSecurityConstants.ROLE_SUPERADMIN.equals(role));
     }
 
     private void stubSecurityContextWithAuthentication() {
@@ -194,7 +211,7 @@ public class UserRoleValidationServiceTest {
     }
 
     @Test
-    public final void shouldMarkTransitionFromBlankToSuperadminAsValidWhenPerformedByNonSuperadmin() {
+    public final void shouldMarkTransitionFromBlankToSuperadminAsInvalidWhenPerformedByNonSuperadmin() {
         // given
         stubSecurityContextWithAuthentication();
         stubCurrentUserRole(ROLE_ADMIN);
@@ -273,7 +290,7 @@ public class UserRoleValidationServiceTest {
     }
 
     @Test
-    public final void shouldMarkTransitionFromSuperadminToAnyAsValid() {
+    public final void shouldMarkTransitionFromSuperadminToAnyAsInvalid() {
         // given
         stubSecurityContextWithAuthentication();
         stubRoleTransition(ROLE_SUPERADMIN, "99anyOtherRole");
@@ -282,7 +299,8 @@ public class UserRoleValidationServiceTest {
         final boolean isValid = userRoleValidationService.checkUserCreatingSuperadmin(userDataDefMock, userEntityMock);
 
         // then
-        assertTrue(isValid);
+        assertFalse(isValid);
+        verify(userEntityMock).addError(Mockito.eq(userRoleFieldDefMock), Mockito.anyString());
     }
 
     @Test
@@ -365,6 +383,7 @@ public class UserRoleValidationServiceTest {
 
     @Test
     public final void shouldMarkTransitionFromAdminToSuperadminAsInvalid() {
+
         // given
         stubSecurityContextWithAuthentication();
         stubRoleTransition(ROLE_ADMIN, ROLE_SUPERADMIN);

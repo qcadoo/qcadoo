@@ -25,21 +25,18 @@ package com.qcadoo.view.internal.components.grid;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.collect.Lists;
 import com.qcadoo.localization.api.utils.DateUtils;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.FieldDefinition;
+import com.qcadoo.model.api.search.JoinType;
 import com.qcadoo.model.api.search.SearchCriteriaBuilder;
 import com.qcadoo.model.api.search.SearchCriterion;
 import com.qcadoo.model.api.search.SearchRestrictions;
@@ -269,11 +266,11 @@ public final class GridComponentFilterUtils {
             case GE:
                 return SearchRestrictions.eq(field, data);
             case CN:
-                return SearchRestrictions.like(field, data, SearchMatchMode.ANYWHERE);
+                return SearchRestrictions.ilike(field, data, SearchMatchMode.ANYWHERE);
             case BW:
-                return SearchRestrictions.like(field, data, SearchMatchMode.START);
+                return SearchRestrictions.ilike(field, data, SearchMatchMode.START);
             case EW:
-                return SearchRestrictions.like(field, data, SearchMatchMode.END);
+                return SearchRestrictions.ilike(field, data, SearchMatchMode.END);
             case IN:
                 Collection<String> values = parseListValue(data);
                 return SearchRestrictions.in(field, values);
@@ -296,6 +293,10 @@ public final class GridComponentFilterUtils {
     }
 
     public static String addAliases(final SearchCriteriaBuilder criteria, final String field) {
+        return addAliases(criteria, field, null);
+    }
+
+    public static String addAliases(final SearchCriteriaBuilder criteria, final String field, final JoinType joinType) {
         if (field == null) {
             return null;
         }
@@ -309,7 +310,7 @@ public final class GridComponentFilterUtils {
         String lastAlias = "";
 
         for (int i = 0; i < path.length - 1; i++) {
-            criteria.createAlias(lastAlias + path[i], path[i] + "_a");
+            criteria.createAlias(lastAlias + path[i], path[i] + "_a", joinType);
             lastAlias = path[i] + "_a.";
         }
 

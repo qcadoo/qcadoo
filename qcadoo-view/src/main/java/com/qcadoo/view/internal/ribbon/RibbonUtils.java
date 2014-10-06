@@ -30,6 +30,7 @@ import java.util.regex.Pattern;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.qcadoo.security.api.SecurityRolesService;
 import com.qcadoo.view.internal.api.ComponentPattern;
 import com.qcadoo.view.internal.api.InternalViewDefinition;
 import com.qcadoo.view.internal.api.ViewDefinition;
@@ -46,7 +47,7 @@ public final class RibbonUtils {
 
     public static JSONObject translateRibbon(final InternalRibbon ribbon, final Locale locale,
             final AbstractComponentPattern pattern) throws JSONException {
-        JSONObject json = ribbon.getAsJson();
+        JSONObject json = ribbon.getAsJson(pattern.getApplicationContext().getBean(SecurityRolesService.class));
 
         for (int i = 0; i < json.getJSONArray("groups").length(); i++) {
             JSONObject group = json.getJSONArray("groups").getJSONObject(i);

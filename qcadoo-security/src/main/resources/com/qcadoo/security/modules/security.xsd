@@ -33,7 +33,8 @@
 	<xs:element name="user-group">
 		<xs:complexType>
 			<xs:attribute name="name" type="notEmptyString" use="required" />
-			<xs:attribute name="role" type="notEmptyString" use="required" />
+			<xs:attribute name="identifier" type="notEmptyString" use="required" />
+			<xs:attribute name="roles" type="xs:string" use="required" />
 		</xs:complexType>
 	</xs:element>
 	
@@ -44,7 +45,14 @@
 			<xs:attribute name="firstName" type="notEmptyString" use="required" />
 			<xs:attribute name="lastName" type="notEmptyString" use="required" />
 			<xs:attribute name="password" type="notEmptyString" use="required" />
-			<xs:attribute name="groupName" type="notEmptyString" use="required" />
+			<xs:attribute name="groupIdentifier" type="notEmptyString" use="required" />
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="role">
+		<xs:complexType>	
+			<xs:attribute name="identifier" type="notEmptyString" use="required" />
+			<xs:attribute name="description" type="notEmptyString" />
 		</xs:complexType>
 	</xs:element>
 	

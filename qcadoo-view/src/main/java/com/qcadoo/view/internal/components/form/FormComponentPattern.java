@@ -27,11 +27,15 @@ import java.util.Locale;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Node;
 
+import com.qcadoo.security.api.SecurityRole;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.internal.ComponentDefinition;
 import com.qcadoo.view.internal.ComponentOption;
 import com.qcadoo.view.internal.patterns.AbstractContainerPattern;
+import com.qcadoo.view.internal.xml.ViewDefinitionParser;
+import com.qcadoo.view.internal.xml.ViewDefinitionParserNodeException;
 
 public class FormComponentPattern extends AbstractContainerPattern {
 
@@ -44,6 +48,8 @@ public class FormComponentPattern extends AbstractContainerPattern {
     private String expressionEdit = "#id";
 
     private String expressionNew;
+
+    private SecurityRole authorizationRole;
 
     public FormComponentPattern(final ComponentDefinition componentDefinition) {
         super(componentDefinition);
@@ -89,6 +95,12 @@ public class FormComponentPattern extends AbstractContainerPattern {
     }
 
     @Override
+    public void parse(final Node componentNode, final ViewDefinitionParser parser) throws ViewDefinitionParserNodeException {
+        super.parse(componentNode, parser);
+        authorizationRole = parser.getAuthorizationRole(componentNode);
+    }
+
+    @Override
     public ComponentState getComponentStateInstance() {
         return new FormComponentState(this);
     }
@@ -114,6 +126,10 @@ public class FormComponentPattern extends AbstractContainerPattern {
 
     public String getExpressionNew() {
         return expressionNew;
+    }
+
+    public SecurityRole getAuthorizationRole() {
+        return authorizationRole;
     }
 
 }

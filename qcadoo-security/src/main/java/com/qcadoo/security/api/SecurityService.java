@@ -23,6 +23,8 @@
  */
 package com.qcadoo.security.api;
 
+import com.qcadoo.model.api.Entity;
+
 /**
  * Service for getting current user.
  * 
@@ -43,5 +45,16 @@ public interface SecurityService {
      * @return currently logged in user's id
      */
     Long getCurrentUserId();
+    
+    /**
+     * Checks if given user can access resource with specified access role identifier
+     * 
+     * @param userEntity
+     *            user to check
+     * @param targetRoleIdetifier
+     *            resource access role identifier
+     * @return true if given user can access to defined role, false otherwise
+     */
+    boolean hasRole(final Entity userEntity, final String targetRoleIdetifier);
 
 }

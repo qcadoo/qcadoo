@@ -96,8 +96,8 @@ public class DictionaryServiceTest extends TransactionMockAwareTest {
 
         given(
                 dataDefinitionService.get("qcadooModel", "dictionaryItem").find().createAlias("dictionary", "dictionary")
-                        .add(SearchRestrictions.eq("dictionary.name", "dict")).addOrder(SearchOrders.asc("name")).list()
-                        .getEntities()).willReturn(newArrayList(item1, item3, item2));
+                        .add(SearchRestrictions.eq("dictionary.name", "dict")).add(SearchRestrictions.eq("active", true))
+                        .addOrder(SearchOrders.asc("name")).list().getEntities()).willReturn(newArrayList(item1, item3, item2));
 
         // when
         Map<String, String> values = dictionaryService.getValues("dict", Locale.ENGLISH);

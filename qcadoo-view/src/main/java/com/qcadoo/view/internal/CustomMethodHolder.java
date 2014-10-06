@@ -23,17 +23,16 @@
  */
 package com.qcadoo.view.internal;
 
+import com.google.common.base.Preconditions;
+import com.qcadoo.view.internal.xml.ViewDefinitionParser;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.ApplicationContext;
+import org.w3c.dom.Node;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
-
-import org.apache.commons.lang.StringUtils;
-import org.springframework.context.ApplicationContext;
-import org.w3c.dom.Node;
-
-import com.google.common.base.Preconditions;
-import com.qcadoo.view.internal.xml.ViewDefinitionParser;
 
 public final class CustomMethodHolder {
 
