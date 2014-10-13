@@ -146,7 +146,7 @@ public class SecurityServiceImpl implements InternalSecurityService, UserDetails
     protected UserDetails convertEntityToUserDetails(final Entity entity) {
         List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
 
-        for (Entity entityRole : entity.getBelongsToField(UserFields.GROUP).getManyToManyField(GroupFields.ROLES_FIELD)) {
+        for (Entity entityRole : entity.getBelongsToField(UserFields.GROUP).getManyToManyField(GroupFields.ROLES)) {
             SecurityRole role = securityRolesService.getRoleByIdentifier(entityRole.getStringField("identifier"));
 
             checkState(role != null, "Role '%s' not defined", entityRole.getStringField("identifier"));
@@ -218,7 +218,7 @@ public class SecurityServiceImpl implements InternalSecurityService, UserDetails
         checkNotNull(targetRoleIdetifier, L_TARGET_ROLE_IDENTIFIER_MUST_BE_GIVEN);
         checkNotNull(userEntity, L_USER_ENTITY_MUST_BE_GIVEN);
 
-        List<Entity> roles = userEntity.getBelongsToField(UserFields.GROUP).getManyToManyField(GroupFields.ROLES_FIELD);
+        List<Entity> roles = userEntity.getBelongsToField(UserFields.GROUP).getManyToManyField(GroupFields.ROLES);
         for (Entity role : roles) {
             if (targetRoleIdetifier.equals(role.getStringField(RoleFields.IDENTIFIER_FIELD))) {
                 return true;

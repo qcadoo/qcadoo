@@ -93,7 +93,7 @@
 		<bean class="com.qcadoo.plugin.internal.module.DefaultModuleFactoryAccessor">
 			<property name="moduleFactories">
 				<list>
-					<!-- Beware! Order matters -->
+					<!-- Beware! Order matters + don't forget to apply changes in another spring profiles! -->
 					<bean class="com.qcadoo.model.internal.module.ModelModuleFactory" />
 					<bean class="com.qcadoo.model.internal.module.FieldModuleFactory" />
 					<bean class="com.qcadoo.model.internal.module.HookModuleFactory" />

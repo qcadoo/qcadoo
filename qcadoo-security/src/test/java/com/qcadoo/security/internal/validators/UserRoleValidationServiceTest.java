@@ -92,14 +92,14 @@ public class UserRoleValidationServiceTest {
     private void stubRoleTransition(final String from, final String to) {
         Entity fromRole = mock(Entity.class);
         given(fromRole.getStringField(RoleFields.IDENTIFIER_FIELD)).willReturn(from);
-        given(existingUserGroupMock.getManyToManyField(GroupFields.ROLES_FIELD)).willReturn(Lists.newArrayList(fromRole));
+        given(existingUserGroupMock.getManyToManyField(GroupFields.ROLES)).willReturn(Lists.newArrayList(fromRole));
         given(existingUserEntityMock.getBelongsToField(UserFields.GROUP)).willReturn(from == null ? null : existingUserGroupMock);
         given(securityService.hasRole(existingUserEntityMock, QcadooSecurityConstants.ROLE_SUPERADMIN)).willReturn(
                 QcadooSecurityConstants.ROLE_SUPERADMIN.equals(from));
 
         Entity toRole = mock(Entity.class);
         given(toRole.getStringField(RoleFields.IDENTIFIER_FIELD)).willReturn(to);
-        given(userGroupMock.getManyToManyField(GroupFields.ROLES_FIELD)).willReturn(Lists.newArrayList(toRole));
+        given(userGroupMock.getManyToManyField(GroupFields.ROLES)).willReturn(Lists.newArrayList(toRole));
         given(userEntityMock.getBelongsToField(UserFields.GROUP)).willReturn(to == null ? null : userGroupMock);
         given(securityService.hasRole(userEntityMock, QcadooSecurityConstants.ROLE_SUPERADMIN)).willReturn(
                 QcadooSecurityConstants.ROLE_SUPERADMIN.equals(to));

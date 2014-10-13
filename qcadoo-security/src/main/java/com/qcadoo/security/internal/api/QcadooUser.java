@@ -29,94 +29,94 @@ import com.qcadoo.model.api.Entity;
 
 public class QcadooUser {
 
-	private String login;
+    private String login;
 
-	private String email;
+    private String email;
 
-	private String firstName;
+    private String firstName;
 
-	private String lastName;
+    private String lastName;
 
-	private Entity group;
+    private Entity group;
 
-	private Date lastActivity;
+    private Date lastActivity;
 
-	public QcadooUser() {
-		// nothing
-	}
+    public QcadooUser() {
+        // nothing
+    }
 
-	public QcadooUser(final String login, final String email, final String firstName, final String lastName, final Entity group,
-	        final Date lastActivity) {
-		this.login = login;
-		this.email = email;
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.group = group;
-		this.lastActivity = new Date(lastActivity.getTime());
-	}
+    public QcadooUser(final String login, final String email, final String firstName, final String lastName, final Entity group,
+            final Date lastActivity) {
+        this.login = login;
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.group = group;
+        this.lastActivity = new Date(lastActivity.getTime());
+    }
 
-	public QcadooUser(final Entity userEntity) {
-		this.login = userEntity.getStringField("userName");
-		this.email = userEntity.getStringField("email");
-		this.firstName = userEntity.getStringField("firstName");
-		this.lastName = userEntity.getStringField("lastName");
-		this.group = userEntity.getBelongsToField("group");
-		this.lastActivity = (Date) userEntity.getField("lastActivity");
-	}
+    public QcadooUser(final Entity userEntity) {
+        this.login = userEntity.getStringField("userName");
+        this.email = userEntity.getStringField("email");
+        this.firstName = userEntity.getStringField("firstName");
+        this.lastName = userEntity.getStringField("lastName");
+        this.group = userEntity.getBelongsToField("group");
+        this.lastActivity = (Date) userEntity.getField("lastActivity");
+    }
 
-	public String getLogin() {
-		return login;
-	}
+    public String getLogin() {
+        return login;
+    }
 
-	public String getEmail() {
-		return email;
-	}
+    public String getEmail() {
+        return email;
+    }
 
-	public String getFirstName() {
-		return firstName;
-	}
+    public String getFirstName() {
+        return firstName;
+    }
 
-	public String getLastName() {
-		return lastName;
-	}
+    public String getLastName() {
+        return lastName;
+    }
 
-	public Entity getGroup() {
-		return group;
-	}
+    public Entity getGroup() {
+        return group;
+    }
 
-	public Date getLastActivity() {
-		if (lastActivity == null) {
-			return null;
-		}
-		return new Date(lastActivity.getTime());
-	}
+    public Date getLastActivity() {
+        if (lastActivity == null) {
+            return null;
+        }
+        return new Date(lastActivity.getTime());
+    }
 
-	public void setLogin(final String login) {
-		this.login = login;
-	}
+    public void setLogin(final String login) {
+        this.login = login;
+    }
 
-	public void setEmail(final String email) {
-		this.email = email;
-	}
+    public void setEmail(final String email) {
+        this.email = email;
+    }
 
-	public void setFirstName(final String firstName) {
-		this.firstName = firstName;
-	}
+    public void setFirstName(final String firstName) {
+        this.firstName = firstName;
+    }
 
-	public void setLastName(final String lastName) {
-		this.lastName = lastName;
-	}
+    public void setLastName(final String lastName) {
+        this.lastName = lastName;
+    }
 
-	public void setGroup(final Entity group) {
-		this.group = group;
-	}
+    public void setGroup(final Entity group) {
+        this.group = group;
+    }
 
-	public void setLastActivity(final Date lastActivity) {
-		if (lastActivity == null) {
-			this.lastActivity = null;
-		} else {
-			this.lastActivity = new Date(lastActivity.getTime());
-		}
-	}
+    public void setLastActivity(final Date lastActivity) {
+        if (lastActivity == null) {
+            this.lastActivity = null;
+        } else {
+            this.lastActivity = new Date(lastActivity.getTime());
+        }
+    }
 
 }

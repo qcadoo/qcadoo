@@ -23,6 +23,8 @@
  */
 package com.qcadoo.model.internal.validators;
 
+import java.util.Objects;
+
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -30,6 +32,8 @@ import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.search.SearchCriteriaBuilder;
+import com.qcadoo.model.api.search.SearchCriterion;
+import com.qcadoo.model.api.search.SearchProjections;
 import com.qcadoo.model.api.search.SearchRestrictions;
 import com.qcadoo.model.api.search.SearchResult;
 import com.qcadoo.model.internal.api.ErrorMessageDefinition;
@@ -56,13 +60,10 @@ public final class UniqueValidator implements FieldHookDefinition, ErrorMessageD
         if (entity.getField(fieldDefinition.getName()) == null) {
             return true;
         }
-        SearchCriteriaBuilder searchCriteriaBuilder = dataDefinition.find()
-                .add(SearchRestrictions.iEq(fieldDefinition.getName(), entity.getField(fieldDefinition.getName())))
-                .setMaxResults(1);
+        SearchCriteriaBuilder searchCriteriaBuilder = dataDefinition.find().add(uniqueCriterionFor(entity)).setMaxResults(1);
         if (entity.getId() != null) {
             searchCriteriaBuilder.add(SearchRestrictions.idNe(entity.getId()));
         }
-
         SearchResult results = searchCriteriaBuilder.list();
 
         if (results.getTotalNumberOfEntities() == 0) {
@@ -71,6 +72,13 @@ public final class UniqueValidator implements FieldHookDefinition, ErrorMessageD
             entity.addError(fieldDefinition, errorMessage);
             return false;
         }
+    }
+
+    private SearchCriterion uniqueCriterionFor(final Entity entity) {
+        if (Objects.equals(String.class, fieldDefinition.getType().getType())) {
+            return SearchRestrictions.iEq(fieldDefinition.getName(), entity.getField(fieldDefinition.getName()));
+        }
+        return SearchRestrictions.eq(fieldDefinition.getName(), entity.getField(fieldDefinition.getName()));
     }
 
     @Override

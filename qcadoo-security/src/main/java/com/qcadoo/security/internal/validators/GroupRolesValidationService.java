@@ -35,12 +35,12 @@ public class GroupRolesValidationService {
             return true;
         }
 
-        entity.addError(dataDefinition.getField(GroupFields.ROLES_FIELD), "qcadooUsers.validate.global.error.forbiddenRole");
+        entity.addError(dataDefinition.getField(GroupFields.ROLES), "qcadooUsers.validate.global.error.forbiddenRole");
         return false;
     }
 
     private Boolean hasRoleSuperAdmin(final Entity entity) {
-        List<Entity> roles = entity.getManyToManyField(GroupFields.ROLES_FIELD);
+        List<Entity> roles = entity.getManyToManyField(GroupFields.ROLES);
         for (Entity role : roles) {
             if (QcadooSecurityConstants.ROLE_SUPERADMIN.equals(role.getStringField("identifier"))) {
                 return true;

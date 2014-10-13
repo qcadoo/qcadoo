@@ -64,7 +64,7 @@ public class GroupRolesValidationServiceTest {
 
         given(userDataDefMock.get(1L)).willReturn(currentUserEntityMock);
 
-        given(groupDataDefMock.getField(GroupFields.ROLES_FIELD)).willReturn(groupRolesFieldDefMock);
+        given(groupDataDefMock.getField(GroupFields.ROLES)).willReturn(groupRolesFieldDefMock);
         given(userGroupMock.getId()).willReturn(1000L);
         given(groupDataDefMock.get(1000L)).willReturn(existingUserGroupMock);
 
@@ -85,7 +85,7 @@ public class GroupRolesValidationServiceTest {
             rolesEntity.add(roleEntity);
         }
 
-        given(group.getManyToManyField(GroupFields.ROLES_FIELD)).willReturn(rolesEntity);
+        given(group.getManyToManyField(GroupFields.ROLES)).willReturn(rolesEntity);
     }
 
     private void stubCurrentUserRole(final String role) {
