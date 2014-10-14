@@ -23,19 +23,23 @@
  */
 package com.qcadoo.model.integration;
 
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+
+import java.math.BigDecimal;
+
+import junit.framework.Assert;
+
+import org.apache.commons.lang3.StringUtils;
+import org.junit.Test;
+import org.springframework.jdbc.UncategorizedSQLException;
+import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.plugin.api.PluginStateResolver;
 import com.qcadoo.plugin.internal.PluginUtilsService;
-import junit.framework.Assert;
-import org.apache.commons.lang3.StringUtils;
-import org.junit.Test;
-import org.springframework.test.util.ReflectionTestUtils;
-
-import java.math.BigDecimal;
-
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 
 public class FieldModuleIntegrationTest extends IntegrationTest {
 

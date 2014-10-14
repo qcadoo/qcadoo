@@ -41,6 +41,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -56,6 +57,7 @@ import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.search.SearchCriteriaBuilder;
 import com.qcadoo.model.api.search.SearchResult;
+import com.qcadoo.model.api.types.FieldType;
 import com.qcadoo.model.api.types.HasManyType;
 import com.qcadoo.model.internal.DefaultEntity;
 import com.qcadoo.model.internal.ExpressionServiceImpl;
@@ -303,7 +305,14 @@ public class GridComponentStateTest extends AbstractStateTest {
     @Test
     public void shouldGetValueUsingExpression() throws Exception {
         // given
-        given(productDataDefinition.getField(anyString()).getType().toString(anyString(), any(Locale.class))).willReturn("John");
+        FieldDefinition nameFieldDefinition = mock(FieldDefinition.class);
+        given(productDataDefinition.getField("name")).willReturn(nameFieldDefinition);
+
+        FieldType nameFieldType = mock(FieldType.class);
+        given(nameFieldDefinition.getType()).willReturn(nameFieldType);
+
+        given(nameFieldType.toString(anyString(), any(Locale.class))).willAnswer(
+                invocation -> Objects.toString(invocation.getArguments()[0]));
 
         GridComponentColumn column = new GridComponentColumn("name");
         column.setExpression("#name + ' ' + #id");

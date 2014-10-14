@@ -23,8 +23,26 @@
  */
 package com.qcadoo.model.types;
 
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertNull;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.Locale;
+import java.util.Set;
+
+import org.apache.commons.lang3.StringUtils;
+import org.junit.Test;
+import org.springframework.security.authentication.encoding.PasswordEncoder;
+
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.api.DictionaryService;
 import com.qcadoo.model.api.FieldDefinition;
@@ -35,23 +53,19 @@ import com.qcadoo.model.internal.DataAccessTest;
 import com.qcadoo.model.internal.DefaultEntity;
 import com.qcadoo.model.internal.FieldDefinitionImpl;
 import com.qcadoo.model.internal.api.ValueAndError;
-import com.qcadoo.model.internal.types.*;
-import org.apache.commons.lang3.StringUtils;
-import org.junit.Test;
-import org.springframework.security.authentication.encoding.PasswordEncoder;
-
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.Locale;
-import java.util.Set;
-
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertNull;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
-import static org.junit.matchers.JUnitMatchers.hasItems;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
+import com.qcadoo.model.internal.types.BelongsToEntityType;
+import com.qcadoo.model.internal.types.BooleanType;
+import com.qcadoo.model.internal.types.DateTimeType;
+import com.qcadoo.model.internal.types.DateType;
+import com.qcadoo.model.internal.types.DecimalType;
+import com.qcadoo.model.internal.types.DictionaryType;
+import com.qcadoo.model.internal.types.EnumType;
+import com.qcadoo.model.internal.types.IntegerType;
+import com.qcadoo.model.internal.types.ManyToManyEntitiesType;
+import com.qcadoo.model.internal.types.PasswordType;
+import com.qcadoo.model.internal.types.PriorityType;
+import com.qcadoo.model.internal.types.StringType;
+import com.qcadoo.model.internal.types.TextType;
 
 public class FieldTypeFactoryTest extends DataAccessTest {
 
@@ -69,10 +83,8 @@ public class FieldTypeFactoryTest extends DataAccessTest {
         EnumeratedType fieldType = new EnumType(translationService, "path", true, "val1", "val2", "val3");
 
         // then
-        assertThat(fieldType, is(EnumType.class));
-
-        assertThat(fieldType.values(Locale.ENGLISH).keySet(), hasItems("val1", "val2", "val3"));
-        assertThat(fieldType.values(Locale.ENGLISH).values(), hasItems("i18nVal1", "i18nVal2", "i18nVal3"));
+        assertEquals(fieldType.values(Locale.ENGLISH).keySet(), Sets.newHashSet("val1", "val2", "val3"));
+        assertEquals(Lists.newArrayList(fieldType.values(Locale.ENGLISH).values()), Lists.newArrayList("i18nVal1", "i18nVal2", "i18nVal3"));
         assertEquals(String.class, fieldType.getType());
 
         ValueAndError valueAndError1 = fieldType.toObject(fieldDefinition, "val1");
@@ -98,9 +110,8 @@ public class FieldTypeFactoryTest extends DataAccessTest {
         EnumeratedType fieldType = new DictionaryType("dictionary", dictionaryService, true);
 
         // then
-        assertThat(fieldType, is(DictionaryType.class));
-        assertThat(fieldType.values(Locale.ENGLISH).keySet(), hasItems("val1", "val2", "val3"));
-        assertThat(fieldType.values(Locale.ENGLISH).values(), hasItems("val1", "val2", "val3"));
+        assertEquals(fieldType.values(Locale.ENGLISH).keySet(), Sets.newHashSet("val1", "val2", "val3"));
+        assertEquals(Lists.newArrayList(fieldType.values(Locale.ENGLISH).values()), Lists.newArrayList("val1", "val2", "val3"));
         assertEquals(String.class, fieldType.getType());
 
         ValueAndError valueAndError1 = fieldType.toObject(fieldDefinition, "val1");
@@ -117,7 +128,6 @@ public class FieldTypeFactoryTest extends DataAccessTest {
         FieldType fieldType = new BooleanType();
 
         // then
-        assertThat(fieldType, is(BooleanType.class));
         assertEquals(Boolean.class, fieldType.getType());
         assertTrue(fieldType.toObject(fieldDefinition, false).isValid());
     }
@@ -128,7 +138,6 @@ public class FieldTypeFactoryTest extends DataAccessTest {
         FieldType fieldType = new DateType();
 
         // then
-        assertThat(fieldType, is(DateType.class));
         assertEquals(Date.class, fieldType.getType());
         assertTrue(fieldType.toObject(fieldDefinition, new Date()).isValid());
     }
@@ -139,7 +148,6 @@ public class FieldTypeFactoryTest extends DataAccessTest {
         FieldType fieldType = new DateTimeType();
 
         // then
-        assertThat(fieldType, is(DateTimeType.class));
         assertEquals(Date.class, fieldType.getType());
         assertTrue(fieldType.toObject(fieldDefinition, new Date()).isValid());
     }
@@ -150,7 +158,6 @@ public class FieldTypeFactoryTest extends DataAccessTest {
         FieldType fieldType = new DecimalType();
 
         // then
-        assertThat(fieldType, is(DecimalType.class));
         assertEquals(BigDecimal.class, fieldType.getType());
         assertTrue(fieldType.toObject(fieldDefinition, BigDecimal.valueOf(1.21)).isValid());
         assertTrue(fieldType.toObject(fieldDefinition, BigDecimal.valueOf(1)).isValid());
@@ -164,7 +171,6 @@ public class FieldTypeFactoryTest extends DataAccessTest {
         FieldType fieldType = new IntegerType();
 
         // then
-        assertThat(fieldType, is(IntegerType.class));
         assertEquals(Integer.class, fieldType.getType());
         assertTrue(fieldType.toObject(fieldDefinition, 1).isValid());
         assertTrue(fieldType.toObject(fieldDefinition, 1234567890).isValid());
@@ -176,7 +182,6 @@ public class FieldTypeFactoryTest extends DataAccessTest {
         FieldType fieldType = new StringType();
 
         // then
-        assertThat(fieldType, is(StringType.class));
         assertEquals(String.class, fieldType.getType());
         assertTrue(fieldType.toObject(fieldDefinition, "test").isValid());
         assertTrue(fieldType.toObject(fieldDefinition, StringUtils.repeat("a", 255)).isValid());
@@ -189,7 +194,6 @@ public class FieldTypeFactoryTest extends DataAccessTest {
         FieldType fieldType = new TextType();
 
         // then
-        assertThat(fieldType, is(TextType.class));
         assertEquals(String.class, fieldType.getType());
         assertTrue(fieldType.toObject(fieldDefinition, "test").isValid());
         assertTrue(fieldType.toObject(fieldDefinition, StringUtils.repeat("a", 2048)).isValid());
@@ -202,7 +206,6 @@ public class FieldTypeFactoryTest extends DataAccessTest {
         FieldType fieldType = new BelongsToEntityType("parent", "entity", dataDefinitionService, false, true);
 
         // then
-        assertThat(fieldType, is(BelongsToEntityType.class));
         assertEquals(Object.class, fieldType.getType());
         assertTrue(fieldType.toObject(fieldDefinition, new DefaultEntity(dataDefinition)).isValid());
     }
@@ -214,7 +217,6 @@ public class FieldTypeFactoryTest extends DataAccessTest {
                 true, dataDefinitionService);
 
         // then
-        assertThat(fieldType, is(ManyToManyEntitiesType.class));
         assertEquals(Set.class, fieldType.getType());
         assertTrue(fieldType.toObject(fieldDefinition, new DefaultEntity(dataDefinition)).isValid());
     }
@@ -226,7 +228,6 @@ public class FieldTypeFactoryTest extends DataAccessTest {
         FieldType fieldType = new PasswordType(passwordEncoder);
 
         // then
-        assertThat(fieldType, is(PasswordType.class));
         assertEquals(String.class, fieldType.getType());
     }
 
@@ -239,7 +240,6 @@ public class FieldTypeFactoryTest extends DataAccessTest {
         FieldType fieldType = new PriorityType(fieldDefinition);
 
         // then
-        assertThat(fieldType, is(PriorityType.class));
         assertEquals(Integer.class, fieldType.getType());
         assertTrue(fieldType.toObject(fieldDefinition, 1).isValid());
         assertEquals(fieldDefinition, ((PriorityType) fieldType).getScopeFieldDefinition());

@@ -33,8 +33,6 @@ import org.junit.BeforeClass;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionStatus;
 
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.EntityOpResult;
@@ -83,10 +81,6 @@ public abstract class IntegrationTest {
     protected static JdbcTemplate jdbcTemplate;
 
     protected static ClassPathXmlApplicationContext applicationContext;
-
-    protected static TransactionStatus txStatus;
-
-    protected static PlatformTransactionManager txManager;
 
     protected static VerifyHooks verifyHooks;
 
