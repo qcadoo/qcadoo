@@ -112,7 +112,7 @@
 				method="onRemoveButtonClick" />
 			<script>
 				<![CDATA[
-					var downloadRibbonItem = #{window}.getRibbonItem("plugins.download");
+					var downloadRibbonItem = #{window}.getRibbonItem("plugins.downloadPlugin");
 					var changeStatusRibbonItem = #{window}.getRibbonItem("actions.changeStatus");
 					var removeRibbonItem = #{window}.getRibbonItem("actions.remove");
 					this.removeOnChangeListeners();
