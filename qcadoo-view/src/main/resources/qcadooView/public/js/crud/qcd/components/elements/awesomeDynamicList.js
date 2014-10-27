@@ -191,7 +191,7 @@ QCD.components.elements.AwesomeDynamicList = function (element, mainController) 
 		for (var i in formObjects) {
 			if (formObjects[i]) {
                 if(hasButtons){
-                    $("#" + elementSearchName + " .awesomeListFormContainer").attr("style", "min-width:" + (width - BUTTONS_WIDTH - 20) + "px; max-width:" + (width - BUTTONS_WIDTH - 20) + "px;");
+                    $("#" + elementSearchName + "_line_" + i + " .awesomeListFormContainer:eq(0)").attr("style", "min-width:" + (width - BUTTONS_WIDTH - 20) + "px; max-width:" + (width - BUTTONS_WIDTH - 20) + "px;");
                 }
 				formObjects[i].updateSize(width - BUTTONS_WIDTH, height);
 			}
