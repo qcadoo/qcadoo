@@ -61,6 +61,10 @@ public abstract class Either<L, R> {
 
     public abstract <V> V fold(final Function<? super L, V> ifLeft, final Function<? super R, V> ifRight);
 
+    public abstract <V> Either<L, V> map(final Function<? super R, V> f);
+
+    public abstract <V> Either<L, V> flatMap(final Function<? super R, Either<L, V>> f);
+
     private static final class Left<L, R> extends Either<L, R> {
 
         private final L value;
@@ -82,6 +86,16 @@ public abstract class Either<L, R> {
         @Override
         public <V> V fold(final Function<? super L, V> ifLeft, final Function<? super R, V> ignored) {
             return ifLeft.apply(value);
+        }
+
+        @Override
+        public <V> Either<L, V> map(final Function<? super R, V> f) {
+            return Either.left(value);
+        }
+
+        @Override
+        public <V> Either<L, V> flatMap(final Function<? super R, Either<L, V>> f) {
+            return Either.left(value);
         }
 
         @Override
@@ -131,6 +145,16 @@ public abstract class Either<L, R> {
         @Override
         public <V> V fold(final Function<? super L, V> ignored, final Function<? super R, V> ifRight) {
             return ifRight.apply(value);
+        }
+
+        @Override
+        public <V> Either<L, V> map(final Function<? super R, V> f) {
+            return Either.right(f.apply(value));
+        }
+
+        @Override
+        public <V> Either<L, V> flatMap(final Function<? super R, Either<L, V>> f) {
+            return f.apply(value);
         }
 
         @Override

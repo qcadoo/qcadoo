@@ -99,7 +99,7 @@ public interface DataDefinition {
      * Counts all model entities.
      *
      * @return entities count
-     * @since 1.2.1
+     * @since 1.4
      */
     long count();
 
@@ -109,7 +109,7 @@ public interface DataDefinition {
      * @param criterion
      *          criterion to restrict entities
      * @return entities count
-     * @since 1.2.1
+     * @since 1.4
      */
     long count(final SearchCriterion criterion);
 
