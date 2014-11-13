@@ -23,7 +23,7 @@
  */
 package com.qcadoo.view.internal.components.tree;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 
@@ -47,7 +47,7 @@ public final class TreeComponentPattern extends FieldComponentPattern {
 
     private static final String JS_OBJECT = "QCD.components.elements.Tree";
 
-    private final Map<String, TreeDataType> dataTypes = new HashMap<String, TreeDataType>();
+    private final Map<String, TreeDataType> dataTypes = new LinkedHashMap<String, TreeDataType>();
 
     private boolean hasNewButtons = true;
 
@@ -127,10 +127,12 @@ public final class TreeComponentPattern extends FieldComponentPattern {
     @Override
     protected JSONObject getJsOptions(final Locale locale) throws JSONException {
         JSONObject json = new JSONObject();
-        JSONObject dataTypesObject = new JSONObject();
+        Map<String, JSONObject> dataTypesTemp = new LinkedHashMap<String, JSONObject>();
         for (Map.Entry<String, TreeDataType> dataTypeEntry : dataTypes.entrySet()) {
-            dataTypesObject.put(dataTypeEntry.getKey(), dataTypeEntry.getValue().toJson());
+            dataTypesTemp.put(dataTypeEntry.getKey(), dataTypeEntry.getValue().toJson());
         }
+        JSONObject dataTypesObject = new JSONObject(dataTypesTemp);
+
         json.put("dataTypes", dataTypesObject);
 
         json.put("belongsToFieldName", getBelongsToFieldDefinition().getName());

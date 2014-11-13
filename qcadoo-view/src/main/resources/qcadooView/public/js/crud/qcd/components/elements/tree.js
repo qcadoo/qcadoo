@@ -100,7 +100,6 @@ QCD.components.elements.Tree = function(_element, _mainController) {
 			header.append(titleElement);
 			
 			dataTypesMap = _this.options.dataTypes;
-			
 			for (var i in dataTypesMap) {
 				var dataType = dataTypesMap[i];
 				var button = QCD.components.elements.utils.HeaderUtils.createHeaderButton("", function(dataType) {
