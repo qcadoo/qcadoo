@@ -33,7 +33,6 @@ import java.util.Set;
 
 import org.mockito.BDDMockito;
 import org.mockito.Matchers;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import com.google.common.collect.Lists;
@@ -55,20 +54,8 @@ public final class EntityTestUtils {
 
     public static DataDefinition mockDataDefinition() {
         DataDefinition dd = mock(DataDefinition.class);
-        BDDMockito.given(dd.save(any(Entity.class))).willAnswer(new Answer<Entity>() {
-
-            @Override
-            public Entity answer(final InvocationOnMock invocation) throws Throwable {
-                return (Entity) invocation.getArguments()[0];
-            }
-        });
-        BDDMockito.given(dd.delete(Matchers.<Long> anyVararg())).willAnswer(new Answer<EntityOpResult>() {
-
-            @Override
-            public EntityOpResult answer(final InvocationOnMock invocation) throws Throwable {
-                return EntityOpResult.successfull();
-            }
-        });
+        BDDMockito.given(dd.save(any(Entity.class))).willAnswer(invocation -> (Entity) invocation.getArguments()[0]);
+        BDDMockito.given(dd.delete(Matchers.<Long> anyVararg())).willAnswer(invocation -> EntityOpResult.successfull());
         return dd;
     }
 
@@ -117,15 +104,11 @@ public final class EntityTestUtils {
     }
 
     public static void stubDateField(final Entity entity, final String fieldName, final Date fieldValue) {
-        Answer<Date> answer = new Answer<Date>() {
-
-            @Override
-            public Date answer(final InvocationOnMock invocation) throws Throwable {
-                if (fieldValue == null) {
-                    return null;
-                }
-                return new Date(fieldValue.getTime());
+        Answer<Date> answer = invocation -> {
+            if (fieldValue == null) {
+                return null;
             }
+            return new Date(fieldValue.getTime());
         };
         BDDMockito.given(entity.getDateField(fieldName)).willAnswer(answer);
         stubField(entity, fieldName, answer);
@@ -142,15 +125,11 @@ public final class EntityTestUtils {
     }
 
     public static void stubManyToManyField(final Entity entity, final String fieldName, final Set<Entity> fieldValue) {
-        Answer<Set<Entity>> answer = new Answer<Set<Entity>>() {
-
-            @Override
-            public Set<Entity> answer(final InvocationOnMock invocation) throws Throwable {
-                if (fieldValue == null) {
-                    return Collections.emptySet();
-                }
-                return Sets.newHashSet(fieldValue);
+        Answer<Set<Entity>> answer = invocation -> {
+            if (fieldValue == null) {
+                return Collections.emptySet();
             }
+            return Sets.newHashSet(fieldValue);
         };
         BDDMockito.given(entity.getManyToManyField(fieldName)).willAnswer(answer);
         stubField(entity, fieldName, answer);
@@ -162,15 +141,11 @@ public final class EntityTestUtils {
     }
 
     public static void stubHasManyField(final Entity entity, final String fieldName, final EntityList fieldValue) {
-        Answer<EntityList> answer = new Answer<EntityList>() {
-
-            @Override
-            public EntityList answer(final InvocationOnMock invocation) throws Throwable {
-                if (fieldValue == null) {
-                    return EntityListMock.create();
-                }
-                return EntityListMock.copyOf(fieldValue);
+        Answer<EntityList> answer = invocation -> {
+            if (fieldValue == null) {
+                return EntityListMock.create();
             }
+            return EntityListMock.copyOf(fieldValue);
         };
         BDDMockito.given(entity.getHasManyField(fieldName)).willAnswer(answer);
         stubField(entity, fieldName, answer);
