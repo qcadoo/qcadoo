@@ -851,12 +851,7 @@ public class ValidatorTest extends DataAccessTest {
         dataDefinition.addValidatorHook(new CustomEntityValidator(new EntityHookDefinitionImpl(CustomEntityService.class
                 .getName(), "hasAge18AndNameMrT", PLUGIN_IDENTIFIER, applicationContext)));
 
-        PluginStateResolver pluginStateResolver = mock(PluginStateResolver.class);
-        PluginUtilsService pluginUtil = new PluginUtilsService();
-        ReflectionTestUtils.setField(pluginUtil, "pluginStateResolver", pluginStateResolver);
-        pluginUtil.init();
-        given(pluginStateResolver.isEnabled(PLUGIN_IDENTIFIER)).willReturn(false);
-        given(pluginStateResolver.isEnabledOrEnabling(PLUGIN_IDENTIFIER)).willReturn(false);
+        stubPluginIsEnabled(false);
 
         // when
         Entity savedEntity = dataDefinition.save(entity);
@@ -875,12 +870,7 @@ public class ValidatorTest extends DataAccessTest {
         dataDefinition.addValidatorHook(new CustomEntityValidator(new EntityHookDefinitionImpl(CustomEntityService.class
                 .getName(), "hasAge18AndNameMrT", PLUGIN_IDENTIFIER, applicationContext)));
 
-        PluginStateResolver pluginStateResolver = mock(PluginStateResolver.class);
-        PluginUtilsService pluginUtil = new PluginUtilsService();
-        ReflectionTestUtils.setField(pluginUtil, "pluginStateResolver", pluginStateResolver);
-        pluginUtil.init();
-        given(pluginStateResolver.isEnabled(PLUGIN_IDENTIFIER)).willReturn(true);
-        given(pluginStateResolver.isEnabledOrEnabling(PLUGIN_IDENTIFIER)).willReturn(true);
+        stubPluginIsEnabled(true);
 
         // when
         Entity savedEntity = dataDefinition.save(entity);
@@ -897,12 +887,7 @@ public class ValidatorTest extends DataAccessTest {
         fieldDefinitionName.withValidator(new CustomValidator(new FieldHookDefinitionImpl(CustomEntityService.class.getName(),
                 "isEqualToQwerty", PLUGIN_IDENTIFIER, applicationContext)));
 
-        PluginStateResolver pluginStateResolver = mock(PluginStateResolver.class);
-        PluginUtilsService pluginUtil = new PluginUtilsService();
-        ReflectionTestUtils.setField(pluginUtil, "pluginStateResolver", pluginStateResolver);
-        pluginUtil.init();
-        given(pluginStateResolver.isEnabled(PLUGIN_IDENTIFIER)).willReturn(false);
-        given(pluginStateResolver.isEnabledOrEnabling(PLUGIN_IDENTIFIER)).willReturn(false);
+        stubPluginIsEnabled(false);
 
         // when
         Entity savedEntity = dataDefinition.save(entity);
@@ -920,12 +905,7 @@ public class ValidatorTest extends DataAccessTest {
         fieldDefinitionName.withValidator(new CustomValidator(new FieldHookDefinitionImpl(CustomEntityService.class.getName(),
                 "isEqualToQwerty", PLUGIN_IDENTIFIER, applicationContext)));
 
-        PluginStateResolver pluginStateResolver = mock(PluginStateResolver.class);
-        PluginUtilsService pluginUtil = new PluginUtilsService();
-        ReflectionTestUtils.setField(pluginUtil, "pluginStateResolver", pluginStateResolver);
-        pluginUtil.init();
-        given(pluginStateResolver.isEnabled(PLUGIN_IDENTIFIER)).willReturn(true);
-        given(pluginStateResolver.isEnabledOrEnabling(PLUGIN_IDENTIFIER)).willReturn(true);
+        stubPluginIsEnabled(true);
 
         // when
         entity = dataDefinition.save(entity);
@@ -933,6 +913,14 @@ public class ValidatorTest extends DataAccessTest {
         // then
         verify(session, never()).save(any(SampleSimpleDatabaseObject.class));
         assertFalse(entity.isValid());
+    }
+
+    private void stubPluginIsEnabled(final boolean isEnabled) {
+        PluginStateResolver pluginStateResolver = mock(PluginStateResolver.class);
+        PluginUtilsService pluginUtil = new PluginUtilsService(pluginStateResolver);
+        pluginUtil.init();
+        given(pluginStateResolver.isEnabled(PLUGIN_IDENTIFIER)).willReturn(isEnabled);
+        given(pluginStateResolver.isEnabledOrEnabling(PLUGIN_IDENTIFIER)).willReturn(isEnabled);
     }
 
 }

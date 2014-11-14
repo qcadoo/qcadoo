@@ -35,18 +35,18 @@ import java.util.Map;
 
 import org.junit.Test;
 import org.junit.matchers.JUnitMatchers;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.types.EnumeratedType;
 import com.qcadoo.plugin.api.PluginStateResolver;
 import com.qcadoo.plugin.internal.PluginUtilsService;
+import junit.framework.Assert;
 
 public class ModuleIntegrationTest extends IntegrationTest {
 
     @Test
-    public void shouldHaveAdditinanalModelsFieldsAndHooks() throws Exception {
+    public void shouldHaveAdditionalModelsFieldsAndHooks() throws Exception {
         // given
         DataDefinition productDao = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PRODUCT);
         DataDefinition machineDao = dataDefinitionService.get(PLUGIN_MACHINES_NAME, ENTITY_NAME_MACHINE);
@@ -65,7 +65,6 @@ public class ModuleIntegrationTest extends IntegrationTest {
         component = componentDao.save(component);
 
         // then
-
         assertEquals("test", component.getField("machineName"));
         assertEquals("XXX", product.getField("changeableName"));
         assertNotNull(component.getField("machine"));
@@ -85,19 +84,11 @@ public class ModuleIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    public void shouldCallAdditinanalHooksIfPluginIsEnabledForCurrentUser() throws Exception {
+    public void shouldCallAdditionalHooksIfPluginIsEnabledForCurrentTenant() throws Exception {
         // given
         DataDefinition productDao = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PRODUCT);
         DataDefinition machineDao = dataDefinitionService.get(PLUGIN_MACHINES_NAME, ENTITY_NAME_MACHINE);
         DataDefinition componentDao = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_COMPONENT);
-
-        PluginStateResolver pluginStateResolver = mock(PluginStateResolver.class);
-        PluginUtilsService pluginUtil = new PluginUtilsService();
-        ReflectionTestUtils.setField(pluginUtil, "pluginStateResolver", pluginStateResolver);
-        pluginUtil.init();
-
-        given(pluginStateResolver.isEnabled("machines")).willReturn(true);
-        given(pluginStateResolver.isEnabledOrEnabling("machines")).willReturn(true);
 
         Entity machine = machineDao.save(createMachine("asd"));
 
@@ -112,7 +103,6 @@ public class ModuleIntegrationTest extends IntegrationTest {
         component = componentDao.save(component);
 
         // then
-
         assertEquals("test", component.getField("machineName"));
         assertEquals("XXX", product.getField("changeableName"));
         assertNotNull(component.getField("machine"));
@@ -131,24 +121,29 @@ public class ModuleIntegrationTest extends IntegrationTest {
                 JUnitMatchers.hasItems("one", "two", "three"));
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void shouldNotHaveAdditinanalModels() throws Exception {
+    @Test
+    public void shouldNotHaveAdditionalModels() throws Exception {
         // given
-        pluginManager.disablePlugin("machines");
+        pluginManager.disablePlugin(PLUGIN_MACHINES_NAME);
 
         DataDefinition machineDao = dataDefinitionService.get(PLUGIN_MACHINES_NAME, ENTITY_NAME_MACHINE);
 
-        // when
-        machineDao.save(createMachine("asd"));
+        // when & then
+        try {
+            machineDao.save(createMachine("asd"));
+            Assert.fail();
+        } catch (IllegalStateException ignored) {
+            // success!
+        }
     }
 
     @Test
-    public void shouldNotHaveAdditinanalFieldsAndHooks() throws Exception {
+    public void shouldNotHaveAdditionalFieldsAndHooks() throws Exception {
         // given
         DataDefinition machineDao = dataDefinitionService.get(PLUGIN_MACHINES_NAME, ENTITY_NAME_MACHINE);
         machineDao.save(createMachine("asd"));
 
-        pluginManager.disablePlugin("machines");
+        pluginManager.disablePlugin(PLUGIN_MACHINES_NAME);
 
         DataDefinition productDao = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PRODUCT);
         DataDefinition componentDao = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_COMPONENT);
@@ -164,7 +159,6 @@ public class ModuleIntegrationTest extends IntegrationTest {
         component = componentDao.save(component);
 
         // then
-
         assertEquals("xxx", product.getField("changeableName"));
         assertNull(component.getField("machineName"));
         assertNull(component.getField("machine"));
@@ -184,18 +178,18 @@ public class ModuleIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    public void shouldNotCallAdditinanalHooksIfPluginIsDisabledOnlyForCurrentUser() throws Exception {
+    public void shouldNotCallAdditionalHooksIfPluginIsDisabledOnlyForCurrentTenant() throws Exception {
         // given
+        pluginManager.enablePlugin(PLUGIN_MACHINES_NAME);
+
         DataDefinition machineDao = dataDefinitionService.get(PLUGIN_MACHINES_NAME, ENTITY_NAME_MACHINE);
         machineDao.save(createMachine("asd"));
 
-        pluginManager.enablePlugin("machines");
-
         PluginStateResolver pluginStateResolver = mock(PluginStateResolver.class);
-        PluginUtilsService pluginUtil = new PluginUtilsService();
-        ReflectionTestUtils.setField(pluginUtil, "pluginStateResolver", pluginStateResolver);
+        PluginUtilsService pluginUtil = new PluginUtilsService(pluginStateResolver);
         pluginUtil.init();
-        given(pluginStateResolver.isEnabled("machines")).willReturn(false);
+        given(pluginStateResolver.isEnabled(PLUGIN_MACHINES_NAME)).willReturn(false);
+        given(pluginStateResolver.isEnabledOrEnabling(PLUGIN_MACHINES_NAME)).willReturn(false);
 
         DataDefinition productDao = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PRODUCT);
         DataDefinition componentDao = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_COMPONENT);
@@ -211,7 +205,6 @@ public class ModuleIntegrationTest extends IntegrationTest {
         component = componentDao.save(component);
 
         // then
-
         assertEquals("xxx", product.getField("changeableName"));
         assertNotNull(component.getField("machineName"));
         assertNull(component.getField("machine"));

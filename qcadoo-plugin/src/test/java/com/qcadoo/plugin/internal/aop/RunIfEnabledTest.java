@@ -37,7 +37,6 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import com.qcadoo.plugin.api.PluginStateResolver;
 import com.qcadoo.plugin.api.RunIfEnabled;
@@ -187,11 +186,10 @@ public class RunIfEnabledTest {
     @Before
     public final void init() {
         MockitoAnnotations.initMocks(this);
-        final PluginUtilsService pluginUtilsService = new PluginUtilsService();
         pluginStateResolver = mock(PluginStateResolver.class);
+        PluginUtilsService pluginUtilsService = new PluginUtilsService(pluginStateResolver);
         given(pluginStateResolver.isEnabled(Mockito.anyString())).willReturn(false);
         given(pluginStateResolver.isEnabledOrEnabling(Mockito.anyString())).willReturn(false);
-        ReflectionTestUtils.setField(pluginUtilsService, "pluginStateResolver", pluginStateResolver);
         pluginUtilsService.init();
 
         aspectDependencyMock = mock(AspectDependencyMock.class);

@@ -61,8 +61,7 @@ public class PluginChangeStateToTest {
 
         mockPluginStateResolver = mock(PluginStateResolver.class);
 
-        PluginUtilsService pluginUtil = new PluginUtilsService();
-        ReflectionTestUtils.setField(pluginUtil, "pluginStateResolver", mockPluginStateResolver);
+        PluginUtilsService pluginUtil = new PluginUtilsService(mockPluginStateResolver);
         pluginUtil.init();
 
         assertOperationNotSupported(null, PluginState.UNKNOWN);

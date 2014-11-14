@@ -140,15 +140,8 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
 
                 try {
                     dataDefinitions.add(parse(resource.getInputStream()));
-                } catch (HookInitializationException e) {
-                    throw new IllegalStateException(L_PARSE_ERROR + e.getMessage(), e);
-                } catch (IOException e) {
-                    throw new IllegalStateException(L_PARSE_ERROR + e.getMessage(), e);
-                } catch (ModelXmlParsingException e) {
-                    throw new IllegalStateException(L_PARSE_ERROR + e.getMessage(), e);
-                } catch (XMLStreamException e) {
-                    throw new IllegalStateException(L_PARSE_ERROR + e.getMessage(), e);
-                } catch (javax.xml.stream.FactoryConfigurationError e) {
+                } catch (HookInitializationException | IOException | ModelXmlParsingException | XMLStreamException
+                        | javax.xml.stream.FactoryConfigurationError e) {
                     throw new IllegalStateException(L_PARSE_ERROR + e.getMessage(), e);
                 }
             }
@@ -176,29 +169,23 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
 
     private DataDefinition getDataDefinition(final XMLStreamReader reader, final String pluginIdentifier)
             throws XMLStreamException, HookInitializationException, ModelXmlParsingException {
-        final DataDefinitionImpl dataDefinition = getModelDefinition(reader, pluginIdentifier);
+        DataDefinitionImpl dataDefinition = getModelDefinition(reader, pluginIdentifier);
 
         LOG.info("Creating dataDefinition " + dataDefinition);
 
-        parseElementChildren(reader, TAG_MODEL, new ParseElementChildrenAction() {
-
-            @Override
-            public void apply(final String childTag) throws XMLStreamException, HookInitializationException,
-                    ModelXmlParsingException {
-                if (TAG_FIELDS.equals(getTagStarted(reader))) {
-                    parseFields(reader, dataDefinition);
-                }
-
-                if (TAG_HOOKS.equals(getTagStarted(reader))) {
-                    parseHooks(reader, dataDefinition);
-                }
-
-                String tag = getTagStarted(reader);
-                if (tag != null) {
-                    addOtherElement(reader, dataDefinition, tag);
-                }
+        parseElementChildren(reader, TAG_MODEL, childTag -> {
+            if (TAG_FIELDS.equals(getTagStarted(reader))) {
+                parseFields(reader, dataDefinition);
             }
 
+            if (TAG_HOOKS.equals(getTagStarted(reader))) {
+                parseHooks(reader, dataDefinition);
+            }
+
+            String tag = getTagStarted(reader);
+            if (tag != null) {
+                addOtherElement(reader, dataDefinition, tag);
+            }
         });
 
         dataDefinitionService.save(dataDefinition);
@@ -215,26 +202,12 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
 
     private void parseFields(final XMLStreamReader reader, final DataDefinitionImpl dataDefinition) throws XMLStreamException,
             HookInitializationException, ModelXmlParsingException {
-        parseElementChildren(reader, TAG_FIELDS, new ParseElementChildrenAction() {
-
-            @Override
-            public void apply(final String childTag) throws XMLStreamException, HookInitializationException,
-                    ModelXmlParsingException {
-                addFieldElement(reader, dataDefinition, childTag);
-            }
-        });
+        parseElementChildren(reader, TAG_FIELDS, childTag -> addFieldElement(reader, dataDefinition, childTag));
     }
 
     private void parseHooks(final XMLStreamReader reader, final DataDefinitionImpl dataDefinition) throws XMLStreamException,
             HookInitializationException, ModelXmlParsingException {
-        parseElementChildren(reader, TAG_HOOKS, new ParseElementChildrenAction() {
-
-            @Override
-            public void apply(final String childTag) throws XMLStreamException, HookInitializationException,
-                    ModelXmlParsingException {
-                addHookElement(reader, dataDefinition, childTag);
-            }
-        });
+        parseElementChildren(reader, TAG_HOOKS, childTag -> addHookElement(reader, dataDefinition, childTag));
     }
 
     public interface ParseElementChildrenAction {
@@ -259,7 +232,7 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
     private void addHookElement(final XMLStreamReader reader, final DataDefinitionImpl dataDefinition, final String tag)
             throws XMLStreamException, HookInitializationException, ModelXmlParsingException {
 
-        final HooksTag hooksTag;
+        HooksTag hooksTag;
         try {
             hooksTag = HooksTag.valueOf(tag.toUpperCase(Locale.ENGLISH));
         } catch (Exception e) {
@@ -427,9 +400,7 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
             fieldDefinition.withValidator(getValidatorDefinition(reader, new UniqueValidator()));
         }
 
-        for (FieldHookDefinition validator : parseFieldValidators(reader, fieldType, fieldDefinition)) {
-            fieldDefinition.withValidator(validator);
-        }
+        parseFieldValidators(reader, fieldType, fieldDefinition).forEach(fieldDefinition::withValidator);
         fieldDefinition.withMissingDefaultValidators();
 
         return fieldDefinition;
@@ -470,7 +441,7 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
                         getIntegerAttribute(reader, "is"), getIntegerAttribute(reader, "max")));
                 break;
             case VALIDATESRANGE:
-                final FieldType type = fieldDefinition.getType();
+                FieldType type = fieldDefinition.getType();
                 Object from = getRangeForType(getStringAttribute(reader, "from"), type);
                 Object to = getRangeForType(getStringAttribute(reader, "to"), type);
                 boolean exclusively = getBooleanAttribute(reader, "exclusively", false);

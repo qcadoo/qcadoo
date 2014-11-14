@@ -148,7 +148,7 @@ public class DefaultPluginManager implements PluginManager {
 
     @Override
     public PluginOperationResult disablePlugin(final String... keys) {
-        List<Plugin> plugins = new ArrayList<Plugin>();
+        List<Plugin> plugins = new ArrayList<>();
 
         for (String key : keys) {
             Plugin plugin = pluginAccessor.getPlugin(key);

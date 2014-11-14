@@ -39,10 +39,14 @@ import com.qcadoo.plugin.api.PluginStateResolver;
 @Service
 public class PluginUtilsService {
 
-    @Autowired
-    private PluginStateResolver pluginStateResolver;
+    private final PluginStateResolver pluginStateResolver;
 
     private static PluginUtilsService instance;
+
+    @Autowired
+    public PluginUtilsService(final PluginStateResolver pluginStateResolver) {
+        this.pluginStateResolver = pluginStateResolver;
+    }
 
     @PostConstruct
     public void init() {

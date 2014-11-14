@@ -32,9 +32,7 @@ import junit.framework.Assert;
 
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
-import org.springframework.jdbc.UncategorizedSQLException;
 import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
@@ -50,11 +48,7 @@ public class FieldModuleIntegrationTest extends IntegrationTest {
         DataDefinition machineDao = dataDefinitionService.get(PLUGIN_MACHINES_NAME, ENTITY_NAME_MACHINE);
         DataDefinition componentDao = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_COMPONENT);
 
-        PluginStateResolver pluginStateResolver = mock(PluginStateResolver.class);
-        PluginUtilsService pluginUtil = new PluginUtilsService();
-        ReflectionTestUtils.setField(pluginUtil, "pluginStateResolver", pluginStateResolver);
-        pluginUtil.init();
-        given(pluginStateResolver.isEnabled(PLUGIN_MACHINES_NAME)).willReturn(true);
+        pluginManager.enablePlugin(PLUGIN_MACHINES_NAME);
 
         Entity machine = machineDao.save(createMachine("asd"));
 
@@ -78,11 +72,7 @@ public class FieldModuleIntegrationTest extends IntegrationTest {
         DataDefinition machineDao = dataDefinitionService.get(PLUGIN_MACHINES_NAME, ENTITY_NAME_MACHINE);
         DataDefinition componentDao = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_COMPONENT);
 
-        PluginStateResolver pluginStateResolver = mock(PluginStateResolver.class);
-        PluginUtilsService pluginUtil = new PluginUtilsService();
-        ReflectionTestUtils.setField(pluginUtil, "pluginStateResolver", pluginStateResolver);
-        pluginUtil.init();
-        given(pluginStateResolver.isEnabled(PLUGIN_MACHINES_NAME)).willReturn(true);
+        pluginManager.enablePlugin(PLUGIN_MACHINES_NAME);
 
         Entity machine = machineDao.save(createMachine("asd"));
 
@@ -107,12 +97,6 @@ public class FieldModuleIntegrationTest extends IntegrationTest {
 
         pluginManager.disablePlugin(PLUGIN_MACHINES_NAME);
 
-        PluginStateResolver pluginStateResolver = mock(PluginStateResolver.class);
-        PluginUtilsService pluginUtil = new PluginUtilsService();
-        ReflectionTestUtils.setField(pluginUtil, "pluginStateResolver", pluginStateResolver);
-        pluginUtil.init();
-        given(pluginStateResolver.isEnabled(PLUGIN_MACHINES_NAME)).willReturn(false);
-
         DataDefinition productDao = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PRODUCT);
         DataDefinition componentDao = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_COMPONENT);
 
@@ -135,9 +119,12 @@ public class FieldModuleIntegrationTest extends IntegrationTest {
         DataDefinition machineDao = dataDefinitionService.get(PLUGIN_MACHINES_NAME, ENTITY_NAME_MACHINE);
         machineDao.save(createMachine("asd"));
 
+        pluginManager.enablePlugin(PLUGIN_MACHINES_NAME);
+
+        // This should be considered as an anti-pattern. Replacing static fields with mocks in an integration test suite weren't
+        // my smartest idea ever..
         PluginStateResolver pluginStateResolver = mock(PluginStateResolver.class);
-        PluginUtilsService pluginUtil = new PluginUtilsService();
-        ReflectionTestUtils.setField(pluginUtil, "pluginStateResolver", pluginStateResolver);
+        PluginUtilsService pluginUtil = new PluginUtilsService(pluginStateResolver);
         pluginUtil.init();
         given(pluginStateResolver.isEnabled(PLUGIN_MACHINES_NAME)).willReturn(false);
 
@@ -160,14 +147,10 @@ public class FieldModuleIntegrationTest extends IntegrationTest {
     @Test
     public void shouldCallAndPassMaxStringLenFieldValidators() throws Exception {
         // given
-        final String stringWith300Characters = StringUtils.repeat("a", 300);
+        String stringWith300Characters = StringUtils.repeat("a", 300);
         DataDefinition productDao = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PRODUCT);
 
-        PluginStateResolver pluginStateResolver = mock(PluginStateResolver.class);
-        PluginUtilsService pluginUtil = new PluginUtilsService();
-        ReflectionTestUtils.setField(pluginUtil, "pluginStateResolver", pluginStateResolver);
-        pluginUtil.init();
-        given(pluginStateResolver.isEnabled(PLUGIN_PRODUCTS_NAME)).willReturn(true);
+        pluginManager.enablePlugin(PLUGIN_PRODUCTS_NAME);
 
         Entity product = createProduct(stringWith300Characters, "asd");
 
@@ -182,7 +165,7 @@ public class FieldModuleIntegrationTest extends IntegrationTest {
     @Test
     public void shouldCallAndFailDefaultMaxStringLenFieldValidators() throws Exception {
         // given
-        final String stringWith300Characters = StringUtils.repeat("a", 300);
+        String stringWith300Characters = StringUtils.repeat("a", 300);
 
         // when & then
         Entity savedPart = performFieldValidationTestOnPart("name", stringWith300Characters, false);
@@ -302,11 +285,7 @@ public class FieldModuleIntegrationTest extends IntegrationTest {
     private Entity performFieldValidationTestOnPart(final String fieldName, final Object fieldValue, final boolean shouldPass) {
         DataDefinition partDao = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, ENTITY_NAME_PART);
 
-        PluginStateResolver pluginStateResolver = mock(PluginStateResolver.class);
-        PluginUtilsService pluginUtil = new PluginUtilsService();
-        ReflectionTestUtils.setField(pluginUtil, "pluginStateResolver", pluginStateResolver);
-        pluginUtil.init();
-        given(pluginStateResolver.isEnabled(PLUGIN_PRODUCTS_NAME)).willReturn(true);
+        pluginManager.enablePlugin(PLUGIN_PRODUCTS_NAME);
 
         Entity part = createPart("somePart", null);
         part.setField(fieldName, fieldValue);

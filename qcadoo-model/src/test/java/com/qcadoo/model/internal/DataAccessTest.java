@@ -140,14 +140,14 @@ public abstract class DataAccessTest extends TransactionMockAwareTest {
 
     @Before
     public void superInit() {
-        PluginUtilsService pluginUtilsService = new PluginUtilsService();
-        pluginUtilsService.init();
         pluginStateResolver = Mockito.mock(PluginStateResolver.class);
         given(pluginStateResolver.isEnabled(Mockito.anyString())).willReturn(true);
         given(pluginStateResolver.isEnabled(Mockito.any(Plugin.class))).willReturn(true);
         given(pluginStateResolver.isEnabledOrEnabling(Mockito.anyString())).willReturn(true);
         given(pluginStateResolver.isEnabledOrEnabling(Mockito.any(Plugin.class))).willReturn(true);
-        ReflectionTestUtils.setField(pluginUtilsService, "pluginStateResolver", pluginStateResolver);
+
+        PluginUtilsService pluginUtilsService = new PluginUtilsService(pluginStateResolver);
+        pluginUtilsService.init();
 
         validationService = new ValidationServiceImpl();
 

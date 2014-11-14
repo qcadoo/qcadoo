@@ -23,6 +23,9 @@
  */
 package com.qcadoo.model.integration;
 
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+
 import java.util.List;
 
 import org.hibernate.SessionFactory;
@@ -37,7 +40,12 @@ import org.springframework.test.util.ReflectionTestUtils;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.EntityOpResult;
 import com.qcadoo.model.internal.api.InternalDataDefinitionService;
+import com.qcadoo.plugin.api.PluginAccessor;
 import com.qcadoo.plugin.api.PluginManager;
+import com.qcadoo.plugin.api.PluginStateResolver;
+import com.qcadoo.plugin.internal.PluginUtilsService;
+import com.qcadoo.plugin.internal.stateresolver.DefaultPluginStateResolver;
+import com.qcadoo.plugin.internal.stateresolver.InternalPluginStateResolver;
 import com.qcadoo.tenant.api.MultiTenantUtil;
 import com.qcadoo.tenant.internal.DefaultMultiTenantService;
 
@@ -104,9 +112,21 @@ public abstract class IntegrationTest {
 
     @Before
     public void mainInit() throws Exception {
-        pluginManager = applicationContext.getBean(PluginManager.class);
-        pluginManager.enablePlugin("machines");
         verifyHooks.clear();
+
+        pluginManager = applicationContext.getBean(PluginManager.class);
+        pluginManager.enablePlugin(PLUGIN_MACHINES_NAME);
+        pluginManager.enablePlugin(PLUGIN_PRODUCTS_NAME);
+
+        // We have to get a rid of mocked replacements injected into PluginUtilService, and restore the original one.
+        resetPluginUtils();
+    }
+
+    private void resetPluginUtils() {
+        InternalPluginStateResolver pluginStateResolver = new DefaultPluginStateResolver();
+        pluginStateResolver.setPluginAccessor(applicationContext.getBean(PluginAccessor.class));
+        PluginUtilsService pluginUtil = new PluginUtilsService(pluginStateResolver);
+        pluginUtil.init();
     }
 
     @After

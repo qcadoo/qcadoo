@@ -45,7 +45,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.context.ApplicationContext;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -417,8 +416,7 @@ public class GridComponentPatternTest extends AbstractPatternTest {
     public void shouldFilterOutColumnsInvisibleForTenant() throws Exception {
         // given
         PluginStateResolver pluginStateResolver = mock(PluginStateResolver.class);
-        PluginUtilsService pluginUtil = new PluginUtilsService();
-        ReflectionTestUtils.setField(pluginUtil, "pluginStateResolver", pluginStateResolver);
+        PluginUtilsService pluginUtil = new PluginUtilsService(pluginStateResolver);
         pluginUtil.init();
 
         given(pluginStateResolver.isEnabled("disabledPlugin")).willReturn(false);
@@ -452,9 +450,9 @@ public class GridComponentPatternTest extends AbstractPatternTest {
         // then
         assertTrue(state instanceof GridComponent);
         @SuppressWarnings("unchecked")
-        final Map<String, GridComponentColumn> patternColumns = (Map<String, GridComponentColumn>) getField(pattern, "columns");
+        Map<String, GridComponentColumn> patternColumns = (Map<String, GridComponentColumn>) getField(pattern, "columns");
         @SuppressWarnings("unchecked")
-        final Map<String, GridComponentColumn> stateColumns = (Map<String, GridComponentColumn>) getField(state, "columns");
+        Map<String, GridComponentColumn> stateColumns = (Map<String, GridComponentColumn>) getField(state, "columns");
         assertEquals(2, patternColumns.size());
         assertEquals(1, stateColumns.size());
 
@@ -474,8 +472,7 @@ public class GridComponentPatternTest extends AbstractPatternTest {
     public void shouldNotFilterOutColumnsVisibleForTenant() throws Exception {
         // given
         PluginStateResolver pluginStateResolver = mock(PluginStateResolver.class);
-        PluginUtilsService pluginUtil = new PluginUtilsService();
-        ReflectionTestUtils.setField(pluginUtil, "pluginStateResolver", pluginStateResolver);
+        PluginUtilsService pluginUtil = new PluginUtilsService(pluginStateResolver);
         pluginUtil.init();
 
         given(pluginStateResolver.isEnabled("disabledPlugin")).willReturn(true);
@@ -509,9 +506,9 @@ public class GridComponentPatternTest extends AbstractPatternTest {
         // then
         assertTrue(state instanceof GridComponent);
         @SuppressWarnings("unchecked")
-        final Map<String, GridComponentColumn> patternColumns = (Map<String, GridComponentColumn>) getField(pattern, "columns");
+        Map<String, GridComponentColumn> patternColumns = (Map<String, GridComponentColumn>) getField(pattern, "columns");
         @SuppressWarnings("unchecked")
-        final Map<String, GridComponentColumn> stateColumns = (Map<String, GridComponentColumn>) getField(state, "columns");
+        Map<String, GridComponentColumn> stateColumns = (Map<String, GridComponentColumn>) getField(state, "columns");
         assertEquals(2, patternColumns.size());
         assertEquals(2, stateColumns.size());
 

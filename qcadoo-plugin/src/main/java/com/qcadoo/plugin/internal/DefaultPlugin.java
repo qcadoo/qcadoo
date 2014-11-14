@@ -87,7 +87,7 @@ public final class DefaultPlugin implements InternalPlugin {
         this.dependencies = dependencies;
         this.system = system;
         this.factories = factories;
-        this.reversedFactories = new ArrayList<ModuleFactory<?>>(factories);
+        this.reversedFactories = new ArrayList<>(factories);
         Collections.reverse(reversedFactories);
     }
 
@@ -118,7 +118,7 @@ public final class DefaultPlugin implements InternalPlugin {
             return;
         }
 
-        final Plugin thisPlugin = this;
+        Plugin thisPlugin = this;
 
         if (ENABLED.equals(targetState)) {
 
@@ -129,15 +129,10 @@ public final class DefaultPlugin implements InternalPlugin {
                 for (final Module module : modules) {
                     module.enable();
 
-                    MultiTenantUtil.doInMultiTenantContext(new MultiTenantCallback() {
-
-                        @Override
-                        public void invoke() {
-                            if (PluginUtils.isEnabled(thisPlugin)) {
-                                module.multiTenantEnable();
-                            }
+                    MultiTenantUtil.doInMultiTenantContext(() -> {
+                        if (PluginUtils.isEnabled(thisPlugin)) {
+                            module.multiTenantEnable();
                         }
-
                     });
                 }
             }
@@ -151,15 +146,10 @@ public final class DefaultPlugin implements InternalPlugin {
                 for (final Module module : modules) {
                     module.disable();
 
-                    MultiTenantUtil.doInMultiTenantContext(new MultiTenantCallback() {
-
-                        @Override
-                        public void invoke() {
-                            if (PluginUtils.isEnabled(thisPlugin)) {
-                                module.multiTenantDisable();
-                            }
+                    MultiTenantUtil.doInMultiTenantContext(() -> {
+                        if (PluginUtils.isEnabled(thisPlugin)) {
+                            module.multiTenantDisable();
                         }
-
                     });
                 }
             }
@@ -240,9 +230,9 @@ public final class DefaultPlugin implements InternalPlugin {
 
         private boolean system;
 
-        private final Map<ModuleFactory<?>, List<Module>> modulesByFactories = new LinkedHashMap<ModuleFactory<?>, List<Module>>();
+        private final Map<ModuleFactory<?>, List<Module>> modulesByFactories = new LinkedHashMap<>();
 
-        private final Set<PluginDependencyInformation> dependencyInformations = new HashSet<PluginDependencyInformation>();
+        private final Set<PluginDependencyInformation> dependencyInformations = new HashSet<>();
 
         private final List<ModuleFactory<?>> factories;
 
@@ -250,7 +240,7 @@ public final class DefaultPlugin implements InternalPlugin {
             this.identifier = identifier;
             this.factories = factories;
             for (ModuleFactory<?> factory : factories) {
-                modulesByFactories.put(factory, new ArrayList<Module>());
+                modulesByFactories.put(factory, new ArrayList<>());
             }
         }
 
@@ -343,7 +333,7 @@ public final class DefaultPlugin implements InternalPlugin {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
+        int prime = 31;
         int result = 1;
         result = prime * result + ((identifier == null) ? 0 : identifier.hashCode());
         result = prime * result + ((fileName == null) ? 0 : fileName.hashCode());

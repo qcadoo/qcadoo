@@ -60,8 +60,7 @@ public class ModuleFactoryAccessorTest {
         given(mockPluginStateResolver.isEnabled("plugin1")).willReturn(false);
         given(mockPluginStateResolver.isEnabled("plugin2")).willReturn(true);
 
-        PluginUtilsService pluginUtil = new PluginUtilsService();
-        ReflectionTestUtils.setField(pluginUtil, "pluginStateResolver", mockPluginStateResolver);
+        PluginUtilsService pluginUtil = new PluginUtilsService(mockPluginStateResolver);
         pluginUtil.init();
 
         ModuleFactory<?> moduleFactory1 = mock(ModuleFactory.class);
@@ -70,7 +69,7 @@ public class ModuleFactoryAccessorTest {
         given(moduleFactory2.getIdentifier()).willReturn("module2");
 
         DefaultModuleFactoryAccessor moduleFactoryAccessor = new DefaultModuleFactoryAccessor();
-        List<ModuleFactory<?>> factoriesList = new ArrayList<ModuleFactory<?>>();
+        List<ModuleFactory<?>> factoriesList = new ArrayList<>();
         factoriesList.add(moduleFactory1);
         factoriesList.add(moduleFactory2);
         moduleFactoryAccessor.setModuleFactories(factoriesList);
@@ -92,7 +91,7 @@ public class ModuleFactoryAccessorTest {
         given(plugin2.hasState(PluginState.ENABLED)).willReturn(true);
         given(plugin2.getIdentifier()).willReturn("plugin2");
 
-        List<Plugin> plugins = newArrayList((Plugin) plugin1, (Plugin) plugin2);
+        List<Plugin> plugins = newArrayList(plugin1, plugin2);
 
         // when
         moduleFactoryAccessor.init(plugins);

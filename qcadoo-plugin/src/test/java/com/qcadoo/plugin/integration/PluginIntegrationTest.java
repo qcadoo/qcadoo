@@ -81,8 +81,7 @@ public class PluginIntegrationTest {
         PluginStateResolver mockPluginStateResolver = mock(PluginStateResolver.class);
         given(mockPluginStateResolver.isEnabled(Mockito.anyString())).willReturn(true);
 
-        PluginUtilsService pluginUtil = new PluginUtilsService();
-        ReflectionTestUtils.setField(pluginUtil, "pluginStateResolver", mockPluginStateResolver);
+        PluginUtilsService pluginUtil = new PluginUtilsService(mockPluginStateResolver);
         pluginUtil.init();
 
         new File("target/plugins").mkdir();
