@@ -32,8 +32,8 @@
 		<string name="identifier" unique="true" />
 		<text name="description" />
 		<manyToMany name="roles" joinField="groups"
-			model="role" />
-		<hasMany name="users" joinField="group" model="user" cascade="delete"/>
+			model="role" cascade="nullify" />
+		<hasMany name="users" joinField="group" model="user" cascade="nullify"/>
 	</fields>
 	<hooks >
 	    <validatesWith class="com.qcadoo.security.internal.validators.GroupRolesValidationService" method="checkUserAddingRoleSuperadmin"/>

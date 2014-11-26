@@ -31,7 +31,7 @@
 		<string name="identifier" required="true" unique="true" />
 		<text name="description" />
 		<manyToMany name="groups"
-				joinField="roles" model="group" />
+				joinField="roles" model="group" cascade="nullify" />
 	</fields>
 	<hooks />
 </model>
