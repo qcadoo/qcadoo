@@ -4,7 +4,7 @@
 	modelPlugin="qcadooSecurity"
 	modelName="group"
 	menuAccessible="true"
-	defaultAuthorizationRole="ROLE_ADMIN">
+	defaultAuthorizationRole="ROLE_SUPERADMIN">
 	
 	<component type="window" name="window">
 		<ribbon>
