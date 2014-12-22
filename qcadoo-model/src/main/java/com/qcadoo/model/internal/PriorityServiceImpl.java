@@ -87,9 +87,13 @@ public final class PriorityServiceImpl implements PriorityService {
             final int offset) {
         FieldDefinition fieldDefinition = dataDefinition.getPriorityField();
 
-        int currentPriority = (Integer) entityService.getField(databaseEntity, fieldDefinition);
-        int targetPriority = getTargetPriority(position, offset, currentPriority);
+        Integer currentPriorityInteger = (Integer) entityService.getField(databaseEntity, fieldDefinition);
 
+        int currentPriority = currentPriorityInteger != null ? currentPriorityInteger.intValue() : 0;
+        int targetPriority = getTargetPriority(position, offset, currentPriority);
+        if (currentPriorityInteger == null) {
+            setPriorityIfNotPresent(dataDefinition, fieldDefinition, databaseEntity, targetPriority);
+        }
         targetPriority = checkIfTargetPriorityIsNotTooLow(targetPriority);
         targetPriority = getIfTargetPriorityIsNotTooHigh(dataDefinition, databaseEntity, fieldDefinition, targetPriority);
 
@@ -103,6 +107,25 @@ public final class PriorityServiceImpl implements PriorityService {
 
         entityService.setField(databaseEntity, fieldDefinition, targetPriority);
         hibernateService.getCurrentSession().update(databaseEntity);
+    }
+
+    private void setPriorityIfNotPresent(final InternalDataDefinition dataDefinition, final FieldDefinition fieldDefinition,
+            final Object databaseEntity, int currentPriority) {
+        Criteria criteria = getCriteria(dataDefinition, fieldDefinition, databaseEntity).add(
+                Restrictions.isNull(fieldDefinition.getName())).add(
+                Restrictions.not(Restrictions.idEq(entityService.getId(databaseEntity))));
+
+        List<Object> entitiesToDecrement = criteria.list();
+
+        int index = currentPriority + 1;
+        for (Object entity : entitiesToDecrement) {
+            Integer priorityInteger = (Integer) entityService.getField(entity, fieldDefinition);
+            int priority = priorityInteger != null ? priorityInteger.intValue() : index;
+
+            entityService.setField(entity, fieldDefinition, priority);
+            hibernateService.getCurrentSession().update(entity);
+            index++;
+        }
     }
 
     private int getIfTargetPriorityIsNotTooHigh(final InternalDataDefinition dataDefinition, final Object databaseEntity,
