@@ -65,9 +65,9 @@
 		<security:role identifier="ROLE_USER" description="Domyślny poziom uprawnień."/>
 		<security:role identifier="ROLE_SUPERADMIN" description="Najwyższy poziom uprawnień - zarezerwowane dla procesów systemowych. Zawiera ROLE_ADMIN."/>
 		<security:role identifier="ROLE_API" description="Dostęp poprzez API do systemu. Rola systemowa."/>
-		<security:user-group name="Admin" identifier="ADMIN" roles="ROLE_ADMIN" />
+		<security:user-group name="Admin" identifier="ADMIN" roles="ROLE_ADMIN, ROLE_DICTIONARY_VIEW" />
 		<security:user-group name="User" identifier="USER" roles="ROLE_USER" />
-		<security:user-group name="Super admin" identifier="SUPER_ADMIN" roles="ROLE_SUPERADMIN" />
+		<security:user-group name="Super admin" identifier="SUPER_ADMIN" roles="ROLE_SUPERADMIN, ROLE_DICTIONARY_VIEW" />
 		<security:user-group name="API" identifier="API" roles="ROLE_API" />
 		<security:user login="admin" password="admin" email="admin@qcadoo.com" firstName="generated admin" 
 			lastName="generated admin" groupIdentifier="ADMIN" />
