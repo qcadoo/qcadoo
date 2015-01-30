@@ -31,12 +31,16 @@ import java.nio.charset.Charset;
 import org.apache.commons.io.IOUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.AbstractHttpMessageConverter;
 
 public final class JsonMapperHttpMessageConverter extends AbstractHttpMessageConverter<Object> {
+
+    private static final Logger LOG = LoggerFactory.getLogger(JsonMapperHttpMessageConverter.class);
 
     public static final Charset CHARSET = Charset.forName("UTF-8");
 
@@ -57,6 +61,9 @@ public final class JsonMapperHttpMessageConverter extends AbstractHttpMessageCon
     @Override
     protected Object readInternal(final Class<?> clazz, final HttpInputMessage inputMessage) throws IOException {
         String body = IOUtils.toString(inputMessage.getBody(), CHARSET.name());
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(body);
+        }
         return mapper.readValue(body, clazz);
     }
 
@@ -65,7 +72,11 @@ public final class JsonMapperHttpMessageConverter extends AbstractHttpMessageCon
         Writer writer = null;
         try {
             writer = new OutputStreamWriter(outputMessage.getBody(), CHARSET);
-            writer.append(mapper.writeValueAsString(value));
+            String out = mapper.writeValueAsString(value);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(out);
+            }
+            writer.append(out);
             writer.flush();
         } finally {
             IOUtils.closeQuietly(writer);
