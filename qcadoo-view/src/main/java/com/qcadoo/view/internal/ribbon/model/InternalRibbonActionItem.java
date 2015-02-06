@@ -47,6 +47,14 @@ public interface InternalRibbonActionItem extends RibbonActionItem {
     void setName(String name);
 
     /**
+     * Set item accesskey
+     *
+     * @param accesskey
+     *            item accesskey
+     */
+    void setAccesskey(String accesskey);
+
+    /**
      * Sets this item default state
      * 
      * @param enabled

@@ -29,8 +29,8 @@
 	name="standardGridTemplate">
 	
 	<group name="actions">
-		<bigButton name="new" icon="newIcon24.png" state="enabled" action="#{grid}.performNew;" />
-		<smallButton name="copy" icon="copyIcon16.png" state="disabled" action="#{grid}.performCopy;">
+		<bigButton name="new" icon="newIcon24.png" state="enabled" action="#{grid}.performNew;" accesskey="n" />
+		<smallButton name="copy" icon="copyIcon16.png" state="disabled" action="#{grid}.performCopy;" accesskey="c">
 			<script><![CDATA[
                 #{grid}.addOnChangeListener({
                 	onChange: function(selectedArray) {
@@ -43,7 +43,7 @@
                 });
 			]]></script>
 		</smallButton>
-		<smallButton name="delete" icon="deleteIcon16.png" state="disabled" action="#{grid}.performDelete;">
+		<smallButton name="delete" icon="deleteIcon16.png" state="disabled" action="#{grid}.performDelete;" accesskey="d">
 			<script><![CDATA[
                 #{grid}.addOnChangeListener({
                 	onChange: function(selectedArray) {
@@ -56,7 +56,7 @@
                 });
 			]]></script>
 		</smallButton>
-		<bigButton name="refresh" icon="updateIcon24.png" state="enabled" action="#{grid}.performRefresh;" />
+		<bigButton name="refresh" icon="updateIcon24.png" state="enabled" action="#{grid}.performRefresh;" accesskey="r" />
 	</group>
 	
 	<group name="states" if="#view.getComponentByReference('grid').dataDefinition.activable">

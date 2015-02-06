@@ -164,6 +164,10 @@ public class RibbonParserService {
 
         item.setIcon(parser.getStringAttribute(itemNode, "icon"));
         item.setName(parser.getStringAttribute(itemNode, NAME));
+        String accesskey = parser.getStringAttribute(itemNode, "accesskey");
+        if (accesskey != null) {
+            item.setAccesskey(accesskey);
+        }
         item.setAction(RibbonUtils.translateRibbonAction(parser.getStringAttribute(itemNode, "action"), viewDefinition));
         item.setType(type);
         String state = parser.getStringAttribute(itemNode, "state");
