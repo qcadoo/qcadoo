@@ -51,10 +51,12 @@ public class UserCriteriaModifiers {
         Entity loggedUser = dataDefinitionService
                 .get(QcadooSecurityConstants.PLUGIN_IDENTIFIER, QcadooSecurityConstants.MODEL_USER).get(
                         securityService.getCurrentUserId());
-
+        Entity superAdminGroup = dataDefinitionService
+                .get(QcadooSecurityConstants.PLUGIN_IDENTIFIER, QcadooSecurityConstants.MODEL_GROUP).find().add(
+                        SearchRestrictions.eq(GroupFields.IDENTIFIER, "SUPER_ADMIN")).setMaxResults(1).uniqueResult();
         if (securityService.hasRole(loggedUser, "ROLE_ADMIN")) {
             scb.createAlias(UserFields.GROUP, "gr", JoinType.INNER);
-            scb.add(SearchRestrictions.ne("gr." + GroupFields.IDENTIFIER, "SUPER_ADMIN"));
+            scb.add(SearchRestrictions.ne("gr.id", superAdminGroup.getId()));
         }
 
     }
