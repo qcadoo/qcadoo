@@ -39,49 +39,55 @@
 		http://schema.qcadoo.org/modules/localization.xsd">
 
     <information>
-		<name>Qcadoo Framework Security</name>
-		<vendor>
-			<name>Qcadoo Limited</name>
-			<url>http://www.qcadoo.com/</url>
-		</vendor>
-		<description>System plugin responsible for security. Security mechanism is described above in Layers Description chapter.</description>
-		<license>AGPL</license>
-	</information>
+        <name>Qcadoo Framework Security</name>
+        <vendor>
+            <name>Qcadoo Limited</name>
+            <url>http://www.qcadoo.com/</url>
+        </vendor>
+        <description>System plugin responsible for security. Security mechanism is described above in Layers Description
+            chapter.
+        </description>
+        <license>AGPL</license>
+    </information>
 
-	<dependencies>
-		<dependency>
-			<plugin>qcadooModel</plugin>
-			<version>[0.4.1</version>
-		</dependency>
-	</dependencies>
+    <dependencies>
+        <dependency>
+            <plugin>qcadooModel</plugin>
+            <version>[0.4.1</version>
+        </dependency>
+    </dependencies>
 
-	<modules>
-		<model:model model="user" resource="model/user.xml" />
-		<model:model model="persistentToken" resource="model/persistentToken.xml" />
-		<model:model model="group" resource="model/group.xml" />
-		<model:model model="role" resource="model/role.xml" />
+    <modules>
+        <model:model model="user" resource="model/user.xml"/>
+        <model:model model="persistentToken" resource="model/persistentToken.xml"/>
+        <model:model model="group" resource="model/group.xml"/>
+        <model:model model="role" resource="model/role.xml"/>
 
-		<security:role identifier="ROLE_ADMIN" description="Zarządzanie rolami, grupami, pluginami i menu. Zawiera ROLE_USER."/>
-		<security:role identifier="ROLE_USER" description="Domyślny poziom uprawnień."/>
-		<security:role identifier="ROLE_SUPERADMIN" description="Najwyższy poziom uprawnień - zarezerwowane dla procesów systemowych. Zawiera ROLE_ADMIN."/>
-		<security:role identifier="ROLE_API" description="Dostęp poprzez API do systemu. Rola systemowa."/>
-		<security:user-group name="Admin" identifier="ADMIN" roles="ROLE_ADMIN, ROLE_DICTIONARY_VIEW" />
-		<security:user-group name="User" identifier="USER" roles="ROLE_USER" />
-		<security:user-group name="Super admin" identifier="SUPER_ADMIN" roles="ROLE_SUPERADMIN, ROLE_DICTIONARY_VIEW" />
-		<security:user-group name="API" identifier="API" roles="ROLE_API" />
-		<security:user login="admin" password="admin" email="admin@qcadoo.com" firstName="generated admin" 
-			lastName="generated admin" groupIdentifier="ADMIN" />
-		<security:user login="superadmin" password="superadmin" email="superadmin@qcadoo.com" firstName="generated superadmin" 
-			lastName="generated superadmin" groupIdentifier="SUPER_ADMIN" />
+        <security:role identifier="ROLE_ADMIN" description="Zarządzanie rolami, grupami, pluginami i menu. Zawiera ROLE_USER."/>
+        <security:role identifier="ROLE_USER" description="Domyślny poziom uprawnień."/>
+        <security:role identifier="ROLE_SUPERADMIN"
+                       description="Najwyższy poziom uprawnień - zarezerwowane dla procesów systemowych. Zawiera ROLE_ADMIN."/>
+        <security:role identifier="ROLE_API" description="Dostęp poprzez API do systemu. Rola systemowa."/>
+        <security:role identifier="ROLE_MENU_HOME" description="Najniższy poziom uprawnień."/>
+        <security:user-group name="Admin" identifier="ADMIN" roles="ROLE_ADMIN, ROLE_DICTIONARY_VIEW"/>
+        <security:user-group name="User" identifier="USER" roles="ROLE_USER"/>
+        <security:user-group name="Super admin" identifier="SUPER_ADMIN" roles="ROLE_SUPERADMIN, ROLE_DICTIONARY_VIEW"/>
+        <security:user-group name="API" identifier="API" roles="ROLE_API"/>
+        <security:user-group name="Menu home user" identifier="USER_MENU_HOME" roles="ROLE_MENU_HOME"/>
 
-		<localization:translation path="locales" />
-		<localization:translation-group name="security"
-			prefix="security" />
+        <security:user login="admin" password="admin" email="admin@qcadoo.com" firstName="generated admin"
+                       lastName="generated admin" groupIdentifier="ADMIN"/>
+        <security:user login="superadmin" password="superadmin" email="superadmin@qcadoo.com" firstName="generated superadmin"
+                       lastName="generated superadmin" groupIdentifier="SUPER_ADMIN"/>
 
-	</modules>
-	
-	<features>
-		<dev-library />
-	</features>
+        <localization:translation path="locales"/>
+        <localization:translation-group name="security"
+                                        prefix="security"/>
+
+    </modules>
+
+    <features>
+        <dev-library/>
+    </features>
 
 </plugin>

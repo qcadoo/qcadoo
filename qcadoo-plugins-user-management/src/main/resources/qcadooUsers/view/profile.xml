@@ -28,7 +28,8 @@
 	xsi:schemaLocation="http://schema.qcadoo.org/view http://schema.qcadoo.org/view.xsd"
 	name="profile"
 	modelPlugin="qcadooSecurity"
-	modelName="user">
+	modelName="user"
+    defaultAuthorizationRole="ROLE_MENU_HOME">
 	
 	<component type="window" name="window">
 		<ribbon>
