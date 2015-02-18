@@ -375,7 +375,7 @@ QCD.components.containers.Window = function(element, mainController) {
 			var containerHeight = Math.round(_height - 2 * margin - ribbonHeight);
 			height = containerHeight;
 			if (this.options.header) {
-				height -= 24;
+				height -= 29;
 			}
 			var childrenElementHeight = containerHeight;
 			if (childrenElement.hasClass("displayingHelpPaths")) {

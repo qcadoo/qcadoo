@@ -84,6 +84,8 @@ public class LookupComponentPattern extends FieldComponentPattern {
 
     private String fieldCode;
 
+    private boolean header = false;
+
     private boolean prioritizable = true;
 
     private ModalDimensions modalDimensions;
@@ -150,6 +152,8 @@ public class LookupComponentPattern extends FieldComponentPattern {
                 expression = option.getValue();
             } else if ("fieldCode".equals(option.getType())) {
                 fieldCode = option.getValue();
+            } else if ("header".equals(option.getType())) {
+                header = Boolean.parseBoolean(option.getValue());
             } else if ("prioritizable".equals(option.getType())) {
                 prioritizable = Boolean.parseBoolean(option.getValue());
             } else if ("textRepresentationOnDisabled".equals(option.getType())) {
@@ -332,7 +336,7 @@ public class LookupComponentPattern extends FieldComponentPattern {
 
         WindowComponentPattern window = new WindowComponentPattern(windowComponentDefinition);
         window.setFixedHeight(true);
-        window.setHeader(false);
+        window.setHeader(header);
         window.setRibbon(createRibbon());
 
         return window;

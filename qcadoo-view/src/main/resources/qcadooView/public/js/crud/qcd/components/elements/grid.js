@@ -575,6 +575,9 @@ QCD.components.elements.Grid = function (element, mainController) {
     }
     
     this.setComponentValue = function (value) {
+        if(value.headerValue){
+            mainController.setWindowHeader(value.headerValue);
+        }
         currentState.rowLinkClickedBefore = false;
         currentState.selectedEntityId = value.selectedEntityId;
 

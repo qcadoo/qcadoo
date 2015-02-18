@@ -34,7 +34,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.qcadoo.model.api.search.*;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -45,6 +44,12 @@ import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.EntityOpResult;
 import com.qcadoo.model.api.FieldDefinition;
+import com.qcadoo.model.api.search.CustomRestriction;
+import com.qcadoo.model.api.search.JoinType;
+import com.qcadoo.model.api.search.SearchCriteriaBuilder;
+import com.qcadoo.model.api.search.SearchOrders;
+import com.qcadoo.model.api.search.SearchRestrictions;
+import com.qcadoo.model.api.search.SearchResult;
 import com.qcadoo.model.api.types.BelongsToType;
 import com.qcadoo.model.api.types.DataDefinitionHolder;
 import com.qcadoo.model.api.types.EnumeratedType;
@@ -69,6 +74,8 @@ public final class GridComponentState extends AbstractComponentState implements 
     };
 
     public static final String JSON_SELECTED_ENTITY_ID = "selectedEntityId";
+
+    public static final String JSON_HEADER_VALUE = "headerValue";
 
     public static final String JSON_BELONGS_TO_ENTITY_ID = "belongsToEntityId";
 
@@ -454,6 +461,9 @@ public final class GridComponentState extends AbstractComponentState implements 
 
         if (criteriaModifierParameter != null) {
             json.put(JSON_CRITERIA_MODIFIER_PARAMETER, criteriaModifierParameter);
+            if (criteriaModifierParameter.has(JSON_HEADER_VALUE)) {
+                json.put(JSON_HEADER_VALUE, criteriaModifierParameter.getString(JSON_HEADER_VALUE));
+            }
         }
 
         return json;
