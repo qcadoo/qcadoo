@@ -65,10 +65,17 @@ public interface RibbonActionItem {
 
     /**
      * Get identifier of this ribbon item
-     * 
+     *
      * @return identifier of this ribbon item
      */
     String getName();
+
+    /**
+     * Get identifier of this ribbon item
+     *
+     * @return identifier of this ribbon item
+     */
+    String getAccesskey();
 
     /**
      * Get item type

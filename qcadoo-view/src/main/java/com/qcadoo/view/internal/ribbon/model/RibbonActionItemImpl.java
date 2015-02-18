@@ -30,6 +30,8 @@ public class RibbonActionItemImpl implements InternalRibbonActionItem {
 
     private String name;
 
+    private String accesskey;
+
     private Type type;
 
     private String icon;
@@ -69,6 +71,16 @@ public class RibbonActionItemImpl implements InternalRibbonActionItem {
     }
 
     @Override
+    public final String getAccesskey() {
+        return accesskey;
+    }
+
+    @Override
+    public final void setAccesskey(final String accesskey) {
+        this.accesskey = accesskey;
+    }
+
+    @Override
     public final Type getType() {
         return type;
     }
@@ -92,6 +104,9 @@ public class RibbonActionItemImpl implements InternalRibbonActionItem {
     public JSONObject getAsJson() throws JSONException {
         JSONObject itemObject = new JSONObject();
         itemObject.put("name", name);
+        if (accesskey != null) {
+            itemObject.put("accesskey", accesskey);
+        }
         itemObject.put("type", type);
         itemObject.put("icon", icon);
         itemObject.put("enabled", enabled);
@@ -162,6 +177,7 @@ public class RibbonActionItemImpl implements InternalRibbonActionItem {
 
     protected void copyFields(final InternalRibbonActionItem item) {
         item.setName(name);
+        item.setAccesskey(accesskey);
         item.setType(type);
         item.setIcon(icon);
         item.setScript(script);

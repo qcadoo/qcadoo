@@ -179,7 +179,7 @@ QCD.components.Ribbon = function(_model, _elementName, _mainController, _transla
 	}
 	
 	function createBigButton(path, itemModel) {
-		var aElement = $("<a>").attr('href','#').html("<span><div"+getItemIconStyle(itemModel)+"></div><label class='ribbonLabel'>"+itemModel.label+"</label></div></div></span>");
+		var aElement = $("<a>").attr('accesskey', itemModel.accesskey).attr('href','#').html("<span><div"+getItemIconStyle(itemModel)+"></div><label class='ribbonLabel'>"+itemModel.label+"</label></div></div></span>");
 		var liElement = $("<li>").append(aElement);
 		var ribbonListElement = $("<ul>").addClass("ribbonListElement").append(liElement);
 		var itemElement = $("<div>").addClass("ribbonBigElement").append(ribbonListElement);
@@ -217,7 +217,7 @@ QCD.components.Ribbon = function(_model, _elementName, _mainController, _transla
 	}
 	
 	function createSmallButton(path, itemModel) {
-		var itemElementButton = $("<a>").attr('href','#').html("<span><div"+getItemIconStyle(itemModel)+"></div><div class='btnOneLabel ribbonLabel'>"+itemModel.label+"</div></span>");
+		var itemElementButton = $("<a>").attr('accesskey', itemModel.accesskey).attr('href','#').html("<span><div"+getItemIconStyle(itemModel)+"></div><div class='btnOneLabel ribbonLabel'>"+itemModel.label+"</div></span>");
 		createTooltip(itemModel,itemElementButton);
 		var itemElement = $("<li>").addClass("btnOne").append(itemElementButton);
 		itemElementButton.bind('click', {itemElement: itemElement, itemName: itemModel.name, clickAction: itemModel.clickAction}, buttonClicked);
