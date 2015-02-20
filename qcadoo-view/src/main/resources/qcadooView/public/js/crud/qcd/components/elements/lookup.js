@@ -433,6 +433,7 @@ QCD.components.elements.Lookup = function(_element, _mainController) {
 					criteriaModifierParameter: dataState.criteriaModifierParameter
 				};
 			url += "?context=" + JSON.stringify(params);
+			url = url.replace("\\\"", "~~~");
 		}
 		lookupWindow = mainController.openModal(elementPath + "_lookup", window.pluginIdentifier + "/" + url, false, onModalClose, onModalRender, modalDimensions);
 	}

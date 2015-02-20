@@ -140,6 +140,7 @@ QCD.PageController = function() {
 	}
 
 	this.setContext = function(contextStr) {
+	    contextStr = contextStr.replace("~~~", "\\\"");
 		var context = JSON.parse(contextStr);
 		for (var i in context) {
 			var dotPos = i.lastIndexOf(".");
