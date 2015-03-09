@@ -25,21 +25,23 @@
 
 -->
 <model name="dictionaryItem" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns="http://schema.qcadoo.org/model"
-	xsi:schemaLocation="http://schema.qcadoo.org/model http://schema.qcadoo.org/model.xsd"
-    deletable="false" activable="true">
-	<fields>
-		<string name="name" required="true" unique="true">
-			<validatesLength max="255" />
-		</string>
-		<string name="externalNumber" unique="true" />
-		<string name="description">
-			<validatesLength max="2048" />
-		</string>
-		<string name="technicalCode" />
-		<belongsTo name="dictionary" model="dictionary" required="true" />
-	</fields>
+       xmlns="http://schema.qcadoo.org/model"
+       xsi:schemaLocation="http://schema.qcadoo.org/model http://schema.qcadoo.org/model.xsd"
+       deletable="false" activable="true">
+    <fields>
+        <string name="name" required="true">
+            <validatesLength max="255"/>
+        </string>
+        <string name="externalNumber" unique="true"/>
+        <string name="description">
+            <validatesLength max="2048"/>
+        </string>
+        <string name="technicalCode"/>
+        <belongsTo name="dictionary" model="dictionary" required="true"/>
+    </fields>
+
     <hooks>
-        <validatesWith class="com.qcadoo.model.internal.dictionaries.hooks.DictionaryItemValidators" method="disallowNameChange" />
-	</hooks >
+        <validatesWith class="com.qcadoo.model.internal.dictionaries.hooks.DictionaryItemValidators"
+                       method="onValidate"/>
+    </hooks>
 </model>
