@@ -1197,6 +1197,11 @@ QCD.components.elements.Grid = function (element, mainController) {
         performOnSelectedEntities("remove", actionsPerformer, translations.confirmDeleteMessage + " (" + getSelectedRowsCount() + ")?");
     };
 
+    //WARNING use at your own risk - should only be used manually, when delete action is confirmed otherwise!
+    this.performDeleteWithoutConfirm = function (actionsPerformer) {
+        performOnSelectedEntities("remove", actionsPerformer);
+    };
+
     this.performCopy = function (actionsPerformer) {
         performOnSelectedEntities("copy", actionsPerformer);
     };
