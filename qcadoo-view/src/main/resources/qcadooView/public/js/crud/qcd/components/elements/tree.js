@@ -359,7 +359,22 @@ QCD.components.elements.Tree = function(_element, _mainController) {
 		});
 	}
 	this.expandTree = expandTree;
-	
+
+	function expandParents(entityId) {
+	    var nodeToExpand = $("#"+elementSearchName+"_node_"+entityId);
+	    if (!nodeToExpand) {
+	        return;
+	    }
+        tree.jstree("open_node", nodeToExpand, false, true);
+
+		var nodeToExpandParent = $.jstree._focused()._get_parent(nodeToExpand);
+		while(nodeToExpandParent) {
+			tree.jstree("open_node", nodeToExpandParent, false, true);
+	        nodeToExpandParent = $.jstree._focused()._get_parent(nodeToExpandParent);
+		}
+	}
+	this.expandParents = expandParents;
+
 	function collapseTree() {
 		tree.jstree("close_all", root, true);
 	}
