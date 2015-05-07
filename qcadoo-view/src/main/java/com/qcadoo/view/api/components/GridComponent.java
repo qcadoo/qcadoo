@@ -80,6 +80,11 @@ public interface GridComponent extends ComponentState {
     List<Entity> getEntities();
 
     /**
+     * Reload content of grid
+     */
+    void reloadEntities();
+
+    /**
      * Returns column names of the current grid
      * 
      * @return column names
@@ -115,7 +120,6 @@ public interface GridComponent extends ComponentState {
      *            true if this grid should be editable, false if not
      */
     void setEditable(boolean isEditable);
-    
 
     /**
      * Gets current criteria modifier parameters value. To modify them use setFilterValue method.
