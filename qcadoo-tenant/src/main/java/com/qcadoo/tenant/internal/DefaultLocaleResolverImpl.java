@@ -26,6 +26,7 @@ package com.qcadoo.tenant.internal;
 import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.qcadoo.tenant.api.DefaultLocaleResolver;
@@ -51,7 +52,7 @@ public final class DefaultLocaleResolverImpl implements DefaultLocaleResolver {
             return EN;
         }
 
-        return Locale.getDefault();
+        return LocaleContextHolder.getLocale();
     }
 
 }

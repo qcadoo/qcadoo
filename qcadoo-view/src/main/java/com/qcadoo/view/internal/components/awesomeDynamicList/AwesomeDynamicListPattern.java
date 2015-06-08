@@ -24,6 +24,7 @@
 package com.qcadoo.view.internal.components.awesomeDynamicList;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 
@@ -58,6 +59,17 @@ public class AwesomeDynamicListPattern extends FieldComponentPattern {
 
     private boolean hasBorder = true;
 
+    private final Map<String, ComponentPattern> children = new LinkedHashMap<String, ComponentPattern>();
+
+    @Override
+    public void unregisterComponent(InternalViewDefinitionService viewDefinitionService) {
+        super.unregisterComponent(viewDefinitionService);
+
+        for (ComponentPattern componentPattern : children.values()) {
+            componentPattern.unregisterComponent(viewDefinitionService);
+        }
+    }
+
     public AwesomeDynamicListPattern(final ComponentDefinition componentDefinition) {
         super(componentDefinition);
         ComponentDefinition formComponentDefinition = new ComponentDefinition();
@@ -70,6 +82,7 @@ public class AwesomeDynamicListPattern extends FieldComponentPattern {
         formComponentDefinition.setParent(this);
         formComponentDefinition.setContextualHelpService(getContextualHelpService());
         innerFormPattern = new FormComponentPattern(formComponentDefinition);
+        children.put(innerFormPattern.getName(), innerFormPattern);
     }
 
     @Override
@@ -126,6 +139,7 @@ public class AwesomeDynamicListPattern extends FieldComponentPattern {
                 formComponentDefinition.setContextualHelpService(getContextualHelpService());
                 headerFormPattern = new FlowLayoutPattern(formComponentDefinition);
                 headerFormPattern.parse(child, parser);
+                children.put(headerFormPattern.getName(), headerFormPattern);
             }
         }
     }
