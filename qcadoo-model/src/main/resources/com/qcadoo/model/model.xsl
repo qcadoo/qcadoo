@@ -100,11 +100,7 @@
 					<cache usage="read-write"/>
 				</xsl:if>
 				<id column="id" name="id" type="long">
-					<generator class="sequence">
-						<param name="sequence">
-							<xsl:value-of select="concat(/qcd:model/@plugin, '_', @name, '_id_seq')" />
-						</param>
-					</generator>
+					<generator class="increment" />
 				</id>
 				<xsl:apply-templates />
 				<xsl:if test="@activable='true'">
