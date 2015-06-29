@@ -102,7 +102,7 @@
 				<id column="id" name="id" type="long">
 					<generator class="sequence">
 						<param name="sequence">
-							<xsl:value-of select="concat(/qcd:model/@plugin, '_', @name, '_id_seq')" />
+							<xsl:value-of select="substring(concat(/qcd:model/@plugin, '_', @name, '_id_seq'),0, 64)" />
 						</param>
 					</generator>
 				</id>
