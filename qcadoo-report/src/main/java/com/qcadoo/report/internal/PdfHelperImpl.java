@@ -23,6 +23,7 @@
  */
 package com.qcadoo.report.internal;
 
+import com.google.common.collect.Lists;
 import com.lowagie.text.*;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
@@ -188,25 +189,46 @@ public final class PdfHelperImpl implements PdfHelper {
     @Override
     public void addTableCellAsTable(final PdfPTable table, final String label, final Object fieldValue, final String nullValue,
             final Font headerFont, final Font valueFont, final int columns) {
+        addTableCellAsTable(table, label, fieldValue, nullValue, headerFont, valueFont, columns, new int[]{});
+    }
+
+    private void addTableCellAsTable(final PdfPTable table, final String label, final Object fieldValue, final String nullValue,
+                                    final Font headerFont, final Font valueFont, final int columns, final int[] columnWidths) {
         PdfPTable cellTable = new PdfPTable(columns);
+
+        if (columnWidths.length > 0) {
+            try {
+                cellTable.setWidths(columnWidths);
+            } catch (DocumentException e) {
+                LOG.error(e.getMessage(), e);
+            }
+        }
+
         cellTable.getDefaultCell().setBorder(Rectangle.NO_BORDER);
         cellTable.addCell(new Phrase(label, headerFont));
+
         if (fieldValue == null) {
             cellTable.addCell(new Phrase(nullValue, valueFont));
         } else {
             cellTable.addCell(new Phrase(fieldValue.toString(), valueFont));
         }
+
         table.addCell(cellTable);
     }
 
     @Override
-    public void addTableCellAsTwoColumnsTable(final PdfPTable table, final String label, final Object fieldValue) {
+     public void addTableCellAsTwoColumnsTable(final PdfPTable table, final String label, final Object fieldValue) {
         addTableCellAsTable(table, label, fieldValue, FontUtils.getDejavuBold7Dark(), FontUtils.getDejavuRegular9Dark(), 2);
     }
 
     @Override
+    public void addTableCellAsTwoColumnsTable(final PdfPTable table, final String label, final Object fieldValue,  final int[] columnWidths) {
+        addTableCellAsTable(table, label, fieldValue, "-", FontUtils.getDejavuBold7Dark(),  FontUtils.getDejavuRegular9Dark(), 2, columnWidths);
+    }
+
+    @Override
     public void addTableCellAsOneColumnTable(final PdfPTable table, final String label, final Object fieldValue) {
-        addTableCellAsTable(table, label, fieldValue, FontUtils.getDejavuBold7Dark(), FontUtils.getDejavuRegular9Dark(), 1);
+        addTableCellAsTable(table, label, fieldValue, FontUtils.getDejavuBold7Dark(),  FontUtils.getDejavuRegular9Dark(), 1);
     }
 
     @Override

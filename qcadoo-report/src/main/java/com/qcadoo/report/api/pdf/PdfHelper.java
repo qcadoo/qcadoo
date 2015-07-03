@@ -144,6 +144,19 @@ public interface PdfHelper {
     void addTableCellAsTwoColumnsTable(final PdfPTable table, final String label, final Object fieldValue);
 
     /**
+     * Add cell with two columns table to current table with given widths
+     *
+     * @param table
+     * @param label
+     *            header label
+     * @param fieldValue
+     *            value
+     * @param columnWidths
+     *            widths
+     */
+    void addTableCellAsTwoColumnsTable(final PdfPTable table, final String label, final Object fieldValue, final int[] columnWidths);
+
+    /**
      * Add cell with one columns table to current table.
      * 
      * @param table
