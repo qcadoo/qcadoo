@@ -43,6 +43,7 @@
 		</c:when>
 		<c:otherwise>
 			<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/core/qcd.css?ver=${buildNumber}" type="text/css" />
+			<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/core/qcadoo-min.css?ver=${buildNumber}" type="text/css" />
 			<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/core/mainPage.css?ver=${buildNumber}" type="text/css" />
 			<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/core/menuTopLevel.css?ver=${buildNumber}" type="text/css" />
 			<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/core/menu/style.css?ver=${buildNumber}" type="text/css" />
@@ -62,6 +63,10 @@
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/qcd/core/windowController.js?ver=${buildNumber}"></script>
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/qcd/core/messagesController.js?ver=${buildNumber}"></script>
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/crud/qcd/components/elements/utils/loadingIndicator.js?ver=${buildNumber}"></script>
+			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/jquery-1.4.2.min.js?ver=${buildNumber}"></script>
+			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/highlight.js?ver=${buildNumber}"></script>
+			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/liveUpdate.js?ver=${buildNumber}"></script>
+			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/jquery.menu-aim.js?ver=${buildNumber}"></script>
 		</c:otherwise>
 	</c:choose>
 	
@@ -72,9 +77,14 @@
 		var menuStructure = ${menuStructure}
 
 		var windowController;
-		
+
+// ************ open request page
+		function openPage(href){
+			alert(href);
+			$('.userMenuBackdoor').click();
+		}
 		jQuery(document).ready(function(){
-			
+
 			windowController = new QCD.WindowController(menuStructure);
 			
 			$("#mainPageIframe").load(function() {
@@ -84,6 +94,64 @@
 				} catch(e) {
 				}
 			});
+			// ************ base variable
+            			var $logoDropdownBox = $('.logoDropdownBox');
+            			var $userMenuBackdoor = $('.userMenuBackdoor');
+            			var $headerSearchInput = $('.headerSearchForm [type="text"]');
+            			var $mainMenu = $('.mainMenu');
+
+            			// ************ toogle menu visible by arrow
+            			$('.logoDropdownBoxToggle a.arrow, .userMenuBackdoor').click(function(e){
+            				$logoDropdownBox.toggleClass('open');
+            				$userMenuBackdoor.toggleClass('open');
+            				$('.subMenuBox').hide();
+            				$('.subMenuBox .maintainHover').removeClass('maintainHover');
+            				if($logoDropdownBox.hasClass('open')){
+            					$headerSearchInput.val('').keyup().focus();
+            					deactivateSubmenu($('.maintainHover', $mainMenu).parent());
+            					activateSubmenu($('li:eq(0)', $mainMenu));
+            				}
+            				e.preventDefault();
+            			});
+            // ************ main menu disabled click
+            			$('.mainMenu a').click(function(e){
+            				e.preventDefault();
+            			});
+
+            			// ************ main menu live search
+            			$headerSearchInput.liveUpdate('.subMenuBoxLiveSearch .subMenu');
+
+
+            			// ************ main menu search, clear
+            			$('.headerSearchForm .iconDel').click(function(e){
+            				$headerSearchInput.val('').keyup().blur();
+            				e.preventDefault();
+            			});
+            var $menu = $(".mainMenu");
+        	$menu.menuAim({
+				activate: activateSubmenu,
+	            deactivate: deactivateSubmenu
+	        });
+// ************ lazy menu show item
+	        function activateSubmenu(row) {
+	        	deactivateSubmenu($('.maintainHover', $mainMenu).parent());
+
+	            var $row = $(row);
+	            $row.find("a").addClass("maintainHover");
+	        	var target = $row.find("a").attr('href');
+				$("#"+target).show();
+	        }
+
+			// ************ lazy menu hide item
+	        function deactivateSubmenu(row) {
+				$('.subMenu .maintainHover').removeClass('maintainHover');
+
+	            var $row = $(row);
+	            $row.find("a").removeClass("maintainHover");
+	        	var target = $row.find("a").attr('href');
+				$("#"+target).hide();
+	        }
+
 		});
 
 		window.goToPage = function(url, serializationObject, isPage) {
@@ -153,6 +221,7 @@
 	
 		
 	</script>
+
 <!-- start Mixpanel -->
 	<c:if test="${not empty mixpanelToken}">
 		
@@ -165,8 +234,62 @@
 <!-- end Mixpanel -->
 </head>
 <body>
+    <div id="mainTopMenu" class="pageTopHeader clearfix">
+        <div class="userMenuBackdoor"></div>
+	    <div class="logoDropdownBox">
+			<div class="logoDropdownBoxToggle">
+				<div class="logo">
+					<img src="/qcadooView/public/css/core/menu/images-new/qcadoo-logo.png" class="logoDark" alt="qcadoo MES logo" onclick="windowController.goToDashboard()">
+					<img src="/qcadooView/public/css/core/menu/images-new/qcadoo-white-logo.png" class="logoWhite" alt="qcadoo MES logo" onclick="windowController.goToDashboard()">
+				</div>
+				<a href="#" class="arrow">
+					<i></i>
+				</a>
+			</div>
+			<div class="logoDropdownBoxContent">
+				<div class="headerSearchForm">
 
-	<div id="mainTopMenu">
+					<div class="headerSearchFormContent">
+						<input type="text" value="" />
+						<i class="icon iconSearch"></i>
+						<a href="#" class="iconDel hidden">&times;</a>
+					</div>
+				</div>
+				<div class="headerMenuBox">
+					<div class="headerMenuContent">
+						<div class="headerMenuRowMain">
+                            <ul class='mainMenu'></ul>
+						</div>
+						<div class="headerMenuRowSub">
+
+							<div class="subMenuBox" id="emptySearchResult">
+								<i class="icon iconInfo"></i>
+								<div>Brak elementów pasujących<br />do zapytania</div>
+							</div>
+							<div class="subMenuBox" id="searchResult">
+								<ul class="subMenu">
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="userMenu">
+		        <ul>
+        				<li><a href="#" class="help"><i class="icon iconHelp"></i> Pomoc</a></li>
+        				<li><i class="icon iconUser"></i> <a href='#' id="profileButton" onclick="windowController.goToMenuPosition('administration.profile')">${userLogin}</a>
+        					<div class="userMenuDropdown">
+        						<a href="#" class="toggle"><i class="icon iconDropdown"></i></a>
+        						<ul>
+        							<li>
+        							<a href='#' onclick="windowController.performLogout()"><i class="icon iconLogout"></i>${commonTranslations["qcadooView.button.logout"] }</a></li>
+        						</ul>
+        					</div>
+        				</li>
+        			</ul>
+        </div>
+	<!--<div id="mainTopMenu">
 		<div id="topLevelMenu">
 			<img id="logoImage" src="/qcadooView/public/css/core/images/logo_small.png" alt="qcadoo MES logo" onclick="windowController.goToDashboard()"></img>
 			<div id="topRightPanel">
@@ -181,6 +304,7 @@
 			<div id="secondLevelMenu">
 			</div>
 			</div>
+	</div>-->
 	</div>
 	<div id="mainPageIframeWrapper"><iframe id="mainPageIframe" frameborder="0"></iframe></div>
 </body>

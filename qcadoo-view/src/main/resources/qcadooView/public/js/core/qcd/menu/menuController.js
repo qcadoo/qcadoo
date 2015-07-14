@@ -32,8 +32,8 @@ QCD.menu.MenuController = function (menuStructure, windowController) {
 
     var that = this;
 
-    var firstLevelElement;
-    var secondLevelElement = $("#secondLevelMenu");
+    var firstLevelElement = $(".headerMenuRowMain");
+    var secondLevelElement = $(".headerMenuRowSub");
 
     var previousActive = {};
     previousActive.first = null;
@@ -47,13 +47,6 @@ QCD.menu.MenuController = function (menuStructure, windowController) {
 
     function constructor() {
 
-        firstLevelElement = $("<div>").attr("id", "q_menu_row1");
-        var q_row1 = $("<div>").attr("id", "q_row1");
-        q_row1.append(firstLevelElement);
-        var q_row1_out = $("<div>").attr("id", "q_row1_out");
-        q_row1_out.append(q_row1);
-        $("#firstLevelMenu").append(q_row1_out);
-
         createMenu(menuStructure);
 
         if (model.selectedItem) {
@@ -61,9 +54,9 @@ QCD.menu.MenuController = function (menuStructure, windowController) {
             model.selectedItem.element.addClass("path");
             previousActive.second = model.selectedItem.selectedItem;
         }
-
-        updateState();
-        updateTopButtons();
+//
+//        updateState();
+//        updateTopButtons();
         if (model.selectedItem && model.selectedItem.selectedItem) {
             changePage(model.selectedItem.selectedItem.page);
         } else {
@@ -90,13 +83,13 @@ QCD.menu.MenuController = function (menuStructure, windowController) {
                     }
                     if (responseText != "") {
                         var response = JSON.parse(responseText);
-                        firstLevelElement.children().remove();
+//                        firstLevelElement.children().remove();
                         createMenu(response);
                         model.selectedItem = model.itemsMap[selectedFirstName];
                         model.selectedItem.selectedItem = model.selectedItem.itemsMap[selectedSecondName];
-                        updateState();
+//                        updateState();
                     }
-                    updateTopButtons();
+//                    updateTopButtons();
                 }
             }
         });
@@ -113,12 +106,7 @@ QCD.menu.MenuController = function (menuStructure, windowController) {
     function createMenu(menuStructure) {
         model = new QCD.menu.MenuModel(menuStructure);
 
-        var menuContentElement = $("<ul>").addClass("q_row1");
-        var menuHomeContentElement = $("<ul>").addClass("q_row1").addClass("q_row1_home");
-        var menuAdministrationContentElement = $("<ul>").addClass("q_row1").addClass("q_row1_administration");
-        firstLevelElement.append(menuHomeContentElement);
-        firstLevelElement.append(menuContentElement);
-        firstLevelElement.append(menuAdministrationContentElement);
+        var menuContentElement = $(".mainMenu");//.addClass("q_row1");
 
         var itemsLen = model.items.length,
             i,
@@ -128,30 +116,52 @@ QCD.menu.MenuController = function (menuStructure, windowController) {
         for (i = 0; i < itemsLen; i++) {
             item = model.items[i];
 
-            if (item.type == QCD.menu.MenuModel.ADMINISTRATION_CATEGORY) {
-                firstLevelButton = $("<li>").html("<a href='#'><span><div class='administrationMenuItem' title='" + item.label + "'></div></span></a>").attr("id", "firstLevelButton_" + item.name);
-                menuAdministrationContentElement.append(firstLevelButton);
-            } else if (item.type == QCD.menu.MenuModel.HOME_CATEGORY) {
-                firstLevelButton = $("<li>").html("<a href='#'><span><div class='homeMenuItem' title='" + item.label + "'></div></span></a>").attr("id", "firstLevelButton_" + item.name);
-                menuHomeContentElement.append(firstLevelButton);
-            } else {
-                firstLevelButton = $("<li>").html("<a href='#'><span>" + item.label + "</span></a>").attr("id", "firstLevelButton_" + item.name);
+                firstLevelButton = $("<li>").html("<a href='menu-" + item.name + "'>" + item.label + "</a>").attr("id", "firstLevelButton_" + item.name);
                 if (item.description) {
                     firstLevelButton.attr("title", item.description);
                 }
+//                firstLevelButton.addClass("has-sub");
                 menuContentElement.append(firstLevelButton);
+
+                var secondItemsLen = item.items.length,
+                    j,
+                    secondLevelItem,
+                    secondLevelButton;
+                var secondMenuContentElement = $("<div>").attr("id", "menu-" + item.name);
+                secondMenuContentElement.addClass("subMenuBox");
+                secondMenuContentElement.addClass("subMenuBoxLiveSearch");
+
+                var secondLevelContent = $("<ul>").addClass("subMenu").attr("id","list-" + item.name);
+
+
+                for (j = 0; j < secondItemsLen; j++) {
+                    secondLevelItem = item.items[j];
+                    secondLevelButton = $("<li>").html(
+                                        "<a href='#'><span>" + secondLevelItem.label
+                                            + "</span></a>").attr("id",
+                                        "secondLevelButton_" + secondLevelItem.name);
+                    if (secondLevelItem.description) {
+                        secondLevelButton.attr("title", secondLevelItem.description);
+                    }
+                    secondLevelButton.appendTo(secondLevelContent);
+                    secondLevelItem.element = secondLevelButton;
+
+                    secondLevelButton.click(function () {
+                        onBottomItemClick($(this));
+                    });
+
+                secondLevelContent.appendTo(secondMenuContentElement);
+                secondMenuContentElement.appendTo(secondLevelElement);
             }
+
 
             item.element = firstLevelButton;
 
-            firstLevelButton.click(function (ignored) {
-                onTopItemClick($(this));
-            });
         }
     }
 
     function onTopItemClick(itemElement) {
-        itemElement.children().blur();
+//        itemElement.children().blur();
 
         var buttonName = itemElement.attr("id").substring(17);
 
@@ -160,17 +170,17 @@ QCD.menu.MenuController = function (menuStructure, windowController) {
             currentActive.second = model.selectedItem.selectedItem
         }
 
-        updateState();
+//        updateState();
     }
 
     function onBottomItemClick(itemElement) {
-        itemElement.children().blur();
+//        itemElement.children().blur();
 
         if (!canChangePage()) {
             return;
         }
 
-        changeTitle(itemElement);
+//        changeTitle(itemElement);
 
         var buttonName = itemElement.attr("id").substring(18);
 
@@ -246,7 +256,7 @@ QCD.menu.MenuController = function (menuStructure, windowController) {
             currentActive.first = model.selectedItem;
             currentActive.first.element.addClass("activ");
 
-            updateSecondLevel();
+            //updateSecondLevel();
 
         } else if (model.selectedItem) {
             if (currentActive.second != model.selectedItem.selectedItem) {
@@ -261,45 +271,6 @@ QCD.menu.MenuController = function (menuStructure, windowController) {
         }
     }
 
-    function updateSecondLevel() {
-        secondLevelElement.children().remove();
-
-        var menuContentElement = $("<ul>").addClass("q_row2");
-        var q_menu_row2 = $("<div>").attr("id", "q_menu_row2");
-        q_menu_row2.append(menuContentElement);
-        var q_row2_out = $("<div>").attr("id", "q_row2_out");
-        q_row2_out.append(q_menu_row2);
-        secondLevelElement.append(q_row2_out);
-
-        var selectedItemSubItemsLen = model.selectedItem.items.length,
-            i,
-            secondLevelItem,
-            secondLevelButton;
-
-        for (i = 0; i < selectedItemSubItemsLen; i++) {
-            secondLevelItem = model.selectedItem.items[i];
-            secondLevelButton = $("<li>").html(
-                    "<a href='#'><span>" + secondLevelItem.label
-                        + "</span></a>").attr("id",
-                    "secondLevelButton_" + secondLevelItem.name);
-            if (secondLevelItem.description) {
-                secondLevelButton.attr("title", secondLevelItem.description);
-            }
-            menuContentElement.append(secondLevelButton);
-            secondLevelItem.element = secondLevelButton;
-
-            secondLevelButton.click(function () {
-                onBottomItemClick($(this));
-            });
-
-            if (previousActive.second
-                && previousActive.second.name == secondLevelItem.name) {
-                secondLevelItem.element.addClass("activ");
-                currentActive.second = secondLevelItem;
-            }
-
-        }
-    }
 
     function changePage(page) {
         windowController.onMenuClicked(page);
@@ -316,4 +287,5 @@ QCD.menu.MenuController = function (menuStructure, windowController) {
     }
 
     constructor();
+
 };
