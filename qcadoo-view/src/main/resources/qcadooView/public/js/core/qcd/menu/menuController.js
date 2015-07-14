@@ -158,10 +158,38 @@ QCD.menu.MenuController = function (menuStructure, windowController) {
             item.element = firstLevelButton;
 
         }
+
+
+        menuContentElement.menuAim({
+            activate: activateSubmenu,
+            deactivate: deactivateSubmenu
+        });
+// ************ lazy menu show item
+        function activateSubmenu(row) {
+            deactivateSubmenu($('.maintainHover', menuContentElement).parent());
+
+            var $row = $(row);
+            $row.find("a").addClass("maintainHover");
+            var target = $row.find("a").attr('href');
+            $("#"+target).show();
+
+            onTopItemClick(row);
+        }
+
+        // ************ lazy menu hide item
+        function deactivateSubmenu(row) {
+            $('.subMenu .maintainHover').removeClass('maintainHover');
+
+            var $row = $(row);
+            $row.find("a").removeClass("maintainHover");
+            var target = $row.find("a").attr('href');
+            $("#"+target).hide();
+        }
     }
 
     function onTopItemClick(itemElement) {
 //        itemElement.children().blur();
+        itemElement = $(itemElement);
 
         var buttonName = itemElement.attr("id").substring(17);
 

@@ -127,11 +127,13 @@
             				$headerSearchInput.val('').keyup().blur();
             				e.preventDefault();
             			});
-            var $menu = $(".mainMenu");
+
+            /*var $menu = $(".mainMenu");
         	$menu.menuAim({
 				activate: activateSubmenu,
 	            deactivate: deactivateSubmenu
 	        });
+	        */
 // ************ lazy menu show item
 	        function activateSubmenu(row) {
 	        	deactivateSubmenu($('.maintainHover', $mainMenu).parent());
