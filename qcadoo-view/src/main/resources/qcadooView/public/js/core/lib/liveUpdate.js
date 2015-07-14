@@ -81,9 +81,6 @@ jQuery.fn.liveUpdate = function(list){
         } else {
           $("li", $searchResult).click(function(e){
             var href = $(this).attr('id');
-            var secondLevelItem = $("#" + href);
-            console.log(secondLevelItem);
-            console.log(windowController);
             var itemParts = href.split("_");
             windowController.goToMenuPosition(itemParts[1] + "." + itemParts[2]);
             //openPage(href);
