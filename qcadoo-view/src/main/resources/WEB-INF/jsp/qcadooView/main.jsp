@@ -63,7 +63,6 @@
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/qcd/core/windowController.js?ver=${buildNumber}"></script>
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/qcd/core/messagesController.js?ver=${buildNumber}"></script>
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/crud/qcd/components/elements/utils/loadingIndicator.js?ver=${buildNumber}"></script>
-			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/jquery-1.4.2.min.js?ver=${buildNumber}"></script>
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/highlight.js?ver=${buildNumber}"></script>
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/liveUpdate.js?ver=${buildNumber}"></script>
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/jquery.menu-aim.js?ver=${buildNumber}"></script>
@@ -79,10 +78,7 @@
 		var windowController;
 
 // ************ open request page
-		function openPage(href){
-			alert(href);
-			$('.userMenuBackdoor').click();
-		}
+
 		jQuery(document).ready(function(){
 
 			windowController = new QCD.WindowController(menuStructure);
@@ -155,7 +151,10 @@
 	        }
 
 		});
-
+        function openPage(href){
+			alert(href);
+			$('.userMenuBackdoor').click();
+		}
 		window.goToPage = function(url, serializationObject, isPage) {
 			windowController.goToPage(url, serializationObject, isPage);
 		}

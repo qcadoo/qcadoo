@@ -79,9 +79,14 @@ jQuery.fn.liveUpdate = function(list){
         if(scores.length < 1){
          $emptySearchResult.show();
         } else {
-          $("a", $searchResult).click(function(e){
-            var href = $(this).attr('href');
-            openPage(href);
+          $("li", $searchResult).click(function(e){
+            var href = $(this).attr('id');
+            var secondLevelItem = $("#" + href);
+            console.log(secondLevelItem);
+            console.log(windowController);
+            var itemParts = href.split("_");
+            windowController.goToMenuPosition(itemParts[1] + "." + itemParts[2]);
+            //openPage(href);
             e.preventDefault();
           });
         }
