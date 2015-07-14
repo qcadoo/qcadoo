@@ -224,6 +224,7 @@ QCD.menu.MenuController = function (menuStructure, windowController) {
         changePage(model.selectedItem.selectedItem.page);
     }
 
+
     this.activateMenuPosition = function (position) {
         var menuParts = position.split(".");
 
