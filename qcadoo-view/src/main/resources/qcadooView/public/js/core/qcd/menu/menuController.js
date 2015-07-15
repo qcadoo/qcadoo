@@ -223,8 +223,6 @@ QCD.menu.MenuController = function(menuStructure, windowController) {
 			return;
 		}
 
-		changeTitle(itemElement);
-
 		var buttonName = itemElement.attr("id").substring(18);
 
 		model.selectedItem.selectedItem = model.selectedItem.itemsMap[buttonName];
@@ -239,7 +237,11 @@ QCD.menu.MenuController = function(menuStructure, windowController) {
 		itemElement.find('a').addClass('currentActive');
 
 		$('.userMenuBackdoor').click();
+
+		changeTitle(itemElement);
+		fillBreadCrumbs(itemElement);
 		changePage(model.selectedItem.selectedItem.page);
+
 	}
 
 	this.activateMenuPosition = function(position) {
@@ -268,6 +270,8 @@ QCD.menu.MenuController = function(menuStructure, windowController) {
 		previousActive.second = bottomItem;
 		model.selectedItem = topItem;
 
+		model.selectedItem.selectedItem = bottomItem;
+		fillBreadCrumbs(topItem);
 		updateState();
 
 	};
@@ -340,6 +344,23 @@ QCD.menu.MenuController = function(menuStructure, windowController) {
 				? actualTitle
 				: actualTitle.substr(0, indexOfDash - 1))
 				+ " - " + itemElement.context.textContent;
+	}
+
+	function fillBreadCrumbs(itemElement) {
+		var container = $(".pageTitle");
+		if (model.selectedItem) {
+			container.children().remove();
+			var category = $("<span>").html(model.selectedItem.label).addClass(
+					"category");
+			category.appendTo(container);
+			if (model.selectedItem.selectedItem) {
+
+				var currentPage = $("<h1>"
+						+ model.selectedItem.selectedItem.label + "</h1>");
+				currentPage.appendTo(container);
+			}
+		}
+
 	}
 
 	constructor();
