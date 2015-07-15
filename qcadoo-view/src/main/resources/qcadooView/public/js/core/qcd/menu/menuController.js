@@ -83,8 +83,9 @@ QCD.menu.MenuController = function (menuStructure, windowController) {
                     }
                     if (responseText != "") {
                         var response = JSON.parse(responseText);
-//                        firstLevelElement.children().remove();
-                        createMenu(response);
+                        //$(".mainMenu").children().remove();
+                        //secondLevelElement.children().remove();
+                        //createMenu(response);
                         model.selectedItem = model.itemsMap[selectedFirstName];
                         model.selectedItem.selectedItem = model.selectedItem.itemsMap[selectedSecondName];
 //                        updateState();
@@ -159,6 +160,14 @@ QCD.menu.MenuController = function (menuStructure, windowController) {
 
         }
 
+        var searchBoxEmpty = $("<div>").html("<i class='icon iconInfo'></i><div>Brak elementów pasujących<br />do zapytania</div>").attr("id", "emptySearchResult");
+        searchBoxEmpty.addClass("subMenuBox");
+        searchBoxEmpty.appendTo(secondLevelElement);
+
+
+        var searchBoxResult = $("<div>").html("<ul class='subMenu'></ul>").attr("id", "searchResult");
+        searchBoxResult.addClass("subMenuBox");
+        searchBoxResult.appendTo(secondLevelElement);
 
         menuContentElement.menuAim({
             activate: activateSubmenu,
@@ -208,7 +217,7 @@ QCD.menu.MenuController = function (menuStructure, windowController) {
             return;
         }
 
-//        changeTitle(itemElement);
+        changeTitle(itemElement);
 
         var buttonName = itemElement.attr("id").substring(18);
 
@@ -221,6 +230,7 @@ QCD.menu.MenuController = function (menuStructure, windowController) {
 
         updateState();
 
+        $('.userMenuBackdoor').click();
         changePage(model.selectedItem.selectedItem.page);
     }
 
