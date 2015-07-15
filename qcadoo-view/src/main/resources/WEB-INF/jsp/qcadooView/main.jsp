@@ -171,6 +171,7 @@
             						if($('.subMenu .maintainHover').length > 0){
             							var href = $('.subMenu .maintainHover').parent().attr('id');
             							var itemParts = href.split("_");
+            							$('.userMenuBackdoor').click();
                                         windowController.goToMenuPosition(itemParts[1] + "." + itemParts[2]);
             						//	openPage(href);
             						}
@@ -347,7 +348,7 @@
                             <ul class='mainMenu'></ul>
 						</div>
 						<div class="headerMenuRowSub">
-
+                        <!--
 							<div class="subMenuBox" id="emptySearchResult">
 								<i class="icon iconInfo"></i>
 								<div>Brak elementów pasujących<br />do zapytania</div>
@@ -355,7 +356,7 @@
 							<div class="subMenuBox" id="searchResult">
 								<ul class="subMenu">
 								</ul>
-							</div>
+							</div> -->
 						</div>
 					</div>
 				</div>
