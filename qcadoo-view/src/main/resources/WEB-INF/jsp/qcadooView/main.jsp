@@ -104,8 +104,8 @@
             				$('.subMenuBox .maintainHover').removeClass('maintainHover');
             				if($logoDropdownBox.hasClass('open')){
             					$headerSearchInput.val('').keyup().focus();
-            					deactivateSubmenu($('.maintainHover', $mainMenu).parent());
-            					activateSubmenu($('li:eq(0)', $mainMenu));
+            					//deactivateSubmenu($('.maintainHover', $mainMenu).parent());
+            					activateSubmenu($('.maintainHover', $mainMenu).parent());
             				}
             				e.preventDefault();
             			});
@@ -329,7 +329,7 @@
 					<img src="/qcadooView/public/css/core/menu/images-new/qcadoo-logo.png" class="logoDark" alt="qcadoo MES logo" onclick="windowController.goToDashboard()">
 					<img src="/qcadooView/public/css/core/menu/images-new/qcadoo-white-logo.png" class="logoWhite" alt="qcadoo MES logo" onclick="windowController.goToDashboard()">
 				</div>
-				<a href="#" class="arrow">
+				<a href="#" class="arrow" accesskey="m">
 					<i></i>
 				</a>
 			</div>
