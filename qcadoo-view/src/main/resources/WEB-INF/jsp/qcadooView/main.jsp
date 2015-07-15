@@ -362,6 +362,8 @@
 				</div>
 			</div>
 		</div>
+		<div class="pageTitle">
+        </div>
 		<div class="userMenu">
 		        <ul>
         				<li><a href="#" class="help"><i class="icon iconHelp"></i> Pomoc</a></li>
