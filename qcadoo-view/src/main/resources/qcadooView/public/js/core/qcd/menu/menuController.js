@@ -234,7 +234,9 @@ QCD.menu.MenuController = function(menuStructure, windowController) {
 		previousActive.second = model.selectedItem.selectedItem;
 		previousActive.first.element.addClass("path");
 
-		updateState();
+		//updateState();
+		$('.subMenu .currentActive').removeClass('currentActive');
+		itemElement.find('a').addClass('currentActive');
 
 		$('.userMenuBackdoor').click();
 		changePage(model.selectedItem.selectedItem.page);
@@ -251,6 +253,14 @@ QCD.menu.MenuController = function(menuStructure, windowController) {
 			bottomItem = topItem.itemsMap[menuParts[1]];
 		}
 
+		if (bottomItem) {
+			$('.subMenu .currentActive').removeClass('currentActive');
+			bottomItem.element.find('a').addClass('currentActive');
+		}
+		if (topItem) {
+			$('.mainMenu .maintainHover').removeClass('maintainHover');
+			topItem.element.find("a").addClass("maintainHover");
+		}
 		model.selectedItem.element.removeClass("path");
 
 		topItem.selectedItem = bottomItem;

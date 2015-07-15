@@ -504,9 +504,13 @@
 	display: block;
 	position: relative;
 }
-.subMenu a.maintainHover{
+.subMenu a.maintainHover {
 	background: #e8e8e8;
 }
+.subMenu .currentActive {
+	background: #D6D6D6;
+}
+
 .subMenu a .iconFavoriteAdded, .subMenu a .iconFavoriteAdd{
 	position: absolute;
 	top: 7px;

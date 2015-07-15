@@ -91,6 +91,7 @@ jQuery.fn.liveUpdate = function(list) {
 								windowController.goToMenuPosition(itemParts[1]
 										+ "." + itemParts[2]);
 								//openPage(href);
+								$('.userMenuBackdoor').click();
 								e.preventDefault();
 							});
 				}
