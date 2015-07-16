@@ -171,6 +171,13 @@ QCD.menu.MenuController = function(menuStructure, windowController) {
 		searchBoxEmpty.addClass("subMenuBox");
 		searchBoxEmpty.appendTo(secondLevelElement);
 
+		var searchBoxTooMany = $("<div>")
+				.html(
+						"<i class='icon iconInfo'></i><div>Znaleziono zbyt wiele<br />wyników</div>")
+				.attr("id", "tooManySearchResult");
+		searchBoxTooMany.addClass("subMenuBox");
+		searchBoxTooMany.appendTo(secondLevelElement);
+
 		var searchBoxResult = $("<div>").html("<ul class='subMenu'></ul>")
 				.attr("id", "searchResult");
 		searchBoxResult.addClass("subMenuBox");

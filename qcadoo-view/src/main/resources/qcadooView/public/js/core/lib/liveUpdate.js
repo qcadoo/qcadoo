@@ -4,7 +4,7 @@ jQuery.fn.liveUpdate = function(list) {
 	if (list.length) {
 		var rows = list.children('li').clone(), cache = rows.map(function() {
 			return $(this).text();
-		}), $searchResult = $('#searchResult'), $emptySearchResult = $('#emptySearchResult'), $headerSearchForm = $('.headerSearchForm'), $headerMenuContent = $('.headerMenuContent');
+		}), $searchResult = $('#searchResult'), $emptySearchResult = $('#emptySearchResult'), $tooManySearchResult = $('#tooManySearchResult'), $headerSearchForm = $('.headerSearchForm'), $headerMenuContent = $('.headerMenuContent');
 
 		this.keyup(filter).keyup().keydown(move).keydown().parents('form')
 				.submit(function() {
@@ -57,10 +57,12 @@ jQuery.fn.liveUpdate = function(list) {
 	function filter(event) {
 		var keycode = (event.keyCode ? event.keyCode : event.which);
 
+		var results = $("#searchResult .subMenu");
 		if (keycode != '40' && keycode != '38') {
 			var term = jQuery.trim(jQuery(this).val()), scores = [];
 
 			$emptySearchResult.hide();
+			$tooManySearchResult.hide();
 			$headerSearchForm.removeClass('showClear');
 			$headerMenuContent.removeClass('openSearchResult');
 			$(".active", $searchResult).removeClass('active');
@@ -83,7 +85,14 @@ jQuery.fn.liveUpdate = function(list) {
 
 				if (scores.length < 1) {
 					$emptySearchResult.show();
+					$tooManySearchResult.hide();
+					results.hide();
+				} else if (scores.length > 12) {
+					$emptySearchResult.hide();
+					$tooManySearchResult.show();
+					results.hide();
 				} else {
+					results.show();
 					$("li", $searchResult).click(
 							function(e) {
 								var href = $(this).attr('id');
