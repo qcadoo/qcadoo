@@ -348,15 +348,6 @@
                             <ul class='mainMenu'></ul>
 						</div>
 						<div class="headerMenuRowSub">
-                        <!--
-							<div class="subMenuBox" id="emptySearchResult">
-								<i class="icon iconInfo"></i>
-								<div>Brak elementów pasujących<br />do zapytania</div>
-							</div>
-							<div class="subMenuBox" id="searchResult">
-								<ul class="subMenu">
-								</ul>
-							</div> -->
 						</div>
 					</div>
 				</div>
@@ -372,28 +363,14 @@
         						<a href="#" class="toggle"><i class="icon iconDropdown"></i></a>
         						<ul>
         							<li>
-        							<a href='#' onclick="windowController.performLogout()"><i class="icon iconLogout"></i>${commonTranslations["qcadooView.button.logout"] }</a></li>
+        							    <a href='#' onclick="windowController.performLogout()"><i class="icon iconLogout"></i>${commonTranslations["qcadooView.button.logout"] }</a>
+        							</li>
         						</ul>
         					</div>
         				</li>
-        			</ul>
+        		</ul>
         </div>
-	<!--<div id="mainTopMenu">
-		<div id="topLevelMenu">
-			<img id="logoImage" src="/qcadooView/public/css/core/images/logo_small.png" alt="qcadoo MES logo" onclick="windowController.goToDashboard()"></img>
-			<div id="topRightPanel">
-				<span id="userInfo">${userLogin}</span>
-				<a href='#' id="profileButton" onclick="windowController.goToMenuPosition('administration.profile')">${commonTranslations["qcadooView.button.userProfile"] }</a>
-				<a href='#' onclick="windowController.performLogout()">${commonTranslations["qcadooView.button.logout"] }</a>
-			</div>
-		</div>
-		<div id="firstLevelMenu">
-		</div>
-		<div id="secondLevelMenuWrapper">
-			<div id="secondLevelMenu">
-			</div>
-			</div>
-	</div>-->
+
 	</div>
 	<div id="mainPageIframeWrapper"><iframe id="mainPageIframe" frameborder="0"></iframe></div>
 </body>

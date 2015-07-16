@@ -486,13 +486,13 @@
 .emptyFavorite .iconInfo{
 	margin-bottom: 10px;
 }
-#emptySearchResult{
+#emptySearchResult, #tooManySearchResult{
 	text-align: center;
 	padding: 10px 20px;
 	font-size: 13px;
 	color: #b3b3b3;
 }
-#emptySearchResult .iconInfo{
+#emptySearchResult .iconInfo, #tooManySearchResult .iconInfo{
 	margin-bottom: 10px;
 }
 .subMenu{
