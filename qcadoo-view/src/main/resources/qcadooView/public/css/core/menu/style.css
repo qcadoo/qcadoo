@@ -65,11 +65,11 @@
 }
 .pageTitle .category{
 	display: block;
-	font-size: 9px;
+	font-size: 11px;
 	text-transform: uppercase;
 }
 .pageTitle h1{
-	font-size: 13px;
+	font-size: 15px;
 	font-weight: normal;
 	margin: 0;
 }
