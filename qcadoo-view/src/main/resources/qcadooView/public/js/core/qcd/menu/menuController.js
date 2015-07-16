@@ -117,8 +117,9 @@ QCD.menu.MenuController = function(menuStructure, windowController) {
 			item = model.items[i];
 
 			firstLevelButton = $("<li>").html(
-					"<a href='menu-" + item.name + "'>" + item.label + "</a>")
-					.attr("id", "firstLevelButton_" + item.name);
+					"<a class='not-active' href='menu-" + item.name + "'>"
+							+ item.label + "</a>").attr("id",
+					"firstLevelButton_" + item.name);
 			if (item.description) {
 				firstLevelButton.attr("title", item.description);
 			}
