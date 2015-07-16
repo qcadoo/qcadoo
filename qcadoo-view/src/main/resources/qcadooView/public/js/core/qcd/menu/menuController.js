@@ -272,6 +272,7 @@ QCD.menu.MenuController = function(menuStructure, windowController) {
 		model.selectedItem = topItem;
 
 		model.selectedItem.selectedItem = bottomItem;
+		changeTitle(model.selectedItem.selectedItem.element);
 		fillBreadCrumbs(topItem);
 		updateState();
 
@@ -341,10 +342,22 @@ QCD.menu.MenuController = function(menuStructure, windowController) {
 	function changeTitle(itemElement) {
 		var indexOfDash = window.parent.document.title.indexOf("-");
 		var actualTitle = window.parent.document.title;
-		window.parent.document.title = (indexOfDash == -1
-				? actualTitle
-				: actualTitle.substr(0, indexOfDash - 1))
-				+ " - " + itemElement.context.textContent;
+		var title;
+		if (itemElement.context) {
+			title = itemElement.context.textContent;
+		} else if (model.selectedItem && model.selectedItem.selectedItem) {
+			title = model.selectedItem.selectedItem.label;
+		}
+		if (title !== undefined) {
+			window.parent.document.title = (indexOfDash == -1
+					? actualTitle
+					: actualTitle.substr(0, indexOfDash - 1))
+					+ " - " + title;
+		} else {
+			window.parent.document.title = (indexOfDash == -1
+					? actualTitle
+					: actualTitle.substr(0, indexOfDash - 1));
+		}
 	}
 
 	function fillBreadCrumbs(itemElement) {
