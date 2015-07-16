@@ -75,6 +75,10 @@
 }
 
 /********************************* user menu */
+.not-active {
+   pointer-events: none;
+   cursor: default;
+}
 .userMenuBackdoor{
 	position: fixed;
 	background: #FFF;
