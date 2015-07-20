@@ -82,14 +82,36 @@
 		jQuery(document).ready(function(){
 
 			windowController = new QCD.WindowController(menuStructure);
-			
+
 			$("#mainPageIframe").load(function() {
 				try {
 					el = $('body', $('iframe').contents());
 					el.click(function() {windowController.restoreMenuState()});
+					$(document.getElementById('mainPageIframe').contentWindow.document).keydown(function(event){
+					    var keycode = (event.keyCode ? event.keyCode : event.which);
+
+                            if(event.ctrlKey){
+                                if(keycode == 77){
+                                    $logoDropdownBox.toggleClass('open');
+                                    $userMenuBackdoor.toggleClass('open');
+
+                                    if($logoDropdownBox.hasClass('open')){
+                                        $headerSearchInput.val('').keyup().focus();
+                                        activateSubmenu($('li:eq(0)', $mainMenu));
+                                    }
+                                }
+                            }
+                            if($logoDropdownBox.hasClass('open')) {
+                                if (keycode == 27) {
+                                    $('.userMenuBackdoor').click();
+                                }
+                            }
+					});
+
 				} catch(e) {
 				}
 			});
+
 			// ************ base variable
             			var $logoDropdownBox = $('.logoDropdownBox');
             			var $userMenuBackdoor = $('.userMenuBackdoor');
@@ -149,6 +171,8 @@
 	        	var target = $row.find("a").attr('href');
 				$("#"+target).hide();
 	        }
+
+
 	        			$('body').keydown(function(event) {
             				var keycode = (event.keyCode ? event.keyCode : event.which);
 
@@ -232,6 +256,13 @@
             							$('.subMenu a.maintainHover').removeClass('maintainHover');
             						}
             					}
+            					
+            					// escape
+            					if($logoDropdownBox.hasClass('open')) {
+                                    if (keycode == 27) {
+                                        $('.userMenuBackdoor').click();
+                                     }
+                                 }
 
             				}
             			});
@@ -280,7 +311,7 @@
 		window.onLoginSuccess = function() {
 			windowController.onLoginSuccess();
 		}
-		
+
 		window.goToMenuPosition = function(position) {
 			windowController.goToMenuPosition(position);
 		}
@@ -329,7 +360,7 @@
 					<img src="/qcadooView/public/css/core/menu/images-new/qcadoo-logo.png" class="logoDark" alt="qcadoo MES logo" onclick="windowController.goToDashboard()">
 					<img src="/qcadooView/public/css/core/menu/images-new/qcadoo-white-logo.png" class="logoWhite" alt="qcadoo MES logo" onclick="windowController.goToDashboard()">
 				</div>
-				<a href="#" class="arrow" accesskey="m">
+				<a href="#" class="arrow"">
 					<i></i>
 				</a>
 			</div>
