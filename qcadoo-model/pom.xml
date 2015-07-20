@@ -35,18 +35,6 @@
             <artifactId>saxon</artifactId>
             <version>9.1.0.8</version>
         </dependency>
-        <dependency>
-            <groupId>com.zaxxer</groupId>
-            <artifactId>HikariCP</artifactId>
-            <version>2.3.2</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.impossibl.pgjdbc-ng</groupId>
-            <artifactId>pgjdbc-ng</artifactId>
-            <version>0.3</version>
-            <classifier>complete</classifier>
-        </dependency>
     </dependencies>
 
     <build>
