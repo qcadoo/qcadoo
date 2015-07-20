@@ -45,23 +45,16 @@
 		<property name="password" value="${dbPassword}" />
 	</bean>
 
-	<bean id="dataSourceJDBC" class="com.zaxxer.hikari.HikariDataSource">
-		<constructor-arg>
-			<bean class="com.zaxxer.hikari.HikariConfig">
-				<constructor-arg>
-					<props>
-						<prop key="driverClassName">com.impossibl.postgres.jdbc.PGDataSource</prop>
-						<prop key="jdbcUrl">${dbJdbcUrl}</prop>
-						<prop key="username">${dbUsername}</prop>
-						<prop key="password">${dbPassword}</prop>
-					</props>
-				</constructor-arg>
-			</bean>
-		</constructor-arg>
+	<bean id="dataSourceJDBC" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+		  destroy-method="close">
+		<property name="driverClass" value="${dbDriverClass}" />
+		<property name="jdbcUrl" value="${dbJdbcUrl}" />
+		<property name="user" value="${dbUsername}" />
+		<property name="password" value="${dbPassword}" />
 	</bean>
 
 	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate">
-		<property name="dataSource" ref="dataSourceJDBC" />
+		<constructor-arg ref="dataSourceJDBC" />
 	</bean>
 
 	<beans profile="standalone">
