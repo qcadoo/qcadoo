@@ -38,7 +38,7 @@ QCD.WindowController = function(_menuStructure) {
 	var serializationObjectToInsert = null;
 
 	var currentPage = null;
-	
+
 	var currentMenuItem = null;
 
 	var messagesController = new QCD.MessagesController();
@@ -58,7 +58,7 @@ QCD.WindowController = function(_menuStructure) {
 		$(window).bind('resize', updateSize);
 
 		menuController = new QCD.menu.MenuController(menuStructure, _this);
-		
+
 		updateSize();
 	}
 
@@ -93,7 +93,7 @@ QCD.WindowController = function(_menuStructure) {
 		}
 		return currentMenuItem;
 	}
-	
+
 	window.openModal = function(id, url, serializationObject, onCloseListener,
 			afterInitListener, dimensions) {
 		if (serializationObject != null) {
@@ -108,9 +108,10 @@ QCD.WindowController = function(_menuStructure) {
 			modalObjects[id].onCloseListener = onCloseListener;
 		}
 		if (dimensions) {
-			modalObjects[id].changeSize(dimensions.width || 1000, dimensions.height || 560);
+			modalObjects[id].changeSize(dimensions.width || 1000,
+					dimensions.height || 560);
 		}
-		
+
 		modalsStack.push(modalObjects[id]);
 
 		if (url.indexOf("?") != -1) {
@@ -128,7 +129,8 @@ QCD.WindowController = function(_menuStructure) {
 
 		modalObjects[id].show(url, function() {
 			if (this.src != "" && this.contentWindow.init) {
-				this.contentWindow.init(serializationObjectToInsert, dimensions);
+				this.contentWindow
+						.init(serializationObjectToInsert, dimensions);
 				serializationObjectToInsert = null;
 			}
 			if (afterInitListener) {
@@ -146,7 +148,7 @@ QCD.WindowController = function(_menuStructure) {
 		var modal = modalsStack[modalsStack.length - 1];
 		modal.changeSize(width, height);
 	}
-	
+
 	this.onLoginSuccess = function() {
 		this.goToLastPage();
 	}
@@ -188,7 +190,7 @@ QCD.WindowController = function(_menuStructure) {
 	this.activateMenuPosition = function(position) {
 		menuController.activateMenuPosition(position);
 	}
-	
+
 	this.goToMenuPosition = function(position) {
 		menuController.goToMenuPosition(position);
 	}
@@ -225,6 +227,8 @@ QCD.WindowController = function(_menuStructure) {
 
 	this.restoreMenuState = function() {
 		menuController.restoreState();
+		menuController.fillBreadCrumbs();
+		menuController.setPageTitle();
 	}
 
 	this.canChangePage = function() {
@@ -278,8 +282,8 @@ QCD.WindowController = function(_menuStructure) {
 				serializationObjectToInsert = null;
 			}
 		} catch (e) {
-		    // I swear that I'll chase each one who puts an empty catch statement!
-		    QCD.error(e);
+			// I swear that I'll chase each one who puts an empty catch statement!
+			QCD.error(e);
 		}
 		loadingIndicator.hide();
 	}

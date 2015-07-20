@@ -58,6 +58,8 @@ QCD.menu.MenuController = function(menuStructure, windowController) {
 		//        updateState();
 		//        updateTopButtons();
 		if (model.selectedItem && model.selectedItem.selectedItem) {
+			fillCurrentPage();
+			that.setPageTitle();
 			changePage(model.selectedItem.selectedItem.page);
 		} else {
 			changePage("noDashboard.html");
@@ -247,7 +249,7 @@ QCD.menu.MenuController = function(menuStructure, windowController) {
 		$('.userMenuBackdoor').click();
 
 		changeTitle(itemElement);
-		fillBreadCrumbs(itemElement);
+		fillCurrentPage();
 		changePage(model.selectedItem.selectedItem.page);
 
 	}
@@ -279,8 +281,10 @@ QCD.menu.MenuController = function(menuStructure, windowController) {
 		model.selectedItem = topItem;
 
 		model.selectedItem.selectedItem = bottomItem;
-		changeTitle(model.selectedItem.selectedItem.element);
-		fillBreadCrumbs(topItem);
+		if (model.selectedItem && model.selectedItem.selectedItem) {
+			changeTitle(model.selectedItem.selectedItem.element);
+		}
+		fillCurrentPage();
 		updateState();
 
 	};
@@ -311,7 +315,7 @@ QCD.menu.MenuController = function(menuStructure, windowController) {
 		if (previousActive.second) {
 			model.selectedItem.selectedItem = previousActive.second;
 		}
-		updateState();
+		//updateState();
 	};
 
 	function updateState() {
@@ -367,21 +371,40 @@ QCD.menu.MenuController = function(menuStructure, windowController) {
 		}
 	}
 
-	function fillBreadCrumbs(itemElement) {
+	function fillCurrentPage() {
 		var container = $(".pageTitle");
-		if (model.selectedItem) {
+		if (model.selectedItem && model.selectedItem.selectedItem) {
 			container.children().remove();
 			var category = $("<span>").html(model.selectedItem.label).addClass(
 					"category");
 			category.appendTo(container);
-			if (model.selectedItem.selectedItem) {
 
-				var currentPage = $("<h1>"
-						+ model.selectedItem.selectedItem.label + "</h1>");
-				currentPage.appendTo(container);
-			}
+			var currentPage = $("<h1>" + model.selectedItem.selectedItem.label
+					+ "</h1>");
+			currentPage.appendTo(container);
 		}
 
+	};
+	this.fillBreadCrumbs = function() {
+		fillCurrentPage();
+	}
+	this.setPageTitle = function() {
+		var indexOfDash = window.parent.document.title.indexOf("-");
+		var actualTitle = window.parent.document.title;
+		var title;
+		if (model.selectedItem && model.selectedItem.selectedItem) {
+			title = model.selectedItem.selectedItem.label;
+		}
+		if (title !== undefined) {
+			window.parent.document.title = (indexOfDash == -1
+					? actualTitle
+					: actualTitle.substr(0, indexOfDash - 1))
+					+ " - " + title;
+		} else {
+			window.parent.document.title = (indexOfDash == -1
+					? actualTitle
+					: actualTitle.substr(0, indexOfDash - 1));
+		}
 	}
 
 	constructor();
