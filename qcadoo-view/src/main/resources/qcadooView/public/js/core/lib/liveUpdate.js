@@ -51,6 +51,11 @@ jQuery.fn.liveUpdate = function(list) {
 							+ itemParts[2]);
 				}
 			}
+			if ($('.logoDropdownBox').hasClass('open')) {
+				if (keycode == 27) {
+					$('.userMenuBackdoor').click();
+				}
+			}
 		}
 	}
 

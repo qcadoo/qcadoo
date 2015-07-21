@@ -94,12 +94,13 @@
                                 if(keycode == 77){
                                     $logoDropdownBox.toggleClass('open');
                                     $userMenuBackdoor.toggleClass('open');
-
+            						$('.subMenuBox').hide();
+                                    $('.subMenuBox .maintainHover').removeClass('maintainHover');
                                     if($logoDropdownBox.hasClass('open')){
                                         $headerSearchInput.val('').keyup().focus();
-                                        activateSubmenu($('li:eq(0)', $mainMenu));
+                                        activateSubmenu($('.maintainHover', $mainMenu).parent());
                                     }
-                                }
+            					}
                             }
                             if($logoDropdownBox.hasClass('open')) {
                                 if (keycode == 27) {
@@ -178,13 +179,14 @@
 
             				if(event.ctrlKey){
             					if(keycode == 77){
-            						$logoDropdownBox.toggleClass('open');
-            						$userMenuBackdoor.toggleClass('open');
-
-            						if($logoDropdownBox.hasClass('open')){
-            							$headerSearchInput.val('').keyup().focus();
-            							activateSubmenu($('li:eq(0)', $mainMenu));
-            						}
+            					    $logoDropdownBox.toggleClass('open');
+                                    $userMenuBackdoor.toggleClass('open');
+            						$('.subMenuBox').hide();
+                                    $('.subMenuBox .maintainHover').removeClass('maintainHover');
+                                    if($logoDropdownBox.hasClass('open')){
+                                        $headerSearchInput.val('').keyup().focus();
+                                        activateSubmenu($('.maintainHover', $mainMenu).parent());
+                                    }
             					}
             				}
 
@@ -388,7 +390,7 @@
         </div>
 		<div class="userMenu">
 		        <ul>
-        				<li><a href="#" class="help"><i class="icon iconHelp"></i> Pomoc</a></li>
+        				<li><a href="http://dokumentacja.qcadoo.com/" target="_blank" class="help"><i class="icon iconHelp"></i> Pomoc</a></li>
         				<li><i class="icon iconUser"></i> <a href='#' id="profileButton" onclick="windowController.goToMenuPosition('administration.profile')">${userLogin}</a>
         					<div class="userMenuDropdown">
         						<a href="#" class="toggle"><i class="icon iconDropdown"></i></a>
