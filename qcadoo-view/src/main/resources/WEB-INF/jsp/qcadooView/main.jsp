@@ -43,6 +43,7 @@
 		</c:when>
 		<c:otherwise>
 			<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/core/qcd.css?ver=${buildNumber}" type="text/css" />
+			<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/core/qcadoo-min.css?ver=${buildNumber}" type="text/css" />
 			<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/core/mainPage.css?ver=${buildNumber}" type="text/css" />
 			<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/core/menuTopLevel.css?ver=${buildNumber}" type="text/css" />
 			<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/core/menu/style.css?ver=${buildNumber}" type="text/css" />
@@ -62,6 +63,9 @@
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/qcd/core/windowController.js?ver=${buildNumber}"></script>
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/qcd/core/messagesController.js?ver=${buildNumber}"></script>
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/crud/qcd/components/elements/utils/loadingIndicator.js?ver=${buildNumber}"></script>
+			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/highlight.js?ver=${buildNumber}"></script>
+			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/liveUpdate.js?ver=${buildNumber}"></script>
+			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/jquery.menu-aim.js?ver=${buildNumber}"></script>
 		</c:otherwise>
 	</c:choose>
 	
@@ -72,20 +76,204 @@
 		var menuStructure = ${menuStructure}
 
 		var windowController;
-		
+
+// ************ open request page
+
 		jQuery(document).ready(function(){
-			
+
 			windowController = new QCD.WindowController(menuStructure);
-			
+
 			$("#mainPageIframe").load(function() {
 				try {
 					el = $('body', $('iframe').contents());
 					el.click(function() {windowController.restoreMenuState()});
+					$(document.getElementById('mainPageIframe').contentWindow.document).keydown(function(event){
+					    var keycode = (event.keyCode ? event.keyCode : event.which);
+
+                            if(event.ctrlKey){
+                                if(keycode == 77){
+                                    $logoDropdownBox.toggleClass('open');
+                                    $userMenuBackdoor.toggleClass('open');
+            						$('.subMenuBox').hide();
+                                    $('.subMenuBox .maintainHover').removeClass('maintainHover');
+                                    if($logoDropdownBox.hasClass('open')){
+                                        $headerSearchInput.val('').keyup().focus();
+                                        activateSubmenu($('.maintainHover', $mainMenu).parent());
+                                    }
+            					}
+                            }
+                            if($logoDropdownBox.hasClass('open')) {
+                                if (keycode == 27) {
+                                    $('.userMenuBackdoor').click();
+                                }
+                            }
+					});
+
 				} catch(e) {
 				}
 			});
-		});
 
+			// ************ base variable
+            			var $logoDropdownBox = $('.logoDropdownBox');
+            			var $userMenuBackdoor = $('.userMenuBackdoor');
+            			var $headerSearchInput = $('.headerSearchForm [type="text"]');
+            			var $mainMenu = $('.mainMenu');
+
+            			// ************ toogle menu visible by arrow
+            			$('.logoDropdownBoxToggle a.arrow, .userMenuBackdoor').click(function(e){
+            				$logoDropdownBox.toggleClass('open');
+            				$userMenuBackdoor.toggleClass('open');
+            				$('.subMenuBox').hide();
+            				$('.subMenuBox .maintainHover').removeClass('maintainHover');
+            				if($logoDropdownBox.hasClass('open')){
+            					$headerSearchInput.val('').keyup().focus();
+            					//deactivateSubmenu($('.maintainHover', $mainMenu).parent());
+            					activateSubmenu($('.maintainHover', $mainMenu).parent());
+            				}
+            				e.preventDefault();
+            			});
+            // ************ main menu disabled click
+            			$('.mainMenu a').click(function(e){
+            				e.preventDefault();
+            			});
+
+            			// ************ main menu live search
+            			$headerSearchInput.liveUpdate('.subMenuBoxLiveSearch .subMenu');
+
+
+            			// ************ main menu search, clear
+            			$('.headerSearchForm .iconDel').click(function(e){
+            				$headerSearchInput.val('').keyup().blur();
+            				e.preventDefault();
+            			});
+
+            /*var $menu = $(".mainMenu");
+        	$menu.menuAim({
+				activate: activateSubmenu,
+	            deactivate: deactivateSubmenu
+	        });
+	        */
+// ************ lazy menu show item
+	        function activateSubmenu(row) {
+	        	deactivateSubmenu($('.maintainHover', $mainMenu).parent());
+
+	            var $row = $(row);
+	            $row.find("a").addClass("maintainHover");
+	        	var target = $row.find("a").attr('href');
+				$("#"+target).show();
+	        }
+
+			// ************ lazy menu hide item
+	        function deactivateSubmenu(row) {
+				$('.subMenu .maintainHover').removeClass('maintainHover');
+
+	            var $row = $(row);
+	            $row.find("a").removeClass("maintainHover");
+	        	var target = $row.find("a").attr('href');
+				$("#"+target).hide();
+	        }
+
+
+	        			$('body').keydown(function(event) {
+            				var keycode = (event.keyCode ? event.keyCode : event.which);
+
+            				if(event.ctrlKey){
+            					if(keycode == 77){
+            					    $logoDropdownBox.toggleClass('open');
+                                    $userMenuBackdoor.toggleClass('open');
+            						$('.subMenuBox').hide();
+                                    $('.subMenuBox .maintainHover').removeClass('maintainHover');
+                                    if($logoDropdownBox.hasClass('open')){
+                                        $headerSearchInput.val('').keyup().focus();
+                                        activateSubmenu($('.maintainHover', $mainMenu).parent());
+                                    }
+            					}
+            				}
+
+            				if($logoDropdownBox.hasClass('open') && $.trim($headerSearchInput.val()).length < 1){
+
+            					// enter
+            					if(keycode == '13'){
+            						if($('.subMenu .maintainHover').length > 0){
+            							var href = $('.subMenu .maintainHover').parent().attr('id');
+            							var itemParts = href.split("_");
+            							$('.userMenuBackdoor').click();
+                                        windowController.goToMenuPosition(itemParts[1] + "." + itemParts[2]);
+            						//	openPage(href);
+            						}
+            					}
+
+            					// down arrow
+            					if(keycode == '40'){
+            						// chek main or sub menu
+            						if($('.subMenu .maintainHover').length < 1){
+            							// main menu
+            							var actualIndex = $('.maintainHover', $mainMenu).parent().index();
+            					        if(actualIndex == $('li', $mainMenu).length - 1){
+            					          actualIndex = -1;
+            					        }
+            							activateSubmenu($('li:eq(' + (actualIndex + 1) + ')', $mainMenu));
+            						} else {
+            							// sub menu
+            							var actualIndex = $('.maintainHover', '.subMenu:visible').parent().index();
+            							$('.maintainHover', '.subMenu:visible').removeClass('maintainHover');
+            					        if(actualIndex == $('li', '.subMenu:visible').length - 1){
+            					          actualIndex = -1;
+            					        }
+            							$('li:eq(' + (actualIndex + 1) + ') a', '.subMenu:visible').addClass('maintainHover');
+            						}
+            					}
+
+            					// up arrow
+            					if(keycode == '38'){
+            						// chek main or sub menu
+            						if($('.subMenu .maintainHover').length < 1){
+            							// main menu
+            							var actualIndex = $('.maintainHover', $mainMenu).parent().index();
+            							if(actualIndex <= 0){
+            								actualIndex = $('li', $mainMenu).length;
+            							}
+            							activateSubmenu($('li:eq(' + (actualIndex - 1) + ')', $mainMenu));
+            						} else {
+            							// sub menu
+            							var actualIndex = $('.maintainHover', '.subMenu:visible').parent().index();
+            							$('.maintainHover', '.subMenu:visible').removeClass('maintainHover');
+            							if(actualIndex <= 0){
+            								actualIndex = $('li', '.subMenu:visible').length;
+            							}
+            							$('li:eq(' + (actualIndex - 1) + ') a', '.subMenu:visible').addClass('maintainHover');
+            						}
+            					}
+
+            					// right arrow
+            					if(keycode == '39'){
+            						if($('.subMenu .maintainHover').length < 1){
+            							$('.subMenu:visible li:eq(0) a').addClass('maintainHover');
+            						}
+            					}
+
+            					// left arrow
+            					if(keycode == '37'){
+            						if($('.subMenu .maintainHover').length > 0){
+            							$('.subMenu a.maintainHover').removeClass('maintainHover');
+            						}
+            					}
+            					
+            					// escape
+            					if($logoDropdownBox.hasClass('open')) {
+                                    if (keycode == 27) {
+                                        $('.userMenuBackdoor').click();
+                                     }
+                                 }
+
+            				}
+            			});
+
+		});
+        function openPage(href){
+			alert(href);
+			$('.userMenuBackdoor').click();
+		}
 		window.goToPage = function(url, serializationObject, isPage) {
 			windowController.goToPage(url, serializationObject, isPage);
 		}
@@ -125,7 +313,7 @@
 		window.onLoginSuccess = function() {
 			windowController.onLoginSuccess();
 		}
-		
+
 		window.goToMenuPosition = function(position) {
 			windowController.goToMenuPosition(position);
 		}
@@ -153,6 +341,7 @@
 	
 		
 	</script>
+
 <!-- start Mixpanel -->
 	<c:if test="${not empty mixpanelToken}">
 		
@@ -165,22 +354,56 @@
 <!-- end Mixpanel -->
 </head>
 <body>
+    <div id="mainTopMenu" class="pageTopHeader clearfix">
+        <div class="userMenuBackdoor"></div>
+	    <div class="logoDropdownBox">
+			<div class="logoDropdownBoxToggle">
+				<div class="logo">
+					<img src="/qcadooView/public/css/core/menu/images-new/qcadoo-logo.png" class="logoDark" alt="qcadoo MES logo" onclick="windowController.goToDashboard()">
+					<img src="/qcadooView/public/css/core/menu/images-new/qcadoo-white-logo.png" class="logoWhite" alt="qcadoo MES logo" onclick="windowController.goToDashboard()">
+				</div>
+				<a href="#" class="arrow"">
+					<i></i>
+				</a>
+			</div>
+			<div class="logoDropdownBoxContent">
+				<div class="headerSearchForm">
 
-	<div id="mainTopMenu">
-		<div id="topLevelMenu">
-			<img id="logoImage" src="/qcadooView/public/css/core/images/logo_small.png" alt="qcadoo MES logo" onclick="windowController.goToDashboard()"></img>
-			<div id="topRightPanel">
-				<span id="userInfo">${userLogin}</span>
-				<a href='#' id="profileButton" onclick="windowController.goToMenuPosition('administration.profile')">${commonTranslations["qcadooView.button.userProfile"] }</a>
-				<a href='#' onclick="windowController.performLogout()">${commonTranslations["qcadooView.button.logout"] }</a>
+					<div class="headerSearchFormContent">
+						<input type="text" value="" />
+						<i class="icon iconSearch"></i>
+						<a href="#" class="iconDel hidden">&times;</a>
+					</div>
+				</div>
+				<div class="headerMenuBox">
+					<div class="headerMenuContent">
+						<div class="headerMenuRowMain">
+                            <ul class='mainMenu'></ul>
+						</div>
+						<div class="headerMenuRowSub">
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
-		<div id="firstLevelMenu">
-		</div>
-		<div id="secondLevelMenuWrapper">
-			<div id="secondLevelMenu">
-			</div>
-			</div>
+		<div class="pageTitle">
+        </div>
+		<div class="userMenu">
+		        <ul>
+        				<li><a href="http://dokumentacja.qcadoo.com/" target="_blank" class="help"><i class="icon iconHelp"></i> Pomoc</a></li>
+        				<li><i class="icon iconUser"></i> <a href='#' id="profileButton" onclick="windowController.goToMenuPosition('administration.profile')">${userLogin}</a>
+        					<div class="userMenuDropdown">
+        						<a href="#" class="toggle"><i class="icon iconDropdown"></i></a>
+        						<ul>
+        							<li>
+        							    <a href='#' onclick="windowController.performLogout()"><i class="icon iconLogout"></i>${commonTranslations["qcadooView.button.logout"] }</a>
+        							</li>
+        						</ul>
+        					</div>
+        				</li>
+        		</ul>
+        </div>
+
 	</div>
 	<div id="mainPageIframeWrapper"><iframe id="mainPageIframe" frameborder="0"></iframe></div>
 </body>
