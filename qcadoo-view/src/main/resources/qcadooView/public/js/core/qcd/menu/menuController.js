@@ -246,6 +246,8 @@ QCD.menu.MenuController = function(menuStructure, windowController) {
 		$('.subMenu .currentActive').removeClass('currentActive');
 		itemElement.find('a').addClass('currentActive');
 
+		$('.mainMenu .currentMainActive').removeClass('currentMainActive');
+		$('.mainMenu .maintainHover').addClass('currentMainActive');
 		$('.userMenuBackdoor').click();
 
 		changeTitle(itemElement);
@@ -259,10 +261,12 @@ QCD.menu.MenuController = function(menuStructure, windowController) {
 
 		var topItem = model.itemsMap[menuParts[0]];
 		var bottomItem;
-		if (menuParts[1] && menuParts[1].indexOf(menuParts[0] + "_") != 0) {
-			bottomItem = topItem.itemsMap[menuParts[0] + "_" + menuParts[1]];
-		} else if (menuParts[1]) {
-			bottomItem = topItem.itemsMap[menuParts[1]];
+		if (topItem) {
+			if (menuParts[1] && menuParts[1].indexOf(menuParts[0] + "_") != 0) {
+				bottomItem = topItem.itemsMap[menuParts[0] + "_" + menuParts[1]];
+			} else if (menuParts[1]) {
+				bottomItem = topItem.itemsMap[menuParts[1]];
+			}
 		}
 
 		if (bottomItem) {
@@ -271,22 +275,26 @@ QCD.menu.MenuController = function(menuStructure, windowController) {
 		}
 		if (topItem) {
 			$('.mainMenu .maintainHover').removeClass('maintainHover');
+			$('.mainMenu .currentMainActive').removeClass('currentMainActive');
 			topItem.element.find("a").addClass("maintainHover");
+			topItem.element.find("a").addClass("currentMainActive");
 		}
-		model.selectedItem.element.removeClass("path");
+		if (topItem && bottomItem) {
+			model.selectedItem.element.removeClass("path");
 
-		topItem.selectedItem = bottomItem;
-		previousActive.first = topItem;
-		previousActive.second = bottomItem;
-		model.selectedItem = topItem;
+			topItem.selectedItem = bottomItem;
 
-		model.selectedItem.selectedItem = bottomItem;
-		if (model.selectedItem && model.selectedItem.selectedItem) {
-			changeTitle(model.selectedItem.selectedItem.element);
+			previousActive.first = topItem;
+			previousActive.second = bottomItem;
+			model.selectedItem = topItem;
+
+			model.selectedItem.selectedItem = bottomItem;
+			if (model.selectedItem && model.selectedItem.selectedItem) {
+				changeTitle(model.selectedItem.selectedItem.element);
+			}
+			fillCurrentPage();
+			updateState();
 		}
-		fillCurrentPage();
-		updateState();
-
 	};
 
 	this.getCurrentActive = function() {

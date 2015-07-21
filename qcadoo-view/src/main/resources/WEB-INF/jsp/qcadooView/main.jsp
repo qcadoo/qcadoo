@@ -98,7 +98,9 @@
                                     $('.subMenuBox .maintainHover').removeClass('maintainHover');
                                     if($logoDropdownBox.hasClass('open')){
                                         $headerSearchInput.val('').keyup().focus();
-                                        activateSubmenu($('.maintainHover', $mainMenu).parent());
+            					        $('.mainMenu .maintainHover').removeClass('maintainHover');
+            					        $('.mainMenu .currentMainActive').addClass('maintainHover');
+            					        activateSubmenu($('.maintainHover', $mainMenu).parent());
                                     }
             					}
                             }
@@ -127,7 +129,8 @@
             				$('.subMenuBox .maintainHover').removeClass('maintainHover');
             				if($logoDropdownBox.hasClass('open')){
             					$headerSearchInput.val('').keyup().focus();
-            					//deactivateSubmenu($('.maintainHover', $mainMenu).parent());
+            					$('.mainMenu .maintainHover').removeClass('maintainHover');
+            					$('.mainMenu .currentMainActive').addClass('maintainHover');
             					activateSubmenu($('.maintainHover', $mainMenu).parent());
             				}
             				e.preventDefault();
@@ -185,7 +188,9 @@
                                     $('.subMenuBox .maintainHover').removeClass('maintainHover');
                                     if($logoDropdownBox.hasClass('open')){
                                         $headerSearchInput.val('').keyup().focus();
-                                        activateSubmenu($('.maintainHover', $mainMenu).parent());
+            					        $('.mainMenu .maintainHover').removeClass('maintainHover');
+            					        $('.mainMenu .currentMainActive').addClass('maintainHover');
+            					        activateSubmenu($('.maintainHover', $mainMenu).parent());
                                     }
             					}
             				}
