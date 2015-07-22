@@ -120,16 +120,16 @@
 	vertical-align: middle;
 }
 .userMenu .icon.iconHelp{
-	background: url('images-new/help-13.png');
+	background: url('/qcadooView/public/css/core/menu/images-new/help-13.png');
 }
 .userMenu .icon.iconUser{
-	background: url('images-new/user-13.png');
+	background: url('/qcadooView/public/css/core/menu/images-new/user-13.png');
 }
 .userMenu .icon.iconDropdown{
-	background: url('images-new/arrow-bottom-13.png');
+	background: url('/qcadooView/public/css/core/menu/images-new/arrow-bottom-13.png');
 }
 .userMenu .icon.iconLogout{
-	background: url('images-new/logout-13.png');
+	background: url('/qcadooView/public/css/core/menu/images-new/logout-13.png');
 }
 .userMenuDropdown{
 	display: inline-block;
@@ -221,7 +221,7 @@
 	display: block;
 	width: 13px;
 	height: 8px;
-	background: url('images-new/header-dropdown-arrow.png');
+	background: url('/qcadooView/public/css/core/menu/images-new/header-dropdown-arrow.png');
 }
 .logoDropdownBoxContent{
 	position: absolute;
@@ -241,21 +241,21 @@
 	vertical-align: middle;
 }
 .logoDropdownBoxContent .iconSearch{
-	background: url('images-new/search-13.png');
+	background: url('/qcadooView/public/css/core/menu/images-new/search-13.png');
 }
 .logoDropdownBoxContent .iconFavoriteMenu{
-	background: url('images-new/favorite-menu-13.png');
+	background: url('/qcadooView/public/css/core/menu/images-new/favorite-menu-13.png');
 }
 .logoDropdownBoxContent .iconFavoriteAdded{
-	background: url('images-new/favorite-added-13.png');
+	background: url('/qcadooView/public/css/core/menu/images-new/favorite-added-13.png');
 }
 .logoDropdownBoxContent .iconFavoriteAdd{
-	background: url('images-new/favorite-add-13.png');
+	background: url('/qcadooView/public/css/core/menu/images-new/favorite-add-13.png');
 }
 .logoDropdownBoxContent .iconInfo{
 	width: 26px;
 	height: 26px;
-	background: url('images-new/info-26.png');
+	background: url('/qcadooView/public/css/core/menu/images-new/info-26.png');
 }
 
 /********************************* logo dropdown */
