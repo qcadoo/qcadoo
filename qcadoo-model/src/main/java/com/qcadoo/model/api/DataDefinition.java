@@ -23,12 +23,12 @@
  */
 package com.qcadoo.model.api;
 
-import java.util.List;
-import java.util.Map;
-
 import com.qcadoo.model.api.search.SearchCriteriaBuilder;
 import com.qcadoo.model.api.search.SearchCriterion;
 import com.qcadoo.model.api.search.SearchQueryBuilder;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Object defines database structure. The {@link #getPluginIdentifier()} and {@link #getName()} are used to calculate table name.
@@ -198,6 +198,13 @@ public interface DataDefinition {
      * @return true if entity is auditable
      */
     boolean isAuditable();
+
+    /**
+     * Return true if entity is versionable
+     *
+     * @return true if entity is versionable
+     */
+    boolean isVersionable();
 
     /**
      * Create entity with given id.

@@ -23,19 +23,20 @@
  */
 package com.qcadoo.view.internal.components.form;
 
-import java.util.Locale;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.w3c.dom.Node;
-
 import com.qcadoo.security.api.SecurityRole;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.internal.ComponentDefinition;
 import com.qcadoo.view.internal.ComponentOption;
+import com.qcadoo.view.internal.components.FieldComponentPattern;
+import com.qcadoo.view.internal.components.HiddenComponentPattern;
 import com.qcadoo.view.internal.patterns.AbstractContainerPattern;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
 import com.qcadoo.view.internal.xml.ViewDefinitionParserNodeException;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.w3c.dom.Node;
+
+import java.util.Locale;
 
 public class FormComponentPattern extends AbstractContainerPattern {
 
@@ -98,6 +99,7 @@ public class FormComponentPattern extends AbstractContainerPattern {
     public void parse(final Node componentNode, final ViewDefinitionParser parser) throws ViewDefinitionParserNodeException {
         super.parse(componentNode, parser);
         authorizationRole = parser.getAuthorizationRole(componentNode);
+        addChild(getVersionField());
     }
 
     @Override
@@ -132,4 +134,20 @@ public class FormComponentPattern extends AbstractContainerPattern {
         return authorizationRole;
     }
 
+    private FieldComponentPattern getVersionField() {
+        ComponentDefinition componentDefinition = new ComponentDefinition();
+        componentDefinition.setName("v");
+        componentDefinition.setFieldPath("#{"+getReference()+"}.v");
+        componentDefinition.setSourceFieldPath(null);
+        componentDefinition.setTranslationService(getTranslationService());
+        componentDefinition.setApplicationContext(getApplicationContext());
+        componentDefinition.setViewDefinition(getViewDefinition());
+        componentDefinition.setParent(this);
+        componentDefinition.setContextualHelpService(getContextualHelpService());
+        componentDefinition.setExtensionPluginIdentifier(getExtensionPluginIdentifier());
+
+        FieldComponentPattern versionField = new HiddenComponentPattern(componentDefinition);
+
+        return versionField;
+    }
 }

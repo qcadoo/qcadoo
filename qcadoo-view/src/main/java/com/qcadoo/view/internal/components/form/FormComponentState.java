@@ -23,11 +23,6 @@
  */
 package com.qcadoo.view.internal.components.form;
 
-import java.util.*;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.qcadoo.model.api.*;
 import com.qcadoo.model.api.expression.ExpressionUtils;
 import com.qcadoo.model.api.validators.ErrorMessage;
@@ -43,6 +38,10 @@ import com.qcadoo.view.internal.components.FieldComponentState;
 import com.qcadoo.view.internal.components.lookup.LookupComponentState;
 import com.qcadoo.view.internal.components.tree.TreeComponentState;
 import com.qcadoo.view.internal.states.AbstractContainerState;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.*;
 
 public class FormComponentState extends AbstractContainerState implements FormComponent {
 
@@ -84,8 +83,11 @@ public class FormComponentState extends AbstractContainerState implements FormCo
 
     private final SecurityRolesService securityRolesService;
 
+    private final FormComponentPattern pattern;
+
     public FormComponentState(final FormComponentPattern pattern) {
         super(pattern);
+        this.pattern = pattern;
         this.expressionNew = pattern.getExpressionNew();
         this.expressionEdit = pattern.getExpressionEdit();
         this.authorizationRole = pattern.getAuthorizationRole();
@@ -428,6 +430,8 @@ public class FormComponentState extends AbstractContainerState implements FormCo
 
             Entity entity = getEntity();
 
+            validateEntityAgainstVersion(databaseEntity, entity);
+
             if (entity.isValid()) {
                 entity = getDataDefinition().save(entity);
 
@@ -445,6 +449,18 @@ public class FormComponentState extends AbstractContainerState implements FormCo
             }
 
             setFieldsRequiredAndDisables();
+        }
+
+        private void validateEntityAgainstVersion(final Entity databaseEntity, final Entity entity) {
+            if(databaseEntity != null && getDataDefinition().isVersionable()){
+                Long newestVersion = (Long) databaseEntity.getField("v");
+                Long currentVersion = (Long)convertFieldFromString(getFieldComponents().get("v").getFieldValue(), "v");
+
+                if(newestVersion.compareTo(currentVersion) != 0){
+                    entity.addGlobalError("qcadooView.validate.global.optimisticLock");
+                    addTranslatedMessage(translateMessage("qcadooView.validate.global.optimisticLock"), MessageType.FAILURE);
+                }
+            }
         }
 
         public void copy(final String[] args) {

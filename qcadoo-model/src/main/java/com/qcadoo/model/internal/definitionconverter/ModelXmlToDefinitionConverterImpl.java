@@ -23,26 +23,24 @@
  */
 package com.qcadoo.model.internal.definitionconverter;
 
-import static com.google.common.base.Preconditions.checkState;
-import static com.qcadoo.model.internal.AbstractModelXmlConverter.FieldsTag.PRIORITY;
-import static com.qcadoo.model.internal.AbstractModelXmlConverter.OtherTag.IDENTIFIER;
-import static org.springframework.context.i18n.LocaleContextHolder.getLocale;
-import static org.springframework.util.StringUtils.hasText;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.math.BigDecimal;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Locale;
-
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-
+import com.google.common.collect.Lists;
+import com.qcadoo.localization.api.TranslationService;
+import com.qcadoo.localization.api.utils.DateUtils;
+import com.qcadoo.model.api.DataDefinition;
+import com.qcadoo.model.api.DictionaryService;
+import com.qcadoo.model.api.FieldDefinition;
+import com.qcadoo.model.api.types.Cascadeable;
+import com.qcadoo.model.api.types.FieldType;
+import com.qcadoo.model.internal.AbstractModelXmlConverter;
+import com.qcadoo.model.internal.DataDefinitionImpl;
+import com.qcadoo.model.internal.FieldDefinitionImpl;
+import com.qcadoo.model.internal.api.*;
+import com.qcadoo.model.internal.hooks.EntityHookDefinitionImpl;
+import com.qcadoo.model.internal.hooks.FieldHookDefinitionImpl;
+import com.qcadoo.model.internal.hooks.HookInitializationException;
+import com.qcadoo.model.internal.types.*;
+import com.qcadoo.model.internal.utils.ClassNameUtils;
+import com.qcadoo.model.internal.validators.*;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -57,52 +55,24 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import com.google.common.collect.Lists;
-import com.qcadoo.localization.api.TranslationService;
-import com.qcadoo.localization.api.utils.DateUtils;
-import com.qcadoo.model.api.DataDefinition;
-import com.qcadoo.model.api.DictionaryService;
-import com.qcadoo.model.api.FieldDefinition;
-import com.qcadoo.model.api.types.Cascadeable;
-import com.qcadoo.model.api.types.FieldType;
-import com.qcadoo.model.internal.AbstractModelXmlConverter;
-import com.qcadoo.model.internal.DataDefinitionImpl;
-import com.qcadoo.model.internal.FieldDefinitionImpl;
-import com.qcadoo.model.internal.api.DataAccessService;
-import com.qcadoo.model.internal.api.EntityHookDefinition;
-import com.qcadoo.model.internal.api.ErrorMessageDefinition;
-import com.qcadoo.model.internal.api.FieldHookDefinition;
-import com.qcadoo.model.internal.api.InternalDataDefinitionService;
-import com.qcadoo.model.internal.api.ModelXmlToDefinitionConverter;
-import com.qcadoo.model.internal.hooks.EntityHookDefinitionImpl;
-import com.qcadoo.model.internal.hooks.FieldHookDefinitionImpl;
-import com.qcadoo.model.internal.hooks.HookInitializationException;
-import com.qcadoo.model.internal.types.BelongsToEntityType;
-import com.qcadoo.model.internal.types.BooleanType;
-import com.qcadoo.model.internal.types.DateTimeType;
-import com.qcadoo.model.internal.types.DateType;
-import com.qcadoo.model.internal.types.DecimalType;
-import com.qcadoo.model.internal.types.DictionaryType;
-import com.qcadoo.model.internal.types.EnumType;
-import com.qcadoo.model.internal.types.FileType;
-import com.qcadoo.model.internal.types.HasManyEntitiesType;
-import com.qcadoo.model.internal.types.IntegerType;
-import com.qcadoo.model.internal.types.ManyToManyEntitiesType;
-import com.qcadoo.model.internal.types.PasswordType;
-import com.qcadoo.model.internal.types.PriorityType;
-import com.qcadoo.model.internal.types.StringType;
-import com.qcadoo.model.internal.types.TextType;
-import com.qcadoo.model.internal.types.TreeEntitiesType;
-import com.qcadoo.model.internal.utils.ClassNameUtils;
-import com.qcadoo.model.internal.validators.CustomEntityValidator;
-import com.qcadoo.model.internal.validators.CustomValidator;
-import com.qcadoo.model.internal.validators.LengthValidator;
-import com.qcadoo.model.internal.validators.RangeValidator;
-import com.qcadoo.model.internal.validators.RegexValidator;
-import com.qcadoo.model.internal.validators.RequiredValidator;
-import com.qcadoo.model.internal.validators.ScaleValidator;
-import com.qcadoo.model.internal.validators.UniqueValidator;
-import com.qcadoo.model.internal.validators.UnscaledValueValidator;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Locale;
+
+import static com.google.common.base.Preconditions.checkState;
+import static com.qcadoo.model.internal.AbstractModelXmlConverter.FieldsTag.PRIORITY;
+import static com.qcadoo.model.internal.AbstractModelXmlConverter.OtherTag.IDENTIFIER;
+import static org.springframework.context.i18n.LocaleContextHolder.getLocale;
+import static org.springframework.util.StringUtils.hasText;
 
 @Service
 public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlConverter implements ModelXmlToDefinitionConverter {
@@ -200,6 +170,15 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
         dataDefinition.withField(getAuditFieldDefinition(dataDefinition, "updateUser", new StringType()));
     }
 
+    private void addVersionFields(final DataDefinitionImpl dataDefinition) {
+        FieldDefinitionImpl fieldDefinition = new FieldDefinitionImpl(dataDefinition, "v");
+        fieldDefinition.withReadOnly(false);
+        fieldDefinition.setPersistent(true);
+        fieldDefinition.withType(new LongType());
+
+        dataDefinition.withField(fieldDefinition);
+    }
+
     private void parseFields(final XMLStreamReader reader, final DataDefinitionImpl dataDefinition) throws XMLStreamException,
             HookInitializationException, ModelXmlParsingException {
         parseElementChildren(reader, TAG_FIELDS, childTag -> addFieldElement(reader, dataDefinition, childTag));
@@ -278,6 +257,10 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
         dataDefinition.setAuditable(getBooleanAttribute(reader, "auditable", false));
         if (dataDefinition.isAuditable()) {
             addAuditFields(dataDefinition);
+        }
+        dataDefinition.setVersionable(getBooleanAttribute(reader, "versionable", false));
+        if (dataDefinition.isVersionable()) {
+            addVersionFields(dataDefinition);
         }
         dataDefinition.setFullyQualifiedClassName(ClassNameUtils.getFullyQualifiedClassName(pluginIdentifier, modelName));
         return dataDefinition;

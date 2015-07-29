@@ -225,6 +225,10 @@ public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverte
             createField(ctClass, "updateUser", String.class.getCanonicalName());
         }
 
+        if (getBooleanAttribute(reader, "versionable", false)) {
+            createField(ctClass, "v", Long.class.getCanonicalName());
+        }
+
         while (reader.hasNext() && reader.next() > 0) {
             if (isTagEnded(reader, TAG_MODEL)) {
                 break;
