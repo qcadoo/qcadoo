@@ -118,6 +118,9 @@ QCD.components.elements.Lookup = function(_element, _mainController) {
 		});
 
 		elements.input.keyup(function(e) {
+			if(elements.input.attr("readonly")){
+				return;
+			}
 			var key = getKey(e);
 			if (key == keyboard.UP) {
 				if (!lookupDropdown.isOpen()) {
