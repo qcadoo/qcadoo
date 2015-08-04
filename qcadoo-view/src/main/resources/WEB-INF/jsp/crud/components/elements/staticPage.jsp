@@ -34,5 +34,7 @@
 <tiles:useAttribute name="component" />
 
 <div class="component component_element component_element_staticPage" id="${component['path']}">
+    <c:set var="translationsMap" value="${component['jspOptions']['translationsMap']}" scope="request"/>
 	<jsp:include page="../../../${component['jspOptions']['page']}" />
 </div>
+
