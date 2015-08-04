@@ -395,7 +395,7 @@
         </div>
 		<div class="userMenu">
 		        <ul>
-        				<li><a href="http://dokumentacja.qcadoo.com/" target="_blank" class="help"><i class="icon iconHelp"></i> Pomoc</a></li>
+        				<li><a href="http://dokumentacja.qcadoo.com/" target="_blank" class="help"><i class="icon iconHelp"></i> ${commonTranslations["qcadooView.button.help"] }</a></li>
         				<li><i class="icon iconUser"></i> <a href='#' id="profileButton" onclick="windowController.goToMenuPosition('administration.profile')">${userLogin}</a>
         					<div class="userMenuDropdown">
         						<a href="#" class="toggle"><i class="icon iconDropdown"></i></a>

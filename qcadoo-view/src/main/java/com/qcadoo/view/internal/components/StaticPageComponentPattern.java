@@ -23,16 +23,15 @@
  */
 package com.qcadoo.view.internal.components;
 
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-
-import org.json.JSONException;
-
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.internal.ComponentDefinition;
 import com.qcadoo.view.internal.ComponentOption;
 import com.qcadoo.view.internal.patterns.AbstractComponentPattern;
+import org.json.JSONException;
+
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 public final class StaticPageComponentPattern extends AbstractComponentPattern {
 
@@ -60,8 +59,13 @@ public final class StaticPageComponentPattern extends AbstractComponentPattern {
     @Override
     protected Map<String, Object> getJspOptions(final Locale locale) {
         Map<String, Object> options = new HashMap<String, Object>();
+
         options.put("page", page);
+
+        options.put("translationsMap", getTranslationService().getMessagesGroup("commons", locale));
+
         return options;
+
     }
 
     @Override
