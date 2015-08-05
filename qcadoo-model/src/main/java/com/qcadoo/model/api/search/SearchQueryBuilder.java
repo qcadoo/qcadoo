@@ -28,6 +28,7 @@ import java.util.Collection;
 import java.util.Date;
 
 import com.qcadoo.model.api.Entity;
+import org.hibernate.Query;
 
 /**
  * Object represents the query builder for finding entities.<br/>
@@ -285,4 +286,18 @@ public interface SearchQueryBuilder {
      */
     SearchQueryBuilder setParameterList(String name, Collection<? extends Object> parameters);
 
+    /**
+     * Add caching parameter to query
+     *
+     * @param query
+     */
+    void addCacheable(Query query);
+
+    /**
+     * Enable caching of this query result, provided query caching is enabled for the underlying session factory.
+     *
+     * @param cacheable
+     * @return this search builder
+     */
+    SearchQueryBuilder setCacheable(boolean cacheable);
 }

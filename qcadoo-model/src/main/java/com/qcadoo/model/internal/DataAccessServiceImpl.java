@@ -23,25 +23,6 @@
  */
 package com.qcadoo.model.internal;
 
-import static com.google.common.base.Preconditions.*;
-
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.apache.commons.lang3.StringUtils;
-import org.hibernate.Criteria;
-import org.hibernate.Query;
-import org.hibernate.exception.ConstraintViolationException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.NoTransactionException;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
-
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Sets;
@@ -59,6 +40,24 @@ import com.qcadoo.model.internal.search.SearchQuery;
 import com.qcadoo.model.internal.search.SearchResultImpl;
 import com.qcadoo.model.internal.utils.EntitySignature;
 import com.qcadoo.tenant.api.Standalone;
+import org.apache.commons.lang3.StringUtils;
+import org.hibernate.Criteria;
+import org.hibernate.Query;
+import org.hibernate.exception.ConstraintViolationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.NoTransactionException;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
+
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static com.google.common.base.Preconditions.*;
 
 @Service
 @Standalone
@@ -640,6 +639,7 @@ public class DataAccessServiceImpl implements DataAccessService {
 
         Query query = searchQuery.createQuery(hibernateService.getCurrentSession());
         searchQuery.addParameters(query);
+        searchQuery.addCacheable(query);
 
         int totalNumberOfEntities = -1;
 

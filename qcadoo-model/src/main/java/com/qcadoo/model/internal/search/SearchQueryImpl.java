@@ -23,6 +23,16 @@
  */
 package com.qcadoo.model.internal.search;
 
+import com.qcadoo.model.api.DataDefinition;
+import com.qcadoo.model.api.Entity;
+import com.qcadoo.model.api.search.SearchQueryBuilder;
+import com.qcadoo.model.api.search.SearchResult;
+import com.qcadoo.model.internal.api.DataAccessService;
+import com.qcadoo.model.internal.api.InternalDataDefinition;
+import org.hibernate.Query;
+import org.hibernate.classic.Session;
+import org.springframework.util.StringUtils;
+
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Date;
@@ -30,17 +40,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.hibernate.Query;
-import org.hibernate.classic.Session;
-import org.springframework.util.StringUtils;
-
-import com.qcadoo.model.api.DataDefinition;
-import com.qcadoo.model.api.Entity;
-import com.qcadoo.model.api.search.SearchQueryBuilder;
-import com.qcadoo.model.api.search.SearchResult;
-import com.qcadoo.model.internal.api.DataAccessService;
-import com.qcadoo.model.internal.api.InternalDataDefinition;
 
 public class SearchQueryImpl implements SearchQuery {
 
@@ -87,6 +86,8 @@ public class SearchQueryImpl implements SearchQuery {
     private int maxResults;
 
     private int firstResult;
+
+    private boolean cacheable = false;
 
     public SearchQueryImpl(final InternalDataDefinition dataDefinition, final DataAccessService dataAccessService,
             final String queryString) {
@@ -149,6 +150,16 @@ public class SearchQueryImpl implements SearchQuery {
         } else {
             throw new IllegalStateException("Too many results, expected one, found " + results.getEntities().size());
         }
+    }
+
+    public SearchQueryBuilder setCacheable(final boolean cacheable){
+        this.cacheable = cacheable;
+        return this;
+    }
+
+    @Override
+    public void addCacheable(Query query) {
+        query.setCacheable(cacheable);
     }
 
     @Override
