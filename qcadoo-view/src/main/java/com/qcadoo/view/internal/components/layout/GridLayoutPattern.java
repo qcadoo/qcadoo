@@ -226,4 +226,7 @@ public class GridLayoutPattern extends AbstractLayoutPattern {
         return JS_OBJECT;
     }
 
+    public GridLayoutCell[][] getCells(){
+        return cells;
+    }
 }

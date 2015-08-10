@@ -440,6 +440,7 @@ public class FormComponentState extends AbstractContainerState implements FormCo
 
             if (entity.isValid()) {
                 setFieldValue(entity.getId());
+                updateVersionFieldOnView(getDatabaseEntity());
                 addTranslatedMessage(translateMessage("saveMessage"), MessageType.SUCCESS);
             } else {
                 if (entity.getGlobalErrors().size() == 0) {
@@ -599,4 +600,9 @@ public class FormComponentState extends AbstractContainerState implements FormCo
         return (FieldComponent) findChild(name);
     }
 
+    private void updateVersionFieldOnView(Entity entity) {
+        FieldComponent fieldComponentVersion = findFieldComponentByName("v");
+        fieldComponentVersion.setFieldValue(entity.getField("v"));
+        fieldComponentVersion.requestComponentUpdateState();
+    }
 }
