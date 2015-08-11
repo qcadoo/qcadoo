@@ -23,6 +23,7 @@
  */
 package com.qcadoo.view.internal.components.form;
 
+import com.qcadoo.model.constants.VersionableConstants;
 import com.qcadoo.security.api.SecurityRole;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.internal.ComponentDefinition;
@@ -48,8 +49,6 @@ public class FormComponentPattern extends AbstractContainerPattern {
     private static final String JSP_PATH = "containers/form.jsp";
 
     private static final String JS_OBJECT = "QCD.components.containers.Form";
-
-    public static final String VERSION_FIELD_NAME = "v";
 
     private boolean header;
 
@@ -157,8 +156,8 @@ public class FormComponentPattern extends AbstractContainerPattern {
 
     private FieldComponentPattern getVersionField(ComponentPattern parent) {
         ComponentDefinition componentDefinition = new ComponentDefinition();
-        componentDefinition.setName(VERSION_FIELD_NAME);
-        componentDefinition.setFieldPath("#{"+getReference()+"}."+VERSION_FIELD_NAME);
+        componentDefinition.setName(VersionableConstants.VERSION_FIELD_NAME);
+        componentDefinition.setFieldPath("#{"+getReference()+"}."+VersionableConstants.VERSION_FIELD_NAME);
         componentDefinition.setSourceFieldPath(null);
         componentDefinition.setTranslationService(getTranslationService());
         componentDefinition.setApplicationContext(getApplicationContext());

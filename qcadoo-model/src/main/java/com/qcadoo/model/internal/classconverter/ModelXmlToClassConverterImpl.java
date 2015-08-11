@@ -23,6 +23,7 @@
  */
 package com.qcadoo.model.internal.classconverter;
 
+import com.qcadoo.model.constants.VersionableConstants;
 import com.qcadoo.model.internal.AbstractModelXmlConverter;
 import com.qcadoo.model.internal.api.ModelXmlToClassConverter;
 import com.qcadoo.model.internal.utils.ClassNameUtils;
@@ -225,8 +226,8 @@ public final class ModelXmlToClassConverterImpl extends AbstractModelXmlConverte
             createField(ctClass, "updateUser", String.class.getCanonicalName());
         }
 
-        if (getBooleanAttribute(reader, "versionable", false)) {
-            createField(ctClass, "v", Long.class.getCanonicalName());
+        if (getBooleanAttribute(reader, VersionableConstants.VERSIONABLE_ATTRIBUTE_NAME, false)) {
+            createField(ctClass, VersionableConstants.VERSION_FIELD_NAME, Long.class.getCanonicalName());
         }
 
         while (reader.hasNext() && reader.next() > 0) {

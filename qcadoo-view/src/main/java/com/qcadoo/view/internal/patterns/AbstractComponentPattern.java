@@ -29,6 +29,7 @@ import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.types.DataDefinitionHolder;
+import com.qcadoo.model.constants.VersionableConstants;
 import com.qcadoo.plugin.api.PluginUtils;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.ViewDefinitionState;
@@ -662,7 +663,7 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
     }
 
     private void checkNotNullFieldDefinition(final FieldDefinition fieldDefinition, final String[] field, final String fieldPath) {
-        if("v".equals(field[1])){
+        if(VersionableConstants.VERSION_FIELD_NAME.equals(field[1])){
             // version field, ignore if empty fieldDefinition
         } else {
             checkNotNull(fieldDefinition, "Cannot find field definition for " + getPath() + ": " + fieldPath);

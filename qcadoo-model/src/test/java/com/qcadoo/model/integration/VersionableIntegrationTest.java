@@ -32,6 +32,7 @@ import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.EntityList;
 import com.qcadoo.model.api.EntityOpResult;
 import com.qcadoo.model.beans.sample.SampleSimpleDatabaseObject;
+import com.qcadoo.model.constants.VersionableConstants;
 import com.qcadoo.model.internal.DefaultEntity;
 import org.junit.Assert;
 import org.junit.Before;
@@ -73,8 +74,8 @@ public class VersionableIntegrationTest extends IntegrationTest {
 
         Entity entityFromDb = fromDb(entity);
 
-        assertEquals(Long.valueOf(0), entity.getLongField("v"));
-        assertEquals(Long.valueOf(0), entityFromDb.getLongField("v"));
+        assertEquals(Long.valueOf(0), entity.getLongField(VersionableConstants.VERSION_FIELD_NAME));
+        assertEquals(Long.valueOf(0), entityFromDb.getLongField(VersionableConstants.VERSION_FIELD_NAME));
     }
 
     @Test
@@ -91,8 +92,8 @@ public class VersionableIntegrationTest extends IntegrationTest {
 
         Entity entityFromDb = fromDb(entity);
 
-        assertEquals(Long.valueOf(0), entity.getLongField("v"));
-        assertEquals(Long.valueOf(1), entityFromDb.getLongField("v"));
+        assertEquals(Long.valueOf(0), entity.getLongField(VersionableConstants.VERSION_FIELD_NAME));
+        assertEquals(Long.valueOf(1), entityFromDb.getLongField(VersionableConstants.VERSION_FIELD_NAME));
     }
 
     @Test
