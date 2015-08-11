@@ -669,4 +669,7 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
         }
     }
 
+    public void setPersistent(boolean persistent){
+        this.persistent = persistent;
+    }
 }

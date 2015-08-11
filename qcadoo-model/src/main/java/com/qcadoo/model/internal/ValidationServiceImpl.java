@@ -26,6 +26,7 @@ package com.qcadoo.model.internal;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.qcadoo.model.api.DataDefinition;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -45,10 +46,13 @@ import com.qcadoo.model.internal.types.PasswordType;
 @Service
 public final class ValidationServiceImpl implements ValidationService {
 
+    public static final String VERSION_FIELD_NAME = "v";
+
     @Override
     public void validateGenericEntity(final InternalDataDefinition dataDefinition, final Entity genericEntity,
             final Entity existingGenericEntity) {
 
+        validateEntityAgainstVersion(existingGenericEntity, genericEntity, dataDefinition);
         copyReadOnlyAndMissingFields(dataDefinition, genericEntity, existingGenericEntity);
         parseFields(dataDefinition, genericEntity);
 
@@ -195,4 +199,14 @@ public final class ValidationServiceImpl implements ValidationService {
         return value;
     }
 
+    private void validateEntityAgainstVersion(final Entity databaseEntity, final Entity entity, final DataDefinition dataDefinition) {
+        if(databaseEntity != null && dataDefinition.isVersionable()){
+            Long savedVersion = (Long) entity.getField(VERSION_FIELD_NAME);
+            Long currentDbVersion = (Long)databaseEntity.getField(VERSION_FIELD_NAME);
+
+            if(savedVersion.compareTo(currentDbVersion) != 0){
+                entity.addGlobalError("qcadooView.validate.global.optimisticLock");
+            }
+        }
+    }
 }

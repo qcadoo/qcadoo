@@ -110,6 +110,18 @@ public interface Entity extends EntityMessagesHolder {
     Integer getIntegerField(final String fieldName);
 
     /**
+     * Return the Long value of the field with given name
+     *
+     * @param fieldName
+     *            field's name
+     * @return the field's long value, when it's empty null is returned (not 0)
+     *
+     * @throws IllegalArgumentException
+     *             if given field is not Integer type
+     */
+    Long getLongField(final String fieldName);
+
+    /**
      * Return the Date value of the field with given name
      * 
      * @param fieldName

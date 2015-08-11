@@ -105,6 +105,11 @@ public final class EntityTreeNodeImpl implements EntityTreeNode, EntityAwareCopy
     }
 
     @Override
+    public Long getLongField(final String fieldName) {
+        return entity.getLongField(fieldName);
+    }
+
+    @Override
     public Entity getBelongsToField(final String fieldName) {
         return entity.getBelongsToField(fieldName);
     }

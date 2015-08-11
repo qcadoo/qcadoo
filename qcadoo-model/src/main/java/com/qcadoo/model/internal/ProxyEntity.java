@@ -182,6 +182,11 @@ public final class ProxyEntity implements Entity, EntityAwareCopyPerformers, Ent
     }
 
     @Override
+    public Long getLongField(String fieldName) {
+        return getEntity().getLongField(fieldName);
+    }
+
+    @Override
     public Entity getBelongsToField(final String fieldName) {
         return getEntity().getBelongsToField(fieldName);
     }

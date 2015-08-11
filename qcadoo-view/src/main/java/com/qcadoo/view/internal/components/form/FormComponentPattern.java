@@ -49,6 +49,8 @@ public class FormComponentPattern extends AbstractContainerPattern {
 
     private static final String JS_OBJECT = "QCD.components.containers.Form";
 
+    public static final String VERSION_FIELD_NAME = "v";
+
     private boolean header;
 
     private String expressionEdit = "#id";
@@ -155,8 +157,8 @@ public class FormComponentPattern extends AbstractContainerPattern {
 
     private FieldComponentPattern getVersionField(ComponentPattern parent) {
         ComponentDefinition componentDefinition = new ComponentDefinition();
-        componentDefinition.setName("v");
-        componentDefinition.setFieldPath("#{"+getReference()+"}.v");
+        componentDefinition.setName(VERSION_FIELD_NAME);
+        componentDefinition.setFieldPath("#{"+getReference()+"}."+VERSION_FIELD_NAME);
         componentDefinition.setSourceFieldPath(null);
         componentDefinition.setTranslationService(getTranslationService());
         componentDefinition.setApplicationContext(getApplicationContext());
@@ -166,6 +168,7 @@ public class FormComponentPattern extends AbstractContainerPattern {
         componentDefinition.setExtensionPluginIdentifier(getExtensionPluginIdentifier());
 
         FieldComponentPattern versionField = new HiddenComponentPattern(componentDefinition);
+        versionField.setPersistent(true);
 
         return versionField;
     }

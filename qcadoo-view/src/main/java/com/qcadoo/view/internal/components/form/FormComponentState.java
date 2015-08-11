@@ -430,8 +430,6 @@ public class FormComponentState extends AbstractContainerState implements FormCo
 
             Entity entity = getEntity();
 
-            validateEntityAgainstVersion(databaseEntity, entity);
-
             if (entity.isValid()) {
                 entity = getDataDefinition().save(entity);
 
@@ -440,7 +438,6 @@ public class FormComponentState extends AbstractContainerState implements FormCo
 
             if (entity.isValid()) {
                 setFieldValue(entity.getId());
-                updateVersionFieldOnView(getDatabaseEntity());
                 addTranslatedMessage(translateMessage("saveMessage"), MessageType.SUCCESS);
             } else {
                 if (entity.getGlobalErrors().size() == 0) {
@@ -450,18 +447,6 @@ public class FormComponentState extends AbstractContainerState implements FormCo
             }
 
             setFieldsRequiredAndDisables();
-        }
-
-        private void validateEntityAgainstVersion(final Entity databaseEntity, final Entity entity) {
-            if(databaseEntity != null && getDataDefinition().isVersionable()){
-                Long newestVersion = (Long) databaseEntity.getField("v");
-                Long currentVersion = (Long)convertFieldFromString(getFieldComponents().get("v").getFieldValue(), "v");
-
-                if(newestVersion.compareTo(currentVersion) != 0){
-                    entity.addGlobalError("qcadooView.validate.global.optimisticLock");
-                    addTranslatedMessage(translateMessage("qcadooView.validate.global.optimisticLock"), MessageType.FAILURE);
-                }
-            }
         }
 
         public void copy(final String[] args) {
@@ -600,9 +585,4 @@ public class FormComponentState extends AbstractContainerState implements FormCo
         return (FieldComponent) findChild(name);
     }
 
-    private void updateVersionFieldOnView(Entity entity) {
-        FieldComponent fieldComponentVersion = findFieldComponentByName("v");
-        fieldComponentVersion.setFieldValue(entity.getField("v"));
-        fieldComponentVersion.requestComponentUpdateState();
-    }
 }
