@@ -149,8 +149,7 @@ public class DataAccessServiceImpl implements DataAccessService {
 
         if(dataDefinition.isVersionable()){
             hibernateService.getCurrentSession().flush();
-            hibernateService.getCurrentSession().refresh(databaseEntity);
-//            savedEntity.setField(VersionableConstants.VERSION_FIELD_NAME, savedEntity.getLongField(VersionableConstants.VERSION_FIELD_NAME) + 1);
+//            hibernateService.getCurrentSession().refresh(databaseEntity);
         }
 
         Entity savedEntity = entityService.convertToGenericEntity(dataDefinition, databaseEntity);
