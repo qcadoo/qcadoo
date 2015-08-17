@@ -29,7 +29,7 @@
 	name="profile"
 	modelPlugin="qcadooSecurity"
 	modelName="user"
-    defaultAuthorizationRole="ROLE_MENU_HOME">
+    defaultAuthorizationRole="ROLE_HOME_PROFIL">
 	
 	<component type="window" name="window">
 		<ribbon>

@@ -115,7 +115,6 @@
         <prop key="rolesHierarchy">
             ROLE_SUPERADMIN > ROLE_ADMIN
             ROLE_ADMIN > ROLE_USER
-            ROLE_USER > ROLE_MENU_HOME
         </prop>
     </util:properties>
 

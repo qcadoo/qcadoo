@@ -77,7 +77,7 @@
 		<view:view resource="view/fileUpload.xml" />
 
 		<menu:menu-category name="home" />
-		<menu:menu-category name="administration" />
+		<menu:menu-category name="administration"/>
 
 		<menu:menu-item-url name="systemInfo" category="administration"
 			url="/systemInfo.html" />
