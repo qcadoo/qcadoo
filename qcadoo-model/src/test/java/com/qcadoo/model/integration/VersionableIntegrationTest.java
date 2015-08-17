@@ -23,31 +23,13 @@
  */
 package com.qcadoo.model.integration;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
-import com.qcadoo.model.api.EntityList;
-import com.qcadoo.model.api.EntityOpResult;
-import com.qcadoo.model.beans.sample.SampleSimpleDatabaseObject;
 import com.qcadoo.model.constants.VersionableConstants;
-import com.qcadoo.model.internal.DefaultEntity;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Matchers;
 
-import java.util.Set;
-
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
-import static org.junit.Assert.*;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.verify;
+import static junit.framework.Assert.*;
 
 public class VersionableIntegrationTest extends IntegrationTest {
 
@@ -92,7 +74,7 @@ public class VersionableIntegrationTest extends IntegrationTest {
 
         Entity entityFromDb = fromDb(entity);
 
-        assertEquals(Long.valueOf(0), entity.getLongField(VersionableConstants.VERSION_FIELD_NAME));
+        assertEquals(Long.valueOf(1), entity.getLongField(VersionableConstants.VERSION_FIELD_NAME));
         assertEquals(Long.valueOf(1), entityFromDb.getLongField(VersionableConstants.VERSION_FIELD_NAME));
     }
 

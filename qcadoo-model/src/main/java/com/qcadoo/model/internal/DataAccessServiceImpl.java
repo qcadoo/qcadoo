@@ -23,7 +23,6 @@
  */
 package com.qcadoo.model.internal;
 
-import java.lang.reflect.Field;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Sets;
@@ -67,8 +66,6 @@ public class DataAccessServiceImpl implements DataAccessService {
     private static final String L_DATA_DEFINITION_BELONGS_TO_DISABLED_PLUGIN = "DataDefinition belongs to disabled plugin";
 
     private static final String L_DATA_DEFINITION_MUST_BE_GIVEN = "DataDefinition must be given";
-
-    public static final String VERSION_FIELD_NAME = "entityVersion";
 
     @Autowired
     private DataDefinitionService dataDefinitionService;
@@ -150,11 +147,13 @@ public class DataAccessServiceImpl implements DataAccessService {
 
         saveDatabaseEntity(dataDefinition, databaseEntity);
 
-        Entity savedEntity = entityService.convertToGenericEntity(dataDefinition, databaseEntity);
-
-        if(dataDefinition.isVersionable() && savedEntity.getLongField(VERSION_FIELD_NAME)!=0){
-            savedEntity.setField(VERSION_FIELD_NAME,savedEntity.getLongField(VERSION_FIELD_NAME)+1);
+        if(dataDefinition.isVersionable()){
+            hibernateService.getCurrentSession().flush();
+            hibernateService.getCurrentSession().refresh(databaseEntity);
+//            savedEntity.setField(VersionableConstants.VERSION_FIELD_NAME, savedEntity.getLongField(VersionableConstants.VERSION_FIELD_NAME) + 1);
         }
+
+        Entity savedEntity = entityService.convertToGenericEntity(dataDefinition, databaseEntity);
 
         for (Entry<String, FieldDefinition> fieldEntry : dataDefinition.getFields().entrySet()) {
             if (fieldEntry.getValue().getType() instanceof HasManyType) {

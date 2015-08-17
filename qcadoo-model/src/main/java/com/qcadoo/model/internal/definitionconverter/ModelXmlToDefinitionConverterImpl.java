@@ -175,7 +175,7 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
         FieldDefinitionImpl fieldDefinition = new FieldDefinitionImpl(dataDefinition, VersionableConstants.VERSION_FIELD_NAME);
         fieldDefinition.withReadOnly(false);
         fieldDefinition.setPersistent(true);
-        fieldDefinition.withType(new LongType());
+        fieldDefinition.withType(new LongType(false));
 
         dataDefinition.withField(fieldDefinition);
     }
