@@ -23,10 +23,6 @@
  */
 package com.qcadoo.model.internal;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.EntityOpResult;
 import com.qcadoo.model.api.FieldDefinition;
@@ -38,6 +34,10 @@ import com.qcadoo.model.api.types.FieldType;
 import com.qcadoo.model.internal.api.EntityHookDefinition;
 import com.qcadoo.model.internal.api.InternalDataDefinition;
 import com.qcadoo.model.internal.search.SearchCriteria;
+
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public class DynamicDataDefinitionImpl implements InternalDataDefinition {
 
@@ -229,6 +229,15 @@ public class DynamicDataDefinitionImpl implements InternalDataDefinition {
     @Override
     public boolean isAuditable() {
         return false;
+    }
+
+    @Override
+    public MasterModel getMasterModel() {
+        return null;
+    }
+
+    @Override
+    public void setMasterModel(MasterModel masterModel) {
     }
 
     @Override

@@ -37,7 +37,7 @@ public abstract class AbstractModelXmlConverter {
     }
 
     public static enum OtherTag {
-        IDENTIFIER
+        IDENTIFIER, MASTERMODEL
     }
 
     protected static enum FieldTag {
@@ -105,5 +105,4 @@ public abstract class AbstractModelXmlConverter {
     protected boolean isTagEnded(final XMLStreamReader reader, final String tagName) {
         return (reader.getEventType() == XMLStreamConstants.END_ELEMENT && tagName.equals(reader.getLocalName()));
     }
-
 }

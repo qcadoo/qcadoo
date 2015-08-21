@@ -412,10 +412,12 @@ public class DataAccessServiceImpl implements DataAccessService {
     @Transactional
     @Monitorable
     public List<Entity> copy(final InternalDataDefinition dataDefinition, final Long... entityIds) {
+        InternalDataDefinition dataDefinitionToCopy = getDataDefinitionByMasterModel(dataDefinition);
+
         List<Entity> copiedEntities = new ArrayList<Entity>();
         for (Long entityId : entityIds) {
-            Entity sourceEntity = get(dataDefinition, entityId);
-            Entity targetEntity = copy(dataDefinition, sourceEntity);
+            Entity sourceEntity = get(dataDefinitionToCopy, entityId);
+            Entity targetEntity = copy(dataDefinitionToCopy, sourceEntity);
 
             if (targetEntity == null) {
                 throw new IllegalStateException("Cannot copy " + sourceEntity);
@@ -423,7 +425,7 @@ public class DataAccessServiceImpl implements DataAccessService {
 
             LOG.info(sourceEntity + " has been copied to " + targetEntity);
 
-            targetEntity = save(dataDefinition, targetEntity);
+            targetEntity = save(dataDefinitionToCopy, targetEntity);
 
             if (!targetEntity.isValid()) {
                 throw new CopyException(targetEntity);
@@ -436,31 +438,33 @@ public class DataAccessServiceImpl implements DataAccessService {
     }
 
     public Entity copy(final InternalDataDefinition dataDefinition, final Entity sourceEntity) {
-        Entity targetEntity = dataDefinition.create();
+        InternalDataDefinition dataDefinitionToCopy = getDataDefinitionByMasterModel(dataDefinition);
 
-        for (Entry<String, FieldDefinition> fieldEntry : dataDefinition.getFields().entrySet()) {
+        Entity targetEntity = dataDefinitionToCopy.create();
+
+        for (Entry<String, FieldDefinition> fieldEntry : dataDefinitionToCopy.getFields().entrySet()) {
             FieldDefinition fieldDefinition = fieldEntry.getValue();
             String fieldName = fieldEntry.getKey();
             boolean copy = fieldDefinition.getType().isCopyable();
             if (copy) {
-                targetEntity.setField(fieldName, getCopyValueOfSimpleField(sourceEntity, dataDefinition, fieldName));
+                targetEntity.setField(fieldName, getCopyValueOfSimpleField(sourceEntity, dataDefinitionToCopy, fieldName));
             }
 
         }
 
-        if (!dataDefinition.callCopyHook(targetEntity)) {
+        if (!dataDefinitionToCopy.callCopyHook(targetEntity)) {
             return null;
         }
 
-        for (String fieldName : dataDefinition.getFields().keySet()) {
-            copyHasManyField(sourceEntity, targetEntity, dataDefinition, fieldName);
+        for (String fieldName : dataDefinitionToCopy.getFields().keySet()) {
+            copyHasManyField(sourceEntity, targetEntity, dataDefinitionToCopy, fieldName);
         }
 
-        for (String fieldName : dataDefinition.getFields().keySet()) {
-            copyTreeField(sourceEntity, targetEntity, dataDefinition, fieldName);
+        for (String fieldName : dataDefinitionToCopy.getFields().keySet()) {
+            copyTreeField(sourceEntity, targetEntity, dataDefinitionToCopy, fieldName);
         }
-        for (String fieldName : dataDefinition.getFields().keySet()) {
-            copyManyToManyField(sourceEntity, targetEntity, dataDefinition, fieldName);
+        for (String fieldName : dataDefinitionToCopy.getFields().keySet()) {
+            copyManyToManyField(sourceEntity, targetEntity, dataDefinitionToCopy, fieldName);
         }
 
         return targetEntity;
@@ -604,13 +608,14 @@ public class DataAccessServiceImpl implements DataAccessService {
     @Transactional
     @Monitorable
     public EntityOpResult delete(final InternalDataDefinition dataDefinition, final Long... entityIds) {
-        checkNotNull(dataDefinition, L_DATA_DEFINITION_MUST_BE_GIVEN);
-        checkState(dataDefinition.isDeletable(), "Entity must be deletable");
-        checkState(dataDefinition.isEnabled(), L_DATA_DEFINITION_BELONGS_TO_DISABLED_PLUGIN);
+        InternalDataDefinition dataDefinitionToDelete = getDataDefinitionByMasterModel(dataDefinition);
+
+        checkState(dataDefinitionToDelete.isDeletable(), "Entity must be deletable");
+        checkState(dataDefinitionToDelete.isEnabled(), L_DATA_DEFINITION_BELONGS_TO_DISABLED_PLUGIN);
         checkState(entityIds.length > 0, "EntityIds must be given");
 
         for (Long entityId : entityIds) {
-            EntityOpResult result = deleteEntity(dataDefinition, entityId);
+            EntityOpResult result = deleteEntity(dataDefinitionToDelete, entityId);
             if (!result.isSuccessfull()) {
                 return result;
             }
@@ -955,6 +960,19 @@ public class DataAccessServiceImpl implements DataAccessService {
 
     protected void setHibernateService(final HibernateService hibernateService) {
         this.hibernateService = hibernateService;
+    }
+
+    private InternalDataDefinition getDataDefinitionByMasterModel(InternalDataDefinition dataDefinition) {
+        InternalDataDefinition masterDataDefinition;
+        if(dataDefinition.getMasterModel() == null){
+            masterDataDefinition = dataDefinition;
+        } else {
+            //FIXME cast
+            masterDataDefinition = (InternalDataDefinition)dataDefinitionService.get(dataDefinition.getMasterModel().getPluginIdentifier(), dataDefinition.getMasterModel().getName());
+        }
+        checkNotNull(masterDataDefinition, L_DATA_DEFINITION_MUST_BE_GIVEN);
+
+        return masterDataDefinition;
     }
 
 }

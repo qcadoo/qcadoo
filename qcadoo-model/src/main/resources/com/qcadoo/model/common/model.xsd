@@ -65,6 +65,11 @@
 		<xs:attribute name="expression" type="xs:string" />
 	</xs:complexType>
 
+	<xs:complexType name="masterOrderType">
+		<xs:attribute name="model" type="identifier" use="required" />
+		<xs:attribute name="plugin" type="identifier" use="required" />
+	</xs:complexType>
+
 	<xs:complexType name="validatesType">
 		<xs:attribute name="message" type="xs:string" />
 	</xs:complexType>

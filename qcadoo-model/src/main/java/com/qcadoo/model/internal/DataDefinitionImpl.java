@@ -23,16 +23,6 @@
  */
 package com.qcadoo.model.internal;
 
-import static com.google.common.base.Preconditions.*;
-import static com.qcadoo.model.api.search.SearchOrders.asc;
-import static com.qcadoo.model.api.search.SearchProjections.alias;
-import static com.qcadoo.model.api.search.SearchProjections.rowCount;
-
-import java.util.*;
-
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.qcadoo.model.api.Entity;
@@ -50,6 +40,15 @@ import com.qcadoo.model.internal.search.SearchCriteria;
 import com.qcadoo.model.internal.search.SearchCriteriaImpl;
 import com.qcadoo.model.internal.search.SearchQueryImpl;
 import com.qcadoo.model.internal.types.PriorityType;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
+import java.util.*;
+
+import static com.google.common.base.Preconditions.*;
+import static com.qcadoo.model.api.search.SearchOrders.asc;
+import static com.qcadoo.model.api.search.SearchProjections.alias;
+import static com.qcadoo.model.api.search.SearchProjections.rowCount;
 
 public final class DataDefinitionImpl implements InternalDataDefinition {
 
@@ -84,6 +83,8 @@ public final class DataDefinitionImpl implements InternalDataDefinition {
     private String identifierExpression = "#id";
 
     private Class<?> classForEntity;
+
+    private MasterModel masterModel;
 
     public DataDefinitionImpl(final String pluginIdentifier, final String name, final DataAccessService dataAccessService) {
         this.pluginIdentifier = pluginIdentifier;
@@ -481,4 +482,11 @@ public final class DataDefinitionImpl implements InternalDataDefinition {
         this.activable = activable;
     }
 
+    public MasterModel getMasterModel() {
+        return masterModel;
+    }
+
+    public void setMasterModel(MasterModel masterModel) {
+        this.masterModel = masterModel;
+    }
 }
