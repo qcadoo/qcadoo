@@ -348,10 +348,12 @@ public class DataAccessServiceImpl implements DataAccessService {
             return Collections.emptyList();
         }
 
+        InternalDataDefinition dataDefinitionToActivate = getDataDefinitionByMasterModel(dataDefinition);
+
         List<Entity> activatedEntities = new ArrayList<Entity>();
 
         for (Long entityId : entityIds) {
-            Entity entity = get(dataDefinition, entityId);
+            Entity entity = get(dataDefinitionToActivate, entityId);
 
             if (entity == null) {
                 throw new IllegalStateException("Cannot activate " + entityId);
@@ -359,7 +361,7 @@ public class DataAccessServiceImpl implements DataAccessService {
 
             if (!entity.isActive()) {
                 entity.setActive(true);
-                entity = save(dataDefinition, entity);
+                entity = save(dataDefinitionToActivate, entity);
 
                 if (!entity.isValid()) {
                     throw new IllegalStateException("Cannot activate " + entity);
@@ -382,10 +384,12 @@ public class DataAccessServiceImpl implements DataAccessService {
             return Collections.emptyList();
         }
 
+        InternalDataDefinition dataDefinitionToDeactivate = getDataDefinitionByMasterModel(dataDefinition);
+
         List<Entity> deactivatedEntities = new ArrayList<Entity>();
 
         for (Long entityId : entityIds) {
-            Entity entity = get(dataDefinition, entityId);
+            Entity entity = get(dataDefinitionToDeactivate, entityId);
 
             if (entity == null) {
                 throw new IllegalStateException("Cannot deactivate " + entityId + " (entity not found)");
@@ -393,7 +397,7 @@ public class DataAccessServiceImpl implements DataAccessService {
 
             if (entity.isActive()) {
                 entity.setActive(false);
-                entity = save(dataDefinition, entity);
+                entity = save(dataDefinitionToDeactivate, entity);
 
                 if (!entity.isValid()) {
                     throw new IllegalStateException("Cannot deactivate " + entity + " because of validation errors");
@@ -967,7 +971,6 @@ public class DataAccessServiceImpl implements DataAccessService {
         if(dataDefinition.getMasterModel() == null){
             masterDataDefinition = dataDefinition;
         } else {
-            //FIXME cast
             masterDataDefinition = (InternalDataDefinition)dataDefinitionService.get(dataDefinition.getMasterModel().getPluginIdentifier(), dataDefinition.getMasterModel().getName());
         }
         checkNotNull(masterDataDefinition, L_DATA_DEFINITION_MUST_BE_GIVEN);
