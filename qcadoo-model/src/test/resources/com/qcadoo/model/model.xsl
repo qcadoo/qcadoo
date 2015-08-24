@@ -99,6 +99,9 @@
 				<id column="id" name="id" type="long">
 					<generator class="increment" />
 				</id>
+				<xsl:if test="@versionable='true'">
+					<version column="entityVersion" name="entityVersion" type="long"></version>
+				</xsl:if>
 				<xsl:apply-templates />
 				<xsl:if test="@activable='true'">
 					<property>

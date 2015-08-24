@@ -106,6 +106,9 @@
 						</param>
 					</generator>
 				</id>
+				<xsl:if test="@versionable='true'">
+					<version column="entityVersion" name="entityVersion" type="long"></version>
+				</xsl:if>
 				<xsl:apply-templates />
 				<xsl:if test="@activable='true'">
 					<property>

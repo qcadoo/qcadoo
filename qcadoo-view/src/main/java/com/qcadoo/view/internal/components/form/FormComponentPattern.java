@@ -23,19 +23,26 @@
  */
 package com.qcadoo.view.internal.components.form;
 
-import java.util.Locale;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.w3c.dom.Node;
-
+import com.qcadoo.model.constants.VersionableConstants;
 import com.qcadoo.security.api.SecurityRole;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.internal.ComponentDefinition;
 import com.qcadoo.view.internal.ComponentOption;
+import com.qcadoo.view.internal.api.ComponentPattern;
+import com.qcadoo.view.internal.components.FieldComponentPattern;
+import com.qcadoo.view.internal.components.HiddenComponentPattern;
+import com.qcadoo.view.internal.components.layout.GridLayoutCell;
+import com.qcadoo.view.internal.components.layout.GridLayoutPattern;
 import com.qcadoo.view.internal.patterns.AbstractContainerPattern;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
 import com.qcadoo.view.internal.xml.ViewDefinitionParserNodeException;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.w3c.dom.Node;
+
+import java.util.List;
+import java.util.Locale;
+import java.util.stream.Collectors;
 
 public class FormComponentPattern extends AbstractContainerPattern {
 
@@ -98,6 +105,7 @@ public class FormComponentPattern extends AbstractContainerPattern {
     public void parse(final Node componentNode, final ViewDefinitionParser parser) throws ViewDefinitionParserNodeException {
         super.parse(componentNode, parser);
         authorizationRole = parser.getAuthorizationRole(componentNode);
+        tryAddVersionField();
     }
 
     @Override
@@ -132,4 +140,35 @@ public class FormComponentPattern extends AbstractContainerPattern {
         return authorizationRole;
     }
 
+    private void tryAddVersionField() {
+        List<ComponentPattern> layouts = getChildren().values().stream().filter(childComponentPattern -> childComponentPattern instanceof GridLayoutPattern).collect(Collectors.toList());
+
+        if(!layouts.isEmpty()){
+            GridLayoutPattern gridLayoutPattern = (GridLayoutPattern) layouts.get(0);
+            FieldComponentPattern versionComponentPattern = getVersionField(gridLayoutPattern);
+            gridLayoutPattern.addChild(versionComponentPattern);
+            GridLayoutCell[][] cells = gridLayoutPattern.getCells();
+            if(cells != null && cells[0] != null && cells[0][0]!=null){
+                cells[0][0].addComponent(versionComponentPattern);
+            }
+        }
+    }
+
+    private FieldComponentPattern getVersionField(ComponentPattern parent) {
+        ComponentDefinition componentDefinition = new ComponentDefinition();
+        componentDefinition.setName(VersionableConstants.VERSION_FIELD_NAME);
+        componentDefinition.setFieldPath("#{"+getReference()+"}."+VersionableConstants.VERSION_FIELD_NAME);
+        componentDefinition.setSourceFieldPath(null);
+        componentDefinition.setTranslationService(getTranslationService());
+        componentDefinition.setApplicationContext(getApplicationContext());
+        componentDefinition.setViewDefinition(getViewDefinition());
+        componentDefinition.setParent(parent);
+        componentDefinition.setContextualHelpService(getContextualHelpService());
+        componentDefinition.setExtensionPluginIdentifier(getExtensionPluginIdentifier());
+
+        FieldComponentPattern versionField = new HiddenComponentPattern(componentDefinition);
+        versionField.setPersistent(true);
+
+        return versionField;
+    }
 }

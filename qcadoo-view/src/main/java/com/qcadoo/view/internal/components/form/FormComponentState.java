@@ -23,11 +23,6 @@
  */
 package com.qcadoo.view.internal.components.form;
 
-import java.util.*;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.qcadoo.model.api.*;
 import com.qcadoo.model.api.expression.ExpressionUtils;
 import com.qcadoo.model.api.validators.ErrorMessage;
@@ -43,6 +38,10 @@ import com.qcadoo.view.internal.components.FieldComponentState;
 import com.qcadoo.view.internal.components.lookup.LookupComponentState;
 import com.qcadoo.view.internal.components.tree.TreeComponentState;
 import com.qcadoo.view.internal.states.AbstractContainerState;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.*;
 
 public class FormComponentState extends AbstractContainerState implements FormComponent {
 
@@ -84,8 +83,11 @@ public class FormComponentState extends AbstractContainerState implements FormCo
 
     private final SecurityRolesService securityRolesService;
 
+    private final FormComponentPattern pattern;
+
     public FormComponentState(final FormComponentPattern pattern) {
         super(pattern);
+        this.pattern = pattern;
         this.expressionNew = pattern.getExpressionNew();
         this.expressionEdit = pattern.getExpressionEdit();
         this.authorizationRole = pattern.getAuthorizationRole();

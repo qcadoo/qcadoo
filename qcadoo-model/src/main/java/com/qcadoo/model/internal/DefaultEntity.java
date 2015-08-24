@@ -342,6 +342,29 @@ public final class DefaultEntity implements Entity, EntityAwareCopyPerformers, E
                 + dataDefinition.getName() + " does not contain correct Integer value (current field value: " + fieldValue + ")");
     }
 
+    @Override
+    public Long getLongField(final String fieldName) {
+        final Object fieldValue = getField(fieldName);
+        if (fieldValue == null) {
+            return null;
+        }
+        if (fieldValue instanceof Long) {
+            return (Long)fieldValue;
+        }
+        final FieldDefinition fieldDefinition = dataDefinition.getField(fieldName);
+        if (fieldValue instanceof String && Long.class.equals(fieldDefinition.getType().getType())) {
+            if (StringUtils.isBlank((String) fieldValue)) {
+                return null;
+            }
+            final ValueAndError valueAndError = fieldDefinition.getType().toObject(fieldDefinition, fieldValue);
+            if (valueAndError.isValid()) {
+                return (Long) valueAndError.getValue();
+            }
+        }
+        throw new IllegalArgumentException("Field " + fieldName + " in " + dataDefinition.getPluginIdentifier() + '.'
+                + dataDefinition.getName() + " does not contain correct Long value (current field value: " + fieldValue + ")");
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public EntityList getHasManyField(final String fieldName) {

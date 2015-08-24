@@ -45,6 +45,8 @@
 		
 		<model:model model="factory" resource="model/factory.xml" />
 		<model:model model="division" resource="model/division.xml" />
+
+		<model:model model="versionableEntity" resource="model/versionableEntity.xml" />
 	</modules>
 
 </plugin>

@@ -31,6 +31,7 @@ import com.qcadoo.model.api.DictionaryService;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.types.Cascadeable;
 import com.qcadoo.model.api.types.FieldType;
+import com.qcadoo.model.constants.VersionableConstants;
 import com.qcadoo.model.internal.AbstractModelXmlConverter;
 import com.qcadoo.model.internal.DataDefinitionImpl;
 import com.qcadoo.model.internal.FieldDefinitionImpl;
@@ -172,6 +173,15 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
         dataDefinition.withField(getAuditFieldDefinition(dataDefinition, "updateUser", new StringType()));
     }
 
+    private void addVersionFields(final DataDefinitionImpl dataDefinition) {
+        FieldDefinitionImpl fieldDefinition = new FieldDefinitionImpl(dataDefinition, VersionableConstants.VERSION_FIELD_NAME);
+        fieldDefinition.withReadOnly(false);
+        fieldDefinition.setPersistent(true);
+        fieldDefinition.withType(new LongType(false));
+
+        dataDefinition.withField(fieldDefinition);
+    }
+
     private void parseFields(final XMLStreamReader reader, final DataDefinitionImpl dataDefinition) throws XMLStreamException,
             HookInitializationException, ModelXmlParsingException {
         parseElementChildren(reader, TAG_FIELDS, childTag -> addFieldElement(reader, dataDefinition, childTag));
@@ -252,6 +262,10 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
         dataDefinition.setAuditable(getBooleanAttribute(reader, "auditable", false));
         if (dataDefinition.isAuditable()) {
             addAuditFields(dataDefinition);
+        }
+        dataDefinition.setVersionable(getBooleanAttribute(reader, VersionableConstants.VERSIONABLE_ATTRIBUTE_NAME, false));
+        if (dataDefinition.isVersionable()) {
+            addVersionFields(dataDefinition);
         }
         dataDefinition.setFullyQualifiedClassName(ClassNameUtils.getFullyQualifiedClassName(pluginIdentifier, modelName));
         return dataDefinition;

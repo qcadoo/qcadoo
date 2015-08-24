@@ -78,6 +78,8 @@ public final class DataDefinitionImpl implements InternalDataDefinition {
 
     private boolean auditable = false;
 
+    private boolean versionable = false;
+
     private boolean activable = false;
 
     private String identifierExpression = "#id";
@@ -413,6 +415,14 @@ public final class DataDefinitionImpl implements InternalDataDefinition {
 
     public void setAuditable(final boolean auditable) {
         this.auditable = auditable;
+    }
+
+    public boolean isVersionable(){
+        return versionable;
+    }
+
+    public void setVersionable(boolean versionable){
+        this.versionable = versionable;
     }
 
     private Class<?> loadClassForEntity() {

@@ -232,6 +232,11 @@ public class DynamicDataDefinitionImpl implements InternalDataDefinition {
     }
 
     @Override
+    public boolean isVersionable() {
+        return false;
+    }
+
+    @Override
     public MasterModel getMasterModel() {
         return null;
     }
