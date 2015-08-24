@@ -47,7 +47,7 @@
 					</xs:complexType>
 				</xs:element>
 				<xs:element name="identifier" type="identifierExpressionType" minOccurs="0" maxOccurs="1" />
-				<xs:element name="masterOrder" type="masterOrderType" minOccurs="0" maxOccurs="1" />
+				<xs:element name="masterModel" type="masterModelType" minOccurs="0" maxOccurs="1" />
 			</xs:sequence>
 			<xs:attribute name="name" type="identifier" use="required" />
 			<xs:attribute name="plugin" type="identifier" use="optional" />

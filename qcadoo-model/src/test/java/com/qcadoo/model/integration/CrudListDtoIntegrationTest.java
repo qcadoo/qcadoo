@@ -26,6 +26,7 @@ package com.qcadoo.model.integration;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.integration.VerifyHooks.HookType;
+import org.junit.Test;
 
 import java.util.List;
 import java.util.Map;
@@ -37,7 +38,7 @@ import static org.junit.Assert.assertTrue;
 
 public class CrudListDtoIntegrationTest extends IntegrationTest {
 
-//    @Test
+    @Test
     public void shouldCopyEntity() throws Exception {
         // given
         DataDefinition productListDtoDataDefinition = getProductListDtoDataDefinition();
@@ -57,7 +58,11 @@ public class CrudListDtoIntegrationTest extends IntegrationTest {
         assertNotNull(productListDtoCopy.getId());
         assertFalse(productListDtoCopy.getId().equals(productListDto.getId()));
         assertTrue(productListDtoCopy.isValid());
-        assertEquals(productListDto.getDataDefinition().getName(), productListDtoCopy.getDataDefinition().getName());
+
+        // copy return master model object!
+        //assertEquals(productListDto.getDataDefinition().getName(), productListDtoCopy.getDataDefinition().getName());
+        assertEquals(productDataDefinition.getName(), productListDtoCopy.getDataDefinition().getName());
+
         assertEquals(productListDto.getDataDefinition().getPluginIdentifier(), productListDtoCopy.getDataDefinition().getPluginIdentifier());
 
         List<Map<String, Object>> result = jdbcTemplate.queryForList("select * from " + TABLE_NAME_PRODUCT + " order by id asc");
@@ -78,7 +83,7 @@ public class CrudListDtoIntegrationTest extends IntegrationTest {
         assertEquals(0, verifyHooks.getNumOfInvocations(HookType.DELETE));
     }
 
-//    @Test
+    @Test
     public void shouldHardDeleteEntity() throws Exception {
         // given
         DataDefinition productDataDefinition = getProductDataDefinition();

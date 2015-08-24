@@ -65,7 +65,7 @@
 		<xs:attribute name="expression" type="xs:string" />
 	</xs:complexType>
 
-	<xs:complexType name="masterOrderType">
+	<xs:complexType name="masterModelType">
 		<xs:attribute name="model" type="identifier" use="required" />
 		<xs:attribute name="plugin" type="identifier" use="required" />
 	</xs:complexType>

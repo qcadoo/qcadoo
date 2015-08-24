@@ -184,6 +184,11 @@
 		</xs:complexContent>
 	</xs:complexType>
 
+	<xs:complexType name="masterModelType">
+		<xs:attribute name="model" type="identifier" use="required" />
+		<xs:attribute name="plugin" type="identifier" use="required" />
+	</xs:complexType>
+
 	<xs:complexType name="hasManyFieldType">
 		<xs:complexContent>
 			<xs:extension base="fieldType">

@@ -38,4 +38,5 @@
 	</fields>
 	<hooks>
 	</hooks>
+    <masterModel plugin="products" model="product" />
 </model>
