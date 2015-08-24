@@ -27,7 +27,7 @@
 						<option type="searchable" value="identifier" />
 						<option type="orderable" value="identifier" />
 						<option type="expression"
-							value="'&lt;/b&gt; - ' + identifier" />
+							value="'&lt;/b&gt; - ' + #identifier" />
 						<option type="fieldCode" value="identifier" />
 						<option type="multiselect" value="true" />
 					</component>
