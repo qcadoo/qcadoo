@@ -36,6 +36,7 @@
 		<string name="description" persistent="false" />
 		<string name="vendor" persistent="false" />
 		<string name="vendorUrl" persistent="false" />
+        <string name="groupName" />
 	</fields>
 	<hooks />
 </model>

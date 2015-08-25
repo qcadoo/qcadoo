@@ -23,17 +23,12 @@
  */
 package com.qcadoo.plugins.plugins.internal;
 
-import java.util.List;
-
+import com.qcadoo.plugin.api.*;
+import com.qcadoo.plugin.api.artifact.PluginArtifact;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.qcadoo.plugin.api.Plugin;
-import com.qcadoo.plugin.api.PluginAccessor;
-import com.qcadoo.plugin.api.PluginManager;
-import com.qcadoo.plugin.api.PluginOperationResult;
-import com.qcadoo.plugin.api.PluginServerManager;
-import com.qcadoo.plugin.api.artifact.PluginArtifact;
+import java.util.List;
 
 @Service
 public class PluginManagmentConnector {
@@ -66,7 +61,7 @@ public class PluginManagmentConnector {
     public PluginAdditionalData getPluginData(final String pluginIdentifier) {
         Plugin plugin = pluginAccessor.getPlugin(pluginIdentifier);
         return new PluginAdditionalData(plugin.getPluginInformation().getName(), plugin.getPluginInformation().getDescription(),
-                plugin.getPluginInformation().getVendor(), plugin.getPluginInformation().getVendorUrl(), plugin.isSystemPlugin());
+                plugin.getPluginInformation().getVendor(), plugin.getPluginInformation().getVendorUrl(), plugin.isSystemPlugin(), plugin.getPluginInformation().getGroup());
     }
 
     public void performRestart() {

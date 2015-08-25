@@ -23,8 +23,10 @@
  */
 package com.qcadoo.plugin.internal.dao;
 
-import java.util.Set;
-
+import com.google.common.collect.Sets;
+import com.qcadoo.model.beans.qcadooPlugin.QcadooPluginPlugin;
+import com.qcadoo.plugin.api.Plugin;
+import com.qcadoo.plugin.internal.api.PluginDao;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,10 +34,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.google.common.collect.Sets;
-import com.qcadoo.model.beans.qcadooPlugin.QcadooPluginPlugin;
-import com.qcadoo.plugin.api.Plugin;
-import com.qcadoo.plugin.internal.api.PluginDao;
+import java.util.Set;
 
 @Service
 public class DefaultPluginDao implements PluginDao {
@@ -62,6 +61,7 @@ public class DefaultPluginDao implements PluginDao {
             existingPlugin.setState(plugin.getState().toString());
             existingPlugin.setVersion(plugin.getVersion().toString());
             existingPlugin.setIsSystem(plugin.isSystemPlugin());
+            existingPlugin.setGroupName(plugin.getPluginInformation()==null ? null : plugin.getPluginInformation().getGroup());
         }
         save(existingPlugin);
     }

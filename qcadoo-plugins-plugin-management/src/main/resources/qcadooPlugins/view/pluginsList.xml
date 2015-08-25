@@ -83,6 +83,7 @@
 				width="100" />
 			<option type="column" name="identifier" fields="identifier"
 				link="true" width="80" />
+			<option type="column" name="groupName" fields="groupName" width="100" />
 			<option type="column" name="vendor" fields="vendor" width="100" />
 			<option type="column" name="version" fields="version" width="40" />
 			<option type="column" name="state" fields="state" width="60" />
@@ -91,8 +92,8 @@
 			<option type="correspondingView" value="qcadooPlugins/pluginDetails" />
 			<option type="correspondingComponent" value="form" />
 			<option type="correspondingViewInModal" value="true" />
-			<option type="searchable" value="identifier,version,state,isSystem" />
-			<option type="orderable" value="identifier,version,state,isSystem" />
+			<option type="searchable" value="identifier,version,state,isSystem,groupName" />
+			<option type="orderable" value="identifier,version,state,isSystem,groupName" />
 			<option type="paginable" value="true" />
 			<option type="deletable" value="false" />
 			<option type="creatable" value="false" />

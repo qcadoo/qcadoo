@@ -23,18 +23,11 @@
  */
 package com.qcadoo.model.beans.qcadooPlugin;
 
-import java.util.Locale;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
+import com.qcadoo.plugin.api.Plugin;
 import org.apache.commons.lang3.StringUtils;
 
-import com.qcadoo.plugin.api.Plugin;
+import javax.persistence.*;
+import java.util.Locale;
 
 @Entity
 @Table(name = "qcadooplugin_plugin")
@@ -56,6 +49,9 @@ public class QcadooPluginPlugin {
     @Column
     private boolean isSystem;
 
+    @Column
+    private String groupName;
+
     public QcadooPluginPlugin() {
         // empty
     }
@@ -65,6 +61,7 @@ public class QcadooPluginPlugin {
         version = plugin.getVersion().toString();
         setState(plugin.getState().toString());
         isSystem = plugin.isSystemPlugin();
+        groupName = plugin.getPluginInformation()== null ? null : plugin.getPluginInformation().getGroup();
     }
 
     public String getIdentifier() {
@@ -99,6 +96,14 @@ public class QcadooPluginPlugin {
         return id;
     }
 
+    public String getGroupName(){
+        return groupName;
+    }
+
+    public void setGroupName(final String groupName){
+        this.groupName = groupName;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -107,6 +112,7 @@ public class QcadooPluginPlugin {
         result = prime * result + ((identifier == null) ? 0 : identifier.hashCode());
         result = prime * result + ((state == null) ? 0 : state.hashCode());
         result = prime * result + ((version == null) ? 0 : version.hashCode());
+        result = prime * result + ((groupName == null) ? 0 : groupName.hashCode());
         return result;
     }
 
@@ -147,6 +153,13 @@ public class QcadooPluginPlugin {
             return false;
         }
         if (isSystem != other.isSystem) {
+            return false;
+        }
+        if (groupName == null) {
+            if (other.groupName != null) {
+                return false;
+            }
+        } else if (!groupName.equals(other.groupName)) {
             return false;
         }
         return true;

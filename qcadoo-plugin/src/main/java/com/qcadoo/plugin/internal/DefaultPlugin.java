@@ -23,35 +23,14 @@
  */
 package com.qcadoo.plugin.internal;
 
-import static com.qcadoo.plugin.api.PluginState.DISABLED;
-import static com.qcadoo.plugin.api.PluginState.ENABLED;
-import static com.qcadoo.plugin.api.PluginState.ENABLING;
-import static com.qcadoo.plugin.api.PluginState.TEMPORARY;
-import static com.qcadoo.plugin.api.PluginState.UNKNOWN;
-import static java.util.Collections.unmodifiableList;
-import static java.util.Collections.unmodifiableMap;
-import static java.util.Collections.unmodifiableSet;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import com.qcadoo.plugin.api.Module;
-import com.qcadoo.plugin.api.ModuleFactory;
-import com.qcadoo.plugin.api.Plugin;
-import com.qcadoo.plugin.api.PluginDependencyInformation;
-import com.qcadoo.plugin.api.PluginInformation;
-import com.qcadoo.plugin.api.PluginState;
-import com.qcadoo.plugin.api.PluginUtils;
-import com.qcadoo.plugin.api.Version;
-import com.qcadoo.plugin.api.VersionOfDependency;
+import com.qcadoo.plugin.api.*;
 import com.qcadoo.plugin.internal.api.InternalPlugin;
-import com.qcadoo.tenant.api.MultiTenantCallback;
 import com.qcadoo.tenant.api.MultiTenantUtil;
+
+import java.util.*;
+
+import static com.qcadoo.plugin.api.PluginState.*;
+import static java.util.Collections.*;
 
 public final class DefaultPlugin implements InternalPlugin {
 
@@ -230,6 +209,8 @@ public final class DefaultPlugin implements InternalPlugin {
 
         private boolean system;
 
+        private String group;
+
         private final Map<ModuleFactory<?>, List<Module>> modulesByFactories = new LinkedHashMap<>();
 
         private final Set<PluginDependencyInformation> dependencyInformations = new HashSet<>();
@@ -303,8 +284,13 @@ public final class DefaultPlugin implements InternalPlugin {
             return this;
         }
 
+        public Builder withGroup(final String group){
+            this.group = group;
+            return this;
+        }
+
         public InternalPlugin build() {
-            PluginInformation pluginInformation = new PluginInformation(name, description, vendor, vendorUrl, license);
+            PluginInformation pluginInformation = new PluginInformation(name, description, vendor, vendorUrl, license, group);
             return new DefaultPlugin(identifier, fileName, system, version, unmodifiableList(factories),
                     unmodifiableMap(modulesByFactories), pluginInformation, unmodifiableSet(dependencyInformations));
         }
