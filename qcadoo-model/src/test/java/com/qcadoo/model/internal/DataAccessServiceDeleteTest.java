@@ -23,22 +23,21 @@
  */
 package com.qcadoo.model.internal;
 
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
-
-import java.util.List;
-
+import com.google.common.collect.Lists;
+import com.qcadoo.model.api.types.HasManyType;
+import com.qcadoo.model.beans.sample.SampleParentDatabaseObject;
+import com.qcadoo.model.beans.sample.SampleSimpleDatabaseObject;
+import com.qcadoo.model.internal.types.HasManyEntitiesType;
 import org.hibernate.Criteria;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import com.google.common.collect.Lists;
-import com.qcadoo.model.api.types.HasManyType;
-import com.qcadoo.model.beans.sample.SampleParentDatabaseObject;
-import com.qcadoo.model.beans.sample.SampleSimpleDatabaseObject;
-import com.qcadoo.model.internal.types.HasManyEntitiesType;
+import java.util.List;
+
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
 public class DataAccessServiceDeleteTest extends DataAccessTest {
 
@@ -59,7 +58,7 @@ public class DataAccessServiceDeleteTest extends DataAccessTest {
         verify(session).delete(simpleDatabaseObject);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void shouldFailIfEntityNotFound() throws Exception {
         // given
         given(session.get(SampleSimpleDatabaseObject.class, 1L)).willReturn(null);
