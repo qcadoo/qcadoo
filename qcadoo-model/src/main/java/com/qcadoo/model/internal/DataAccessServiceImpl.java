@@ -785,8 +785,10 @@ public class DataAccessServiceImpl implements DataAccessService {
 
         Object databaseEntity = getDatabaseEntity(dataDefinition, entityId);
 
-        checkNotNull(databaseEntity, "Entity[%s][id=%s] cannot be found", dataDefinition.getPluginIdentifier() + "."
-                + dataDefinition.getName(), entityId);
+        if(databaseEntity == null){
+            logEntityInfo(dataDefinition, entityId, "has been deleted earlier, for example onDelete hook");
+            return new EntityOpResult(true, new EntityMessagesHolderImpl());
+        }
 
         Entity entity = get(dataDefinition, entityId);
 
