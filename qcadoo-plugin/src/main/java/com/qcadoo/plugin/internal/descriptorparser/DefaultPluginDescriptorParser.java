@@ -23,28 +23,16 @@
  */
 package com.qcadoo.plugin.internal.descriptorparser;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
-import java.io.File;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.net.UnknownHostException;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
+import com.google.common.base.Preconditions;
+import com.qcadoo.plugin.api.Module;
+import com.qcadoo.plugin.api.ModuleFactory;
+import com.qcadoo.plugin.api.PluginState;
+import com.qcadoo.plugin.internal.DefaultPlugin.Builder;
+import com.qcadoo.plugin.internal.PluginException;
+import com.qcadoo.plugin.internal.api.InternalPlugin;
+import com.qcadoo.plugin.internal.api.ModuleFactoryAccessor;
+import com.qcadoo.plugin.internal.api.PluginDescriptorParser;
+import com.qcadoo.plugin.internal.api.PluginDescriptorResolver;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.jdom.Element;
@@ -63,16 +51,20 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import com.google.common.base.Preconditions;
-import com.qcadoo.plugin.api.Module;
-import com.qcadoo.plugin.api.ModuleFactory;
-import com.qcadoo.plugin.api.PluginState;
-import com.qcadoo.plugin.internal.DefaultPlugin.Builder;
-import com.qcadoo.plugin.internal.PluginException;
-import com.qcadoo.plugin.internal.api.InternalPlugin;
-import com.qcadoo.plugin.internal.api.ModuleFactoryAccessor;
-import com.qcadoo.plugin.internal.api.PluginDescriptorParser;
-import com.qcadoo.plugin.internal.api.PluginDescriptorResolver;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.File;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.UnknownHostException;
+import java.util.*;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 @Service
 public class DefaultPluginDescriptorParser implements PluginDescriptorParser {
@@ -258,6 +250,9 @@ public class DefaultPluginDescriptorParser implements PluginDescriptorParser {
         if (isSystemPluginStr != null && Boolean.parseBoolean(isSystemPluginStr)) {
             pluginBuilder.asSystem();
         }
+
+        String pluginGroup = getStringAttribute(pluginNode, "group");
+        pluginBuilder.withGroup(pluginGroup);
 
         for (Node child : getChildNodes(pluginNode)) {
             if ("information".equals(child.getNodeName())) {

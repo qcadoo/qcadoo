@@ -3,19 +3,19 @@
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
  * Version: 1.3
- *
+ * <p>
  * This file is part of Qcadoo.
- *
+ * <p>
  * Qcadoo is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
  * by the Free Software Foundation; either version 3 of the License,
  * or (at your option) any later version.
- *
+ * <p>
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty
  * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Affero General Public License for more details.
- *
+ * <p>
  * You should have received a copy of the GNU Affero General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -23,12 +23,14 @@
  */
 package com.qcadoo.plugins.plugins.internal;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
+import com.qcadoo.localization.api.TranslationService;
+import com.qcadoo.plugin.api.Plugin;
+import com.qcadoo.plugin.api.PluginAccessor;
+import com.qcadoo.plugin.api.VersionOfDependency;
+import com.qcadoo.plugin.api.artifact.InputStreamPluginArtifact;
+import com.qcadoo.plugin.api.artifact.PluginArtifact;
+import com.qcadoo.plugins.plugins.constants.QcadooPluginsConstants;
+import com.qcadoo.view.api.crud.CrudService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,12 +40,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.qcadoo.localization.api.TranslationService;
-import com.qcadoo.plugin.api.VersionOfDependency;
-import com.qcadoo.plugin.api.artifact.InputStreamPluginArtifact;
-import com.qcadoo.plugin.api.artifact.PluginArtifact;
-import com.qcadoo.plugins.plugins.constants.QcadooPluginsConstants;
-import com.qcadoo.view.api.crud.CrudService;
+import java.io.IOException;
+import java.util.*;
 
 @Controller
 public class PluginManagmentUrlController {
@@ -60,6 +58,9 @@ public class PluginManagmentUrlController {
 
     @Autowired
     private TranslationService translationService;
+
+    @Autowired
+    private PluginAccessor pluginAccessor;
 
     @RequestMapping(value = "pluginPages/downloadPage", method = RequestMethod.GET)
     public ModelAndView getDownloadPageView(final Locale locale) {
@@ -171,9 +172,23 @@ public class PluginManagmentUrlController {
         if (dependencies.isEmpty()) {
             return null;
         } else {
-            return dependencies;
+            return addGroupsToPlugins(dependencies);
 
         }
+    }
+
+    private Map<String, String> addGroupsToPlugins(Map<String, String> dependencies) {
+        Map<String, String> newDependencies = new HashMap<>();
+        Iterator<Map.Entry<String, String>> it = dependencies.entrySet().iterator();
+
+        while (it.hasNext()) {
+            Map.Entry<String, String> entry = it.next();
+            Plugin plugin = pluginAccessor.getPlugin(entry.getKey());
+            String key = plugin.getPluginInformation().getGroup() + "." + plugin.getIdentifier();
+            newDependencies.put(key, entry.getValue());
+        }
+
+        return newDependencies;
     }
 
     private String convertVersionString(final String versionStr, final Locale locale) {

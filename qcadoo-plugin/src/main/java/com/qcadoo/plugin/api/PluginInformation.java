@@ -40,6 +40,8 @@ public class PluginInformation {
 
     private final String name;
 
+    private final String group;
+
     /**
      * Creates additional information with given fields.
      * 
@@ -54,13 +56,14 @@ public class PluginInformation {
      * @param license
      */
     public PluginInformation(final String name, final String description, final String vendor, final String vendorUrl,
-            final String license) {
+            final String license, final String group) {
         super();
         this.name = name;
         this.description = description;
         this.vendor = vendor;
         this.vendorUrl = vendorUrl;
         this.license = license;
+        this.group = group;
     }
 
     /**
@@ -108,6 +111,10 @@ public class PluginInformation {
         return name;
     }
 
+    public String getGroup(){
+        return this.group;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -120,6 +127,7 @@ public class PluginInformation {
         result = prime * result + ((vendor == null) ? 0 : vendor.hashCode());
         result = prime * result + ((vendorUrl == null) ? 0 : vendorUrl.hashCode());
         result = prime * result + ((license == null) ? 0 : license.hashCode());
+        result = prime * result + ((group == null) ? 0 : group.hashCode());
         return result;
     }
 
@@ -171,6 +179,13 @@ public class PluginInformation {
                 return false;
             }
         } else if (!license.equals(other.license)) {
+            return false;
+        }
+        if (group == null) {
+            if (other.group != null) {
+                return false;
+            }
+        } else if (!group.equals(other.group)) {
             return false;
         }
         return true;
