@@ -67,7 +67,7 @@
 		</model:model-hook>
 
 		<menu:menu-item name="plugins" category="administration"
-			view="pluginsList" />
+			view="pluginsList" defaultAuthorizationRole="ROLE_SUPERADMIN"/>
 
 		<view:view resource="view/pluginsList.xml" />
 		<view:view resource="view/pluginDetails.xml" />

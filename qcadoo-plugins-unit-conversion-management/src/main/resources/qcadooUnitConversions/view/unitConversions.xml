@@ -27,12 +27,12 @@
 <view xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schema.qcadoo.org/view"
 	xsi:schemaLocation="http://schema.qcadoo.org/view http://schema.qcadoo.org/view.xsd"
 	name="unitConversions" modelName="globalUnitConversionsAggregate" modelPlugin="qcadooModel"
-	defaultAuthorizationRole="ROLE_USER">
+	defaultAuthorizationRole="ROLE_UNIT_CONVERSIONS">
 
 	<component type="window" name="window" reference="window">
 		<ribbon>
 			<template name="standardFormTemplate" includeItems="actions.save,actions.refresh" />
-			<group name="dictionary">
+			<group name="dictionary" defaultAuthorizationRole="ROLE_DICTIONARY_VIEW">
 				<bigButton name="unitsDictionary" icon="calendarIcon24.png"
 					action="">
 					<script>
