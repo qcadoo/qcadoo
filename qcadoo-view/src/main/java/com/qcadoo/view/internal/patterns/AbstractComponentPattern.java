@@ -23,6 +23,24 @@
  */
 package com.qcadoo.view.internal.patterns;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static org.springframework.util.StringUtils.hasText;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.springframework.context.ApplicationContext;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.qcadoo.localization.api.TranslationService;
@@ -37,29 +55,18 @@ import com.qcadoo.view.internal.ComponentDefinition;
 import com.qcadoo.view.internal.ComponentOption;
 import com.qcadoo.view.internal.FieldEntityIdChangeListener;
 import com.qcadoo.view.internal.ScopeEntityIdChangeListener;
-import com.qcadoo.view.internal.api.*;
+import com.qcadoo.view.internal.api.ComponentPattern;
+import com.qcadoo.view.internal.api.ContextualHelpService;
+import com.qcadoo.view.internal.api.InternalComponentState;
+import com.qcadoo.view.internal.api.InternalViewDefinition;
+import com.qcadoo.view.internal.api.InternalViewDefinitionService;
+import com.qcadoo.view.internal.api.InternalViewDefinitionState;
+import com.qcadoo.view.internal.api.ViewDefinition;
 import com.qcadoo.view.internal.hooks.ViewEventListenerHook;
 import com.qcadoo.view.internal.states.AbstractComponentState;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
 import com.qcadoo.view.internal.xml.ViewDefinitionParserImpl;
 import com.qcadoo.view.internal.xml.ViewDefinitionParserNodeException;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.springframework.context.ApplicationContext;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-import static org.springframework.util.StringUtils.hasText;
 
 public abstract class AbstractComponentPattern implements ComponentPattern {
 
@@ -195,7 +202,7 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
         viewDefinition.unregisterComponent(getReference(), getPath());
         unregisterComponentViews(viewDefinitionService);
 
-        if (fieldComponent != null) {
+        if (fieldComponent != null && fieldDefinition != null) {
             fieldComponent.removeFieldEntityIdChangeListener(fieldDefinition.getName());
         }
 
@@ -663,14 +670,14 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
     }
 
     private void checkNotNullFieldDefinition(final FieldDefinition fieldDefinition, final String[] field, final String fieldPath) {
-        if(VersionableConstants.VERSION_FIELD_NAME.equals(field[1])){
+        if (VersionableConstants.VERSION_FIELD_NAME.equals(field[1])) {
             // version field, ignore if empty fieldDefinition
         } else {
             checkNotNull(fieldDefinition, "Cannot find field definition for " + getPath() + ": " + fieldPath);
         }
     }
 
-    public void setPersistent(boolean persistent){
+    public void setPersistent(boolean persistent) {
         this.persistent = persistent;
     }
 }
