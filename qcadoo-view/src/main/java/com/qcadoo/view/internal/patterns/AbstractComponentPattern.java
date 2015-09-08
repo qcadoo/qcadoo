@@ -202,8 +202,11 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
         viewDefinition.unregisterComponent(getReference(), getPath());
         unregisterComponentViews(viewDefinitionService);
 
-        if (fieldComponent != null && fieldDefinition != null) {
-            fieldComponent.removeFieldEntityIdChangeListener(fieldDefinition.getName());
+        if (fieldComponent != null) {
+            if (!fieldComponent.getComponentAndField(fieldPath)[1].equals(VersionableConstants.VERSION_FIELD_NAME)
+                    || fieldDefinition != null) {
+                fieldComponent.removeFieldEntityIdChangeListener(fieldDefinition.getName());
+            }
         }
 
         if (scopeFieldComponent != null && scopeFieldDefinition != null) {
@@ -680,4 +683,5 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
     public void setPersistent(boolean persistent) {
         this.persistent = persistent;
     }
+
 }
