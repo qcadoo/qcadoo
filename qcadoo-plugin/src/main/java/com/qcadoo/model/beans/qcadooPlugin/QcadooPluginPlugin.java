@@ -33,8 +33,9 @@ import java.util.Locale;
 @Table(name = "qcadooplugin_plugin")
 public class QcadooPluginPlugin {
 
+    @SequenceGenerator(name="ID_GEN", sequenceName="qcadooplugin_plugin_id_seq")
+    @GeneratedValue(generator="ID_GEN")
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Column
