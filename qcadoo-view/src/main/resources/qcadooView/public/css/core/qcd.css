@@ -106,3 +106,7 @@ textarea.readonly {
 	padding-left: 34px;
 	margin: auto;
 }
+
+.flow-grid-layout-column {
+	float: left;
+}
