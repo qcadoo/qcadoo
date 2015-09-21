@@ -43,6 +43,7 @@
 		<hasMany name="parts" model="part" joinField="product"
 			cascade="delete" />
 		<manyToMany name="partsManyToMany" model="part" plugin="products" joinField="products" copyable="true" cascade="delete" />
+		<manyToMany name="lazyManyToMany" model="versionableEntity" plugin="products" joinField="products" copyable="true" cascade="delete" lazy="true"/>
 		<string name="readOnly" readonly="true" />
 	</fields>
 	<hooks>

@@ -3,19 +3,19 @@
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
  * Version: 1.3
- *
+ * <p>
  * This file is part of Qcadoo.
- *
+ * <p>
  * Qcadoo is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
  * by the Free Software Foundation; either version 3 of the License,
  * or (at your option) any later version.
- *
+ * <p>
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty
  * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Affero General Public License for more details.
- *
+ * <p>
  * You should have received a copy of the GNU Affero General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -23,24 +23,21 @@
  */
 package com.qcadoo.model.integration;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-
-import junit.framework.Assert;
-
-import org.junit.Test;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.EntityOpResult;
 import com.qcadoo.model.internal.ProxyEntity;
+import junit.framework.Assert;
+import org.junit.Test;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+
+import static org.junit.Assert.*;
 
 public class ManyToManyIntegrationTest extends IntegrationTest {
 
@@ -345,4 +342,25 @@ public class ManyToManyIntegrationTest extends IntegrationTest {
         Assert.assertNotNull(fromDb(thirdPart));
     }
 
+    @Test
+    public void shouldLoadLazyLoading() {
+        // given
+        Entity product1 = save(createProduct("name-lazy-1", "number-lazy-1"));
+        Entity vEntity = dataDefinitionService.get(PLUGIN_PRODUCTS_NAME, "versionableEntity").create();
+        vEntity.setField("name", "name-vEntity-1");
+        vEntity.setField("number", "number-vEntity-1");
+        vEntity.setField("products", Arrays.asList(product1, fromDb(save(createProduct("name-lazy-2", "number-lazy-2"))),
+                fromDb(save(createProduct("name-lazy-3", "number-lazy-3")))));
+
+        vEntity = save(vEntity);
+
+        // when
+        Entity vEntityDb = fromDb(vEntity);
+        Entity product1Db = fromDb(product1);
+
+        // then
+        Assert.assertEquals(3, vEntityDb.getManyToManyField("products").size());
+        Assert.assertEquals(1, product1Db.getManyToManyField("lazyManyToMany").size());
+        Assert.assertTrue(vEntity.getManyToManyField("products").contains(product1Db));
+    }
 }

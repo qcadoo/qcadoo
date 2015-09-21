@@ -214,7 +214,7 @@ public class FieldTypeFactoryTest extends DataAccessTest {
     public void shouldReturnManyToManyType() throws Exception {
         // when
         FieldType fieldType = new ManyToManyEntitiesType("parent", "entity", "joinFieldName", ManyToManyType.Cascade.NULLIFY,
-                true, dataDefinitionService);
+                true, false, dataDefinitionService);
 
         // then
         assertEquals(Set.class, fieldType.getType());

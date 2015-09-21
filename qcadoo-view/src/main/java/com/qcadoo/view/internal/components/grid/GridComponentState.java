@@ -734,12 +734,10 @@ public final class GridComponentState extends AbstractComponentState implements 
                 if (belongsToFieldDefinition != null) {
                     if (belongsToFieldDefinition.getType() instanceof ManyToManyType) {
                         String belongsToFieldName = belongsToFieldDefinition.getName();
-                        criteria.createAlias(belongsToFieldName, belongsToFieldName).add(
-                                SearchRestrictions.eq(belongsToFieldName + ".id", belongsToEntityId));
+                        criteria.createAlias(belongsToFieldName, belongsToFieldName).add(SearchRestrictions.eq(belongsToFieldName + ".id", belongsToEntityId));
                     } else {
-                        criteria.add(SearchRestrictions.belongsTo(belongsToFieldDefinition.getName(),
-                                ((DataDefinitionHolder) belongsToFieldDefinition.getType()).getDataDefinition(),
-                                belongsToEntityId));
+//                        criteria.add(SearchRestrictions.belongsTo(belongsToFieldDefinition.getName(), ((DataDefinitionHolder) belongsToFieldDefinition.getType()).getDataDefinition(), belongsToEntityId));
+                        criteria.add(SearchRestrictions.eq(belongsToFieldDefinition.getName()+".id", belongsToEntityId));
                     }
                 }
 

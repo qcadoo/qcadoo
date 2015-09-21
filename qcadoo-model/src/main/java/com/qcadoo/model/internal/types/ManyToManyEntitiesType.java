@@ -44,14 +44,17 @@ public final class ManyToManyEntitiesType extends AbstractFieldType implements M
 
     private final Cascade cascade;
 
+    private final boolean lazyLoading;
+
     // TODO MAKU reduce arguments length using parameter object
     public ManyToManyEntitiesType(final String pluginIdentifier, final String entityName, final String joinFieldName,
-            final Cascade cascade, final boolean copyable, final DataDefinitionService dataDefinitionService) {
+            final Cascade cascade, final boolean copyable, boolean lazyLoading, final DataDefinitionService dataDefinitionService) {
         super(copyable);
         this.pluginIdentifier = pluginIdentifier;
         this.entityName = entityName;
         this.joinFieldName = joinFieldName;
         this.cascade = cascade;
+        this.lazyLoading = lazyLoading;
         this.dataDefinitionService = dataDefinitionService;
     }
 
@@ -90,4 +93,8 @@ public final class ManyToManyEntitiesType extends AbstractFieldType implements M
         return dataDefinitionService.get(pluginIdentifier, entityName);
     }
 
+    @Override
+    public boolean isLazyLoading() {
+        return lazyLoading;
+    }
 }

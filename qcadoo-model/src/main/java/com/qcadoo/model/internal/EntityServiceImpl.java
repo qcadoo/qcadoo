@@ -131,7 +131,7 @@ public final class EntityServiceImpl implements EntityService {
             return getHasManyField(databaseEntity, fieldDefinition);
         }
         if (fieldDefinition.getType() instanceof ManyToManyType) {
-            return getManyToManyField(databaseEntity, fieldDefinition);
+            return getManyToManyField(databaseEntity, fieldDefinition, performer);
         }
         if (fieldDefinition.getType() instanceof TreeType) {
             return getTreeField(databaseEntity, fieldDefinition);
@@ -267,29 +267,35 @@ public final class EntityServiceImpl implements EntityService {
         return new EntityListImpl(referencedDataDefinition, hasManyFieldType.getJoinFieldName(), parentId);
     }
 
-    private Object getManyToManyField(final Object databaseEntity, final FieldDefinition fieldDefinition) {
-        @SuppressWarnings("unchecked")
-        Set<Object> databaseEntities = (Set<Object>) getPrimitiveField(databaseEntity, fieldDefinition);
-        if (databaseEntities == null) {
-            return null;
-        }
-        List<Entity> genericEntities = Lists.newArrayList();
-        InternalDataDefinition referencedDataDefinition = (InternalDataDefinition) ((ManyToManyType) fieldDefinition.getType())
-                .getDataDefinition();
+    private Object getManyToManyField(final Object databaseEntity, final FieldDefinition fieldDefinition, final Entity performer) {
+        ManyToManyType manyToManyType = (ManyToManyType) fieldDefinition.getType();
+        InternalDataDefinition referencedDataDefinition = (InternalDataDefinition) manyToManyType.getDataDefinition();
 
-        @SuppressWarnings("unchecked")
-        final Iterable<Object> fieldValues = (Iterable<Object>) getField(databaseEntity, fieldDefinition.getName());
-        for (Object innerDatabaseEntity : fieldValues) {
-            Entity innerEntity = null;
-            Long id = getId(innerDatabaseEntity);
-            if (id == null) {
-                innerEntity = convertToGenericEntity(referencedDataDefinition, innerDatabaseEntity);
-            } else {
-                innerEntity = new ProxyEntity(referencedDataDefinition, id);
+        if(manyToManyType.isLazyLoading()){
+            return new ProxyList(fieldDefinition, getId(databaseEntity), performer);
+
+        } else {
+            @SuppressWarnings("unchecked")
+            Set<Object> databaseEntities = (Set<Object>) getPrimitiveField(databaseEntity, fieldDefinition);
+            if (databaseEntities == null) {
+                return null;
             }
-            genericEntities.add(innerEntity);
+            List<Entity> genericEntities = Lists.newArrayList();
+
+            @SuppressWarnings("unchecked")
+            final Iterable<Object> fieldValues = (Iterable<Object>) getField(databaseEntity, fieldDefinition.getName());
+            for (Object innerDatabaseEntity : fieldValues) {
+                Entity innerEntity = null;
+                Long id = getId(innerDatabaseEntity);
+                if (id == null) {
+                    innerEntity = convertToGenericEntity(referencedDataDefinition, innerDatabaseEntity);
+                } else {
+                    innerEntity = new ProxyEntity(referencedDataDefinition, id);
+                }
+                genericEntities.add(innerEntity);
+            }
+            return genericEntities;
         }
-        return genericEntities;
     }
 
     private Object getTreeField(final Object databaseEntity, final FieldDefinition fieldDefinition) {

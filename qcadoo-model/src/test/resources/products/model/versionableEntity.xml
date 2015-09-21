@@ -32,6 +32,7 @@
 		<string name="name" required="true">
 			<validatesLength max="512" />
 		</string>
+        <manyToMany name="products" model="product" plugin="products" joinField="lazyManyToMany" cascade="nullify" lazy="true" />
 	</fields>
 	<hooks>
 	</hooks>
