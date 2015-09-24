@@ -60,8 +60,8 @@
 	</licenses>
 
 	<properties>
-		<qcadoo.plugin.version>1.4</qcadoo.plugin.version>
-		<qcadoo.maven.plugin.version>1.4</qcadoo.maven.plugin.version>
+		<qcadoo.plugin.version>1.5</qcadoo.plugin.version>
+		<qcadoo.maven.plugin.version>1.5-SNAPSHOT</qcadoo.maven.plugin.version>
 	</properties>
 
 	<dependencies>
