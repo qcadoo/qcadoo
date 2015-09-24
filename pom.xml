@@ -11,7 +11,7 @@
 
 	<groupId>com.qcadoo</groupId>
 	<artifactId>qcadoo</artifactId>
-	<version>1.4</version>
+	<version>1.5-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<modules>
@@ -274,7 +274,7 @@
 		<connection>scm:git:ssh://github.com/qcadoo/qcadoo.git</connection>
 		<developerConnection>scm:git:ssh://git@github.com/qcadoo/qcadoo.git</developerConnection>
 		<url>http://github.com/qcadoo/qcadoo</url>
-	  <tag>1.4</tag>
+	  <tag>HEAD</tag>
   </scm>
 
 </project>
