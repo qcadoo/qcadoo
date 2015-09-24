@@ -92,42 +92,6 @@ public class FlowGridLayoutPattern extends AbstractLayoutPattern {
                 throw new ViewDefinitionParserNodeException(child, e);
             }
         }
-
-        if (parser.getBooleanAttribute(componentNode, "hasBorders", true)) {
-            updateBorders();
-        }
-    }
-
-    private void updateBorders() {
-        int colsNumber = cells[0].length;
-        boolean[] bordersArray = new boolean[colsNumber];
-        for (int i = 0; i < colsNumber; i++) {
-            bordersArray[i] = false;
-        }
-
-        for (int row = 0; row < cells.length; row++) {
-            for (int col = 0; col < cells[row].length; col++) {
-                if (cells[row][col].getComponents() != null) {
-                    bordersArray[col + cells[row][col].getColspan() - 1] = true;
-                }
-            }
-        }
-
-        // remove last border
-        for (int i = colsNumber - 1; i >= 0; i--) {
-            if (bordersArray[i]) {
-                bordersArray[i] = false;
-                break;
-            }
-        }
-
-        for (int row = 0; row < cells.length; row++) {
-            for (int col = 0; col < cells[row].length; col++) {
-                if (bordersArray[col + cells[row][col].getColspan() - 1]) {
-                    cells[row][col].setRightBorder(true);
-                }
-            }
-        }
     }
 
     private FlowGridLayoutCell createFlowGridLayoutCell(final Node child, final ViewDefinitionParser parser) throws ViewDefinitionParserNodeException {

@@ -38,8 +38,6 @@ public class FlowGridLayoutCell {
 
     private boolean available = true;
 
-    private boolean rightBorder = false;
-
     private Integer minHeight;
 
     public List<ComponentPattern> getComponents() {
@@ -75,14 +73,6 @@ public class FlowGridLayoutCell {
 
     public void setAvailable(final boolean available) {
         this.available = available;
-    }
-
-    public boolean isRightBorder() {
-        return rightBorder;
-    }
-
-    public void setRightBorder(final boolean rightBorder) {
-        this.rightBorder = rightBorder;
     }
 
     public Integer getMinHeight() {

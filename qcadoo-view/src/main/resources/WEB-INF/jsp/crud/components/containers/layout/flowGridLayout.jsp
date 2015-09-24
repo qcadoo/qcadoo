@@ -51,12 +51,7 @@
 
 					<c:if test="${cell.available || cell.components != null}">
 
-						<c:set var="borderClass" value=""/>
-						<c:if test="${cell.rightBorder}">
-							<c:set var="borderClass" value="rightBorder"/>
-						</c:if>
-
-						<div class="flow-grid-layout-item" rowspan="${cell.rowspan}" colspan="${cell.colspan}" minHeight="${cell.minHeight}" rowIndex="<%= j%>" cellIndex="<%= i%>" class="${borderClass}">
+						<div class="flow-grid-layout-item" rowspan="${cell.rowspan}" colspan="${cell.colspan}" minHeight="${cell.minHeight}" rowIndex="<%= j%>" cellIndex="<%= i%>">
 
 							<c:if test="${cell.components != null}">
 								<c:forEach items="${cell.components}" var="childrenComponent">
