@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 1.3
+ * Version: 1.4
  *
  * This file is part of Qcadoo.
  *
@@ -33,8 +33,9 @@ import java.util.Locale;
 @Table(name = "qcadooplugin_plugin")
 public class QcadooPluginPlugin {
 
+    @SequenceGenerator(name="ID_GEN", sequenceName="qcadooplugin_plugin_id_seq")
+    @GeneratedValue(generator="ID_GEN")
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Column

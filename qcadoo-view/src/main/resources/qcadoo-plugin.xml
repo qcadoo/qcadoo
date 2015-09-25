@@ -4,7 +4,7 @@
     ***************************************************************************
     Copyright (c) 2010 Qcadoo Limited
     Project: Qcadoo Framework
-    Version: 1.3
+    Version: 1.4
 
     This file is part of Qcadoo.
 
@@ -122,6 +122,8 @@
 			class="com.qcadoo.view.internal.components.layout.VerticalLayoutPattern" />
 		<view:view-component name="gridLayout"
 			class="com.qcadoo.view.internal.components.layout.GridLayoutPattern" />
+		<view:view-component name="flowGridLayout"
+				class="com.qcadoo.view.internal.components.layout.FlowGridLayoutPattern" />
 		<view:view-component name="borderLayout"
 			class="com.qcadoo.view.internal.components.layout.BorderLayoutPattern" />
 		<view:view-component name="flowLayout"
