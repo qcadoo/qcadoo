@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 1.3
+ * Version: 1.4
  *
  * This file is part of Qcadoo.
  *
@@ -34,6 +34,7 @@ import com.qcadoo.model.api.search.SearchResult;
 import com.qcadoo.model.api.types.*;
 import com.qcadoo.model.api.utils.EntityUtils;
 import com.qcadoo.model.api.validators.ErrorMessage;
+import com.qcadoo.model.constants.VersionableConstants;
 import com.qcadoo.model.internal.api.*;
 import com.qcadoo.model.internal.search.SearchCriteria;
 import com.qcadoo.model.internal.search.SearchQuery;
@@ -94,12 +95,21 @@ public class DataAccessServiceImpl implements DataAccessService {
     public Entity save(final InternalDataDefinition dataDefinition, final Entity genericEntity) {
         Set<Entity> newlySavedEntities = new HashSet<Entity>();
 
+        Long previousVersion = null;
+        if(dataDefinition.isVersionable()) {
+            previousVersion = genericEntity.getLongField(VersionableConstants.VERSION_FIELD_NAME);
+        }
+
         Entity resultEntity = performSave(dataDefinition, genericEntity, new HashSet<Entity>(), newlySavedEntities);
         try {
             if (TransactionAspectSupport.currentTransactionStatus().isRollbackOnly()) {
                 resultEntity.setNotValid();
                 for (Entity e : newlySavedEntities) {
                     e.setId(null);
+                }
+
+                if(dataDefinition.isVersionable()) {
+                    resultEntity.setField(VersionableConstants.VERSION_FIELD_NAME, previousVersion);
                 }
             }
         } catch (NoTransactionException e) {
@@ -149,7 +159,6 @@ public class DataAccessServiceImpl implements DataAccessService {
 
         if(dataDefinition.isVersionable()){
             hibernateService.getCurrentSession().flush();
-//            hibernateService.getCurrentSession().refresh(databaseEntity);
         }
 
         Entity savedEntity = entityService.convertToGenericEntity(dataDefinition, databaseEntity);

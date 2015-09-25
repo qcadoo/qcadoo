@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
@@ -12,7 +11,7 @@
 
 	<groupId>com.qcadoo</groupId>
 	<artifactId>qcadoo</artifactId>
-	<version>1.4-SNAPSHOT</version>
+	<version>1.5-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<modules>
@@ -61,8 +60,8 @@
 	</licenses>
 
 	<properties>
-		<qcadoo.plugin.version>1.4</qcadoo.plugin.version>
-		<qcadoo.maven.plugin.version>1.4-SNAPSHOT</qcadoo.maven.plugin.version>
+		<qcadoo.plugin.version>1.5</qcadoo.plugin.version>
+		<qcadoo.maven.plugin.version>1.5-SNAPSHOT</qcadoo.maven.plugin.version>
 	</properties>
 
 	<dependencies>
@@ -275,6 +274,7 @@
 		<connection>scm:git:ssh://github.com/qcadoo/qcadoo.git</connection>
 		<developerConnection>scm:git:ssh://git@github.com/qcadoo/qcadoo.git</developerConnection>
 		<url>http://github.com/qcadoo/qcadoo</url>
-	</scm>
+	  <tag>HEAD</tag>
+  </scm>
 
 </project>
