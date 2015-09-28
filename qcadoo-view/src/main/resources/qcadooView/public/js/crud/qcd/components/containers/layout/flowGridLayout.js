@@ -32,7 +32,7 @@ QCD.components.containers.layout.FlowGridLayout = function(_element, _mainContro
 	var debug = false;
 	var elementSearchName = this.elementSearchName;
 	var rootElement = $("#"+elementSearchName+"_layoutComponents > .gridLayoutTable");
-	var headerUsedHeight = 230;
+	var headerUsedHeight = 235;
 	var baseRowHeight = 50;
 	
 	var colsNumber = this.options.colsNumber;
