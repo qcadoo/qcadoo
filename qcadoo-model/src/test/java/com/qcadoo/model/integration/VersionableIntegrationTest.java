@@ -29,6 +29,8 @@ import com.qcadoo.model.constants.VersionableConstants;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Arrays;
+
 import static junit.framework.Assert.*;
 
 public class VersionableIntegrationTest extends IntegrationTest {
@@ -101,6 +103,26 @@ public class VersionableIntegrationTest extends IntegrationTest {
         assertEquals(1, entity2.getGlobalErrors().size());
         assertEquals("qcadooView.validate.global.optimisticLock", entity2.getGlobalErrors().get(0).getMessage());
     }
+
+
+    @Test
+    public void shouldSaveEntityWithManyToManyToVersionable(){
+        // given
+        Entity product1 = save(createProduct("product-1", "product-1"));
+
+        Entity vEntity1 = save(createVersionableEntity("versionable-1", "versionable-1"));
+        Entity vEntity2 = save(createVersionableEntity("versionable-2", "versionable-2"));
+
+        vEntity1.setField("products", Arrays.asList(product1));
+        vEntity2.setField("products", Arrays.asList(product1));
+        product1.setField("lazyManyToMany", Arrays.asList(vEntity1, vEntity2));
+
+        // when
+        product1 = save(product1);
+
+        // then
+    }
+
 
     protected Entity createVersionableEntity(final String name, final String number) {
         Entity entity = versionableEntityDataDefinition.create();

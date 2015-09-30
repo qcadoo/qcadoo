@@ -23,17 +23,6 @@
  */
 package com.qcadoo.model.internal;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map.Entry;
-import java.util.Set;
-
-import org.apache.commons.beanutils.PropertyUtils;
-import org.hibernate.proxy.HibernateProxy;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.qcadoo.model.api.Entity;
@@ -43,11 +32,22 @@ import com.qcadoo.model.api.types.BelongsToType;
 import com.qcadoo.model.api.types.HasManyType;
 import com.qcadoo.model.api.types.ManyToManyType;
 import com.qcadoo.model.api.types.TreeType;
+import com.qcadoo.model.constants.VersionableConstants;
 import com.qcadoo.model.internal.api.EntityService;
 import com.qcadoo.model.internal.api.HibernateService;
 import com.qcadoo.model.internal.api.InternalDataDefinition;
 import com.qcadoo.model.internal.api.InternalFieldDefinition;
 import com.qcadoo.model.internal.types.PasswordType;
+import org.apache.commons.beanutils.PropertyUtils;
+import org.hibernate.proxy.HibernateProxy;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map.Entry;
+import java.util.Set;
 
 @Service
 public final class EntityServiceImpl implements EntityService {
@@ -249,6 +249,10 @@ public final class EntityServiceImpl implements EntityService {
         if (existingDatabaseEntity == null) {
             databaseEntity = dataDefinition.getInstanceForEntity();
             setId(databaseEntity, genericEntity.getId());
+
+            if(dataDefinition.isVersionable()) {
+                setField(databaseEntity, VersionableConstants.VERSION_FIELD_NAME, genericEntity.getLongField(VersionableConstants.VERSION_FIELD_NAME));
+            }
         } else {
             databaseEntity = existingDatabaseEntity;
         }
