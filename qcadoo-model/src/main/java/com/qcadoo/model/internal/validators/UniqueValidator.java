@@ -25,6 +25,7 @@ package com.qcadoo.model.internal.validators;
 
 import java.util.Objects;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -76,7 +77,7 @@ public final class UniqueValidator implements FieldHookDefinition, ErrorMessageD
 
     private SearchCriterion uniqueCriterionFor(final Entity entity) {
         if (Objects.equals(String.class, fieldDefinition.getType().getType())) {
-            return SearchRestrictions.iEq(fieldDefinition.getName(), entity.getField(fieldDefinition.getName()));
+            return SearchRestrictions.iEq(fieldDefinition.getName(), entity.getStringField(fieldDefinition.getName()).trim());
         }
         return SearchRestrictions.eq(fieldDefinition.getName(), entity.getField(fieldDefinition.getName()));
     }
