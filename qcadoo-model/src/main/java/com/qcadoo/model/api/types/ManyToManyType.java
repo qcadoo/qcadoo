@@ -29,5 +29,10 @@ package com.qcadoo.model.api.types;
  * @since 0.4.9
  */
 public interface ManyToManyType extends CollectionFieldType {
-
+    /**
+     * Returns true if field will be lazy loaded.
+     *
+     * @return true if lazy loading
+     */
+    boolean isLazyLoading();
 }

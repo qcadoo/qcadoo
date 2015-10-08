@@ -226,6 +226,7 @@
 	<xs:complexType name="manyToManyFieldType">
 		<xs:complexContent>
 			<xs:extension base="collectionValueFieldType">
+				<xs:attribute name="lazy" type="xs:boolean" default="false" />
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>

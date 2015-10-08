@@ -198,6 +198,7 @@
 					use="required" />
 				<xs:attribute name="cascade" type="cascadeType" default="nullify" />
 				<xs:attribute name="copyable" type="xs:boolean" default="false" />
+				<xs:attribute name="lazy" type="xs:boolean" default="false" />
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>

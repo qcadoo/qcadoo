@@ -67,6 +67,10 @@ public abstract class IntegrationTest {
 
     protected static final String ENTITY_NAME_DIVISION = "division";
 
+    protected static final String ENTITY_NAME_VERSIONABLE = "versionableEntity";
+
+    protected static final String TABLE_NAME_VERSIONABLE = PLUGIN_PRODUCTS_NAME + "_" + ENTITY_NAME_VERSIONABLE;
+
     protected static final String TABLE_NAME_PRODUCT = PLUGIN_PRODUCTS_NAME + "_" + ENTITY_NAME_PRODUCT;
 
     protected static final String TABLE_NAME_MACHINE = PLUGIN_MACHINES_NAME + "_" + ENTITY_NAME_MACHINE;
@@ -81,6 +85,9 @@ public abstract class IntegrationTest {
 
     protected static final String TABLE_NAME_JOIN_PRODUCT_PART = "JOINTABLE_" + ENTITY_NAME_PART.toUpperCase() + "_"
             + ENTITY_NAME_PRODUCT.toUpperCase();
+
+    protected static final String TABLE_NAME_JOIN_PRODUCT_VERSIONABLE = "JOINTABLE_" + ENTITY_NAME_PRODUCT.toUpperCase() + "_"
+            + ENTITY_NAME_VERSIONABLE.toUpperCase();
 
     protected static InternalDataDefinitionService dataDefinitionService;
 
@@ -138,6 +145,8 @@ public abstract class IntegrationTest {
         jdbcTemplate.execute("delete from " + TABLE_NAME_PART);
         jdbcTemplate.execute("delete from " + TABLE_NAME_COMPONENT);
         jdbcTemplate.execute("delete from " + TABLE_NAME_MACHINE);
+        jdbcTemplate.execute("delete from " + TABLE_NAME_JOIN_PRODUCT_VERSIONABLE);
+        jdbcTemplate.execute("delete from " + TABLE_NAME_VERSIONABLE);
         jdbcTemplate.execute("delete from " + TABLE_NAME_PRODUCT);
     }
 

@@ -296,7 +296,7 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
     private FieldType getManyToManyType(final XMLStreamReader reader, final String pluginIdentifier) {
         CollectionTypeCommonParams params = new CollectionTypeCommonParams(reader, pluginIdentifier);
         return new ManyToManyEntitiesType(params.getPluginName(), params.getModelName(), params.getJoinFieldName(),
-                params.getCascade(), params.isCopyable(), dataDefinitionService);
+                params.getCascade(), params.isCopyable(), params.isLazyLoading(), dataDefinitionService);
     }
 
     private FieldType getTreeType(final XMLStreamReader reader, final String pluginIdentifier) {
@@ -317,12 +317,15 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
 
         private final boolean isCopyable;
 
+        private final boolean isLazyLoading;
+
         private CollectionTypeCommonParams(final XMLStreamReader reader, final String pluginIdentifier) {
             pluginName = getStringAttribute(reader, TAG_PLUGIN, pluginIdentifier);
             modelName = getStringAttribute(reader, TAG_MODEL);
             joinFieldName = getStringAttribute(reader, TAG_JOIN_FIELD);
             cascade = Cascadeable.Cascade.parse(getStringAttribute(reader, "cascade"));
             isCopyable = getBooleanAttribute(reader, "copyable", false);
+            isLazyLoading = getBooleanAttribute(reader, "lazy", false);
         }
 
         public String getPluginName() {
@@ -343,6 +346,10 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
 
         public boolean isCopyable() {
             return isCopyable;
+        }
+
+        public boolean isLazyLoading() {
+            return isLazyLoading;
         }
     }
 

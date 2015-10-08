@@ -43,5 +43,4 @@ public interface EntityService {
     Entity convertToGenericEntity(InternalDataDefinition dataDefinition, Object databaseEntity);
 
     Object convertToDatabaseEntity(InternalDataDefinition dataDefinition, Entity genericEntity, Object existingDatabaseEntity);
-
 }
