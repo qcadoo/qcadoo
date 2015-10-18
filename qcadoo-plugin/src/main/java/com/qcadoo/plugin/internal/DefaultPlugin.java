@@ -94,14 +94,13 @@ public final class DefaultPlugin implements InternalPlugin {
 
         if (hasState(UNKNOWN)) {
             state = targetState;
+
             return;
         }
 
         Plugin thisPlugin = this;
 
         if (ENABLED.equals(targetState)) {
-
-            state = targetState;
             for (final ModuleFactory<?> factory : factories) {
                 List<Module> modules = modulesByFactories.get(factory);
 
@@ -116,8 +115,8 @@ public final class DefaultPlugin implements InternalPlugin {
                 }
             }
 
+            state = targetState;
         } else if (DISABLED.equals(targetState)) {
-
             for (final ModuleFactory<?> factory : reversedFactories) {
                 List<Module> modules = modulesByFactories.get(factory);
                 Collections.reverse(modules);
@@ -132,12 +131,10 @@ public final class DefaultPlugin implements InternalPlugin {
                     });
                 }
             }
-            state = targetState;
 
+            state = targetState;
         } else {
-
             state = targetState;
-
         }
 
     }

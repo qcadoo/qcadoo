@@ -121,6 +121,10 @@ public class PluginManagmentPerformer {
             case CANNOT_INSTALL_PLUGIN_FILE:
                 url = createErrorPageUrl("enable.cannotInstall");
                 break;
+            case PLUGIN_ENABLING_ENCOUNTERED_ERRORS:
+                url = createErrorPageUrl("enable.encounteredErrors");
+                break;
+
             default:
                 throw new IllegalStateException(L_WRONG_STATUS);
         }

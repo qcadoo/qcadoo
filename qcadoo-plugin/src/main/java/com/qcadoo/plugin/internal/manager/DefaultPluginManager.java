@@ -115,6 +115,7 @@ public class DefaultPluginManager implements PluginManager {
         boolean shouldRestart = false;
 
         List<String> fileNames = new ArrayList<String>();
+
         for (Plugin plugin : plugins) {
             if (plugin.hasState(PluginState.TEMPORARY)) {
                 fileNames.add(plugin.getFilename());
@@ -128,12 +129,20 @@ public class DefaultPluginManager implements PluginManager {
         }
 
         plugins = pluginDependencyManager.sortPluginsInDependencyOrder(plugins);
+
         for (Plugin plugin : plugins) {
             if (plugin.hasState(PluginState.TEMPORARY)) {
                 ((InternalPlugin) plugin).changeStateTo(PluginState.ENABLING);
             } else {
-                ((InternalPlugin) plugin).changeStateTo(PluginState.ENABLED);
+                try {
+                    ((InternalPlugin) plugin).changeStateTo(PluginState.ENABLED);
+                } catch (Exception e) {
+                    LOG.error(e.getMessage());
+
+                    return PluginOperationResultImpl.pluginEnablingEncounteredErrors();
+                }
             }
+
             pluginDao.save(plugin);
             pluginAccessor.savePlugin(plugin);
         }
@@ -174,9 +183,12 @@ public class DefaultPluginManager implements PluginManager {
         }
 
         plugins = pluginDependencyManager.sortPluginsInDependencyOrder(plugins);
+
         Collections.reverse(plugins);
+
         for (Plugin plugin : plugins) {
             ((InternalPlugin) plugin).changeStateTo(PluginState.DISABLED);
+
             pluginDao.save(plugin);
             pluginAccessor.savePlugin(plugin);
         }

@@ -116,6 +116,11 @@ public enum PluginOperationStatus {
     PLUGIN_ENABLING_IS_NOT_ALLOWED,
 
     /**
+     * Plugin cannot be enabled because of encountered errors
+     */
+    PLUGIN_ENABLING_ENCOUNTERED_ERRORS,
+
+    /**
      * Plugin not exist.
      */
     PLUGIN_NOT_EXIST;
