@@ -30,7 +30,6 @@ import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.constants.QcadooModelConstants;
-import com.qcadoo.plugins.dictionaries.DictionariesService;
 
 @Service
 public class DictionariesServiceImpl implements DictionariesService {
