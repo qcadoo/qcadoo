@@ -139,6 +139,8 @@ public class DefaultPluginManager implements PluginManager {
                 } catch (Exception e) {
                     LOG.error(e.getMessage());
 
+                    ((InternalPlugin) plugin).changeStateTo(PluginState.DISABLED);
+
                     return PluginOperationResultImpl.pluginEnablingEncounteredErrors();
                 }
             }
