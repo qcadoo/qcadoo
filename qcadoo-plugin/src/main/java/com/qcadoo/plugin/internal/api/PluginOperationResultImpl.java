@@ -236,6 +236,15 @@ public final class PluginOperationResultImpl implements PluginOperationResult {
     }
 
     /**
+     * Creates holder with {@link PluginOperationStatus#PLUGIN_ENABLING_ENCOUNTERED_ERRORS}
+     *
+     * @return holder
+     */
+    public static PluginOperationResult pluginEnablingEncounteredErrors() {
+        return new PluginOperationResultImpl(PluginOperationStatus.PLUGIN_ENABLING_ENCOUNTERED_ERRORS);
+    }
+
+    /**
      * Creates holder with {@link PluginOperationStatus#PLUGIN_NOT_EXIST}
      * 
      * @return holder
