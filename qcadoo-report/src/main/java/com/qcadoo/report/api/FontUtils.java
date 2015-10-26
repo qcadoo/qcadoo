@@ -42,6 +42,10 @@ public final class FontUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(FontUtils.class);
 
+    private static Font dejavuBold70Light;
+
+    private static Font dejavuBold70Dark;
+
     private static Font dejavuBold19Light;
 
     private static Font dejavuBold19Dark;
@@ -99,9 +103,18 @@ public final class FontUtils {
                 LOG.warn("Font not found, using embedded font helvetica");
                 dejavu = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.EMBEDDED);
             }
+            dejavuBold70Light = new Font(dejavu, 70);
+            dejavuBold70Light.setStyle(Font.BOLD);
+            dejavuBold70Light.setColor(ColorUtils.getLightColor());
+            
+            dejavuBold70Dark = new Font(dejavu, 70);
+            dejavuBold70Dark.setStyle(Font.BOLD);
+            dejavuBold70Dark.setColor(ColorUtils.getDarkColor());
+            
             dejavuBold19Light = new Font(dejavu, 19);
             dejavuBold19Light.setStyle(Font.BOLD);
             dejavuBold19Light.setColor(ColorUtils.getLightColor());
+            
             dejavuBold19Dark = new Font(dejavu, 19);
             dejavuBold19Dark.setStyle(Font.BOLD);
             dejavuBold19Dark.setColor(ColorUtils.getDarkColor());
@@ -113,42 +126,63 @@ public final class FontUtils {
             dejavuBold17Light = new Font(dejavu, 17);
             dejavuBold17Light.setStyle(Font.BOLD);
             dejavuBold17Light.setColor(ColorUtils.getLightColor());
+            
             dejavuBold14Light = new Font(dejavu, 17);
             dejavuBold14Light.setStyle(Font.BOLD);
             dejavuBold14Light.setColor(ColorUtils.getLightColor());
+            
             dejavuBold17Dark = new Font(dejavu, 17);
             dejavuBold17Dark.setStyle(Font.BOLD);
             dejavuBold17Dark.setColor(ColorUtils.getDarkColor());
+            
             dejavuRegular9Light = new Font(dejavu, 9);
             dejavuRegular9Light.setColor(ColorUtils.getLightColor());
+            
             dejavuRegular9Dark = new Font(dejavu, 9);
             dejavuRegular9Dark.setColor(ColorUtils.getDarkColor());
+            
             dejavuRegular7Dark = new Font(dejavu, 7);
             dejavuRegular7Dark.setColor(ColorUtils.getDarkColor());
+            
             dejavuBold9Dark = new Font(dejavu, 9);
             dejavuBold9Dark.setColor(ColorUtils.getDarkColor());
             dejavuBold9Dark.setStyle(Font.BOLD);
+            
             dejavuBold11Dark = new Font(dejavu, 11);
             dejavuBold11Dark.setColor(ColorUtils.getDarkColor());
             dejavuBold11Dark.setStyle(Font.BOLD);
+            
             dejavuBold11Light = new Font(dejavu, 11);
             dejavuBold11Light.setColor(ColorUtils.getLightColor());
             dejavuBold11Light.setStyle(Font.BOLD);
+            
             dejavuRegular10Dark = new Font(dejavu, 10);
             dejavuRegular10Dark.setColor(ColorUtils.getDarkColor());
+            
             dejavuBold10Dark = new Font(dejavu, 10);
             dejavuBold10Dark.setColor(ColorUtils.getDarkColor());
             dejavuBold10Dark.setStyle(Font.BOLD);
+            
             dejavuRegular7Light = new Font(dejavu, 7);
             dejavuRegular7Light.setColor(ColorUtils.getLightColor());
+            
             dejavuBold7Dark = new Font(dejavu, 7);
             dejavuBold7Dark.setColor(ColorUtils.getDarkColor());
             dejavuBold7Dark.setStyle(Font.BOLD);
+            
             dejavuBold8Dark = new Font(dejavu, 8);
             dejavuBold8Dark.setColor(ColorUtils.getDarkColor());
             dejavuBold8Dark.setStyle(Font.BOLD);
 
         }
+    }
+
+    public static Font getDejavuBold70Light() {
+        return dejavuBold70Light;
+    }
+
+    public static Font getDejavuBold70Dark() {
+        return dejavuBold70Dark;
     }
 
     public static Font getDejavuBold19Light() {

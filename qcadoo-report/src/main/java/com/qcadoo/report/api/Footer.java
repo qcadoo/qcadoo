@@ -45,6 +45,16 @@ public class Footer {
 
     private final String additionalText;
 
+    public Footer() {
+        this.page = "";
+        this.in = "";
+        this.companyName = "";
+        this.address = "";
+        this.phoneEmail = "";
+        this.generatedBy = "";
+        this.additionalText = "";
+    }
+
     public Footer(String page, String in, String companyName, String address, String phoneEmail, String generatedBy,
             String additionalText) {
         this.page = page;
