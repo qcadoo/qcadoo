@@ -29,6 +29,7 @@ import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.types.FieldType;
 import com.qcadoo.model.internal.api.DefaultValidatorsProvider;
 import com.qcadoo.model.internal.api.FieldHookDefinition;
+import com.qcadoo.model.internal.api.InternalDataDefinition;
 import com.qcadoo.model.internal.api.InternalFieldDefinition;
 import com.qcadoo.model.internal.types.StringType;
 import com.qcadoo.model.internal.types.TextType;
@@ -225,8 +226,7 @@ public final class FieldDefinitionImpl implements InternalFieldDefinition {
 
     @Override
     public boolean isEnabled() {
-        // FIXME MAKU I think we should check also if plugin which inject this field is enabled for current user.
-        return enabled;
+        return enabled && ((InternalDataDefinition)dataDefinition).isEnabled();
     }
 
     @Override
