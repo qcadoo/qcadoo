@@ -54,10 +54,10 @@ public abstract class AbstractViewHookDefinition extends AbstractHookDefinition 
                 LOG.debug("Failed to invoke view hook", e);
             }
 
-//            if (args != null && args[0] != null && args[0] instanceof ViewDefinitionState) {
-//                ViewDefinitionState viewDefinitionState = (ViewDefinitionState) args[0];
-//                viewDefinitionState.addMessage("qcadooView.errorPage.error.internalError.explanation", ComponentState.MessageType.FAILURE);
-//            }
+            if (args != null && args[0] != null && args[0] instanceof ViewDefinitionState) {
+                ViewDefinitionState viewDefinitionState = (ViewDefinitionState) args[0];
+                viewDefinitionState.addMessage("qcadooView.errorPage.error.internalError.explanation", ComponentState.MessageType.FAILURE);
+            }
         }
         return null;
     }
