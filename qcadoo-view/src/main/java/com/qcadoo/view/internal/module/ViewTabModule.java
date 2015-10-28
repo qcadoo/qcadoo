@@ -23,13 +23,8 @@
  */
 package com.qcadoo.view.internal.module;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.springframework.core.io.Resource;
-import org.w3c.dom.Node;
-
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import com.qcadoo.plugin.api.Module;
 import com.qcadoo.plugin.api.ModuleException;
 import com.qcadoo.view.internal.ComponentDefinition;
@@ -42,6 +37,11 @@ import com.qcadoo.view.internal.xml.ViewDefinitionParser;
 import com.qcadoo.view.internal.xml.ViewDefinitionParserException;
 import com.qcadoo.view.internal.xml.ViewDefinitionParserNodeException;
 import com.qcadoo.view.internal.xml.ViewExtension;
+import org.springframework.core.io.Resource;
+import org.w3c.dom.Node;
+
+import java.io.IOException;
+import java.util.Map;
 
 public class ViewTabModule extends Module {
 
@@ -55,7 +55,7 @@ public class ViewTabModule extends Module {
 
     private final String fileName;
 
-    private Map<WindowComponentPattern, ComponentPattern> addedTabs;
+    private Multimap<WindowComponentPattern, ComponentPattern> addedTabs;
 
     public ViewTabModule(final String pluginIdentifier, final Resource xmlFile,
             final InternalViewDefinitionService viewDefinitionService, final ViewDefinitionParser viewDefinitionParser) {
@@ -81,7 +81,7 @@ public class ViewTabModule extends Module {
 
     @Override
     public void enable() {
-        addedTabs = new HashMap<WindowComponentPattern, ComponentPattern>();
+        addedTabs = ArrayListMultimap.create();
 
         InternalViewDefinition viewDefinition = viewDefinitionService.getWithoutSession(viewExtension.getPluginName(),
                 viewExtension.getViewName());
@@ -118,7 +118,7 @@ public class ViewTabModule extends Module {
 
     @Override
     public void disable() {
-        for (Map.Entry<WindowComponentPattern, ComponentPattern> addedGroupEntry : addedTabs.entrySet()) {
+        for (Map.Entry<WindowComponentPattern, ComponentPattern> addedGroupEntry : addedTabs.entries()) {
             addedGroupEntry.getValue().unregisterComponent(viewDefinitionService);
             addedGroupEntry.getKey().removeChild(addedGroupEntry.getValue().getName());
         }
