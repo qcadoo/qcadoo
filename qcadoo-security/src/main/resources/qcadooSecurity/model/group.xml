@@ -32,7 +32,7 @@
 		<string name="identifier" unique="true" />
 		<text name="description" />
 		<manyToMany name="roles" joinField="groups"
-			model="role" cascade="nullify" />
+			model="role" cascade="nullify" copyable="true" />
 		<hasMany name="users" joinField="group" model="user" cascade="nullify"/>
 	</fields>
 	<hooks >
