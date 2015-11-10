@@ -49,8 +49,8 @@
 					<component type="lookup" name="role" reference="roleLookup" field="roles" defaultVisible="false" persistent="false" hasLabel="false">
 						<option type="column" name="description" fields="description" link="true"
 							width="250" />
-						<option type="searchable" value="identifier" />
-						<option type="orderable" value="identifier" />
+						<option type="searchable" value="identifier,description" />
+						<option type="orderable" value="identifier,description" />
 						<option type="expression"
 							value="'&lt;/b&gt; - ' + #identifier" />
 						<option type="fieldCode" value="identifier" />
