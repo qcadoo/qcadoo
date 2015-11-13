@@ -52,6 +52,10 @@
 							value="'&lt;/b&gt; - ' + #identifier" />
 						<option type="fieldCode" value="identifier" />
 						<option type="multiselect" value="true" />
+						
+						<option type="searchable" value="identifier,description" />
+						<option type="orderable" value="identifier,description" />
+						
 					</component>
 					<component type="grid" name="groupComponents"
 						reference="groupComponents" source="#{form}.roles" defaultEnabled="false">
