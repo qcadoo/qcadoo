@@ -101,7 +101,7 @@ public class FlowGridLayoutPattern extends AbstractLayoutPattern {
         if (rowspan == null) {
             rowspan = minHeight = getIntAttribute(child, "minHeight", parser);
             if (minHeight == null) {
-                throw new ViewDefinitionParserNodeException(child, "Height or minHeight must be defined.");
+                rowspan = 1;                
             }
         }
 

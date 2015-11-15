@@ -492,7 +492,7 @@ public class DataAccessServiceImpl implements DataAccessService {
             final String fieldName) {
         FieldDefinition fieldDefinition = dataDefinition.getField(fieldName);
 
-        if (!(fieldDefinition.getType() instanceof TreeType) || !((TreeType) fieldDefinition.getType()).isCopyable()) {
+        if(!isFieldCopyable(TreeType.class, fieldDefinition, dataDefinition)){
             return;
         }
 
@@ -518,7 +518,7 @@ public class DataAccessServiceImpl implements DataAccessService {
             final String fieldName) {
         FieldDefinition fieldDefinition = dataDefinition.getField(fieldName);
 
-        if (!(fieldDefinition.getType() instanceof HasManyType) || !((HasManyType) fieldDefinition.getType()).isCopyable()) {
+        if(!isFieldCopyable(HasManyType.class, fieldDefinition, dataDefinition)){
             return;
         }
 
@@ -543,15 +543,24 @@ public class DataAccessServiceImpl implements DataAccessService {
             final String fieldName) {
         FieldDefinition fieldDefinition = dataDefinition.getField(fieldName);
 
-        if (!(fieldDefinition.getType() instanceof ManyToManyType) || !((ManyToManyType) fieldDefinition.getType()).isCopyable()) {
+        if(!isFieldCopyable(ManyToManyType.class, fieldDefinition, dataDefinition)){
             return;
         }
         targetEntity.setField(fieldName, sourceEntity.getField(fieldName));
     }
 
+    private boolean isFieldCopyable(Class fieldTypeClass, FieldDefinition fieldDefinition, DataDefinition dataDefinition){
+        return fieldTypeClass.isInstance(fieldDefinition.getType()) && fieldDefinition.getType().isCopyable() && ((InternalFieldDefinition)fieldDefinition).isEnabled();
+    }
+
     private Object getCopyValueOfSimpleField(final Entity sourceEntity, final DataDefinition dataDefinition,
             final String fieldName) {
         InternalFieldDefinition fieldDefinition = (InternalFieldDefinition) dataDefinition.getField(fieldName);
+
+        if(!fieldDefinition.isEnabled()){
+            return null;
+        }
+
         if (fieldDefinition.isUnique()) {
             if (fieldDefinition.canBeBothCopyableAndUnique()) {
                 return getCopyValueOfUniqueField(dataDefinition, fieldDefinition, sourceEntity.getStringField(fieldName));

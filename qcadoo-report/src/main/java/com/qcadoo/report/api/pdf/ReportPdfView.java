@@ -59,15 +59,19 @@ public abstract class ReportPdfView extends AbstractPdfView {
     protected final void buildPdfDocument(final Map<String, Object> model, final Document document, final PdfWriter writer,
             final HttpServletRequest request, final HttpServletResponse response) {
         String fileName;
+
         try {
             PdfAction ac = PdfAction.gotoLocalPage(1, new PdfDestination(PdfDestination.XYZ, -1, -1, 1f), writer);
+
             writer.setOpenAction(ac);
+
             fileName = addContent(document, model, LocaleContextHolder.getLocale(), writer);
         } catch (DocumentException e) {
             throw new IllegalStateException(e.getMessage(), e);
         } catch (IOException e) {
             throw new IllegalStateException(e.getMessage(), e);
         }
+
         response.setHeader("Content-disposition",
                 "inline; filename=" + fileName + "." + ReportService.ReportType.PDF.getExtension());
     }
@@ -75,7 +79,9 @@ public abstract class ReportPdfView extends AbstractPdfView {
     @Override
     protected Document newDocument() {
         Document doc = super.newDocument();
+
         doc.setMargins(40, 40, 60, 60);
+
         return doc;
     }
 
@@ -83,6 +89,11 @@ public abstract class ReportPdfView extends AbstractPdfView {
     protected void prepareWriter(final Map<String, Object> model, final PdfWriter writer, final HttpServletRequest request)
             throws DocumentException {
         super.prepareWriter(model, writer, request);
+
+        setPageEvent(writer);
+    }
+
+    protected void setPageEvent(final PdfWriter writer) {
         writer.setPageEvent(new PdfPageNumbering(footerResolver.resolveFooter(LocaleContextHolder.getLocale())));
     }
 
@@ -90,6 +101,7 @@ public abstract class ReportPdfView extends AbstractPdfView {
     protected final void buildPdfMetadata(final Map<String, Object> model, final Document document,
             final HttpServletRequest request) {
         addTitle(document, LocaleContextHolder.getLocale());
+
         pdfHelper.addMetaData(document);
     }
 

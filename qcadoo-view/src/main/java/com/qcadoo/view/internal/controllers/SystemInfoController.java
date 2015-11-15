@@ -23,10 +23,8 @@
  */
 package com.qcadoo.view.internal.controllers;
 
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-
+import com.qcadoo.localization.api.TranslationService;
+import com.qcadoo.view.api.crud.CrudService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -35,8 +33,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.qcadoo.localization.api.TranslationService;
-import com.qcadoo.view.api.crud.CrudService;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 @Controller
 public final class SystemInfoController {
@@ -52,6 +51,9 @@ public final class SystemInfoController {
 
     @Value("${buildApplicationVersion}")
     private String buildApplicationVersion;
+
+    @Value("${buildVersionForUser}")
+    private String buildVersionForUser;
 
     @Value("${buildFrameworkVersion}")
     private String buildFrameworkVersion;
@@ -90,8 +92,8 @@ public final class SystemInfoController {
         mav.addObject("translationsMap", translationsMap);
 
         mav.addObject("buildApplicationName", buildApplicationName);
-        mav.addObject("buildApplicationVersion", buildApplicationVersion);
-        mav.addObject("buildFrameworkVersion", buildFrameworkVersion);
+        mav.addObject("buildApplicationVersion", buildVersionForUser);
+        mav.addObject("buildFrameworkVersion", buildVersionForUser);
         mav.addObject("buildNumber", buildNumber);
         mav.addObject("buildTime", buildTime);
         mav.addObject("buildRevision", buildRevision);

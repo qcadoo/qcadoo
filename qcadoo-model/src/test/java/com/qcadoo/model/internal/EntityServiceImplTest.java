@@ -23,28 +23,6 @@
  */
 package com.qcadoo.model.internal;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertNull;
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.junit.Assert.assertThat;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.springframework.util.Assert.isInstanceOf;
-
-import java.lang.reflect.Field;
-import java.util.Collections;
-import java.util.List;
-
-import org.junit.Test;
-import org.junit.matchers.JUnitMatchers;
-import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.util.ReflectionUtils;
-
 import com.google.common.collect.Lists;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
@@ -56,6 +34,22 @@ import com.qcadoo.model.beans.sample.SampleSimpleDatabaseObject;
 import com.qcadoo.model.internal.api.InternalDataDefinition;
 import com.qcadoo.model.internal.types.IntegerType;
 import com.qcadoo.model.internal.types.StringType;
+import org.junit.Test;
+import org.junit.matchers.JUnitMatchers;
+import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.util.ReflectionUtils;
+
+import java.lang.reflect.Field;
+import java.util.Collections;
+import java.util.List;
+
+import static junit.framework.Assert.*;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.junit.Assert.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Mockito.*;
+import static org.springframework.util.Assert.isInstanceOf;
 
 public class EntityServiceImplTest extends DataAccessTest {
 
@@ -64,7 +58,7 @@ public class EntityServiceImplTest extends DataAccessTest {
         // given
         SampleSimpleDatabaseObject databaseEntity = new SampleSimpleDatabaseObject(1L);
 
-        FieldDefinition fieldDefinition = new FieldDefinitionImpl(null, "unknown");
+        FieldDefinition fieldDefinition = new FieldDefinitionImpl(new DataDefinitionImpl("", "", null), "unknown");
 
         // when
         entityService.getField(databaseEntity, fieldDefinition);
@@ -120,7 +114,7 @@ public class EntityServiceImplTest extends DataAccessTest {
         SampleSimpleDatabaseObject databaseEntity = new SampleSimpleDatabaseObject(1L);
         databaseEntity.setName("Mr T");
 
-        FieldDefinition fieldDefinition = new FieldDefinitionImpl(null, "name").withType(new IntegerType());
+        FieldDefinition fieldDefinition = new FieldDefinitionImpl(new DataDefinitionImpl("", "", null), "name").withType(new IntegerType());
 
         // when
         entityService.getField(databaseEntity, fieldDefinition);
@@ -174,7 +168,7 @@ public class EntityServiceImplTest extends DataAccessTest {
         // given
         SampleSimpleDatabaseObject databaseEntity = new SampleSimpleDatabaseObject(1L);
 
-        FieldDefinition fieldDefinition = new FieldDefinitionImpl(null, "unknown").withType(new StringType());
+        FieldDefinition fieldDefinition = new FieldDefinitionImpl(new DataDefinitionImpl("", "", null), "unknown").withType(new StringType());
 
         // when
         entityService.setField(databaseEntity, fieldDefinition, "XXX");
