@@ -25,9 +25,12 @@
 
 -->
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
-	xmlns:util="http://www.springframework.org/schema/util" xmlns:context="http://www.springframework.org/schema/context"
-	xsi:schemaLocation="
+	   xmlns:c="http://www.springframework.org/schema/c"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:tx="http://www.springframework.org/schema/tx"
+	   xmlns:util="http://www.springframework.org/schema/util"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xsi:schemaLocation="
 		http://www.springframework.org/schema/beans 
 		http://www.springframework.org/schema/beans/spring-beans-3.1.xsd 
 		http://www.springframework.org/schema/tx 
@@ -38,18 +41,21 @@
 		http://www.springframework.org/schema/context/spring-context-3.1.xsd">
 
 	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
-		destroy-method="close">
-		<property name="driverClass" value="${dbDriverClass}" />
-		<property name="jdbcUrl" value="${dbJdbcUrl}" />
-		<property name="user" value="${dbUsername}" />
-		<property name="password" value="${dbPassword}" />
+		  destroy-method="close">
+		<property name="driverClass" value="${dbDriverClass}"/>
+		<property name="jdbcUrl" value="${dbJdbcUrl}"/>
+		<property name="user" value="${dbUsername}"/>
+		<property name="password" value="${dbPassword}"/>
 	</bean>
+
+	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate"
+		  c:dataSource-ref="dataSource"/>
 
 	<beans profile="standalone">
 
 		<bean id="sessionFactory"
-			class="com.qcadoo.model.internal.sessionfactory.DynamicSessionFactoryBeanImpl">
-			<property name="dataSource" ref="dataSource" />
+			  class="com.qcadoo.model.internal.sessionfactory.DynamicSessionFactoryBeanImpl">
+			<property name="dataSource" ref="dataSource"/>
 			<property name="hibernateProperties">
 				<props>
 					<prop key="hibernate.dialect">${hibernateDialect}</prop>
@@ -62,7 +68,7 @@
 					<prop key="hibernate.cache.use_second_level_cache">${hibernateUseSecondLevelCache}</prop>
 					<prop key="hibernate.cache.provider_class">${hibernateCacheProviderClass}</prop>
 					<prop key="hibernate.cache.use_query_cache">${hibernateUseQueryCache}</prop>
-                    <prop key="hibernate.hbm2ddl.import_files">${hibernateHbm2ddlImportFiles}</prop>
+					<prop key="hibernate.hbm2ddl.import_files">${hibernateHbm2ddlImportFiles}</prop>
 					<prop key="hibernate.cache.use_minimal_puts">true</prop>
 					<prop key="hibernate.cache.use_structured_entries">true</prop>
 				</props>
@@ -70,13 +76,13 @@
 		</bean>
 
 		<bean id="transactionManager"
-			class="org.springframework.orm.hibernate3.HibernateTransactionManager">
-			<property name="sessionFactory" ref="sessionFactory" />
-			<property name="dataSource" ref="dataSource" />
+			  class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+			<property name="sessionFactory" ref="sessionFactory"/>
+			<property name="dataSource" ref="dataSource"/>
 		</bean>
-		
-		<tx:annotation-driven transaction-manager="transactionManager" mode="aspectj" />
-	
+
+		<tx:annotation-driven transaction-manager="transactionManager" mode="aspectj"/>
+
 	</beans>
 
 </beans>
