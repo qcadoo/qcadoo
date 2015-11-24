@@ -125,7 +125,7 @@
 
 	<bean id="restTemplate" class="org.springframework.web.client.RestTemplate">
 		<property name="messageConverters">
-			<bean class="com.qcadoo.view.internal.JsonMapperHttpMessageConverter"/>
+			<bean id="jsonMapperHttpMessageConverter" class="com.qcadoo.view.internal.JsonMapperHttpMessageConverter"/>
 		</property>
 	</bean>
 
