@@ -39,9 +39,9 @@ import com.qcadoo.plugin.internal.api.ModuleFactoryAccessor;
 import com.qcadoo.tenant.api.MultiTenantCallback;
 import com.qcadoo.tenant.api.MultiTenantUtil;
 
-public final class DefaultModuleFactoryAccessor implements ModuleFactoryAccessor {
+public class DefaultModuleFactoryAccessor implements ModuleFactoryAccessor {
 
-    private final Map<String, ModuleFactory<?>> moduleFactoryRegistry = new LinkedHashMap<String, ModuleFactory<?>>();
+    protected final Map<String, ModuleFactory<?>> moduleFactoryRegistry = new LinkedHashMap<>();
 
     @Override
     public void init(final List<Plugin> pluginsToInitialize) {
