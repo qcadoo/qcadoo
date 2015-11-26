@@ -23,14 +23,15 @@
  */
 package com.qcadoo.view.api.components;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.search.CustomRestriction;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.components.lookup.FilterValueHolder;
+import com.qcadoo.view.internal.components.grid.GridComponentColumn;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Represents grid component
@@ -138,4 +139,13 @@ public interface GridComponent extends ComponentState {
      */
     void setFilterValue(FilterValueHolder value);
 
+    /**
+     * Gets current filters.
+     *
+     * @return Current filters.
+     * @since 1.4
+     */
+    Map<String, String> getFilters();
+
+    Map<String, GridComponentColumn> getColumns();
 }
