@@ -40,11 +40,6 @@
 			<artifactId>json</artifactId>
 			<version>20090211</version>
 		</dependency>
-		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-mapper-lgpl</artifactId>
-			<version>1.8.4</version>
-		</dependency>
 	</dependencies>
 
 	<build>
