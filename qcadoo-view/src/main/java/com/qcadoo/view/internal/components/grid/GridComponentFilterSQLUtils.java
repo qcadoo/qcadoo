@@ -47,7 +47,7 @@ public final class GridComponentFilterSQLUtils {
 
     public static String addFilters(final Map<String, String> filters, final Map<String, GridComponentColumn> columns,
             String table, final DataDefinition dataDefinition) throws GridComponentFilterException {
-        StringBuffer filterQuery = new StringBuffer("");
+        StringBuilder filterQuery = new StringBuilder("");
 
         for (Entry<String, String> filter : filters.entrySet()) {
 
@@ -226,7 +226,7 @@ public final class GridComponentFilterSQLUtils {
                 return field + " ilike '" + data + "%' ";
             case IN:
                 Collection<String> values = parseListValue(data);
-                return field + " in [" + values.spliterator() + "] ";
+                return field + " in (" + convertToIn(values) + ") ";
             case NE:
             case GT:
             case LT:
@@ -234,6 +234,21 @@ public final class GridComponentFilterSQLUtils {
             default:
                 throw new IllegalStateException("Unknown filter operator");
         }
+    }
+
+    private static String convertToIn(final Collection<String> values) {
+        StringBuilder builder= new StringBuilder();
+        values.forEach(v -> joinToIn(v, builder));
+        return builder.toString();
+    }
+
+    private static void joinToIn(final String v, final StringBuilder builder) {
+        if(builder.length()>0){
+            builder.append(", ");
+        }
+        builder.append("'");
+        builder.append(v);
+        builder.append("'");
     }
 
     private static Collection<String> parseListValue(String data) {
@@ -245,7 +260,7 @@ public final class GridComponentFilterSQLUtils {
         return values;
     }
 
-    private static void addIntegerFilter(String table, StringBuffer filterQuery,
+    private static void addIntegerFilter(String table, StringBuilder filterQuery,
             final Entry<GridComponentFilterOperator, String> filterValue, final String field)
             throws GridComponentFilterException {
         if (filterQuery.toString().length() != 0) {
@@ -254,7 +269,7 @@ public final class GridComponentFilterSQLUtils {
         filterQuery.append(createIntegerCriterion(table, filterValue.getKey(), filterValue.getValue(), field));
     }
 
-    private static void addDecimalFilter(String table, StringBuffer filterQuery,
+    private static void addDecimalFilter(String table, StringBuilder filterQuery,
             final Entry<GridComponentFilterOperator, String> filterValue, final String field)
             throws GridComponentFilterException {
         if (filterQuery.toString().length() != 0) {
@@ -263,7 +278,7 @@ public final class GridComponentFilterSQLUtils {
         filterQuery.append(createDecimalCriterion(table, filterValue.getKey(), filterValue.getValue(), field));
     }
 
-    private static void addSimpleFilter(String table, StringBuffer filterQuery,
+    private static void addSimpleFilter(String table, StringBuilder filterQuery,
             final Entry<GridComponentFilterOperator, String> filterValue, final String field, final Object value) {
         if (filterQuery.toString().length() != 0) {
             filterQuery.append(" AND ");
@@ -271,7 +286,7 @@ public final class GridComponentFilterSQLUtils {
         filterQuery.append(createSimpleCriterion(table, filterValue.getKey(), value, field));
     }
 
-    private static void addStringFilter(final String table, final StringBuffer filterQuery,
+    private static void addStringFilter(final String table, final StringBuilder filterQuery,
             final Entry<GridComponentFilterOperator, String> filterValue, final String field) {
         String value = filterValue.getValue();
 
@@ -286,7 +301,7 @@ public final class GridComponentFilterSQLUtils {
         filterQuery.append(createStringCriterion(table, operator, value, field));
     }
 
-    private static void addDateFilter(String table, final StringBuffer filterQuery,
+    private static void addDateFilter(String table, final StringBuilder filterQuery,
             final Entry<GridComponentFilterOperator, String> filterValue, final String field) throws ParseException {
         if (filterQuery.toString().length() != 0) {
             filterQuery.append(" AND ");
