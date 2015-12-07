@@ -43,20 +43,20 @@
             <option type="column" name="firstName" fields="firstName"
                     link="true"/>
             <option type="column" name="lastName" fields="lastName" link="true"/>
-            <option type="column" name="group" fields="group" expression="#group['name']"/>
+            <option type="column" name="groupName" fields="group" expression="#group['name']"/>
             <option type="column" name="lastActivity" fields="lastActivity"/>
 
             <option type="order" column="login" direction="asc"/>
-            <option type="orderable" value="login,email,firstName,lastName,role,lastActivity"/>
-            <option type="searchable" value="login,email,firstName,lastName,role"/>
+            <option type="orderable" value="login,email,firstName,lastName,lastActivity,groupName"/>
+            <option type="searchable" value="login,email,firstName,lastName,groupName"/>
             <option type="correspondingView" value="qcadooUsers/userDetails"/>
             <option type="correspondingComponent" value="form"/>
             <option type="fullscreen" value="true"/>
             <option type="multiselect" value="true"/>
 
-            <criteriaModifier
-                    class="com.qcadoo.plugins.users.internal.UserCriteriaModifiers"
-                    method="criteriaForRole"/>
+            <!--<criteriaModifier-->
+            <!--class="com.qcadoo.plugins.users.internal.UserCriteriaModifiers"-->
+            <!--method="criteriaForRole"/>-->
 
         </component>
         <option type="fixedHeight" value="true"/>
