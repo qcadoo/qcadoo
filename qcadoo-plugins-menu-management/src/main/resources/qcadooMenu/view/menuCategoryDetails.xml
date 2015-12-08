@@ -37,7 +37,7 @@
 		</ribbon>
 		<component type="form" name="menuCategory" reference="form">
 			<component type="gridLayout" name="gridLayout" columns="3"
-				rows="2">
+				rows="1">
 				<layoutElement column="1" row="1">
 					<component type="input" name="name" field="name"
 						hasDescription="false" reference="categoryName"/>
@@ -74,9 +74,9 @@
 				});
 				]]></script>
 		</component>
-		<component type="gridLayout" name="gridLayout" columns="3"
-			rows="5">
-			<layoutElement column="1" row="1" height="5" width="2">
+		<component type="flowGridLayout" name="gridLayout" columns="3"
+			rows="4">
+			<layoutElement column="1" row="1" minHeight="4" width="3">
 				<component type="grid" name="menuViewDefinitionItems"
 					source="#{form}.items" reference="itemsGrid">
 					<option type="column" name="name" fields="name" link="true"
@@ -88,10 +88,10 @@
 					<option type="correspondingComponent" value="form" />
 					<option type="correspondingViewInModal" value="true" />
 					<option type="paginable" value="false" />
-					<option type="height" value="200" />
-					<option type="width" value="400" />
+					
 					<option type="creatable" value="true" />
 					<option type="deletable" value="true" />
+					
 					<script><![CDATA[
 						this.addOnChangeListener({
 							onChange: function(selectedEntitiesArray) { 

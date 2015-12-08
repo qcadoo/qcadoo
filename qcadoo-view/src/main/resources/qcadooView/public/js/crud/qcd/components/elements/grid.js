@@ -553,8 +553,13 @@ QCD.components.elements.Grid = function (element, mainController) {
                 break;
             }
         }
-        if (!isIdentical) {
+
+        if (!isIdentical && !jQuery.isEmptyObject(filterToSearch)) {
             headerController.setPredefinedFilter(null);
+        } else {
+            if(!isIdentical){
+                headerController.setPredefinedFilter(0);
+            }
         }
     }
     

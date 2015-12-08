@@ -89,11 +89,24 @@ public final class UserService {
     public void disableFormForAdmin(final ViewDefinitionState state) {
         FormComponent form = (FormComponent) state.getComponentByReference("form");
 
-        Entity loggedUser = dataDefinitionService
-                .get(QcadooSecurityConstants.PLUGIN_IDENTIFIER, QcadooSecurityConstants.MODEL_USER).get(
-                        securityService.getCurrentUserId());
+        Entity loggedUser = dataDefinitionService.get(QcadooSecurityConstants.PLUGIN_IDENTIFIER,
+                QcadooSecurityConstants.MODEL_USER).get(securityService.getCurrentUserId());
 
         if (!securityService.hasRole(loggedUser, "ROLE_SUPERADMIN")) {
+            form.setFormEnabled(false);
+        }
+    }
+
+    public void disableFormForSuperadmin(final ViewDefinitionState state) {
+        FormComponent form = (FormComponent) state.getComponentByReference("form");
+
+        Long viewedUserId = form.getEntityId();
+        Entity viewedUser = dataDefinitionService.get(QcadooSecurityConstants.PLUGIN_IDENTIFIER,
+                QcadooSecurityConstants.MODEL_USER).get(viewedUserId);
+        Entity loggedUser = dataDefinitionService.get(QcadooSecurityConstants.PLUGIN_IDENTIFIER,
+                QcadooSecurityConstants.MODEL_USER).get(securityService.getCurrentUserId());
+
+        if (!securityService.hasRole(loggedUser, "ROLE_SUPERADMIN") && securityService.hasRole(viewedUser, "ROLE_SUPERADMIN")) {
             form.setFormEnabled(false);
         }
     }
