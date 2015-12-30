@@ -23,32 +23,6 @@
  */
 package com.qcadoo.security.internal;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
-import static com.qcadoo.security.constants.QcadooSecurityConstants.MODEL_PERSISTENT_TOKEN;
-import static com.qcadoo.security.constants.QcadooSecurityConstants.MODEL_USER;
-import static com.qcadoo.security.constants.QcadooSecurityConstants.PLUGIN_IDENTIFIER;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationListener;
-import org.springframework.security.access.event.AuthorizedEvent;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.GrantedAuthorityImpl;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.web.authentication.rememberme.PersistentRememberMeToken;
-import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
-import org.springframework.stereotype.Service;
-
 import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.aop.Monitorable;
@@ -61,10 +35,29 @@ import com.qcadoo.security.constants.RoleFields;
 import com.qcadoo.security.constants.UserFields;
 import com.qcadoo.security.internal.api.InternalSecurityService;
 import com.qcadoo.security.internal.api.QcadooUser;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationListener;
+import org.springframework.security.authentication.event.AbstractAuthenticationEvent;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.GrantedAuthorityImpl;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.web.authentication.rememberme.PersistentRememberMeToken;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.stereotype.Service;
+
+import java.util.*;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
+import static com.qcadoo.security.constants.QcadooSecurityConstants.*;
 
 @Service("userDetailsService")
 public class SecurityServiceImpl implements InternalSecurityService, UserDetailsService, PersistentTokenRepository,
-        ApplicationListener<AuthorizedEvent> {
+        ApplicationListener<AbstractAuthenticationEvent> {
 
     private static final String L_USER_NAME = "userName";
 
@@ -79,7 +72,7 @@ public class SecurityServiceImpl implements InternalSecurityService, UserDetails
     private SecurityRolesService securityRolesService;
 
     @Override
-    public void onApplicationEvent(final AuthorizedEvent event) {
+    public void onApplicationEvent(final AbstractAuthenticationEvent event) {
         UserDetails userDetails = (UserDetails) event.getAuthentication().getPrincipal();
         Entity entity = dataDefinitionService.get(PLUGIN_IDENTIFIER, MODEL_USER).find()
                 .add(SearchRestrictions.eq(L_USER_NAME, userDetails.getUsername())).uniqueResult();
