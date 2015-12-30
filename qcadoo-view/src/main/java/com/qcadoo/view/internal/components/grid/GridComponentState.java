@@ -588,7 +588,9 @@ public final class GridComponentState extends AbstractComponentState implements 
             FieldType belongsToFieldType = belongsToFieldDefinition.getType();
             if (belongsToFieldType instanceof JoinFieldHolder) {
                 Entity gridOwnerEntity = scopeFieldDataDefinition.get(belongsToEntityId);
-                gridOwnerEntity.setField(((JoinFieldHolder) belongsToFieldType).getJoinFieldName(), existingEntities);
+                List<Entity> entities = gridOwnerEntity.getManyToManyField(((JoinFieldHolder) belongsToFieldType).getJoinFieldName());
+                entities.addAll(newlyAddedEntities);
+                gridOwnerEntity.setField(((JoinFieldHolder) belongsToFieldType).getJoinFieldName(), entities);
                 gridOwnerEntity.getDataDefinition().save(gridOwnerEntity);
                 copyFieldValidationMessages(gridOwnerEntity);
             } else if (belongsToFieldType instanceof BelongsToType) {
