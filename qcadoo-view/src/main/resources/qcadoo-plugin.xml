@@ -72,6 +72,8 @@
 		<model:model model="category" resource="model/category.xml" />
 		<model:model model="item" resource="model/item.xml" />
 		<model:model model="view" resource="model/view.xml" />
+		<model:model model="alert" resource="model/alert.xml" />
+		<model:model model="viewedAlert" resource="model/viewedAlert.xml" />
 
 		<view:view resource="view/systemInfo.xml" />
 		<view:view resource="view/fileUpload.xml" />
