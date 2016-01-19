@@ -25,6 +25,8 @@ package com.qcadoo.view.constants;
 
 public final class QcadooViewConstants {
 
+    public static final String MODEL_VIEWED_ALERT = "viewedAlert";
+
     private QcadooViewConstants() {
     }
 
@@ -32,6 +34,8 @@ public final class QcadooViewConstants {
 
     // MODEL
     public static final String MODEL_CATEGORY = "category";
+
+    public static final String MODEL_ALERT = "alert";
 
     public static final String MODEL_ITEM = "item";
 
