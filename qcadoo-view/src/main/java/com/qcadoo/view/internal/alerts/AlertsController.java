@@ -6,7 +6,6 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
@@ -17,7 +16,7 @@ public class AlertsController {
 
     @ResponseBody
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<AlertDto> getAlert(@RequestParam String user) {
+    public List<AlertDto> getAlert() {
        List<AlertDto> alerts = Lists.newArrayList();
         AlertDto alertDto = new AlertDto();
         alertDto.setMessage("test");

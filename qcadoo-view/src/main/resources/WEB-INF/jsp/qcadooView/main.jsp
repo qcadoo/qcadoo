@@ -88,7 +88,7 @@
 
 // ************ open request page
         function notyInit(){
-            $.get('/rest/alert?user=${userLogin}', function(data) {
+            $.get('/rest/alert', function(data) {
 			for(var k in data) {
 				var n = noty(
                 	{
