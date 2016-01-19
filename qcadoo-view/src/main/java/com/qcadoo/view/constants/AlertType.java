@@ -25,7 +25,7 @@ package com.qcadoo.view.constants;
 
 public enum AlertType {
 
-    ALERT("01alert"), SUCCESS("02success"), ERROR("03error"), WARNING("04warning"), INFORMATION("05information"), CONFIRM("06confirm");
+    ALERT("alert"), SUCCESS("success"), ERROR("error"), WARNING("warning"), INFORMATION("information"), CONFIRM("confirm");
 
     private final String state;
 

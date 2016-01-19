@@ -29,11 +29,11 @@
        xsi:schemaLocation="http://schema.qcadoo.org/model http://schema.qcadoo.org/model.xsd">
     <fields>
         <text name="message"/>
-        <enum name="type" values="alert,success,error,warning,information,confirm" default="01info" required="true"/>
+        <enum name="type" values="alert,success,error,warning,information,confirm" default="information"
+              required="true"/>
         <hasMany name="viewedAlerts" joinField="alert" model="viewedAlert"
                  cascade="delete"/>
-        <datetime name="createDate"/>
-        <integer name="expiration"/>
+        <datetime name="expirationDate"/>
     </fields>
     <hooks/>
 </model>
