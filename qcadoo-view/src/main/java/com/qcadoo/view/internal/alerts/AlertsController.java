@@ -20,7 +20,9 @@ public class AlertsController {
     @ResponseBody
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<AlertDto> getAlert() {
-       return alertsDbHelper.getAlerts();
+        List<AlertDto> alerts = alertsDbHelper.getAlerts();
+        alertsDbHelper.createViewedAlerts(alerts);
+       return alerts;
     }
 
 }
