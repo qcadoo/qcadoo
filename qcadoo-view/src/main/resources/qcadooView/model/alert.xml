@@ -29,7 +29,7 @@
        xsi:schemaLocation="http://schema.qcadoo.org/model http://schema.qcadoo.org/model.xsd">
     <fields>
         <text name="message"/>
-        <enum name="type" values="01info,02warn" default="01info" required="true"/>
+        <enum name="type" values="alert,success,error,warning,information,confirm" default="01info" required="true"/>
         <hasMany name="viewedAlerts" joinField="alert" model="viewedAlert"
                  cascade="delete"/>
     </fields>

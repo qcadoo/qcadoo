@@ -1,4 +1,4 @@
-package com.qcadoo.view.internal.model;
+package com.qcadoo.view.internal.alerts.model;
 
 public class AlertDto {
 
