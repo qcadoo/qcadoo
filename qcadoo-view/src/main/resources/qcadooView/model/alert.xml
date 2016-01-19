@@ -32,6 +32,8 @@
         <enum name="type" values="alert,success,error,warning,information,confirm" default="01info" required="true"/>
         <hasMany name="viewedAlerts" joinField="alert" model="viewedAlert"
                  cascade="delete"/>
+        <datetime name="createDate"/>
+        <integer name="expiration"/>
     </fields>
     <hooks/>
 </model>
