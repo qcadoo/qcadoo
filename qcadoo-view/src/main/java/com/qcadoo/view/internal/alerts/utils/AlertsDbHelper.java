@@ -22,6 +22,16 @@ public class AlertsDbHelper {
     @Autowired
     private UserService userService;
 
+    public void createViewedAlert(final Long id) {
+        Entity viewedAlert = dataDefinitionService
+                .get(QcadooViewConstants.PLUGIN_IDENTIFIER, QcadooViewConstants.MODEL_VIEWED_ALERT).create();
+        Entity alert = dataDefinitionService.get(QcadooViewConstants.PLUGIN_IDENTIFIER, QcadooViewConstants.MODEL_ALERT).get(id);
+        Entity user = userService.getCurrentUserEntity();
+        viewedAlert.setField("user", user);
+        viewedAlert.setField("alert", alert);
+        viewedAlert.getDataDefinition().save(viewedAlert);
+    }
+
     public List<Entity> getAlertsForUser() {
         Entity user = userService.getCurrentUserEntity();
 
