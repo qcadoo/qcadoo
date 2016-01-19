@@ -89,30 +89,32 @@
 // ************ open request page
         function notyInit(){
             $.get('/rest/alert?user=${userLogin}', function(data) {
-              var n = noty(
-                              {
-                                  layout: 'top',
-                                  theme: 'relax', // or 'relax'
-                                  type: 'warning',
-                                  text: data.message,
-                                  dismissQueue: true, // If you want to use queue feature set this true
-                                  template: '<div class="noty_message"><span class="noty_text"></span><div class="noty_close"></div></div>',
-                                  animation: {
-                                          open: 'animated fadeInDown', // Animate.css class names
-                                          close: 'animated fadeOutUp', // Animate.css class names
-                                          easing: 'swing', // unavailable - no need
-                                          speed: 500 // unavailable - no need
-                                  },
-                                  timeout: false, // delay for closing event. Set false for sticky notifications
-                                  force: false, // adds notification to the beginning of queue when set to true
-                                  modal: false,
-                                  maxVisible: 3, // you can set max visible notification for dismissQueue true option,
-                                  killer: false, // for close all notifications before show
-                                  closeWith: ['button'], // ['click', 'button', 'hover', 'backdrop'] // backdrop click will close all notifications
+			for(var k in data) {
+				var n = noty(
+                	{
+                    	layout: 'top',
+                        theme: 'relax', // or 'relax'
+                        type: data[k].type,
+                        text: data[k].message,
+                        dismissQueue: true, // If you want to use queue feature set this true
+                        template: '<div class="noty_message"><span class="noty_text"></span><div class="noty_close"></div></div>',
+                        animation: {
+                        	open: 'animated fadeInDown', // Animate.css class names
+                            close: 'animated fadeOutUp', // Animate.css class names
+                            easing: 'swing', // unavailable - no need
+                            speed: 500 // unavailable - no need
+                        },
+                        timeout: false, // delay for closing event. Set false for sticky notifications
+                        force: false, // adds notification to the beginning of queue when set to true
+                        modal: false,
+                        maxVisible: 3, // you can set max visible notification for dismissQueue true option,
+                        killer: false, // for close all notifications before show
+                        closeWith: ['button'], // ['click', 'button', 'hover', 'backdrop'] // backdrop click will close all notifications
+							buttons: false // an array of buttons
+                    });
+			}
 
-                                  buttons: false // an array of buttons
-                              });
-               setTimeout(notyInit,50000);
+            setTimeout(notyInit,50000);
            });
         }
 		jQuery(document).ready(function(){
