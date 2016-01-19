@@ -112,6 +112,8 @@
                         closeWith: ['button'], // ['click', 'button', 'hover', 'backdrop'] // backdrop click will close all notifications
 							buttons: false // an array of buttons
                     });
+                    var audio = new Audio('/qcadooView/public/alarm.mp3');
+                    audio.play();
 			}
 
             setTimeout(notyInit,50000);
