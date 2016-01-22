@@ -259,13 +259,11 @@ public final class LookupComponentState extends FieldComponentState implements L
         }
 
         public void autompleteSearch(final String[] args) {
-            if ((belongsToFieldDefinition == null || belongsToEntityId != null)) {
+            if ((belongsToFieldDefinition == null || belongsToEntityId != null) && StringUtils.hasText(currentCode)) {
                 SearchCriteriaBuilder searchCriteriaBuilder = getDataDefinition().find();
 
-                if (StringUtils.hasText(currentCode)) {
-                    searchCriteriaBuilder.add(SearchRestrictions.ilike(fieldCode, currentCode, SearchMatchMode.ANYWHERE));
-                }
-
+                searchCriteriaBuilder.add(SearchRestrictions.ilike(fieldCode, currentCode, SearchMatchMode.ANYWHERE));
+                
                 if (belongsToFieldDefinition != null && belongsToEntityId != null
                         && belongsToFieldDefinition.getType() instanceof BelongsToType) {
                     BelongsToType type = (BelongsToType) belongsToFieldDefinition.getType();
@@ -288,17 +286,21 @@ public final class LookupComponentState extends FieldComponentState implements L
                     criteriaModifier.modifyCriteria(searchCriteriaBuilder, criteriaModifierParameter);
                 }
 
+                searchCriteriaBuilder.setMaxResults(25);
+                
                 SearchResult results = searchCriteriaBuilder.list();
 
                 autocompleteEntitiesNumber = results.getTotalNumberOfEntities();
 
                 if (results.getTotalNumberOfEntities() > 25) {
-                    autocompleteMatches = new LinkedList<Entity>();
+                    autocompleteMatches = new LinkedList<>();
+                    
                 } else {
                     autocompleteMatches = results.getEntities();
                 }
+                
             } else {
-                autocompleteMatches = new LinkedList<Entity>();
+                autocompleteMatches = new LinkedList<>();
             }
 
             autocompleteCode = currentCode;
