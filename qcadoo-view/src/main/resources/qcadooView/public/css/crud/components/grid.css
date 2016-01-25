@@ -209,6 +209,12 @@ div.filterButton {
 	font-family: "Lucida Grande", Tahoma, Arial, Helvetica, sans-serif;
 	text-decoration: none;
 }
+.gridContainer .inactive .gridLink, .gridContainer .gridLink .inactive
+	{
+	color: #4B6582;
+	font-style: italic;
+}
+
 
 .gridContainer .gridLink:hover {
 	text-decoration: underline;
@@ -369,6 +375,7 @@ div.filterButton {
 .gridContainer .inactive,.gridContainer .inactive a,.gridContainer .inactive a:hover
 	{
 	color: #8A8A8A;
+	font-style: italic;
 }
 
 .gridContainer .redBg,
