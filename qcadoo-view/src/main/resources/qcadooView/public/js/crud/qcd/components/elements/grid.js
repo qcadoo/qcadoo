@@ -441,6 +441,7 @@ QCD.components.elements.Grid = function (element, mainController) {
         currentState.selectedEntities = state.selectedEntities;
         currentState.multiselectMode = state.multiselectMode;
         currentState.onlyActive = state.onlyActive;
+        currentState.onlyInactive = state.onlyInactive;
 
         if (state.belongsToEntityId) {
             currentState.belongsToEntityId = state.belongsToEntityId;
@@ -936,6 +937,12 @@ QCD.components.elements.Grid = function (element, mainController) {
     this.setOnlyActive = function (onlyActive) {
         blockGrid();
         currentState.onlyActive = onlyActive;
+        onCurrentStateChange(gridParameters.hasPredefinedFilters);
+    };
+
+    this.setOnlyInactive = function (onlyInactive) {
+        blockGrid();
+        currentState.onlyInactive = onlyInactive;
         onCurrentStateChange(gridParameters.hasPredefinedFilters);
     };
 
