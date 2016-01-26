@@ -49,10 +49,12 @@ public final class ViewDefinitionStateImpl extends AbstractContainerState implem
 
     private boolean shouldSerializeWindow;
 
-    private final Map<String, ComponentState> registry = new HashMap<String, ComponentState>();
+    private final Map<String, ComponentState> registry = new HashMap<>();
 
     private final ViewDefinitionStateLogger logger;
 
+    private boolean viewAfterReload = false;
+    
     public ViewDefinitionStateImpl() {
         super();
 
@@ -70,7 +72,7 @@ public final class ViewDefinitionStateImpl extends AbstractContainerState implem
         if (redirectToUrl == null) {
             return super.render();
         }
-
+        
         JSONObject json = new JSONObject();
         JSONObject jsonRedirect = new JSONObject();
         json.put("redirect", jsonRedirect);
@@ -78,6 +80,7 @@ public final class ViewDefinitionStateImpl extends AbstractContainerState implem
         jsonRedirect.put("openInNewWindow", openInNewWindow);
         jsonRedirect.put("openInModalWindow", openInModalWindow);
         jsonRedirect.put("shouldSerializeWindow", shouldSerializeWindow);
+        
         return json;
     }
 
@@ -155,7 +158,7 @@ public final class ViewDefinitionStateImpl extends AbstractContainerState implem
     }
 
     private List<InternalComponentState> getStatesAsList(final Collection<InternalComponentState> states) {
-        List<InternalComponentState> list = new ArrayList<InternalComponentState>();
+        List<InternalComponentState> list = new ArrayList<>();
         list.addAll(states);
         for (InternalComponentState state : states) {
             if (state instanceof ContainerState) {
@@ -204,4 +207,12 @@ public final class ViewDefinitionStateImpl extends AbstractContainerState implem
         registry.put(reference, state);
     }
 
+    public void setViewAfterReload(boolean viewAfterReload) {
+        this.viewAfterReload = viewAfterReload;
+    }
+    
+    @Override
+    public boolean isViewAfterReload() {
+        return viewAfterReload;
+    }    
 }

@@ -105,7 +105,7 @@ public final class LookupComponentState extends FieldComponentState implements L
     private final CriteriaModifier criteriaModifier;
 
     private final FilterValueHolder criteriaModifierParameter;
-
+    
     public LookupComponentState(final FieldDefinition scopeField, final String fieldCode, final String expression,
             final LookupComponentPattern pattern) {
         super(pattern);
@@ -196,7 +196,7 @@ public final class LookupComponentState extends FieldComponentState implements L
     @Override
     public boolean isEmpty() {
         return org.apache.commons.lang3.StringUtils.isEmpty(autocompleteCode) && !hasSelectedEntity();
-    }
+    }  
 
     private boolean hasSelectedEntity() {
         return getFieldValue() != null;
@@ -259,10 +259,12 @@ public final class LookupComponentState extends FieldComponentState implements L
         }
 
         public void autompleteSearch(final String[] args) {
-            if ((belongsToFieldDefinition == null || belongsToEntityId != null) && StringUtils.hasText(currentCode)) {
+            if ((belongsToFieldDefinition == null || belongsToEntityId != null)) {
                 SearchCriteriaBuilder searchCriteriaBuilder = getDataDefinition().find();
 
-                searchCriteriaBuilder.add(SearchRestrictions.ilike(fieldCode, currentCode, SearchMatchMode.ANYWHERE));
+                if(StringUtils.hasText(currentCode)){
+                    searchCriteriaBuilder.add(SearchRestrictions.ilike(fieldCode, currentCode, SearchMatchMode.ANYWHERE));
+                }
                 
                 if (belongsToFieldDefinition != null && belongsToEntityId != null
                         && belongsToFieldDefinition.getType() instanceof BelongsToType) {
@@ -303,6 +305,10 @@ public final class LookupComponentState extends FieldComponentState implements L
                 autocompleteMatches = new LinkedList<>();
             }
 
+            if(!StringUtils.hasText(currentCode)){
+                setFieldValue("");
+            }            
+            
             autocompleteCode = currentCode;
             requestRender();
         }
@@ -352,5 +358,4 @@ public final class LookupComponentState extends FieldComponentState implements L
         criteriaModifierParameter.initialize(value.toJSON());
         requestRender();
     }
-
 }
