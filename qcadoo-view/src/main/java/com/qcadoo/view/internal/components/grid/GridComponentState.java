@@ -23,38 +23,14 @@
  */
 package com.qcadoo.view.internal.components.grid;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.EntityOpResult;
 import com.qcadoo.model.api.FieldDefinition;
-import com.qcadoo.model.api.search.CustomRestriction;
-import com.qcadoo.model.api.search.JoinType;
-import com.qcadoo.model.api.search.SearchCriteriaBuilder;
-import com.qcadoo.model.api.search.SearchOrders;
-import com.qcadoo.model.api.search.SearchRestrictions;
-import com.qcadoo.model.api.search.SearchResult;
-import com.qcadoo.model.api.types.BelongsToType;
-import com.qcadoo.model.api.types.EnumeratedType;
-import com.qcadoo.model.api.types.FieldType;
-import com.qcadoo.model.api.types.JoinFieldHolder;
-import com.qcadoo.model.api.types.ManyToManyType;
+import com.qcadoo.model.api.search.*;
+import com.qcadoo.model.api.types.*;
 import com.qcadoo.model.api.validators.ErrorMessage;
 import com.qcadoo.model.internal.ProxyEntity;
 import com.qcadoo.security.api.SecurityRole;
@@ -65,6 +41,12 @@ import com.qcadoo.view.internal.CriteriaModifier;
 import com.qcadoo.view.internal.FilterValueHolderImpl;
 import com.qcadoo.view.internal.RowStyleResolver;
 import com.qcadoo.view.internal.states.AbstractComponentState;
+import org.apache.commons.lang3.StringUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.*;
 
 public final class GridComponentState extends AbstractComponentState implements GridComponent {
 
@@ -116,6 +98,8 @@ public final class GridComponentState extends AbstractComponentState implements 
 
     public static final String JSON_CRITERIA_MODIFIER_PARAMETER = "criteriaModifierParameter";
 
+    public static final String JSON_DELETE_ENABLED = "deleteEnabled";
+
     private final GridEventPerformer eventPerformer = new GridEventPerformer();
 
     private final Map<String, GridComponentColumn> columns;
@@ -162,6 +146,8 @@ public final class GridComponentState extends AbstractComponentState implements 
 
     private final boolean activable;
 
+    private boolean deletable = false;
+
     private final boolean weakRelation;
 
     private final DataDefinition scopeFieldDataDefinition;
@@ -174,6 +160,10 @@ public final class GridComponentState extends AbstractComponentState implements 
 
     private final SecurityRole authorizationRole;
 
+    private String deletableAuthorizationRole = "";
+
+    private boolean deleteEnabled = false;
+
     private final SecurityRolesService securityRolesService;
 
     public GridComponentState(final DataDefinition dataDefinition, final GridComponentPattern pattern) {
@@ -181,8 +171,8 @@ public final class GridComponentState extends AbstractComponentState implements 
         this.belongsToFieldDefinition = pattern.getBelongsToFieldDefinition();
         this.columns = pattern.getColumns();
         if (pattern.getDefaultOrderColumn() != null) {
-            this.orderColumns
-                    .add(new GridComponentOrderColumn(pattern.getDefaultOrderColumn(), pattern.getDefaultOrderDirection()));
+            this.orderColumns.add(new GridComponentOrderColumn(pattern.getDefaultOrderColumn(), pattern
+                    .getDefaultOrderDirection()));
         }
         this.activable = pattern.isActivable();
         this.weakRelation = pattern.isWeakRelation();
@@ -193,6 +183,8 @@ public final class GridComponentState extends AbstractComponentState implements 
         this.defaultPredefinedFilter = pattern.getDefaultPredefinedFilter();
         this.authorizationRole = pattern.getAuthorizationRole();
         this.securityRolesService = pattern.getApplicationContext().getBean(SecurityRolesService.class);
+        this.deletable = pattern.isDeletable();
+        this.deletableAuthorizationRole = pattern.getDeletableAuthorizationRole();
         registerEvent("refresh", eventPerformer, "refresh");
         registerEvent("select", eventPerformer, "selectEntity");
         registerEvent("addExistingEntity", eventPerformer, "addExistingEntity");
@@ -269,14 +261,19 @@ public final class GridComponentState extends AbstractComponentState implements 
             for (int i = 0; i < orderJson.length(); i++) {
                 JSONObject orderColumn = orderJson.getJSONObject(i);
                 if (orderColumn.has(JSON_ORDER_COLUMN) && orderColumn.has(JSON_ORDER_DIRECTION)) {
-                    orderColumns.add(new GridComponentOrderColumn(orderColumn.getString(JSON_ORDER_COLUMN),
-                            orderColumn.getString(JSON_ORDER_DIRECTION)));
+                    orderColumns.add(new GridComponentOrderColumn(orderColumn.getString(JSON_ORDER_COLUMN), orderColumn
+                            .getString(JSON_ORDER_DIRECTION)));
                 }
             }
         }
-        if ((belongsToFieldDefinition != null && belongsToEntityId == null)
-                || !securityRolesService.canAccess(authorizationRole)) {
+        if ((belongsToFieldDefinition != null && belongsToEntityId == null) || !securityRolesService.canAccess(authorizationRole)) {
             setEnabled(false);
+        }
+
+        if (deletable && StringUtils.isNotEmpty(deletableAuthorizationRole)
+                && securityRolesService.canAccess(deletableAuthorizationRole) || deletable
+                && StringUtils.isEmpty(deletableAuthorizationRole)) {
+            this.deleteEnabled = true;
         }
 
         passFiltersFromJson(json);
@@ -325,8 +322,8 @@ public final class GridComponentState extends AbstractComponentState implements 
             JSONObject jsonMultiSearchFilter = json.getJSONObject(JSON_MULTI_SEARCH_FILTER);
             if (jsonMultiSearchFilter.has(GridComponentMultiSearchFilter.JSON_GROUP_OPERATOR_FIELD)
                     && !jsonMultiSearchFilter.isNull(GridComponentMultiSearchFilter.JSON_GROUP_OPERATOR_FIELD)) {
-                multiSearchFilter.setGroupOperator(
-                        jsonMultiSearchFilter.getString(GridComponentMultiSearchFilter.JSON_GROUP_OPERATOR_FIELD));
+                multiSearchFilter.setGroupOperator(jsonMultiSearchFilter
+                        .getString(GridComponentMultiSearchFilter.JSON_GROUP_OPERATOR_FIELD));
             }
             if (jsonMultiSearchFilter.has(GridComponentMultiSearchFilter.JSON_RULES_FIELD)
                     && !jsonMultiSearchFilter.isNull(GridComponentMultiSearchFilter.JSON_RULES_FIELD)) {
@@ -334,10 +331,11 @@ public final class GridComponentState extends AbstractComponentState implements 
                         .getJSONArray(GridComponentMultiSearchFilter.JSON_RULES_FIELD);
                 for (int i = 0; i < jsonMultiSearchFilterRules.length(); ++i) {
                     JSONObject jsonRule = jsonMultiSearchFilterRules.getJSONObject(i);
-                    multiSearchFilter.addRule(jsonRule.getString(GridComponentMultiSearchFilterRule.JSON_FIELD_FIELD),
+                    multiSearchFilter.addRule(
+                            jsonRule.getString(GridComponentMultiSearchFilterRule.JSON_FIELD_FIELD),
                             jsonRule.getString(GridComponentMultiSearchFilterRule.JSON_OPERATOR_FIELD),
-                            jsonRule.isNull(GridComponentMultiSearchFilterRule.JSON_DATA_FIELD) ? null
-                                    : jsonRule.getString(GridComponentMultiSearchFilterRule.JSON_DATA_FIELD));
+                            jsonRule.isNull(GridComponentMultiSearchFilterRule.JSON_DATA_FIELD) ? null : jsonRule
+                                    .getString(GridComponentMultiSearchFilterRule.JSON_DATA_FIELD));
                 }
             }
         }
@@ -472,6 +470,8 @@ public final class GridComponentState extends AbstractComponentState implements 
                 json.put(JSON_HEADER_VALUE, criteriaModifierParameter.getString(JSON_HEADER_VALUE));
             }
         }
+
+        json.put(JSON_DELETE_ENABLED, this.deleteEnabled);
 
         return json;
     }
@@ -615,8 +615,8 @@ public final class GridComponentState extends AbstractComponentState implements 
             FieldType belongsToFieldType = belongsToFieldDefinition.getType();
             if (belongsToFieldType instanceof JoinFieldHolder) {
                 Entity gridOwnerEntity = scopeFieldDataDefinition.get(belongsToEntityId);
-                List<Entity> entities = gridOwnerEntity
-                        .getManyToManyField(((JoinFieldHolder) belongsToFieldType).getJoinFieldName());
+                List<Entity> entities = gridOwnerEntity.getManyToManyField(((JoinFieldHolder) belongsToFieldType)
+                        .getJoinFieldName());
                 entities.addAll(newlyAddedEntities);
                 gridOwnerEntity.setField(((JoinFieldHolder) belongsToFieldType).getJoinFieldName(), entities);
                 gridOwnerEntity.getDataDefinition().save(gridOwnerEntity);
@@ -628,8 +628,7 @@ public final class GridComponentState extends AbstractComponentState implements 
                     copyFieldValidationMessages(entity);
                 }
             } else {
-                throw new IllegalArgumentException(
-                        "Unsupported relation type - " + belongsToFieldDefinition.getType().toString());
+                throw new IllegalArgumentException("Unsupported relation type - " + belongsToFieldDefinition.getType().toString());
             }
 
             reload();
@@ -686,8 +685,8 @@ public final class GridComponentState extends AbstractComponentState implements 
         }
 
         public void deactivateSelectedEntity(final String[] args) {
-            List<Entity> deactivatedEntities = getDataDefinition()
-                    .deactivate(selectedEntities.toArray(new Long[selectedEntities.size()]));
+            List<Entity> deactivatedEntities = getDataDefinition().deactivate(
+                    selectedEntities.toArray(new Long[selectedEntities.size()]));
 
             entitiesToMarkAsNew = new HashSet<Long>();
             for (Entity entity : deactivatedEntities) {
@@ -703,8 +702,8 @@ public final class GridComponentState extends AbstractComponentState implements 
         }
 
         public void activateSelectedEntity(final String[] args) {
-            List<Entity> activatedEntities = getDataDefinition()
-                    .activate(selectedEntities.toArray(new Long[selectedEntities.size()]));
+            List<Entity> activatedEntities = getDataDefinition().activate(
+                    selectedEntities.toArray(new Long[selectedEntities.size()]));
 
             entitiesToMarkAsNew = new HashSet<Long>();
             for (Entity entity : activatedEntities) {
@@ -745,8 +744,8 @@ public final class GridComponentState extends AbstractComponentState implements 
                 if (belongsToFieldDefinition != null) {
                     if (belongsToFieldDefinition.getType() instanceof ManyToManyType) {
                         String belongsToFieldName = belongsToFieldDefinition.getName();
-                        criteria.createAlias(belongsToFieldName, belongsToFieldName)
-                                .add(SearchRestrictions.eq(belongsToFieldName + ".id", belongsToEntityId));
+                        criteria.createAlias(belongsToFieldName, belongsToFieldName).add(
+                                SearchRestrictions.eq(belongsToFieldName + ".id", belongsToEntityId));
                     } else {
                         // criteria.add(SearchRestrictions.belongsTo(belongsToFieldDefinition.getName(), ((DataDefinitionHolder)
                         // belongsToFieldDefinition.getType()).getDataDefinition(), belongsToEntityId));
@@ -848,8 +847,10 @@ public final class GridComponentState extends AbstractComponentState implements 
             if (column.getFields().size() == 1) {
                 String fieldCode = getDataDefinition().getPluginIdentifier() + "." + getDataDefinition().getName() + "."
                         + column.getFields().get(0).getName();
-                names.put(column.getName(), getTranslationService()
-                        .translate(getTranslationPath() + ".column." + column.getName(), fieldCode + ".label", getLocale()));
+                names.put(
+                        column.getName(),
+                        getTranslationService().translate(getTranslationPath() + ".column." + column.getName(),
+                                fieldCode + ".label", getLocale()));
             } else {
                 names.put(column.getName(),
                         getTranslationService().translate(getTranslationPath() + ".column." + column.getName(), getLocale()));
@@ -961,4 +962,5 @@ public final class GridComponentState extends AbstractComponentState implements 
     public Map<String, GridComponentColumn> getColumns() {
         return columns;
     }
+
 }
