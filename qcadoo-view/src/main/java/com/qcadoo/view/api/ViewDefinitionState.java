@@ -94,4 +94,10 @@ public interface ViewDefinitionState extends ComponentState {
      */
     void openModal(String url);
 
+    /**
+     * Checks whether the view is generated for the first time or after reload
+     * 
+     * @return boolean
+     */
+    boolean isViewAfterReload();
 }

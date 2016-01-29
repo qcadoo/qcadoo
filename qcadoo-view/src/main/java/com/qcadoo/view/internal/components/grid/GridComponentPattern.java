@@ -23,6 +23,20 @@
  */
 package com.qcadoo.view.internal.components.grid;
 
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
+import org.apache.commons.lang3.StringUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
@@ -43,15 +57,6 @@ import com.qcadoo.view.internal.RowStyleResolver;
 import com.qcadoo.view.internal.patterns.AbstractComponentPattern;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
 import com.qcadoo.view.internal.xml.ViewDefinitionParserNodeException;
-import org.apache.commons.lang3.StringUtils;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
-import java.util.*;
-import java.util.Map.Entry;
 
 public class GridComponentPattern extends AbstractComponentPattern {
 
@@ -197,8 +202,8 @@ public class GridComponentPattern extends AbstractComponentPattern {
         if (getScopeFieldDefinition() != null) {
             FieldType fieldType = getScopeFieldDefinition().getType();
             if (fieldType instanceof JoinFieldHolder && fieldType instanceof DataDefinitionHolder) {
-                belongsToFieldDefinition = ((DataDefinitionHolder) fieldType).getDataDefinition().getField(
-                        ((JoinFieldHolder) fieldType).getJoinFieldName());
+                belongsToFieldDefinition = ((DataDefinitionHolder) fieldType).getDataDefinition()
+                        .getField(((JoinFieldHolder) fieldType).getJoinFieldName());
             } else {
                 throwIllegalStateException("Scope field for grid should be one of: hasMany, tree or manyToMany");
             }
@@ -249,6 +254,7 @@ public class GridComponentPattern extends AbstractComponentPattern {
         JSONObject translations = new JSONObject();
 
         addTranslation(translations, "unactiveVisibleButton", locale);
+        addTranslation(translations, "onlyInactiveVisibleButton", locale);
         addTranslation(translations, "unactiveNotVisibleButton", locale);
         addTranslation(translations, "addFilterButton", locale);
         addTranslation(translations, "multiSearchButton", locale);
@@ -344,8 +350,8 @@ public class GridComponentPattern extends AbstractComponentPattern {
     }
 
     private void addTranslation(final JSONObject translation, final String key, final Locale locale) throws JSONException {
-        translation.put(key, getTranslationService()
-                .translate(getTranslationPath() + "." + key, "qcadooView.grid." + key, locale));
+        translation.put(key,
+                getTranslationService().translate(getTranslationPath() + "." + key, "qcadooView.grid." + key, locale));
     }
 
     private JSONArray getColumnsForJsOptions(final Locale locale) throws JSONException {
@@ -437,7 +443,8 @@ public class GridComponentPattern extends AbstractComponentPattern {
                     predefinedFilter.setName(predefinedFilterName);
 
                     NodeList restrictionNodes = child.getChildNodes();
-                    for (int restrictionNodesIndex = 0; restrictionNodesIndex < restrictionNodes.getLength(); restrictionNodesIndex++) {
+                    for (int restrictionNodesIndex = 0; restrictionNodesIndex < restrictionNodes
+                            .getLength(); restrictionNodesIndex++) {
                         Node restrictionNode = restrictionNodes.item(restrictionNodesIndex);
                         if (restrictionNode.getNodeType() == Node.ELEMENT_NODE) {
                             if ("filterRestriction".equals(restrictionNode.getNodeName())) {
@@ -454,8 +461,8 @@ public class GridComponentPattern extends AbstractComponentPattern {
                                     direction = "asc";
                                 } else {
                                     if (!("asc".equals(direction) || "desc".equals(direction))) {
-                                        throw new ViewDefinitionParserNodeException(restrictionNode, "unknown order direction: "
-                                                + direction);
+                                        throw new ViewDefinitionParserNodeException(restrictionNode,
+                                                "unknown order direction: " + direction);
                                     }
                                 }
                                 predefinedFilter.setOrderColumn(column);
@@ -503,7 +510,7 @@ public class GridComponentPattern extends AbstractComponentPattern {
             } else if ("hasPredefinedFilters".equals(option.getType())) {
                 hasPredefinedFilters = Boolean.parseBoolean(option.getValue());
             } else if ("defaultPredefinedFilterName".equals(option.getType())) {
-                    defaultPredefinedFilterName = option.getValue();
+                defaultPredefinedFilterName = option.getValue();
             } else if ("filtersDefaultVisible".equals(option.getType())) {
                 filtersDefaultVisible = Boolean.parseBoolean(option.getValue());
             } else if ("deletable".equals(option.getType())) {
