@@ -1,13 +1,7 @@
 package com.qcadoo.view.internal.alerts.utils;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.joda.time.DateTime;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.google.common.collect.Lists;
+import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.search.SearchRestrictions;
@@ -16,23 +10,25 @@ import com.qcadoo.view.constants.AlertFields;
 import com.qcadoo.view.constants.QcadooViewConstants;
 import com.qcadoo.view.constants.ViewedAlertFields;
 import com.qcadoo.view.internal.alerts.model.AlertDto;
+import org.joda.time.DateTime;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-@Service
-public class AlertsDbHelper {
+import java.util.List;
+import java.util.stream.Collectors;
 
-    @Autowired
-    private DataDefinitionService dataDefinitionService;
+@Service public class AlertsDbHelper {
 
-    @Autowired
-    private UserService userService;
+    @Autowired private DataDefinitionService dataDefinitionService;
+
+    @Autowired private UserService userService;
 
     public void createViewedAlerts(final List<AlertDto> alerts) {
         alerts.forEach(a -> createViewedAlert(a.getId()));
     }
 
     private void createViewedAlert(final Long id) {
-        Entity viewedAlert = dataDefinitionService
-                .get(QcadooViewConstants.PLUGIN_IDENTIFIER, QcadooViewConstants.MODEL_VIEWED_ALERT).create();
+        Entity viewedAlert = getViewdAlertDD().create();
         Entity alert = dataDefinitionService.get(QcadooViewConstants.PLUGIN_IDENTIFIER, QcadooViewConstants.MODEL_ALERT).get(id);
         Entity user = userService.getCurrentUserEntity();
         viewedAlert.setField(ViewedAlertFields.USER, user);
@@ -46,15 +42,12 @@ public class AlertsDbHelper {
         List<Entity> result = Lists.newArrayList();
         DateTime currentDate = DateTime.now();
         if (user != null) {
-            List<Entity> alerts = dataDefinitionService
-                    .get(QcadooViewConstants.PLUGIN_IDENTIFIER, QcadooViewConstants.MODEL_ALERT).find()
+            List<Entity> alerts = getAlertDD().find()
                     .add(SearchRestrictions.ge(AlertFields.EXPIRATION_DATE, currentDate.toDate())).list().getEntities();
-            List<Entity> viewedAlerts = dataDefinitionService
-                    .get(QcadooViewConstants.PLUGIN_IDENTIFIER, QcadooViewConstants.MODEL_VIEWED_ALERT).find()
+            List<Entity> viewedAlerts = getViewdAlertDD().find()
                     .add(SearchRestrictions.belongsTo(ViewedAlertFields.USER, user)).list().getEntities();
-            result.addAll(alerts.stream()
-                    .filter(alert -> viewedAlerts.stream()
-                            .noneMatch(va -> va.getBelongsToField(ViewedAlertFields.ALERT).getId() == alert.getId()))
+            result.addAll(alerts.stream().filter(alert -> viewedAlerts.stream()
+                    .noneMatch(va -> va.getBelongsToField(ViewedAlertFields.ALERT).getId() == alert.getId()))
                     .collect(Collectors.toList()));
         }
         return result;
@@ -72,5 +65,23 @@ public class AlertsDbHelper {
         alert.setMessage(a.getStringField(AlertFields.MESSAGE));
         alert.setId(a.getId());
         alerts.add(alert);
+    }
+
+    public void registerAlert(final AlertDto alert) {
+        Entity alertEntity = getAlertDD().create();
+        alertEntity.setField(AlertFields.TYPE, alert.getType());
+        alertEntity.setField(AlertFields.MESSAGE, alert.getMessage());
+        alertEntity.setField(AlertFields.EXPIRATION_DATE, alert.getExpirationDate());
+        alertEntity.setField(AlertFields.SOUND,alert.isSound());
+        alertEntity = alertEntity.getDataDefinition().save(alertEntity);
+
+    }
+
+    private DataDefinition getAlertDD() {
+        return dataDefinitionService.get(QcadooViewConstants.PLUGIN_IDENTIFIER, QcadooViewConstants.MODEL_ALERT);
+    }
+
+    private DataDefinition getViewdAlertDD() {
+        return dataDefinitionService.get(QcadooViewConstants.PLUGIN_IDENTIFIER, QcadooViewConstants.MODEL_VIEWED_ALERT);
     }
 }

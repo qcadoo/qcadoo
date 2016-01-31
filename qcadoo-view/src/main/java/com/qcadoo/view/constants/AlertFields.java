@@ -32,6 +32,8 @@ public final class AlertFields {
 
     public static final String MESSAGE = "message";
 
+    public static final String SOUND = "sound";
+
     public static final String VIEWED_ALERTS = "viewedAlerts";
 
     public static final String EXPIRATION_DATE = "expirationDate";

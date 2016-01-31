@@ -5,6 +5,7 @@ import com.qcadoo.view.internal.alerts.utils.AlertsDbHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -17,12 +18,18 @@ public class AlertsController {
 
     @Autowired
     private AlertsDbHelper alertsDbHelper;
+
     @ResponseBody
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<AlertDto> getAlert() {
         List<AlertDto> alerts = alertsDbHelper.getAlerts();
         alertsDbHelper.createViewedAlerts(alerts);
-       return alerts;
+        return alerts;
+    }
+
+    @RequestMapping(method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public void registerAlert(@RequestBody AlertDto alert) {
+        alertsDbHelper.registerAlert(alert);
     }
 
 }
