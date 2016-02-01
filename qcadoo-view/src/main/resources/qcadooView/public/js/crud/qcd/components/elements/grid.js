@@ -946,6 +946,13 @@ QCD.components.elements.Grid = function (element, mainController) {
         onCurrentStateChange(gridParameters.hasPredefinedFilters);
     };
 
+    this.setOnlyActiveAndOnlyInactive = function (onlyActive, onlyInactive) {
+        blockGrid();
+        currentState.onlyActive = onlyActive;
+        currentState.onlyInactive = onlyInactive;
+        onCurrentStateChange(gridParameters.hasPredefinedFilters);
+    };
+
     this.setFilterObject = function (filter) {
         blockGrid();
 
