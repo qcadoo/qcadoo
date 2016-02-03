@@ -65,7 +65,7 @@ QCD.components.elements.grid.GridHeaderController = function(_gridController, _m
 	var enabled = false;
 	var rowIndex = null;
 	var multiselectMode = false;
-	
+
 	function constructor(_this) {
 		pagingVars.first = 0;
 		pagingVars.max = $.cookie("page_size") ? $.cookie("page_size") : 30;
