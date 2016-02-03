@@ -521,8 +521,7 @@ QCD.components.elements.grid.GridHeaderController = function(_gridController, _m
 		headerElements.onlyInactiveButton.hide();
 		//headerElements.allButton.hide();
 		headerElements.onlyActiveButton.css("display", "inline-block");
-		gridController.setOnlyInactive(false);
-		gridController.setOnlyActive(true);
+		gridController.setOnlyActiveAndOnlyInactive(true, false);
 
 	}
 	

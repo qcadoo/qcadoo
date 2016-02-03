@@ -55,7 +55,9 @@
 						
 						<option type="searchable" value="identifier,description" />
 						<option type="orderable" value="identifier,description" />
-						
+						<criteriaModifier
+							class="com.qcadoo.plugins.users.internal.GroupDetailsCriteriaModifiers"
+							method="criteriaForGroups"/>
 					</component>
 					<component type="grid" name="groupComponents"
 						reference="groupComponents" source="#{form}.roles" defaultEnabled="false">
@@ -85,4 +87,9 @@
 			<option type="expression" value="#name" />
 		</component>
 	</component>
+	<hooks>
+		<beforeRender
+				class="com.qcadoo.plugins.users.hooks.GroupDetailsHooks"
+				method="fillCriteriaModifiers"/>
+	</hooks>
 </view>
