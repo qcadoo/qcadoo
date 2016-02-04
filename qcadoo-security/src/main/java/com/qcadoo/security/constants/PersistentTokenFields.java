@@ -23,16 +23,18 @@
  */
 package com.qcadoo.security.constants;
 
-public final class RoleFields {
+public final class PersistentTokenFields {
 
-    private RoleFields() {
+	private PersistentTokenFields() {
 
-    }
+	}
 
-    public static final String IDENTIFIER = "identifier";
+	public static final String USER_NAME = "userName";
 
-    public static final String DESCRIPTION = "description";
+	public static final String SERIES = "series";
 
-    public static final String GROUPS_FIELD = "groups";
+	public static final String TOKEN = "token";
+
+	public static final String LAST_USED = "lastUsed";
 
 }
