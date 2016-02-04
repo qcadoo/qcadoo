@@ -38,6 +38,7 @@ import com.qcadoo.security.internal.api.QcadooUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.security.authentication.event.AbstractAuthenticationEvent;
+import org.springframework.security.authentication.event.AbstractAuthenticationFailureEvent;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.GrantedAuthorityImpl;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -73,15 +74,17 @@ public class SecurityServiceImpl implements InternalSecurityService, UserDetails
 
     @Override
     public void onApplicationEvent(final AbstractAuthenticationEvent event) {
-        UserDetails userDetails = (UserDetails) event.getAuthentication().getPrincipal();
-        Entity entity = dataDefinitionService.get(PLUGIN_IDENTIFIER, MODEL_USER).find()
-                .add(SearchRestrictions.eq(L_USER_NAME, userDetails.getUsername())).uniqueResult();
-        Calendar now = Calendar.getInstance();
-        now.add(Calendar.DAY_OF_YEAR, -1);
-        if (entity.getField("lastActivity") == null || now.getTime().after((Date) entity.getField("lastActivity"))) {
-            entity.setField("lastActivity", new Date());
+        if (!(event instanceof AbstractAuthenticationFailureEvent)) {
+            UserDetails userDetails = (UserDetails) event.getAuthentication().getPrincipal();
+            Entity entity = dataDefinitionService.get(PLUGIN_IDENTIFIER, MODEL_USER).find()
+                    .add(SearchRestrictions.eq(L_USER_NAME, userDetails.getUsername())).uniqueResult();
+            Calendar now = Calendar.getInstance();
+            now.add(Calendar.DAY_OF_YEAR, -1);
+            if (entity.getField("lastActivity") == null || now.getTime().after((Date) entity.getField("lastActivity"))) {
+                entity.setField("lastActivity", new Date());
 
-            dataDefinitionService.get(PLUGIN_IDENTIFIER, MODEL_USER).save(entity);
+                dataDefinitionService.get(PLUGIN_IDENTIFIER, MODEL_USER).save(entity);
+            }
         }
     }
 
