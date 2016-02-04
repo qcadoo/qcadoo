@@ -41,27 +41,13 @@ public abstract class AbstractXLSXView extends AbstractView {
 
         XSSFWorkbook workbook;
         ByteArrayOutputStream baos = createTemporaryOutputStream();
-		/*if (this.url != null) {
-			workbook = getTemplateSource(this.url, request);
-		}
-		else {*/
+
         workbook = new XSSFWorkbook();
-        logger.debug("Created Excel Workbook from scratch");
-        //}
 
         buildExcelDocument(model, workbook, request, response);
 
-        // Set the content type.
-        //response.setContentType(getContentType());
-
-        // Should we set the content length here?
-        // response.setContentLength(workbook.getBytes().length);
-
-        // Flush byte array to servlet output stream.
-        //ServletOutputStream out = response.getOutputStream();
         workbook.write(baos);
         writeToResponse(response, baos);
-        //out.flush();
     }
 
 
