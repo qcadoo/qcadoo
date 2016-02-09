@@ -53,11 +53,15 @@ public final class TreeComponentPattern extends FieldComponentPattern {
 
     private boolean hasDeleteButton = true;
 
+    private boolean hasCustomActionButton = false;
+
     private boolean hasEditButton = true;
 
     private boolean hasMoveButton = true;
 
     private boolean selectableWhenDisabled = false;
+
+    private String customActionIcon = "collapseAllIcon16.png";
 
     public TreeComponentPattern(final ComponentDefinition componentDefinition) {
         super(componentDefinition);
@@ -114,12 +118,16 @@ public final class TreeComponentPattern extends FieldComponentPattern {
                 hasNewButtons = Boolean.parseBoolean(option.getValue());
             } else if ("hasDeleteButton".equals(option.getType())) {
                 hasDeleteButton = Boolean.parseBoolean(option.getValue());
+            } else if ("hasCustomActionButton".equals(option.getType())) {
+                hasCustomActionButton = Boolean.parseBoolean(option.getValue());
             } else if ("hasEditButton".equals(option.getType())) {
                 hasEditButton = Boolean.parseBoolean(option.getValue());
             } else if ("hasMoveButton".equals(option.getType())) {
                 hasMoveButton = Boolean.parseBoolean(option.getValue());
             } else if ("selectableWhenDisabled".equals(option.getType())) {
                 selectableWhenDisabled = Boolean.parseBoolean(option.getValue());
+            } else if ("customActionIcon".equals(option.getType())) {
+                customActionIcon = String.valueOf(option.getValue());
             }
         }
     }
@@ -140,8 +148,11 @@ public final class TreeComponentPattern extends FieldComponentPattern {
         JSONObject buttonsOptions = new JSONObject();
         buttonsOptions.put("hasNewButtons", hasNewButtons);
         buttonsOptions.put("hasDeleteButton", hasDeleteButton);
+        buttonsOptions.put("hasCustomActionButton", hasCustomActionButton);
         buttonsOptions.put("hasEditButton", hasEditButton);
         buttonsOptions.put("hasMoveButton", hasMoveButton);
+        buttonsOptions.put("customActionIcon", customActionIcon);
+
         json.put("buttonsOptions", buttonsOptions);
 
         json.put("selectableWhenDisabled", selectableWhenDisabled);
@@ -162,6 +173,10 @@ public final class TreeComponentPattern extends FieldComponentPattern {
         translations.put("moveModeCancelButtonConfirm", getTranslation("moveModeCancelButtonConfirm", locale));
 
         translations.put("header", getTranslationService().translate(getTranslationPath() + ".header", locale));
+        translations.put("customActionTitle",
+                getTranslationService().translate(getTranslationPath() + ".customActionTitle", locale));
+        translations.put("customActionConfirm",
+                getTranslationService().translate(getTranslationPath() + ".customActionConfirm", locale));
 
         translations.put("moveModeInfoHeader", getTranslation("moveModeInfoHeader", locale));
         translations.put("moveModeInfoContent", getTranslation("moveModeInfoContent", locale));
