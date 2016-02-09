@@ -1,7 +1,10 @@
 package com.qcadoo.view.internal.alerts.model;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+
 import java.util.Date;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class AlertDto {
 
     Long id;
