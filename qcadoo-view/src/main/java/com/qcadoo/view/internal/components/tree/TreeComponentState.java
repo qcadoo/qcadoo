@@ -96,6 +96,7 @@ public final class TreeComponentState extends FieldComponentState implements Tre
         registerEvent("refresh", eventPerformer, "refresh");
         registerEvent("select", eventPerformer, "selectEntity");
         registerEvent("remove", eventPerformer, "removeSelectedEntity");
+        registerEvent("customAction", eventPerformer, "customAction");
         registerEvent("save", eventPerformer, "save");
         registerEvent("clear", eventPerformer, "clear");
     }
@@ -362,6 +363,9 @@ public final class TreeComponentState extends FieldComponentState implements Tre
 
         public void selectEntity(final String[] args) {
             notifyEntityIdChangeListeners(parseSelectedIdForListeners(getSelectedEntityId()));
+        }
+
+        public void customAction(final String[] args) {
         }
 
         public void removeSelectedEntity(final String[] args) {
