@@ -145,6 +145,8 @@ public class GridComponentPattern extends AbstractComponentPattern {
 
     private SecurityRole authorizationRole;
 
+    private String deletableAuthorizationRole = "";
+
     public GridComponentPattern(final ComponentDefinition componentDefinition) {
         super(componentDefinition);
     }
@@ -197,8 +199,8 @@ public class GridComponentPattern extends AbstractComponentPattern {
         if (getScopeFieldDefinition() != null) {
             FieldType fieldType = getScopeFieldDefinition().getType();
             if (fieldType instanceof JoinFieldHolder && fieldType instanceof DataDefinitionHolder) {
-                belongsToFieldDefinition = ((DataDefinitionHolder) fieldType).getDataDefinition().getField(
-                        ((JoinFieldHolder) fieldType).getJoinFieldName());
+                belongsToFieldDefinition = ((DataDefinitionHolder) fieldType).getDataDefinition()
+                        .getField(((JoinFieldHolder) fieldType).getJoinFieldName());
             } else {
                 throwIllegalStateException("Scope field for grid should be one of: hasMany, tree or manyToMany");
             }
@@ -249,6 +251,7 @@ public class GridComponentPattern extends AbstractComponentPattern {
         JSONObject translations = new JSONObject();
 
         addTranslation(translations, "unactiveVisibleButton", locale);
+        addTranslation(translations, "onlyInactiveVisibleButton", locale);
         addTranslation(translations, "unactiveNotVisibleButton", locale);
         addTranslation(translations, "addFilterButton", locale);
         addTranslation(translations, "multiSearchButton", locale);
@@ -344,8 +347,8 @@ public class GridComponentPattern extends AbstractComponentPattern {
     }
 
     private void addTranslation(final JSONObject translation, final String key, final Locale locale) throws JSONException {
-        translation.put(key, getTranslationService()
-                .translate(getTranslationPath() + "." + key, "qcadooView.grid." + key, locale));
+        translation.put(key,
+                getTranslationService().translate(getTranslationPath() + "." + key, "qcadooView.grid." + key, locale));
     }
 
     private JSONArray getColumnsForJsOptions(final Locale locale) throws JSONException {
@@ -437,7 +440,8 @@ public class GridComponentPattern extends AbstractComponentPattern {
                     predefinedFilter.setName(predefinedFilterName);
 
                     NodeList restrictionNodes = child.getChildNodes();
-                    for (int restrictionNodesIndex = 0; restrictionNodesIndex < restrictionNodes.getLength(); restrictionNodesIndex++) {
+                    for (int restrictionNodesIndex = 0; restrictionNodesIndex < restrictionNodes
+                            .getLength(); restrictionNodesIndex++) {
                         Node restrictionNode = restrictionNodes.item(restrictionNodesIndex);
                         if (restrictionNode.getNodeType() == Node.ELEMENT_NODE) {
                             if ("filterRestriction".equals(restrictionNode.getNodeName())) {
@@ -454,8 +458,8 @@ public class GridComponentPattern extends AbstractComponentPattern {
                                     direction = "asc";
                                 } else {
                                     if (!("asc".equals(direction) || "desc".equals(direction))) {
-                                        throw new ViewDefinitionParserNodeException(restrictionNode, "unknown order direction: "
-                                                + direction);
+                                        throw new ViewDefinitionParserNodeException(restrictionNode,
+                                                "unknown order direction: " + direction);
                                     }
                                 }
                                 predefinedFilter.setOrderColumn(column);
@@ -503,11 +507,13 @@ public class GridComponentPattern extends AbstractComponentPattern {
             } else if ("hasPredefinedFilters".equals(option.getType())) {
                 hasPredefinedFilters = Boolean.parseBoolean(option.getValue());
             } else if ("defaultPredefinedFilterName".equals(option.getType())) {
-                    defaultPredefinedFilterName = option.getValue();
+                defaultPredefinedFilterName = option.getValue();
             } else if ("filtersDefaultVisible".equals(option.getType())) {
                 filtersDefaultVisible = Boolean.parseBoolean(option.getValue());
             } else if ("deletable".equals(option.getType())) {
                 deletable = Boolean.parseBoolean(option.getValue());
+            } else if ("deletableAuthorizationRole".equals(option.getType())) {
+                deletableAuthorizationRole = option.getValue();
             } else if ("height".equals(option.getType())) {
                 height = Integer.parseInt(option.getValue());
             } else if (L_WIDTH.equals(option.getType())) {
@@ -663,5 +669,13 @@ public class GridComponentPattern extends AbstractComponentPattern {
 
     public SecurityRole getAuthorizationRole() {
         return authorizationRole;
+    }
+
+    public boolean isDeletable() {
+        return deletable;
+    }
+
+    public String getDeletableAuthorizationRole() {
+        return deletableAuthorizationRole;
     }
 }

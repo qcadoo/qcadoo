@@ -246,6 +246,11 @@ public final class ViewDefinitionImpl implements InternalViewDefinition {
         ViewDefinitionStateImpl viewDefinitionState = new ViewDefinitionStateImpl();
         viewDefinitionState.setTranslationService(translationService);
 
+        JSONObject eventJson = jsonObject.getJSONObject(JSON_EVENT);
+        String eventName = eventJson.getString(JSON_EVENT_NAME);
+        
+        viewDefinitionState.setViewAfterReload(!(eventName.startsWith("initialize") || "reset".equals(eventName)));
+        
         for (ComponentPattern cp : patterns.values()) {
             viewDefinitionState.addChild(cp.createComponentState(viewDefinitionState));
         }
@@ -263,8 +268,6 @@ public final class ViewDefinitionImpl implements InternalViewDefinition {
 
         viewHooksHolder.callLifecycleHooks(HookType.AFTER_INITIALIZE, viewDefinitionState);
 
-        JSONObject eventJson = jsonObject.getJSONObject(JSON_EVENT);
-        String eventName = eventJson.getString(JSON_EVENT_NAME);
         String eventComponent = eventJson.has(JSON_EVENT_COMPONENT) ? eventJson.getString(JSON_EVENT_COMPONENT) : null;
         JSONArray eventArgsArray = eventJson.has(JSON_EVENT_ARGS) ? eventJson.getJSONArray(JSON_EVENT_ARGS) : new JSONArray();
         String[] eventArgs = new String[eventArgsArray.length()];

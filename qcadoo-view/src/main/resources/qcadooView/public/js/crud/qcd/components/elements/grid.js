@@ -68,7 +68,8 @@ QCD.components.elements.Grid = function (element, mainController) {
             addExistingButtonClickedBefore : false,
             multiselectMode : true,
             isEditable : true,
-			multiSearchEnabled : false
+			multiSearchEnabled : false,
+			deleteEnabled : false
         },
 
         columnModel = {},
@@ -441,6 +442,8 @@ QCD.components.elements.Grid = function (element, mainController) {
         currentState.selectedEntities = state.selectedEntities;
         currentState.multiselectMode = state.multiselectMode;
         currentState.onlyActive = state.onlyActive;
+        currentState.onlyInactive = state.onlyInactive;
+        currentState.deleteEnabled = state.deleteEnabled;
 
         if (state.belongsToEntityId) {
             currentState.belongsToEntityId = state.belongsToEntityId;
@@ -606,6 +609,8 @@ QCD.components.elements.Grid = function (element, mainController) {
             return;
         }
 
+        currentState.deleteEnabled = value.deleteEnabled;
+
         grid.jqGrid('clearGridData');
         var rowCounter = 1;
         currentEntities = {};
@@ -711,6 +716,9 @@ QCD.components.elements.Grid = function (element, mainController) {
         } else if (typeof value.isEditable !== 'undefined' && value.isEditable !== null) {
             this.setComponentEditable(value.isEditable);
         }
+
+
+        headerController.setDeleteEnabled(currentState.deleteEnabled);
 
         unblockGrid();
     };
@@ -936,6 +944,19 @@ QCD.components.elements.Grid = function (element, mainController) {
     this.setOnlyActive = function (onlyActive) {
         blockGrid();
         currentState.onlyActive = onlyActive;
+        onCurrentStateChange(gridParameters.hasPredefinedFilters);
+    };
+
+    this.setOnlyInactive = function (onlyInactive) {
+        blockGrid();
+        currentState.onlyInactive = onlyInactive;
+        onCurrentStateChange(gridParameters.hasPredefinedFilters);
+    };
+
+    this.setOnlyActiveAndOnlyInactive = function (onlyActive, onlyInactive) {
+        blockGrid();
+        currentState.onlyActive = onlyActive;
+        currentState.onlyInactive = onlyInactive;
         onCurrentStateChange(gridParameters.hasPredefinedFilters);
     };
 

@@ -104,6 +104,8 @@
 			<option type="deletable" value="false" />
 			<option type="creatable" value="false" />
 			<option type="multiselect" value="true" />
+			<option type="fullscreen" value="true" />
+			<option type="fixedHeight" value="true"/>
 		</component>
 	</component>
 </view>

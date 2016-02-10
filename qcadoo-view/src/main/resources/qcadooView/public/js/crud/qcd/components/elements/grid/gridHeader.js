@@ -65,7 +65,7 @@ QCD.components.elements.grid.GridHeaderController = function(_gridController, _m
 	var enabled = false;
 	var rowIndex = null;
 	var multiselectMode = false;
-	
+
 	function constructor(_this) {
 		pagingVars.first = 0;
 		pagingVars.max = $.cookie("page_size") ? $.cookie("page_size") : 30;
@@ -197,17 +197,26 @@ QCD.components.elements.grid.GridHeaderController = function(_gridController, _m
 		if (gridParameters.activable && !gridParameters.lookup) {
 			headerElements.onlyActiveButton = QCD.components.elements.utils.HeaderUtils.createHeaderButton("", function(e) {
 				onlyActiveButtonClicked();
-			}, "unactiveNotVisibleIcon.png");
+			}, "unactiveVisibleIcon.png");
 			headerElements.onlyActiveButton.attr("title", translations.unactiveNotVisibleButton);
 			headerElements.allButton = QCD.components.elements.utils.HeaderUtils.createHeaderButton("", function(e) {
 				allButtonClicked();
-			}, "unactiveVisibleIcon.png");
+			}, "allVisibleIcon.png");
 			headerElements.allButton.attr("title", translations.unactiveVisibleButton);
+
+			headerElements.onlyInactiveButton = QCD.components.elements.utils.HeaderUtils.createHeaderButton("", function(e) {
+				onlyInactiveButtonClicked();
+			}, "unactiveNotVisibleIcon.png");
+			headerElements.onlyInactiveButton.attr("title", translations.onlyInactiveVisibleButton);
+
 			headerElement.append(headerElements.onlyActiveButton);
 			headerElement.append(headerElements.allButton);
+			headerElement.append(headerElements.onlyInactiveButton);
 			setEnabledButton(headerElements.onlyActiveButton, true);
 			setEnabledButton(headerElements.allButton, true);
+			setEnabledButton(headerElements.onlyInactiveButton, true);
 			headerElements.allButton.hide();
+			headerElements.onlyInactiveButton.hide();
 		}
 		if (gridParameters.hasPredefinedFilters) {
 			var options = new Array();
@@ -495,14 +504,25 @@ QCD.components.elements.grid.GridHeaderController = function(_gridController, _m
 	
 	function allButtonClicked() {
 		headerElements.allButton.hide();
-		headerElements.onlyActiveButton.css("display", "inline-block");
-		gridController.setOnlyActive(true);
+		//headerElements.onlyActiveButton.hide();
+		headerElements.onlyInactiveButton.css("display", "inline-block");
+		//gridController.setOnlyActive(false);
+		gridController.setOnlyInactive(true);
 	}
 	
 	function onlyActiveButtonClicked() {
 		headerElements.onlyActiveButton.hide();
+		//headerElements.onlyInactiveButton.hide();
 		headerElements.allButton.css("display", "inline-block");
 		gridController.setOnlyActive(false);
+		//gridController.setOnlyInactive(false);
+	}
+	function onlyInactiveButtonClicked() {
+		headerElements.onlyInactiveButton.hide();
+		//headerElements.allButton.hide();
+		headerElements.onlyActiveButton.css("display", "inline-block");
+		gridController.setOnlyActiveAndOnlyInactive(true, false);
+
 	}
 	
 	function filterClicked() {
