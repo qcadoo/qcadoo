@@ -156,7 +156,13 @@ QCD.components.elements.Tree = function(_element, _mainController) {
 			buttons.collapseTreeButton = QCD.components.elements.utils.HeaderUtils.createHeaderButton("", function(e) {
 				collapseTreeClicked();
 			}, "collapseAllIcon16.png").attr("title", translations.collapseTreeButton);
-			
+
+
+			buttons.customActionButton = QCD.components.elements.utils.HeaderUtils.createHeaderButton("", function(e) {
+				customActionClicked();
+			}, _this.options.buttonsOptions.customActionIcon);
+			buttons.customActionButton.attr("title",translations.customActionTitle);
+
 			buttons.moveUpButton.hide();
 			buttons.moveDownButton.hide();
 			buttons.moveLeftButton.hide();
@@ -176,7 +182,11 @@ QCD.components.elements.Tree = function(_element, _mainController) {
 			if (_this.options.buttonsOptions.hasDeleteButton) {
 				header.append(buttons.deleteButton);
 			}
-			
+
+			if (_this.options.buttonsOptions.hasCustomActionButton) {
+				header.append(buttons.customActionButton);
+			}
+
 			if (_this.options.buttonsOptions.hasMoveButton) {
 				header.append(buttons.moveButton);
 				buttons.moveButton.addClass("headerButtonEnabled");
@@ -390,6 +400,7 @@ QCD.components.elements.Tree = function(_element, _mainController) {
 		}
 		buttons.editButton.hide();
 		buttons.deleteButton.hide();
+		buttons.customActionButton.hide();
 		
 		moveModeIconElement.show();
 		moveModeIconElement.css("display", "inline-block");
@@ -439,6 +450,7 @@ QCD.components.elements.Tree = function(_element, _mainController) {
 		
 		buttons.editButton.show();
 		buttons.deleteButton.show();
+		buttons.customActionButton.show();
 		buttons.moveUpButton.hide();
 		buttons.moveDownButton.hide();
 		buttons.moveLeftButton.hide();
@@ -518,6 +530,7 @@ QCD.components.elements.Tree = function(_element, _mainController) {
 			}
 			buttons.editButton.removeClass("headerButtonEnabled");
 			buttons.deleteButton.removeClass("headerButtonEnabled");
+			buttons.customActionButton.removeClass("headerButtonEnabled");
 			if (moveMode) {
 				buttons.moveUpButton.removeClass("headerButtonEnabled");
 				buttons.moveDownButton.removeClass("headerButtonEnabled");
@@ -538,8 +551,10 @@ QCD.components.elements.Tree = function(_element, _mainController) {
 			if (selected != "0" && isEnabled) {
 				buttons.editButton.addClass("headerButtonEnabled");
 				buttons.deleteButton.addClass("headerButtonEnabled");
+				buttons.customActionButton.addClass("headerButtonEnabled");
 			} else {
 				buttons.deleteButton.removeClass("headerButtonEnabled");
+				buttons.customActionButton.removeClass("headerButtonEnabled");
 			}
 			if (moveMode) {
 				var selectedNode = tree.jstree("get_selected");
@@ -625,7 +640,20 @@ QCD.components.elements.Tree = function(_element, _mainController) {
 			}
 		}
 	}
-	
+
+	function customActionClicked() {
+		var customActionConfirm = translations.customActionConfirm;
+		if (buttons.deleteButton.hasClass("headerButtonEnabled")) {
+			if (window.confirm(customActionConfirm)) {
+				block();
+				newButtonClickedBefore = false;
+				mainController.callEvent("customAction", elementPath, function() {
+					unblock();
+				}, null, null);
+			}
+		}
+	}
+
 	function moveUpClicked() {
 		if (buttons.moveUpButton.hasClass("headerButtonEnabled")) {
 			var selectedNode = tree.jstree("get_selected");
