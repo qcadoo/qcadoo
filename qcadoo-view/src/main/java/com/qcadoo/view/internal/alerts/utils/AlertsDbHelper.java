@@ -63,6 +63,7 @@ import java.util.stream.Collectors;
         AlertDto alert = new AlertDto();
         alert.setType(a.getStringField(AlertFields.TYPE));
         alert.setMessage(a.getStringField(AlertFields.MESSAGE));
+        alert.setSound(a.getBooleanField(AlertFields.SOUND));
         alert.setId(a.getId());
         alerts.add(alert);
     }

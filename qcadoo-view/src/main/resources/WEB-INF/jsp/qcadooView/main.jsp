@@ -74,7 +74,7 @@
 
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/qcd/alert/noty/packaged/jquery.noty.packaged.js?ver=${buildNumber}"></script>
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/qcd/alert/noty/layouts/top.js?ver=${buildNumber}"></script>
-
+			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/qcd/core/notyController.js?ver=${buildNumber}"></script>
 		</c:otherwise>
 	</c:choose>
 	
@@ -87,38 +87,7 @@
 		var windowController;
 
 // ************ open request page
-        function notyInit(){
-            $.get('/rest/alert', function(data) {
-			for(var k in data) {
-				var n = noty(
-                	{
-                    	layout: 'top',
-                        theme: 'relax', // or 'relax'
-                        type: data[k].type,
-                        text: data[k].message,
-                        dismissQueue: true, // If you want to use queue feature set this true
-                        template: '<div class="noty_message"><span class="noty_text"></span><div class="noty_close"></div></div>',
-                        animation: {
-                        	open: 'animated fadeInDown', // Animate.css class names
-                            close: 'animated fadeOutUp', // Animate.css class names
-                            easing: 'swing', // unavailable - no need
-                            speed: 500 // unavailable - no need
-                        },
-                        timeout: false, // delay for closing event. Set false for sticky notifications
-                        force: false, // adds notification to the beginning of queue when set to true
-                        modal: false,
-                        maxVisible: 3, // you can set max visible notification for dismissQueue true option,
-                        killer: false, // for close all notifications before show
-                        closeWith: ['button'], // ['click', 'button', 'hover', 'backdrop'] // backdrop click will close all notifications
-							buttons: false // an array of buttons
-                    });
-                    var audio = new Audio('/qcadooView/public/alarm.mp3');
-                    audio.play();
-			}
 
-            setTimeout(notyInit,50000);
-           });
-        }
 		jQuery(document).ready(function(){
 
 
@@ -126,7 +95,8 @@
 
 			$("#mainPageIframe").load(function() {
 				try {
-				    notyInit();
+				var notifications = new QCD.Notifications();
+				    notifications.getNotifications();
 					el = $('body', $('iframe').contents());
 					el.click(function() {windowController.restoreMenuState()});
 					$(document.getElementById('mainPageIframe').contentWindow.document).keydown(function(event){

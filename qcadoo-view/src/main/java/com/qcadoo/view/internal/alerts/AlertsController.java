@@ -1,5 +1,6 @@
 package com.qcadoo.view.internal.alerts;
 
+import com.google.common.io.BaseEncoding;
 import com.qcadoo.view.internal.alerts.model.AlertDto;
 import com.qcadoo.view.internal.alerts.utils.AlertsDbHelper;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -22,6 +23,10 @@ import java.util.List;
 @RequestMapping("/alert")
 public class AlertsController {
 
+    private String NOTIFICATION_REGISTER_SUCCESS = "NOTIFICATION REGISTER SUCCESS";
+
+    private String NOTIFICATION_REGISTER_ERROR = "NOTIFICATION REGISTER ERROR";
+
     @Autowired
     private AlertsDbHelper alertsDbHelper;
 
@@ -39,10 +44,16 @@ public class AlertsController {
         ObjectMapper mapper = new ObjectMapper();
         try {
             AlertDto alertDto = mapper.readValue(data, AlertDto.class);
+            alertDto.setMessage( new String(BaseEncoding.base64Url().decode(alertDto.getMessage()),"utf-8"));
             alertsDbHelper.registerAlert(alertDto);
+            return createResponse(inCallback, NOTIFICATION_REGISTER_SUCCESS,  HttpStatus.OK);
         } catch (IOException e) {
-            e.printStackTrace();
+            return createResponse(inCallback, NOTIFICATION_REGISTER_ERROR,  HttpStatus.INTERNAL_SERVER_ERROR);
         }
+
+    }
+
+    private ResponseEntity createResponse(String inCallback, String statusCode, HttpStatus status) {
         StringBuffer theStringBuffer = new StringBuffer();
         HashMap theHashMap = new HashMap();
 
@@ -51,15 +62,13 @@ public class AlertsController {
         theStringBuffer.append("('");
 
         // add the JSON string and close parens
-        theStringBuffer.append("Alert register");
+        theStringBuffer.append(statusCode);
         theStringBuffer.append("')");
 
         HttpHeaders responseHeaders = new HttpHeaders();
-        //responseHeaders.setContentType(new MediaType());
-
         responseHeaders.add("Content-Type", "application/json;charset=utf-8");
 
-        return new ResponseEntity(theStringBuffer.toString(), responseHeaders, HttpStatus.OK);
+        return new ResponseEntity(theStringBuffer.toString(), responseHeaders, status);
     }
 
 }
