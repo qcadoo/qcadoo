@@ -92,11 +92,10 @@
 
 
 			windowController = new QCD.WindowController(menuStructure);
-
+			var notifications = new QCD.Notifications();
+			   notifications.getNotifications();
 			$("#mainPageIframe").load(function() {
 				try {
-				var notifications = new QCD.Notifications();
-				    notifications.getNotifications();
 					el = $('body', $('iframe').contents());
 					el.click(function() {windowController.restoreMenuState()});
 					$(document.getElementById('mainPageIframe').contentWindow.document).keydown(function(event){

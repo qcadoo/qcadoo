@@ -34,6 +34,8 @@ QCD.Notifications = function () {
 
 		var notifications = function () {
     		$.get('/rest/alert', function(data) {
+    		if(data instanceof Array){
+
     	    var audio = new Audio('/qcadooView/public/alarm.mp3');
         		for(var k in data) {
         			var n = noty(
@@ -61,6 +63,8 @@ QCD.Notifications = function () {
                     	if(data[k].sound){
                     		audio.play();
                     	}
+        		}
+
         		}
         	});
         	setTimeout(notifications,900000);
