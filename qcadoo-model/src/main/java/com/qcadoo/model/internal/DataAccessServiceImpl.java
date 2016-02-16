@@ -724,7 +724,7 @@ public class DataAccessServiceImpl implements DataAccessService {
         int totalNumberOfEntities = hibernateService.getTotalNumberOfEntities(criteria);
 
         if (totalNumberOfEntities == 0) {
-            LOG.info("There is no entity matching criteria " + searchCriteria);
+            LOG.debug("There is no entity matching criteria " + searchCriteria);
             return getResultSet(null, totalNumberOfEntities, Collections.emptyList());
         }
 
