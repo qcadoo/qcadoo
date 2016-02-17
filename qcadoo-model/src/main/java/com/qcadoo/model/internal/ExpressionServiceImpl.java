@@ -112,7 +112,7 @@ public final class ExpressionServiceImpl implements ExpressionService {
     @Override
     public String getValue(final Entity entity, final String expression, final Locale locale) {
         if (StringUtils.isEmpty(expression) || "null".equals(expression)) {
-            LOG.warn("Calculating empty expressions");
+            LOG.debug("Calculating empty expressions");
             return null;
         }
 

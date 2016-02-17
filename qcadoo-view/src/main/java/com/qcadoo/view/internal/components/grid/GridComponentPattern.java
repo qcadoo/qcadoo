@@ -23,20 +23,6 @@
  */
 package com.qcadoo.view.internal.components.grid;
 
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
-import org.apache.commons.lang3.StringUtils;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
@@ -57,6 +43,15 @@ import com.qcadoo.view.internal.RowStyleResolver;
 import com.qcadoo.view.internal.patterns.AbstractComponentPattern;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
 import com.qcadoo.view.internal.xml.ViewDefinitionParserNodeException;
+import org.apache.commons.lang3.StringUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import java.util.*;
+import java.util.Map.Entry;
 
 public class GridComponentPattern extends AbstractComponentPattern {
 
@@ -149,6 +144,8 @@ public class GridComponentPattern extends AbstractComponentPattern {
     private CriteriaModifier criteriaModifier = null;
 
     private SecurityRole authorizationRole;
+
+    private String deletableAuthorizationRole = "";
 
     public GridComponentPattern(final ComponentDefinition componentDefinition) {
         super(componentDefinition);
@@ -515,6 +512,8 @@ public class GridComponentPattern extends AbstractComponentPattern {
                 filtersDefaultVisible = Boolean.parseBoolean(option.getValue());
             } else if ("deletable".equals(option.getType())) {
                 deletable = Boolean.parseBoolean(option.getValue());
+            } else if ("deletableAuthorizationRole".equals(option.getType())) {
+                deletableAuthorizationRole = option.getValue();
             } else if ("height".equals(option.getType())) {
                 height = Integer.parseInt(option.getValue());
             } else if (L_WIDTH.equals(option.getType())) {
@@ -670,5 +669,13 @@ public class GridComponentPattern extends AbstractComponentPattern {
 
     public SecurityRole getAuthorizationRole() {
         return authorizationRole;
+    }
+
+    public boolean isDeletable() {
+        return deletable;
+    }
+
+    public String getDeletableAuthorizationRole() {
+        return deletableAuthorizationRole;
     }
 }

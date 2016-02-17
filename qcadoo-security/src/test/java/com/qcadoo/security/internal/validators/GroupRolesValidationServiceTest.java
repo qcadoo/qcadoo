@@ -104,7 +104,7 @@ public class GroupRolesValidationServiceTest {
         List<Entity> rolesEntity = Lists.newArrayList();
         for (String role : roles) {
             Entity roleEntity = mock(Entity.class);
-            given(roleEntity.getStringField(RoleFields.IDENTIFIER_FIELD)).willReturn(role);
+            given(roleEntity.getStringField(RoleFields.IDENTIFIER)).willReturn(role);
             rolesEntity.add(roleEntity);
         }
 
@@ -113,7 +113,7 @@ public class GroupRolesValidationServiceTest {
 
     private void stubCurrentUserRole(final String role) {
         Entity roleEntity = mock(Entity.class);
-        given(roleEntity.getStringField(RoleFields.IDENTIFIER_FIELD)).willReturn(role);
+        given(roleEntity.getStringField(RoleFields.IDENTIFIER)).willReturn(role);
         given(currentUserEntityMock.getManyToManyField(UserFields.GROUP)).willReturn(Lists.newArrayList(roleEntity));
         given(securityService.hasRole(currentUserEntityMock, QcadooSecurityConstants.ROLE_SUPERADMIN)).willReturn(
                 QcadooSecurityConstants.ROLE_SUPERADMIN.equals(role));
@@ -211,4 +211,5 @@ public class GroupRolesValidationServiceTest {
         // then
         assertTrue(isValid);
     }
+
 }
