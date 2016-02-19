@@ -219,11 +219,11 @@ public class DataAccessServiceImpl implements DataAccessService {
     }
 
     private void logDeletionErrors(final Entity entity) {
-        logEntityErrors(entity, entity + " hasn't been deleted, bacause of onDelete hook rejection");
+        logEntityErrors(entity, entity + " hasn't been deleted, because of onDelete hook rejection");
     }
 
     private void logValidationErrors(final Entity entity) {
-        logEntityErrors(entity, entity + " hasn't been saved, bacause of validation errors");
+        logEntityErrors(entity, entity + " hasn't been saved, because of validation errors");
     }
 
     private void logEntityErrors(final Entity entity, final String msg) {
@@ -724,7 +724,7 @@ public class DataAccessServiceImpl implements DataAccessService {
         int totalNumberOfEntities = hibernateService.getTotalNumberOfEntities(criteria);
 
         if (totalNumberOfEntities == 0) {
-            LOG.info("There is no entity matching criteria " + searchCriteria);
+            LOG.debug("There is no entity matching criteria " + searchCriteria);
             return getResultSet(null, totalNumberOfEntities, Collections.emptyList());
         }
 

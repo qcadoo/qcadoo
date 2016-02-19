@@ -36,7 +36,7 @@ QCD.components.elements.Lookup = function(_element, _mainController) {
 
 	var fireOnChangeListeners = this.fireOnChangeListeners;
 
-	var AUTOCOMPLETE_TIMEOUT = 100;
+	var AUTOCOMPLETE_TIMEOUT = 400;
 
 	var keyboard = {
 		UP : 38,

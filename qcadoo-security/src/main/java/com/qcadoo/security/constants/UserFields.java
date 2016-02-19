@@ -26,6 +26,7 @@ package com.qcadoo.security.constants;
 public final class UserFields {
 
 	private UserFields() {
+
 	}
 
 	public static final String USER_NAME = "userName";

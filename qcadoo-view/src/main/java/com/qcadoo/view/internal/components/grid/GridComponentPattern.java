@@ -23,14 +23,8 @@
  */
 package com.qcadoo.view.internal.components.grid;
 
-import java.util.*;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
 import com.google.common.base.Function;
-import com.google.common.base.Predicate;
+import com.google.common.base.Predicate; 
 import com.google.common.base.Predicates;
 import com.google.common.collect.Maps;
 import com.qcadoo.model.api.DataDefinition;
@@ -152,6 +146,8 @@ public class GridComponentPattern extends AbstractComponentPattern {
     private CriteriaModifier criteriaModifier = null;
 
     private SecurityRole authorizationRole;
+
+    private String deletableAuthorizationRole = "";
 
     public GridComponentPattern(final ComponentDefinition componentDefinition) {
         super(componentDefinition);
@@ -520,6 +516,8 @@ public class GridComponentPattern extends AbstractComponentPattern {
                 filtersDefaultVisible = Boolean.parseBoolean(option.getValue());
             } else if ("deletable".equals(option.getType())) {
                 deletable = Boolean.parseBoolean(option.getValue());
+            } else if ("deletableAuthorizationRole".equals(option.getType())) {
+                deletableAuthorizationRole = option.getValue();
             } else if ("height".equals(option.getType())) {
                 height = Integer.parseInt(option.getValue());
             } else if (L_WIDTH.equals(option.getType())) {
@@ -677,5 +675,13 @@ public class GridComponentPattern extends AbstractComponentPattern {
 
     public SecurityRole getAuthorizationRole() {
         return authorizationRole;
+    }
+
+    public boolean isDeletable() {
+        return deletable;
+    }
+
+    public String getDeletableAuthorizationRole() {
+        return deletableAuthorizationRole;
     }
 }

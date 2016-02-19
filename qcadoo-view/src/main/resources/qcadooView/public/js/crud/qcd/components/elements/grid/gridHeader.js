@@ -65,7 +65,7 @@ QCD.components.elements.grid.GridHeaderController = function(_gridController, _m
 	var enabled = false;
 	var rowIndex = null;
 	var multiselectMode = false;
-	
+
 	function constructor(_this) {
 		pagingVars.first = 0;
 		pagingVars.max = $.cookie("page_size") ? $.cookie("page_size") : 30;
@@ -521,8 +521,7 @@ QCD.components.elements.grid.GridHeaderController = function(_gridController, _m
 		headerElements.onlyInactiveButton.hide();
 		//headerElements.allButton.hide();
 		headerElements.onlyActiveButton.css("display", "inline-block");
-		gridController.setOnlyInactive(false);
-		gridController.setOnlyActive(true);
+		gridController.setOnlyActiveAndOnlyInactive(true, false);
 
 	}
 	

@@ -23,12 +23,12 @@
  */
 package com.qcadoo.report.api;
 
+import com.qcadoo.view.api.ComponentState;
+import com.qcadoo.view.api.ViewDefinitionState;
+
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
-import com.qcadoo.view.api.ComponentState;
-import com.qcadoo.view.api.ViewDefinitionState;
 
 /**
  * Service for generating and printing reports.
@@ -37,7 +37,7 @@ import com.qcadoo.view.api.ViewDefinitionState;
 public interface ReportService {
 
     enum ReportType {
-        PDF("application/pdf", "pdf"), CSV("text/csv", "csv"), XLS("application/vnd.ms-excel", "xls");
+        PDF("application/pdf", "pdf"), CSV("text/csv", "csv"), XLS("application/vnd.ms-excel", "xls"), XLSX("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "xlsx");
 
         private final String mimeType;
 

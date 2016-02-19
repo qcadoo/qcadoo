@@ -23,21 +23,16 @@
  */
 package com.qcadoo.view.internal.internal;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.google.common.base.Optional;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.internal.api.ContainerState;
 import com.qcadoo.view.internal.api.InternalComponentState;
 import com.qcadoo.view.internal.api.InternalViewDefinitionState;
 import com.qcadoo.view.internal.states.AbstractContainerState;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.*;
 
 public final class ViewDefinitionStateImpl extends AbstractContainerState implements InternalViewDefinitionState {
 
@@ -136,7 +131,7 @@ public final class ViewDefinitionStateImpl extends AbstractContainerState implem
         try {
             Optional<T> maybeComponent = Optional.fromNullable((T) getComponentByReference(reference));
             if (!maybeComponent.isPresent()) {
-                logger.logWarn(String.format("Cannot find component with reference name = '%s'", reference));
+                logger.logDebug(String.format("Cannot find component with reference name = '%s'", reference));
             }
             return maybeComponent;
         } catch (ClassCastException cce) {

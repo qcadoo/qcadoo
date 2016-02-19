@@ -26,6 +26,7 @@ package com.qcadoo.security.constants;
 public final class GroupFields {
 
     private GroupFields() {
+
     }
 
     public static final String NAME = "name";
