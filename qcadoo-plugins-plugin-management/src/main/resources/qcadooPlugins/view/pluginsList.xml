@@ -87,13 +87,14 @@
 			<option type="column" name="vendor" fields="vendor" width="100" />
 			<option type="column" name="version" fields="version" width="40" />
 			<option type="column" name="state" fields="state" width="60" />
+			<option type="column" name="license" fields="license" width="60" />
 			<option type="column" name="isSystem" fields="isSystem" width="60" />
 			<option type="order" column="identifier" direction="asc" />
 			<option type="correspondingView" value="qcadooPlugins/pluginDetails" />
 			<option type="correspondingComponent" value="form" />
 			<option type="correspondingViewInModal" value="true" />
-			<option type="searchable" value="identifier,version,state,isSystem,groupName" />
-			<option type="orderable" value="identifier,version,state,isSystem,groupName" />
+			<option type="searchable" value="identifier,version,state,isSystem,groupName,license" />
+			<option type="orderable" value="identifier,version,state,isSystem,groupName,license" />
 			<option type="paginable" value="true" />
 			<option type="deletable" value="false" />
 			<option type="creatable" value="false" />

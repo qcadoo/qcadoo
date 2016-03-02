@@ -61,7 +61,8 @@ public class PluginManagmentConnector {
     public PluginAdditionalData getPluginData(final String pluginIdentifier) {
         Plugin plugin = pluginAccessor.getPlugin(pluginIdentifier);
         return new PluginAdditionalData(plugin.getPluginInformation().getName(), plugin.getPluginInformation().getDescription(),
-                plugin.getPluginInformation().getVendor(), plugin.getPluginInformation().getVendorUrl(), plugin.isSystemPlugin(), plugin.getPluginInformation().getGroup());
+                plugin.getPluginInformation().getVendor(), plugin.getPluginInformation().getVendorUrl(), plugin.isSystemPlugin(),
+                plugin.getPluginInformation().getGroup(), plugin.getPluginInformation().getLicense());
     }
 
     public void performRestart() {
