@@ -23,27 +23,18 @@
  */
 package com.qcadoo.view.constants;
 
-public final class QcadooViewConstants {
+public enum AlertType {
 
-    public static final String MODEL_VIEWED_ALERT = "viewedAlert";
+    ALERT("alert"), SUCCESS("success"), ERROR("error"), WARNING("warning"), INFORMATION("information"), CONFIRM("confirm");
 
-    private QcadooViewConstants() {
+    private final String state;
+
+    private AlertType(final String state) {
+        this.state = state;
     }
 
-    public static final String PLUGIN_IDENTIFIER = "qcadooView";
-
-    // MODEL
-    public static final String MODEL_CATEGORY = "category";
-
-    public static final String MODEL_ALERT = "alert";
-
-    public static final String MODEL_ITEM = "item";
-
-    public static final String MODEL_VIEW = "view";
-
-    // VIEW
-    public static final String VIEW_SYSTEM_INFO = "systemInfo";
-
-    public static final String VIEW_FILE_UPLOAD = "fileUpload";
+    public String getStringValue() {
+        return state;
+    }
 
 }
