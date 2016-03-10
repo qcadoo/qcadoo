@@ -61,7 +61,9 @@ public class DefaultPluginDao implements PluginDao {
             existingPlugin.setState(plugin.getState().toString());
             existingPlugin.setVersion(plugin.getVersion().toString());
             existingPlugin.setIsSystem(plugin.isSystemPlugin());
-            existingPlugin.setGroupName(plugin.getPluginInformation()==null ? null : plugin.getPluginInformation().getGroup());
+            existingPlugin.setGroupName(plugin.getPluginInformation() == null ? null : plugin.getPluginInformation().getGroup());
+            existingPlugin.setLicense(plugin.getPluginInformation() == null ? null : plugin.getPluginInformation().getLicense());
+
         }
         save(existingPlugin);
     }

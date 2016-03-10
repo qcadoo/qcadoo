@@ -53,6 +53,9 @@ public class QcadooPluginPlugin {
     @Column
     private String groupName;
 
+    @Column
+    private String license;
+
     public QcadooPluginPlugin() {
         // empty
     }
@@ -63,6 +66,7 @@ public class QcadooPluginPlugin {
         setState(plugin.getState().toString());
         isSystem = plugin.isSystemPlugin();
         groupName = plugin.getPluginInformation()== null ? null : plugin.getPluginInformation().getGroup();
+        license = plugin.getPluginInformation()== null ? null : plugin.getPluginInformation().getLicense();
     }
 
     public String getIdentifier() {
@@ -105,6 +109,14 @@ public class QcadooPluginPlugin {
         this.groupName = groupName;
     }
 
+    public String getLicense() {
+        return license;
+    }
+
+    public void setLicense(String license) {
+        this.license = license;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -114,6 +126,7 @@ public class QcadooPluginPlugin {
         result = prime * result + ((state == null) ? 0 : state.hashCode());
         result = prime * result + ((version == null) ? 0 : version.hashCode());
         result = prime * result + ((groupName == null) ? 0 : groupName.hashCode());
+        result = prime * result + ((license == null) ? 0 : license.hashCode());
         return result;
     }
 
@@ -161,6 +174,13 @@ public class QcadooPluginPlugin {
                 return false;
             }
         } else if (!groupName.equals(other.groupName)) {
+            return false;
+        }
+        if (license == null) {
+            if (other.license != null) {
+                return false;
+            }
+        } else if (!license.equals(other.license)) {
             return false;
         }
         return true;

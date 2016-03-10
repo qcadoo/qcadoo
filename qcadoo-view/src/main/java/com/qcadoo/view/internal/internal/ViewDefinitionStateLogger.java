@@ -48,6 +48,10 @@ class ViewDefinitionStateLogger {
         logWarn(message, null);
     }
 
+    public void logDebug(final String message) {
+        LOGGER.debug(message);
+    }
+
     public void logWarn(final String message, final Throwable cause) {
         if (LOGGER.isWarnEnabled()) {
             LOGGER.warn(formatMessage(message), cause);
