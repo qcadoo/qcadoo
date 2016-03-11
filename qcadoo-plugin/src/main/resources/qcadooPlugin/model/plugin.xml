@@ -37,6 +37,7 @@
 		<string name="vendor" persistent="false" />
 		<string name="vendorUrl" persistent="false" />
         <string name="groupName" />
+        <string name="license" />
 	</fields>
 	<hooks />
 </model>
