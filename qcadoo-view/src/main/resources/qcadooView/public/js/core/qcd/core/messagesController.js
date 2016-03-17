@@ -44,7 +44,11 @@ QCD.MessagesController = function () {
 		if (typeof message.autoClose === 'undefined' || message.autoClose === null) {
 			message.autoClose = true;
 		}
-		
+
+		if (typeof message.extraLarge === 'undefined' || message.extraLarge === null) {
+        	message.extraLarge = false;
+        }
+
 		if (type === "failure") {
 			type = "error";
 		}
@@ -63,8 +67,11 @@ QCD.MessagesController = function () {
 				pnotify_delay: 4000,
 				pnotify_hide: message.autoClose
 			}; 
-		
-		if (! message.autoClose) {
+
+		if (message.extraLarge) {
+			messageOptionsObject.pnotify_width = "65%";
+			messageOptionsObject.pnotify_addclass = messageOptionsObject.pnotify_addclass + ' extraLargeClass';
+		} else if (! message.autoClose) {
 			messageOptionsObject.pnotify_width = "400px";
 			messageOptionsObject.pnotify_addclass = messageOptionsObject.pnotify_addclass + ' noAutoCloseClass';
 		}

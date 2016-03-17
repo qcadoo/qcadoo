@@ -23,26 +23,21 @@
  */
 package com.qcadoo.model.internal;
 
-import java.util.Map;
-import java.util.Map.Entry;
-
 import com.qcadoo.model.api.DataDefinition;
-import com.qcadoo.model.constants.VersionableConstants;
-import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.FieldDefinition;
-import com.qcadoo.model.api.types.BelongsToType;
-import com.qcadoo.model.api.types.FieldType;
-import com.qcadoo.model.api.types.HasManyType;
-import com.qcadoo.model.api.types.ManyToManyType;
-import com.qcadoo.model.api.types.TreeType;
+import com.qcadoo.model.api.types.*;
+import com.qcadoo.model.constants.VersionableConstants;
 import com.qcadoo.model.internal.api.InternalDataDefinition;
 import com.qcadoo.model.internal.api.InternalFieldDefinition;
 import com.qcadoo.model.internal.api.ValidationService;
 import com.qcadoo.model.internal.api.ValueAndError;
 import com.qcadoo.model.internal.types.PasswordType;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
+import java.util.Map;
+import java.util.Map.Entry;
 
 @Service
 public final class ValidationServiceImpl implements ValidationService {
@@ -204,7 +199,7 @@ public final class ValidationServiceImpl implements ValidationService {
             Long currentDbVersion = (Long)databaseEntity.getField(VersionableConstants.VERSION_FIELD_NAME);
 
             if(savedVersion.compareTo(currentDbVersion) != 0){
-                entity.addGlobalError("qcadooView.validate.global.optimisticLock");
+                entity.addGlobalError("qcadooView.validate.global.optimisticLock",false, true);
             }
         }
     }

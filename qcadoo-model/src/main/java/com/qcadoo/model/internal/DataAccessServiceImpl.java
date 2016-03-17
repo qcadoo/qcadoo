@@ -954,7 +954,7 @@ public class DataAccessServiceImpl implements DataAccessService {
     private void copyValidationErrors(final DataDefinition dataDefinition, final EntityMessagesHolder target,
             final EntityMessagesHolder source) {
         for (ErrorMessage error : source.getGlobalErrors()) {
-            target.addGlobalError(error.getMessage(), error.getVars());
+            target.addGlobalError(error.getMessage(), error.getAutoClose(), error.isExtraLarge(), error.getVars());
         }
         for (Map.Entry<String, ErrorMessage> error : source.getErrors().entrySet()) {
             target.addError(dataDefinition.getField(error.getKey()), error.getValue().getMessage(), error.getValue().getVars());

@@ -23,22 +23,17 @@
  */
 package com.qcadoo.model.internal;
 
+import com.qcadoo.model.api.*;
+import com.qcadoo.model.api.validators.ErrorMessage;
+import com.qcadoo.model.internal.api.EntityAwareCopyPerformers;
+import com.qcadoo.model.internal.api.EntityAwareEqualsPerformers;
+import com.qcadoo.model.internal.api.PerformerEntitiesChain;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
-import com.qcadoo.model.api.DataDefinition;
-import com.qcadoo.model.api.Entity;
-import com.qcadoo.model.api.EntityList;
-import com.qcadoo.model.api.EntityTree;
-import com.qcadoo.model.api.EntityTreeNode;
-import com.qcadoo.model.api.FieldDefinition;
-import com.qcadoo.model.api.validators.ErrorMessage;
-import com.qcadoo.model.internal.api.EntityAwareCopyPerformers;
-import com.qcadoo.model.internal.api.EntityAwareEqualsPerformers;
-import com.qcadoo.model.internal.api.PerformerEntitiesChain;
 
 public final class EntityTreeNodeImpl implements EntityTreeNode, EntityAwareCopyPerformers, EntityAwareEqualsPerformers {
 
@@ -147,6 +142,11 @@ public final class EntityTreeNodeImpl implements EntityTreeNode, EntityAwareCopy
     @Override
     public void addGlobalError(final String message, final boolean autoClose, final String... vars) {
         entity.addGlobalError(message, autoClose, vars);
+    }
+
+    @Override
+    public void addGlobalError(final String message, final boolean autoClose, final boolean extraLarge, final String... vars) {
+        entity.addGlobalError(message, autoClose, extraLarge, vars);
     }
 
     @Override

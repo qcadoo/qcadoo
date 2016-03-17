@@ -23,10 +23,10 @@
  */
 package com.qcadoo.model.api;
 
+import com.qcadoo.model.api.validators.ErrorMessage;
+
 import java.util.List;
 import java.util.Map;
-
-import com.qcadoo.model.api.validators.ErrorMessage;
 
 public interface EntityMessagesHolder {
 
@@ -43,6 +43,20 @@ public interface EntityMessagesHolder {
     /**
      * Set global error, not related with fields.
      * 
+     * @param message
+     *            message
+     * @param autoClose
+     *            autoClose
+     * @param autoClose
+     *            autoClose
+     * @param vars
+     *            message's vars
+     */
+    void addGlobalError(final String message, final boolean autoClose,final boolean extraLarge, final String... vars);
+
+    /**
+     * Set global error, not related with fields.
+     *
      * @param message
      *            message
      * @param autoClose

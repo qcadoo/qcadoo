@@ -23,7 +23,12 @@
  */
 package com.qcadoo.model.internal;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import com.qcadoo.model.api.*;
+import com.qcadoo.model.api.validators.ErrorMessage;
+import com.qcadoo.model.internal.api.EntityAwareCopyPerformers;
+import com.qcadoo.model.internal.api.EntityAwareEqualsPerformers;
+import com.qcadoo.model.internal.api.PerformerEntitiesChain;
+import org.apache.commons.lang3.builder.EqualsBuilder;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -31,13 +36,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-
-import com.qcadoo.model.api.*;
-import com.qcadoo.model.api.validators.ErrorMessage;
-import com.qcadoo.model.internal.api.EntityAwareCopyPerformers;
-import com.qcadoo.model.internal.api.EntityAwareEqualsPerformers;
-import com.qcadoo.model.internal.api.PerformerEntitiesChain;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 public final class ProxyEntity implements Entity, EntityAwareCopyPerformers, EntityAwareEqualsPerformers {
 
@@ -98,6 +97,11 @@ public final class ProxyEntity implements Entity, EntityAwareCopyPerformers, Ent
     @Override
     public void addGlobalError(final String message, final boolean autoClose, final String... vars) {
         getEntity().addGlobalError(message, autoClose, vars);
+    }
+
+    @Override
+    public void addGlobalError(final String message, final boolean autoClose, final boolean extraLarge, final String... vars) {
+        getEntity().addGlobalError(message, autoClose, extraLarge, vars);
     }
 
     @Override
