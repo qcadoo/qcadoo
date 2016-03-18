@@ -84,6 +84,7 @@ html>body .ui-pnotify {
 .ui-pnotify.extraLargeClass .ui-pnotify-text {
 	display: block;
 	font-size: 18px;
+    text-align: justify;
 }
 
 .ui-pnotify.extraLargeClass {
