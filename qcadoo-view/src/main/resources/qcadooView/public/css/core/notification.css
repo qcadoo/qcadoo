@@ -87,13 +87,15 @@ html>body .ui-pnotify {
     text-align: justify;
 }
 
+.ui-pnotify.extraLargeClass .ui-pnotify {
+
+}
+
 .ui-pnotify.extraLargeClass {
-	width: 65%;
-    height: 50%;
+
 }
 .ui-pnotify.extraLargeClass .ui-pnotify-container {
-	width: 40%;
-	padding-left: 80px;
+
 	background-image: url(/qcadooView/public/img/core/icons/importantIcon48.png);
 	background-repeat: no-repeat;
 	background-position: 4px 0px;
