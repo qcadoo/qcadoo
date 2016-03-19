@@ -75,15 +75,15 @@ html>body .ui-pnotify {
 .ui-pnotify.extraLargeClass .ui-pnotify-title {
 	display: block;
     font-weight: bold;
-    font-size: 18px;
+    font-size: 2.25em;
     margin-bottom: .4em;
-    line-height: 16px;
+    line-height: 1em;
     vertical-align: middle;
 }
 
 .ui-pnotify.extraLargeClass .ui-pnotify-text {
 	display: block;
-	font-size: 18px;
+	font-size: 2.25em;
     text-align: justify;
 }
 
@@ -95,10 +95,11 @@ html>body .ui-pnotify {
 
 }
 .ui-pnotify.extraLargeClass .ui-pnotify-container {
-
+	width: 40%;
+	padding-left: 58px;
 	background-image: url(/qcadooView/public/img/core/icons/importantIcon48.png);
 	background-repeat: no-repeat;
-	background-position: 4px 0px;
+	background-position: 5px 0px;
 	border: 2px solid #CD0A0A;
 }
 
