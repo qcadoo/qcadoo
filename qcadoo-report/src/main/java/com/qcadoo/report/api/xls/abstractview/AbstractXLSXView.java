@@ -1,5 +1,6 @@
 package com.qcadoo.report.api.xls.abstractview;
 
+import org.apache.poi.POIXMLProperties;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.web.servlet.view.AbstractView;
 
@@ -16,6 +17,9 @@ public abstract class AbstractXLSXView extends AbstractView {
 
     /** The extension to look for existing templates */
     private static final String EXTENSION = ".xlsx";
+
+    private static final String CREATOR = "qcadoo MES";
+
     private String url;
 
     /**	 * Default Constructor.	 * Sets the content type of the view to "application/vnd.ms-excel".	 */
@@ -43,7 +47,9 @@ public abstract class AbstractXLSXView extends AbstractView {
         ByteArrayOutputStream baos = createTemporaryOutputStream();
 
         workbook = new XSSFWorkbook();
-
+        POIXMLProperties xmlProps = workbook.getProperties();
+        POIXMLProperties.CoreProperties coreProps =  xmlProps.getCoreProperties();
+        coreProps.setCreator(CREATOR);
         buildExcelDocument(model, workbook, request, response);
 
         workbook.write(baos);
