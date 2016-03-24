@@ -88,7 +88,7 @@ public class LookupComponentPattern extends FieldComponentPattern {
 
     private boolean prioritizable = true;
 
-    private boolean onlyActive = false;
+    private boolean onlyActive = true;
 
     private ModalDimensions modalDimensions;
 
