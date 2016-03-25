@@ -23,13 +23,6 @@
  */
 package com.qcadoo.view.internal.states;
 
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.validators.ErrorMessage;
@@ -43,6 +36,12 @@ import com.qcadoo.view.internal.hooks.ViewEventListenerHook;
 import com.qcadoo.view.internal.internal.EntityIdChangeListenerHolder;
 import com.qcadoo.view.internal.internal.EventHandlerHolder;
 import com.qcadoo.view.internal.internal.MessageHolder;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 public abstract class AbstractComponentState implements InternalComponentState, FieldEntityIdChangeListener,
         ScopeEntityIdChangeListener {
@@ -72,6 +71,8 @@ public abstract class AbstractComponentState implements InternalComponentState, 
     public static final String JSON_MESSAGE_TYPE = "type";
 
     public static final String JSON_MESSAGE_AUTOCLOSE = "autoClose";
+
+    public static final String JSON_MESSAGE_EXTRALARGE = "extraLarge";
 
     public static final String JSON_COMPONENT_OPTIONS = "options";
 
@@ -148,7 +149,8 @@ public abstract class AbstractComponentState implements InternalComponentState, 
 
     @Override
     public final void addMessage(final ErrorMessage errorMessage) {
-        addMessage(errorMessage.getMessage(), MessageType.FAILURE, errorMessage.getAutoClose(), errorMessage.getVars());
+        addMessage(errorMessage.getMessage(), MessageType.FAILURE, errorMessage.getAutoClose(), errorMessage.isExtraLarge(),
+                errorMessage.getVars());
     }
 
     @Override
@@ -163,6 +165,13 @@ public abstract class AbstractComponentState implements InternalComponentState, 
     }
 
     @Override
+    public final void addMessage(final String message, final MessageType type, final boolean autoClose, final boolean extraLarge,
+            final String... args) {
+        String translatedMessage = getTranslationService().translate(message, getLocale(), args);
+        addTranslatedMessage(translatedMessage, type, autoClose, extraLarge);
+    }
+
+    @Override
     public final void addTranslatedMessage(final String translatedMessage, final MessageType type) {
         addTranslatedMessage(translatedMessage, type, true);
     }
@@ -170,6 +179,15 @@ public abstract class AbstractComponentState implements InternalComponentState, 
     @Override
     public final void addTranslatedMessage(final String translatedMessage, final MessageType type, final boolean autoClose) {
         messageHolder.addMessage(null, translatedMessage, type, autoClose);
+        if (MessageType.FAILURE.equals(type)) {
+            hasError = true;
+        }
+    }
+
+    @Override
+    public final void addTranslatedMessage(final String translatedMessage, final MessageType type, final boolean autoClose,
+            final boolean extraLarge) {
+        messageHolder.addMessage(null, translatedMessage, type, autoClose, extraLarge);
         if (MessageType.FAILURE.equals(type)) {
             hasError = true;
         }

@@ -88,6 +88,8 @@ public final class LookupComponentState extends FieldComponentState implements L
 
     private boolean selectedEntityActive = true;
 
+    private boolean onlyActive = false;
+
     private String selectedEntityCode;
 
     private String selectedEntityValue;
@@ -114,6 +116,7 @@ public final class LookupComponentState extends FieldComponentState implements L
         this.expression = expression;
         this.criteriaModifier = pattern.getCriteriaModifier();
         this.criteriaModifierParameter = this.criteriaModifier != null ? new FilterValueHolderImpl() : null;
+        this.onlyActive = pattern.isOnlyActive();
         registerEvent("initialize", eventPerformer, "initialize");
         registerEvent("autompleteSearch", eventPerformer, "autompleteSearch");
         registerEvent("onSelectedEntityChange", eventPerformer, "onSelectedEntityChange");
@@ -273,7 +276,7 @@ public final class LookupComponentState extends FieldComponentState implements L
                             .getDataDefinition().get(belongsToEntityId)));
                 }
 
-                if (getDataDefinition().isActivable()) {
+                if (getDataDefinition().isActivable() && onlyActive) {
                     if (oldSelectedEntityId == null) {
                         searchCriteriaBuilder.add(SearchRestrictions.eq("active", true));
                     } else {

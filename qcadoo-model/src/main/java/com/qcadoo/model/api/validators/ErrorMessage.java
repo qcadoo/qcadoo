@@ -23,9 +23,9 @@
  */
 package com.qcadoo.model.api.validators;
 
-import java.util.Arrays;
-
 import org.apache.commons.lang3.ArrayUtils;
+
+import java.util.Arrays;
 
 /**
  * Object holds validation error message.
@@ -40,6 +40,8 @@ public final class ErrorMessage {
 
     private final boolean autoClose;
 
+    private final boolean extraLarge;
+
     /**
      * Create new validation error message.
      * 
@@ -51,6 +53,7 @@ public final class ErrorMessage {
     public ErrorMessage(final String message, final String... vars) {
         this.message = message;
         this.autoClose = true;
+        this.extraLarge = false;
         if (ArrayUtils.isEmpty(vars)) {
             this.vars = ArrayUtils.EMPTY_STRING_ARRAY;
         } else {
@@ -71,6 +74,30 @@ public final class ErrorMessage {
     public ErrorMessage(final String message, final boolean autoClose, final String... vars) {
         this.message = message;
         this.autoClose = autoClose;
+        this.extraLarge = false;
+        if (ArrayUtils.isEmpty(vars)) {
+            this.vars = ArrayUtils.EMPTY_STRING_ARRAY;
+        } else {
+            this.vars = vars;
+        }
+    }
+
+    /**
+     * Create new validation error message.
+     *
+     * @param message
+     *            message
+     * @param autoClose
+     *            autoClose
+     * @param extraLarge
+     *            extraLarge
+     * @param vars
+     *            message's vars
+     */
+    public ErrorMessage(final String message, final boolean autoClose, final boolean extraLarge, final String... vars) {
+        this.message = message;
+        this.autoClose = autoClose;
+        this.extraLarge = extraLarge;
         if (ArrayUtils.isEmpty(vars)) {
             this.vars = ArrayUtils.EMPTY_STRING_ARRAY;
         } else {
@@ -105,4 +132,12 @@ public final class ErrorMessage {
         return autoClose;
     }
 
+    /**
+     * Return extraLarge.
+     *
+     * @return extraLarge
+     */
+    public boolean isExtraLarge() {
+        return extraLarge;
+    }
 }

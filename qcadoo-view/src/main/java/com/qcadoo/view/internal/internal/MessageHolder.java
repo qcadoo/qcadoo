@@ -23,17 +23,16 @@
  */
 package com.qcadoo.view.internal.internal;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-
+import com.qcadoo.localization.api.TranslationService;
+import com.qcadoo.view.api.ComponentState.MessageType;
+import com.qcadoo.view.internal.states.AbstractComponentState;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.qcadoo.localization.api.TranslationService;
-import com.qcadoo.view.api.ComponentState.MessageType;
-import com.qcadoo.view.internal.states.AbstractComponentState;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 public final class MessageHolder {
 
@@ -49,11 +48,15 @@ public final class MessageHolder {
     }
 
     public void addMessage(final String title, final String message, final MessageType type) {
-        addMessage(title, message, type, true);
+        addMessage(title, message, type, true, false);
     }
 
     public void addMessage(final String title, final String message, final MessageType type, final boolean autoClose) {
-        messages.add(new Object[] { getTranslatedTitle(title, type), message, type, autoClose });
+        messages.add(new Object[] { getTranslatedTitle(title, type), message, type, autoClose, false });
+    }
+
+    public void addMessage(final String title, final String message, final MessageType type, final boolean autoClose, final boolean extraLarge) {
+        messages.add(new Object[] { getTranslatedTitle(title, type), message, type, autoClose, extraLarge});
     }
 
     private Object getTranslatedTitle(final String title, final MessageType type) {
@@ -72,6 +75,7 @@ public final class MessageHolder {
             jsonMessage.put(AbstractComponentState.JSON_MESSAGE_BODY, message[1]);
             jsonMessage.put(AbstractComponentState.JSON_MESSAGE_TYPE, message[2]);
             jsonMessage.put(AbstractComponentState.JSON_MESSAGE_AUTOCLOSE, message[3]);
+            jsonMessage.put(AbstractComponentState.JSON_MESSAGE_EXTRALARGE, message[4]);
             json.put(jsonMessage);
         }
 
