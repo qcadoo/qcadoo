@@ -85,28 +85,16 @@ public final class SessionExpirationFilter implements Filter {
         } else if ("true".equals(request.getParameter("popup"))) {
             String targetUrl = request.getContextPath() + "/login.html?popup=true&targetUrl="
                     + URLEncoder.encode(request.getRequestURL().toString() + "?" + request.getQueryString(), "UTF-8");
-            response.sendRedirect(addUrlContext(request, response.encodeRedirectURL(targetUrl)));
-            
+            response.sendRedirect(response.encodeRedirectURL(targetUrl));
         } else if ("true".equals(request.getParameter("iframe"))) {
             String targetUrl = request.getContextPath() + "/login.html?iframe=true";
-            response.sendRedirect(addUrlContext(request, response.encodeRedirectURL(targetUrl)));
-            
+            response.sendRedirect(response.encodeRedirectURL(targetUrl));
         } else {
             String targetUrl = request.getContextPath() + "/login.html?timeout=true";
-            response.sendRedirect(addUrlContext(request, response.encodeRedirectURL(targetUrl)));
+            response.sendRedirect(response.encodeRedirectURL(targetUrl));
         }
     }
 
-    private String addUrlContext(final HttpServletRequest request, String url){
-        String urlContext = request.getScheme() + "://" +request.getServerName();
-        if("http".equals(request.getScheme()) && request.getServerPort() == 80 || "https".equals(request.getScheme()) && request.getServerPort() == 443){
-        } else {
-            urlContext += ":" + request.getServerPort();
-        }      
-        
-        return urlContext + url;
-    }
-    
     @Override
     public void init(final FilterConfig filterConfig) throws ServletException {
     }
