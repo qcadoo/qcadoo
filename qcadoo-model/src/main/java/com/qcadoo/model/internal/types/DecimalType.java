@@ -77,6 +77,9 @@ public final class DecimalType extends AbstractFieldType implements DefaultValid
         if (value == null) {
             return "";
         }
+        if(value instanceof String){
+            return (String) value;
+        }
         NumberFormat format = null;
         if (locale == null) {
             format = NumberFormat.getNumberInstance();
