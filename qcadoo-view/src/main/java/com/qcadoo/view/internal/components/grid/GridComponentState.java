@@ -175,6 +175,7 @@ public final class GridComponentState extends AbstractComponentState implements 
                     .getDefaultOrderDirection()));
         }
         this.activable = pattern.isActivable();
+        this.onlyActive = pattern.isOnlyActive();
         this.weakRelation = pattern.isWeakRelation();
         this.scopeFieldDataDefinition = dataDefinition;
         this.rowStyleResolver = pattern.getRowStyleResolver();

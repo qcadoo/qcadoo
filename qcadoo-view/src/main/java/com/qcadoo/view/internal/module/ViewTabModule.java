@@ -83,10 +83,9 @@ public class ViewTabModule extends Module {
     public void enable() {
         addedTabs = ArrayListMultimap.create();
 
-        InternalViewDefinition viewDefinition = viewDefinitionService.getWithoutSession(viewExtension.getPluginName(),
-                viewExtension.getViewName());
+        InternalViewDefinition viewDefinition = viewDefinitionService.getWithoutSession(viewExtension.getPluginName(), viewExtension.getViewName());
         if (viewDefinition == null) {
-            throw new ModuleException(pluginIdentifier, "view", "reference to view which not exists");
+            throw new ModuleException(pluginIdentifier, "view", String.format("Reference to view which not exists: %s[%s]",viewExtension.getPluginName(), viewExtension.getViewName()));
         }
 
         try {

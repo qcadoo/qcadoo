@@ -23,15 +23,15 @@
  */
 package com.qcadoo.model.internal;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.qcadoo.model.api.EntityMessagesHolder;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.validators.ErrorMessage;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 public final class EntityMessagesHolderImpl implements EntityMessagesHolder {
 
@@ -57,6 +57,11 @@ public final class EntityMessagesHolderImpl implements EntityMessagesHolder {
     @Override
     public void addGlobalError(final String message, final boolean autoClose, final String... vars) {
         globalErrors.add(new ErrorMessage(message, autoClose, vars));
+    }
+
+    @Override
+    public void addGlobalError(final String message, final boolean autoClose, final boolean extraLarge, final String... vars) {
+        globalErrors.add(new ErrorMessage(message, autoClose, extraLarge, vars));
     }
 
     @Override

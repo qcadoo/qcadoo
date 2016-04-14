@@ -69,6 +69,21 @@ public interface ComponentMessagesHolder {
     void addMessage(final String messageTranslationKey, final MessageType type, final boolean autoClose, final String... args);
 
     /**
+     * Adds message (translated using given key) to this component.
+     *
+     * @param messageTranslationKey
+     *            translation key for message content
+     * @param type
+     *            message type
+     * @param autoClose
+     *            true if this message should automatically close after some time
+     * @param args
+     *            message's arguments
+     * @param extraLarge
+     */
+    void addMessage(final String messageTranslationKey, final MessageType type, final boolean autoClose, final boolean extraLarge, final String... args);
+
+    /**
      * Adds already translated message to this component. Message will automatically close after some time.
      * 
      * @param translatedMessage
@@ -91,4 +106,18 @@ public interface ComponentMessagesHolder {
      *            true if this message should automatically close after some time
      */
     void addTranslatedMessage(final String translatedMessage, final MessageType type, final boolean autoClose);
+
+    /**
+     * Adds already translated message to this component.
+     *
+     * @param translatedMessage
+     *            translated message content
+     * @param type
+     *            message type
+     * @param autoClose
+     *            true if this message should automatically close after some time
+     * @param extraLarge
+     *
+     */
+    void addTranslatedMessage(final String translatedMessage, final MessageType type, final boolean autoClose, final boolean extraLarge);
 }

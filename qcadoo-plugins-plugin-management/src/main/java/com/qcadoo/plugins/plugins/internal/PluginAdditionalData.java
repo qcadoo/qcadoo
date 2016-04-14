@@ -35,16 +35,19 @@ public class PluginAdditionalData {
 
     private final boolean isSystem;
 
+    private final String license;
+
     private final String group;
 
     public PluginAdditionalData(final String name, final String description, final String vendor, final String vendorUrl,
-            final boolean isSystem, final String group) {
+            final boolean isSystem, final String group, final String license) {
         this.name = name;
         this.description = description;
         this.vendor = vendor;
         this.vendorUrl = vendorUrl;
         this.isSystem = isSystem;
         this.group = group;
+        this.license = license;
     }
 
     public String getName() {
@@ -69,5 +72,9 @@ public class PluginAdditionalData {
 
     public String getGroup(){
         return group;
+    }
+
+    public String getLicense() {
+        return license;
     }
 }
