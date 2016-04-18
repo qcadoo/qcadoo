@@ -23,9 +23,9 @@
  */
 package com.qcadoo.view.api;
 
-import java.util.Map;
-
 import com.google.common.base.Optional;
+
+import java.util.Map;
 
 /**
  * ViewDefinitionState is instance of single view. It is generated using ViewDefinition in request scope.
@@ -100,4 +100,11 @@ public interface ViewDefinitionState extends ComponentState {
      * @return boolean
      */
     boolean isViewAfterReload();
+
+    /**
+     * Checks whether the view is generated after redirect event
+     *
+     * @return boolean
+     */
+    boolean isViewAfterRedirect();
 }

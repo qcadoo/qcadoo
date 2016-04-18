@@ -49,7 +49,9 @@ public final class ViewDefinitionStateImpl extends AbstractContainerState implem
     private final ViewDefinitionStateLogger logger;
 
     private boolean viewAfterReload = false;
-    
+
+    private boolean viewAfterRedirect = false;
+
     public ViewDefinitionStateImpl() {
         super();
 
@@ -209,5 +211,13 @@ public final class ViewDefinitionStateImpl extends AbstractContainerState implem
     @Override
     public boolean isViewAfterReload() {
         return viewAfterReload;
-    }    
+    }
+
+    public void setViewAfterRedirect(boolean viewAfterRedirect) {
+        this.viewAfterRedirect = viewAfterRedirect;
+    }
+
+    @Override public boolean isViewAfterRedirect() {
+        return viewAfterRedirect;
+    }
 }

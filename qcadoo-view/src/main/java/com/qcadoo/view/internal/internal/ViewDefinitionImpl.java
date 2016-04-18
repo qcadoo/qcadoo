@@ -23,19 +23,6 @@
  */
 package com.qcadoo.view.internal.internal;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.springframework.util.StringUtils;
-
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.qcadoo.localization.api.TranslationService;
@@ -51,14 +38,14 @@ import com.qcadoo.view.internal.components.window.WindowComponentPattern;
 import com.qcadoo.view.internal.hooks.AbstractViewHookDefinition;
 import com.qcadoo.view.internal.hooks.HookType;
 import com.qcadoo.view.internal.patterns.AbstractComponentPattern;
-import com.qcadoo.view.internal.ribbon.model.InternalRibbon;
-import com.qcadoo.view.internal.ribbon.model.InternalRibbonActionItem;
-import com.qcadoo.view.internal.ribbon.model.InternalRibbonGroup;
-import com.qcadoo.view.internal.ribbon.model.RibbonActionItemImpl;
-import com.qcadoo.view.internal.ribbon.model.RibbonGroupImpl;
-import com.qcadoo.view.internal.ribbon.model.RibbonGroupsPack;
-import com.qcadoo.view.internal.ribbon.model.SingleRibbonGroupPack;
+import com.qcadoo.view.internal.ribbon.model.*;
 import com.qcadoo.view.internal.states.AbstractComponentState;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.springframework.util.StringUtils;
+
+import java.util.*;
 
 public final class ViewDefinitionImpl implements InternalViewDefinition {
 
@@ -250,7 +237,9 @@ public final class ViewDefinitionImpl implements InternalViewDefinition {
         String eventName = eventJson.getString(JSON_EVENT_NAME);
         
         viewDefinitionState.setViewAfterReload(!(eventName.startsWith("initialize") || "reset".equals(eventName)));
-        
+
+        viewDefinitionState.setViewAfterRedirect(eventName.startsWith("redirect") || eventName.startsWith("initialize"));
+
         for (ComponentPattern cp : patterns.values()) {
             viewDefinitionState.addChild(cp.createComponentState(viewDefinitionState));
         }
