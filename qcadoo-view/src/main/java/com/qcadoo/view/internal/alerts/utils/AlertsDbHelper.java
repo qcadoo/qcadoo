@@ -74,8 +74,7 @@ import java.util.stream.Collectors;
         alertEntity.setField(AlertFields.MESSAGE, alert.getMessage());
         alertEntity.setField(AlertFields.EXPIRATION_DATE, alert.getExpirationDate());
         alertEntity.setField(AlertFields.SOUND,alert.isSound());
-        alertEntity = alertEntity.getDataDefinition().save(alertEntity);
-
+        alertEntity.getDataDefinition().save(alertEntity);
     }
 
     private DataDefinition getAlertDD() {
