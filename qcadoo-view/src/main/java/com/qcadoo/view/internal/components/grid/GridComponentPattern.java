@@ -24,7 +24,7 @@
 package com.qcadoo.view.internal.components.grid;
 
 import com.google.common.base.Function;
-import com.google.common.base.Predicate;
+import com.google.common.base.Predicate; 
 import com.google.common.base.Predicates;
 import com.google.common.collect.Maps;
 import com.qcadoo.model.api.DataDefinition;
@@ -141,6 +141,8 @@ public class GridComponentPattern extends AbstractComponentPattern {
 
     private Boolean fixedHeight;
 
+    private boolean shrinkToFit = true;
+
     private RowStyleResolver rowStyleResolver = null;
 
     private CriteriaModifier criteriaModifier = null;
@@ -244,6 +246,8 @@ public class GridComponentPattern extends AbstractComponentPattern {
         json.put("orderableColumns", new JSONArray(orderableColumns));
 
         json.put("fixedHeight", fixedHeight);
+
+        json.put("shrinkToFit", shrinkToFit);
 
         if (belongsToFieldDefinition != null) {
             json.put("belongsToFieldName", belongsToFieldDefinition.getName());
@@ -554,6 +558,8 @@ public class GridComponentPattern extends AbstractComponentPattern {
                 weakRelation = Boolean.parseBoolean(option.getValue());
             } else if ("fixedHeight".equals(option.getType())) {
                 fixedHeight = Boolean.parseBoolean(option.getValue());
+            } else if ("shrinkToFit".equals(option.getType())) {
+                shrinkToFit = Boolean.parseBoolean(option.getValue());
             }
         }
         if (defaultOrderColumn == null) {

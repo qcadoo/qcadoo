@@ -29,8 +29,8 @@ import java.io.Writer;
 import java.nio.charset.Charset;
 
 import org.apache.commons.io.IOUtils;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.SerializationConfig;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpInputMessage;
@@ -50,7 +50,7 @@ public final class JsonMapperHttpMessageConverter extends AbstractHttpMessageCon
 
     public JsonMapperHttpMessageConverter() {
         super(MEDIA_TYPE);
-        mapper.getSerializationConfig().set(SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS, false);
+        mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
     }
 
     @Override

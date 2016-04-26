@@ -248,7 +248,7 @@ QCD.components.elements.Grid = function (element, mainController) {
         gridParameters.datatype = function (postdata) {
         };
         gridParameters.multiselect = true;
-        gridParameters.shrinkToFit = true;
+        gridParameters.shrinkToFit = options.shrinkToFit;
 
         gridParameters.listeners = options.listeners;
         gridParameters.canNew = options.creatable;
@@ -1096,7 +1096,7 @@ QCD.components.elements.Grid = function (element, mainController) {
             currentGridHeight += 35;
         }
         grid.setGridHeight(currentGridHeight);
-        grid.setGridWidth(width - 24, true);
+        grid.setGridWidth(width - 24, this.options.shrinkToFit);
     };
 
     function onSelectChange() {
