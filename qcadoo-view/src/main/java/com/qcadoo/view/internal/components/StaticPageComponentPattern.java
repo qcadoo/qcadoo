@@ -40,6 +40,8 @@ public final class StaticPageComponentPattern extends AbstractComponentPattern {
     private static final String JSP_PATH = "elements/staticPage.jsp";
 
     private String page;
+    
+    private String messagesGroup = "commons";
 
     public StaticPageComponentPattern(final ComponentDefinition componentDefinition) {
         super(componentDefinition);
@@ -50,6 +52,8 @@ public final class StaticPageComponentPattern extends AbstractComponentPattern {
         for (ComponentOption option : getOptions()) {
             if ("page".equals(option.getType())) {
                 page = option.getValue();
+            } else if("messagesGroup".equals(option.getType())){
+                messagesGroup = option.getValue();
             } else {
                 throw new IllegalStateException("Unknown option for staticPage: " + option.getType());
             }
@@ -58,11 +62,10 @@ public final class StaticPageComponentPattern extends AbstractComponentPattern {
 
     @Override
     protected Map<String, Object> getJspOptions(final Locale locale) {
-        Map<String, Object> options = new HashMap<String, Object>();
+        Map<String, Object> options = new HashMap<>();
 
         options.put("page", page);
-
-        options.put("translationsMap", getTranslationService().getMessagesGroup("commons", locale));
+        options.put("translationsMap", getTranslationService().getMessagesGroup(messagesGroup, locale));
 
         return options;
 
