@@ -34,19 +34,18 @@ import com.google.common.base.Optional;
 import com.qcadoo.commons.functional.Either;
 
 public final class BigDecimalUtils {
-
+    
     private static final BigDecimal ONE_HUNDRED = BigDecimal.valueOf(100L);
-
+    
     private BigDecimalUtils() {
-
+        
     }
 
     /**
      * Converts value, if null returns zero
-     * 
-     * @param value
-     *            value
-     * 
+     *
+     * @param value value
+     *
      * @return value or zero
      */
     public static BigDecimal convertNullToZero(final Object value) {
@@ -61,10 +60,9 @@ public final class BigDecimalUtils {
 
     /**
      * Converts value, if null returns one
-     * 
-     * @param value
-     *            value
-     * 
+     *
+     * @param value value
+     *
      * @return value or one
      */
     public static BigDecimal convertNullToOne(final Object value) {
@@ -75,30 +73,29 @@ public final class BigDecimalUtils {
             return (BigDecimal) value;
         }
         return BigDecimal.valueOf(Double.valueOf(value.toString()));
-
+        
     }
 
     /**
      * Converts decimal value to percent
-     * 
-     * @param decimalValue
-     *            decimal value
-     * 
+     *
+     * @param decimalValue decimal value
+     *
      * @return percent
      */
     public static BigDecimal toPercent(final BigDecimal decimalValue, final MathContext mathContext) {
         return convertNullToZero(decimalValue).divide(ONE_HUNDRED, mathContext);
-
+        
     }
 
     /**
-     * Check if decimals represent the same numeric value, even if they have different precisions or contexts.
-     * 
-     * @param d1
-     *            first BigDecimal to compare
-     * @param d2
-     *            second decimal to compare
-     * @return true if decimals represent the same numeric value, even if they have different precisions or contexts.
+     * Check if decimals represent the same numeric value, even if they have
+     * different precisions or contexts.
+     *
+     * @param d1 first BigDecimal to compare
+     * @param d2 second decimal to compare
+     * @return true if decimals represent the same numeric value, even if they
+     * have different precisions or contexts.
      */
     public static boolean valueEquals(final BigDecimal d1, final BigDecimal d2) {
         if (d1 == null) {
@@ -111,16 +108,15 @@ public final class BigDecimalUtils {
 
     /**
      * Try parse string into BigDecimal.
-     * 
-     * @param maybeStringWithDecimal
-     *            String to be parsed as a BigDecimal number
-     * @param locale
-     *            locale to be used when parse.
-     * @return either Exception that occur during parsing or parsed BigDecimal, wrapped within Optional.
+     *
+     * @param maybeStringWithDecimal String to be parsed as a BigDecimal number
+     * @param locale locale to be used when parse.
+     * @return either Exception that occur during parsing or parsed BigDecimal,
+     * wrapped within Optional.
      */
     public static Either<Exception, Optional<BigDecimal>> tryParse(final String maybeStringWithDecimal, final Locale locale) {
         if (StringUtils.isBlank(maybeStringWithDecimal)) {
-            return Either.right(Optional.<BigDecimal> absent());
+            return Either.right(Optional.<BigDecimal>absent());
         }
         try {
             DecimalFormat format = (DecimalFormat) DecimalFormat.getInstance(locale);
@@ -131,5 +127,12 @@ public final class BigDecimalUtils {
             return Either.left(e);
         }
     }
-
+    
+    public static Either<Exception, Optional<BigDecimal>> tryParseAndIgnoreSeparator(final String maybeStringWithDecimal, final Locale locale) {
+        if (maybeStringWithDecimal != null && "PL".equals(locale.getCountry())) {
+            return tryParse(maybeStringWithDecimal.replace(".", ","), locale);
+        }
+        
+        return tryParse(maybeStringWithDecimal, locale);        
+    }
 }
