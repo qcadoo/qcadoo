@@ -259,6 +259,7 @@ QCD.components.elements.Grid = function (element, mainController) {
         gridParameters.filter = hasFilterableColumns;
         gridParameters.orderable = options.prioritizable;
         gridParameters.allowMultiselect = options.multiselect;
+        gridParameters.autoRefresh = options.autoRefresh;
 
         gridParameters.fullScreen = options.fullscreen;
         if (options.height) {
