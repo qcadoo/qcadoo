@@ -41,6 +41,22 @@
 	text-align: left;
 }
 
+.gridContainer .gridFooter .autoRefresh {
+    color: #9b9b9b;
+    font-family: "Lucida Grande", Tahoma, Arial, Helvetica, sans-serif;
+    font-size: 11px;
+    margin-left: 10px;
+    float: left;
+}
+
+.gridContainer .gridFooter .autoRefresh input {
+    margin-right: 5px;
+}
+
+.gridContainer .gridFooter .autoRefresh .autoRefreshInterval {
+    margin-left: 5px;
+}
+
 .gridContainer .grid_header .pageInput.inputError,.gridContainer .grid_footer .pageInput.inputError
 	{
 	border: solid red 1px;

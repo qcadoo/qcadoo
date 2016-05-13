@@ -66,6 +66,11 @@ QCD.components.elements.grid.GridHeaderController = function(_gridController, _m
 	var rowIndex = null;
 	var multiselectMode = false;
 
+    var autoRefreshActive = false;
+    var autoRefreshIntervalId;
+    var idleIntervalId;
+    var idleTimer = 0;
+
 	function constructor(_this) {
 		pagingVars.first = 0;
 		pagingVars.max = $.cookie("page_size") ? $.cookie("page_size") : 30;
@@ -322,14 +327,93 @@ QCD.components.elements.grid.GridHeaderController = function(_gridController, _m
 	}
 	
 	this.getFooterElement = function() {
-		if (!gridParameters.paging) {
+		if (!gridParameters.paging && !gridParameters.autoRefresh) {
 			return null;
 		}
 		footerPagingController = new QCD.components.elements.grid.GridPagingElement(this, mainController, translations);
-		footerElement = $("<div>").addClass('grid_footer').append(footerPagingController.getPagingElement(pagingVars)); 
+		footerElement = $("<div>").addClass('grid_footer');
+
+        if (gridParameters.autoRefresh) {
+            autoRefreshElement = createautoRefreshElement();
+            footerElement.append(autoRefreshElement);
+        }
+		if (gridParameters.paging) {
+		    footerElement.append(footerPagingController.getPagingElement(pagingVars));
+		}
 		return footerElement;
 	}
-	
+	function createautoRefreshElement() {
+	    element = $("<div>").addClass("autoRefresh");
+        checkbox = $("<input type='checkbox' id='autoRefresh' value='autoRefresh'>");
+        label = $("<label>");
+        label.append(checkbox);
+        label.append(translations.autoRefresh);
+
+
+		intervalSelect = $("<select id='autoRefreshInterval'>").addClass('autoRefreshInterval');
+		intervalSelect.append("<option value=1>1 min</option>");
+		intervalSelect.append("<option value=5>5 min</option>");
+		intervalSelect.append("<option value=10>10 min</option>");
+
+        var that = $(this);
+		checkbox.change(function(e) {
+            if($(this).is(":checked")) {
+                autoRefreshActive = true;
+                var interval = $("#autoRefreshInterval").val();
+                autoRefreshIntervalId = setInterval(function() {
+                    autoRefreshGrid()
+                }, interval * 60000);
+                that.mousemove(function (e) {
+                    idleTimer = 0;
+                });
+                that.keypress(function (e) {
+                    idleTimer = 0;
+                });
+                idleIntervalId = setInterval(timerIncrement, 60000); // 1 minute
+            }
+            else {
+                autoRefreshActive = false;
+                clearInterval(autoRefreshIntervalId);
+                clearInterval(idleIntervalId);
+                idleTimer = 0;
+                that.off('mousemove');
+                that.off('keypress');
+            }
+		});
+		intervalSelect.change(function(e) {
+            if (autoRefreshActive) {
+                clearInterval(autoRefreshIntervalId);
+                var interval = $("#autoRefreshInterval").val();
+                autoRefreshIntervalId = setInterval(function() {
+                    autoRefreshGrid()
+                }, interval * 60000);
+            }
+        });
+        element.append(label);
+		element.append(intervalSelect);
+
+	    return element;
+	}
+
+	function autoRefreshGrid() {
+	    $(this).off('mousemove');
+        gridController.performRefresh();
+        setTimeout(function() {
+            $(this).mousemove(function (e) {
+                idleTimer = 0;
+            });
+        }, 1000);
+	}
+
+    function timerIncrement() {
+        idleTimer++;
+        if (idleTimer > 59) {
+            $('#autoRefresh').attr('checked', false);
+            $('#autoRefresh').trigger('change');
+            idleTimer = 0;
+        }
+    }
+
 	this.setEnabled = function(_enabled) {
 		enabled = _enabled;
 		if (enabled) {
