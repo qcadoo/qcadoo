@@ -38,6 +38,9 @@ public class ResourceService {
     private final Set<ResourceModule> resourceModules = new HashSet<ResourceModule>();
 
     public void addResourceModule(final ResourceModule resourceModule) {
+        if (resourceModules.contains(resourceModule)) {
+            throw new IllegalStateException("Module " + resourceModule + " is already added");
+        }
         resourceModules.add(resourceModule);
     }
 
