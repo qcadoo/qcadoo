@@ -66,7 +66,7 @@ public final class EntityTreeImpl extends AbstractList<Entity> implements Entity
         if (entities == null) {
             entities = find().addOrder(SearchOrders.asc("priority")).list().getEntities();
 
-            Map<Long, EntityTreeNodeImpl> entitiesById = new LinkedHashMap<Long, EntityTreeNodeImpl>();
+            Map<Long, EntityTreeNodeImpl> entitiesById = new LinkedHashMap<>();
 
             for (Entity entity : entities) {
                 entitiesById.put(entity.getId(), new EntityTreeNodeImpl(entity));
@@ -77,7 +77,7 @@ public final class EntityTreeImpl extends AbstractList<Entity> implements Entity
 
                 if (parent == null) {
                     if (root != null) {
-                        throw new IllegalStateException("Tree cannot have multiple roots");
+                        throw new IllegalStateException(String.format("Tree cannot have multiple roots [%s, %s]", root, entity));
                     }
 
                     root = entity;

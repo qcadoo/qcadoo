@@ -1,9 +1,9 @@
 package com.qcadoo.view.internal.alerts;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.BaseEncoding;
 import com.qcadoo.view.internal.alerts.model.AlertDto;
 import com.qcadoo.view.internal.alerts.utils.AlertsDbHelper;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

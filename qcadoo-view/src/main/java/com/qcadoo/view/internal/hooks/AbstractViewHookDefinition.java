@@ -23,22 +23,23 @@
  */
 package com.qcadoo.view.internal.hooks;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
+
 import com.qcadoo.model.internal.hooks.AbstractHookDefinition;
 import com.qcadoo.model.internal.hooks.HookInitializationException;
 import com.qcadoo.plugin.api.PluginUtils;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.internal.ViewHookDefinition;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
 
 public abstract class AbstractViewHookDefinition extends AbstractHookDefinition implements ViewHookDefinition {
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractViewHookDefinition.class);
 
     public AbstractViewHookDefinition(final String className, final String methodName, final String pluginIdentifier,
-                                      final ApplicationContext applicationContext) throws HookInitializationException {
+            final ApplicationContext applicationContext) throws HookInitializationException {
         super(className, methodName, pluginIdentifier, applicationContext);
     }
 
@@ -50,17 +51,16 @@ public abstract class AbstractViewHookDefinition extends AbstractHookDefinition 
         try {
             return super.performCall(args);
         } catch (Exception e) {
-            if (LOG.isWarnEnabled()) {
-                LOG.debug("Failed to invoke view hook", e);
-            }
+
+            LOG.warn("Failed to invoke view hook", e);
 
             if (args != null && args[0] != null && args[0] instanceof ViewDefinitionState) {
                 ViewDefinitionState viewDefinitionState = (ViewDefinitionState) args[0];
-                viewDefinitionState.addMessage("qcadooView.errorPage.error.internalError.explanation", ComponentState.MessageType.FAILURE);
+                viewDefinitionState.addMessage("qcadooView.errorPage.error.internalError.explanation",
+                        ComponentState.MessageType.FAILURE);
             }
         }
         return null;
     }
-
 
 }

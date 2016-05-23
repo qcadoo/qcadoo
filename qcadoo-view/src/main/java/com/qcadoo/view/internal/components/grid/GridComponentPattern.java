@@ -23,6 +23,20 @@
  */
 package com.qcadoo.view.internal.components.grid;
 
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
+import org.apache.commons.lang3.StringUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
@@ -43,15 +57,6 @@ import com.qcadoo.view.internal.RowStyleResolver;
 import com.qcadoo.view.internal.patterns.AbstractComponentPattern;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
 import com.qcadoo.view.internal.xml.ViewDefinitionParserNodeException;
-import org.apache.commons.lang3.StringUtils;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
-import java.util.*;
-import java.util.Map.Entry;
 
 public class GridComponentPattern extends AbstractComponentPattern {
 
@@ -141,6 +146,8 @@ public class GridComponentPattern extends AbstractComponentPattern {
 
     private Boolean fixedHeight;
 
+    private boolean shrinkToFit = true;
+
     private RowStyleResolver rowStyleResolver = null;
 
     private CriteriaModifier criteriaModifier = null;
@@ -148,6 +155,8 @@ public class GridComponentPattern extends AbstractComponentPattern {
     private SecurityRole authorizationRole;
 
     private String deletableAuthorizationRole = "";
+
+    private boolean autoRefresh = false;
 
     public GridComponentPattern(final ComponentDefinition componentDefinition) {
         super(componentDefinition);
@@ -245,6 +254,10 @@ public class GridComponentPattern extends AbstractComponentPattern {
 
         json.put("fixedHeight", fixedHeight);
 
+        json.put("shrinkToFit", shrinkToFit);
+
+        json.put("autoRefresh", autoRefresh);
+
         if (belongsToFieldDefinition != null) {
             json.put("belongsToFieldName", belongsToFieldDefinition.getName());
         }
@@ -290,6 +303,7 @@ public class GridComponentPattern extends AbstractComponentPattern {
         addTranslation(translations, "match", locale);
         addTranslation(translations, "matchAllRules", locale);
         addTranslation(translations, "matchAnyRules", locale);
+        addTranslation(translations, "autoRefresh", locale);
 
         addTranslation(translations, "customPredefinedFilter", locale);
         for (PredefinedFilter filter : predefinedFilters.values()) {
@@ -554,6 +568,10 @@ public class GridComponentPattern extends AbstractComponentPattern {
                 weakRelation = Boolean.parseBoolean(option.getValue());
             } else if ("fixedHeight".equals(option.getType())) {
                 fixedHeight = Boolean.parseBoolean(option.getValue());
+            } else if ("shrinkToFit".equals(option.getType())) {
+                shrinkToFit = Boolean.parseBoolean(option.getValue());
+            } else if ("autoRefresh".equals(option.getType())) {
+                autoRefresh = Boolean.parseBoolean(option.getValue());
             }
         }
         if (defaultOrderColumn == null) {
@@ -686,5 +704,9 @@ public class GridComponentPattern extends AbstractComponentPattern {
 
     public String getDeletableAuthorizationRole() {
         return deletableAuthorizationRole;
+    }
+
+    public boolean isautoRefresh() {
+        return autoRefresh;
     }
 }
