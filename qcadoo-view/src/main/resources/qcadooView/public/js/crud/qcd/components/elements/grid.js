@@ -1107,7 +1107,7 @@ QCD.components.elements.Grid = function (element, mainController) {
     }
     
     function rowClicked(rowId, col) {
-        if (!componentEnabled || !currentState.isEditable) {
+        if (!componentEnabled) {
             grid.setSelection(rowId, false);
             return;
         }
