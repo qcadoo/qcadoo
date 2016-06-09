@@ -61,6 +61,15 @@ public interface DataDefinition {
     Entity get(final Long id);
 
     /**
+     * Return the entity related with master model data definition, by its id.
+     * 
+     * @param id
+     *            id
+     * @return entity
+     */
+    Entity getMasterModelEntity(final Long id);
+
+    /**
      * Return the copied entity related with this data definition.
      * 
      * @param id
@@ -250,5 +259,4 @@ public interface DataDefinition {
      * @return true if given entity is valid.
      */
     boolean callValidators(final Entity targetEntity);
-
 }

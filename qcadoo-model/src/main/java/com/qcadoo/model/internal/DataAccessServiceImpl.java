@@ -1003,4 +1003,13 @@ public class DataAccessServiceImpl implements DataAccessService {
         return masterDataDefinition;
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    @Monitorable
+    public Entity getMasterModelEntity(InternalDataDefinition dataDefinition, Long id) {
+        InternalDataDefinition dataDefinitionByMasterModel = getDataDefinitionByMasterModel(dataDefinition);
+        
+        return dataDefinitionByMasterModel.get(id);
+    }
+
 }
