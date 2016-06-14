@@ -35,6 +35,8 @@ QCD.components.elements.grid.GridHeaderController = function (_gridController, _
 
     var deleteButtonEnabled = true;
 
+    var cookieExpires = 30 * 12 * 2;
+
     var pagingVars = new Object();
     pagingVars.first = null;
     pagingVars.max = null;
@@ -139,7 +141,7 @@ QCD.components.elements.grid.GridHeaderController = function (_gridController, _
 
     this.paging_onRecordsNoSelectChange = function (recordsNoSelectElement) {
         var recordsNoSelectValue = recordsNoSelectElement.val();
-        $.cookie("page_size", recordsNoSelectValue);
+        $.cookie("page_size", recordsNoSelectValue, {expires: cookieExpires});
         pagingVars.max = parseInt(recordsNoSelectValue);
         pagingVars.first = 0;
         onPagingEvent();
@@ -342,11 +344,11 @@ QCD.components.elements.grid.GridHeaderController = function (_gridController, _
         }
         return footerElement;
     }
-    
+
     function createautoRefreshElement() {
         element = $("<div>").addClass("autoRefresh");
         checkbox = $("<input type='checkbox' id='autoRefresh' value='autoRefresh'>");
-        checkbox.prop( "checked", $.cookie('auto_refresh'));
+        checkbox.attr("checked", $.cookie('auto_refresh') === '1');
         label = $("<label>");
         label.append(checkbox);
         label.append(translations.autoRefresh);
@@ -356,17 +358,18 @@ QCD.components.elements.grid.GridHeaderController = function (_gridController, _
         intervalSelect.append("<option value='5'>5 min</option>");
         intervalSelect.append("<option value='10'>10 min</option>");
         intervalSelect.val($.cookie('auto_refresh_interval'));
-        intervalSelect.change(function(e){
-            $.cookie('auto_refresh_interval', $(this).val());      
-            onPagingEvent();      
+        intervalSelect.change(function (e) {
+            $.cookie('auto_refresh_interval', $(this).val(), {expires: cookieExpires});
+            onPagingEvent();
         });
 
         var that = $(this);
-        checkbox.change(function (e) {
-            var isChecked = $(this).is(":checked");
+        var checkboxOnChange = function () {
+            var isChecked = checkbox.is(":checked");
             if (isChecked) {
                 autoRefreshActive = true;
-                var interval = $("#autoRefreshInterval").val();
+                var interval = $.cookie('auto_refresh_interval');
+                interval = interval || 1;
                 autoRefreshIntervalId = setInterval(function () {
                     autoRefreshGrid()
                 }, interval * 60000);
@@ -385,10 +388,15 @@ QCD.components.elements.grid.GridHeaderController = function (_gridController, _
                 that.off('mousemove');
                 that.off('keypress');
             }
-            
-            $.cookie('auto_refresh', isChecked);
+
+            $.cookie('auto_refresh', isChecked ? '1' : '0', {expires: cookieExpires});
             onPagingEvent();
-        });
+        };
+        checkbox.change(checkboxOnChange);
+        if (checkbox.prop('checked')) {
+            setTimeout(checkboxOnChange, 10000);
+        }
+
         intervalSelect.change(function (e) {
             if (autoRefreshActive) {
                 clearInterval(autoRefreshIntervalId);
