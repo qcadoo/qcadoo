@@ -509,10 +509,10 @@ public final class DataDefinitionImpl implements InternalDataDefinition {
     }
 
     @Override
-    public com.google.common.base.Optional<Entity> tryGetMasterModelEntity(Long id) {
+    public Entity tryGetMasterModelEntity(Long id) {
         if(getMasterModel() == null){
-            return com.google.common.base.Optional.absent();
+            return null;
         }
-        return com.google.common.base.Optional.fromNullable(dataAccessService.getMasterModelEntity(this, id));
+        return dataAccessService.getMasterModelEntity(this, id);
     }
 }
