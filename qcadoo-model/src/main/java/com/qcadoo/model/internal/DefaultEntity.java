@@ -62,11 +62,11 @@ public final class DefaultEntity implements Entity, EntityAwareCopyPerformers, E
     }
 
     public DefaultEntity(final DataDefinition dataDefinition, final Long id) {
-        this(dataDefinition, id, new HashMap<String, Object>());
+        this(dataDefinition, id, new HashMap<>());
     }
 
     public DefaultEntity(final DataDefinition dataDefinition) {
-        this(dataDefinition, null, new HashMap<String, Object>());
+        this(dataDefinition, null, new HashMap<>());
     }
 
     @Override

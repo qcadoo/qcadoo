@@ -67,6 +67,15 @@ public interface DataAccessService {
     Entity get(InternalDataDefinition dataDefinition, Long entityId);
 
     /**
+     * Return the entity related with master model data definition, by its id.
+     * 
+     * @param dataDefinition
+     * @param id
+     * @return entity
+     */
+    Entity getMasterModelEntity(InternalDataDefinition dataDefinition, final Long id);
+    
+    /**
      * Return the copied entity related with given data definition.
      * 
      * @param dataDefinition
