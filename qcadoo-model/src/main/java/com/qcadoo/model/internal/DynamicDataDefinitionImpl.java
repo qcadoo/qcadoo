@@ -38,6 +38,7 @@ import com.qcadoo.model.internal.search.SearchCriteria;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class DynamicDataDefinitionImpl implements InternalDataDefinition {
 
@@ -288,6 +289,10 @@ public class DynamicDataDefinitionImpl implements InternalDataDefinition {
     @Override
     public Entity getMasterModelEntity(Long id) {
         return null;
+    }
+
+    @Override public Optional<Entity> tryGetMasterModelEntity(Long id) {
+        return Optional.empty();
     }
 
 }

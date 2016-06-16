@@ -29,6 +29,7 @@ import com.qcadoo.model.api.search.SearchQueryBuilder;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Object defines database structure. The {@link #getPluginIdentifier()} and {@link #getName()} are used to calculate table name.
@@ -68,6 +69,16 @@ public interface DataDefinition {
      * @return entity
      */
     Entity getMasterModelEntity(final Long id);
+
+    /**
+     * Return the optional of entity related with master model data definition, by its id.
+     *
+     * @param id
+     *            id
+     * @return optional of entity
+     */
+    Optional<Entity> tryGetMasterModelEntity(final Long id);
+
 
     /**
      * Return the copied entity related with this data definition.

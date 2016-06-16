@@ -507,4 +507,12 @@ public final class DataDefinitionImpl implements InternalDataDefinition {
     public Entity getMasterModelEntity(Long id) {
         return dataAccessService.getMasterModelEntity(this, id);
     }
+
+    @Override
+    public Optional<Entity> tryGetMasterModelEntity(Long id) {
+        if(getMasterModel() == null){
+            return Optional.empty();
+        }
+        return Optional.ofNullable(dataAccessService.getMasterModelEntity(this, id));
+    }
 }
