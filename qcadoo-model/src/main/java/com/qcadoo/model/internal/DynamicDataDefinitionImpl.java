@@ -291,8 +291,8 @@ public class DynamicDataDefinitionImpl implements InternalDataDefinition {
     }
 
     @Override
-    public Entity tryGetMasterModelEntity(Long id) {
-        return null;
+    public com.google.common.base.Optional<Entity> tryGetMasterModelEntity(Long id) {
+        return com.google.common.base.Optional.absent();
     }
 
 }

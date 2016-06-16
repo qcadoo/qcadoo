@@ -23,6 +23,7 @@
  */
 package com.qcadoo.model.api;
 
+import com.google.common.base.Optional;
 import com.qcadoo.model.api.search.SearchCriteriaBuilder;
 import com.qcadoo.model.api.search.SearchCriterion;
 import com.qcadoo.model.api.search.SearchQueryBuilder;
@@ -76,7 +77,7 @@ public interface DataDefinition {
      *            id
      * @return entity
      */
-    Entity tryGetMasterModelEntity(Long id);
+    Optional<Entity> tryGetMasterModelEntity(Long id);
 
 
     /**
