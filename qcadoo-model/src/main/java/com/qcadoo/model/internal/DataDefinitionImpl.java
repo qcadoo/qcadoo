@@ -509,10 +509,10 @@ public final class DataDefinitionImpl implements InternalDataDefinition {
     }
 
     @Override
-    public Optional<Entity> tryGetMasterModelEntity(Long id) {
+    public Entity tryGetMasterModelEntity(Long id) {
         if(getMasterModel() == null){
-            return Optional.empty();
+            return null;
         }
-        return Optional.ofNullable(dataAccessService.getMasterModelEntity(this, id));
+        return dataAccessService.getMasterModelEntity(this, id);
     }
 }
