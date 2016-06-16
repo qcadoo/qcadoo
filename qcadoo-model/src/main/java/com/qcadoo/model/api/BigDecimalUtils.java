@@ -23,15 +23,14 @@
  */
 package com.qcadoo.model.api;
 
+import com.google.common.base.Optional;
+import com.qcadoo.commons.functional.Either;
+import org.apache.commons.lang3.StringUtils;
+
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.text.DecimalFormat;
 import java.util.Locale;
-
-import org.apache.commons.lang3.StringUtils;
-
-import com.google.common.base.Optional;
-import com.qcadoo.commons.functional.Either;
 
 public final class BigDecimalUtils {
     
@@ -134,5 +133,14 @@ public final class BigDecimalUtils {
         }
         
         return tryParse(maybeStringWithDecimal, locale);        
+    }
+
+    public static boolean checkIfCorrectDecimalValue(final Entity entity, final String decimalFieldName){
+        try {
+            entity.getDecimalField(decimalFieldName);
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+        return true;
     }
 }
