@@ -285,4 +285,14 @@ public class DynamicDataDefinitionImpl implements InternalDataDefinition {
         return false;
     }
 
+    @Override
+    public Entity getMasterModelEntity(Long id) {
+        return null;
+    }
+
+    @Override
+    public Entity tryGetMasterModelEntity(Long id) {
+        return null;
+    }
+
 }

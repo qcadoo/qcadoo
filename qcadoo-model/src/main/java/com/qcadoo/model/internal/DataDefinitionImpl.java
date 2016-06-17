@@ -60,11 +60,11 @@ public final class DataDefinitionImpl implements InternalDataDefinition {
 
     private String fullyQualifiedClassName;
 
-    private final Map<String, FieldDefinition> fields = new LinkedHashMap<String, FieldDefinition>();
+    private final Map<String, FieldDefinition> fields = new LinkedHashMap<>();
 
     private FieldDefinition priorityField;
 
-    private final Map<String, EntityHookDefinition> hooksByMethodPath = new HashMap<String, EntityHookDefinition>();
+    private final Map<String, EntityHookDefinition> hooksByMethodPath = new HashMap<>();
 
     private final ListMultimap<HooksTag, EntityHookDefinition> entityHooks = LinkedListMultimap.create();
 
@@ -417,6 +417,7 @@ public final class DataDefinitionImpl implements InternalDataDefinition {
         this.auditable = auditable;
     }
 
+    @Override
     public boolean isVersionable(){
         return versionable;
     }
@@ -492,11 +493,26 @@ public final class DataDefinitionImpl implements InternalDataDefinition {
         this.activable = activable;
     }
 
+    @Override
     public MasterModel getMasterModel() {
         return masterModel;
     }
 
+    @Override
     public void setMasterModel(MasterModel masterModel) {
         this.masterModel = masterModel;
+    }
+
+    @Override
+    public Entity getMasterModelEntity(Long id) {
+        return dataAccessService.getMasterModelEntity(this, id);
+    }
+
+    @Override
+    public Entity tryGetMasterModelEntity(Long id) {
+        if(getMasterModel() == null){
+            return null;
+        }
+        return dataAccessService.getMasterModelEntity(this, id);
     }
 }
