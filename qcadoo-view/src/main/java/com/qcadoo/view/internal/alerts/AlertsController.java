@@ -2,6 +2,8 @@ package com.qcadoo.view.internal.alerts;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.BaseEncoding;
+import com.qcadoo.view.api.notifications.NotificationContainer;
+import com.qcadoo.view.api.notifications.NotificationService;
 import com.qcadoo.view.internal.alerts.model.AlertDto;
 import com.qcadoo.view.internal.alerts.utils.AlertsDbHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,15 @@ public class AlertsController {
     @Autowired
     private AlertsDbHelper alertsDbHelper;
 
+    @Autowired
+    private NotificationService notificationService;
+
+    @ResponseBody
+    @RequestMapping(value = "/systemNotifications", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public NotificationContainer getSystemNotifications() {
+        return notificationService.getNotification();
+    }
+
     @ResponseBody
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<AlertDto> getAlert() {
@@ -44,11 +55,11 @@ public class AlertsController {
         ObjectMapper mapper = new ObjectMapper();
         try {
             AlertDto alertDto = mapper.readValue(data, AlertDto.class);
-            alertDto.setMessage( new String(BaseEncoding.base64Url().decode(alertDto.getMessage()),"utf-8"));
+            alertDto.setMessage(new String(BaseEncoding.base64Url().decode(alertDto.getMessage()), "utf-8"));
             alertsDbHelper.registerAlert(alertDto);
-            return createResponse(inCallback, NOTIFICATION_REGISTER_SUCCESS,  HttpStatus.OK);
+            return createResponse(inCallback, NOTIFICATION_REGISTER_SUCCESS, HttpStatus.OK);
         } catch (IOException e) {
-            return createResponse(inCallback, NOTIFICATION_REGISTER_ERROR,  HttpStatus.INTERNAL_SERVER_ERROR);
+            return createResponse(inCallback, NOTIFICATION_REGISTER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }
