@@ -24,7 +24,7 @@
 
 --%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+         pageEncoding="UTF-8"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
@@ -35,22 +35,23 @@
 
 <c:set var="isVisibleStyle" value=""/>
 <c:if test="${component.defaultVisible}">
-	<c:set var="isVisibleStyle" value=" display: none;"/>
+    <c:set var="isVisibleStyle" value=" display: none;"/>
 </c:if>
 
 <c:set var="isRequiredStyle" value=""/>
 <c:if test="${component.jspOptions.defaultRequired}">
-	<c:set var="isRequiredStyle" value="required"/>
+    <c:set var="isRequiredStyle" value="required"/>
 </c:if> 
 
 <div id="${component['path']}" class="component ${isRequiredStyle}" style="height: 100%; ${isVisibleStyle}">
-	<div class="element_js_object" style="display: none">${component['jsObjectName']}</div>
-	<div class="element_options" style="display: none">${component['jsOptions']}</div>
-	
-	<tiles:insertTemplate template="${component['jspFilePath']}">
-		<tiles:putAttribute name="component" value="${component}" />
-	</tiles:insertTemplate>
+    <div class="element_js_object" style="display: none">${component['jsObjectName']}</div>
+    <div class="element_options" style="display: none">${component['jsOptions']}</div>
+
+
+    <tiles:insertTemplate template="${component['jspFilePath']}">
+        <tiles:putAttribute name="component" value="${component}" />
+    </tiles:insertTemplate>
 </div>
 
 
-	
+
