@@ -67,6 +67,7 @@ import com.qcadoo.view.internal.states.AbstractComponentState;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
 import com.qcadoo.view.internal.xml.ViewDefinitionParserImpl;
 import com.qcadoo.view.internal.xml.ViewDefinitionParserNodeException;
+import java.util.ArrayList;
 
 public abstract class AbstractComponentPattern implements ComponentPattern {
 
@@ -115,6 +116,8 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
     private final List<ViewEventListenerHook> customEventListeners = Lists.newArrayList();
 
     private String script;
+    
+    private final List<String> scriptFiles = new ArrayList<>();
 
     private FieldDefinition fieldDefinition;
 
@@ -168,7 +171,7 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
 
     protected Map<String, Object> getJspOptions(final Locale locale) {
         // reimplement me if you want
-        return new HashMap<String, Object>();
+        return new HashMap<>();
     }
 
     protected void initializeComponent() throws JSONException {
@@ -262,7 +265,9 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
             if (script != null) {
                 jsOptions.put("script", prepareScript(script, locale));
             }
+            jsOptions.put("scriptFiles", scriptFiles);
             map.put("jsOptions", jsOptions);
+            
         } catch (JSONException e) {
             throw new IllegalStateException(e.getMessage(), e);
         }
@@ -616,9 +621,9 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
         Pattern pField = Pattern.compile("^#\\{(.+)\\}(\\.(\\w+))?");
         Matcher mField = pField.matcher(path);
         if (mField.find()) {
-            return new String[] { mField.group(1), mField.group(3) };
+            return new String[]{mField.group(1), mField.group(3)};
         } else {
-            return new String[] { null, path };
+            return new String[]{null, path};
         }
     }
 
@@ -651,7 +656,15 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
                 if (script == null) {
                     script = "";
                 }
-                script += parser.getStringNodeContent(child) + ";";
+
+                if (nodeHasAttribute(child, "src")) {
+                    String src = child.getAttributes().getNamedItem("src").getNodeValue();
+                    scriptFiles.add(src);
+                    
+                } else {
+                    script += parser.getStringNodeContent(child) + ";";
+                }
+
             }
         }
     }

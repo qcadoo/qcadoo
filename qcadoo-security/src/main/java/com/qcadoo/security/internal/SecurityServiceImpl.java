@@ -23,13 +23,17 @@
  */
 package com.qcadoo.security.internal;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
-
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
+import com.google.common.collect.Lists;
+import com.qcadoo.model.api.DataDefinitionService;
+import com.qcadoo.model.api.Entity;
+import com.qcadoo.model.api.aop.Monitorable;
+import com.qcadoo.model.api.search.SearchOrders;
+import com.qcadoo.model.api.search.SearchRestrictions;
+import com.qcadoo.security.api.SecurityRole;
+import com.qcadoo.security.api.SecurityRolesService;
+import com.qcadoo.security.constants.*;
+import com.qcadoo.security.internal.api.InternalSecurityService;
+import com.qcadoo.security.internal.api.QcadooUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.security.authentication.event.AbstractAuthenticationEvent;
@@ -45,21 +49,12 @@ import org.springframework.security.web.authentication.rememberme.PersistentReme
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.stereotype.Service;
 
-import com.google.common.collect.Lists;
-import com.qcadoo.model.api.DataDefinitionService;
-import com.qcadoo.model.api.Entity;
-import com.qcadoo.model.api.aop.Monitorable;
-import com.qcadoo.model.api.search.SearchOrders;
-import com.qcadoo.model.api.search.SearchRestrictions;
-import com.qcadoo.security.api.SecurityRole;
-import com.qcadoo.security.api.SecurityRolesService;
-import com.qcadoo.security.constants.GroupFields;
-import com.qcadoo.security.constants.PersistentTokenFields;
-import com.qcadoo.security.constants.QcadooSecurityConstants;
-import com.qcadoo.security.constants.RoleFields;
-import com.qcadoo.security.constants.UserFields;
-import com.qcadoo.security.internal.api.InternalSecurityService;
-import com.qcadoo.security.internal.api.QcadooUser;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 
 @Service("userDetailsService")
 public class SecurityServiceImpl implements InternalSecurityService, UserDetailsService, PersistentTokenRepository,
@@ -258,4 +253,18 @@ public class SecurityServiceImpl implements InternalSecurityService, UserDetails
         return false;
     }
 
+    @Override
+    public boolean hasCurrentUserRole(String targetRoleIdentifier) {
+        checkNotNull(targetRoleIdentifier, L_TARGET_ROLE_IDENTIFIER_MUST_BE_GIVEN);
+        Entity user = getUserEntity(getCurrentUserName());
+        List<Entity> roles = user.getBelongsToField(UserFields.GROUP).getManyToManyField(GroupFields.ROLES);
+
+        for (Entity role : roles) {
+            if (targetRoleIdentifier.equals(role.getStringField(RoleFields.IDENTIFIER))) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

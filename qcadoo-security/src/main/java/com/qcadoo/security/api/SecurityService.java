@@ -57,4 +57,6 @@ public interface SecurityService {
      */
     boolean hasRole(final Entity userEntity, final String targetRoleIdetifier);
 
+    boolean hasCurrentUserRole(final String targetRoleIdetifier);
+
 }
