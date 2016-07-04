@@ -132,4 +132,11 @@ public interface ComponentState extends ComponentMessagesHolder {
      * @return name of this component
      */
     String getName();
+
+    /**
+     * Returns unique identifier of this component.
+     *
+     * @return unique identifier of this component
+     */
+    String getUuid();
 }

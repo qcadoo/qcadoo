@@ -23,24 +23,6 @@
  */
 package com.qcadoo.view.internal.patterns;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-import static org.springframework.util.StringUtils.hasText;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.springframework.context.ApplicationContext;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.qcadoo.localization.api.TranslationService;
@@ -55,19 +37,26 @@ import com.qcadoo.view.internal.ComponentDefinition;
 import com.qcadoo.view.internal.ComponentOption;
 import com.qcadoo.view.internal.FieldEntityIdChangeListener;
 import com.qcadoo.view.internal.ScopeEntityIdChangeListener;
-import com.qcadoo.view.internal.api.ComponentPattern;
-import com.qcadoo.view.internal.api.ContextualHelpService;
-import com.qcadoo.view.internal.api.InternalComponentState;
-import com.qcadoo.view.internal.api.InternalViewDefinition;
-import com.qcadoo.view.internal.api.InternalViewDefinitionService;
-import com.qcadoo.view.internal.api.InternalViewDefinitionState;
-import com.qcadoo.view.internal.api.ViewDefinition;
+import com.qcadoo.view.internal.api.*;
 import com.qcadoo.view.internal.hooks.ViewEventListenerHook;
 import com.qcadoo.view.internal.states.AbstractComponentState;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
 import com.qcadoo.view.internal.xml.ViewDefinitionParserImpl;
 import com.qcadoo.view.internal.xml.ViewDefinitionParserNodeException;
-import java.util.ArrayList;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.springframework.context.ApplicationContext;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static org.springframework.util.StringUtils.hasText;
 
 public abstract class AbstractComponentPattern implements ComponentPattern {
 
@@ -78,6 +67,8 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
     protected static final String JS_OBJECT = "AbstractJavascriptObject";
 
     private final String name;
+
+    private final String uuid;
 
     private String extensionPluginIdentifier;
 
@@ -138,6 +129,7 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
     public AbstractComponentPattern(final ComponentDefinition componentDefinition) {
         checkArgument(hasText(componentDefinition.getName()), "Component name must be specified");
         this.name = componentDefinition.getName();
+        this.uuid = UUID.randomUUID().toString();
         this.extensionPluginIdentifier = componentDefinition.getExtensionPluginIdentifier();
         this.fieldPath = componentDefinition.getFieldPath();
         this.scopeFieldPath = componentDefinition.getSourceFieldPath();
@@ -222,6 +214,7 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
         AbstractComponentState state = (AbstractComponentState) getComponentStateInstance();
         state.setDataDefinition(dataDefinition);
         state.setName(name);
+        state.setUuid(UUID.randomUUID().toString());
         state.setEnabled(isDefaultEnabled());
         state.setVisible(isDefaultVisible());
         state.setTranslationService(translationService);
@@ -239,6 +232,7 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
     public Map<String, Object> prepareView(final Locale locale) {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("name", getName());
+        map.put("uuid", getUuid());
         map.put("path", getPath());
         map.put("indexOrder", indexOrder);
         map.put("jspFilePath", getJspFilePath());
@@ -311,6 +305,11 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
     @Override
     public final String getName() {
         return name;
+    }
+
+    @Override
+    public final String getUuid() {
+        return uuid;
     }
 
     @Override

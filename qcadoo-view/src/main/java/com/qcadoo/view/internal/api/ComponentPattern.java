@@ -23,14 +23,13 @@
  */
 package com.qcadoo.view.internal.api;
 
-import java.util.Locale;
-import java.util.Map;
-
-import org.w3c.dom.Node;
-
 import com.qcadoo.view.internal.hooks.ViewEventListenerHook;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
 import com.qcadoo.view.internal.xml.ViewDefinitionParserNodeException;
+import org.w3c.dom.Node;
+
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * ComponentPattern is a definition of single view element. It can be described as 'class' which main responsibility is to create
@@ -184,4 +183,10 @@ public interface ComponentPattern {
      */
     boolean isPermanentlyDisabled();
 
+    /**
+     * Returns unique identifier of this component.
+     *
+     * @return unique identifier of this component
+     */
+    String getUuid();
 }
