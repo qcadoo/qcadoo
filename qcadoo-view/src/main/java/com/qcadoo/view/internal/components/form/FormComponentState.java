@@ -436,6 +436,8 @@ public class FormComponentState extends AbstractContainerState implements FormCo
                 setEntity(entity);
             }
 
+            copyGlobalMessages(entity.getGlobalMessages());
+        
             if (entity.isValid()) {
                 setFieldValue(entity.getId());
                 addTranslatedMessage(translateMessage("saveMessage"), MessageType.SUCCESS);
