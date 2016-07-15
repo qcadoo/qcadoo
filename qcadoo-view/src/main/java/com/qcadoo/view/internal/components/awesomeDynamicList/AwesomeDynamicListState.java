@@ -23,18 +23,6 @@
  */
 package com.qcadoo.view.internal.components.awesomeDynamicList;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.view.api.components.AwesomeDynamicListComponent;
@@ -46,6 +34,13 @@ import com.qcadoo.view.internal.components.FieldComponentState;
 import com.qcadoo.view.internal.components.form.FormComponentPattern;
 import com.qcadoo.view.internal.components.form.FormComponentState;
 import com.qcadoo.view.internal.internal.ViewDefinitionStateImpl;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.*;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 public class AwesomeDynamicListState extends FieldComponentState implements AwesomeDynamicListComponent, ContainerState {
 

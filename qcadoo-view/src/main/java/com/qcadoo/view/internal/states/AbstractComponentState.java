@@ -84,6 +84,8 @@ public abstract class AbstractComponentState implements InternalComponentState, 
 
     private String name;
 
+    private String uuid;
+
     private Locale locale;
 
     private DataDefinition dataDefinition;
@@ -119,8 +121,16 @@ public abstract class AbstractComponentState implements InternalComponentState, 
         return name;
     };
 
+    @Override
+    public final String getUuid() {
+        return uuid;
+    };
+
     public final void setName(final String name) {
         this.name = name;
+    }
+    public final void setUuid(final String uuid) {
+        this.uuid = uuid;
     }
 
     public final void setDataDefinition(final DataDefinition dataDefinition) {
