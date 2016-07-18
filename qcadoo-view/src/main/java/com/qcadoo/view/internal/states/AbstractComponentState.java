@@ -26,6 +26,7 @@ package com.qcadoo.view.internal.states;
 import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.validators.ErrorMessage;
+import com.qcadoo.model.api.validators.GlobalMessage;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.internal.FieldEntityIdChangeListener;
@@ -164,6 +165,11 @@ public abstract class AbstractComponentState implements InternalComponentState, 
     }
 
     @Override
+    public final void addMessage(final GlobalMessage globalMessage) {
+        addMessage(globalMessage.getMessage(), MessageType.INFO, globalMessage.getAutoClose(), globalMessage.isExtraLarge(), globalMessage.getVars());
+    }
+
+    @Override
     public void addMessage(final String message, final MessageType type, final String... args) {
         addMessage(message, type, true, args);
     }
@@ -214,8 +220,20 @@ public abstract class AbstractComponentState implements InternalComponentState, 
         }
     }
 
+    protected void copyMessage(final ComponentState componentState, final GlobalMessage message) {
+        if (message != null) {
+            componentState.addMessage(message);
+        }
+    }
+
     protected void copyMessages(final List<ErrorMessage> messages) {
         for (ErrorMessage message : messages) {
+            copyMessage(this, message);
+        }
+    }
+
+    protected void copyGlobalMessages(final List<GlobalMessage> messages) {
+        for (GlobalMessage message : messages) {
             copyMessage(this, message);
         }
     }

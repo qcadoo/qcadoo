@@ -378,6 +378,7 @@ public final class TreeComponentState extends FieldComponentState implements Tre
             } else {
                 copyMessages(result.getMessagesHolder().getGlobalErrors());
             }
+            copyGlobalMessages(result.getMessagesHolder().getGlobalMessages());
         }
 
         public void save(final String[] args) {

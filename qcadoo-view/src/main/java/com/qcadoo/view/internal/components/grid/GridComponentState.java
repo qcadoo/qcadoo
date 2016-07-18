@@ -707,6 +707,7 @@ public final class GridComponentState extends AbstractComponentState implements 
             } else {
                 copyMessages(result.getMessagesHolder().getGlobalErrors());
             }
+            copyGlobalMessages(result.getMessagesHolder().getGlobalMessages());
         }
 
         public void moveUpSelectedEntity(final String[] args) {
