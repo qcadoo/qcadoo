@@ -139,6 +139,7 @@ html>body .ui-pnotify {
 .ui-pnotify-text {
 	display: block;
 	font-size: 10px;
+	word-wrap: break-word;
 }
 
 .ui-pnotify-icon, .ui-pnotify-closer {
