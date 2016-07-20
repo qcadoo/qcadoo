@@ -565,7 +565,7 @@ html>body .ui-pnotify{position:fixed;}
 .ui-state-success .ui-state-highlight{background:#B9F47D;border:1px solid #24A800;color:#363636;}
 .ui-pnotify-closer{float:right;margin-left:.2em;}
 .ui-pnotify-title{display:block;font-weight:bold;font-size:10px;margin-bottom:.4em;line-height:16px;vertical-align:middle;margin:0 .2em .2em;}
-.ui-pnotify-text{display:block;font-size:10px;}
+.ui-pnotify-text{display:block;font-size:10px;word-wrap:break-word;}
 .ui-pnotify-icon,.ui-pnotify-closer{display:block;}
 .ui-pnotify-closer{margin-left:.2em;float:right;}
 .ui-pnotify-icon{margin-right:.2em;float:left;}
