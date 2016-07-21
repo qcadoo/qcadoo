@@ -128,7 +128,7 @@ public final class BigDecimalUtils {
     }
     
     public static Either<Exception, Optional<BigDecimal>> tryParseAndIgnoreSeparator(final String maybeStringWithDecimal, final Locale locale) {
-        if (maybeStringWithDecimal != null && "PL".equals(locale.getCountry())) {
+        if (maybeStringWithDecimal != null && "pl".equals(locale.getLanguage())) {
             return tryParse(maybeStringWithDecimal.replace(".", ","), locale);
         }
         
