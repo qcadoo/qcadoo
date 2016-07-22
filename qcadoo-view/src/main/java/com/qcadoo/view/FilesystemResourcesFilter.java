@@ -1,7 +1,7 @@
 package com.qcadoo.view;
 
-import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
+import com.qcadoo.localization.internal.ConfigUtil;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
@@ -15,32 +15,33 @@ import java.util.List;
 import java.util.Set;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 public class FilesystemResourcesFilter implements Filter {
 
-    private String sourceBasePath;
-
     private final Set EXTENSIONS = Sets.newHashSet("js", "css");
+
+    @Autowired
+    private ConfigUtil configUtil;
 
     @Override
     public void init(FilterConfig conf) {
-        sourceBasePath = conf.getInitParameter("sourceBasePath");
-        if (Strings.isNullOrEmpty(sourceBasePath)) {
-            String currentDir = getClass().getClassLoader().getResource("").getPath();
-            String currentDirSuffix = "/mes/mes-application/target/tomcat-archiver/mes-application/webapps/ROOT/WEB-INF/classes/";
-            sourceBasePath = currentDir.substring(0, currentDir.length() - currentDirSuffix.length());
-        }
+        SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, conf.getServletContext());
     }
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response,
             FilterChain chain) throws IOException, ServletException {
-        if (request instanceof HttpServletRequest) {
+        if (configUtil.isHotDeploy() && request instanceof HttpServletRequest) {
             HttpServletRequest httpRequest = (HttpServletRequest) request;
 
             if (!serveResource(httpRequest, (HttpServletResponse) response)) {
                 chain.doFilter(request, response);
             }
+
+        } else {
+            chain.doFilter(request, response);
         }
     }
 
@@ -74,7 +75,7 @@ public class FilesystemResourcesFilter implements Filter {
                 List<String> prefixes = Arrays.asList("/mes/mes-plugins/", "/mes-commercial/", "/qcadoo/");
 
                 for (String prefix : prefixes) {
-                    Path dir = FileSystems.getDefault().getPath(sourceBasePath + prefix);
+                    Path dir = FileSystems.getDefault().getPath(configUtil.getSourceBasePath() + prefix);
                     try (DirectoryStream<Path> stream = Files.newDirectoryStream(dir)) {
                         for (Path pluginMainDir : stream) {
                             Path file = pluginMainDir.resolve("src/main/resources/").resolve(uri.substring(1));

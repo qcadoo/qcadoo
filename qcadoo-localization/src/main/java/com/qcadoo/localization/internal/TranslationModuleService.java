@@ -51,7 +51,7 @@ public class TranslationModuleService {
     @Autowired
     private ApplicationContext applicationContext;
 
-    private final Set<String> basenames = new LinkedHashSet<String>();
+    private final Set<String> basenames = new LinkedHashSet<>();
 
     public void addTranslationModule(final Collection<? extends String> moduleBasenames) {
         basenames.addAll(moduleBasenames);
@@ -68,7 +68,7 @@ public class TranslationModuleService {
     }
 
     public List<Resource> getLocalizationResources() {
-        List<Resource> resources = new LinkedList<Resource>();
+        List<Resource> resources = new LinkedList<>();
         for (String basename : basenames) {
             String searchName = basename + "*.properties";
             try {
