@@ -978,6 +978,11 @@ public final class GridComponentState extends AbstractComponentState implements 
     }
 
     @Override
+    public void setFilters(Map<String, String> newFilters) {
+        filters.putAll(newFilters);
+    }
+
+    @Override
     public Map<String, GridComponentColumn> getColumns() {
         return columns;
     }
