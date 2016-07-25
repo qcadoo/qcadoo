@@ -527,3 +527,14 @@ div.filterButton {
 	-webkit-border-radius: 1px;
 	border-radius: 1px;
 }
+
+.ui-jqgrid tr.footrow td {
+    font-weight: bold;
+    overflow: hidden;
+    white-space: nowrap;
+    height: 21px;
+    padding: 0 0px 0 0px;
+    border-top-width: 1px;
+    border-top-color: inherit;
+    border-top-style: solid;
+}
