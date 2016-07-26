@@ -753,11 +753,17 @@ QCD.components.elements.Grid = function (element, mainController) {
                 var val = grid.jqGrid('getCell', row, c)
                 totalSum += parseFloat(nanToZero(val.split('&nbsp;').join('').replace(',','.'))) || 0;
             }
-            var total = nanToZero(totalSum);
-            var obj = '[{"' + c + '": "' + total.toString().replace('.',',') + '"}]';
+            var total = nanToZero(parseFloat(totalSum.toFixed(5)));
+            var obj = '[{"' + c + '": "' + numberWithSpaces(total.toString().replace('.',',')) + '"}]';
             var colFoot = JSON.parse(obj);
             grid.jqGrid('footerData', 'set', colFoot[0]);
         }
+    }
+
+    function numberWithSpaces(x) {
+        var parts = x.toString().split(",");
+        parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+        return parts.join(",");
     }
 
      function addSummaryDataForNumberTimeRows(){

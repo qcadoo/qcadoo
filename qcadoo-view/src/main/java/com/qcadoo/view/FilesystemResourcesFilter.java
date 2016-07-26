@@ -29,7 +29,7 @@ public class FilesystemResourcesFilter implements Filter {
         sourceBasePath = conf.getInitParameter("sourceBasePath");
         if (Strings.isNullOrEmpty(sourceBasePath)) {
             String currentDir = getClass().getClassLoader().getResource("").getPath();
-            String currentDirSuffix = "/mes/mes-application/target/mes-application/webapps/ROOT/WEB-INF/classes/";
+            String currentDirSuffix = "/mes/mes-application/target/tomcat-archiver/mes-application/webapps/ROOT/WEB-INF/classes/";
             sourceBasePath = currentDir.substring(0, currentDir.length() - currentDirSuffix.length());
         }
     }
