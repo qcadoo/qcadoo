@@ -2,9 +2,13 @@ package com.qcadoo.view;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
+import org.apache.commons.io.IOUtils;
+
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
-import java.io.*;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URLConnection;
 import java.nio.file.DirectoryStream;
 import java.nio.file.FileSystems;
@@ -13,8 +17,6 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
-import javax.servlet.http.HttpServletResponse;
-import org.apache.commons.io.IOUtils;
 
 public class FilesystemResourcesFilter implements Filter {
 
