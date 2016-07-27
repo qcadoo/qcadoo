@@ -189,42 +189,38 @@
 		<xs:attribute name="plugin" type="identifier" use="required" />
 	</xs:complexType>
 
-	<xs:complexType name="hasManyFieldType">
+	<xs:complexType name="collectionValueFieldType">
 		<xs:complexContent>
 			<xs:extension base="fieldType">
 				<xs:attribute name="model" type="identifier" use="required" />
 				<xs:attribute name="plugin" type="identifier" />
 				<xs:attribute name="joinField" type="identifier"
-					use="required" />
-				<xs:attribute name="cascade" type="cascadeType" default="nullify" />
+							  use="required" />
+				<xs:attribute name="cascade" type="cascadeType" default="nullify"
+							  use="required" />
 				<xs:attribute name="copyable" type="xs:boolean" default="false" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="hasManyFieldType">
+		<xs:complexContent>
+			<xs:extension base="collectionValueFieldType">
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="manyToManyFieldType">
+		<xs:complexContent>
+			<xs:extension base="collectionValueFieldType">
 				<xs:attribute name="lazy" type="xs:boolean" default="false" />
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-	
-	<xs:complexType name="manyToManyFieldType">
-		<xs:complexContent>
-			<xs:extension base="fieldType">
-				<xs:attribute name="model" type="identifier" use="required" />
-				<xs:attribute name="plugin" type="identifier" />
-				<xs:attribute name="joinField" type="identifier"
-					use="required" />
-				<xs:attribute name="cascade" type="cascadeType" default="nullify" />
-				<xs:attribute name="copyable" type="xs:boolean" default="false" />
-			</xs:extension>
-		</xs:complexContent>
-	</xs:complexType>
-	
+
 	<xs:complexType name="treeFieldType">
 		<xs:complexContent>
-			<xs:extension base="fieldType">
-				<xs:attribute name="model" type="identifier" use="required" />
-				<xs:attribute name="plugin" type="identifier" />
-				<xs:attribute name="joinField" type="identifier"
-					use="required" />
-				<xs:attribute name="cascade" type="cascadeType" default="nullify" />
-				<xs:attribute name="copyable" type="xs:boolean" default="false" />
+			<xs:extension base="collectionValueFieldType">
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
