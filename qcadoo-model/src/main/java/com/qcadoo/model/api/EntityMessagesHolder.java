@@ -24,12 +24,31 @@
 package com.qcadoo.model.api;
 
 import com.qcadoo.model.api.validators.ErrorMessage;
+import com.qcadoo.model.api.validators.GlobalMessage;
 
 import java.util.List;
 import java.util.Map;
 
 public interface EntityMessagesHolder {
 
+    /**
+     * Add global info message not related with fields.
+     * 
+     * @param message message
+     * @param vars message's vars
+     */
+    void addGlobalMessage(final String message, final String... vars);
+    
+    /**
+     * Add global message, not related with fields.
+     * 
+     * @param message message
+     * @param autoClose autoClose
+     * @param extraLarge extraLarge
+     * @param vars message's vars
+     */
+    void addGlobalMessage(final String message, final boolean autoClose, final boolean extraLarge, final String... vars);
+    
     /**
      * Set global error, not related with fields.
      * 
@@ -84,6 +103,13 @@ public interface EntityMessagesHolder {
      * @return errors
      */
     List<ErrorMessage> getGlobalErrors();
+    
+    /**
+     * Return all global messages.
+     * 
+     * @return messages
+     */
+    List<GlobalMessage> getGlobalMessages();
 
     /**
      * Return all field's errors.

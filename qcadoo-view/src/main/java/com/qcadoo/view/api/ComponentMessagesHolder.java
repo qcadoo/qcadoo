@@ -24,6 +24,7 @@
 package com.qcadoo.view.api;
 
 import com.qcadoo.model.api.validators.ErrorMessage;
+import com.qcadoo.model.api.validators.GlobalMessage;
 import com.qcadoo.view.api.ComponentState.MessageType;
 
 /**
@@ -41,6 +42,14 @@ public interface ComponentMessagesHolder {
      *            validation error message
      */
     void addMessage(final ErrorMessage errorMessage);
+    
+    /**
+     * Adds message to this component with type set to MessageType.INFO. Message will automatically close after some time.
+     * 
+     * @param globalMessage
+     *            validation message
+     */
+    void addMessage(final GlobalMessage globalMessage);
 
     /**
      * Adds message (translated using given key) to this component. Message will automatically close after some time.

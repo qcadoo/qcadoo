@@ -37,6 +37,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import com.qcadoo.model.api.validators.GlobalMessage;
 
 public final class ProxyEntity implements Entity, EntityAwareCopyPerformers, EntityAwareEqualsPerformers {
 
@@ -95,6 +96,16 @@ public final class ProxyEntity implements Entity, EntityAwareCopyPerformers, Ent
     }
 
     @Override
+    public void addGlobalMessage(final String message, final String... vars) {
+        getEntity().addGlobalMessage(message, vars);
+    }
+
+    @Override
+    public void addGlobalMessage(final String message, final boolean autoClose, final boolean extraLarge, final String... vars) {
+        getEntity().addGlobalMessage(message, autoClose, extraLarge, vars);
+    }
+
+    @Override
     public void addGlobalError(final String message, final boolean autoClose, final String... vars) {
         getEntity().addGlobalError(message, autoClose, vars);
     }
@@ -112,6 +123,11 @@ public final class ProxyEntity implements Entity, EntityAwareCopyPerformers, Ent
     @Override
     public List<ErrorMessage> getGlobalErrors() {
         return getEntity().getGlobalErrors();
+    }
+
+    @Override
+    public List<GlobalMessage> getGlobalMessages() {
+        return getEntity().getGlobalMessages();
     }
 
     @Override

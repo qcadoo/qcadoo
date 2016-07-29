@@ -59,6 +59,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.google.common.base.Preconditions.*;
+import com.qcadoo.model.api.validators.GlobalMessage;
 
 @Service
 @Standalone
@@ -162,6 +163,7 @@ public class DataAccessServiceImpl implements DataAccessService {
         }
 
         Entity savedEntity = entityService.convertToGenericEntity(dataDefinition, databaseEntity);
+        copyGlobalMessages(dataDefinition, savedEntity, genericEntity);
 
         for (Entry<String, FieldDefinition> fieldEntry : dataDefinition.getFields().entrySet()) {
             if (fieldEntry.getValue().getType() instanceof HasManyType) {
@@ -958,6 +960,13 @@ public class DataAccessServiceImpl implements DataAccessService {
         }
         for (Map.Entry<String, ErrorMessage> error : source.getErrors().entrySet()) {
             target.addError(dataDefinition.getField(error.getKey()), error.getValue().getMessage(), error.getValue().getVars());
+        }
+    }
+
+    private void copyGlobalMessages(final DataDefinition dataDefinition, final EntityMessagesHolder target,
+            final EntityMessagesHolder source) {
+        for (GlobalMessage message : source.getGlobalMessages()) {
+            target.addGlobalMessage(message.getMessage(), message.getAutoClose(), message.isExtraLarge(), message.getVars());
         }
     }
 

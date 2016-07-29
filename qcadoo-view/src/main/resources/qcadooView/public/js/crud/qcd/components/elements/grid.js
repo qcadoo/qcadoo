@@ -262,6 +262,12 @@ QCD.components.elements.Grid = function (element, mainController) {
         gridParameters.autoRefresh = options.autoRefresh;
 
         gridParameters.fullScreen = options.fullscreen;
+
+        gridParameters.footerrow = options.footerRow;
+        gridParameters.userDataOnFooter = options.footerRow;
+        gridParameters.columnsToSummary = options.columnsToSummary;
+        gridParameters.columnsToSummaryTime = options.columnsToSummaryTime;
+
         if (options.height) {
             gridParameters.height = parseInt(options.height, 10);
             if (gridParameters.height <= 0) {
@@ -720,9 +726,100 @@ QCD.components.elements.Grid = function (element, mainController) {
 
 
         headerController.setDeleteEnabled(currentState.deleteEnabled);
+        if(gridParameters.footerrow){
 
+            grid.jqGrid('footerData', 'set', { cb: 'Σ'});
+            addSummaryDataForNumberRows();
+            addSummaryDataForNumberTimeRows();
+
+        }
         unblockGrid();
     };
+
+    function addSummaryDataForNumberRows(){
+        if(isEmpty(gridParameters.columnsToSummary)){
+            return;
+        }
+        var rows = grid.jqGrid('getDataIDs');
+
+        var tmp = gridParameters.columnsToSummary;
+        var columnsToSummary = tmp.split(",");
+        for (var n = 0; n < columnsToSummary.length; ++n) {
+            var c = columnsToSummary[n];
+
+            var totalSum = 0;
+            for (var i = 0; i < rows.length; ++i) {
+                var row = rows[i];
+                var val = grid.jqGrid('getCell', row, c)
+                totalSum += parseFloat(nanToZero(val.split('&nbsp;').join('').replace(',','.'))) || 0;
+            }
+            var total = nanToZero(parseFloat(totalSum.toFixed(5)));
+            var obj = '[{"' + c + '": "' + numberWithSpaces(total.toString().replace('.',',')) + '"}]';
+            var colFoot = JSON.parse(obj);
+            grid.jqGrid('footerData', 'set', colFoot[0]);
+        }
+    }
+
+    function numberWithSpaces(x) {
+        var parts = x.toString().split(",");
+        parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+        return parts.join(",");
+    }
+
+     function addSummaryDataForNumberTimeRows(){
+        if(isEmpty(gridParameters.columnsToSummaryTime)){
+            return;
+        }
+        var rows = grid.jqGrid('getDataIDs');
+
+        var tmp = gridParameters.columnsToSummaryTime;
+        var columnsToSummary = tmp.split(",");
+        for (var n = 0; n < columnsToSummary.length; ++n) {
+            var c = columnsToSummary[n];
+            var totalSum = 0;
+            for (var i = 0; i < rows.length; ++i) {
+                var row = rows[i];
+                var val = grid.jqGrid('getCell', row, c)
+                totalSum += toSeconds(val);
+            }
+            var total = nanToZero(totalSum);
+            var obj = '[{"' + c + '": "' + secondsToTime(total) + '"}]';
+            var colFoot = JSON.parse(obj);
+            grid.jqGrid('footerData', 'set', colFoot[0]);
+        }
+    }
+
+    function toSeconds(time) {
+        if(isEmpty(time)){
+            return 0;
+        }
+        var parts = time.split(':');
+        return (+parts[0]) * 60 * 60 + (+parts[1]) * 60 + (+parts[2]);
+    }
+
+    function secondsToTime(secs)
+    {
+       var sec_num = parseInt(secs);
+       var hours   = Math.floor(sec_num / 3600);
+       var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
+       var seconds = sec_num - (hours * 3600) - (minutes * 60);
+       if (hours   < 10) {hours   = "0"+hours;}
+       if (minutes < 10) {minutes = "0"+minutes;}
+       if (seconds < 10) {seconds = "0"+seconds;}
+       var time    = hours+':'+minutes+':'+seconds;
+       return time;
+    }
+
+    function nanToZero(val) {
+        if (isNaN(val)) {
+            return 0;
+         }
+        return val;
+    }
+
+    function isEmpty(str) {
+        return (!str || 0 === str.length);
+    }
 
     this.setComponentEnabled = function (isEnabled) {
         componentEnabled = isEnabled;
@@ -1096,6 +1193,9 @@ QCD.components.elements.Grid = function (element, mainController) {
         if (!gridParameters.paging) {
             currentGridHeight += 35;
         }
+        if(this.options.footerRow){
+            currentGridHeight -= 22;
+        }
         grid.setGridHeight(currentGridHeight);
         grid.setGridWidth(width - 24, this.options.shrinkToFit);
     };
@@ -1367,6 +1467,7 @@ QCD.components.elements.Grid = function (element, mainController) {
         gridParameters.ondblClickRow = function (id) {
         };
         gridParameters.onSortCol = onSortColumnChange;
+
 
         grid = $("#" + gridParameters.element).jqGrid(gridParameters);
 

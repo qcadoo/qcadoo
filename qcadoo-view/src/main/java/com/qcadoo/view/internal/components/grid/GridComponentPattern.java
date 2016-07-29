@@ -23,20 +23,6 @@
  */
 package com.qcadoo.view.internal.components.grid;
 
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
-import org.apache.commons.lang3.StringUtils;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
@@ -57,6 +43,15 @@ import com.qcadoo.view.internal.RowStyleResolver;
 import com.qcadoo.view.internal.patterns.AbstractComponentPattern;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
 import com.qcadoo.view.internal.xml.ViewDefinitionParserNodeException;
+import org.apache.commons.lang3.StringUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import java.util.*;
+import java.util.Map.Entry;
 
 public class GridComponentPattern extends AbstractComponentPattern {
 
@@ -155,6 +150,12 @@ public class GridComponentPattern extends AbstractComponentPattern {
     private SecurityRole authorizationRole;
 
     private String deletableAuthorizationRole = "";
+
+    private boolean footerRow = false;
+
+    private String columnsToSummary = "";
+
+    private String columnsToSummaryTime = "";
 
     private boolean autoRefresh = false;
 
@@ -257,6 +258,12 @@ public class GridComponentPattern extends AbstractComponentPattern {
         json.put("shrinkToFit", shrinkToFit);
 
         json.put("autoRefresh", autoRefresh);
+
+        json.put("footerRow", footerRow);
+
+        json.put("columnsToSummary", columnsToSummary);
+
+        json.put("columnsToSummaryTime", columnsToSummaryTime);
 
         if (belongsToFieldDefinition != null) {
             json.put("belongsToFieldName", belongsToFieldDefinition.getName());
@@ -572,6 +579,12 @@ public class GridComponentPattern extends AbstractComponentPattern {
                 shrinkToFit = Boolean.parseBoolean(option.getValue());
             } else if ("autoRefresh".equals(option.getType())) {
                 autoRefresh = Boolean.parseBoolean(option.getValue());
+            } else if ("footerRow".equals(option.getType())) {
+                footerRow = Boolean.parseBoolean(option.getValue());
+            } else if ("columnsToSummary".equals(option.getType())) {
+                columnsToSummary = option.getValue();
+            } else if ("columnsToSummaryTime".equals(option.getType())) {
+                columnsToSummaryTime = option.getValue();
             }
         }
         if (defaultOrderColumn == null) {
@@ -708,5 +721,17 @@ public class GridComponentPattern extends AbstractComponentPattern {
 
     public boolean isautoRefresh() {
         return autoRefresh;
+    }
+
+    public boolean isFooterRow() {
+        return footerRow;
+    }
+
+    public String getColumnsToSummary() {
+        return columnsToSummary;
+    }
+
+    public String getColumnsToSummaryTime() {
+        return columnsToSummaryTime;
     }
 }

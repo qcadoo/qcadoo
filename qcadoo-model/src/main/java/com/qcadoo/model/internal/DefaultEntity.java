@@ -40,6 +40,7 @@ import java.math.BigDecimal;
 import java.util.*;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import com.qcadoo.model.api.validators.GlobalMessage;
 
 public final class DefaultEntity implements Entity, EntityAwareCopyPerformers, EntityAwareEqualsPerformers {
 
@@ -100,6 +101,16 @@ public final class DefaultEntity implements Entity, EntityAwareCopyPerformers, E
     }
 
     @Override
+    public void addGlobalMessage(final String message, final String... vars) {
+        messagesHolder.addGlobalMessage(message, vars);
+    }
+
+    @Override
+    public void addGlobalMessage(String message, boolean autoClose, final boolean extraLarge, String... vars) {
+        messagesHolder.addGlobalMessage(message, autoClose, extraLarge, vars);
+    }
+
+    @Override
     public void addGlobalError(String message, boolean autoClose, String... vars) {
         messagesHolder.addGlobalError(message, autoClose, vars);
     }
@@ -117,6 +128,11 @@ public final class DefaultEntity implements Entity, EntityAwareCopyPerformers, E
     @Override
     public List<ErrorMessage> getGlobalErrors() {
         return messagesHolder.getGlobalErrors();
+    }
+
+    @Override
+    public List<GlobalMessage> getGlobalMessages() {
+        return messagesHolder.getGlobalMessages();
     }
 
     @Override

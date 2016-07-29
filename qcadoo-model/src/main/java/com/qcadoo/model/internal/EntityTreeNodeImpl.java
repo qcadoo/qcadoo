@@ -25,6 +25,7 @@ package com.qcadoo.model.internal;
 
 import com.qcadoo.model.api.*;
 import com.qcadoo.model.api.validators.ErrorMessage;
+import com.qcadoo.model.api.validators.GlobalMessage;
 import com.qcadoo.model.internal.api.EntityAwareCopyPerformers;
 import com.qcadoo.model.internal.api.EntityAwareEqualsPerformers;
 import com.qcadoo.model.internal.api.PerformerEntitiesChain;
@@ -37,7 +38,7 @@ import java.util.Map;
 
 public final class EntityTreeNodeImpl implements EntityTreeNode, EntityAwareCopyPerformers, EntityAwareEqualsPerformers {
 
-    private final List<EntityTreeNode> children = new ArrayList<EntityTreeNode>();
+    private final List<EntityTreeNode> children = new ArrayList<>();
 
     private final Entity entity;
 
@@ -140,6 +141,16 @@ public final class EntityTreeNodeImpl implements EntityTreeNode, EntityAwareCopy
     }
 
     @Override
+    public void addGlobalMessage(final String message, final String... vars) {
+        entity.addGlobalMessage(message, vars);
+    }
+
+    @Override
+    public void addGlobalMessage(final String message, final boolean autoClose, final boolean extraLarge, final String... vars) {
+        entity.addGlobalMessage(message, autoClose, extraLarge, vars);
+    }
+
+    @Override
     public void addGlobalError(final String message, final boolean autoClose, final String... vars) {
         entity.addGlobalError(message, autoClose, vars);
     }
@@ -157,6 +168,11 @@ public final class EntityTreeNodeImpl implements EntityTreeNode, EntityAwareCopy
     @Override
     public List<ErrorMessage> getGlobalErrors() {
         return entity.getGlobalErrors();
+    }
+
+    @Override
+    public List<GlobalMessage> getGlobalMessages() {
+        return entity.getGlobalMessages();
     }
 
     @Override
