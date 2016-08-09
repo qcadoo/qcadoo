@@ -22,9 +22,14 @@ public class ConfigUtil {
     }
 
     public String getDefaultSourceBasePath() {
-        String currentDir = getClass().getClassLoader().getResource("").getPath();
-        String currentDirSuffix = "/mes/mes-application/target/tomcat-archiver/mes-application/webapps/ROOT/WEB-INF/classes/";
+        if (isHotDeploy()) {
+            String currentDir = getClass().getClassLoader().getResource("").getPath();
+            String currentDirSuffix = "/mes/mes-application/target/tomcat-archiver/mes-application/webapps/ROOT/WEB-INF/classes/";
 
-        return currentDir.substring(0, currentDir.length() - currentDirSuffix.length());
+            return currentDir.substring(0, currentDir.length() - currentDirSuffix.length());
+            
+        } else {
+            return "";
+        }
     }
 }
