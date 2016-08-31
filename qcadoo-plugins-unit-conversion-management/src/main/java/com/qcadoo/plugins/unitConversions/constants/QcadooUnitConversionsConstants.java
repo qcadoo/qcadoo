@@ -26,6 +26,7 @@ package com.qcadoo.plugins.unitConversions.constants;
 public final class QcadooUnitConversionsConstants {
 
     private QcadooUnitConversionsConstants() {
+
     }
 
     public static final String PLUGIN_IDENTIFIER = "qcadooUnitConversions";

@@ -26,6 +26,7 @@ package com.qcadoo.view.constants;
 public final class RowStyle {
 
     private RowStyle() {
+
     }
 
     public static final String RED_BACKGROUND = "redBg";

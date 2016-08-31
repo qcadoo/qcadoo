@@ -26,6 +26,7 @@ package com.qcadoo.model.constants;
 public final class QcadooModelConstants {
 
     private QcadooModelConstants() {
+
     }
 
     public static final String PLUGIN_IDENTIFIER = "qcadooModel";

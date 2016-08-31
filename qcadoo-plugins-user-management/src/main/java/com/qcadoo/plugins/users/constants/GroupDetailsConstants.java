@@ -1,6 +1,11 @@
 package com.qcadoo.plugins.users.constants;
 
-public class GroupDetailsConstants {
+public final class GroupDetailsConstants {
 
-    public static String GROUP_ID = "groupId";
+    private GroupDetailsConstants() {
+
+    }
+
+    public static final String GROUP_ID = "groupId";
+
 }

@@ -23,7 +23,12 @@
  */
 package com.qcadoo.localization.constants;
 
-public interface QcadooLocalizationConstants {
+public final class QcadooLocalizationConstants {
 
-    String PLUGIN_IDENTIFIER = "qcadooLocalization";
+    private QcadooLocalizationConstants() {
+
+    }
+
+    public static final String PLUGIN_IDENTIFIER = "qcadooLocalization";
+
 }
