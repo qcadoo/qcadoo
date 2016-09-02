@@ -23,19 +23,23 @@
  */
 package com.qcadoo.plugins.plugins.constants;
 
-public interface QcadooPluginsConstants {
+public final class QcadooPluginsConstants {
 
-    String PLUGIN_IDENTIFIER = "qcadooPlugins";
+    private QcadooPluginsConstants() {
+
+    }
+
+    public static final String PLUGIN_IDENTIFIER = "qcadooPlugins";
 
     // VIEW
-    String VIEW_PLUGIN_DETAILS = "pluginDetails";
+    public static final String VIEW_PLUGIN_DETAILS = "pluginDetails";
 
-    String VIEW_PLUGIN_DOWNLOAD = "pluginDownload";
+    public static final String VIEW_PLUGIN_DOWNLOAD = "pluginDownload";
 
-    String VIEW_PLUGIN_INFO = "pluginInfo";
+    public static final String VIEW_PLUGIN_INFO = "pluginInfo";
 
-    String VIEW_PLUGINS_LIST = "pluginsList";
+    public static final String VIEW_PLUGINS_LIST = "pluginsList";
 
-    String VIEW_RESTART_VIEW = "restartView";
+    public static final String VIEW_RESTART_VIEW = "restartView";
 
 }

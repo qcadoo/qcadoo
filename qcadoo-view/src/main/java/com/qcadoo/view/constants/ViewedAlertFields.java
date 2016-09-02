@@ -26,6 +26,7 @@ package com.qcadoo.view.constants;
 public final class ViewedAlertFields {
 
     private ViewedAlertFields() {
+
     }
 
     public static final String USER = "user";
