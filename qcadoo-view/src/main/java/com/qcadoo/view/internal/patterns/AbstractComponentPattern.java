@@ -70,6 +70,8 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
 
     private final String uuid;
 
+    private final boolean useDto;
+
     private String extensionPluginIdentifier;
 
     private final String fieldPath;
@@ -130,6 +132,7 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
         checkArgument(hasText(componentDefinition.getName()), "Component name must be specified");
         this.name = componentDefinition.getName();
         this.uuid = UUID.randomUUID().toString();
+        this.useDto = componentDefinition.isUseDto();
         this.extensionPluginIdentifier = componentDefinition.getExtensionPluginIdentifier();
         this.fieldPath = componentDefinition.getFieldPath();
         this.scopeFieldPath = componentDefinition.getSourceFieldPath();
@@ -346,7 +349,7 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
         String[] field = null;
         String[] scopeField = null;
 
-        if (dataDefinition == null) {
+        if (dataDefinition == null || useDto) {
             if (fieldPath != null) {
                 field = getComponentAndField(fieldPath);
                 fieldComponent = (AbstractComponentPattern) (field[0] == null ? parent : viewDefinition
@@ -572,6 +575,7 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
 
     private void getFieldAndScopeFieldDefinitions(final String[] field, final AbstractComponentPattern fieldComponent,
             final String[] scopeField, final AbstractComponentPattern scopeFieldComponent) {
+
         if (dataDefinition != null) {
             if (fieldPath != null && field[1] != null) {
                 fieldDefinition = fieldComponent.getDataDefinition().getField(field[1]);
@@ -696,4 +700,7 @@ public abstract class AbstractComponentPattern implements ComponentPattern {
         this.persistent = persistent;
     }
 
+    public boolean isUseDto() {
+        return useDto;
+    }
 }

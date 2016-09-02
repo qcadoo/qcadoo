@@ -53,6 +53,11 @@ public final class ComponentDefinition {
 
     private boolean hasLabel;
 
+    /**
+     * Only for grid component type
+     */
+    private boolean useDto = false;
+
     private TranslationService translationService;
 
     private ContextualHelpService contextualHelpService;
@@ -196,4 +201,11 @@ public final class ComponentDefinition {
         this.applicationContext = applicationContext;
     }
 
+    public boolean isUseDto() {
+        return useDto;
+    }
+
+    public void setUseDto(boolean useDto) {
+        this.useDto = useDto;
+    }
 }
