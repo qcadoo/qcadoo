@@ -52,6 +52,8 @@ public final class ViewDefinitionStateImpl extends AbstractContainerState implem
 
     private boolean viewAfterRedirect = false;
 
+    private JSONObject jsonContext;
+    
     public ViewDefinitionStateImpl() {
         super();
 
@@ -219,5 +221,15 @@ public final class ViewDefinitionStateImpl extends AbstractContainerState implem
 
     @Override public boolean isViewAfterRedirect() {
         return viewAfterRedirect;
+    }
+
+    @Override
+    public JSONObject getJsonContext() {
+        return jsonContext;
+    }
+
+    @Override
+    public void setJsonContext(JSONObject jsonContext) {
+        this.jsonContext = jsonContext;
     }
 }

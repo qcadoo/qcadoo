@@ -62,6 +62,7 @@ public class CrudServiceImpl implements CrudService {
         if (StringUtils.hasText(context)) {
             try {
                 jsonContext = new JSONObject(context);
+                viewDefinition.setJsonContext(jsonContext);
             } catch (JSONException e) {
                 throw new IllegalStateException(e.getMessage(), e);
             }
