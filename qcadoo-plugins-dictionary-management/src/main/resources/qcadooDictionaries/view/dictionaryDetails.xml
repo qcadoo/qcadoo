@@ -37,7 +37,7 @@
 
 		<component type="form" reference="form" name="dictionary">
 			<option type="header" value="true"/>
-			<option type="expression" value="'@basic.' + #name + '.dictionary'"/>
+			<option type="expression" value="'@' + #pluginIdentifier + '.' + #name + '.dictionary'"/>
 		</component>
 
 		<component type="grid" name="dictionaryItems" reference="grid"
