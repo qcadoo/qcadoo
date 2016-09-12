@@ -24,24 +24,24 @@
     ***************************************************************************
 
 -->
-<view xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schema.qcadoo.org/view" 
-	xsi:schemaLocation="http://schema.qcadoo.org/view http://schema.qcadoo.org/view.xsd"
-	name="dictionaryDetails"
-	modelPlugin="qcadooModel"
-	modelName="dictionary"
-	defaultAuthorizationRole="ROLE_DICTIONARY_VIEW">
-	
+<view xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schema.qcadoo.org/view"
+	  xsi:schemaLocation="http://schema.qcadoo.org/view http://schema.qcadoo.org/view.xsd" name="dictionaryDetails"
+	  modelPlugin="qcadooModel" modelName="dictionary" defaultAuthorizationRole="ROLE_DICTIONARY_VIEW">
+
 	<component type="window" name="window" reference="window">
+
 		<ribbon>
 			<template name="standardFormTemplate" includeItems="navigation.back"/>
-			<template name="standardGridTemplate" excludeItems="actions.delete,actions.copy" />
+			<template name="standardGridTemplate" excludeItems="actions.delete,actions.copy"/>
 		</ribbon>
+
 		<component type="form" reference="form" name="dictionary">
-			<option type="header" value="true" />
-			<option type="expression" value="'@basic.' + #name + '.dictionary'" />
+			<option type="header" value="true"/>
+			<option type="expression" value="'@basic.' + #name + '.dictionary'"/>
 		</component>
+
 		<component type="grid" name="dictionaryItems" reference="grid"
-			source="#{form}.dictionaryItems">
+				   source="#{form}.dictionaryItems">
 			<script>
 				<![CDATA[
 
@@ -88,24 +88,33 @@
 					this.addOnChangeListener(listener);
 				]]>
 			</script>
+
 			<option type="column" name="name" fields="name" link="true"
-				width="50" />
+					width="50"/>
 			<option type="column" name="description" fields="description"
-				width="100" />
-			<option type="column" name="externalNumber" fields="externalNumber" hidden="true" />
-			<option type="column" name="technicalCode" fields="technicalCode" hidden="true" />
-			<option type="order" column="name" direction="asc" />
-			<option type="searchable" value="name,description" />
-			<option type="orderable" value="name,description" />
-			<option type="paginable" value="true" />
-			<option type="height" value="250" />
-			<option type="correspondingView" value="qcadooDictionaries/dictionaryItemDetails" />
-			<option type="correspondingComponent" value="form" />
-			<option type="deletable" value="false" />
-			<option type="creatable" value="false" />
-			<option type="multiselect" value="true" />
-			<option type="fullscreen" value="true" />
+					width="100"/>
+			<option type="column" name="externalNumber" fields="externalNumber" hidden="true"/>
+			<option type="column" name="technicalCode" fields="technicalCode" hidden="true"/>
+
+			<option type="order" column="name" direction="asc"/>
+
+			<option type="searchable" value="name,description"/>
+			<option type="orderable" value="name,description"/>
+
+			<option type="correspondingView" value="qcadooDictionaries/dictionaryItemDetails"/>
+			<option type="correspondingComponent" value="form"/>
+
+			<option type="paginable" value="true"/>
+
+			<option type="deletable" value="false"/>
+			<option type="creatable" value="false"/>
+
+			<option type="multiselect" value="true"/>
+			<option type="fullscreen" value="true"/>
 			<option type="fixedHeight" value="true"/>
+
+			<option type="height" value="250"/>
 		</component>
 	</component>
+
 </view>

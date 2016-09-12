@@ -24,97 +24,111 @@
     ***************************************************************************
 
 -->
-<view xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schema.qcadoo.org/view" 
-	xsi:schemaLocation="http://schema.qcadoo.org/view http://schema.qcadoo.org/view.xsd"
-	name="menuCategoryDetails"
-	modelPlugin="qcadooView"
-	modelName="category"
-	defaultAuthorizationRole="ROLE_ADMIN">
-	
+<view xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schema.qcadoo.org/view" xsi:schemaLocation="http://schema.qcadoo.org/view http://schema.qcadoo.org/view.xsd" name="menuCategoryDetails" modelPlugin="qcadooView" modelName="category" defaultAuthorizationRole="ROLE_ADMIN">
+
 	<component type="window" name="window" reference="window">
+
 		<ribbon>
 			<template name="standardFormTemplate" excludeItems="actions.copy, actions.saveNew"/>
 		</ribbon>
+
 		<component type="form" name="menuCategory" reference="form">
+			<script>
+				<![CDATA[
+					var save = #{window}.getRibbonItem("actions.save");
+					var saveBack = #{window}.getRibbonItem("actions.saveBack");
+					var cancel = #{window}.getRibbonItem("actions.cancel");
+					var del = #{window}.getRibbonItem("actions.delete");
+
+					this.addOnChangeListener({
+						onSetValue: function(value) {
+							if (! value || ! value.content) {
+								return;
+							}
+
+							var pluginIdentifier =  #{pluginIdentifier}.getComponentData().value;
+
+							if (pluginIdentifier && pluginIdentifier != "") {
+								save.disable();
+								saveBack.disable();
+								cancel.disable();
+								del.disable();
+							} else {
+								save.enable();
+								saveBack.enable();
+								cancel.enable();
+								del.enable();
+							}
+						}
+					});
+				]]>
+			</script>
+
 			<component type="gridLayout" name="gridLayout" columns="3"
-				rows="1">
+					   rows="1">
 				<layoutElement column="1" row="1">
 					<component type="input" name="name" field="name"
-						hasDescription="false" reference="categoryName"/>
+							   hasDescription="false" reference="categoryName"/>
 					<component type="input" name="pluginIdentifier" field="pluginIdentifier"
-						hasDescription="false" reference="pluginIdentifier" defaultVisible="false"/>
+							   hasDescription="false" reference="pluginIdentifier" defaultVisible="false"/>
 				</layoutElement>
 			</component>
-			<option type="header" value="true" />
-			<option type="expression" value="#name" />
-			<script><![CDATA[
-				var save = #{window}.getRibbonItem("actions.save");
-				var saveBack = #{window}.getRibbonItem("actions.saveBack");
-				var cancel = #{window}.getRibbonItem("actions.cancel");
-				var del = #{window}.getRibbonItem("actions.delete");
-				
-				this.addOnChangeListener({
-					onSetValue: function(value) {
-						if (! value || ! value.content) {
-							return;
-						}
-						var pluginIdentifier =  #{pluginIdentifier}.getComponentData().value;
-						if (pluginIdentifier && pluginIdentifier != "") {
-							save.disable();
-							saveBack.disable();
-							cancel.disable();
-							del.disable();
-						} else {
-							save.enable();
-							saveBack.enable();
-							cancel.enable();
-							del.enable();
-						}
-					}
-				});
-				]]></script>
+
+			<option type="header" value="true"/>
+			<option type="expression" value="'@' + #pluginIdentifier + '.menu.' + #name"/>
 		</component>
 		<component type="flowGridLayout" name="gridLayout" columns="3"
-			rows="4">
+				   rows="4">
 			<layoutElement column="1" row="1" minHeight="4" width="3">
 				<component type="grid" name="menuViewDefinitionItems"
-					source="#{form}.items" reference="itemsGrid">
-					<option type="column" name="name" fields="name" link="true"
-						width="300" />
-					<option type="column" name="active" fields="active" link="false" />
-					<option type="column" name="pluginIdentifier" fields="pluginIdentifier" link="false" width="300" />
-					<option type="order" column="succession" direction="asc" />
-					<option type="correspondingView" value="qcadooMenu/menuViewDefinitionItemDetails" />
-					<option type="correspondingComponent" value="form" />
-					<option type="correspondingViewInModal" value="true" />
-					<option type="paginable" value="false" />
-					
-					<option type="creatable" value="true" />
-					<option type="deletable" value="true" />
-					
-					<script><![CDATA[
-						this.addOnChangeListener({
-							onChange: function(selectedEntitiesArray) { 
-								if(selectedEntitiesArray.length == 0 || (selectedEntitiesArray[0].fields.pluginIdentifier && selectedEntitiesArray[0].fields.pluginIdentifier != '')) {
-									this.setDeleteEnabled(false);
-								} else {
-									this.setDeleteEnabled(true);
+						   source="#{form}.items" reference="itemsGrid">
+					<script>
+						<![CDATA[
+							this.addOnChangeListener({
+								onChange: function(selectedEntitiesArray) {
+									if (selectedEntitiesArray.length == 0 || (selectedEntitiesArray[0].fields.pluginIdentifier && selectedEntitiesArray[0].fields.pluginIdentifier != '')) {
+										this.setDeleteEnabled(false);
+									} else {
+										this.setDeleteEnabled(true);
+									}
 								}
-							}
-						});
-					]]></script>
+							});
+						]]>
+					</script>
+
+					<option type="column" name="name" fields="name" link="true"
+							width="300"/>
+					<option type="column" name="active" fields="active" link="false"/>
+					<option type="column" name="pluginIdentifier" fields="pluginIdentifier" link="false" width="300"/>
+
+					<option type="order" column="succession" direction="asc"/>
+
+					<option type="correspondingView" value="qcadooMenu/menuViewDefinitionItemDetails"/>
+					<option type="correspondingComponent" value="form"/>
+					<option type="correspondingViewInModal" value="true"/>
+
+					<option type="paginable" value="false"/>
+
+					<option type="creatable" value="true"/>
+					<option type="deletable" value="true"/>
 				</component>
 			</layoutElement>
 		</component>
-		<script><![CDATA[
-			this.addOnChangeListener({
-				onSetValue: function(selectedEntitiesArray) {
-					this.updateMenu();
-				}
-			});
-		]]></script>
+
+		<script>
+			<![CDATA[
+				this.addOnChangeListener({
+					onSetValue: function(selectedEntitiesArray) {
+						this.updateMenu();
+					}
+				});
+			]]>
+		</script>
 	</component>
+
 	<hooks>
-		<beforeRender class="com.qcadoo.plugins.menu.internal.MenuAdministrationService" method="translateCategoryForm" />
+		<beforeRender class="com.qcadoo.plugins.menu.internal.MenuAdministrationService"
+					  method="translateCategoryForm"/>
 	</hooks>
+
 </view>
