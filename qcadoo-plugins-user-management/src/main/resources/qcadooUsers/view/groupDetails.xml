@@ -46,7 +46,7 @@
 					<component type="lookup" name="role" reference="roleLookup" field="roles" defaultVisible="false"
 							   persistent="false" hasLabel="false">
 						<option type="column" name="description" fields="identifier,description"
-								expression="(#description == null) ? '@' + 'qcadooSecurity.role.' + (#identifier) + '.description' : #description" link="true"
+								expression="(#description == null) ? '@qcadooSecurity.role.' + #identifier + '.description' : #description" link="true"
 								width="250"/>
 
 						<option type="expression"
@@ -66,7 +66,7 @@
 							   reference="groupComponents" source="#{form}.roles" defaultEnabled="false">
 						<option type="column" name="identifier" fields="identifier" width="50"/>
 						<option type="column" name="description" fields="identifier,description"
-								expression="(#description == null) ? '@' + 'qcadooSecurity.role.' + (#identifier) + '.description' : #description"/>
+								expression="(#description == null) ? '@qcadooSecurity.role.' + #identifier + '.description' : #description"/>
 
 						<option type="order" column="identifier" direction="asc"/>
 
@@ -90,7 +90,7 @@
 			</component>
 
 			<option type="header" value="true"/>
-			<option type="expression" value="#identifier"/>
+			<option type="expression" value="(#identifier == null) ? #name : #identifier"/>
 		</component>
 
 	</component>
