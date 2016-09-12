@@ -25,18 +25,16 @@
 
 -->
 <view xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schema.qcadoo.org/view"
-      xsi:schemaLocation="http://schema.qcadoo.org/view http://schema.qcadoo.org/view.xsd"
-      name="usersList"
-      modelPlugin="qcadooSecurity"
-      modelName="user"
-      menuAccessible="true"
-      defaultAuthorizationRole="ROLE_ADMIN">
+      xsi:schemaLocation="http://schema.qcadoo.org/view http://schema.qcadoo.org/view.xsd" name="usersList"
+      modelPlugin="qcadooSecurity" modelName="user" menuAccessible="true" defaultAuthorizationRole="ROLE_ADMIN">
 
     <component type="window" name="window">
+
         <ribbon>
             <group template="gridNewAndRemoveAction" defaultAuthorizationRole="ROLE_SUPERADMIN"/>
             <group template="gridGenericExportAction" defaultAuthorizationRole="ROLE_SUPERADMIN"/>
         </ribbon>
+
         <component type="grid" name="users" reference="grid">
             <option type="column" name="login" fields="userName" link="true"/>
             <option type="column" name="email" fields="email"/>
@@ -47,19 +45,19 @@
             <option type="column" name="lastActivity" fields="lastActivity"/>
 
             <option type="order" column="login" direction="asc"/>
+
             <option type="orderable" value="login,email,firstName,lastName,lastActivity,groupName"/>
             <option type="searchable" value="login,email,firstName,lastName,groupName"/>
+
             <option type="correspondingView" value="qcadooUsers/userDetails"/>
             <option type="correspondingComponent" value="form"/>
+
             <option type="fullscreen" value="true"/>
             <option type="multiselect" value="true"/>
-
-            <!--<criteriaModifier-->
-            <!--class="com.qcadoo.plugins.users.internal.UserCriteriaModifiers"-->
-            <!--method="criteriaForRole"/>-->
-
         </component>
+
         <option type="fixedHeight" value="true"/>
         <option type="header" value="false"/>
     </component>
+
 </view>
