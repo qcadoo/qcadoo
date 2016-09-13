@@ -26,6 +26,7 @@ package com.qcadoo.view.api;
 import com.google.common.base.Optional;
 
 import java.util.Map;
+import org.json.JSONObject;
 
 /**
  * ViewDefinitionState is instance of single view. It is generated using ViewDefinition in request scope.
@@ -107,4 +108,18 @@ public interface ViewDefinitionState extends ComponentState {
      * @return boolean
      */
     boolean isViewAfterRedirect();
+    
+    /**
+     * Set context form url
+     * 
+     * @param jSONObject 
+     */
+    void setJsonContext(JSONObject jSONObject);
+    
+    /**
+     * Get context from url
+     * 
+     * @return 
+     */
+    JSONObject getJsonContext();
 }

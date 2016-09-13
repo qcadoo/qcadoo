@@ -25,10 +25,11 @@ package com.qcadoo.view.constants;
 
 public final class QcadooViewConstants {
 
-    public static final String MODEL_VIEWED_ALERT = "viewedAlert";
-
     private QcadooViewConstants() {
+
     }
+
+    public static final String MODEL_VIEWED_ALERT = "viewedAlert";
 
     public static final String PLUGIN_IDENTIFIER = "qcadooView";
 
