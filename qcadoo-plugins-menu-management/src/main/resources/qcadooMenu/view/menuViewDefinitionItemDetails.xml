@@ -63,7 +63,7 @@
 
 			<option type="header" value="true"/>
 			<option type="expression"
-					value="(#pluginIdentifier == null) ? #name + ' / ' + '@' + #category['pluginIdentifier'] + '.menu.' + #category['name'] + ' [' + #succession + ']' : '@' + #pluginIdentifier + '.menu.' + #category['name'] + '.' + #name + ' / ' + '@' + #category['pluginIdentifier'] + '.menu.' + #category['name'] + ' [' + #succession + ']'"/>
+					value="(#pluginIdentifier == null) ? '@' + #category['pluginIdentifier'] + '.menu.' + #category['name'] + ' / ' + #name + ' [' + #succession + ']' : '@' + #category['pluginIdentifier'] + '.menu.' + #category['name'] + ' / ' + '@' + #pluginIdentifier + '.menu.' + #category['name'] + '.' + #name + ' [' + #succession + ']'"/>
 		</component>
 	</component>
 
