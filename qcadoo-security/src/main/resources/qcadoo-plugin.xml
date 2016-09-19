@@ -63,12 +63,11 @@
         <model:model model="group" resource="model/group.xml"/>
         <model:model model="role" resource="model/role.xml"/>
 
-        <security:role identifier="ROLE_ADMIN" description="Zarządzanie rolami, grupami, pluginami i menu. Zawiera ROLE_USER."/>
-        <security:role identifier="ROLE_USER" description="Domyślny poziom uprawnień."/>
-        <security:role identifier="ROLE_SUPERADMIN"
-                       description="Najwyższy poziom uprawnień - zarezerwowane dla procesów systemowych. Zawiera ROLE_ADMIN."/>
-        <security:role identifier="ROLE_API" description="Dostęp poprzez API do systemu. Rola systemowa."/>
-        <security:role identifier="ROLE_HOME_PROFIL" description="Dostęp do profilu użytkownika"/>
+        <security:role identifier="ROLE_USER"/>
+        <security:role identifier="ROLE_ADMIN"/>
+        <security:role identifier="ROLE_SUPERADMIN"/>
+        <security:role identifier="ROLE_API"/>
+        <security:role identifier="ROLE_HOME_PROFIL"/>
 
         <security:user-group name="Admin" identifier="ADMIN" roles="ROLE_ADMIN, ROLE_DICTIONARY_VIEW"/>
         <security:user-group name="User" identifier="USER" roles="ROLE_USER"/>
