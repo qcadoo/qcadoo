@@ -140,9 +140,6 @@ public class MenuAdministrationService {
                 FieldComponent itemViewField = (FieldComponent) viewDefinitionState.getComponentByReference("itemView");
 
                 itemNameField.setEnabled(false);
-
-                itemNameField.setFieldValue(translationUtilsService.getItemTranslation(item, viewDefinitionState.getLocale()));
-
                 itemViewField.setEnabled(false);
             }
         }
