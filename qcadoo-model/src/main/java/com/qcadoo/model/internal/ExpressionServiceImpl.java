@@ -169,7 +169,7 @@ public final class ExpressionServiceImpl implements ExpressionService {
             return expression;
         }
 
-        Matcher m = Pattern.compile("\\@([a-zA-Z0-9\\.]+)").matcher(expression);
+        Matcher m = Pattern.compile("\\@([a-zA-Z_0-9\\.]+)").matcher(expression);
         StringBuffer sb = new StringBuffer();
 
         int i = 0;
