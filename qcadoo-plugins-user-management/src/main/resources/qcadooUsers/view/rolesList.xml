@@ -23,30 +23,34 @@
     ***************************************************************************
 
 -->
-<view xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schema.qcadoo.org/view" 
-	xsi:schemaLocation="http://schema.qcadoo.org/view http://schema.qcadoo.org/view.xsd"
-	name="rolesList"
-	modelPlugin="qcadooSecurity"
-	modelName="role"
-	menuAccessible="true"
-	defaultAuthorizationRole="ROLE_SUPERADMIN">
-	
+<view xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schema.qcadoo.org/view"
+	  xsi:schemaLocation="http://schema.qcadoo.org/view http://schema.qcadoo.org/view.xsd" name="rolesList"
+	  modelPlugin="qcadooSecurity" modelName="role" menuAccessible="true" defaultAuthorizationRole="ROLE_SUPERADMIN">
+
 	<component type="window" name="window">
+
 		<ribbon>
 			<template name="standardGridTemplate" excludeItems="actions.copy, actions.delete, actions.new"/>
 		</ribbon>
+
 		<component type="grid" name="roles" reference="grid">
-			<option type="column" name="identifier" fields="identifier" link="true" />
-			<option type="column" name="description" fields="description" />
-			
-			<option type="order" column="identifier" direction="asc" />
-			<option type="orderable" value="identifier" />
-			<option type="searchable" value="identifier" />
-			<option type="correspondingView" value="qcadooUsers/roleDetails" />
-			<option type="correspondingComponent" value="form" />
-			<option type="fullscreen" value="true" />
+			<option type="column" name="identifier" fields="identifier" link="true"/>
+			<option type="column" name="description" fields="identifier,description"
+					expression="(#description == null) ? '@qcadooSecurity.role.' + #identifier + '.description' : #description"/>
+
+			<option type="order" column="identifier" direction="asc"/>
+
+			<option type="orderable" value="identifier"/>
+			<option type="searchable" value="identifier"/>
+
+			<option type="correspondingView" value="qcadooUsers/roleDetails"/>
+			<option type="correspondingComponent" value="form"/>
+
+			<option type="fullscreen" value="true"/>
 		</component>
-		<option type="fixedHeight" value="true" />
-		<option type="header" value="false" />
+
+		<option type="fixedHeight" value="true"/>
+		<option type="header" value="false"/>
 	</component>
+
 </view>

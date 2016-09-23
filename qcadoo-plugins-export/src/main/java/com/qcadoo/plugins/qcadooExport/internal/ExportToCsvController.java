@@ -57,11 +57,14 @@ import com.qcadoo.view.api.crud.CrudService;
 @Controller
 public class ExportToCsvController {
 
-    private static final String VIEW_NAME_VARIABLE = "viewName";
+    private static final String L_GRID = "grid";
 
-    private static final String PLUGIN_IDENTIFIER_VARIABLE = "pluginIdentifier";
+    private static final String L_VIEW_NAME_VARIABLE = "viewName";
 
-    private static final String CONTROLLER_PATH = "exportToCsv/{" + PLUGIN_IDENTIFIER_VARIABLE + "}/{" + VIEW_NAME_VARIABLE + "}";
+    private static final String L_PLUGIN_IDENTIFIER_VARIABLE = "pluginIdentifier";
+
+    private static final String L_CONTROLLER_PATH = "exportToCsv/{" + L_PLUGIN_IDENTIFIER_VARIABLE + "}/{" + L_VIEW_NAME_VARIABLE
+            + "}";
 
     @Value("${exportedCsvSeparator:','}")
     private String exportedCsvSeparator;
@@ -74,27 +77,29 @@ public class ExportToCsvController {
 
     @Monitorable(threshold = 500)
     @ResponseBody
-    @RequestMapping(value = { CONTROLLER_PATH }, method = RequestMethod.POST)
-    public Object generateCsv(@PathVariable(PLUGIN_IDENTIFIER_VARIABLE) final String pluginIdentifier,
-            @PathVariable(VIEW_NAME_VARIABLE) final String viewName, @RequestBody final JSONObject body, final Locale locale) {
+    @RequestMapping(value = { L_CONTROLLER_PATH }, method = RequestMethod.POST)
+    public Object generateCsv(@PathVariable(L_PLUGIN_IDENTIFIER_VARIABLE) final String pluginIdentifier,
+            @PathVariable(L_VIEW_NAME_VARIABLE) final String viewName, @RequestBody final JSONObject body, final Locale locale) {
         try {
             changeMaxResults(body);
 
             ViewDefinitionState state = crudService.invokeEvent(pluginIdentifier, viewName, body, locale);
 
-            GridComponent grid = (GridComponent) state.getComponentByReference("grid");
+            GridComponent grid = (GridComponent) state.getComponentByReference(L_GRID);
 
             String date = DateFormat.getDateInstance().format(new Date());
             File file = fileService.createExportFile("export_" + grid.getName() + "_" + date + ".csv");
 
-            BufferedWriter output = null;
+            BufferedWriter bufferedWriter = null;
 
             try {
-                FileOutputStream fos = new FileOutputStream(file);
-                fos.write(239);
-                fos.write(187);
-                fos.write(191);
-                output = new BufferedWriter(new OutputStreamWriter(fos, Charset.forName("UTF-8")));
+                FileOutputStream fileOutputStream = new FileOutputStream(file);
+
+                fileOutputStream.write(239);
+                fileOutputStream.write(187);
+                fileOutputStream.write(191);
+
+                bufferedWriter = new BufferedWriter(new OutputStreamWriter(fileOutputStream, Charset.forName("UTF-8")));
 
                 boolean firstName = true;
 
@@ -102,14 +107,16 @@ public class ExportToCsvController {
                     if (firstName) {
                         firstName = false;
                     } else {
-                        output.append(exportedCsvSeparator);
+                        bufferedWriter.append(exportedCsvSeparator);
                     }
-                    output.append("\"").append(normalizeString(name)).append("\"");
+
+                    bufferedWriter.append("\"").append(normalizeString(name)).append("\"");
                 }
 
-                output.append("\n");
+                bufferedWriter.append("\n");
 
                 List<Map<String, String>> rows;
+
                 if (grid.getSelectedEntitiesIds().isEmpty()) {
                     rows = grid.getColumnValuesOfAllRecords();
                 } else {
@@ -118,23 +125,25 @@ public class ExportToCsvController {
 
                 for (Map<String, String> row : rows) {
                     boolean firstValue = true;
+
                     for (String value : row.values()) {
                         if (firstValue) {
                             firstValue = false;
                         } else {
-                            output.append(exportedCsvSeparator);
+                            bufferedWriter.append(exportedCsvSeparator);
                         }
-                        output.append("\"").append(normalizeString(value)).append("\"");
+
+                        bufferedWriter.append("\"").append(normalizeString(value)).append("\"");
                     }
 
-                    output.append("\n");
+                    bufferedWriter.append("\n");
                 }
 
-                output.flush();
+                bufferedWriter.flush();
             } catch (IOException e) {
                 throw new IllegalStateException(e.getMessage(), e);
             } finally {
-                IOUtils.closeQuietly(output);
+                IOUtils.closeQuietly(bufferedWriter);
             }
 
             state.redirectTo(fileService.getUrl(file.getAbsolutePath()) + "?clean", true, false);

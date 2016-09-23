@@ -37,9 +37,14 @@
 		<component type="grid" name="menuCategories" reference="grid">
 			<script>
 				<![CDATA[
+					var deleteButton = #{window}.getRibbonItem("actions.delete");
 					this.addOnChangeListener({
-						onSetValue: function(selectedEntitiesArray) {
-							this.updateMenu();
+						onChange: function(selectedEntitiesArray) {
+							if(selectedEntitiesArray.length == 0 || (selectedEntitiesArray[0].fields.pluginIdentifier && selectedEntitiesArray[0].fields.pluginIdentifier != '')) {
+								deleteButton.disable();
+							} else {
+								deleteButton.enable();
+							}
 						}
 					});
 				]]>
@@ -58,25 +63,20 @@
 			<option type="correspondingComponent" value="form"/>
 
 			<option type="fullscreen" value="true"/>
-
-			<script>
-				<![CDATA[
-					var deleteButton = #{window}.getRibbonItem("actions.delete");
-					this.addOnChangeListener({
-						onChange: function(selectedEntitiesArray) {
-							if(selectedEntitiesArray.length == 0 || (selectedEntitiesArray[0].fields.pluginIdentifier && selectedEntitiesArray[0].fields.pluginIdentifier != '')) {
-								deleteButton.disable();
-							} else {
-								deleteButton.enable();
-							}
-						}
-					});
-				]]>
-			</script>
 		</component>
 
 		<option type="fixedHeight" value="true"/>
 		<option type="header" value="false"/>
+
+		<script>
+			<![CDATA[
+					this.addOnChangeListener({
+						onSetValue: function(selectedEntitiesArray) {
+							this.updateMenu();
+						}
+					});
+				]]>
+		</script>
 	</component>
 
 	<hooks>

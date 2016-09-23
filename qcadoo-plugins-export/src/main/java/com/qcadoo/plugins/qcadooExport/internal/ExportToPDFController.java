@@ -27,7 +27,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.text.DateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -43,6 +42,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.google.common.collect.Lists;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.PageSize;
@@ -64,11 +64,14 @@ import com.qcadoo.view.api.crud.CrudService;
 @Controller
 public class ExportToPDFController {
 
-    private static final String VIEW_NAME_VARIABLE = "viewName";
+    public static final String L_GRID = "grid";
 
-    private static final String PLUGIN_IDENTIFIER_VARIABLE = "pluginIdentifier";
+    private static final String L_VIEW_NAME_VARIABLE = "viewName";
 
-    private static final String CONTROLLER_PATH = "exportToPdf/{" + PLUGIN_IDENTIFIER_VARIABLE + "}/{" + VIEW_NAME_VARIABLE + "}";
+    private static final String L_PLUGIN_IDENTIFIER_VARIABLE = "pluginIdentifier";
+
+    private static final String L_CONTROLLER_PATH = "exportToPdf/{" + L_PLUGIN_IDENTIFIER_VARIABLE + "}/{" + L_VIEW_NAME_VARIABLE
+            + "}";
 
     @Autowired
     private CrudService crudService;
@@ -90,26 +93,30 @@ public class ExportToPDFController {
 
     @Monitorable(threshold = 500)
     @ResponseBody
-    @RequestMapping(value = { CONTROLLER_PATH }, method = RequestMethod.POST)
-    public Object generatePdf(@PathVariable(PLUGIN_IDENTIFIER_VARIABLE) final String pluginIdentifier,
-            @PathVariable(VIEW_NAME_VARIABLE) final String viewName, @RequestBody final JSONObject body, final Locale locale) {
+    @RequestMapping(value = { L_CONTROLLER_PATH }, method = RequestMethod.POST)
+    public Object generatePdf(@PathVariable(L_PLUGIN_IDENTIFIER_VARIABLE) final String pluginIdentifier,
+            @PathVariable(L_VIEW_NAME_VARIABLE) final String viewName, @RequestBody final JSONObject body, final Locale locale) {
         try {
             changeMaxResults(body);
+
             ViewDefinitionState state = crudService.invokeEvent(pluginIdentifier, viewName, body, locale);
-            GridComponent grid = (GridComponent) state.getComponentByReference("grid");
+
+            GridComponent grid = (GridComponent) state.getComponentByReference(L_GRID);
+
             Document document = new Document(PageSize.A4.rotate());
             String date = DateFormat.getDateInstance().format(new Date());
             File file = fileService.createExportFile("export_" + grid.getName() + "_" + date + ".pdf");
-            FileOutputStream fileOutputStream = new FileOutputStream(file);
-            PdfWriter writer = PdfWriter.getInstance(document, fileOutputStream);
 
-            writer.setPageEvent(new PdfPageNumbering(footerResolver.resolveFooter(locale)));
+            FileOutputStream fileOutputStream = new FileOutputStream(file);
+            PdfWriter pdfWriter = PdfWriter.getInstance(document, fileOutputStream);
+
+            pdfWriter.setPageEvent(new PdfPageNumbering(footerResolver.resolveFooter(locale)));
 
             document.setMargins(40, 40, 60, 60);
 
             document.addTitle("export.pdf");
             pdfHelper.addMetaData(document);
-            writer.createXmpMetadata();
+            pdfWriter.createXmpMetadata();
             document.open();
 
             String title = translationService.translate(pluginIdentifier + "." + viewName + ".window.mainTab." + grid.getName()
@@ -120,30 +127,26 @@ public class ExportToPDFController {
             pdfHelper.addDocumentHeader(document, "", title,
                     translationService.translate("qcadooReport.commons.generatedBy.label", locale), generationDate);
 
-            int columns = 0;
-            List<String> exportToPDFTableHeader = new ArrayList<String>();
-            for (String name : grid.getColumnNames().values()) {
-                exportToPDFTableHeader.add(name);
-                columns++;
-            }
-            PdfPTable table = pdfHelper.createTableWithHeader(columns, exportToPDFTableHeader, false);
+            List<String> columns = getColumns(grid, viewName);
+            List<String> columnNames = getColumnNames(grid, columns);
+
+            PdfPTable pdfTable = pdfHelper.createTableWithHeader(columnNames.size(), columnNames, false);
 
             List<Map<String, String>> rows;
+
             if (grid.getSelectedEntitiesIds().isEmpty()) {
                 rows = grid.getColumnValuesOfAllRecords();
             } else {
                 rows = grid.getColumnValuesOfSelectedRecords();
             }
 
-            for (Map<String, String> row : rows) {
-                for (String value : row.values()) {
-                    table.addCell(new Phrase(value, FontUtils.getDejavuRegular7Dark()));
-                }
-            }
-            document.add(table);
+            addPdfTableCells(pdfTable, rows, columns, viewName);
+
+            document.add(pdfTable);
             document.close();
 
             state.redirectTo(fileService.getUrl(file.getAbsolutePath()) + "?clean", true, false);
+
             return crudService.renderView(state);
         } catch (JSONException e) {
             throw new IllegalStateException(e.getMessage(), e);
@@ -154,8 +157,38 @@ public class ExportToPDFController {
         }
     }
 
+    private List<String> getColumns(final GridComponent grid, final String viewName) {
+        List<String> columns = Lists.newLinkedList();
+
+        grid.getColumns().keySet().stream().forEach(column -> columns.add(column));
+
+        return columns;
+    }
+
+    private List<String> getColumnNames(final GridComponent grid, final List<String> columns) {
+        List<String> columnNames = Lists.newLinkedList();
+
+        columns.forEach(column -> {
+            String columnName = grid.getColumnNames().get(column);
+
+            columnNames.add(columnName);
+        });
+
+        return columnNames;
+    }
+
+    private void addPdfTableCells(final PdfPTable pdfTable, final List<Map<String, String>> rows, final List<String> columns,
+            final String viewName) {
+        rows.forEach(row -> {
+            columns.forEach(column -> {
+                pdfTable.addCell(new Phrase(row.get(column), FontUtils.getDejavuRegular7Dark()));
+            });
+        });
+    }
+
     private void changeMaxResults(final JSONObject json) throws JSONException {
         JSONObject component = getComponent(json, getComponentName(json));
+
         component.getJSONObject("content").put("firstEntity", 0);
         component.getJSONObject("content").put("maxEntities", Integer.MAX_VALUE);
     }

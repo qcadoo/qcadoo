@@ -33,6 +33,7 @@ import com.qcadoo.model.api.search.*;
 import com.qcadoo.model.api.types.*;
 import com.qcadoo.model.api.validators.ErrorMessage;
 import com.qcadoo.model.internal.ProxyEntity;
+import com.qcadoo.model.internal.types.EnumType;
 import com.qcadoo.security.api.SecurityRole;
 import com.qcadoo.security.api.SecurityRolesService;
 import com.qcadoo.view.api.components.GridComponent;
@@ -931,7 +932,7 @@ public final class GridComponentState extends AbstractComponentState implements 
                 continue;
             }
 
-            if (column.getFields().get(0).getType() instanceof EnumeratedType) {
+            if (column.getFields().get(0).getType() instanceof EnumType) {
                 String fieldValue = column.getValue(entity, getLocale());
 
                 StringBuffer localeString = new StringBuffer();
