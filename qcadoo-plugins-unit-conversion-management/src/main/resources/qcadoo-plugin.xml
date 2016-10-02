@@ -67,7 +67,7 @@
 	<modules>
 		<localization:translation path="locales" />
 
-		<security:role identifier="ROLE_UNIT_CONVERSIONS" description="Dostęp do przeliczników"/>
+		<security:role identifier="ROLE_UNIT_CONVERSIONS"/>
 
 		<menu:menu-item-url name="unitConversions"
 			category="administration" url="/unitConversions.html" defaultAuthorizationRole="ROLE_UNIT_CONVERSIONS"/>

@@ -32,8 +32,6 @@ import org.json.JSONObject;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.internal.components.window.WindowComponentPattern;
 import com.qcadoo.view.internal.hooks.AbstractViewHookDefinition;
-import com.qcadoo.view.internal.hooks.ViewConstructionHook;
-import com.qcadoo.view.internal.hooks.ViewLifecycleHook;
 
 public interface InternalViewDefinition extends ViewDefinition {
 

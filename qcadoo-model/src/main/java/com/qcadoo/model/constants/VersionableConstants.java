@@ -26,6 +26,7 @@ package com.qcadoo.model.constants;
 public final class VersionableConstants {
 
     private VersionableConstants() {
+
     }
 
     public static final String VERSION_FIELD_NAME = "entityVersion";

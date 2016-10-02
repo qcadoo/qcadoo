@@ -96,9 +96,15 @@ QCD.components.containers.layout.FlowGridLayout = function(_element, _mainContro
 			for (var j in components) {
 				if(elementColumn == getElementColumnIndex(components[j])){
 					var tdElement = components[j].element.parent();
+					var scrollHeight = tdElement[0].scrollHeight;
 					var rowspan = tdElement.attr("rowspan") ? tdElement.attr("rowspan") : 1;
 					var elementHeight = baseRowHeight * rowspan;
-					columnMinHeight += elementHeight;
+					if (elementHeight > scrollHeight) {
+					    columnMinHeight += elementHeight;
+					}
+					else {
+					    columnMinHeight += scrollHeight;
+					}
 				}
 			}
 			if(!columnsMinHeight || (columnMinHeight > columnsMinHeight)){

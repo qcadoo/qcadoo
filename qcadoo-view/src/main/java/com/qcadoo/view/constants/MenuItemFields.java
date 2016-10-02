@@ -26,6 +26,7 @@ package com.qcadoo.view.constants;
 public final class MenuItemFields {
 
     private MenuItemFields() {
+
     }
 
     public static final String PLUGIN_IDENTIFIER = "pluginIdentifier";

@@ -41,11 +41,14 @@ import com.lowagie.text.pdf.PdfDestination;
 import com.lowagie.text.pdf.PdfWriter;
 import com.qcadoo.report.api.FooterResolver;
 import com.qcadoo.report.api.ReportService;
+import java.io.FileOutputStream;
 
 /**
- * Abstract superclass for report PDF views, using Bruno Lowagie's <a href="http://www.lowagie.com/iText">iText</a> package.
- * Application-specific view classes will extend this class. The view will be held in the subclass itself, not in a template.
- * 
+ * Abstract superclass for report PDF views, using Bruno Lowagie's
+ * <a href="http://www.lowagie.com/iText">iText</a> package.
+ * Application-specific view classes will extend this class. The view will be
+ * held in the subclass itself, not in a template.
+ *
  */
 public abstract class ReportPdfView extends AbstractPdfView {
 
@@ -56,7 +59,7 @@ public abstract class ReportPdfView extends AbstractPdfView {
     private FooterResolver footerResolver;
 
     @Override
-    protected final void buildPdfDocument(final Map<String, Object> model, final Document document, final PdfWriter writer,
+    protected void buildPdfDocument(final Map<String, Object> model, final Document document, final PdfWriter writer,
             final HttpServletRequest request, final HttpServletResponse response) {
         String fileName;
 
@@ -74,6 +77,27 @@ public abstract class ReportPdfView extends AbstractPdfView {
 
         response.setHeader("Content-disposition",
                 "inline; filename=" + fileName + "." + ReportService.ReportType.PDF.getExtension());
+    }
+
+    public void buildTestedPdfDocumentToFile(final Map<String, Object> model, final String filePath) {
+
+        try {
+            Document document = newDocument();
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(filePath));
+            writer.setViewerPreferences(getViewerPreferences());
+            setPageEvent(writer);
+
+            document.open();
+            PdfAction ac = PdfAction.gotoLocalPage(1, new PdfDestination(PdfDestination.XYZ, -1, -1, 1f), writer);
+
+            writer.setOpenAction(ac);
+            addContent(document, model, LocaleContextHolder.getLocale(), writer);
+
+            document.close();
+
+        } catch (DocumentException | IOException e) {
+            throw new IllegalStateException(e.getMessage(), e);
+        }
     }
 
     @Override

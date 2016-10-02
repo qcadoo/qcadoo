@@ -23,14 +23,19 @@
  */
 package com.qcadoo.plugins.menu.constants;
 
-public interface QcadooMenuConstants {
+public final class QcadooMenuConstants {
 
-    String PLUGIN_IDENTIFIER = "qcadooMenu";
+    private QcadooMenuConstants() {
+
+    }
+
+    public static final String PLUGIN_IDENTIFIER = "qcadooMenu";
 
     // VIEW
-    String VIEW_MENU_CATEGORIES_LIST = "menuCategoriesList";
+    public static final String VIEW_MENU_CATEGORIES_LIST = "menuCategoriesList";
 
-    String VIEW_MENU_CATEGORY_DETAILS = "menuCategoryDetails";
+    public static final String VIEW_MENU_CATEGORY_DETAILS = "menuCategoryDetails";
 
-    String VIEW_MENU_VIEW_DEFINITION_ITEMS_DETAILS = "menuViewDefinitionItemDetails";
+    public static final String VIEW_MENU_VIEW_DEFINITION_ITEMS_DETAILS = "menuViewDefinitionItemDetails";
+
 }

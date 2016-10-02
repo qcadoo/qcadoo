@@ -74,7 +74,7 @@
 		<view:view resource="view/dictionaryDetails.xml" />
 		<view:view resource="view/dictionaryItemDetails.xml" />
 		
-		<security:role identifier="ROLE_DICTIONARY_VIEW" description="Zarządzanie słownikami."/>
+		<security:role identifier="ROLE_DICTIONARY_VIEW"/>
 	</modules>
 
 </plugin>

@@ -26,6 +26,7 @@ package com.qcadoo.model.constants;
 public final class UnitConversionItemFields {
 
     private UnitConversionItemFields() {
+
     }
 
     public static final String QUANTITY_FROM = "quantityFrom";

@@ -43,6 +43,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
 import com.google.common.collect.Lists;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 
 @Service
 public final class TranslationServiceImpl implements InternalTranslationService {
@@ -51,12 +52,14 @@ public final class TranslationServiceImpl implements InternalTranslationService 
 
     private static final Logger TRANSLATION_LOG = LoggerFactory.getLogger("TRANSLATION");
 
-    private static final Map<String, Set<String>> GROUP_MESSAGES = new HashMap<String, Set<String>>();
+    private static final Map<String, Set<String>> GROUP_MESSAGES = new HashMap<>();
 
     @Value("${ignoreMissingTranslations}")
     private boolean ignoreMissingTranslations;
 
-    private final Map<String, String> locales = new HashMap<String, String>();
+    private long lastHotDeployClearCache;
+
+    private final Map<String, String> locales = new HashMap<>();
 
     @Autowired
     private MessageSource messageSource;
@@ -64,6 +67,9 @@ public final class TranslationServiceImpl implements InternalTranslationService 
     @Autowired
     private TranslationModuleService translationModuleService;
 
+    @Autowired
+    private ConfigUtil configUtil;
+    
     @Override
     public String translate(final String code, final Locale locale, final String... args) {
         String message = translateWithError(code, locale, args);
@@ -110,7 +116,19 @@ public final class TranslationServiceImpl implements InternalTranslationService 
     }
 
     private String translateWithError(final String messageCode, final Locale locale, final String[] args) {
-        return messageSource.getMessage(messageCode, args, null, locale);
+        if (configUtil.isHotDeploy() && this.messageSource instanceof ReloadableResourceBundleMessageSource) {
+            ReloadableResourceBundleMessageSource reloadableResourceBundleMessageSource = (ReloadableResourceBundleMessageSource) this.messageSource;
+
+            if ((System.currentTimeMillis() - lastHotDeployClearCache) >= 2500) {
+                reloadableResourceBundleMessageSource.clearCache();
+                lastHotDeployClearCache = System.currentTimeMillis();
+            }
+
+            return reloadableResourceBundleMessageSource.getMessage(messageCode, args, null, locale);
+
+        } else {
+            return messageSource.getMessage(messageCode, args, null, locale);
+        }
     }
 
     @Override
@@ -119,7 +137,7 @@ public final class TranslationServiceImpl implements InternalTranslationService 
             return Collections.emptyMap();
         }
 
-        Map<String, String> commonsTranslations = new HashMap<String, String>();
+        Map<String, String> commonsTranslations = new HashMap<>();
 
         for (String commonMessage : GROUP_MESSAGES.get(group)) {
             commonsTranslations.put(commonMessage, translate(commonMessage, locale));
@@ -130,7 +148,7 @@ public final class TranslationServiceImpl implements InternalTranslationService 
 
     @Override
     public void prepareMessagesGroup(final String group, final String prefix) {
-        Set<String> messages = new HashSet<String>();
+        Set<String> messages = new HashSet<>();
         GROUP_MESSAGES.put(group, messages);
         getMessagesByPrefix(prefix, messages);
     }

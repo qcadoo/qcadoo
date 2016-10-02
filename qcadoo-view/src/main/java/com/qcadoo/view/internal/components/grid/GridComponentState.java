@@ -33,6 +33,7 @@ import com.qcadoo.model.api.search.*;
 import com.qcadoo.model.api.types.*;
 import com.qcadoo.model.api.validators.ErrorMessage;
 import com.qcadoo.model.internal.ProxyEntity;
+import com.qcadoo.model.internal.types.EnumType;
 import com.qcadoo.security.api.SecurityRole;
 import com.qcadoo.security.api.SecurityRolesService;
 import com.qcadoo.view.api.components.GridComponent;
@@ -168,6 +169,8 @@ public final class GridComponentState extends AbstractComponentState implements 
 
     private final SecurityRolesService securityRolesService;
 
+    private boolean useDto = false;
+
     private boolean footerRow = false;
 
     private String columnsToSummary = "";
@@ -181,8 +184,8 @@ public final class GridComponentState extends AbstractComponentState implements 
         this.belongsToFieldDefinition = pattern.getBelongsToFieldDefinition();
         this.columns = pattern.getColumns();
         if (pattern.getDefaultOrderColumn() != null) {
-            this.orderColumns
-                    .add(new GridComponentOrderColumn(pattern.getDefaultOrderColumn(), pattern.getDefaultOrderDirection()));
+            this.orderColumns.add(new GridComponentOrderColumn(pattern.getDefaultOrderColumn(), pattern
+                    .getDefaultOrderDirection()));
         }
         this.activable = pattern.isActivable();
         this.onlyActive = pattern.isOnlyActive();
@@ -200,6 +203,7 @@ public final class GridComponentState extends AbstractComponentState implements 
         this.footerRow = pattern.isFooterRow();
         this.columnsToSummary = pattern.getColumnsToSummary();
         this.columnsToSummaryTime = pattern.getColumnsToSummaryTime();
+        this.useDto = pattern.isUseDto();
         registerEvent("refresh", eventPerformer, "refresh");
         registerEvent("select", eventPerformer, "selectEntity");
         registerEvent("addExistingEntity", eventPerformer, "addExistingEntity");
@@ -276,22 +280,21 @@ public final class GridComponentState extends AbstractComponentState implements 
             for (int i = 0; i < orderJson.length(); i++) {
                 JSONObject orderColumn = orderJson.getJSONObject(i);
                 if (orderColumn.has(JSON_ORDER_COLUMN) && orderColumn.has(JSON_ORDER_DIRECTION)) {
-                    orderColumns.add(new GridComponentOrderColumn(orderColumn.getString(JSON_ORDER_COLUMN),
-                            orderColumn.getString(JSON_ORDER_DIRECTION)));
+                    orderColumns.add(new GridComponentOrderColumn(orderColumn.getString(JSON_ORDER_COLUMN), orderColumn
+                            .getString(JSON_ORDER_DIRECTION)));
                 }
             }
         }
         if (json.has(JSON_AUTOMATIC_REFRESH)) {
             autoRefresh = json.getBoolean(JSON_AUTOMATIC_REFRESH);
         }
-        if ((belongsToFieldDefinition != null && belongsToEntityId == null)
-                || !securityRolesService.canAccess(authorizationRole)) {
+        if ((belongsToFieldDefinition != null && belongsToEntityId == null) || !securityRolesService.canAccess(authorizationRole)) {
             setEnabled(false);
         }
 
         if (deletable && StringUtils.isNotEmpty(deletableAuthorizationRole)
-                && securityRolesService.canAccess(deletableAuthorizationRole)
-                || deletable && StringUtils.isEmpty(deletableAuthorizationRole)) {
+                && securityRolesService.canAccess(deletableAuthorizationRole) || deletable
+                && StringUtils.isEmpty(deletableAuthorizationRole)) {
             this.deleteEnabled = true;
         }
 
@@ -341,8 +344,8 @@ public final class GridComponentState extends AbstractComponentState implements 
             JSONObject jsonMultiSearchFilter = json.getJSONObject(JSON_MULTI_SEARCH_FILTER);
             if (jsonMultiSearchFilter.has(GridComponentMultiSearchFilter.JSON_GROUP_OPERATOR_FIELD)
                     && !jsonMultiSearchFilter.isNull(GridComponentMultiSearchFilter.JSON_GROUP_OPERATOR_FIELD)) {
-                multiSearchFilter.setGroupOperator(
-                        jsonMultiSearchFilter.getString(GridComponentMultiSearchFilter.JSON_GROUP_OPERATOR_FIELD));
+                multiSearchFilter.setGroupOperator(jsonMultiSearchFilter
+                        .getString(GridComponentMultiSearchFilter.JSON_GROUP_OPERATOR_FIELD));
             }
             if (jsonMultiSearchFilter.has(GridComponentMultiSearchFilter.JSON_RULES_FIELD)
                     && !jsonMultiSearchFilter.isNull(GridComponentMultiSearchFilter.JSON_RULES_FIELD)) {
@@ -350,10 +353,11 @@ public final class GridComponentState extends AbstractComponentState implements 
                         .getJSONArray(GridComponentMultiSearchFilter.JSON_RULES_FIELD);
                 for (int i = 0; i < jsonMultiSearchFilterRules.length(); ++i) {
                     JSONObject jsonRule = jsonMultiSearchFilterRules.getJSONObject(i);
-                    multiSearchFilter.addRule(jsonRule.getString(GridComponentMultiSearchFilterRule.JSON_FIELD_FIELD),
+                    multiSearchFilter.addRule(
+                            jsonRule.getString(GridComponentMultiSearchFilterRule.JSON_FIELD_FIELD),
                             jsonRule.getString(GridComponentMultiSearchFilterRule.JSON_OPERATOR_FIELD),
-                            jsonRule.isNull(GridComponentMultiSearchFilterRule.JSON_DATA_FIELD) ? null
-                                    : jsonRule.getString(GridComponentMultiSearchFilterRule.JSON_DATA_FIELD));
+                            jsonRule.isNull(GridComponentMultiSearchFilterRule.JSON_DATA_FIELD) ? null : jsonRule
+                                    .getString(GridComponentMultiSearchFilterRule.JSON_DATA_FIELD));
                 }
             }
         }
@@ -634,8 +638,8 @@ public final class GridComponentState extends AbstractComponentState implements 
             FieldType belongsToFieldType = belongsToFieldDefinition.getType();
             if (belongsToFieldType instanceof JoinFieldHolder) {
                 Entity gridOwnerEntity = scopeFieldDataDefinition.get(belongsToEntityId);
-                List<Entity> entities = gridOwnerEntity
-                        .getManyToManyField(((JoinFieldHolder) belongsToFieldType).getJoinFieldName());
+                List<Entity> entities = gridOwnerEntity.getManyToManyField(((JoinFieldHolder) belongsToFieldType)
+                        .getJoinFieldName());
                 entities.addAll(newlyAddedEntities);
                 gridOwnerEntity.setField(((JoinFieldHolder) belongsToFieldType).getJoinFieldName(), entities);
                 gridOwnerEntity.getDataDefinition().save(gridOwnerEntity);
@@ -647,8 +651,7 @@ public final class GridComponentState extends AbstractComponentState implements 
                     copyFieldValidationMessages(entity);
                 }
             } else {
-                throw new IllegalArgumentException(
-                        "Unsupported relation type - " + belongsToFieldDefinition.getType().toString());
+                throw new IllegalArgumentException("Unsupported relation type - " + belongsToFieldDefinition.getType().toString());
             }
 
             reload();
@@ -706,8 +709,8 @@ public final class GridComponentState extends AbstractComponentState implements 
         }
 
         public void deactivateSelectedEntity(final String[] args) {
-            List<Entity> deactivatedEntities = getDataDefinition()
-                    .deactivate(selectedEntities.toArray(new Long[selectedEntities.size()]));
+            List<Entity> deactivatedEntities = getDataDefinition().deactivate(
+                    selectedEntities.toArray(new Long[selectedEntities.size()]));
 
             entitiesToMarkAsNew = new HashSet<Long>();
             for (Entity entity : deactivatedEntities) {
@@ -723,8 +726,8 @@ public final class GridComponentState extends AbstractComponentState implements 
         }
 
         public void activateSelectedEntity(final String[] args) {
-            List<Entity> activatedEntities = getDataDefinition()
-                    .activate(selectedEntities.toArray(new Long[selectedEntities.size()]));
+            List<Entity> activatedEntities = getDataDefinition().activate(
+                    selectedEntities.toArray(new Long[selectedEntities.size()]));
 
             entitiesToMarkAsNew = new HashSet<Long>();
             for (Entity entity : activatedEntities) {
@@ -762,16 +765,20 @@ public final class GridComponentState extends AbstractComponentState implements 
         private void reload() {
             if (belongsToFieldDefinition == null || belongsToEntityId != null) {
                 SearchCriteriaBuilder criteria = getDataDefinition().find();
-                if (belongsToFieldDefinition != null) {
+                if (belongsToFieldDefinition != null && !useDto) {
                     if (belongsToFieldDefinition.getType() instanceof ManyToManyType) {
                         String belongsToFieldName = belongsToFieldDefinition.getName();
-                        criteria.createAlias(belongsToFieldName, belongsToFieldName)
-                                .add(SearchRestrictions.eq(belongsToFieldName + ".id", belongsToEntityId));
+                        criteria.createAlias(belongsToFieldName, belongsToFieldName).add(
+                                SearchRestrictions.eq(belongsToFieldName + ".id", belongsToEntityId));
                     } else {
                         // criteria.add(SearchRestrictions.belongsTo(belongsToFieldDefinition.getName(), ((DataDefinitionHolder)
                         // belongsToFieldDefinition.getType()).getDataDefinition(), belongsToEntityId));
                         criteria.add(SearchRestrictions.eq(belongsToFieldDefinition.getName() + ".id", belongsToEntityId));
                     }
+                }
+                if (useDto) {
+                    criteria.add(SearchRestrictions.eq(buildDtoIdFieldName(belongsToFieldDefinition.getName()),
+                            belongsToEntityId.intValue()));
                 }
 
                 try {
@@ -857,6 +864,13 @@ public final class GridComponentState extends AbstractComponentState implements 
         }
     }
 
+    private String buildDtoIdFieldName(final String name) {
+        StringBuffer dtoKey = new StringBuffer();
+        dtoKey.append(name);
+        dtoKey.append("Id");
+        return dtoKey.toString();
+    }
+
     @Override
     public Map<String, String> getColumnNames() {
         Map<String, String> names = new LinkedHashMap<String, String>();
@@ -868,8 +882,10 @@ public final class GridComponentState extends AbstractComponentState implements 
             if (column.getFields().size() == 1) {
                 String fieldCode = getDataDefinition().getPluginIdentifier() + "." + getDataDefinition().getName() + "."
                         + column.getFields().get(0).getName();
-                names.put(column.getName(), getTranslationService()
-                        .translate(getTranslationPath() + ".column." + column.getName(), fieldCode + ".label", getLocale()));
+                names.put(
+                        column.getName(),
+                        getTranslationService().translate(getTranslationPath() + ".column." + column.getName(),
+                                fieldCode + ".label", getLocale()));
             } else {
                 names.put(column.getName(),
                         getTranslationService().translate(getTranslationPath() + ".column." + column.getName(), getLocale()));
@@ -916,7 +932,7 @@ public final class GridComponentState extends AbstractComponentState implements 
                 continue;
             }
 
-            if (column.getFields().get(0).getType() instanceof EnumeratedType) {
+            if (column.getFields().get(0).getType() instanceof EnumType) {
                 String fieldValue = column.getValue(entity, getLocale());
 
                 StringBuffer localeString = new StringBuffer();

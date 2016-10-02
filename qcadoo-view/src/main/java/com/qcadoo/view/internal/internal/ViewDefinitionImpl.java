@@ -78,6 +78,8 @@ public final class ViewDefinitionImpl implements InternalViewDefinition {
     private boolean permanentlyDisabled;
 
     private RibbonGroupsPack ribbonNavigationGroupPack;
+    
+    private JSONObject jsonContext;
 
     public ViewDefinitionImpl(final String name, final String pluginIdentifier, final DataDefinition dataDefinition,
             final boolean menuAccessible, final TranslationService translationService) {
@@ -232,6 +234,7 @@ public final class ViewDefinitionImpl implements InternalViewDefinition {
 
         ViewDefinitionStateImpl viewDefinitionState = new ViewDefinitionStateImpl();
         viewDefinitionState.setTranslationService(translationService);
+        viewDefinitionState.setJsonContext(getJsonContext());
 
         JSONObject eventJson = jsonObject.getJSONObject(JSON_EVENT);
         String eventName = eventJson.getString(JSON_EVENT_NAME);
@@ -398,5 +401,15 @@ public final class ViewDefinitionImpl implements InternalViewDefinition {
     @Override
     public SecurityRole getAuthorizationRole() {
         return authorizationRole;
+    }
+
+    @Override
+    public JSONObject getJsonContext() {
+        return jsonContext;
+    }
+
+    @Override
+    public void setJsonContext(JSONObject jsonContext) {
+        this.jsonContext = jsonContext;
     }
 }

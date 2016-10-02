@@ -23,16 +23,15 @@
  */
 package com.qcadoo.report.api;
 
-import java.io.IOException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
 import com.lowagie.text.pdf.BaseFont;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
 
 /**
  * Utilities for pdf fonts management.
@@ -79,6 +78,8 @@ public final class FontUtils {
     private static Font dejavuBold7Dark;
 
     private static Font dejavuBold8Dark;
+
+    private static Font dejavuBold140Dark;
 
     private static BaseFont dejavu;
 
@@ -174,6 +175,9 @@ public final class FontUtils {
             dejavuBold8Dark.setColor(ColorUtils.getDarkColor());
             dejavuBold8Dark.setStyle(Font.BOLD);
 
+            dejavuBold140Dark = new Font(dejavu, 120);
+            dejavuBold140Dark.setStyle(Font.BOLD);
+            dejavuBold140Dark.setColor(ColorUtils.getDarkColor());
         }
     }
 
@@ -256,4 +260,9 @@ public final class FontUtils {
     public static BaseFont getDejavu() {
         return dejavu;
     }
+
+    public static Font getDejavuBold140Dark() {
+        return dejavuBold140Dark;
+    }
+
 }

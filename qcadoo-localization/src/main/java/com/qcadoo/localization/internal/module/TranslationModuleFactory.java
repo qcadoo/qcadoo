@@ -23,6 +23,7 @@
  */
 package com.qcadoo.localization.internal.module;
 
+import com.qcadoo.localization.internal.ConfigUtil;
 import org.jdom.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -39,12 +40,15 @@ public class TranslationModuleFactory extends ModuleFactory<Module> {
     @Autowired
     private TranslationModuleService translationModuleService;
 
+    @Autowired
+    private ConfigUtil configUtil;
+    
     @Override
     protected Module parseElement(final String pluginIdentifier, final Element element) {
         String path = getRequiredAttribute(element, "path");
         String basename = getAttribute(element, "basename");
 
-        return new TranslationModule(applicationContext, translationModuleService, pluginIdentifier, basename, path);
+        return new TranslationModule(applicationContext, translationModuleService, configUtil, pluginIdentifier, basename, path);
     }
 
     @Override

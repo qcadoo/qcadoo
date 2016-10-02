@@ -34,8 +34,15 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
 
 import com.qcadoo.localization.api.TranslationPropertiesHolder;
+import com.qcadoo.localization.internal.ConfigUtil;
 import com.qcadoo.localization.internal.TranslationModuleService;
 import com.qcadoo.plugin.api.Module;
+import java.nio.file.DirectoryStream;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.List;
 
 public class TranslationModule extends Module implements TranslationPropertiesHolder {
 
@@ -43,7 +50,7 @@ public class TranslationModule extends Module implements TranslationPropertiesHo
 
     private final TranslationModuleService translationModuleService;
 
-    private final Set<String> basenames = new LinkedHashSet<String>();
+    private final Set<String> basenames = new LinkedHashSet<>();
 
     private final String pluginIdentifier;
 
@@ -51,16 +58,21 @@ public class TranslationModule extends Module implements TranslationPropertiesHo
 
     private final String path;
 
+    private final boolean hotDeploy;
+
+    private final String sourceBasePath;
+
     public TranslationModule(final ApplicationContext applicationContext,
-            final TranslationModuleService translationModuleService, final String pluginIdentifier, final String basename,
+            final TranslationModuleService translationModuleService, final ConfigUtil configUtil, final String pluginIdentifier, final String basename,
             final String path) {
         super();
-
         this.applicationContext = applicationContext;
         this.translationModuleService = translationModuleService;
         this.pluginIdentifier = pluginIdentifier;
         this.basename = basename;
         this.path = path;
+        this.sourceBasePath = configUtil.getSourceBasePath();
+        this.hotDeploy = configUtil.isHotDeploy();
     }
 
     @Override
@@ -91,6 +103,10 @@ public class TranslationModule extends Module implements TranslationPropertiesHo
     private Set<String> parseBasenames() {
         if (basename == null || "*".equals(basename)) {
             basenames.addAll(getAllFilesFromPath());
+
+        } else if (hotDeploy) {
+            basenames.add(findPluginPath(pluginIdentifier) + "/" + path + "/" + basename);
+
         } else {
             basenames.add("classpath:" + pluginIdentifier + "/" + path + "/" + basename);
         }
@@ -109,18 +125,22 @@ public class TranslationModule extends Module implements TranslationPropertiesHo
     }
 
     private Collection<? extends String> getAllFilesFromPath() {
-        Set<String> basenamesInDirectory = new LinkedHashSet<String>();
+        Set<String> basenamesInDirectory = new LinkedHashSet<>();
 
         try {
-            Resource[] resources = applicationContext.getResources("classpath*:" + pluginIdentifier + "/" + path
-                    + "/*.properties");
+            Resource[] resources = applicationContext.getResources("classpath*:" + pluginIdentifier + "/" + path + "/*.properties");
             Pattern pattern = Pattern.compile("([a-z][a-zA-Z0-9]*)\\_\\w+\\.properties");
 
             for (Resource resource : resources) {
                 Matcher matcher = pattern.matcher(resource.getFilename());
 
                 if (matcher.matches()) {
-                    basenamesInDirectory.add("classpath:" + pluginIdentifier + "/" + path + "/" + matcher.group(1));
+                    if (hotDeploy) {
+                        basenamesInDirectory.add(findPluginPath(pluginIdentifier) + "/" + path + "/" + matcher.group(1));
+
+                    } else {
+                        basenamesInDirectory.add("classpath:" + pluginIdentifier + "/" + path + "/" + matcher.group(1));
+                    }
                 }
             }
         } catch (IOException e) {
@@ -128,5 +148,26 @@ public class TranslationModule extends Module implements TranslationPropertiesHo
         }
 
         return basenamesInDirectory;
+    }
+
+    private String findPluginPath(String pluginIdentifier) {
+        List<String> prefixes = Arrays.asList("/mes/mes-plugins/", "/mes-commercial/", "/qcadoo/");
+
+        for (String prefix : prefixes) {
+            Path dir = FileSystems.getDefault().getPath(sourceBasePath + prefix);
+            try (DirectoryStream<Path> stream = Files.newDirectoryStream(dir)) {
+                for (Path pluginMainDir : stream) {
+                    Path file = pluginMainDir.resolve("src/main/resources/").resolve(pluginIdentifier);
+                    if (Files.exists(file)) {
+                        String x = file.toUri().toURL().toString();
+                        return x;
+                    }
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        return "";
     }
 }

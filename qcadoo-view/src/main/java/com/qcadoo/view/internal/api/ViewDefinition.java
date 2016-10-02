@@ -25,6 +25,7 @@ package com.qcadoo.view.internal.api;
 
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.security.api.SecurityRole;
+import org.json.JSONObject;
 
 /**
  * ViewDefinition defines single 'view' in system.
@@ -67,5 +68,18 @@ public interface ViewDefinition {
      * @return main data definition of this view
      */
     DataDefinition getDataDefinition();
-
+    
+    /**
+     * Set context form url
+     * 
+     * @param jSONObject 
+     */
+    void setJsonContext(JSONObject jSONObject);
+    
+    /**
+     * Get context from url
+     * 
+     * @return 
+     */
+    JSONObject getJsonContext();
 }

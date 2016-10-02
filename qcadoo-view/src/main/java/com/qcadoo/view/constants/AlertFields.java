@@ -26,6 +26,7 @@ package com.qcadoo.view.constants;
 public final class AlertFields {
 
     private AlertFields() {
+
     }
 
     public static final String TYPE = "type";
