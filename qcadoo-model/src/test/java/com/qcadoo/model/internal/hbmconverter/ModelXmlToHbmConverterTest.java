@@ -144,7 +144,7 @@ public class ModelXmlToHbmConverterTest {
         assertNodeEquals("id", "/hibernate-mapping/class[1]/id/@name", hbmFirstEntity);
         assertNodeEquals("long", "/hibernate-mapping/class[1]/id/@type", hbmFirstEntity);
         assertNodeExists("/hibernate-mapping/class[1]/id/generator", hbmFirstEntity);
-        assertNodeEquals("increment", "/hibernate-mapping/class[1]/id/generator/@class", hbmFirstEntity);
+        assertNodeEquals("sequence", "/hibernate-mapping/class[1]/id/generator/@class", hbmFirstEntity);
     }
 
     @Test
