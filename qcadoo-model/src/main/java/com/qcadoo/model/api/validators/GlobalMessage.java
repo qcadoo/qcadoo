@@ -23,7 +23,6 @@
  */
 package com.qcadoo.model.api.validators;
 
-import java.awt.TrayIcon;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.Arrays;
