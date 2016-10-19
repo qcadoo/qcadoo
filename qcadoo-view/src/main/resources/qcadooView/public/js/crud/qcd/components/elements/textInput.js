@@ -25,77 +25,97 @@ var QCD = QCD || {};
 QCD.components = QCD.components || {};
 QCD.components.elements = QCD.components.elements || {};
 
-QCD.components.elements.TextInput = function(_element, _mainController) {
-	$.extend(this, new QCD.components.elements.FormComponent(_element, _mainController));
-	
-	var textRepresentation = $("#" + this.elementSearchName + "_text");
-	
-	var input = this.input;
-	
-	var elementPath = this.elementPath;
-	
-	var hasListeners = (this.options.listeners.length > 0) ? true : false;
-	
-	var fireOnChangeListeners = this.fireOnChangeListeners;
+QCD.components.elements.TextInput = function (_element, _mainController) {
+    $.extend(this, new QCD.components.elements.FormComponent(_element, _mainController));
 
-	var allowOnlyScan = this.options.allowOnlyScan;
-	
-	function constructor(_this) {
-		input.change(function() {
-			inputDataChanged();
-		});
-	}
-	
-	function inputDataChanged() {
-	    if (allowOnlyScan) {
-	        console.log('scan only');
-	    }
-	    else {
-	        console.log('no scan only');
-	    }
-		fireOnChangeListeners("onChange", [input.val()]);
-		if (hasListeners) {
-			mainController.callEvent("onInputChange", elementPath, null, null, null);
-		}
-	}
-	
-	if (this.options.referenceName) {
-		_mainController.registerReferenceName(this.options.referenceName, this);
-	}
-	
-	this.getComponentData = function() {
-		return {
-			value : input.val()
-		}
-	}
-	
-	this.setComponentData = function(data) {
-		if (data.value) {
-			this.input.val(data.value);
-			textRepresentation.html(data.value);
-		} else {
-			this.input.val("");
-			textRepresentation.html("-");
-		}
-	}
-	
-	this.setFormComponentEnabled = function(isEnabled) {
-		if(this.options.textRepresentationOnDisabled) {
-			if(isEnabled) {
-				input.show();
-				textRepresentation.hide();
-			} else {
-				input.hide();
-				textRepresentation.show();
-			}
-		}
-	}
-	
-	this.updateSize = function(_width, _height) {
-		var height = _height ? _height-10 : 40;
-		this.input.parent().parent().parent().height(height);
-		this.input.parent().parent().height(height);
-	}
-	
-	constructor(this);
+    var textRepresentation = $("#" + this.elementSearchName + "_text");
+
+    var input = this.input;
+
+    var elementPath = this.elementPath;
+
+    var hasListeners = (this.options.listeners.length > 0) ? true : false;
+
+    var fireOnChangeListeners = this.fireOnChangeListeners;
+
+    var allowOnlyScan = this.options.allowOnlyScan;
+
+    if (allowOnlyScan) {
+        this.input.addClass('allowOnlyScan');
+
+        $(this.input).bind("cut copy paste", function (e) {
+            e.preventDefault();
+        });
+        $(this.input).scannerDetection({
+            timeBeforeScanTest: 200, // wait for the next character for upto 200ms
+            endChar: [13], // be sure the scan is complete if key 13 (enter) is detected
+            avgTimeByChar: 10, // it's not a barcode if a character takes longer than 40ms
+            //                ignoreIfFocusOn: 'input', // turn off scanner detection if an input has focus
+            onComplete: function (barcode, qty) {
+            }, // main callback function
+            scanButtonKeyCode: 116, // the hardware scan button acts as key 116 (F5)
+            scanButtonLongPressThreshold: 5, // assume a long press if 5 or more events come in sequence
+            onScanButtonLongPressed: function () {
+            }, // callback for long pressing the scan button
+            onError: function (string) {
+                input.val('');
+            }
+        });
+
+    } else {
+        this.input.removeClass('allowOnlyScan');
+    }
+
+    function constructor(_this) {
+        input.change(function () {
+            inputDataChanged();
+        });
+    }
+
+    function inputDataChanged() {
+        fireOnChangeListeners("onChange", [input.val()]);
+        if (hasListeners) {
+            mainController.callEvent("onInputChange", elementPath, null, null, null);
+        }
+    }
+
+    if (this.options.referenceName) {
+        _mainController.registerReferenceName(this.options.referenceName, this);
+    }
+
+    this.getComponentData = function () {
+        return {
+            value: input.val()
+        }
+    }
+
+    this.setComponentData = function (data) {
+        if (data.value) {
+            this.input.val(data.value);
+            textRepresentation.html(data.value);
+        } else {
+            this.input.val("");
+            textRepresentation.html("-");
+        }
+    }
+
+    this.setFormComponentEnabled = function (isEnabled) {
+        if (this.options.textRepresentationOnDisabled) {
+            if (isEnabled) {
+                input.show();
+                textRepresentation.hide();
+            } else {
+                input.hide();
+                textRepresentation.show();
+            }
+        }
+    }
+
+    this.updateSize = function (_width, _height) {
+        var height = _height ? _height - 10 : 40;
+        this.input.parent().parent().parent().height(height);
+        this.input.parent().parent().height(height);
+    }
+
+    constructor(this);
 }
