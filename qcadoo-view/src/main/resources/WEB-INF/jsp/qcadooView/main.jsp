@@ -47,6 +47,7 @@
             <script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/qcd/alert/notyController.min.js?ver=${buildNumber}"></script>
 
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/qcadoo-min.js?ver=${buildNumber}"></script>
+			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/jquery.scannerdetection.js?ver=${buildNumber}"></script>
 
 
 		</c:when>
@@ -85,6 +86,7 @@
 						<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/qcd/alert/layouts/center.min.js?ver=${buildNumber}"></script>
 
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/qcd/alert/notyController.min.js?ver=${buildNumber}"></script>
+			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/jquery.scannerdetection.js?ver=${buildNumber}"></script>
 
 		</c:otherwise>
 	</c:choose>
@@ -135,7 +137,14 @@
 				} catch(e) {
 				}
 			});
-
+/*
+	        $(document).scannerDetection({
+	            timeBeforeScanTest: 5000,
+	            avgTimeByChar: 5000,
+	            minLength:2,
+                onComplete:
+                    function(data) { console.log('cos sie dzieje'); }
+              }); */
 			// ************ base variable
             			var $logoDropdownBox = $('.logoDropdownBox');
             			var $userMenuBackdoor = $('.userMenuBackdoor');

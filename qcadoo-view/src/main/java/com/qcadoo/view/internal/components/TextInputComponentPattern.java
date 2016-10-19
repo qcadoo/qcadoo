@@ -27,6 +27,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.internal.ComponentDefinition;
@@ -41,6 +42,8 @@ public final class TextInputComponentPattern extends FieldComponentPattern {
     private boolean textRepresentationOnDisabled;
 
     private boolean boldTextRepresentationOnDisabled;
+
+    private boolean allowOnlyScan = false;
 
     private String alignment;
 
@@ -60,6 +63,8 @@ public final class TextInputComponentPattern extends FieldComponentPattern {
                 boldTextRepresentationOnDisabled = optionValue;
             } else if ("alignment".equals(option.getType())) {
                 alignment = option.getValue();
+            } else if ("allowOnlyScan".equals(option.getType())) {
+                allowOnlyScan = Boolean.parseBoolean(option.getValue());
             } else if (!"labelWidth".equals(option.getType())) {
                 throw new IllegalStateException("Unknown option for input: " + option.getType());
             }
@@ -72,7 +77,15 @@ public final class TextInputComponentPattern extends FieldComponentPattern {
         options.put("textRepresentationOnDisabled", textRepresentationOnDisabled);
         options.put("boldTextRepresentationOnDisabled", boldTextRepresentationOnDisabled);
         options.put("alignment", alignment);
+        options.put("allowOnlyScan", allowOnlyScan);
         return options;
+    }
+
+    @Override
+    protected JSONObject getJsOptions(final Locale locale) throws JSONException {
+        JSONObject json = super.getJsOptions(locale);
+        json.append("allowOnlyScan", allowOnlyScan);
+        return json;
     }
 
     @Override
@@ -93,5 +106,9 @@ public final class TextInputComponentPattern extends FieldComponentPattern {
     @Override
     public String getJsObjectName() {
         return JS_OBJECT;
+    }
+
+    public boolean isAllowOnlyScan() {
+        return allowOnlyScan;
     }
 }

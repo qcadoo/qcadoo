@@ -37,6 +37,8 @@ QCD.components.elements.TextInput = function(_element, _mainController) {
 	var hasListeners = (this.options.listeners.length > 0) ? true : false;
 	
 	var fireOnChangeListeners = this.fireOnChangeListeners;
+
+	var allowOnlyScan = this.options.allowOnlyScan;
 	
 	function constructor(_this) {
 		input.change(function() {
@@ -45,6 +47,12 @@ QCD.components.elements.TextInput = function(_element, _mainController) {
 	}
 	
 	function inputDataChanged() {
+	    if (allowOnlyScan) {
+	        console.log('scan only');
+	    }
+	    else {
+	        console.log('no scan only');
+	    }
 		fireOnChangeListeners("onChange", [input.val()]);
 		if (hasListeners) {
 			mainController.callEvent("onInputChange", elementPath, null, null, null);
