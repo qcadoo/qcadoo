@@ -84,7 +84,7 @@ public final class TextInputComponentPattern extends FieldComponentPattern {
     @Override
     protected JSONObject getJsOptions(final Locale locale) throws JSONException {
         JSONObject json = super.getJsOptions(locale);
-        json.append("allowOnlyScan", allowOnlyScan);
+        json.put("allowOnlyScan", allowOnlyScan);
         return json;
     }
 
