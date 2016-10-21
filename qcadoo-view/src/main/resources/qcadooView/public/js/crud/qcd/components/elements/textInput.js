@@ -43,14 +43,29 @@ QCD.components.elements.TextInput = function (_element, _mainController) {
     if (allowOnlyScan) {
         this.input.addClass('allowOnlyScan');
 
+        // disable delete and back
+        $(this.input).keydown(function (e) {
+            if (e.keyCode === 8 || e.keyCode === 46) {
+                e.preventDefault();
+            }
+        });
+
         $(this.input).bind("cut copy paste", function (e) {
             e.preventDefault();
         });
+
+        // clear previous value
+        $(window).bind('scannerDetectionComplete', function (e, data) {
+            $(input).removeAttr('value');
+            $(input).val(data.string);
+        })
+
         $(this.input).scannerDetection({
             timeBeforeScanTest: 200, // wait for the next character for upto 200ms
             endChar: [13], // be sure the scan is complete if key 13 (enter) is detected
             avgTimeByChar: 10, // it's not a barcode if a character takes longer than 40ms
             //                ignoreIfFocusOn: 'input', // turn off scanner detection if an input has focus
+            minLength: 5,
             onComplete: function (barcode, qty) {
             }, // main callback function
             scanButtonKeyCode: 116, // the hardware scan button acts as key 116 (F5)
@@ -59,6 +74,8 @@ QCD.components.elements.TextInput = function (_element, _mainController) {
             }, // callback for long pressing the scan button
             onError: function (string) {
                 input.val('');
+            },
+            onReceive: function () {
             }
         });
 
