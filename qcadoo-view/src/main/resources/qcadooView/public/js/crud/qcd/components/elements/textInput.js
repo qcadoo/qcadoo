@@ -58,6 +58,7 @@ QCD.components.elements.TextInput = function (_element, _mainController) {
         $(window).bind('scannerDetectionComplete', function (e, data) {
             $(input).removeAttr('value');
             $(input).val(data.string);
+            $(input).trigger("change");
         })
 
         $(this.input).scannerDetection({
