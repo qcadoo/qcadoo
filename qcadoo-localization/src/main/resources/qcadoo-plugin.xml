@@ -63,6 +63,8 @@
 			locale="en" label="English" />
 		<localization:translation-locale
 			locale="pl" label="Polski" />
+		<localization:translation-locale
+			locale="de" label="Niemiecki" />
 	</modules>
 	
 	<features>
