@@ -44,7 +44,7 @@
 			<name>Qcadoo Limited</name>
 			<url>http://www.qcadoo.com/</url>
 		</vendor>
-		<description>System plugin responsible for Hibernate entities and mappings preparation based on our model defintions.</description>
+		<description>System plugin responsible for Hibernate entities and mappings preparation based on our model definitions.</description>
 		<license>AGPL</license>
 	</information>
 
