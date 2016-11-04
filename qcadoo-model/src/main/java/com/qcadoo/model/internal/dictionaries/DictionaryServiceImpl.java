@@ -94,6 +94,24 @@ public final class DictionaryServiceImpl implements InternalDictionaryService {
     @Override
     @Transactional(readOnly = true)
     @Monitorable
+    public Map<String, String> getKeyValues(final String dictionary, final Locale locale) {
+        checkArgument(hasText(dictionary), "dictionary name must be given");
+
+        List<Entity> items = createCriteriaForActiveItemsFrom(dictionary).addOrder(SearchOrders.asc(DictionaryItemFields.NAME))
+                .list().getEntities();
+
+        Map<String, String> values = new LinkedHashMap<>();
+
+        for (Entity item : items) {
+            values.put(item.getStringField(DictionaryItemFields.TECHNICAL_CODE), item.getStringField(DictionaryItemFields.NAME));
+        }
+
+        return values;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @Monitorable
     public Set<String> getDictionaries() {
         List<Entity> dictionaries = getDictionaryDataDefinition().find().addOrder(SearchOrders.asc(DictionaryFields.NAME)).list()
                 .getEntities();

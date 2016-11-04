@@ -45,6 +45,8 @@ public interface DictionaryService {
      * @return the dictionary's values
      */
     Map<String, String> getValues(String dictionary, Locale locale);
+    
+    Map<String, String> getKeyValues(String dictionary, Locale locale);
 
     /**
      * Return all defined dictionaries.

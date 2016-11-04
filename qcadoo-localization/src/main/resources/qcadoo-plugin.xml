@@ -47,7 +47,7 @@
 			<name>Qcadoo Limited</name>
 			<url>http://www.qcadoo.com/</url>
 		</vendor>
-		<description>System plugin responsible for message transaltion and number or date format localization.</description>
+		<description>System plugin responsible for message translation and number or date format localization.</description>
 		<license>AGPL</license>
 	</information>
 
@@ -63,6 +63,8 @@
 			locale="en" label="English" />
 		<localization:translation-locale
 			locale="pl" label="Polski" />
+		<localization:translation-locale
+			locale="de" label="Deutsch" />
 	</modules>
 	
 	<features>
