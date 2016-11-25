@@ -23,6 +23,7 @@
  */
 package com.qcadoo.plugins.qcadooExport.internal;
 
+import com.google.common.base.Strings;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -56,7 +57,7 @@ import com.qcadoo.report.api.FontUtils;
 import com.qcadoo.report.api.FooterResolver;
 import com.qcadoo.report.api.pdf.PdfHelper;
 import com.qcadoo.report.api.pdf.PdfPageNumbering;
-import com.qcadoo.security.api.SecurityService;
+import com.qcadoo.security.api.SecurityRolesService;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.api.components.GridComponent;
 import com.qcadoo.view.api.crud.CrudService;
@@ -83,7 +84,7 @@ public class ExportToPDFController {
     private TranslationService translationService;
 
     @Autowired
-    private SecurityService securityService;
+    private SecurityRolesService securityRolesService;
 
     @Autowired
     private PdfHelper pdfHelper;
@@ -93,7 +94,7 @@ public class ExportToPDFController {
 
     @Monitorable(threshold = 500)
     @ResponseBody
-    @RequestMapping(value = { L_CONTROLLER_PATH }, method = RequestMethod.POST)
+    @RequestMapping(value = {L_CONTROLLER_PATH}, method = RequestMethod.POST)
     public Object generatePdf(@PathVariable(L_PLUGIN_IDENTIFIER_VARIABLE) final String pluginIdentifier,
             @PathVariable(L_VIEW_NAME_VARIABLE) final String viewName, @RequestBody final JSONObject body, final Locale locale) {
         try {
@@ -160,7 +161,12 @@ public class ExportToPDFController {
     private List<String> getColumns(final GridComponent grid, final String viewName) {
         List<String> columns = Lists.newLinkedList();
 
-        grid.getColumns().keySet().stream().forEach(column -> columns.add(column));
+        grid.getColumns().entrySet().stream().forEach(entry -> {
+            String columnAuthorizationRole = entry.getValue().getAuthorizationRole();
+            if (Strings.isNullOrEmpty(columnAuthorizationRole) || securityRolesService.canAccess(columnAuthorizationRole)) {
+                columns.add(entry.getKey());
+            }
+        });
 
         return columns;
     }

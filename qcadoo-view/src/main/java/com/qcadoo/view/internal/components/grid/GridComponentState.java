@@ -521,7 +521,7 @@ public final class GridComponentState extends AbstractComponentState implements 
             json.put("active", true);
         }
         JSONObject fields = new JSONObject();
-        for (GridComponentColumn column : pattern.filterColumnsWithAccess(columns)){
+        for (GridComponentColumn column : pattern.filterColumnsWithAccess(columns.values())){
             fields.put(column.getName(), column.getValue(entity, getLocale()));
         }
         json.put("fields", fields);
@@ -880,7 +880,7 @@ public final class GridComponentState extends AbstractComponentState implements 
     public Map<String, String> getColumnNames() {
         Map<String, String> names = new LinkedHashMap<String, String>();
 
-        for (GridComponentColumn column : columns.values()) {
+        for (GridComponentColumn column : pattern.filterColumnsWithAccess(columns.values())){
             if (column.isHidden()) {
                 continue;
             }
@@ -932,7 +932,7 @@ public final class GridComponentState extends AbstractComponentState implements 
 
     private Map<String, String> convertEntityToMap(final Entity entity) {
         Map<String, String> values = new LinkedHashMap<String, String>();
-        for (GridComponentColumn column : columns.values()) {
+        for (GridComponentColumn column : pattern.filterColumnsWithAccess(columns.values())){
             if (column.isHidden()) {
                 continue;
             }

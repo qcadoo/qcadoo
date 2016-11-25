@@ -153,7 +153,7 @@ public class GridComponentPattern extends AbstractComponentPattern {
     private SecurityRole authorizationRole;
 
     private String deletableAuthorizationRole = "";
-    
+
     private String linkAuthorizationRole = "";
 
     private boolean footerRow = false;
@@ -164,8 +164,8 @@ public class GridComponentPattern extends AbstractComponentPattern {
 
     private boolean autoRefresh = false;
 
-    private final SecurityRolesService securityRolesService;    
-    
+    private final SecurityRolesService securityRolesService;
+
     public GridComponentPattern(final ComponentDefinition componentDefinition) {
         super(componentDefinition);
         securityRolesService = getApplicationContext().getBean(SecurityRolesService.class);
@@ -387,8 +387,8 @@ public class GridComponentPattern extends AbstractComponentPattern {
         JSONArray jsonColumns = new JSONArray();
         String nameTranslation = null;
         boolean isLinkAllowed = isLinkAllowed();
-        
-        for (GridComponentColumn column : filterColumnsWithAccess(columns)) {
+
+        for (GridComponentColumn column : filterColumnsWithAccess(columns.values())) {
             if (!COLUMNS_VISIBLE_FOR_TENANT_PREDICATE.apply(column)) {
                 continue;
             }
@@ -414,14 +414,14 @@ public class GridComponentPattern extends AbstractComponentPattern {
         return jsonColumns;
     }
 
-    public Collection<GridComponentColumn> filterColumnsWithAccess(Map<String, GridComponentColumn> columns) {              
-        Map<String, GridComponentColumn> collect = columns.entrySet().stream().filter(entry -> {
-                String columnAuthorizationRole = entry.getValue().getAuthorizationRole();
-                return Strings.isNullOrEmpty(columnAuthorizationRole) || securityRolesService.canAccess(columnAuthorizationRole);
-                
-            }).collect(Collectors.toMap(p -> p.getKey(), p -> p.getValue()));
-                
-        return collect.values();
+    public Collection<GridComponentColumn> filterColumnsWithAccess(Collection<GridComponentColumn> columns) {
+        List<GridComponentColumn> collect = columns.stream().filter(item -> {
+            String columnAuthorizationRole = item.getAuthorizationRole();
+            return Strings.isNullOrEmpty(columnAuthorizationRole) || securityRolesService.canAccess(columnAuthorizationRole);
+
+        }).collect(Collectors.toList());
+
+        return collect;
     }
 
     public JSONObject getFilterValuesForColumn(final GridComponentColumn column, final Locale locale) throws JSONException {
@@ -561,7 +561,7 @@ public class GridComponentPattern extends AbstractComponentPattern {
             } else if ("deletableAuthorizationRole".equals(option.getType())) {
                 deletableAuthorizationRole = option.getValue();
             } else if ("linkAuthorizationRole".equals(option.getType())) {
-                linkAuthorizationRole = option.getValue();                
+                linkAuthorizationRole = option.getValue();
             } else if ("height".equals(option.getType())) {
                 height = Integer.parseInt(option.getValue());
             } else if (L_WIDTH.equals(option.getType())) {
@@ -635,8 +635,8 @@ public class GridComponentPattern extends AbstractComponentPattern {
         if (option.getAtrributeValue("hidden") != null) {
             column.setHidden(Boolean.parseBoolean(option.getAtrributeValue("hidden")));
         }
-        
-        columns.put(column.getName(), column);        
+
+        columns.put(column.getName(), column);
     }
 
     private Alignment parseColumnAlignOption(final ComponentOption options) {

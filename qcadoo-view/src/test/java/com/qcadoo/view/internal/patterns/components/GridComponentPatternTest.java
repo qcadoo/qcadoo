@@ -157,8 +157,8 @@ public class GridComponentPatternTest extends AbstractPatternTest {
         assertEquals(3, options.getJSONArray("columns").length());
 
         JSONObject number = options.getJSONArray("columns").getJSONObject(0);
-        JSONObject product = options.getJSONArray("columns").getJSONObject(1);
-        JSONObject name = options.getJSONArray("columns").getJSONObject(2);
+        JSONObject name = options.getJSONArray("columns").getJSONObject(1);
+        JSONObject product = options.getJSONArray("columns").getJSONObject(2);
 
         assertEquals("number", number.getString("name"));
         assertTrue(number.getBoolean("link"));
