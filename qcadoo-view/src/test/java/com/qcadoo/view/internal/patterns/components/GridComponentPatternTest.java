@@ -111,6 +111,7 @@ public class GridComponentPatternTest extends AbstractPatternTest {
         given(viewDefinition.getDataDefinition()).willReturn(dataDefinition);
         ComponentDefinition componentDefinition = getComponentDefinition("grid", viewDefinition);
         componentDefinition.setTranslationService(translationService);
+        componentDefinition.setApplicationContext(applicationContext);
         GridComponentPattern pattern = new GridComponentPattern(componentDefinition);
 
         pattern.addOption(new ComponentOption("correspondingView", ImmutableMap.of("value", "plugin/details")));
@@ -193,6 +194,7 @@ public class GridComponentPatternTest extends AbstractPatternTest {
         given(viewDefinition.getDataDefinition()).willReturn(dataDefinition);
         ComponentDefinition componentDefinition = getComponentDefinition("grid", viewDefinition);
         componentDefinition.setTranslationService(translationService);
+        componentDefinition.setApplicationContext(applicationContext);
         GridComponentPattern pattern = new GridComponentPattern(componentDefinition);
         pattern.addOption(new ComponentOption("order", ImmutableMap.of("column", "name", "direction", "asc")));
 
@@ -227,6 +229,7 @@ public class GridComponentPatternTest extends AbstractPatternTest {
         given(viewDefinition.getDataDefinition()).willReturn(dataDefinition);
         ComponentDefinition componentDefinition = getComponentDefinition("grid", viewDefinition);
         componentDefinition.setTranslationService(translationService);
+        componentDefinition.setApplicationContext(applicationContext);
         GridComponentPattern pattern = new GridComponentPattern(componentDefinition);
 
         pattern.addOption(new ComponentOption("fullscreen", ImmutableMap.of("value", "true")));
@@ -278,6 +281,7 @@ public class GridComponentPatternTest extends AbstractPatternTest {
 
         ComponentDefinition componentDefinition = getComponentDefinition("grid", null, "#{component}.field", null, viewDefinition);
         componentDefinition.setTranslationService(translationService);
+        componentDefinition.setApplicationContext(applicationContext);
         GridComponentPattern pattern = new GridComponentPattern(componentDefinition);
 
         pattern.addOption(new ComponentOption("order", ImmutableMap.of("column", "name", "direction", "asc")));
@@ -353,6 +357,7 @@ public class GridComponentPatternTest extends AbstractPatternTest {
         given(viewDefinition.getDataDefinition()).willReturn(dataDefinition);
         ComponentDefinition componentDefinition = getComponentDefinition("grid", viewDefinition);
         componentDefinition.setTranslationService(translationService);
+        componentDefinition.setApplicationContext(applicationContext);
         GridComponentPattern pattern = new GridComponentPattern(componentDefinition);
 
         pattern.addOption(new ComponentOption("order", ImmutableMap.of("column", "name", "direction", "asc")));

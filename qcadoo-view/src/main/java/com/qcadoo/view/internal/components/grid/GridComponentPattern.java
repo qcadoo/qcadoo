@@ -26,6 +26,7 @@ package com.qcadoo.view.internal.components.grid;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
+import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.FieldDefinition;
@@ -34,6 +35,7 @@ import com.qcadoo.model.api.types.EnumeratedType;
 import com.qcadoo.model.api.types.FieldType;
 import com.qcadoo.model.api.types.JoinFieldHolder;
 import com.qcadoo.security.api.SecurityRole;
+import com.qcadoo.security.api.SecurityRolesService;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.constants.Alignment;
 import com.qcadoo.view.internal.ComponentDefinition;
@@ -52,6 +54,7 @@ import org.w3c.dom.NodeList;
 
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 public class GridComponentPattern extends AbstractComponentPattern {
 
@@ -151,6 +154,8 @@ public class GridComponentPattern extends AbstractComponentPattern {
 
     private String deletableAuthorizationRole = "";
 
+    private String linkAuthorizationRole = "";
+
     private boolean footerRow = false;
 
     private String columnsToSummary = "";
@@ -159,8 +164,11 @@ public class GridComponentPattern extends AbstractComponentPattern {
 
     private boolean autoRefresh = false;
 
+    private final SecurityRolesService securityRolesService;
+
     public GridComponentPattern(final ComponentDefinition componentDefinition) {
         super(componentDefinition);
+        securityRolesService = getApplicationContext().getBean(SecurityRolesService.class);
     }
 
     @Override
@@ -378,7 +386,9 @@ public class GridComponentPattern extends AbstractComponentPattern {
     private JSONArray getColumnsForJsOptions(final Locale locale) throws JSONException {
         JSONArray jsonColumns = new JSONArray();
         String nameTranslation = null;
-        for (GridComponentColumn column : columns.values()) {
+        boolean isLinkAllowed = isLinkAllowed();
+
+        for (GridComponentColumn column : filterColumnsWithAccess(columns.values())) {
             if (!COLUMNS_VISIBLE_FOR_TENANT_PREDICATE.apply(column)) {
                 continue;
             }
@@ -393,7 +403,7 @@ public class GridComponentPattern extends AbstractComponentPattern {
             JSONObject jsonColumn = new JSONObject();
             jsonColumn.put("name", column.getName());
             jsonColumn.put("label", nameTranslation);
-            jsonColumn.put("link", column.isLink());
+            jsonColumn.put("link", isLinkAllowed && column.isLink());
             jsonColumn.put("hidden", column.isHidden());
             jsonColumn.put(L_WIDTH, column.getWidth());
             jsonColumn.put("align", column.getAlign().getStringValue());
@@ -402,6 +412,16 @@ public class GridComponentPattern extends AbstractComponentPattern {
         }
 
         return jsonColumns;
+    }
+
+    public Collection<GridComponentColumn> filterColumnsWithAccess(Collection<GridComponentColumn> columns) {
+        List<GridComponentColumn> collect = columns.stream().filter(item -> {
+            String columnAuthorizationRole = item.getAuthorizationRole();
+            return Strings.isNullOrEmpty(columnAuthorizationRole) || securityRolesService.canAccess(columnAuthorizationRole);
+
+        }).collect(Collectors.toList());
+
+        return collect;
     }
 
     public JSONObject getFilterValuesForColumn(final GridComponentColumn column, final Locale locale) throws JSONException {
@@ -540,6 +560,8 @@ public class GridComponentPattern extends AbstractComponentPattern {
                 deletable = Boolean.parseBoolean(option.getValue());
             } else if ("deletableAuthorizationRole".equals(option.getType())) {
                 deletableAuthorizationRole = option.getValue();
+            } else if ("linkAuthorizationRole".equals(option.getType())) {
+                linkAuthorizationRole = option.getValue();
             } else if ("height".equals(option.getType())) {
                 height = Integer.parseInt(option.getValue());
             } else if (L_WIDTH.equals(option.getType())) {
@@ -600,6 +622,7 @@ public class GridComponentPattern extends AbstractComponentPattern {
                 column.addField(field);
             }
         }
+        column.setAuthorizationRole(parseColumnAuthorizationRole(option));
         column.setAlign(parseColumnAlignOption(option));
         column.setExpression(option.getAtrributeValue("expression"));
         String columnWidth = option.getAtrributeValue(L_WIDTH);
@@ -612,6 +635,7 @@ public class GridComponentPattern extends AbstractComponentPattern {
         if (option.getAtrributeValue("hidden") != null) {
             column.setHidden(Boolean.parseBoolean(option.getAtrributeValue("hidden")));
         }
+
         columns.put(column.getName(), column);
     }
 
@@ -619,6 +643,14 @@ public class GridComponentPattern extends AbstractComponentPattern {
         String alignStringVal = options.getAtrributeValue("align");
         if (StringUtils.isNotEmpty(alignStringVal)) {
             return Alignment.parseString(alignStringVal);
+        }
+        return null;
+    }
+
+    private String parseColumnAuthorizationRole(ComponentOption option) {
+        String optionAuthorizationRole = option.getAtrributeValue("authorizationRole");
+        if (StringUtils.isNotEmpty(optionAuthorizationRole)) {
+            return optionAuthorizationRole;
         }
         return null;
     }
@@ -719,6 +751,10 @@ public class GridComponentPattern extends AbstractComponentPattern {
         return deletableAuthorizationRole;
     }
 
+    public String getLinkAuthorizationRole() {
+        return linkAuthorizationRole;
+    }
+
     public boolean isautoRefresh() {
         return autoRefresh;
     }
@@ -733,5 +769,9 @@ public class GridComponentPattern extends AbstractComponentPattern {
 
     public String getColumnsToSummaryTime() {
         return columnsToSummaryTime;
+    }
+
+    private boolean isLinkAllowed() {
+        return Strings.isNullOrEmpty(linkAuthorizationRole) || securityRolesService.canAccess(linkAuthorizationRole);
     }
 }

@@ -56,6 +56,8 @@ public class GridComponentColumn {
     private boolean hidden;
 
     private Alignment align;
+    
+    private String authorizationRole;
 
     public GridComponentColumn(final String name) {
         this(name, null);
@@ -128,6 +130,14 @@ public class GridComponentColumn {
         return fields;
     }
 
+    public String getAuthorizationRole() {
+        return authorizationRole;
+    }
+
+    public void setAuthorizationRole(String authorizationRole) {
+        this.authorizationRole = authorizationRole;
+    }
+
     public String getValue(final Entity entity, final Locale locale) {
         if (StringUtils.hasText(expression)) {
             return ExpressionUtils.getValue(entity, expression, locale);
@@ -146,7 +156,7 @@ public class GridComponentColumn {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(name).append(fields).append(extendingPluginIdentifier).append(hidden).append(link)
+        return new HashCodeBuilder().append(name).append(fields).append(extendingPluginIdentifier).append(hidden).append(link).append(authorizationRole)
                 .append(expression).append(width).append(getAlign()).toHashCode();
     }
 
@@ -161,7 +171,7 @@ public class GridComponentColumn {
         GridComponentColumn that = (GridComponentColumn) o;
         return new EqualsBuilder().append(this.name, that.name).append(this.fields, that.fields)
                 .append(this.extendingPluginIdentifier, that.extendingPluginIdentifier).append(this.hidden, that.hidden)
-                .append(this.link, that.link).append(this.expression, that.expression).append(this.width, that.width)
+                .append(this.link, that.link).append(this.authorizationRole, this.authorizationRole).append(this.expression, that.expression).append(this.width, that.width)
                 .append(this.getAlign(), that.getAlign()).isEquals();
     }
 

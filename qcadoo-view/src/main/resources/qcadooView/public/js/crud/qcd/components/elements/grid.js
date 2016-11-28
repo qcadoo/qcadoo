@@ -751,12 +751,18 @@ QCD.components.elements.Grid = function (element, mainController) {
             for (var i = 0; i < rows.length; ++i) {
                 var row = rows[i];
                 var val = grid.jqGrid('getCell', row, c)
+                if(val === false){
+                    totalSum = false;
+                    break;
+                }
                 totalSum += parseFloat(nanToZero(val.split('&nbsp;').join('').replace(',','.'))) || 0;
             }
-            var total = nanToZero(parseFloat(totalSum.toFixed(5)));
-            var obj = '[{"' + c + '": "' + numberWithSpaces(total.toString().replace('.',',')) + '"}]';
-            var colFoot = JSON.parse(obj);
-            grid.jqGrid('footerData', 'set', colFoot[0]);
+            if(totalSum!==false){
+                var total = nanToZero(parseFloat(totalSum.toFixed(5)));
+                var obj = '[{"' + c + '": "' + numberWithSpaces(total.toString().replace('.',',')) + '"}]';
+                var colFoot = JSON.parse(obj);
+                grid.jqGrid('footerData', 'set', colFoot[0]);
+            }
         }
     }
 
