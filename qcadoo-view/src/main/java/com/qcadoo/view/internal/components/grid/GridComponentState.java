@@ -23,6 +23,7 @@
  */
 package com.qcadoo.view.internal.components.grid;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.qcadoo.model.api.DataDefinition;
@@ -48,6 +49,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public final class GridComponentState extends AbstractComponentState implements GridComponent {
 
@@ -179,10 +181,12 @@ public final class GridComponentState extends AbstractComponentState implements 
 
     private boolean autoRefresh = false;
 
+    private final GridComponentPattern pattern;
+    
     public GridComponentState(final DataDefinition dataDefinition, final GridComponentPattern pattern) {
         super(pattern);
+        this.pattern = pattern;
         this.belongsToFieldDefinition = pattern.getBelongsToFieldDefinition();
-        this.columns = pattern.getColumns();
         if (pattern.getDefaultOrderColumn() != null) {
             this.orderColumns.add(new GridComponentOrderColumn(pattern.getDefaultOrderColumn(), pattern
                     .getDefaultOrderDirection()));
@@ -204,6 +208,7 @@ public final class GridComponentState extends AbstractComponentState implements 
         this.columnsToSummary = pattern.getColumnsToSummary();
         this.columnsToSummaryTime = pattern.getColumnsToSummaryTime();
         this.useDto = pattern.isUseDto();
+        this.columns = pattern.getColumns();
         registerEvent("refresh", eventPerformer, "refresh");
         registerEvent("select", eventPerformer, "selectEntity");
         registerEvent("addExistingEntity", eventPerformer, "addExistingEntity");
@@ -516,7 +521,7 @@ public final class GridComponentState extends AbstractComponentState implements 
             json.put("active", true);
         }
         JSONObject fields = new JSONObject();
-        for (GridComponentColumn column : columns.values()) {
+        for (GridComponentColumn column : pattern.filterColumnsWithAccess(columns.values())){
             fields.put(column.getName(), column.getValue(entity, getLocale()));
         }
         json.put("fields", fields);
@@ -875,7 +880,7 @@ public final class GridComponentState extends AbstractComponentState implements 
     public Map<String, String> getColumnNames() {
         Map<String, String> names = new LinkedHashMap<String, String>();
 
-        for (GridComponentColumn column : columns.values()) {
+        for (GridComponentColumn column : pattern.filterColumnsWithAccess(columns.values())){
             if (column.isHidden()) {
                 continue;
             }
@@ -927,11 +932,10 @@ public final class GridComponentState extends AbstractComponentState implements 
 
     private Map<String, String> convertEntityToMap(final Entity entity) {
         Map<String, String> values = new LinkedHashMap<String, String>();
-        for (GridComponentColumn column : columns.values()) {
+        for (GridComponentColumn column : pattern.filterColumnsWithAccess(columns.values())){
             if (column.isHidden()) {
                 continue;
             }
-
             if (column.getFields().get(0).getType() instanceof EnumType) {
                 String fieldValue = column.getValue(entity, getLocale());
 
@@ -1002,5 +1006,4 @@ public final class GridComponentState extends AbstractComponentState implements 
     public Map<String, GridComponentColumn> getColumns() {
         return columns;
     }
-
 }
