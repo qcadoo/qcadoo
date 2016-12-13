@@ -523,6 +523,8 @@ QCD.components.elements.Grid = function (element, mainController) {
     				$("#" + elementSearchName + "_sortArrow_" + orderItem.column).addClass("downArrow");
     			}
 	    	});
+
+            $(window).resize();
     	}
 
     }
@@ -1191,8 +1193,9 @@ QCD.components.elements.Grid = function (element, mainController) {
 
         element.css("height", height + "px");
 
-        var HEIGHT_DIFF = 120;
-        currentGridHeight = height - HEIGHT_DIFF;
+        var h = $(".ui-jqgrid-labels").height();
+        var HEIGHT_DIFF = 90;
+        currentGridHeight = height - HEIGHT_DIFF - h;
         if (currentState.filtersEnabled) {
             currentGridHeight -= 21;
         }
