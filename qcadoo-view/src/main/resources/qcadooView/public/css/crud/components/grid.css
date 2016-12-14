@@ -363,6 +363,7 @@ div.filterButton {
 .gridContainer .ui-jqgrid .ui-th-column.sortableColumn,.gridContainer .ui-jqgrid .ui-th-column.sortableColumn .ui-jqgrid-sortable
 	{
 	cursor: pointer;
+	text-overflow: ellipsis;
 }
 
 .gridContainer .ui-th-column.sortableColumn:hover {
