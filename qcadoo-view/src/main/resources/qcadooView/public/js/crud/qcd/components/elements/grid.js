@@ -1476,6 +1476,7 @@ QCD.components.elements.Grid = function (element, mainController) {
         gridParameters.ondblClickRow = function (id) {
         };
         gridParameters.onSortCol = onSortColumnChange;
+        gridParameters.headertitles = true;
 
 
         grid = $("#" + gridParameters.element).jqGrid(gridParameters);
