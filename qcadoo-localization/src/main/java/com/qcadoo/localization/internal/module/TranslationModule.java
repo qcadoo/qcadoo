@@ -41,6 +41,7 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
@@ -154,17 +155,20 @@ public class TranslationModule extends Module implements TranslationPropertiesHo
         List<String> prefixes = Arrays.asList("/mes/mes-plugins/", "/mes-commercial/", "/qcadoo/");
 
         for (String prefix : prefixes) {
-            Path dir = FileSystems.getDefault().getPath(sourceBasePath + prefix);
-            try (DirectoryStream<Path> stream = Files.newDirectoryStream(dir)) {
-                for (Path pluginMainDir : stream) {
-                    Path file = pluginMainDir.resolve("src/main/resources/").resolve(pluginIdentifier);
-                    if (Files.exists(file)) {
-                        String x = file.toUri().toURL().toString();
-                        return x;
+            String f = sourceBasePath + prefix;
+            if (Files.isDirectory(Paths.get(f))) {
+                Path dir = FileSystems.getDefault().getPath(f);
+                try (DirectoryStream<Path> stream = Files.newDirectoryStream(dir)) {
+                    for (Path pluginMainDir : stream) {
+                        Path file = pluginMainDir.resolve("src/main/resources/").resolve(pluginIdentifier);
+                        if (Files.exists(file)) {
+                            String x = file.toUri().toURL().toString();
+                            return x;
+                        }
                     }
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
                 }
-            } catch (IOException e) {
-                throw new RuntimeException(e);
             }
         }
 
