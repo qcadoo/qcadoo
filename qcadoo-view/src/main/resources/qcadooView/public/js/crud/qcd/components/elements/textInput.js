@@ -62,9 +62,9 @@ QCD.components.elements.TextInput = function (_element, _mainController) {
         })
 
         $(this.input).scannerDetection({
-            timeBeforeScanTest: 200, // wait for the next character for upto 200ms
+            timeBeforeScanTest: 200, // wait for the next character for up to 200ms
             endChar: [13], // be sure the scan is complete if key 13 (enter) is detected
-            avgTimeByChar: 10, // it's not a barcode if a character takes longer than 40ms
+            avgTimeByChar: 40, // it's not a barcode if a character takes longer than 40ms
             //                ignoreIfFocusOn: 'input', // turn off scanner detection if an input has focus
             minLength: 5,
             onComplete: function (barcode, qty) {
