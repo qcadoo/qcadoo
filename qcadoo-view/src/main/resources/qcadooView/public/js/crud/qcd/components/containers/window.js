@@ -430,7 +430,13 @@ QCD.components.containers.Window = function(element, mainController) {
 			actionsPerformer.performNext();
 		}
 	};
-	
+
+	this.performBackWithoutConfirm = function(actionsPerformer) {
+		mainController.goBack(true);
+		if (actionsPerformer) {
+			actionsPerformer.performNext();
+		}
+	};
 	this.updateMenu = function() {
 		mainController.updateMenu();
 	};

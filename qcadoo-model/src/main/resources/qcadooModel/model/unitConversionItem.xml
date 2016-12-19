@@ -25,16 +25,25 @@
 
 -->
 <model name="unitConversionItem"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schema.qcadoo.org/model"
-	xsi:schemaLocation="http://schema.qcadoo.org/model http://schema.qcadoo.org/model.xsd">
-	<fields>
-		<decimal name="quantityFrom" required="true" />
-		<decimal name="quantityTo" required="true"/>
-		<dictionary name="unitFrom" dictionary="units" required="true"/>
-		<dictionary name="unitTo" dictionary="units" required="true"/>
-		<belongsTo name="globalUnitConversionsAggregate" model="globalUnitConversionsAggregate"/>
-	</fields>
-	<hooks>
-		<validatesWith class="com.qcadoo.model.internal.units.hooks.UnitConversionItemValidators" method="validateUnits"/>	
-	</hooks>
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schema.qcadoo.org/model"
+       xsi:schemaLocation="http://schema.qcadoo.org/model http://schema.qcadoo.org/model.xsd">
+    <fields>
+        <decimal name="quantityFrom" required="true">
+            <validatesRange from="0" exclusively="true"/>
+            <validatesUnscaledValue max="9"/>
+            <validatesScale max="5"/>
+        </decimal>
+        <decimal name="quantityTo" required="true">
+            <validatesRange from="0" exclusively="true"/>
+            <validatesUnscaledValue max="9"/>
+            <validatesScale max="5"/>
+        </decimal>
+        <dictionary name="unitFrom" dictionary="units" required="true"/>
+        <dictionary name="unitTo" dictionary="units" required="true"/>
+        <belongsTo name="globalUnitConversionsAggregate" model="globalUnitConversionsAggregate"/>
+    </fields>
+    <hooks>
+        <validatesWith class="com.qcadoo.model.internal.units.hooks.UnitConversionItemValidators"
+                       method="validateUnits"/>
+    </hooks>
 </model>	

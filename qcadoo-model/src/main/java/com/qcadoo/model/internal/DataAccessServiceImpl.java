@@ -59,7 +59,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.google.common.base.Preconditions.*;
+import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.api.validators.GlobalMessage;
+import org.springframework.context.i18n.LocaleContextHolder;
 
 @Service
 @Standalone
@@ -87,6 +89,9 @@ public class DataAccessServiceImpl implements DataAccessService {
     @Autowired
     private HibernateService hibernateService;
 
+    @Autowired
+    private TranslationService translationService;
+    
     private static final Logger LOG = LoggerFactory.getLogger(DataAccessServiceImpl.class);
 
     @Auditable
@@ -305,7 +310,7 @@ public class DataAccessServiceImpl implements DataAccessService {
         String msg = String.format("Can not save entity '%s' because related entity '%s' has following validation errors:",
                 savedEntity, errorEntity);
         logEntityErrors(errorEntity, msg);
-        savedEntity.addGlobalError("qcadooView.validate.field.error.invalidRelatedObject");
+        savedEntity.addGlobalError("qcadooView.validate.field.error.invalidRelatedObject", errorDetails(errorEntity));
         TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
     }
 
@@ -1021,4 +1026,15 @@ public class DataAccessServiceImpl implements DataAccessService {
         return dataDefinitionByMasterModel.get(id);
     }
 
+    private String errorDetails(Entity errorEntity) {
+        StringBuilder sb = new StringBuilder();
+        for (ErrorMessage error : errorEntity.getGlobalErrors()) {
+            sb.append("<br />").append(translationService.translate(error.getMessage(), LocaleContextHolder.getLocale(), error.getVars()));
+        }
+        for (Map.Entry<String, ErrorMessage> error : errorEntity.getErrors().entrySet()) {
+            sb.append("<br />").append(translationService.translate(error.getValue().getMessage(), LocaleContextHolder.getLocale(), error.getValue().getMessage()));
+        }
+        
+        return sb.toString();
+    }
 }

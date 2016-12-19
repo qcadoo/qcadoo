@@ -166,7 +166,7 @@ html, body {
 	color: #005ec5;
 	font-family: "Lucida Grande",Arial bold, Arial, Helvetica, sans-serif;
 	font-size: 11px;
-	text-decoraton: none;
+	text-decoration: none;
 }
 
 #loginForm #loginButtonWrapper #changeUserButton {
@@ -176,7 +176,7 @@ html, body {
 
 #loginForm #forgotPasswordLinkWrapper #forgotPasswordLink:hover,
 #loginForm #loginButtonWrapper #changeUserButton:hover {
-	text-decoraton: underline;
+	text-decoration: underline;
 	color: red;
 }
 
@@ -200,7 +200,7 @@ html, body {
 	color: white;
 	font-family: "Lucida Grande",Arial bold, Arial, Helvetica, sans-serif;
 	font-size: 13px;
-	text-decoraton: none;
+	text-decoration: none;
 	margin-left: 46px;
 }
 
