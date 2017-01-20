@@ -93,12 +93,24 @@ public class DataAccessServiceImpl implements DataAccessService {
     private TranslationService translationService;
     
     private static final Logger LOG = LoggerFactory.getLogger(DataAccessServiceImpl.class);
-
+    
+    @Auditable
+    @Override
+    @Transactional
+    @Monitorable
+    public Entity fastSave(final InternalDataDefinition dataDefinition, final Entity genericEntity) {
+        return save(dataDefinition, genericEntity, true);
+    }
+    
     @Auditable
     @Override
     @Transactional
     @Monitorable
     public Entity save(final InternalDataDefinition dataDefinition, final Entity genericEntity) {
+        return save(dataDefinition, genericEntity, false);
+    }
+
+    private Entity save(final InternalDataDefinition dataDefinition, final Entity genericEntity, boolean fast) {
         Set<Entity> newlySavedEntities = new HashSet<Entity>();
 
         Long previousVersion = null;
@@ -106,7 +118,7 @@ public class DataAccessServiceImpl implements DataAccessService {
             previousVersion = genericEntity.getLongField(VersionableConstants.VERSION_FIELD_NAME);
         }
 
-        Entity resultEntity = performSave(dataDefinition, genericEntity, new HashSet<Entity>(), newlySavedEntities);
+        Entity resultEntity = performSave(dataDefinition, genericEntity, new HashSet<Entity>(), newlySavedEntities, fast);
         try {
             if (TransactionAspectSupport.currentTransactionStatus().isRollbackOnly()) {
                 resultEntity.setNotValid();
@@ -123,10 +135,15 @@ public class DataAccessServiceImpl implements DataAccessService {
         }
         return resultEntity;
     }
-
     @SuppressWarnings("unchecked")
     private Entity performSave(final InternalDataDefinition dataDefinition, final Entity genericEntity,
             final Set<Entity> alreadySavedEntities, final Set<Entity> newlySavedEntities) {
+        return performSave(dataDefinition, genericEntity, alreadySavedEntities, newlySavedEntities, false);
+    }
+
+    @SuppressWarnings("unchecked")
+    private Entity performSave(final InternalDataDefinition dataDefinition, final Entity genericEntity,
+            final Set<Entity> alreadySavedEntities, final Set<Entity> newlySavedEntities, boolean fast) {
 
         checkNotNull(dataDefinition, L_DATA_DEFINITION_MUST_BE_GIVEN);
         checkState(dataDefinition.isEnabled(), L_DATA_DEFINITION_BELONGS_TO_DISABLED_PLUGIN);
@@ -145,7 +162,9 @@ public class DataAccessServiceImpl implements DataAccessService {
             existingGenericEntity = entityService.convertToGenericEntity(dataDefinition, existingDatabaseEntity);
         }
 
-        validationService.validateGenericEntity(dataDefinition, genericEntity, existingGenericEntity);
+        if(!fast){
+            validationService.validateGenericEntity(dataDefinition, genericEntity, existingGenericEntity);
+        }
 
         if (!genericEntity.isValid()) {
             copyValidationErrors(dataDefinition, genericEntityToSave, genericEntity);

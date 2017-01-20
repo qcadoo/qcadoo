@@ -93,6 +93,11 @@ public class DynamicDataDefinitionImpl implements InternalDataDefinition {
     }
 
     @Override
+    public Entity fastSave(final Entity entity) {
+        throw new UnsupportedOperationException("Cannot save entity for dynamic data definition");
+    }
+
+    @Override
     public SearchCriteriaBuilder find() {
         throw new UnsupportedOperationException(L_CANNOT_FIND_ENTITY_FOR_DYNAMIC_DATA_DEFINITION);
     }
