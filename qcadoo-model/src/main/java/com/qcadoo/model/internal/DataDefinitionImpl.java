@@ -118,6 +118,14 @@ public final class DataDefinitionImpl implements InternalDataDefinition {
     }
 
     @Override
+    public Entity fastSave(final Entity entity) {
+        if (!this.equals(entity.getDataDefinition())) {
+            throw new IllegalStateException("Incompatible types");
+        }
+        return dataAccessService.fastSave(this, entity);
+    }
+
+    @Override
     public SearchQueryBuilder find(final String queryString) {
         checkArgument(queryString != null, "HQL query string must be given");
         return new SearchQueryImpl(this, dataAccessService, queryString);

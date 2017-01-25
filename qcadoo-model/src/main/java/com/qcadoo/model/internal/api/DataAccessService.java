@@ -56,6 +56,15 @@ public interface DataAccessService {
      * @return saved entity
      */
     Entity save(InternalDataDefinition dataDefinition, Entity entity);
+        
+    /**
+     * Save the entity related with given data definition without invoke hooks.
+     * 
+     * @param dataDefinition
+     * @param entity
+     * @return saved entity
+     */
+    Entity fastSave(InternalDataDefinition dataDefinition, Entity entity);
 
     /**
      * Return the entity related with given data definition, by its id.
