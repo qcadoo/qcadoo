@@ -104,7 +104,15 @@ public interface DataDefinition {
      *            entity to save
      * @return saved entity
      */
-    Entity save(final Entity entity);
+    Entity save(final Entity entity);    
+
+    /**
+     * Save the entity related with this data definition without invoke hooks.
+     * 
+     * @param entity entity to save
+     * @return saved entity
+     */
+    Entity fastSave(final Entity entity);
 
     /**
      * Create search criteria builder for this data definition.
