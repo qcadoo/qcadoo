@@ -373,8 +373,7 @@ public class DataAccessServiceImpl implements DataAccessService {
         final Set<Long> savedEntityIds = Sets.newHashSet(EntityUtils.getIdsView(savedEntities));
         return Collections2.filter(dbEntities, new Predicate<Entity>() {
 
-            @Override
-            public boolean apply(final Entity entity) {
+            @Override public boolean apply(final Entity entity) {
                 return entity != null && !savedEntityIds.contains(entity.getId());
             }
         });
@@ -808,8 +807,8 @@ public class DataAccessServiceImpl implements DataAccessService {
 
         if (entity.getId() != null) {
             existingDatabaseEntity = getDatabaseEntity(dataDefinition, entity.getId());
-            checkState(existingDatabaseEntity != null, "Entity[%s][id=%s] cannot be found", dataDefinition.getPluginIdentifier()
-                    + "." + dataDefinition.getName(), entity.getId());
+            checkState(existingDatabaseEntity != null, "Entity[%s][id=%s] cannot be found",
+                    dataDefinition.getPluginIdentifier() + "." + dataDefinition.getName(), entity.getId());
         }
 
         return existingDatabaseEntity;
@@ -830,7 +829,7 @@ public class DataAccessServiceImpl implements DataAccessService {
         Object databaseEntity = getDatabaseEntity(dataDefinition, entityId);
 
         if(databaseEntity == null){
-            logEntityInfo(dataDefinition, entityId, "has been deleted earlier, for example onDelete hook");
+            logEntityDebug(dataDefinition, entityId, "has been deleted earlier, for example onDelete hook");
             return new EntityOpResult(true, new EntityMessagesHolderImpl());
         }
 
@@ -871,7 +870,7 @@ public class DataAccessServiceImpl implements DataAccessService {
             } catch (ConstraintViolationException e) {
                 throw new IllegalStateException(getConstraintViolationMessage(entity), e);
             }
-            logEntityInfo(dataDefinition, entityId, "has been deleted");
+            logEntityDebug(dataDefinition, entityId, "has been deleted");
         }
         return new EntityOpResult(true, entity);
     }
@@ -1001,6 +1000,16 @@ public class DataAccessServiceImpl implements DataAccessService {
             entityInfo.append("][id=").append(entityId).append("] ");
             entityInfo.append(message);
             LOG.info(entityInfo.toString());
+        }
+    }
+
+    private void logEntityDebug(final DataDefinition dataDefinition, final Long entityId, final String message) {
+        if (LOG.isDebugEnabled()) {
+            StringBuilder entityInfo = new StringBuilder("Entity[");
+            entityInfo.append(dataDefinition.getPluginIdentifier()).append('.').append(dataDefinition.getName());
+            entityInfo.append("][id=").append(entityId).append("] ");
+            entityInfo.append(message);
+            LOG.debug(entityInfo.toString());
         }
     }
 
