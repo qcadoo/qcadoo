@@ -30,8 +30,6 @@ import static org.mockito.Mockito.mock;
 import java.util.Collection;
 import java.util.List;
 
-import junit.framework.Assert;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -44,6 +42,7 @@ import com.google.common.collect.Lists;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.view.api.utils.NumberGeneratorModelHelper;
 import com.qcadoo.view.api.utils.NumberGeneratorService;
+import junit.framework.Assert;
 
 public class NumberGeneratorServiceTest {
 
@@ -66,7 +65,7 @@ public class NumberGeneratorServiceTest {
 
     private void stubExistingNumbers(final Iterable<String> numbers) {
         final Collection<Entity> projectionEntities = mockProjectionEntities(numbers);
-        given(numberGeneratorModelHelper.getNumbersProjection(anyString(), anyString(), anyString(), anyString())).willAnswer(
+        given(numberGeneratorModelHelper.getNumbersProjection(anyString(), anyString(), anyString(), anyString(), anyString())).willAnswer(
                 new Answer<Collection<Entity>>() {
 
                     @Override

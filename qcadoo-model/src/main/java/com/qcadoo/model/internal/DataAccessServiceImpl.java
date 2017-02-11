@@ -26,6 +26,7 @@ package com.qcadoo.model.internal;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Sets;
+import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.api.*;
 import com.qcadoo.model.api.aop.Auditable;
 import com.qcadoo.model.api.aop.Monitorable;
@@ -34,6 +35,7 @@ import com.qcadoo.model.api.search.SearchResult;
 import com.qcadoo.model.api.types.*;
 import com.qcadoo.model.api.utils.EntityUtils;
 import com.qcadoo.model.api.validators.ErrorMessage;
+import com.qcadoo.model.api.validators.GlobalMessage;
 import com.qcadoo.model.constants.VersionableConstants;
 import com.qcadoo.model.internal.api.*;
 import com.qcadoo.model.internal.search.SearchCriteria;
@@ -48,6 +50,7 @@ import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.NoTransactionException;
 import org.springframework.transaction.annotation.Transactional;
@@ -59,9 +62,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.google.common.base.Preconditions.*;
-import com.qcadoo.localization.api.TranslationService;
-import com.qcadoo.model.api.validators.GlobalMessage;
-import org.springframework.context.i18n.LocaleContextHolder;
 
 @Service
 @Standalone
@@ -231,8 +231,8 @@ public class DataAccessServiceImpl implements DataAccessService {
             }
         }
 
-        if (LOG.isInfoEnabled()) {
-            LOG.info(savedEntity + " has been saved");
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(savedEntity + " has been saved");
         }
 
         alreadySavedEntities.add(savedEntity);
@@ -373,8 +373,7 @@ public class DataAccessServiceImpl implements DataAccessService {
         final Set<Long> savedEntityIds = Sets.newHashSet(EntityUtils.getIdsView(savedEntities));
         return Collections2.filter(dbEntities, new Predicate<Entity>() {
 
-            @Override
-            public boolean apply(final Entity entity) {
+            @Override public boolean apply(final Entity entity) {
                 return entity != null && !savedEntityIds.contains(entity.getId());
             }
         });
@@ -407,7 +406,7 @@ public class DataAccessServiceImpl implements DataAccessService {
                     throw new IllegalStateException("Cannot activate " + entity);
                 }
 
-                LOG.info(entity + " has been activated");
+                LOG.debug(entity + " has been activated");
 
                 activatedEntities.add(entity);
             }
@@ -443,7 +442,7 @@ public class DataAccessServiceImpl implements DataAccessService {
                     throw new IllegalStateException("Cannot deactivate " + entity + " because of validation errors");
                 }
 
-                LOG.info(entity + " has been deactivated");
+                LOG.debug(entity + " has been deactivated");
 
                 deactivatedEntities.add(entity);
             }
@@ -467,7 +466,7 @@ public class DataAccessServiceImpl implements DataAccessService {
                 throw new IllegalStateException("Cannot copy " + sourceEntity);
             }
 
-            LOG.info(sourceEntity + " has been copied to " + targetEntity);
+            LOG.debug(sourceEntity + " has been copied to " + targetEntity);
 
             targetEntity = save(dataDefinitionToCopy, targetEntity);
 
@@ -808,8 +807,8 @@ public class DataAccessServiceImpl implements DataAccessService {
 
         if (entity.getId() != null) {
             existingDatabaseEntity = getDatabaseEntity(dataDefinition, entity.getId());
-            checkState(existingDatabaseEntity != null, "Entity[%s][id=%s] cannot be found", dataDefinition.getPluginIdentifier()
-                    + "." + dataDefinition.getName(), entity.getId());
+            checkState(existingDatabaseEntity != null, "Entity[%s][id=%s] cannot be found",
+                    dataDefinition.getPluginIdentifier() + "." + dataDefinition.getName(), entity.getId());
         }
 
         return existingDatabaseEntity;
@@ -830,7 +829,7 @@ public class DataAccessServiceImpl implements DataAccessService {
         Object databaseEntity = getDatabaseEntity(dataDefinition, entityId);
 
         if(databaseEntity == null){
-            logEntityInfo(dataDefinition, entityId, "has been deleted earlier, for example onDelete hook");
+            logEntityDebug(dataDefinition, entityId, "has been deleted earlier, for example onDelete hook");
             return new EntityOpResult(true, new EntityMessagesHolderImpl());
         }
 
@@ -871,7 +870,7 @@ public class DataAccessServiceImpl implements DataAccessService {
             } catch (ConstraintViolationException e) {
                 throw new IllegalStateException(getConstraintViolationMessage(entity), e);
             }
-            logEntityInfo(dataDefinition, entityId, "has been deleted");
+            logEntityDebug(dataDefinition, entityId, "has been deleted");
         }
         return new EntityOpResult(true, entity);
     }
@@ -1001,6 +1000,16 @@ public class DataAccessServiceImpl implements DataAccessService {
             entityInfo.append("][id=").append(entityId).append("] ");
             entityInfo.append(message);
             LOG.info(entityInfo.toString());
+        }
+    }
+
+    private void logEntityDebug(final DataDefinition dataDefinition, final Long entityId, final String message) {
+        if (LOG.isDebugEnabled()) {
+            StringBuilder entityInfo = new StringBuilder("Entity[");
+            entityInfo.append(dataDefinition.getPluginIdentifier()).append('.').append(dataDefinition.getName());
+            entityInfo.append("][id=").append(entityId).append("] ");
+            entityInfo.append(message);
+            LOG.debug(entityInfo.toString());
         }
     }
 

@@ -148,19 +148,14 @@ public class NumberGeneratorService {
      *            name of entity
      * @param numOfDigits
      *            number of digits of generated number
+     * @param prefix
+     *            number prefix
      * @return new number of entity
      */
     // TODO MAKU move this responsibility to the qcadoo-model
     public String generateNumberWithPrefix(final String pluginIdentifier, final String modelName, final int numOfDigits,
             final String prefix) {
-        Collection<Entity> numberProjections = numberGeneratorModelHelper.getNumbersProjection(pluginIdentifier, modelName,
-                DEFAULT_NUMBER_FIELD_NAME, prefix);
-        Collection<Long> numericValues = extractNumericValues(numberProjections);
-        Long greatestNumber = 0L;
-        if (!numericValues.isEmpty()) {
-            greatestNumber = Ordering.natural().max(numericValues);
-        }
-        String generatedNumber = String.format("%0" + numOfDigits + "d", greatestNumber + 1);
+        String generatedNumber = generateNumberWithExtension(pluginIdentifier, modelName, numOfDigits, prefix, "", "");
         return prependPrefix(prefix, generatedNumber);
     }
 
@@ -169,6 +164,43 @@ public class NumberGeneratorService {
             return generatedNumber;
         }
         return prefix + generatedNumber;
+    }
+
+    /**
+     * Generate new number of entity with specified digits number
+     *
+     * @param pluginIdentifier
+     *            plugin identifier of entity
+     * @param modelName
+     *            name of entity
+     * @param numOfDigits
+     *            number of digits of generated number
+     * @param suffix
+     *            number suffix
+     * @return new number of entity
+     */
+    public String generateNumberWithSuffix(final String pluginIdentifier, final String modelName, final int numOfDigits,
+                                           final String suffix, final String numberFieldName) {
+        String generatedNumber = generateNumberWithExtension(pluginIdentifier, modelName, numOfDigits, "", suffix, numberFieldName);
+        return appendSuffix(suffix, generatedNumber);
+    }
+
+    private String generateNumberWithExtension(String pluginIdentifier, String modelName, int numOfDigits, String prefix, String suffix, String numberFieldName) {
+        Collection<Entity> numberProjections = numberGeneratorModelHelper.getNumbersProjection(pluginIdentifier, modelName,
+                StringUtils.isEmpty(numberFieldName) ? DEFAULT_NUMBER_FIELD_NAME : numberFieldName, prefix, suffix);
+        Collection<Long> numericValues = extractNumericValues(numberProjections);
+        Long greatestNumber = 0L;
+        if (!numericValues.isEmpty()) {
+            greatestNumber = Ordering.natural().max(numericValues);
+        }
+        return String.format("%0" + numOfDigits + "d", greatestNumber + 1);
+    }
+
+    private String appendSuffix(final String suffix, final String generatedNumber) {
+        if (suffix == null) {
+            return generatedNumber;
+        }
+        return generatedNumber + suffix;
     }
 
     private Collection<Long> extractNumericValues(final Iterable<Entity> numberProjections) {

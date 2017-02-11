@@ -23,6 +23,7 @@
  */
 package com.qcadoo.report.api.pdf;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.Map;
@@ -41,7 +42,6 @@ import com.lowagie.text.pdf.PdfDestination;
 import com.lowagie.text.pdf.PdfWriter;
 import com.qcadoo.report.api.FooterResolver;
 import com.qcadoo.report.api.ReportService;
-import java.io.FileOutputStream;
 
 /**
  * Abstract superclass for report PDF views, using Bruno Lowagie's
