@@ -49,6 +49,17 @@ QCD.menu.MenuController = function(menuStructure, windowController) {
 
 		createMenu(menuStructure);
 
+        var hash = window.location.href.split("#")[1];
+        if(hash != ""){
+            for(var i = 0; i < model.items.length; i++){
+                for(var j = 0; j < model.items[i].items.length; j++){
+                    if(model.items[i].items[j] && model.items[i].items[j].page === hash){
+                        model.selectedItem = model.items[i];
+                        model.selectedItem.selectedItem = model.items[i].items[j];
+                    }
+                }
+            }
+        }
 		if (model.selectedItem) {
 			previousActive.first = model.selectedItem;
 			model.selectedItem.element.addClass("path");
@@ -142,7 +153,7 @@ QCD.menu.MenuController = function(menuStructure, windowController) {
 			for (j = 0; j < secondItemsLen; j++) {
 				secondLevelItem = item.items[j];
 				secondLevelButton = $("<li>").html(
-						"<a href='#'><span>" + secondLevelItem.label
+						"<a href='" + window.location.href.split("#")[0] + "#" + secondLevelItem.page + "'><span>" + secondLevelItem.label
 								+ "</span></a>").attr("id",
 						"secondLevelButton_" + secondLevelItem.name);
 				if (secondLevelItem.description) {
