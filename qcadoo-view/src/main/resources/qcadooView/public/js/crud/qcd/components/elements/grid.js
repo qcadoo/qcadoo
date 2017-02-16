@@ -130,7 +130,8 @@ QCD.components.elements.Grid = function (element, mainController) {
 				{ op: "ge", text: options.translations.operator_ge },
 				{ op: "lt", text: options.translations.operator_lt },
 				{ op: "le", text: options.translations.operator_le },
-				{ op: "in", text: options.translations.operator_in }
+				{ op: "in", text: options.translations.operator_in },
+				{ op: "isnull", text: options.translations.operator_isnull }
 		];
 			
         for (i in options.columns) {

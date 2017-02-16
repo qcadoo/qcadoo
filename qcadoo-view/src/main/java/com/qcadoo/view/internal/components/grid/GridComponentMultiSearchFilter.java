@@ -94,6 +94,8 @@ public class GridComponentMultiSearchFilter {
             filterOperator = GridComponentFilterOperator.BW;
         } else if (GridComponentFilterOperator.EW.getValue().equals(operator)) {
             filterOperator = GridComponentFilterOperator.EW;
+        } else if (GridComponentFilterOperator.ISNULL.getValue().equals(operator)) {
+            filterOperator = GridComponentFilterOperator.ISNULL;
         } else {
             throw new IllegalStateException("Unwknow filter operator.");
         }

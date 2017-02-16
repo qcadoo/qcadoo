@@ -78,7 +78,12 @@ public enum GridComponentFilterOperator {
     /**
      * Ends with.
      */
-    EW("ew");
+    EW("ew"),
+
+    /**
+     * Is null.
+     */
+    ISNULL("isnull");
 
     private String value;
 
