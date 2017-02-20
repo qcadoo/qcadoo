@@ -461,6 +461,9 @@ QCD.components.containers.Window = function(element, mainController) {
 	this.getRibbonItem = function(ribbonItemPath) {
 		return ribbon.getRibbonItem(ribbonItemPath);
 	};
+	this.getRibbonItemOrNull = function(ribbonItemPath) {
+    		return ribbon.getRibbonItemOrNull(ribbonItemPath);
+    	};
 	
 	constructor();
 }
