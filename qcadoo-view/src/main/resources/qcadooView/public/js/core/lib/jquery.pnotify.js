@@ -243,6 +243,7 @@
 					}
 					if (opts.pnotify_hide && opts.pnotify_mouse_reset) pnotify.pnotify_cancel_remove();
 					if (opts.pnotify_closer && !opts.pnotify_nonblock) pnotify.closer.show();
+					if (opts.pnotify_close_all && !opts.pnotify_nonblock) pnotify.close_all.show();
 				},
 				"mouseleave": function(e){
 					if (opts.pnotify_nonblock) e.stopPropagation();
@@ -252,6 +253,7 @@
 						pnotify.animate({"opacity": opts.pnotify_opacity}, "fast");
 					if (opts.pnotify_hide && opts.pnotify_mouse_reset) pnotify.pnotify_queue_remove();
 					pnotify.closer.hide();
+					pnotify.close_all.hide();
 					$.pnotify_position_all();
 				},
 				"mouseover": function(e){
@@ -508,6 +510,17 @@
 			.append($("<span />", {"class": "ui-icon ui-icon-circle-close"}))
 			.appendTo(pnotify.container);
 
+			pnotify.close_all = $("<div />", {
+            				"class": "ui-pnotify-closer",
+            				"css": {"cursor": "pointer", "display": "none"},
+            				"click": function(){
+            					$.pnotify_remove_all();
+            					pnotify.close_all.hide();
+            				}
+            })
+			.append($("<span />", {"class": "ui-icon ui-icon-circle-close-all"}))
+			.appendTo(pnotify.container);
+
 			// Add the appropriate icon.
 			if ((opts.pnotify_error_icon && opts.pnotify_type == "error") || (opts.pnotify_notice_icon)) {
 				$("<div />", {"class": "ui-pnotify-icon"})
@@ -714,6 +727,8 @@
 		pnotify_shadow: false,
 		// Provide a button for the user to manually close the notice.
 		pnotify_closer: true,
+		//Custom close all action
+		pnotify_close_all: true,
 		// After a delay, remove the notice.
 		pnotify_hide: true,
 		// Delay in milliseconds before the notice is removed.
