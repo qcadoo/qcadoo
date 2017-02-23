@@ -333,6 +333,9 @@
 		}
 
 		window.addMessage = function(message) {
+		    message.closerTitle = window.translationsMap['qcadooView.notification.closerTitle'];
+		    message.closeAllTitle = window.translationsMap['qcadooView.notification.closeAllTitle'];
+
 			windowController.addMessage(message);
 		}
 

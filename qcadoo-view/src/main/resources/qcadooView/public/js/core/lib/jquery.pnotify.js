@@ -502,6 +502,7 @@
 			pnotify.closer = $("<div />", {
 				"class": "ui-pnotify-closer",
 				"css": {"cursor": "pointer", "display": "none"},
+				"title": opts.pnotify_closer_title,
 				"click": function(){
 					pnotify.pnotify_remove();
 					pnotify.closer.hide();
@@ -514,6 +515,7 @@
 			pnotify.close_all = $("<div />", {
             				"class": "ui-pnotify-closer",
             				"css": {"cursor": "pointer", "display": "none"},
+            				"title": opts.pnotify_close_all_title,
             				"click": function(){
             					$.pnotify_remove_all();
             					pnotify.close_all.hide();
@@ -731,6 +733,8 @@
 		pnotify_closer: true,
 		//Custom close all action
 		pnotify_close_all: true,
+		pnotify_closer_title: "Close",
+		pnotify_close_all_title: "Close all",
 		// After a delay, remove the notice.
 		pnotify_hide: true,
 		// Delay in milliseconds before the notice is removed.
