@@ -505,6 +505,7 @@
 				"click": function(){
 					pnotify.pnotify_remove();
 					pnotify.closer.hide();
+					pnotify.close_all.hide();
 				}
 			})
 			.append($("<span />", {"class": "ui-icon ui-icon-circle-close"}))
@@ -516,6 +517,7 @@
             				"click": function(){
             					$.pnotify_remove_all();
             					pnotify.close_all.hide();
+            					pnotify.closer.hide();
             				}
             })
 			.append($("<span />", {"class": "ui-icon ui-icon-circle-close-all"}))
