@@ -169,6 +169,11 @@ html>body .ui-pnotify {
 	background-position: -32px -192px;
 }
 
+.ui-pnotify-closer .ui-icon-circle-close-all {
+	background-image: url(/qcadooView/public/css/core/images/ui-icons_222222_256x240.png);
+	background-position: -207px -192px;
+}
+
 .ui-pnotify-icon .ui-icon-error {
 	background-image: url(/qcadooView/public/css/core/images/ui-icons_222222_256x240.png);
 	background-position: 0px -144px;
