@@ -53,7 +53,6 @@ QCD.MessagesController = function () {
 		if (type === "failure") {
 			type = "error";
 		}
-		console.log(QCD);
 		messageOptionsObject = {
 				pnotify_title: message.title,
 				pnotify_text: message.content,
