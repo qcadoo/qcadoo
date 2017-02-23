@@ -224,6 +224,7 @@ QCD.components.elements.Calendar = function (element, mainController) {
 			input.mask("2999-19-39");
 			if (withTimePicker) {
 				timeInput.mask("29:69:69");
+				timeInput.removeAttr("disabled");
 			}
 			input.removeAttr("disabled");
 		} else {
@@ -233,6 +234,7 @@ QCD.components.elements.Calendar = function (element, mainController) {
 			input.attr("disabled", "disabled");
 			if (withTimePicker) {
 				timeInput.unmask();
+				timeInput.attr("disabled", "disabled");
 			}
 		}
 	};
