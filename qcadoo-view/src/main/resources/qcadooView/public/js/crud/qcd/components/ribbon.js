@@ -535,6 +535,50 @@ QCD.components.Ribbon = function(_model, _elementName, _mainController, _transla
 		return createJsObject(item);
 	}
 
+	this.getRibbonItemOrNull = function(ribbonItemPath) {
+		var pathParts = ribbonItemPath.split(".");
+		if (pathParts.length != 2 && pathParts.length != 3) {
+			return null;
+		}
+		var group = null;
+		for (var groupIter in ribbonModel.groups) {
+			if (ribbonModel.groups[groupIter].name == pathParts[0]) {
+				group = ribbonModel.groups[groupIter];
+				break;
+			}
+		}
+		if (!group) {
+			return null;
+		}
+		var item = null;
+		for (var itemsIter in group.items) {
+			if (group.items[itemsIter].name == pathParts[1]) {
+				item = group.items[itemsIter];
+				break;
+			}
+		}
+		if (!item) {
+			return null;
+		}
+		if (pathParts.length == 3) {
+			if (! item.items) {
+				return null;
+			}
+			var dropdownItem = null;
+			for (var dropdownItemsIter in item.items) {
+				if (item.items[dropdownItemsIter].name == pathParts[2]) {
+					dropdownItem = item.items[dropdownItemsIter];
+					break;
+				}
+			}
+			if (! dropdownItem) {
+				return null;
+			}
+			return createJsObject(dropdownItem);
+		}
+		return createJsObject(item);
+	}
+
 	this.updateSize = function(innerWidth) {
 		currentWidth = innerWidth;
 			

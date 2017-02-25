@@ -155,19 +155,23 @@ QCD.WindowController = function(_menuStructure) {
 
 	this.goBack = function(pageController) {
 		lastPageController = pageController;
-		var stateObject = statesStack.pop();
-		serializationObjectToInsert = stateObject;
-		if (stateObject.openedModal) {
-			modal = modalsStack.pop();
-			modal.hide();
-			if (modalsStack.length == 0) {
-				onIframeLoad();
-			} else {
-				onIframeLoad(modalsStack[modalsStack.length - 1].iframe[0]);
-			}
+		if(statesStack.length > 0){
+            var stateObject = statesStack.pop();
+            serializationObjectToInsert = stateObject;
+            if (stateObject.openedModal) {
+                modal = modalsStack.pop();
+                modal.hide();
+                if (modalsStack.length == 0) {
+                    onIframeLoad();
+                } else {
+                    onIframeLoad(modalsStack[modalsStack.length - 1].iframe[0]);
+                }
+            } else {
+                currentPage = stateObject.url;
+                performGoToPage(currentPage);
+            }
 		} else {
-			currentPage = stateObject.url;
-			performGoToPage(currentPage);
+		    this.goToDashboard();
 		}
 	}
 
@@ -252,6 +256,11 @@ QCD.WindowController = function(_menuStructure) {
 			messagesController.clearMessager();
 		}
 		loadingIndicator.show();
+		if(url.indexOf(window.location.origin) > -1){
+		    window.location.hash = url.split(window.location.origin)[1];
+		} else {
+		    window.location.hash = url;
+		}
 		if (url.search("://") <= 0) {
 			if (url.indexOf("?") == -1) {
 				url += "?iframe=true";

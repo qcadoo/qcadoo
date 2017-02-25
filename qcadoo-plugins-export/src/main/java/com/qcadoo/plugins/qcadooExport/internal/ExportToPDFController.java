@@ -23,7 +23,6 @@
  */
 package com.qcadoo.plugins.qcadooExport.internal;
 
-import com.google.common.base.Strings;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -43,6 +42,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -94,7 +94,7 @@ public class ExportToPDFController {
 
     @Monitorable(threshold = 500)
     @ResponseBody
-    @RequestMapping(value = {L_CONTROLLER_PATH}, method = RequestMethod.POST)
+    @RequestMapping(value = { L_CONTROLLER_PATH }, method = RequestMethod.POST)
     public Object generatePdf(@PathVariable(L_PLUGIN_IDENTIFIER_VARIABLE) final String pluginIdentifier,
             @PathVariable(L_VIEW_NAME_VARIABLE) final String viewName, @RequestBody final JSONObject body, final Locale locale) {
         try {
@@ -120,8 +120,8 @@ public class ExportToPDFController {
             pdfWriter.createXmpMetadata();
             document.open();
 
-            String title = translationService.translate(pluginIdentifier + "." + viewName + ".window.mainTab." + grid.getName()
-                    + ".header", locale);
+            String title = translationService
+                    .translate(pluginIdentifier + "." + viewName + ".window.mainTab." + grid.getName() + ".header", locale);
 
             Date generationDate = new Date();
 
@@ -163,7 +163,9 @@ public class ExportToPDFController {
 
         grid.getColumns().entrySet().stream().forEach(entry -> {
             String columnAuthorizationRole = entry.getValue().getAuthorizationRole();
-            if (Strings.isNullOrEmpty(columnAuthorizationRole) || securityRolesService.canAccess(columnAuthorizationRole)) {
+
+            if ((Strings.isNullOrEmpty(columnAuthorizationRole) || securityRolesService.canAccess(columnAuthorizationRole))
+                    && !entry.getValue().isHidden()) {
                 columns.add(entry.getKey());
             }
         });
@@ -177,7 +179,9 @@ public class ExportToPDFController {
         columns.forEach(column -> {
             String columnName = grid.getColumnNames().get(column);
 
-            columnNames.add(columnName);
+            if (!Strings.isNullOrEmpty(columnName)) {
+                columnNames.add(columnName);
+            }
         });
 
         return columnNames;

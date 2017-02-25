@@ -49,20 +49,35 @@ QCD.menu.MenuController = function(menuStructure, windowController) {
 
 		createMenu(menuStructure);
 
-		if (model.selectedItem) {
-			previousActive.first = model.selectedItem;
-			model.selectedItem.element.addClass("path");
-			previousActive.second = model.selectedItem.selectedItem;
-		}
-		//
-		//        updateState();
-		//        updateTopButtons();
-		if (model.selectedItem && model.selectedItem.selectedItem) {
-			fillCurrentPage();
-			that.setPageTitle();
-			changePage(model.selectedItem.selectedItem.page);
+        var hash = window.location.href.split("#")[1];
+        if(!hash || hash.indexOf("context") === -1){
+            if(hash != ""){
+                    for(var i = 0; i < model.items.length; i++){
+                        for(var j = 0; j < model.items[i].items.length; j++){
+                            if(model.items[i].items[j] && model.items[i].items[j].page === hash){
+                                model.selectedItem = model.items[i];
+                                model.selectedItem.selectedItem = model.items[i].items[j];
+                            }
+                        }
+                    }
+            }
+            if (model.selectedItem) {
+                previousActive.first = model.selectedItem;
+                model.selectedItem.element.addClass("path");
+                previousActive.second = model.selectedItem.selectedItem;
+                model.selectedItem.element.find("a").addClass("maintainHover");
+                model.selectedItem.element.find("a").addClass("currentMainActive");
+                model.selectedItem.selectedItem.element.find('a').addClass('currentActive');
+            }
+            if (model.selectedItem && model.selectedItem.selectedItem) {
+                fillCurrentPage();
+                that.setPageTitle();
+                changePage(model.selectedItem.selectedItem.page);
+            } else {
+                changePage("noDashboard.html");
+            }
 		} else {
-			changePage("noDashboard.html");
+            changePage(hash);
 		}
 	}
 
@@ -87,14 +102,9 @@ QCD.menu.MenuController = function(menuStructure, windowController) {
 							}
 							if (responseText != "") {
 								var response = JSON.parse(responseText);
-								//$(".mainMenu").children().remove();
-								//secondLevelElement.children().remove();
-								//createMenu(response);
 								model.selectedItem = model.itemsMap[selectedFirstName];
 								model.selectedItem.selectedItem = model.selectedItem.itemsMap[selectedSecondName];
-								//                        updateState();
 							}
-							//                    updateTopButtons();
 						}
 					}
 				});
@@ -142,7 +152,7 @@ QCD.menu.MenuController = function(menuStructure, windowController) {
 			for (j = 0; j < secondItemsLen; j++) {
 				secondLevelItem = item.items[j];
 				secondLevelButton = $("<li>").html(
-						"<a href='#'><span>" + secondLevelItem.label
+						"<a href='" + window.location.href.split("#")[0] + "#" + secondLevelItem.page + "'><span>" + secondLevelItem.label
 								+ "</span></a>").attr("id",
 						"secondLevelButton_" + secondLevelItem.name);
 				if (secondLevelItem.description) {
@@ -213,7 +223,6 @@ QCD.menu.MenuController = function(menuStructure, windowController) {
 	}
 
 	function onTopItemClick(itemElement) {
-		//        itemElement.children().blur();
 		itemElement = $(itemElement);
 
 		var buttonName = itemElement.attr("id").substring(17);
@@ -223,11 +232,9 @@ QCD.menu.MenuController = function(menuStructure, windowController) {
 			currentActive.second = model.selectedItem.selectedItem
 		}
 
-		//        updateState();
 	}
 
 	function onBottomItemClick(itemElement) {
-		//        itemElement.children().blur();
 
 		if (!canChangePage()) {
 			return;
@@ -237,12 +244,13 @@ QCD.menu.MenuController = function(menuStructure, windowController) {
 
 		model.selectedItem.selectedItem = model.selectedItem.itemsMap[buttonName];
 
-		previousActive.first.element.removeClass("path");
+        if(previousActive.first){
+		    previousActive.first.element.removeClass("path");
+		}
 		previousActive.first = model.selectedItem;
 		previousActive.second = model.selectedItem.selectedItem;
 		previousActive.first.element.addClass("path");
 
-		//updateState();
 		$('.subMenu .currentActive').removeClass('currentActive');
 		itemElement.find('a').addClass('currentActive');
 
@@ -280,7 +288,9 @@ QCD.menu.MenuController = function(menuStructure, windowController) {
 			topItem.element.find("a").addClass("currentMainActive");
 		}
 		if (topItem && bottomItem) {
-			model.selectedItem.element.removeClass("path");
+		    if(model.selectedItem){
+			    model.selectedItem.element.removeClass("path");
+		    }
 
 			topItem.selectedItem = bottomItem;
 
@@ -323,7 +333,6 @@ QCD.menu.MenuController = function(menuStructure, windowController) {
 		if (previousActive.second) {
 			model.selectedItem.selectedItem = previousActive.second;
 		}
-		//updateState();
 	};
 
 	function updateState() {
@@ -335,7 +344,6 @@ QCD.menu.MenuController = function(menuStructure, windowController) {
 			currentActive.first = model.selectedItem;
 			currentActive.first.element.addClass("activ");
 
-			//updateSecondLevel();
 
 		} else if (model.selectedItem) {
 			if (currentActive.second != model.selectedItem.selectedItem) {

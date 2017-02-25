@@ -23,6 +23,23 @@
  */
 package com.qcadoo.view.internal.components.grid;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
@@ -45,16 +62,6 @@ import com.qcadoo.view.internal.RowStyleResolver;
 import com.qcadoo.view.internal.patterns.AbstractComponentPattern;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
 import com.qcadoo.view.internal.xml.ViewDefinitionParserNodeException;
-import org.apache.commons.lang3.StringUtils;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
 
 public class GridComponentPattern extends AbstractComponentPattern {
 
@@ -312,6 +319,7 @@ public class GridComponentPattern extends AbstractComponentPattern {
         addTranslation(translations, "operator_cn", locale);
         addTranslation(translations, "operator_bw", locale);
         addTranslation(translations, "operator_ew", locale);
+        addTranslation(translations, "operator_isnull", locale);
         addTranslation(translations, "multiSearchTitle", locale);
         addTranslation(translations, "searchButton", locale);
         addTranslation(translations, "resetButton", locale);

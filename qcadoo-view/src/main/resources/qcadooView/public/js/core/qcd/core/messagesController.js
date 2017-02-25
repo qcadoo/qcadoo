@@ -53,7 +53,6 @@ QCD.MessagesController = function () {
 		if (type === "failure") {
 			type = "error";
 		}
-		
 		messageOptionsObject = {
 				pnotify_title: message.title,
 				pnotify_text: message.content,
@@ -66,7 +65,9 @@ QCD.MessagesController = function () {
 				pnotify_error_icon: 'ui-icon ui-icon-error',
 				pnotify_opacity: 0.9,
 				pnotify_delay: 4000,
-				pnotify_hide: message.autoClose
+				pnotify_hide: message.autoClose,
+				pnotify_closer_title: message.closerTitle,
+				pnotify_close_all_title: message.closeAllTitle
 			}; 
 
 		if (! message.autoClose) {

@@ -670,7 +670,7 @@ QCD.components.elements.grid.GridHeaderController = function (_gridController, _
     function onMultiSearchDialogSearchClicked(data) {
         var isEmpty = true;
         for (var iterator in data.rules) {
-            if (data.rules[iterator] != null && $.trim(data.rules[iterator].data) != "") {
+            if (data.rules[iterator] != null && (data.rules[iterator].op === "isnull" || $.trim(data.rules[iterator].data) != "")) {
                 isEmpty = false;
                 break;
             }

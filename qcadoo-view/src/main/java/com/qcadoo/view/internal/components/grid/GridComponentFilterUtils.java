@@ -98,7 +98,7 @@ public final class GridComponentFilterUtils {
                 try {
                     FieldDefinition fieldDefinition = getFieldDefinition(dataDefinition, field);
 
-                    if ("".equals(rule.getData())) {
+                    if ("".equals(rule.getData()) && !GridComponentFilterOperator.ISNULL.equals(rule.getFilterOperator())) {
                         continue;
                     }
 
@@ -169,6 +169,8 @@ public final class GridComponentFilterUtils {
                 return SearchRestrictions.lt(field, data);
             case LE:
                 return SearchRestrictions.le(field, data);
+            case ISNULL:
+                return SearchRestrictions.isNull(field);
             case IN:
                 if (data instanceof Collection<?>) {
                     return SearchRestrictions.in(field, (Collection<?>) data);
@@ -254,6 +256,8 @@ public final class GridComponentFilterUtils {
                 return SearchRestrictions.lt(field, minDate);
             case LE:
                 return SearchRestrictions.le(field, maxDate);
+            case ISNULL:
+                return SearchRestrictions.isNull(field);
             default:
                 throw new IllegalStateException("Unknown filter operator");
         }
@@ -278,6 +282,8 @@ public final class GridComponentFilterUtils {
             case GT:
             case LT:
                 return SearchRestrictions.ne(field, data);
+            case ISNULL:
+                return SearchRestrictions.isNull(field);
             default:
                 throw new IllegalStateException("Unknown filter operator");
         }
