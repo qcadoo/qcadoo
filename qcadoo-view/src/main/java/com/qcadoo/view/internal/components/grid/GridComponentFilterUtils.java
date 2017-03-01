@@ -277,7 +277,7 @@ public final class GridComponentFilterUtils {
                 return SearchRestrictions.ilike(field, data, SearchMatchMode.END);
             case IN:
                 Collection<String> values = parseListValue(data);
-                return SearchRestrictions.in(field, values);
+                return SearchRestrictions.inIgnoringCase(field, values);
             case NE:
             case GT:
             case LT:
