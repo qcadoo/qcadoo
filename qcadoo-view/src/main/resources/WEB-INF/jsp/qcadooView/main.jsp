@@ -82,7 +82,7 @@
 
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/qcd/alert/packaged/jquery.noty.packaged.min.js?ver=${buildNumber}"></script>
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/qcd/alert/layouts/top.min.js?ver=${buildNumber}"></script>
-						<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/qcd/alert/layouts/center.min.js?ver=${buildNumber}"></script>
+			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/qcd/alert/layouts/center.min.js?ver=${buildNumber}"></script>
 
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/qcd/alert/notyController.min.js?ver=${buildNumber}"></script>
 
@@ -102,6 +102,7 @@
 		jQuery(document).ready(function(){
 
 			windowController = new QCD.WindowController(menuStructure);
+
 			var notifications = new QCD.Notifications();
  			notifications.getNotifications();
 			$("#mainPageIframe").load(function() {
@@ -171,13 +172,7 @@
             				e.preventDefault();
             			});
 
-            /*var $menu = $(".mainMenu");
-        	$menu.menuAim({
-				activate: activateSubmenu,
-	            deactivate: deactivateSubmenu
-	        });
-	        */
-// ************ lazy menu show item
+            // ************ lazy menu show item
 	        function activateSubmenu(row) {
 	        	deactivateSubmenu($('.maintainHover', $mainMenu).parent());
 
