@@ -208,15 +208,15 @@
                         y: offset.top - options.tolerance
                     },
                     upperRight = {
-                        x: offset.left + $menu.outerWidth(),
+                        x: offset.left + $menu.outerWidth(false),
                         y: upperLeft.y
                     },
                     lowerLeft = {
                         x: offset.left,
-                        y: offset.top + $menu.outerHeight() + options.tolerance
+                        y: offset.top + $menu.outerHeight(false) + options.tolerance
                     },
                     lowerRight = {
-                        x: offset.left + $menu.outerWidth(),
+                        x: offset.left + $menu.outerWidth(false),
                         y: lowerLeft.y
                     },
                     loc = mouseLocs[mouseLocs.length - 1],
