@@ -168,11 +168,11 @@ QCD.components.containers.Form = function(_element, _mainController) {
 	}
 	
 	function block() {
-        QCD.components.elements.utils.LoadingIndicator.blockElement(element);
+        QCD.components.elements.utils.LoadingIndicator.blockElement($("#window_windowComponents"));
     }
     
     function unblock() {
-        QCD.components.elements.utils.LoadingIndicator.unblockElement(element);
+        QCD.components.elements.utils.LoadingIndicator.unblockElement($("#window_windowComponents"));
     }
 	
 	var origSendEvent = this.sendEvent;

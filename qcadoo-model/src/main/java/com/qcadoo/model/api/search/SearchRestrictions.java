@@ -38,6 +38,7 @@ import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.internal.api.DataAccessService;
 import com.qcadoo.model.internal.api.InternalDataDefinition;
+import com.qcadoo.model.internal.search.InExpressionIgnoringCase;
 import com.qcadoo.model.internal.search.SearchConjunctionImpl;
 import com.qcadoo.model.internal.search.SearchCriterionImpl;
 import com.qcadoo.model.internal.search.SearchDisjunctionImpl;
@@ -583,6 +584,19 @@ public final class SearchRestrictions {
      */
     public static SearchCriterion in(final String field, final Collection<?> values) {
         return new SearchCriterionImpl(Restrictions.in(field, values));
+    }
+
+    /**
+     * Creates criterion which checks if field is in given values ignoring case.
+     *
+     * @param field
+     *            field
+     * @param values
+     *            values
+     * @return criterion
+     */
+    public static SearchCriterion inIgnoringCase(final String field, final Collection<?> values) {
+        return new SearchCriterionImpl(new InExpressionIgnoringCase(field, values.toArray()));
     }
 
     /**

@@ -743,6 +743,8 @@ QCD.components.elements.Grid = function (element, mainController) {
         if(isEmpty(gridParameters.columnsToSummary)){
             return;
         }
+        var locale = window.top.document.documentElement.lang;
+
         var rows = grid.jqGrid('getDataIDs');
 
         var tmp = gridParameters.columnsToSummary;
@@ -758,11 +760,24 @@ QCD.components.elements.Grid = function (element, mainController) {
                     totalSum = false;
                     break;
                 }
-                totalSum += parseFloat(nanToZero(val.split('&nbsp;').join('').replace(',','.'))) || 0;
+                if(locale === "pl_PL" || locale === "pl"){
+                    totalSum += parseFloat(nanToZero(val.split('&nbsp;').join('').replace(',','.'))) || 0;
+                } else if(locale === "de"){
+                    totalSum += parseFloat(nanToZero(val.split('&nbsp;').join('').replace(/\./g,'').replace(',','.'))) || 0;
+                } else {
+                    totalSum += parseFloat(nanToZero(val.split('&nbsp;').join('').replace(/\,/g,''))) || 0;
+                }
             }
             if(totalSum!==false){
                 var total = nanToZero(parseFloat(totalSum.toFixed(5)));
-                var obj = '[{"' + c + '": "' + numberWithSpaces(total.toString().replace('.',',')) + '"}]';
+                var obj;
+                if(locale === "pl_PL" || locale === "pl"){
+                    obj = '[{"' + c + '": "' + numberWithSpaces(total.toString().replace('.',',')) + '"}]';
+                } else if (locale === "de") {
+                    obj = '[{"' + c + '": "' + numberWithDot(total.toString().replace('.',',')) + '"}]';
+                } else {
+                    obj = '[{"' + c + '": "' + numberWithComa(total.toString().replace('.',',')) + '"}]';
+                }
                 var colFoot = JSON.parse(obj);
                 grid.jqGrid('footerData', 'set', colFoot[0]);
             }
@@ -774,6 +789,19 @@ QCD.components.elements.Grid = function (element, mainController) {
         parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, " ");
         return parts.join(",");
     }
+
+    function numberWithDot(x) {
+        var parts = x.toString().split(",");
+        parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        return parts.join(",");
+    }
+
+    function numberWithComa(x) {
+        var parts = x.toString().split(",");
+        parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        return parts.join(".");
+    }
+
 
      function addSummaryDataForNumberTimeRows(){
         if(isEmpty(gridParameters.columnsToSummaryTime)){
