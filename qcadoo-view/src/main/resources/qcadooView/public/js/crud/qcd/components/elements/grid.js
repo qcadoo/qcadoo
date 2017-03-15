@@ -827,30 +827,42 @@ QCD.components.elements.Grid = function (element, mainController) {
     }
 
     function toSeconds(time) {
-        if(isEmpty(time)){
+        if (isEmpty(time)){
             return 0;
         }
+
         var parts = time.split(':');
+
         return (+parts[0]) * 60 * 60 + (+parts[1]) * 60 + (+parts[2]);
     }
 
     function secondsToTime(secs)
     {
-       var sec_num = parseInt(secs);
-       var hours   = Math.floor(sec_num / 3600);
-       var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
-       var seconds = sec_num - (hours * 3600) - (minutes * 60);
-       if (hours   < 10) {hours   = "0"+hours;}
-       if (minutes < 10) {minutes = "0"+minutes;}
-       if (seconds < 10) {seconds = "0"+seconds;}
-       var time    = hours+':'+minutes+':'+seconds;
-       return time;
+        var minus = false;
+
+        var sec_num = parseInt(secs);
+
+        if (sec_num < 0) {
+            minus = true;
+
+            sec_num = -sec_num;
+        }
+
+        var hours = Math.floor(sec_num / 3600);
+        var minutes = Math.floor(sec_num % 3600 / 60);
+        var seconds = Math.floor(sec_num % 3600 % 60);
+
+        return (minus ? "-" : "") +
+            ((hours < 10) ? "0" : "") + hours + ":" +
+            ((minutes < 10) ? "0" : "") + minutes + ":" +
+            ((seconds < 10) ? "0" : "") + seconds;
     }
 
     function nanToZero(val) {
         if (isNaN(val)) {
             return 0;
-         }
+        }
+
         return val;
     }
 

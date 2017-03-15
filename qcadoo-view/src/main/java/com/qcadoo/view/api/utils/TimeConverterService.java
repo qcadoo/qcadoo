@@ -73,29 +73,25 @@ public class TimeConverterService {
         if (duration == null) {
             return ERROR_STRING_VALUE;
         }
-        // rly? IMO this conversion doesn't make any sense in this specific case..
+
+        boolean minus = false;
+
         long longValueFromDuration = duration.longValue();
+
+        if (longValueFromDuration < 0 ) {
+            minus = true;
+
+            longValueFromDuration = -longValueFromDuration;
+        }
+
         long hours = longValueFromDuration / 3600;
         long minutes = longValueFromDuration % 3600 / 60;
         long seconds = longValueFromDuration % 3600 % 60;
 
-        Boolean minus = false;
-
-        if (hours < 0) {
-            minus = true;
-            hours = -hours;
-        }
-        if (minutes < 0) {
-            minus = true;
-            minutes = -minutes;
-        }
-        if (seconds < 0) {
-            minus = true;
-            seconds = -seconds;
-        }
-
-        return (minus ? "-" : "") + (hours < 10 ? "0" : "") + hours + ":" + (minutes < 10 ? "0" : "") + minutes + ":"
-                + (seconds < 10 ? "0" : "") + seconds;
+        return (minus ? "-" : "") +
+                ((hours < 10) ? "0" : "") + hours + ":" +
+                ((minutes < 10) ? "0" : "") + minutes + ":" +
+                ((seconds < 10) ? "0" : "") + seconds;
     }
 
     /**
