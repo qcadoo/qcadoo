@@ -32,6 +32,7 @@ import com.qcadoo.model.api.search.CustomRestriction;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.components.lookup.FilterValueHolder;
 import com.qcadoo.view.internal.components.grid.GridComponentColumn;
+import com.qcadoo.view.api.components.grid.GridComponentMultiSearchFilter;
 
 /**
  * Represents grid component
@@ -156,4 +157,6 @@ public interface GridComponent extends ComponentState {
     void setFilters(Map<String, String> filters);
 
     Map<String, GridComponentColumn> getColumns();
+
+    GridComponentMultiSearchFilter getMultiSearchFilter();
 }

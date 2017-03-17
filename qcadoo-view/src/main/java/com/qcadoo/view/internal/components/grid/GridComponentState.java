@@ -23,33 +23,50 @@
  */
 package com.qcadoo.view.internal.components.grid;
 
-import com.google.common.base.Strings;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.commons.lang3.StringUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.EntityOpResult;
 import com.qcadoo.model.api.FieldDefinition;
-import com.qcadoo.model.api.search.*;
-import com.qcadoo.model.api.types.*;
+import com.qcadoo.model.api.search.CustomRestriction;
+import com.qcadoo.model.api.search.JoinType;
+import com.qcadoo.model.api.search.SearchCriteriaBuilder;
+import com.qcadoo.model.api.search.SearchOrders;
+import com.qcadoo.model.api.search.SearchRestrictions;
+import com.qcadoo.model.api.search.SearchResult;
+import com.qcadoo.model.api.types.BelongsToType;
+import com.qcadoo.model.api.types.FieldType;
+import com.qcadoo.model.api.types.JoinFieldHolder;
+import com.qcadoo.model.api.types.ManyToManyType;
 import com.qcadoo.model.api.validators.ErrorMessage;
 import com.qcadoo.model.internal.ProxyEntity;
 import com.qcadoo.model.internal.types.EnumType;
 import com.qcadoo.security.api.SecurityRole;
 import com.qcadoo.security.api.SecurityRolesService;
 import com.qcadoo.view.api.components.GridComponent;
+import com.qcadoo.view.api.components.grid.GridComponentMultiSearchFilter;
 import com.qcadoo.view.api.components.lookup.FilterValueHolder;
 import com.qcadoo.view.internal.CriteriaModifier;
 import com.qcadoo.view.internal.FilterValueHolderImpl;
 import com.qcadoo.view.internal.RowStyleResolver;
 import com.qcadoo.view.internal.states.AbstractComponentState;
-import org.apache.commons.lang3.StringUtils;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.*;
-import java.util.stream.Collectors;
 
 public final class GridComponentState extends AbstractComponentState implements GridComponent {
 
@@ -182,7 +199,7 @@ public final class GridComponentState extends AbstractComponentState implements 
     private boolean autoRefresh = false;
 
     private final GridComponentPattern pattern;
-    
+
     public GridComponentState(final DataDefinition dataDefinition, final GridComponentPattern pattern) {
         super(pattern);
         this.pattern = pattern;
@@ -1005,5 +1022,10 @@ public final class GridComponentState extends AbstractComponentState implements 
     @Override
     public Map<String, GridComponentColumn> getColumns() {
         return columns;
+    }
+
+    @Override
+    public GridComponentMultiSearchFilter getMultiSearchFilter() {
+        return multiSearchFilter;
     }
 }

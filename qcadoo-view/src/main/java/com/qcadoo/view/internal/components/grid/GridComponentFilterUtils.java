@@ -23,6 +23,8 @@
  */
 package com.qcadoo.view.internal.components.grid;
 
+import static com.qcadoo.view.internal.components.grid.GridComponentFilterOperator.ISNULL;
+
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.*;
@@ -42,6 +44,7 @@ import com.qcadoo.model.api.search.SearchCriterion;
 import com.qcadoo.model.api.search.SearchRestrictions;
 import com.qcadoo.model.api.search.SearchRestrictions.SearchMatchMode;
 import com.qcadoo.model.api.types.BelongsToType;
+import com.qcadoo.view.api.components.grid.GridComponentMultiSearchFilter;
 
 public final class GridComponentFilterUtils {
 
@@ -60,7 +63,7 @@ public final class GridComponentFilterUtils {
 
                     Map.Entry<GridComponentFilterOperator, String> filterValue = parseFilterValue(filter.getValue());
 
-                    if ("".equals(filterValue.getValue())) {
+                    if ("".equals(filterValue.getValue()) && !ISNULL.equals(filterValue.getKey())) {
                         continue;
                     }
 
@@ -98,7 +101,7 @@ public final class GridComponentFilterUtils {
                 try {
                     FieldDefinition fieldDefinition = getFieldDefinition(dataDefinition, field);
 
-                    if ("".equals(rule.getData()) && !GridComponentFilterOperator.ISNULL.equals(rule.getFilterOperator())) {
+                    if ("".equals(rule.getData()) && !ISNULL.equals(rule.getFilterOperator())) {
                         continue;
                     }
 
@@ -237,8 +240,13 @@ public final class GridComponentFilterUtils {
             return SearchRestrictions.in(field, dates);
         }
 
-        Date minDate = DateUtils.parseAndComplete(data, false);
-        Date maxDate = DateUtils.parseAndComplete(data, true);
+        Date minDate = null;
+        Date maxDate = null;
+
+        if(!ISNULL.equals(filterOperator)){
+            minDate = DateUtils.parseAndComplete(data, false);
+            maxDate = DateUtils.parseAndComplete(data, true);
+        }
 
         switch (filterOperator) {
             case EQ:
@@ -400,6 +408,9 @@ public final class GridComponentFilterUtils {
         } else if (filterValue.charAt(0) == '[' && filterValue.charAt(filterValue.length() - 1) == ']') {
             operator = GridComponentFilterOperator.IN;
             value = filterValue.substring(1, filterValue.length() - 1);
+        } else if (ISNULL.name().equals(filterValue.toUpperCase())) {
+            operator = GridComponentFilterOperator.ISNULL;
+            value = "";
         } else {
             value = filterValue;
         }

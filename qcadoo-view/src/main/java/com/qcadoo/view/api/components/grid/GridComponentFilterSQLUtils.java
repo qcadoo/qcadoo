@@ -21,14 +21,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * ***************************************************************************
  */
-package com.qcadoo.view.internal.components.grid;
-
-import com.google.common.collect.Lists;
-import com.qcadoo.localization.api.utils.DateUtils;
-import com.qcadoo.model.api.DataDefinition;
-import com.qcadoo.model.api.FieldDefinition;
-import com.qcadoo.model.api.types.BelongsToType;
-import org.apache.commons.lang3.StringUtils;
+package com.qcadoo.view.api.components.grid;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -39,6 +32,19 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.apache.commons.lang3.StringUtils;
+
+import com.google.common.collect.Lists;
+import com.qcadoo.localization.api.utils.DateUtils;
+import com.qcadoo.model.api.DataDefinition;
+import com.qcadoo.model.api.FieldDefinition;
+import com.qcadoo.model.api.search.SearchCriterion;
+import com.qcadoo.model.api.types.BelongsToType;
+import com.qcadoo.view.internal.components.grid.GridComponentColumn;
+import com.qcadoo.view.internal.components.grid.GridComponentFilterException;
+import com.qcadoo.view.internal.components.grid.GridComponentFilterOperator;
+import com.qcadoo.view.internal.components.grid.GridComponentMultiSearchFilterRule;
 
 public final class GridComponentFilterSQLUtils {
 
@@ -84,6 +90,70 @@ public final class GridComponentFilterSQLUtils {
         }
 
         return filterQuery.toString();
+    }
+
+    public static String addMultiSearchFilter(GridComponentMultiSearchFilter multiSearchFilter,
+                                            Map<String, GridComponentColumn> columns, String table, DataDefinition dataDefinition)
+            throws GridComponentFilterException {
+        StringBuilder filterQuery = new StringBuilder("");
+
+        for (GridComponentMultiSearchFilterRule rule : multiSearchFilter.getRules()) {
+            String field = getFieldNameByColumnName(columns, rule.getField());
+
+            if (field != null) {
+                try {
+                    FieldDefinition fieldDefinition = getFieldDefinition(dataDefinition, field);
+
+                    if ("".equals(rule.getData()) && !GridComponentFilterOperator.ISNULL.equals(rule.getFilterOperator())) {
+                        continue;
+                    }
+
+                    SearchCriterion searchRule = null;
+//                    if (fieldDefinition != null && String.class.isAssignableFrom(fieldDefinition.getType().getType())) {
+//                        searchRule = createStringCriterion(rule.getFilterOperator(), rule.getData(), field);
+//                    } else if (fieldDefinition != null && Boolean.class.isAssignableFrom(fieldDefinition.getType().getType())) {
+//                        searchRule = createSimpleCriterion(rule.getFilterOperator(), "1".equals(rule.getData()), field);
+//                    } else if (fieldDefinition != null && Date.class.isAssignableFrom(fieldDefinition.getType().getType())) {
+//                        searchRule = createDateCriterion(rule.getFilterOperator(), rule.getData(), field);
+//                    } else if (fieldDefinition != null && BigDecimal.class.isAssignableFrom(fieldDefinition.getType().getType())) {
+//                        searchRule = createDecimalCriterion(rule.getFilterOperator(), rule.getData(), field);
+//                    } else if (fieldDefinition != null && Integer.class.isAssignableFrom(fieldDefinition.getType().getType())) {
+//                        searchRule = createIntegerCriterion(rule.getFilterOperator(), rule.getData(), field);
+//                    } else {
+//                        searchRule = createSimpleCriterion(rule.getFilterOperator(), rule.getData(), field);
+//                    }
+
+//                    searchRules.add(searchRule);
+                } catch (Exception pe) {
+                    throw new GridComponentFilterException(rule.getData());
+                }
+            }
+        }
+
+        SearchCriterion groupedRules = null;
+//        if (searchRules.size() == 1) {
+//            groupedRules = searchRules.pollFirst();
+//        } else if (searchRules.size() == 2) {
+//            if (multiSearchFilter.getGroupOperator() == GridComponentFilterGroupOperator.AND) {
+//                groupedRules = SearchRestrictions.and(searchRules.pollFirst(), searchRules.pollFirst());
+//            } else if (multiSearchFilter.getGroupOperator() == GridComponentFilterGroupOperator.OR) {
+//                groupedRules = SearchRestrictions.or(searchRules.pollFirst(), searchRules.pollFirst());
+//            }
+//        } else if (searchRules.size() > 2) {
+//            SearchCriterion firstRule = searchRules.pollFirst();
+//            SearchCriterion secondRule = searchRules.pollFirst();
+//            SearchCriterion[] otherRules = new SearchCriterion[searchRules.size()];
+//            searchRules.toArray(otherRules);
+//            if (multiSearchFilter.getGroupOperator() == GridComponentFilterGroupOperator.AND) {
+//                groupedRules = SearchRestrictions.and(firstRule, secondRule, otherRules);
+//            } else if (multiSearchFilter.getGroupOperator() == GridComponentFilterGroupOperator.OR) {
+//                groupedRules = SearchRestrictions.or(firstRule, secondRule, otherRules);
+//            }
+//        }
+        if (groupedRules != null) {
+//            criteria.add(groupedRules);
+        }
+        return "";
     }
 
     private static String createSimpleCriterion(String table, GridComponentFilterOperator filterOperator, Object data,
@@ -226,7 +296,7 @@ public final class GridComponentFilterSQLUtils {
                 return field + " ilike '" + data + "%' ";
             case IN:
                 Collection<String> values = parseListValue(data);
-                return field + " in (" + convertToIn(values) + ") ";
+                return "lower(" + field + ") in (" + convertToIn(values) + ") ";
             case NE:
             case GT:
             case LT:
@@ -238,7 +308,7 @@ public final class GridComponentFilterSQLUtils {
 
     private static String convertToIn(final Collection<String> values) {
         StringBuilder builder= new StringBuilder();
-        values.forEach(v -> joinToIn(v, builder));
+        values.forEach(v -> joinToIn(v.toLowerCase(), builder));
         return builder.toString();
     }
 
