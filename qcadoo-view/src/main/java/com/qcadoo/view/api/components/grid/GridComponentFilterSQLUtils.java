@@ -21,14 +21,9 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * ***************************************************************************
  */
-package com.qcadoo.view.internal.components.grid;
+package com.qcadoo.view.api.components.grid;
 
-import com.google.common.collect.Lists;
-import com.qcadoo.localization.api.utils.DateUtils;
-import com.qcadoo.model.api.DataDefinition;
-import com.qcadoo.model.api.FieldDefinition;
-import com.qcadoo.model.api.types.BelongsToType;
-import org.apache.commons.lang3.StringUtils;
+import static com.qcadoo.view.internal.components.grid.GridComponentFilterOperator.ISNULL;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -40,6 +35,19 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
+
+import com.google.common.collect.Lists;
+import com.qcadoo.localization.api.utils.DateUtils;
+import com.qcadoo.model.api.DataDefinition;
+import com.qcadoo.model.api.FieldDefinition;
+import com.qcadoo.model.api.types.BelongsToType;
+import com.qcadoo.view.internal.components.grid.GridComponentColumn;
+import com.qcadoo.view.internal.components.grid.GridComponentFilterException;
+import com.qcadoo.view.internal.components.grid.GridComponentFilterGroupOperator;
+import com.qcadoo.view.internal.components.grid.GridComponentFilterOperator;
+import com.qcadoo.view.internal.components.grid.GridComponentMultiSearchFilterRule;
+
 public final class GridComponentFilterSQLUtils {
 
     private GridComponentFilterSQLUtils() {
@@ -47,7 +55,7 @@ public final class GridComponentFilterSQLUtils {
 
     public static String addFilters(final Map<String, String> filters, final Map<String, GridComponentColumn> columns,
             String table, final DataDefinition dataDefinition) throws GridComponentFilterException {
-        StringBuilder filterQuery = new StringBuilder("");
+        StringBuilder filterQuery = new StringBuilder(" 1=1 ");
 
         for (Entry<String, String> filter : filters.entrySet()) {
 
@@ -59,7 +67,7 @@ public final class GridComponentFilterSQLUtils {
 
                     Entry<GridComponentFilterOperator, String> filterValue = parseFilterValue(filter.getValue());
 
-                    if ("".equals(filterValue.getValue())) {
+                    if ("".equals(filterValue.getValue()) && !ISNULL.equals(filterValue.getKey())) {
                         continue;
                     }
 
@@ -69,8 +77,8 @@ public final class GridComponentFilterSQLUtils {
                         addSimpleFilter(table, filterQuery, filterValue, field, "1".equals(filterValue.getValue()));
                     } else if (fieldDefinition != null && Date.class.isAssignableFrom(fieldDefinition.getType().getType())) {
                         addDateFilter(table, filterQuery, filterValue, field);
-                    } else if (fieldDefinition != null && BigDecimal.class
-                            .isAssignableFrom(fieldDefinition.getType().getType())) {
+                    } else if (fieldDefinition != null
+                            && BigDecimal.class.isAssignableFrom(fieldDefinition.getType().getType())) {
                         addDecimalFilter(table, filterQuery, filterValue, field);
                     } else if (fieldDefinition != null && Integer.class.isAssignableFrom(fieldDefinition.getType().getType())) {
                         addIntegerFilter(table, filterQuery, filterValue, field);
@@ -81,6 +89,60 @@ public final class GridComponentFilterSQLUtils {
                     throw new GridComponentFilterException(filter.getValue());
                 }
             }
+        }
+
+        return filterQuery.toString();
+    }
+
+    public static String addMultiSearchFilter(GridComponentMultiSearchFilter multiSearchFilter,
+            Map<String, GridComponentColumn> columns, String table, DataDefinition dataDefinition)
+            throws GridComponentFilterException {
+        StringBuilder filterQuery = new StringBuilder(" 1=1 ");
+
+        for (GridComponentMultiSearchFilterRule rule : multiSearchFilter.getRules()) {
+            String field = getFieldNameByColumnName(columns, rule.getField());
+
+            if (field != null) {
+                try {
+                    FieldDefinition fieldDefinition = getFieldDefinition(dataDefinition, field);
+
+                    if ("".equals(rule.getData()) && !ISNULL.equals(rule.getFilterOperator())) {
+                        continue;
+                    }
+
+                    if (filterQuery.length() > 5) {
+                        if (multiSearchFilter.getGroupOperator() == GridComponentFilterGroupOperator.AND) {
+                            filterQuery.append(GridComponentFilterGroupOperator.AND + " ");
+                        } else if (multiSearchFilter.getGroupOperator() == GridComponentFilterGroupOperator.OR) {
+                            filterQuery.append(GridComponentFilterGroupOperator.OR + " ");
+                        }
+                    } else {
+                        filterQuery.append(GridComponentFilterGroupOperator.AND + " (");
+                    }
+
+                    if (fieldDefinition != null && String.class.isAssignableFrom(fieldDefinition.getType().getType())) {
+                        filterQuery.append(createStringCriterion(table, rule.getFilterOperator(), rule.getData(), field));
+                    } else if (fieldDefinition != null && Boolean.class.isAssignableFrom(fieldDefinition.getType().getType())) {
+                        filterQuery.append(
+                                createSimpleCriterion(table, rule.getFilterOperator(), "1".equals(rule.getData()), field));
+                    } else if (fieldDefinition != null && Date.class.isAssignableFrom(fieldDefinition.getType().getType())) {
+                        filterQuery.append(createDateCriterion(table, rule.getFilterOperator(), rule.getData(), field));
+                    } else if (fieldDefinition != null
+                            && BigDecimal.class.isAssignableFrom(fieldDefinition.getType().getType())) {
+                        filterQuery.append(createDecimalCriterion(table, rule.getFilterOperator(), rule.getData(), field));
+                    } else if (fieldDefinition != null && Integer.class.isAssignableFrom(fieldDefinition.getType().getType())) {
+                        filterQuery.append(createIntegerCriterion(table, rule.getFilterOperator(), rule.getData(), field));
+                    } else {
+                        filterQuery.append(createSimpleCriterion(table, rule.getFilterOperator(), rule.getData(), field));
+                    }
+
+                } catch (Exception pe) {
+                    throw new GridComponentFilterException(rule.getData());
+                }
+            }
+        }
+        if (filterQuery.length() > 5) {
+            filterQuery.append(") ");
         }
 
         return filterQuery.toString();
@@ -107,9 +169,11 @@ public final class GridComponentFilterSQLUtils {
                 return field + " < '" + data + "' ";
             case LE:
                 return field + " <= '" + data + "' ";
+            case ISNULL:
+                return field + " IS NULL ";
             case IN:
                 if (data instanceof Collection<?>) {
-                    //TODO
+                    // TODO
                     return " 1=1";
                 } else {
                     throw new IllegalStateException("Unknown filter value, collection required");
@@ -178,31 +242,34 @@ public final class GridComponentFilterSQLUtils {
             field = table + "." + field;
         }
 
-        Date minDate = DateUtils.parseAndComplete(data, false);
-        Date maxDate = DateUtils.parseAndComplete(data, true);
+        Date minDate = null;
+        Date maxDate = null;
+
+        if (!ISNULL.equals(filterOperator)) {
+            minDate = DateUtils.parseAndComplete(data, false);
+            maxDate = DateUtils.parseAndComplete(data, true);
+        }
 
         switch (filterOperator) {
             case EQ:
             case CN:
             case BW:
             case EW:
-                return field + " between '" + DateUtils.toDateTimeString(minDate) + "' and '" + DateUtils
-                        .toDateTimeString(maxDate) + "' ";
+                return field + " between '" + DateUtils.toDateTimeString(minDate) + "' and '"
+                        + DateUtils.toDateTimeString(maxDate) + "' ";
             case NE:
-                return field + " not between '" + DateUtils.toDateTimeString(minDate) + "' and '" + DateUtils
-                        .toDateTimeString(maxDate) + "' ";
+                return field + " not between '" + DateUtils.toDateTimeString(minDate) + "' and '"
+                        + DateUtils.toDateTimeString(maxDate) + "' ";
             case GT:
-                return field + " > '" +  DateUtils
-                        .toDateTimeString(maxDate) + "' ";
+                return field + " > '" + DateUtils.toDateTimeString(maxDate) + "' ";
             case GE:
-                return field + " >= '" +  DateUtils
-                        .toDateTimeString(minDate) + "' ";
+                return field + " >= '" + DateUtils.toDateTimeString(minDate) + "' ";
             case LT:
-                return field + " < '" +  DateUtils
-                        .toDateTimeString(minDate) + "' ";
+                return field + " < '" + DateUtils.toDateTimeString(minDate) + "' ";
             case LE:
-                return field + " >= '" +  DateUtils
-                        .toDateTimeString(maxDate) + "' ";
+                return field + " >= '" + DateUtils.toDateTimeString(maxDate) + "' ";
+            case ISNULL:
+                return field + " IS NULL ";
             default:
                 throw new IllegalStateException("Unknown filter operator");
         }
@@ -221,29 +288,31 @@ public final class GridComponentFilterSQLUtils {
             case CN:
                 return field + " ilike '%" + data + "%' ";
             case BW:
-                return field + " ilike '%" + data + "' ";
-            case EW:
                 return field + " ilike '" + data + "%' ";
+            case EW:
+                return field + " ilike '%" + data + "' ";
             case IN:
                 Collection<String> values = parseListValue(data);
-                return field + " in (" + convertToIn(values) + ") ";
+                return "lower(" + field + ") in (" + convertToIn(values) + ") ";
             case NE:
             case GT:
             case LT:
                 return field + " <> '" + data + "' ";
+            case ISNULL:
+                return field + " IS NULL ";
             default:
                 throw new IllegalStateException("Unknown filter operator");
         }
     }
 
     private static String convertToIn(final Collection<String> values) {
-        StringBuilder builder= new StringBuilder();
-        values.forEach(v -> joinToIn(v, builder));
+        StringBuilder builder = new StringBuilder();
+        values.forEach(v -> joinToIn(v.toLowerCase(), builder));
         return builder.toString();
     }
 
     private static void joinToIn(final String v, final StringBuilder builder) {
-        if(builder.length()>0){
+        if (builder.length() > 0) {
             builder.append(", ");
         }
         builder.append("'");
@@ -263,26 +332,20 @@ public final class GridComponentFilterSQLUtils {
     private static void addIntegerFilter(String table, StringBuilder filterQuery,
             final Entry<GridComponentFilterOperator, String> filterValue, final String field)
             throws GridComponentFilterException {
-        if (filterQuery.toString().length() != 0) {
-            filterQuery.append(" AND ");
-        }
+        filterQuery.append(GridComponentFilterGroupOperator.AND + " ");
         filterQuery.append(createIntegerCriterion(table, filterValue.getKey(), filterValue.getValue(), field));
     }
 
     private static void addDecimalFilter(String table, StringBuilder filterQuery,
             final Entry<GridComponentFilterOperator, String> filterValue, final String field)
             throws GridComponentFilterException {
-        if (filterQuery.toString().length() != 0) {
-            filterQuery.append(" AND ");
-        }
+        filterQuery.append(GridComponentFilterGroupOperator.AND + " ");
         filterQuery.append(createDecimalCriterion(table, filterValue.getKey(), filterValue.getValue(), field));
     }
 
     private static void addSimpleFilter(String table, StringBuilder filterQuery,
             final Entry<GridComponentFilterOperator, String> filterValue, final String field, final Object value) {
-        if (filterQuery.toString().length() != 0) {
-            filterQuery.append(" AND ");
-        }
+        filterQuery.append(GridComponentFilterGroupOperator.AND + " ");
         filterQuery.append(createSimpleCriterion(table, filterValue.getKey(), value, field));
     }
 
@@ -294,18 +357,13 @@ public final class GridComponentFilterSQLUtils {
         if (filterValue.getKey() == GridComponentFilterOperator.EQ) {
             operator = GridComponentFilterOperator.CN;
         }
-        if (filterQuery.toString().length() != 0) {
-            filterQuery.append(" AND ");
-        }
-
+        filterQuery.append(GridComponentFilterGroupOperator.AND + " ");
         filterQuery.append(createStringCriterion(table, operator, value, field));
     }
 
     private static void addDateFilter(String table, final StringBuilder filterQuery,
             final Entry<GridComponentFilterOperator, String> filterValue, final String field) throws ParseException {
-        if (filterQuery.toString().length() != 0) {
-            filterQuery.append(" AND ");
-        }
+        filterQuery.append(GridComponentFilterGroupOperator.AND + " ");
         filterQuery.append(createDateCriterion(table, filterValue.getKey(), filterValue.getValue(), field));
     }
 
@@ -349,6 +407,9 @@ public final class GridComponentFilterSQLUtils {
         } else if (filterValue.charAt(0) == '[' && filterValue.charAt(filterValue.length() - 1) == ']') {
             operator = GridComponentFilterOperator.IN;
             value = filterValue.substring(1, filterValue.length() - 1);
+        } else if (ISNULL.name().equals(filterValue.toUpperCase())) {
+            operator = GridComponentFilterOperator.ISNULL;
+            value = "";
         } else {
             value = filterValue;
         }

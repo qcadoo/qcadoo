@@ -21,7 +21,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * ***************************************************************************
  */
-package com.qcadoo.view.internal.components.grid;
+package com.qcadoo.view.api.components.grid;
 
 import java.util.Set;
 
@@ -30,6 +30,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.google.common.collect.Sets;
+import com.qcadoo.view.internal.components.grid.GridComponentFilterGroupOperator;
+import com.qcadoo.view.internal.components.grid.GridComponentFilterOperator;
+import com.qcadoo.view.internal.components.grid.GridComponentMultiSearchFilterRule;
 
 public class GridComponentMultiSearchFilter {
 
