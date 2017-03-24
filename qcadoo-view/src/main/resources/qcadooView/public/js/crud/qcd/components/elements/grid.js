@@ -802,26 +802,31 @@ QCD.components.elements.Grid = function (element, mainController) {
         return parts.join(".");
     }
 
-
-     function addSummaryDataForNumberTimeRows(){
+    function addSummaryDataForNumberTimeRows() {
         if(isEmpty(gridParameters.columnsToSummaryTime)){
             return;
         }
+
         var rows = grid.jqGrid('getDataIDs');
 
         var tmp = gridParameters.columnsToSummaryTime;
         var columnsToSummary = tmp.split(",");
+
         for (var n = 0; n < columnsToSummary.length; ++n) {
             var c = columnsToSummary[n];
             var totalSum = 0;
+
             for (var i = 0; i < rows.length; ++i) {
                 var row = rows[i];
                 var val = grid.jqGrid('getCell', row, c)
+
                 totalSum += toSeconds(val);
             }
+
             var total = nanToZero(totalSum);
             var obj = '[{"' + c + '": "' + secondsToTime(total) + '"}]';
             var colFoot = JSON.parse(obj);
+
             grid.jqGrid('footerData', 'set', colFoot[0]);
         }
     }
@@ -831,13 +836,24 @@ QCD.components.elements.Grid = function (element, mainController) {
             return 0;
         }
 
+        var minus = false;
+
+        if (time.startsWith("-")) {
+            minus = true;
+
+            time = time.replace("-", "");
+        }
+
         var parts = time.split(':');
 
-        return (+parts[0]) * 60 * 60 + (+parts[1]) * 60 + (+parts[2]);
+        var hours = (+parts[0]) * 60 * 60;
+        var minutes = (+parts[1]) * 60;
+        var seconds = (+parts[2]);
+
+        return (minus ? -(hours + minutes + seconds) : (hours + minutes + seconds));
     }
 
-    function secondsToTime(secs)
-    {
+    function secondsToTime(secs) {
         var minus = false;
 
         var sec_num = parseInt(secs);
