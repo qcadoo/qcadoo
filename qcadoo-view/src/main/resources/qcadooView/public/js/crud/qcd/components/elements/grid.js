@@ -430,7 +430,7 @@ QCD.components.elements.Grid = function (element, mainController) {
 				};
 			}
             
-            url = pluginIdentifier + "/" + correspondingLookupComponent.options.viewName + ".html?context=" + JSON.stringify(params);
+            url = pluginIdentifier + "/" + correspondingLookupComponent.options.viewName + ".html?context=" + encodeURIComponent(JSON.stringify(params));
             mainController.openModal(elementPath + "_editWindow", url, false, onModalClose, onModalRender);
         }
     }

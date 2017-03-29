@@ -283,7 +283,7 @@ QCD.PageController = function() {
 	function putShowBackInContext(url) {
 		if (url.indexOf("context={") == -1) {
 			return appendGetVariableToUrl(url,
-					"context={\"window.showBack\":true}");
+					"context=" + encodeURIComponent("{\"window.showBack\":true}"));
 		}
 		return url.replace("context={", "context={\"window.showBack\":true,");
 	}
