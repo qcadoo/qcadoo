@@ -283,7 +283,7 @@ QCD.PageController = function() {
 	function putShowBackInContext(url) {
 		if (url.indexOf("context={") == -1) {
 			return appendGetVariableToUrl(url,
-					"context=" + encodeURIComponent("{\"window.showBack\":true}"));
+					"context={\"window.showBack\":true}");
 		}
 		return url.replace("context={", "context={\"window.showBack\":true,");
 	}
@@ -472,6 +472,7 @@ QCD.PageController = function() {
 			}
 			url+="popup=true";
 		}
+		url = encodeParams(url);
 		window.parent.goToPage(url, serializationObject, isPage);
 	}
 	var goToPage = this.goToPage;
@@ -482,9 +483,17 @@ QCD.PageController = function() {
 		if (shouldSerialize) {
 			serializationObject = getSerializationObject();
 		}
+		url = encodeParams(url);
 		return window.parent.openModal(id, url, serializationObject, onCloseListener, afterInitListener, dimensions);
 	}
 	this.openModal = openModal;
+
+    function encodeParams(url) {
+        if(url.indexOf("context=") != -1){
+            url = url.substring(0, url.indexOf("context=") + 8) + encodeURIComponent(url.substring(url.indexOf("context=") + 8, url.length));
+        }
+        return url;
+    }
 
 	function canClose() {
         changed = false;

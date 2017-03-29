@@ -387,7 +387,7 @@ QCD.components.elements.Grid = function (element, mainController) {
         if (gridParameters.correspondingViewName && gridParameters.correspondingViewName !== '' && mainController.canClose()) {
             setPermanentlyDisableParam(params);
             params[gridParameters.correspondingComponent + "." + belongsToFieldName] = currentState.belongsToEntityId;
-            var url = gridParameters.correspondingViewName + ".html?context=" + encodeURIComponent(JSON.stringify(params));
+            var url = gridParameters.correspondingViewName + ".html?context=" + JSON.stringify(params);
             if (gridParameters.correspondingViewInModal) {
                 mainController.openModal(elementPath + "_editWindow", url);
             } else {
@@ -430,7 +430,7 @@ QCD.components.elements.Grid = function (element, mainController) {
 				};
 			}
             
-            url = pluginIdentifier + "/" + correspondingLookupComponent.options.viewName + ".html?context=" + encodeURIComponent(JSON.stringify(params));
+            url = pluginIdentifier + "/" + correspondingLookupComponent.options.viewName + ".html?context=" + JSON.stringify(params);
             mainController.openModal(elementPath + "_editWindow", url, false, onModalClose, onModalRender);
         }
     }
