@@ -54,10 +54,8 @@ import com.qcadoo.plugin.internal.api.PluginFileManager;
 import com.qcadoo.plugin.internal.api.PluginOperationResultImpl;
 import com.qcadoo.plugin.internal.dependencymanager.PluginStatusResolver;
 import com.qcadoo.plugin.internal.dependencymanager.SimplePluginStatusResolver;
-import com.qcadoo.tenant.api.Standalone;
 
 @Service
-@Standalone
 public class DefaultPluginManager implements PluginManager {
 
     private static final Logger LOG = LoggerFactory.getLogger(DefaultPluginManager.class);

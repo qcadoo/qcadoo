@@ -88,7 +88,6 @@ public class PluginIntegrationTest {
         new File("target/tmpPlugins").mkdir();
 
         applicationContext = new ClassPathXmlApplicationContext();
-        applicationContext.getEnvironment().setActiveProfiles("standalone");
         applicationContext.setConfigLocation("com/qcadoo/plugin/integration/spring.xml");
         applicationContext.registerShutdownHook();
         applicationContext.refresh();

@@ -47,10 +47,8 @@ import org.springframework.stereotype.Component;
 
 import com.qcadoo.model.internal.api.Constants;
 import com.qcadoo.model.internal.api.ModelXmlToHbmConverter;
-import com.qcadoo.tenant.api.Standalone;
 
 @Component
-@Standalone
 public class ModelXmlToHbmConverterImpl implements ModelXmlToHbmConverter {
 
     private static final Logger LOG = LoggerFactory.getLogger(ModelXmlToHbmConverterImpl.class);

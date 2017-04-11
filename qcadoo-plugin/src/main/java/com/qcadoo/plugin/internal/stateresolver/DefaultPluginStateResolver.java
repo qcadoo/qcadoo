@@ -29,10 +29,8 @@ import com.google.common.base.Preconditions;
 import com.qcadoo.plugin.api.Plugin;
 import com.qcadoo.plugin.api.PluginAccessor;
 import com.qcadoo.plugin.api.PluginState;
-import com.qcadoo.tenant.api.Standalone;
 
 @Service
-@Standalone
 public class DefaultPluginStateResolver implements InternalPluginStateResolver {
 
     private PluginAccessor pluginAccessor;

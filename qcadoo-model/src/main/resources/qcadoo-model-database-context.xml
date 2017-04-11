@@ -47,7 +47,7 @@
 		<property name="password" value="${dbPassword}"/>
 	</bean>
 
-	<beans profile="standalone">
+	<beans>
 
 		<bean id="sessionFactory"
 			  class="com.qcadoo.model.internal.sessionfactory.DynamicSessionFactoryBeanImpl">

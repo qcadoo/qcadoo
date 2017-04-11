@@ -29,10 +29,8 @@ import org.springframework.stereotype.Service;
 import com.qcadoo.tenant.api.MultiTenantCallback;
 import com.qcadoo.tenant.api.MultiTenantService;
 import com.qcadoo.tenant.api.SamplesDataset;
-import com.qcadoo.tenant.api.Standalone;
 
 @Service
-@Standalone
 public class DefaultMultiTenantService implements MultiTenantService {
 
     @Value("${samplesDataset}")

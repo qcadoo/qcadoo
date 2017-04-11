@@ -54,7 +54,7 @@
 		<property name="password" value="${dbPassword}" />
 	</bean>
 
-	<beans profile="standalone">
+	<beans>
 	
 		<bean id="pluginSessionFactory"
 			class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">

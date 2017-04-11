@@ -23,26 +23,22 @@
  */
 package com.qcadoo.model.internal;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.Sets;
-import com.qcadoo.localization.api.TranslationService;
-import com.qcadoo.model.api.*;
-import com.qcadoo.model.api.aop.Auditable;
-import com.qcadoo.model.api.aop.Monitorable;
-import com.qcadoo.model.api.search.SearchRestrictions;
-import com.qcadoo.model.api.search.SearchResult;
-import com.qcadoo.model.api.types.*;
-import com.qcadoo.model.api.utils.EntityUtils;
-import com.qcadoo.model.api.validators.ErrorMessage;
-import com.qcadoo.model.api.validators.GlobalMessage;
-import com.qcadoo.model.constants.VersionableConstants;
-import com.qcadoo.model.internal.api.*;
-import com.qcadoo.model.internal.search.SearchCriteria;
-import com.qcadoo.model.internal.search.SearchQuery;
-import com.qcadoo.model.internal.search.SearchResultImpl;
-import com.qcadoo.model.internal.utils.EntitySignature;
-import com.qcadoo.tenant.api.Standalone;
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -56,15 +52,48 @@ import org.springframework.transaction.NoTransactionException;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import static com.google.common.base.Preconditions.*;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Sets;
+import com.qcadoo.localization.api.TranslationService;
+import com.qcadoo.model.api.CopyException;
+import com.qcadoo.model.api.DataDefinition;
+import com.qcadoo.model.api.DataDefinitionService;
+import com.qcadoo.model.api.Entity;
+import com.qcadoo.model.api.EntityList;
+import com.qcadoo.model.api.EntityMessagesHolder;
+import com.qcadoo.model.api.EntityOpResult;
+import com.qcadoo.model.api.ExpressionService;
+import com.qcadoo.model.api.FieldDefinition;
+import com.qcadoo.model.api.aop.Auditable;
+import com.qcadoo.model.api.aop.Monitorable;
+import com.qcadoo.model.api.search.SearchRestrictions;
+import com.qcadoo.model.api.search.SearchResult;
+import com.qcadoo.model.api.types.Cascadeable;
+import com.qcadoo.model.api.types.CollectionFieldType;
+import com.qcadoo.model.api.types.DataDefinitionHolder;
+import com.qcadoo.model.api.types.FieldType;
+import com.qcadoo.model.api.types.HasManyType;
+import com.qcadoo.model.api.types.JoinFieldHolder;
+import com.qcadoo.model.api.types.ManyToManyType;
+import com.qcadoo.model.api.types.TreeType;
+import com.qcadoo.model.api.utils.EntityUtils;
+import com.qcadoo.model.api.validators.ErrorMessage;
+import com.qcadoo.model.api.validators.GlobalMessage;
+import com.qcadoo.model.constants.VersionableConstants;
+import com.qcadoo.model.internal.api.DataAccessService;
+import com.qcadoo.model.internal.api.EntityService;
+import com.qcadoo.model.internal.api.HibernateService;
+import com.qcadoo.model.internal.api.InternalDataDefinition;
+import com.qcadoo.model.internal.api.InternalFieldDefinition;
+import com.qcadoo.model.internal.api.PriorityService;
+import com.qcadoo.model.internal.api.ValidationService;
+import com.qcadoo.model.internal.search.SearchCriteria;
+import com.qcadoo.model.internal.search.SearchQuery;
+import com.qcadoo.model.internal.search.SearchResultImpl;
+import com.qcadoo.model.internal.utils.EntitySignature;
 
 @Service
-@Standalone
 public class DataAccessServiceImpl implements DataAccessService {
 
     private static final String L_DATA_DEFINITION_BELONGS_TO_DISABLED_PLUGIN = "DataDefinition belongs to disabled plugin";
