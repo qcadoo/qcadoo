@@ -46,11 +46,13 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import com.google.common.collect.ImmutableMap;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.FieldDefinition;
+import com.qcadoo.model.api.search.JoinType;
 import com.qcadoo.model.api.search.SearchCriteriaBuilder;
 import com.qcadoo.model.api.search.SearchRestrictions;
 import com.qcadoo.model.api.search.SearchRestrictions.SearchMatchMode;
 import com.qcadoo.model.api.types.BelongsToType;
 import com.qcadoo.model.api.types.FieldType;
+
 import junit.framework.Assert;
 
 @RunWith(PowerMockRunner.class)
@@ -649,10 +651,10 @@ public class GridComponentFilterUtilsTest {
         String field = "fieldName";
 
         // when
-        GridComponentFilterUtils.addAliases(criteria, field);
+        GridComponentFilterUtils.addAliases(criteria, field, JoinType.LEFT);
 
         // then
-        verify(criteria, never()).createAlias(Mockito.anyString(), Mockito.anyString());
+        verify(criteria, never()).createAlias(Mockito.anyString(), Mockito.anyString(), Mockito.any(JoinType.class));
     }
 
     @Test
@@ -661,10 +663,10 @@ public class GridComponentFilterUtilsTest {
         String field = "firstBelongsTo.fieldName";
 
         // when
-        GridComponentFilterUtils.addAliases(criteria, field);
+        GridComponentFilterUtils.addAliases(criteria, field, JoinType.LEFT);
 
         // then
-        verify(criteria).createAlias("firstBelongsTo", "firstBelongsTo_a", null);
+        verify(criteria).createAlias("firstBelongsTo", "firstBelongsTo_a", JoinType.LEFT);
     }
 
     @Test
@@ -673,11 +675,11 @@ public class GridComponentFilterUtilsTest {
         String field = "firstBelongsTo.secondBelongsTo.fieldName";
 
         // when
-        GridComponentFilterUtils.addAliases(criteria, field);
+        GridComponentFilterUtils.addAliases(criteria, field, JoinType.LEFT);
 
         // then
-        verify(criteria).createAlias("firstBelongsTo", "firstBelongsTo_a", null);
-        verify(criteria).createAlias("firstBelongsTo_a.secondBelongsTo", "secondBelongsTo_a", null);
+        verify(criteria).createAlias("firstBelongsTo", "firstBelongsTo_a", JoinType.LEFT);
+        verify(criteria).createAlias("firstBelongsTo_a.secondBelongsTo", "secondBelongsTo_a", JoinType.LEFT);
     }
 
     @Test
@@ -686,12 +688,12 @@ public class GridComponentFilterUtilsTest {
         String field = "firstBelongsTo.secondBelongsTo.thirdBelongsTo.fieldName";
 
         // when
-        GridComponentFilterUtils.addAliases(criteria, field);
+        GridComponentFilterUtils.addAliases(criteria, field, JoinType.LEFT);
 
         // then
-        verify(criteria).createAlias("firstBelongsTo", "firstBelongsTo_a", null);
-        verify(criteria).createAlias("firstBelongsTo_a.secondBelongsTo", "secondBelongsTo_a", null);
-        verify(criteria).createAlias("secondBelongsTo_a.thirdBelongsTo", "thirdBelongsTo_a", null);
+        verify(criteria).createAlias("firstBelongsTo", "firstBelongsTo_a", JoinType.LEFT);
+        verify(criteria).createAlias("firstBelongsTo_a.secondBelongsTo", "secondBelongsTo_a", JoinType.LEFT);
+        verify(criteria).createAlias("secondBelongsTo_a.thirdBelongsTo", "thirdBelongsTo_a", JoinType.LEFT);
     }
 
     @Test
@@ -700,13 +702,13 @@ public class GridComponentFilterUtilsTest {
         String field = "firstBelongsTo.secondBelongsTo.thirdBelongsTo.fourthBelongsTo.fieldName";
 
         // when
-        GridComponentFilterUtils.addAliases(criteria, field);
+        GridComponentFilterUtils.addAliases(criteria, field, JoinType.LEFT);
 
         // then
-        verify(criteria).createAlias("firstBelongsTo", "firstBelongsTo_a", null);
-        verify(criteria).createAlias("firstBelongsTo_a.secondBelongsTo", "secondBelongsTo_a", null);
-        verify(criteria).createAlias("secondBelongsTo_a.thirdBelongsTo", "thirdBelongsTo_a", null);
-        verify(criteria).createAlias("thirdBelongsTo_a.fourthBelongsTo", "fourthBelongsTo_a", null);
+        verify(criteria).createAlias("firstBelongsTo", "firstBelongsTo_a", JoinType.LEFT);
+        verify(criteria).createAlias("firstBelongsTo_a.secondBelongsTo", "secondBelongsTo_a", JoinType.LEFT);
+        verify(criteria).createAlias("secondBelongsTo_a.thirdBelongsTo", "thirdBelongsTo_a", JoinType.LEFT);
+        verify(criteria).createAlias("thirdBelongsTo_a.fourthBelongsTo", "fourthBelongsTo_a", JoinType.LEFT);
     }
 
     @Test

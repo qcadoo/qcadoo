@@ -49,6 +49,7 @@
     <security:http pattern="/login.html" security="none"/>
     <security:http pattern="/css/**" security="none"/>
     <security:http pattern="/js/**" security="none"/>
+    <security:http pattern="/v2/api-docs.json" security="none"/>
 
     <security:http use-expressions="true" auto-config="false"
                    entry-point-ref="loginUrlAuthenticationEntryPoint">

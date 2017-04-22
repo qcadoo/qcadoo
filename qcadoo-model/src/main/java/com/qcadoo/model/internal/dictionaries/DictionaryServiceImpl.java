@@ -26,7 +26,13 @@ package com.qcadoo.model.internal.dictionaries;
 import static com.google.common.base.Preconditions.checkArgument;
 import static org.springframework.util.StringUtils.hasText;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -63,6 +69,23 @@ public final class DictionaryServiceImpl implements InternalDictionaryService {
 
         List<Entity> items = createCriteriaForItemsFrom(dictionary).addOrder(SearchOrders.asc(DictionaryItemFields.NAME)).list()
                 .getEntities();
+        List<String> keys = new ArrayList<String>();
+
+        for (Entity item : items) {
+            keys.add(item.getStringField(DictionaryItemFields.NAME));
+        }
+
+        return keys;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @Monitorable
+    public List<String> getActiveKeys(final String dictionary) {
+        checkArgument(hasText(dictionary), "dictionary name must be given");
+
+        List<Entity> items = createCriteriaForItemsFrom(dictionary).add(SearchRestrictions.eq("active", true))
+                .addOrder(SearchOrders.asc(DictionaryItemFields.NAME)).list().getEntities();
         List<String> keys = new ArrayList<String>();
 
         for (Entity item : items) {

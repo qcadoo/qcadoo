@@ -37,6 +37,8 @@ public interface DictionaryService {
 
     List<String> getKeys(String dictionary);
 
+    List<String> getActiveKeys(String dictionary);
+
     /**
      * Return all values for given dictionary's name.
      * 
@@ -45,7 +47,7 @@ public interface DictionaryService {
      * @return the dictionary's values
      */
     Map<String, String> getValues(String dictionary, Locale locale);
-    
+
     Map<String, String> getKeyValues(String dictionary, Locale locale);
 
     /**

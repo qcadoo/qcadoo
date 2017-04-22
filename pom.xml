@@ -36,6 +36,7 @@
 		<module>qcadoo-plugins-unit-conversion-management</module>
 		<module>qcadoo-commons</module>
 		<module>qcadoo-testing</module>
+		<module>qcadoo-swagger</module>
 	</modules>
 
 	<name>Qcadoo Framework</name>

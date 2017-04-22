@@ -108,7 +108,6 @@ public abstract class IntegrationTest {
         multiTenantUtil.init();
 
         applicationContext = new ClassPathXmlApplicationContext();
-        applicationContext.getEnvironment().setActiveProfiles("standalone");
         applicationContext.setConfigLocation("spring.xml");
         applicationContext.refresh();
         dataDefinitionService = applicationContext.getBean(InternalDataDefinitionService.class);

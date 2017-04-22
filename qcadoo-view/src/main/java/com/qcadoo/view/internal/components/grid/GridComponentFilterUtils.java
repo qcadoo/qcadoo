@@ -67,7 +67,7 @@ public final class GridComponentFilterUtils {
                         continue;
                     }
 
-                    field = addAliases(criteria, field);
+                    field = addAliases(criteria, field, JoinType.LEFT);
 
                     if (fieldDefinition != null && String.class.isAssignableFrom(fieldDefinition.getType().getType())) {
                         addStringFilter(criteria, filterValue, field);
@@ -105,7 +105,7 @@ public final class GridComponentFilterUtils {
                         continue;
                     }
 
-                    field = addAliases(criteria, field);
+                    field = addAliases(criteria, field, JoinType.LEFT);
 
                     SearchCriterion searchRule;
                     if (fieldDefinition != null && String.class.isAssignableFrom(fieldDefinition.getType().getType())) {
@@ -304,10 +304,6 @@ public final class GridComponentFilterUtils {
             values.add(tokens[i].trim());
         }
         return values;
-    }
-
-    public static String addAliases(final SearchCriteriaBuilder criteria, final String field) {
-        return addAliases(criteria, field, null);
     }
 
     public static String addAliases(final SearchCriteriaBuilder criteria, final String field, final JoinType joinType) {

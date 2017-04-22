@@ -30,9 +30,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.qcadoo.tenant.api.DefaultLocaleResolver;
-import com.qcadoo.tenant.api.Standalone;
 
-@Standalone
 @Service
 public final class DefaultLocaleResolverImpl implements DefaultLocaleResolver {
 
