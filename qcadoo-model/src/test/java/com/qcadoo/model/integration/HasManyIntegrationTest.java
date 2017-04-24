@@ -23,6 +23,17 @@
  */
 package com.qcadoo.model.integration;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Set;
+
+import org.junit.Before;
+import org.junit.Test;
+
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
@@ -31,12 +42,6 @@ import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.EntityList;
 import com.qcadoo.model.api.EntityOpResult;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.util.Set;
-
-import static org.junit.Assert.*;
 
 public class HasManyIntegrationTest extends IntegrationTest {
 
@@ -85,9 +90,10 @@ public class HasManyIntegrationTest extends IntegrationTest {
     public void shouldSaveHasManyField() throws Exception {
         // given
         Entity product = productDataDefinition.save(createProduct("asd", "asd"));
-        Entity machine = machineDataDefinition.save(createMachine("asd"));
-        Entity component1 = componentDataDefinition.save(createComponent("name1", product, machine));
-        Entity component2 = componentDataDefinition.save(createComponent("name2", product, machine));
+        Entity machine1 = machineDataDefinition.save(createMachine("asd"));
+        Entity machine2 = machineDataDefinition.save(createMachine("asde"));
+        Entity component1 = componentDataDefinition.save(createComponent("name1", product, machine1));
+        Entity component2 = componentDataDefinition.save(createComponent("name2", product, machine2));
 
         // when
         product = fromDb(product);
