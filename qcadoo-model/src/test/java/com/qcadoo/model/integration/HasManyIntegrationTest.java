@@ -91,8 +91,8 @@ public class HasManyIntegrationTest extends IntegrationTest {
         // given
         Entity product = productDataDefinition.save(createProduct("asd", "asd"));
         Entity machine1 = machineDataDefinition.save(createMachine("asd"));
-        Entity machine2 = machineDataDefinition.save(createMachine("asde"));
         Entity component1 = componentDataDefinition.save(createComponent("name1", product, machine1));
+        Entity machine2 = machineDataDefinition.save(createMachine("asde"));
         Entity component2 = componentDataDefinition.save(createComponent("name2", product, machine2));
 
         // when
@@ -100,47 +100,6 @@ public class HasManyIntegrationTest extends IntegrationTest {
 
         // then
         checkComponents(product, component1, component2);
-    }
-
-//    @Test
-    public final void shouldOnDeleteHookRejectCascadeDeletion() {
-        // given
-        Entity product = productDataDefinition.save(createProduct("someName", "someNumber"));
-        Entity machine = machineDataDefinition.save(createMachine("asd"));
-        Entity component1 = componentDataDefinition.save(createComponent("name1", product, machine));
-        Entity component2 = componentDataDefinition.save(createComponent("name2", product, machine));
-
-        product = fromDb(product);
-
-        // when
-        EntityOpResult result = productDataDefinition.delete(product.getId());
-
-        // then
-        assertFalse(result.isSuccessfull());
-        product = fromDb(product);
-        assertNotNull(product);
-        checkComponents(product, component1, component2);
-    }
-
-//    @Test
-    public final void shouldOnDeleteHookRejectOrphansDeletion() {
-        // given
-        Entity product = productDataDefinition.save(createProduct("someName", "someNumber"));
-        Entity machine = machineDataDefinition.save(createMachine("asd"));
-        Entity component1 = componentDataDefinition.save(createComponent("name1", product, machine));
-        Entity component2 = componentDataDefinition.save(createComponent("name2", product, machine));
-        Entity component3 = componentDataDefinition.save(createComponent("name3", null, machine));
-
-        product = fromDb(product);
-        checkComponents(product, component1, component2);
-
-        // when
-        product.setField(FIELD_COMPONENTS, Lists.newArrayList(component2, component3));
-        Entity savedProduct = productDataDefinition.save(product);
-
-        // then
-        assertFalse(savedProduct.isValid());
-        checkComponents(savedProduct, component1, component2);
     }
 
     @Test
