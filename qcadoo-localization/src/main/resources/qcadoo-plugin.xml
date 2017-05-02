@@ -65,6 +65,8 @@
 			locale="pl" label="Polski" />
 		<localization:translation-locale
 			locale="de" label="Deutsch" />
+		<localization:translation-locale
+				locale="cn" label="基恩斯基" />
 	</modules>
 	
 	<features>
