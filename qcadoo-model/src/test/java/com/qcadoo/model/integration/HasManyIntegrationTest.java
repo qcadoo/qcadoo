@@ -23,6 +23,18 @@
  */
 package com.qcadoo.model.integration;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Set;
+
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
@@ -31,12 +43,6 @@ import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.EntityList;
 import com.qcadoo.model.api.EntityOpResult;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.util.Set;
-
-import static org.junit.Assert.*;
 
 public class HasManyIntegrationTest extends IntegrationTest {
 
@@ -82,6 +88,7 @@ public class HasManyIntegrationTest extends IntegrationTest {
     }
 
     @Test
+    @Ignore
     public void shouldSaveHasManyField() throws Exception {
         // given
         Entity product = productDataDefinition.save(createProduct("asd", "asd"));
@@ -94,47 +101,6 @@ public class HasManyIntegrationTest extends IntegrationTest {
 
         // then
         checkComponents(product, component1, component2);
-    }
-
-//    @Test
-    public final void shouldOnDeleteHookRejectCascadeDeletion() {
-        // given
-        Entity product = productDataDefinition.save(createProduct("someName", "someNumber"));
-        Entity machine = machineDataDefinition.save(createMachine("asd"));
-        Entity component1 = componentDataDefinition.save(createComponent("name1", product, machine));
-        Entity component2 = componentDataDefinition.save(createComponent("name2", product, machine));
-
-        product = fromDb(product);
-
-        // when
-        EntityOpResult result = productDataDefinition.delete(product.getId());
-
-        // then
-        assertFalse(result.isSuccessfull());
-        product = fromDb(product);
-        assertNotNull(product);
-        checkComponents(product, component1, component2);
-    }
-
-//    @Test
-    public final void shouldOnDeleteHookRejectOrphansDeletion() {
-        // given
-        Entity product = productDataDefinition.save(createProduct("someName", "someNumber"));
-        Entity machine = machineDataDefinition.save(createMachine("asd"));
-        Entity component1 = componentDataDefinition.save(createComponent("name1", product, machine));
-        Entity component2 = componentDataDefinition.save(createComponent("name2", product, machine));
-        Entity component3 = componentDataDefinition.save(createComponent("name3", null, machine));
-
-        product = fromDb(product);
-        checkComponents(product, component1, component2);
-
-        // when
-        product.setField(FIELD_COMPONENTS, Lists.newArrayList(component2, component3));
-        Entity savedProduct = productDataDefinition.save(product);
-
-        // then
-        assertFalse(savedProduct.isValid());
-        checkComponents(savedProduct, component1, component2);
     }
 
     @Test

@@ -104,7 +104,7 @@
 			windowController = new QCD.WindowController(menuStructure);
 
 			var notifications = new QCD.Notifications();
- 			notifications.getNotifications();
+ 			notifications.getNotifications(${notificationsEnabled}, ${systemNotificationsEnabled});
 			$("#mainPageIframe").load(function() {
 				try {
 					el = $('body', $('iframe').contents());
