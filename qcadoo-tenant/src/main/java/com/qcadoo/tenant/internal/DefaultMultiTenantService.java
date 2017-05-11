@@ -23,18 +23,13 @@
  */
 package com.qcadoo.tenant.internal;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.qcadoo.tenant.api.MultiTenantCallback;
 import com.qcadoo.tenant.api.MultiTenantService;
-import com.qcadoo.tenant.api.SamplesDataset;
 
 @Service
 public class DefaultMultiTenantService implements MultiTenantService {
-
-    @Value("${samplesDataset}")
-    private String samplesDataset;
 
     @Override
     public void doInMultiTenantContext(final MultiTenantCallback callback) {
@@ -50,10 +45,4 @@ public class DefaultMultiTenantService implements MultiTenantService {
     public int getCurrentTenantId() {
         return 0;
     }
-
-    @Override
-    public SamplesDataset getTenantSamplesDataset() {
-        return SamplesDataset.parseString(samplesDataset);
-    }
-
 }

@@ -30,7 +30,4 @@ public interface MultiTenantService {
     void doInMultiTenantContext(int tenantId, MultiTenantCallback callback);
 
     int getCurrentTenantId();
-
-    SamplesDataset getTenantSamplesDataset();
-
 }
