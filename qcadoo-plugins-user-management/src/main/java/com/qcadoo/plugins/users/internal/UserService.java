@@ -34,6 +34,9 @@ import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.api.components.FieldComponent;
 import com.qcadoo.view.api.components.FormComponent;
+import com.qcadoo.view.api.components.WindowComponent;
+import com.qcadoo.view.api.ribbon.RibbonActionItem;
+import com.qcadoo.view.api.ribbon.RibbonGroup;
 
 @Service
 public final class UserService {
@@ -108,6 +111,17 @@ public final class UserService {
 
         if (!securityService.hasRole(loggedUser, "ROLE_SUPERADMIN") && securityService.hasRole(viewedUser, "ROLE_SUPERADMIN")) {
             form.setFormEnabled(false);
+        }
+    }
+
+    public void setupRibbonForAdmins(final ViewDefinitionState state) {
+        WindowComponent window = (WindowComponent) state.getComponentByReference("window");
+        if(!securityService.hasCurrentUserRole("ROLE_SUPERADMIN") && securityService.hasCurrentUserRole("ROLE_ADMIN")){
+            RibbonGroup actions = window.getRibbon().getGroupByName("actions");
+            for (RibbonActionItem actionItem : actions.getItems()) {
+                actionItem.setEnabled(false);
+                actionItem.requestUpdate(true);
+            }
         }
     }
 
