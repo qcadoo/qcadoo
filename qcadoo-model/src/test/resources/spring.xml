@@ -68,7 +68,6 @@
 				<prop key="hibernate.show_sql">true</prop>
 				<prop key="hibernate.format_sql">true</prop>
 				<prop key="hibernate.hbm2ddl.auto">create</prop>
-				<prop key="hibernate.hbm2ddl.import_files">/test_import.sql</prop>
 			</props>
 		</property>
 	</bean>

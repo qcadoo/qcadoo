@@ -199,6 +199,20 @@ public final class ViewDefinitionStateImpl extends AbstractContainerState implem
     }
 
     @Override
+    public void openModal(final String modalUrl, final Map<String, Object> parameters) {
+        JSONObject context = new JSONObject(parameters);
+        StringBuilder url = new StringBuilder(modalUrl);
+        if (modalUrl.contains("?")) {
+            url.append("&");
+        } else {
+            url.append("?");
+        }
+        url.append("context=");
+        url.append(context.toString());
+        openModal(url.toString());
+    }
+
+    @Override
     public void registerComponent(final String reference, final ComponentState state) {
         if (registry.containsKey(reference)) {
             throw new IllegalStateException("Duplicated state reference : " + reference);
