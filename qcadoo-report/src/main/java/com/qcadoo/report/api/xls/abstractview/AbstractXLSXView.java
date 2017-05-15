@@ -16,7 +16,7 @@ public abstract class AbstractXLSXView extends AbstractView {
     private static final String CONTENT_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
     /** The extension to look for existing templates */
-    private static final String EXTENSION = ".xlsx";
+    protected static final String EXTENSION = ".xlsx";
 
     private static final String CREATOR = "qcadoo MES";
 
@@ -51,7 +51,7 @@ public abstract class AbstractXLSXView extends AbstractView {
         POIXMLProperties.CoreProperties coreProps =  xmlProps.getCoreProperties();
         coreProps.setCreator(CREATOR);
         buildExcelDocument(model, workbook, request, response);
-
+        setupResponse(response);
         workbook.write(baos);
         writeToResponse(response, baos);
     }
@@ -61,5 +61,8 @@ public abstract class AbstractXLSXView extends AbstractView {
             Map<String, Object> model, XSSFWorkbook workbook, HttpServletRequest request, HttpServletResponse response)
             throws Exception;
 
+    protected void setupResponse(HttpServletResponse response){
+        // empty for compatibility with other XLSX reports
+    }
 
 }
