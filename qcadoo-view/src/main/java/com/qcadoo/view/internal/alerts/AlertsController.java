@@ -25,9 +25,9 @@ import java.util.List;
 @RequestMapping("/alert")
 public class AlertsController {
 
-    private String NOTIFICATION_REGISTER_SUCCESS = "NOTIFICATION REGISTER SUCCESS";
+    private static final String NOTIFICATION_REGISTER_SUCCESS = "NOTIFICATION REGISTER SUCCESS";
 
-    private String NOTIFICATION_REGISTER_ERROR = "NOTIFICATION REGISTER ERROR";
+    private static final String NOTIFICATION_REGISTER_ERROR = "NOTIFICATION REGISTER ERROR";
 
     @Autowired
     private AlertsDbHelper alertsDbHelper;
