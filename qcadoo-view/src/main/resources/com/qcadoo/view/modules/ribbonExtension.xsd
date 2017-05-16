@@ -42,6 +42,7 @@
 			<xs:any minOccurs="1" maxOccurs="unbounded" processContents="skip"/>
 		</xs:sequence>
 		<xs:attribute name="name" type="identifierType" use="required" />
+		<xs:attribute name="defaultAuthorizationRole" type="xs:string" use="optional"/>
 	</xs:complexType>
 	
 	<xs:simpleType name="identifierType">
