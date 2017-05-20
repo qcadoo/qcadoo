@@ -24,9 +24,9 @@
 package com.qcadoo.view.api;
 
 import com.google.common.base.Optional;
+import org.json.JSONObject;
 
 import java.util.Map;
-import org.json.JSONObject;
 
 /**
  * ViewDefinitionState is instance of single view. It is generated using ViewDefinition in request scope.
@@ -94,6 +94,14 @@ public interface ViewDefinitionState extends ComponentState {
      *            target url of opened window
      */
     void openModal(String url);
+
+    /**
+     * Informs client that should open new modal window and pass custom component parameters.
+     *
+     * @param url
+     *            target url of opened window
+     */
+    void openModal(String url, Map<String, Object> parameters);
 
     /**
      * Checks whether the view is generated for the first time or after reload

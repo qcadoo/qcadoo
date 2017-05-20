@@ -38,7 +38,7 @@ public final class DefaultLocaleResolverImpl implements DefaultLocaleResolver {
 
     private static final Locale EN = new Locale("en");
 
-    @Value("${samplesDatasetLocale}")
+    @Value("${defaultLocale}")
     private String locale;
 
     @Override
