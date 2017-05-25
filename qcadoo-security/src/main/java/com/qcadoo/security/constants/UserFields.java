@@ -51,6 +51,8 @@ public final class UserFields {
 
 	public static final String LAST_ACTIVITY = "lastActivity";
 
+	public static final String IP_ADDRESS = "ipAddress";
+
 	public static final String GROUP = "group";
 
 }
