@@ -261,6 +261,7 @@ QCD.PageController = function() {
 				} else if (response.redirect.openInModalWindow) {
 					openModal(redirectUrl, redirectUrl);
 				} else if (isPopup) {
+				    redirectUrl = encodeParams(redirectUrl);
 					window.location = redirectUrl;
 				} else {
 					goToPage(putShowBackInContext(redirectUrl), false, response.redirect.shouldSerializeWindow);
