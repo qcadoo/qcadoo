@@ -257,12 +257,11 @@ QCD.PageController = function() {
 				var contextPath = window.location.protocol+"//"+window.location.host;
 				var redirectUrl = response.redirect.url.replace(/\$\{root\}/, contextPath)
 				if (response.redirect.openInNewWindow) {
-					var w = window.open(redirectUrl, "_blank", "status=0");
+					openNewWindow(redirectUrl);
 				} else if (response.redirect.openInModalWindow) {
 					openModal(redirectUrl, redirectUrl);
 				} else if (isPopup) {
-				    redirectUrl = encodeParams(redirectUrl);
-					window.location = redirectUrl;
+				    preparePopup(redirectUrl);
 				} else {
 					goToPage(putShowBackInContext(redirectUrl), false, response.redirect.shouldSerializeWindow);
 					return;
@@ -488,6 +487,18 @@ QCD.PageController = function() {
 		return window.parent.openModal(id, url, serializationObject, onCloseListener, afterInitListener, dimensions);
 	}
 	this.openModal = openModal;
+
+    function openNewWindow(url) {
+        url = encodeParams(url);
+        window.open(url, "_blank", "status=0");
+    }
+    this.openNewWindow = openNewWindow;
+
+    function preparePopup(url) {
+        url = encodeParams(url);
+		window.location = url;
+    }
+    this.preparePopup = preparePopup;
 
     function encodeParams(url) {
         if(url.indexOf("context=") != -1){

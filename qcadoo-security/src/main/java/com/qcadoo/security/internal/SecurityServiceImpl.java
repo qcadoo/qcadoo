@@ -23,17 +23,13 @@
  */
 package com.qcadoo.security.internal;
 
-import com.google.common.collect.Lists;
-import com.qcadoo.model.api.DataDefinitionService;
-import com.qcadoo.model.api.Entity;
-import com.qcadoo.model.api.aop.Monitorable;
-import com.qcadoo.model.api.search.SearchOrders;
-import com.qcadoo.model.api.search.SearchRestrictions;
-import com.qcadoo.security.api.SecurityRole;
-import com.qcadoo.security.api.SecurityRolesService;
-import com.qcadoo.security.constants.*;
-import com.qcadoo.security.internal.api.InternalSecurityService;
-import com.qcadoo.security.internal.api.QcadooUser;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.security.authentication.event.AbstractAuthenticationEvent;
@@ -45,16 +41,26 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.security.web.authentication.rememberme.PersistentRememberMeToken;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
+import com.google.common.collect.Lists;
+import com.qcadoo.model.api.DataDefinitionService;
+import com.qcadoo.model.api.Entity;
+import com.qcadoo.model.api.aop.Monitorable;
+import com.qcadoo.model.api.search.SearchOrders;
+import com.qcadoo.model.api.search.SearchRestrictions;
+import com.qcadoo.security.api.SecurityRole;
+import com.qcadoo.security.api.SecurityRolesService;
+import com.qcadoo.security.constants.GroupFields;
+import com.qcadoo.security.constants.PersistentTokenFields;
+import com.qcadoo.security.constants.QcadooSecurityConstants;
+import com.qcadoo.security.constants.RoleFields;
+import com.qcadoo.security.constants.UserFields;
+import com.qcadoo.security.internal.api.InternalSecurityService;
+import com.qcadoo.security.internal.api.QcadooUser;
 
 @Service("userDetailsService")
 public class SecurityServiceImpl implements InternalSecurityService, UserDetailsService, PersistentTokenRepository,
@@ -85,6 +91,12 @@ public class SecurityServiceImpl implements InternalSecurityService, UserDetails
             if ((user.getField(UserFields.LAST_ACTIVITY) == null)
                     || now.getTime().after(user.getDateField(UserFields.LAST_ACTIVITY))) {
                 user.setField(UserFields.LAST_ACTIVITY, new Date());
+
+                Object details = event.getAuthentication().getDetails();
+                if (details instanceof WebAuthenticationDetails){
+                    String ipAddress = ((WebAuthenticationDetails) details).getRemoteAddress();
+                    user.setField(UserFields.IP_ADDRESS, ipAddress);
+                }
 
                 dataDefinitionService.get(QcadooSecurityConstants.PLUGIN_IDENTIFIER, QcadooSecurityConstants.MODEL_USER).save(
                         user);

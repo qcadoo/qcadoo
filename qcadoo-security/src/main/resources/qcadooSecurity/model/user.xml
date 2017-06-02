@@ -47,6 +47,7 @@
 		<password name="oldPassword" persistent="false" />
 		<string name="viewIdentifier" persistent="false" />
 		<datetime name="lastActivity" />
+		<string name="ipAddress" />
 		<belongsTo name="group" model="group" required="true"/>
 	</fields>
 	<hooks>

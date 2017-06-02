@@ -431,13 +431,17 @@ public class FormComponentState extends AbstractContainerState implements FormCo
             Entity entity = getEntity();
 
             if (entity.isValid()) {
-                entity = getDataDefinition().save(entity);
-
+                try {
+                    entity = getDataDefinition().save(entity);
+                } catch (org.hibernate.exception.ConstraintViolationException ex) {
+                    entity.addGlobalError("qcadooView.errorPage.error.constraintViolationException.explanation");
+                    entity.setNotValid();
+                }
                 setEntity(entity);
             }
 
             copyGlobalMessages(entity.getGlobalMessages());
-        
+
             if (entity.isValid()) {
                 setFieldValue(entity.getId());
                 addTranslatedMessage(translateMessage("saveMessage"), MessageType.SUCCESS);

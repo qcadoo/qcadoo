@@ -43,6 +43,7 @@
             <option type="column" name="lastName" fields="lastName" link="true"/>
             <option type="column" name="groupName" fields="group" expression="#group['name']"/>
             <option type="column" name="lastActivity" fields="lastActivity"/>
+            <option type="column" name="ipAddress" fields="ipAddress"/>
 
             <option type="order" column="login" direction="asc"/>
 
