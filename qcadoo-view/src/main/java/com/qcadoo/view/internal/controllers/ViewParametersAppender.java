@@ -35,13 +35,9 @@ public class ViewParametersAppender {
 
     @Value("${useCompressedStaticResources}")
     private boolean useCompressedStaticResources;
-    
-    @Value("${mixpanelToken}")
-    private String mixpanelToken;
 
     public void appendCommonViewObjects(final ModelAndView mav) {
         mav.addObject("applicationDisplayName", applicationDisplayName);
         mav.addObject("useCompressedStaticResources", useCompressedStaticResources);
-        mav.addObject("mixpanelToken", mixpanelToken );
     }
 }
