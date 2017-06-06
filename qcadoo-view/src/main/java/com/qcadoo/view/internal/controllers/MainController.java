@@ -58,10 +58,10 @@ public final class MainController {
     @Autowired
     private ViewParametersAppender viewParametersAppender;
 
-    @Value("${notificationsEnabled}")
-    private boolean notificationsEnabled;
+    @Value("${dbNotificationsEnabled:true}")
+    private boolean dbNotificationsEnabled;
 
-    @Value("${systemNotificationsEnabled}")
+    @Value("${systemNotificationsEnabled:false}")
     private boolean systemNotificationsEnabled;
 
     @RequestMapping(value = "main", method = RequestMethod.GET)
@@ -74,7 +74,7 @@ public final class MainController {
         mav.addObject("menuStructure", menuService.getMenu(locale).getAsJson());
         mav.addObject("userLogin", securityService.getCurrentUserName());
         mav.addObject("languageCode", LocaleContextHolder.getLocale().getLanguage());
-        mav.addObject("notificationsEnabled", notificationsEnabled);
+        mav.addObject("dbNotificationsEnabled", dbNotificationsEnabled);
         mav.addObject("systemNotificationsEnabled", systemNotificationsEnabled);
         return mav;
     }
