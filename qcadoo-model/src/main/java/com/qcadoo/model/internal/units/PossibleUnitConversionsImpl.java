@@ -27,21 +27,27 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.qcadoo.model.api.DataDefinition;
+import com.qcadoo.model.api.DictionaryService;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.NumberService;
 import com.qcadoo.model.api.units.UnitConversion;
 import com.qcadoo.model.api.units.UnsupportedUnitConversionException;
+import com.qcadoo.model.constants.DictionaryItemFields;
+import com.qcadoo.model.constants.QcadooModelConstants;
 import com.qcadoo.model.constants.UnitConversionItemFields;
 
 public final class PossibleUnitConversionsImpl implements InternalPossibleUnitConversions {
 
     private final Map<String, BigDecimal> targetUnitToFactor;
+
+    private final Map<String, Boolean> targetUnitToIsInteger;
 
     private final String unitFrom;
 
@@ -49,16 +55,21 @@ public final class PossibleUnitConversionsImpl implements InternalPossibleUnitCo
 
     private final DataDefinition unitConversionItemDD;
 
+    private final DictionaryService dictionaryService;
+
     public PossibleUnitConversionsImpl(final String unitFrom, final NumberService numberService,
-            final DataDefinition unitConversionItemDD) {
+                                       final DataDefinition unitConversionItemDD, DictionaryService dictionaryService) {
         Preconditions.checkNotNull(unitFrom);
         Preconditions.checkNotNull(numberService);
         Preconditions.checkNotNull(unitConversionItemDD);
+        Preconditions.checkNotNull(dictionaryService);
 
         this.unitFrom = unitFrom;
         this.numberService = numberService;
         this.unitConversionItemDD = unitConversionItemDD;
+        this.dictionaryService = dictionaryService;
         this.targetUnitToFactor = Maps.newHashMap();
+        this.targetUnitToIsInteger = Maps.newHashMap();
     }
 
     @Override
@@ -85,13 +96,24 @@ public final class PossibleUnitConversionsImpl implements InternalPossibleUnitCo
         return Collections.unmodifiableSet(targetUnitToFactor.keySet());
     }
 
+    private Boolean checkIfUnitIsInteger(String unit) {
+        return Optional.ofNullable(dictionaryService.getItemEntity(QcadooModelConstants.DICTIONARY_UNITS, unit))
+                .map(u -> u.getBooleanField(DictionaryItemFields.IS_INTEGER)).orElse(Boolean.FALSE);
+    }
+
     @Override
     public BigDecimal convertTo(final BigDecimal quantityFrom, final String unitTo) {
         final BigDecimal ratio = targetUnitToFactor.get(unitTo);
         if (ratio == null) {
             throw new UnsupportedUnitConversionException(unitFrom, unitTo);
         }
-        return numberService.setScale(quantityFrom.multiply(ratio));
+        BigDecimal convertedValue = quantityFrom.multiply(ratio);
+        boolean unitIsInteger = targetUnitToIsInteger.computeIfAbsent(unitTo, this::checkIfUnitIsInteger);
+        if (unitIsInteger) {
+            return numberService.setScale(numberService.setScale(convertedValue, 0));
+        } else {
+            return numberService.setScale(convertedValue);
+        }
     }
 
     @Override

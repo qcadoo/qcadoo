@@ -44,6 +44,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import com.google.common.collect.Lists;
 import com.qcadoo.model.api.DataDefinition;
+import com.qcadoo.model.api.DictionaryService;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.NumberService;
 import com.qcadoo.model.api.units.PossibleUnitConversions;
@@ -62,6 +63,9 @@ public class UnitConversionServiceImplTest {
     @Mock
     private DataDefinition unitConversionItemDD;
 
+    @Mock
+    private DictionaryService dictionaryService;
+
     @Before
     public final void init() {
         MockitoAnnotations.initMocks(this);
@@ -72,6 +76,7 @@ public class UnitConversionServiceImplTest {
         given(unitConversionModelService.getDataDefinition()).willReturn(unitConversionItemDD);
         ReflectionTestUtils.setField(unitConversionService, "numberService", numberService);
         ReflectionTestUtils.setField(unitConversionService, "unitConversionModelService", unitConversionModelService);
+        ReflectionTestUtils.setField(unitConversionService, "dictionaryService", dictionaryService);
     }
 
     private void stubGetAll(final List<Entity> unitConversionItems) {

@@ -77,13 +77,16 @@
 			</script>
 
 			<component type="gridLayout" name="gridLayout" columns="3"
-					   rows="3">
+					   rows="4">
 				<layoutElement column="1" row="1">
 					<component type="input" name="name" field="name" reference="name"/>
 					<component type="hidden" name="externalNumber" field="externalNumber" reference="externalNumber"/>
 				</layoutElement>
 				<layoutElement column="1" row="2" height="2">
 					<component type="textarea" name="description" field="description"/>
+				</layoutElement>
+				<layoutElement column="1" row="4">
+					<component type="checkbox" name="isInteger" field="isInteger" reference="isInteger" defaultVisible="false"/>
 				</layoutElement>
 			</component>
 
@@ -99,6 +102,8 @@
 					  method="blockedActivationOptionWhenDictionaryWasAddFromSystem"/>
 		<beforeRender class="com.qcadoo.plugins.dictionaries.internal.hooks.DictionaryItemDetailsHooks"
 					  method="disableNameEdit"/>
+		<beforeRender class="com.qcadoo.plugins.dictionaries.internal.hooks.DictionaryItemDetailsHooks"
+					  method="showIntegerCheckbox"/>
 	</hooks>
 
 </view>
