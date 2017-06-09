@@ -25,6 +25,7 @@ package com.qcadoo.model.internal.units;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
+import com.qcadoo.model.api.DictionaryService;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.NumberService;
 import com.qcadoo.model.api.search.CustomRestriction;
@@ -32,6 +33,7 @@ import com.qcadoo.model.api.units.PossibleUnitConversions;
 import com.qcadoo.model.api.units.UnitConversion;
 import com.qcadoo.model.api.units.UnitConversionModelService;
 import com.qcadoo.model.api.units.UnitConversionService;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -48,6 +50,9 @@ public final class UnitConversionServiceImpl implements UnitConversionService {
     @Autowired
     private NumberService numberService;
 
+    @Autowired
+    private DictionaryService dictionaryService;
+
     @Override
     public PossibleUnitConversions getPossibleConversions(final String unit) {
         return getPossibleConversions(unit, unitConversionModelService.find(unit));
@@ -61,7 +66,7 @@ public final class UnitConversionServiceImpl implements UnitConversionService {
     private PossibleUnitConversions getPossibleConversions(final String unit, final List<Entity> matchingDomain) {
         Preconditions.checkNotNull(unit);
         final InternalPossibleUnitConversions possibleUnitConversions = new PossibleUnitConversionsImpl(unit, numberService,
-                unitConversionModelService.getDataDefinition());
+                unitConversionModelService.getDataDefinition(), dictionaryService);
         final UnitConversion root = UnitConversionImpl.build(unit, numberService.getMathContext());
         traverse(possibleUnitConversions, root, convertEntities(matchingDomain));
         return possibleUnitConversions;
@@ -98,5 +103,6 @@ public final class UnitConversionServiceImpl implements UnitConversionService {
         }
         return unitConversions;
     }
+
 
 }

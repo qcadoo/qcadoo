@@ -28,6 +28,8 @@ import static org.mockito.Mockito.mock;
 
 import java.math.BigDecimal;
 
+import com.qcadoo.model.api.DictionaryService;
+import com.qcadoo.model.api.units.UnsupportedUnitConversionException;
 import junit.framework.Assert;
 
 import org.junit.Before;
@@ -52,11 +54,14 @@ public class PossibleUnitConversionsImplTest {
     @Mock
     private NumberService numberService;
 
+    @Mock
+    private DictionaryService dictionaryService;
+
     @Before
     public final void init() {
         MockitoAnnotations.initMocks(this);
 
-        this.possibleUnitConversionsImpl = new PossibleUnitConversionsImpl(UNIT_FROM, numberService, unitConversionItemDD);
+        this.possibleUnitConversionsImpl = new PossibleUnitConversionsImpl(UNIT_FROM, numberService, unitConversionItemDD, dictionaryService);
     }
 
     private UnitConversion mockUnitConversion(final String unitFrom, final BigDecimal ratio, final String unitTo) {
@@ -73,14 +78,10 @@ public class PossibleUnitConversionsImplTest {
         }
     }
 
-    @Test
+    @Test(expected = UnsupportedUnitConversionException.class)
     public final void shouldThrowExceptionIfConversionDoesNotExists() {
         // when & then
-        try {
-            possibleUnitConversionsImpl.convertTo(BigDecimal.ONE, "kg");
-            Assert.fail();
-        } catch (Exception e) {
-        }
+        possibleUnitConversionsImpl.convertTo(BigDecimal.ONE, "kg");
     }
 
     @Test
