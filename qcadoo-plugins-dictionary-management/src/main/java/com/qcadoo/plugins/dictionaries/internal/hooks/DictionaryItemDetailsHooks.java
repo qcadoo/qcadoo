@@ -98,4 +98,13 @@ public class DictionaryItemDetailsHooks {
             form.setFormEnabled(true);
         }
     }
+
+    public void showIntegerCheckbox(final ViewDefinitionState state) {
+        FormComponent form = (FormComponent) state.getComponentByReference("form");
+        String dictionaryName = form.getEntity().getBelongsToField("dictionary").getStringField("name");
+        if(QcadooModelConstants.DICTIONARY_UNITS.equals(dictionaryName)){
+            state.getComponentByReference("isInteger").setVisible(true);
+        }
+    }
+
 }
