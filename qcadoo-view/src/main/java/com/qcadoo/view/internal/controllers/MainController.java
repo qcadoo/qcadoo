@@ -64,6 +64,9 @@ public final class MainController {
     @Value("${systemNotificationsEnabled:false}")
     private boolean systemNotificationsEnabled;
 
+    @Value("${systemNotificationsIntervalInSeconds:30}")
+    private int systemNotificationsIntervalInSeconds;
+
     @RequestMapping(value = "main", method = RequestMethod.GET)
     public ModelAndView getMainView(@RequestParam final Map<String, String> arguments, final Locale locale) {
         ModelAndView mav = new ModelAndView();
@@ -76,6 +79,7 @@ public final class MainController {
         mav.addObject("languageCode", LocaleContextHolder.getLocale().getLanguage());
         mav.addObject("dbNotificationsEnabled", dbNotificationsEnabled);
         mav.addObject("systemNotificationsEnabled", systemNotificationsEnabled);
+        mav.addObject("systemNotificationsIntervalInSeconds", systemNotificationsIntervalInSeconds);
         return mav;
     }
 
