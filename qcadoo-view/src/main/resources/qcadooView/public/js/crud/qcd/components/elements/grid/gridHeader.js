@@ -269,6 +269,14 @@ QCD.components.elements.grid.GridHeaderController = function (_gridController, _
             setEnabledButton(headerElements.filterButton, false);
             headerElements.clearFilterButton.hide();
         }
+        headerElements.columnChooserButton = QCD.components.elements.utils.HeaderUtils.createHeaderButton("", function (e) {
+            if (headerElements.columnChooserButton.hasClass("headerButtonEnabled")) {
+                columnChooserClicked();
+            }
+        }, "fileviewColumn16.png");
+        headerElements.columnChooserButton.attr("title", translations.columnChooserButton);
+        headerElement.append(headerElements.columnChooserButton);
+        setEnabledButton(headerElements.columnChooserButton, true);
         if (gridParameters.canNew && !gridParameters.weakRelation) {
             headerElements.newButton = QCD.components.elements.utils.HeaderUtils.createHeaderButton(translations.newButton, function (e) {
                 if (headerElements.newButton.hasClass("headerButtonEnabled")) {
@@ -690,6 +698,10 @@ QCD.components.elements.grid.GridHeaderController = function (_gridController, _
 
     function clearFilterClicked(data) {
         gridController.onClearFilterClicked();
+    }
+
+    function columnChooserClicked() {
+        gridController.onColumnChooserClicked();
     }
 
     this.setFiltersValuesEmpty = function () {
