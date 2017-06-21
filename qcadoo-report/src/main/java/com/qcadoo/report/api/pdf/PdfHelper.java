@@ -23,15 +23,15 @@
  */
 package com.qcadoo.report.api.pdf;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Font;
 import com.lowagie.text.pdf.PdfPTable;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * Helper for PDF.
@@ -158,7 +158,7 @@ public interface PdfHelper {
 
     /**
      * Add cell with one columns table to current table.
-     * 
+     *
      * @param table
      * @param label
      *            header label
@@ -166,6 +166,19 @@ public interface PdfHelper {
      *            value
      */
     void addTableCellAsOneColumnTable(final PdfPTable table, final String label, final Object fieldValue);
+
+    /**
+     * Add cell with one columns table to current table.
+     *
+     * @param table
+     * @param label
+     *            header label
+     * @param fieldValue
+     *            value
+     * @param boldAndBigger
+     *            boldAndBigger
+     */
+    void addTableCellAsOneColumnTable(final PdfPTable table, final String label, final Object fieldValue, final boolean boldAndBigger);
 
     /**
      * Add image from file name to given document.

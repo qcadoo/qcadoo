@@ -23,8 +23,16 @@
  */
 package com.qcadoo.report.internal;
 
-import com.google.common.collect.Lists;
-import com.lowagie.text.*;
+import com.lowagie.text.BadElementException;
+import com.lowagie.text.Chunk;
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Element;
+import com.lowagie.text.Font;
+import com.lowagie.text.Image;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.Phrase;
+import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.draw.LineSeparator;
@@ -47,8 +55,12 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import static org.springframework.context.i18n.LocaleContextHolder.getLocale;
 
@@ -229,6 +241,15 @@ public final class PdfHelperImpl implements PdfHelper {
     @Override
     public void addTableCellAsOneColumnTable(final PdfPTable table, final String label, final Object fieldValue) {
         addTableCellAsTable(table, label, fieldValue, FontUtils.getDejavuBold7Dark(),  FontUtils.getDejavuRegular9Dark(), 1);
+    }
+
+    @Override
+    public void addTableCellAsOneColumnTable(final PdfPTable table, final String label, final Object fieldValue, final boolean boldAndBigger) {
+        if(boldAndBigger){
+            addTableCellAsTable(table, label, fieldValue, FontUtils.getDejavuBold7Dark(),  FontUtils.getDejavuBold10Dark(), 1);
+        } else {
+            addTableCellAsTable(table, label, fieldValue, FontUtils.getDejavuBold7Dark(),  FontUtils.getDejavuRegular9Dark(), 1);
+        }
     }
 
     @Override
