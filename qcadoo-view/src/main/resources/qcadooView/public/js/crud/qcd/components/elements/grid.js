@@ -1085,6 +1085,19 @@ QCD.components.elements.Grid = function (element, mainController) {
         onCurrentStateChange();
     };
 
+    this.onColumnChooserClicked = function () {
+        grid.jqGrid('setColumns', {
+            dataheight: currentGridHeight,
+            colnameview: false,
+            recreateForm: true,
+            caption: translations.columnChooserCaption,
+            bSubmit: translations.columnChooserSubmit,
+            bCancel: translations.columnChooserCancel,
+            afterSubmitForm: function (id) {
+            }
+        });
+    };
+
     this.setFilterState = function (column, filterText) {
         if (!currentState.filtersEnabled) {
             grid[0].toggleToolbar();
