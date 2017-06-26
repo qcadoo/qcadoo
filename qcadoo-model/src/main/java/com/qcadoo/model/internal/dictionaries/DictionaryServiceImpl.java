@@ -227,4 +227,8 @@ public final class DictionaryServiceImpl implements InternalDictionaryService {
         }
     }
 
+    public Boolean checkIfUnitIsInteger(String unit) {
+        return getItemEntity(QcadooModelConstants.DICTIONARY_UNITS, unit).getBooleanField(DictionaryItemFields.IS_INTEGER);
+    }
+
 }

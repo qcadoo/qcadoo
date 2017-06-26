@@ -81,4 +81,6 @@ public interface DictionaryService {
      */
     Entity getItemEntity(String dictionary, String item);
 
+    Boolean checkIfUnitIsInteger(String unit);
+
 }
