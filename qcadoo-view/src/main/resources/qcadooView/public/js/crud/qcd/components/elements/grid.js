@@ -86,7 +86,9 @@ QCD.components.elements.Grid = function (element, mainController) {
 
         that = this,
 
-        addedEntityId = null;
+        addedEntityId = null,
+
+        localStorageKey = 'qcadoo-' + pluginIdentifier + '-' + viewName;
 
     if (this.options.referenceName) {
         mainController.registerReferenceName(this.options.referenceName, this);
@@ -233,6 +235,14 @@ QCD.components.elements.Grid = function (element, mainController) {
 				multiSearchColumns.push(multiSearchColumn);
 				multiSearchColumn = null;
 			}
+        }
+        var restoredColumns = JSON.parse(localStorage.getItem(localStorageKey));
+        if(restoredColumns){
+            for(var i in colModel){
+                if(restoredColumns.indexOf(colModel[i].name) === -1){
+                    colModel[i].hidden = true;
+                }
+            }
         }
 
         gridParameters.hasMultiSearchColumns = hasMultiSearchColumns;
@@ -1101,6 +1111,14 @@ QCD.components.elements.Grid = function (element, mainController) {
             bSubmit: translations.columnChooserSubmit,
             bCancel: translations.columnChooserCancel,
             afterSubmitForm: function (id) {
+                var columns = [];
+                for (var i in grid[0].p.colModel) {
+                    var column = grid[0].p.colModel[i];
+                    if(!column.hidden && !column.hidedlg){
+                        columns.push(column.name);
+                    }
+                }
+                localStorage.setItem(localStorageKey, JSON.stringify(columns));
             }
         });
     };
