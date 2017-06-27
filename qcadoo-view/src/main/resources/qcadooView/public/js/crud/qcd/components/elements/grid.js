@@ -395,14 +395,20 @@ QCD.components.elements.Grid = function (element, mainController) {
             }
         }
     }
-    
-    function linkClicked(selectedEntities) {
+
+    function linkClicked(selectedEntities, colName) {
         if (!currentState.isEditable) {
             return;
         }
         currentState.rowLinkClickedBefore = true;
         if (linkListener) {
             linkListener.onGridLinkClicked(selectedEntities);
+        } else if(colName && columnModel[colName].correspondingView && mainController.canClose()) {
+            var params = {};
+            params["form.id"] = currentEntities[selectedEntities].fields[columnModel[colName].correspondingField].replace(/\s/g, '');
+            setPermanentlyDisableParam(params);
+            var url = columnModel[colName].correspondingView + ".html?context=" + JSON.stringify(params);
+            mainController.goToPage(url);
         } else {
             var params = {};
             params[gridParameters.correspondingComponent + ".id"] = selectedEntities;
@@ -661,8 +667,9 @@ QCD.components.elements.Grid = function (element, mainController) {
 
         $("." + elementSearchName + "_link").click(function (e) {
             var idArr = e.target.id.split("_"),
-                entityId = idArr[idArr.length - 1];
-            linkClicked(entityId);
+                entityId = idArr[idArr.length - 1],
+                colName = idArr[idArr.length - 2];
+            linkClicked(entityId, colName);
         });
 
         headerController.updatePagingParameters(currentState.firstEntity, currentState.maxEntities, value.totalEntities);
