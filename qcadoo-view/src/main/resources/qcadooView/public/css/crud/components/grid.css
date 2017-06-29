@@ -539,3 +539,7 @@ div.filterButton {
     border-top-color: inherit;
     border-top-style: solid;
 }
+
+.ColTable td {
+    float: left;
+}
