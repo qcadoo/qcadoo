@@ -86,7 +86,9 @@ QCD.components.elements.Grid = function (element, mainController) {
 
         that = this,
 
-        addedEntityId = null;
+        addedEntityId = null,
+
+        localStorageKey = 'qcadoo-' + pluginIdentifier + '-' + viewName;
 
     if (this.options.referenceName) {
         mainController.registerReferenceName(this.options.referenceName, this);
@@ -233,6 +235,14 @@ QCD.components.elements.Grid = function (element, mainController) {
 				multiSearchColumns.push(multiSearchColumn);
 				multiSearchColumn = null;
 			}
+        }
+        var restoredColumns = JSON.parse(localStorage.getItem(localStorageKey));
+        if(restoredColumns){
+            for(var i in colModel){
+                if(restoredColumns.indexOf(colModel[i].name) === -1){
+                    colModel[i].hidden = true;
+                }
+            }
         }
 
         gridParameters.hasMultiSearchColumns = hasMultiSearchColumns;
@@ -395,14 +405,20 @@ QCD.components.elements.Grid = function (element, mainController) {
             }
         }
     }
-    
-    function linkClicked(selectedEntities) {
+
+    function linkClicked(selectedEntities, colName) {
         if (!currentState.isEditable) {
             return;
         }
         currentState.rowLinkClickedBefore = true;
         if (linkListener) {
             linkListener.onGridLinkClicked(selectedEntities);
+        } else if(colName && columnModel[colName].correspondingView && mainController.canClose()) {
+            var params = {};
+            params["form.id"] = currentEntities[selectedEntities].fields[columnModel[colName].correspondingField].replace(/\s/g, '');
+            setPermanentlyDisableParam(params);
+            var url = columnModel[colName].correspondingView + ".html?context=" + JSON.stringify(params);
+            mainController.goToPage(url);
         } else {
             var params = {};
             params[gridParameters.correspondingComponent + ".id"] = selectedEntities;
@@ -661,8 +677,9 @@ QCD.components.elements.Grid = function (element, mainController) {
 
         $("." + elementSearchName + "_link").click(function (e) {
             var idArr = e.target.id.split("_"),
-                entityId = idArr[idArr.length - 1];
-            linkClicked(entityId);
+                entityId = idArr[idArr.length - 1],
+                colName = idArr[idArr.length - 2];
+            linkClicked(entityId, colName);
         });
 
         headerController.updatePagingParameters(currentState.firstEntity, currentState.maxEntities, value.totalEntities);
@@ -1083,6 +1100,27 @@ QCD.components.elements.Grid = function (element, mainController) {
         }
         onFiltersStateChange();
         onCurrentStateChange();
+    };
+
+    this.onColumnChooserClicked = function () {
+        grid.jqGrid('setColumns', {
+            dataheight: currentGridHeight,
+            colnameview: false,
+            recreateForm: true,
+            caption: translations.columnChooserCaption,
+            bSubmit: translations.columnChooserSubmit,
+            bCancel: translations.columnChooserCancel,
+            afterSubmitForm: function (id) {
+                var columns = [];
+                for (var i in grid[0].p.colModel) {
+                    var column = grid[0].p.colModel[i];
+                    if(!column.hidden && !column.hidedlg){
+                        columns.push(column.name);
+                    }
+                }
+                localStorage.setItem(localStorageKey, JSON.stringify(columns));
+            }
+        });
     };
 
     this.setFilterState = function (column, filterText) {

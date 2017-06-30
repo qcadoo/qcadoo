@@ -23,19 +23,20 @@
  */
 package com.qcadoo.view.internal.components.grid;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.springframework.util.StringUtils;
+
 import com.google.common.base.Preconditions;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.expression.ExpressionUtils;
 import com.qcadoo.plugin.api.PluginUtils;
 import com.qcadoo.view.constants.Alignment;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.springframework.util.StringUtils;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
 
 public class GridComponentColumn {
 
@@ -58,6 +59,10 @@ public class GridComponentColumn {
     private Alignment align;
     
     private String authorizationRole;
+
+    private String correspondingView;
+
+    private String correspondingField;
 
     public GridComponentColumn(final String name) {
         this(name, null);
@@ -86,6 +91,22 @@ public class GridComponentColumn {
 
     public void setLink(final boolean link) {
         this.link = link;
+    }
+
+    public String getCorrespondingView() {
+        return correspondingView;
+    }
+
+    public String getCorrespondingField() {
+        return correspondingField;
+    }
+
+    public void setCorrespondingView(final String correspondingView) {
+        this.correspondingView = correspondingView;
+    }
+
+    public void setCorrespondingField(final String correspondingField) {
+        this.correspondingField = correspondingField;
     }
 
     public boolean isHidden() {
@@ -157,7 +178,7 @@ public class GridComponentColumn {
     @Override
     public int hashCode() {
         return new HashCodeBuilder().append(name).append(fields).append(extendingPluginIdentifier).append(hidden).append(link).append(authorizationRole)
-                .append(expression).append(width).append(getAlign()).toHashCode();
+                .append(expression).append(width).append(getAlign()).append(correspondingView).append(correspondingField).toHashCode();
     }
 
     @Override
@@ -172,7 +193,7 @@ public class GridComponentColumn {
         return new EqualsBuilder().append(this.name, that.name).append(this.fields, that.fields)
                 .append(this.extendingPluginIdentifier, that.extendingPluginIdentifier).append(this.hidden, that.hidden)
                 .append(this.link, that.link).append(this.authorizationRole, this.authorizationRole).append(this.expression, that.expression).append(this.width, that.width)
-                .append(this.getAlign(), that.getAlign()).isEquals();
+                .append(this.getAlign(), that.getAlign()).append(this.correspondingView, that.correspondingView).append(this.correspondingField, that.correspondingField).isEquals();
     }
 
 }

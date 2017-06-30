@@ -29,7 +29,11 @@ import static com.google.common.base.Preconditions.checkState;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.security.authentication.event.AbstractAuthenticationEvent;
@@ -41,7 +45,6 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.security.web.authentication.rememberme.PersistentRememberMeToken;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.stereotype.Service;
@@ -76,6 +79,9 @@ public class SecurityServiceImpl implements InternalSecurityService, UserDetails
     @Autowired
     private SecurityRolesService securityRolesService;
 
+    @Autowired
+    private HttpServletRequest request;
+
     @Override
     public void onApplicationEvent(final AbstractAuthenticationEvent event) {
         if (!(event instanceof AbstractAuthenticationFailureEvent)) {
@@ -92,16 +98,22 @@ public class SecurityServiceImpl implements InternalSecurityService, UserDetails
                     || now.getTime().after(user.getDateField(UserFields.LAST_ACTIVITY))) {
                 user.setField(UserFields.LAST_ACTIVITY, new Date());
 
-                Object details = event.getAuthentication().getDetails();
-                if (details instanceof WebAuthenticationDetails){
-                    String ipAddress = ((WebAuthenticationDetails) details).getRemoteAddress();
-                    user.setField(UserFields.IP_ADDRESS, ipAddress);
+                if(Objects.nonNull(request)){
+                    user.setField(UserFields.IP_ADDRESS, getClientIP());
                 }
 
                 dataDefinitionService.get(QcadooSecurityConstants.PLUGIN_IDENTIFIER, QcadooSecurityConstants.MODEL_USER).save(
                         user);
             }
         }
+    }
+
+    private String getClientIP() {
+        String xfHeader = request.getHeader("X-Forwarded-For");
+        if (StringUtils.isBlank(xfHeader)){
+            return request.getRemoteAddr();
+        }
+        return xfHeader.split(",")[0];
     }
 
     @Override
