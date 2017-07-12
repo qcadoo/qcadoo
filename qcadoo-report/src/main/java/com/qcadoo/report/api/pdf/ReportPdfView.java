@@ -23,18 +23,6 @@
  */
 package com.qcadoo.report.api.pdf;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Locale;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.web.servlet.view.document.AbstractPdfView;
-
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.pdf.PdfAction;
@@ -42,6 +30,16 @@ import com.lowagie.text.pdf.PdfDestination;
 import com.lowagie.text.pdf.PdfWriter;
 import com.qcadoo.report.api.FooterResolver;
 import com.qcadoo.report.api.ReportService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.web.servlet.view.document.AbstractPdfView;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Locale;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * Abstract superclass for report PDF views, using Bruno Lowagie's
@@ -117,8 +115,14 @@ public abstract class ReportPdfView extends AbstractPdfView {
         setPageEvent(writer);
     }
 
+    protected void prepareCoustomWriter(final Map<String, Object> model, final PdfWriter writer, final HttpServletRequest request)
+            throws DocumentException {
+        super.prepareWriter(model, writer, request);
+    }
+
     protected void setPageEvent(final PdfWriter writer) {
         writer.setPageEvent(new PdfPageNumbering(footerResolver.resolveFooter(LocaleContextHolder.getLocale())));
+
     }
 
     @Override
