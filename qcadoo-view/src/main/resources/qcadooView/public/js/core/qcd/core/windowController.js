@@ -175,6 +175,10 @@ QCD.WindowController = function(_menuStructure) {
 		}
 	}
 
+	this.getStatesStackLength = function() {
+	    return statesStack.length;
+	}
+
 	this.closeThisModalWindow = function(status) {
 		modal = modalsStack.pop();
 		modal.hide();
