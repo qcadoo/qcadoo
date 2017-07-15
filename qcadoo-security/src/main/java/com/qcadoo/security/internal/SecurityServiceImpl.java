@@ -79,7 +79,7 @@ public class SecurityServiceImpl implements InternalSecurityService, UserDetails
     @Autowired
     private SecurityRolesService securityRolesService;
 
-    @Autowired
+    @Autowired(required = false)
     private HttpServletRequest request;
 
     @Override
