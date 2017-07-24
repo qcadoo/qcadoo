@@ -24,6 +24,7 @@
 package com.qcadoo.view.internal.controllers;
 
 import com.qcadoo.localization.api.TranslationService;
+import com.qcadoo.view.internal.LogoComponent;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -45,11 +46,16 @@ public final class LoginController {
 
     private static final String MESSAGE_CONTENT = "messageContent";
 
+    private static final String LOGO_PATH = "logoPath";
+
     @Autowired
     private TranslationService translationService;
 
     @Autowired
     private ViewParametersAppender viewParametersAppender;
+
+    @Autowired
+    private LogoComponent logoComponent;
 
     @RequestMapping(value = "login", method = RequestMethod.GET)
     public ModelAndView getLoginPageView(@RequestParam(required = false) final String loginError,
@@ -64,8 +70,10 @@ public final class LoginController {
         mav.setViewName("qcadooView/login");
         viewParametersAppender.appendCommonViewObjects(mav);
         mav.addObject("translation", translationService.getMessagesGroup("security", locale));
-        mav.addObject("currentLanguage", locale.getLanguage());
+        mav.addObject("currentLanguagecurrentLanguage", locale.getLanguage());
         mav.addObject("locales", translationService.getLocales());
+
+        mav.addObject(LOGO_PATH, logoComponent.prepareLoginPageLogoPath());
 
         mav.addObject("iframe", iframe);
         mav.addObject("popup", popup);

@@ -36,8 +36,17 @@ public class ViewParametersAppender {
     @Value("${useCompressedStaticResources}")
     private boolean useCompressedStaticResources;
 
+    @Value("${applicationProfile}")
+    private String applicationProfile;
+
     public void appendCommonViewObjects(final ModelAndView mav) {
         mav.addObject("applicationDisplayName", applicationDisplayName);
         mav.addObject("useCompressedStaticResources", useCompressedStaticResources);
+        mav.addObject("applicationProfile", applicationProfile);
     }
+
+    public String getApplicationProfile() {
+        return applicationProfile;
+    }
+
 }

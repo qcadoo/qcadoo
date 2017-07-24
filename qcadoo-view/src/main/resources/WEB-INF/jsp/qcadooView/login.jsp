@@ -172,6 +172,10 @@
 
         $("#languageSelect").val("${currentLanguage}");
 
+        var logoPath = "${logoPath}";
+        $('#loginFooterLogo').css('background-image', 'url('+logoPath+')');
+
+
         passwordInput.keypress(function (e) {
             var key = e.keyCode || e.which;
             if (key == 13) {

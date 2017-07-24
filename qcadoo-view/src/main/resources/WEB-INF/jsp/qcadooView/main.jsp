@@ -357,7 +357,7 @@
 		window.getCurrentUserLogin = function() {
 			return "${userLogin}";
 		}
-	
+
 		window.translationsMap = new Object();
 		<c:forEach items="${commonTranslations}" var="translation">
 			window.translationsMap["${translation.key}"] = "${translation.value}";
@@ -372,7 +372,7 @@
 	    <div class="logoDropdownBox">
 			<div class="logoDropdownBoxToggle">
 				<div class="logo">
-					<img src="/qcadooView/public/css/core/menu/images-new/qcadoo-logo.png" class="logoDark" alt="qcadoo MES logo" onclick="windowController.goToDashboard()">
+					<img src="${logoPath}" class="logoDark" alt="qcadoo MES logo" onclick="windowController.goToDashboard()">
 					<img src="/qcadooView/public/css/core/menu/images-new/qcadoo-white-logo.png" class="logoWhite" alt="qcadoo MES logo" onclick="windowController.goToDashboard()">
 				</div>
 				<a href="#" class="arrow"">
