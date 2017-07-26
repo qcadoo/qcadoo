@@ -70,7 +70,7 @@ public final class LoginController {
         mav.setViewName("qcadooView/login");
         viewParametersAppender.appendCommonViewObjects(mav);
         mav.addObject("translation", translationService.getMessagesGroup("security", locale));
-        mav.addObject("currentLanguagecurrentLanguage", locale.getLanguage());
+        mav.addObject("currentLanguage", locale.getLanguage());
         mav.addObject("locales", translationService.getLocales());
 
         mav.addObject(LOGO_PATH, logoComponent.prepareLoginPageLogoPath());
