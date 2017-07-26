@@ -197,8 +197,8 @@ QCD.components.elements.AwesomeDynamicList = function (element, mainController) 
 			}
 		}
 		if (awesomeDynamicListHeaderObject) {
-            awesomeDynamicListHeader.width(width - ((BUTTONS_WIDTH > 0) ? BUTTONS_WIDTH - 20 : 0));
-			awesomeDynamicListHeaderObject.updateSize(width - ((BUTTONS_WIDTH > 0) ? BUTTONS_WIDTH - 30 : 0), height);
+            awesomeDynamicListHeader.width(width - ((BUTTONS_WIDTH > 0) ? BUTTONS_WIDTH + 20 : 20));
+			awesomeDynamicListHeaderObject.updateSize(width - ((BUTTONS_WIDTH > 0) ? BUTTONS_WIDTH + 20 : 20), height);
 		}
 
 		$(".awesomeListLine").addClass('forceRedraw').removeClass('forceRedraw'); // IE fix - force redraw
