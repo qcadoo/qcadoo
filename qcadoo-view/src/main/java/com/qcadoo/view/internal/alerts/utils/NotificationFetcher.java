@@ -1,8 +1,18 @@
 package com.qcadoo.view.internal.alerts.utils;
 
+
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
+import javax.net.ssl.SSLContext;
+
 import org.apache.commons.codec.binary.Base64;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.ssl.SSLContextBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -10,6 +20,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -38,7 +49,7 @@ public class NotificationFetcher {
 
     public void fetch() {
         if (!Strings.isNullOrEmpty(url)) {
-            RestTemplate restTemplate = new RestTemplate();
+            RestTemplate restTemplate = new RestTemplate(createHttpComponentsClientHttpRequestFactory());
             ResponseEntity<List<AlertDto>> alertResponse = restTemplate.exchange(url + "?instanceName=" + instanceName,
                     HttpMethod.GET, new HttpEntity<>(createHeaders()), new ParameterizedTypeReference<List<AlertDto>>() {
                     });
@@ -48,6 +59,25 @@ public class NotificationFetcher {
                 restTemplate.exchange(url + a.getId(), HttpMethod.PUT, new HttpEntity<>(createHeaders()), Void.class);
             });
         }
+    }
+
+    private HttpComponentsClientHttpRequestFactory createHttpComponentsClientHttpRequestFactory() {
+        SSLContext sslContext = null;
+        try {
+            sslContext = new SSLContextBuilder()
+                    .loadTrustMaterial(null, (certificate, authType) -> true).build();
+        } catch (NoSuchAlgorithmException | KeyManagementException | KeyStoreException e) {
+            e.printStackTrace();
+        }
+        CloseableHttpClient httpClient
+                = HttpClients.custom()
+                .setSslcontext(sslContext)
+                .setSSLHostnameVerifier(new NoopHostnameVerifier())
+                .build();
+        HttpComponentsClientHttpRequestFactory requestFactory
+                = new HttpComponentsClientHttpRequestFactory();
+        requestFactory.setHttpClient(httpClient);
+        return requestFactory;
     }
 
     private HttpHeaders createHeaders() {
