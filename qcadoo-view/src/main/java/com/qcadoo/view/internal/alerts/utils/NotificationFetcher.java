@@ -83,11 +83,7 @@ public class NotificationFetcher {
     private HttpHeaders createHeaders() {
         HttpHeaders httpHeaders = new HttpHeaders();
 
-        StringBuilder plainCredentials = new StringBuilder();
-
-        plainCredentials.append(userName).append(":").append(password);
-
-        byte[] plainCredentialsBytes = plainCredentials.toString().getBytes();
+        byte[] plainCredentialsBytes = (userName + ":" + password).getBytes();
         byte[] base64CredentialsBytes = Base64.encodeBase64(plainCredentialsBytes);
         String base64Credentials = new String(base64CredentialsBytes);
 
