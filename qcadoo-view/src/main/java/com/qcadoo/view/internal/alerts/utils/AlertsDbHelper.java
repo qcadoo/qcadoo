@@ -1,5 +1,12 @@
 package com.qcadoo.view.internal.alerts.utils;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.joda.time.DateTime;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.google.common.collect.Lists;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.DataDefinitionService;
@@ -10,33 +17,30 @@ import com.qcadoo.view.constants.AlertFields;
 import com.qcadoo.view.constants.QcadooViewConstants;
 import com.qcadoo.view.constants.ViewedAlertFields;
 import com.qcadoo.view.internal.alerts.model.AlertDto;
-import org.joda.time.DateTime;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.Collectors;
+@Service
+public class AlertsDbHelper {
 
-@Service public class AlertsDbHelper {
+    @Autowired
+    private DataDefinitionService dataDefinitionService;
 
-    @Autowired private DataDefinitionService dataDefinitionService;
-
-    @Autowired private UserService userService;
+    @Autowired
+    private UserService userService;
 
     public void createViewedAlerts(final List<AlertDto> alerts) {
-        alerts.forEach(a -> createViewedAlert(a.getId()));
+        Entity user = userService.getCurrentUserEntity();
+        alerts.forEach(a -> createViewedAlert(a.getId(), user));
     }
 
-    private void createViewedAlert(final Long id) {
+    private void createViewedAlert(final Long id, final Entity user) {
         Entity viewedAlert = getViewdAlertDD().create();
         Entity alert = dataDefinitionService.get(QcadooViewConstants.PLUGIN_IDENTIFIER, QcadooViewConstants.MODEL_ALERT).get(id);
-        Entity user = userService.getCurrentUserEntity();
         viewedAlert.setField(ViewedAlertFields.USER, user);
         viewedAlert.setField(ViewedAlertFields.ALERT, alert);
         viewedAlert.getDataDefinition().save(viewedAlert);
     }
 
-    public List<Entity> getAlertsForUser() {
+    private List<Entity> getAlertsForUser() {
         Entity user = userService.getCurrentUserEntity();
 
         List<Entity> result = Lists.newArrayList();
@@ -68,7 +72,7 @@ import java.util.stream.Collectors;
         alerts.add(alert);
     }
 
-    public void registerAlert(final AlertDto alert) {
+    void registerAlert(final AlertDto alert) {
         Entity alertEntity = getAlertDD().create();
         alertEntity.setField(AlertFields.TYPE, alert.getType());
         alertEntity.setField(AlertFields.MESSAGE, alert.getMessage());

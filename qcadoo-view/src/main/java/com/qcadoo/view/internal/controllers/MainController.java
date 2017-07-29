@@ -23,9 +23,11 @@
  */
 package com.qcadoo.view.internal.controllers;
 
-import java.util.Locale;
-import java.util.Map;
-
+import com.qcadoo.localization.api.TranslationService;
+import com.qcadoo.security.api.SecurityService;
+import com.qcadoo.view.internal.LogoComponent;
+import com.qcadoo.view.internal.api.ViewDefinitionService;
+import com.qcadoo.view.internal.menu.MenuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -35,13 +37,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.qcadoo.localization.api.TranslationService;
-import com.qcadoo.security.api.SecurityService;
-import com.qcadoo.view.internal.api.ViewDefinitionService;
-import com.qcadoo.view.internal.menu.MenuService;
+import java.util.Locale;
+import java.util.Map;
 
 @Controller
 public final class MainController {
+
+    private static final String LOGO_PATH = "logoPath";
 
     @Autowired
     private ViewDefinitionService viewDefinitionService;
@@ -57,6 +59,9 @@ public final class MainController {
 
     @Autowired
     private ViewParametersAppender viewParametersAppender;
+
+    @Autowired
+    private LogoComponent logoComponent;
 
     @Value("${dbNotificationsEnabled:true}")
     private boolean dbNotificationsEnabled;
@@ -80,6 +85,7 @@ public final class MainController {
         mav.addObject("dbNotificationsEnabled", dbNotificationsEnabled);
         mav.addObject("systemNotificationsEnabled", systemNotificationsEnabled);
         mav.addObject("systemNotificationsIntervalInSeconds", systemNotificationsIntervalInSeconds);
+        mav.addObject(LOGO_PATH, logoComponent.prepareMenuLogoPath());
         return mav;
     }
 
