@@ -579,20 +579,18 @@ QCD.components.elements.GanttChartTooltip = function (_element) {
         var position = calculatePosition(x, y);
         htmlElements.tooltipElement.css("left", position.x).css("top", position.y);
         if (!visible) {
+            visible = true;
             htmlElements.tooltipElement.animate({
                 opacity: 0.8
             }, {
                 duration: 100,
-                queue: false,
-                complete: function () {
-                    visible = true;
-                }
+                queue: false
             });
         }
     };
 
     this.hide = function () {
-        htmlElements.tooltipElement.css("opacity", "0.0").css("top", "-1000px");
+        htmlElements.tooltipElement.stop().css("opacity", "0.0").css("top", "-1000px");
         visible = false;
     };
 
