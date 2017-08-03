@@ -60,10 +60,10 @@ public abstract class XlsDocumentService implements ReportDocumentService {
     @Override
     public final void generateDocument(final Entity entity, final Locale locale, final Rectangle pageSize) throws IOException {
         HSSFWorkbook workbook = new HSSFWorkbook();
-        HSSFSheet sheet = workbook.createSheet(getReportTitle(locale));
+        HSSFSheet sheet = createSheet(workbook, getReportTitle(locale));
         addHeader(sheet, locale, entity);
         addSeries(sheet, entity);
-        sheet.setZoom(4, 3);
+        addExtraSheets(workbook);
         FileOutputStream outputStream = null;
         try {
             outputStream = new FileOutputStream(fileService.createReportFile((String) entity.getField("fileName") + "."
@@ -82,5 +82,15 @@ public abstract class XlsDocumentService implements ReportDocumentService {
     protected abstract void addHeader(final HSSFSheet sheet, final Locale locale, final Entity entity);
 
     protected abstract void addSeries(final HSSFSheet sheet, final Entity entity);
+
+    protected void addExtraSheets(final HSSFWorkbook workbook) {
+
+    }
+
+    protected HSSFSheet createSheet(final HSSFWorkbook workbook, final String title) {
+        HSSFSheet sheet = workbook.createSheet(title);
+        sheet.setZoom(4, 3);
+        return sheet;
+    }
 
 }
