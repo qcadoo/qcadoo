@@ -83,7 +83,7 @@ public abstract class XlsDocumentService implements ReportDocumentService {
 
     protected abstract void addSeries(final HSSFSheet sheet, final Entity entity);
 
-    protected void addExtraSheets(final HSSFWorkbook workbook, Entity entity) {
+    protected void addExtraSheets(final HSSFWorkbook workbook, Entity entity, Locale locale) {
 
     }
 
