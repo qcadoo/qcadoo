@@ -63,7 +63,7 @@ public abstract class XlsDocumentService implements ReportDocumentService {
         HSSFSheet sheet = createSheet(workbook, getReportTitle(locale));
         addHeader(sheet, locale, entity);
         addSeries(sheet, entity);
-        addExtraSheets(workbook, entity);
+        addExtraSheets(workbook, entity, locale);
         FileOutputStream outputStream = null;
         try {
             outputStream = new FileOutputStream(fileService.createReportFile((String) entity.getField("fileName") + "."
