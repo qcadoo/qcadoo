@@ -63,7 +63,7 @@ public abstract class XlsDocumentService implements ReportDocumentService {
         HSSFSheet sheet = createSheet(workbook, getReportTitle(locale));
         addHeader(sheet, locale, entity);
         addSeries(sheet, entity);
-        addExtraSheets(workbook);
+        addExtraSheets(workbook, entity);
         FileOutputStream outputStream = null;
         try {
             outputStream = new FileOutputStream(fileService.createReportFile((String) entity.getField("fileName") + "."
@@ -83,7 +83,7 @@ public abstract class XlsDocumentService implements ReportDocumentService {
 
     protected abstract void addSeries(final HSSFSheet sheet, final Entity entity);
 
-    protected void addExtraSheets(final HSSFWorkbook workbook) {
+    protected void addExtraSheets(final HSSFWorkbook workbook, Entity entity) {
 
     }
 
