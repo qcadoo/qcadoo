@@ -23,6 +23,7 @@
  */
 package com.qcadoo.view.api.components.grid;
 
+import java.util.Arrays;
 import java.util.Set;
 
 import org.json.JSONArray;
@@ -39,6 +40,12 @@ public class GridComponentMultiSearchFilter {
     public static final String JSON_GROUP_OPERATOR_FIELD = "groupOp";
 
     public static final String JSON_RULES_FIELD = "rules";
+
+    private static final GridComponentFilterOperator[] OPERATORS = new GridComponentFilterOperator[] {
+            GridComponentFilterOperator.EQ, GridComponentFilterOperator.NE, GridComponentFilterOperator.LT,
+            GridComponentFilterOperator.LE, GridComponentFilterOperator.GT, GridComponentFilterOperator.GE,
+            GridComponentFilterOperator.IN, GridComponentFilterOperator.CN, GridComponentFilterOperator.BW,
+            GridComponentFilterOperator.EW, GridComponentFilterOperator.ISNULL, GridComponentFilterOperator.CIN };
 
     private GridComponentFilterGroupOperator groupOperator = null;
 
@@ -76,34 +83,8 @@ public class GridComponentMultiSearchFilter {
     }
 
     private GridComponentFilterOperator resolveOperator(final String operator) {
-        GridComponentFilterOperator filterOperator;
-        if (GridComponentFilterOperator.EQ.getValue().equals(operator)) {
-            filterOperator = GridComponentFilterOperator.EQ;
-        } else if (GridComponentFilterOperator.NE.getValue().equals(operator)) {
-            filterOperator = GridComponentFilterOperator.NE;
-        } else if (GridComponentFilterOperator.LT.getValue().equals(operator)) {
-            filterOperator = GridComponentFilterOperator.LT;
-        } else if (GridComponentFilterOperator.LE.getValue().equals(operator)) {
-            filterOperator = GridComponentFilterOperator.LE;
-        } else if (GridComponentFilterOperator.GT.getValue().equals(operator)) {
-            filterOperator = GridComponentFilterOperator.GT;
-        } else if (GridComponentFilterOperator.GE.getValue().equals(operator)) {
-            filterOperator = GridComponentFilterOperator.GE;
-        } else if (GridComponentFilterOperator.IN.getValue().equals(operator)) {
-            filterOperator = GridComponentFilterOperator.IN;
-        } else if (GridComponentFilterOperator.CN.getValue().equals(operator)) {
-            filterOperator = GridComponentFilterOperator.CN;
-        } else if (GridComponentFilterOperator.BW.getValue().equals(operator)) {
-            filterOperator = GridComponentFilterOperator.BW;
-        } else if (GridComponentFilterOperator.EW.getValue().equals(operator)) {
-            filterOperator = GridComponentFilterOperator.EW;
-        } else if (GridComponentFilterOperator.ISNULL.getValue().equals(operator)) {
-            filterOperator = GridComponentFilterOperator.ISNULL;
-        } else {
-            throw new IllegalStateException("Unwknow filter operator.");
-        }
-
-        return filterOperator;
+        return Arrays.stream(OPERATORS).filter(o -> o.getValue().equals(operator)).findFirst()
+                .orElseThrow(() -> new IllegalStateException("Unknown filter operator."));
     }
 
     public JSONObject toJson() throws JSONException {

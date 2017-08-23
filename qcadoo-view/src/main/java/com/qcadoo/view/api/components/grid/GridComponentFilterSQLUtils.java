@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -294,6 +295,14 @@ public final class GridComponentFilterSQLUtils {
             case IN:
                 Collection<String> values = parseListValue(data);
                 return "lower(" + field + ") in (" + convertToIn(values) + ") ";
+            case CIN:
+                StringBuilder sb = new StringBuilder("(");
+                Collection<String> cinValues = parseListValue(data);
+                final String finalField = field;
+                String collected = cinValues.stream().map(s -> finalField + " ilike '%" + s + "%'")
+                        .collect(Collectors.joining(" OR "));
+                sb.append(collected).append(") ");
+                return sb.toString();
             case NE:
             case GT:
             case LT:
@@ -406,6 +415,9 @@ public final class GridComponentFilterSQLUtils {
             }
         } else if (filterValue.charAt(0) == '[' && filterValue.charAt(filterValue.length() - 1) == ']') {
             operator = GridComponentFilterOperator.IN;
+            value = filterValue.substring(1, filterValue.length() - 1);
+        } else if (filterValue.charAt(0) == '{' && filterValue.charAt(filterValue.length() - 1) == '}') {
+            operator = GridComponentFilterOperator.CIN;
             value = filterValue.substring(1, filterValue.length() - 1);
         } else if (ISNULL.name().equals(filterValue.toUpperCase())) {
             operator = GridComponentFilterOperator.ISNULL;
