@@ -324,6 +324,7 @@ public class GridComponentPattern extends AbstractComponentPattern {
         addTranslation(translations, "operator_bw", locale);
         addTranslation(translations, "operator_ew", locale);
         addTranslation(translations, "operator_isnull", locale);
+        addTranslation(translations, "operator_cin", locale);
         addTranslation(translations, "multiSearchTitle", locale);
         addTranslation(translations, "searchButton", locale);
         addTranslation(translations, "resetButton", locale);

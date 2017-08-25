@@ -71,6 +71,11 @@ public enum GridComponentFilterOperator {
     CN("cn"),
 
     /**
+     * Contains in.
+     */
+    CIN("cin"),
+
+    /**
      * Begins with.
      */
     BW("bw"),

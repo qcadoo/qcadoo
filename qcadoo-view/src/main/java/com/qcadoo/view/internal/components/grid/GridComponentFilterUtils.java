@@ -27,7 +27,11 @@ import static com.qcadoo.view.internal.components.grid.GridComponentFilterOperat
 
 import java.math.BigDecimal;
 import java.text.ParseException;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -41,6 +45,7 @@ import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.search.JoinType;
 import com.qcadoo.model.api.search.SearchCriteriaBuilder;
 import com.qcadoo.model.api.search.SearchCriterion;
+import com.qcadoo.model.api.search.SearchDisjunction;
 import com.qcadoo.model.api.search.SearchRestrictions;
 import com.qcadoo.model.api.search.SearchRestrictions.SearchMatchMode;
 import com.qcadoo.model.api.types.BelongsToType;
@@ -286,6 +291,11 @@ public final class GridComponentFilterUtils {
             case IN:
                 Collection<String> values = parseListValue(data);
                 return SearchRestrictions.inIgnoringCase(field, values);
+            case CIN:
+                SearchDisjunction disjunction = SearchRestrictions.disjunction();
+                parseListValue(data)
+                        .forEach(value -> disjunction.add(SearchRestrictions.ilike(field, value, SearchMatchMode.ANYWHERE)));
+                return disjunction;
             case NE:
             case GT:
             case LT:
@@ -407,6 +417,9 @@ public final class GridComponentFilterUtils {
         } else if (ISNULL.name().equals(filterValue.toUpperCase())) {
             operator = GridComponentFilterOperator.ISNULL;
             value = "";
+        } else if (filterValue.charAt(0) == '{' && filterValue.charAt(filterValue.length() - 1) == '}') {
+            operator = GridComponentFilterOperator.CIN;
+            value = filterValue.substring(1, filterValue.length() - 1);
         } else {
             value = filterValue;
         }
