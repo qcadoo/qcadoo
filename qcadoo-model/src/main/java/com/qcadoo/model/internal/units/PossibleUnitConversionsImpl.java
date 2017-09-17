@@ -23,12 +23,6 @@
  */
 package com.qcadoo.model.internal.units;
 
-import java.math.BigDecimal;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -39,6 +33,12 @@ import com.qcadoo.model.api.NumberService;
 import com.qcadoo.model.api.units.UnitConversion;
 import com.qcadoo.model.api.units.UnsupportedUnitConversionException;
 import com.qcadoo.model.constants.UnitConversionItemFields;
+
+import java.math.BigDecimal;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public final class PossibleUnitConversionsImpl implements InternalPossibleUnitConversions {
 
@@ -105,6 +105,21 @@ public final class PossibleUnitConversionsImpl implements InternalPossibleUnitCo
             return numberService.setScale(numberService.setScale(convertedValue, 0));
         } else {
             return numberService.setScale(convertedValue);
+        }
+    }
+
+    @Override
+    public BigDecimal convertTo(BigDecimal quantityFrom, String unitTo, int roundMode) {
+        final BigDecimal ratio = targetUnitToFactor.get(unitTo);
+        if (ratio == null) {
+            throw new UnsupportedUnitConversionException(unitFrom, unitTo);
+        }
+        BigDecimal convertedValue = quantityFrom.multiply(ratio);
+        boolean unitIsInteger = targetUnitToIsInteger.computeIfAbsent(unitTo, dictionaryService::checkIfUnitIsInteger);
+        if (unitIsInteger) {
+            return numberService.setScale(numberService.setScale(convertedValue, 0));
+        } else {
+            return convertedValue.setScale(NumberService.DEFAULT_MAX_FRACTION_DIGITS_IN_DECIMAL, roundMode);
         }
     }
 

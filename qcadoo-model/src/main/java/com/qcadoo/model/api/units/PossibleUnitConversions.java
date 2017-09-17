@@ -23,12 +23,12 @@
  */
 package com.qcadoo.model.api.units;
 
+import com.qcadoo.model.api.Entity;
+
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import com.qcadoo.model.api.Entity;
 
 /**
  * Object representing possible unit conversions
@@ -51,6 +51,16 @@ public interface PossibleUnitConversions {
      *             if conversion is not defined
      */
     BigDecimal convertTo(final BigDecimal value, final String unitTo);
+
+    /**
+     * @param value
+     * @param unitTo
+     * @param roundMode
+     * @return value in specified unit
+     * @throws UnsupportedUnitConversionException
+     *             if conversion is not defined
+     */
+    BigDecimal convertTo(final BigDecimal value, final String unitTo, final int roundMode);
 
     /**
      * @return true if there is no available conversions matching source unit (source unit can be obtained using
