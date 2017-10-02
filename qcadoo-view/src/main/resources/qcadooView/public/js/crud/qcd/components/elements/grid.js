@@ -88,7 +88,7 @@ QCD.components.elements.Grid = function (element, mainController) {
 
         addedEntityId = null,
 
-        localStorageKey = 'qcadoo-' + pluginIdentifier + '-' + viewName;
+        localStorageKey = ['qcadoo', pluginIdentifier, viewName, elementPath].join("-");
 
     if (this.options.referenceName) {
         mainController.registerReferenceName(this.options.referenceName, this);
@@ -237,10 +237,10 @@ QCD.components.elements.Grid = function (element, mainController) {
 				multiSearchColumn = null;
 			}
         }
-        var restoredColumns = JSON.parse(localStorage.getItem(localStorageKey));
-        if(restoredColumns){
+        var item = JSON.parse(localStorage.getItem(localStorageKey));
+        if (item && item.columns) {
             for(var i in colModel){
-                if(restoredColumns.indexOf(colModel[i].name) === -1){
+                if (item.indexOf(colModel[i].name) === -1) {
                     colModel[i].hidden = true;
                 }
             }
@@ -1001,7 +1001,7 @@ QCD.components.elements.Grid = function (element, mainController) {
         }
     }
 
-    function applytFilters() {
+    function applyFilters() {
         if (currentState.filtersEnabled) {
             currentState.filters = {};
             for (var i in columnModel) {
@@ -1021,7 +1021,7 @@ QCD.components.elements.Grid = function (element, mainController) {
     
     function performFilter() {
         blockGrid();
-        applytFilters();
+        applyFilters();
         onCurrentStateChange();
         onFiltersStateChange();
     }
@@ -1103,6 +1103,12 @@ QCD.components.elements.Grid = function (element, mainController) {
         onCurrentStateChange();
     };
 
+    this.onSaveFilterClicked = function () {
+        var item = JSON.parse(localStorage.getItem(localStorageKey)) || {};
+        item.filters = currentState.filters;
+        localStorage.setItem(localStorageKey, JSON.stringify(item));
+    };
+
     this.onColumnChooserClicked = function () {
         grid.jqGrid('setColumns', {
             dataheight: currentGridHeight,
@@ -1122,6 +1128,13 @@ QCD.components.elements.Grid = function (element, mainController) {
                 localStorage.setItem(localStorageKey, JSON.stringify(columns));
             }
         });
+    };
+
+    this.onResetFilterClicked = function () {
+        var savedOptions = JSON.parse(localStorage.getItem(localStorageKey)) || {};
+        savedOptions.filters = {};
+        localStorage.setItem(localStorageKey, JSON.stringify(savedOptions));
+        this.onClearFilterClicked();
     };
 
     this.setFilterState = function (column, filterText) {
@@ -1350,6 +1363,13 @@ QCD.components.elements.Grid = function (element, mainController) {
         // FIRE JAVA LISTENERS
         if (gridParameters.listeners.length > 0) {
             onSelectChange();
+        }
+    }
+
+    function restoreSavedOptions() {
+        var savedOptions = JSON.parse(localStorage.getItem(localStorageKey)) || {};
+        if(savedOptions.filters){
+            currentState.filters = savedOptions.filters;
         }
     }
 
@@ -1611,6 +1631,8 @@ QCD.components.elements.Grid = function (element, mainController) {
         if (gridParameters.filtersDefaultEnabled) {
             updateSearchFields();
         }
+
+        restoreSavedOptions();
 
         noRecordsDiv = $("<div>").html(translations.noResults).addClass("noRecordsBox");
         noRecordsDiv.hide();

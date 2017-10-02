@@ -298,6 +298,8 @@ public class GridComponentPattern extends AbstractComponentPattern {
         addTranslation(translations, "columnChooserCaption", locale);
         addTranslation(translations, "columnChooserSubmit", locale);
         addTranslation(translations, "columnChooserCancel", locale);
+        addTranslation(translations, "saveFilterButton", locale);
+        addTranslation(translations, "resetFilterButton", locale);
         addTranslation(translations, "noResults", locale);
         addTranslation(translations, "removeFilterButton", locale);
         addTranslation(translations, "newButton", locale);

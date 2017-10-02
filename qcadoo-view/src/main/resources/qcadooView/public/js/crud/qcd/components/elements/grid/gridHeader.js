@@ -258,15 +258,31 @@ QCD.components.elements.grid.GridHeaderController = function (_gridController, _
                     filterClicked();
                 }
             }, "filterIcon16_dis.png");
+            headerElements.saveFilterButton = QCD.components.elements.utils.HeaderUtils.createHeaderButton(translations.saveFilterButton, function (e) {
+                if (headerElements.saveFilterButton.hasClass("headerButtonEnabled")) {
+                    saveFilterClicked();
+                }
+            }, "saveIcon16.png");
             headerElements.clearFilterButton = QCD.components.elements.utils.HeaderUtils.createHeaderButton("", function (e) {
                 if (headerElements.clearFilterButton.hasClass("headerButtonEnabled")) {
                     clearFilterClicked();
                 }
             }, "clearIcon16_dis.png");
+            headerElements.resetFilterButton = QCD.components.elements.utils.HeaderUtils.createHeaderButton("", function (e) {
+                if (headerElements.resetFilterButton.hasClass("headerButtonEnabled")) {
+                    resetFilterClicked();
+                }
+            }, "cancel16.png");
+            headerElements.saveFilterButton.attr("title", translations.saveFilterButton);
             headerElements.clearFilterButton.attr("title", translations.clearFilterButton);
+            headerElements.resetFilterButton.attr("title", translations.resetFilterButton);
             headerElement.append(headerElements.filterButton);
+            headerElement.append(headerElements.saveFilterButton);
             headerElement.append(headerElements.clearFilterButton);
+            headerElement.append(headerElements.resetFilterButton);
             setEnabledButton(headerElements.filterButton, false);
+            setEnabledButton(headerElements.saveFilterButton, true);
+            setEnabledButton(headerElements.resetFilterButton, true);
             headerElements.clearFilterButton.hide();
         }
         headerElements.columnChooserButton = QCD.components.elements.utils.HeaderUtils.createHeaderButton("", function (e) {
@@ -696,8 +712,16 @@ QCD.components.elements.grid.GridHeaderController = function (_gridController, _
         gridController.onMultiSearchReset(data);
     }
 
-    function clearFilterClicked(data) {
+    function clearFilterClicked() {
         gridController.onClearFilterClicked();
+    }
+
+    function saveFilterClicked() {
+        gridController.onSaveFilterClicked();
+    }
+
+    function resetFilterClicked(){
+        gridController.onResetFilterClicked();
     }
 
     function columnChooserClicked() {
