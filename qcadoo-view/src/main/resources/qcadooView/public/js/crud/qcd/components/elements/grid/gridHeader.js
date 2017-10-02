@@ -253,39 +253,47 @@ QCD.components.elements.grid.GridHeaderController = function (_gridController, _
             headerElement.append(headerElements.predefiniedFiltersCombo);
         }
         if (gridParameters.hasFilterableColumns && gridParameters.filter) {
-            headerElements.filterButton = QCD.components.elements.utils.HeaderUtils.createHeaderButton(translations.addFilterButton, function (e) {
+            headerElements.filterButton = QCD.components.elements.utils.HeaderUtils.createHeaderButton(translations.addFilterButton, function () {
                 if (headerElements.filterButton.hasClass("headerButtonEnabled")) {
                     filterClicked();
                 }
             }, "filterIcon16_dis.png");
-            headerElements.saveFilterButton = QCD.components.elements.utils.HeaderUtils.createHeaderButton(translations.saveFilterButton, function (e) {
+            headerElements.saveFilterButton = QCD.components.elements.utils.HeaderUtils.createHeaderButton(translations.saveFilterButton, function () {
                 if (headerElements.saveFilterButton.hasClass("headerButtonEnabled")) {
                     saveFilterClicked();
                 }
             }, "saveIcon16.png");
-            headerElements.clearFilterButton = QCD.components.elements.utils.HeaderUtils.createHeaderButton("", function (e) {
+            headerElements.saveColumnWidthButton = QCD.components.elements.utils.HeaderUtils.createHeaderButton(translations.saveColumnWidthButton, function () {
+                if (headerElements.saveColumnWidthButton.hasClass("headerButtonEnabled")) {
+                    saveColumnWidthClicked();
+                }
+            }, "saveIcon16.png");
+            headerElements.clearFilterButton = QCD.components.elements.utils.HeaderUtils.createHeaderButton("", function () {
                 if (headerElements.clearFilterButton.hasClass("headerButtonEnabled")) {
                     clearFilterClicked();
                 }
             }, "clearIcon16_dis.png");
-            headerElements.resetFilterButton = QCD.components.elements.utils.HeaderUtils.createHeaderButton("", function (e) {
+            headerElements.resetFilterButton = QCD.components.elements.utils.HeaderUtils.createHeaderButton("", function () {
                 if (headerElements.resetFilterButton.hasClass("headerButtonEnabled")) {
                     resetFilterClicked();
                 }
             }, "cancel16.png");
             headerElements.saveFilterButton.attr("title", translations.saveFilterButton);
+            headerElements.saveFilterButton.attr("title", translations.saveColumnWidthButton);
             headerElements.clearFilterButton.attr("title", translations.clearFilterButton);
             headerElements.resetFilterButton.attr("title", translations.resetFilterButton);
             headerElement.append(headerElements.filterButton);
             headerElement.append(headerElements.saveFilterButton);
+            headerElement.append(headerElements.saveColumnWidthButton);
             headerElement.append(headerElements.clearFilterButton);
             headerElement.append(headerElements.resetFilterButton);
             setEnabledButton(headerElements.filterButton, false);
             setEnabledButton(headerElements.saveFilterButton, true);
+            setEnabledButton(headerElements.saveColumnWidthButton, true);
             setEnabledButton(headerElements.resetFilterButton, true);
             headerElements.clearFilterButton.hide();
         }
-        headerElements.columnChooserButton = QCD.components.elements.utils.HeaderUtils.createHeaderButton("", function (e) {
+        headerElements.columnChooserButton = QCD.components.elements.utils.HeaderUtils.createHeaderButton("", function () {
             if (headerElements.columnChooserButton.hasClass("headerButtonEnabled")) {
                 columnChooserClicked();
             }
@@ -718,6 +726,10 @@ QCD.components.elements.grid.GridHeaderController = function (_gridController, _
 
     function saveFilterClicked() {
         gridController.onSaveFilterClicked();
+    }
+
+    function saveColumnWidthClicked() {
+        gridController.onSaveColumnWidthClicked();
     }
 
     function resetFilterClicked(){

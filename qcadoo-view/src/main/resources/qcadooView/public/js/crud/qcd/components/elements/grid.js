@@ -237,14 +237,8 @@ QCD.components.elements.Grid = function (element, mainController) {
 				multiSearchColumn = null;
 			}
         }
-        var item = JSON.parse(localStorage.getItem(localStorageKey));
-        if (item && item.columns) {
-            for(var i in colModel){
-                if (item.indexOf(colModel[i].name) === -1) {
-                    colModel[i].hidden = true;
-                }
-            }
-        }
+
+        restoreSavedColumns(colModel);
 
         gridParameters.hasMultiSearchColumns = hasMultiSearchColumns;
 		gridParameters.multiSearchColumns = multiSearchColumns;
@@ -1104,10 +1098,27 @@ QCD.components.elements.Grid = function (element, mainController) {
     };
 
     this.onSaveFilterClicked = function () {
-        var item = JSON.parse(localStorage.getItem(localStorageKey)) || {};
+        var item = getSavedOptions();
         item.filters = currentState.filters;
-        localStorage.setItem(localStorageKey, JSON.stringify(item));
+        setSavedOptions(item);
     };
+
+    this.onSaveColumnWidthClicked = function () {
+        saveColumns();
+    };
+
+    function saveColumns() {
+        var columns = [];
+        for (var i in grid[0].p.colModel) {
+            var column = grid[0].p.colModel[i];
+            if (!column.hidden && !column.hidedlg) {
+                columns.push({name: column.name, width: column.width});
+            }
+        }
+        var savedOptions = getSavedOptions();
+        savedOptions.columns = columns;
+        setSavedOptions(savedOptions);
+    }
 
     this.onColumnChooserClicked = function () {
         grid.jqGrid('setColumns', {
@@ -1117,23 +1128,16 @@ QCD.components.elements.Grid = function (element, mainController) {
             caption: translations.columnChooserCaption,
             bSubmit: translations.columnChooserSubmit,
             bCancel: translations.columnChooserCancel,
-            afterSubmitForm: function (id) {
-                var columns = [];
-                for (var i in grid[0].p.colModel) {
-                    var column = grid[0].p.colModel[i];
-                    if(!column.hidden && !column.hidedlg){
-                        columns.push(column.name);
-                    }
-                }
-                localStorage.setItem(localStorageKey, JSON.stringify(columns));
+            afterSubmitForm: function () {
+                saveColumns();
             }
         });
     };
 
     this.onResetFilterClicked = function () {
-        var savedOptions = JSON.parse(localStorage.getItem(localStorageKey)) || {};
+        var savedOptions = getSavedOptions();
         savedOptions.filters = {};
-        localStorage.setItem(localStorageKey, JSON.stringify(savedOptions));
+        setSavedOptions(savedOptions);
         this.onClearFilterClicked();
     };
 
@@ -1367,12 +1371,38 @@ QCD.components.elements.Grid = function (element, mainController) {
     }
 
     function restoreSavedOptions() {
-        var savedOptions = JSON.parse(localStorage.getItem(localStorageKey)) || {};
+        var savedOptions = getSavedOptions();
         if(savedOptions.filters){
             currentState.filters = savedOptions.filters;
         }
     }
 
+    function restoreSavedColumns(colModel) {
+        var savedOptions = getSavedOptions();
+        if (savedOptions.columns) {
+            for (var i in colModel) {
+                var contains = false;
+                for (var columnIndex in savedOptions.columns) {
+                    contains = savedOptions.columns[columnIndex].name === colModel[i].name;
+                    if (contains) {
+                        colModel[i].width = savedOptions.columns[columnIndex].width;
+                        break;
+                    }
+                }
+                if (!contains) {
+                    colModel[i].hidden = true;
+                }
+            }
+        }
+    }
+
+    function getSavedOptions() {
+        return JSON.parse(localStorage.getItem(localStorageKey)) || {};
+    }
+
+    function setSavedOptions(options) {
+        localStorage.setItem(localStorageKey, JSON.stringify(options));
+    }
 
     this.performNew = function (actionsPerformer) {
         currentState.newButtonClickedBefore = true;
