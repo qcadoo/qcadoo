@@ -962,6 +962,9 @@ QCD.components.elements.Grid = function (element, mainController) {
     			currentState.order.splice(orderIndex, 1);
     		}
     	}
+        var savedOptions = getSavedOptions();
+        savedOptions.sorters = currentState.order;
+        setSavedOptions(savedOptions);
         onCurrentStateChange();
         return 'stop';
     }
@@ -1374,6 +1377,9 @@ QCD.components.elements.Grid = function (element, mainController) {
         var savedOptions = getSavedOptions();
         if(savedOptions.filters){
             currentState.filters = savedOptions.filters;
+        }
+        if (savedOptions.sorters) {
+            currentState.order = savedOptions.sorters;
         }
     }
 
