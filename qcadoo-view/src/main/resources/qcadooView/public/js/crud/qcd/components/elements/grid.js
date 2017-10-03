@@ -962,9 +962,7 @@ QCD.components.elements.Grid = function (element, mainController) {
     			currentState.order.splice(orderIndex, 1);
     		}
     	}
-        var savedOptions = getSavedOptions();
-        savedOptions.sorters = currentState.order;
-        setSavedOptions(savedOptions);
+        updateSavedOptions("sorters", currentState.order);
         onCurrentStateChange();
         return 'stop';
     }
@@ -1101,9 +1099,7 @@ QCD.components.elements.Grid = function (element, mainController) {
     };
 
     this.onSaveFilterClicked = function () {
-        var item = getSavedOptions();
-        item.filters = currentState.filters;
-        setSavedOptions(item);
+        updateSavedOptions("filters", currentState.filters);
     };
 
     this.onSaveColumnWidthClicked = function () {
@@ -1118,9 +1114,7 @@ QCD.components.elements.Grid = function (element, mainController) {
                 columns.push({name: column.name, width: column.width});
             }
         }
-        var savedOptions = getSavedOptions();
-        savedOptions.columns = columns;
-        setSavedOptions(savedOptions);
+        updateSavedOptions("columns", columns);
     }
 
     this.onColumnChooserClicked = function () {
@@ -1138,9 +1132,7 @@ QCD.components.elements.Grid = function (element, mainController) {
     };
 
     this.onResetFilterClicked = function () {
-        var savedOptions = getSavedOptions();
-        savedOptions.filters = {};
-        setSavedOptions(savedOptions);
+        updateSavedOptions("filters", {});
         this.onClearFilterClicked();
     };
 
@@ -1408,6 +1400,12 @@ QCD.components.elements.Grid = function (element, mainController) {
 
     function setSavedOptions(options) {
         localStorage.setItem(localStorageKey, JSON.stringify(options));
+    }
+
+    function updateSavedOptions(attribute, value) {
+        var savedOptions = getSavedOptions();
+        savedOptions[attribute] = value;
+        setSavedOptions(savedOptions);
     }
 
     this.performNew = function (actionsPerformer) {
