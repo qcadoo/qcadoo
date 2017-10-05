@@ -105,10 +105,19 @@
 
 			var notifications = new QCD.Notifications();
  			notifications.getNotifications(${dbNotificationsEnabled}, ${systemNotificationsEnabled}, ${systemNotificationsIntervalInSeconds});
+
+			notifications.getActivityStream();
+
 			$("#mainPageIframe").load(function() {
 				try {
 					el = $('body', $('iframe').contents());
-					el.click(function() {windowController.restoreMenuState()});
+					el.click(function() {
+					    windowController.restoreMenuState();
+					    if ($('.activityStreamContainer').css('display') == 'block') {
+					        notifications.markActivityStreamAsRead();
+					        $('.activityStreamContainer').hide();
+					    }
+					});
 					$(document.getElementById('mainPageIframe').contentWindow.document).keydown(function(event){
 					    var keycode = (event.keyCode ? event.keyCode : event.which);
 
@@ -171,6 +180,19 @@
             				$headerSearchInput.val('').keyup().blur();
             				e.preventDefault();
             			});
+
+                        $('.activityStreamIcon').click(function(e){
+
+					        if ($('.activityStreamContainer').css('display') == 'block') {
+            				    notifications.markActivityStreamAsRead();
+            		        }
+            				var position = $('.activityStreamIcon').position();
+            				$('.activityStreamContainer').css({ left: position.left - 150 + "px", top: position.top + 30 + "px"});
+            				$('.activityStreamContainer').toggle();
+
+
+            			});
+
 
             // ************ lazy menu show item
 	        function activateSubmenu(row) {
@@ -415,6 +437,14 @@
         					</div>
         				</li>
         		</ul>
+        </div>
+
+        <div class="activityStreamMenu">
+            <a href="#" class="activityStreamIcon">
+        	    <i></i>
+          	</a>
+        	<div class="activityStreamContainer">
+        	</div>
         </div>
 
 	</div>

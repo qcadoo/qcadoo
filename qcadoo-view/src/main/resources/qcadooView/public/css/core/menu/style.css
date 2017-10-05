@@ -89,6 +89,7 @@
 	opacity: 0;
 	display: none;
 }
+
 .userMenuBackdoor.open{
 	display: block;
 }
@@ -223,6 +224,7 @@
 	height: 8px;
 	background: url('/qcadooView/public/css/core/menu/images-new/header-dropdown-arrow.png');
 }
+
 .logoDropdownBoxContent{
 	position: absolute;
 	top: 100%;
@@ -1261,4 +1263,80 @@ ul.ribbon_list li.twoB.enabled ul li a.twoB_down:hover {
 .ribbonGroupsDropdown .ribbon_list {
 	float: none;
 	display: inline-block;
+}
+
+.activityStreamMenu {
+	float: right;
+    padding-top: 15px;
+}
+
+.activityStreamMenu .activityStreamIcon {
+	display: block;
+}
+
+.activityStreamMenu .activityStreamIcon i {
+	display: block;
+	width: 20px;
+	height: 20px;
+	background: url('/qcadooView/public/css/core/menu/images-new/bell-light-grey-64.png');
+	background-size: 20px 20px;
+}
+.activityStreamMenu .activityStreamActive i {
+	display: block;
+	width: 20px;
+	height: 20px;
+	background: url('/qcadooView/public/css/core/menu/images-new/bell-orange-64.png');
+	background-size: 20px 20px;
+}
+
+
+.activityStreamMenu .activityStreamContainer {
+    overflow: auto;
+    width: 320px;
+    height: 500px;
+    border: 1px solid #9b9b9b;
+    display: none;
+    position: fixed;
+    background: white;
+}
+
+.activityStreamMenu .activityStreamContainer .productionTracking {
+    border-bottom: solid #9b9b9b 1px;
+}
+
+.activityStreamMenu .activityStreamContainer .other {
+    border-bottom: solid #9b9b9b 1px;
+}
+.activityStreamContainer {
+	font-size: 11px;
+    color: #9B9B9B;
+    background: #f2f2f2;
+    border: solid #9b9b9b 1px;
+}
+.activityStreamContainer div {
+    padding: 10px;
+    border-left: 10px solid #f2f2f2;
+}
+.activityStreamContainer .activityStreamPlaceholder {
+	text-transform: uppercase;
+    text-align: center;
+	display: block;
+}
+.activityStreamContainer a {
+    text-decoration: none;
+    font-weight: bold;
+    color: #2fa917;
+}
+
+.activityStreamContainer i {
+}
+.activityStreamContainer .newMessage {
+	color: #555555;
+	background: #fafafa;
+	border-left: 10px solid #2fa917;
+}
+.activityStreamDate {
+    text-align: right;
+    font-style: italic;
+    margin: 0;
 }
