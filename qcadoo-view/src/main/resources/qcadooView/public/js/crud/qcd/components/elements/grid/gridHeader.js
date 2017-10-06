@@ -225,6 +225,33 @@ QCD.components.elements.grid.GridHeaderController = function (_gridController, _
             headerElements.allButton.hide();
             headerElements.onlyInactiveButton.hide();
         }
+        if (gridParameters.canNew && !gridParameters.weakRelation) {
+            headerElements.newButton = QCD.components.elements.utils.HeaderUtils.createHeaderButton(translations.newButton, function (e) {
+                if (headerElements.newButton.hasClass("headerButtonEnabled")) {
+                    gridController.onNewButtonClicked();
+                }
+            }, "newIcon16_dis.png");
+            headerElement.append(headerElements.newButton);
+            setEnabledButton(headerElements.newButton, false);
+        }
+        if (gridParameters.canNew && gridParameters.weakRelation) {
+            headerElements.addExistingButton = QCD.components.elements.utils.HeaderUtils.createHeaderButton(translations.addExistingButton, function (e) {
+                if (headerElements.addExistingButton.hasClass("headerButtonEnabled")) {
+                    gridController.onAddExistingButtonClicked();
+                }
+            }, "newIcon16_dis.png");
+            headerElement.append(headerElements.addExistingButton);
+            setEnabledButton(headerElements.addExistingButton, false);
+        }
+        if (gridParameters.canDelete) {
+            headerElements.deleteButton = QCD.components.elements.utils.HeaderUtils.createHeaderButton(translations.deleteButton, function (e) {
+                if (headerElements.deleteButton.hasClass("headerButtonEnabled")) {
+                    gridController.onDeleteButtonClicked();
+                }
+            }, "deleteIcon16_dis.png");
+            headerElement.append(headerElements.deleteButton);
+            setEnabledButton(headerElements.deleteButton, false);
+        }
         if (gridParameters.hasPredefinedFilters) {
             var options = new Array();
 
@@ -253,23 +280,40 @@ QCD.components.elements.grid.GridHeaderController = function (_gridController, _
             headerElement.append(headerElements.predefiniedFiltersCombo);
         }
         if (gridParameters.hasFilterableColumns && gridParameters.filter) {
-            headerElements.filterButton = QCD.components.elements.utils.HeaderUtils.createHeaderButton(translations.addFilterButton, function (e) {
+            headerElements.filterButton = QCD.components.elements.utils.HeaderUtils.createHeaderButton(translations.addFilterButton, function () {
                 if (headerElements.filterButton.hasClass("headerButtonEnabled")) {
                     filterClicked();
                 }
             }, "filterIcon16_dis.png");
-            headerElements.clearFilterButton = QCD.components.elements.utils.HeaderUtils.createHeaderButton("", function (e) {
+            headerElements.saveFilterButton = QCD.components.elements.utils.HeaderUtils.createHeaderButton(translations.saveFilterButton, function () {
+                if (headerElements.saveFilterButton.hasClass("headerButtonEnabled")) {
+                    animateHeaderButtonClick(this);
+                    saveFilterClicked();
+                }
+            }, "saveIcon16.png");
+            headerElements.clearFilterButton = QCD.components.elements.utils.HeaderUtils.createHeaderButton("", function () {
                 if (headerElements.clearFilterButton.hasClass("headerButtonEnabled")) {
                     clearFilterClicked();
                 }
             }, "clearIcon16_dis.png");
+            headerElements.resetFilterButton = QCD.components.elements.utils.HeaderUtils.createHeaderButton("", function () {
+                if (headerElements.resetFilterButton.hasClass("headerButtonEnabled")) {
+                    resetFilterClicked();
+                }
+            }, "cancel16.png");
+            headerElements.saveFilterButton.attr("title", translations.saveFilterButton);
             headerElements.clearFilterButton.attr("title", translations.clearFilterButton);
+            headerElements.resetFilterButton.attr("title", translations.resetFilterButton);
             headerElement.append(headerElements.filterButton);
+            headerElement.append(headerElements.saveFilterButton);
             headerElement.append(headerElements.clearFilterButton);
+            headerElement.append(headerElements.resetFilterButton);
             setEnabledButton(headerElements.filterButton, false);
+            setEnabledButton(headerElements.saveFilterButton, true);
+            setEnabledButton(headerElements.resetFilterButton, true);
             headerElements.clearFilterButton.hide();
         }
-        headerElements.columnChooserButton = QCD.components.elements.utils.HeaderUtils.createHeaderButton("", function (e) {
+        headerElements.columnChooserButton = QCD.components.elements.utils.HeaderUtils.createHeaderButton("", function () {
             if (headerElements.columnChooserButton.hasClass("headerButtonEnabled")) {
                 columnChooserClicked();
             }
@@ -277,33 +321,15 @@ QCD.components.elements.grid.GridHeaderController = function (_gridController, _
         headerElements.columnChooserButton.attr("title", translations.columnChooserButton);
         headerElement.append(headerElements.columnChooserButton);
         setEnabledButton(headerElements.columnChooserButton, true);
-        if (gridParameters.canNew && !gridParameters.weakRelation) {
-            headerElements.newButton = QCD.components.elements.utils.HeaderUtils.createHeaderButton(translations.newButton, function (e) {
-                if (headerElements.newButton.hasClass("headerButtonEnabled")) {
-                    gridController.onNewButtonClicked();
-                }
-            }, "newIcon16_dis.png");
-            headerElement.append(headerElements.newButton);
-            setEnabledButton(headerElements.newButton, false);
-        }
-        if (gridParameters.canNew && gridParameters.weakRelation) {
-            headerElements.addExistingButton = QCD.components.elements.utils.HeaderUtils.createHeaderButton(translations.addExistingButton, function (e) {
-                if (headerElements.addExistingButton.hasClass("headerButtonEnabled")) {
-                    gridController.onAddExistingButtonClicked();
-                }
-            }, "newIcon16_dis.png");
-            headerElement.append(headerElements.addExistingButton);
-            setEnabledButton(headerElements.addExistingButton, false);
-        }
-        if (gridParameters.canDelete) {
-            headerElements.deleteButton = QCD.components.elements.utils.HeaderUtils.createHeaderButton(translations.deleteButton, function (e) {
-                if (headerElements.deleteButton.hasClass("headerButtonEnabled")) {
-                    gridController.onDeleteButtonClicked();
-                }
-            }, "deleteIcon16_dis.png");
-            headerElement.append(headerElements.deleteButton);
-            setEnabledButton(headerElements.deleteButton, false);
-        }
+        headerElements.saveColumnWidthButton = QCD.components.elements.utils.HeaderUtils.createHeaderButton(translations.saveColumnWidthButton, function () {
+            if (headerElements.saveColumnWidthButton.hasClass("headerButtonEnabled")) {
+                animateHeaderButtonClick(this);
+                saveColumnWidthClicked();
+            }
+        }, "saveIcon16.png");
+        headerElements.saveColumnWidthButton.attr("title", translations.saveColumnWidthButton);
+        headerElement.append(headerElements.saveColumnWidthButton);
+        setEnabledButton(headerElements.saveColumnWidthButton, true);
         if (gridParameters.orderable) {
             headerElements.upButton = QCD.components.elements.utils.HeaderUtils.createHeaderButton(translations.upButton, function (e) {
                 if (headerElements.upButton.hasClass("headerButtonEnabled")) {
@@ -334,6 +360,13 @@ QCD.components.elements.grid.GridHeaderController = function (_gridController, _
             headerElement.append(headerPagingController.getPagingElement(pagingVars));
         }
         return headerElement;
+    };
+
+    function animateHeaderButtonClick(button){
+        $(button).addClass("headerButtonActive");
+        setTimeout(function(){
+            button.removeClass("headerButtonActive");
+        }, 200);
     }
 
     this.getFooterElement = function () {
@@ -696,8 +729,20 @@ QCD.components.elements.grid.GridHeaderController = function (_gridController, _
         gridController.onMultiSearchReset(data);
     }
 
-    function clearFilterClicked(data) {
+    function clearFilterClicked() {
         gridController.onClearFilterClicked();
+    }
+
+    function saveFilterClicked() {
+        gridController.onSaveFilterClicked();
+    }
+
+    function saveColumnWidthClicked() {
+        gridController.onSaveColumnWidthClicked();
+    }
+
+    function resetFilterClicked(){
+        gridController.onResetFilterClicked();
     }
 
     function columnChooserClicked() {

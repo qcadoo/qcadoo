@@ -88,7 +88,7 @@ QCD.components.elements.Grid = function (element, mainController) {
 
         addedEntityId = null,
 
-        localStorageKey = 'qcadoo-' + pluginIdentifier + '-' + viewName;
+        localStorageKey = ['qcadoo', pluginIdentifier, viewName, elementPath].join("-");
 
     if (this.options.referenceName) {
         mainController.registerReferenceName(this.options.referenceName, this);
@@ -237,14 +237,8 @@ QCD.components.elements.Grid = function (element, mainController) {
 				multiSearchColumn = null;
 			}
         }
-        var restoredColumns = JSON.parse(localStorage.getItem(localStorageKey));
-        if(restoredColumns){
-            for(var i in colModel){
-                if(restoredColumns.indexOf(colModel[i].name) === -1){
-                    colModel[i].hidden = true;
-                }
-            }
-        }
+
+        restoreSavedColumns(colModel);
 
         gridParameters.hasMultiSearchColumns = hasMultiSearchColumns;
 		gridParameters.multiSearchColumns = multiSearchColumns;
@@ -968,6 +962,7 @@ QCD.components.elements.Grid = function (element, mainController) {
     			currentState.order.splice(orderIndex, 1);
     		}
     	}
+        updateSavedOptions("sorters", currentState.order);
         onCurrentStateChange();
         return 'stop';
     }
@@ -1001,7 +996,7 @@ QCD.components.elements.Grid = function (element, mainController) {
         }
     }
 
-    function applytFilters() {
+    function applyFilters() {
         if (currentState.filtersEnabled) {
             currentState.filters = {};
             for (var i in columnModel) {
@@ -1021,7 +1016,7 @@ QCD.components.elements.Grid = function (element, mainController) {
     
     function performFilter() {
         blockGrid();
-        applytFilters();
+        applyFilters();
         onCurrentStateChange();
         onFiltersStateChange();
     }
@@ -1103,6 +1098,25 @@ QCD.components.elements.Grid = function (element, mainController) {
         onCurrentStateChange();
     };
 
+    this.onSaveFilterClicked = function () {
+        updateSavedOptions("filters", currentState.filters);
+    };
+
+    this.onSaveColumnWidthClicked = function () {
+        saveColumns();
+    };
+
+    function saveColumns() {
+        var columns = [];
+        for (var i in grid[0].p.colModel) {
+            var column = grid[0].p.colModel[i];
+            if (!column.hidden && !column.hidedlg) {
+                columns.push({name: column.name, width: column.width});
+            }
+        }
+        updateSavedOptions("columns", columns);
+    }
+
     this.onColumnChooserClicked = function () {
         grid.jqGrid('setColumns', {
             dataheight: currentGridHeight,
@@ -1111,17 +1125,15 @@ QCD.components.elements.Grid = function (element, mainController) {
             caption: translations.columnChooserCaption,
             bSubmit: translations.columnChooserSubmit,
             bCancel: translations.columnChooserCancel,
-            afterSubmitForm: function (id) {
-                var columns = [];
-                for (var i in grid[0].p.colModel) {
-                    var column = grid[0].p.colModel[i];
-                    if(!column.hidden && !column.hidedlg){
-                        columns.push(column.name);
-                    }
-                }
-                localStorage.setItem(localStorageKey, JSON.stringify(columns));
+            afterSubmitForm: function () {
+                saveColumns();
             }
         });
+    };
+
+    this.onResetFilterClicked = function () {
+        updateSavedOptions("filters", {});
+        this.onClearFilterClicked();
     };
 
     this.setFilterState = function (column, filterText) {
@@ -1353,6 +1365,48 @@ QCD.components.elements.Grid = function (element, mainController) {
         }
     }
 
+    function restoreSavedOptions() {
+        var savedOptions = getSavedOptions();
+        if(savedOptions.filters){
+            currentState.filters = savedOptions.filters;
+        }
+        if (savedOptions.sorters) {
+            currentState.order = savedOptions.sorters;
+        }
+    }
+
+    function restoreSavedColumns(colModel) {
+        var savedOptions = getSavedOptions();
+        if (savedOptions.columns) {
+            for (var i in colModel) {
+                var contains = false;
+                for (var columnIndex in savedOptions.columns) {
+                    contains = savedOptions.columns[columnIndex].name === colModel[i].name;
+                    if (contains) {
+                        colModel[i].width = savedOptions.columns[columnIndex].width;
+                        break;
+                    }
+                }
+                if (!contains) {
+                    colModel[i].hidden = true;
+                }
+            }
+        }
+    }
+
+    function getSavedOptions() {
+        return JSON.parse(localStorage.getItem(localStorageKey)) || {};
+    }
+
+    function setSavedOptions(options) {
+        localStorage.setItem(localStorageKey, JSON.stringify(options));
+    }
+
+    function updateSavedOptions(attribute, value) {
+        var savedOptions = getSavedOptions();
+        savedOptions[attribute] = value;
+        setSavedOptions(savedOptions);
+    }
 
     this.performNew = function (actionsPerformer) {
         currentState.newButtonClickedBefore = true;
@@ -1611,6 +1665,8 @@ QCD.components.elements.Grid = function (element, mainController) {
         if (gridParameters.filtersDefaultEnabled) {
             updateSearchFields();
         }
+
+        restoreSavedOptions();
 
         noRecordsDiv = $("<div>").html(translations.noResults).addClass("noRecordsBox");
         noRecordsDiv.hide();
