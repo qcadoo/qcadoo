@@ -45,6 +45,8 @@ QCD.menu.MenuController = function(menuStructure, windowController) {
 
 	var model = {};
 
+	var globalTitleSuffix;
+
 	function constructor() {
 
 		createMenu(menuStructure);
@@ -376,10 +378,8 @@ QCD.menu.MenuController = function(menuStructure, windowController) {
 			title = model.selectedItem.selectedItem.label;
 		}
 		if (title !== undefined) {
-			window.parent.document.title = (indexOfDash == -1
-					? actualTitle
-					: actualTitle.substr(0, indexOfDash - 1))
-					+ " - " + title;
+			window.parent.document.title = (title
+					+ " - " + globalTitleSuffix);
 		} else {
 			window.parent.document.title = (indexOfDash == -1
 					? actualTitle
@@ -407,15 +407,17 @@ QCD.menu.MenuController = function(menuStructure, windowController) {
 	this.setPageTitle = function() {
 		var indexOfDash = window.parent.document.title.indexOf("-");
 		var actualTitle = window.parent.document.title;
+		if (globalTitleSuffix === undefined) {
+			globalTitleSuffix = actualTitle;
+		}
 		var title;
+
 		if (model.selectedItem && model.selectedItem.selectedItem) {
 			title = model.selectedItem.selectedItem.label;
 		}
 		if (title !== undefined) {
-			window.parent.document.title = (indexOfDash == -1
-					? actualTitle
-					: actualTitle.substr(0, indexOfDash - 1))
-					+ " - " + title;
+			window.parent.document.title = title
+					+ " - " + globalTitleSuffix;
 		} else {
 			window.parent.document.title = (indexOfDash == -1
 					? actualTitle

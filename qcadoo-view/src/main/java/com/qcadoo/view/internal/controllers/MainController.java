@@ -23,11 +23,9 @@
  */
 package com.qcadoo.view.internal.controllers;
 
-import com.qcadoo.localization.api.TranslationService;
-import com.qcadoo.security.api.SecurityService;
-import com.qcadoo.view.internal.LogoComponent;
-import com.qcadoo.view.internal.api.ViewDefinitionService;
-import com.qcadoo.view.internal.menu.MenuService;
+import java.util.Locale;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -37,13 +35,31 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.Locale;
-import java.util.Map;
+import com.qcadoo.localization.api.TranslationService;
+import com.qcadoo.security.api.SecurityService;
+import com.qcadoo.view.internal.LogoComponent;
+import com.qcadoo.view.internal.api.ViewDefinitionService;
+import com.qcadoo.view.internal.menu.MenuService;
 
 @Controller
 public final class MainController {
 
     private static final String LOGO_PATH = "logoPath";
+
+    @Value("${dbNotificationsEnabled:true}")
+    private boolean dbNotificationsEnabled;
+
+    @Value("${systemNotificationsEnabled:false}")
+    private boolean systemNotificationsEnabled;
+
+    @Value("${systemNotificationsIntervalInSeconds:30}")
+    private int systemNotificationsIntervalInSeconds;
+
+    @Value("${activityStreamEnabled:true}")
+    private boolean activityStreamEnabled;
+
+    @Value("${activityStreamIntervalInSeconds:10}")
+    private int activityStreamIntervalInSeconds;
 
     @Autowired
     private ViewDefinitionService viewDefinitionService;
@@ -63,20 +79,14 @@ public final class MainController {
     @Autowired
     private LogoComponent logoComponent;
 
-    @Value("${dbNotificationsEnabled:true}")
-    private boolean dbNotificationsEnabled;
-
-    @Value("${systemNotificationsEnabled:false}")
-    private boolean systemNotificationsEnabled;
-
-    @Value("${systemNotificationsIntervalInSeconds:30}")
-    private int systemNotificationsIntervalInSeconds;
-
     @RequestMapping(value = "main", method = RequestMethod.GET)
     public ModelAndView getMainView(@RequestParam final Map<String, String> arguments, final Locale locale) {
         ModelAndView mav = new ModelAndView();
+
         mav.setViewName("qcadooView/main");
+
         viewParametersAppender.appendCommonViewObjects(mav);
+
         mav.addObject("viewsList", viewDefinitionService.list());
         mav.addObject("commonTranslations", translationService.getMessagesGroup("commons", locale));
         mav.addObject("menuStructure", menuService.getMenu(locale).getAsJson());
@@ -85,17 +95,26 @@ public final class MainController {
         mav.addObject("dbNotificationsEnabled", dbNotificationsEnabled);
         mav.addObject("systemNotificationsEnabled", systemNotificationsEnabled);
         mav.addObject("systemNotificationsIntervalInSeconds", systemNotificationsIntervalInSeconds);
+        mav.addObject("activityStreamEnabled", activityStreamEnabled);
+        mav.addObject("activityStreamIntervalInSeconds", activityStreamIntervalInSeconds);
+
         mav.addObject(LOGO_PATH, logoComponent.prepareMenuLogoPath());
+
         return mav;
     }
 
     @RequestMapping(value = "noDashboard", method = RequestMethod.GET)
     public ModelAndView getStartViewWhenNoDashboard(@RequestParam final Map<String, String> arguments, final Locale locale) {
         ModelAndView mav = new ModelAndView();
+
         mav.setViewName("qcadooView/noDashboard");
+
         viewParametersAppender.appendCommonViewObjects(mav);
+
         mav.addObject("userLogin", securityService.getCurrentUserName());
         mav.addObject("translationsMap", translationService.getMessagesGroup("noDashboard", locale));
+
         return mav;
     }
+
 }
