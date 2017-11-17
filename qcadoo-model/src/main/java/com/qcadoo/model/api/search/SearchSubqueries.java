@@ -84,7 +84,7 @@ public final class SearchSubqueries {
      */
     public static SearchCriterion fieldIn(final String field, final SearchCriteriaBuilder criteria) {
         return new SearchCriterionImpl(
-                Subqueries.propertyNotIn(field, ((SearchCriteria) criteria).getHibernateDetachedCriteria()));
+                Subqueries.propertyIn(field, ((SearchCriteria) criteria).getHibernateDetachedCriteria()));
     }
 
     /**
