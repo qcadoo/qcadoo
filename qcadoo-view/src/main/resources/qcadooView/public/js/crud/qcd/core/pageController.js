@@ -255,11 +255,11 @@ QCD.PageController = function() {
 			}
 			if (response.redirect) {
 				var contextPath = window.location.protocol+"//"+window.location.host;
-				var redirectUrl = response.redirect.url.replace(/\$\{root\}/, contextPath)
+				var redirectUrl = response.redirect.url.replace(/\$\{root\}/, contextPath);
 				if (response.redirect.openInNewWindow) {
 					openNewWindow(redirectUrl);
 				} else if (response.redirect.openInModalWindow) {
-					openModal(redirectUrl, redirectUrl);
+                    openModal(redirectUrl.replace(/\?.*$/, ""), redirectUrl);
 				} else if (isPopup) {
 				    preparePopup(redirectUrl);
 				} else {
