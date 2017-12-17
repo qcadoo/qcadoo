@@ -69,14 +69,10 @@ public class FileResolverController {
             if (input == null) {
                 response.sendRedirect("/error.html?code=404");
             } else {
-                OutputStream output = response.getOutputStream();
-
-                int bytes = IOUtils.copy(input, output);
-
                 response.setHeader("Content-disposition", "inline; filename=" + fileService.getName(path));
                 response.setContentType(fileService.getContentType(path));
-                response.setContentLength(bytes);
-
+                OutputStream output = response.getOutputStream();
+                IOUtils.copy(input, output);
                 output.flush();
             }
         } catch (IOException e) {
