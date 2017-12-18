@@ -767,10 +767,12 @@ QCD.components.elements.Grid = function (element, mainController) {
             var totalSum = 0;
             for (var i = 0; i < rows.length; ++i) {
                 var row = rows[i];
-                var val = grid.jqGrid('getCell', row, c)
+                var val = grid.jqGrid('getCell', row, c);
                 if(val === false){
                     totalSum = false;
                     break;
+                } else if (val.indexOf("gridLink") > 0) {
+                    val = $(val).text();
                 }
                 if(locale === "pl_PL" || locale === "pl"){
                     totalSum += parseFloat(nanToZero(val.split('&nbsp;').join('').replace(',','.'))) || 0;
