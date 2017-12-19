@@ -273,6 +273,7 @@ QCD.components.elements.Grid = function (element, mainController) {
         gridParameters.userDataOnFooter = options.footerRow;
         gridParameters.columnsToSummary = options.columnsToSummary;
         gridParameters.columnsToSummaryTime = options.columnsToSummaryTime;
+        gridParameters.suppressSelectEvent = options.suppressSelectEvent;
 
         if (options.height) {
             gridParameters.height = parseInt(options.height, 10);
@@ -993,9 +994,7 @@ QCD.components.elements.Grid = function (element, mainController) {
             }
         }
         aferSelectionUpdate();
-        if (gridParameters.listeners.length > 0) {
-            onSelectChange();
-        }
+        onSelectChange();
     }
 
     function applyFilters() {
@@ -1320,11 +1319,11 @@ QCD.components.elements.Grid = function (element, mainController) {
     };
 
     function onSelectChange() {
-        if (componentEnabled) {
+        if (componentEnabled && !gridParameters.suppressSelectEvent && gridParameters.listeners.length > 0) {
             mainController.callEvent("select", elementPath, null);
         }
     }
-    
+
     function rowClicked(rowId, col) {
         if (!componentEnabled) {
             grid.setSelection(rowId, false);
@@ -1362,9 +1361,7 @@ QCD.components.elements.Grid = function (element, mainController) {
         aferSelectionUpdate();
 
         // FIRE JAVA LISTENERS
-        if (gridParameters.listeners.length > 0) {
-            onSelectChange();
-        }
+        onSelectChange();
     }
 
     function restoreSavedOptions() {

@@ -173,6 +173,8 @@ public class GridComponentPattern extends AbstractComponentPattern {
 
     private final SecurityRolesService securityRolesService;
 
+    private boolean suppressSelectEvent = false;
+
     public GridComponentPattern(final ComponentDefinition componentDefinition) {
         super(componentDefinition);
         securityRolesService = getApplicationContext().getBean(SecurityRolesService.class);
@@ -267,18 +269,13 @@ public class GridComponentPattern extends AbstractComponentPattern {
         json.put("searchableColumns", new JSONArray(searchableColumns));
         json.put("multiSearchColumns", new JSONArray(multiSearchColumns));
         json.put("orderableColumns", new JSONArray(orderableColumns));
-
         json.put("fixedHeight", fixedHeight);
-
         json.put("shrinkToFit", shrinkToFit);
-
         json.put("autoRefresh", autoRefresh);
-
         json.put("footerRow", footerRow);
-
         json.put("columnsToSummary", columnsToSummary);
-
         json.put("columnsToSummaryTime", columnsToSummaryTime);
+        json.put("suppressSelectEvent", suppressSelectEvent);
 
         if (belongsToFieldDefinition != null) {
             json.put("belongsToFieldName", belongsToFieldDefinition.getName());
@@ -625,6 +622,8 @@ public class GridComponentPattern extends AbstractComponentPattern {
                 columnsToSummary = option.getValue();
             } else if ("columnsToSummaryTime".equals(option.getType())) {
                 columnsToSummaryTime = option.getValue();
+            } else if ("suppressSelectEvent".equals(option.getType())) {
+                suppressSelectEvent = Boolean.parseBoolean(option.getValue());
             }
         }
         if (defaultOrderColumn == null) {
