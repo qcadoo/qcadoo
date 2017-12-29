@@ -273,6 +273,7 @@ QCD.components.elements.Grid = function (element, mainController) {
         gridParameters.userDataOnFooter = options.footerRow;
         gridParameters.columnsToSummary = options.columnsToSummary;
         gridParameters.columnsToSummaryTime = options.columnsToSummaryTime;
+        gridParameters.suppressSelectEvent = options.suppressSelectEvent;
 
         if (options.height) {
             gridParameters.height = parseInt(options.height, 10);
@@ -767,10 +768,12 @@ QCD.components.elements.Grid = function (element, mainController) {
             var totalSum = 0;
             for (var i = 0; i < rows.length; ++i) {
                 var row = rows[i];
-                var val = grid.jqGrid('getCell', row, c)
+                var val = grid.jqGrid('getCell', row, c);
                 if(val === false){
                     totalSum = false;
                     break;
+                } else if (val.indexOf("gridLink") > 0) {
+                    val = $(val).text();
                 }
                 if(locale === "pl_PL" || locale === "pl"){
                     totalSum += parseFloat(nanToZero(val.split('&nbsp;').join('').replace(',','.'))) || 0;
@@ -991,9 +994,7 @@ QCD.components.elements.Grid = function (element, mainController) {
             }
         }
         aferSelectionUpdate();
-        if (gridParameters.listeners.length > 0) {
-            onSelectChange();
-        }
+        onSelectChange();
     }
 
     function applyFilters() {
@@ -1318,11 +1319,11 @@ QCD.components.elements.Grid = function (element, mainController) {
     };
 
     function onSelectChange() {
-        if (componentEnabled) {
+        if (componentEnabled && !gridParameters.suppressSelectEvent && gridParameters.listeners.length > 0) {
             mainController.callEvent("select", elementPath, null);
         }
     }
-    
+
     function rowClicked(rowId, col) {
         if (!componentEnabled) {
             grid.setSelection(rowId, false);
@@ -1360,9 +1361,7 @@ QCD.components.elements.Grid = function (element, mainController) {
         aferSelectionUpdate();
 
         // FIRE JAVA LISTENERS
-        if (gridParameters.listeners.length > 0) {
-            onSelectChange();
-        }
+        onSelectChange();
     }
 
     function restoreSavedOptions() {
