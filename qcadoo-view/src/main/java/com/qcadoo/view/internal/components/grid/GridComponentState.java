@@ -23,22 +23,6 @@
  */
 package com.qcadoo.view.internal.components.grid;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.apache.commons.lang3.StringUtils;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.qcadoo.model.api.DataDefinition;
@@ -67,6 +51,21 @@ import com.qcadoo.view.internal.CriteriaModifier;
 import com.qcadoo.view.internal.FilterValueHolderImpl;
 import com.qcadoo.view.internal.RowStyleResolver;
 import com.qcadoo.view.internal.states.AbstractComponentState;
+import org.apache.commons.lang3.StringUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public final class GridComponentState extends AbstractComponentState implements GridComponent {
 
@@ -668,9 +667,10 @@ public final class GridComponentState extends AbstractComponentState implements 
                 copyFieldValidationMessages(gridOwnerEntity);
             } else if (belongsToFieldType instanceof BelongsToType) {
                 for (Entity entity : newlyAddedEntities) {
-                    entity.setField(belongsToFieldDefinition.getName(), belongsToEntityId);
-                    entity.getDataDefinition().save(entity);
-                    copyFieldValidationMessages(entity);
+                    Entity newEntity = entity.getDataDefinition().getMasterModelEntity(entity.getId());
+                    newEntity.setField(belongsToFieldDefinition.getName(), belongsToEntityId);
+                    newEntity.getDataDefinition().save(newEntity);
+                    copyFieldValidationMessages(newEntity);
                 }
             } else {
                 throw new IllegalArgumentException("Unsupported relation type - " + belongsToFieldDefinition.getType().toString());
@@ -699,9 +699,9 @@ public final class GridComponentState extends AbstractComponentState implements 
                     copyFieldValidationMessages(gridOwnerEntity);
                 } else {
                     for (Long selectedId : selectedEntitiesIds) {
-                        entity = getDataDefinition().get(selectedId);
+                        entity = getDataDefinition().getMasterModelEntity(selectedId);
                         entity.setField(belongsToFieldDefinition.getName(), null);
-                        getDataDefinition().save(entity);
+                        entity.getDataDefinition().save(entity);
                         copyFieldValidationMessages(entity);
                     }
                 }
