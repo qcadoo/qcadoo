@@ -68,7 +68,7 @@ public final class DefaultExceptionResolver extends SimpleMappingExceptionResolv
     @Autowired
     private TranslationService translationService;
 
-    @Value("${maxUploadSize:2000000}")
+    @Value("${maxUploadSize:5242880}")
     private int maxUploadSize;
 
     private Map<Class<? extends Exception>, ExceptionInfoResolver<? extends Exception>> classResolversMap = new HashMap<Class<? extends Exception>, ExceptionInfoResolver<? extends Exception>>();
