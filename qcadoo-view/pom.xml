@@ -86,6 +86,7 @@
 							<excludes>
 								<exclude>**/*min.js</exclude>
 								<exclude>**/*min.css</exclude>
+								<exclude>**/ViewerJS/*</exclude>
 							</excludes>
 							<aggregations>
 								<aggregation>

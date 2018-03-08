@@ -86,6 +86,9 @@
         <menu:menu-item-url name="systemInfo" category="administration"
                             url="/systemInfo.html"/>
 
+        <menu:menu-item-url name="attachmentViewer" category="administration"
+                            url="/attachmentViewer.html"/>
+
         <view:view-component name="button"
                              class="com.qcadoo.view.internal.components.ButtonComponentPattern"/>
         <view:view-component name="label"
