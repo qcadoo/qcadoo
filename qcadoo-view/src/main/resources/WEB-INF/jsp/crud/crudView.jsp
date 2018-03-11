@@ -43,6 +43,7 @@
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/jquery.searchFilter.js?ver=${buildNumber}"></script>
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/jquery.shorten.min.js?ver=${buildNumber}"></script>
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/jquery.maskedinput-1.3.min.js?ver=${buildNumber}"></script>
+			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/qcd/utils/base64.min.js?ver=${buildNumber}"></script>
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/qcadoo-min.js?ver=${buildNumber}"></script>
 		</c:when>
 		<c:otherwise>
@@ -123,7 +124,8 @@
 			<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/crud/qcd/components/elements/gantt/ganttChartHeader.js?ver=${buildNumber}"></script>
 
             <script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/jquery.scannerdetection.js?ver=${buildNumber}"></script>
-            
+            <script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/qcd/utils/base64.min.js?ver=${buildNumber}"></script>
+
 			<c:forEach items="${model['jsFilePaths']}" var="jsFilePath">
 				<c:if test="${jsFilePath != null }">
 					<script type="text/javascript" src="${jsFilePath}"></script>

@@ -58,7 +58,7 @@ public class FileUploadController {
     @Autowired
     private ViewParametersAppender viewParametersAppender;
 
-    @Value("${maxUploadSize:2000000}")
+    @Value("${maxUploadSize:5242880}")
     private int maxUploadSize;
 
     @RequestMapping(value = "fileUpload", method = RequestMethod.GET)

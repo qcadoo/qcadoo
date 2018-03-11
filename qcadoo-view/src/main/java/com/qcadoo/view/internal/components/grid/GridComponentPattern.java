@@ -23,23 +23,6 @@
  */
 package com.qcadoo.view.internal.components.grid;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.StringUtils;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
@@ -62,6 +45,22 @@ import com.qcadoo.view.internal.RowStyleResolver;
 import com.qcadoo.view.internal.patterns.AbstractComponentPattern;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
 import com.qcadoo.view.internal.xml.ViewDefinitionParserNodeException;
+import org.apache.commons.lang3.StringUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class GridComponentPattern extends AbstractComponentPattern {
 
@@ -423,6 +422,8 @@ public class GridComponentPattern extends AbstractComponentPattern {
             jsonColumn.put("filterValues", getFilterValuesForColumn(column, locale));
             jsonColumn.put("correspondingView", column.getCorrespondingView());
             jsonColumn.put("correspondingField", column.getCorrespondingField());
+            jsonColumn.put("correspondingViewField", column.getCorrespondingViewField());
+            jsonColumn.put("attachment", column.getAttachment());
             jsonColumns.put(jsonColumn);
         }
 
@@ -655,7 +656,10 @@ public class GridComponentPattern extends AbstractComponentPattern {
 
         column.setCorrespondingView(option.getAtrributeValue("correspondingView"));
         column.setCorrespondingField(option.getAtrributeValue("correspondingField"));
-
+        column.setCorrespondingViewField(option.getAtrributeValue("correspondingViewField"));
+        if (option.getAtrributeValue("attachment") != null) {
+            column.setAttachment(Boolean.parseBoolean(option.getAtrributeValue("attachment")));
+        }
         columns.put(column.getName(), column);
     }
 

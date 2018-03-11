@@ -395,7 +395,7 @@ QCD.components.elements.Grid = function (element, mainController) {
             params[gridParameters.correspondingComponent + "." + belongsToFieldName] = currentState.belongsToEntityId;
             var url = gridParameters.correspondingViewName + ".html?context=" + JSON.stringify(params);
             if (gridParameters.correspondingViewInModal) {
-                mainController.openModal(elementPath + "_editWindow", url);
+                mainController.openModal(elementPath + "_editWindow", url);f
             } else {
                 mainController.goToPage(url);
             }
@@ -409,11 +409,20 @@ QCD.components.elements.Grid = function (element, mainController) {
         currentState.rowLinkClickedBefore = true;
         if (linkListener) {
             linkListener.onGridLinkClicked(selectedEntities);
+        } else if(colName && columnModel[colName].attachment && mainController.canClose()) {
+            var url =  "/attachmentViewer.html?attachment=" +  Base64.encodeURI(JSON.stringify(currentEntities[selectedEntities].fields[columnModel[colName].correspondingField]));
+            window.open(url, '_blank');
         } else if(colName && columnModel[colName].correspondingView && mainController.canClose()) {
             var params = {};
             params["form.id"] = currentEntities[selectedEntities].fields[columnModel[colName].correspondingField].replace(/\s/g, '');
             setPermanentlyDisableParam(params);
             var url = columnModel[colName].correspondingView + ".html?context=" + JSON.stringify(params);
+            mainController.goToPage(url);
+        } else if(colName && columnModel[colName].correspondingViewField && mainController.canClose()) {
+            var params = {};
+            params["form.id"] = currentEntities[selectedEntities].fields[columnModel[colName].correspondingField].replace(/\s/g, '');
+            setPermanentlyDisableParam(params);
+            var url = currentEntities[selectedEntities].fields[columnModel[colName].correspondingViewField] + ".html?context=" + JSON.stringify(params);
             mainController.goToPage(url);
         } else {
             var params = {};
