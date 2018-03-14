@@ -414,13 +414,13 @@ QCD.components.elements.Grid = function (element, mainController) {
             window.open(url, '_blank');
         } else if(colName && columnModel[colName].correspondingView && mainController.canClose()) {
             var params = {};
-            params["form.id"] = currentEntities[selectedEntities].fields[columnModel[colName].correspondingField].replace(/\s/g, '');
+            params["form.id"] = currentEntities[selectedEntities].fields[columnModel[colName].correspondingField].replace(/\s/g, '').replace(/,/g , '');
             setPermanentlyDisableParam(params);
             var url = columnModel[colName].correspondingView + ".html?context=" + JSON.stringify(params);
             mainController.goToPage(url);
         } else if(colName && columnModel[colName].correspondingViewField && mainController.canClose()) {
             var params = {};
-            params["form.id"] = currentEntities[selectedEntities].fields[columnModel[colName].correspondingField].replace(/\s/g, '');
+            params["form.id"] = currentEntities[selectedEntities].fields[columnModel[colName].correspondingField].replace(/\s/g, '').replace(/,/g , '');
             setPermanentlyDisableParam(params);
             var url = currentEntities[selectedEntities].fields[columnModel[colName].correspondingViewField] + ".html?context=" + JSON.stringify(params);
             mainController.goToPage(url);
