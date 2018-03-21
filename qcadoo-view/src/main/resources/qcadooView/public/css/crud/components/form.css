@@ -412,6 +412,7 @@
 	border: none;
 }
 
+
  .lookupValueWrapper .lookupInputWrapper,
  .fileValueWrapper .fileInputWrapper {
 	position: absolute;
@@ -424,6 +425,41 @@
 	border: none;
 	height: 20px;
 }
+
+ .lookupValueWrapper .actionButton {
+	height: 20px;
+	width: 20px;
+	display: inline-block;
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	background: url(/qcadooView/public/css/crud/images/form/play-grey.png) no-repeat 0;
+	vertical-align: middle;
+}
+
+ .lookupValueWrapper .actionButton.enabled {
+ 	background: url(/qcadooView/public/css/crud/images/form/play-dark.png) no-repeat 0;
+	background-position: 0px 0;
+		 	top: 2px;
+	cursor: pointer;
+}
+
+
+ .lookupValueWrapper .actionButton.enabled:hover,
+ .lookupValueWrapper .actionButton.enabled.lightHover:hover {
+ 	background-position: 0px 0;
+ 	top: 0px;
+ 	background: url(/qcadooView/public/css/crud/images/form/play-green.png) no-repeat 0;
+
+}
+
+
+.lookupValueWrapper .lookupInputWrapper .input .dimmed  {
+     color: #959595;
+     background-color: #f5f5f5;
+     border: solid #cccccc 1px;
+     border-bottom: solid #e8e8e8 1px;
+ }
 
  .lookupValueWrapper .lookupButton,
  .fileValueWrapper .fileButton {
