@@ -141,6 +141,8 @@
                              class="com.qcadoo.view.internal.components.ganttChart.GanttChartComponentPattern"/>
         <view:view-component name="time"
                              class="com.qcadoo.view.internal.components.TimeInputComponentPattern"/>
+        <view:view-component name="inputWithAction"
+                             class="com.qcadoo.view.internal.components.inputWithActionButton.InputWithActionComponentPattern"/>
 
         <view:view-ribbon-template
                 resource="view/ribbonTemplates/standardGridTemplate.xml"/>

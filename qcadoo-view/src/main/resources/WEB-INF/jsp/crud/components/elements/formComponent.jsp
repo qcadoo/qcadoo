@@ -43,7 +43,7 @@
 	<c:set var="hasLabel" value="${component['hasLabel'] && component['jspOptions']['translations']['label'] != ''}" />
 	<c:set var="labelWidth" value="${hasLabel ? component['jspOptions']['labelWidth'] : 0}" />
 	
-	<c:set var="isInputBox" value="${'textarea' == componentType || 'input' == componentType || 'password' == componentType || 'calendar' == componentType || 'lookup' == componentType || 'file' == componentType || 'time' == componentType}"/>
+	<c:set var="isInputBox" value="${'textarea' == componentType || 'input' == componentType || 'password' == componentType || 'calendar' == componentType || 'lookup' == componentType || 'file' == componentType || 'time' == componentType || 'inputWithAction' == componentType}"/>
 
 	<c:if test="${! component['hasLabel']}">
 		<c:set var="labelboxClass" value="noLabel"/>

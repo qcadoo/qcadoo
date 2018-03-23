@@ -26,7 +26,6 @@ package com.qcadoo.view.internal.controllers;
 import com.google.common.io.BaseEncoding;
 import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.api.file.FileService;
-import com.qcadoo.view.api.crud.CrudService;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -59,9 +58,6 @@ public final class AttachmentViewerController {
     private TranslationService translationService;
 
     @Autowired
-    private CrudService crudController;
-
-    @Autowired
     private FileService fileService;
 
     @Autowired
@@ -78,7 +74,7 @@ public final class AttachmentViewerController {
         String url = fileService.getUrl(file);
         mav.addObject(L_ATTACHMENT, url.substring(1, url.length() - 1));
         mav.addObject(L_EXT, ext);
-        int index = name.indexOf("_");
+        int index = name.indexOf('_');
         mav.addObject(L_FILE_NAME, name.substring(index+1, name.length() - 1));
         appendTranslations(locale, mav);
         viewParametersAppender.appendCommonViewObjects(mav);
