@@ -12,7 +12,7 @@ public final class InputWithActionComponentState extends FieldComponentState {
         registerEvent("onClick", eventPerformer, "onClick");
     }
 
-    protected class InputWithActionEventPerformer {
+    protected static class InputWithActionEventPerformer {
 
         public void onClick(final String[] args) {
             // nothing interesting here
