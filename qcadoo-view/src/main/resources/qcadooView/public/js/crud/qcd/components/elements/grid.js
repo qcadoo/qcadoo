@@ -395,7 +395,7 @@ QCD.components.elements.Grid = function (element, mainController) {
             params[gridParameters.correspondingComponent + "." + belongsToFieldName] = currentState.belongsToEntityId;
             var url = gridParameters.correspondingViewName + ".html?context=" + JSON.stringify(params);
             if (gridParameters.correspondingViewInModal) {
-                mainController.openModal(elementPath + "_editWindow", url);f
+                mainController.openModal(elementPath + "_editWindow", url);
             } else {
                 mainController.goToPage(url);
             }
