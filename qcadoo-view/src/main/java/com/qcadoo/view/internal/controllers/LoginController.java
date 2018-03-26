@@ -23,8 +23,8 @@
  */
 package com.qcadoo.view.internal.controllers;
 
-import com.qcadoo.localization.api.TranslationService;
-import com.qcadoo.view.internal.LogoComponent;
+import java.util.Locale;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -33,7 +33,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.Locale;
+import com.qcadoo.localization.api.TranslationService;
+import com.qcadoo.view.internal.LogoComponent;
 
 @Controller
 public final class LoginController {
@@ -67,13 +68,15 @@ public final class LoginController {
             @RequestParam(required = false, defaultValue = FALSE) final Boolean passwordReseted, final Locale locale) {
 
         ModelAndView mav = new ModelAndView();
+
         mav.setViewName("qcadooView/login");
+
         viewParametersAppender.appendCommonViewObjects(mav);
+
         mav.addObject("translation", translationService.getMessagesGroup("security", locale));
         mav.addObject("currentLanguage", locale.getLanguage());
         mav.addObject("locales", translationService.getLocales());
-
-        mav.addObject(LOGO_PATH, logoComponent.prepareLoginPageLogoPath());
+        mav.addObject("logoPath", logoComponent.prepareDefaultLogoPath());
 
         mav.addObject("iframe", iframe);
         mav.addObject("popup", popup);
@@ -103,7 +106,9 @@ public final class LoginController {
     @RequestMapping(value = "accessDenied", method = RequestMethod.GET)
     public ModelAndView getAccessDeniedPageView(final Locale locale) {
         ModelAndView mav = new ModelAndView();
+
         viewParametersAppender.appendCommonViewObjects(mav);
+
         mav.setViewName("qcadooView/accessDenied");
 
         mav.addObject("translation", translationService.getMessagesGroup("security", locale));
@@ -114,7 +119,9 @@ public final class LoginController {
     @RequestMapping(value = "browserNotSupported", method = RequestMethod.GET)
     public ModelAndView getBrowserNotSupportedView(final Locale locale) {
         ModelAndView mav = new ModelAndView();
+
         viewParametersAppender.appendCommonViewObjects(mav);
+
         mav.setViewName("qcadooView/browserNotSupported");
 
         mav.addObject("locales", translationService.getLocales());
@@ -123,4 +130,5 @@ public final class LoginController {
 
         return mav;
     }
+
 }

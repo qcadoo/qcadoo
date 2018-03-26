@@ -22,201 +22,74 @@
  * ***************************************************************************
  */
 html, body {
-	background: #9B9B9B;
-	font-family:"Lucida Grande",Arial, Helvetica, sans-serif;
-	margin: 0;
-	padding: 0;
-	height: 100%;
+    margin: 0;
+    padding: 0;
+
+    height: 100%;
+
+    background-color: #f5f5f5;
 }
 
-#contentWrapperOuter {
-	display: table;
-	position: static;
-	height: 100%;
-	width: 100%;
+body {
+    display: -ms-flexbox;
+    display: -webkit-box;
+    display: flex;
+    -ms-flex-align: center;
+    -ms-flex-pack: center;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+    padding-top: 40px;
+    padding-bottom: 40px;
 }
 
-#contentWrapperMiddle {
-	display: table-cell;
-	vertical-align: middle;
-	width: 100%;
+#messagePanel p {
+    margin: 0;
+    padding: 0;
 }
 
-#contentWrapper {
-	clear: both;
-	width: 600px;
-	margin: auto;
+.container {
+    width: 100%;
+    padding: 15px;
 }
 
-#messagePanel {
-	height: 45px;
-	margin-bottom: 10px;
-	border: solid black 1px;
-	background-color: white;
-	font-size: 12px;
-	padding-left: 10px;
-}
-#messagePanel #messageHeader {
-	font-weight: bold;
-	margin-top: 8px;
-}
-#messagePanel #messageContent {
-	
-}
-#messagePanel.success {
-	border-color: #2aaa00;
-	background-color: #e6ffe2;
-	color: #2aaa00;
-}
-#messagePanel.info {
-	border-color: #ff9d00;
-	background-color: #fff2c8;
-	color: #ff9d00;
-}
-#messagePanel.error {
-	border-color: #ec1c24;
-	background-color: #ffe2e2;
-	color: #ec1c24;
+.dropdown-menu {
+    padding: 5px 5px;
 }
 
-#loginContentWrapper {
-	background-color: white;
-	border: solid #777 1px;
+.logo {
+    width: 55px;
+    height: 75px;
 }
 
-#loginContentWrapper #loginHeader {
-	background-color: #ebebeb;
-	border-bottom: solid #a7a7a7 1px;
-	height: 35px;
-	line-height: 35px;
-	padding-left: 20px;
-	font-size: 14px;
-	font-weight: bold;
-	color: #7d7d7d;
-	margin-bottom: 30px;
+.form-signin {
+    width: 100%;
+    max-width: 330px;
+    margin: 0 auto;
 }
 
-#loginContentWrapper #loginHeader #languageDiv {
-	float: right;
-	margin-right: 10px;
-	margin-top: 8px;
+.form-signin .input-group .form-control {
+    position: relative;
+    box-sizing: border-box;
+    border-radius: 4px;
+    height: auto;
+    padding: 10px;
+    font-size: 16px;
 }
 
-#loginForm {
-	margin: auto;
-	width: 400px;
-}
-#loginForm > div {
-	margin-top: 20px;
-}
-#loginForm div label {
-	display: inline-block;
-	width: 130px;
-	text-align: right;
-	padding-right: 20px;
-	font-size: 11px;
-	font-weight: bold;
-}
-#loginForm div .component_container_form_w {
-	width: 180px;
-	margin-top: 0;
+.form-signin .form-control:focus {
+    z-index: 2;
 }
 
-#loginForm div .component_container_form_w .errorMessagePanel {
-	position: absolute;
-	top: 17px;
-	left: 5px;
-	width: 170px;
-	height: 20px;
+.form-signin .input-group input[type="text"] {
+    margin-bottom: -1px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
 }
 
-#loginForm div .component_container_form_w .login_failed {
-	width: 13px;
-	height: 8px;
-	background: url(/qcadooView/public/css/core/images/error.icon.png);
-	vertical-align: baseline;
-	display: inline-block;
-}
-
-#loginForm div .component_container_form_w .login_failed_message {
-	font-size: 11px;
-	font-weight: normal;
-	color: #ec1c24;
-	vertical-align: baseline;
-}
-
-
-#loginForm div#rememberMeRow {
-	margin-top: 15px;
-}
-
-#loginForm div input#rememberMeCheckbox {
-	margin-left: 3px;
-}
-#loginForm div label#rememberMeLabel {
-	font-weight: normal;
-	text-align: left;
-	margin-left: 3px;
-	width: 200px;
-}
-
-#loginForm #forgotPasswordLinkWrapper #forgotPasswordLink,
-#loginForm #loginButtonWrapper #changeUserButton {
-	display: inline-block;
-	color: #005ec5;
-	font-family: "Lucida Grande",Arial bold, Arial, Helvetica, sans-serif;
-	font-size: 11px;
-	text-decoration: none;
-}
-
-#loginForm #loginButtonWrapper #changeUserButton {
-	margin-left: 80px; 
-	margin-right: 30px; 
-}
-
-#loginForm #forgotPasswordLinkWrapper #forgotPasswordLink:hover,
-#loginForm #loginButtonWrapper #changeUserButton:hover {
-	text-decoration: underline;
-	color: red;
-}
-
-#loginForm #forgotPasswordLinkWrapper {
-	text-align: center;
-}
-
-#loginForm #loginButtonWrapper #loginButton {
-	display: inline-block;
-	width: 103px;
-	height: 37px;
-	background-image: url('/qcadooView/public/css/core/images/login/loginButton.png');
-	background-repeat: no-repeat;
-	text-decoration: none;
-}
-#loginForm #loginButtonWrapper #loginButton:hover {
-	background-position: 0 -37px;
-}
-#loginForm #loginButtonWrapper #loginButton span {
-	line-height: 37px;
-	color: white;
-	font-family: "Lucida Grande",Arial bold, Arial, Helvetica, sans-serif;
-	font-size: 13px;
-	text-decoration: none;
-	margin-left: 46px;
-}
-
-#loginContentWrapper #loginFooter #loginFooterLine {
-	width: 571px;
-	height: 10px;
-	margin: auto;
-	background-image: url('/qcadooView/public/css/core/images/login/cien.png');
-	background-repeat: no-repeat;
-}
-#loginContentWrapper #loginFooter #loginFooterLogo {
-	width: 81px;
-	height: 24px;
-	margin: auto;
-	background-image: url('/qcadooView/public/css/core/images/login/qcadoo-logo.png');
-	background-repeat: no-repeat;
-	margin-top: 6px;
-	margin-bottom: 16px;
+.form-signin .input-group input[type="password"] {
+    margin-bottom: 25px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
 }

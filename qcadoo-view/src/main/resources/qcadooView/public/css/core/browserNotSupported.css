@@ -44,11 +44,6 @@ body {
     padding-bottom: 40px;
 }
 
-#messagePanel p {
-    margin: 0;
-    padding: 0;
-}
-
 .container {
     width: 100%;
     padding: 15px;
@@ -59,30 +54,11 @@ body {
 }
 
 .logo {
-    width: 55px;
-    height: 75px;
+    width: 75px;
+    height: 100px;
 }
 
-.form-reset {
+.form-info {
     width: 100%;
-    max-width: 330px;
-    margin: 0 auto;
+    max-width: 640px;
 }
-
-.form-reset .input-group .form-control {
-    position: relative;
-    box-sizing: border-box;
-    border-radius: 4px;
-    height: auto;
-    padding: 10px;
-    font-size: 16px;
-}
-
-.form-reset .input-group .form-control:focus {
-    z-index: 2;
-}
-
-.form-reset .input-group input[type="text"] {
-    margin-bottom: 25px;
-}
-

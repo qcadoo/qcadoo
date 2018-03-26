@@ -45,6 +45,7 @@
         <security:expression-handler ref="methodSecurityExpressionHandler"/>
     </security:global-method-security>
 
+    <security:http pattern="/browserNotSupported.html" security="none"/>
     <security:http pattern="/passwordReset.html" security="none"/>
     <security:http pattern="/login.html" security="none"/>
     <security:http pattern="/css/**" security="none"/>

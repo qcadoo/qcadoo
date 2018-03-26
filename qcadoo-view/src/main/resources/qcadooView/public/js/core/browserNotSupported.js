@@ -1,4 +1,4 @@
-/**
+/*
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
@@ -21,68 +21,22 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * ***************************************************************************
  */
-html, body {
-    margin: 0;
-    padding: 0;
+var QCD = QCD || {};
 
-    height: 100%;
+QCD.browserNotSupported = (function () {
+    function init() {
+        $(".dropdown-menu li span").each(function (i, li) {
+            $(li).click(function () {
+                changeLanguage(this.lang);
+            });
+        });
+    }
 
-    background-color: #f5f5f5;
-}
+    function changeLanguage(language) {
+        window.location = "browserNotSupported.html?lang=" + language;
+    }
 
-body {
-    display: -ms-flexbox;
-    display: -webkit-box;
-    display: flex;
-    -ms-flex-align: center;
-    -ms-flex-pack: center;
-    -webkit-box-align: center;
-    align-items: center;
-    -webkit-box-pack: center;
-    justify-content: center;
-    padding-top: 40px;
-    padding-bottom: 40px;
-}
-
-#messagePanel p {
-    margin: 0;
-    padding: 0;
-}
-
-.container {
-    width: 100%;
-    padding: 15px;
-}
-
-.dropdown-menu {
-    padding: 5px 5px;
-}
-
-.logo {
-    width: 55px;
-    height: 75px;
-}
-
-.form-reset {
-    width: 100%;
-    max-width: 330px;
-    margin: 0 auto;
-}
-
-.form-reset .input-group .form-control {
-    position: relative;
-    box-sizing: border-box;
-    border-radius: 4px;
-    height: auto;
-    padding: 10px;
-    font-size: 16px;
-}
-
-.form-reset .input-group .form-control:focus {
-    z-index: 2;
-}
-
-.form-reset .input-group input[type="text"] {
-    margin-bottom: 25px;
-}
-
+    return {
+        init: init
+    };
+})();
