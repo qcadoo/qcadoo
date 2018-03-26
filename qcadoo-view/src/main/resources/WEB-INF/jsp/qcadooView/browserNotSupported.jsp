@@ -82,11 +82,11 @@
                 <div class="text-right">
                     <div class="btn-group dropup">
                         <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                            <span class="lang-sm lang-lbl-full" lang="${currentLanguage}"></span> <span class="caret"></span>
+                            <span class="lang-sm" lang="${currentLanguage}"></span> <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu" role="menu">
                             <c:forEach items="${locales}" var="localesEntry">
-                                <li><span class="lang-sm lang-lbl-full" lang="${localesEntry.key}"></span></li>
+                                <li><span class="lang-sm lang-lbl" lang="${localesEntry.key}"></span></li>
                             </c:forEach>
                         </ul>
                     </div>
