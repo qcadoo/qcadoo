@@ -103,4 +103,12 @@ public interface TranslationService {
      * @see LocaleModuleFactory
      */
     Map<String, String> getLocales();
+
+    /**
+     * Returns a max upload size.
+     *
+     * @return a max upload size
+     * @see int
+     */
+    int getMaxUploadSize();
 }

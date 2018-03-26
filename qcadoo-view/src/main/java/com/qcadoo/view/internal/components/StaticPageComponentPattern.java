@@ -23,15 +23,16 @@
  */
 package com.qcadoo.view.internal.components;
 
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+
+import org.json.JSONException;
+
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.internal.ComponentDefinition;
 import com.qcadoo.view.internal.ComponentOption;
 import com.qcadoo.view.internal.patterns.AbstractComponentPattern;
-import org.json.JSONException;
-
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
 
 public final class StaticPageComponentPattern extends AbstractComponentPattern {
 
@@ -65,10 +66,15 @@ public final class StaticPageComponentPattern extends AbstractComponentPattern {
         Map<String, Object> options = new HashMap<>();
 
         options.put("page", page);
-        options.put("translationsMap", getTranslationService().getMessagesGroup(messagesGroup, locale));
+        Map<String, String> translationsMap = getTranslationService().getMessagesGroup(messagesGroup, locale);
+        translationsMap.put("qcadooView.fileupload.dropzone", getTranslationService().translate("qcadooView.fileupload.dropzone",
+                locale, "" + getTranslationService().getMaxUploadSize()));
+        translationsMap.put("qcadooView.errorPage.error.uploadException.maxSizeExceeded.explanation",
+                getTranslationService().translate("qcadooView.errorPage.error.uploadException.maxSizeExceeded.explanation",
+                        locale, "" + getTranslationService().getMaxUploadSize()));
+        options.put("translationsMap", translationsMap);
 
         return options;
-
     }
 
     @Override

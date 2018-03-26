@@ -35,5 +35,4 @@ public interface InternalTranslationService extends TranslationService {
     void addLocaleToList(String locale, String label);
 
     void removeLocaleToList(String locale);
-
 }

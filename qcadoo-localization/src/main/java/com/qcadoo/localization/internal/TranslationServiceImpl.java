@@ -39,11 +39,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
 import com.google.common.collect.Lists;
-import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 
 @Service
 public final class TranslationServiceImpl implements InternalTranslationService {
@@ -56,6 +56,9 @@ public final class TranslationServiceImpl implements InternalTranslationService 
 
     @Value("${ignoreMissingTranslations}")
     private boolean ignoreMissingTranslations;
+
+    @Value("${maxUploadSize:5242880}")
+    private int maxUploadSize;
 
     private long lastHotDeployClearCache;
 
@@ -190,4 +193,8 @@ public final class TranslationServiceImpl implements InternalTranslationService 
         return locales;
     }
 
+    @Override
+    public int getMaxUploadSize() {
+        return maxUploadSize/1048576;
+    }
 }
