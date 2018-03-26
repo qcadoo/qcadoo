@@ -56,4 +56,8 @@ public class MockTranslationService implements TranslationService {
         return null;
     }
 
+    @Override
+    public int getMaxUploadSize() {
+        return 0;
+    }
 }
