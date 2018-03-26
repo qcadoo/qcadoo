@@ -46,7 +46,6 @@ body {
 
 .container {
     width: 100%;
-    max-width: 640px;
     padding: 15px;
 }
 
@@ -61,4 +60,5 @@ body {
 
 .form-info {
     width: 100%;
+    max-width: 640px;
 }

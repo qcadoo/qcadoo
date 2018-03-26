@@ -51,7 +51,6 @@ body {
 
 .container {
     width: 100%;
-    max-width: 330px;
     padding: 15px;
 }
 
@@ -66,12 +65,14 @@ body {
 
 .form-signin {
     width: 100%;
+    max-width: 330px;
+    margin: 0 auto;
 }
 
 .form-signin .input-group .form-control {
     position: relative;
     box-sizing: border-box;
-    border-radius: .25rem;
+    border-radius: 4px;
     height: auto;
     padding: 10px;
     font-size: 16px;
@@ -88,7 +89,7 @@ body {
 }
 
 .form-signin .input-group input[type="password"] {
-    margin-bottom: 10px;
+    margin-bottom: 25px;
     border-top-left-radius: 0;
     border-top-right-radius: 0;
 }

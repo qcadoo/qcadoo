@@ -103,18 +103,20 @@
 
             <form id="passwordResetForm" name="passwordResetForm" method="POST">
             <img class="logo mb-4" src="${logoPath}" alt="Logo"/>
-            <h1 class="h3 mb-3 font-weight-normal">${translation["security.form.header.passwordReset"]}</h1>
+            <h1 class="h3 mb-3 font-weight-normal">${translation["security.form.header.passwordReset"]}</h1><br/>
 
             <div class="input-group">
                 <label for="usernameInput" class="sr-only">${translation["security.form.label.login"]}</label>
                 <input type="text" id="usernameInput" name="login" class="form-control" placeHolder="${translation["security.form.label.login"]}" value='<c:if test="${not empty param.login_error}"><c:out value="${SPRING_SECURITY_LAST_USERNAME}"/></c:if>' required autofocus>
-                <div class="invalid-feedback">
+                <div class="invalid-feedback" style="margin-top: -25px;">
                     ${translation["security.message.wrongLogin"]}
                 </div>
             </div>
 
-            <div class="mt-3 mb-3">
-                ${translation["security.form.content.passwordReset"]}
+            <div class="mb-3">
+                <label>
+                    ${translation["security.form.content.passwordReset"]}
+                </label>
             </div>
 
             <div class="btn-group" role="group">
