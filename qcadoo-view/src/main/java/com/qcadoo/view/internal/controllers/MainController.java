@@ -97,8 +97,7 @@ public final class MainController {
         mav.addObject("systemNotificationsIntervalInSeconds", systemNotificationsIntervalInSeconds);
         mav.addObject("activityStreamEnabled", activityStreamEnabled);
         mav.addObject("activityStreamIntervalInSeconds", activityStreamIntervalInSeconds);
-
-        mav.addObject(LOGO_PATH, logoComponent.prepareMenuLogoPath());
+        mav.addObject("logoPath", logoComponent.prepareMenuLogoPath());
 
         return mav;
     }

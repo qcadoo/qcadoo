@@ -26,6 +26,8 @@ package com.qcadoo.view.internal.controllers;
 import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.mail.api.InvalidMailAddressException;
 import com.qcadoo.security.api.PasswordReminderService;
+import com.qcadoo.view.internal.LogoComponent;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
@@ -53,16 +55,23 @@ public final class PasswordResetController {
     @Autowired
     private ViewParametersAppender viewParametersAppender;
 
+    @Autowired
+    private LogoComponent logoComponent;
+
     @RequestMapping(value = "passwordReset", method = RequestMethod.GET)
     public ModelAndView getForgotPasswordFormView(@RequestParam(required = false, defaultValue = FALSE) final Boolean iframe,
             @RequestParam(required = false, defaultValue = FALSE) final Boolean popup, final Locale locale) {
 
         ModelAndView mav = new ModelAndView();
+
         viewParametersAppender.appendCommonViewObjects(mav);
+
         mav.setViewName("qcadooView/passwordReset");
+
         mav.addObject("translation", translationService.getMessagesGroup("security", locale));
         mav.addObject("currentLanguage", locale.getLanguage());
         mav.addObject("locales", translationService.getLocales());
+        mav.addObject("logoPath", logoComponent.prepareDefaultLogoPath());
 
         mav.addObject("iframe", iframe);
         mav.addObject("popup", popup);
@@ -76,6 +85,7 @@ public final class PasswordResetController {
         if (StringUtils.isBlank(login)) {
             return "loginIsBlank";
         }
+
         return performPasswordReseting(login);
     }
 
