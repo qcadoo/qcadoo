@@ -103,7 +103,7 @@
 
             <form id="passwordResetForm" name="passwordResetForm" method="POST">
             <img class="logo mb-4" src="${logoPath}" alt="Logo"/>
-            <h1 class="h3 mb-3 font-weight-normal">${translation["security.form.header.passwordReset"]}</h1><br/>
+            <h1 class="h3 mb-4 font-weight-normal">${translation["security.form.header.passwordReset"]}</h1>
 
             <div class="input-group">
                 <label for="usernameInput" class="sr-only">${translation["security.form.label.login"]}</label>
