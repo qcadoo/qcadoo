@@ -37,44 +37,26 @@
 
 	<title>${applicationDisplayName} :: forgot password</title>
 
-	<c:choose>
-        <c:when test="${useCompressedStaticResources}">
-            <link rel="stylesheet"
-                href="${pageContext.request.contextPath}/qcadooView/public/qcadoo-min.css?ver=${buildNumber}"
-                type="text/css"/>
+    <link rel="stylesheet"
+        href="${pageContext.request.contextPath}/qcadooView/public/css/core/lib/bootstrap.min.css?ver=${buildNumber}"
+        type="text/css"/>
+    <link rel="stylesheet"
+        href="${pageContext.request.contextPath}/qcadooView/public/css/core/lib/languages.min.css?ver=${buildNumber}"
+        type="text/css"/>
+    <link rel="stylesheet"
+        href="${pageContext.request.contextPath}/qcadooView/public/css/core/passwordReset-min.css?ver=${buildNumber}"
+        type="text/css"/>
 
-            <script type="text/javascript"
-                src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/jquery-3.2.1.min.js?ver=${buildNumber}"></script>
-            <script type="text/javascript"
-                src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/popper.min.js?ver=${buildNumber}"></script>
-            <script type="text/javascript"
-                src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/bootstrap.min.js?ver=${buildNumber}"></script>
-            <script type="text/javascript"
-                src="${pageContext.request.contextPath}/qcadooView/public/qcadoo-min.js?ver=${buildNumber}"></script>
-        </c:when>
-        <c:otherwise>
-            <link rel="stylesheet"
-                href="${pageContext.request.contextPath}/qcadooView/public/css/core/lib/bootstrap.min.css?ver=${buildNumber}"
-                type="text/css"/>
-            <link rel="stylesheet"
-                href="${pageContext.request.contextPath}/qcadooView/public/css/core/lib/languages.min.css?ver=${buildNumber}"
-                type="text/css"/>
-            <link rel="stylesheet"
-                href="${pageContext.request.contextPath}/qcadooView/public/css/core/passwordReset.css?ver=${buildNumber}"
-                type="text/css"/>
-
-            <script type="text/javascript"
-                src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/jquery-3.2.1.min.js?ver=${buildNumber}"></script>
-            <script type="text/javascript"
-                src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/popper.min.js?ver=${buildNumber}"></script>
-            <script type="text/javascript"
-                src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/bootstrap.min.js?ver=${buildNumber}"></script>
-            <script type="text/javascript"
-                src="${pageContext.request.contextPath}/qcadooView/public/js/core/qcd/utils/serializator.js?ver=${buildNumber}"></script>
-            <script type="text/javascript"
-                src="${pageContext.request.contextPath}/qcadooView/public/js/core/passwordReset.js?ver=${buildNumber}"></script>
-        </c:otherwise>
-    </c:choose>
+    <script type="text/javascript"
+        src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/jquery-3.2.1.min.js?ver=${buildNumber}"></script>
+    <script type="text/javascript"
+        src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/popper.min.js?ver=${buildNumber}"></script>
+    <script type="text/javascript"
+        src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/bootstrap.min.js?ver=${buildNumber}"></script>
+    <script type="text/javascript"
+        src="${pageContext.request.contextPath}/qcadooView/public/js/core/qcd/utils/serializator.js?ver=${buildNumber}"></script>
+    <script type="text/javascript"
+        src="${pageContext.request.contextPath}/qcadooView/public/js/core/passwordReset-min.js?ver=${buildNumber}"></script>
 </head>
 
 <body class="text-center" role="document">

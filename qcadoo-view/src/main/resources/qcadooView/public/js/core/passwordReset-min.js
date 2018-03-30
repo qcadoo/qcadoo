@@ -164,6 +164,7 @@ QCD.passwordReset = (function () {
                     case "loginIsBlank":
                         usernameInput.addClass('is-invalid');
 
+                        lockForm(false);
                     break;
 
                     case "userNotFound":
@@ -171,32 +172,33 @@ QCD.passwordReset = (function () {
 
                         usernameInput.addClass('is-invalid');
 
+                        lockForm(false);
                     break;
 
                     case "invalidMailAddress":
                         showMessagePanel("alert-danger", errorHeaderText, invalidMailAddressText);
 
+                        lockForm(false);
                     break;
 
                     case "invalidMailConfig":
                         showMessagePanel("alert-danger", errorHeaderText, invalidConfigContentText);
 
+                        lockForm(false);
                     break;
 
                     default:
                         showMessagePanel("alert-danger", errorHeaderText, errorContentText);
 
+                        lockForm(false);
                     break;
                 }
-
-                lockForm(false);
             },
             error: function(xhr, textStatus, errorThrown){
                 showMessagePanel("alert-danger", errorHeaderText, errorMessage);
 
                 lockForm(false);
             }
-
         });
     }
 

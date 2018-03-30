@@ -211,39 +211,43 @@ QCD.login = (function () {
             success: function (response) {
                 response = $.trim(response);
 
-                if (response == "loginSuccessfull") {
-                    if (isPopup == true) {
-                        window.location = targetUrl;
-                    } else if (window.parent.onLoginSuccess) {
-                        window.parent.onLoginSuccess();
-                    } else {
-                        if (isMobile()) {
-                            window.location = "terminal.html";
+                switch(response) {
+                    case "loginSuccessfull":
+                        if (isPopup == true) {
+                            window.location = targetUrl;
+                        } else if (window.parent.onLoginSuccess) {
+                            window.parent.onLoginSuccess();
                         } else {
-                            window.location = "main.html";
+                            if (isMobile()) {
+                                window.location = "terminal.html";
+                            } else {
+                                window.location = "main.html";
+                            }
                         }
-                    }
-                } else {
-                    switch(response) {
-                        case "loginUnsuccessfull:login":
-                            hideMessagePanel();
+                    break;
 
-                            usernameInput.addClass('is-invalid');
-                        break;
+                    case "loginUnsuccessfull:login":
+                        hideMessagePanel();
 
-                        case "loginUnsuccessfull:password":
-                            hideMessagePanel();
+                        usernameInput.addClass('is-invalid');
 
-                            passwordInput.addClass('is-invalid');
-                        break;
+                        lockForm(false);
+                    break;
 
-                        default:
-                            showMessagePanel("alert-danger", errorHeaderText, errorContentText);
-                        break;
-                    }
+                    case "loginUnsuccessfull:password":
+                        hideMessagePanel();
+
+                        passwordInput.addClass('is-invalid');
+
+                        lockForm(false);
+                    break;
+
+                    default:
+                        showMessagePanel("alert-danger", errorHeaderText, errorContentText);
+
+                        lockForm(false);
+                    break;
                 }
-
-                lockForm(false);
             },
             error: function (xhr, textStatus, errorThrown) {
                 showMessageBox("alert-danger", errorHeaderText, errorContentText);
