@@ -111,10 +111,7 @@
                 </label>
             </div>
 
-            <div class="btn-group" role="group">
-                <button type="button" class="btn btn-lg btn-success" id="changeUserButton"><span>${translation['security.form.button.changeUser']}</button>
-                <button type="button" class="btn btn-lg btn-primary" id="loginButton"><span>${translation['security.form.button.logIn']}</button>
-            </div>
+            <button type="button" class="btn btn-lg btn-primary btn-block" id="loginButton"><span>${translation['security.form.button.logIn']}</button>
 
             <p class="mt-3 mb-3">
                 <a href="#" id="forgotPasswordLink">${translation['security.form.link.forgotPassword']}</a>

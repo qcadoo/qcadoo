@@ -31,7 +31,6 @@ QCD.login = (function () {
     var usernameInput;
     var passwordInput;
 
-    var changeUserButton;
     var loginButton;
 
     var forgotPasswordLink;
@@ -60,12 +59,10 @@ QCD.login = (function () {
         usernameInput = $("#usernameInput");
         passwordInput = $("#passwordInput");
 
-        changeUserButton = $("#changeUserButton");
         loginButton = $("#loginButton");
 
         forgotPasswordLink = $("#forgotPasswordLink");
 
-        changeUserButton.click(onChangeUserClick);
         loginButton.click(onLoginClick);
 
         forgotPasswordLink.click(onForgotPasswordClick);
@@ -87,12 +84,8 @@ QCD.login = (function () {
             usernameInput.prop("disabled", true);
 
             passwordInput.focus();
-
-            changeUserButton.prop("disabled", false);
         } else {
             usernameInput.focus();
-
-            changeUserButton.prop("disabled", true);
         }
 
         usernameInput.keypress(onUsernameInputKeyPress);
@@ -266,9 +259,6 @@ QCD.login = (function () {
         }
 
         loginButton.prop("disabled", disabled);
-    }
-
-    function onChangeUserClick() {
     }
 
     function onForgotPasswordClick() {
