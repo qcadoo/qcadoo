@@ -21,18 +21,45 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * ***************************************************************************
  */
-package com.qcadoo.localization.internal;
+html, body {
+    margin: 0;
+    padding: 0;
 
-import com.qcadoo.localization.api.TranslationService;
+    height: 100%;
 
-/**
- * Service for getting translations.
- */
-public interface InternalTranslationService extends TranslationService {
+    background-color: #f5f5f5;
+}
 
-    void prepareMessagesGroup(String group, String prefix);
+body {
+    display: -ms-flexbox;
+    display: -webkit-box;
+    display: flex;
+    -ms-flex-align: center;
+    -ms-flex-pack: center;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+    padding-top: 40px;
+    padding-bottom: 40px;
+}
 
-    void addLocaleToList(String locale, String label);
+.container {
+    width: 100%;
+    padding: 15px;
+}
 
-    void removeLocaleToList(String locale);
+.dropdown-menu {
+    padding: 5px 5px;
+}
+
+.logo {
+    width: 75px;
+    height: 100px;
+}
+
+.form-info {
+    width: 100%;
+    max-width: 640px;
+    margin: 0 auto;
 }

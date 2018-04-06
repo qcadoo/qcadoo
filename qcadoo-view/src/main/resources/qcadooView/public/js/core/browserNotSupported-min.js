@@ -1,4 +1,4 @@
-/**
+/*
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
@@ -21,18 +21,22 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * ***************************************************************************
  */
-package com.qcadoo.localization.internal;
+var QCD = QCD || {};
 
-import com.qcadoo.localization.api.TranslationService;
+QCD.browserNotSupported = (function () {
+    function init() {
+        $(".dropdown-menu li span").each(function (i, li) {
+            $(li).click(function () {
+                changeLanguage(this.lang);
+            });
+        });
+    }
 
-/**
- * Service for getting translations.
- */
-public interface InternalTranslationService extends TranslationService {
+    function changeLanguage(language) {
+        window.location = "browserNotSupported.html?lang=" + language;
+    }
 
-    void prepareMessagesGroup(String group, String prefix);
-
-    void addLocaleToList(String locale, String label);
-
-    void removeLocaleToList(String locale);
-}
+    return {
+        init: init
+    };
+})();

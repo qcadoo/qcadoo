@@ -25,129 +25,91 @@
 --%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 
 <html>
+
 <head>
-	
-	<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/_jquery-1.4.2.min.js?ver=${buildNumber}"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-	<link rel="shortcut icon" href="/qcadooView/public/img/core/icons/favicon.png">
-	
+    <link rel="shortcut icon" href="/qcadooView/public/img/core/icons/favicon.png">
+
 	<title>${applicationDisplayName}</title>
-	
-	<style type="text/css">
-	
-	</style>
-		
-	<script type="text/javascript">
 
-		jQuery(document).ready(function(){
-			$("#languageSelect").val("${currentLanguage}");
-		});
-	
-		changeLanguage = function(language) {
-			window.location = "browserNotSupported.html?lang="+language;
-		}
-		
-	</script>
-	
-	<style type="text/css">
-		body {
-			background-color: white;
-			font-family:"Lucida Grande",Arial, Helvetica, sans-serif;
-			margin: 0;
-			padding: 0;
-		}
-		#header {
-			padding: 5px 10px;
-			background-color: #ebebeb;
-			border-bottom: solid #a7a7a7 1px;
-		}
-		#header #headerText {
-			display: inline-block;
-		}
-		#header #languageSelect {
-			float: right;
-		}
-		#content {
-			padding: 20px;
-		}
-		#content #browswersList {
-			border-top: solid #a7a7a7 1px;
-			margin-top: 20px;
-			padding-top: 20px;
-		}
-		#content #browswersList ul {
-			margin-top: 10px;
-		}
-		#content #browswersList ul li {
-			margin-top: 7px;
-		}
-		#content #browswersList ul li a,
-		#content #browswersList ul li a:link,
-		#content #browswersList ul li a:visited {
-			color: #005EC5;
-			text-decoration: none;
-		}
-		#content #browswersList ul li a:hover {
-			text-decoration: underline;
-		}
-		#content #browswersList ul li a:active {
-			color: red;
-		}
-		#content #browswersList ul li .fromVersionText {
-			color: #777777;
-		}
-		#content #browswersList ul li .fromVersionNumber {
-			color: black;
-		}
-	</style>
-	<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/custom.css?ver=${buildNumber}" type="text/css" />
-	
+    <link rel="stylesheet"
+        href="${pageContext.request.contextPath}/qcadooView/public/css/core/lib/bootstrap.min.css?ver=${buildNumber}"
+        type="text/css"/>
+    <link rel="stylesheet"
+        href="${pageContext.request.contextPath}/qcadooView/public/css/core/lib/languages.min.css?ver=${buildNumber}"
+        type="text/css"/>
+    <link rel="stylesheet"
+        href="${pageContext.request.contextPath}/qcadooView/public/css/core/browserNotSupported-min.css?ver=${buildNumber}"
+        type="text/css"/>
+
+    <script type="text/javascript"
+        src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/jquery-3.2.1.min.js?ver=${buildNumber}"></script>
+    <script type="text/javascript"
+        src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/popper.min.js?ver=${buildNumber}"></script>
+    <script type="text/javascript"
+        src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/bootstrap.min.js?ver=${buildNumber}"></script>
+    <script type="text/javascript"
+        src="${pageContext.request.contextPath}/qcadooView/public/js/core/browserNotSupported-min.js?ver=${buildNumber}"></script>
 </head>
-<body >
-	<div id="header">
-		<span id="headerText">
-			${translation["qcadooView.browserNotSupported.header"]}
-		</span>
- 		<select id="languageSelect" onchange="changeLanguage(this.value)">
- 			<c:forEach items="${locales}" var="localesEntry">
- 				<option value="${localesEntry.key}">${localesEntry.value}</option>
- 			</c:forEach>
- 		</select>
- 	</div>
-				 	
-	<div id="content">
-	
-		<div>
-			${translation["qcadooView.browserNotSupported.content"]}
+
+<body class="text-center" role="document">
+    <div class="container" role="main">
+	    <div class="form-info">
+            <c:if test="${! iframe && ! popup}">
+                <div class="text-right">
+                    <div class="btn-group dropup">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                            <span class="lang-sm" lang="${currentLanguage}"></span> <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                            <c:forEach items="${locales}" var="localesEntry">
+                                <li><span class="lang-sm lang-lbl" lang="${localesEntry.key}"></span></li>
+                            </c:forEach>
+                        </ul>
+                    </div>
+                </div>
+                <div class="mt-3"></div>
+            </c:if>
+
+            <img class="logo mb-4" src="/qcadooView/public/css/core/images/login/new/qcadoo-logo.png" alt="Logo"/>
+
+            <div class="card">
+                <h5 class="card-header bg-secondary text-white">${translation["qcadooView.browserNotSupported.content"]}</h5>
+                <div class="card-body">
+                    <h5 class="card-title">${translation["qcadooView.browserNotSupported.listHeader"]}</h5>
+                    <ul class="card-text text-dark text-left">
+                        <li>
+                            <a href="http://www.google.com/chrome" target="_blank">Chrome</a>
+                        </li>
+                        <li>
+                            <a href="http://www.firefox.com" target="_blank">Firefox</a>
+                            <span class="fromVersionText">${translation["qcadooView.browserNotSupported.listFromVersion"]}</span>
+                            <span class="fromVersionNumber">3.0</span>
+                        </li>
+                        <li>
+                            <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home" target="_blank">Internet Explorer</a>
+                            <span class="fromVersionText">${translation["qcadooView.browserNotSupported.listFromVersion"]}</span>
+                            <span class="fromVersionNumber">8</span>
+                        </li>
+                        <li>
+                            <a href="http://www.apple.com/safari/" target="_blank">Safari</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
 		</div>
-		
-		<div id="browswersList">
-			<div>
-				${translation["qcadooView.browserNotSupported.listHeader"]}
-			</div>
-			<ul>
-				<li>
-					<a href="http://www.google.com/chrome" target="_blank">Chrome</a>
-				</li>
-				<li>
-					<a href="http://www.firefox.com" target="_blank">Firefox</a>
-					<span class="fromVersionText">${translation["qcadooView.browserNotSupported.listFromVersion"]}</span>
-					<span class="fromVersionNumber">3.0</span>
-				</li>
-				<li>
-					<a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home" target="_blank">Internet Explorer</a>
-					<span class="fromVersionText">${translation["qcadooView.browserNotSupported.listFromVersion"]}</span>
-					<span class="fromVersionNumber">8</span>
-				</li>
-				<li>
-					<a href="http://www.apple.com/safari/" target="_blank">Safari</a>
-				</li>
-			</ul>
-		</div>
-	</div>
-	
+    </div>
+
+	<script type="text/javascript" charset="utf-8">
+        jQuery(document).ready(function() {
+            QCD.browserNotSupported.init();
+        });
+    </script>
 </body>
+
 </html>
