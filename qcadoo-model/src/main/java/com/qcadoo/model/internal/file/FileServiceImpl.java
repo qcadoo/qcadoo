@@ -40,7 +40,6 @@ import java.util.zip.ZipOutputStream;
 
 import javax.activation.MimetypesFileTypeMap;
 
-import com.google.common.base.Preconditions;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -52,6 +51,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.google.common.base.Preconditions;
 import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.localization.api.utils.DateUtils;
 import com.qcadoo.model.api.Entity;
@@ -61,19 +61,27 @@ import com.qcadoo.tenant.api.MultiTenantUtil;
 @Service
 public class FileServiceImpl implements FileService {
 
-    @Autowired
-    private TranslationService translationService;
-
     private static final Logger LOG = LoggerFactory.getLogger(FileServiceImpl.class);
+
+    private static final String L_FILE_URL_PREFIX = "/files/";
 
     private static FileService instance;
 
-    private static final String L_FILE_URL_PREFIX = "/files/";
+    @Autowired
+    private TranslationService translationService;
 
     private File uploadDirectory;
 
     public FileServiceImpl() {
         FileServiceImpl.setInstance(this);
+    }
+
+    public static FileService getInstance() {
+        return instance;
+    }
+
+    private static void setInstance(final FileService instance) {
+        FileServiceImpl.instance = instance;
     }
 
     @Value("${reportPath}")
@@ -86,6 +94,7 @@ public class FileServiceImpl implements FileService {
         if (!StringUtils.hasText(path)) {
             return null;
         }
+
         return path.substring(path.lastIndexOf(File.separatorChar) + 1);
     }
 
@@ -94,8 +103,10 @@ public class FileServiceImpl implements FileService {
         if (!StringUtils.hasText(path)) {
             return null;
         }
-        Date date = new Date(Long.valueOf(path.substring(path.lastIndexOf(File.separatorChar) + 1,
-                path.lastIndexOf(File.separatorChar) + 14)));
+
+        Date date = new Date(Long
+                .valueOf(path.substring(path.lastIndexOf(File.separatorChar) + 1, path.lastIndexOf(File.separatorChar) + 14)));
+
         return new SimpleDateFormat(DateUtils.L_DATE_FORMAT, getLocale()).format(date);
     }
 
@@ -104,7 +115,14 @@ public class FileServiceImpl implements FileService {
         if (!StringUtils.hasText(path)) {
             return null;
         }
-        return L_FILE_URL_PREFIX + normalizeSeparators(path.substring(uploadDirectory.getAbsolutePath().length() + 1));
+
+        int beginIndex = uploadDirectory.getAbsolutePath().length() + 1;
+
+        if (beginIndex > path.length()) {
+            return null;
+        }
+
+        return L_FILE_URL_PREFIX + normalizeSeparators(path.substring(beginIndex));
     }
 
     private String normalizeSeparators(final String string) {
@@ -126,6 +144,7 @@ public class FileServiceImpl implements FileService {
     @Override
     public String getPathFromUrl(final String url) {
         String denormalizedUrl = denormalizeSeparators(url);
+
         return uploadDirectory.getAbsolutePath() + File.separator
                 + denormalizedUrl.substring(denormalizedUrl.indexOf(File.separatorChar) + L_FILE_URL_PREFIX.length() - 1);
     }
@@ -135,6 +154,7 @@ public class FileServiceImpl implements FileService {
         if (!StringUtils.hasText(path)) {
             return null;
         }
+
         try {
             return new FileInputStream(new File(path));
         } catch (FileNotFoundException e) {
@@ -150,10 +170,13 @@ public class FileServiceImpl implements FileService {
 
         try {
             output = new FileOutputStream(file);
+
             IOUtils.copy(multipartFile.getInputStream(), output);
         } catch (IOException e) {
             LOG.error(e.getMessage(), e);
+
             IOUtils.closeQuietly(output);
+
             throw e;
         }
 
@@ -172,20 +195,26 @@ public class FileServiceImpl implements FileService {
 
     private File getFileFromFilename(final String filename) throws IOException {
         File directory = new File(uploadDirectory, MultiTenantUtil.getCurrentTenantId() + File.separator);
+
         try {
             FileUtils.forceMkdir(directory);
         } catch (IOException e) {
             LOG.error(e.getMessage(), e);
+
             throw e;
         }
+
         return new File(directory, getNormalizedFileName(filename.substring(filename.lastIndexOf(File.separator) + 1)));
     }
 
     private File getFileFromFilenameWithRandomDirectory(final String filename) {
         String date = Long.toString(System.currentTimeMillis());
+
         File directory = new File(uploadDirectory, MultiTenantUtil.getCurrentTenantId() + File.separator
                 + date.charAt(date.length() - 1) + File.separator + date.charAt(date.length() - 2) + File.separator);
+
         directory.mkdirs();
+
         return new File(directory, date + "_" + getNormalizedFileName(filename));
     }
 
@@ -196,6 +225,7 @@ public class FileServiceImpl implements FileService {
     @Override
     public Entity updateReportFileName(final Entity entity, final String dateFieldName, final String name) {
         String currentFiles = entity.getStringField("fileName");
+
         if (currentFiles == null) {
             currentFiles = "";
         }
@@ -215,8 +245,10 @@ public class FileServiceImpl implements FileService {
         Preconditions.checkArgument(!documents.isEmpty(), "documents list can't be empty");
 
         File zipFile = createExportFile("documents.zip");
+
         FileOutputStream fos = new FileOutputStream(zipFile);
         ZipOutputStream zos = new ZipOutputStream(fos);
+
         try {
 
             for (File document : documents) {
@@ -224,10 +256,13 @@ public class FileServiceImpl implements FileService {
                 zos.putNextEntry(ze);
 
                 FileInputStream in = new FileInputStream(document);
+
                 IOUtils.copy(in, zos);
                 IOUtils.closeQuietly(in);
+
                 zos.closeEntry();
-                if(removeCompressed) {
+
+                if (removeCompressed) {
                     remove(document.getAbsolutePath());
                 }
             }
@@ -235,11 +270,13 @@ public class FileServiceImpl implements FileService {
         } finally {
             IOUtils.closeQuietly(zos);
         }
+
         return zipFile;
     }
 
     private String getReportFullPath(final String name, final Date date) {
         String translatedReportName = translationService.translate(name, LocaleContextHolder.getLocale());
+
         return getReportPath() + translatedReportName + "_"
                 + new SimpleDateFormat(DateUtils.L_REPORT_DATE_TIME_FORMAT, getLocale()).format(date);
     }
@@ -256,14 +293,6 @@ public class FileServiceImpl implements FileService {
     @Override
     public void remove(final String path) {
         FileUtils.deleteQuietly(new File(path));
-    }
-
-    public static FileService getInstance() {
-        return instance;
-    }
-
-    private static void setInstance(final FileService instance) {
-        FileServiceImpl.instance = instance;
     }
 
 }
