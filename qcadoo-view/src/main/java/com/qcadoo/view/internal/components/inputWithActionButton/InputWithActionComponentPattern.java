@@ -17,6 +17,8 @@ public class InputWithActionComponentPattern extends FieldComponentPattern {
 
     private boolean enabled = true;
 
+    private String alignment;
+
     public InputWithActionComponentPattern(final ComponentDefinition componentDefinition) {
         super(componentDefinition);
     }
@@ -27,6 +29,8 @@ public class InputWithActionComponentPattern extends FieldComponentPattern {
         for (ComponentOption option : getOptions()) {
             if ("enabled".equals(option.getType())) {
                 enabled = Boolean.parseBoolean(option.getValue());
+            } else if ("alignment".equals(option.getType())) {
+                alignment = option.getValue();
             }
         }
     }
@@ -40,6 +44,7 @@ public class InputWithActionComponentPattern extends FieldComponentPattern {
     protected JSONObject getJsOptions(final Locale locale) throws JSONException {
         JSONObject json = super.getJsOptions(locale);
         json.put("enabled", enabled);
+        json.put("alignment", alignment);
         return json;
     }
 
@@ -58,6 +63,7 @@ public class InputWithActionComponentPattern extends FieldComponentPattern {
         return JS_OBJECT;
     }
 
-
-
+    public boolean isEnabled() {
+        return enabled;
+    }
 }
