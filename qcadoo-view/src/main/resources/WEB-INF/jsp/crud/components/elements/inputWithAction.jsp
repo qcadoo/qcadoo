@@ -42,6 +42,9 @@
     		</c:if>
     	</tiles:putAttribute>
 	<tiles:putAttribute name="componentBody">
+		<c:if test="${component['jspOptions']['alignment']=='right'}">
+    			<c:set var="alignment" value="text-align: right;" />
+    		</c:if>
 		<c:if test="${component['jspOptions']['textRepresentationOnDisabled']}">
 			<c:set var="displayHiddenIfTextRepresentationOnDisabled" value="display: none" />
 		</c:if>
@@ -50,7 +53,7 @@
 		</c:if>
 		<div class="lookupValueWrapper" style="${displayHiddenIfTextRepresentationOnDisabled}">
 			<div class="lookupInputWrapper">
-        		<input type="text" id="${component['path']}_input" tabindex="${component['indexOrder']}"/>
+        		<input type="text" id="${component['path']}_input"  style="${alignment}" tabindex="${component['indexOrder']}"/>
         	</div>
         	<div class="actionButton" id="${component['path']}_actionButton"></div>
 
