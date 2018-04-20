@@ -42,6 +42,7 @@ QCD.components.elements.InputWithAction = function (_element, _mainController) {
     var options = this.options;
 
     var enabled = this.options.enabled;
+    var alignment = this.options.alignment;
 
 	var elements = {
 		input : this.input,
@@ -51,12 +52,18 @@ QCD.components.elements.InputWithAction = function (_element, _mainController) {
 	};
 
     function constructor(_this) {
-    console.log(options);
     	elements.actionButton.click(preformActionOnClick);
 
         input.change(function () {
             inputDataChanged();
         });
+
+        var style = "";
+        if(alignment=='right') {
+            style = "text-align: right;"
+            elements.input.attr('style', style);
+        }
+
     }
 
     function preformActionOnClick() {
@@ -91,30 +98,37 @@ QCD.components.elements.InputWithAction = function (_element, _mainController) {
             this.input.val("");
             textRepresentation.html("-");
         }
-    }
-
-    this.setFormComponentEnabled = function (isEnabled) {
-        if (this.options.textRepresentationOnDisabled) {
-            if (isEnabled) {
-                input.show();
-                textRepresentation.hide();
-            } else {
-                input.hide();
-                textRepresentation.show();
-            }
+         var style = "";
+         if(alignment=='right') {
+            style = "text-align: right;";
+         }
+        if(data.enabled) {
+            input.removeAttr("readonly");
+            input.removeAttr("disabled");
+            style = style;
+            elements.input.attr('style', style);
+        } else {
+            input.attr("readonly", "readonly");
+            input.attr("disabled", "disabled");
+            style = style + 'color: #959595; background-color: #f5f5f5;';
+            elements.input.attr('style', style);
         }
     }
-
     this.updateSize = function(_width, _height) {
 		var height = _height ? _height - 10 : 40;
 		this.input.parent().parent().parent().parent().parent().height(height);
 	}
 
     this.setFormComponentEnabled = function(isEnabled) {
+        var style = "";
+        if(alignment=='right') {
+            style = "text-align: right;"
+        }
         if(!enabled) {
             input.attr("readonly", "readonly");
             input.attr("disabled", "disabled");
-            elements.input.attr('style', 'color: #959595; background-color: #f5f5f5;');
+            style = style + 'color: #959595; background-color: #f5f5f5;'
+            elements.input.attr('style', style);
         }
 
 		if (isEnabled) {
