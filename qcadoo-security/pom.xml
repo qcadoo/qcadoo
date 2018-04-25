@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>com.qcadoo</groupId>
 		<artifactId>qcadoo</artifactId>
-		<version>1.5-SNAPSHOT-DEV</version>
+		<version>1.5-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>qcadoo-security</artifactId>
@@ -17,19 +17,19 @@
 		<dependency>
 			<groupId>com.qcadoo</groupId>
 			<artifactId>qcadoo-model</artifactId>
-			<version>1.5-SNAPSHOT-DEV</version>
+			<version>1.5-SNAPSHOT</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>com.qcadoo</groupId>
 			<artifactId>qcadoo-mail</artifactId>
-			<version>1.5-SNAPSHOT-DEV</version>
+			<version>1.5-SNAPSHOT</version>
 		</dependency>
 
         <dependency>
             <groupId>com.qcadoo</groupId>
             <artifactId>qcadoo-testing</artifactId>
-            <version>1.5-SNAPSHOT-DEV</version>
+            <version>1.5-SNAPSHOT</version>
         </dependency>
 	</dependencies>
 
