@@ -77,6 +77,10 @@ QCD.components.Component = function (element, mainController) {
         this.setVisible(value.visible);
         this.setMessages(value.messages);
 
+        if(typeof value.inputEnabled !== 'undefined' && value.inputEnabled !== null) {
+            this.enableInput(value.inputEnabled);
+        }
+
         if (value.components) {
             this.setComponentsValue(value);
         }
@@ -263,6 +267,10 @@ QCD.components.Component = function (element, mainController) {
     this.isPersistent = function () {
         return this.options.persistent;
     };
+
+    this.enableInput = function (enable) {
+
+    }
 
     function constructor(that) {
         var optionsElement = element.children(".element_options");

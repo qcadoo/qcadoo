@@ -759,3 +759,7 @@
 	padding-left: 10px;
 	padding-top: 10px;
 }
+
+.actionButton {
+	border-left: solid #ccc 1px;
+}
