@@ -102,9 +102,9 @@ public final class PossibleUnitConversionsImpl implements InternalPossibleUnitCo
         BigDecimal convertedValue = quantityFrom.multiply(ratio);
         boolean unitIsInteger = targetUnitToIsInteger.computeIfAbsent(unitTo, dictionaryService::checkIfUnitIsInteger);
         if (unitIsInteger) {
-            return numberService.setScale(numberService.setScale(convertedValue, 0));
+            return numberService.setScaleWithDefaultMathContext(numberService.setScaleWithDefaultMathContext(convertedValue, 0));
         } else {
-            return numberService.setScale(convertedValue);
+            return numberService.setScaleWithDefaultMathContext(convertedValue);
         }
     }
 
@@ -117,7 +117,7 @@ public final class PossibleUnitConversionsImpl implements InternalPossibleUnitCo
         BigDecimal convertedValue = quantityFrom.multiply(ratio);
         boolean unitIsInteger = targetUnitToIsInteger.computeIfAbsent(unitTo, dictionaryService::checkIfUnitIsInteger);
         if (unitIsInteger) {
-            return numberService.setScale(numberService.setScale(convertedValue, 0));
+            return numberService.setScaleWithDefaultMathContext(numberService.setScaleWithDefaultMathContext(convertedValue, 0));
         } else {
             return convertedValue.setScale(NumberService.DEFAULT_MAX_FRACTION_DIGITS_IN_DECIMAL, roundMode);
         }
@@ -149,7 +149,7 @@ public final class PossibleUnitConversionsImpl implements InternalPossibleUnitCo
         final Entity unitConversionItem = unitConversionItemDD.create();
         unitConversionItem.setField(UnitConversionItemFields.UNIT_FROM, unitFrom);
         unitConversionItem.setField(UnitConversionItemFields.UNIT_TO, unitTo);
-        unitConversionItem.setField(UnitConversionItemFields.QUANTITY_FROM, numberService.setScale(BigDecimal.ONE));
+        unitConversionItem.setField(UnitConversionItemFields.QUANTITY_FROM, numberService.setScaleWithDefaultMathContext(BigDecimal.ONE));
         unitConversionItem.setField(UnitConversionItemFields.QUANTITY_TO,
                 calculateQuantityTo(unitFrom, unitTo, ratio, ownerEntity));
         return unitConversionItem;
@@ -157,6 +157,6 @@ public final class PossibleUnitConversionsImpl implements InternalPossibleUnitCo
 
     private BigDecimal calculateQuantityTo(final String unitFrom, final String unitTo, final BigDecimal ratio,
             final Entity ownerEntity) {
-        return numberService.setScale(BigDecimal.ONE.multiply(ratio));
+        return numberService.setScaleWithDefaultMathContext(BigDecimal.ONE.multiply(ratio));
     }
 }

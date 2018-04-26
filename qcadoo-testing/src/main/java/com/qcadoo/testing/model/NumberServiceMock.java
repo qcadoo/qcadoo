@@ -63,19 +63,19 @@ public final class NumberServiceMock {
         }
 
         @Override
-        public BigDecimal setScale(final BigDecimal decimal) {
+        public BigDecimal setScaleWithDefaultMathContext(final BigDecimal decimal) {
             if (ignoreScale) {
                 return decimal;
             }
-            return numberService.setScale(decimal);
+            return numberService.setScaleWithDefaultMathContext(decimal);
         }
 
         @Override
-        public BigDecimal setScale(final BigDecimal decimal, final int newScale) {
+        public BigDecimal setScaleWithDefaultMathContext(final BigDecimal decimal, final int newScale) {
             if (ignoreScale) {
                 return decimal;
             }
-            return numberService.setScale(decimal, newScale);
+            return numberService.setScaleWithDefaultMathContext(decimal, newScale);
         }
 
         @Override
