@@ -23,6 +23,17 @@
  */
 package com.qcadoo.view.internal.components.awesomeDynamicList;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.google.common.collect.Lists;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.view.api.components.AwesomeDynamicListComponent;
@@ -34,17 +45,10 @@ import com.qcadoo.view.internal.components.FieldComponentState;
 import com.qcadoo.view.internal.components.form.FormComponentPattern;
 import com.qcadoo.view.internal.components.form.FormComponentState;
 import com.qcadoo.view.internal.internal.ViewDefinitionStateImpl;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.*;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 public class AwesomeDynamicListState extends FieldComponentState implements AwesomeDynamicListComponent, ContainerState {
 
-    public static final String JSON_FORM_VALUES = "forms";
+    private static final String JSON_FORM_VALUES = "forms";
 
     private final AwesomeDynamicListModelUtils awesomeDynamicListModelUtils;
 
@@ -52,7 +56,7 @@ public class AwesomeDynamicListState extends FieldComponentState implements Awes
 
     private List<FormComponentState> forms;
 
-    public AwesomeDynamicListState(final AwesomeDynamicListPattern pattern, final FormComponentPattern innerFormPattern) {
+    AwesomeDynamicListState(final AwesomeDynamicListPattern pattern, final FormComponentPattern innerFormPattern) {
         super(pattern);
         this.innerFormPattern = innerFormPattern;
         this.awesomeDynamicListModelUtils = new AwesomeDynamicListModelUtilsImpl();
@@ -61,7 +65,7 @@ public class AwesomeDynamicListState extends FieldComponentState implements Awes
     @Override
     protected void initializeContent(final JSONObject json) throws JSONException {
         if (json.has(JSON_FORM_VALUES)) {
-            forms = new LinkedList<FormComponentState>();
+            forms = new LinkedList<>();
             JSONArray formValues = json.getJSONArray(JSON_FORM_VALUES);
             for (int i = 0; i < formValues.length(); i++) {
                 JSONObject value = formValues.getJSONObject(i);
@@ -81,8 +85,8 @@ public class AwesomeDynamicListState extends FieldComponentState implements Awes
     @Override
     public void setFieldValue(final Object value) {
         requestRender();
-        forms = new LinkedList<FormComponentState>();
-        if ((value != null) && (value instanceof List)) {
+        forms = new LinkedList<>();
+        if (value instanceof List) {
             List<Entity> entities = (List<Entity>) value;
             for (Entity entity : entities) {
                 InternalViewDefinitionState innerFormState = new ViewDefinitionStateImpl();
@@ -106,7 +110,7 @@ public class AwesomeDynamicListState extends FieldComponentState implements Awes
 
     @Override
     public List<Entity> getEntities() {
-        List<Entity> entities = new LinkedList<Entity>();
+        List<Entity> entities = new LinkedList<>();
         for (FormComponent form : forms) {
             Entity e = form.getEntity();
             awesomeDynamicListModelUtils.proxyBelongsToFields(e);
@@ -147,7 +151,7 @@ public class AwesomeDynamicListState extends FieldComponentState implements Awes
 
     @Override
     public Map<String, InternalComponentState> getChildren() {
-        Map<String, InternalComponentState> children = new HashMap<String, InternalComponentState>();
+        Map<String, InternalComponentState> children = new HashMap<>();
         for (FormComponentState form : forms) {
             children.put(form.getName(), form);
         }
@@ -181,9 +185,7 @@ public class AwesomeDynamicListState extends FieldComponentState implements Awes
     @Override
     public List<FormComponent> getFormComponents() {
         List<FormComponent> formComponents = Lists.newArrayList();
-        for (FormComponent form : forms) {
-            formComponents.add(form);
-        }
+        formComponents.addAll(forms);
         return formComponents;
     }
 

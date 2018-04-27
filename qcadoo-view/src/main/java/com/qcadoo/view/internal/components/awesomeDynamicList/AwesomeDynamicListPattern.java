@@ -59,7 +59,9 @@ public class AwesomeDynamicListPattern extends FieldComponentPattern {
 
     private boolean hasBorder = true;
 
-    private final Map<String, ComponentPattern> children = new LinkedHashMap<String, ComponentPattern>();
+    private boolean flipOrder = false;
+
+    private final Map<String, ComponentPattern> children = new LinkedHashMap<>();
 
     @Override
     public void unregisterComponent(InternalViewDefinitionService viewDefinitionService) {
@@ -96,6 +98,8 @@ public class AwesomeDynamicListPattern extends FieldComponentPattern {
                 hasButtons = Boolean.parseBoolean(option.getValue());
             } else if ("hasBorder".equals(option.getType())) {
                 hasBorder = Boolean.parseBoolean(option.getValue());
+            } else if ("flipOrder".equals(option.getType())) {
+                flipOrder = Boolean.parseBoolean(option.getValue());
             } else {
                 throw new IllegalStateException("Unknown option for AwesomeDynamicList: " + option.getType());
             }
@@ -153,12 +157,13 @@ public class AwesomeDynamicListPattern extends FieldComponentPattern {
         JSONObject json = new JSONObject();
         json.put("hasButtons", hasButtons);
         json.put("hasBorder", hasBorder);
+        json.put("flipOrder", flipOrder);
         return json;
     }
 
     @Override
     protected Map<String, Object> getJspOptions(final Locale locale) {
-        Map<String, Object> options = new HashMap<String, Object>();
+        Map<String, Object> options = new HashMap<>();
         options.put("innerForm", innerFormPattern.prepareView(locale));
         options.put("hasBorder", hasBorder);
         options.put("hasButtons", hasButtons);
