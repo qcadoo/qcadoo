@@ -59,7 +59,7 @@ QCD.components.elements.InputWithAction = function (_element, _mainController) {
         });
 
         var style = "";
-        if(alignment=='right') {
+        if (alignment == 'right') {
             style = "text-align: right;"
             elements.input.attr('style', style);
         }
@@ -92,10 +92,10 @@ QCD.components.elements.InputWithAction = function (_element, _mainController) {
 
     this.enableInput = function (enableInput) {
         var style = "";
-        if(alignment=='right') {
+        if (alignment == 'right') {
             style = "text-align: right;";
         }
-        if(enableInput) {
+        if (enableInput) {
             input.removeAttr("readonly");
             input.removeAttr("disabled");
             style = style;
@@ -116,11 +116,11 @@ QCD.components.elements.InputWithAction = function (_element, _mainController) {
             this.input.val("");
             textRepresentation.html("-");
         }
-         var style = "";
-         if(alignment=='right') {
+        var style = "";
+        if (alignment == 'right') {
             style = "text-align: right;";
-         }
-        if(data.inputEnabled) {
+        }
+        if (data.inputEnabled) {
             input.removeAttr("readonly");
             input.removeAttr("disabled");
             style = style;
@@ -140,10 +140,10 @@ QCD.components.elements.InputWithAction = function (_element, _mainController) {
 
     this.setFormComponentEnabled = function(isEnabled) {
         var style = "";
-        if(alignment=='right') {
+        if (alignment == 'right') {
             style = "text-align: right;"
         }
-        if(!enabled) {
+        if (!enabled) {
             input.attr("readonly", "readonly");
             input.attr("disabled", "disabled");
             style = style + 'color: #959595; background-color: #f5f5f5;'

@@ -14,21 +14,27 @@ public final class InputWithActionComponentState extends FieldComponentState imp
 
     public InputWithActionComponentState(InputWithActionComponentPattern pattern) {
         super(pattern);
+
         inputEnabled = pattern.isEnabled();
+
         registerEvent("onClick", eventPerformer, "onClick");
     }
 
     @Override
     protected JSONObject renderContent() throws JSONException {
         JSONObject json = super.renderContent();
+
         json.put("inputEnabled", inputEnabled);
+
         return json;
     }
 
     @Override
     public JSONObject render() throws JSONException {
         JSONObject json = super.render();
+
         json.put("inputEnabled", inputEnabled);
+
         return json;
     }
 
