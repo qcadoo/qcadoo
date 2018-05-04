@@ -59,7 +59,7 @@ QCD.components.elements.InputWithAction = function (_element, _mainController) {
         });
 
         var style = "";
-        if(alignment=='right') {
+        if (alignment == 'right') {
             style = "text-align: right;"
             elements.input.attr('style', style);
         }
@@ -90,6 +90,24 @@ QCD.components.elements.InputWithAction = function (_element, _mainController) {
         }
     }
 
+    this.enableInput = function (enableInput) {
+        var style = "";
+        if (alignment == 'right') {
+            style = "text-align: right;";
+        }
+        if (enableInput) {
+            input.removeAttr("readonly");
+            input.removeAttr("disabled");
+            style = style;
+            elements.input.attr('style', style);
+        } else {
+            input.attr("readonly", "readonly");
+            input.attr("disabled", "disabled");
+            style = style + 'color: #959595; background-color: #f5f5f5;';
+            elements.input.attr('style', style);
+        }
+     };
+
     this.setComponentData = function (data) {
         if (data.value) {
             this.input.val(data.value);
@@ -98,11 +116,11 @@ QCD.components.elements.InputWithAction = function (_element, _mainController) {
             this.input.val("");
             textRepresentation.html("-");
         }
-         var style = "";
-         if(alignment=='right') {
+        var style = "";
+        if (alignment == 'right') {
             style = "text-align: right;";
-         }
-        if(data.enabled) {
+        }
+        if (data.inputEnabled) {
             input.removeAttr("readonly");
             input.removeAttr("disabled");
             style = style;
@@ -114,6 +132,7 @@ QCD.components.elements.InputWithAction = function (_element, _mainController) {
             elements.input.attr('style', style);
         }
     }
+
     this.updateSize = function(_width, _height) {
 		var height = _height ? _height - 10 : 40;
 		this.input.parent().parent().parent().parent().parent().height(height);
@@ -121,10 +140,10 @@ QCD.components.elements.InputWithAction = function (_element, _mainController) {
 
     this.setFormComponentEnabled = function(isEnabled) {
         var style = "";
-        if(alignment=='right') {
+        if (alignment == 'right') {
             style = "text-align: right;"
         }
-        if(!enabled) {
+        if (!enabled) {
             input.attr("readonly", "readonly");
             input.attr("disabled", "disabled");
             style = style + 'color: #959595; background-color: #f5f5f5;'

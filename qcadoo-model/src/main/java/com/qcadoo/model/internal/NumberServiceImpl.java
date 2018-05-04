@@ -107,15 +107,15 @@ public final class NumberServiceImpl implements NumberService {
     }
 
     @Override
-    public BigDecimal setScale(final BigDecimal decimal) {
-        return setScale(decimal, MAX_PRECISION);
+    public BigDecimal setScaleWithDefaultMathContext(final BigDecimal decimal) {
+        return setScaleWithDefaultMathContext(decimal, MAX_PRECISION);
     }
 
     @Override
-    public BigDecimal setScale(final BigDecimal decimal, final int newScale) {
+    public BigDecimal setScaleWithDefaultMathContext(final BigDecimal decimal, final int newScale) {
         if (decimal == null) {
             if (LOG.isDebugEnabled()) {
-                LOG.debug("NumberService setScale - decimal is null!");
+                LOG.debug("NumberService setScaleWithDefaultMathContext - decimal is null!");
             }
             return null;
         }
