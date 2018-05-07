@@ -190,25 +190,18 @@ public class LookupComponentPattern extends FieldComponentPattern {
         GridComponentPattern grid = createGridComponentPattern(lookupViewDefinition, window);
 
         for (ComponentOption option : getOptions()) {
-            if ("expression".equals(option.getType())) {
-                continue;
-            } else if ("fieldCode".equals(option.getType())) {
-                continue;
-            } else if ("textRepresentationOnDisabled".equals(option.getType())) {
-                continue;
-            } else if ("labelWidth".equals(option.getType())) {
-                continue;
-            } else if ("orderable".equals(option.getType())) {
-                Map<String, String> newAttributes = new HashMap<String, String>();
+            if ("orderable".equals(option.getType())) {
+                Map<String, String> newAttributes = new HashMap<>();
                 newAttributes.put(L_VALUE, option.getValue() + ",lookupCode");
                 option = new ComponentOption("orderable", newAttributes);
                 grid.addOption(option);
             } else if ("searchable".equals(option.getType())) {
-                Map<String, String> newAttributes = new HashMap<String, String>();
+                Map<String, String> newAttributes = new HashMap<>();
                 newAttributes.put(L_VALUE, option.getValue() + ",lookupCode");
                 option = new ComponentOption("searchable", newAttributes);
                 grid.addOption(option);
-            } else {
+            } else if (!"expression".equals(option.getType()) && !"fieldCode".equals(option.getType())
+                    && !"textRepresentationOnDisabled".equals(option.getType()) && !"labelWidth".equals(option.getType())) {
                 grid.addOption(option);
             }
         }
@@ -315,7 +308,7 @@ public class LookupComponentPattern extends FieldComponentPattern {
     }
 
     private ComponentOption createLookupValueColumn() {
-        Map<String, String> valueColumnOptions = new HashMap<String, String>();
+        Map<String, String> valueColumnOptions = new HashMap<>();
         valueColumnOptions.put("name", "lookupValue");
         valueColumnOptions.put("expression", expression);
         valueColumnOptions.put("hidden", L_TRUE);
@@ -323,7 +316,7 @@ public class LookupComponentPattern extends FieldComponentPattern {
     }
 
     private ComponentOption createLookupCodeColumn() {
-        Map<String, String> codeVisibleColumnOptions = new HashMap<String, String>();
+        Map<String, String> codeVisibleColumnOptions = new HashMap<>();
         codeVisibleColumnOptions.put("name", L_LOOKUP_CODE);
         codeVisibleColumnOptions.put("fields", fieldCode);
         codeVisibleColumnOptions.put("hidden", "false");
@@ -381,7 +374,7 @@ public class LookupComponentPattern extends FieldComponentPattern {
         return getViewDefinition().getName() + "." + getFunctionalPath() + ".lookup";
     }
 
-    public boolean isOnlyActive() {
+    boolean isOnlyActive() {
         return onlyActive;
     }
 
