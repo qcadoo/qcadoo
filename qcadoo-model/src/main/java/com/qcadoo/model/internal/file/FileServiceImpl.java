@@ -104,8 +104,8 @@ public class FileServiceImpl implements FileService {
             return null;
         }
 
-        Date date = new Date(Long
-                .valueOf(path.substring(path.lastIndexOf(File.separatorChar) + 1, path.lastIndexOf(File.separatorChar) + 14)));
+        Date date = new Date(Long.valueOf(path.substring(path.lastIndexOf(File.separatorChar) + 1,
+                path.lastIndexOf(File.separatorChar) + 14)));
 
         return new SimpleDateFormat(DateUtils.L_DATE_FORMAT, getLocale()).format(date);
     }
@@ -240,6 +240,23 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
+    public Entity updateReportFileName(final Entity entity, final String dateFieldName, final String name, final String... args) {
+        String currentFiles = entity.getStringField("fileName");
+
+        if (currentFiles == null) {
+            currentFiles = "";
+        }
+
+        if (!currentFiles.isEmpty()) {
+            currentFiles += ",";
+        }
+
+        entity.setField("fileName", currentFiles + getReportFullPathWithArgs(name, (Date) entity.getField(dateFieldName), args));
+
+        return entity.getDataDefinition().save(entity);
+    }
+
+    @Override
     public File compressToZipFile(List<File> documents, boolean removeCompressed) throws IOException {
         Preconditions.checkNotNull(documents, "documents argument is nullable.");
         Preconditions.checkArgument(!documents.isEmpty(), "documents list can't be empty");
@@ -276,6 +293,13 @@ public class FileServiceImpl implements FileService {
 
     private String getReportFullPath(final String name, final Date date) {
         String translatedReportName = translationService.translate(name, LocaleContextHolder.getLocale());
+
+        return getReportPath() + translatedReportName + "_"
+                + new SimpleDateFormat(DateUtils.L_REPORT_DATE_TIME_FORMAT, getLocale()).format(date);
+    }
+
+    private String getReportFullPathWithArgs(final String name, final Date date, final String... args) {
+        String translatedReportName = translationService.translate(name, LocaleContextHolder.getLocale(), args);
 
         return getReportPath() + translatedReportName + "_"
                 + new SimpleDateFormat(DateUtils.L_REPORT_DATE_TIME_FORMAT, getLocale()).format(date);
