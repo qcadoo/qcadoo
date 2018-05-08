@@ -73,6 +73,9 @@ QCD.components.containers.WindowTab = function(element, mainController) {
 	}
 	this.setComponentValue = function(value) {
 		setContextualHelpButton(value.contextualHelpUrl);
+        if (value.ribbon) {
+            ribbon.updateRibbonState(value.ribbon);
+        }
 	}
 	
 	function setContextualHelpButton(url) {

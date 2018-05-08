@@ -33,9 +33,9 @@ import com.qcadoo.view.api.ribbon.Ribbon;
 public interface WindowComponent {
 
     /**
-     * Returns robbon of this window
+     * Returns ribbon of this window
      * 
-     * @return robbon of this window
+     * @return ribbon of this window
      */
     Ribbon getRibbon();
 

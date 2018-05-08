@@ -88,6 +88,10 @@ public class WindowTabComponentPattern extends AbstractContainerPattern {
         this.ribbon = ribbon;
     }
 
+    public InternalRibbon getRibbon() {
+        return ribbon;
+    }
+
     @Override
     public String getJspFilePath() {
         return JSP_PATH;
