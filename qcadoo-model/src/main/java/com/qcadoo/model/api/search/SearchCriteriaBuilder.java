@@ -187,6 +187,8 @@ public interface SearchCriteriaBuilder {
      */
     SearchCriteriaBuilder createCriteria(final String association, final String alias, final JoinType joinType);
 
+    boolean existsAliasForAssociation(final String association);
+
     /**
      * Enable caching of this query result, provided query caching is enabled for the underlying session factory.
      * 
@@ -457,4 +459,5 @@ public interface SearchCriteriaBuilder {
     @Deprecated
     SearchCriteriaBuilder isIdNe(final Long id);
 
+    String getAliasForAssociation(String association);
 }
