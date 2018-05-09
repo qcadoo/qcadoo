@@ -23,20 +23,21 @@
  */
 package com.qcadoo.view.internal.components.window;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.qcadoo.view.api.components.WindowComponent;
 import com.qcadoo.view.api.ribbon.Ribbon;
 import com.qcadoo.view.internal.api.InternalComponentState;
 import com.qcadoo.view.internal.ribbon.RibbonUtils;
 import com.qcadoo.view.internal.ribbon.model.InternalRibbon;
 import com.qcadoo.view.internal.states.AbstractContainerState;
-import org.apache.commons.lang3.StringUtils;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
 public class WindowComponentState extends AbstractContainerState implements WindowComponent {
 
@@ -44,9 +45,9 @@ public class WindowComponentState extends AbstractContainerState implements Wind
 
     private final WindowComponentPattern pattern;
 
-    public static final String JSON_ACTIVE_MENU = "activeMenu";
+    private static final String JSON_ACTIVE_MENU = "activeMenu";
 
-    public static final String JSON_TABS_SELECTION_STATE = "tabsSelectionState";
+    private static final String JSON_TABS_SELECTION_STATE = "tabsSelectionState";
 
     private String activeMenu = null;
 

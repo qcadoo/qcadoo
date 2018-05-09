@@ -26,11 +26,11 @@ package com.qcadoo.view.api.components;
 import com.qcadoo.view.api.ribbon.Ribbon;
 
 /**
- * Represents window component
+ * Represents window tab component
  * 
  * @since 0.4.0
  */
-public interface WindowComponent {
+public interface WindowTabComponent {
 
     /**
      * Returns ribbon of this window
@@ -38,22 +38,5 @@ public interface WindowComponent {
      * @return ribbon of this window
      */
     Ribbon getRibbon();
-
-    /**
-     * Informs that this window's ribbon should be updated
-     */
-    void requestRibbonRender();
-
-    /**
-     * Set tab with given name as active (focused).
-     * 
-     * @param tabName
-     *            name of the tab to be activated (focused). Note that this tab will be also mark as visible.
-     * 
-     * @throws IllegalArgumentException
-     *             If tab with given name doesn't exist inside of this window.
-     * @since 1.2.1
-     */
-    void setActiveTab(final String tabName) throws IllegalArgumentException;
 
 }
