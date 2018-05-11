@@ -105,6 +105,15 @@ QCD.components.elements.Grid = function (element, mainController) {
             linkElem.attr('id', elementPath + "_" + options.colModel.name + "_" + rowObject.id);
             linkElem.append(cellvalue);
             cellvalue = linkElem.wrap('<div />').parent().html();
+        } else if (options.colModel.classesCls) {
+            var elem = $("<span />");
+            var classes = options.colModel.classesCls.split(" ");
+            for(var cls in classes){
+                elem.addClass(classes[cls]);
+            }
+            elem.attr('id', elementPath + "_" + options.colModel.name + "_" + rowObject.id);
+            elem.append(cellvalue);
+            cellvalue = elem.wrap('<div />').parent().html();
         }
         return cellvalue; 
     }
@@ -217,6 +226,7 @@ QCD.components.elements.Grid = function (element, mainController) {
                     sortable : isSortable,
                     resizable : true,
                     align : column.align,
+                    classesCls: column.classesCls,
                     stype : stype,
                     searchoptions : searchoptions,
                     link : column.link
@@ -224,7 +234,7 @@ QCD.components.elements.Grid = function (element, mainController) {
 
                 globalColumnTranslations[column.name] = possibleValues;
 
-                if (searchoptions.value || column.link) {
+                if (searchoptions.value || column.link || column.classesCls) {
                     col.formatter = cellFormatter;
                 }
 

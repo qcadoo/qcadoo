@@ -46,7 +46,7 @@ public class ViewGridColumnModule extends Module {
 
     private final InternalViewDefinitionService viewDefinitionService;
 
-    public ViewGridColumnModule(final String pluginIdentifier, final String extendsViewPlugin, final String extendsViewName,
+    ViewGridColumnModule(final String pluginIdentifier, final String extendsViewPlugin, final String extendsViewName,
             final String extendsComponentName, final List<ViewGridColumnModuleColumnModel> columns,
             final InternalViewDefinitionService viewDefinitionService) {
         super();
@@ -70,7 +70,7 @@ public class ViewGridColumnModule extends Module {
         for (ViewGridColumnModuleColumnModel columnModel : columns) {
             grid.addColumn(columnModel.getName(), columnModel.getFields(), columnModel.getExpression(), columnModel.getLink(),
                     columnModel.getWidth(), columnModel.getOrderable(), columnModel.getSearchable(), columnModel.getHidden(),
-                    columnModel.getMultiSearch(), pluginIdentifier, columnModel.getAlign());
+                    columnModel.getMultiSearch(), pluginIdentifier, columnModel.getAlign(), columnModel.getClassesCls());
         }
     }
 
@@ -89,13 +89,13 @@ public class ViewGridColumnModule extends Module {
         }
         ComponentPattern component = viewDefinition.getComponentByReference(extendsComponentName);
         if (component == null) {
-            throw new ModuleException(pluginIdentifier, "view", "reference to component which not exists in " + extendsViewPlugin
-                    + "/" + extendsViewName);
+            throw new ModuleException(pluginIdentifier, "view",
+                    "reference to component which not exists in " + extendsViewPlugin + "/" + extendsViewName);
 
         }
         if (!(component instanceof GridComponentPattern)) {
-            throw new ModuleException(pluginIdentifier, "view", "component '" + extendsComponentName + "' in "
-                    + extendsViewPlugin + "/" + extendsViewName + " is not a grid");
+            throw new ModuleException(pluginIdentifier, "view", "component '" + extendsComponentName + "' in " + extendsViewPlugin
+                    + "/" + extendsViewName + " is not a grid");
         }
         return (GridComponentPattern) component;
     }

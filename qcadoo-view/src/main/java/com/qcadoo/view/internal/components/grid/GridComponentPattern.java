@@ -23,6 +23,23 @@
  */
 package com.qcadoo.view.internal.components.grid;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
@@ -45,22 +62,6 @@ import com.qcadoo.view.internal.RowStyleResolver;
 import com.qcadoo.view.internal.patterns.AbstractComponentPattern;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
 import com.qcadoo.view.internal.xml.ViewDefinitionParserNodeException;
-import org.apache.commons.lang3.StringUtils;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class GridComponentPattern extends AbstractComponentPattern {
 
@@ -96,13 +97,13 @@ public class GridComponentPattern extends AbstractComponentPattern {
         }
     };
 
-    private final Set<String> searchableColumns = new HashSet<String>();
+    private final Set<String> searchableColumns = new HashSet<>();
 
-    private final Set<String> multiSearchColumns = new HashSet<String>();
+    private final Set<String> multiSearchColumns = new HashSet<>();
 
-    private final Set<String> orderableColumns = new HashSet<String>();
+    private final Set<String> orderableColumns = new HashSet<>();
 
-    private final Map<String, GridComponentColumn> columns = new LinkedHashMap<String, GridComponentColumn>();
+    private final Map<String, GridComponentColumn> columns = new LinkedHashMap<>();
 
     private FieldDefinition belongsToFieldDefinition;
 
@@ -352,19 +353,20 @@ public class GridComponentPattern extends AbstractComponentPattern {
     public void addColumn(final String name, final String fields, final String expression, final Boolean isLink,
             final Integer width, final boolean isOrderable, final boolean isSearchable, final String extendingPluginIdentifier) {
         addColumn(name, fields, expression, isLink, width, isOrderable, isSearchable, false, false, extendingPluginIdentifier,
-                null);
+                null, null);
     }
 
     // FIXME maku replace this ugly chain of arguments with some kind of columnDefinition object..
     public void addColumn(final String name, final String fields, final String expression, final Boolean isLink,
             final Integer width, final boolean isOrderable, final boolean isSearchable, final boolean isHidden,
-            final boolean isMultiSearch, final String extendingPluginIdentifier, final Alignment align) {
+            final boolean isMultiSearch, final String extendingPluginIdentifier, final Alignment align, final String classesCls) {
         final GridComponentColumn column = new GridComponentColumn(name, extendingPluginIdentifier);
         for (FieldDefinition field : parseFields(fields, column)) {
             column.addField(field);
         }
         column.setHidden(isHidden);
         column.setAlign(align);
+        column.setClassesCls(classesCls);
         column.setExpression(expression);
         if (isLink != null) {
             column.setLink(isLink);
@@ -419,6 +421,7 @@ public class GridComponentPattern extends AbstractComponentPattern {
             jsonColumn.put("hidden", column.isHidden());
             jsonColumn.put(L_WIDTH, column.getWidth());
             jsonColumn.put("align", column.getAlign().getStringValue());
+            jsonColumn.put("classesCls", column.getClassesCls());
             jsonColumn.put("filterValues", getFilterValuesForColumn(column, locale));
             jsonColumn.put("correspondingView", column.getCorrespondingView());
             jsonColumn.put("correspondingField", column.getCorrespondingField());
@@ -430,17 +433,15 @@ public class GridComponentPattern extends AbstractComponentPattern {
         return jsonColumns;
     }
 
-    public Collection<GridComponentColumn> filterColumnsWithAccess(Collection<GridComponentColumn> columns) {
-        List<GridComponentColumn> collect = columns.stream().filter(item -> {
+    Collection<GridComponentColumn> filterColumnsWithAccess(Collection<GridComponentColumn> columns) {
+        return columns.stream().filter(item -> {
             String columnAuthorizationRole = item.getAuthorizationRole();
             return Strings.isNullOrEmpty(columnAuthorizationRole) || securityRolesService.canAccess(columnAuthorizationRole);
 
         }).collect(Collectors.toList());
-
-        return collect;
     }
 
-    public JSONObject getFilterValuesForColumn(final GridComponentColumn column, final Locale locale) throws JSONException {
+    private JSONObject getFilterValuesForColumn(final GridComponentColumn column, final Locale locale) throws JSONException {
         if (column.getFields().size() != 1) {
             return null;
         }
@@ -653,6 +654,7 @@ public class GridComponentPattern extends AbstractComponentPattern {
         if (option.getAtrributeValue("hidden") != null) {
             column.setHidden(Boolean.parseBoolean(option.getAtrributeValue("hidden")));
         }
+        column.setClassesCls(option.getAtrributeValue("classesCls"));
 
         column.setCorrespondingView(option.getAtrributeValue("correspondingView"));
         column.setCorrespondingField(option.getAtrributeValue("correspondingField"));
@@ -680,10 +682,8 @@ public class GridComponentPattern extends AbstractComponentPattern {
     }
 
     private Set<String> parseColumns(final String columns) {
-        Set<String> set = new HashSet<String>();
-        for (String column : columns.split("\\s*,\\s*")) {
-            set.add(column);
-        }
+        Set<String> set = new HashSet<>();
+        Collections.addAll(set, columns.split("\\s*,\\s*"));
         return set;
     }
 

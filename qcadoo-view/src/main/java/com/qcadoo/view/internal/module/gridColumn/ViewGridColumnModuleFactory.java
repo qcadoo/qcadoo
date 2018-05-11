@@ -23,15 +23,16 @@
  */
 package com.qcadoo.view.internal.module.gridColumn;
 
-import com.qcadoo.plugin.api.ModuleFactory;
-import com.qcadoo.view.constants.Alignment;
-import com.qcadoo.view.internal.api.InternalViewDefinitionService;
+import java.util.LinkedList;
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 import org.jdom.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.LinkedList;
-import java.util.List;
+import com.qcadoo.plugin.api.ModuleFactory;
+import com.qcadoo.view.constants.Alignment;
+import com.qcadoo.view.internal.api.InternalViewDefinitionService;
 
 public class ViewGridColumnModuleFactory extends ModuleFactory<ViewGridColumnModule> {
 
@@ -44,7 +45,7 @@ public class ViewGridColumnModuleFactory extends ModuleFactory<ViewGridColumnMod
         String plugin = getRequiredAttribute(element, "plugin");
         String view = getRequiredAttribute(element, "view");
         String component = getRequiredAttribute(element, "component");
-        List<ViewGridColumnModuleColumnModel> columns = new LinkedList<ViewGridColumnModuleColumnModel>();
+        List<ViewGridColumnModuleColumnModel> columns = new LinkedList<>();
         @SuppressWarnings("unchecked")
         List<Element> children = (List<Element>) element.getChildren();
 
@@ -59,6 +60,7 @@ public class ViewGridColumnModuleFactory extends ModuleFactory<ViewGridColumnMod
             String columnOrderable = getAttribute(columnElement, "orderable");
             String columnHidden = getAttribute(columnElement, "hidden");
             String columnAlign = getAttribute(columnElement, "align");
+            String columnClassesCls = getAttribute(columnElement, "classesCls");
 
             ViewGridColumnModuleColumnModel columnModel = new ViewGridColumnModuleColumnModel(columnName, columnFields);
             columnModel.setExpression(columnExpression);
@@ -77,12 +79,13 @@ public class ViewGridColumnModuleFactory extends ModuleFactory<ViewGridColumnMod
             if (columnOrderable != null) {
                 columnModel.setOrderable(Boolean.parseBoolean(columnOrderable));
             }
-            if(columnHidden != null){
+            if (columnHidden != null) {
                 columnModel.setHidden(Boolean.parseBoolean(columnHidden));
             }
             if (StringUtils.isNotEmpty(columnAlign)) {
                 columnModel.setAlign(Alignment.parseString(columnAlign));
             }
+            columnModel.setClassesCls(columnClassesCls);
 
             columns.add(columnModel);
         }

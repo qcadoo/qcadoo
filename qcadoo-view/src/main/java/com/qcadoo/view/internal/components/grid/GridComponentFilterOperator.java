@@ -92,7 +92,7 @@ public enum GridComponentFilterOperator {
 
     private String value;
 
-    private GridComponentFilterOperator(final String value) {
+    GridComponentFilterOperator(final String value) {
         this.value = value;
     }
 

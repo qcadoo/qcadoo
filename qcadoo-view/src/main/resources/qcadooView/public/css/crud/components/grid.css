@@ -543,3 +543,9 @@ div.filterButton {
 .ColTable td {
     float: left;
 }
+
+.wrap-date {
+	white-space: normal;
+	text-align: center;
+	display: block;
+}
