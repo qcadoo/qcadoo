@@ -58,7 +58,7 @@ public final class ComponentOption {
      *            attribute's name
      * @return value
      */
-    public String getAtrributeValue(final String name) {
+    public String getAttributeValue(final String name) {
         return attributes.get(name);
     }
 

@@ -81,9 +81,7 @@ QCD.ActionEvaluator = function(_pageController) {
 		}
 		
 		try {
-//			alert("1");
 			eval(jsBody);
-//			alert("2");
 		} catch (e) {
 			printError(e);
 		}

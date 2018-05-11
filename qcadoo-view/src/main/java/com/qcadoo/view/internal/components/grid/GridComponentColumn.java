@@ -70,6 +70,8 @@ public class GridComponentColumn {
 
     private String classesCls;
 
+    private String classesCondition;
+
     public GridComponentColumn(final String name) {
         this(name, null);
     }
@@ -157,8 +159,16 @@ public class GridComponentColumn {
         return classesCls;
     }
 
-    public void setClassesCls(String classesCls) {
+    public void setClassesCls(final String classesCls) {
         this.classesCls = classesCls;
+    }
+
+    public String getClassesCondition() {
+        return classesCondition;
+    }
+
+    public void setClassesCondition(final String classesCondition) {
+        this.classesCondition = classesCondition;
     }
 
     public void setHidden(final boolean hidden) {
@@ -209,7 +219,8 @@ public class GridComponentColumn {
     public int hashCode() {
         return new HashCodeBuilder().append(name).append(fields).append(extendingPluginIdentifier).append(hidden).append(link)
                 .append(authorizationRole).append(expression).append(width).append(getAlign()).append(correspondingView)
-                .append(correspondingField).append(correspondingViewField).append(attachment).append(classesCls).toHashCode();
+                .append(correspondingField).append(correspondingViewField).append(attachment).append(classesCls)
+                .append(classesCondition).toHashCode();
     }
 
     @Override
@@ -227,7 +238,6 @@ public class GridComponentColumn {
                 .append(this.expression, that.expression).append(this.width, that.width).append(this.getAlign(), that.getAlign())
                 .append(this.correspondingView, that.correspondingView).append(this.correspondingField, that.correspondingField)
                 .append(this.attachment, that.attachment).append(this.correspondingViewField, that.correspondingViewField)
-                .append(this.classesCls, that.classesCls).isEquals();
+                .append(this.classesCls, that.classesCls).append(this.classesCondition, that.classesCondition).isEquals();
     }
-
 }

@@ -59,6 +59,7 @@ import com.qcadoo.view.internal.ComponentDefinition;
 import com.qcadoo.view.internal.ComponentOption;
 import com.qcadoo.view.internal.CriteriaModifier;
 import com.qcadoo.view.internal.RowStyleResolver;
+import com.qcadoo.view.internal.module.gridColumn.ViewGridColumnModuleColumnModel;
 import com.qcadoo.view.internal.patterns.AbstractComponentPattern;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
 import com.qcadoo.view.internal.xml.ViewDefinitionParserNodeException;
@@ -345,44 +346,29 @@ public class GridComponentPattern extends AbstractComponentPattern {
         return json;
     }
 
-    public void addColumn(final String name, final String fields, final String expression, final Boolean isLink,
-            final Integer width, final boolean isOrderable, final boolean isSearchable) {
-        addColumn(name, fields, expression, isLink, width, isOrderable, isSearchable, null);
-    }
-
-    public void addColumn(final String name, final String fields, final String expression, final Boolean isLink,
-            final Integer width, final boolean isOrderable, final boolean isSearchable, final String extendingPluginIdentifier) {
-        addColumn(name, fields, expression, isLink, width, isOrderable, isSearchable, false, false, extendingPluginIdentifier,
-                null, null);
-    }
-
-    // FIXME maku replace this ugly chain of arguments with some kind of columnDefinition object..
-    public void addColumn(final String name, final String fields, final String expression, final Boolean isLink,
-            final Integer width, final boolean isOrderable, final boolean isSearchable, final boolean isHidden,
-            final boolean isMultiSearch, final String extendingPluginIdentifier, final Alignment align, final String classesCls) {
-        final GridComponentColumn column = new GridComponentColumn(name, extendingPluginIdentifier);
-        for (FieldDefinition field : parseFields(fields, column)) {
+    public void addColumn(final String extendingPluginIdentifier, final ViewGridColumnModuleColumnModel columnModel) {
+        final GridComponentColumn column = new GridComponentColumn(columnModel.getName(), extendingPluginIdentifier);
+        for (FieldDefinition field : parseFields(columnModel.getFields(), column)) {
             column.addField(field);
         }
-        column.setHidden(isHidden);
-        column.setAlign(align);
-        column.setClassesCls(classesCls);
-        column.setExpression(expression);
-        if (isLink != null) {
-            column.setLink(isLink);
+        column.setHidden(columnModel.getHidden());
+        column.setAlign(columnModel.getAlign());
+        column.setClassesCls(columnModel.getClassesCls());
+        column.setClassesCondition(columnModel.getClassesCondition());
+        column.setExpression(columnModel.getExpression());
+        column.setLink(columnModel.getLink());
+        if (columnModel.getWidth() != null) {
+            column.setWidth(columnModel.getWidth());
         }
-        if (width != null) {
-            column.setWidth(width);
+        columns.put(columnModel.getName(), column);
+        if (columnModel.getOrderable()) {
+            orderableColumns.add(columnModel.getName());
         }
-        columns.put(name, column);
-        if (isOrderable) {
-            orderableColumns.add(name);
+        if (columnModel.getSearchable()) {
+            searchableColumns.add(columnModel.getName());
         }
-        if (isSearchable) {
-            searchableColumns.add(name);
-        }
-        if (isMultiSearch) {
-            multiSearchColumns.add(name);
+        if (columnModel.getMultiSearch()) {
+            multiSearchColumns.add(columnModel.getName());
         }
     }
 
@@ -422,6 +408,7 @@ public class GridComponentPattern extends AbstractComponentPattern {
             jsonColumn.put(L_WIDTH, column.getWidth());
             jsonColumn.put("align", column.getAlign().getStringValue());
             jsonColumn.put("classesCls", column.getClassesCls());
+            jsonColumn.put("classesCondition", column.getClassesCondition());
             jsonColumn.put("filterValues", getFilterValuesForColumn(column, locale));
             jsonColumn.put("correspondingView", column.getCorrespondingView());
             jsonColumn.put("correspondingField", column.getCorrespondingField());
@@ -595,8 +582,8 @@ public class GridComponentPattern extends AbstractComponentPattern {
             } else if ("orderable".equals(option.getType())) {
                 orderableColumns.addAll(parseColumns(option.getValue()));
             } else if ("order".equals(option.getType())) {
-                defaultOrderColumn = option.getAtrributeValue(L_COLUMN);
-                defaultOrderDirection = option.getAtrributeValue("direction");
+                defaultOrderColumn = option.getAttributeValue(L_COLUMN);
+                defaultOrderDirection = option.getAttributeValue("direction");
                 if (defaultOrderDirection == null) {
                     defaultOrderDirection = "asc";
                 }
@@ -634,8 +621,8 @@ public class GridComponentPattern extends AbstractComponentPattern {
     }
 
     private void parseColumnOption(final ComponentOption option) {
-        GridComponentColumn column = new GridComponentColumn(option.getAtrributeValue("name"));
-        String fields = option.getAtrributeValue("fields");
+        GridComponentColumn column = new GridComponentColumn(option.getAttributeValue("name"));
+        String fields = option.getAttributeValue("fields");
         if (fields != null) {
             for (FieldDefinition field : parseFields(fields, column)) {
                 column.addField(field);
@@ -643,30 +630,31 @@ public class GridComponentPattern extends AbstractComponentPattern {
         }
         column.setAuthorizationRole(parseColumnAuthorizationRole(option));
         column.setAlign(parseColumnAlignOption(option));
-        column.setExpression(option.getAtrributeValue("expression"));
-        String columnWidth = option.getAtrributeValue(L_WIDTH);
+        column.setExpression(option.getAttributeValue("expression"));
+        String columnWidth = option.getAttributeValue(L_WIDTH);
         if (columnWidth != null) {
             column.setWidth(Integer.valueOf(columnWidth));
         }
-        if (option.getAtrributeValue("link") != null) {
-            column.setLink(Boolean.parseBoolean(option.getAtrributeValue("link")));
+        if (option.getAttributeValue("link") != null) {
+            column.setLink(Boolean.parseBoolean(option.getAttributeValue("link")));
         }
-        if (option.getAtrributeValue("hidden") != null) {
-            column.setHidden(Boolean.parseBoolean(option.getAtrributeValue("hidden")));
+        if (option.getAttributeValue("hidden") != null) {
+            column.setHidden(Boolean.parseBoolean(option.getAttributeValue("hidden")));
         }
-        column.setClassesCls(option.getAtrributeValue("classesCls"));
+        column.setClassesCls(option.getAttributeValue("classesCls"));
+        column.setClassesCondition(option.getAttributeValue("classesCondition"));
 
-        column.setCorrespondingView(option.getAtrributeValue("correspondingView"));
-        column.setCorrespondingField(option.getAtrributeValue("correspondingField"));
-        column.setCorrespondingViewField(option.getAtrributeValue("correspondingViewField"));
-        if (option.getAtrributeValue("attachment") != null) {
-            column.setAttachment(Boolean.parseBoolean(option.getAtrributeValue("attachment")));
+        column.setCorrespondingView(option.getAttributeValue("correspondingView"));
+        column.setCorrespondingField(option.getAttributeValue("correspondingField"));
+        column.setCorrespondingViewField(option.getAttributeValue("correspondingViewField"));
+        if (option.getAttributeValue("attachment") != null) {
+            column.setAttachment(Boolean.parseBoolean(option.getAttributeValue("attachment")));
         }
         columns.put(column.getName(), column);
     }
 
     private Alignment parseColumnAlignOption(final ComponentOption options) {
-        String alignStringVal = options.getAtrributeValue("align");
+        String alignStringVal = options.getAttributeValue("align");
         if (StringUtils.isNotEmpty(alignStringVal)) {
             return Alignment.parseString(alignStringVal);
         }
@@ -674,7 +662,7 @@ public class GridComponentPattern extends AbstractComponentPattern {
     }
 
     private String parseColumnAuthorizationRole(ComponentOption option) {
-        String optionAuthorizationRole = option.getAtrributeValue("authorizationRole");
+        String optionAuthorizationRole = option.getAttributeValue("authorizationRole");
         if (StringUtils.isNotEmpty(optionAuthorizationRole)) {
             return optionAuthorizationRole;
         }

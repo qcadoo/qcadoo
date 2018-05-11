@@ -61,6 +61,7 @@ public class ViewGridColumnModuleFactory extends ModuleFactory<ViewGridColumnMod
             String columnHidden = getAttribute(columnElement, "hidden");
             String columnAlign = getAttribute(columnElement, "align");
             String columnClassesCls = getAttribute(columnElement, "classesCls");
+            String columnClassesCondition = getAttribute(columnElement, "classesCondition");
 
             ViewGridColumnModuleColumnModel columnModel = new ViewGridColumnModuleColumnModel(columnName, columnFields);
             columnModel.setExpression(columnExpression);
@@ -86,6 +87,7 @@ public class ViewGridColumnModuleFactory extends ModuleFactory<ViewGridColumnMod
                 columnModel.setAlign(Alignment.parseString(columnAlign));
             }
             columnModel.setClassesCls(columnClassesCls);
+            columnModel.setClassesCondition(columnClassesCondition);
 
             columns.add(columnModel);
         }
