@@ -21,88 +21,22 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * ***************************************************************************
  */
-package com.qcadoo.view.internal.components.grid;
+package com.qcadoo.view.api.components;
+
+import com.qcadoo.view.api.ribbon.Ribbon;
 
 /**
- * Restriction comparison operator.
+ * Represents window tab component
  * 
  * @since 0.4.0
  */
-public enum GridComponentFilterOperator {
+public interface WindowTabComponent {
 
     /**
-     * Equals.
-     */
-    EQ("eq"),
-
-    /**
-     * Greaten than or equals.
-     */
-    GE("ge"),
-
-    /**
-     * Greaten than.
-     */
-    GT("gt"),
-
-    /**
-     * Less than or equals.
-     */
-    LE("le"),
-
-    /**
-     * Less than.
-     */
-    LT("lt"),
-
-    /**
-     * Not equals.
-     */
-    NE("ne"),
-
-    /**
-     * Is in.
-     */
-    IN("in"),
-
-    /**
-     * Contains.
-     */
-    CN("cn"),
-
-    /**
-     * Contains in.
-     */
-    CIN("cin"),
-
-    /**
-     * Begins with.
-     */
-    BW("bw"),
-
-    /**
-     * Ends with.
-     */
-    EW("ew"),
-
-    /**
-     * Is null.
-     */
-    ISNULL("isnull");
-
-    private String value;
-
-    GridComponentFilterOperator(final String value) {
-        this.value = value;
-    }
-
-    /**
-     * Operator shortcats in javascript components.
+     * Returns ribbon of this window
      * 
-     * @return representation of operator
+     * @return ribbon of this window
      */
-    public String getValue() {
-        return value;
-    }
+    Ribbon getRibbon();
 
 }

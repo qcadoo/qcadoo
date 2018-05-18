@@ -45,6 +45,7 @@ QCD.components.elements.AwesomeDynamicList = function (element, mainController) 
 	    firstLine = null,
 	    BUTTONS_WIDTH = 70,
 	    hasButtons = this.options.hasButtons,
+	    flipOrder = this.options.flipOrder,
 	    enabled = true,
 	    isChanged = false,
 	    components = {},
@@ -241,7 +242,11 @@ QCD.components.elements.AwesomeDynamicList = function (element, mainController) 
 
 			line.append(buttons);
 		}
-		awesomeDynamicListContent.append(line);
+		if(flipOrder){
+            $(awesomeDynamicListContent).prepend($(line));
+		} else {
+			awesomeDynamicListContent.append(line);
+		}
 		var formObject = QCDPageConstructor.getChildrenComponents(copy, mainController)["innerForm_"+formId];
 
 		formObject.isVirtual = isVirtual;

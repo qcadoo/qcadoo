@@ -26,15 +26,26 @@ package com.qcadoo.view.internal.components.window;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.qcadoo.view.api.components.WindowTabComponent;
+import com.qcadoo.view.api.ribbon.Ribbon;
+import com.qcadoo.view.internal.ribbon.RibbonUtils;
+import com.qcadoo.view.internal.ribbon.model.InternalRibbon;
 import com.qcadoo.view.internal.states.AbstractContainerState;
 
-public class WindowTabComponentState extends AbstractContainerState {
+public class WindowTabComponentState extends AbstractContainerState implements WindowTabComponent {
+
+    private final InternalRibbon ribbon;
 
     private final WindowTabComponentPattern pattern;
 
-    public WindowTabComponentState(final WindowTabComponentPattern pattern) {
+    WindowTabComponentState(final WindowTabComponentPattern pattern) {
         super(pattern);
         this.pattern = pattern;
+        if (pattern.getRibbon() != null) {
+            this.ribbon = pattern.getRibbon().getCopy();
+        } else {
+            this.ribbon = null;
+        }
     }
 
     @Override
@@ -49,7 +60,17 @@ public class WindowTabComponentState extends AbstractContainerState {
         if (pattern.getContextualHelpUrl() != null) {
             json.put("contextualHelpUrl", pattern.getContextualHelpUrl());
         }
+        if (ribbon != null) {
+            InternalRibbon differenceRibbon = ribbon.getUpdate();
+            if (differenceRibbon != null) {
+                json.put("ribbon", RibbonUtils.translateRibbon(differenceRibbon, getLocale(), pattern));
+            }
+        }
         return json;
     }
 
+    @Override
+    public Ribbon getRibbon() {
+        return ribbon;
+    }
 }

@@ -25,7 +25,14 @@ package com.qcadoo.model.internal.search;
 
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
-import com.qcadoo.model.api.search.*;
+import com.qcadoo.model.api.search.JoinType;
+import com.qcadoo.model.api.search.SearchCriteriaBuilder;
+import com.qcadoo.model.api.search.SearchCriterion;
+import com.qcadoo.model.api.search.SearchOrder;
+import com.qcadoo.model.api.search.SearchOrders;
+import com.qcadoo.model.api.search.SearchProjection;
+import com.qcadoo.model.api.search.SearchRestrictions;
+import com.qcadoo.model.api.search.SearchResult;
 import com.qcadoo.model.api.types.BelongsToType;
 import com.qcadoo.model.internal.api.InternalDataDefinition;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -208,6 +215,20 @@ public final class SearchCriteriaImpl implements SearchCriteriaBuilder, SearchCr
     public SearchCriteriaBuilder createCriteria(final String associationPath, final String alias, final JoinType joinType) {
         DetachedCriteria subcriteria = criteria.createCriteria(associationPath, alias, getIntValueForJoinType(joinType));
         return new SearchCriteriaImpl(subcriteria);
+    }
+
+    @Override
+    public boolean existsAliasForAssociation(String association) {
+        return aliases.containsValue(association);
+    }
+
+    @Override public String getAliasForAssociation(String association) {
+        for(Map.Entry<String, String> entry: aliases.entrySet()) {
+            if(association.equals(entry.getValue())){
+                return entry.getKey();
+            }
+        }
+        throw new IllegalStateException("Cannot find alias for " + association);
     }
 
     private int getIntValueForJoinType(final JoinType joinType) {

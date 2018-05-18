@@ -543,3 +543,22 @@ div.filterButton {
 .ColTable td {
     float: left;
 }
+
+.wrap-date {
+	white-space: normal;
+	text-align: center;
+	display: block;
+}
+
+.green-cell {
+	background-color: limegreen;
+	display: block;
+	margin-right: -2px;
+	margin-left: -2px;
+	padding-right: 2px;
+	padding-left: 2px;
+	margin-top: -7px;
+	margin-bottom: -7px;
+	padding-top: 7px;
+	padding-bottom: 7px;
+}

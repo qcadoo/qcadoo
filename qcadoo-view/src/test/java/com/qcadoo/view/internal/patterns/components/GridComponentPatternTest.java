@@ -70,6 +70,7 @@ import com.qcadoo.view.internal.api.InternalViewDefinitionState;
 import com.qcadoo.view.internal.components.TextInputComponentPattern;
 import com.qcadoo.view.internal.components.grid.GridComponentColumn;
 import com.qcadoo.view.internal.components.grid.GridComponentPattern;
+import com.qcadoo.view.internal.module.gridColumn.ViewGridColumnModuleColumnModel;
 import com.qcadoo.view.internal.patterns.AbstractComponentPattern;
 import com.qcadoo.view.internal.patterns.AbstractPatternTest;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
@@ -445,7 +446,9 @@ public class GridComponentPatternTest extends AbstractPatternTest {
         pattern.addOption(new ComponentOption("column", ImmutableMap.of("name", "name", "fields", "name", "hidden", "true")));
         pattern.addOption(new ComponentOption("order", ImmutableMap.of("column", "name", "direction", "asc")));
 
-        pattern.addColumn("invisible", "name", null, false, 100, false, false, "disabledPlugin");
+        ViewGridColumnModuleColumnModel columnModel = new ViewGridColumnModuleColumnModel("invisible", "name");
+        columnModel.setWidth(100);
+        pattern.addColumn("disabledPlugin", columnModel);
 
         pattern.initialize();
 
@@ -501,7 +504,9 @@ public class GridComponentPatternTest extends AbstractPatternTest {
         pattern.addOption(new ComponentOption("column", ImmutableMap.of("name", "name", "fields", "name", "hidden", "true")));
         pattern.addOption(new ComponentOption("order", ImmutableMap.of("column", "name", "direction", "asc")));
 
-        pattern.addColumn("invisible", "name", null, false, 100, false, false, "disabledPlugin");
+        ViewGridColumnModuleColumnModel columnModel = new ViewGridColumnModuleColumnModel("invisible", "name");
+        columnModel.setWidth(100);
+        pattern.addColumn("disabledPlugin", columnModel);
 
         pattern.initialize();
 

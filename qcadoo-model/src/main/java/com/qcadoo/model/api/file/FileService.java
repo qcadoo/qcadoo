@@ -140,14 +140,27 @@ public interface FileService {
      */
     Entity updateReportFileName(Entity entity, String dateFieldName, String name);
 
+    /**
+     * Update report file name for given report entity
+     *
+     * @param entity
+     * @param dateFieldName
+     *            report date field name
+     * @param name
+     *            translation code for language specific file name
+     * @param args
+     *            translation args
+     * @return updated entity
+     */
+    Entity updateReportFileName(Entity entity, String dateFieldName, String name, String... args);
 
     /**
      * Compress documents to newly created zip file.
      *
      * @param documents
-     *              documents to be compress
+     *            documents to be compress
      * @param removeCompressed
-     *              if true removes documents after compression
+     *            if true removes documents after compression
      * @return created zip file
      * @throws IOException
      */

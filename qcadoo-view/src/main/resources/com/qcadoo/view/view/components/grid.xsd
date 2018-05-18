@@ -96,6 +96,8 @@
                 <xs:attribute name="column" type="identifierType"/>
                 <xs:attribute name="direction" type="directionType"/>
                 <xs:attribute name="value" type="xs:anyType"/>
+                <xs:attribute name="classesCls" type="xs:string"/>
+                <xs:attribute name="classesCondition" type="xs:string"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -148,6 +150,8 @@
                         </xs:restriction>
                     </xs:simpleType>
                 </xs:attribute>
+                <xs:attribute name="classesCls" type="xs:string"/>
+                <xs:attribute name="classesCondition" type="xs:string"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
