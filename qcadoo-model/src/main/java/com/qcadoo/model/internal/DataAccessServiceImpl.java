@@ -816,19 +816,20 @@ public class DataAccessServiceImpl implements DataAccessService {
     @Transactional
     @Monitorable
     private void move(final InternalDataDefinition dataDefinition, final Long entityId, final int position, final int offset) {
-        checkNotNull(dataDefinition, L_DATA_DEFINITION_MUST_BE_GIVEN);
-        checkState(dataDefinition.isPrioritizable(), "Entity must be prioritizable");
-        checkState(dataDefinition.isEnabled(), L_DATA_DEFINITION_BELONGS_TO_DISABLED_PLUGIN);
+        InternalDataDefinition dataDefinitionToMove = getDataDefinitionByMasterModel(dataDefinition);
+        checkNotNull(dataDefinitionToMove, L_DATA_DEFINITION_MUST_BE_GIVEN);
+        checkState(dataDefinitionToMove.isPrioritizable(), "Entity must be prioritizable");
+        checkState(dataDefinitionToMove.isEnabled(), L_DATA_DEFINITION_BELONGS_TO_DISABLED_PLUGIN);
         checkNotNull(entityId, "EntityId must be given");
 
-        Object databaseEntity = getDatabaseEntity(dataDefinition, entityId);
+        Object databaseEntity = getDatabaseEntity(dataDefinitionToMove, entityId);
         if (databaseEntity == null) {
-            logEntityInfo(dataDefinition, entityId, "hasn't been prioritized, because it doesn't exist");
+            logEntityInfo(dataDefinitionToMove, entityId, "hasn't been prioritized, because it doesn't exist");
             return;
         }
 
-        priorityService.move(dataDefinition, databaseEntity, position, offset);
-        logEntityInfo(dataDefinition, entityId, "has been prioritized");
+        priorityService.move(dataDefinitionToMove, databaseEntity, position, offset);
+        logEntityInfo(dataDefinitionToMove, entityId, "has been prioritized");
     }
 
     private Object getExistingDatabaseEntity(final InternalDataDefinition dataDefinition, final Entity entity) {
