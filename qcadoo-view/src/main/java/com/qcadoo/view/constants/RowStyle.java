@@ -39,6 +39,10 @@ public final class RowStyle {
     
     public static final String GREEN_BACKGROUND = "greenBg";
 
+    public static final String GREEN_FONT_COLOR = "greenFontColor";
+
+    public static final String ORANGE_FONT_COLOR = "orangeFontColor";
+
     public static final String BOLD_FONT = "boldFont";
 
 }
