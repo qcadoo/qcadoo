@@ -105,11 +105,11 @@ QCD.components.elements.Grid = function (element, mainController) {
             linkElem.attr('id', elementPath + "_" + options.colModel.name + "_" + rowObject.id);
             linkElem.append(cellvalue);
             cellvalue = linkElem.wrap('<div />').parent().html();
-        } else if (options.colModel.classesCls) {
+        } else if (options.colModel.classesNames) {
             if (!options.colModel.classesCondition || Function('rowObject', '"use strict";return '
                     + options.colModel.classesCondition.replace(/&gt;/g,">").replace(/&lt;/g,"<"))(rowObject)) {
                 var elem = $("<span />");
-                var classes = options.colModel.classesCls.split(" ");
+                var classes = options.colModel.classesNames.split(" ");
                 for (var cls in classes) {
                     elem.addClass(classes[cls]);
                 }
@@ -229,7 +229,7 @@ QCD.components.elements.Grid = function (element, mainController) {
                     sortable : isSortable,
                     resizable : true,
                     align : column.align,
-                    classesCls: column.classesCls,
+                    classesNames: column.classesNames,
                     classesCondition: column.classesCondition,
                     stype : stype,
                     searchoptions : searchoptions,
@@ -238,7 +238,7 @@ QCD.components.elements.Grid = function (element, mainController) {
 
                 globalColumnTranslations[column.name] = possibleValues;
 
-                if (searchoptions.value || column.link || column.classesCls) {
+                if (searchoptions.value || column.link || column.classesNames) {
                     col.formatter = cellFormatter;
                 }
 

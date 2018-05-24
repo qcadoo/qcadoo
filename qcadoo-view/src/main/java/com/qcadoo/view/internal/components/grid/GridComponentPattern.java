@@ -353,7 +353,7 @@ public class GridComponentPattern extends AbstractComponentPattern {
         }
         column.setHidden(columnModel.getHidden());
         column.setAlign(columnModel.getAlign());
-        column.setClassesCls(columnModel.getClassesCls());
+        column.setClassesNames(columnModel.getClassesNames());
         column.setClassesCondition(columnModel.getClassesCondition());
         column.setExpression(columnModel.getExpression());
         column.setLink(columnModel.getLink());
@@ -407,7 +407,7 @@ public class GridComponentPattern extends AbstractComponentPattern {
             jsonColumn.put("hidden", column.isHidden());
             jsonColumn.put(L_WIDTH, column.getWidth());
             jsonColumn.put("align", column.getAlign().getStringValue());
-            jsonColumn.put("classesCls", column.getClassesCls());
+            jsonColumn.put("classesNames", column.getClassesNames());
             jsonColumn.put("classesCondition", column.getClassesCondition());
             jsonColumn.put("filterValues", getFilterValuesForColumn(column, locale));
             jsonColumn.put("correspondingView", column.getCorrespondingView());
@@ -641,7 +641,7 @@ public class GridComponentPattern extends AbstractComponentPattern {
         if (option.getAttributeValue("hidden") != null) {
             column.setHidden(Boolean.parseBoolean(option.getAttributeValue("hidden")));
         }
-        column.setClassesCls(option.getAttributeValue("classesCls"));
+        column.setClassesNames(option.getAttributeValue("classesNames"));
         column.setClassesCondition(option.getAttributeValue("classesCondition"));
 
         column.setCorrespondingView(option.getAttributeValue("correspondingView"));
