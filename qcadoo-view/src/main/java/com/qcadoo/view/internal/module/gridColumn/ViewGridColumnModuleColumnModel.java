@@ -50,7 +50,7 @@ public class ViewGridColumnModuleColumnModel {
 
     private Alignment align;
 
-    private String classesCls;
+    private String classesNames;
 
     private String classesCondition;
 
@@ -131,12 +131,12 @@ public class ViewGridColumnModuleColumnModel {
         return this.align;
     }
 
-    public String getClassesCls() {
-        return classesCls;
+    public String getClassesNames() {
+        return classesNames;
     }
 
-    public void setClassesCls(final String classesCls) {
-        this.classesCls = classesCls;
+    public void setClassesNames(final String classesNames) {
+        this.classesNames = classesNames;
     }
 
     public String getClassesCondition() {
@@ -151,7 +151,7 @@ public class ViewGridColumnModuleColumnModel {
     public int hashCode() {
         return new HashCodeBuilder().append(getName()).append(getFields()).append(getLink()).append(getWidth())
                 .append(getExpression()).append(getAlign()).append(getOrderable()).append(getHidden()).append(getSearchable())
-                .append(getMultiSearch()).append(getClassesCls()).append(getClassesCondition()).toHashCode();
+                .append(getMultiSearch()).append(getClassesNames()).append(getClassesCondition()).toHashCode();
     }
 
     @Override
@@ -169,7 +169,7 @@ public class ViewGridColumnModuleColumnModel {
                 .append(this.getExpression(), that.getExpression()).append(this.getAlign(), that.getAlign())
                 .append(this.getOrderable(), that.getOrderable()).append(this.getHidden(), that.getHidden())
                 .append(this.getMultiSearch(), that.getMultiSearch()).append(this.getSearchable(), that.getSearchable())
-                .append(this.getClassesCls(), that.getClassesCls()).append(this.getClassesCondition(), that.getClassesCondition())
+                .append(this.getClassesNames(), that.getClassesNames()).append(this.getClassesCondition(), that.getClassesCondition())
                 .isEquals();
     }
 }

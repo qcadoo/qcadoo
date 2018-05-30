@@ -562,3 +562,11 @@ div.filterButton {
 	padding-top: 7px;
 	padding-bottom: 7px;
 }
+
+.gridContainer .greenFontColor {
+	color: #68bb25;
+}
+
+.gridContainer .orangeFontColor {
+	color: #FFA319;
+}
