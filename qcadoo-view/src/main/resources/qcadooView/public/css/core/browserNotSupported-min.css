@@ -58,7 +58,7 @@ body {
     height: 100px;
 }
 
-.form-info {
+.browserNotSupportedContainer {
     width: 100%;
     max-width: 640px;
     margin: 0 auto;

@@ -40,11 +40,7 @@ QCD.login = (function () {
             window.location = "browserNotSupported.html";
         }
 
-        $(".dropdown-menu li span").each(function (i, li) {
-            $(li).click(function () {
-                changeLanguage(this.lang);
-            });
-        });
+        $(".dropdown-menu li span").each(onDropdownMenuLiEach);
 
         messagePanel = $("#messagePanel");
         messagePanelHeader = $("#messageHeader");
@@ -62,6 +58,9 @@ QCD.login = (function () {
         loginButton = $("#loginButton");
 
         forgotPasswordLink = $("#forgotPasswordLink");
+
+        usernameInput.keypress(onUsernameInputKeyPress);
+        passwordInput.keypress(onPasswordInputKeyPress);
 
         loginButton.click(onLoginClick);
 
@@ -87,9 +86,6 @@ QCD.login = (function () {
         } else {
             usernameInput.focus();
         }
-
-        usernameInput.keypress(onUsernameInputKeyPress);
-        passwordInput.keypress(onPasswordInputKeyPress);
     }
 
     function getBrowser() {
@@ -99,18 +95,18 @@ QCD.login = (function () {
         if (/trident/i.test(browser[1])) {
             version =  /\brv[ :]+(\d+)/g.exec(userAgent) || [];
 
-            return { name: 'IE ', version: (version[1] || '') };
+            return { name: "IE ", version: (version[1] || "") };
         }
 
-        if (browser[1] === 'Chrome') {
+        if (browser[1] === "Chrome") {
             version = userAgent.match(/\b(OPR|Edge)\/(\d+)/);
 
             if (version != null) {
-                return { name: version[1].replace('OPR', 'Opera'), version: version[2] };
+                return { name: version[1].replace("OPR", "Opera"), version: version[2] };
             }
         }
 
-        browser = browser[2] ? [browser[1], browser[2]] : [navigator.appName, navigator.appVersion, '-?'];
+        browser = browser[2] ? [browser[1], browser[2]] : [navigator.appName, navigator.appVersion, "-?"];
 
         if ((version = userAgent.match(/version\/(\d+)/i)) != null) {
             browser.splice(1, 1, version[1]);
@@ -124,8 +120,8 @@ QCD.login = (function () {
 
         if (
             browser.name.match(/Opera|Chrome|Safari/i) ||
-            (browser.name == 'IE' && browser.version >= 8) ||
-            (browser.name == 'Firefox' && browser.version >= 3)
+            (browser.name == "IE" && browser.version >= 8) ||
+            (browser.name == "Firefox" && browser.version >= 3)
         ) {
             return true;
         } else {
@@ -133,35 +129,14 @@ QCD.login = (function () {
         }
     }
 
-    function isMobile() {
-        var userAgent = navigator.userAgent;
-
-        if (userAgent.match(/Android|webOS|iPhone|iPad|iPod|BlackBerry|Windows Phone/i)){
-            return true;
-        } else {
-            return false;
-        }
+    function onDropdownMenuLiEach(i, li) {
+        $(li).click(function () {
+            changeLanguage(this.lang);
+        });
     }
 
     function changeLanguage(language) {
         window.location = "login.html?lang=" + language;
-    }
-
-    function showMessagePanel(type, header, content) {
-        messagePanel.removeClass("alert-info");
-        messagePanel.removeClass("alert-success");
-        messagePanel.removeClass("alert-error");
-
-        messagePanel.addClass('alert-' + type);
-
-        messagePanelHeader.html(header);
-        messagePanelContent.html(content);
-
-        messagePanel.show();
-    }
-
-    function hideMessagePanel() {
-        messagePanel.hide();
     }
 
     function onUsernameInputKeyPress(e) {
@@ -187,8 +162,8 @@ QCD.login = (function () {
     function onLoginClick() {
         hideMessagePanel();
 
-        usernameInput.removeClass('is-invalid');
-        passwordInput.removeClass('is-invalid');
+        usernameInput.removeClass("is-invalid");
+        passwordInput.removeClass("is-invalid");
 
         usernameInput.prop("disabled", false);
 
@@ -199,12 +174,12 @@ QCD.login = (function () {
 
         $.ajax({
             url: url,
-            type: 'POST',
+            type: "POST",
             data: formData,
             success: function (response) {
                 response = $.trim(response);
 
-                switch(response) {
+                switch (response) {
                     case "loginSuccessfull":
                         if (isPopup == true) {
                             window.location = targetUrl;
@@ -222,7 +197,7 @@ QCD.login = (function () {
                     case "loginUnsuccessfull:login":
                         hideMessagePanel();
 
-                        usernameInput.addClass('is-invalid');
+                        usernameInput.addClass("is-invalid");
 
                         lockForm(false);
                     break;
@@ -230,24 +205,51 @@ QCD.login = (function () {
                     case "loginUnsuccessfull:password":
                         hideMessagePanel();
 
-                        passwordInput.addClass('is-invalid');
+                        passwordInput.addClass("is-invalid");
 
                         lockForm(false);
                     break;
 
                     default:
-                        showMessagePanel("alert-danger", errorHeaderText, errorContentText);
+                        showMessagePanel("danger", errorHeaderText, errorContentText);
 
                         lockForm(false);
                     break;
                 }
             },
             error: function (xhr, textStatus, errorThrown) {
-                showMessageBox("alert-danger", errorHeaderText, errorContentText);
+                showMessageBox("danger", errorHeaderText, errorContentText);
 
                 lockForm(false);
             }
         });
+    }
+
+    function isMobile() {
+        var userAgent = navigator.userAgent;
+
+        if (userAgent.match(/Android|webOS|iPhone|iPad|iPod|BlackBerry|Windows Phone/i)){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    function showMessagePanel(type, header, content) {
+        messagePanel.removeClass("alert-info");
+        messagePanel.removeClass("alert-success");
+        messagePanel.removeClass("alert-danger");
+
+        messagePanel.addClass("alert-" + type);
+
+        messagePanelHeader.html(header);
+        messagePanelContent.html(content);
+
+        messagePanel.show();
+    }
+
+    function hideMessagePanel() {
+        messagePanel.hide();
     }
 
     function lockForm(disabled) {

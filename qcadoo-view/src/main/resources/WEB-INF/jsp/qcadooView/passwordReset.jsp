@@ -66,7 +66,7 @@
             <p id="messageContent"></p>
         </div>
 
-        <div class="form-reset">
+        <div class="passwordResetContainer">
             <c:if test="${! iframe && ! popup}">
                 <div class="text-right">
                     <div class="btn-group dropup">

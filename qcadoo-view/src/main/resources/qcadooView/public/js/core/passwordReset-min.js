@@ -40,11 +40,7 @@ QCD.passwordReset = (function () {
             window.location = "browserNotSupported.html";
         }
 
-        $(".dropdown-menu li span").each(function (i, li) {
-            $(li).click(function () {
-                changeLanguage(this.lang);
-            });
-        });
+        $(".dropdown-menu li span").each(onDropdownMenuLiEach);
 
         messagePanel = $("#messagePanel");
         messagePanelHeader = $("#messageHeader");
@@ -57,11 +53,11 @@ QCD.passwordReset = (function () {
         cancelButton = $("#cancelButton");
         passwordResetButton = $("#passwordResetButton");
 
-        cancelButton.click(onCancelClick);
-        passwordResetButton.click(onPasswordResetClick);
-
         usernameInput.focus();
         usernameInput.keypress(onUsernameInputKeyPress);
+
+        cancelButton.click(onCancelClick);
+        passwordResetButton.click(onPasswordResetClick);
     }
 
     function getBrowser() {
@@ -71,18 +67,18 @@ QCD.passwordReset = (function () {
         if (/trident/i.test(browser[1])) {
             version =  /\brv[ :]+(\d+)/g.exec(userAgent) || [];
 
-            return { name: 'IE ', version: (version[1] || '') };
+            return { name: "IE ", version: (version[1] || "") };
         }
 
-        if (browser[1] === 'Chrome') {
+        if (browser[1] === "Chrome") {
             version = userAgent.match(/\b(OPR|Edge)\/(\d+)/);
 
             if (version != null) {
-                return { name: version[1].replace('OPR', 'Opera'), version: version[2] };
+                return { name: version[1].replace("OPR", "Opera"), version: version[2] };
             }
         }
 
-        browser = browser[2] ? [browser[1], browser[2]] : [navigator.appName, navigator.appVersion, '-?'];
+        browser = browser[2] ? [browser[1], browser[2]] : [navigator.appName, navigator.appVersion, "-?"];
 
         if ((version = userAgent.match(/version\/(\d+)/i)) != null) {
             browser.splice(1, 1, version[1]);
@@ -96,8 +92,8 @@ QCD.passwordReset = (function () {
 
         if (
             browser.name.match(/Opera|Chrome|Safari/i) ||
-            (browser.name == 'IE' && browser.version >= 8) ||
-            (browser.name == 'Firefox' && browser.version >= 3)
+            (browser.name == "IE" && browser.version >= 8) ||
+            (browser.name == "Firefox" && browser.version >= 3)
         ) {
             return true;
         } else {
@@ -105,24 +101,14 @@ QCD.passwordReset = (function () {
         }
     }
 
+    function onDropdownMenuLiEach(i, li) {
+        $(li).click(function () {
+            changeLanguage(this.lang);
+        });
+    }
+
     function changeLanguage(language) {
         window.location = "passwordReset.html?lang=" + language;
-    }
-
-    function showMessagePanel(type, header, content) {
-        messagePanel.removeClass("alert-success");
-        messagePanel.removeClass("alert-danger");
-
-        messagePanel.addClass(type);
-
-        messagePanelHeader.html(header);
-        messagePanelContent.html(content);
-
-        messagePanel.show();
-    }
-
-    function hideMessagePanel() {
-        messagePanel.hide();
     }
 
     function onUsernameInputKeyPress(e) {
@@ -141,7 +127,7 @@ QCD.passwordReset = (function () {
 
     function onPasswordResetClick() {
         hideMessagePanel();
-        usernameInput.removeClass('is-invalid');
+        usernameInput.removeClass("is-invalid");
 
         var formData = QCDSerializator.serializeForm(passwordResetForm);
         var url = "passwordReset.html";
@@ -150,7 +136,7 @@ QCD.passwordReset = (function () {
 
         $.ajax({
             url: url,
-            type: 'POST',
+            type: "POST",
             data: formData,
             success: function(response) {
                 response = $.trim(response);
@@ -162,7 +148,7 @@ QCD.passwordReset = (function () {
                     break;
 
                     case "loginIsBlank":
-                        usernameInput.addClass('is-invalid');
+                        usernameInput.addClass("is-invalid");
 
                         lockForm(false);
                     break;
@@ -170,7 +156,7 @@ QCD.passwordReset = (function () {
                     case "userNotFound":
                         showMessagePanel("alert-danger", errorHeaderText, userNotFoundText);
 
-                        usernameInput.addClass('is-invalid');
+                        usernameInput.addClass("is-invalid");
 
                         lockForm(false);
                     break;
@@ -200,6 +186,23 @@ QCD.passwordReset = (function () {
                 lockForm(false);
             }
         });
+    }
+
+    function showMessagePanel(type, header, content) {
+        messagePanel.removeClass("alert-info");
+        messagePanel.removeClass("alert-success");
+        messagePanel.removeClass("alert-danger");
+
+        messagePanel.addClass(type);
+
+        messagePanelHeader.html(header);
+        messagePanelContent.html(content);
+
+        messagePanel.show();
+    }
+
+    function hideMessagePanel() {
+        messagePanel.hide();
     }
 
     function lockForm(disabled) {

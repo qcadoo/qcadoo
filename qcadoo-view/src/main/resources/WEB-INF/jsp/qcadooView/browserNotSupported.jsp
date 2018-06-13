@@ -59,7 +59,7 @@
 
 <body class="text-center" role="document">
     <div class="container" role="main">
-	    <div class="form-info">
+	    <div class="browserNotSupportedContainer">
             <c:if test="${! iframe && ! popup}">
                 <div class="text-right">
                     <div class="btn-group dropup">
