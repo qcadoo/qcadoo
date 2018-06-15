@@ -63,13 +63,13 @@ body {
     height: 75px;
 }
 
-.form-signin {
+.loginContainer {
     width: 100%;
     max-width: 330px;
     margin: 0 auto;
 }
 
-.form-signin .input-group .form-control {
+.loginContainer .input-group .form-control {
     position: relative;
     box-sizing: border-box;
     border-radius: 4px;
@@ -78,17 +78,17 @@ body {
     font-size: 16px;
 }
 
-.form-signin .form-control:focus {
+.loginContainer .form-control:focus {
     z-index: 2;
 }
 
-.form-signin .input-group input[type="text"] {
+.loginContainer .input-group input[type="text"] {
     margin-bottom: -1px;
     border-bottom-right-radius: 0;
     border-bottom-left-radius: 0;
 }
 
-.form-signin .input-group input[type="password"] {
+.loginContainer .input-group input[type="password"] {
     margin-bottom: 25px;
     border-top-left-radius: 0;
     border-top-right-radius: 0;

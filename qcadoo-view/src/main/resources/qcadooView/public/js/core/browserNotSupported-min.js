@@ -25,10 +25,12 @@ var QCD = QCD || {};
 
 QCD.browserNotSupported = (function () {
     function init() {
-        $(".dropdown-menu li span").each(function (i, li) {
-            $(li).click(function () {
-                changeLanguage(this.lang);
-            });
+        $(".dropdown-menu li span").each(onDropdownMenuLiEach);
+    }
+
+    function onDropdownMenuLiEach(i, li) {
+        $(li).click(function () {
+            changeLanguage(this.lang);
         });
     }
 

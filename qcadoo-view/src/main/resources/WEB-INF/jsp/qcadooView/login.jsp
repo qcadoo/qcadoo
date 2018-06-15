@@ -68,7 +68,7 @@
             <p id="messageContent"></p>
         </div>
 
-        <div class="form-signin">
+        <div class="loginContainer">
             <c:if test="${! iframe && ! popup}">
                 <div class="text-right">
                     <div class="btn-group dropup">
