@@ -27,10 +27,9 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 
 import org.apache.commons.io.IOUtils;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpInputMessage;
@@ -38,9 +37,16 @@ import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.AbstractHttpMessageConverter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+
 public final class JsonMapperHttpMessageConverter extends AbstractHttpMessageConverter<Object> {
 
+    private static final String ACTIVITY_DTO_CLASS = "com.qcadoo.mes.basic.activityStream.model.ActivityDto";
+
     private static final Logger LOG = LoggerFactory.getLogger(JsonMapperHttpMessageConverter.class);
+
+    private static final Logger ACTIVITY_LOG = LoggerFactory.getLogger(ACTIVITY_DTO_CLASS);
 
     public static final Charset CHARSET = Charset.forName("UTF-8");
 
@@ -74,7 +80,16 @@ public final class JsonMapperHttpMessageConverter extends AbstractHttpMessageCon
             writer = new OutputStreamWriter(outputMessage.getBody(), CHARSET);
             String out = mapper.writeValueAsString(value);
             if (LOG.isDebugEnabled()) {
-                LOG.debug(out);
+                if (value.getClass().equals(ArrayList.class)) {
+                    ArrayList arrayList = (ArrayList) value;
+                    if (arrayList.size() > 0 && arrayList.get(0).getClass().getName().equals(ACTIVITY_DTO_CLASS)) {
+                        ACTIVITY_LOG.debug(out);
+                    } else {
+                        LOG.debug(out);
+                    }
+                } else {
+                    LOG.debug(out);
+                }
             }
             writer.append(out);
             writer.flush();
@@ -82,5 +97,4 @@ public final class JsonMapperHttpMessageConverter extends AbstractHttpMessageCon
             IOUtils.closeQuietly(writer);
         }
     }
-
 }
