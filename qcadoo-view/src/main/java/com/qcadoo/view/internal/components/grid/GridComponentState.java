@@ -23,6 +23,22 @@
  */
 package com.qcadoo.view.internal.components.grid;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.commons.lang3.StringUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.qcadoo.model.api.DataDefinition;
@@ -51,21 +67,6 @@ import com.qcadoo.view.internal.CriteriaModifier;
 import com.qcadoo.view.internal.FilterValueHolderImpl;
 import com.qcadoo.view.internal.RowStyleResolver;
 import com.qcadoo.view.internal.states.AbstractComponentState;
-import org.apache.commons.lang3.StringUtils;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public final class GridComponentState extends AbstractComponentState implements GridComponent {
 
@@ -537,7 +538,7 @@ public final class GridComponentState extends AbstractComponentState implements 
             json.put("active", true);
         }
         JSONObject fields = new JSONObject();
-        for (GridComponentColumn column : pattern.filterColumnsWithAccess(columns.values())){
+        for (GridComponentColumn column : pattern.filterColumnsWithAccess(columns.values())) {
             fields.put(column.getName(), column.getValue(entity, getLocale()));
         }
         json.put("fields", fields);
@@ -731,19 +732,27 @@ public final class GridComponentState extends AbstractComponentState implements 
         }
 
         public void deactivateSelectedEntity(final String[] args) {
-            List<Entity> deactivatedEntities = getDataDefinition().deactivate(
-                    selectedEntities.toArray(new Long[selectedEntities.size()]));
+            try {
+                List<Entity> deactivatedEntities = getDataDefinition().deactivate(
+                        selectedEntities.toArray(new Long[selectedEntities.size()]));
 
-            entitiesToMarkAsNew = new HashSet<Long>();
-            for (Entity entity : deactivatedEntities) {
-                entitiesToMarkAsNew.add(entity.getId());
-            }
+                entitiesToMarkAsNew = new HashSet<Long>();
+                for (Entity entity : deactivatedEntities) {
+                    entitiesToMarkAsNew.add(entity.getId());
+                }
 
-            if (selectedEntities.size() == 1) {
-                addTranslatedMessage(translateMessage("deactivateMessage"), MessageType.SUCCESS);
-            } else {
-                addTranslatedMessage(translateMessage("deactivateMessages", String.valueOf(selectedEntities.size())),
-                        MessageType.SUCCESS);
+                if (selectedEntities.size() == 1) {
+                    addTranslatedMessage(translateMessage("deactivateMessage"), MessageType.SUCCESS);
+                } else {
+                    addTranslatedMessage(translateMessage("deactivateMessages", String.valueOf(selectedEntities.size())),
+                            MessageType.SUCCESS);
+                }
+            } catch (IllegalStateException e) {
+                if (e.getMessage().contains("validation")) {
+                    addTranslatedMessage(translateMessage("deactivateFailedValidationMessage"), MessageType.FAILURE);
+                } else {
+                    addTranslatedMessage(translateMessage("deactivateFailedMessage"), MessageType.FAILURE);
+                }
             }
         }
 
@@ -897,7 +906,7 @@ public final class GridComponentState extends AbstractComponentState implements 
     public Map<String, String> getColumnNames() {
         Map<String, String> names = new LinkedHashMap<String, String>();
 
-        for (GridComponentColumn column : pattern.filterColumnsWithAccess(columns.values())){
+        for (GridComponentColumn column : pattern.filterColumnsWithAccess(columns.values())) {
             if (column.isHidden()) {
                 continue;
             }
@@ -949,7 +958,7 @@ public final class GridComponentState extends AbstractComponentState implements 
 
     private Map<String, String> convertEntityToMap(final Entity entity) {
         Map<String, String> values = new LinkedHashMap<String, String>();
-        for (GridComponentColumn column : pattern.filterColumnsWithAccess(columns.values())){
+        for (GridComponentColumn column : pattern.filterColumnsWithAccess(columns.values())) {
             if (column.isHidden()) {
                 continue;
             }
