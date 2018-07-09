@@ -757,19 +757,27 @@ public final class GridComponentState extends AbstractComponentState implements 
         }
 
         public void activateSelectedEntity(final String[] args) {
-            List<Entity> activatedEntities = getDataDefinition().activate(
-                    selectedEntities.toArray(new Long[selectedEntities.size()]));
+            try {
+                List<Entity> activatedEntities = getDataDefinition().activate(
+                        selectedEntities.toArray(new Long[selectedEntities.size()]));
 
-            entitiesToMarkAsNew = new HashSet<Long>();
-            for (Entity entity : activatedEntities) {
-                entitiesToMarkAsNew.add(entity.getId());
-            }
+                entitiesToMarkAsNew = new HashSet<Long>();
+                for (Entity entity : activatedEntities) {
+                    entitiesToMarkAsNew.add(entity.getId());
+                }
 
-            if (selectedEntities.size() == 1) {
-                addTranslatedMessage(translateMessage("activateMessage"), MessageType.SUCCESS);
-            } else {
-                addTranslatedMessage(translateMessage("activateMessages", String.valueOf(selectedEntities.size())),
-                        MessageType.SUCCESS);
+                if (selectedEntities.size() == 1) {
+                    addTranslatedMessage(translateMessage("activateMessage"), MessageType.SUCCESS);
+                } else {
+                    addTranslatedMessage(translateMessage("activateMessages", String.valueOf(selectedEntities.size())),
+                            MessageType.SUCCESS);
+                }
+            } catch (IllegalStateException e) {
+                if (e.getMessage().contains("validation")) {
+                    addTranslatedMessage(translateMessage("activateFailedValidationMessage"), MessageType.FAILURE);
+                } else {
+                    addTranslatedMessage(translateMessage("activateFailedMessage"), MessageType.FAILURE);
+                }
             }
         }
 

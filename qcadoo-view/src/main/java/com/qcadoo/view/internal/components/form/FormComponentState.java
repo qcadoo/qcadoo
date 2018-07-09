@@ -483,17 +483,26 @@ public class FormComponentState extends AbstractContainerState implements FormCo
         }
 
         public void activate(final String[] args) {
-            if (entityId == null) {
-                addTranslatedMessage(translateMessage("activateFailedMessage"), MessageType.FAILURE);
-                return;
-            }
+            try {
 
-            List<Entity> activatedEntities = getDataDefinition().activate(entityId);
+                if (entityId == null) {
+                    addTranslatedMessage(translateMessage("activateFailedMessage"), MessageType.FAILURE);
+                    return;
+                }
 
-            if (!activatedEntities.isEmpty()) {
-                active = true;
-                addTranslatedMessage(translateMessage("activateMessage"), MessageType.SUCCESS);
-                setEntity(activatedEntities.get(0));
+                List<Entity> activatedEntities = getDataDefinition().activate(entityId);
+
+                if (!activatedEntities.isEmpty()) {
+                    active = true;
+                    addTranslatedMessage(translateMessage("activateMessage"), MessageType.SUCCESS);
+                    setEntity(activatedEntities.get(0));
+                }
+            } catch (IllegalStateException e) {
+                if (e.getMessage().contains("validation")) {
+                    addTranslatedMessage(translateMessage("activateFailedValidationMessage"), MessageType.FAILURE);
+                } else {
+                    addTranslatedMessage(translateMessage("activateFailedMessage"), MessageType.FAILURE);
+                }
             }
         }
 
