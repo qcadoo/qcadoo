@@ -21,7 +21,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * ***************************************************************************
  */
-package com.qcadoo.plugins.qcadooExport.internal;
+package com.qcadoo.plugins.qcadooExport.internal.controllers;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -50,6 +50,7 @@ import com.lowagie.text.PageSize;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
+import com.qcadoo.plugins.qcadooExport.api.helpers.ExportToPDFColumnsHelper;
 import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.api.aop.Monitorable;
 import com.qcadoo.model.api.file.FileService;
@@ -91,6 +92,9 @@ public class ExportToPDFController {
 
     @Autowired
     private FooterResolver footerResolver;
+
+    @Autowired
+	private	ExportToPDFColumnsHelper exportToPDFColumnsHelper;
 
     @Monitorable(threshold = 500)
     @ResponseBody
@@ -159,18 +163,7 @@ public class ExportToPDFController {
     }
 
     private List<String> getColumns(final GridComponent grid, final String viewName) {
-        List<String> columns = Lists.newLinkedList();
-
-        grid.getColumns().entrySet().stream().forEach(entry -> {
-            String columnAuthorizationRole = entry.getValue().getAuthorizationRole();
-
-            if ((Strings.isNullOrEmpty(columnAuthorizationRole) || securityRolesService.canAccess(columnAuthorizationRole))
-                    && !entry.getValue().isHidden()) {
-                columns.add(entry.getKey());
-            }
-        });
-
-        return columns;
+        return exportToPDFColumnsHelper.getColumns(grid);
     }
 
     private List<String> getColumnNames(final GridComponent grid, final List<String> columns) {

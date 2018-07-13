@@ -69,6 +69,7 @@ QCD.components.elements.Grid = function (element, mainController) {
             multiselectMode : true,
             isEditable : true,
 			multiSearchEnabled : false,
+			userHiddenColumns : [],
 			deleteEnabled : false
         },
 
@@ -306,6 +307,8 @@ QCD.components.elements.Grid = function (element, mainController) {
         gridParameters.correspondingLookup = options.correspondingLookup;
         gridParameters.correspondingViewInModal = options.correspondingViewInModal;
         gridParameters.weakRelation = options.weakRelation;
+
+        updateUserHiddenColumns();
     }
 
     function aferSelectionUpdate() {
@@ -1138,7 +1141,9 @@ QCD.components.elements.Grid = function (element, mainController) {
                 columns.push({name: column.name, width: column.width});
             }
         }
+
         updateSavedOptions("columns", columns);
+        updateUserHiddenColumns();
     }
 
     this.onColumnChooserClicked = function () {
@@ -1616,7 +1621,19 @@ QCD.components.elements.Grid = function (element, mainController) {
             lookupCode : stripTags(grid.getRowData(entityId).lookupCode)
         };
     };
-    
+
+    function updateUserHiddenColumns() {
+        currentState.userHiddenColumns = [];
+        var restoredColumns = JSON.stringify(localStorage.getItem(localStorageKey));
+        if (restoredColumns) {
+            for (var i in gridParameters.colModel) {
+                if (restoredColumns.indexOf(gridParameters.colModel[i].name) === -1) {
+                    currentState.userHiddenColumns.push(gridParameters.colModel[i].name);
+                }
+            }
+        }
+    }
+
     function constructor() {
 
         parseOptions(that.options, that);
