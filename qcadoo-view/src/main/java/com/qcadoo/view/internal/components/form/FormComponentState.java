@@ -23,7 +23,20 @@
  */
 package com.qcadoo.view.internal.components.form;
 
-import com.qcadoo.model.api.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.qcadoo.model.api.Entity;
+import com.qcadoo.model.api.EntityMessagesHolder;
+import com.qcadoo.model.api.EntityOpResult;
+import com.qcadoo.model.api.EntityTree;
+import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.expression.ExpressionUtils;
 import com.qcadoo.model.api.validators.ErrorMessage;
 import com.qcadoo.model.internal.DetachedEntityTreeImpl;
@@ -38,10 +51,6 @@ import com.qcadoo.view.internal.components.FieldComponentState;
 import com.qcadoo.view.internal.components.lookup.LookupComponentState;
 import com.qcadoo.view.internal.components.tree.TreeComponentState;
 import com.qcadoo.view.internal.states.AbstractContainerState;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.*;
 
 public class FormComponentState extends AbstractContainerState implements FormComponent {
 
@@ -474,17 +483,26 @@ public class FormComponentState extends AbstractContainerState implements FormCo
         }
 
         public void activate(final String[] args) {
-            if (entityId == null) {
-                addTranslatedMessage(translateMessage("activateFailedMessage"), MessageType.FAILURE);
-                return;
-            }
+            try {
 
-            List<Entity> activatedEntities = getDataDefinition().activate(entityId);
+                if (entityId == null) {
+                    addTranslatedMessage(translateMessage("activateFailedMessage"), MessageType.FAILURE);
+                    return;
+                }
 
-            if (!activatedEntities.isEmpty()) {
-                active = true;
-                addTranslatedMessage(translateMessage("activateMessage"), MessageType.SUCCESS);
-                setEntity(activatedEntities.get(0));
+                List<Entity> activatedEntities = getDataDefinition().activate(entityId);
+
+                if (!activatedEntities.isEmpty()) {
+                    active = true;
+                    addTranslatedMessage(translateMessage("activateMessage"), MessageType.SUCCESS);
+                    setEntity(activatedEntities.get(0));
+                }
+            } catch (IllegalStateException e) {
+                if (e.getMessage().contains("validation")) {
+                    addTranslatedMessage(translateMessage("activateFailedValidationMessage"), MessageType.FAILURE);
+                } else {
+                    addTranslatedMessage(translateMessage("activateFailedMessage"), MessageType.FAILURE);
+                }
             }
         }
 
@@ -494,12 +512,20 @@ public class FormComponentState extends AbstractContainerState implements FormCo
                 return;
             }
 
-            List<Entity> deactivatedEntities = getDataDefinition().deactivate(entityId);
+            try {
+                List<Entity> deactivatedEntities = getDataDefinition().deactivate(entityId);
 
-            if (!deactivatedEntities.isEmpty()) {
-                active = false;
-                addTranslatedMessage(translateMessage("deactivateMessage"), MessageType.SUCCESS);
-                setEntity(deactivatedEntities.get(0));
+                if (!deactivatedEntities.isEmpty()) {
+                    active = false;
+                    addTranslatedMessage(translateMessage("deactivateMessage"), MessageType.SUCCESS);
+                    setEntity(deactivatedEntities.get(0));
+                }
+            } catch (IllegalStateException e) {
+                if (e.getMessage().contains("validation")) {
+                    addTranslatedMessage(translateMessage("deactivateFailedValidationMessage"), MessageType.FAILURE);
+                } else {
+                    addTranslatedMessage(translateMessage("deactivateFailedMessage"), MessageType.FAILURE);
+                }
             }
         }
 
