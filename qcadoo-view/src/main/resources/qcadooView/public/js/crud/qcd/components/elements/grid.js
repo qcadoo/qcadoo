@@ -1624,11 +1624,19 @@ QCD.components.elements.Grid = function (element, mainController) {
 
     function updateUserHiddenColumns() {
         currentState.userHiddenColumns = [];
-        var restoredColumns = JSON.stringify(localStorage.getItem(localStorageKey));
-        if (restoredColumns) {
+        var savedOptions = getSavedOptions();
+        if (savedOptions.columns) {
             for (var i in gridParameters.colModel) {
-                if (restoredColumns.indexOf(gridParameters.colModel[i].name) === -1) {
+                var contains = false;
+                for (var columnIndex in savedOptions.columns) {
+                    contains = savedOptions.columns[columnIndex].name === gridParameters.colModel[i].name;
+                    if (contains) {
+                        break;
+                    }
+                }
+                if (!contains) {
                     currentState.userHiddenColumns.push(gridParameters.colModel[i].name);
+                    break;
                 }
             }
         }
