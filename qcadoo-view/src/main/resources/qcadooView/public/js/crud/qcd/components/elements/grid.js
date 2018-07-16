@@ -172,8 +172,8 @@ QCD.components.elements.Grid = function (element, mainController) {
                 }
             }
 			
-			for(var multiSearchColIter in options.multiSearchColumns){
-				if(options.multiSearchColumns[multiSearchColIter] === column.name){
+			for (var multiSearchColIter in options.multiSearchColumns){
+				if (options.multiSearchColumns[multiSearchColIter] === column.name){
 					hasMultiSearchColumns = true;
 					multiSearchColumn = {
 							text : column.label,
@@ -247,7 +247,7 @@ QCD.components.elements.Grid = function (element, mainController) {
             } else {
                 hiddenColumnValues[column.name] = {};
             }
-			if(multiSearchColumn != null){
+			if (multiSearchColumn != null) {
 				multiSearchColumns.push(multiSearchColumn);
 				multiSearchColumn = null;
 			}
@@ -1394,7 +1394,7 @@ QCD.components.elements.Grid = function (element, mainController) {
 
     function restoreSavedOptions() {
         var savedOptions = getSavedOptions();
-        if(savedOptions.filters){
+        if (savedOptions.filters){
             currentState.filters = savedOptions.filters;
         }
         if (savedOptions.sorters) {
@@ -1626,18 +1626,18 @@ QCD.components.elements.Grid = function (element, mainController) {
         currentState.userHiddenColumns = [];
         var savedOptions = getSavedOptions();
         if (savedOptions.columns) {
-            for (var i in gridParameters.colModel) {
+            for (var i in columnModel) {
                 var contains = false;
                 for (var columnIndex in savedOptions.columns) {
-                    contains = savedOptions.columns[columnIndex].name === gridParameters.colModel[i].name;
+                    contains = savedOptions.columns[columnIndex].name === columnModel[i].name;
                     if (contains) {
                         break;
                     }
                 }
                 if (!contains) {
-                    currentState.userHiddenColumns.push(gridParameters.colModel[i].name);
-                    break;
+                    currentState.userHiddenColumns.push(columnModel[i].name);
                 }
+
             }
         }
     }
