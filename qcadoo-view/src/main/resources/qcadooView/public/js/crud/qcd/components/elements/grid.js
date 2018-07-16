@@ -1657,6 +1657,10 @@ QCD.components.elements.Grid = function (element, mainController) {
         }
 
         gridParameters.onCellSelect = function (rowId, iCol, cellcontent, e) {
+            if (window.getSelection().toString()) {
+                grid.setSelection(rowId, false);
+                return;
+            }
             if (!currentState.rowLinkClickedBefore) {
                 rowClicked(rowId, iCol);
             }
