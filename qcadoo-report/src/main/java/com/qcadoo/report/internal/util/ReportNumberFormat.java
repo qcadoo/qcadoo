@@ -40,19 +40,17 @@ public final class ReportNumberFormat extends NumberFormat {
 
     private static final Map<Locale, ReportNumberFormat> FORMATTERS = new HashMap<Locale, ReportNumberFormat>();
 
-    public static ReportNumberFormat getInstance(final Locale locale) {
-        ReportNumberFormat format = FORMATTERS.get(locale);
-        if (format == null) {
-            synchronized (FORMATTERS) {
-                format = FORMATTERS.get(locale);
-                if (format == null) {
-                    format = new ReportNumberFormat(locale);
-                    FORMATTERS.put(locale, format);
-                }
-            }
-        }
-        return format;
-    }
+	public static ReportNumberFormat getInstance(final Locale locale) {
+		ReportNumberFormat format = FORMATTERS.get(locale);
+
+		if (format == null) {
+			synchronized (FORMATTERS) {
+				format = FORMATTERS.computeIfAbsent(locale, f -> new ReportNumberFormat(locale));
+			}
+		}
+
+		return format;
+	}
 
     private ReportNumberFormat(final Locale locale) {
         super();
