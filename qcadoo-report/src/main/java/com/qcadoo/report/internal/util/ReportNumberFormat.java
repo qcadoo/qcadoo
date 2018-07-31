@@ -42,15 +42,13 @@ public final class ReportNumberFormat extends NumberFormat {
 
     public static ReportNumberFormat getInstance(final Locale locale) {
         ReportNumberFormat format = FORMATTERS.get(locale);
+
         if (format == null) {
             synchronized (FORMATTERS) {
-                format = FORMATTERS.get(locale);
-                if (format == null) {
-                    format = new ReportNumberFormat(locale);
-                    FORMATTERS.put(locale, format);
-                }
+                format = FORMATTERS.computeIfAbsent(locale, f -> new ReportNumberFormat(locale));
             }
         }
+
         return format;
     }
 
