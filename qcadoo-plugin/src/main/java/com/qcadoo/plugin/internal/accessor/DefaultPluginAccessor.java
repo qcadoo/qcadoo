@@ -181,8 +181,7 @@ public class DefaultPluginAccessor implements InternalPluginAccessor, Applicatio
                 }
             }
             if (existingPlugin == null) {
-                // TODO temporary - uncomment this after changes in connectors
-                // pluginDao.delete(databasePlugin);
+                pluginDao.delete(databasePlugin);
             }
         }
         Set<InternalPlugin> temporaryPlugins = pluginDescriptorParser.getTemporaryPlugins();

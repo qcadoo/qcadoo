@@ -86,7 +86,7 @@ public class PluginAccessorTest {
         Assert.assertTrue(true);
     }
 
-    // @Test
+    @Test
     public void shouldSynchronizePluginsFromClasspathAndDatabase() throws Exception {
         // given
         InternalPlugin plugin1 = mock(InternalPlugin.class);
@@ -307,7 +307,7 @@ public class PluginAccessorTest {
         verify(pluginDao, never()).save(plugin3);
     }
 
-    // @Test
+    @Test
     public void shouldNotDeleteTemporaryPlugins() throws Exception {
         // given
         QcadooPluginPlugin pluginsPlugin1 = mock(QcadooPluginPlugin.class);
