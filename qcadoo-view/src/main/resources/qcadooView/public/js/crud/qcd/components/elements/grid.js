@@ -991,7 +991,10 @@ QCD.components.elements.Grid = function (element, mainController) {
     			currentState.order.splice(orderIndex, 1);
     		}
     	}
-        updateSavedOptions("sorters", currentState.order);
+
+    	if(!jQuery.isEmptyObject(currentState.order)) {
+            updateSavedOptions("sorters", currentState.order);
+        }
         onCurrentStateChange();
         return 'stop';
     }
@@ -1398,7 +1401,9 @@ QCD.components.elements.Grid = function (element, mainController) {
             currentState.filters = savedOptions.filters;
         }
         if (savedOptions.sorters) {
-            currentState.order = savedOptions.sorters;
+            if(!jQuery.isEmptyObject(savedOptions.sorters)) {
+                currentState.order = savedOptions.sorters;
+            }
         }
     }
 
