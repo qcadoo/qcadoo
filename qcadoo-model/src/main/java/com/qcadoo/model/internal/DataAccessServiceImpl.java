@@ -27,10 +27,8 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -54,6 +52,7 @@ import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.api.CopyException;
@@ -120,9 +119,9 @@ public class DataAccessServiceImpl implements DataAccessService {
 
     @Autowired
     private TranslationService translationService;
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(DataAccessServiceImpl.class);
-    
+
     @Auditable
     @Override
     @Transactional
@@ -130,7 +129,7 @@ public class DataAccessServiceImpl implements DataAccessService {
     public Entity fastSave(final InternalDataDefinition dataDefinition, final Entity genericEntity) {
         return save(dataDefinition, genericEntity, true);
     }
-    
+
     @Auditable
     @Override
     @Transactional
@@ -140,30 +139,34 @@ public class DataAccessServiceImpl implements DataAccessService {
     }
 
     private Entity save(final InternalDataDefinition dataDefinition, final Entity genericEntity, boolean fast) {
-        Set<Entity> newlySavedEntities = new HashSet<Entity>();
+        Set<Entity> newlySavedEntities = Sets.newHashSet();
 
         Long previousVersion = null;
-        if(dataDefinition.isVersionable()) {
+        if (dataDefinition.isVersionable()) {
             previousVersion = genericEntity.getLongField(VersionableConstants.VERSION_FIELD_NAME);
         }
 
-        Entity resultEntity = performSave(dataDefinition, genericEntity, new HashSet<Entity>(), newlySavedEntities, fast);
+        Entity resultEntity = performSave(dataDefinition, genericEntity, Sets.newHashSet(), newlySavedEntities, fast);
+
         try {
             if (TransactionAspectSupport.currentTransactionStatus().isRollbackOnly()) {
                 resultEntity.setNotValid();
+
                 for (Entity e : newlySavedEntities) {
                     e.setId(null);
                 }
 
-                if(dataDefinition.isVersionable()) {
+                if (dataDefinition.isVersionable()) {
                     resultEntity.setField(VersionableConstants.VERSION_FIELD_NAME, previousVersion);
                 }
             }
         } catch (NoTransactionException e) {
             LOG.error(e.getMessage(), e);
         }
+
         return resultEntity;
     }
+
     @SuppressWarnings("unchecked")
     private Entity performSave(final InternalDataDefinition dataDefinition, final Entity genericEntity,
             final Set<Entity> alreadySavedEntities, final Set<Entity> newlySavedEntities) {
@@ -173,7 +176,6 @@ public class DataAccessServiceImpl implements DataAccessService {
     @SuppressWarnings("unchecked")
     private Entity performSave(final InternalDataDefinition dataDefinition, final Entity genericEntity,
             final Set<Entity> alreadySavedEntities, final Set<Entity> newlySavedEntities, boolean fast) {
-
         checkNotNull(dataDefinition, L_DATA_DEFINITION_MUST_BE_GIVEN);
         checkState(dataDefinition.isEnabled(), L_DATA_DEFINITION_BELONGS_TO_DISABLED_PLUGIN);
         checkNotNull(genericEntity, "Entity must be given");
@@ -181,6 +183,7 @@ public class DataAccessServiceImpl implements DataAccessService {
         if (alreadySavedEntities.contains(genericEntity)) {
             return genericEntity;
         }
+
         Entity genericEntityToSave = genericEntity.copy();
 
         Object existingDatabaseEntity = getExistingDatabaseEntity(dataDefinition, genericEntity);
@@ -191,18 +194,22 @@ public class DataAccessServiceImpl implements DataAccessService {
             existingGenericEntity = entityService.convertToGenericEntity(dataDefinition, existingDatabaseEntity);
         }
 
-        if(!fast){
+        if (!fast) {
             validationService.validateGenericEntity(dataDefinition, genericEntity, existingGenericEntity);
         }
 
         if (!genericEntity.isValid()) {
             copyValidationErrors(dataDefinition, genericEntityToSave, genericEntity);
+
             if (existingGenericEntity != null) {
                 copyMissingFields(genericEntityToSave, existingGenericEntity);
             }
+
             logValidationErrors(genericEntityToSave);
+
             return genericEntityToSave;
         }
+
         Object databaseEntity = entityService.convertToDatabaseEntity(dataDefinition, genericEntity, existingDatabaseEntity);
 
         if (genericEntity.getId() == null) {
@@ -211,7 +218,7 @@ public class DataAccessServiceImpl implements DataAccessService {
 
         saveDatabaseEntity(dataDefinition, databaseEntity);
 
-        if(dataDefinition.isVersionable()){
+        if (dataDefinition.isVersionable()) {
             hibernateService.getCurrentSession().flush();
         }
 
@@ -226,6 +233,7 @@ public class DataAccessServiceImpl implements DataAccessService {
 
                 if (entities == null || entities instanceof EntityListImpl) {
                     savedEntity.setField(fieldEntry.getKey(), entities);
+
                     continue;
                 }
 
@@ -235,26 +243,29 @@ public class DataAccessServiceImpl implements DataAccessService {
 
                 EntityList dbEntities = savedEntity.getHasManyField(fieldEntry.getKey());
                 EntityOpResult results = removeOrphans(hasManyType, findOrphans(savedEntities, dbEntities));
+
                 if (!results.isSuccessfull()) {
-                    // #TODO MAKU
                     copyValidationErrors(dataDefinition, savedEntity, results.getMessagesHolder());
                     savedEntity.setField(fieldEntry.getKey(), existingGenericEntity.getField(fieldEntry.getKey()));
+
                     return savedEntity;
                 }
+
                 savedEntity.setField(fieldEntry.getKey(), savedEntities);
             } else if (fieldEntry.getValue().getType() instanceof TreeType) {
                 List<Entity> entities = (List<Entity>) genericEntity.getField(fieldEntry.getKey());
 
                 if (entities == null || entities instanceof EntityTreeImpl) {
                     savedEntity.setField(fieldEntry.getKey(), entities);
+
                     continue;
                 }
 
                 TreeType treeType = (TreeType) fieldEntry.getValue().getType();
 
                 List<Entity> savedEntities = saveTreeEntities(alreadySavedEntities, newlySavedEntities,
-                        treeType.getJoinFieldName(), savedEntity, entities,
-                        (InternalDataDefinition) treeType.getDataDefinition(), null);
+                        treeType.getJoinFieldName(), savedEntity, entities, (InternalDataDefinition) treeType.getDataDefinition(),
+                        null);
 
                 savedEntity.setField(fieldEntry.getKey(), savedEntities);
             }
@@ -287,6 +298,7 @@ public class DataAccessServiceImpl implements DataAccessService {
         }
 
         StringBuilder sb = new StringBuilder();
+
         if (StringUtils.isNotEmpty(msg)) {
             sb.append(msg);
             sb.append('\n');
@@ -299,6 +311,7 @@ public class DataAccessServiceImpl implements DataAccessService {
             sb.append(" --- " + error.getKey() + ": " + error.getValue().getMessage());
             sb.append('\n');
         }
+
         LOG.info(sb.toString());
     }
 
@@ -311,12 +324,13 @@ public class DataAccessServiceImpl implements DataAccessService {
     private List<Entity> saveHasManyEntities(final Set<Entity> alreadySavedEntities, final Set<Entity> newlySavedEntities,
             final String joinFieldName, final Entity parentEntity, final List<Entity> entities,
             final InternalDataDefinition dataDefinition) {
-        List<Entity> savedEntities = new ArrayList<Entity>();
+        List<Entity> savedEntities = Lists.newArrayList();
 
         for (Entity innerEntity : entities) {
             innerEntity.setField(joinFieldName, parentEntity.getId());
             Entity savedInnerEntity = performSave(dataDefinition, innerEntity, alreadySavedEntities, newlySavedEntities);
             savedEntities.add(savedInnerEntity);
+
             if (!savedInnerEntity.isValid()) {
                 rollbackAndAddGlobalError(parentEntity, savedInnerEntity);
             }
@@ -329,7 +343,8 @@ public class DataAccessServiceImpl implements DataAccessService {
     private List<Entity> saveTreeEntities(final Set<Entity> alreadySavedEntities, final Set<Entity> newlySavedEntities,
             final String joinFieldName, final Entity parentEntity, final List<Entity> entities,
             final InternalDataDefinition dataDefinition, final Long parentId) {
-        List<Entity> savedEntities = new ArrayList<Entity>();
+        List<Entity> savedEntities = Lists.newArrayList();
+
         int i = 0;
 
         for (Entity innerEntity : entities) {
@@ -340,6 +355,7 @@ public class DataAccessServiceImpl implements DataAccessService {
             innerEntity.setField("children", null);
             Entity savedInnerEntity = performSave(dataDefinition, innerEntity, alreadySavedEntities, newlySavedEntities);
             savedEntities.add(savedInnerEntity);
+
             if (children != null) {
                 children = saveTreeEntities(alreadySavedEntities, newlySavedEntities, joinFieldName, parentEntity, children,
                         dataDefinition, savedInnerEntity.getId());
@@ -353,16 +369,16 @@ public class DataAccessServiceImpl implements DataAccessService {
         return savedEntities;
     }
 
-
     private void rollbackAndAddGlobalError(final Entity savedEntity, final Entity errorEntity) {
         String msg = String.format("Can not save entity '%s' because related entity '%s' has following validation errors:",
                 savedEntity, errorEntity);
         logEntityErrors(errorEntity, msg);
         savedEntity.addGlobalError("qcadooView.validate.field.error.invalidRelatedObject", errorDetails(errorEntity));
+
         TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
     }
 
-   private EntityOpResult removeOrphans(final CollectionFieldType fieldType, final Iterable<Entity> orphans) {
+    private EntityOpResult removeOrphans(final CollectionFieldType fieldType, final Iterable<Entity> orphans) {
         switch (fieldType.getCascade()) {
             case NULLIFY:
                 return nullifyOrphans(fieldType.getJoinFieldName(), orphans);
@@ -380,10 +396,12 @@ public class DataAccessServiceImpl implements DataAccessService {
 
         for (Entity orphan : orphans) {
             EntityOpResult result = deleteEntity(dataDefinition, orphan.getId());
+
             if (!result.isSuccessfull()) {
                 return result;
             }
         }
+
         return EntityOpResult.successfull();
     }
 
@@ -391,10 +409,12 @@ public class DataAccessServiceImpl implements DataAccessService {
         for (Entity entity : entities) {
             entity.setField(fieldName, null);
             Entity savedEntity = entity.getDataDefinition().save(entity);
+
             if (!savedEntity.isValid()) {
                 return EntityOpResult.failure(savedEntity);
             }
         }
+
         return EntityOpResult.successfull();
     }
 
@@ -402,7 +422,8 @@ public class DataAccessServiceImpl implements DataAccessService {
         final Set<Long> savedEntityIds = Sets.newHashSet(EntityUtils.getIdsView(savedEntities));
         return Collections2.filter(dbEntities, new Predicate<Entity>() {
 
-            @Override public boolean apply(final Entity entity) {
+            @Override
+            public boolean apply(final Entity entity) {
                 return entity != null && !savedEntityIds.contains(entity.getId());
             }
         });
@@ -418,7 +439,7 @@ public class DataAccessServiceImpl implements DataAccessService {
 
         InternalDataDefinition dataDefinitionToActivate = getDataDefinitionByMasterModel(dataDefinition);
 
-        List<Entity> activatedEntities = new ArrayList<Entity>();
+        List<Entity> activatedEntities = Lists.newArrayList();
 
         for (Long entityId : entityIds) {
             Entity entity = get(dataDefinitionToActivate, entityId);
@@ -454,7 +475,7 @@ public class DataAccessServiceImpl implements DataAccessService {
 
         InternalDataDefinition dataDefinitionToDeactivate = getDataDefinitionByMasterModel(dataDefinition);
 
-        List<Entity> deactivatedEntities = new ArrayList<Entity>();
+        List<Entity> deactivatedEntities = Lists.newArrayList();
 
         for (Long entityId : entityIds) {
             Entity entity = get(dataDefinitionToDeactivate, entityId);
@@ -486,7 +507,8 @@ public class DataAccessServiceImpl implements DataAccessService {
     public List<Entity> copy(final InternalDataDefinition dataDefinition, final Long... entityIds) {
         InternalDataDefinition dataDefinitionToCopy = getDataDefinitionByMasterModel(dataDefinition);
 
-        List<Entity> copiedEntities = new ArrayList<Entity>();
+        List<Entity> copiedEntities = Lists.newArrayList();
+
         for (Long entityId : entityIds) {
             Entity sourceEntity = get(dataDefinitionToCopy, entityId);
             Entity targetEntity = copy(dataDefinitionToCopy, sourceEntity);
@@ -517,11 +539,12 @@ public class DataAccessServiceImpl implements DataAccessService {
         for (Entry<String, FieldDefinition> fieldEntry : dataDefinitionToCopy.getFields().entrySet()) {
             FieldDefinition fieldDefinition = fieldEntry.getValue();
             String fieldName = fieldEntry.getKey();
+
             boolean copy = fieldDefinition.getType().isCopyable();
+
             if (copy) {
                 targetEntity.setField(fieldName, getCopyValueOfSimpleField(sourceEntity, dataDefinitionToCopy, fieldName));
             }
-
         }
 
         if (!dataDefinitionToCopy.callCopyHook(targetEntity)) {
@@ -546,13 +569,13 @@ public class DataAccessServiceImpl implements DataAccessService {
             final String fieldName) {
         FieldDefinition fieldDefinition = dataDefinition.getField(fieldName);
 
-        if(!isFieldCopyable(TreeType.class, fieldDefinition, dataDefinition)){
+        if (!isFieldCopyable(TreeType.class, fieldDefinition, dataDefinition)) {
             return;
         }
 
         TreeType treeType = ((TreeType) fieldDefinition.getType());
 
-        List<Entity> entities = new ArrayList<Entity>();
+        List<Entity> entities = Lists.newArrayList();
 
         Entity root = sourceEntity.getTreeField(fieldName).getRoot();
 
@@ -572,13 +595,13 @@ public class DataAccessServiceImpl implements DataAccessService {
             final String fieldName) {
         FieldDefinition fieldDefinition = dataDefinition.getField(fieldName);
 
-        if(!isFieldCopyable(HasManyType.class, fieldDefinition, dataDefinition)){
+        if (!isFieldCopyable(HasManyType.class, fieldDefinition, dataDefinition)) {
             return;
         }
 
         HasManyType hasManyType = ((HasManyType) fieldDefinition.getType());
 
-        List<Entity> entities = new ArrayList<Entity>();
+        List<Entity> entities = Lists.newArrayList();
 
         for (Entity childEntity : sourceEntity.getHasManyField(fieldName)) {
             childEntity.setField(hasManyType.getJoinFieldName(), null);
@@ -597,21 +620,23 @@ public class DataAccessServiceImpl implements DataAccessService {
             final String fieldName) {
         FieldDefinition fieldDefinition = dataDefinition.getField(fieldName);
 
-        if(!isFieldCopyable(ManyToManyType.class, fieldDefinition, dataDefinition)){
+        if (!isFieldCopyable(ManyToManyType.class, fieldDefinition, dataDefinition)) {
             return;
         }
+
         targetEntity.setField(fieldName, sourceEntity.getField(fieldName));
     }
 
-    private boolean isFieldCopyable(Class fieldTypeClass, FieldDefinition fieldDefinition, DataDefinition dataDefinition){
-        return fieldTypeClass.isInstance(fieldDefinition.getType()) && fieldDefinition.getType().isCopyable() && ((InternalFieldDefinition)fieldDefinition).isEnabled();
+    private boolean isFieldCopyable(Class fieldTypeClass, FieldDefinition fieldDefinition, DataDefinition dataDefinition) {
+        return fieldTypeClass.isInstance(fieldDefinition.getType()) && fieldDefinition.getType().isCopyable()
+                && ((InternalFieldDefinition) fieldDefinition).isEnabled();
     }
 
     private Object getCopyValueOfSimpleField(final Entity sourceEntity, final DataDefinition dataDefinition,
             final String fieldName) {
         InternalFieldDefinition fieldDefinition = (InternalFieldDefinition) dataDefinition.getField(fieldName);
 
-        if(!fieldDefinition.isEnabled()){
+        if (!fieldDefinition.isEnabled()) {
             return null;
         }
 
@@ -673,6 +698,7 @@ public class DataAccessServiceImpl implements DataAccessService {
 
         if (databaseEntity == null) {
             logEntityInfo(dataDefinition, entityId, "hasn't been retrieved, because it doesn't exist");
+
             return null;
         }
 
@@ -697,10 +723,12 @@ public class DataAccessServiceImpl implements DataAccessService {
 
         for (Long entityId : entityIds) {
             EntityOpResult result = deleteEntity(dataDefinitionToDelete, entityId);
+
             if (!result.isSuccessfull()) {
                 return result;
             }
         }
+
         return EntityOpResult.successfull();
     }
 
@@ -729,28 +757,22 @@ public class DataAccessServiceImpl implements DataAccessService {
 
         int totalNumberOfEntities = -1;
 
+        List<?> results = hibernateService.list(query);
+
         if (searchQuery.hasFirstAndMaxResults()) {
-            totalNumberOfEntities = hibernateService.list(query).size();
+            totalNumberOfEntities = results.size();
             searchQuery.addFirstAndMaxResults(query);
         }
 
         if (totalNumberOfEntities == 0) {
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("There is no entity matching criteria " + searchQuery);
-            }
-            return getResultSet(null, totalNumberOfEntities, Collections.emptyList());
+            return returnEmptyResultSet(searchQuery, totalNumberOfEntities);
         }
-
-        List<?> results = hibernateService.list(query);
 
         if (totalNumberOfEntities == -1) {
             totalNumberOfEntities = results.size();
 
             if (totalNumberOfEntities == 0) {
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("There is no entity matching criteria " + searchQuery);
-                }
-                return getResultSet(null, totalNumberOfEntities, Collections.emptyList());
+                return returnEmptyResultSet(searchQuery, totalNumberOfEntities);
             }
         }
 
@@ -767,6 +789,14 @@ public class DataAccessServiceImpl implements DataAccessService {
         return getResultSet(searchQueryDataDefinition, totalNumberOfEntities, results);
     }
 
+    private SearchResult returnEmptyResultSet(final SearchQuery searchQuery, final int totalNumberOfEntities) {
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("There is no entity matching criteria " + searchQuery);
+        }
+
+        return getResultSet(null, totalNumberOfEntities, Collections.emptyList());
+    }
+
     @Override
     @Transactional(readOnly = true)
     @Monitorable
@@ -775,18 +805,27 @@ public class DataAccessServiceImpl implements DataAccessService {
 
         Criteria criteria = searchCriteria.createCriteria(hibernateService.getCurrentSession());
 
-        int totalNumberOfEntities = hibernateService.getTotalNumberOfEntities(criteria);
+        int totalNumberOfEntities = -1;
 
-        if (totalNumberOfEntities == 0) {
-            LOG.debug("There is no entity matching criteria " + searchCriteria);
-            return getResultSet(null, totalNumberOfEntities, Collections.emptyList());
+        if (searchCriteria.hasFirstAndMaxResults()) {
+            totalNumberOfEntities = hibernateService.getTotalNumberOfEntities(criteria);
+            searchCriteria.addFirstAndMaxResults(criteria);
         }
 
-        searchCriteria.addFirstAndMaxResults(criteria);
+        if (totalNumberOfEntities == 0) {
+            return returnEmptyResultSet(searchCriteria, totalNumberOfEntities);
+        }
+
         searchCriteria.addOrders(criteria);
         searchCriteria.addCacheable(criteria);
 
         List<?> results = hibernateService.list(criteria);
+
+        if (totalNumberOfEntities == -1) {
+            totalNumberOfEntities = results.size();
+
+            return returnEmptyResultSet(searchCriteria, totalNumberOfEntities);
+        }
 
         if (LOG.isDebugEnabled()) {
             LOG.debug("There are " + totalNumberOfEntities + " entities matching criteria " + searchCriteria);
@@ -801,15 +840,25 @@ public class DataAccessServiceImpl implements DataAccessService {
         return getResultSet(searchQueryDataDefinition, totalNumberOfEntities, results);
     }
 
+    private SearchResult returnEmptyResultSet(final SearchCriteria searchCriteria, final int totalNumberOfEntities) {
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("There is no entity matching criteria " + searchCriteria);
+        }
+
+        return getResultSet(null, totalNumberOfEntities, Collections.emptyList());
+    }
+
     @Override
     public void moveTo(final InternalDataDefinition dataDefinition, final Long entityId, final int position) {
         checkState(position > 0, "Position must be greaten than 0");
+
         move(dataDefinition, entityId, position, 0);
     }
 
     @Override
     public void move(final InternalDataDefinition dataDefinition, final Long entityId, final int offset) {
         checkState(offset != 0, "Offset must be different than 0");
+
         move(dataDefinition, entityId, 0, offset);
     }
 
@@ -817,18 +866,21 @@ public class DataAccessServiceImpl implements DataAccessService {
     @Monitorable
     private void move(final InternalDataDefinition dataDefinition, final Long entityId, final int position, final int offset) {
         InternalDataDefinition dataDefinitionToMove = getDataDefinitionByMasterModel(dataDefinition);
+
         checkNotNull(dataDefinitionToMove, L_DATA_DEFINITION_MUST_BE_GIVEN);
         checkState(dataDefinitionToMove.isPrioritizable(), "Entity must be prioritizable");
         checkState(dataDefinitionToMove.isEnabled(), L_DATA_DEFINITION_BELONGS_TO_DISABLED_PLUGIN);
         checkNotNull(entityId, "EntityId must be given");
 
         Object databaseEntity = getDatabaseEntity(dataDefinitionToMove, entityId);
+
         if (databaseEntity == null) {
             logEntityInfo(dataDefinitionToMove, entityId, "hasn't been prioritized, because it doesn't exist");
             return;
         }
 
         priorityService.move(dataDefinitionToMove, databaseEntity, position, offset);
+
         logEntityInfo(dataDefinitionToMove, entityId, "has been prioritized");
     }
 
@@ -845,7 +897,7 @@ public class DataAccessServiceImpl implements DataAccessService {
     }
 
     private EntityOpResult deleteEntity(final InternalDataDefinition dataDefinition, final Long entityId) {
-        return deleteEntity(dataDefinition, entityId, Sets.<EntitySignature> newHashSet());
+        return deleteEntity(dataDefinition, entityId, Sets.newHashSet());
     }
 
     private EntityOpResult deleteEntity(final InternalDataDefinition dataDefinition, final Long entityId,
@@ -855,10 +907,9 @@ public class DataAccessServiceImpl implements DataAccessService {
 
     private EntityOpResult deleteEntity(final InternalDataDefinition dataDefinition, final Long entityId, final boolean testOnly,
             final Set<EntitySignature> traversedEntities) {
-
         Object databaseEntity = getDatabaseEntity(dataDefinition, entityId);
 
-        if(databaseEntity == null){
+        if (databaseEntity == null) {
             logEntityDebug(dataDefinition, entityId, "has been deleted earlier, for example onDelete hook");
             return new EntityOpResult(true, new EntityMessagesHolderImpl());
         }
@@ -869,12 +920,14 @@ public class DataAccessServiceImpl implements DataAccessService {
             logDeletionErrors(entity);
             entity.addGlobalError("qcadooView.message.deleteFailedMessage");
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+
             return EntityOpResult.failure(entity);
         }
 
         priorityService.deprioritizeEntity(dataDefinition, databaseEntity);
 
         Map<String, FieldDefinition> fields = dataDefinition.getFields();
+
         for (FieldDefinition fieldDefinition : fields.values()) {
             if (fieldDefinition.getType() instanceof CollectionFieldType) {
                 CollectionFieldType collectionFieldType = (CollectionFieldType) fieldDefinition.getType();
@@ -893,6 +946,7 @@ public class DataAccessServiceImpl implements DataAccessService {
         } else {
             try {
                 databaseEntity = getDatabaseEntity(dataDefinition, entityId);
+
                 if (databaseEntity != null) {
                     hibernateService.getCurrentSession().delete(databaseEntity);
                     hibernateService.getCurrentSession().flush();
@@ -900,8 +954,10 @@ public class DataAccessServiceImpl implements DataAccessService {
             } catch (ConstraintViolationException e) {
                 throw new IllegalStateException(getConstraintViolationMessage(entity), e);
             }
+
             logEntityDebug(dataDefinition, entityId, "has been deleted");
         }
+
         return new EntityOpResult(true, entity);
     }
 
@@ -910,7 +966,9 @@ public class DataAccessServiceImpl implements DataAccessService {
         if (children == null || children.isEmpty()) {
             return EntityOpResult.successfull();
         }
+
         boolean isManyToManyType = fieldType instanceof ManyToManyType;
+
         InternalDataDefinition childDataDefinition = (InternalDataDefinition) ((DataDefinitionHolder) fieldType)
                 .getDataDefinition();
         Cascadeable.Cascade cascade = ((Cascadeable) fieldType).getCascade();
@@ -930,18 +988,24 @@ public class DataAccessServiceImpl implements DataAccessService {
     private EntityOpResult performCascadeNullification(final InternalDataDefinition childDataDefinition,
             final Collection<Entity> children, final Entity entity, final FieldType fieldType) {
         String joinFieldName = ((JoinFieldHolder) fieldType).getJoinFieldName();
+
         for (Entity child : children) {
             child.setField(joinFieldName, null);
             child = save(childDataDefinition, child);
+
             if (!child.isValid()) {
                 String msg = String.format("Can not nullify field '%s' in %s because of following validation errors:",
                         joinFieldName, child);
+
                 logEntityErrors(child, msg);
+
                 EntityMessagesHolder msgHolder = new EntityMessagesHolderImpl(child);
                 msgHolder.addGlobalError("qcadooView.errorPage.error.dataIntegrityViolationException.objectInUse.explanation");
+
                 return EntityOpResult.failure(msgHolder);
             }
         }
+
         return EntityOpResult.successfull();
     }
 
@@ -949,35 +1013,41 @@ public class DataAccessServiceImpl implements DataAccessService {
             final Collection<Entity> children, final boolean testOnly, final Set<EntitySignature> traversedEntities) {
         for (Entity child : children) {
             EntitySignature childSignature = EntitySignature.of(child);
+
             if (!traversedEntities.contains(childSignature)) {
                 traversedEntities.add(childSignature);
                 EntityOpResult result = deleteEntity(childDataDefinition, child.getId(), testOnly, traversedEntities);
+
                 if (!result.isSuccessfull()) {
                     return result;
                 }
             }
         }
+
         return EntityOpResult.successfull();
     }
 
     private String getConstraintViolationMessage(final Entity entity) {
         String message = null;
+
         try {
             message = String.format("Entity [ENTITY.%s] is in use", getIdentifierExpression(entity));
         } catch (Exception e) {
             message = "Entity is in use";
         }
+
         return message;
     }
 
     private String getIdentifierExpression(final Entity entity) {
-        InternalDataDefinition dataDef = (InternalDataDefinition) entity.getDataDefinition();
-        return expressionService.getValue(entity, dataDef.getIdentifierExpression(), Locale.ENGLISH);
+        InternalDataDefinition dataDefinition = (InternalDataDefinition) entity.getDataDefinition();
+
+        return expressionService.getValue(entity, dataDefinition.getIdentifierExpression(), Locale.ENGLISH);
     }
 
     private SearchResultImpl getResultSet(final InternalDataDefinition dataDefinition, final int totalNumberOfEntities,
             final List<?> results) {
-        List<Entity> genericResults = new ArrayList<Entity>();
+        List<Entity> genericResults = Lists.newArrayList();
 
         for (Object databaseEntity : results) {
             genericResults.add(entityService.convertToGenericEntity(dataDefinition, databaseEntity));
@@ -1029,6 +1099,7 @@ public class DataAccessServiceImpl implements DataAccessService {
             entityInfo.append(dataDefinition.getPluginIdentifier()).append('.').append(dataDefinition.getName());
             entityInfo.append("][id=").append(entityId).append("] ");
             entityInfo.append(message);
+
             LOG.info(entityInfo.toString());
         }
     }
@@ -1039,6 +1110,7 @@ public class DataAccessServiceImpl implements DataAccessService {
             entityInfo.append(dataDefinition.getPluginIdentifier()).append('.').append(dataDefinition.getName());
             entityInfo.append("][id=").append(entityId).append("] ");
             entityInfo.append(message);
+
             LOG.debug(entityInfo.toString());
         }
     }
@@ -1065,11 +1137,14 @@ public class DataAccessServiceImpl implements DataAccessService {
 
     private InternalDataDefinition getDataDefinitionByMasterModel(InternalDataDefinition dataDefinition) {
         InternalDataDefinition masterDataDefinition;
-        if(dataDefinition.getMasterModel() == null){
+
+        if (dataDefinition.getMasterModel() == null) {
             masterDataDefinition = dataDefinition;
         } else {
-            masterDataDefinition = (InternalDataDefinition)dataDefinitionService.get(dataDefinition.getMasterModel().getPluginIdentifier(), dataDefinition.getMasterModel().getName());
+            masterDataDefinition = (InternalDataDefinition) dataDefinitionService
+                    .get(dataDefinition.getMasterModel().getPluginIdentifier(), dataDefinition.getMasterModel().getName());
         }
+
         checkNotNull(masterDataDefinition, L_DATA_DEFINITION_MUST_BE_GIVEN);
 
         return masterDataDefinition;
@@ -1080,19 +1155,22 @@ public class DataAccessServiceImpl implements DataAccessService {
     @Monitorable
     public Entity getMasterModelEntity(InternalDataDefinition dataDefinition, Long id) {
         InternalDataDefinition dataDefinitionByMasterModel = getDataDefinitionByMasterModel(dataDefinition);
-        
+
         return dataDefinitionByMasterModel.get(id);
     }
 
     private String errorDetails(Entity errorEntity) {
         StringBuilder sb = new StringBuilder();
+
         for (ErrorMessage error : errorEntity.getGlobalErrors()) {
-            sb.append("<br />").append(translationService.translate(error.getMessage(), LocaleContextHolder.getLocale(), error.getVars()));
+            sb.append("<br />")
+                    .append(translationService.translate(error.getMessage(), LocaleContextHolder.getLocale(), error.getVars()));
         }
         for (Map.Entry<String, ErrorMessage> error : errorEntity.getErrors().entrySet()) {
-            sb.append("<br />").append(translationService.translate(error.getValue().getMessage(), LocaleContextHolder.getLocale(), error.getValue().getMessage()));
+            sb.append("<br />").append(translationService.translate(error.getValue().getMessage(),
+                    LocaleContextHolder.getLocale(), error.getValue().getMessage()));
         }
-        
+
         return sb.toString();
     }
 }

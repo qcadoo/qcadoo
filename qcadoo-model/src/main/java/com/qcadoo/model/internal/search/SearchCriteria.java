@@ -47,6 +47,8 @@ public interface SearchCriteria {
 
     void addFirstAndMaxResults(Criteria criteria);
 
+	boolean hasFirstAndMaxResults();
+
     void addCacheable(Criteria criteria);
 
     void addOrders(Criteria criteria);
