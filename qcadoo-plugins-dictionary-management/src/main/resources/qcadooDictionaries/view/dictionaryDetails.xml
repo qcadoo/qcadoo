@@ -44,7 +44,6 @@
 				   source="#{form}.dictionaryItems">
 			<script>
 				<![CDATA[
-
 					var activateButton = #{window}.getRibbonItem("states.activate");
 					var deactivateButton = #{window}.getRibbonItem("states.deactivate");
 
@@ -56,6 +55,7 @@
 							} else {
 								var hasExternal = false;
 								var hasTechnicalCode = false;
+
 								for (var i in selectedEntitiesArray) {
 									if (selectedEntitiesArray[i].fields.externalNumber != '' && selectedEntitiesArray[i].fields.externalNumber != undefined) {
 										hasExternal = true;

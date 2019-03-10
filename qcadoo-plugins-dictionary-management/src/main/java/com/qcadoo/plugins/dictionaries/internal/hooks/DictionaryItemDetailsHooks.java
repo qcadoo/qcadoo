@@ -25,12 +25,16 @@ package com.qcadoo.plugins.dictionaries.internal.hooks;
 
 import static com.qcadoo.model.constants.DictionaryItemFields.TECHNICAL_CODE;
 
+import java.util.Objects;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.Entity;
+import com.qcadoo.model.constants.DictionaryFields;
+import com.qcadoo.model.constants.DictionaryItemFields;
 import com.qcadoo.model.constants.QcadooModelConstants;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.api.components.FieldComponent;
@@ -41,70 +45,96 @@ import com.qcadoo.view.api.ribbon.RibbonActionItem;
 @Service
 public class DictionaryItemDetailsHooks {
 
+    private static final String L_FORM = "form";
+
+    private static final String L_WINDOW = "window";
+
+    private static final String L_STATES = "states";
+
+    private static final String L_DEACTIVATE = "deactivate";
+
+    private static final String L_ACTIVATE = "activate";
+
+    private static final String L_IS_INTEGER = "isInteger";
+
     @Autowired
     private DataDefinitionService dataDefinitionService;
 
     public void blockedActivationOptionWhenDictionaryWasAddFromSystem(final ViewDefinitionState view) {
-        FormComponent form = (FormComponent) view.getComponentByReference("form");
-        if (form.getEntityId() == null) {
+        FormComponent dictionaryItemForm = (FormComponent) view.getComponentByReference(L_FORM);
+
+        Long dictionaryItemId = dictionaryItemForm.getEntityId();
+
+        if (dictionaryItemId == null) {
             return;
         }
-        Entity dictionaryItem = form.getEntity();
-        if (StringUtils.isEmpty(dictionaryItem.getStringField(TECHNICAL_CODE))) {
+
+        Entity dictionaryItem = getDictionaryItem(dictionaryItemId);
+
+        if (StringUtils.isNotEmpty(dictionaryItem.getStringField(TECHNICAL_CODE))) {
             changedEnabledButton(view, false);
         }
     }
 
     protected void changedEnabledButton(final ViewDefinitionState view, final boolean enabled) {
-        WindowComponent window = (WindowComponent) view.getComponentByReference("window");
-        RibbonActionItem deactivateButton = window.getRibbon().getGroupByName("states").getItemByName("deactivate");
+        WindowComponent window = (WindowComponent) view.getComponentByReference(L_WINDOW);
+        RibbonActionItem deactivateButton = window.getRibbon().getGroupByName(L_STATES).getItemByName(L_DEACTIVATE);
+        RibbonActionItem activateButton = window.getRibbon().getGroupByName(L_STATES).getItemByName(L_ACTIVATE);
+
         deactivateButton.setEnabled(enabled);
         deactivateButton.requestUpdate(true);
-        RibbonActionItem activateButton = window.getRibbon().getGroupByName("states").getItemByName("activate");
         activateButton.setEnabled(enabled);
         activateButton.requestUpdate(true);
     }
 
     public void disableNameEdit(final ViewDefinitionState view) {
-        FormComponent form = (FormComponent) view.getComponentByReference("form");
-        if (form.getEntityId() == null) {
+        FormComponent dictionaryItemForm = (FormComponent) view.getComponentByReference(L_FORM);
+        FieldComponent nameFieldComponent = (FieldComponent) view.getComponentByReference(DictionaryItemFields.NAME);
+
+        if (dictionaryItemForm.getEntityId() == null) {
             return;
         } else {
-            FieldComponent nameFieldComponent = (FieldComponent) view.getComponentByReference("name");
             nameFieldComponent.setEnabled(false);
         }
     }
 
     public void disableDictionaryItemFormForExternalItems(final ViewDefinitionState state) {
-        FormComponent form = (FormComponent) state.getComponentByReference("form");
+        FormComponent dictionaryItemForm = (FormComponent) state.getComponentByReference(L_FORM);
 
-        if (form.getEntityId() == null) {
-            form.setFormEnabled(true);
+        Long dictionaryItemId = dictionaryItemForm.getEntityId();
+
+        if (dictionaryItemId == null) {
+            dictionaryItemForm.setFormEnabled(true);
+
             return;
         }
 
-        Entity entity = dataDefinitionService.get(QcadooModelConstants.PLUGIN_IDENTIFIER,
-                QcadooModelConstants.MODEL_DICTIONARY_ITEM).get(form.getEntityId());
+        Entity dictionaryItem = getDictionaryItem(dictionaryItemId);
 
-        if (entity == null) {
+        if (Objects.isNull(dictionaryItem)) {
             return;
         }
 
-        String externalNumber = entity.getStringField("externalNumber");
+        String externalNumber = dictionaryItem.getStringField(DictionaryItemFields.EXTERNAL_NUMBER);
 
-        if (externalNumber != null) {
-            form.setFormEnabled(false);
-        } else {
-            form.setFormEnabled(true);
-        }
+        dictionaryItemForm.setFormEnabled(Objects.isNull(externalNumber));
     }
 
     public void showIntegerCheckbox(final ViewDefinitionState state) {
-        FormComponent form = (FormComponent) state.getComponentByReference("form");
-        String dictionaryName = form.getEntity().getBelongsToField("dictionary").getStringField("name");
-        if(QcadooModelConstants.DICTIONARY_UNITS.equals(dictionaryName)){
-            state.getComponentByReference("isInteger").setVisible(true);
+        FormComponent form = (FormComponent) state.getComponentByReference(L_FORM);
+
+        String dictionaryName = form.getEntity().getBelongsToField(DictionaryItemFields.DICTIONARY)
+                .getStringField(DictionaryFields.NAME);
+
+        if (QcadooModelConstants.DICTIONARY_UNITS.equals(dictionaryName)) {
+            state.getComponentByReference(L_IS_INTEGER).setVisible(true);
         }
+    }
+
+    private Entity getDictionaryItem(final Long dictionaryItemId) {
+        return dataDefinitionService
+                .get(QcadooModelConstants.PLUGIN_IDENTIFIER, QcadooModelConstants.MODEL_DICTIONARY_ITEM)
+                .get(dictionaryItemId);
     }
 
 }
