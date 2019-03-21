@@ -60,4 +60,10 @@ public interface LookupComponent extends FieldComponent {
      */
     boolean isEmpty();
 
+    /**
+     * Get current filed code
+     * @return current code
+     */
+    String getCurrentCode();
+
 }
