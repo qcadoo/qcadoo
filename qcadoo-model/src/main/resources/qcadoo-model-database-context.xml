@@ -39,45 +39,47 @@
 		http://www.springframework.org/schema/context 
 		http://www.springframework.org/schema/context/spring-context-3.1.xsd">
 
-	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
-		  destroy-method="close">
-		<property name="driverClass" value="${dbDriverClass}"/>
+	<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
+		<property name="maximumPoolSize" value="${hikariMaximumPoolSize}" />
+		<property name="connectionTimeout" value="${hikariConnectionTimeout}" />
+		<property name="idleTimeout" value="${hikariIdleTimeout}" />
+		<property name="maxLifetime" value="${hikariMaxLifetime}" />
+		<property name="driverClassName" value="${dbDriverClass}"/>
 		<property name="jdbcUrl" value="${dbJdbcUrl}"/>
-		<property name="user" value="${dbUsername}"/>
+		<property name="username" value="${dbUsername}"/>
 		<property name="password" value="${dbPassword}"/>
 	</bean>
 
-	<beans>
+	<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource"
+		  destroy-method="close">
+		<constructor-arg ref="hikariConfig" />
+	</bean>
 
-		<bean id="sessionFactory"
-			  class="com.qcadoo.model.internal.sessionfactory.DynamicSessionFactoryBeanImpl">
-			<property name="dataSource" ref="dataSource"/>
-			<property name="hibernateProperties">
-				<props>
-					<prop key="hibernate.dialect">${hibernateDialect}</prop>
-					<prop key="hibernate.show_sql">${hibernateShowSql}</prop>
-					<prop key="hibernate.format_sql">${hibernateFormatSql}</prop>
-					<prop key="hibernate.hbm2ddl.auto">${hibernateHbm2ddlAuto}</prop>
-					<prop key="hibernate.generate_statistics">${hibernateGenerateStatistics}</prop>
-					<prop key="hibernate.order_updates">true</prop>
-					<prop key="hibernate.bytecode.use_reflection_optimizer">true</prop>
-					<prop key="hibernate.cache.use_second_level_cache">${hibernateUseSecondLevelCache}</prop>
-					<prop key="hibernate.cache.provider_class">${hibernateCacheProviderClass}</prop>
-					<prop key="hibernate.cache.use_query_cache">${hibernateUseQueryCache}</prop>
-					<prop key="hibernate.cache.use_minimal_puts">true</prop>
-					<prop key="hibernate.cache.use_structured_entries">true</prop>
-				</props>
-			</property>
-		</bean>
+	<bean id="sessionFactory" class="com.qcadoo.model.internal.sessionfactory.DynamicSessionFactoryBeanImpl">
+		<property name="dataSource" ref="dataSource"/>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">${hibernateDialect}</prop>
+				<prop key="hibernate.show_sql">${hibernateShowSql}</prop>
+				<prop key="hibernate.format_sql">${hibernateFormatSql}</prop>
+				<prop key="hibernate.hbm2ddl.auto">${hibernateHbm2ddlAuto}</prop>
+				<prop key="hibernate.generate_statistics">${hibernateGenerateStatistics}</prop>
+				<prop key="hibernate.order_updates">true</prop>
+				<prop key="hibernate.bytecode.use_reflection_optimizer">true</prop>
+				<prop key="hibernate.cache.use_second_level_cache">${hibernateUseSecondLevelCache}</prop>
+				<prop key="hibernate.cache.provider_class">${hibernateCacheProviderClass}</prop>
+				<prop key="hibernate.cache.use_query_cache">${hibernateUseQueryCache}</prop>
+				<prop key="hibernate.temp.use_jdbc_metadata_defaults">false</prop>
+			</props>
+		</property>
+	</bean>
 
-		<bean id="transactionManager"
-			  class="org.springframework.orm.hibernate3.HibernateTransactionManager">
-			<property name="sessionFactory" ref="sessionFactory"/>
-			<property name="dataSource" ref="dataSource"/>
-		</bean>
+	<bean id="transactionManager"
+		  class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory"/>
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
 
-		<tx:annotation-driven transaction-manager="transactionManager" mode="aspectj"/>
-
-	</beans>
+	<tx:annotation-driven transaction-manager="transactionManager" mode="aspectj"/>
 
 </beans>
