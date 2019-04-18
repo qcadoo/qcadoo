@@ -100,7 +100,7 @@
 	
 	<!-- qcadoo-plugin's transaction manager & dependencies bean definitions below - necessary for integration tests -->
 	<bean id="pluginDataSource" class="org.apache.commons.dbcp.BasicDataSource"
-	destroy-method="close">
+		destroy-method="close">
 		<property name="driverClassName" value="org.hsqldb.jdbcDriver" />
 		<property name="url" value="jdbc:hsqldb:mem:mes;create=true" />
 		<property name="username" value="sa" />
@@ -120,8 +120,7 @@
 		</property>
 		<property name="annotatedClasses">
 			<list>
-				<value>com.qcadoo.model.beans.qcadooPlugin.QcadooPluginPlugin
-				</value>
+				<value>com.qcadoo.model.beans.qcadooPlugin.QcadooPluginPlugin</value>
 			</list>
 		</property>
 	</bean>

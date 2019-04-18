@@ -46,85 +46,88 @@
 
 	<context:component-scan base-package="com.qcadoo.plugin" />
 
-	<bean id="pluginDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
-		destroy-method="close">
-		<property name="driverClass" value="${dbDriverClass}" />
-		<property name="jdbcUrl" value="${dbJdbcUrl}" />
-		<property name="user" value="${dbUsername}" />
-		<property name="password" value="${dbPassword}" />
+	<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
+		<property name="maximumPoolSize" value="${hikariMaximumPoolSize}" />
+		<property name="connectionTimeout" value="${hikariConnectionTimeout}" />
+		<property name="idleTimeout" value="${hikariIdleTimeout}" />
+		<property name="maxLifetime" value="${hikariMaxLifetime}" />
+		<property name="driverClassName" value="${dbDriverClass}"/>
+		<property name="jdbcUrl" value="${dbJdbcUrl}"/>
+		<property name="username" value="${dbUsername}"/>
+		<property name="password" value="${dbPassword}"/>
 	</bean>
 
-	<beans>
-	
-		<bean id="pluginSessionFactory"
-			class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
-			<qualifier value="plugin" />
-			<property name="dataSource" ref="pluginDataSource" />
-			<property name="hibernateProperties">
-				<props>
-					<prop key="hibernate.dialect">${hibernateDialect}</prop>
-					<prop key="hibernate.show_sql">${hibernateShowSql}</prop>
-					<prop key="hibernate.format_sql">${hibernateFormatSql}</prop>
-					<prop key="hibernate.hbm2ddl.auto">${hibernateHbm2ddlAuto}</prop>
-					<prop key="hibernate.generate_statistics">${hibernateGenerateStatistics}</prop>
-					<prop key="hibernate.order_updates">true</prop>
-					<prop key="hibernate.cache.use_second_level_cache">${hibernateUseSecondLevelCache}</prop>
-					<prop key="hibernate.cache.provider_class">${hibernateCacheProviderClass}</prop>
-					<prop key="hibernate.cache.use_query_cache">${hibernateUseQueryCache}</prop>
-					<prop key="hibernate.cache.use_minimal_puts">true</prop>
-					<prop key="hibernate.cache.use_structured_entries">true</prop>
-				</props>
-			</property>
-			<property name="annotatedClasses">
-				<list>
-					<value>com.qcadoo.model.beans.qcadooPlugin.QcadooPluginPlugin
-					</value>
-				</list>
-			</property>
-		</bean>
-		
-		<bean id="pluginTransactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
-			<qualifier value="plugin" />
-			<property name="sessionFactory" ref="pluginSessionFactory" />
-		</bean> 
-		
-		<tx:annotation-driven transaction-manager="plugin" mode="aspectj"/>
-		
-		<bean class="com.qcadoo.plugin.internal.module.DefaultModuleFactoryAccessor">
-			<property name="moduleFactories">
-				<list>
-					<!-- Beware! Order matters + don't forget to apply changes in another spring profiles! -->
-					<bean class="com.qcadoo.model.internal.module.ModelModuleFactory" />
-					<bean class="com.qcadoo.model.internal.module.FieldModuleFactory" />
-					<bean class="com.qcadoo.model.internal.module.HookModuleFactory" />
-					<bean class="com.qcadoo.model.internal.module.HibernateModuleFactory" />
-					<bean class="com.qcadoo.model.internal.module.EnumValueModuleFactory" />
-					<bean class="com.qcadoo.model.internal.module.DictionaryModuleFactory" />
-					<bean class="com.qcadoo.security.internal.module.RoleModuleFactory" />
-					<bean class="com.qcadoo.security.internal.module.UserGroupModuleFactory" />
-					<bean class="com.qcadoo.security.internal.module.UserModuleFactory" />
-					<bean class="com.qcadoo.localization.internal.module.LocaleModuleFactory" />
-					<bean class="com.qcadoo.localization.internal.module.TranslationModuleFactory" />
-					<bean class="com.qcadoo.localization.internal.module.TranslationGroupModuleFactory" />
-					<bean class="com.qcadoo.report.internal.module.ReportTemplateModuleFactory" />
-					<bean class="com.qcadoo.view.internal.ribbon.templates.module.RibbonTemplateModuleFactory" />
-					<bean class="com.qcadoo.view.internal.ribbon.templates.module.RibbonTemplateExtensionModuleFactory" />
-					<bean class="com.qcadoo.view.internal.module.ViewComponentModuleFactory" />
-					<bean class="com.qcadoo.view.internal.module.ViewModuleFactory" />
-					<bean class="com.qcadoo.view.internal.module.ViewTabModuleFactory" />
-					<bean class="com.qcadoo.view.internal.module.ViewHookModuleFactory" />
-					<bean class="com.qcadoo.view.internal.module.ViewListenerModuleFactory" />
-					<bean class="com.qcadoo.view.internal.module.ViewRibbonModuleFactory" />
-					<bean class="com.qcadoo.view.internal.module.gridColumn.ViewGridColumnModuleFactory" />
-					<bean class="com.qcadoo.view.internal.resource.module.UniversalResourceModuleFactory" />
-					<bean class="com.qcadoo.view.internal.menu.module.MenuCategoryModuleFactory" />
-					<bean class="com.qcadoo.view.internal.menu.module.MenuViewModuleFactory" />
-					<bean class="com.qcadoo.view.internal.menu.module.MenuUrlModuleFactory" />
-					<bean class="com.qcadoo.plugin.internal.module.CustomModuleFactory" />
-				</list>
-			</property>
-		</bean>
-		
-	</beans>
+	<bean id="pluginDataSource" class="com.zaxxer.hikari.HikariDataSource"
+		  destroy-method="close">
+		<constructor-arg ref="hikariConfig" />
+	</bean>
 
+	<bean id="pluginSessionFactory"
+		class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+		<qualifier value="plugin" />
+		<property name="dataSource" ref="pluginDataSource" />
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">${hibernateDialect}</prop>
+				<prop key="hibernate.show_sql">${hibernateShowSql}</prop>
+				<prop key="hibernate.format_sql">${hibernateFormatSql}</prop>
+				<prop key="hibernate.hbm2ddl.auto">${hibernateHbm2ddlAuto}</prop>
+				<prop key="hibernate.generate_statistics">${hibernateGenerateStatistics}</prop>
+				<prop key="hibernate.order_updates">true</prop>
+				<prop key="hibernate.cache.use_second_level_cache">${hibernateUseSecondLevelCache}</prop>
+				<prop key="hibernate.cache.provider_class">${hibernateCacheProviderClass}</prop>
+				<prop key="hibernate.cache.use_query_cache">${hibernateUseQueryCache}</prop>
+				<prop key="hibernate.temp.use_jdbc_metadata_defaults">false</prop>
+			</props>
+		</property>
+		<property name="annotatedClasses">
+			<list>
+				<value>com.qcadoo.model.beans.qcadooPlugin.QcadooPluginPlugin
+				</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="pluginTransactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<qualifier value="plugin" />
+		<property name="sessionFactory" ref="pluginSessionFactory" />
+	</bean>
+
+	<tx:annotation-driven transaction-manager="plugin" mode="aspectj"/>
+
+	<bean class="com.qcadoo.plugin.internal.module.DefaultModuleFactoryAccessor">
+		<property name="moduleFactories">
+			<list>
+				<!-- Beware! Order matters + don't forget to apply changes in another spring profiles! -->
+				<bean class="com.qcadoo.model.internal.module.ModelModuleFactory" />
+				<bean class="com.qcadoo.model.internal.module.FieldModuleFactory" />
+				<bean class="com.qcadoo.model.internal.module.HookModuleFactory" />
+				<bean class="com.qcadoo.model.internal.module.HibernateModuleFactory" />
+				<bean class="com.qcadoo.model.internal.module.EnumValueModuleFactory" />
+				<bean class="com.qcadoo.model.internal.module.DictionaryModuleFactory" />
+				<bean class="com.qcadoo.security.internal.module.RoleModuleFactory" />
+				<bean class="com.qcadoo.security.internal.module.UserGroupModuleFactory" />
+				<bean class="com.qcadoo.security.internal.module.UserModuleFactory" />
+				<bean class="com.qcadoo.localization.internal.module.LocaleModuleFactory" />
+				<bean class="com.qcadoo.localization.internal.module.TranslationModuleFactory" />
+				<bean class="com.qcadoo.localization.internal.module.TranslationGroupModuleFactory" />
+				<bean class="com.qcadoo.report.internal.module.ReportTemplateModuleFactory" />
+				<bean class="com.qcadoo.view.internal.ribbon.templates.module.RibbonTemplateModuleFactory" />
+				<bean class="com.qcadoo.view.internal.ribbon.templates.module.RibbonTemplateExtensionModuleFactory" />
+				<bean class="com.qcadoo.view.internal.module.ViewComponentModuleFactory" />
+				<bean class="com.qcadoo.view.internal.module.ViewModuleFactory" />
+				<bean class="com.qcadoo.view.internal.module.ViewTabModuleFactory" />
+				<bean class="com.qcadoo.view.internal.module.ViewHookModuleFactory" />
+				<bean class="com.qcadoo.view.internal.module.ViewListenerModuleFactory" />
+				<bean class="com.qcadoo.view.internal.module.ViewRibbonModuleFactory" />
+				<bean class="com.qcadoo.view.internal.module.gridColumn.ViewGridColumnModuleFactory" />
+				<bean class="com.qcadoo.view.internal.resource.module.UniversalResourceModuleFactory" />
+				<bean class="com.qcadoo.view.internal.menu.module.MenuCategoryModuleFactory" />
+				<bean class="com.qcadoo.view.internal.menu.module.MenuViewModuleFactory" />
+				<bean class="com.qcadoo.view.internal.menu.module.MenuUrlModuleFactory" />
+				<bean class="com.qcadoo.plugin.internal.module.CustomModuleFactory" />
+			</list>
+		</property>
+	</bean>
+		
 </beans>
