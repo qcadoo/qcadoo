@@ -46,7 +46,7 @@
 
 	<context:component-scan base-package="com.qcadoo.plugin" />
 
-	<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
+	<bean id="pluginHikariConfig" class="com.zaxxer.hikari.HikariConfig">
 		<property name="maximumPoolSize" value="3" />
 		<property name="connectionTimeout" value="${hikariConnectionTimeout}" />
 		<property name="idleTimeout" value="${hikariIdleTimeout}" />
@@ -59,7 +59,7 @@
 
 	<bean id="pluginDataSource" class="com.zaxxer.hikari.HikariDataSource"
 		  destroy-method="close">
-		<constructor-arg ref="hikariConfig" />
+		<constructor-arg ref="pluginHikariConfig" />
 	</bean>
 
 	<bean id="pluginSessionFactory"
