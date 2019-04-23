@@ -92,6 +92,10 @@ public class DynamicDataDefinitionImpl implements InternalDataDefinition {
         throw new UnsupportedOperationException("Cannot save entity for dynamic data definition");
     }
 
+    @Override public Entity validate(Entity entity) {
+        throw new UnsupportedOperationException("Cannot validate entity for dynamic data definition");
+    }
+
     @Override
     public Entity fastSave(final Entity entity) {
         throw new UnsupportedOperationException("Cannot save entity for dynamic data definition");

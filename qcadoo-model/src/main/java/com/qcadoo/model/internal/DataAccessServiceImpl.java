@@ -23,35 +23,6 @@
  */
 package com.qcadoo.model.internal;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.apache.commons.lang3.StringUtils;
-import org.hibernate.Criteria;
-import org.hibernate.Query;
-import org.hibernate.exception.ConstraintViolationException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.NoTransactionException;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
-
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Sets;
@@ -92,6 +63,34 @@ import com.qcadoo.model.internal.search.SearchCriteria;
 import com.qcadoo.model.internal.search.SearchQuery;
 import com.qcadoo.model.internal.search.SearchResultImpl;
 import com.qcadoo.model.internal.utils.EntitySignature;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.commons.lang3.StringUtils;
+import org.hibernate.Criteria;
+import org.hibernate.Query;
+import org.hibernate.exception.ConstraintViolationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.NoTransactionException;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 
 @Service
 public class DataAccessServiceImpl implements DataAccessService {
@@ -137,6 +136,20 @@ public class DataAccessServiceImpl implements DataAccessService {
     @Monitorable
     public Entity save(final InternalDataDefinition dataDefinition, final Entity genericEntity) {
         return save(dataDefinition, genericEntity, false);
+    }
+
+    @Override
+    public Entity validate(DataDefinitionImpl dataDefinition, Entity genericEntity) {
+        checkNotNull(dataDefinition, L_DATA_DEFINITION_MUST_BE_GIVEN);
+        checkState(dataDefinition.isEnabled(), L_DATA_DEFINITION_BELONGS_TO_DISABLED_PLUGIN);
+        checkNotNull(genericEntity, "Entity must be given");
+        Object existingDatabaseEntity = getExistingDatabaseEntity(dataDefinition, genericEntity);
+        Entity existingGenericEntity = null;
+        if (existingDatabaseEntity != null) {
+            existingGenericEntity = entityService.convertToGenericEntity(dataDefinition, existingDatabaseEntity);
+        }
+        validationService.validateGenericEntity(dataDefinition, genericEntity, existingGenericEntity);
+        return genericEntity;
     }
 
     private Entity save(final InternalDataDefinition dataDefinition, final Entity genericEntity, boolean fast) {

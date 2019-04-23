@@ -104,7 +104,16 @@ public interface DataDefinition {
      *            entity to save
      * @return saved entity
      */
-    Entity save(final Entity entity);    
+    Entity save(final Entity entity);
+
+    /**
+     * Validate the entity related with this data definition.
+     *
+     * @param entity
+     *            entity to validate
+     * @return validate entity
+     */
+    Entity validate(final Entity entity);
 
     /**
      * Save the entity related with this data definition without invoke hooks.
