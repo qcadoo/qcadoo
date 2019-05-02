@@ -23,6 +23,6 @@
  */
 package com.qcadoo.plugins.qcadooExport.api;
 
-public interface ExportToPdfColumns extends ExportToFileColumns {
+public interface ExportToCsvColumns extends ExportToFileColumns {
 
 }

@@ -21,8 +21,26 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * ***************************************************************************
  */
-package com.qcadoo.plugins.qcadooExport.api;
+package com.qcadoo.plugins.qcadooExport.api.services;
 
-public interface ExportToPdfColumns extends ExportToFileColumns {
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Service;
+
+import com.qcadoo.plugins.qcadooExport.api.ExportToCsvColumns;
+import com.qcadoo.view.api.components.GridComponent;
+
+@Service
+@Order(2)
+public class ExportToCsvColumnsService implements ExportToCsvColumns {
+
+    @Autowired
+    private ExportToFileColumnsService exportToFileColumnsService;
+
+    public List<String> getColumns(final GridComponent grid) {
+        return exportToFileColumnsService.getColumns(grid);
+    }
 
 }
