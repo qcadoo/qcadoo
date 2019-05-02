@@ -23,13 +23,14 @@
  */
 package com.qcadoo.model.internal.api;
 
-import java.util.List;
-
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.EntityOpResult;
 import com.qcadoo.model.api.search.SearchResult;
+import com.qcadoo.model.internal.DataDefinitionImpl;
 import com.qcadoo.model.internal.search.SearchCriteria;
 import com.qcadoo.model.internal.search.SearchQuery;
+
+import java.util.List;
 
 /**
  * Service for manipulating data.
@@ -56,7 +57,16 @@ public interface DataAccessService {
      * @return saved entity
      */
     Entity save(InternalDataDefinition dataDefinition, Entity entity);
-        
+
+    /**
+     * Validate the entity related with given data definition.
+     *
+     * @param dataDefinition
+     * @param entity
+     * @return validated entity
+     */
+    Entity validate(DataDefinitionImpl dataDefinition, Entity entity);
+
     /**
      * Save the entity related with given data definition without invoke hooks.
      * 
@@ -161,4 +171,5 @@ public interface DataAccessService {
      * @return activated entities
      */
     List<Entity> activate(InternalDataDefinition dataDefinition, Long... entityId);
+
 }

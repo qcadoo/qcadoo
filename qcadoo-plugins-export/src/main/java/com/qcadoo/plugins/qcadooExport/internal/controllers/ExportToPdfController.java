@@ -50,10 +50,11 @@ import com.lowagie.text.PageSize;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
-import com.qcadoo.plugins.qcadooExport.api.helpers.ExportToPDFColumnsHelper;
 import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.api.aop.Monitorable;
 import com.qcadoo.model.api.file.FileService;
+import com.qcadoo.plugins.qcadooExport.api.ExportToPdfColumns;
+import com.qcadoo.plugins.qcadooExport.api.helpers.ExportToFileColumnsHelper;
 import com.qcadoo.report.api.FontUtils;
 import com.qcadoo.report.api.FooterResolver;
 import com.qcadoo.report.api.pdf.PdfHelper;
@@ -64,9 +65,9 @@ import com.qcadoo.view.api.components.GridComponent;
 import com.qcadoo.view.api.crud.CrudService;
 
 @Controller
-public class ExportToPDFController {
+public class ExportToPdfController {
 
-    public static final String L_GRID = "grid";
+    private static final String L_GRID = "grid";
 
     private static final String L_VIEW_NAME_VARIABLE = "viewName";
 
@@ -94,7 +95,7 @@ public class ExportToPDFController {
     private FooterResolver footerResolver;
 
     @Autowired
-	private	ExportToPDFColumnsHelper exportToPDFColumnsHelper;
+	private ExportToFileColumnsHelper<ExportToPdfColumns> exportToFileColumnsHelper;
 
     @Monitorable(threshold = 500)
     @ResponseBody
@@ -132,7 +133,7 @@ public class ExportToPDFController {
             pdfHelper.addDocumentHeader(document, "", title,
                     translationService.translate("qcadooReport.commons.generatedBy.label", locale), generationDate);
 
-            List<String> columns = getColumns(grid, viewName);
+            List<String> columns = getColumns(grid);
             List<String> columnNames = getColumnNames(grid, columns);
 
             PdfPTable pdfTable = pdfHelper.createTableWithHeader(columnNames.size(), columnNames, false);
@@ -162,8 +163,8 @@ public class ExportToPDFController {
         }
     }
 
-    private List<String> getColumns(final GridComponent grid, final String viewName) {
-        return exportToPDFColumnsHelper.getColumns(grid);
+    private List<String> getColumns(final GridComponent grid) {
+        return exportToFileColumnsHelper.getColumns(grid, ExportToPdfColumns.class);
     }
 
     private List<String> getColumnNames(final GridComponent grid, final List<String> columns) {

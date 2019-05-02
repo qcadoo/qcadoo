@@ -21,40 +21,13 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * ***************************************************************************
  */
-package com.qcadoo.plugins.qcadooExport.api.services;
+package com.qcadoo.plugins.qcadooExport.api;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Service;
-
-import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
-import com.qcadoo.plugins.qcadooExport.api.ExportToPDFColumns;
-import com.qcadoo.security.api.SecurityRolesService;
 import com.qcadoo.view.api.components.GridComponent;
 
-@Service
-@Order(2)
-public class ExportToPDFColumnsService implements ExportToPDFColumns {
+public interface ExportToFileColumns {
 
-	@Autowired
-	private SecurityRolesService securityRolesService;
-
-    public List<String> getColumns(final GridComponent grid) {
-		List<String> columns = Lists.newLinkedList();
-
-		grid.getColumns().entrySet().stream().forEach(entry -> {
-			String columnAuthorizationRole = entry.getValue().getAuthorizationRole();
-
-			if ((Strings.isNullOrEmpty(columnAuthorizationRole) || securityRolesService.canAccess(columnAuthorizationRole))
-					&& !entry.getValue().isHidden()) {
-				columns.add(entry.getKey());
-			}
-		});
-
-		return columns;
-	}
-
+    List<String> getColumns(final GridComponent grid);
 }

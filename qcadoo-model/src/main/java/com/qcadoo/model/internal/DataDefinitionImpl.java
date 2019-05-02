@@ -40,12 +40,19 @@ import com.qcadoo.model.internal.search.SearchCriteria;
 import com.qcadoo.model.internal.search.SearchCriteriaImpl;
 import com.qcadoo.model.internal.search.SearchQueryImpl;
 import com.qcadoo.model.internal.types.PriorityType;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-
-import java.util.*;
-
-import static com.google.common.base.Preconditions.*;
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 import static com.qcadoo.model.api.search.SearchOrders.asc;
 import static com.qcadoo.model.api.search.SearchProjections.alias;
 import static com.qcadoo.model.api.search.SearchProjections.rowCount;
@@ -115,6 +122,14 @@ public final class DataDefinitionImpl implements InternalDataDefinition {
             throw new IllegalStateException("Incompatible types");
         }
         return dataAccessService.save(this, entity);
+    }
+
+    @Override
+    public Entity validate(final Entity entity) {
+        if (!this.equals(entity.getDataDefinition())) {
+            throw new IllegalStateException("Incompatible types");
+        }
+        return dataAccessService.validate(this, entity);
     }
 
     @Override

@@ -48,8 +48,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
 import com.qcadoo.model.api.aop.Monitorable;
 import com.qcadoo.model.api.file.FileService;
+import com.qcadoo.plugins.qcadooExport.api.ExportToCsvColumns;
+import com.qcadoo.plugins.qcadooExport.api.helpers.ExportToFileColumnsHelper;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.api.components.GridComponent;
 import com.qcadoo.view.api.crud.CrudService;
@@ -74,6 +78,9 @@ public class ExportToCsvController {
 
     @Autowired
     private CrudService crudService;
+
+    @Autowired
+    private ExportToFileColumnsHelper<ExportToCsvColumns> exportToFileColumnsHelper;
 
     @Monitorable(threshold = 500)
     @ResponseBody
@@ -103,7 +110,10 @@ public class ExportToCsvController {
 
                 boolean firstName = true;
 
-                for (String name : grid.getColumnNames().values()) {
+                List<String> columns = getColumns(grid);
+                List<String> columnNames = getColumnNames(grid, columns);
+
+                for (String name : columnNames) {
                     if (firstName) {
                         firstName = false;
                     } else {
@@ -123,21 +133,7 @@ public class ExportToCsvController {
                     rows = grid.getColumnValuesOfSelectedRecords();
                 }
 
-                for (Map<String, String> row : rows) {
-                    boolean firstValue = true;
-
-                    for (String value : row.values()) {
-                        if (firstValue) {
-                            firstValue = false;
-                        } else {
-                            bufferedWriter.append(exportedCsvSeparator);
-                        }
-
-                        bufferedWriter.append("\"").append(normalizeString(value)).append("\"");
-                    }
-
-                    bufferedWriter.append("\n");
-                }
+                addCsvTableCells(bufferedWriter, rows, columns);
 
                 bufferedWriter.flush();
             } catch (IOException e) {
@@ -154,6 +150,43 @@ public class ExportToCsvController {
         }
     }
 
+    private List<String> getColumns(final GridComponent grid) {
+        return exportToFileColumnsHelper.getColumns(grid, ExportToCsvColumns.class);
+    }
+
+    private List<String> getColumnNames(final GridComponent grid, final List<String> columns) {
+        List<String> columnNames = Lists.newLinkedList();
+
+        columns.forEach(column -> {
+            String columnName = grid.getColumnNames().get(column);
+
+            if (!Strings.isNullOrEmpty(columnName)) {
+                columnNames.add(columnName);
+            }
+        });
+
+        return columnNames;
+    }
+
+    private void addCsvTableCells(final BufferedWriter bufferedWriter, final List<Map<String, String>> rows,
+            final List<String> columns) throws IOException {
+        for (Map<String, String> row : rows) {
+            boolean firstValue = true;
+
+            for (String column : columns) {
+                if (firstValue) {
+                    firstValue = false;
+                } else {
+                    bufferedWriter.append(exportedCsvSeparator);
+                }
+
+                bufferedWriter.append("\"").append(normalizeString(row.get(column))).append("\"");
+            }
+
+            bufferedWriter.append("\n");
+        }
+    }
+
     private String normalizeString(final String string) {
         if (StringUtils.hasText(string)) {
             return string.replaceAll("\"", "\\\"").replaceAll("\n", " ");
@@ -164,6 +197,7 @@ public class ExportToCsvController {
 
     private void changeMaxResults(final JSONObject json) throws JSONException {
         JSONObject component = getComponent(json, getComponentName(json));
+
         component.getJSONObject("content").put("firstEntity", 0);
         component.getJSONObject("content").put("maxEntities", Integer.MAX_VALUE);
     }

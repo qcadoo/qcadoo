@@ -23,11 +23,6 @@
  */
 package com.qcadoo.plugins.qcadooExport.api;
 
-import java.util.List;
+public interface ExportToCsvColumns extends ExportToFileColumns {
 
-import com.qcadoo.view.api.components.GridComponent;
-
-public interface ExportToPDFColumns {
-
-	List<String> getColumns(final GridComponent grid);
 }
