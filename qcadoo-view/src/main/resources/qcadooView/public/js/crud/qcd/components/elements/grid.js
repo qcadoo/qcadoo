@@ -110,7 +110,11 @@ QCD.components.elements.Grid = function (element, mainController) {
             if (!options.colModel.classesCondition || Function('rowObject', '"use strict";return '
                     + options.colModel.classesCondition.replace(/&gt;/g,">").replace(/&lt;/g,"<"))(rowObject)) {
                 var elem = $("<span />");
-                var classes = options.colModel.classesNames.split(" ");
+                var modelCls = options.colModel.classesNames;
+                if(modelCls.includes("rowObject['")){
+                    modelCls = Function('rowObject', '"use strict";return '+ options.colModel.classesNames)(rowObject);
+                }
+                var classes = modelCls.split(" ");
                 for (var cls in classes) {
                     elem.addClass(classes[cls]);
                 }
@@ -245,6 +249,23 @@ QCD.components.elements.Grid = function (element, mainController) {
 
                 colModel.push(col);
             } else {
+                var col = {
+                    name : column.name,
+                    index : column.name,
+                    width : column.width,
+                    sortable : isSortable,
+                    resizable : true,
+                    hidden : true,
+                    align : column.align,
+                    classesNames: column.classesNames,
+                    classesCondition: column.classesCondition,
+                    stype : stype,
+                    searchoptions : searchoptions,
+                    link : column.link
+                };
+                colModel.push(col);
+                colNames.push(column.name);
+
                 hiddenColumnValues[column.name] = {};
             }
 			if (multiSearchColumn != null) {
@@ -671,6 +692,11 @@ QCD.components.elements.Grid = function (element, mainController) {
             for (var fieldName in columnModel) {
                 if (hiddenColumnValues[fieldName]) {
                     hiddenColumnValues[fieldName][entity.id] = entity.fields[fieldName];
+                    if (entity.fields[fieldName] && entity.fields[fieldName] !== "") {
+                        fields[fieldName] = entity.fields[fieldName];
+                    } else {
+                        fields[fieldName] = "";
+                    }
                 } else {
                     if (entity.fields[fieldName] && entity.fields[fieldName] !== "") {
                         fields[fieldName] = entity.fields[fieldName];
@@ -1159,7 +1185,13 @@ QCD.components.elements.Grid = function (element, mainController) {
             bCancel: translations.columnChooserCancel,
             afterSubmitForm: function () {
                 saveColumns();
+            },
+            afterShowForm: function () {
+                for (var key in hiddenColumnValues) {
+                    $("#col_"+key).closest("tr").css({"display": "none"})
+                }
             }
+
         });
     };
 
