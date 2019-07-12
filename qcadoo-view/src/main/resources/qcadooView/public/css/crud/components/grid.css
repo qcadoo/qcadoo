@@ -551,7 +551,7 @@ div.filterButton {
 }
 
 .green-cell {
-	background-color: limegreen;
+	background-color: #99cc33;
 	display: block;
 	margin-right: -2px;
 	margin-left: -2px;
@@ -564,7 +564,7 @@ div.filterButton {
 }
 
 .red-cell {
-	background-color: red;
+	background-color: #ff3366;
 	display: block;
 	margin-right: -2px;
 	margin-left: -2px;
@@ -578,7 +578,7 @@ div.filterButton {
 
 
 .yellow-cell {
-	background-color: #ecec42;
+	background-color: #ffffcc;
 	display: block;
 	margin-right: -2px;
 	margin-left: -2px;
