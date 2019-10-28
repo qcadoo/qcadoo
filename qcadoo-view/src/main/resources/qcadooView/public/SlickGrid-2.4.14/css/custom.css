@@ -232,7 +232,7 @@ input.editor-checkbox {
 }
 
 .slick-headerrow-column {
-  background: #87ceeb;
+  background: lightgray;
   text-overflow: clip;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
