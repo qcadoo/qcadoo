@@ -247,3 +247,6 @@ input.editor-checkbox {
   box-sizing: border-box;
 }
 
+.right-align {
+  text-align: right;
+}
