@@ -4462,13 +4462,37 @@ if (typeof Slick === "undefined") {
       }
     }
 
+    //This get/set methods are used for keeping text-selection. These don't consider IE because they don't loose text-selection.
+    function getTextSelection(){
+      var textSelection = null;
+      if (window.getSelection) {
+        var selection = window.getSelection();
+        if (selection.rangeCount > 0) {
+          textSelection = selection.getRangeAt(0);
+        }
+      }
+      return textSelection;
+    }
+
+    function setTextSelection(selection){
+      if (window.getSelection && selection) {
+        var target = window.getSelection();
+        target.removeAllRanges();
+        target.addRange(selection);
+      }
+    }
+
     function handleClick(e) {
       if (!currentEditor) {
         // if this click resulted in some cell child node getting focus,
         // don't steal it back - keyboard events will still bubble up
         // IE9+ seems to default DIVs to tabIndex=0 instead of -1, so check for cell clicks directly.
         if (e.target != document.activeElement || $(e.target).hasClass("slick-cell")) {
+          var selection = getTextSelection();
           setFocus();
+          if ( options.enableTextSelectionOnCells ) {
+            setTextSelection(selection);
+          }
         }
       }
 
