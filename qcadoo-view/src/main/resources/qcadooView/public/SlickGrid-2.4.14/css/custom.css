@@ -247,3 +247,12 @@ input.editor-checkbox {
   box-sizing: border-box;
 }
 
+.right-align {
+  text-align: right;
+}
+
+.slick-footerrow-column.ui-state-default {
+  text-align: right;
+  height: 13px;
+  line-height: 13px;
+}
