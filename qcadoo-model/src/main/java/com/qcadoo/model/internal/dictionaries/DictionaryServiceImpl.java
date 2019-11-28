@@ -23,21 +23,6 @@
  */
 package com.qcadoo.model.internal.dictionaries;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static org.springframework.util.StringUtils.hasText;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.DataDefinitionService;
@@ -51,6 +36,20 @@ import com.qcadoo.model.constants.DictionaryFields;
 import com.qcadoo.model.constants.DictionaryItemFields;
 import com.qcadoo.model.constants.QcadooModelConstants;
 import com.qcadoo.model.internal.api.InternalDictionaryService;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import static com.google.common.base.Preconditions.checkArgument;
+import static org.springframework.util.StringUtils.hasText;
 
 @Service
 public final class DictionaryServiceImpl implements InternalDictionaryService {
@@ -189,6 +188,12 @@ public final class DictionaryServiceImpl implements InternalDictionaryService {
     @Override
     public Entity getItemEntity(final String dictionaryName, final String itemName) {
         return createCriteriaForActiveItemsFrom(dictionaryName).add(SearchRestrictions.eq(DictionaryItemFields.NAME, itemName))
+                .setMaxResults(1).uniqueResult();
+    }
+
+    @Override
+    public Entity getItemEntityByTechnicalCode(String dictionary, String technicalCode) {
+        return createCriteriaForActiveItemsFrom(dictionary).add(SearchRestrictions.eq(DictionaryItemFields.TECHNICAL_CODE, technicalCode))
                 .setMaxResults(1).uniqueResult();
     }
 
