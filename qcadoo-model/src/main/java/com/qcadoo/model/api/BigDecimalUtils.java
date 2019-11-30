@@ -25,12 +25,15 @@ package com.qcadoo.model.api;
 
 import com.google.common.base.Optional;
 import com.qcadoo.commons.functional.Either;
-import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.Locale;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.i18n.LocaleContextHolder;
 
 public final class BigDecimalUtils {
     
@@ -142,5 +145,11 @@ public final class BigDecimalUtils {
             return false;
         }
         return true;
+    }
+
+    public static String toString(BigDecimal decimal) {
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols(LocaleContextHolder.getLocale());
+        return DecimalFormat.getNumberInstance(LocaleContextHolder.getLocale()).format(decimal)
+                .replace(String.valueOf(symbols.getGroupingSeparator()), String.valueOf(""));
     }
 }
