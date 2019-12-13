@@ -30,6 +30,7 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
 import java.util.Locale;
 
 import org.apache.commons.lang3.StringUtils;
@@ -147,9 +148,11 @@ public final class BigDecimalUtils {
         return true;
     }
 
-    public static String toString(BigDecimal decimal) {
+    public static String toString(BigDecimal decimal,int maximumFractionDigits) {
         DecimalFormatSymbols symbols = new DecimalFormatSymbols(LocaleContextHolder.getLocale());
-        return DecimalFormat.getNumberInstance(LocaleContextHolder.getLocale()).format(decimal)
+        NumberFormat format = DecimalFormat.getNumberInstance(LocaleContextHolder.getLocale());
+        format.setMaximumFractionDigits(maximumFractionDigits);
+        return format.format(decimal)
                 .replace(String.valueOf(symbols.getGroupingSeparator()), String.valueOf(""));
     }
 }
