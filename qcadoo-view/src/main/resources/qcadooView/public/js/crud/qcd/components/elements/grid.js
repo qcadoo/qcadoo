@@ -795,25 +795,27 @@ QCD.components.elements.Grid = function (element, mainController) {
 
         headerController.setDeleteEnabled(currentState.deleteEnabled);
         if(gridParameters.footerrow){
-
-            grid.jqGrid('footerData', 'set', { cb: 'Σ'});
             addSummaryDataForNumberRows();
             addSummaryDataForNumberTimeRows();
-
         }
         unblockGrid();
     };
 
-    function addSummaryDataForNumberRows(){
-        if(isEmpty(gridParameters.columnsToSummary)){
+    function addSummaryDataForNumberRows() {
+
+        if (isEmpty(gridParameters.columnsToSummary)) {
             return;
         }
         var locale = window.top.document.documentElement.lang;
 
-        var rows = grid.jqGrid('getDataIDs');
-
         var tmp = gridParameters.columnsToSummary;
         var columnsToSummary = tmp.split(",");
+
+
+        var rows = grid.jqGrid('getDataIDs');
+
+        var $footerRow = $('.ui-jqgrid-ftable').find('tbody').find('tr').first();
+
         for (var n = 0; n < columnsToSummary.length; ++n) {
             var c = columnsToSummary[n];
 
@@ -835,10 +837,10 @@ QCD.components.elements.Grid = function (element, mainController) {
                     totalSum += parseFloat(nanToZero(val.split('&nbsp;').join('').replace(/\,/g,''))) || 0;
                 }
             }
-            if(totalSum!==false){
+            if (totalSum!==false) {
                 var total = nanToZero(parseFloat(totalSum.toFixed(5)));
                 var obj;
-                if(locale === "pl_PL" || locale === "pl"){
+                if (locale === "pl_PL" || locale === "pl") {
                     obj = '[{"' + c + '": "' + numberWithSpaces(total.toString().replace('.',',')) + '"}]';
                 } else if (locale === "de") {
                     obj = '[{"' + c + '": "' + numberWithDot(total.toString().replace('.',',')) + '"}]';
@@ -849,6 +851,46 @@ QCD.components.elements.Grid = function (element, mainController) {
                 grid.jqGrid('footerData', 'set', colFoot[0]);
             }
         }
+
+        var selectedIds = grid.jqGrid('getGridParam','selarrrow');
+
+        var $newFooterRow = $('.ui-jqgrid-ftable').find('tbody').find('tr').last();
+        for (var n = 0; n < columnsToSummary.length; ++n) {
+            var c = columnsToSummary[n];
+             var totalSum = 0;
+             for (var i = 0; i < selectedIds.length; ++i) {
+                var row = selectedIds[i];
+                var val = grid.jqGrid('getCell', row, c);
+                if (val === false) {
+                    totalSum = false;
+                    break;
+                } else if (val.indexOf("gridLink") > 0) {
+                    val = $(val).text();
+                }
+                if (locale === "pl_PL" || locale === "pl") {
+                    totalSum += parseFloat(nanToZero(val.split('&nbsp;').join('').replace(',','.'))) || 0;
+                } else if (locale === "de") {
+                    totalSum += parseFloat(nanToZero(val.split('&nbsp;').join('').replace(/\./g,'').replace(',','.'))) || 0;
+                } else {
+                    totalSum += parseFloat(nanToZero(val.split('&nbsp;').join('').replace(/\,/g,''))) || 0;
+                }
+             }
+            if(totalSum!==false){
+                var total = nanToZero(parseFloat(totalSum.toFixed(5)));
+                var obj;
+                if (locale === "pl_PL" || locale === "pl") {
+                    obj = numberWithSpaces(total.toString().replace('.',','));
+                } else if (locale === "de") {
+                    obj = numberWithDot(total.toString().replace('.',','));
+                } else {
+                    obj = numberWithComa(total.toString().replace('.',','));
+                }
+                $newFooterRow.find(">td[aria-describedby=" + gridParameters.element + "_"+c+"]").text(obj);
+            }
+        }
+
+        $newFooterRow.find('td').first().text(translations.summarySelectedRow).css({'overflow':'inherit', 'border-right':'none'});
+        $footerRow.find('td').first().text(translations.summaryRow).css({'overflow':'inherit', 'border-right':'none'});
     }
 
     function numberWithSpaces(x) {
@@ -878,6 +920,7 @@ QCD.components.elements.Grid = function (element, mainController) {
 
         var tmp = gridParameters.columnsToSummaryTime;
         var columnsToSummary = tmp.split(",");
+        var $footerRow = $('.ui-jqgrid-ftable').find('tbody').find('tr').first();
 
         for (var n = 0; n < columnsToSummary.length; ++n) {
             var c = columnsToSummary[n];
@@ -896,6 +939,27 @@ QCD.components.elements.Grid = function (element, mainController) {
 
             grid.jqGrid('footerData', 'set', colFoot[0]);
         }
+
+        var selectedIds = grid.jqGrid('getGridParam','selarrrow');
+        var $newFooterRow = $('.ui-jqgrid-ftable').find('tbody').find('tr').last();
+
+        for (var n = 0; n < columnsToSummary.length; ++n) {
+             var c = columnsToSummary[n];
+             var totalSum = 0;
+
+             for (var i = 0; i < selectedIds.length; ++i) {
+                  var row = selectedIds[i];
+                  var val = grid.jqGrid('getCell', row, c)
+                    totalSum += toSeconds(val);
+             }
+
+            var total = nanToZero(totalSum);
+            var obj = secondsToTime(total);
+            $newFooterRow.find(">td[aria-describedby=" + gridParameters.element + "_"+c+"]").text(obj);
+        }
+
+        $newFooterRow.find('td').first().text(translations.summarySelectedRow).css({'overflow':'inherit', 'border-right':'none'});
+        $footerRow.find('td').first().text(translations.summaryRow).css({'overflow':'inherit', 'border-right':'none'});
     }
 
     function toSeconds(time) {
@@ -1375,7 +1439,7 @@ QCD.components.elements.Grid = function (element, mainController) {
             currentGridHeight += 35;
         }
         if(this.options.footerRow){
-            currentGridHeight -= 22;
+            currentGridHeight -= 44;
         }
         grid.setGridHeight(currentGridHeight);
         grid.setGridWidth(width - 24, this.options.shrinkToFit);
@@ -1384,6 +1448,11 @@ QCD.components.elements.Grid = function (element, mainController) {
     function onSelectChange() {
         if (componentEnabled && !gridParameters.suppressSelectEvent && gridParameters.listeners.length > 0) {
             mainController.callEvent("select", elementPath, null);
+        } else {
+            if(gridParameters.footerrow) {
+                addSummaryDataForNumberRows();
+                addSummaryDataForNumberTimeRows();
+             }
         }
     }
 
@@ -1759,6 +1828,10 @@ QCD.components.elements.Grid = function (element, mainController) {
         noRecordsDiv = $("<div>").html(translations.noResults).addClass("noRecordsBox");
         noRecordsDiv.hide();
         $("#" + gridParameters.element).parent().append(noRecordsDiv);
+        if(gridParameters.footerrow){
+            grid.jqGrid('footerData', 'set', { cb: 'Σ'});
+            $('.ui-jqgrid-ftable').find('tbody').append($('.ui-jqgrid-ftable').find('tr').clone(true));
+        }
     }
 
     constructor();
