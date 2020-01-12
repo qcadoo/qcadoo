@@ -23,23 +23,6 @@
  */
 package com.qcadoo.view.internal.components.grid;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.StringUtils;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
@@ -63,6 +46,23 @@ import com.qcadoo.view.internal.module.gridColumn.ViewGridColumnModuleColumnMode
 import com.qcadoo.view.internal.patterns.AbstractComponentPattern;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
 import com.qcadoo.view.internal.xml.ViewDefinitionParserNodeException;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 public class GridComponentPattern extends AbstractComponentPattern {
 
@@ -333,6 +333,8 @@ public class GridComponentPattern extends AbstractComponentPattern {
         addTranslation(translations, "matchAllRules", locale);
         addTranslation(translations, "matchAnyRules", locale);
         addTranslation(translations, "autoRefresh", locale);
+        addTranslation(translations, "summaryRow", locale);
+        addTranslation(translations, "summarySelectedRow", locale);
 
         addTranslation(translations, "customPredefinedFilter", locale);
         for (PredefinedFilter filter : predefinedFilters.values()) {
