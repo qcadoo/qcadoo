@@ -50,7 +50,7 @@
 		</c:if>
 		<div class="lookupValueWrapper" style="${displayHiddenIfTextRepresentationOnDisabled}">
 			<div class="lookupInputWrapper">
-				<input type="text" id="${component['path']}_input" tabindex="${component['indexOrder']}"/>
+				<input type="text" id="${component['path']}_input" tabindex="${component['indexOrder']}" autocomplete="off"/>
 			</div>
 			<div class="lookupLoading" id="${component['path']}_loadingDiv"></div>
 			<div class="lookupButton" id="${component['path']}_openLookupButton"></div>
