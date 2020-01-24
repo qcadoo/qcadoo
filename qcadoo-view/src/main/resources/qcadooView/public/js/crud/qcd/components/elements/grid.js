@@ -102,10 +102,12 @@ QCD.components.elements.Grid = function (element, mainController) {
         }
         if (options.colModel.link) {
             // wrap cell value with link-like span element
-            var linkElem = $("<span />").addClass('gridLink').addClass(elementPath + '_link');
-            linkElem.attr('id', elementPath + "_" + options.colModel.name + "_" + rowObject.id);
-            linkElem.append(cellvalue);
-            cellvalue = linkElem.wrap('<div />').parent().html();
+            if(rowObject.id) {
+                var linkElem = $("<span />").addClass('gridLink').addClass(elementPath + '_link');
+                linkElem.attr('id', elementPath + "_" + options.colModel.name + "_" + rowObject.id);
+                linkElem.append(cellvalue);
+                cellvalue = linkElem.wrap('<div />').parent().html();
+            }
         } else if (options.colModel.classesNames) {
             if (!options.colModel.classesCondition || Function('rowObject', '"use strict";return '
                     + options.colModel.classesCondition.replace(/&gt;/g,">").replace(/&lt;/g,"<"))(rowObject)) {
@@ -929,7 +931,12 @@ QCD.components.elements.Grid = function (element, mainController) {
             for (var i = 0; i < rows.length; ++i) {
                 var row = rows[i];
                 var val = grid.jqGrid('getCell', row, c)
-
+                if(val === false){
+                    totalSum = false;
+                    break;
+                } else if (val.indexOf("gridLink") > 0) {
+                    val = $(val).text();
+                }
                 totalSum += toSeconds(val);
             }
 
@@ -949,8 +956,14 @@ QCD.components.elements.Grid = function (element, mainController) {
 
              for (var i = 0; i < selectedIds.length; ++i) {
                   var row = selectedIds[i];
-                  var val = grid.jqGrid('getCell', row, c)
-                    totalSum += toSeconds(val);
+                  var val = grid.jqGrid('getCell', row, c);
+                  if(val === false){
+                    totalSum = false;
+                    break;
+                  } else if (val.indexOf("gridLink") > 0) {
+                    val = $(val).text();
+                  }
+                  totalSum += toSeconds(val);
              }
 
             var total = nanToZero(totalSum);

@@ -47,7 +47,7 @@
 		<c:if test="${component['jspOptions']['boldTextRepresentationOnDisabled']}">
 			<c:set var="boldFont" value="margin: 0.1em; font-size: 1.1em; font-weight: normal;" />
 		</c:if>
-		<input type="text" id="${component['path']}_input" style="${alignment}${displayHiddenIfTextRepresentationOnDisabled}" tabindex="${component['indexOrder']}" />
+		<input type="text" id="${component['path']}_input" style="${alignment}${displayHiddenIfTextRepresentationOnDisabled}" tabindex="${component['indexOrder']}" autocomplete="off"/>
 		<c:if test="${component['jspOptions']['textRepresentationOnDisabled']}">
 			<span id="${component['path']}_text" style="${boldFont}" class="component_container_form_textRepresentation">&nbsp;</span>
 			<span id="${componentFullName}_textHeight" style="display: inline-block; height: 100%; vertical-align: middle;">&nbsp;</span>
