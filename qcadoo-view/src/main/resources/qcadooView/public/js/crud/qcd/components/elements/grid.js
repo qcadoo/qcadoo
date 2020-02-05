@@ -1250,6 +1250,12 @@ QCD.components.elements.Grid = function (element, mainController) {
 
         updateSavedOptions("columns", columns);
         updateUserHiddenColumns();
+         if(gridParameters.footerrow){
+            $('.ui-jqgrid-ftable').find('tr').last().remove();
+            $('.ui-jqgrid-ftable').find('tbody').append($('.ui-jqgrid-ftable').find('tr').clone(true));
+            addSummaryDataForNumberRows();
+            addSummaryDataForNumberTimeRows();
+         }
     }
 
     this.onColumnChooserClicked = function () {
