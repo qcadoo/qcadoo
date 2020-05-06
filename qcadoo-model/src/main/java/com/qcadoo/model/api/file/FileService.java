@@ -23,14 +23,13 @@
  */
 package com.qcadoo.model.api.file;
 
+import com.qcadoo.model.api.Entity;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-
-import org.springframework.web.multipart.MultipartFile;
-
-import com.qcadoo.model.api.Entity;
 
 /**
  * Service for managing files.
@@ -165,4 +164,6 @@ public interface FileService {
      * @throws IOException
      */
     File compressToZipFile(List<File> documents, boolean removeCompressed) throws IOException;
+
+    File getFileFromFilenameWithRandomDirectory(final String filename);
 }

@@ -23,23 +23,12 @@
  */
 package com.qcadoo.model.internal.file;
 
-import static org.springframework.context.i18n.LocaleContextHolder.getLocale;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
-
-import javax.activation.MimetypesFileTypeMap;
-
+import com.google.common.base.Preconditions;
+import com.qcadoo.localization.api.TranslationService;
+import com.qcadoo.localization.api.utils.DateUtils;
+import com.qcadoo.model.api.Entity;
+import com.qcadoo.model.api.file.FileService;
+import com.qcadoo.tenant.api.MultiTenantUtil;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -51,12 +40,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.google.common.base.Preconditions;
-import com.qcadoo.localization.api.TranslationService;
-import com.qcadoo.localization.api.utils.DateUtils;
-import com.qcadoo.model.api.Entity;
-import com.qcadoo.model.api.file.FileService;
-import com.qcadoo.tenant.api.MultiTenantUtil;
+import javax.activation.MimetypesFileTypeMap;
+import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
+import static org.springframework.context.i18n.LocaleContextHolder.getLocale;
 
 @Service
 public class FileServiceImpl implements FileService {
@@ -207,7 +199,7 @@ public class FileServiceImpl implements FileService {
         return new File(directory, getNormalizedFileName(filename.substring(filename.lastIndexOf(File.separator) + 1)));
     }
 
-    private File getFileFromFilenameWithRandomDirectory(final String filename) {
+    public File getFileFromFilenameWithRandomDirectory(final String filename) {
         String date = Long.toString(System.currentTimeMillis());
 
         File directory = new File(uploadDirectory, MultiTenantUtil.getCurrentTenantId() + File.separator
