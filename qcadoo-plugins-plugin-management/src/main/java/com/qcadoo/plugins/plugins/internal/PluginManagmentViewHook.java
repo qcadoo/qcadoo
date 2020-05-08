@@ -23,13 +23,6 @@
  */
 package com.qcadoo.plugins.plugins.internal;
 
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.google.common.base.Preconditions;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.DataDefinitionService;
@@ -38,6 +31,13 @@ import com.qcadoo.plugin.constants.QcadooPluginConstants;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.api.components.GridComponent;
+import com.qcadoo.view.constants.QcadooViewConstants;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 
 @Service
 public class PluginManagmentViewHook {
@@ -68,7 +68,7 @@ public class PluginManagmentViewHook {
         String url = pluginManagmentPerformer.performRemove(getPluginIdentifiersFromView(viewDefinitionState));
 
         if (url.contains("type=success")) {
-            GridComponent grid = (GridComponent) viewDefinitionState.getComponentByReference("grid");
+            GridComponent grid = (GridComponent) viewDefinitionState.getComponentByReference(QcadooViewConstants.L_GRID);
             grid.setSelectedEntitiesIds(new HashSet<Long>());
         }
         viewDefinitionState.openModal(url);
@@ -77,7 +77,7 @@ public class PluginManagmentViewHook {
     private List<String> getPluginIdentifiersFromView(final ViewDefinitionState viewDefinitionState) {
 
         List<String> pluginIdentifiers = new LinkedList<String>();
-        GridComponent grid = (GridComponent) viewDefinitionState.getComponentByReference("grid");
+        GridComponent grid = (GridComponent) viewDefinitionState.getComponentByReference(QcadooViewConstants.L_GRID);
 
         Preconditions.checkState(grid.getSelectedEntitiesIds().size() > 0, "No record selected");
 

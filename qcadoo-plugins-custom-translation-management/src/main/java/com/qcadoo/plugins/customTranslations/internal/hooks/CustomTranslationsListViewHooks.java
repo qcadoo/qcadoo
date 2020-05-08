@@ -33,6 +33,7 @@ import com.qcadoo.view.api.components.GridComponent;
 import com.qcadoo.view.api.components.WindowComponent;
 import com.qcadoo.view.api.ribbon.RibbonActionItem;
 import com.qcadoo.view.api.ribbon.RibbonGroup;
+import com.qcadoo.view.constants.QcadooViewConstants;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
@@ -46,17 +47,13 @@ public class CustomTranslationsListViewHooks {
 
     private static final String L_CLEAN = "clean";
 
-    private static final String L_WINDOW = "window";
-
-    private static final String L_GRID = "grid";
-
     public void updateRibbonState(final ViewDefinitionState view) {
-        GridComponent customTranslationsGrid = (GridComponent) view.getComponentByReference(L_GRID);
+        GridComponent customTranslationsGrid = (GridComponent) view.getComponentByReference(QcadooViewConstants.L_GRID);
 
-        WindowComponent window = (WindowComponent) view.getComponentByReference(L_WINDOW);
-        RibbonGroup clean = (RibbonGroup) window.getRibbon().getGroupByName(L_CLEAN);
+        WindowComponent window = (WindowComponent) view.getComponentByReference(QcadooViewConstants.L_WINDOW);
+        RibbonGroup clean = window.getRibbon().getGroupByName(L_CLEAN);
 
-        RibbonActionItem cleanCustomTranslations = (RibbonActionItem) clean.getItemByName(L_CLEAN_CUSTOM_TRANSLATIONS);
+        RibbonActionItem cleanCustomTranslations = clean.getItemByName(L_CLEAN_CUSTOM_TRANSLATIONS);
 
         boolean isAnyTranslationSelected = customTranslationsGrid.getSelectedEntities().isEmpty();
 
@@ -82,7 +79,7 @@ public class CustomTranslationsListViewHooks {
     }
 
     public void addDiscriminatorRestrictionToGrid(final ViewDefinitionState view) {
-        GridComponent customTranslationsGrid = (GridComponent) view.getComponentByReference(L_GRID);
+        GridComponent customTranslationsGrid = (GridComponent) view.getComponentByReference(QcadooViewConstants.L_GRID);
 
         FieldComponent localeField = (FieldComponent) view.getComponentByReference(LOCALE);
 

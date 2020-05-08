@@ -37,6 +37,7 @@ import com.qcadoo.view.api.components.FormComponent;
 import com.qcadoo.view.api.components.WindowComponent;
 import com.qcadoo.view.api.ribbon.RibbonActionItem;
 import com.qcadoo.view.api.ribbon.RibbonGroup;
+import com.qcadoo.view.constants.QcadooViewConstants;
 
 @Service
 public final class UserService {
@@ -70,7 +71,7 @@ public final class UserService {
     }
 
     public void hidePasswordOnUpdateForm(final ViewDefinitionState state) {
-        FormComponent form = (FormComponent) state.getComponentByReference("form");
+        FormComponent form = (FormComponent) state.getComponentByReference(QcadooViewConstants.L_FORM);
         FieldComponent password = (FieldComponent) state.getComponentByReference("passwordTextInput");
         FieldComponent passwordConfirmation = (FieldComponent) state.getComponentByReference("passwordConfirmationTextInput");
         ComponentState changePasswordButton = state.getComponentByReference("changePasswordButton");
@@ -90,7 +91,7 @@ public final class UserService {
     }
 
     public void disableFormForAdmin(final ViewDefinitionState state) {
-        FormComponent form = (FormComponent) state.getComponentByReference("form");
+        FormComponent form = (FormComponent) state.getComponentByReference(QcadooViewConstants.L_FORM);
 
         Entity loggedUser = dataDefinitionService.get(QcadooSecurityConstants.PLUGIN_IDENTIFIER,
                 QcadooSecurityConstants.MODEL_USER).get(securityService.getCurrentUserId());
@@ -101,7 +102,7 @@ public final class UserService {
     }
 
     public void disableFormForSuperadmin(final ViewDefinitionState state) {
-        FormComponent form = (FormComponent) state.getComponentByReference("form");
+        FormComponent form = (FormComponent) state.getComponentByReference(QcadooViewConstants.L_FORM);
 
         Long viewedUserId = form.getEntityId();
         Entity viewedUser = dataDefinitionService.get(QcadooSecurityConstants.PLUGIN_IDENTIFIER,
@@ -115,7 +116,7 @@ public final class UserService {
     }
 
     public void setupRibbonForAdmins(final ViewDefinitionState state) {
-        WindowComponent window = (WindowComponent) state.getComponentByReference("window");
+        WindowComponent window = (WindowComponent) state.getComponentByReference(QcadooViewConstants.L_WINDOW);
         if(!securityService.hasCurrentUserRole("ROLE_SUPERADMIN") && securityService.hasCurrentUserRole("ROLE_ADMIN")){
             RibbonGroup actions = window.getRibbon().getGroupByName("actions");
             for (RibbonActionItem actionItem : actions.getItems()) {

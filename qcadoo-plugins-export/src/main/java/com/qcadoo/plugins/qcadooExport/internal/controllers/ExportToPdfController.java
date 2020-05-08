@@ -23,25 +23,6 @@
  */
 package com.qcadoo.plugins.qcadooExport.internal.controllers;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.text.DateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.lowagie.text.Document;
@@ -63,11 +44,26 @@ import com.qcadoo.security.api.SecurityRolesService;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.api.components.GridComponent;
 import com.qcadoo.view.api.crud.CrudService;
+import com.qcadoo.view.constants.QcadooViewConstants;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.text.DateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 @Controller
 public class ExportToPdfController {
 
-    private static final String L_GRID = "grid";
+
 
     private static final String L_VIEW_NAME_VARIABLE = "viewName";
 
@@ -107,7 +103,7 @@ public class ExportToPdfController {
 
             ViewDefinitionState state = crudService.invokeEvent(pluginIdentifier, viewName, body, locale);
 
-            GridComponent grid = (GridComponent) state.getComponentByReference(L_GRID);
+            GridComponent grid = (GridComponent) state.getComponentByReference(QcadooViewConstants.L_GRID);
 
             Document document = new Document(PageSize.A4.rotate());
             String date = DateFormat.getDateInstance().format(new Date());

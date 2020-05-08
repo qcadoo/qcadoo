@@ -29,6 +29,7 @@ import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.security.api.SecurityRole;
 import com.qcadoo.security.api.SecurityRolesService;
+import com.qcadoo.view.constants.QcadooViewConstants;
 import com.qcadoo.view.internal.ComponentDefinition;
 import com.qcadoo.view.internal.ComponentOption;
 import com.qcadoo.view.internal.api.*;
@@ -284,7 +285,7 @@ public final class ViewDefinitionParserImpl implements ViewDefinitionParser {
             final ContainerPattern parent, final String pluginIdentifier) throws ViewDefinitionParserNodeException {
         String type = getStringAttribute(componentNode, "type");
 
-        if (parent == null && !("window".equals(type) || "tabWindow".equals(type))) {
+        if (parent == null && !(QcadooViewConstants.L_WINDOW.equals(type) || "tabWindow".equals(type))) {
             throw new ViewDefinitionParserNodeException(componentNode, "Unsupported component: " + type);
         }
 

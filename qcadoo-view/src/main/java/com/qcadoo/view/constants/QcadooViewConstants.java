@@ -43,8 +43,12 @@ public final class QcadooViewConstants {
     public static final String MODEL_VIEW = "view";
 
     // VIEW
-    public static final String VIEW_SYSTEM_INFO = "systemInfo";
-
     public static final String VIEW_FILE_UPLOAD = "fileUpload";
+
+    public static final String L_WINDOW = "window";
+
+    public static final String L_FORM = "form";
+    
+    public static final String L_GRID = "grid";
 
 }

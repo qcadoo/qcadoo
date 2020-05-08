@@ -23,14 +23,6 @@
  */
 package com.qcadoo.plugins.dictionaries.internal.hooks;
 
-import static com.qcadoo.model.constants.DictionaryItemFields.TECHNICAL_CODE;
-
-import java.util.Objects;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.constants.DictionaryFields;
@@ -41,13 +33,21 @@ import com.qcadoo.view.api.components.FieldComponent;
 import com.qcadoo.view.api.components.FormComponent;
 import com.qcadoo.view.api.components.WindowComponent;
 import com.qcadoo.view.api.ribbon.RibbonActionItem;
+import com.qcadoo.view.constants.QcadooViewConstants;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.Objects;
+
+import static com.qcadoo.model.constants.DictionaryItemFields.TECHNICAL_CODE;
 
 @Service
 public class DictionaryItemDetailsHooks {
 
-    private static final String L_FORM = "form";
+    
 
-    private static final String L_WINDOW = "window";
+
 
     private static final String L_STATES = "states";
 
@@ -61,7 +61,7 @@ public class DictionaryItemDetailsHooks {
     private DataDefinitionService dataDefinitionService;
 
     public void blockedActivationOptionWhenDictionaryWasAddFromSystem(final ViewDefinitionState view) {
-        FormComponent dictionaryItemForm = (FormComponent) view.getComponentByReference(L_FORM);
+        FormComponent dictionaryItemForm = (FormComponent) view.getComponentByReference(QcadooViewConstants.L_FORM);
 
         Long dictionaryItemId = dictionaryItemForm.getEntityId();
 
@@ -77,7 +77,7 @@ public class DictionaryItemDetailsHooks {
     }
 
     protected void changedEnabledButton(final ViewDefinitionState view, final boolean enabled) {
-        WindowComponent window = (WindowComponent) view.getComponentByReference(L_WINDOW);
+        WindowComponent window = (WindowComponent) view.getComponentByReference(QcadooViewConstants.L_WINDOW);
         RibbonActionItem deactivateButton = window.getRibbon().getGroupByName(L_STATES).getItemByName(L_DEACTIVATE);
         RibbonActionItem activateButton = window.getRibbon().getGroupByName(L_STATES).getItemByName(L_ACTIVATE);
 
@@ -88,7 +88,7 @@ public class DictionaryItemDetailsHooks {
     }
 
     public void disableNameEdit(final ViewDefinitionState view) {
-        FormComponent dictionaryItemForm = (FormComponent) view.getComponentByReference(L_FORM);
+        FormComponent dictionaryItemForm = (FormComponent) view.getComponentByReference(QcadooViewConstants.L_FORM);
         FieldComponent nameFieldComponent = (FieldComponent) view.getComponentByReference(DictionaryItemFields.NAME);
 
         if (dictionaryItemForm.getEntityId() == null) {
@@ -99,7 +99,7 @@ public class DictionaryItemDetailsHooks {
     }
 
     public void disableDictionaryItemFormForExternalItems(final ViewDefinitionState state) {
-        FormComponent dictionaryItemForm = (FormComponent) state.getComponentByReference(L_FORM);
+        FormComponent dictionaryItemForm = (FormComponent) state.getComponentByReference(QcadooViewConstants.L_FORM);
 
         Long dictionaryItemId = dictionaryItemForm.getEntityId();
 
@@ -121,7 +121,7 @@ public class DictionaryItemDetailsHooks {
     }
 
     public void showIntegerCheckbox(final ViewDefinitionState state) {
-        FormComponent form = (FormComponent) state.getComponentByReference(L_FORM);
+        FormComponent form = (FormComponent) state.getComponentByReference(QcadooViewConstants.L_FORM);
 
         String dictionaryName = form.getEntity().getBelongsToField(DictionaryItemFields.DICTIONARY)
                 .getStringField(DictionaryFields.NAME);

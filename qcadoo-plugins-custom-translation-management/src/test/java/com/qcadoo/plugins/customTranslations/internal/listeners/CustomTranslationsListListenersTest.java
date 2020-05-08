@@ -23,17 +23,14 @@
  */
 package com.qcadoo.plugins.customTranslations.internal.listeners;
 
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Maps;
+import com.qcadoo.model.api.DataDefinition;
+import com.qcadoo.model.api.Entity;
+import com.qcadoo.view.api.ComponentState.MessageType;
+import com.qcadoo.view.api.ViewDefinitionState;
+import com.qcadoo.view.api.components.GridComponent;
+import com.qcadoo.view.constants.QcadooViewConstants;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -43,20 +40,15 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Maps;
-import com.qcadoo.model.api.DataDefinition;
-import com.qcadoo.model.api.Entity;
-import com.qcadoo.view.api.ComponentState.MessageType;
-import com.qcadoo.view.api.ViewDefinitionState;
-import com.qcadoo.view.api.components.GridComponent;
+import java.util.*;
+
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
 
 @Ignore
 public class CustomTranslationsListListenersTest {
 
     private CustomTranslationsListListeners customTranslationsListListeners;
-
-    private static final String L_GRID = "grid";
 
     private static final String L_WINDOW_ACTIVE_MENU = "window.activeMenu";
 
@@ -106,7 +98,7 @@ public class CustomTranslationsListListenersTest {
         // given
         customTranslations = mockEntityList(Arrays.asList(customTranslation));
 
-        given(view.getComponentByReference(L_GRID)).willReturn(customTranslationsGrid);
+        given(view.getComponentByReference(QcadooViewConstants.L_GRID)).willReturn(customTranslationsGrid);
         given(customTranslationsGrid.getSelectedEntities()).willReturn(customTranslations);
 
         given(customTranslation.getDataDefinition()).willReturn(customTranslationDD);
@@ -125,7 +117,7 @@ public class CustomTranslationsListListenersTest {
         // given
         customTranslations = mockEntityList(new ArrayList<Entity>());
 
-        given(view.getComponentByReference(L_GRID)).willReturn(customTranslationsGrid);
+        given(view.getComponentByReference(QcadooViewConstants.L_GRID)).willReturn(customTranslationsGrid);
         given(customTranslationsGrid.getSelectedEntities()).willReturn(customTranslations);
 
         // when

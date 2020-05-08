@@ -30,6 +30,7 @@ import com.qcadoo.view.api.ComponentState.MessageType;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.api.components.FieldComponent;
 import com.qcadoo.view.api.components.FormComponent;
+import com.qcadoo.view.constants.QcadooViewConstants;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,7 +42,7 @@ import static com.qcadoo.customTranslation.constants.CustomTranslationFields.*;
 @Service
 public class ReplaceCustomTranslationsListeners {
 
-    private static final String L_FORM = "form";
+    
 
     private static final String L_REPLACE_TO = "replaceTo";
 
@@ -51,7 +52,7 @@ public class ReplaceCustomTranslationsListeners {
     private CustomTranslationManagementService customTranslationManagementService;
 
     public void replaceCustomTranslations(final ViewDefinitionState view, final ComponentState state, final String[] args) {
-        FormComponent replaceCustomTranslationsFrom = (FormComponent) view.getComponentByReference(L_FORM);
+        FormComponent replaceCustomTranslationsFrom = (FormComponent) view.getComponentByReference(QcadooViewConstants.L_FORM);
 
         FieldComponent localeField = (FieldComponent) view.getComponentByReference(LOCALE);
         FieldComponent replaceFromField = (FieldComponent) view.getComponentByReference(L_REPLACE_FROM);

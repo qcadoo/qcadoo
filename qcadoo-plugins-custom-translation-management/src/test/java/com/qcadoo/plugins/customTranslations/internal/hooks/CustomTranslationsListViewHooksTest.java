@@ -23,21 +23,6 @@
  */
 package com.qcadoo.plugins.customTranslations.internal.hooks;
 
-import static com.qcadoo.customTranslation.constants.CustomTranslationFields.LOCALE;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-
-import java.util.List;
-
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.search.CustomRestriction;
 import com.qcadoo.model.api.search.SearchCriteriaBuilder;
@@ -49,14 +34,25 @@ import com.qcadoo.view.api.components.GridComponent;
 import com.qcadoo.view.api.ribbon.Ribbon;
 import com.qcadoo.view.api.ribbon.RibbonActionItem;
 import com.qcadoo.view.api.ribbon.RibbonGroup;
+import com.qcadoo.view.constants.QcadooViewConstants;
 import com.qcadoo.view.internal.components.window.WindowComponentState;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+
+import java.util.List;
+
+import static com.qcadoo.customTranslation.constants.CustomTranslationFields.LOCALE;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 @Ignore
 public class CustomTranslationsListViewHooksTest {
-
-    private static final String L_GRID = "grid";
-
-    private static final String L_WINDOW = "window";
 
     private static final String L_CLEAN = "clean";
 
@@ -104,11 +100,11 @@ public class CustomTranslationsListViewHooksTest {
     @Test
     public void shouldUpdateRibbonStateIfCustomTranslationIsSelected() {
         // given
-        given(view.getComponentByReference(L_GRID)).willReturn(customTranslationsGrid);
+        given(view.getComponentByReference(QcadooViewConstants.L_GRID)).willReturn(customTranslationsGrid);
         given(customTranslationsGrid.getSelectedEntities()).willReturn(customTranslations);
         given(customTranslations.isEmpty()).willReturn(false);
 
-        given(view.getComponentByReference(L_WINDOW)).willReturn((ComponentState) window);
+        given(view.getComponentByReference(QcadooViewConstants.L_WINDOW)).willReturn((ComponentState) window);
 
         given(window.getRibbon()).willReturn(ribbon);
 
@@ -126,11 +122,11 @@ public class CustomTranslationsListViewHooksTest {
     @Test
     public void shouldntUpdateRibbonStateIfCustomTranslationIsntSelected() {
         // given
-        given(view.getComponentByReference(L_GRID)).willReturn(customTranslationsGrid);
+        given(view.getComponentByReference(QcadooViewConstants.L_GRID)).willReturn(customTranslationsGrid);
         given(customTranslationsGrid.getSelectedEntities()).willReturn(customTranslations);
         given(customTranslations.isEmpty()).willReturn(true);
 
-        given(view.getComponentByReference(L_WINDOW)).willReturn((ComponentState) window);
+        given(view.getComponentByReference(QcadooViewConstants.L_WINDOW)).willReturn((ComponentState) window);
 
         given(window.getRibbon()).willReturn(ribbon);
 
@@ -178,7 +174,7 @@ public class CustomTranslationsListViewHooksTest {
     @Test
     public void shouldSetCustomRestrictionsToNullWhenAddDiscriminatorRestrictionToGridListenerIfLocaleIsEmpty() {
         // given
-        given(view.getComponentByReference(L_GRID)).willReturn(customTranslationsGrid);
+        given(view.getComponentByReference(QcadooViewConstants.L_GRID)).willReturn(customTranslationsGrid);
 
         given(view.getComponentByReference(LOCALE)).willReturn(localeField);
 
@@ -196,7 +192,7 @@ public class CustomTranslationsListViewHooksTest {
         // given
         String locale = "pl";
 
-        given(view.getComponentByReference(L_GRID)).willReturn(customTranslationsGrid);
+        given(view.getComponentByReference(QcadooViewConstants.L_GRID)).willReturn(customTranslationsGrid);
 
         given(view.getComponentByReference(LOCALE)).willReturn(localeField);
 
@@ -212,7 +208,7 @@ public class CustomTranslationsListViewHooksTest {
     @Test
     public void shouldSetCustomRestrictionsToNullWhenAddDiscriminatorRestrictionToGridIfLocaleIsEmpty() {
         // given
-        given(view.getComponentByReference(L_GRID)).willReturn(customTranslationsGrid);
+        given(view.getComponentByReference(QcadooViewConstants.L_GRID)).willReturn(customTranslationsGrid);
 
         given(view.getComponentByReference(LOCALE)).willReturn(localeField);
 
@@ -230,7 +226,7 @@ public class CustomTranslationsListViewHooksTest {
         // given
         String locale = "pl";
 
-        given(view.getComponentByReference(L_GRID)).willReturn(customTranslationsGrid);
+        given(view.getComponentByReference(QcadooViewConstants.L_GRID)).willReturn(customTranslationsGrid);
 
         given(view.getComponentByReference(LOCALE)).willReturn(localeField);
 

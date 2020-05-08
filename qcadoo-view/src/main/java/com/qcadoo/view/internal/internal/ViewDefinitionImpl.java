@@ -30,6 +30,7 @@ import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.security.api.SecurityRole;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.api.ribbon.RibbonActionItem.Type;
+import com.qcadoo.view.constants.QcadooViewConstants;
 import com.qcadoo.view.internal.api.ComponentPattern;
 import com.qcadoo.view.internal.api.ContainerPattern;
 import com.qcadoo.view.internal.api.InternalViewDefinition;
@@ -180,7 +181,7 @@ public final class ViewDefinitionImpl implements InternalViewDefinition {
     }
 
     private InternalRibbon getRibbon() {
-        ComponentPattern window = patterns.get("window");
+        ComponentPattern window = patterns.get(QcadooViewConstants.L_WINDOW);
         if (window instanceof WindowComponentPattern) {
             return ((WindowComponentPattern) window).getRibbon();
         }

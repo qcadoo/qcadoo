@@ -23,17 +23,16 @@
  */
 package com.qcadoo.plugins.customTranslations.internal.listeners;
 
-import static com.qcadoo.customTranslation.constants.CustomTranslationFields.LOCALE;
-import static com.qcadoo.customTranslation.constants.CustomTranslationFields.PROPERTIES_TRANSLATION;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-
+import com.google.common.collect.ImmutableList;
+import com.qcadoo.customTranslation.api.CustomTranslationManagementService;
+import com.qcadoo.model.api.DataDefinition;
+import com.qcadoo.model.api.Entity;
+import com.qcadoo.view.api.ComponentState;
+import com.qcadoo.view.api.ComponentState.MessageType;
+import com.qcadoo.view.api.ViewDefinitionState;
+import com.qcadoo.view.api.components.FieldComponent;
+import com.qcadoo.view.api.components.FormComponent;
+import com.qcadoo.view.constants.QcadooViewConstants;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -44,22 +43,21 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import com.google.common.collect.ImmutableList;
-import com.qcadoo.customTranslation.api.CustomTranslationManagementService;
-import com.qcadoo.model.api.DataDefinition;
-import com.qcadoo.model.api.Entity;
-import com.qcadoo.view.api.ComponentState;
-import com.qcadoo.view.api.ComponentState.MessageType;
-import com.qcadoo.view.api.ViewDefinitionState;
-import com.qcadoo.view.api.components.FieldComponent;
-import com.qcadoo.view.api.components.FormComponent;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+
+import static com.qcadoo.customTranslation.constants.CustomTranslationFields.LOCALE;
+import static com.qcadoo.customTranslation.constants.CustomTranslationFields.PROPERTIES_TRANSLATION;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
 
 @Ignore
 public class ReplaceCustomTranslationsListenersTest {
 
     private ReplaceCustomTranslationsListeners replaceCustomTranslationsListeners;
 
-    private static final String L_FORM = "form";
+
 
     private static final String L_REPLACE_TO = "replaceTo";
 
@@ -112,7 +110,7 @@ public class ReplaceCustomTranslationsListenersTest {
 
         replaceCustomTranslationsListeners = new ReplaceCustomTranslationsListeners();
 
-        given(view.getComponentByReference(L_FORM)).willReturn(replaceCustomTranslationsFrom);
+        given(view.getComponentByReference(QcadooViewConstants.L_FORM)).willReturn(replaceCustomTranslationsFrom);
 
         ReflectionTestUtils.setField(replaceCustomTranslationsListeners, "customTranslationManagementService",
                 customTranslationManagementService);
