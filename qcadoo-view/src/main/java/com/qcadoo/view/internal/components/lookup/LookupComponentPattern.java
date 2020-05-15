@@ -23,30 +23,14 @@
  */
 package com.qcadoo.view.internal.components.lookup;
 
-import static com.google.common.base.Preconditions.checkState;
-import static org.springframework.util.StringUtils.hasText;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 import com.google.common.collect.ImmutableMap;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.types.JoinFieldHolder;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.ribbon.RibbonActionItem.Type;
-import com.qcadoo.view.internal.ComponentDefinition;
-import com.qcadoo.view.internal.ComponentOption;
-import com.qcadoo.view.internal.CriteriaModifier;
-import com.qcadoo.view.internal.ModalDimensions;
-import com.qcadoo.view.internal.RowStyleResolver;
+import com.qcadoo.view.constants.QcadooViewConstants;
+import com.qcadoo.view.internal.*;
 import com.qcadoo.view.internal.api.InternalViewDefinition;
 import com.qcadoo.view.internal.api.InternalViewDefinitionService;
 import com.qcadoo.view.internal.api.ViewDefinition;
@@ -54,15 +38,21 @@ import com.qcadoo.view.internal.components.FieldComponentPattern;
 import com.qcadoo.view.internal.components.grid.GridComponentPattern;
 import com.qcadoo.view.internal.components.window.WindowComponentPattern;
 import com.qcadoo.view.internal.internal.ViewDefinitionImpl;
-import com.qcadoo.view.internal.ribbon.model.InternalRibbon;
-import com.qcadoo.view.internal.ribbon.model.InternalRibbonActionItem;
-import com.qcadoo.view.internal.ribbon.model.InternalRibbonGroup;
-import com.qcadoo.view.internal.ribbon.model.RibbonActionItemImpl;
-import com.qcadoo.view.internal.ribbon.model.RibbonGroupImpl;
-import com.qcadoo.view.internal.ribbon.model.RibbonImpl;
-import com.qcadoo.view.internal.ribbon.model.SingleRibbonGroupPack;
+import com.qcadoo.view.internal.ribbon.model.*;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
 import com.qcadoo.view.internal.xml.ViewDefinitionParserNodeException;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+
+import static com.google.common.base.Preconditions.checkState;
+import static org.springframework.util.StringUtils.hasText;
 
 public class LookupComponentPattern extends FieldComponentPattern {
 
@@ -279,13 +269,13 @@ public class LookupComponentPattern extends FieldComponentPattern {
     private GridComponentPattern createGridComponentPattern(final ViewDefinition lookupViewDefinition,
             final WindowComponentPattern window) {
         final ComponentDefinition gridComponentDefinition = new ComponentDefinition();
-        gridComponentDefinition.setName("grid");
+        gridComponentDefinition.setName(QcadooViewConstants.L_GRID);
         gridComponentDefinition.setTranslationService(getTranslationService());
         gridComponentDefinition.setApplicationContext(getApplicationContext());
         gridComponentDefinition.setViewDefinition(lookupViewDefinition);
         gridComponentDefinition.setParent(window);
         gridComponentDefinition.setContextualHelpService(getContextualHelpService());
-        gridComponentDefinition.setReference("grid");
+        gridComponentDefinition.setReference(QcadooViewConstants.L_GRID);
 
         if (getScopeFieldDefinition() != null) {
             gridComponentDefinition.setSourceFieldPath(getScopeFieldDefinition().getName());
@@ -326,7 +316,7 @@ public class LookupComponentPattern extends FieldComponentPattern {
 
     private WindowComponentPattern createWindowComponentPattern(final ViewDefinition lookupViewDefinition) {
         ComponentDefinition windowComponentDefinition = new ComponentDefinition();
-        windowComponentDefinition.setName("window");
+        windowComponentDefinition.setName(QcadooViewConstants.L_WINDOW);
         windowComponentDefinition.setTranslationService(getTranslationService());
         windowComponentDefinition.setApplicationContext(getApplicationContext());
         windowComponentDefinition.setViewDefinition(lookupViewDefinition);

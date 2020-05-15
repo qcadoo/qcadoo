@@ -23,32 +23,6 @@
  */
 package com.qcadoo.view.internal.patterns.components;
 
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertNull;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-import static org.springframework.test.util.ReflectionTestUtils.getField;
-import static org.springframework.test.util.ReflectionTestUtils.setField;
-
-import java.util.Locale;
-import java.util.Map;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mockito;
-import org.springframework.context.ApplicationContext;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-
 import com.google.common.collect.ImmutableMap;
 import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.api.DataDefinition;
@@ -63,6 +37,7 @@ import com.qcadoo.plugin.internal.PluginUtilsService;
 import com.qcadoo.security.api.SecurityRolesService;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.components.GridComponent;
+import com.qcadoo.view.constants.QcadooViewConstants;
 import com.qcadoo.view.internal.ComponentDefinition;
 import com.qcadoo.view.internal.ComponentOption;
 import com.qcadoo.view.internal.api.InternalViewDefinition;
@@ -75,6 +50,28 @@ import com.qcadoo.view.internal.patterns.AbstractComponentPattern;
 import com.qcadoo.view.internal.patterns.AbstractPatternTest;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
 import com.qcadoo.view.internal.xml.ViewDefinitionParserImpl;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mockito;
+import org.springframework.context.ApplicationContext;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.util.Locale;
+import java.util.Map;
+
+import static junit.framework.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+import static org.springframework.test.util.ReflectionTestUtils.getField;
+import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 public class GridComponentPatternTest extends AbstractPatternTest {
 
@@ -110,7 +107,7 @@ public class GridComponentPatternTest extends AbstractPatternTest {
         given(dataDefinition.isPrioritizable()).willReturn(true);
 
         given(viewDefinition.getDataDefinition()).willReturn(dataDefinition);
-        ComponentDefinition componentDefinition = getComponentDefinition("grid", viewDefinition);
+        ComponentDefinition componentDefinition = getComponentDefinition(QcadooViewConstants.L_GRID, viewDefinition);
         componentDefinition.setTranslationService(translationService);
         componentDefinition.setApplicationContext(applicationContext);
         GridComponentPattern pattern = new GridComponentPattern(componentDefinition);
@@ -193,7 +190,7 @@ public class GridComponentPatternTest extends AbstractPatternTest {
         InternalViewDefinition viewDefinition = mock(InternalViewDefinition.class);
 
         given(viewDefinition.getDataDefinition()).willReturn(dataDefinition);
-        ComponentDefinition componentDefinition = getComponentDefinition("grid", viewDefinition);
+        ComponentDefinition componentDefinition = getComponentDefinition(QcadooViewConstants.L_GRID, viewDefinition);
         componentDefinition.setTranslationService(translationService);
         componentDefinition.setApplicationContext(applicationContext);
         GridComponentPattern pattern = new GridComponentPattern(componentDefinition);
@@ -228,7 +225,7 @@ public class GridComponentPatternTest extends AbstractPatternTest {
         InternalViewDefinition viewDefinition = mock(InternalViewDefinition.class);
 
         given(viewDefinition.getDataDefinition()).willReturn(dataDefinition);
-        ComponentDefinition componentDefinition = getComponentDefinition("grid", viewDefinition);
+        ComponentDefinition componentDefinition = getComponentDefinition(QcadooViewConstants.L_GRID, viewDefinition);
         componentDefinition.setTranslationService(translationService);
         componentDefinition.setApplicationContext(applicationContext);
         GridComponentPattern pattern = new GridComponentPattern(componentDefinition);
@@ -280,7 +277,7 @@ public class GridComponentPatternTest extends AbstractPatternTest {
 
         given(viewDefinition.getComponentByReference("component")).willReturn(sourceComponent);
 
-        ComponentDefinition componentDefinition = getComponentDefinition("grid", null, "#{component}.field", null, viewDefinition);
+        ComponentDefinition componentDefinition = getComponentDefinition(QcadooViewConstants.L_GRID, null, "#{component}.field", null, viewDefinition);
         componentDefinition.setTranslationService(translationService);
         componentDefinition.setApplicationContext(applicationContext);
         GridComponentPattern pattern = new GridComponentPattern(componentDefinition);
@@ -328,7 +325,7 @@ public class GridComponentPatternTest extends AbstractPatternTest {
 
         given(viewDefinition.getComponentByReference("component")).willReturn(sourceComponent);
 
-        ComponentDefinition componentDefinition = getComponentDefinition("grid", null, "#{component}.field", null, viewDefinition);
+        ComponentDefinition componentDefinition = getComponentDefinition(QcadooViewConstants.L_GRID, null, "#{component}.field", null, viewDefinition);
         componentDefinition.setTranslationService(translationService);
         componentDefinition.setApplicationContext(applicationContext);
         GridComponentPattern pattern = new GridComponentPattern(componentDefinition);
@@ -356,7 +353,7 @@ public class GridComponentPatternTest extends AbstractPatternTest {
         SecurityRolesService securityRolesService = mock(SecurityRolesService.class);
 
         given(viewDefinition.getDataDefinition()).willReturn(dataDefinition);
-        ComponentDefinition componentDefinition = getComponentDefinition("grid", viewDefinition);
+        ComponentDefinition componentDefinition = getComponentDefinition(QcadooViewConstants.L_GRID, viewDefinition);
         componentDefinition.setTranslationService(translationService);
         componentDefinition.setApplicationContext(applicationContext);
         GridComponentPattern pattern = new GridComponentPattern(componentDefinition);
@@ -432,7 +429,7 @@ public class GridComponentPatternTest extends AbstractPatternTest {
         InternalViewDefinition viewDefinition = mock(InternalViewDefinition.class);
 
         given(viewDefinition.getDataDefinition()).willReturn(dataDefinition);
-        ComponentDefinition componentDefinition = getComponentDefinition("grid", viewDefinition);
+        ComponentDefinition componentDefinition = getComponentDefinition(QcadooViewConstants.L_GRID, viewDefinition);
         componentDefinition.setTranslationService(translationService);
         componentDefinition.setApplicationContext(applicationContext);
         componentDefinition.setDataDefinition(dataDefinition);
@@ -490,7 +487,7 @@ public class GridComponentPatternTest extends AbstractPatternTest {
         InternalViewDefinition viewDefinition = mock(InternalViewDefinition.class);
 
         given(viewDefinition.getDataDefinition()).willReturn(dataDefinition);
-        ComponentDefinition componentDefinition = getComponentDefinition("grid", viewDefinition);
+        ComponentDefinition componentDefinition = getComponentDefinition(QcadooViewConstants.L_GRID, viewDefinition);
         componentDefinition.setTranslationService(translationService);
         componentDefinition.setApplicationContext(applicationContext);
         componentDefinition.setDataDefinition(dataDefinition);

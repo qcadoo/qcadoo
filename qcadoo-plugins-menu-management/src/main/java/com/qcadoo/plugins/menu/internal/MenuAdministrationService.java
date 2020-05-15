@@ -23,19 +23,12 @@
  */
 package com.qcadoo.plugins.menu.internal;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.search.CustomRestriction;
 import com.qcadoo.model.api.search.SearchCriteriaBuilder;
 import com.qcadoo.model.api.search.SearchDisjunction;
 import com.qcadoo.model.api.search.SearchRestrictions;
-import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.api.components.FieldComponent;
 import com.qcadoo.view.api.components.FormComponent;
@@ -44,13 +37,18 @@ import com.qcadoo.view.api.utils.TranslationUtilsService;
 import com.qcadoo.view.constants.MenuCategoryFields;
 import com.qcadoo.view.constants.MenuItemFields;
 import com.qcadoo.view.constants.QcadooViewConstants;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class MenuAdministrationService {
 
-    private static final String L_FORM = "form";
+    
 
-    private static final String L_GRID = "grid";
+
 
     @Autowired
     private DataDefinitionService dataDefinitionService;
@@ -66,7 +64,7 @@ public class MenuAdministrationService {
     }
 
     public void addRestrictionToCategoriesGrid(final ViewDefinitionState viewDefinitionState) {
-        GridComponent categoriesGrid = (GridComponent) viewDefinitionState.getComponentByReference(L_GRID);
+        GridComponent categoriesGrid = (GridComponent) viewDefinitionState.getComponentByReference(QcadooViewConstants.L_GRID);
 
         categoriesGrid.setCustomRestriction(new CustomRestriction() {
 
@@ -87,7 +85,7 @@ public class MenuAdministrationService {
     }
 
     public void translateCategoriesGrid(final ViewDefinitionState viewDefinitionState) {
-        GridComponent categoriesGrid = (GridComponent) viewDefinitionState.getComponentByReference(L_GRID);
+        GridComponent categoriesGrid = (GridComponent) viewDefinitionState.getComponentByReference(QcadooViewConstants.L_GRID);
 
         for (Entity category : categoriesGrid.getEntities()) {
             if (category.getStringField(MenuCategoryFields.PLUGIN_IDENTIFIER) != null) {
@@ -98,7 +96,7 @@ public class MenuAdministrationService {
     }
 
     public void translateCategoryForm(final ViewDefinitionState viewDefinitionState) {
-        FormComponent categoryForm = (FormComponent) viewDefinitionState.getComponentByReference(L_FORM);
+        FormComponent categoryForm = (FormComponent) viewDefinitionState.getComponentByReference(QcadooViewConstants.L_FORM);
 
         Long categoryId = categoryForm.getEntityId();
 
@@ -127,7 +125,7 @@ public class MenuAdministrationService {
     }
 
     public void translateItemForm(final ViewDefinitionState viewDefinitionState) {
-        FormComponent itemForm = (FormComponent) viewDefinitionState.getComponentByReference(L_FORM);
+        FormComponent itemForm = (FormComponent) viewDefinitionState.getComponentByReference(QcadooViewConstants.L_FORM);
 
         Long itemId = itemForm.getEntityId();
 

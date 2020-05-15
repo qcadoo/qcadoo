@@ -23,32 +23,6 @@
  */
 package com.qcadoo.view.internal.xml;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-import static org.springframework.test.util.ReflectionTestUtils.getField;
-import static org.springframework.test.util.ReflectionTestUtils.setField;
-
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import junit.framework.Assert;
-
-import org.json.JSONObject;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.mockito.Mockito;
-import org.springframework.context.ApplicationContext;
-import org.springframework.core.io.ClassPathResource;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
@@ -63,13 +37,10 @@ import com.qcadoo.security.api.SecurityRole;
 import com.qcadoo.security.api.SecurityRolesService;
 import com.qcadoo.view.api.ribbon.RibbonActionItem;
 import com.qcadoo.view.beans.sample.CustomViewService;
+import com.qcadoo.view.constants.QcadooViewConstants;
 import com.qcadoo.view.internal.ViewDefinitionServiceImpl;
 import com.qcadoo.view.internal.ViewHookDefinition;
-import com.qcadoo.view.internal.api.ComponentPattern;
-import com.qcadoo.view.internal.api.ContextualHelpService;
-import com.qcadoo.view.internal.api.InternalViewDefinition;
-import com.qcadoo.view.internal.api.ViewDefinition;
-import com.qcadoo.view.internal.api.ViewDefinitionService;
+import com.qcadoo.view.internal.api.*;
 import com.qcadoo.view.internal.components.ButtonComponentPattern;
 import com.qcadoo.view.internal.components.CheckBoxComponentPattern;
 import com.qcadoo.view.internal.components.TextAreaComponentPattern;
@@ -77,14 +48,30 @@ import com.qcadoo.view.internal.components.TextInputComponentPattern;
 import com.qcadoo.view.internal.components.form.FormComponentPattern;
 import com.qcadoo.view.internal.components.grid.GridComponentPattern;
 import com.qcadoo.view.internal.components.window.WindowComponentPattern;
-import com.qcadoo.view.internal.hooks.HookFactory;
-import com.qcadoo.view.internal.hooks.HookType;
-import com.qcadoo.view.internal.hooks.ViewConstructionHook;
-import com.qcadoo.view.internal.hooks.ViewEventListenerHook;
-import com.qcadoo.view.internal.hooks.ViewLifecycleHook;
+import com.qcadoo.view.internal.hooks.*;
 import com.qcadoo.view.internal.internal.ViewComponentsResolverImpl;
 import com.qcadoo.view.internal.internal.ViewHooksHolder;
 import com.qcadoo.view.internal.ribbon.RibbonParserService;
+import junit.framework.Assert;
+import org.json.JSONObject;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.mockito.Mockito;
+import org.springframework.context.ApplicationContext;
+import org.springframework.core.io.ClassPathResource;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.junit.Assert.*;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+import static org.springframework.test.util.ReflectionTestUtils.getField;
+import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 public class ViewDefinitionParserImplTest {
 
@@ -119,12 +106,12 @@ public class ViewDefinitionParserImplTest {
     @BeforeClass
     public static void initClass() throws Exception {
         viewComponentsResolver = new ViewComponentsResolverImpl();
-        viewComponentsResolver.register("window", WindowComponentPattern.class);
-        viewComponentsResolver.register("form", FormComponentPattern.class);
+        viewComponentsResolver.register(QcadooViewConstants.L_WINDOW, WindowComponentPattern.class);
+        viewComponentsResolver.register(QcadooViewConstants.L_FORM, FormComponentPattern.class);
         viewComponentsResolver.register("checkbox", CheckBoxComponentPattern.class);
         viewComponentsResolver.register("input", TextInputComponentPattern.class);
         viewComponentsResolver.register("textarea", TextAreaComponentPattern.class);
-        viewComponentsResolver.register("grid", GridComponentPattern.class);
+        viewComponentsResolver.register(QcadooViewConstants.L_GRID, GridComponentPattern.class);
         viewComponentsResolver.register("button", ButtonComponentPattern.class);
     }
 

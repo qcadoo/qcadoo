@@ -23,11 +23,6 @@
  */
 package com.qcadoo.plugins.dictionaries.internal;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.qcadoo.model.api.DictionaryService;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.search.CustomRestriction;
@@ -35,6 +30,11 @@ import com.qcadoo.model.api.search.SearchCriteriaBuilder;
 import com.qcadoo.model.api.search.SearchRestrictions;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.api.components.GridComponent;
+import com.qcadoo.view.constants.QcadooViewConstants;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class ViewDictionaryService {
@@ -43,7 +43,7 @@ public class ViewDictionaryService {
     private DictionaryService dictionaryService;
 
     public void translateLabel(final ViewDefinitionState state) {
-        GridComponent grid = (GridComponent) state.getComponentByReference("grid");
+        GridComponent grid = (GridComponent) state.getComponentByReference(QcadooViewConstants.L_GRID);
 
         List<Entity> entities = grid.getEntities();
 
@@ -53,7 +53,7 @@ public class ViewDictionaryService {
     }
 
     public void addRestrictionToDictionariesGrid(final ViewDefinitionState viewDefinitionState) {
-        GridComponent grid = (GridComponent) viewDefinitionState.getComponentByReference("grid");
+        GridComponent grid = (GridComponent) viewDefinitionState.getComponentByReference(QcadooViewConstants.L_GRID);
         grid.setCustomRestriction(new CustomRestriction() {
 
             @Override

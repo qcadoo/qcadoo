@@ -341,11 +341,11 @@
 
 .description_message {
 	position: absolute;
-	top: 15px;
-	left: 15px;
+	top: 25px;
+	left: -25px;
 	background: #fff;
 	z-index: 999;
-	width: 275px;
+	width: 220px;
 	font: 11px arial;
 	border: 1px solid #0076ca;
 	border-radius: 2px;

@@ -23,29 +23,27 @@
  */
 package com.qcadoo.plugins.customTranslations.internal.listeners;
 
-import static com.qcadoo.customTranslation.constants.CustomTranslationFields.CUSTOM_TRANSLATION;
-
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.stereotype.Service;
-
 import com.google.common.collect.Maps;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.ComponentState.MessageType;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.api.components.GridComponent;
+import com.qcadoo.view.constants.QcadooViewConstants;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
+
+import static com.qcadoo.customTranslation.constants.CustomTranslationFields.CUSTOM_TRANSLATION;
 
 @Service
 public class CustomTranslationsListListeners {
 
-    private static final String L_GRID = "grid";
-
     private static final String L_WINDOW_ACTIVE_MENU = "window.activeMenu";
 
     public void cleanCustomTranslations(final ViewDefinitionState view, final ComponentState state, final String[] args) {
-        GridComponent customTranslationsGrid = (GridComponent) view.getComponentByReference(L_GRID);
+        GridComponent customTranslationsGrid = (GridComponent) view.getComponentByReference(QcadooViewConstants.L_GRID);
 
         List<Entity> customTranslations = customTranslationsGrid.getSelectedEntities();
 

@@ -23,27 +23,27 @@
  */
 package com.qcadoo.view.internal.patterns;
 
+import com.qcadoo.model.api.DataDefinition;
+import com.qcadoo.model.api.FieldDefinition;
+import com.qcadoo.model.api.types.BelongsToType;
+import com.qcadoo.model.api.types.FieldType;
+import com.qcadoo.model.api.types.HasManyType;
+import com.qcadoo.view.constants.QcadooViewConstants;
+import com.qcadoo.view.internal.api.InternalViewDefinition;
+import com.qcadoo.view.internal.components.TextInputComponentPattern;
+import com.qcadoo.view.internal.components.form.FormComponentPattern;
+import com.qcadoo.view.internal.components.window.WindowComponentPattern;
+import com.qcadoo.view.internal.internal.ViewDefinitionImpl;
+import org.junit.Assert;
+import org.junit.Test;
+import org.springframework.test.util.ReflectionTestUtils;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.springframework.test.util.ReflectionTestUtils.getField;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
-
-import org.junit.Assert;
-import org.junit.Test;
-import org.springframework.test.util.ReflectionTestUtils;
-
-import com.qcadoo.model.api.DataDefinition;
-import com.qcadoo.model.api.FieldDefinition;
-import com.qcadoo.model.api.types.BelongsToType;
-import com.qcadoo.model.api.types.FieldType;
-import com.qcadoo.model.api.types.HasManyType;
-import com.qcadoo.view.internal.api.InternalViewDefinition;
-import com.qcadoo.view.internal.components.TextInputComponentPattern;
-import com.qcadoo.view.internal.components.form.FormComponentPattern;
-import com.qcadoo.view.internal.components.window.WindowComponentPattern;
-import com.qcadoo.view.internal.internal.ViewDefinitionImpl;
 
 public class InitializationTest extends AbstractPatternTest {
 
@@ -336,7 +336,7 @@ public class InitializationTest extends AbstractPatternTest {
         InternalViewDefinition viewDefinition = new ViewDefinitionImpl("view", "plugin", dataDefinition, true, null);
 
         AbstractContainerPattern parent = new FormComponentPattern(getComponentDefinition("parent", viewDefinition));
-        AbstractContainerPattern form = new FormComponentPattern(getComponentDefinition("form", null, null, parent,
+        AbstractContainerPattern form = new FormComponentPattern(getComponentDefinition(QcadooViewConstants.L_FORM, null, null, parent,
                 viewDefinition));
         AbstractComponentPattern input = new TextInputComponentPattern(getComponentDefinition("input", "field", null, form,
                 viewDefinition));
@@ -344,7 +344,7 @@ public class InitializationTest extends AbstractPatternTest {
                 viewDefinition));
         AbstractComponentPattern subselect = new TextInputComponentPattern(getComponentDefinition("subselect",
                 "#{parent.form}.hasMany", "#{parent.form.select}.hasMany", form, viewDefinition));
-        AbstractComponentPattern grid = new TextInputComponentPattern(getComponentDefinition("grid", null,
+        AbstractComponentPattern grid = new TextInputComponentPattern(getComponentDefinition(QcadooViewConstants.L_GRID, null,
                 "#{parent.form}.hasMany", parent, viewDefinition));
 
         parent.addChild(form);
