@@ -208,8 +208,8 @@ QCD.components.elements.Grid = function (element, mainController) {
 					    var iter = null;
 					    for (iter in column.filterValues) {
 					        var multiSearchFilterValue = {
-					            text: column.filterValues[iter],
-					            value: iter
+					            text: column.filterValues[iter].value,
+					            value: column.filterValues[iter].key
 					        };
 					        multiSearchFilterValues.push(multiSearchFilterValue);   
 					    }
@@ -221,8 +221,8 @@ QCD.components.elements.Grid = function (element, mainController) {
                         j = null;
                         
                     for (j in column.filterValues) {
-                        possibleValues[j] = column.filterValues[j];
-                        possibleValuesString += ";" + j + ":" + column.filterValues[j];
+                        possibleValues[column.filterValues[j].key] = column.filterValues[j].value;
+                        possibleValuesString += ";" + column.filterValues[j].key + ":" + column.filterValues[j].value;
                     }
                     stype = 'select';
                     searchoptions.value = possibleValuesString;

@@ -430,26 +430,35 @@ public class GridComponentPattern extends AbstractComponentPattern {
         }).collect(Collectors.toList());
     }
 
-    private JSONObject getFilterValuesForColumn(final GridComponentColumn column, final Locale locale) throws JSONException {
+    private JSONArray getFilterValuesForColumn(final GridComponentColumn column, final Locale locale) throws JSONException {
         if (column.getFields().size() != 1) {
             return null;
         }
 
-        JSONObject json = new JSONObject();
+        JSONArray values = new JSONArray();
 
         if (column.getFields().get(0).getType() instanceof EnumeratedType) {
             EnumeratedType type = (EnumeratedType) column.getFields().get(0).getType();
             Map<String, String> sortedValues = type.values(locale);
             for (Map.Entry<String, String> value : sortedValues.entrySet()) {
-                json.put(value.getKey(), value.getValue());
+                JSONObject obj = new JSONObject();
+                obj.put("key", value.getKey());
+                obj.put("value", value.getValue());
+                values.put(obj);
             }
         } else if (column.getFields().get(0).getType().getType().equals(Boolean.class)) {
-            json.put("1", getTranslationService().translate("qcadooView.true", locale));
-            json.put("0", getTranslationService().translate("qcadooView.false", locale));
+            JSONObject obj1 = new JSONObject();
+            obj1.put("key", "1");
+            obj1.put("value", getTranslationService().translate("qcadooView.true", locale));
+            values.put(obj1);
+            JSONObject obj0 = new JSONObject();
+            obj0.put("key", "0");
+            obj0.put("value", getTranslationService().translate("qcadooView.false", locale));
+            values.put(obj0);
         }
 
-        if (json.length() > 0) {
-            return json;
+        if (values.length() > 0) {
+            return values;
         } else {
             return null;
         }
