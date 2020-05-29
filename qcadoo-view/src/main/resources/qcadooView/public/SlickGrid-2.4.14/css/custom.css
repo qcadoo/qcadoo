@@ -256,3 +256,9 @@ input.editor-checkbox {
   height: 13px;
   line-height: 13px;
 }
+
+.slick-cell-checkboxsel {
+    background: #f0f0f0;
+    border-right-color: silver;
+    border-right-style: solid;
+}
