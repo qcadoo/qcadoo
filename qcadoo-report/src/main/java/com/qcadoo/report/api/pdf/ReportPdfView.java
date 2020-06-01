@@ -30,9 +30,6 @@ import com.lowagie.text.pdf.PdfDestination;
 import com.lowagie.text.pdf.PdfWriter;
 import com.qcadoo.report.api.FooterResolver;
 import com.qcadoo.report.api.ReportService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.web.servlet.view.document.AbstractPdfView;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -40,6 +37,10 @@ import java.util.Locale;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.web.servlet.view.document.AbstractPdfView;
 
 /**
  * Abstract superclass for report PDF views, using Bruno Lowagie's
@@ -74,7 +75,7 @@ public abstract class ReportPdfView extends AbstractPdfView {
         }
 
         response.setHeader("Content-disposition",
-                "inline; filename=" + fileName + "." + ReportService.ReportType.PDF.getExtension());
+                "inline; filename=" + fileName.replaceAll(",", ".") + "." + ReportService.ReportType.PDF.getExtension());
     }
 
     public void buildTestedPdfDocumentToFile(final Map<String, Object> model, final String filePath) {
