@@ -38,8 +38,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.security.authentication.event.AbstractAuthenticationEvent;
 import org.springframework.security.authentication.event.AbstractAuthenticationFailureEvent;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.GrantedAuthorityImpl;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -69,7 +71,7 @@ import com.qcadoo.security.internal.api.QcadooUser;
 public class SecurityServiceImpl implements InternalSecurityService, UserDetailsService, PersistentTokenRepository,
         ApplicationListener<AbstractAuthenticationEvent> {
 
-    private static final String L_TARGET_ROLE_IDENTIFIER_MUST_BE_GIVEN = "targetRoleIdetifier must be given";
+    private static final String L_TARGET_ROLE_IDENTIFIER_MUST_BE_GIVEN = "targetRoleIdentifier must be given";
 
     private static final String L_USER_ENTITY_MUST_BE_GIVEN = "User entity must be given";;
 
@@ -87,50 +89,34 @@ public class SecurityServiceImpl implements InternalSecurityService, UserDetails
         if (!(event instanceof AbstractAuthenticationFailureEvent)) {
             UserDetails userDetails = (UserDetails) event.getAuthentication().getPrincipal();
 
-            Entity user = dataDefinitionService
-                    .get(QcadooSecurityConstants.PLUGIN_IDENTIFIER, QcadooSecurityConstants.MODEL_USER).find()
-                    .add(SearchRestrictions.eq(UserFields.USER_NAME, userDetails.getUsername())).uniqueResult();
+            Entity user = dataDefinitionService.get(QcadooSecurityConstants.PLUGIN_IDENTIFIER, QcadooSecurityConstants.MODEL_USER)
+                    .find().add(SearchRestrictions.eq(UserFields.USER_NAME, userDetails.getUsername())).uniqueResult();
 
             Calendar now = Calendar.getInstance();
             now.add(Calendar.DAY_OF_YEAR, -1);
 
-            if ((user.getField(UserFields.LAST_ACTIVITY) == null)
+            if (Objects.isNull(user.getField(UserFields.LAST_ACTIVITY))
                     || now.getTime().after(user.getDateField(UserFields.LAST_ACTIVITY))) {
                 user.setField(UserFields.LAST_ACTIVITY, new Date());
 
-                if(Objects.nonNull(request)){
+                if (Objects.nonNull(request)) {
                     user.setField(UserFields.IP_ADDRESS, getClientIP());
                 }
 
-                dataDefinitionService.get(QcadooSecurityConstants.PLUGIN_IDENTIFIER, QcadooSecurityConstants.MODEL_USER).save(
-                        user);
+                dataDefinitionService.get(QcadooSecurityConstants.PLUGIN_IDENTIFIER, QcadooSecurityConstants.MODEL_USER)
+                        .save(user);
             }
         }
     }
 
     private String getClientIP() {
         String xfHeader = request.getHeader("X-Forwarded-For");
-        if (StringUtils.isBlank(xfHeader)){
+
+        if (StringUtils.isBlank(xfHeader)) {
             return request.getRemoteAddr();
         }
+
         return xfHeader.split(",")[0];
-    }
-
-    @Override
-    @Monitorable
-    public String getCurrentUserName() {
-        if ((SecurityContextHolder.getContext() == null) || (SecurityContextHolder.getContext().getAuthentication() == null)
-                || (SecurityContextHolder.getContext().getAuthentication().getName() == null)) {
-            return null;
-        }
-
-        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
-        
-        Entity user = getUserEntity(userName);
-
-        checkNotNull(user, "Current user with login %s cannot be found", userName);
-
-        return user.getStringField(UserFields.USER_NAME);
     }
 
     @Override
@@ -148,6 +134,14 @@ public class SecurityServiceImpl implements InternalSecurityService, UserDetails
         return qcadooUsers;
     }
 
+    private SecurityContext getContext() {
+        return SecurityContextHolder.getContext();
+    }
+
+    private Authentication getAuthentication() {
+        return getContext().getAuthentication();
+    }
+
     @Override
     public Entity getUserEntity(final String userName) {
         return dataDefinitionService.get(QcadooSecurityConstants.PLUGIN_IDENTIFIER, QcadooSecurityConstants.MODEL_USER).find()
@@ -156,9 +150,33 @@ public class SecurityServiceImpl implements InternalSecurityService, UserDetails
 
     @Override
     @Monitorable
-    public Long getCurrentUserId() {
-        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+    public String getCurrentUserName() {
+        SecurityContext context = getContext();
+        Authentication authentication = getAuthentication();
 
+        if (Objects.isNull(context) || Objects.isNull(authentication) || Objects.isNull(authentication.getName())) {
+            return null;
+        }
+
+        String userName = authentication.getName();
+        Entity user = getUserEntity(userName);
+
+        checkNotNull(user, "Current user with login %s cannot be found", userName);
+
+        return user.getStringField(UserFields.USER_NAME);
+    }
+
+    @Override
+    @Monitorable
+    public Long getCurrentUserId() {
+        SecurityContext context = getContext();
+        Authentication authentication = getAuthentication();
+
+        if (Objects.isNull(context) || Objects.isNull(authentication) || Objects.isNull(authentication.getName())) {
+            return null;
+        }
+
+        String userName = authentication.getName();
         Entity user = getUserEntity(userName);
 
         checkNotNull(user, "Current user with login %s cannot be found", userName);
@@ -171,7 +189,7 @@ public class SecurityServiceImpl implements InternalSecurityService, UserDetails
     public UserDetails loadUserByUsername(final String username) {
         Entity user = getUserEntity(username);
 
-        if (user == null) {
+        if (Objects.isNull(user)) {
             throw new UsernameNotFoundException("Username " + username + " not found");
         }
 
@@ -184,7 +202,7 @@ public class SecurityServiceImpl implements InternalSecurityService, UserDetails
         for (Entity role : user.getBelongsToField(UserFields.GROUP).getManyToManyField(GroupFields.ROLES)) {
             SecurityRole securityRole = securityRolesService.getRoleByIdentifier(role.getStringField(RoleFields.IDENTIFIER));
 
-            checkState(securityRole != null, "Role '%s' not defined", role.getStringField(RoleFields.IDENTIFIER));
+            checkState(Objects.nonNull(securityRole), "Role '%s' not defined", role.getStringField(RoleFields.IDENTIFIER));
 
             grantedAuthorities.add(new GrantedAuthorityImpl(securityRole.getRoleIdentifier()));
         }
@@ -198,8 +216,8 @@ public class SecurityServiceImpl implements InternalSecurityService, UserDetails
 
     @Override
     public void createNewToken(final PersistentRememberMeToken persistentRememberMeToken) {
-        Entity persistentToken = dataDefinitionService.get(QcadooSecurityConstants.PLUGIN_IDENTIFIER,
-                QcadooSecurityConstants.MODEL_PERSISTENT_TOKEN).create();
+        Entity persistentToken = dataDefinitionService
+                .get(QcadooSecurityConstants.PLUGIN_IDENTIFIER, QcadooSecurityConstants.MODEL_PERSISTENT_TOKEN).create();
 
         persistentToken.setField(PersistentTokenFields.USER_NAME, persistentRememberMeToken.getUsername());
         persistentToken.setField(PersistentTokenFields.SERIES, persistentRememberMeToken.getSeries());
@@ -214,7 +232,7 @@ public class SecurityServiceImpl implements InternalSecurityService, UserDetails
     public void updateToken(final String series, final String token, final Date lastUsed) {
         Entity persistentToken = getPersistentToken(series);
 
-        if (persistentToken != null) {
+        if (Objects.nonNull(persistentToken)) {
             persistentToken.setField(PersistentTokenFields.TOKEN, token);
             persistentToken.setField(PersistentTokenFields.LAST_USED, lastUsed);
 
@@ -227,7 +245,8 @@ public class SecurityServiceImpl implements InternalSecurityService, UserDetails
     public PersistentRememberMeToken getTokenForSeries(final String series) {
         Entity persistentToken = getPersistentToken(series);
 
-        if ((persistentToken == null) || (getUserEntity(persistentToken.getStringField(PersistentTokenFields.USER_NAME)) == null)) {
+        if (Objects.isNull(persistentToken)
+                || Objects.isNull(getUserEntity(persistentToken.getStringField(PersistentTokenFields.USER_NAME)))) {
             return null;
         }
 
@@ -262,14 +281,14 @@ public class SecurityServiceImpl implements InternalSecurityService, UserDetails
     }
 
     @Override
-    public boolean hasRole(Entity user, String targetRoleIdetifier) {
-        checkNotNull(targetRoleIdetifier, L_TARGET_ROLE_IDENTIFIER_MUST_BE_GIVEN);
+    public boolean hasRole(final Entity user, final String targetRoleIdentifier) {
+        checkNotNull(targetRoleIdentifier, L_TARGET_ROLE_IDENTIFIER_MUST_BE_GIVEN);
         checkNotNull(user, L_USER_ENTITY_MUST_BE_GIVEN);
 
         List<Entity> roles = user.getBelongsToField(UserFields.GROUP).getManyToManyField(GroupFields.ROLES);
 
         for (Entity role : roles) {
-            if (targetRoleIdetifier.equals(role.getStringField(RoleFields.IDENTIFIER))) {
+            if (targetRoleIdentifier.equals(role.getStringField(RoleFields.IDENTIFIER))) {
                 return true;
             }
         }
@@ -278,8 +297,9 @@ public class SecurityServiceImpl implements InternalSecurityService, UserDetails
     }
 
     @Override
-    public boolean hasCurrentUserRole(String targetRoleIdentifier) {
+    public boolean hasCurrentUserRole(final String targetRoleIdentifier) {
         checkNotNull(targetRoleIdentifier, L_TARGET_ROLE_IDENTIFIER_MUST_BE_GIVEN);
+
         Entity user = getUserEntity(getCurrentUserName());
         List<Entity> roles = user.getBelongsToField(UserFields.GROUP).getManyToManyField(GroupFields.ROLES);
 
@@ -291,4 +311,5 @@ public class SecurityServiceImpl implements InternalSecurityService, UserDetails
 
         return false;
     }
+
 }

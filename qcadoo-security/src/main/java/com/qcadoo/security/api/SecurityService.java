@@ -23,6 +23,8 @@
  */
 package com.qcadoo.security.api;
 
+import org.springframework.security.core.Authentication;
+
 import com.qcadoo.model.api.Entity;
 
 /**
@@ -31,6 +33,8 @@ import com.qcadoo.model.api.Entity;
  * @since 0.4.0
  */
 public interface SecurityService {
+
+    Entity getUserEntity(final String userName);
 
     /**
      * Returns the name of the currently logged in user
@@ -45,18 +49,18 @@ public interface SecurityService {
      * @return currently logged in user's id
      */
     Long getCurrentUserId();
-    
+
     /**
      * Checks if given user can access resource with specified access role identifier
      * 
      * @param userEntity
      *            user to check
-     * @param targetRoleIdetifier
+     * @param targetRoleIdentifier
      *            resource access role identifier
      * @return true if given user can access to defined role, false otherwise
      */
-    boolean hasRole(final Entity userEntity, final String targetRoleIdetifier);
+    boolean hasRole(final Entity userEntity, final String targetRoleIdentifier);
 
-    boolean hasCurrentUserRole(final String targetRoleIdetifier);
+    boolean hasCurrentUserRole(final String targetRoleIdentifier);
 
 }
