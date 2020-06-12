@@ -23,6 +23,24 @@
  */
 package com.qcadoo.report.internal;
 
+import static org.springframework.context.i18n.LocaleContextHolder.getLocale;
+
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.lowagie.text.BadElementException;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
@@ -46,23 +64,6 @@ import com.qcadoo.report.api.pdf.HeaderAlignment;
 import com.qcadoo.report.api.pdf.PdfHelper;
 import com.qcadoo.report.api.pdf.TableBorderEvent;
 import com.qcadoo.security.api.SecurityService;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import static org.springframework.context.i18n.LocaleContextHolder.getLocale;
 
 @Component
 public final class PdfHelperImpl implements PdfHelper {
@@ -201,11 +202,11 @@ public final class PdfHelperImpl implements PdfHelper {
     @Override
     public void addTableCellAsTable(final PdfPTable table, final String label, final Object fieldValue, final String nullValue,
             final Font headerFont, final Font valueFont, final int columns) {
-        addTableCellAsTable(table, label, fieldValue, nullValue, headerFont, valueFont, columns, new int[]{});
+        addTableCellAsTable(table, label, fieldValue, nullValue, headerFont, valueFont, columns, new int[] {});
     }
 
     private void addTableCellAsTable(final PdfPTable table, final String label, final Object fieldValue, final String nullValue,
-                                    final Font headerFont, final Font valueFont, final int columns, final int[] columnWidths) {
+            final Font headerFont, final Font valueFont, final int columns, final int[] columnWidths) {
         PdfPTable cellTable = new PdfPTable(columns);
 
         if (columnWidths.length > 0) {
@@ -229,27 +230,56 @@ public final class PdfHelperImpl implements PdfHelper {
     }
 
     @Override
-     public void addTableCellAsTwoColumnsTable(final PdfPTable table, final String label, final Object fieldValue) {
+    public void addTableCellAsTwoColumnsTable(final PdfPTable table, final String label, final Object fieldValue) {
         addTableCellAsTable(table, label, fieldValue, FontUtils.getDejavuBold7Dark(), FontUtils.getDejavuRegular9Dark(), 2);
     }
 
     @Override
-    public void addTableCellAsTwoColumnsTable(final PdfPTable table, final String label, final Object fieldValue,  final int[] columnWidths) {
-        addTableCellAsTable(table, label, fieldValue, "-", FontUtils.getDejavuBold7Dark(),  FontUtils.getDejavuRegular9Dark(), 2, columnWidths);
+    public void addTableCellAsTwoColumnsTable(final PdfPTable table, final String label, final Object fieldValue,
+            final int[] columnWidths) {
+        addTableCellAsTable(table, label, fieldValue, "-", FontUtils.getDejavuBold7Dark(), FontUtils.getDejavuRegular9Dark(), 2,
+                columnWidths);
     }
 
     @Override
     public void addTableCellAsOneColumnTable(final PdfPTable table, final String label, final Object fieldValue) {
-        addTableCellAsTable(table, label, fieldValue, FontUtils.getDejavuBold7Dark(),  FontUtils.getDejavuRegular9Dark(), 1);
+        addTableCellAsTable(table, label, fieldValue, FontUtils.getDejavuBold7Dark(), FontUtils.getDejavuRegular9Dark(), 1);
     }
 
     @Override
-    public void addTableCellAsOneColumnTable(final PdfPTable table, final String label, final Object fieldValue, final boolean boldAndBigger) {
-        if(boldAndBigger){
-            addTableCellAsTable(table, label, fieldValue, FontUtils.getDejavuBold7Dark(),  FontUtils.getDejavuBold10Dark(), 1);
+    public void addTableCellAsOneColumnTable(final PdfPTable table, final String label, final Object fieldValue,
+            final boolean boldAndBigger) {
+        if (boldAndBigger) {
+            addTableCellAsTable(table, label, fieldValue, FontUtils.getDejavuBold7Dark(), FontUtils.getDejavuBold10Dark(), 1);
         } else {
-            addTableCellAsTable(table, label, fieldValue, FontUtils.getDejavuBold7Dark(),  FontUtils.getDejavuRegular9Dark(), 1);
+            addTableCellAsTable(table, label, fieldValue, FontUtils.getDejavuBold7Dark(), FontUtils.getDejavuRegular9Dark(), 1);
         }
+    }
+
+    @Override
+    public void addTableCellAsCheckBox(final PdfPTable table, final boolean isChecked) {
+        PdfPTable checkbox = createPanelTable(1);
+
+        checkbox.getDefaultCell().setBorder(Rectangle.BOX);
+        checkbox.getDefaultCell().setPadding(2.0f);
+        checkbox.getDefaultCell().setHorizontalAlignment(PdfPCell.ALIGN_TOP);
+
+        checkbox.setTotalWidth(9.0f);
+        checkbox.setLockedWidth(true);
+
+        if (isChecked) {
+            checkbox.addCell(new Phrase("X", FontUtils.getDejavuBold7Dark()));
+        } else {
+            checkbox.addCell(new Phrase(" ", FontUtils.getDejavuBold7Dark()));
+        }
+
+        table.getDefaultCell().setPaddingTop(4.0f);
+        table.getDefaultCell().setPaddingBottom(4.0f);
+        table.getDefaultCell().setMinimumHeight(9.0f);
+
+        table.addCell(checkbox);
+
+        table.getDefaultCell().setPadding(2.0f);
     }
 
     @Override
@@ -342,7 +372,8 @@ public final class PdfHelperImpl implements PdfHelper {
     }
 
     @Override
-    public PdfPTable addDynamicHeaderTableCell(final PdfPTable headerTable, final Map<String, Object> column, final Locale locale) {
+    public PdfPTable addDynamicHeaderTableCell(final PdfPTable headerTable, final Map<String, Object> column,
+            final Locale locale) {
         if (column.keySet().size() != 0) {
             Object key = column.keySet().iterator().next();
             addTableCellAsOneColumnTable(headerTable, translationService.translate(key.toString(), locale), column.get(key));
@@ -362,8 +393,8 @@ public final class PdfHelperImpl implements PdfHelper {
         return headerTable;
     }
 
-    private PdfPTable setTableProperties(final List<String> header, final boolean lastColumnAligmentToLeft,
-            final PdfPTable table, final Map<String, HeaderAlignment> alignments) {
+    private PdfPTable setTableProperties(final List<String> header, final boolean lastColumnAligmentToLeft, final PdfPTable table,
+            final Map<String, HeaderAlignment> alignments) {
         table.setWidthPercentage(100f);
         table.setHorizontalAlignment(Element.ALIGN_LEFT);
         table.setSpacingBefore(7.0f);
@@ -496,7 +527,8 @@ public final class PdfHelperImpl implements PdfHelper {
     }
 
     @Override
-    public boolean validateReportColumnWidths(Integer availableWidth, Map<String, Integer> fixedColumns, List<String> allColumns) {
+    public boolean validateReportColumnWidths(Integer availableWidth, Map<String, Integer> fixedColumns,
+            List<String> allColumns) {
         Integer remainedAvailableWidth = availableWidth;
         for (String entryColumn : allColumns) {
             for (Map.Entry<String, Integer> entryFixedColumn : fixedColumns.entrySet()) {

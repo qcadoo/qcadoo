@@ -23,15 +23,15 @@
  */
 package com.qcadoo.report.api.pdf;
 
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Font;
-import com.lowagie.text.pdf.PdfPTable;
-
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Font;
+import com.lowagie.text.pdf.PdfPTable;
 
 /**
  * Helper for PDF.
@@ -154,7 +154,8 @@ public interface PdfHelper {
      * @param columnWidths
      *            widths
      */
-    void addTableCellAsTwoColumnsTable(final PdfPTable table, final String label, final Object fieldValue, final int[] columnWidths);
+    void addTableCellAsTwoColumnsTable(final PdfPTable table, final String label, final Object fieldValue,
+            final int[] columnWidths);
 
     /**
      * Add cell with one columns table to current table.
@@ -178,7 +179,17 @@ public interface PdfHelper {
      * @param boldAndBigger
      *            boldAndBigger
      */
-    void addTableCellAsOneColumnTable(final PdfPTable table, final String label, final Object fieldValue, final boolean boldAndBigger);
+    void addTableCellAsOneColumnTable(final PdfPTable table, final String label, final Object fieldValue,
+            final boolean boldAndBigger);
+
+    /**
+     * Add cell with checkbox to current table.
+     *
+     * @param table
+     * @param isChecked
+     *            is checked
+     */
+    void addTableCellAsCheckBox(final PdfPTable table, final boolean isChecked);
 
     /**
      * Add image from file name to given document.
@@ -292,4 +303,5 @@ public interface PdfHelper {
 
     boolean validateReportColumnWidths(final Integer availableWidth, final Map<String, Integer> fixedColumns,
             final List<String> allColumns);
+
 }

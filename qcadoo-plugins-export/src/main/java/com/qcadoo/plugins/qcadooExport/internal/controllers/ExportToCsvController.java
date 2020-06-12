@@ -27,25 +27,20 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.qcadoo.model.api.aop.Monitorable;
 import com.qcadoo.model.api.file.FileService;
+import com.qcadoo.plugins.qcadooExport.api.ExportToCsv;
 import com.qcadoo.plugins.qcadooExport.api.ExportToCsvColumns;
 import com.qcadoo.plugins.qcadooExport.api.helpers.ExportToFileColumnsHelper;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.api.components.GridComponent;
 import com.qcadoo.view.api.crud.CrudService;
 import com.qcadoo.view.constants.QcadooViewConstants;
-import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.*;
-import java.nio.charset.Charset;
-import java.text.DateFormat;
-import java.util.Date;
+import java.io.File;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -53,17 +48,12 @@ import java.util.Map;
 @Controller
 public class ExportToCsvController {
 
-
-
     private static final String L_VIEW_NAME_VARIABLE = "viewName";
 
     private static final String L_PLUGIN_IDENTIFIER_VARIABLE = "pluginIdentifier";
 
     private static final String L_CONTROLLER_PATH = "exportToCsv/{" + L_PLUGIN_IDENTIFIER_VARIABLE + "}/{" + L_VIEW_NAME_VARIABLE
             + "}";
-
-    @Value("${exportedCsvSeparator:','}")
-    private String exportedCsvSeparator;
 
     @Autowired
     private FileService fileService;
@@ -73,6 +63,9 @@ public class ExportToCsvController {
 
     @Autowired
     private ExportToFileColumnsHelper<ExportToCsvColumns> exportToFileColumnsHelper;
+
+    @Autowired
+    private ExportToCsv exportToCsv;
 
     @Monitorable(threshold = 500)
     @ResponseBody
@@ -86,53 +79,18 @@ public class ExportToCsvController {
 
             GridComponent grid = (GridComponent) state.getComponentByReference(QcadooViewConstants.L_GRID);
 
-            String date = DateFormat.getDateInstance().format(new Date());
-            File file = fileService.createExportFile("export_" + grid.getName() + "_" + date + ".csv");
+            List<String> columns = getColumns(grid);
+            List<String> columnNames = getColumnNames(grid, columns);
 
-            BufferedWriter bufferedWriter = null;
+            List<Map<String, String>> rows;
 
-            try {
-                FileOutputStream fileOutputStream = new FileOutputStream(file);
-
-                fileOutputStream.write(239);
-                fileOutputStream.write(187);
-                fileOutputStream.write(191);
-
-                bufferedWriter = new BufferedWriter(new OutputStreamWriter(fileOutputStream, Charset.forName("UTF-8")));
-
-                boolean firstName = true;
-
-                List<String> columns = getColumns(grid);
-                List<String> columnNames = getColumnNames(grid, columns);
-
-                for (String name : columnNames) {
-                    if (firstName) {
-                        firstName = false;
-                    } else {
-                        bufferedWriter.append(exportedCsvSeparator);
-                    }
-
-                    bufferedWriter.append("\"").append(normalizeString(name)).append("\"");
-                }
-
-                bufferedWriter.append("\n");
-
-                List<Map<String, String>> rows;
-
-                if (grid.getSelectedEntitiesIds().isEmpty()) {
-                    rows = grid.getColumnValuesOfAllRecords();
-                } else {
-                    rows = grid.getColumnValuesOfSelectedRecords();
-                }
-
-                addCsvTableCells(bufferedWriter, rows, columns);
-
-                bufferedWriter.flush();
-            } catch (IOException e) {
-                throw new IllegalStateException(e.getMessage(), e);
-            } finally {
-                IOUtils.closeQuietly(bufferedWriter);
+            if (grid.getSelectedEntitiesIds().isEmpty()) {
+                rows = grid.getColumnValuesOfAllRecords();
+            } else {
+                rows = grid.getColumnValuesOfSelectedRecords();
             }
+
+            File file = exportToCsv.createExportFile(columns, columnNames, rows, grid.getName());
 
             state.redirectTo(fileService.getUrl(file.getAbsolutePath()) + "?clean", true, false);
 
@@ -158,33 +116,6 @@ public class ExportToCsvController {
         });
 
         return columnNames;
-    }
-
-    private void addCsvTableCells(final BufferedWriter bufferedWriter, final List<Map<String, String>> rows,
-            final List<String> columns) throws IOException {
-        for (Map<String, String> row : rows) {
-            boolean firstValue = true;
-
-            for (String column : columns) {
-                if (firstValue) {
-                    firstValue = false;
-                } else {
-                    bufferedWriter.append(exportedCsvSeparator);
-                }
-
-                bufferedWriter.append("\"").append(normalizeString(row.get(column))).append("\"");
-            }
-
-            bufferedWriter.append("\n");
-        }
-    }
-
-    private String normalizeString(final String string) {
-        if (StringUtils.hasText(string)) {
-            return string.replaceAll("\"", "\\\"").replaceAll("\n", " ");
-        } else {
-            return "";
-        }
     }
 
     private void changeMaxResults(final JSONObject json) throws JSONException {
