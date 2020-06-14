@@ -75,6 +75,8 @@ public class SecurityServiceImpl implements InternalSecurityService, UserDetails
 
     private static final String L_USER_ENTITY_MUST_BE_GIVEN = "User entity must be given";;
 
+    private static final String L_QCADOO_BOT = "qcadoo_bot";
+
     @Autowired
     private DataDefinitionService dataDefinitionService;
 
@@ -142,10 +144,19 @@ public class SecurityServiceImpl implements InternalSecurityService, UserDetails
         return getContext().getAuthentication();
     }
 
-    @Override
     public Entity getUserEntity(final String userName) {
         return dataDefinitionService.get(QcadooSecurityConstants.PLUGIN_IDENTIFIER, QcadooSecurityConstants.MODEL_USER).find()
                 .add(SearchRestrictions.eq(UserFields.USER_NAME, userName)).setMaxResults(1).uniqueResult();
+    }
+
+    private Entity getAndCheckUserEntity(final String userName) {
+        Entity user = getUserEntity(userName);
+
+        if (Objects.isNull(user)) {
+            throw new UsernameNotFoundException("Username " + userName + " not found");
+        }
+
+        return user;
     }
 
     @Override
@@ -161,9 +172,20 @@ public class SecurityServiceImpl implements InternalSecurityService, UserDetails
         String userName = authentication.getName();
         Entity user = getUserEntity(userName);
 
-        checkNotNull(user, "Current user with login %s cannot be found", userName);
-
         return user.getStringField(UserFields.USER_NAME);
+    }
+
+    @Override
+    public String getCurrentUserOrQcadooBotName() {
+        String userName = getCurrentUserName();
+
+        if (Objects.isNull(userName)) {
+            Entity user = getAndCheckUserEntity(L_QCADOO_BOT);
+
+            userName = user.getStringField(UserFields.USER_NAME);
+        }
+
+        return userName;
     }
 
     @Override
@@ -179,19 +201,26 @@ public class SecurityServiceImpl implements InternalSecurityService, UserDetails
         String userName = authentication.getName();
         Entity user = getUserEntity(userName);
 
-        checkNotNull(user, "Current user with login %s cannot be found", userName);
-
         return user.getId();
     }
 
     @Override
-    @Monitorable
-    public UserDetails loadUserByUsername(final String username) {
-        Entity user = getUserEntity(username);
+    public Long getCurrentUserOrQcadooBotId() {
+        Long userId = getCurrentUserId();
 
-        if (Objects.isNull(user)) {
-            throw new UsernameNotFoundException("Username " + username + " not found");
+        if (Objects.isNull(userId)) {
+            Entity user = getAndCheckUserEntity(L_QCADOO_BOT);
+
+            userId = user.getId();
         }
+
+        return userId;
+    }
+
+    @Override
+    @Monitorable
+    public UserDetails loadUserByUsername(final String userName) {
+        Entity user = getAndCheckUserEntity(userName);
 
         return convertEntityToUserDetails(user);
     }

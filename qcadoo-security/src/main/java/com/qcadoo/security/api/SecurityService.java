@@ -23,36 +23,46 @@
  */
 package com.qcadoo.security.api;
 
-import org.springframework.security.core.Authentication;
-
 import com.qcadoo.model.api.Entity;
 
 /**
  * Service for getting current user.
- * 
+ *
  * @since 0.4.0
  */
 public interface SecurityService {
 
-    Entity getUserEntity(final String userName);
-
     /**
      * Returns the name of the currently logged in user
-     * 
+     *
      * @return currently logged in user's name
      */
     String getCurrentUserName();
 
     /**
+     * Returns the name of the currently logged in user or qcadoo_bot
+     *
+     * @return currently logged in user's name
+     */
+    String getCurrentUserOrQcadooBotName();
+
+    /**
      * Returns the id of the currently logged in user
-     * 
+     *
      * @return currently logged in user's id
      */
     Long getCurrentUserId();
 
     /**
+     * Returns the id of the currently logged in user or qcadoo_bot
+     *
+     * @return currently logged in user's id
+     */
+    Long getCurrentUserOrQcadooBotId();
+
+    /**
      * Checks if given user can access resource with specified access role identifier
-     * 
+     *
      * @param userEntity
      *            user to check
      * @param targetRoleIdentifier
