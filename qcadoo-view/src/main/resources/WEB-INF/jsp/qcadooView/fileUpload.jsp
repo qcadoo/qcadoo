@@ -220,7 +220,6 @@
 </head>
 <body>
 
-	<div id="contentWrapperOuter">
 	<div id="contentWrapperMiddle">
 	<div id="contentWrapper">
 	
@@ -293,7 +292,6 @@
 				<div id="loginFooterLogo"></div>
 			</div>
 	 	</div>
- 	</div>
  	</div>
  	</div>
 </body>

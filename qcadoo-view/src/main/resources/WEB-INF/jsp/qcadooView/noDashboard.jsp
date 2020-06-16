@@ -47,30 +47,14 @@
 <body>
 
 	<div id="windowContainer">
-		<div id="windowContainerRibbon">
-			<div id="q_row3_out">
-				<div id="q_menu_row3"></div>
-			</div>
-			<div id="q_row4_out"></div>
-		</div>
 		<div id="windowContainerContentBody">
-			<div id="contentWrapperOuter">
 			<div id="contentWrapperMiddle">
 			<div id="dashboardContentWrapper">
-			
-				<div id="userElement">
-					${translationsMap['qcadooView.noDashboardPage.hello']} <span id="userLogin">${userLogin}</span>
-				</div>
 				<div id="descriptionElement">
 					<div id="descriptionHeader">
 						${translationsMap['qcadooView.noDashboardPage.header']}
 					</div>
-					<div id="descriptionContent">
-						${translationsMap['qcadooView.noDashboardPage.content']}
-					</div>
 				</div>
-		
-			</div>
 			</div>
 			</div>
 		</div>

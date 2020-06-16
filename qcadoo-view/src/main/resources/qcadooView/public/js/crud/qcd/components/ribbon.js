@@ -45,21 +45,6 @@ QCD.components.Ribbon = function(_model, _elementName, _mainController, _transla
 	
 	var currentWidth;
 	
-	this.constructElement = function() {
-		
-		element = $("<div>");
-		
-		var contentWrapper = $("<div>").attr("id", "q_row3_out");
-		element.append(contentWrapper);
-		element.append($("<div>").attr("id", "q_row4_out"));
-		
-		var content = $("<div>").attr("id", "q_menu_row3");
-		content.append(this.constructElementContent());
-		contentWrapper.append(content);
-		
-		return element;
-	}
-	
 	this.constructElementContent = function() {
 		var content = $("<div>").attr("id",elementName+"_ribbonContentWrapper"); 
 		var lastGroupMenu = null;

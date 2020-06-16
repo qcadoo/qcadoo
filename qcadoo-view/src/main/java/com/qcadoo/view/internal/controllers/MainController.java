@@ -23,9 +23,11 @@
  */
 package com.qcadoo.view.internal.controllers;
 
-import java.util.Locale;
-import java.util.Map;
-
+import com.qcadoo.localization.api.TranslationService;
+import com.qcadoo.security.api.SecurityService;
+import com.qcadoo.view.internal.LogoComponent;
+import com.qcadoo.view.internal.api.ViewDefinitionService;
+import com.qcadoo.view.internal.menu.MenuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -35,11 +37,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.qcadoo.localization.api.TranslationService;
-import com.qcadoo.security.api.SecurityService;
-import com.qcadoo.view.internal.LogoComponent;
-import com.qcadoo.view.internal.api.ViewDefinitionService;
-import com.qcadoo.view.internal.menu.MenuService;
+import java.util.Locale;
+import java.util.Map;
 
 @Controller
 public final class MainController {
@@ -110,7 +109,6 @@ public final class MainController {
 
         viewParametersAppender.appendCommonViewObjects(mav);
 
-        mav.addObject("userLogin", securityService.getCurrentUserName());
         mav.addObject("translationsMap", translationService.getMessagesGroup("noDashboard", locale));
 
         return mav;
