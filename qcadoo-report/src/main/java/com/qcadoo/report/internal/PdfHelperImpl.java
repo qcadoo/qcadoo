@@ -23,24 +23,11 @@
  */
 package com.qcadoo.report.internal;
 
-import static org.springframework.context.i18n.LocaleContextHolder.getLocale;
-
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 import com.lowagie.text.BadElementException;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
@@ -65,6 +52,27 @@ import com.qcadoo.report.api.pdf.PdfHelper;
 import com.qcadoo.report.api.pdf.TableBorderEvent;
 import com.qcadoo.security.api.SecurityService;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import javax.imageio.ImageIO;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import static org.springframework.context.i18n.LocaleContextHolder.getLocale;
+
 @Component
 public final class PdfHelperImpl implements PdfHelper {
 
@@ -81,6 +89,8 @@ public final class PdfHelperImpl implements PdfHelper {
     private static final String LAST_NAME = "lastName";
 
     private static final String USER_NAME = "userName";
+
+    public static final String L_PNG = "png";
 
     @Autowired
     private DataDefinitionService dataDefinitionService;
@@ -541,5 +551,15 @@ public final class PdfHelperImpl implements PdfHelper {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public Image generateQRCodeImage(String text) throws WriterException, IOException, BadElementException {
+        QRCodeWriter barcodeWriter = new QRCodeWriter();
+        BitMatrix bitMatrix = barcodeWriter.encode(text, BarcodeFormat.QR_CODE, 20, 20);
+        BufferedImage bufferedImage =  MatrixToImageWriter.toBufferedImage(bitMatrix);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageIO.write(bufferedImage, L_PNG, baos);
+        return Image.getInstance(baos.toByteArray());
     }
 }
