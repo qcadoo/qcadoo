@@ -21,17 +21,19 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * ***************************************************************************
  */
- html, body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  background-color: #9B9B9B;
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background-color: #9B9B9B;
+
+    background: url(/qcadooView/public/css/core/images/dashboard/startowa_pattern_grey.png);
 }
 
 #windowContainer {
 	height: 100%;
 	position: relative;
-	margin: 0;
+	margin: 0px 40px 0px 40px;
 	padding: 0;
 	font-family:Arial, Helvetica, sans-serif;
 }
@@ -54,17 +56,15 @@
 
 #dashboardContentWrapper {
 	clear: both;
-	background-position-x: 20px;
 	background-image: url('/qcadooView/public/css/core/images/dashboard/qcadoo_white.png');
 	background-repeat: no-repeat;
-	margin-top: 20px;
+    margin-top: 20px;
 	margin-bottom: 20px;
 	width: 50%;
 	display: inline-block;
 }
 
 #dashboardContentWrapper #descriptionElement {
-	height: 130px;
 	color: white;
 	overflow: hidden;
 	margin-left: 180px;
@@ -77,13 +77,33 @@
 }
 
 #contentWrapperMiddle #chartElement {
-	position: relative;
-	width:50%;
+	width: 50%;
+	margin-top: 20px;
 	display: inline-block;
 	float: right;
-	margin-top: 20px;
 }
 
+#contentWrapperMiddle #buttonsElement {
+	width: 50%;
+	margin-top: 20px;
+	display: inline-block;
+	float: right;
+}
 
+.card-columns {
+    -webkit-column-count: 2;
+    -moz-column-count: 2;
+    column-count: 2;
+}
 
+.card-columns .card {
+    cursor: pointer;
+}
 
+.card-columns .card img {
+    padding-right: 15px;
+}
+
+.card-columns .card span {
+    padding-top: 15px;
+}
