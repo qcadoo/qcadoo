@@ -62,6 +62,7 @@ html, body {
 	margin-bottom: 20px;
 	width: 50%;
 	display: inline-block;
+	float: left;
 }
 
 #dashboardContentWrapper #descriptionElement {
@@ -77,6 +78,8 @@ html, body {
 }
 
 #contentWrapperMiddle #chartElement {
+    position: relative;
+    top: -100px;
 	width: 50%;
 	margin-top: 20px;
 	display: inline-block;
@@ -87,7 +90,7 @@ html, body {
 	width: 50%;
 	margin-top: 20px;
 	display: inline-block;
-	float: right;
+	float: left;
 }
 
 .card-columns {
@@ -100,10 +103,25 @@ html, body {
     cursor: pointer;
 }
 
+.card-columns .card .card-body {
+    padding: 15px;
+    height: 73px;
+}
+
 .card-columns .card img {
     padding-right: 15px;
 }
 
 .card-columns .card span {
     padding-top: 15px;
+}
+
+.card-columns .card h5 {
+    font-size: 20px;
+}
+
+@media (max-width: 1440px) {
+    .card-columns .card h5 {
+        font-size: 17px;
+    }
 }
