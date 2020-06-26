@@ -23,15 +23,19 @@
  */
 package com.qcadoo.report.api.pdf;
 
+import com.google.zxing.WriterException;
+import com.lowagie.text.BadElementException;
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Font;
+import com.lowagie.text.Image;
+import com.lowagie.text.pdf.PdfPTable;
+
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Font;
-import com.lowagie.text.pdf.PdfPTable;
 
 /**
  * Helper for PDF.
@@ -304,4 +308,5 @@ public interface PdfHelper {
     boolean validateReportColumnWidths(final Integer availableWidth, final Map<String, Integer> fixedColumns,
             final List<String> allColumns);
 
+    Image generateQRCodeImage(String text) throws WriterException, IOException, BadElementException;
 }

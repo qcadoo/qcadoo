@@ -31,9 +31,7 @@ public class ExportToCsvService implements ExportToCsv {
 
         BufferedWriter bufferedWriter = null;
 
-        try {
-            FileOutputStream fileOutputStream = new FileOutputStream(file);
-
+        try (FileOutputStream fileOutputStream = new FileOutputStream(file)) {
             fileOutputStream.write(239);
             fileOutputStream.write(187);
             fileOutputStream.write(191);

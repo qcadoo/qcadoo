@@ -280,12 +280,3 @@
 	background-position: top;
 	background-repeat: no-repeat;
 }
-
-
-.tabWindowRibbon #q_row4_out {
-	background-image:url('/qcadooView/public/css/core/menu/images/shadow_20.png');
-	background-position: top;
-	background-repeat: repeat-x;
-	height: 20px;
-	width: 0px;
-}

@@ -23,17 +23,16 @@
  */
 package com.qcadoo.report.api.xls;
 
+import com.qcadoo.report.api.ReportService;
+
 import java.util.Locale;
 import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.web.servlet.view.document.AbstractExcelView;
-
-import com.qcadoo.report.api.ReportService;
 
 /**
  * Convenient superclass for report Excel document views. Compatible with Apache POI 3.0 as well as 3.5, as of Spring 3.0.
@@ -48,7 +47,7 @@ public abstract class ReportXlsView extends AbstractExcelView {
             final HttpServletRequest request, final HttpServletResponse response) {
         String fileName = addContent(model, workbook, LocaleContextHolder.getLocale());
         response.setHeader("Content-disposition",
-                "inline; filename=" + fileName + "." + ReportService.ReportType.XLS.getExtension());
+                "inline; filename=" + fileName.replaceAll(",", ".")  + "." + ReportService.ReportType.XLS.getExtension());
     }
 
     protected abstract String addContent(final Map<String, Object> model, final HSSFWorkbook workbook, final Locale locale);

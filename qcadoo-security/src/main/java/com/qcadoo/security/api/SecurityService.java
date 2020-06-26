@@ -27,36 +27,50 @@ import com.qcadoo.model.api.Entity;
 
 /**
  * Service for getting current user.
- * 
+ *
  * @since 0.4.0
  */
 public interface SecurityService {
 
     /**
      * Returns the name of the currently logged in user
-     * 
+     *
      * @return currently logged in user's name
      */
     String getCurrentUserName();
 
     /**
+     * Returns the name of the currently logged in user or qcadoo_bot
+     *
+     * @return currently logged in user's name
+     */
+    String getCurrentUserOrQcadooBotName();
+
+    /**
      * Returns the id of the currently logged in user
-     * 
+     *
      * @return currently logged in user's id
      */
     Long getCurrentUserId();
-    
+
+    /**
+     * Returns the id of the currently logged in user or qcadoo_bot
+     *
+     * @return currently logged in user's id
+     */
+    Long getCurrentUserOrQcadooBotId();
+
     /**
      * Checks if given user can access resource with specified access role identifier
-     * 
+     *
      * @param userEntity
      *            user to check
-     * @param targetRoleIdetifier
+     * @param targetRoleIdentifier
      *            resource access role identifier
      * @return true if given user can access to defined role, false otherwise
      */
-    boolean hasRole(final Entity userEntity, final String targetRoleIdetifier);
+    boolean hasRole(final Entity userEntity, final String targetRoleIdentifier);
 
-    boolean hasCurrentUserRole(final String targetRoleIdetifier);
+    boolean hasCurrentUserRole(final String targetRoleIdentifier);
 
 }

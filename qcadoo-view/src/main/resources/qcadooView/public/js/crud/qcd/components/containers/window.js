@@ -44,7 +44,6 @@ QCD.components.containers.Window = function(element, mainController) {
 	    ribbonMainElement,
 	    tabRibbonDiv,
 	    tabsRightElement,
-	    ribbonShadowElement,
 	    currentWidth,
 	    currentHeight,
 	    tabs = {},
@@ -126,10 +125,7 @@ QCD.components.containers.Window = function(element, mainController) {
 					}
 				}
 			}
-			
-			ribbonShadowElement = $("<div>").attr("id", "q_row4_out");
-			element.append(ribbonShadowElement);
-			
+
 			var ribbonDiv = $("#"+that.elementPath+"_windowContainerRibbon");
 			ribbonDiv.append(element);
 		} else {
@@ -400,7 +396,6 @@ QCD.components.containers.Window = function(element, mainController) {
 		
 		if (this.options.hasRibbon) {
 			ribbonLeftElement.width(margin);
-			ribbonShadowElement.width(innerWidth > windowWidth ? windowWidth : innerWidth);
 			if (tabRibbonDiv) {
 				var tabRibbonWidth = width - ribbonMainElement.width();
 				tabRibbonDiv.width(tabRibbonWidth);
