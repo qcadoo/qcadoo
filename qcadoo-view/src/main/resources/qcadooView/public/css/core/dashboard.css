@@ -118,6 +118,7 @@ html, body {
 
 .card-columns .card h5 {
     font-size: 20px;
+    padding-left: 10px;
 }
 
 @media (max-width: 1440px) {
