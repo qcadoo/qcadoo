@@ -327,7 +327,6 @@ public class RibbonTemplates {
         ribbonCopyAction.setType(RibbonActionItem.Type.SMALL_BUTTON);
         ribbonCopyAction.setEnabled(false);
         ribbonCopyAction.setDefaultEnabled(false);
-        // ribbonCopyAction.setMessage("recordNotCreated");
         ribbonCopyAction
                 .setScript("var listener = {onSetValue: function(value) {if (!value || !value.content) return; if (value.content.entityId) {"
                         + "this.enable();} else {this.disable();}}}; #{form}.addOnChangeListener(listener);");

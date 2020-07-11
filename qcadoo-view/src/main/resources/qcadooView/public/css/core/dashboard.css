@@ -24,104 +24,162 @@
 html, body {
     margin: 0;
     padding: 0;
+
     height: 100%;
+
     background-color: #9B9B9B;
-
-    background: url(/qcadooView/public/css/core/images/dashboard/startowa_pattern_grey.png);
 }
 
-#windowContainer {
-	height: 100%;
-	position: relative;
-	margin: 0px 40px 0px 40px;
-	padding: 0;
-	font-family:Arial, Helvetica, sans-serif;
+.container {
+    width: 100%;
+    min-width: 100%;
+
+    padding-top: 20px;
+    padding-left: 40px;
+    padding-right: 40px;
+    padding-bottom: 20px;
+
+    font-family:Arial, Helvetica, sans-serif;
 }
 
-#windowContainer #windowContainerContentBody {
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	overflow: auto;
-}
-
-#contentWrapperMiddle {
-	display: table;
-	vertical-align: middle;
-	width: 100%;
-	height: 100%;
-}
-
-#dashboardContentWrapper {
-	clear: both;
-	background-image: url('/qcadooView/public/css/core/images/dashboard/qcadoo_white.png');
-	background-repeat: no-repeat;
+#dashboardDescription {
     margin-top: 20px;
 	margin-bottom: 20px;
-	width: 50%;
-	display: inline-block;
+
 	float: left;
+
+	background-image: url('/qcadooView/public/css/core/images/dashboard/qcadoo_white.png');
+    background-repeat: no-repeat;
 }
 
-#dashboardContentWrapper #descriptionElement {
-	color: white;
-	overflow: hidden;
-	margin-left: 180px;
-}
+.description-header {
+    padding-top: 30px;
+	padding-left: 180px;
 
-#dashboardContentWrapper #descriptionElement #descriptionHeader {
 	font-size: 23px;
-	margin-top: 30px;
-	margin-left: 20px;
+	color: white;
 }
 
-#contentWrapperMiddle #chartElement {
-    position: relative;
-    top: -100px;
+#dashboardChart {
+    float: right;
+
+    margin-top: -100px;
+    margin-bottom: 0px;
+
 	width: 50%;
-	margin-top: 20px;
-	display: inline-block;
-	float: right;
 }
 
-#contentWrapperMiddle #buttonsElement {
+#dashboardButtons {
+    float: left;
+
+    margin-top: 20px;
+    margin-bottom: 40px;
+
 	width: 50%;
-	margin-top: 20px;
-	display: inline-block;
-	float: left;
 }
 
-.card-columns {
+#dashboardButtons .card-columns {
     -webkit-column-count: 2;
     -moz-column-count: 2;
     column-count: 2;
 }
 
-.card-columns .card {
+#dashboardButtons .card {
     cursor: pointer;
 }
 
-.card-columns .card .card-body {
+#dashboardButtons .card-body {
     padding: 15px;
     height: 73px;
 }
 
-.card-columns .card img {
+#dashboardButtons .card img {
     padding-right: 15px;
 }
 
-.card-columns .card span {
+#dashboardButtons .card span {
     padding-top: 15px;
 }
 
-.card-columns .card h5 {
+#dashboardButtons .card h5 {
     font-size: 20px;
+    padding-left: 10px;
+}
+
+#dashboardButtons .card-title {
+    font-weight: bold;
 }
 
 @media (max-width: 1440px) {
-    .card-columns .card h5 {
-        font-size: 17px;
+    #dashboardButtons .card h5 {
+        font-size: 16px;
     }
+}
+
+#dashboardKanban {
+    float: left;
+
+    margin-top: 20px;
+    margin-bottom: 20px;
+
+    width: 100%;
+}
+
+#dashboardKanban .card {
+
+}
+
+#dashboardKanban .card-body {
+    font-size: 14px;
+}
+
+#dashboardKanban .card img {
+    padding-right: 15px;
+}
+
+
+#dashboardKanban .card span {
+
+}
+
+#dashboardKanban .card h5 {
+    font-weight: bold;
+}
+
+#dashboardKanban .card-title {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+#dashboardKanban .badge {
+    margin-top: 0px;
+}
+
+#dashboardKanban .draggable {
+    margin-bottom: 5px;
+    cursor: grab;
+}
+
+#dashboardKanban .items {
+    height: 300px;
+    overflow: auto;
+}
+
+#dashboardKanban .droppable {
+    border: 1px dashed var(--secondary);
+    min-height: 120px;
+    margin-bottom: 1rem;
+}
+
+#dashboardKanban .dropzone {
+    height: 10px;
+}
+
+#loader .modal-dialog {
+    width: 80px;
+    margin: 15px auto;
+}
+
+#loader .modal-body {
+    text-align: center;
 }
