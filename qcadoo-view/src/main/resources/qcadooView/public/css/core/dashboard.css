@@ -27,7 +27,7 @@ html, body {
 
     height: 100%;
 
-    background-color: #9B9B9B;
+    background-color: #EBEDF0;
 }
 
 .container {
@@ -39,32 +39,13 @@ html, body {
     padding-right: 40px;
     padding-bottom: 20px;
 
-    font-family:Arial, Helvetica, sans-serif;
-}
-
-#dashboardDescription {
-    margin-top: 20px;
-	margin-bottom: 20px;
-
-	float: left;
-
-	background-image: url('/qcadooView/public/css/core/images/dashboard/qcadoo_white.png');
-    background-repeat: no-repeat;
-}
-
-.description-header {
-    padding-top: 30px;
-	padding-left: 180px;
-
-	font-size: 23px;
-	color: white;
 }
 
 #dashboardChart {
     float: right;
 
-    margin-top: -100px;
-    margin-bottom: 0px;
+    margin-top: 0;
+    margin-bottom: 0;
 
 	width: 50%;
 }
@@ -104,6 +85,10 @@ html, body {
 #dashboardButtons .card h5 {
     font-size: 20px;
     padding-left: 10px;
+}
+
+#dashboardButtons .bg-secondary {
+    background-color: grey !important;
 }
 
 #dashboardButtons .card-title {
