@@ -325,6 +325,10 @@
 			windowController.openModal(id, url, serializationObject, onCloseListener);
 		}
 
+		window.encodeParams = function(url){
+			windowController.encodeParams(url);
+		}
+
 		window.changeModalSize = function(width, height) {
 			windowController.changeModalSize(width, height);
 		}

@@ -27,7 +27,7 @@ html, body {
 
     height: 100%;
 
-    background-color: #EBEDF0;
+    background-color: #F2F2F2;
 }
 
 .container {
@@ -87,8 +87,16 @@ html, body {
     padding-left: 10px;
 }
 
-#dashboardButtons .bg-secondary {
-    background-color: grey !important;
+#dashboardButtons .bg-secondary, #dashboardKanban .bg-secondary {
+    background-color: #2F3640 !important;
+}
+
+#dashboardButtons .bg-success, #dashboardKanban .btn-success, #dashboardKanban .badge-success {
+    background-color: #639AA6 !important;
+}
+
+#dashboardKanban .btn-success {
+    border-color: #F2F2F2;
 }
 
 #dashboardButtons .card-title {
