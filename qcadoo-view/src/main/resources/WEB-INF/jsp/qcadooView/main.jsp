@@ -326,7 +326,7 @@
 		}
 
 		window.encodeParams = function(url){
-			windowController.encodeParams(url);
+			return windowController.encodeParams(url);
 		}
 
 		window.changeModalSize = function(width, height) {
