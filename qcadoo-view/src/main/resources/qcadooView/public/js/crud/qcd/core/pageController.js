@@ -472,7 +472,7 @@ QCD.PageController = function() {
 			}
 			url+="popup=true";
 		}
-		url = encodeParams(url);
+		url = window.parent.encodeParams(url);
 		window.parent.goToPage(url, serializationObject, isPage);
 	}
 	var goToPage = this.goToPage;
@@ -483,29 +483,22 @@ QCD.PageController = function() {
 		if (shouldSerialize) {
 			serializationObject = getSerializationObject();
 		}
-		url = encodeParams(url);
+		url = window.parent.encodeParams(url);
 		return window.parent.openModal(id, url, serializationObject, onCloseListener, afterInitListener, dimensions);
 	}
 	this.openModal = openModal;
 
     function openNewWindow(url) {
-        url = encodeParams(url);
+        url = window.parent.encodeParams(url);
         window.open(url, "_blank", "status=0");
     }
     this.openNewWindow = openNewWindow;
 
     function preparePopup(url) {
-        url = encodeParams(url);
+        url = window.parent.encodeParams(url);
 		window.location = url;
     }
     this.preparePopup = preparePopup;
-
-    function encodeParams(url) {
-        if(url.indexOf("context=") != -1){
-            url = url.substring(0, url.indexOf("context=") + 8) + encodeURIComponent(url.substring(url.indexOf("context=") + 8, url.length));
-        }
-        return url;
-    }
 
 	function canClose() {
         changed = false;

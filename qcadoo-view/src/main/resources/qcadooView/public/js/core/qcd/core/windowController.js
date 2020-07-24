@@ -141,6 +141,13 @@ QCD.WindowController = function(_menuStructure) {
 		return modalObjects[id].iframe[0].contentWindow;
 	}
 
+	this.encodeParams = function(url) {
+		if(url.indexOf("context=") != -1){
+			url = url.substring(0, url.indexOf("context=") + 8) + encodeURIComponent(url.substring(url.indexOf("context=") + 8, url.length));
+		}
+		return url;
+	}
+
 	window.changeModalSize = function(width, height) {
 		if (modalsStack.length == 0) {
 			return;
