@@ -87,6 +87,7 @@
 								<exclude>**/*min.js</exclude>
 								<exclude>**/*min.css</exclude>
 								<exclude>**/ViewerJS/*</exclude>
+								<exclude>**/bootstrap/*</exclude>
 								<exclude>**/SlickGrid-2.4.14/*</exclude>
 								<exclude>**/SlickGrid-2.4.14/*/*</exclude>
 								<exclude>**/SlickGrid-2.4.14/css/smoothness/*</exclude>
