@@ -7,7 +7,7 @@ classes should alter those!
 
 .slick-header.ui-state-default, .slick-headerrow.ui-state-default, .slick-footerrow.ui-state-default, .slick-top-panel-scroller.ui-state-default, .slick-group-header.ui-state-default {
   width: 100%;
-  overflow: auto;
+  overflow: unset;
   position: relative;
   border-left: 0px !important;
 }
