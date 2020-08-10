@@ -79,7 +79,9 @@ html, body {
 }
 
 #dashboardButtons .card img {
-    padding-right: 15px;
+    margin-top: -10px;
+    width: 48px;
+    height: 48px;
 }
 
 #dashboardButtons .card span {
