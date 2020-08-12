@@ -74,7 +74,10 @@ html, body {
 }
 
 #dashboardButtons .card-body {
-    padding: 25px;
+    padding-top: 25px;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-bottom: 25px;
     height: 73px;
 }
 
@@ -90,7 +93,7 @@ html, body {
 
 #dashboardButtons .card h5 {
     font-size: 20px;
-    padding-left: 10px;
+    padding-left: 5px;
 }
 
 #dashboardButtons .bg-secondary, #dashboardKanban .bg-secondary {
@@ -131,8 +134,16 @@ html, body {
     font-weight: bold;
 }
 
-@media (max-width: 1440px) {
+@media (max-width: 1400px) {
     #dashboardButtons .card h5 {
+        padding-top: 6px;
+        font-size: 14px;
+    }
+}
+
+@media (min-width: 1400px) and (max-width: 1600px) {
+    #dashboardButtons .card h5 {
+        padding-top: 4px;
         font-size: 16px;
     }
 }
