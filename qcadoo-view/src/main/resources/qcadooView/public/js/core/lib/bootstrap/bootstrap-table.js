@@ -2139,6 +2139,9 @@
             error: function (res) {
                 var data = [];
                 if (that.options.sidePagination === 'server') {
+                    if(res.status == 401) {
+                        window.location = "/login.html?timeout=true";
+                    }
                     data = {};
                     data[that.options.totalField] = 0;
                     data[that.options.dataField] = [];
