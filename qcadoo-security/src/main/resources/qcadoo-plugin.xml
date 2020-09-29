@@ -67,7 +67,7 @@
         <security:role identifier="ROLE_ADMIN"/>
         <security:role identifier="ROLE_SUPERADMIN"/>
         <security:role identifier="ROLE_API"/>
-        <security:role identifier="ROLE_HOME_PROFIL"/>
+        <security:role identifier="ROLE_HOME_PROFILE"/>
 
         <security:user-group name="Admin" identifier="ADMIN" roles="ROLE_ADMIN, ROLE_DICTIONARY_VIEW"/>
         <security:user-group name="User" identifier="USER" roles="ROLE_USER"/>
