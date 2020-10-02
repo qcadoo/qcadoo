@@ -63,7 +63,7 @@
 		<menu:menu-item name="users" category="administration"
 			view="usersList" />
 		<menu:menu-item-url name="profile" category="administration"
-			url="/userProfile.html" />
+			url="/userProfile.html" defaultAuthorizationRole="ROLE_HOME_PROFILE"/>
 			
 		<menu:menu-item name="roles" category="administration"
 			view="rolesList" />
