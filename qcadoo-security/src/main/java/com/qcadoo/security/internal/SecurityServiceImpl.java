@@ -52,9 +52,11 @@ import org.springframework.security.web.authentication.rememberme.PersistentToke
 import org.springframework.stereotype.Service;
 
 import com.google.common.collect.Lists;
+import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.aop.Monitorable;
+import com.qcadoo.model.api.search.JoinType;
 import com.qcadoo.model.api.search.SearchOrders;
 import com.qcadoo.model.api.search.SearchRestrictions;
 import com.qcadoo.security.api.SecurityRole;
@@ -245,16 +247,14 @@ public class SecurityServiceImpl implements InternalSecurityService, UserDetails
 
     @Override
     public void createNewToken(final PersistentRememberMeToken persistentRememberMeToken) {
-        Entity persistentToken = dataDefinitionService
-                .get(QcadooSecurityConstants.PLUGIN_IDENTIFIER, QcadooSecurityConstants.MODEL_PERSISTENT_TOKEN).create();
+        Entity persistentToken = getPersistentTokenDD().create();
 
         persistentToken.setField(PersistentTokenFields.USER_NAME, persistentRememberMeToken.getUsername());
         persistentToken.setField(PersistentTokenFields.SERIES, persistentRememberMeToken.getSeries());
         persistentToken.setField(PersistentTokenFields.TOKEN, persistentRememberMeToken.getTokenValue());
         persistentToken.setField(PersistentTokenFields.LAST_USED, persistentRememberMeToken.getDate());
 
-        dataDefinitionService.get(QcadooSecurityConstants.PLUGIN_IDENTIFIER, QcadooSecurityConstants.MODEL_PERSISTENT_TOKEN)
-                .save(persistentToken);
+        getPersistentTokenDD().save(persistentToken);
     }
 
     @Override
@@ -265,8 +265,7 @@ public class SecurityServiceImpl implements InternalSecurityService, UserDetails
             persistentToken.setField(PersistentTokenFields.TOKEN, token);
             persistentToken.setField(PersistentTokenFields.LAST_USED, lastUsed);
 
-            dataDefinitionService.get(QcadooSecurityConstants.PLUGIN_IDENTIFIER, QcadooSecurityConstants.MODEL_PERSISTENT_TOKEN)
-                    .save(persistentToken);
+            getPersistentTokenDD().save(persistentToken);
         }
     }
 
@@ -287,19 +286,16 @@ public class SecurityServiceImpl implements InternalSecurityService, UserDetails
 
     @Override
     public void removeUserTokens(final String username) {
-        List<Entity> persistentTokens = dataDefinitionService
-                .get(QcadooSecurityConstants.PLUGIN_IDENTIFIER, QcadooSecurityConstants.MODEL_PERSISTENT_TOKEN).find()
+        List<Entity> persistentTokens = getPersistentTokenDD().find()
                 .add(SearchRestrictions.eq(PersistentTokenFields.USER_NAME, username)).list().getEntities();
 
         for (Entity persistentToken : persistentTokens) {
-            dataDefinitionService.get(QcadooSecurityConstants.PLUGIN_IDENTIFIER, QcadooSecurityConstants.MODEL_PERSISTENT_TOKEN)
-                    .delete(persistentToken.getId());
+            getPersistentTokenDD().delete(persistentToken.getId());
         }
     }
 
     private Entity getPersistentToken(final String series) {
-        List<Entity> persistentTokens = dataDefinitionService
-                .get(QcadooSecurityConstants.PLUGIN_IDENTIFIER, QcadooSecurityConstants.MODEL_PERSISTENT_TOKEN).find()
+        List<Entity> persistentTokens = getPersistentTokenDD().find()
                 .add(SearchRestrictions.eq(PersistentTokenFields.SERIES, series)).list().getEntities();
 
         if (persistentTokens.size() == 1) {
@@ -314,15 +310,12 @@ public class SecurityServiceImpl implements InternalSecurityService, UserDetails
         checkNotNull(targetRoleIdentifier, L_TARGET_ROLE_IDENTIFIER_MUST_BE_GIVEN);
         checkNotNull(user, L_USER_ENTITY_MUST_BE_GIVEN);
 
-        List<Entity> roles = user.getBelongsToField(UserFields.GROUP).getManyToManyField(GroupFields.ROLES);
+        Entity group = user.getBelongsToField(UserFields.GROUP);
 
-        for (Entity role : roles) {
-            if (targetRoleIdentifier.equals(role.getStringField(RoleFields.IDENTIFIER))) {
-                return true;
-            }
-        }
-
-        return false;
+        return getGroupDD().find().createAlias(GroupFields.ROLES, GroupFields.ROLES, JoinType.LEFT)
+                .add(SearchRestrictions.eq("id", group.getId()))
+                .add(SearchRestrictions.eq(GroupFields.ROLES + "." + RoleFields.IDENTIFIER, targetRoleIdentifier))
+                .list().getTotalNumberOfEntities() > 0;
     }
 
     @Override
@@ -330,15 +323,22 @@ public class SecurityServiceImpl implements InternalSecurityService, UserDetails
         checkNotNull(targetRoleIdentifier, L_TARGET_ROLE_IDENTIFIER_MUST_BE_GIVEN);
 
         Entity user = getUserEntity(getCurrentUserName());
-        List<Entity> roles = user.getBelongsToField(UserFields.GROUP).getManyToManyField(GroupFields.ROLES);
+        Entity group = user.getBelongsToField(UserFields.GROUP);
 
-        for (Entity role : roles) {
-            if (targetRoleIdentifier.equals(role.getStringField(RoleFields.IDENTIFIER))) {
-                return true;
-            }
-        }
+        return getGroupDD().find().createAlias(GroupFields.ROLES, GroupFields.ROLES, JoinType.LEFT)
+                .add(SearchRestrictions.eq("id", group.getId()))
+                .add(SearchRestrictions.eq(GroupFields.ROLES + "." + RoleFields.IDENTIFIER, targetRoleIdentifier))
+                .list().getTotalNumberOfEntities() > 0;
+    }
 
-        return false;
+    private DataDefinition getPersistentTokenDD() {
+        return dataDefinitionService.get(QcadooSecurityConstants.PLUGIN_IDENTIFIER,
+                QcadooSecurityConstants.MODEL_PERSISTENT_TOKEN);
+    }
+
+    private DataDefinition getGroupDD() {
+        return dataDefinitionService.get(QcadooSecurityConstants.PLUGIN_IDENTIFIER,
+                QcadooSecurityConstants.MODEL_GROUP);
     }
 
 }
