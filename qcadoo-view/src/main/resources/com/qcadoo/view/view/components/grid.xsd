@@ -98,6 +98,7 @@
                 <xs:attribute name="value" type="xs:anyType"/>
                 <xs:attribute name="classesNames" type="xs:string"/>
                 <xs:attribute name="classesCondition" type="xs:string"/>
+                <xs:attribute name="formatter" type="xs:string"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -152,6 +153,7 @@
                 </xs:attribute>
                 <xs:attribute name="classesNames" type="xs:string"/>
                 <xs:attribute name="classesCondition" type="xs:string"/>
+                <xs:attribute name="formatter" type="xs:string"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>

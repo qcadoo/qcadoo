@@ -110,3 +110,8 @@ textarea.readonly {
 .flow-grid-layout-column {
 	float: left;
 }
+
+.grid-input {
+width: 98%;
+}
+

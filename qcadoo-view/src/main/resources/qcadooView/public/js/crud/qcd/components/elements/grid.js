@@ -100,7 +100,7 @@ QCD.components.elements.Grid = function (element, mainController) {
             // translate enumerable value
             cellvalue = globalColumnTranslations[options.colModel.name][cellvalue];
         }
-        if (options.colModel.link) {
+       if (options.colModel.link) {
             // wrap cell value with link-like span element
             if(rowObject.id) {
                 var linkElem = $("<span />").addClass('gridLink').addClass(elementPath + '_link');
@@ -124,6 +124,10 @@ QCD.components.elements.Grid = function (element, mainController) {
                 elem.append(cellvalue);
                 cellvalue = elem.wrap('<div />').parent().html();
             }
+        } else if(options.colModel.formatterType && options.colModel.formatterType === "input") {
+           return '<input type="text" tabindex="'+rowObject.tabindex+'" style="text-align:'+options.colModel.align+';" onchange="'+ options.colModel.index+ 'Change()" class="grid-input" id="'+ options.colModel.index+ '_'+rowObject.id+'" value="' +cellvalue + '"></input>';
+
+
         }
         return cellvalue; 
     }
@@ -238,6 +242,7 @@ QCD.components.elements.Grid = function (element, mainController) {
                     align : column.align,
                     classesNames: column.classesNames,
                     classesCondition: column.classesCondition,
+                    formatterType: column.formatter,
                     stype : stype,
                     searchoptions : searchoptions,
                     link : column.link
@@ -245,7 +250,7 @@ QCD.components.elements.Grid = function (element, mainController) {
 
                 globalColumnTranslations[column.name] = possibleValues;
 
-                if (searchoptions.value || column.link || column.classesNames) {
+                if (searchoptions.value || column.link || column.classesNames || column.formatter) {
                     col.formatter = cellFormatter;
                 }
 
@@ -261,6 +266,7 @@ QCD.components.elements.Grid = function (element, mainController) {
                     align : column.align,
                     classesNames: column.classesNames,
                     classesCondition: column.classesCondition,
+                    formatterType: column.formatter,
                     stype : stype,
                     searchoptions : searchoptions,
                     link : column.link
@@ -707,6 +713,7 @@ QCD.components.elements.Grid = function (element, mainController) {
                     }
                 }
             }
+            fields.tabindex = rowCounter;
             grid.jqGrid('addRowData', entity.id, fields);
             if (rowCounter % 2 === 0) {
                 grid.jqGrid('setRowData', entity.id, false, "darkRow");
@@ -1592,6 +1599,7 @@ QCD.components.elements.Grid = function (element, mainController) {
         }
     };
 
+
     this.onGridLinkClicked = function (selectedEntities) {
         that.performAddExistingEntity(null, selectedEntities);
         mainController.closeThisModalWindow();
@@ -1852,6 +1860,12 @@ QCD.components.elements.Grid = function (element, mainController) {
             $('.ui-jqgrid-ftable').find('tbody').append($('.ui-jqgrid-ftable').find('tr').clone(true));
         }
     }
+
+
+    this.getGrid= function () {
+              return grid;
+
+    };
 
     constructor();
 
