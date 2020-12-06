@@ -64,6 +64,9 @@ html, body {
 }
 
 #dashboardButtons .card-columns {
+    padding-right: 10px;
+    padding-left: 0px;
+
     -webkit-column-count: 2;
     -moz-column-count: 2;
     column-count: 2;
@@ -98,12 +101,10 @@ html, body {
 
 #dashboardButtons .bg-secondary, #dashboardKanban .bg-secondary {
     background-color: #2F3640 !important;
-    background-image: none;
 }
 
 #dashboardButtons .bg-secondary:hover, #dashboardKanban .bg-secondary:hover {
     background-color: #3d4754e3;
-    background-image: none;
 }
 
 
@@ -122,8 +123,6 @@ html, body {
 .card-hover {
     background-color: #425261!important;
     border-color: #425261!important;
-
-    background-image: none;
 }
 
 #dashboardKanban .btn-success {
