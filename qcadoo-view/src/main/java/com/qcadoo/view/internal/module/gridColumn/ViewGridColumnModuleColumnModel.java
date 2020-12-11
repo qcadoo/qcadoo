@@ -23,10 +23,10 @@
  */
 package com.qcadoo.view.internal.module.gridColumn;
 
+import com.qcadoo.view.constants.Alignment;
+
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-
-import com.qcadoo.view.constants.Alignment;
 
 public class ViewGridColumnModuleColumnModel {
 
@@ -53,6 +53,8 @@ public class ViewGridColumnModuleColumnModel {
     private String classesNames;
 
     private String classesCondition;
+
+    private String formatter;
 
     public ViewGridColumnModuleColumnModel(final String name, final String fields) {
         this.name = name;
@@ -147,11 +149,20 @@ public class ViewGridColumnModuleColumnModel {
         this.classesCondition = classesCondition;
     }
 
+    public String getFormatter() {
+        return formatter;
+    }
+
+    public void setFormatter(String formatter) {
+        this.formatter = formatter;
+    }
+
     @Override
     public int hashCode() {
         return new HashCodeBuilder().append(getName()).append(getFields()).append(getLink()).append(getWidth())
                 .append(getExpression()).append(getAlign()).append(getOrderable()).append(getHidden()).append(getSearchable())
-                .append(getMultiSearch()).append(getClassesNames()).append(getClassesCondition()).toHashCode();
+                .append(getMultiSearch()).append(getClassesNames()).append(getClassesCondition()).append(getFormatter())
+                .toHashCode();
     }
 
     @Override
@@ -169,7 +180,8 @@ public class ViewGridColumnModuleColumnModel {
                 .append(this.getExpression(), that.getExpression()).append(this.getAlign(), that.getAlign())
                 .append(this.getOrderable(), that.getOrderable()).append(this.getHidden(), that.getHidden())
                 .append(this.getMultiSearch(), that.getMultiSearch()).append(this.getSearchable(), that.getSearchable())
-                .append(this.getClassesNames(), that.getClassesNames()).append(this.getClassesCondition(), that.getClassesCondition())
+                .append(this.getClassesNames(), that.getClassesNames())
+                .append(this.getClassesCondition(), that.getClassesCondition()).append(this.getFormatter(), that.getFormatter())
                 .isEquals();
     }
 }

@@ -23,6 +23,13 @@
  */
 package com.qcadoo.view.internal.components.grid;
 
+import com.google.common.base.Preconditions;
+import com.qcadoo.model.api.Entity;
+import com.qcadoo.model.api.FieldDefinition;
+import com.qcadoo.model.api.expression.ExpressionUtils;
+import com.qcadoo.plugin.api.PluginUtils;
+import com.qcadoo.view.constants.Alignment;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -30,13 +37,6 @@ import java.util.Locale;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.springframework.util.StringUtils;
-
-import com.google.common.base.Preconditions;
-import com.qcadoo.model.api.Entity;
-import com.qcadoo.model.api.FieldDefinition;
-import com.qcadoo.model.api.expression.ExpressionUtils;
-import com.qcadoo.plugin.api.PluginUtils;
-import com.qcadoo.view.constants.Alignment;
 
 public class GridComponentColumn {
 
@@ -71,6 +71,8 @@ public class GridComponentColumn {
     private String classesNames;
 
     private String classesCondition;
+
+    private String formatter;
 
     public GridComponentColumn(final String name) {
         this(name, null);
@@ -163,6 +165,14 @@ public class GridComponentColumn {
         this.classesNames = classesNames;
     }
 
+    public String getFormatter() {
+        return formatter;
+    }
+
+    public void setFormatter(String formatter) {
+        this.formatter = formatter;
+    }
+
     public String getClassesCondition() {
         return classesCondition;
     }
@@ -220,7 +230,7 @@ public class GridComponentColumn {
         return new HashCodeBuilder().append(name).append(fields).append(extendingPluginIdentifier).append(hidden).append(link)
                 .append(authorizationRole).append(expression).append(width).append(getAlign()).append(correspondingView)
                 .append(correspondingField).append(correspondingViewField).append(attachment).append(classesNames)
-                .append(classesCondition).toHashCode();
+                .append(classesCondition).append(formatter).toHashCode();
     }
 
     @Override
@@ -238,6 +248,7 @@ public class GridComponentColumn {
                 .append(this.expression, that.expression).append(this.width, that.width).append(this.getAlign(), that.getAlign())
                 .append(this.correspondingView, that.correspondingView).append(this.correspondingField, that.correspondingField)
                 .append(this.attachment, that.attachment).append(this.correspondingViewField, that.correspondingViewField)
-                .append(this.classesNames, that.classesNames).append(this.classesCondition, that.classesCondition).isEquals();
+                .append(this.classesNames, that.classesNames).append(this.classesCondition, that.classesCondition)
+                .append(this.formatter, that.formatter).isEquals();
     }
 }

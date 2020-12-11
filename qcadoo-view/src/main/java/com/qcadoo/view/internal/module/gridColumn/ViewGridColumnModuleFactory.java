@@ -23,16 +23,16 @@
  */
 package com.qcadoo.view.internal.module.gridColumn;
 
+import com.qcadoo.plugin.api.ModuleFactory;
+import com.qcadoo.view.constants.Alignment;
+import com.qcadoo.view.internal.api.InternalViewDefinitionService;
+
 import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jdom.Element;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import com.qcadoo.plugin.api.ModuleFactory;
-import com.qcadoo.view.constants.Alignment;
-import com.qcadoo.view.internal.api.InternalViewDefinitionService;
 
 public class ViewGridColumnModuleFactory extends ModuleFactory<ViewGridColumnModule> {
 
@@ -62,6 +62,7 @@ public class ViewGridColumnModuleFactory extends ModuleFactory<ViewGridColumnMod
             String columnAlign = getAttribute(columnElement, "align");
             String columnClassesNames = getAttribute(columnElement, "classesNames");
             String columnClassesCondition = getAttribute(columnElement, "classesCondition");
+            String columnFormatter = getAttribute(columnElement, "formatter");
 
             ViewGridColumnModuleColumnModel columnModel = new ViewGridColumnModuleColumnModel(columnName, columnFields);
             columnModel.setExpression(columnExpression);
@@ -88,6 +89,9 @@ public class ViewGridColumnModuleFactory extends ModuleFactory<ViewGridColumnMod
             }
             columnModel.setClassesNames(columnClassesNames);
             columnModel.setClassesCondition(columnClassesCondition);
+            if (StringUtils.isNotEmpty(columnAlign)) {
+                columnModel.setFormatter(columnFormatter);
+            }
 
             columns.add(columnModel);
         }
