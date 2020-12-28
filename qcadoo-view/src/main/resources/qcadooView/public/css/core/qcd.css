@@ -112,6 +112,9 @@ textarea.readonly {
 }
 
 .grid-input {
-width: 98%;
+    width: 98%;
 }
 
+.is-invalid {
+    border-color: red;
+}
