@@ -713,7 +713,7 @@ QCD.components.elements.Grid = function (element, mainController) {
                     }
                 }
             }
-            fields.tabindex = rowCounter;
+            fields.tabindex = 1000 + rowCounter;
             grid.jqGrid('addRowData', entity.id, fields);
             if (rowCounter % 2 === 0) {
                 grid.jqGrid('setRowData', entity.id, false, "darkRow");
