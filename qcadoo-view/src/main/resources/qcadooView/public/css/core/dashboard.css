@@ -27,7 +27,7 @@ html, body {
 
     height: 100%;
 
-    background-color: #F2F2F2;
+    background-color: #F2F2F2 !important;
 }
 
 .dashboardColorBackground {
@@ -42,7 +42,6 @@ html, body {
     padding-left: 40px;
     padding-right: 40px;
     padding-bottom: 20px;
-
 }
 
 #dashboardChart {
@@ -121,8 +120,8 @@ html, body {
 }
 
 .card-hover {
-    background-color: #425261!important;
-    border-color: #425261!important;
+    background-color: #425261 !important;
+    border-color: #425261 !important;
 }
 
 #dashboardKanban .btn-success {
