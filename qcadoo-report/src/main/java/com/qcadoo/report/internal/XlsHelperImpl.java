@@ -46,7 +46,7 @@ public final class XlsHelperImpl implements XlsHelper {
         Font font = workbook.createFont();
         font.setFontHeightInPoints((short) 12);
         font.setFontName(HSSFFont.FONT_ARIAL);
-        font.setBoldweight(Font.BOLDWEIGHT_BOLD);
+        font.setBold(true);
         style.setFont(font);
         return style;
     }
