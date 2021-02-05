@@ -3,19 +3,19 @@
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
  * Version: 1.3
- * <p>
+ *
  * This file is part of Qcadoo.
- * <p>
+ *
  * Qcadoo is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
  * by the Free Software Foundation; either version 3 of the License,
  * or (at your option) any later version.
- * <p>
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty
  * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Affero General Public License for more details.
- * <p>
+ *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -23,18 +23,19 @@
  */
 package com.qcadoo.view.internal.components.layout;
 
-import com.google.common.base.Preconditions;
-import com.qcadoo.view.internal.ComponentDefinition;
-import com.qcadoo.view.internal.api.ComponentPattern;
-import com.qcadoo.view.internal.xml.ViewDefinitionParser;
-import com.qcadoo.view.internal.xml.ViewDefinitionParserNodeException;
+import java.util.Locale;
+import java.util.Map;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import java.util.Locale;
-import java.util.Map;
+import com.google.common.base.Preconditions;
+import com.qcadoo.view.internal.ComponentDefinition;
+import com.qcadoo.view.internal.api.ComponentPattern;
+import com.qcadoo.view.internal.xml.ViewDefinitionParser;
+import com.qcadoo.view.internal.xml.ViewDefinitionParserNodeException;
 
 public class FlowGridLayoutPattern extends AbstractLayoutPattern {
 
