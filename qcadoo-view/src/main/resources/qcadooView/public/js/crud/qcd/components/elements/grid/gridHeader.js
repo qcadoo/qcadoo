@@ -862,7 +862,6 @@ QCD.components.elements.grid.GridPagingElement = function (_gridHeaderController
         pagingElements.nextButton = $("<div>").addClass("headerPagingButton").addClass("headerButton_right");
         pagingDiv.append(pagingElements.nextButton);
         pagingElements.lastButton = $("<div>").addClass("headerPagingButton").addClass("headerButton_last");
-        ;
         pagingDiv.append(pagingElements.lastButton);
 
         pagingElements.firstButton.click(function (e) {

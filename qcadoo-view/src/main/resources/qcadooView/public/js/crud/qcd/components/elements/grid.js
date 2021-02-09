@@ -1039,6 +1039,11 @@ QCD.components.elements.Grid = function (element, mainController) {
 
     this.setComponentEnabled = function (isEnabled) {
         componentEnabled = isEnabled;
+        if (componentEnabled) {
+            selectAllCheckBox.attr("disabled", false);
+        } else {
+            selectAllCheckBox.attr("disabled", true);
+        }
         headerController.setEnabled(currentState.isEditable && isEnabled);
     };
 
