@@ -310,6 +310,7 @@ QCD.components.elements.Grid = function (element, mainController) {
         gridParameters.orderable = options.prioritizable;
         gridParameters.allowMultiselect = options.multiselect;
         gridParameters.autoRefresh = options.autoRefresh;
+        gridParameters.selectableWhenDisabled = options.selectableWhenDisabled;
 
         gridParameters.fullScreen = options.fullscreen;
 
@@ -1039,10 +1040,12 @@ QCD.components.elements.Grid = function (element, mainController) {
 
     this.setComponentEnabled = function (isEnabled) {
         componentEnabled = isEnabled;
-        if (componentEnabled) {
-            selectAllCheckBox.attr("disabled", false);
-        } else {
-            selectAllCheckBox.attr("disabled", true);
+        if(selectAllCheckBox){
+            if (componentEnabled || gridParameters.selectableWhenDisabled) {
+                selectAllCheckBox.attr("disabled", false);
+            } else {
+                selectAllCheckBox.attr("disabled", true);
+            }
         }
         headerController.setEnabled(currentState.isEditable && isEnabled);
     };
@@ -1477,7 +1480,7 @@ QCD.components.elements.Grid = function (element, mainController) {
     };
 
     function onSelectChange() {
-        if (componentEnabled && !gridParameters.suppressSelectEvent && gridParameters.listeners.length > 0) {
+        if ((componentEnabled || gridParameters.selectableWhenDisabled) && !gridParameters.suppressSelectEvent && gridParameters.listeners.length > 0) {
             mainController.callEvent("select", elementPath, null);
         } else {
             if(gridParameters.footerrow) {
@@ -1488,7 +1491,7 @@ QCD.components.elements.Grid = function (element, mainController) {
     }
 
     function rowClicked(rowId, col) {
-        if (!componentEnabled) {
+        if (!componentEnabled && !gridParameters.selectableWhenDisabled) {
             grid.setSelection(rowId, false);
             return;
         }

@@ -46,23 +46,16 @@ import com.qcadoo.view.internal.module.gridColumn.ViewGridColumnModuleColumnMode
 import com.qcadoo.view.internal.patterns.AbstractComponentPattern;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
 import com.qcadoo.view.internal.xml.ViewDefinitionParserNodeException;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 public class GridComponentPattern extends AbstractComponentPattern {
 
@@ -119,6 +112,8 @@ public class GridComponentPattern extends AbstractComponentPattern {
     private boolean paginable = true;
 
     private boolean deletable = false;
+
+    private boolean selectableWhenDisabled = false;
 
     private boolean creatable = false;
 
@@ -242,6 +237,7 @@ public class GridComponentPattern extends AbstractComponentPattern {
         JSONObject json = super.getJsOptions(locale);
         json.put("paginable", paginable);
         json.put("deletable", deletable);
+        json.put("selectableWhenDisabled", selectableWhenDisabled);
         json.put("creatable", creatable);
         json.put("multiselect", multiselect);
         json.put("activable", activable);
@@ -575,6 +571,8 @@ public class GridComponentPattern extends AbstractComponentPattern {
                 filtersDefaultVisible = Boolean.parseBoolean(option.getValue());
             } else if ("deletable".equals(option.getType())) {
                 deletable = Boolean.parseBoolean(option.getValue());
+            } else if ("selectableWhenDisabled".equals(option.getType())) {
+                selectableWhenDisabled = Boolean.parseBoolean(option.getValue());
             } else if ("deletableAuthorizationRole".equals(option.getType())) {
                 deletableAuthorizationRole = option.getValue();
             } else if ("linkAuthorizationRole".equals(option.getType())) {

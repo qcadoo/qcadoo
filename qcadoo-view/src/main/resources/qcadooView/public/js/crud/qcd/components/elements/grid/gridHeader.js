@@ -646,22 +646,17 @@ QCD.components.elements.grid.GridHeaderController = function (_gridController, _
 
     function allButtonClicked() {
         headerElements.allButton.hide();
-        //headerElements.onlyActiveButton.hide();
         headerElements.onlyInactiveButton.css("display", "inline-block");
-        //gridController.setOnlyActive(false);
         gridController.setOnlyInactive(true);
     }
 
     function onlyActiveButtonClicked() {
         headerElements.onlyActiveButton.hide();
-        //headerElements.onlyInactiveButton.hide();
         headerElements.allButton.css("display", "inline-block");
         gridController.setOnlyActive(false);
-        //gridController.setOnlyInactive(false);
     }
     function onlyInactiveButtonClicked() {
         headerElements.onlyInactiveButton.hide();
-        //headerElements.allButton.hide();
         headerElements.onlyActiveButton.css("display", "inline-block");
         gridController.setOnlyActiveAndOnlyInactive(true, false);
 
