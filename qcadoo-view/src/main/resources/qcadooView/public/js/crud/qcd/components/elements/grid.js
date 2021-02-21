@@ -282,6 +282,8 @@ QCD.components.elements.Grid = function (element, mainController) {
 			}
         }
 
+        gridParameters.defaultVisibleColumns = options.defaultVisibleColumns;
+
         restoreSavedColumns(colModel);
 
         gridParameters.hasMultiSearchColumns = hasMultiSearchColumns;
@@ -1544,7 +1546,7 @@ QCD.components.elements.Grid = function (element, mainController) {
 
     function restoreSavedColumns(colModel) {
         var savedOptions = getSavedOptions();
-        if (savedOptions.columns) {
+        if (savedOptions.columns && savedOptions.columns.length > 0) {
             for (var i in colModel) {
                 var contains = false;
                 for (var columnIndex in savedOptions.columns) {
@@ -1555,6 +1557,12 @@ QCD.components.elements.Grid = function (element, mainController) {
                     }
                 }
                 if (!contains) {
+                    colModel[i].hidden = true;
+                }
+            }
+        } else if (gridParameters.defaultVisibleColumns.length !== 0) {
+            for (var i in colModel) {
+                if (gridParameters.defaultVisibleColumns.indexOf(colModel[i].name) === -1) {
                     colModel[i].hidden = true;
                 }
             }
