@@ -70,8 +70,6 @@ QCD.components.elements.grid.GridHeaderController = function (_gridController, _
 
     var autoRefreshActive = false;
     var autoRefreshIntervalId;
-    var idleIntervalId;
-    var idleTimer = 0;
 
     function constructor(_this) {
         pagingVars.first = 0;
@@ -404,7 +402,6 @@ QCD.components.elements.grid.GridHeaderController = function (_gridController, _
             onPagingEvent();
         });
 
-        var that = $(this);
         var checkboxOnChange = function () {
             var isChecked = checkbox.is(":checked");
             if (isChecked) {
@@ -414,20 +411,9 @@ QCD.components.elements.grid.GridHeaderController = function (_gridController, _
                 autoRefreshIntervalId = setInterval(function () {
                     autoRefreshGrid()
                 }, interval * 60000);
-                that.mousemove(function (e) {
-                    idleTimer = 0;
-                });
-                that.keypress(function (e) {
-                    idleTimer = 0;
-                });
-                idleIntervalId = setInterval(timerIncrement, 60000); // 1 minute
             } else {
                 autoRefreshActive = false;
                 clearInterval(autoRefreshIntervalId);
-                clearInterval(idleIntervalId);
-                idleTimer = 0;
-                that.off('mousemove');
-                that.off('keypress');
             }
 
             $.cookie('auto_refresh', isChecked ? '1' : '0', {expires: cookieExpires});
@@ -454,23 +440,7 @@ QCD.components.elements.grid.GridHeaderController = function (_gridController, _
     }
 
     function autoRefreshGrid() {
-        $(this).off('mousemove');
         gridController.performRefresh();
-        setTimeout(function () {
-            $(this).mousemove(function (e) {
-                idleTimer = 0;
-            });
-        }, 1000);
-    }
-
-    function timerIncrement() {
-        // GOODFOOD-1186 - disabled auto-off
-//        idleTimer++;
-//        if (idleTimer > 59) {
-//            $('#autoRefresh').attr('checked', false);
-//            $('#autoRefresh').trigger('change');
-//            idleTimer = 0;
-//        }
     }
 
     this.setEnabled = function (_enabled) {
@@ -646,22 +616,17 @@ QCD.components.elements.grid.GridHeaderController = function (_gridController, _
 
     function allButtonClicked() {
         headerElements.allButton.hide();
-        //headerElements.onlyActiveButton.hide();
         headerElements.onlyInactiveButton.css("display", "inline-block");
-        //gridController.setOnlyActive(false);
         gridController.setOnlyInactive(true);
     }
 
     function onlyActiveButtonClicked() {
         headerElements.onlyActiveButton.hide();
-        //headerElements.onlyInactiveButton.hide();
         headerElements.allButton.css("display", "inline-block");
         gridController.setOnlyActive(false);
-        //gridController.setOnlyInactive(false);
     }
     function onlyInactiveButtonClicked() {
         headerElements.onlyInactiveButton.hide();
-        //headerElements.allButton.hide();
         headerElements.onlyActiveButton.css("display", "inline-block");
         gridController.setOnlyActiveAndOnlyInactive(true, false);
 
@@ -862,7 +827,6 @@ QCD.components.elements.grid.GridPagingElement = function (_gridHeaderController
         pagingElements.nextButton = $("<div>").addClass("headerPagingButton").addClass("headerButton_right");
         pagingDiv.append(pagingElements.nextButton);
         pagingElements.lastButton = $("<div>").addClass("headerPagingButton").addClass("headerButton_last");
-        ;
         pagingDiv.append(pagingElements.lastButton);
 
         pagingElements.firstButton.click(function (e) {

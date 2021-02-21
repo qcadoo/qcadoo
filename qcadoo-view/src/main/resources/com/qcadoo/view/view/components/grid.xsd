@@ -75,6 +75,7 @@
                             <xs:enumeration value="hasPredefinedFilters"/>
                             <xs:enumeration value="filtersDefaultVisible"/>
                             <xs:enumeration value="deletable"/>
+                            <xs:enumeration value="selectableWhenDisabled"/>
                             <xs:enumeration value="prioritizable"/>
                             <xs:enumeration value="height"/>
                             <xs:enumeration value="width"/>
@@ -226,6 +227,10 @@
     </xs:complexType>
 
     <xs:complexType name="deletable">
+        <xs:attribute name="value" use="required" type="xs:boolean" default="false"/>
+    </xs:complexType>
+
+    <xs:complexType name="selectableWhenDisabled">
         <xs:attribute name="value" use="required" type="xs:boolean" default="false"/>
     </xs:complexType>
 
