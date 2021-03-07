@@ -23,6 +23,23 @@
  */
 package com.qcadoo.view.internal.components.grid;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import com.beust.jcommander.internal.Sets;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
@@ -46,22 +63,10 @@ import com.qcadoo.view.internal.module.gridColumn.ViewGridColumnModuleColumnMode
 import com.qcadoo.view.internal.patterns.AbstractComponentPattern;
 import com.qcadoo.view.internal.xml.ViewDefinitionParser;
 import com.qcadoo.view.internal.xml.ViewDefinitionParserNodeException;
-import org.apache.commons.lang3.StringUtils;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
 
 public class GridComponentPattern extends AbstractComponentPattern {
 
     private static final String L_COLUMN = "column";
-
-    private static final String L_WIDTH = "width";
 
     private static final String JSP_PATH = "elements/grid.jsp";
 
@@ -71,33 +76,25 @@ public class GridComponentPattern extends AbstractComponentPattern {
 
     private static final int DEFAULT_GRID_WIDTH = 300;
 
-    private static final Predicate<GridComponentColumn> COLUMNS_VISIBLE_FOR_TENANT_PREDICATE = new Predicate<GridComponentColumn>() {
+    private static final Predicate<GridComponentColumn> COLUMNS_VISIBLE_FOR_TENANT_PREDICATE = column -> Objects.nonNull(column) && column.isVisibleForCurrentTenant();
 
-        @Override
-        public boolean apply(final GridComponentColumn column) {
-            return column != null && column.isVisibleForCurrentTenant();
+    private static final Function<Entry<String, GridComponentColumn>, GridComponentColumn> VALUE_FROM_MAP_ENTRY_FUNCTION = from -> {
+        if (Objects.isNull(from)) {
+            return null;
+        } else {
+            return from.getValue();
         }
     };
 
-    private static final Function<Entry<String, GridComponentColumn>, GridComponentColumn> VALUE_FROM_MAP_ENTRY_FUNCTION = new Function<Entry<String, GridComponentColumn>, GridComponentColumn>() {
+    private final Set<String> searchableColumns = Sets.newHashSet();
 
-        @Override
-        public GridComponentColumn apply(final Entry<String, GridComponentColumn> from) {
-            if (from == null) {
-                return null;
-            } else {
-                return from.getValue();
-            }
-        }
-    };
+    private final Set<String> multiSearchColumns = Sets.newHashSet();
 
-    private final Set<String> searchableColumns = new HashSet<>();
+    private final Set<String> orderableColumns = Sets.newHashSet();
 
-    private final Set<String> multiSearchColumns = new HashSet<>();
+    private final Map<String, GridComponentColumn> columns = Maps.newLinkedHashMap();
 
-    private final Set<String> orderableColumns = new HashSet<>();
-
-    private final Map<String, GridComponentColumn> columns = new LinkedHashMap<>();
+    private Set<String> defaultVisibleColumns = Sets.newHashSet();
 
     private FieldDefinition belongsToFieldDefinition;
 
@@ -173,15 +170,18 @@ public class GridComponentPattern extends AbstractComponentPattern {
 
     public GridComponentPattern(final ComponentDefinition componentDefinition) {
         super(componentDefinition);
+
         securityRolesService = getApplicationContext().getBean(SecurityRolesService.class);
     }
 
     @Override
     public ComponentState getComponentStateInstance() {
         DataDefinition scopeFieldDataDefinition = null;
-        if (getScopeFieldDefinition() != null) {
+
+        if (Objects.nonNull(getScopeFieldDefinition())) {
             scopeFieldDataDefinition = getScopeFieldDefinition().getDataDefinition();
         }
+
         return new GridComponentState(scopeFieldDataDefinition, this);
     }
 
@@ -207,22 +207,23 @@ public class GridComponentPattern extends AbstractComponentPattern {
 
         activable = getDataDefinition().isActivable();
 
-        if (creatable && weakRelation && getScopeFieldDefinition() == null) {
+        if (creatable && weakRelation && Objects.isNull(getScopeFieldDefinition())) {
             throwIllegalStateException("Missing scope field for grid");
         }
 
-        if (correspondingView != null && correspondingComponent == null) {
+        if (Objects.nonNull(correspondingView) && Objects.isNull(correspondingComponent)) {
             throwIllegalStateException("Missing correspondingComponent for grid");
         }
 
-        if (weakRelation && creatable && correspondingLookup == null) {
+        if (weakRelation && creatable && Objects.isNull(correspondingLookup)) {
             throwIllegalStateException("Missing correspondingLookup for grid");
         }
     }
 
     private void configureBelongsToFieldDefinition() {
-        if (getScopeFieldDefinition() != null) {
+        if (Objects.nonNull(getScopeFieldDefinition())) {
             FieldType fieldType = getScopeFieldDefinition().getType();
+
             if (fieldType instanceof JoinFieldHolder && fieldType instanceof DataDefinitionHolder) {
                 belongsToFieldDefinition = ((DataDefinitionHolder) fieldType).getDataDefinition()
                         .getField(((JoinFieldHolder) fieldType).getJoinFieldName());
@@ -235,6 +236,7 @@ public class GridComponentPattern extends AbstractComponentPattern {
     @Override
     protected JSONObject getJsOptions(final Locale locale) throws JSONException {
         JSONObject json = super.getJsOptions(locale);
+
         json.put("paginable", paginable);
         json.put("deletable", deletable);
         json.put("selectableWhenDisabled", selectableWhenDisabled);
@@ -247,6 +249,7 @@ public class GridComponentPattern extends AbstractComponentPattern {
         json.put("filtersDefaultVisible", filtersDefaultVisible);
 
         JSONArray predefinedFiltersArray = new JSONArray();
+
         for (PredefinedFilter predefinedFilter : predefinedFilters.values()) {
             predefinedFiltersArray.put(predefinedFilter.toJson());
         }
@@ -254,7 +257,7 @@ public class GridComponentPattern extends AbstractComponentPattern {
         json.put("predefinedFilters", predefinedFiltersArray);
 
         json.put("height", height);
-        json.put(L_WIDTH, width);
+        json.put("width", width);
         json.put("fullscreen", width == 0 || height == 0);
         json.put("lookup", lookup);
         json.put("correspondingView", correspondingView);
@@ -274,11 +277,12 @@ public class GridComponentPattern extends AbstractComponentPattern {
         json.put("columnsToSummaryTime", columnsToSummaryTime);
         json.put("suppressSelectEvent", suppressSelectEvent);
 
-        if (belongsToFieldDefinition != null) {
+        if (Objects.nonNull(belongsToFieldDefinition)) {
             json.put("belongsToFieldName", belongsToFieldDefinition.getName());
         }
 
         json.put("columns", getColumnsForJsOptions(locale));
+        json.put("defaultVisibleColumns", new JSONArray(defaultVisibleColumns));
 
         JSONObject translations = new JSONObject();
 
@@ -333,6 +337,7 @@ public class GridComponentPattern extends AbstractComponentPattern {
         addTranslation(translations, "summarySelectedRow", locale);
 
         addTranslation(translations, "customPredefinedFilter", locale);
+
         for (PredefinedFilter filter : predefinedFilters.values()) {
             addTranslation(translations, "filter." + filter.getName(), locale);
         }
@@ -346,9 +351,11 @@ public class GridComponentPattern extends AbstractComponentPattern {
 
     public void addColumn(final String extendingPluginIdentifier, final ViewGridColumnModuleColumnModel columnModel) {
         final GridComponentColumn column = new GridComponentColumn(columnModel.getName(), extendingPluginIdentifier);
+
         for (FieldDefinition field : parseFields(columnModel.getFields(), column)) {
             column.addField(field);
         }
+
         column.setHidden(columnModel.getHidden());
         column.setAlign(columnModel.getAlign());
         column.setClassesNames(columnModel.getClassesNames());
@@ -356,16 +363,21 @@ public class GridComponentPattern extends AbstractComponentPattern {
         column.setClassesCondition(columnModel.getClassesCondition());
         column.setExpression(columnModel.getExpression());
         column.setLink(columnModel.getLink());
-        if (columnModel.getWidth() != null) {
+
+        if (Objects.nonNull(columnModel.getWidth())) {
             column.setWidth(columnModel.getWidth());
         }
+
         columns.put(columnModel.getName(), column);
+
         if (columnModel.getOrderable()) {
             orderableColumns.add(columnModel.getName());
         }
+
         if (columnModel.getSearchable()) {
             searchableColumns.add(columnModel.getName());
         }
+
         if (columnModel.getMultiSearch()) {
             multiSearchColumns.add(columnModel.getName());
         }
@@ -384,13 +396,16 @@ public class GridComponentPattern extends AbstractComponentPattern {
 
     private JSONArray getColumnsForJsOptions(final Locale locale) throws JSONException {
         JSONArray jsonColumns = new JSONArray();
+
         String nameTranslation = null;
+
         boolean isLinkAllowed = isLinkAllowed();
 
         for (GridComponentColumn column : filterColumnsWithAccess(columns.values())) {
             if (!COLUMNS_VISIBLE_FOR_TENANT_PREDICATE.apply(column)) {
                 continue;
             }
+
             if (column.getFields().size() == 1) {
                 String fieldCode = getDataDefinition().getPluginIdentifier() + "." + getDataDefinition().getName() + "."
                         + column.getFields().get(0).getName();
@@ -399,12 +414,14 @@ public class GridComponentPattern extends AbstractComponentPattern {
             } else {
                 nameTranslation = getTranslationService().translate(getTranslationPath() + ".column." + column.getName(), locale);
             }
+
             JSONObject jsonColumn = new JSONObject();
+
             jsonColumn.put("name", column.getName());
             jsonColumn.put("label", nameTranslation);
             jsonColumn.put("link", isLinkAllowed && column.isLink());
             jsonColumn.put("hidden", column.isHidden());
-            jsonColumn.put(L_WIDTH, column.getWidth());
+            jsonColumn.put("width", column.getWidth());
             jsonColumn.put("align", column.getAlign().getStringValue());
             jsonColumn.put("classesNames", column.getClassesNames());
             jsonColumn.put("classesCondition", column.getClassesCondition());
@@ -414,6 +431,7 @@ public class GridComponentPattern extends AbstractComponentPattern {
             jsonColumn.put("correspondingField", column.getCorrespondingField());
             jsonColumn.put("correspondingViewField", column.getCorrespondingViewField());
             jsonColumn.put("attachment", column.getAttachment());
+
             jsonColumns.put(jsonColumn);
         }
 
@@ -423,8 +441,8 @@ public class GridComponentPattern extends AbstractComponentPattern {
     Collection<GridComponentColumn> filterColumnsWithAccess(Collection<GridComponentColumn> columns) {
         return columns.stream().filter(item -> {
             String columnAuthorizationRole = item.getAuthorizationRole();
-            return Strings.isNullOrEmpty(columnAuthorizationRole) || securityRolesService.canAccess(columnAuthorizationRole);
 
+            return Strings.isNullOrEmpty(columnAuthorizationRole) || securityRolesService.canAccess(columnAuthorizationRole);
         }).collect(Collectors.toList());
     }
 
@@ -437,21 +455,30 @@ public class GridComponentPattern extends AbstractComponentPattern {
 
         if (column.getFields().get(0).getType() instanceof EnumeratedType) {
             EnumeratedType type = (EnumeratedType) column.getFields().get(0).getType();
+
             Map<String, String> sortedValues = type.values(locale);
+
             for (Map.Entry<String, String> value : sortedValues.entrySet()) {
                 JSONObject obj = new JSONObject();
+
                 obj.put("key", value.getKey());
                 obj.put("value", value.getValue());
+
                 values.put(obj);
             }
         } else if (column.getFields().get(0).getType().getType().equals(Boolean.class)) {
             JSONObject obj1 = new JSONObject();
+
             obj1.put("key", "1");
             obj1.put("value", getTranslationService().translate("qcadooView.true", locale));
+
             values.put(obj1);
+
             JSONObject obj0 = new JSONObject();
+
             obj0.put("key", "0");
             obj0.put("value", getTranslationService().translate("qcadooView.false", locale));
+
             values.put(obj0);
         }
 
@@ -460,22 +487,28 @@ public class GridComponentPattern extends AbstractComponentPattern {
         } else {
             return null;
         }
-
     }
 
     @Override
     public void parse(final Node componentNode, final ViewDefinitionParser parser) throws ViewDefinitionParserNodeException {
         super.parse(componentNode, parser);
+
         authorizationRole = parser.getAuthorizationRole(componentNode);
+
         final NodeList childNodes = componentNode.getChildNodes();
+
         for (int i = 0; i < childNodes.getLength(); i++) {
             final Node child = childNodes.item(i);
+
             if ("predefinedFilters".equals(child.getNodeName())) {
                 String defaultValue = parser.getStringAttribute(child, "default");
-                if (defaultValue != null) {
+
+                if (Objects.nonNull(defaultValue)) {
                     defaultPredefinedFilterName = defaultValue;
                 }
+
                 NodeList predefinedFilterChildNodes = child.getChildNodes();
+
                 parsePredefinedFilterChildNodes(predefinedFilterChildNodes, parser);
             } else if (RowStyleResolver.NODE_NAME.equals(child.getNodeName())) {
                 rowStyleResolver = new RowStyleResolver(child, parser, getApplicationContext());
@@ -483,23 +516,26 @@ public class GridComponentPattern extends AbstractComponentPattern {
                 criteriaModifier = new CriteriaModifier(child, parser, getApplicationContext());
             }
         }
-
     }
 
     private void parsePredefinedFilterChildNodes(final NodeList componentNodes, final ViewDefinitionParser parser)
             throws ViewDefinitionParserNodeException {
         for (int i = 0; i < componentNodes.getLength(); i++) {
             Node child = componentNodes.item(i);
+
             if (child.getNodeType() == Node.ELEMENT_NODE) {
                 if ("predefinedFilter".equals(child.getNodeName())) {
                     PredefinedFilter predefinedFilter = new PredefinedFilter();
+
                     String predefinedFilterName = parser.getStringAttribute(child, "name");
                     predefinedFilter.setName(predefinedFilterName);
 
                     NodeList restrictionNodes = child.getChildNodes();
+
                     for (int restrictionNodesIndex = 0; restrictionNodesIndex < restrictionNodes
                             .getLength(); restrictionNodesIndex++) {
                         Node restrictionNode = restrictionNodes.item(restrictionNodesIndex);
+
                         if (restrictionNode.getNodeType() == Node.ELEMENT_NODE) {
                             if ("filterRestriction".equals(restrictionNode.getNodeName())) {
                                 predefinedFilter.addFilterRestriction(parser.getStringAttribute(restrictionNode, L_COLUMN),
@@ -507,11 +543,13 @@ public class GridComponentPattern extends AbstractComponentPattern {
                             } else if ("filterOrder".equals(restrictionNode.getNodeName())) {
                                 String column = parser.getStringAttribute(restrictionNode, L_COLUMN);
                                 String direction = parser.getStringAttribute(restrictionNode, "direction");
-                                if (column == null) {
+
+                                if (Objects.isNull(column)) {
                                     throw new ViewDefinitionParserNodeException(restrictionNode,
                                             "'filterOrder' tag must contain 'column' attribute");
                                 }
-                                if (direction == null) {
+
+                                if (Objects.isNull(direction)) {
                                     direction = "asc";
                                 } else {
                                     if (!("asc".equals(direction) || "desc".equals(direction))) {
@@ -519,6 +557,7 @@ public class GridComponentPattern extends AbstractComponentPattern {
                                                 "unknown order direction: " + direction);
                                     }
                                 }
+
                                 predefinedFilter.setOrderColumn(column);
                                 predefinedFilter.setOrderDirection(direction);
                             } else {
@@ -528,7 +567,7 @@ public class GridComponentPattern extends AbstractComponentPattern {
                         }
                     }
 
-                    if (predefinedFilter.getOrderColumn() == null && defaultOrderColumn != null) {
+                    if (Objects.isNull(predefinedFilter.getOrderColumn()) && Objects.nonNull(defaultOrderColumn)) {
                         predefinedFilter.setOrderColumn(defaultOrderColumn);
                         predefinedFilter.setOrderDirection(defaultOrderDirection);
                     }
@@ -536,6 +575,7 @@ public class GridComponentPattern extends AbstractComponentPattern {
                     predefinedFilters.put(predefinedFilterName, predefinedFilter);
                 } else {
                     throwIllegalStateException("predefinedFilters can only contain 'predefinedFilter' tag");
+
                     throw new ViewDefinitionParserNodeException(child,
                             "predefinedFilters can only contain 'predefinedFilter' tag");
                 }
@@ -579,7 +619,7 @@ public class GridComponentPattern extends AbstractComponentPattern {
                 linkAuthorizationRole = option.getValue();
             } else if ("height".equals(option.getType())) {
                 height = Integer.parseInt(option.getValue());
-            } else if (L_WIDTH.equals(option.getType())) {
+            } else if ("width".equals(option.getType())) {
                 width = Integer.parseInt(option.getValue());
             } else if ("fullscreen".equals(option.getType())) {
                 width = 0;
@@ -595,12 +635,14 @@ public class GridComponentPattern extends AbstractComponentPattern {
             } else if ("order".equals(option.getType())) {
                 defaultOrderColumn = option.getAttributeValue(L_COLUMN);
                 defaultOrderDirection = option.getAttributeValue("direction");
-                if (defaultOrderDirection == null) {
+
+                if (Objects.isNull(defaultOrderDirection)) {
                     defaultOrderDirection = "asc";
                 }
-                if (predefinedFilters != null) {
+
+                if (Objects.nonNull(predefinedFilters)) {
                     for (PredefinedFilter predefinedFilter : predefinedFilters.values()) {
-                        if (predefinedFilter.getOrderColumn() == null) {
+                        if (Objects.isNull(predefinedFilter.getOrderColumn())) {
                             predefinedFilter.setOrderColumn(defaultOrderColumn);
                             predefinedFilter.setOrderDirection(defaultOrderDirection);
                         }
@@ -608,6 +650,8 @@ public class GridComponentPattern extends AbstractComponentPattern {
                 }
             } else if (L_COLUMN.equals(option.getType())) {
                 parseColumnOption(option);
+            } else if ("defaultVisibleColumns".equals(option.getType())) {
+                defaultVisibleColumns.addAll(parseColumns(option.getValue()));
             } else if ("weakRelation".equals(option.getType())) {
                 weakRelation = Boolean.parseBoolean(option.getValue());
             } else if ("fixedHeight".equals(option.getType())) {
@@ -626,32 +670,41 @@ public class GridComponentPattern extends AbstractComponentPattern {
                 suppressSelectEvent = Boolean.parseBoolean(option.getValue());
             }
         }
-        if (defaultOrderColumn == null) {
+
+        if (Objects.isNull(defaultOrderColumn)) {
             throwIllegalStateException("grid must contain 'order' option");
         }
     }
 
     private void parseColumnOption(final ComponentOption option) {
         GridComponentColumn column = new GridComponentColumn(option.getAttributeValue("name"));
+
         String fields = option.getAttributeValue("fields");
-        if (fields != null) {
+
+        if (Objects.nonNull(fields)) {
             for (FieldDefinition field : parseFields(fields, column)) {
                 column.addField(field);
             }
         }
+
         column.setAuthorizationRole(parseColumnAuthorizationRole(option));
         column.setAlign(parseColumnAlignOption(option));
         column.setExpression(option.getAttributeValue("expression"));
-        String columnWidth = option.getAttributeValue(L_WIDTH);
-        if (columnWidth != null) {
+
+        String columnWidth = option.getAttributeValue("width");
+
+        if (Objects.nonNull(columnWidth)) {
             column.setWidth(Integer.valueOf(columnWidth));
         }
-        if (option.getAttributeValue("link") != null) {
+
+        if (Objects.nonNull(option.getAttributeValue("link"))) {
             column.setLink(Boolean.parseBoolean(option.getAttributeValue("link")));
         }
-        if (option.getAttributeValue("hidden") != null) {
+
+        if (Objects.nonNull(option.getAttributeValue("hidden"))) {
             column.setHidden(Boolean.parseBoolean(option.getAttributeValue("hidden")));
         }
+
         column.setClassesNames(option.getAttributeValue("classesNames"));
         column.setClassesCondition(option.getAttributeValue("classesCondition"));
         column.setFormatter(option.getAttributeValue("formatter"));
@@ -659,43 +712,55 @@ public class GridComponentPattern extends AbstractComponentPattern {
         column.setCorrespondingView(option.getAttributeValue("correspondingView"));
         column.setCorrespondingField(option.getAttributeValue("correspondingField"));
         column.setCorrespondingViewField(option.getAttributeValue("correspondingViewField"));
-        if (option.getAttributeValue("attachment") != null) {
+
+        if (Objects.nonNull(option.getAttributeValue("attachment"))) {
             column.setAttachment(Boolean.parseBoolean(option.getAttributeValue("attachment")));
         }
+
         columns.put(column.getName(), column);
     }
 
     private Alignment parseColumnAlignOption(final ComponentOption options) {
         String alignStringVal = options.getAttributeValue("align");
+
         if (StringUtils.isNotEmpty(alignStringVal)) {
             return Alignment.parseString(alignStringVal);
         }
+
         return null;
     }
 
     private String parseColumnAuthorizationRole(ComponentOption option) {
         String optionAuthorizationRole = option.getAttributeValue("authorizationRole");
+
         if (StringUtils.isNotEmpty(optionAuthorizationRole)) {
             return optionAuthorizationRole;
         }
+
         return null;
     }
 
     private Set<String> parseColumns(final String columns) {
-        Set<String> set = new HashSet<>();
+        Set<String> set = Sets.newHashSet();
+
         Collections.addAll(set, columns.split("\\s*,\\s*"));
+
         return set;
     }
 
     private Set<FieldDefinition> parseFields(final String fields, final GridComponentColumn column) {
-        Set<FieldDefinition> set = new HashSet<FieldDefinition>();
+        Set<FieldDefinition> set = Sets.newHashSet();
+
         for (String field : fields.split("\\s*,\\s*")) {
             FieldDefinition fieldDefiniton = getDataDefinition().getField(field);
-            if (fieldDefiniton == null) {
+
+            if (Objects.isNull(fieldDefiniton)) {
                 throwIllegalStateException("field = " + field + " in option column = " + column.getName() + " doesn't exists");
             }
+
             set.add(fieldDefiniton);
         }
+
         return set;
     }
 
@@ -725,6 +790,10 @@ public class GridComponentPattern extends AbstractComponentPattern {
         // into SynchronizedMap.
         return Maps.filterEntries(columns,
                 Predicates.compose(COLUMNS_VISIBLE_FOR_TENANT_PREDICATE, VALUE_FROM_MAP_ENTRY_FUNCTION));
+    }
+
+    public Set<String> getDefaultVisibleColumns() {
+        return defaultVisibleColumns;
     }
 
     public boolean isActivable() {
@@ -779,7 +848,7 @@ public class GridComponentPattern extends AbstractComponentPattern {
         return linkAuthorizationRole;
     }
 
-    public boolean isautoRefresh() {
+    public boolean isAutoRefresh() {
         return autoRefresh;
     }
 
@@ -798,4 +867,5 @@ public class GridComponentPattern extends AbstractComponentPattern {
     private boolean isLinkAllowed() {
         return Strings.isNullOrEmpty(linkAuthorizationRole) || securityRolesService.canAccess(linkAuthorizationRole);
     }
+
 }
