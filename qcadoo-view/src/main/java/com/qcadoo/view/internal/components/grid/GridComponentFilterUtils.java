@@ -27,6 +27,7 @@ import static com.qcadoo.view.internal.components.grid.GridComponentFilterOperat
 
 import java.math.BigDecimal;
 import java.text.ParseException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -35,6 +36,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -49,6 +51,7 @@ import com.qcadoo.model.api.search.SearchDisjunction;
 import com.qcadoo.model.api.search.SearchRestrictions;
 import com.qcadoo.model.api.search.SearchRestrictions.SearchMatchMode;
 import com.qcadoo.model.api.types.BelongsToType;
+import com.qcadoo.model.internal.types.DictionaryType;
 import com.qcadoo.view.api.components.grid.GridComponentMultiSearchFilter;
 
 public final class GridComponentFilterUtils {
@@ -74,13 +77,16 @@ public final class GridComponentFilterUtils {
 
                     field = addAliases(criteria, field, JoinType.LEFT);
 
-                    if (fieldDefinition != null && String.class.isAssignableFrom(fieldDefinition.getType().getType())) {
+                    if (fieldDefinition != null && fieldDefinition.getType() instanceof DictionaryType) {
+                        addSimpleFilter(criteria, filterValue, field, filterValue.getValue());
+                    } else if (fieldDefinition != null && String.class.isAssignableFrom(fieldDefinition.getType().getType())) {
                         addStringFilter(criteria, filterValue, field);
                     } else if (fieldDefinition != null && Boolean.class.isAssignableFrom(fieldDefinition.getType().getType())) {
                         addSimpleFilter(criteria, filterValue, field, "1".equals(filterValue.getValue()));
                     } else if (fieldDefinition != null && Date.class.isAssignableFrom(fieldDefinition.getType().getType())) {
                         addDateFilter(criteria, filterValue, field);
-                    } else if (fieldDefinition != null && BigDecimal.class.isAssignableFrom(fieldDefinition.getType().getType())) {
+                    } else if (fieldDefinition != null
+                            && BigDecimal.class.isAssignableFrom(fieldDefinition.getType().getType())) {
                         addDecimalFilter(criteria, filterValue, field);
                     } else if (fieldDefinition != null && Integer.class.isAssignableFrom(fieldDefinition.getType().getType())) {
                         addIntegerFilter(criteria, filterValue, field);
@@ -119,7 +125,8 @@ public final class GridComponentFilterUtils {
                         searchRule = createSimpleCriterion(rule.getFilterOperator(), "1".equals(rule.getData()), field);
                     } else if (fieldDefinition != null && Date.class.isAssignableFrom(fieldDefinition.getType().getType())) {
                         searchRule = createDateCriterion(rule.getFilterOperator(), rule.getData(), field);
-                    } else if (fieldDefinition != null && BigDecimal.class.isAssignableFrom(fieldDefinition.getType().getType())) {
+                    } else if (fieldDefinition != null
+                            && BigDecimal.class.isAssignableFrom(fieldDefinition.getType().getType())) {
                         searchRule = createDecimalCriterion(rule.getFilterOperator(), rule.getData(), field);
                     } else if (fieldDefinition != null && Integer.class.isAssignableFrom(fieldDefinition.getType().getType())) {
                         searchRule = createIntegerCriterion(rule.getFilterOperator(), rule.getData(), field);
@@ -248,7 +255,7 @@ public final class GridComponentFilterUtils {
         Date minDate = null;
         Date maxDate = null;
 
-        if(!ISNULL.equals(filterOperator)){
+        if (!ISNULL.equals(filterOperator)) {
             minDate = DateUtils.parseAndComplete(data, false);
             maxDate = DateUtils.parseAndComplete(data, true);
         }
@@ -309,11 +316,8 @@ public final class GridComponentFilterUtils {
 
     private static Collection<String> parseListValue(String data) {
         String[] tokens = data.split(",");
-        Collection<String> values = Lists.newArrayListWithCapacity(tokens.length);
-        for (int i = 0; i < tokens.length; ++i) {
-            values.add(tokens[i].trim());
-        }
-        return values;
+        return Arrays.stream(tokens).map(String::trim)
+                .collect(Collectors.toCollection(() -> Lists.newArrayListWithCapacity(tokens.length)));
     }
 
     public static String addAliases(final SearchCriteriaBuilder criteria, final String field, final JoinType joinType) {
@@ -338,13 +342,15 @@ public final class GridComponentFilterUtils {
     }
 
     private static void addIntegerFilter(final SearchCriteriaBuilder criteria,
-            final Entry<GridComponentFilterOperator, String> filterValue, final String field) throws GridComponentFilterException {
+            final Entry<GridComponentFilterOperator, String> filterValue, final String field)
+            throws GridComponentFilterException {
 
         criteria.add(createIntegerCriterion(filterValue.getKey(), filterValue.getValue(), field));
     }
 
     private static void addDecimalFilter(final SearchCriteriaBuilder criteria,
-            final Entry<GridComponentFilterOperator, String> filterValue, final String field) throws GridComponentFilterException {
+            final Entry<GridComponentFilterOperator, String> filterValue, final String field)
+            throws GridComponentFilterException {
 
         criteria.add(createDecimalCriterion(filterValue.getKey(), filterValue.getValue(), field));
     }
@@ -365,7 +371,6 @@ public final class GridComponentFilterUtils {
         }
 
         criteria.add(createStringCriterion(operator, value, field));
-
     }
 
     private static void addDateFilter(final SearchCriteriaBuilder criteria,
@@ -481,7 +486,8 @@ public final class GridComponentFilterUtils {
                         "getBooleanField('", "?.getBooleanField('", "getDecimalField('", "?.getDecimalField('",
                         "getIntegerField('", "?.getIntegerField('", "getDateField('", "?.getDateField('", "getBelongsToField('",
                         "?.getBelongsToField('", "')" };
-                final String[] replacementList = new String[] { "", ".", "", ".", "", ".", "", ".", "", ".", "", ".", "", ".", "" };
+                final String[] replacementList = new String[] { "", ".", "", ".", "", ".", "", ".", "", ".", "", ".", "", ".",
+                        "" };
 
                 fieldNameBuilder.append(StringUtils.replaceEach(matcher.group(4), searchList, replacementList));
             }
