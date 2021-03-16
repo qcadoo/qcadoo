@@ -23,6 +23,28 @@
  */
 package com.qcadoo.report.internal;
 
+import static org.springframework.context.i18n.LocaleContextHolder.getLocale;
+
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import javax.imageio.ImageIO;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
@@ -51,27 +73,6 @@ import com.qcadoo.report.api.pdf.HeaderAlignment;
 import com.qcadoo.report.api.pdf.PdfHelper;
 import com.qcadoo.report.api.pdf.TableBorderEvent;
 import com.qcadoo.security.api.SecurityService;
-
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import javax.imageio.ImageIO;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import static org.springframework.context.i18n.LocaleContextHolder.getLocale;
 
 @Component
 public final class PdfHelperImpl implements PdfHelper {
@@ -408,7 +409,6 @@ public final class PdfHelperImpl implements PdfHelper {
         table.setWidthPercentage(100f);
         table.setHorizontalAlignment(Element.ALIGN_LEFT);
         table.setSpacingBefore(7.0f);
-        // table.getDefaultCell().setBackgroundColor(ColorUtils.getBackgroundColor());
         table.getDefaultCell().setBorderColor(ColorUtils.getLineDarkColor());
         table.getDefaultCell().setBorderWidth(1.0f);
         table.getDefaultCell().setVerticalAlignment(Element.ALIGN_MIDDLE);
