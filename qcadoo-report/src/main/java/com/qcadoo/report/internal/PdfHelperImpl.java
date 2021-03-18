@@ -28,7 +28,6 @@ import static org.springframework.context.i18n.LocaleContextHolder.getLocale;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -303,13 +302,18 @@ public final class PdfHelperImpl implements PdfHelper {
 
             document.add(img);
             document.add(Chunk.NEWLINE);
-        } catch (BadElementException e) {
+        } catch (IOException | DocumentException e) {
             LOG.error(e.getMessage(), e);
-        } catch (MalformedURLException e) {
-            LOG.error(e.getMessage(), e);
-        } catch (IOException e) {
-            LOG.error(e.getMessage(), e);
-        } catch (DocumentException e) {
+        }
+    }
+
+    @Override
+    public void addImage(final PdfPTable table, final String fileName) {
+        try {
+            Image img = Image.getInstance(fileName);
+
+            table.addCell(img);
+        } catch (IOException | DocumentException e) {
             LOG.error(e.getMessage(), e);
         }
     }
@@ -318,7 +322,7 @@ public final class PdfHelperImpl implements PdfHelper {
     public PdfPTable createTableWithHeader(int numOfColumns, List<String> header, boolean lastColumnAlignmentToLeft,
             HeaderAlignment headerAlignment) {
         PdfPTable table = new PdfPTable(numOfColumns);
-        return setTableProperties(header, lastColumnAlignmentToLeft, table, null);
+        return setTableProperties(header, table, null);
     }
 
     @Override
@@ -330,7 +334,7 @@ public final class PdfHelperImpl implements PdfHelper {
         } catch (DocumentException e) {
             LOG.error(e.getMessage(), e);
         }
-        return setTableProperties(header, lastColumnAlignmentToLeft, table, alignments);
+        return setTableProperties(header, table, alignments);
     }
 
     @Override
@@ -342,14 +346,14 @@ public final class PdfHelperImpl implements PdfHelper {
         } catch (DocumentException e) {
             LOG.error(e.getMessage(), e);
         }
-        return setTableProperties(header, lastColumnAlignmentToLeft, table, null);
+        return setTableProperties(header, table, null);
     }
 
     @Override
     public PdfPTable createTableWithHeader(final int numOfColumns, final List<String> header,
             final boolean lastColumnAlignmentToLeft, final Map<String, HeaderAlignment> alignments) {
         PdfPTable table = new PdfPTable(numOfColumns);
-        return setTableProperties(header, lastColumnAlignmentToLeft, table, alignments);
+        return setTableProperties(header, table, alignments);
     }
 
     @Override
@@ -361,14 +365,14 @@ public final class PdfHelperImpl implements PdfHelper {
         } catch (DocumentException e) {
             LOG.error(e.getMessage(), e);
         }
-        return setTableProperties(header, lastColumnAlignmentToLeft, table, null);
+        return setTableProperties(header, table, null);
     }
 
     @Override
     public PdfPTable createTableWithHeader(final int numOfColumns, final List<String> header,
             final boolean lastColumnAlignmentToLeft) {
         PdfPTable table = new PdfPTable(numOfColumns);
-        return setTableProperties(header, lastColumnAlignmentToLeft, table, null);
+        return setTableProperties(header, table, null);
     }
 
     @Override
@@ -404,7 +408,7 @@ public final class PdfHelperImpl implements PdfHelper {
         return headerTable;
     }
 
-    private PdfPTable setTableProperties(final List<String> header, final boolean lastColumnAligmentToLeft, final PdfPTable table,
+    private PdfPTable setTableProperties(final List<String> header, final PdfPTable table,
             final Map<String, HeaderAlignment> alignments) {
         table.setWidthPercentage(100f);
         table.setHorizontalAlignment(Element.ALIGN_LEFT);
@@ -459,7 +463,7 @@ public final class PdfHelperImpl implements PdfHelper {
     public int[] getReportColumnWidths(Integer availableWidth, Map<String, Integer> fixedColumns, List<String> allColumns) {
         int[] reportColumnWidths = new int[allColumns.size()];
         Integer remainedAvailableWidth = availableWidth;
-        Map<Integer, Integer> columnWithFixedWidth = new HashMap<Integer, Integer>();
+        Map<Integer, Integer> columnWithFixedWidth = new HashMap<>();
         int i = 0;
         for (String entryColumn : allColumns) {
             for (Map.Entry<String, Integer> entryFixedColumn : fixedColumns.entrySet()) {
@@ -478,7 +482,7 @@ public final class PdfHelperImpl implements PdfHelper {
             }
         } else if (remainedAvailableWidth >= 0
                 && remainedAvailableWidth > columnWithoutFixedWidth * MINIMUM_ALLOWABLE_SIZE_COLUMN_IN_PIXEL) {
-            Integer columnSize = remainedAvailableWidth / columnWithoutFixedWidth;
+            int columnSize = remainedAvailableWidth / columnWithoutFixedWidth;
             Arrays.fill(reportColumnWidths, columnSize);
             for (Map.Entry<Integer, Integer> entry : columnWithFixedWidth.entrySet()) {
                 reportColumnWidths[entry.getKey()] = entry.getValue();
@@ -498,8 +502,8 @@ public final class PdfHelperImpl implements PdfHelper {
 
     private int getSumColumnWidths(final int[] reportColumnWidths) {
         int sumColumnsWidth = 0;
-        for (int k = 0; k < reportColumnWidths.length; k++) {
-            sumColumnsWidth += reportColumnWidths[k];
+        for (int reportColumnWidth : reportColumnWidths) {
+            sumColumnsWidth += reportColumnWidth;
         }
         return sumColumnsWidth;
     }
@@ -547,17 +551,14 @@ public final class PdfHelperImpl implements PdfHelper {
                 }
             }
         }
-        if (remainedAvailableWidth >= 0) {
-            return true;
-        }
-        return false;
+        return remainedAvailableWidth >= 0;
     }
 
     @Override
     public Image generateQRCodeImage(String text) throws WriterException, IOException, BadElementException {
         QRCodeWriter barcodeWriter = new QRCodeWriter();
         BitMatrix bitMatrix = barcodeWriter.encode(text, BarcodeFormat.QR_CODE, 20, 20);
-        BufferedImage bufferedImage =  MatrixToImageWriter.toBufferedImage(bitMatrix);
+        BufferedImage bufferedImage = MatrixToImageWriter.toBufferedImage(bitMatrix);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ImageIO.write(bufferedImage, L_PNG, baos);
         return Image.getInstance(baos.toByteArray());
