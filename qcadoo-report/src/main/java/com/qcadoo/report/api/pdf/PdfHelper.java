@@ -23,6 +23,12 @@
  */
 package com.qcadoo.report.api.pdf;
 
+import java.io.IOException;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
 import com.google.zxing.WriterException;
 import com.lowagie.text.BadElementException;
 import com.lowagie.text.Document;
@@ -30,12 +36,6 @@ import com.lowagie.text.DocumentException;
 import com.lowagie.text.Font;
 import com.lowagie.text.Image;
 import com.lowagie.text.pdf.PdfPTable;
-
-import java.io.IOException;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
 /**
  * Helper for PDF.
@@ -202,6 +202,14 @@ public interface PdfHelper {
      * @param fileName
      */
     void addImage(final Document document, final String fileName);
+
+    /**
+     * Add image from file name to given table.
+     *
+     * @param table
+     * @param fileName
+     */
+    void addImage(final PdfPTable table, final String fileName);
 
     /**
      * Create new table with header and given column widths.
