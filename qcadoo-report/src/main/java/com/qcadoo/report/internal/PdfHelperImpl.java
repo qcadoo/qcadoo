@@ -308,17 +308,6 @@ public final class PdfHelperImpl implements PdfHelper {
     }
 
     @Override
-    public void addImage(final PdfPTable table, final String fileName) {
-        try {
-            Image img = Image.getInstance(fileName);
-
-            table.addCell(img);
-        } catch (IOException | DocumentException e) {
-            LOG.error(e.getMessage(), e);
-        }
-    }
-
-    @Override
     public PdfPTable createTableWithHeader(int numOfColumns, List<String> header, boolean lastColumnAlignmentToLeft,
             HeaderAlignment headerAlignment) {
         PdfPTable table = new PdfPTable(numOfColumns);

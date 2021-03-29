@@ -204,14 +204,6 @@ public interface PdfHelper {
     void addImage(final Document document, final String fileName);
 
     /**
-     * Add image from file name to given table.
-     *
-     * @param table
-     * @param fileName
-     */
-    void addImage(final PdfPTable table, final String fileName);
-
-    /**
      * Create new table with header and given column widths.
      * 
      * @param numOfColumns
