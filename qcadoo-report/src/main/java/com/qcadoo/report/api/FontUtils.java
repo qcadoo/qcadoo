@@ -76,6 +76,8 @@ public final class FontUtils {
 
     private static Font dejavuRegular7Light;
 
+    private static Font dejavuItalic7Light;
+
     private static Font dejavuRegular7Dark;
 
     private static Font dejavuBold7Dark;
@@ -174,6 +176,10 @@ public final class FontUtils {
             dejavuRegular7Light = new Font(dejavu, 7);
             dejavuRegular7Light.setColor(ColorUtils.getLightColor());
 
+            dejavuItalic7Light = new Font(dejavu, 7);
+            dejavuItalic7Light.setColor(ColorUtils.getLightColor());
+            dejavuItalic7Light.setStyle(Font.ITALIC);
+
             dejavuBold7Dark = new Font(dejavu, 7);
             dejavuBold7Dark.setColor(ColorUtils.getDarkColor());
             dejavuBold7Dark.setStyle(Font.BOLD);
@@ -254,6 +260,10 @@ public final class FontUtils {
 
     public static Font getDejavuRegular7Dark() {
         return dejavuRegular7Dark;
+    }
+
+    public static Font getDejavuItalic7Light() {
+        return dejavuItalic7Light;
     }
 
     public static Font getDejavuBold7Dark() {
