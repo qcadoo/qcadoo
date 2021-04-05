@@ -56,13 +56,15 @@
 
 	<modules>
 		<localization:translation-locale
-			locale="en" label="English" />
+				locale="en" label="English" />
 		<localization:translation-locale
-			locale="pl" label="Polski" />
+				locale="pl" label="Polski" />
 		<localization:translation-locale
-			locale="de" label="Deutsch" />
+				locale="de" label="Deutsch" />
 		<localization:translation-locale
 				locale="cn" label="中文" />
+		<localization:translation-locale
+				locale="fr" label="Français" />
 	</modules>
 	
 	<features>
