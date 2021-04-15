@@ -39,12 +39,12 @@ import org.json.JSONObject;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.beust.jcommander.internal.Sets;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.types.DataDefinitionHolder;
