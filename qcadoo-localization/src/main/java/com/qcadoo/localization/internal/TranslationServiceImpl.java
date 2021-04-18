@@ -72,7 +72,7 @@ public final class TranslationServiceImpl implements InternalTranslationService 
 
     @Autowired
     private ConfigUtil configUtil;
-    
+
     @Override
     public String translate(final String code, final Locale locale, final String... args) {
         String message = translateWithError(code, locale, args);
@@ -84,6 +84,11 @@ public final class TranslationServiceImpl implements InternalTranslationService 
         TRANSLATION_LOG.warn("Missing translation " + code + " for locale " + locale);
 
         if (ignoreMissingTranslations) {
+            message = translateWithError(code, Locale.ENGLISH, args);
+
+            if (message != null) {
+                return message.trim();
+            }
             return DEFAULT_MISSING_MESSAGE;
         } else {
             return code;
@@ -101,6 +106,12 @@ public final class TranslationServiceImpl implements InternalTranslationService 
         TRANSLATION_LOG.warn("Missing translation " + messageCodes + " for locale " + locale);
 
         if (ignoreMissingTranslations) {
+            for (String messageCode : messageCodes) {
+                String message = translateWithError(messageCode, Locale.ENGLISH, args);
+                if (message != null) {
+                    return message.trim();
+                }
+            }
             return DEFAULT_MISSING_MESSAGE;
         } else {
             return messageCodes.toString();
@@ -195,6 +206,6 @@ public final class TranslationServiceImpl implements InternalTranslationService 
 
     @Override
     public int getMaxUploadSize() {
-        return maxUploadSize/1048576;
+        return maxUploadSize / 1048576;
     }
 }

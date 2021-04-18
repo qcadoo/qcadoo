@@ -36,7 +36,7 @@ import com.qcadoo.localization.internal.module.LocaleModuleFactory;
 public interface TranslationService {
 
     /**
-     * Default message, used when ignoreMissingTranslations is set to true and mesage translation was not found
+     * Default message, used when ignoreMissingTranslations is set to true and message translation was not found
      */
     String DEFAULT_MISSING_MESSAGE = "-";
 
