@@ -51,7 +51,7 @@ import com.qcadoo.model.api.search.SearchDisjunction;
 import com.qcadoo.model.api.search.SearchRestrictions;
 import com.qcadoo.model.api.search.SearchRestrictions.SearchMatchMode;
 import com.qcadoo.model.api.types.BelongsToType;
-import com.qcadoo.model.internal.types.DictionaryType;
+import com.qcadoo.model.api.types.EnumeratedType;
 import com.qcadoo.view.api.components.grid.GridComponentMultiSearchFilter;
 
 public final class GridComponentFilterUtils {
@@ -77,7 +77,7 @@ public final class GridComponentFilterUtils {
 
                     field = addAliases(criteria, field, JoinType.LEFT);
 
-                    if (fieldDefinition != null && fieldDefinition.getType() instanceof DictionaryType) {
+                    if (fieldDefinition != null && fieldDefinition.getType() instanceof EnumeratedType) {
                         addSimpleFilter(criteria, filterValue, field, filterValue.getValue());
                     } else if (fieldDefinition != null && String.class.isAssignableFrom(fieldDefinition.getType().getType())) {
                         addStringFilter(criteria, filterValue, field);
