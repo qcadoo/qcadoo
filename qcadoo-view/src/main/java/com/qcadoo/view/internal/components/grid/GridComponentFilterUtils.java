@@ -51,7 +51,8 @@ import com.qcadoo.model.api.search.SearchDisjunction;
 import com.qcadoo.model.api.search.SearchRestrictions;
 import com.qcadoo.model.api.search.SearchRestrictions.SearchMatchMode;
 import com.qcadoo.model.api.types.BelongsToType;
-import com.qcadoo.model.internal.types.DictionaryType;
+import com.qcadoo.model.api.types.EnumeratedType;
+import com.qcadoo.model.api.types.FieldType;
 import com.qcadoo.view.api.components.grid.GridComponentMultiSearchFilter;
 
 public final class GridComponentFilterUtils {
@@ -77,10 +78,8 @@ public final class GridComponentFilterUtils {
 
                     field = addAliases(criteria, field, JoinType.LEFT);
 
-                    if (fieldDefinition != null && fieldDefinition.getType() instanceof DictionaryType) {
-                        addSimpleFilter(criteria, filterValue, field, filterValue.getValue());
-                    } else if (fieldDefinition != null && String.class.isAssignableFrom(fieldDefinition.getType().getType())) {
-                        addStringFilter(criteria, filterValue, field);
+                    if (fieldDefinition != null && String.class.isAssignableFrom(fieldDefinition.getType().getType())) {
+                        addStringFilter(criteria, filterValue, field, fieldDefinition.getType());
                     } else if (fieldDefinition != null && Boolean.class.isAssignableFrom(fieldDefinition.getType().getType())) {
                         addSimpleFilter(criteria, filterValue, field, "1".equals(filterValue.getValue()));
                     } else if (fieldDefinition != null && Date.class.isAssignableFrom(fieldDefinition.getType().getType())) {
@@ -362,11 +361,11 @@ public final class GridComponentFilterUtils {
     }
 
     private static void addStringFilter(final SearchCriteriaBuilder criteria,
-            final Entry<GridComponentFilterOperator, String> filterValue, final String field) {
+            final Entry<GridComponentFilterOperator, String> filterValue, final String field, FieldType type) {
         String value = filterValue.getValue();
 
         GridComponentFilterOperator operator = filterValue.getKey();
-        if (filterValue.getKey() == GridComponentFilterOperator.EQ) {
+        if (!(type instanceof EnumeratedType) && filterValue.getKey() == GridComponentFilterOperator.EQ) {
             operator = GridComponentFilterOperator.CN;
         }
 

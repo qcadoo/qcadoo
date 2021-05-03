@@ -397,8 +397,6 @@ public class GridComponentPattern extends AbstractComponentPattern {
     private JSONArray getColumnsForJsOptions(final Locale locale) throws JSONException {
         JSONArray jsonColumns = new JSONArray();
 
-        String nameTranslation = null;
-
         boolean isLinkAllowed = isLinkAllowed();
 
         for (GridComponentColumn column : filterColumnsWithAccess(columns.values())) {
@@ -406,6 +404,7 @@ public class GridComponentPattern extends AbstractComponentPattern {
                 continue;
             }
 
+            String nameTranslation;
             if (column.getFields().size() == 1) {
                 String fieldCode = getDataDefinition().getPluginIdentifier() + "." + getDataDefinition().getName() + "."
                         + column.getFields().get(0).getName();
@@ -451,10 +450,20 @@ public class GridComponentPattern extends AbstractComponentPattern {
             return null;
         }
 
+        String field = GridComponentFilterUtils.getFieldNameByColumnName(columns, column.getName());
+        if (field == null) {
+            return null;
+        }
+
+        FieldDefinition fieldDefinition = GridComponentFilterUtils.getFieldDefinition(getDataDefinition(), field);
+        if (fieldDefinition == null) {
+            return null;
+        }
+
         JSONArray values = new JSONArray();
 
-        if (column.getFields().get(0).getType() instanceof EnumeratedType) {
-            EnumeratedType type = (EnumeratedType) column.getFields().get(0).getType();
+        if (fieldDefinition.getType() instanceof EnumeratedType) {
+            EnumeratedType type = (EnumeratedType) fieldDefinition.getType();
 
             Map<String, String> sortedValues = type.values(locale);
 
@@ -466,7 +475,7 @@ public class GridComponentPattern extends AbstractComponentPattern {
 
                 values.put(obj);
             }
-        } else if (column.getFields().get(0).getType().getType().equals(Boolean.class)) {
+        } else if (fieldDefinition.getType().getType().equals(Boolean.class)) {
             JSONObject obj1 = new JSONObject();
 
             obj1.put("key", "1");
