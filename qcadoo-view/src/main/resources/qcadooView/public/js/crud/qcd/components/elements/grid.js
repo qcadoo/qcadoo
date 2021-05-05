@@ -826,7 +826,7 @@ QCD.components.elements.Grid = function (element, mainController) {
 
         var rows = grid.jqGrid('getDataIDs');
 
-        var $footerRow = $('.ui-jqgrid-ftable').find('tbody').find('tr').first();
+        var $footerRow = $('#' + elementSearchName + ' .ui-jqgrid-ftable').find('tbody').find('tr').first();
 
         for (var n = 0; n < columnsToSummary.length; ++n) {
             var c = columnsToSummary[n];
@@ -866,7 +866,7 @@ QCD.components.elements.Grid = function (element, mainController) {
 
         var selectedIds = grid.jqGrid('getGridParam','selarrrow');
 
-        var $newFooterRow = $('.ui-jqgrid-ftable').find('tbody').find('tr').last();
+        var $newFooterRow = $('#' + elementSearchName + ' .ui-jqgrid-ftable').find('tbody').find('tr').last();
         for (var n = 0; n < columnsToSummary.length; ++n) {
             var c = columnsToSummary[n];
              var totalSum = 0;
@@ -932,7 +932,7 @@ QCD.components.elements.Grid = function (element, mainController) {
 
         var tmp = gridParameters.columnsToSummaryTime;
         var columnsToSummary = tmp.split(",");
-        var $footerRow = $('.ui-jqgrid-ftable').find('tbody').find('tr').first();
+        var $footerRow = $('#' + elementSearchName + ' .ui-jqgrid-ftable').find('tbody').find('tr').first();
 
         for (var n = 0; n < columnsToSummary.length; ++n) {
             var c = columnsToSummary[n];
@@ -958,7 +958,7 @@ QCD.components.elements.Grid = function (element, mainController) {
         }
 
         var selectedIds = grid.jqGrid('getGridParam','selarrrow');
-        var $newFooterRow = $('.ui-jqgrid-ftable').find('tbody').find('tr').last();
+        var $newFooterRow = $('#' + elementSearchName + ' .ui-jqgrid-ftable').find('tbody').find('tr').last();
 
         for (var n = 0; n < columnsToSummary.length; ++n) {
              var c = columnsToSummary[n];
@@ -1268,8 +1268,8 @@ QCD.components.elements.Grid = function (element, mainController) {
         updateSavedOptions("columns", columns);
         updateUserHiddenColumns();
          if(gridParameters.footerrow){
-            $('.ui-jqgrid-ftable').find('tr').last().remove();
-            $('.ui-jqgrid-ftable').find('tbody').append($('.ui-jqgrid-ftable').find('tr').clone(true));
+            $('#' + elementSearchName + ' .ui-jqgrid-ftable').find('tr').last().remove();
+            $('#' + elementSearchName + ' .ui-jqgrid-ftable').find('tbody').append($('#' + elementSearchName + ' .ui-jqgrid-ftable').find('tr').clone(true));
             addSummaryDataForNumberRows();
             addSummaryDataForNumberTimeRows();
          }
@@ -1873,14 +1873,13 @@ QCD.components.elements.Grid = function (element, mainController) {
         $("#" + gridParameters.element).parent().append(noRecordsDiv);
         if(gridParameters.footerrow){
             grid.jqGrid('footerData', 'set', { cb: 'Σ'});
-            $('.ui-jqgrid-ftable').find('tbody').append($('.ui-jqgrid-ftable').find('tr').clone(true));
+            $('#' + elementSearchName + ' .ui-jqgrid-ftable').find('tbody').append($('#' + elementSearchName + ' .ui-jqgrid-ftable').find('tr').clone(true));
         }
     }
 
 
     this.getGrid= function () {
               return grid;
-
     };
 
     constructor();
