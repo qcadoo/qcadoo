@@ -92,7 +92,7 @@ jQuery.fn.liveUpdate = function(list) {
 					$emptySearchResult.show();
 					$tooManySearchResult.hide();
 					results.hide();
-				} else if (scores.length > 12) {
+				} else if (scores.length > 15) {
 					$emptySearchResult.hide();
 					$tooManySearchResult.show();
 					results.hide();
