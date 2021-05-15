@@ -187,7 +187,7 @@ QCD.login = (function () {
                             window.parent.onLoginSuccess();
                         } else {
                             if (isMobile()) {
-                                window.location = "terminal.html";
+                                window.location = "mobile.html";
                             } else {
                                 window.location = "main.html";
                             }
