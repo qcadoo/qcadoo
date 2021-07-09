@@ -52,7 +52,7 @@
 
 			<option type="column" name="name" fields="name" link="true"
 					width="600"/>
-			<option type="column" name="pluginIdentifier" fields="pluginIdentifier" link="false"
+			<option type="column" name="pluginIdentifier" fields="pluginIdentifier" link="false" hidden="true"
 					width="600"/>
 
 			<option type="order" column="succession" direction="asc"/>

@@ -99,7 +99,6 @@
 					<option type="column" name="name" fields="name" link="true"
 							width="300"/>
 					<option type="column" name="active" fields="active" link="false"/>
-					<option type="column" name="pluginIdentifier" fields="pluginIdentifier" link="false" width="300"/>
 
 					<option type="order" column="succession" direction="asc"/>
 
