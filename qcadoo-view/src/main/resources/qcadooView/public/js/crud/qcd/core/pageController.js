@@ -281,6 +281,9 @@ QCD.PageController = function() {
 	}
 
 	function putShowBackInContext(url) {
+	    if (url.indexOf("window.showBack") != -1) {
+	        return url;
+	    }
 		if (url.indexOf("context={") == -1) {
 			return appendGetVariableToUrl(url,
 					"context={\"window.showBack\":true}");
