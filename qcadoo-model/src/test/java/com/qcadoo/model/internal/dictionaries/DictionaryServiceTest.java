@@ -100,7 +100,7 @@ public class DictionaryServiceTest extends TransactionMockAwareTest {
                         .addOrder(SearchOrders.asc("name")).list().getEntities()).willReturn(newArrayList(item1, item3, item2));
 
         // when
-        Map<String, String> values = dictionaryService.getValues("dict", Locale.ENGLISH);
+        Map<String, String> values = dictionaryService.getActiveValues("dict", Locale.ENGLISH);
 
         // then
         assertThat(values.size(), equalTo(3));
@@ -112,13 +112,13 @@ public class DictionaryServiceTest extends TransactionMockAwareTest {
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrownAnExceptionIfDictionaryNameIsNull() throws Exception {
         // when
-        dictionaryService.getValues(null, Locale.ENGLISH);
+        dictionaryService.getActiveValues(null, Locale.ENGLISH);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrownAnExceptionIfDictionaryNameIsEmpty() throws Exception {
         // when
-        dictionaryService.getValues("", Locale.ENGLISH);
+        dictionaryService.getActiveValues("", Locale.ENGLISH);
     }
 
 }

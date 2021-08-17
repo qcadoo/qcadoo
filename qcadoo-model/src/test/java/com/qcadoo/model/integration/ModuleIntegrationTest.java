@@ -79,7 +79,7 @@ public class ModuleIntegrationTest extends IntegrationTest {
         assertNotNull(productResult);
         assertEquals("XXX", productResult.get("changeableName"));
 
-        assertThat(((EnumeratedType) productDao.getField("enum").getType()).values(Locale.ENGLISH).keySet(),
+        assertThat(((EnumeratedType) productDao.getField("enum").getType()).activeValues(Locale.ENGLISH).keySet(),
                 JUnitMatchers.hasItems("one", "two", "three"));
     }
 
@@ -117,7 +117,7 @@ public class ModuleIntegrationTest extends IntegrationTest {
         assertNotNull(productResult);
         assertEquals("XXX", productResult.get("changeableName"));
 
-        assertThat(((EnumeratedType) productDao.getField("enum").getType()).values(Locale.ENGLISH).keySet(),
+        assertThat(((EnumeratedType) productDao.getField("enum").getType()).activeValues(Locale.ENGLISH).keySet(),
                 JUnitMatchers.hasItems("one", "two", "three"));
     }
 
@@ -173,7 +173,7 @@ public class ModuleIntegrationTest extends IntegrationTest {
         assertNotNull(productResult);
         assertEquals("xxx", productResult.get("changeableName"));
 
-        assertThat(((EnumeratedType) productDao.getField("enum").getType()).values(Locale.ENGLISH).keySet(),
+        assertThat(((EnumeratedType) productDao.getField("enum").getType()).activeValues(Locale.ENGLISH).keySet(),
                 JUnitMatchers.hasItems("one", "two"));
     }
 
@@ -219,7 +219,7 @@ public class ModuleIntegrationTest extends IntegrationTest {
         assertNotNull(productResult);
         assertEquals("xxx", productResult.get("changeableName"));
 
-        assertThat(((EnumeratedType) productDao.getField("enum").getType()).values(Locale.ENGLISH).keySet(),
+        assertThat(((EnumeratedType) productDao.getField("enum").getType()).activeValues(Locale.ENGLISH).keySet(),
                 JUnitMatchers.hasItems("one", "two"));
     }
 
