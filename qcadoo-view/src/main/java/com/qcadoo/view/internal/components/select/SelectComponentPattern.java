@@ -30,13 +30,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import com.google.common.base.Splitter;
-import com.google.common.collect.Lists;
-import org.apache.commons.lang3.ArrayUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.google.common.base.Splitter;
+import com.google.common.collect.Lists;
 import com.qcadoo.model.api.types.BelongsToType;
 import com.qcadoo.model.api.types.EnumeratedType;
 import com.qcadoo.view.api.ComponentState;
@@ -88,7 +87,7 @@ public final class SelectComponentPattern extends FieldComponentPattern {
 
         if (getFieldDefinition() != null) {
             if (EnumeratedType.class.isAssignableFrom(getFieldDefinition().getType().getClass())) {
-                values.putAll(((EnumeratedType) getFieldDefinition().getType()).values(locale));
+                values.putAll(((EnumeratedType) getFieldDefinition().getType()).activeValues(locale));
             } else if (BelongsToType.class.isAssignableFrom(getFieldDefinition().getType().getClass())) {
                 throw new IllegalStateException("Select for belongsTo type is not supported");
             } else {

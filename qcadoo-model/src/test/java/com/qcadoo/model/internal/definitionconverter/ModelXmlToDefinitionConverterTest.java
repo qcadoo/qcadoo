@@ -41,8 +41,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
-import junit.framework.Assert;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
@@ -93,6 +91,7 @@ import com.qcadoo.model.internal.validators.RequiredValidator;
 import com.qcadoo.model.internal.validators.ScaleValidator;
 import com.qcadoo.model.internal.validators.UniqueValidator;
 import com.qcadoo.model.internal.validators.UnscaledValueValidator;
+import junit.framework.Assert;
 
 public class ModelXmlToDefinitionConverterTest extends TransactionMockAwareTest {
 
@@ -261,7 +260,7 @@ public class ModelXmlToDefinitionConverterTest extends TransactionMockAwareTest 
         assertNotNull(dataDefinition.getField("fieldEnum"));
         assertThat(dataDefinition.getField("fieldEnum").getType(), instanceOf(EnumType.class));
 
-        assertThat(((EnumType) dataDefinition.getField("fieldEnum").getType()).values(Locale.ENGLISH).keySet(),
+        assertThat(((EnumType) dataDefinition.getField("fieldEnum").getType()).activeValues(Locale.ENGLISH).keySet(),
                 hasItems("one", "two", "three"));
 
         assertNotNull(dataDefinition.getField("fieldDictionary"));

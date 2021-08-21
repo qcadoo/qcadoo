@@ -34,9 +34,11 @@ import java.util.Map;
 public interface EnumeratedType extends FieldType {
 
     /**
-     * Returns all possible field values with its translations.
+     * Returns active possible field values with its translations.
      * 
      * @return values
      */
+    Map<String, String> activeValues(final Locale locale);
+
     Map<String, String> values(final Locale locale);
 }

@@ -40,12 +40,14 @@ public interface DictionaryService {
     List<String> getActiveKeys(String dictionary);
 
     /**
-     * Return all values for given dictionary's name.
+     * Return active values for given dictionary's name.
      * 
      * @param dictionary
      *            dictionary's name
      * @return the dictionary's values
      */
+    Map<String, String> getActiveValues(String dictionary, Locale locale);
+
     Map<String, String> getValues(String dictionary, Locale locale);
 
     Map<String, String> getKeyValues(String dictionary, Locale locale);

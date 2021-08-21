@@ -50,6 +50,11 @@ public final class DictionaryType extends AbstractFieldType implements Enumerate
     }
 
     @Override
+    public Map<String, String> activeValues(final Locale locale) {
+        return dictionaryService.getActiveValues(dictionary, locale);
+    }
+
+    @Override
     public Class<?> getType() {
         return String.class;
     }

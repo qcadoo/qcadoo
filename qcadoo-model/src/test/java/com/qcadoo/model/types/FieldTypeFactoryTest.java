@@ -83,8 +83,8 @@ public class FieldTypeFactoryTest extends DataAccessTest {
         EnumeratedType fieldType = new EnumType(translationService, "path", true, "val1", "val2", "val3");
 
         // then
-        assertEquals(fieldType.values(Locale.ENGLISH).keySet(), Sets.newHashSet("val1", "val2", "val3"));
-        assertEquals(Lists.newArrayList(fieldType.values(Locale.ENGLISH).values()), Lists.newArrayList("i18nVal1", "i18nVal2", "i18nVal3"));
+        assertEquals(fieldType.activeValues(Locale.ENGLISH).keySet(), Sets.newHashSet("val1", "val2", "val3"));
+        assertEquals(Lists.newArrayList(fieldType.activeValues(Locale.ENGLISH).values()), Lists.newArrayList("i18nVal1", "i18nVal2", "i18nVal3"));
         assertEquals(String.class, fieldType.getType());
 
         ValueAndError valueAndError1 = fieldType.toObject(fieldDefinition, "val1");
@@ -102,7 +102,7 @@ public class FieldTypeFactoryTest extends DataAccessTest {
     public void shouldReturnDictionaryType() throws Exception {
         // given
         DictionaryService dictionaryService = mock(DictionaryService.class);
-        given(dictionaryService.getValues("dictionary", Locale.ENGLISH)).willReturn(
+        given(dictionaryService.getActiveValues("dictionary", Locale.ENGLISH)).willReturn(
                 ImmutableMap.of("val1", "val1", "val2", "val2", "val3", "val3"));
         given(dictionaryService.getKeys("dictionary")).willReturn(Lists.newArrayList("val1", "val2", "val3"));
 
@@ -110,8 +110,8 @@ public class FieldTypeFactoryTest extends DataAccessTest {
         EnumeratedType fieldType = new DictionaryType("dictionary", dictionaryService, true);
 
         // then
-        assertEquals(fieldType.values(Locale.ENGLISH).keySet(), Sets.newHashSet("val1", "val2", "val3"));
-        assertEquals(Lists.newArrayList(fieldType.values(Locale.ENGLISH).values()), Lists.newArrayList("val1", "val2", "val3"));
+        assertEquals(fieldType.activeValues(Locale.ENGLISH).keySet(), Sets.newHashSet("val1", "val2", "val3"));
+        assertEquals(Lists.newArrayList(fieldType.activeValues(Locale.ENGLISH).values()), Lists.newArrayList("val1", "val2", "val3"));
         assertEquals(String.class, fieldType.getType());
 
         ValueAndError valueAndError1 = fieldType.toObject(fieldDefinition, "val1");

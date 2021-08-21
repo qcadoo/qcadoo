@@ -34,9 +34,6 @@ import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
 
-import com.google.common.collect.Lists;
-import com.qcadoo.localization.api.TranslationService;
-import com.qcadoo.view.internal.ComponentOption;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Before;
@@ -44,11 +41,14 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.api.DictionaryService;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.internal.types.DictionaryType;
 import com.qcadoo.view.internal.ComponentDefinition;
+import com.qcadoo.view.internal.ComponentOption;
 import com.qcadoo.view.internal.api.InternalViewDefinition;
 
 public class SelectComponentStateTest {
@@ -89,12 +89,12 @@ public class SelectComponentStateTest {
         setField(pattern, "defaultRequired", true);
     }
 
-    private void stubValues(String... values) throws JSONException {
+    private void stubValues(String... values) {
         Map<String, String> array = Maps.newLinkedHashMap();
-        for (int i = 0; i < values.length; ++i) {
-            array.put(values[i], values[i]);
+        for (String value : values) {
+            array.put(value, value);
         }
-        when(dictionaryService.getValues(DICTIONARY_NAME, Locale.ENGLISH)).thenReturn(array);
+        when(dictionaryService.getActiveValues(DICTIONARY_NAME, Locale.ENGLISH)).thenReturn(array);
     }
 
     @Test

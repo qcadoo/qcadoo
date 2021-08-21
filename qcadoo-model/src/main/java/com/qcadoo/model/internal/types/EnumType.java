@@ -25,7 +25,6 @@ package com.qcadoo.model.internal.types;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -53,11 +52,11 @@ public final class EnumType extends AbstractFieldType implements EnumeratedType 
         super(copyable);
         this.translationService = translationService;
         this.translationPath = translationPath;
-        this.keys = new ArrayList<EnumTypeKey>();
+        this.keys = new ArrayList<>();
         for (String key : keys) {
             this.keys.add(new EnumTypeKey(key, null));
         }
-        Collections.sort(this.keys, ENUM_TYPE_COMPARATOR);
+        this.keys.sort(ENUM_TYPE_COMPARATOR);
     }
 
     public List<EnumTypeKey> getKeys() {
@@ -66,7 +65,12 @@ public final class EnumType extends AbstractFieldType implements EnumeratedType 
 
     @Override
     public Map<String, String> values(final Locale locale) {
-        LinkedHashMap<String, String> values = new LinkedHashMap<String, String>();
+        return activeValues(locale);
+    }
+
+    @Override
+    public Map<String, String> activeValues(final Locale locale) {
+        LinkedHashMap<String, String> values = new LinkedHashMap<>();
         for (String key : toStringList()) {
             values.put(key, translationService.translate(translationPath + ".value." + key, locale));
         }
@@ -88,7 +92,7 @@ public final class EnumType extends AbstractFieldType implements EnumeratedType 
     }
 
     private List<String> toStringList() {
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
         for (EnumTypeKey key : keys) {
             if (key.getOriginPluginIdentifier() == null || PluginUtils.isEnabled(key.getOriginPluginIdentifier())) {
                 result.add(key.getValue());

@@ -23,6 +23,21 @@
  */
 package com.qcadoo.model.internal.dictionaries;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static org.springframework.util.StringUtils.hasText;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.DataDefinitionService;
@@ -36,20 +51,6 @@ import com.qcadoo.model.constants.DictionaryFields;
 import com.qcadoo.model.constants.DictionaryItemFields;
 import com.qcadoo.model.constants.QcadooModelConstants;
 import com.qcadoo.model.internal.api.InternalDictionaryService;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import static com.google.common.base.Preconditions.checkArgument;
-import static org.springframework.util.StringUtils.hasText;
 
 @Service
 public final class DictionaryServiceImpl implements InternalDictionaryService {
@@ -68,7 +69,7 @@ public final class DictionaryServiceImpl implements InternalDictionaryService {
 
         List<Entity> items = createCriteriaForItemsFrom(dictionary).addOrder(SearchOrders.asc(DictionaryItemFields.NAME)).list()
                 .getEntities();
-        List<String> keys = new ArrayList<String>();
+        List<String> keys = new ArrayList<>();
 
         for (Entity item : items) {
             keys.add(item.getStringField(DictionaryItemFields.NAME));
@@ -85,7 +86,7 @@ public final class DictionaryServiceImpl implements InternalDictionaryService {
 
         List<Entity> items = createCriteriaForItemsFrom(dictionary).add(SearchRestrictions.eq("active", true))
                 .addOrder(SearchOrders.asc(DictionaryItemFields.NAME)).list().getEntities();
-        List<String> keys = new ArrayList<String>();
+        List<String> keys = new ArrayList<>();
 
         for (Entity item : items) {
             keys.add(item.getStringField(DictionaryItemFields.NAME));
@@ -97,15 +98,33 @@ public final class DictionaryServiceImpl implements InternalDictionaryService {
     @Override
     @Transactional(readOnly = true)
     @Monitorable
-    public Map<String, String> getValues(final String dictionary, final Locale locale) {
+    public Map<String, String> getActiveValues(final String dictionary, final Locale locale) {
         checkArgument(hasText(dictionary), "dictionary name must be given");
 
         List<Entity> items = createCriteriaForActiveItemsFrom(dictionary).addOrder(SearchOrders.asc(DictionaryItemFields.NAME))
                 .list().getEntities();
 
-        Map<String, String> values = new LinkedHashMap<String, String>();
+        Map<String, String> values = new LinkedHashMap<>();
 
         // TODO MAKU translate dictionary values
+        for (Entity item : items) {
+            values.put(item.getStringField(DictionaryItemFields.NAME), item.getStringField(DictionaryItemFields.NAME));
+        }
+
+        return values;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @Monitorable
+    public Map<String, String> getValues(final String dictionary, final Locale locale) {
+        checkArgument(hasText(dictionary), "dictionary name must be given");
+
+        List<Entity> items = createCriteriaForItemsFrom(dictionary).addOrder(SearchOrders.asc(DictionaryItemFields.NAME))
+                .list().getEntities();
+
+        Map<String, String> values = new LinkedHashMap<>();
+
         for (Entity item : items) {
             values.put(item.getStringField(DictionaryItemFields.NAME), item.getStringField(DictionaryItemFields.NAME));
         }
@@ -138,7 +157,7 @@ public final class DictionaryServiceImpl implements InternalDictionaryService {
         List<Entity> dictionaries = getDictionaryDataDefinition().find().addOrder(SearchOrders.asc(DictionaryFields.NAME)).list()
                 .getEntities();
 
-        Set<String> names = new HashSet<String>();
+        Set<String> names = new HashSet<>();
 
         for (Entity dictionary : dictionaries) {
             if ((Boolean) dictionary.getField(DictionaryFields.ACTIVE)) {
