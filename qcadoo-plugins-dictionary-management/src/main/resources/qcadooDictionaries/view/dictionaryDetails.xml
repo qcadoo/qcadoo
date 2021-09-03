@@ -93,13 +93,15 @@
 					width="50"/>
 			<option type="column" name="description" fields="description"
 					width="100"/>
+			<option type="column" name="priority" fields="priority"
+					width="50"/>
 			<option type="column" name="externalNumber" fields="externalNumber" hidden="true"/>
 			<option type="column" name="technicalCode" fields="technicalCode" hidden="true"/>
 
 			<option type="order" column="name" direction="asc"/>
 
-			<option type="searchable" value="name,description"/>
-			<option type="orderable" value="name,description"/>
+			<option type="searchable" value="name,description,priority"/>
+			<option type="orderable" value="name,description,priority"/>
 
 			<option type="correspondingView" value="qcadooDictionaries/dictionaryItemDetails"/>
 			<option type="correspondingComponent" value="form"/>

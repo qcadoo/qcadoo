@@ -38,6 +38,7 @@
         </string>
         <string name="technicalCode"/>
         <belongsTo name="dictionary" model="dictionary" required="true"/>
+        <priority name="priority" scope="dictionary"/>
         <boolean name="isInteger" default="false"/>
     </fields>
 
