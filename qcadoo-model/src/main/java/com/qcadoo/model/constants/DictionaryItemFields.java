@@ -42,4 +42,6 @@ public final class DictionaryItemFields {
     public static final String ACTIVE = "active";
 
     public static final String IS_INTEGER = "isInteger";
+
+    public static final String PRIORITY = "priority";
 }
