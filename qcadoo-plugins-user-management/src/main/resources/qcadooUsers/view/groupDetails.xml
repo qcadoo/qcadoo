@@ -26,15 +26,19 @@
 -->
 <view xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schema.qcadoo.org/view"
 	  xsi:schemaLocation="http://schema.qcadoo.org/view http://schema.qcadoo.org/view.xsd" name="groupDetails"
-	  modelPlugin="qcadooSecurity" modelName="group" defaultAuthorizationRole="ROLE_ADMIN">
+	  modelPlugin="qcadooSecurity" modelName="group" defaultAuthorizationRole="ROLE_GROUPS_VIEW">
 
 	<component type="window" name="window">
 
 		<ribbon>
-			<template name="standardFormTemplate"/>
+			<group template="navigation"/>
+			<group template="formSaveCopyAndRemoveActions" defaultAuthorizationRole="ROLE_GROUPS_EDIT"/>
+			<group name="actions">
+				<smallButton name="refresh" icon="updateIcon16.png" state="enabled" action="#{form}.performRefresh;" accesskey="r" />
+			</group>
 		</ribbon>
 
-		<component type="form" name="group" reference="form">
+		<component type="form" name="group" reference="form" defaultAuthorizationRole="ROLE_GROUPS_EDIT">
 			<component type="gridLayout" name="gridLayout" columns="3" rows="8">
 				<layoutElement column="1" row="1">
 					<component type="input" name="name" field="name" reference="name"/>
@@ -63,7 +67,8 @@
 								method="criteriaForGroups"/>
 					</component>
 					<component type="grid" name="groupComponents"
-							   reference="groupComponents" source="#{form}.roles" defaultEnabled="false">
+							   reference="groupComponents" source="#{form}.roles" defaultEnabled="false"
+							   defaultAuthorizationRole="ROLE_GROUPS_EDIT">
 						<option type="column" name="identifier" fields="identifier" width="50"/>
 						<option type="column" name="description" fields="identifier,description"
 								expression="(#description == null) ? '@qcadooSecurity.role.' + #identifier + '.description' : #description"/>
