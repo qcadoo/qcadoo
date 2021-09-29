@@ -40,16 +40,16 @@ public class DictionaryItemValidators {
     public boolean onValidate(final DataDefinition dictionaryItemDD, final Entity dictionaryItem) {
         boolean isValid = true;
 
-        isValid = checkIfIsUnique(dictionaryItemDD, dictionaryItem) && isValid;
+        isValid = isValid && checkIfIsUnique(dictionaryItemDD, dictionaryItem, DictionaryItemFields.NAME);
+        isValid = isValid && checkIfIsUnique(dictionaryItemDD, dictionaryItem, DictionaryItemFields.EXTERNAL_NUMBER);
         isValid = disallowNameChange(dictionaryItemDD, dictionaryItem) && isValid;
 
         return isValid;
     }
 
-    private boolean checkIfIsUnique(final DataDefinition dictionaryItemDD, final Entity dictionaryItem) {
-        if (!checkIfDictionaryItemIsUnique(dictionaryItemDD, dictionaryItem)) {
-            dictionaryItem.addError(dictionaryItemDD.getField(DictionaryItemFields.NAME),
-                    "qcadooView.validate.field.error.duplicated");
+    private boolean checkIfIsUnique(final DataDefinition dictionaryItemDD, final Entity dictionaryItem, final String fieldName) {
+        if (!checkIfDictionaryItemIsUnique(dictionaryItemDD, dictionaryItem, fieldName)) {
+            dictionaryItem.addError(dictionaryItemDD.getField(fieldName), "qcadooView.validate.field.error.duplicated");
 
             return false;
         }
@@ -57,15 +57,16 @@ public class DictionaryItemValidators {
         return true;
     }
 
-    private boolean checkIfDictionaryItemIsUnique(final DataDefinition dictionaryItemDD, final Entity dictionaryItem) {
+    private boolean checkIfDictionaryItemIsUnique(final DataDefinition dictionaryItemDD, final Entity dictionaryItem,
+            final String fieldName) {
         Entity dictionary = dictionaryItem.getBelongsToField(DictionaryItemFields.DICTIONARY);
-        String name = dictionaryItem.getStringField(DictionaryItemFields.NAME);
+        String fieldValue = dictionaryItem.getStringField(fieldName);
 
         SearchCriteriaBuilder searchCriteriaBuilder = dictionaryItemDD.find()
                 .add(SearchRestrictions.belongsTo(DictionaryItemFields.DICTIONARY, dictionary))
-                .add(SearchRestrictions.eq(DictionaryItemFields.NAME, name));
+                .add(SearchRestrictions.eq(fieldName, fieldValue));
 
-        if (dictionaryItem.getId() != null) {
+        if (Objects.nonNull(dictionaryItem.getId())) {
             searchCriteriaBuilder.add(SearchRestrictions.idNe(dictionaryItem.getId()));
         }
 
@@ -75,7 +76,7 @@ public class DictionaryItemValidators {
     }
 
     private boolean disallowNameChange(final DataDefinition dictionaryItemDD, final Entity dictionaryItem) {
-        if (dictionaryItem.getId() != null) {
+        if (Objects.nonNull(dictionaryItem.getId())) {
             Entity existingEntity = dictionaryItemDD.get(dictionaryItem.getId());
 
             if (!Objects.equals(dictionaryItem.getStringField(DictionaryItemFields.NAME),
