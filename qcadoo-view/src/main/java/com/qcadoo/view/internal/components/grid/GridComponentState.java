@@ -23,17 +23,6 @@
  */
 package com.qcadoo.view.internal.components.grid;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-
-import org.apache.commons.lang3.StringUtils;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -63,6 +52,18 @@ import com.qcadoo.view.internal.CriteriaModifier;
 import com.qcadoo.view.internal.FilterValueHolderImpl;
 import com.qcadoo.view.internal.RowStyleResolver;
 import com.qcadoo.view.internal.states.AbstractComponentState;
+
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+
+import org.apache.commons.lang3.StringUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public final class GridComponentState extends AbstractComponentState implements GridComponent {
 
@@ -207,8 +208,14 @@ public final class GridComponentState extends AbstractComponentState implements 
         this.belongsToFieldDefinition = pattern.getBelongsToFieldDefinition();
 
         if (Objects.nonNull(pattern.getDefaultOrderColumn())) {
-            this.orderColumns
-                    .add(new GridComponentOrderColumn(pattern.getDefaultOrderColumn(), pattern.getDefaultOrderDirection()));
+            Set<String> set = Sets.newHashSet();
+
+            Collections.addAll(set, pattern.getDefaultOrderColumn().split("\\s*,\\s*"));
+            set.forEach(column -> {
+                this.orderColumns
+                        .add(new GridComponentOrderColumn(column, pattern.getDefaultOrderDirection()));
+            });
+
         }
 
         this.activable = pattern.isActivable();

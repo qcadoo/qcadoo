@@ -25,12 +25,16 @@
 -->
 <view xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schema.qcadoo.org/view"
 	  xsi:schemaLocation="http://schema.qcadoo.org/view http://schema.qcadoo.org/view.xsd" name="groupsList"
-	  modelPlugin="qcadooSecurity" modelName="group" menuAccessible="true" defaultAuthorizationRole="ROLE_SUPERADMIN">
+	  modelPlugin="qcadooSecurity" modelName="group" menuAccessible="true" defaultAuthorizationRole="ROLE_GROUPS_VIEW">
 
 	<component type="window" name="window">
 
 		<ribbon>
-			<template name="standardGridTemplate"/>
+			<group template="gridNewCopyAndRemoveAction" defaultAuthorizationRole="ROLE_GROUPS_EDIT"/>
+			<group name="actions">
+				<bigButton name="refresh" icon="updateIcon24.png" state="enabled" action="#{grid}.performRefresh;" accesskey="r" />
+			</group>
+			<group template="gridGenericExportAction"/>
 		</ribbon>
 
 		<component type="grid" name="groups" reference="grid">
