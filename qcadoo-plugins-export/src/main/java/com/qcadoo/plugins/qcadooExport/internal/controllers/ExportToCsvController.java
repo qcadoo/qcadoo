@@ -23,23 +23,6 @@
  */
 package com.qcadoo.plugins.qcadooExport.internal.controllers;
 
-import java.io.File;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.qcadoo.model.api.aop.Monitorable;
@@ -51,6 +34,18 @@ import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.api.components.GridComponent;
 import com.qcadoo.view.api.crud.CrudService;
 import com.qcadoo.view.constants.QcadooViewConstants;
+import org.apache.commons.lang3.StringUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+
+import java.io.File;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 @Controller
 public class ExportToCsvController {
@@ -88,6 +83,13 @@ public class ExportToCsvController {
 
             GridComponent grid = (GridComponent) state.getComponentByReference(QcadooViewConstants.L_GRID);
 
+            if (grid == null) {
+                JSONArray args = body.getJSONObject("event").getJSONArray("args");
+                if (args.length() > 0) {
+                    grid = (GridComponent) state.getComponentByReference(args.getString(0));
+                }
+            }
+
             List<String> columns = getColumns(grid);
             List<String> columnNames = getColumnNames(grid, columns);
 
@@ -101,11 +103,8 @@ public class ExportToCsvController {
 
             File file = exportToCsv.createExportFile(columns, columnNames, rows, grid.getName());
 
-            boolean openInNewWindow = true;
-
-            if (StringUtils.isNoneBlank(userAgent) && (userAgent.contains("Chrome") || userAgent.contains("Safari")) && !userAgent.contains("Edge")) {
-                openInNewWindow = false;
-            }
+            boolean openInNewWindow = !StringUtils.isNoneBlank(userAgent) || (!userAgent.contains("Chrome") && !userAgent.contains("Safari"))
+                    || userAgent.contains("Edge");
 
             state.redirectTo(fileService.getUrl(file.getAbsolutePath()) + "?clean", openInNewWindow, false);
 
