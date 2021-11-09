@@ -26,6 +26,13 @@ package com.qcadoo.view.internal.controllers;
 import com.google.common.io.BaseEncoding;
 import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.api.file.FileService;
+
+import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -33,11 +40,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-
-import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
 
 @Controller
 public final class AttachmentViewerController {
@@ -69,10 +71,19 @@ public final class AttachmentViewerController {
 
         ModelAndView mav = new ModelAndView();
         String file =  new String(BaseEncoding.base64Url().decode(arguments.get(L_ATTACHMENT)),"utf-8");
+        String url = null;
+
+        if(file.substring(1, file.length()-1).startsWith(File.separator + "files")) {
+            url = file;
+            mav.addObject(L_ATTACHMENT, url.substring(2, url.length() - 1));
+        } else {
+            url = fileService.getUrl(file);
+            mav.addObject(L_ATTACHMENT, url.substring(1, url.length() - 1));
+        }
+
         String ext = FilenameUtils.getExtension(file);
         String name =  FilenameUtils.getName(file);
-        String url = fileService.getUrl(file);
-        mav.addObject(L_ATTACHMENT, url.substring(1, url.length() - 1));
+
         mav.addObject(L_EXT, ext);
         int index = name.indexOf('_');
         mav.addObject(L_FILE_NAME, name.substring(index+1, name.length() - 1));
