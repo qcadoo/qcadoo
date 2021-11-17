@@ -66,8 +66,8 @@ public abstract class XlsDocumentService implements ReportDocumentService {
         addExtraSheets(workbook, entity, locale);
         FileOutputStream outputStream = null;
         try {
-            outputStream = new FileOutputStream(fileService.createReportFile((String) entity.getField("fileName") + "."
-                    + ReportService.ReportType.XLS.getExtension()));
+            outputStream = new FileOutputStream(fileService
+                    .createReportFile(entity.getField("fileName") + "." + ReportService.ReportType.XLS.getExtension()));
             workbook.write(outputStream);
         } catch (IOException e) {
             LOG.error("Problem with generating document - " + e.getMessage());
@@ -81,10 +81,10 @@ public abstract class XlsDocumentService implements ReportDocumentService {
 
     protected abstract void addHeader(final HSSFSheet sheet, final Locale locale, final Entity entity);
 
-    protected abstract void addSeries(final HSSFSheet sheet, final Entity entity);
+    protected void addSeries(final HSSFSheet sheet, final Entity entity) {
+    }
 
     protected void addExtraSheets(final HSSFWorkbook workbook, Entity entity, Locale locale) {
-
     }
 
     protected HSSFSheet createSheet(final HSSFWorkbook workbook, final String title) {
