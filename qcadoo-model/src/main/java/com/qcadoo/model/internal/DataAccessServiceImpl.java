@@ -1103,7 +1103,7 @@ public class DataAccessServiceImpl implements DataAccessService {
             sb.append("<br />").append(translationService.translate(error.getMessage(), LocaleContextHolder.getLocale(), error.getVars()));
         }
         for (Map.Entry<String, ErrorMessage> error : errorEntity.getErrors().entrySet()) {
-            sb.append("<br />").append(translationService.translate(error.getValue().getMessage(), LocaleContextHolder.getLocale(), error.getValue().getMessage()));
+            sb.append("<br />").append(translationService.translate(error.getValue().getMessage(), LocaleContextHolder.getLocale(), error.getValue().getVars()));
         }
         
         return sb.toString();
