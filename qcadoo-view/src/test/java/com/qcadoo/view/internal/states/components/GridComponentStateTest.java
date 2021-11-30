@@ -73,8 +73,6 @@ import com.qcadoo.view.internal.states.AbstractStateTest;
 
 public class GridComponentStateTest extends AbstractStateTest {
 
-    private Entity entity;
-
     private ViewDefinitionState viewDefinitionState;
 
     private GridComponentState grid;
@@ -84,8 +82,6 @@ public class GridComponentStateTest extends AbstractStateTest {
     private DataDefinition substituteDataDefinition;
 
     private FieldDefinition substitutesFieldDefinition;
-
-    private TranslationService translationService;
 
     private JSONObject json;
 
@@ -119,7 +115,7 @@ public class GridComponentStateTest extends AbstractStateTest {
 
         json = new JSONObject(Collections.singletonMap(AbstractComponentState.JSON_CONTENT, jsonContent));
 
-        entity = mock(Entity.class);
+        Entity entity = mock(Entity.class);
         given(entity.getField("name")).willReturn("text");
 
         viewDefinitionState = mock(ViewDefinitionState.class);
@@ -148,7 +144,7 @@ public class GridComponentStateTest extends AbstractStateTest {
 
         columns = new LinkedHashMap<String, GridComponentColumn>();
 
-        translationService = mock(TranslationService.class);
+        TranslationService translationService = mock(TranslationService.class);
         given(translationService.translate(Mockito.anyString(), Mockito.any(Locale.class))).willReturn("i18n");
         given(translationService.translate(Mockito.anyString(), Mockito.anyString(), Mockito.any(Locale.class))).willReturn(
                 "i18n");
@@ -249,7 +245,7 @@ public class GridComponentStateTest extends AbstractStateTest {
         grid.addFieldEntityIdChangeListener("field", listener);
 
         // when
-        grid.performEvent(viewDefinitionState, "select", new String[0]);
+        grid.performEvent(viewDefinitionState, "select");
 
         // then
         verify(listener).onFieldEntityIdChange(13L);
@@ -267,7 +263,7 @@ public class GridComponentStateTest extends AbstractStateTest {
         grid.addFieldEntityIdChangeListener("field", listener);
 
         // when
-        grid.performEvent(viewDefinitionState, "refresh", new String[0]);
+        grid.performEvent(viewDefinitionState, "refresh");
     }
 
     @Test(expected = IllegalStateException.class)
@@ -283,7 +279,7 @@ public class GridComponentStateTest extends AbstractStateTest {
         grid.addFieldEntityIdChangeListener("field", listener);
 
         // when
-        grid.performEvent(viewDefinitionState, "moveUp", new String[0]);
+        grid.performEvent(viewDefinitionState, "moveUp");
     }
 
     @Test(expected = IllegalStateException.class)
@@ -299,7 +295,7 @@ public class GridComponentStateTest extends AbstractStateTest {
         grid.addFieldEntityIdChangeListener("field", listener);
 
         // when
-        grid.performEvent(viewDefinitionState, "moveDown", new String[0]);
+        grid.performEvent(viewDefinitionState, "moveDown");
     }
 
     @Test
