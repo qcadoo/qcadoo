@@ -127,10 +127,6 @@ html, body {
     border-color: #425261 !important;
 }
 
-#dashboardKanban .btn-success {
-    border-color: #F2F2F2;
-}
-
 #dashboardButtons .card-title {
     font-weight: bold;
 }
@@ -149,6 +145,15 @@ html, body {
     }
 }
 
+#dashboardSearch {
+    float: left;
+
+    margin-top: 0;
+    margin-bottom: 20px;
+
+    width: 20%;
+}
+
 #dashboardKanban {
     float: left;
 
@@ -156,6 +161,10 @@ html, body {
     margin-bottom: 0;
 
     width: 100%;
+}
+
+#dashboardKanban .btn-success {
+    border-color: #F2F2F2;
 }
 
 #dashboardKanban .card {
