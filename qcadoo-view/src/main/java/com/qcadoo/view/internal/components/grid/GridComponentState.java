@@ -3,19 +3,19 @@
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
  * Version: 1.4
- *
+ * <p>
  * This file is part of Qcadoo.
- *
+ * <p>
  * Qcadoo is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
  * by the Free Software Foundation; either version 3 of the License,
  * or (at your option) any later version.
- *
+ * <p>
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty
  * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Affero General Public License for more details.
- *
+ * <p>
  * You should have received a copy of the GNU Affero General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -41,6 +41,7 @@ import com.qcadoo.model.api.types.FieldType;
 import com.qcadoo.model.api.types.JoinFieldHolder;
 import com.qcadoo.model.api.types.ManyToManyType;
 import com.qcadoo.model.api.validators.ErrorMessage;
+import com.qcadoo.model.api.validators.GlobalMessage;
 import com.qcadoo.model.internal.ProxyEntity;
 import com.qcadoo.model.internal.types.EnumType;
 import com.qcadoo.security.api.SecurityRole;
@@ -69,7 +70,9 @@ public final class GridComponentState extends AbstractComponentState implements 
 
     enum ExportMode {
         ALL, SELECTED
-    };
+    }
+
+    ;
 
     public static final String JSON_SELECTED_ENTITY_ID = "selectedEntityId";
 
@@ -744,9 +747,10 @@ public final class GridComponentState extends AbstractComponentState implements 
                 entities.addAll(newlyAddedEntities);
 
                 gridOwnerEntity.setField(((JoinFieldHolder) belongsToFieldType).getJoinFieldName(), entities);
-                gridOwnerEntity.getDataDefinition().save(gridOwnerEntity);
+                gridOwnerEntity = gridOwnerEntity.getDataDefinition().save(gridOwnerEntity);
 
                 copyFieldValidationMessages(gridOwnerEntity);
+                copyGlobalMessages(gridOwnerEntity.getGlobalMessages());
             } else if (belongsToFieldType instanceof BelongsToType) {
                 for (Entity entity : newlyAddedEntities) {
                     Entity newEntity = entity.getDataDefinition().getMasterModelEntity(entity.getId());
@@ -786,9 +790,10 @@ public final class GridComponentState extends AbstractComponentState implements 
 
                     gridOwnerEntity.setField(gridFieldName, relatedEntities);
 
-                    scopeFieldDataDefinition.save(gridOwnerEntity);
+                    gridOwnerEntity = scopeFieldDataDefinition.save(gridOwnerEntity);
 
                     copyFieldValidationMessages(gridOwnerEntity);
+                    copyGlobalMessages(gridOwnerEntity.getGlobalMessages());
                 } else {
                     for (Long selectedId : selectedEntitiesIds) {
                         entity = getDataDefinition().getMasterModelEntity(selectedId);
