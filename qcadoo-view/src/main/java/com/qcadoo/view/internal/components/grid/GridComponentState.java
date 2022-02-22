@@ -72,8 +72,6 @@ public final class GridComponentState extends AbstractComponentState implements 
         ALL, SELECTED
     }
 
-    ;
-
     public static final String JSON_SELECTED_ENTITY_ID = "selectedEntityId";
 
     public static final String JSON_HEADER_VALUE = "headerValue";
