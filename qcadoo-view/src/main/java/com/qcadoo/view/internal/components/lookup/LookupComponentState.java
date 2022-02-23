@@ -60,7 +60,7 @@ public final class LookupComponentState extends FieldComponentState implements L
 
     public static final String JSON_CURRENT_CODE = "currentCode";
 
-    public static final String JSON_CLEAR_CURRENT_CODE = "clearCurrentCodeCode";
+    public static final String JSON_CLEAR_CURRENT_CODE = "clearCurrentCode";
 
     public static final String JSON_BELONGS_TO_ENTITY_ID = "contextEntityId";
 
@@ -84,7 +84,7 @@ public final class LookupComponentState extends FieldComponentState implements L
 
     private String currentCode;
 
-    private boolean clearCurrentCodeCode = false;
+    private boolean clearCurrentCode = false;
 
     private boolean selectedEntityActive = true;
 
@@ -164,8 +164,8 @@ public final class LookupComponentState extends FieldComponentState implements L
         json.put(JSON_ACTIVE, selectedEntityActive);
         json.put(JSON_BELONGS_TO_ENTITY_ID, belongsToEntityId);
 
-        if (clearCurrentCodeCode) {
-            json.put(JSON_CLEAR_CURRENT_CODE, clearCurrentCodeCode);
+        if (clearCurrentCode) {
+            json.put(JSON_CLEAR_CURRENT_CODE, clearCurrentCode);
         }
 
         if (autocompleteMatches != null) {
@@ -202,6 +202,11 @@ public final class LookupComponentState extends FieldComponentState implements L
     }
 
     @Override
+    public boolean isClearCurrentCode() {
+        return clearCurrentCode;
+    }
+
+    @Override
     public String getCurrentCode() {
         return currentCode;
     }
@@ -218,7 +223,7 @@ public final class LookupComponentState extends FieldComponentState implements L
     public void setFieldValue(final Object value) {
         setFieldValueWithoutRefreshing(convertToLong(value));
         if (!this.isHasError()) {
-            clearCurrentCodeCode = true;
+            clearCurrentCode = true;
         }
         eventPerformer.refresh();
     }

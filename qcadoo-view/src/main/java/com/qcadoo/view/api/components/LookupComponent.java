@@ -66,4 +66,6 @@ public interface LookupComponent extends FieldComponent {
      */
     String getCurrentCode();
 
+    boolean isClearCurrentCode();
+
 }

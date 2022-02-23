@@ -194,7 +194,7 @@ QCD.components.elements.Lookup = function(_element, _mainController) {
 	}
 
 	this.setComponentData = function(data) {
-		if (data.clearCurrentCodeCode) {
+		if (data.clearCurrentCode) {
 			dataState.currentCode = "";
 		} else {
 			dataState.currentCode = data.currentCode ? data.currentCode
