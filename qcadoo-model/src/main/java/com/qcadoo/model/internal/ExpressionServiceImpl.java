@@ -3,19 +3,19 @@
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
  * Version: 1.4
- *
+ * <p>
  * This file is part of Qcadoo.
- *
+ * <p>
  * Qcadoo is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
  * by the Free Software Foundation; either version 3 of the License,
  * or (at your option) any later version.
- *
+ * <p>
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty
  * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Affero General Public License for more details.
- *
+ * <p>
  * You should have received a copy of the GNU Affero General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -29,6 +29,7 @@ import com.qcadoo.model.api.ExpressionService;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.types.BelongsToType;
 import com.qcadoo.model.api.types.FieldType;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +44,7 @@ import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -56,6 +58,8 @@ public final class ExpressionServiceImpl implements ExpressionService {
     private static final Logger LOG = LoggerFactory.getLogger(ExpressionServiceImpl.class);
 
     private static final int ENTITY_FLATTENING_DEPTH = 2;
+
+    private static final int ENTITY_MIN_FLATTENING_DEPTH = 0;
 
     private static final String TOO_MANY_GET_METHOD_INVOCATIONS_HINT = String
             .format("Be sure tha you don't call .get(String) or [String] more than %s times in a single traverse expression.",
@@ -128,7 +132,11 @@ public final class ExpressionServiceImpl implements ExpressionService {
     private String evaluateExpression(final String expression, final Entity entity, final Locale locale) {
         ExpressionParser parser = new SpelExpressionParser();
         Expression exp = parser.parseExpression(expression);
-        EvaluationContext evaluationContext = getEvaluationContext(entity, locale);
+        int level = ENTITY_FLATTENING_DEPTH;
+        if (!expression.contains(".") && !expression.contains("[")) {
+            level = ENTITY_MIN_FLATTENING_DEPTH;
+        }
+        EvaluationContext evaluationContext = getEvaluationContext(entity, level, locale);
         try {
             String value = String.valueOf(exp.getValue(evaluationContext));
             if (LOG.isDebugEnabled()) {
@@ -144,10 +152,10 @@ public final class ExpressionServiceImpl implements ExpressionService {
         }
     }
 
-    private EvaluationContext getEvaluationContext(final Entity entity, final Locale locale) {
+    private EvaluationContext getEvaluationContext(final Entity entity, final int level, final Locale locale) {
         EvaluationContext context = new StandardEvaluationContext();
         if (entity != null) {
-            Map<String, Object> values = getValuesForEntity(entity, locale, ENTITY_FLATTENING_DEPTH);
+            Map<String, Object> values = getValuesForEntity(entity, locale, level);
 
             for (Map.Entry<String, Object> entry : values.entrySet()) {
                 context.setVariable(entry.getKey(), entry.getValue());
@@ -170,12 +178,12 @@ public final class ExpressionServiceImpl implements ExpressionService {
         }
 
         Matcher m = Pattern.compile("\\@([a-zA-Z_0-9\\.]+)").matcher(expression);
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
 
         int i = 0;
 
         while (m.find()) {
-            sb.append(expression.substring(i, m.start()));
+            sb.append(expression, i, m.start());
             sb.append(translationService.translate(m.group(1), locale));
             i = m.end();
         }
@@ -184,7 +192,7 @@ public final class ExpressionServiceImpl implements ExpressionService {
             return expression;
         }
 
-        sb.append(expression.substring(i, expression.length()));
+        sb.append(expression.substring(i));
 
         return sb.toString();
     }
@@ -194,7 +202,7 @@ public final class ExpressionServiceImpl implements ExpressionService {
             return null;
         }
 
-        Map<String, Object> values = new HashMap<String, Object>();
+        Map<String, Object> values = new HashMap<>();
         values.put("id", entity.getId());
 
         if (level == 0) {
