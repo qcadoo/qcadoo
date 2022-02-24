@@ -51,9 +51,9 @@ public class ModelXmlToClassConverterTest {
 
     private static final ModelXmlToClassConverterImpl MODEL_XML_TO_CLASSCONVERTER = new ModelXmlToClassConverterImpl();
 
-    private static Map<String, Class<?>> classes = new HashMap<String, Class<?>>();
+    private static Map<String, Class<?>> classes = new HashMap<>();
 
-    private static Map<String, PropertyDescriptor> propertyDescriptors = new HashMap<String, PropertyDescriptor>();
+    private static Map<String, PropertyDescriptor> propertyDescriptors = new HashMap<>();
 
     @BeforeClass
     public static void init() throws Exception {

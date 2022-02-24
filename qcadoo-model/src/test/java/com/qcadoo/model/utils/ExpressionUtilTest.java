@@ -142,10 +142,10 @@ public class ExpressionUtilTest {
 
         // when
         String value = expressionService.getValue(entity,
-                "#name + \" -> (\" + (#age) + \") -> \" + (#sex == \"F\" ? \"female\" : \"male\")", Locale.ENGLISH);
+                "#name + \" -> (\" + (#age) + \") -> \" + (#sex == \"F\" ? \"female\" : \"male\") + \".\"", Locale.ENGLISH);
 
         // then
-        assertEquals("Mr X -> (34) -> female", value);
+        assertEquals("Mr X -> (34) -> female.", value);
     }
 
     @Test
