@@ -31,7 +31,7 @@
 	exclude-result-prefixes="qcd xsi">
 
 	<xsl:output method="xml" version="1.0" encoding="UTF-8"
-		doctype-system="http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd"
+		doctype-system="https://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd"
 		doctype-public="-//Hibernate/Hibernate Mapping DTD 3.0//EN" />
 
 	<xsl:variable name="smallcase" select="'abcdefghijklmnopqrstuvwxyz'" />
