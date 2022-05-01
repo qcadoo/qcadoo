@@ -28,7 +28,10 @@ import com.qcadoo.mail.api.InvalidMailAddressException;
 import com.qcadoo.security.api.PasswordReminderService;
 import com.qcadoo.view.internal.LogoComponent;
 
+import com.qcadoo.view.internal.hooks.AbstractViewHookDefinition;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -43,6 +46,8 @@ import java.util.Locale;
 
 @Controller
 public final class PasswordResetController {
+
+    private static final Logger LOG = LoggerFactory.getLogger(PasswordResetController.class);
 
     private static final String FALSE = "false";
 
@@ -97,6 +102,7 @@ public final class PasswordResetController {
         } catch (InvalidMailAddressException e) {
             return "invalidMailAddress";
         } catch (MailException e) {
+            LOG.warn("Invalid mail config", e);
             return "invalidMailConfig";
         } catch (Exception e) {
             return "error";
