@@ -634,6 +634,7 @@ QCD.components.elements.Tree = function(_element, _mainController) {
 			if (window.confirm(confirmDeleteMessage)) {
 				block();
 				newButtonClickedBefore = false;
+				addedEntityId = null;
 				mainController.callEvent("remove", elementPath, function() {
 					unblock();
 				}, null, null);
@@ -647,6 +648,7 @@ QCD.components.elements.Tree = function(_element, _mainController) {
 			if (window.confirm(customActionConfirm)) {
 				block();
 				newButtonClickedBefore = false;
+				addedEntityId = null;
 				mainController.callEvent("customAction", elementPath, function() {
 					unblock();
 				}, null, null);
