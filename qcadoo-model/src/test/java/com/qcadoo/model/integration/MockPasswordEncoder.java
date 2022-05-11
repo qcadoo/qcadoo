@@ -23,17 +23,21 @@
  */
 package com.qcadoo.model.integration;
 
-import org.springframework.security.authentication.encoding.PasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 public class MockPasswordEncoder implements PasswordEncoder {
 
     @Override
-    public String encodePassword(final String rawPass, final Object salt) {
-        return rawPass;
+    public String encode(final CharSequence rawPass) {
+        return rawPass.toString();
+    }
+
+    public boolean isPasswordValid(final String encPass, final String rawPass, final Object salt) {
+        return true;
     }
 
     @Override
-    public boolean isPasswordValid(final String encPass, final String rawPass, final Object salt) {
+    public boolean matches(CharSequence rawPassword, String encodedPassword) {
         return true;
     }
 
