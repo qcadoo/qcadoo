@@ -56,6 +56,10 @@
     <security:http use-expressions="true" auto-config="false"
                    entry-point-ref="loginUrlAuthenticationEntryPoint">
 
+        <security:headers>
+            <security:frame-options policy="SAMEORIGIN"/>
+        </security:headers>
+
         <security:intercept-url pattern="/**"
                                 access="isAuthenticated()"/>
 
