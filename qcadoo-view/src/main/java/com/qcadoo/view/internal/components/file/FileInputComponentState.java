@@ -30,6 +30,9 @@ import org.springframework.util.StringUtils;
 import com.qcadoo.model.api.file.FileUtils;
 import com.qcadoo.view.internal.components.FieldComponentPattern;
 import com.qcadoo.view.internal.components.FieldComponentState;
+import com.qcadoo.view.utils.FileAccessUtils;
+
+import java.util.Objects;
 
 public class FileInputComponentState extends FieldComponentState {
 
@@ -47,9 +50,12 @@ public class FileInputComponentState extends FieldComponentState {
     protected JSONObject renderContent() throws JSONException {
         JSONObject json = super.renderContent();
 
-        if (getFieldValue() != null && StringUtils.hasText((String) getFieldValue())) {
+        if (Objects.nonNull(getFieldValue()) && StringUtils.hasText((String) getFieldValue())) {
+            String securedUrl = FileAccessUtils.getInstance().getFileAccessService()
+                    .createSecuredUrl(FileUtils.getInstance().getUrl((String) getFieldValue()));
+
             json.put(JSON_FILE_NAME, FileUtils.getInstance().getName((String) getFieldValue()));
-            json.put(JSON_FILE_URL, FileUtils.getInstance().getUrl((String) getFieldValue()));
+            json.put(JSON_FILE_URL, securedUrl);
             json.put(JSON_FILE_LAST_MODIFICATION_DATE, FileUtils.getInstance().getLastModificationDate((String) getFieldValue()));
         } else {
             json.put(JSON_FILE_NAME, "");
