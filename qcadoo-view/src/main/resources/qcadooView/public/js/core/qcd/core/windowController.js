@@ -67,8 +67,12 @@ QCD.WindowController = function(_menuStructure) {
 	}
 
 	this.performLogout = function() {
-		window.location = "j_spring_security_logout";
-	}
+        var token = $("meta[name='_csrf']").attr("content");
+        var parameter = $("meta[name='_csrf_parameter']").attr("content");
+        var csrfHiddenField = $('<input/>').attr('type', 'hidden').attr('name', parameter).val(token);
+
+        $('<form/>').attr('action', 'j_spring_security_logout').attr('method', 'post').append(csrfHiddenField).appendTo($('body')).submit();
+    }
 
 	this.goToPage = function(url, serializationObject, isPage) {
 		if (serializationObject) {

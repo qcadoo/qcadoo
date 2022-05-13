@@ -23,18 +23,18 @@
  */
 package com.qcadoo.view.internal.controllers;
 
-import java.util.Locale;
-
+import com.qcadoo.localization.api.TranslationService;
+import com.qcadoo.view.internal.LogoComponent;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.qcadoo.localization.api.TranslationService;
-import com.qcadoo.view.internal.LogoComponent;
+import java.util.Locale;
 
 @Controller
 public final class LoginController {
@@ -48,6 +48,9 @@ public final class LoginController {
     private static final String MESSAGE_CONTENT = "messageContent";
 
     private static final String LOGO_PATH = "logoPath";
+
+    @Value("${rememberMeFeatureAvailable:false}")
+    private Boolean rememberMeAvailable;
 
     @Autowired
     private TranslationService translationService;
@@ -81,6 +84,7 @@ public final class LoginController {
         mav.addObject("iframe", iframe);
         mav.addObject("popup", popup);
         mav.addObject("targetUrl", targetUrl);
+        mav.addObject("rememberMeAvailable", rememberMeAvailable);
 
         if (logout) {
             mav.addObject(MESSAGE_TYPE, "success");

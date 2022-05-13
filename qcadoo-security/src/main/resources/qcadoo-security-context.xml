@@ -46,8 +46,6 @@
     </security:global-method-security>
 
     <security:http pattern="/browserNotSupported.html" security="none"/>
-    <security:http pattern="/passwordReset.html" security="none"/>
-    <security:http pattern="/login.html" security="none"/>
     <security:http pattern="/css/**" security="none"/>
     <security:http pattern="/js/**" security="none"/>
     <security:http pattern="/v2/api-docs.json" security="none"/>
@@ -59,6 +57,11 @@
         <security:headers>
             <security:frame-options policy="SAMEORIGIN"/>
         </security:headers>
+
+        <security:csrf/>
+
+        <security:intercept-url pattern="/login.html" access="permitAll"/>
+        <security:intercept-url pattern="/passwordReset.html" access="permitAll"/>
 
         <security:intercept-url pattern="/**"
                                 access="isAuthenticated()"/>

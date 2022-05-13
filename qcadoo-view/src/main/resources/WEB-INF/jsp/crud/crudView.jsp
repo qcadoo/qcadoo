@@ -29,10 +29,13 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
-<%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
+<%@ taglib prefix="tiles" uri="http://tiles.apache.org/tags-tiles" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <html>
 <head>
+    <sec:csrfMetaTags/>
+
 	<c:choose>
 		<c:when test="${useCompressedStaticResources}">
 			<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/qcadoo-min.css?ver=${buildNumber}" type="text/css" />
@@ -179,6 +182,21 @@
 
 		window.mainController = controller;
 	});
+
+    $(function () {
+        var csrfMetaNameSelector = "meta[name='_csrf']";
+        var csrfHeadMetaNameSelector = "meta[name='_csrf_header']";
+
+        var csrfToken = $(csrfMetaNameSelector).attr("content");
+        window.top.$(csrfMetaNameSelector).attr("content", csrfToken);
+        window.top.$('iframe').contents().find(csrfMetaNameSelector).attr("content", csrfToken);
+
+        $(document).ajaxSend(function(e, xhr, options) {
+            var token = $(csrfMetaNameSelector).attr("content");
+            var header = $(csrfHeadMetaNameSelector).attr("content");
+            xhr.setRequestHeader(header, token);
+        });
+    });
 
 	//--><!]]>
 	</script>
