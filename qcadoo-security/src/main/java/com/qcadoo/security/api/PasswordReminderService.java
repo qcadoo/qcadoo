@@ -33,12 +33,13 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 public interface PasswordReminderService {
 
     /**
-     * Generate and send via email new password for specified user
+     * Generate and send via email password reset link for specified user
      * 
      * @param userName
      *            user name whose password you want to reset
      * @throws UsernameNotFoundException
      *             when user with given name does not exist
      */
-    void generateAndSendNewPassword(String userName) throws UsernameNotFoundException;
+    void generateAndSendPasswordResetLink(String userName) throws UsernameNotFoundException;
+
 }

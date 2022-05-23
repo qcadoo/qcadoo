@@ -68,7 +68,8 @@ public final class LoginController {
             @RequestParam(required = false, defaultValue = FALSE) final Boolean logout,
             @RequestParam(required = false, defaultValue = "") final String targetUrl,
             @RequestParam(required = false, defaultValue = FALSE) final Boolean timeout,
-            @RequestParam(required = false, defaultValue = FALSE) final Boolean passwordReseted, final Locale locale) {
+            @RequestParam(required = false, defaultValue = FALSE) final Boolean passwordReseted,
+            @RequestParam(required = false, defaultValue = FALSE) final Boolean passwordChanged, final Locale locale) {
 
         ModelAndView mav = new ModelAndView();
 
@@ -102,6 +103,10 @@ public final class LoginController {
             mav.addObject(MESSAGE_TYPE, "success");
             mav.addObject(MESSAGE_HEADER, "security.message.passwordReset.successHeader");
             mav.addObject(MESSAGE_CONTENT, "security.message.passwordReset.successContent");
+        } else if (passwordChanged) {
+            mav.addObject(MESSAGE_TYPE, "success");
+            mav.addObject(MESSAGE_HEADER, "security.message.passwordChange.successHeader");
+            mav.addObject(MESSAGE_CONTENT, "security.message.passwordChange.successContent");
         }
 
         return mav;

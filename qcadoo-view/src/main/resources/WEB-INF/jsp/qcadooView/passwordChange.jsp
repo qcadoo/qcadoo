@@ -39,7 +39,7 @@
 
         <link rel="shortcut icon" href="/qcadooView/public/img/core/icons/favicon.png">
 
-        <title>${applicationDisplayName} :: forgot password</title>
+        <title>${applicationDisplayName} :: change password</title>
 
         <link rel="stylesheet"
             href="${pageContext.request.contextPath}/qcadooView/public/css/core/lib/bootstrap.min.css?ver=${buildNumber}"
@@ -48,7 +48,7 @@
             href="${pageContext.request.contextPath}/qcadooView/public/css/core/lib/languages.min.css?ver=${buildNumber}"
             type="text/css"/>
         <link rel="stylesheet"
-            href="${pageContext.request.contextPath}/qcadooView/public/css/core/passwordReset-min.css?ver=${buildNumber}"
+            href="${pageContext.request.contextPath}/qcadooView/public/css/core/passwordChange-min.css?ver=${buildNumber}"
             type="text/css"/>
 
         <script type="text/javascript"
@@ -60,7 +60,7 @@
         <script type="text/javascript"
             src="${pageContext.request.contextPath}/qcadooView/public/js/core/qcd/utils/serializator.js?ver=${buildNumber}"></script>
         <script type="text/javascript"
-            src="${pageContext.request.contextPath}/qcadooView/public/js/core/passwordReset-min.js?ver=${buildNumber}"></script>
+            src="${pageContext.request.contextPath}/qcadooView/public/js/core/passwordChange-min.js?ver=${buildNumber}"></script>
     </head>
 
     <body class="text-center" role="document">
@@ -70,7 +70,7 @@
                 <p id="messageContent"></p>
             </div>
 
-            <div class="passwordResetContainer">
+            <div class="passwordChangeContainer">
                 <c:if test="${! iframe && ! popup}">
                     <div class="text-right">
                         <div class="btn-group dropup">
@@ -87,27 +87,30 @@
                     <div class="mt-3"></div>
                 </c:if>
 
-                <form id="passwordResetForm" name="passwordResetForm" method="POST">
+                <form id="passwordChangeForm" name="passwordChangeForm" method="POST">
+                <input type="hidden" name="token" value="${token}">
                 <img class="logo mb-4" src="${logoPath}" alt="Logo"/>
-                <h1 class="h3 mb-4 font-weight-normal">${translation["security.form.header.passwordReset"]}</h1>
+                <h1 class="h3 mb-4 font-weight-normal">${translation["security.form.header.passwordChange"]}</h1>
 
                 <div class="input-group">
-                    <label for="usernameInput" class="sr-only">${translation["security.form.label.login"]}</label>
-                    <input type="text" id="usernameInput" name="login" class="form-control" placeHolder="${translation["security.form.label.login"]}" value='<c:if test="${not empty param.login_error}"><c:out value="${SPRING_SECURITY_LAST_USERNAME}"/></c:if>' required autofocus>
-                    <div class="invalid-feedback" style="margin-top: -25px;">
-                        ${translation["security.message.wrongLogin"]}
+                    <label for="password" class="sr-only">${translation["security.form.label.password"]}</label>
+                    <input type="password" id="passwordInput" name="password" class="form-control" placeHolder="${translation["security.form.label.password"]}" required autofocus>
+                    <div class="invalid-feedback" style="margin-top: -65px;">
+                        ${translation["security.message.wrongPassword"]}
                     </div>
                 </div>
 
-                <div class="mb-3">
-                    <label>
-                        ${translation["security.form.content.passwordReset"]}
-                    </label>
+                <div class="input-group">
+                    <label for="usernameInput" class="sr-only">${translation["security.form.label.login"]}</label>
+                    <input type="password" id="passwordConfirmationInput" name="passwordConfirmation" class="form-control" placeHolder="${translation["security.form.label.passwordConfirmation"]}" required>
+                    <div class="invalid-feedback" style="margin-top: -25px;">
+                        ${translation["security.message.wrongPasswordConfirmation"]}
+                    </div>
                 </div>
 
                 <div class="btn-group" role="group">
                     <button type="button" class="btn btn-lg btn-info" id="cancelButton"><span>${translation['security.form.button.cancel']}</button>
-                    <button type="button" class="btn btn-lg btn-primary" id="passwordResetButton"><span>${translation['security.form.button.passwordReset']}</button>
+                    <button type="button" class="btn btn-lg btn-primary" id="passwordChangeButton"><span>${translation['security.form.button.passwordChange']}</button>
                 </div>
 
                 <p class="mt-3 mb-3">
@@ -118,23 +121,17 @@
         </div>
 
         <script type="text/javascript" charset="utf-8">
-            var successHeaderText = '${translation["security.message.passwordReset.successHeader"]}';
-		    var successContentText = '${translation["security.message.passwordReset.successContent"]}';
+            var successHeaderText = '${translation["security.message.passwordChange.successHeader"]}';
+		    var successContentText = '${translation["security.message.passwordChange.successContent"]}';
 
             var errorHeaderText = '${translation["security.message.errorHeader"]}';
             var errorContentText = '${translation["security.message.errorContent"]}';
 
-            var wrongLoginText = '${translation["security.message.wrongLogin"]}';
-
-            var userNotFoundText = '${translation["security.message.loginNotFound"]}';
-
-            var invalidMailAddressText = '${translation["security.message.invalidMailAddressContent"]}';
-            var invalidConfigContentText = '${translation["security.message.invalidMailConfigContent"]}';
-
-            var isPopup = "${popup}";
+            var wrongPasswordText = '${translation["security.message.wrongPassword"]}';
+            var wrongPasswordText = '${translation["security.message.wrongPasswordConfirmation"]}';
 
             jQuery(document).ready(function() {
-                QCD.passwordReset.init();
+                QCD.passwordChange.init();
             });
 
             $(function () {

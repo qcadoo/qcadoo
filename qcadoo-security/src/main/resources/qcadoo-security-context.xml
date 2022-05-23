@@ -62,6 +62,7 @@
 
         <security:intercept-url pattern="/login.html" access="permitAll"/>
         <security:intercept-url pattern="/passwordReset.html" access="permitAll"/>
+        <security:intercept-url pattern="/passwordChange.html" access="permitAll"/>
 
         <security:intercept-url pattern="/**"
                                 access="isAuthenticated()"/>

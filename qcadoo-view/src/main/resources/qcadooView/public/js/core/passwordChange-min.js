@@ -23,17 +23,18 @@
  */
 var QCD = QCD || {};
 
-QCD.passwordReset = (function () {
+QCD.passwordChange = (function () {
     var messagePanel;
     var messagePanelHeader;
     var messagePanelContent;
 
-    var passwordResetForm;
+    var passwordChangeForm;
 
-    var usernameInput;
+    var passwordInput;
+    var passwordConfirmationInput;
 
     var cancelButton;
-    var passwordResetButton;
+    var passwordChangeButton;
 
     function init() {
         if (!isSupportedBrowser()) {
@@ -46,18 +47,21 @@ QCD.passwordReset = (function () {
         messagePanelHeader = $("#messageHeader");
         messagePanelContent = $("#messageContent");
 
-        passwordResetForm = $("#passwordResetForm");
+        passwordChangeForm = $("#passwordChangeForm");
 
-        usernameInput = $("#usernameInput");
+        passwordInput = $("#passwordInput");
+        passwordConfirmationInput = $("#passwordConfirmationInput");
 
         cancelButton = $("#cancelButton");
-        passwordResetButton = $("#passwordResetButton");
+        passwordChangeButton = $("#passwordChangeButton");
 
-        usernameInput.focus();
-        usernameInput.keypress(onUsernameInputKeyPress);
+        passwordInput.focus();
+        passwordInput.keypress(onPasswordInputKeyPress);
+
+        passwordConfirmationInput.keypress(onPasswordConfirmationInputKeyPress);
 
         cancelButton.click(onCancelClick);
-        passwordResetButton.click(onPasswordResetClick);
+        passwordChangeButton.click(onPasswordChangeClick);
     }
 
     function getBrowser() {
@@ -108,14 +112,28 @@ QCD.passwordReset = (function () {
     }
 
     function changeLanguage(language) {
-        window.location = "passwordReset.html?lang=" + language;
+        var params = $.param({
+            token: $('input[type="hidden"][name="token"]').val(),
+            lang: language
+        });
+        window.location = "passwordChange.html?" + params;
     }
 
-    function onUsernameInputKeyPress(e) {
+    function onPasswordInputKeyPress(e) {
         var key = e.keyCode || e.which;
 
         if (key == 13) {
-            onPasswordResetClick();
+            onPasswordChangeClick();
+
+            return false;
+        }
+    }
+
+    function onPasswordConfirmationInputKeyPress(e) {
+        var key = e.keyCode || e.which;
+
+        if (key == 13) {
+            onPasswordChangeClick();
 
             return false;
         }
@@ -125,13 +143,14 @@ QCD.passwordReset = (function () {
         window.parent.location = "login.html";
     }
 
-    function onPasswordResetClick() {
+    function onPasswordChangeClick() {
         hideMessagePanel();
 
-        usernameInput.removeClass("is-invalid");
+        passwordInput.removeClass("is-invalid");
+        passwordConfirmationInput.removeClass("is-invalid");
 
-        var formData = QCDSerializator.serializeForm(passwordResetForm);
-        var url = "passwordReset.html";
+        var formData = QCDSerializator.serializeForm(passwordChangeForm);
+        var url = "passwordChange.html";
 
         lockForm(true);
 
@@ -140,36 +159,19 @@ QCD.passwordReset = (function () {
             type: "POST",
             data: formData,
             success: function(response) {
-                response = $.trim(response);
+                //response = $.trim(response);
 
-                switch(response) {
-                    case "success":
-                        window.location = "login.html?passwordReseted=true";
+                switch(response.status) {
+                    case "ok":
+                        window.location = "login.html?passwordChanged=true";
 
                     break;
 
-                    case "loginIsBlank":
-                        usernameInput.addClass("is-invalid");
+                    case "error":
+                        showMessagePanel("alert-danger", errorHeaderText, response.errorMessage);
 
-                        lockForm(false);
-                    break;
-
-                    case "userNotFound":
-                        showMessagePanel("alert-danger", errorHeaderText, userNotFoundText);
-
-                        usernameInput.addClass("is-invalid");
-
-                        lockForm(false);
-                    break;
-
-                    case "invalidMailAddress":
-                        showMessagePanel("alert-danger", errorHeaderText, invalidMailAddressText);
-
-                        lockForm(false);
-                    break;
-
-                    case "invalidMailConfig":
-                        showMessagePanel("alert-danger", errorHeaderText, invalidConfigContentText);
+                        passwordInput.addClass("is-invalid");
+                        passwordConfirmationInput.addClass("is-invalid");
 
                         lockForm(false);
                     break;
@@ -207,9 +209,10 @@ QCD.passwordReset = (function () {
     }
 
     function lockForm(disabled) {
-        usernameInput.prop("disabled", disabled);
+        passwordInput.prop("disabled", disabled);
+        passwordConfirmationInput.prop("disabled", disabled);
 
-        passwordResetButton.prop("disabled", disabled);
+        passwordChangeButton.prop("disabled", disabled);
     }
 
     return {
