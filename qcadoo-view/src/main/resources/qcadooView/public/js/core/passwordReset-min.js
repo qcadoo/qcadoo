@@ -155,23 +155,18 @@ QCD.passwordReset = (function () {
                     break;
 
                     case "userNotFound":
-                        showMessagePanel("alert-danger", errorHeaderText, userNotFoundText);
+                        window.location = "login.html?passwordReseted=true";
 
-                        usernameInput.addClass("is-invalid");
-
-                        lockForm(false);
                     break;
 
                     case "invalidMailAddress":
-                        showMessagePanel("alert-danger", errorHeaderText, invalidMailAddressText);
+                        window.location = "login.html?passwordReseted=true";
 
-                        lockForm(false);
                     break;
 
                     case "invalidMailConfig":
-                        showMessagePanel("alert-danger", errorHeaderText, invalidConfigContentText);
+                        window.location = "login.html?passwordReseted=true";
 
-                        lockForm(false);
                     break;
 
                     default:

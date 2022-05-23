@@ -72,8 +72,7 @@
             var loginErrorMessagePanel;
             var passwordErrorMessagePanel;
 
-            var wrongLoginText = '${translation["security.message.wrongLogin"]}';
-            var wrongPasswordText = '${translation["security.message.wrongPassword"]}';
+            var wrongLoginOrPasswordText = '${translation["security.message.wrongLoginOrPassword"]}';
 
             var errorHeaderText = '${translation["security.message.errorHeader"]}';
             var errorContentText = '${translation["security.message.errorContent"]}';
@@ -94,9 +93,6 @@
                 messagePanel = $("#messagePanel");
                 messagePanelHeader = $("#messageHeader");
                 messagePanelContent = $("#messageContent");
-
-                loginErrorMessagePanel = $("#loginErrorMessagePanel");
-                passwordErrorMessagePanel = $("#passwordErrorMessagePanel");
 
                 usernameInput = $("#usernameInput");
 
@@ -155,8 +151,6 @@
                 }
                 var url = "j_spring_security_check";
 
-                hideLoginAndPasswordMessages();
-
                 $.ajax({
                     url: url,
                     type: 'POST',
@@ -172,12 +166,8 @@
                                 window.location = "main.html"
                             }
                         } else {
-                            if (response == "loginUnsuccessfull:login") {
-                                hideMessageBox();
-                                addLoginMessage();
-                            } else if (response == "loginUnsuccessfull:password") {
-                                hideMessageBox();
-                                addPasswordMessage();
+                            if (response == "loginUnsuccessfull:login" || response == "loginUnsuccessfull:password") {
+                                showMessageBox("error", errorHeaderText, wrongLoginOrPasswordText);
                             } else {
                                 showMessageBox("error", errorHeaderText, errorContentText);
                             }
@@ -199,24 +189,10 @@
                 messagePanelContent.html(content);
                 messagePanel.css("display", "block");
             }
+
             hideMessageBox = function() {
                 messagePanel.css("display", "none");
             }
-            addLoginMessage = function() {
-                loginErrorMessagePanel.css("display", "block");
-                $('#usernameInput').css("border-color", "#ec1c24");
-            }
-            addPasswordMessage = function() {
-                passwordErrorMessagePanel.css("display", "block");
-                $('#passwordInput').css("border-color", "#ec1c24");
-            }
-            hideLoginAndPasswordMessages = function() {
-                loginErrorMessagePanel.css("display", "none");
-                $('#usernameInput').css("border-color", "")
-                passwordErrorMessagePanel.css("display", "none");
-                $('#passwordInput').css("border-color", "");
-            }
-
         </script>
     </head>
 
@@ -255,10 +231,6 @@
                                         <div class="component_container_form_y"></div>
                                         <input type='text' id="usernameInput" name='j_username' value='<c:if test="${not empty param.login_error}"><c:out value="${SPRING_SECURITY_LAST_USERNAME}"/></c:if>'/>
                                     </div>
-                                        <div id="loginErrorMessagePanel" style="display: none;">
-                                            <div class="login_failed"></div>
-                                            <span id="loginMessage" class="login_failed_message">${translation["security.message.wrongLogin"]}</span>
-                                        </div>
                                 </div>
                                 </div>
                             </div>
@@ -270,10 +242,6 @@
                                         <div class="component_container_form_x"></div>
                                         <div class="component_container_form_y"></div>
                                         <input type='password' id="passwordInput" name='j_password'>
-                                        <div id="passwordErrorMessagePanel" style="display: none;">
-                                            <div class="login_failed"></div>
-                                            <span id="passwordMessage" class="login_failed_message">${translation["security.message.wrongPassword"]}</span>
-                                        </div>
                                     </div>
                                 </div>
                                 </div>
