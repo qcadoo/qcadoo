@@ -128,6 +128,8 @@
             var errorContentText = '${translation["security.message.errorContent"]}';
 
             var wrongLoginOrPasswordText = '${translation["security.message.wrongLoginOrPassword"]}';
+            var userBlockedText = '${translation["security.message.userBlockedText"]}';
+    	    var maxUnsuccessfullAttemptsUserBlockedText = '${translation["security.message.maxUnsuccessfullAttemptsUserBlockedText"]}';
 
             var isPopup = "${popup}";
             var targetUrl = "${targetUrl}";

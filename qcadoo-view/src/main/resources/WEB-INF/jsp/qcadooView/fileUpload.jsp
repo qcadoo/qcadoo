@@ -73,6 +73,8 @@
             var passwordErrorMessagePanel;
 
             var wrongLoginOrPasswordText = '${translation["security.message.wrongLoginOrPassword"]}';
+            var userBlockedText = '${translation["security.message.userBlockedText"]}';
+    	    var maxUnsuccessfullAttemptsUserBlockedText = '${translation["security.message.maxUnsuccessfullAttemptsUserBlockedText"]}';
 
             var errorHeaderText = '${translation["security.message.errorHeader"]}';
             var errorContentText = '${translation["security.message.errorContent"]}';
@@ -165,12 +167,14 @@
                             } else {
                                 window.location = "main.html"
                             }
+                        } else if (response == "loginUnsuccessfull") {
+                            showMessageBox("error", errorHeaderText, wrongLoginOrPasswordText);
+                        } else if (response == "userBlocked") {
+                            showMessageBox("error", errorHeaderText, userBlockedText);
+                        } else if (response == "maxUnsuccessfullAttemptsUserBlocked") {
+                            showMessageBox("error", errorHeaderText, maxUnsuccessfullAttemptsUserBlockedText);
                         } else {
-                            if (response == "loginUnsuccessfull:login" || response == "loginUnsuccessfull:password") {
-                                showMessageBox("error", errorHeaderText, wrongLoginOrPasswordText);
-                            } else {
-                                showMessageBox("error", errorHeaderText, errorContentText);
-                            }
+                            showMessageBox("error", errorHeaderText, errorContentText);
                         }
                     },
                     error: function(xhr, textStatus, errorThrown){

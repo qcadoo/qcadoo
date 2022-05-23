@@ -194,7 +194,7 @@ QCD.login = (function () {
                         }
                     break;
 
-                    case "loginUnsuccessfull:login":
+                    case "loginUnsuccessfull":
                         hideMessagePanel();
 
                         usernameInput.addClass("is-invalid");
@@ -203,11 +203,14 @@ QCD.login = (function () {
                         lockForm(false);
                     break;
 
-                    case "loginUnsuccessfull:password":
-                        hideMessagePanel();
+                    case "userBlocked":
+                        showMessagePanel("danger", errorHeaderText, userBlockedText);
 
-                        usernameInput.addClass("is-invalid");
-                        passwordInput.addClass("is-invalid");
+                        lockForm(false);
+                    break;
+
+                    case "maxUnsuccessfullAttemptsUserBlocked":
+                        showMessagePanel("danger", errorHeaderText, maxUnsuccessfullAttemptsUserBlockedText);
 
                         lockForm(false);
                     break;

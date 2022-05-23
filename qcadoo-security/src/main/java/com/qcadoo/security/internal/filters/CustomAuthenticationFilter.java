@@ -23,22 +23,27 @@
  */
 package com.qcadoo.security.internal.filters;
 
-import java.io.IOException;
+import com.qcadoo.security.internal.LoginAttemptService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.LockedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
-
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import java.io.IOException;
 
 public final class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
+    @Autowired
+    private LoginAttemptService loginAttemptService;
+
     @Override
     protected void successfulAuthentication(final HttpServletRequest request, final HttpServletResponse response,
-            final Authentication authResult) throws IOException, ServletException {
+                                            final Authentication authResult) throws IOException, ServletException {
 
         RedirectResponseWrapper redirectResponseWrapper = new RedirectResponseWrapper(response);
 
@@ -50,18 +55,19 @@ public final class CustomAuthenticationFilter extends UsernamePasswordAuthentica
 
     @Override
     protected void unsuccessfulAuthentication(final HttpServletRequest request, final HttpServletResponse response,
-            final AuthenticationException failed) throws IOException, ServletException {
+                                              final AuthenticationException failed) throws IOException, ServletException {
 
         RedirectResponseWrapper redirectResponseWrapper = new RedirectResponseWrapper(response);
 
         super.unsuccessfulAuthentication(request, redirectResponseWrapper, failed);
 
-        if (failed.getExtraInformation() == null) {
-            response.getOutputStream().println("loginUnsuccessfull:login");
+        if (failed instanceof LockedException
+                || loginAttemptService.isBlocked(failed.getAuthentication().getPrincipal().toString(),
+                loginAttemptService.getClientIP(request))) {
+            response.getOutputStream().println("maxUnsuccessfullAttemptsUserBlocked");
         } else {
-            response.getOutputStream().println("loginUnsuccessfull:password");
+            response.getOutputStream().println("loginUnsuccessfull");
         }
-
     }
 
     private static final class RedirectResponseWrapper extends HttpServletResponseWrapper {
@@ -76,4 +82,5 @@ public final class CustomAuthenticationFilter extends UsernamePasswordAuthentica
         }
 
     }
+
 }

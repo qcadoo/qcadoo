@@ -80,6 +80,9 @@ public class SecurityServiceImpl implements InternalSecurityService, UserDetails
     @Autowired
     private SecurityRolesService securityRolesService;
 
+    @Autowired
+    private LoginAttemptService loginAttemptService;
+
     @Autowired(required = false)
     private HttpServletRequest request;
 
@@ -237,8 +240,17 @@ public class SecurityServiceImpl implements InternalSecurityService, UserDetails
         checkState(!grantedAuthorities.isEmpty(), "Current user with login %s cannot be found",
                 user.getStringField(UserFields.USER_NAME));
 
-        return new User(user.getStringField(UserFields.USER_NAME), user.getStringField(UserFields.PASSWORD), true, true, true,
-                true, grantedAuthorities);
+        String username = user.getStringField(UserFields.USER_NAME);
+        String password = user.getStringField(UserFields.PASSWORD);
+        String ipAddress = loginAttemptService.getClientIP(request);
+
+        boolean isAccountNonLocked = true;
+
+        if (loginAttemptService.isBlocked(username, ipAddress)) {
+            isAccountNonLocked = false;
+        }
+
+        return new User(username, password, true, true, true, isAccountNonLocked, grantedAuthorities);
     }
 
     @Override
