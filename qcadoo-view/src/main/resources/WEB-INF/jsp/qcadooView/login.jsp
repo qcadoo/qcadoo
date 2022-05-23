@@ -95,12 +95,12 @@
 
                 <div class="input-group">
                     <label for="usernameInput" class="sr-only">${translation["security.form.label.login"]}</label>
-                    <input type="text" id="usernameInput" name="j_username" class="form-control" placeHolder="${translation["security.form.label.login"]}" value='<c:if test="${not empty param.login_error}"><c:out value="${SPRING_SECURITY_LAST_USERNAME}"/></c:if>' required autofocus>
+                    <input type="text" id="usernameInput" name="j_username" class="form-control" placeHolder="${translation["security.form.label.login"]}" value='<c:if test="${not empty param.login_error}"><c:out value="${SPRING_SECURITY_LAST_USERNAME}"/></c:if>' autocomplete="off" required autofocus/>
                 </div>
 
                 <div class="input-group">
                     <label for="passwordInput" class="sr-only">${translation["security.form.label.password"]}</label>
-                    <input type="password" id="passwordInput" name="j_password" class="form-control" placeHolder="${translation["security.form.label.password"]}" required>
+                    <input type="password" id="passwordInput" name="j_password" class="form-control" placeHolder="${translation["security.form.label.password"]}" autocomplete="off" required/>
                     <div class="invalid-feedback" style="margin-top: -25px;">
                         ${translation["security.message.wrongLoginOrPassword"]}
                     </div>

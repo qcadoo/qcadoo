@@ -233,7 +233,7 @@
                                     <div class="component_container_form_inner">
                                         <div class="component_container_form_x"></div>
                                         <div class="component_container_form_y"></div>
-                                        <input type='text' id="usernameInput" name='j_username' value='<c:if test="${not empty param.login_error}"><c:out value="${SPRING_SECURITY_LAST_USERNAME}"/></c:if>'/>
+                                        <input type="text" id="usernameInput" name='j_username' value='<c:if test="${not empty param.login_error}"><c:out value="${SPRING_SECURITY_LAST_USERNAME}"/></c:if>' autocomplete="off"/>
                                     </div>
                                 </div>
                                 </div>
@@ -245,7 +245,7 @@
                                     <div class="component_container_form_inner">
                                         <div class="component_container_form_x"></div>
                                         <div class="component_container_form_y"></div>
-                                        <input type='password' id="passwordInput" name='j_password'>
+                                        <input type="password" id="passwordInput" name='j_password' autocomplete="off"/>
                                     </div>
                                 </div>
                                 </div>

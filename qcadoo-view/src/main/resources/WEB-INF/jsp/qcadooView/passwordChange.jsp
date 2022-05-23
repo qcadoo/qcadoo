@@ -94,7 +94,7 @@
 
                 <div class="input-group">
                     <label for="password" class="sr-only">${translation["security.form.label.password"]}</label>
-                    <input type="password" id="passwordInput" name="password" class="form-control" placeHolder="${translation["security.form.label.password"]}" required autofocus>
+                    <input type="password" id="passwordInput" name="password" class="form-control" placeHolder="${translation["security.form.label.password"]}" autocomplete="off" required autofocus/>
                     <div class="invalid-feedback" style="margin-top: -65px;">
                         ${translation["security.message.wrongPassword"]}
                     </div>
@@ -102,7 +102,7 @@
 
                 <div class="input-group">
                     <label for="usernameInput" class="sr-only">${translation["security.form.label.login"]}</label>
-                    <input type="password" id="passwordConfirmationInput" name="passwordConfirmation" class="form-control" placeHolder="${translation["security.form.label.passwordConfirmation"]}" required>
+                    <input type="password" id="passwordConfirmationInput" name="passwordConfirmation" class="form-control" placeHolder="${translation["security.form.label.passwordConfirmation"]}" autocomplete="off" required/>
                     <div class="invalid-feedback" style="margin-top: -25px;">
                         ${translation["security.message.wrongPasswordConfirmation"]}
                     </div>
