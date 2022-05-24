@@ -63,6 +63,9 @@
 
 		<onDelete class="com.qcadoo.security.internal.hooks.UserModelHooks" 
 			method="preventSelfDeletion" />
+
+		<onSave class="com.qcadoo.security.internal.hooks.UserModelHooks"
+				  method="checkIfEmailNotificationShouldBeSent" />
 	</hooks>
 
 	<identifier expression="#userName" />
