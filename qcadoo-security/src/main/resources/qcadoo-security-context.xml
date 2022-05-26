@@ -98,8 +98,9 @@
         </security:authentication-provider>
     </security:authentication-manager>
 
-    <bean id="passwordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder">
-        <constructor-arg name="strength" value="11" />
+    <bean id="passwordEncoder"
+          class="org.springframework.security.authentication.encoding.ShaPasswordEncoder">
+        <constructor-arg value="256"/>
     </bean>
 
     <bean id="globalDefinitionPermissionEvaluator"

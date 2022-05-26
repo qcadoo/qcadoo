@@ -26,17 +26,12 @@ package com.qcadoo.security.internal.validators;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.security.constants.UserFields;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
 
 @Service
 public class PasswordValidationService {
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     public boolean checkPassword(final DataDefinition userDD, final Entity user) {
         String password = user.getStringField(UserFields.PASSWORD);
@@ -58,7 +53,7 @@ public class PasswordValidationService {
 
             Object currentPassword = userDD.get(user.getId()).getField(UserFields.PASSWORD);
 
-            if (!passwordEncoder.matches(oldPassword, currentPassword.toString())) {
+            if (!currentPassword.equals(oldPassword)) {
                 user.addError(userDD.getField(UserFields.OLD_PASSWORD), "qcadooUsers.validate.global.error.wrongOldPassword");
 
                 return false;
@@ -78,7 +73,7 @@ public class PasswordValidationService {
             return false;
         }
 
-        if (!passwordEncoder.matches(passwordConfirmation, password)) {
+        if (!password.equals(passwordConfirmation)) {
             user.addError(userDD.getField(UserFields.PASSWORD), "qcadooUsers.validate.global.error.notMatch");
             user.addError(userDD.getField(UserFields.PASSWORD_CONFIRMATION), "qcadooUsers.validate.global.error.notMatch");
 
