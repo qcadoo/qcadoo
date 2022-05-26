@@ -25,62 +25,52 @@ package com.qcadoo.security.internal.validators;
 
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
-import com.qcadoo.security.constants.UserFields;
 import org.springframework.stereotype.Service;
-
-import java.util.Objects;
 
 @Service
 public class PasswordValidationService {
+    private static final String L_PASSWORD = "password";
 
-    public boolean checkPassword(final DataDefinition userDD, final Entity user) {
-        String password = user.getStringField(UserFields.PASSWORD);
-        String passwordConfirmation = user.getStringField(UserFields.PASSWORD_CONFIRMATION);
-        String oldPassword = user.getStringField(UserFields.OLD_PASSWORD);
-
-        String viewIdentifier = user.getId() == null ? "userChangePassword" : user.getStringField(UserFields.VIEW_IDENTIFIER);
+    public boolean checkPassword(final DataDefinition dataDefinition, final Entity entity) {
+        String password = entity.getStringField(L_PASSWORD);
+        String passwordConfirmation = entity.getStringField("passwordConfirmation");
+        String oldPassword = entity.getStringField("oldPassword");
+        String viewIdentifier = entity.getId() == null ? "userChangePassword" : entity.getStringField("viewIdentifier");
 
         if (!"profileChangePassword".equals(viewIdentifier) && !"userChangePassword".equals(viewIdentifier)) {
             return true;
         }
 
         if ("profileChangePassword".equals(viewIdentifier)) {
-            if (Objects.isNull(oldPassword)) {
-                user.addError(userDD.getField(UserFields.OLD_PASSWORD), "qcadooUsers.validate.global.error.noOldPassword");
-
+            if (oldPassword == null) {
+                entity.addError(dataDefinition.getField("oldPassword"), "qcadooUsers.validate.global.error.noOldPassword");
                 return false;
             }
-
-            Object currentPassword = userDD.get(user.getId()).getField(UserFields.PASSWORD);
+            Object currentPassword = dataDefinition.get(entity.getId()).getField(L_PASSWORD);
 
             if (!currentPassword.equals(oldPassword)) {
-                user.addError(userDD.getField(UserFields.OLD_PASSWORD), "qcadooUsers.validate.global.error.wrongOldPassword");
-
+                entity.addError(dataDefinition.getField("oldPassword"), "qcadooUsers.validate.global.error.wrongOldPassword");
                 return false;
             }
         }
 
-        if (Objects.isNull(password)) {
-            user.addError(userDD.getField(UserFields.PASSWORD), "qcadooUsers.validate.global.error.noPassword");
-
+        if (password == null) {
+            entity.addError(dataDefinition.getField(L_PASSWORD), "qcadooUsers.validate.global.error.noPassword");
             return false;
         }
 
-        if (Objects.isNull(passwordConfirmation)) {
-            user.addError(userDD.getField(UserFields.PASSWORD_CONFIRMATION),
+        if (passwordConfirmation == null) {
+            entity.addError(dataDefinition.getField("passwordConfirmation"),
                     "qcadooUsers.validate.global.error.noPasswordConfirmation");
-
             return false;
         }
 
         if (!password.equals(passwordConfirmation)) {
-            user.addError(userDD.getField(UserFields.PASSWORD), "qcadooUsers.validate.global.error.notMatch");
-            user.addError(userDD.getField(UserFields.PASSWORD_CONFIRMATION), "qcadooUsers.validate.global.error.notMatch");
-
+            entity.addError(dataDefinition.getField(L_PASSWORD), "qcadooUsers.validate.global.error.notMatch");
+            entity.addError(dataDefinition.getField("passwordConfirmation"), "qcadooUsers.validate.global.error.notMatch");
             return false;
         }
 
         return true;
     }
-
 }

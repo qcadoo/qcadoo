@@ -49,9 +49,6 @@ public final class LoginController {
 
     private static final String LOGO_PATH = "logoPath";
 
-    @Value("${rememberMeFeatureAvailable:false}")
-    private Boolean rememberMeAvailable;
-
     @Autowired
     private TranslationService translationService;
 
@@ -85,7 +82,6 @@ public final class LoginController {
         mav.addObject("iframe", iframe);
         mav.addObject("popup", popup);
         mav.addObject("targetUrl", targetUrl);
-        mav.addObject("rememberMeAvailable", rememberMeAvailable);
 
         if (logout) {
             mav.addObject(MESSAGE_TYPE, "success");
