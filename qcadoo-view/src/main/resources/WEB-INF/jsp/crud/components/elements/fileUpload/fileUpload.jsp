@@ -90,9 +90,8 @@ String ctx = request.getContextPath();
 
 </script>
 
-
 <form method="post" action="<%=ctx%>/fileUpload.html" enctype="multipart/form-data" id="form" style="text-align: left">
-		        	
+
 	<div style="margin-left: 10px; margin-top: 10px; font: 11px arial; font-weight: bold;">
 		${chooseFileLabel}
 	</div>

@@ -23,17 +23,18 @@
  */
 var QCD = QCD || {};
 
-QCD.login = (function () {
+QCD.passwordChange = (function () {
     var messagePanel;
     var messagePanelHeader;
     var messagePanelContent;
 
-    var usernameInput;
+    var passwordChangeForm;
+
     var passwordInput;
+    var passwordConfirmationInput;
 
-    var loginButton;
-
-    var forgotPasswordLink;
+    var cancelButton;
+    var passwordChangeButton;
 
     function init() {
         if (!isSupportedBrowser()) {
@@ -46,46 +47,21 @@ QCD.login = (function () {
         messagePanelHeader = $("#messageHeader");
         messagePanelContent = $("#messageContent");
 
-        if (serverMessageType) {
-            showMessagePanel(serverMessageType, serverMessageHeader, serverMessageContent);
-        } else {
-            hideMessagePanel();
-        }
+        passwordChangeForm = $("#passwordChangeForm");
 
-        usernameInput = $("#usernameInput");
         passwordInput = $("#passwordInput");
+        passwordConfirmationInput = $("#passwordConfirmationInput");
 
-        loginButton = $("#loginButton");
+        cancelButton = $("#cancelButton");
+        passwordChangeButton = $("#passwordChangeButton");
 
-        forgotPasswordLink = $("#forgotPasswordLink");
-
-        usernameInput.keypress(onUsernameInputKeyPress);
+        passwordInput.focus();
         passwordInput.keypress(onPasswordInputKeyPress);
 
-        loginButton.click(onLoginClick);
+        passwordConfirmationInput.keypress(onPasswordConfirmationInputKeyPress);
 
-        forgotPasswordLink.click(onForgotPasswordClick);
-
-        var currentLogin = null;
-
-        try {
-            if (window.parent && window.parent.getCurrentUserLogin) {
-                currentLogin = window.parent.getCurrentUserLogin();
-            } else if (window.opener && window.opener.controller && window.opener.controller.getCurrentUserLogin) {
-                currentLogin = window.opener.controller.getCurrentUserLogin();
-            }
-        } catch (err) {
-            console.log("err");
-        }
-
-        if (currentLogin) {
-            usernameInput.val(currentLogin);
-            usernameInput.prop("disabled", true);
-
-            passwordInput.focus();
-        } else {
-            usernameInput.focus();
-        }
+        cancelButton.click(onCancelClick);
+        passwordChangeButton.click(onPasswordChangeClick);
     }
 
     function getBrowser() {
@@ -136,39 +112,45 @@ QCD.login = (function () {
     }
 
     function changeLanguage(language) {
-        window.location = "login.html?lang=" + language;
-    }
-
-    function onUsernameInputKeyPress(e) {
-        var key = e.keyCode || e.which;
-
-        if (key == 13) {
-            onLoginClick();
-
-            return false;
-        }
+        var params = $.param({
+            token: $('input[type="hidden"][name="token"]').val(),
+            lang: language
+        });
+        window.location = "passwordChange.html?" + params;
     }
 
     function onPasswordInputKeyPress(e) {
         var key = e.keyCode || e.which;
 
         if (key == 13) {
-            onLoginClick();
+            onPasswordChangeClick();
 
             return false;
         }
     }
 
-    function onLoginClick() {
+    function onPasswordConfirmationInputKeyPress(e) {
+        var key = e.keyCode || e.which;
+
+        if (key == 13) {
+            onPasswordChangeClick();
+
+            return false;
+        }
+    }
+
+    function onCancelClick() {
+        window.parent.location = "login.html";
+    }
+
+    function onPasswordChangeClick() {
         hideMessagePanel();
 
-        usernameInput.removeClass("is-invalid");
         passwordInput.removeClass("is-invalid");
+        passwordConfirmationInput.removeClass("is-invalid");
 
-        usernameInput.prop("disabled", false);
-
-        var formData = QCDSerializator.serializeForm($("#loginForm"));
-        var url = "j_spring_security_check";
+        var formData = QCDSerializator.serializeForm(passwordChangeForm);
+        var url = "passwordChange.html";
 
         lockForm(true);
 
@@ -176,68 +158,37 @@ QCD.login = (function () {
             url: url,
             type: "POST",
             data: formData,
-            success: function (response) {
-                response = $.trim(response);
+            success: function(response) {
+                //response = $.trim(response);
 
-                switch (response) {
-                    case "loginSuccessfull":
-                        if (isPopup == true) {
-                            window.location = targetUrl;
-                        } else if (window.parent.onLoginSuccess) {
-                            window.parent.onLoginSuccess();
-                        } else {
-                            if (isMobile()) {
-                                window.location = "mobile.html";
-                            } else {
-                                window.location = "main.html";
-                            }
-                        }
+                switch(response.status) {
+                    case "ok":
+                        window.location = "login.html?passwordChanged=true";
+
                     break;
 
-                    case "loginUnsuccessfull":
-                        hideMessagePanel();
+                    case "error":
+                        showMessagePanel("alert-danger", errorHeaderText, response.errorMessage);
 
-                        usernameInput.addClass("is-invalid");
                         passwordInput.addClass("is-invalid");
-
-                        lockForm(false);
-                    break;
-
-                    case "userBlocked":
-                        showMessagePanel("danger", errorHeaderText, userBlockedText);
-
-                        lockForm(false);
-                    break;
-
-                    case "maxUnsuccessfullAttemptsUserBlocked":
-                        showMessagePanel("danger", errorHeaderText, maxUnsuccessfullAttemptsUserBlockedText);
+                        passwordConfirmationInput.addClass("is-invalid");
 
                         lockForm(false);
                     break;
 
                     default:
-                        showMessagePanel("danger", errorHeaderText, errorContentText);
+                        showMessagePanel("alert-danger", errorHeaderText, errorContentText);
 
                         lockForm(false);
                     break;
                 }
             },
-            error: function (xhr, textStatus, errorThrown) {
-                showMessageBox("danger", errorHeaderText, errorContentText);
+            error: function(xhr, textStatus, errorThrown){
+                showMessagePanel("alert-danger", errorHeaderText, errorMessage);
 
                 lockForm(false);
             }
         });
-    }
-
-    function isMobile() {
-        var userAgent = navigator.userAgent;
-
-        if (userAgent.match(/Android|webOS|iPhone|iPad|iPod|BlackBerry|Windows Phone/i)){
-            return true;
-        } else {
-            return false;
-        }
     }
 
     function showMessagePanel(type, header, content) {
@@ -245,7 +196,7 @@ QCD.login = (function () {
         messagePanel.removeClass("alert-success");
         messagePanel.removeClass("alert-danger");
 
-        messagePanel.addClass("alert-" + type);
+        messagePanel.addClass(type);
 
         messagePanelHeader.html(header);
         messagePanelContent.html(content);
@@ -258,18 +209,10 @@ QCD.login = (function () {
     }
 
     function lockForm(disabled) {
-        usernameInput.prop("disabled", disabled);
         passwordInput.prop("disabled", disabled);
+        passwordConfirmationInput.prop("disabled", disabled);
 
-        if (window.parent.getCurrentUserLogin) {
-            usernameInput.prop("disabled", true);
-        }
-
-        loginButton.prop("disabled", disabled);
-    }
-
-    function onForgotPasswordClick() {
-        window.parent.location = "passwordReset.html";
+        passwordChangeButton.prop("disabled", disabled);
     }
 
     return {

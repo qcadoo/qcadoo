@@ -23,13 +23,12 @@
  */
 package com.qcadoo.view.internal.controllers;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletResponse;
-
+import com.google.common.collect.Maps;
+import com.qcadoo.localization.api.TranslationService;
+import com.qcadoo.model.api.file.FileUtils;
+import com.qcadoo.view.api.crud.CrudService;
+import com.qcadoo.view.constants.QcadooViewConstants;
+import com.qcadoo.view.utils.FileAccessUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,10 +40,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.qcadoo.localization.api.TranslationService;
-import com.qcadoo.model.api.file.FileUtils;
-import com.qcadoo.view.api.crud.CrudService;
-import com.qcadoo.view.constants.QcadooViewConstants;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
 
 @Controller
 public class FileUploadController {
@@ -64,20 +64,23 @@ public class FileUploadController {
     @RequestMapping(value = "fileUpload", method = RequestMethod.GET)
     public ModelAndView upload(final Locale locale) {
         ModelAndView mav = getCrudPopupView(QcadooViewConstants.VIEW_FILE_UPLOAD, locale);
+
         viewParametersAppender.appendCommonViewObjects(mav);
 
         mav.addObject("headerLabel", translationService.translate("qcadooView.fileUpload.header", locale));
         mav.addObject("buttonLabel", translationService.translate("qcadooView.fileUpload.button", locale));
         mav.addObject("chooseFileLabel", translationService.translate("qcadooView.fileUpload.chooseFileLabel", locale));
         mav.addObject("maxUploadSizeExceeded",
-                translationService.translate("qcadooView.errorPage.error.uploadException.maxSizeExceeded.explanation", locale, "" + maxUploadSize/1000000));
+                translationService.translate("qcadooView.errorPage.error.uploadException.maxSizeExceeded.explanation", locale, "" + maxUploadSize / 1000000));
 
         return mav;
     }
 
     private ModelAndView getCrudPopupView(final String viewName, final Locale locale) {
-        Map<String, String> crudArgs = new HashMap<String, String>();
+        Map<String, String> crudArgs = Maps.newHashMap();
+
         crudArgs.put("popup", "true");
+
         return crudController.prepareView(QcadooViewConstants.PLUGIN_IDENTIFIER, viewName, crudArgs, locale);
     }
 
@@ -93,27 +96,34 @@ public class FileUploadController {
         }
 
         JSONObject response = new JSONObject();
+
         try {
-            if (path == null) {
+            if (Objects.isNull(path)) {
                 response.put("fileLastModificationDate", "");
                 response.put("fileUrl", "");
                 response.put("fileName", "");
                 response.put("filePath", "");
             } else {
+                String securedUrl = FileAccessUtils.getInstance().getFileAccessService()
+                        .createSecuredUrl(FileUtils.getInstance().getUrl(path));
+
                 response.put("fileLastModificationDate", FileUtils.getInstance().getLastModificationDate(path));
-                response.put("fileUrl", FileUtils.getInstance().getUrl(path));
+                response.put("fileUrl", securedUrl);
                 response.put("fileName", FileUtils.getInstance().getName(path));
                 response.put("filePath", path);
             }
+
             response.put("fileUploadError", error);
         } catch (JSONException e) {
             throw new IllegalStateException(e.getMessage(), e);
         }
+
         try {
             httpResponse.setContentType("text/plain");
-            httpResponse.getWriter().print(response.toString());
+            httpResponse.getWriter().print(response);
         } catch (IOException e) {
             throw new IllegalStateException(e.getMessage(), e);
         }
     }
+
 }

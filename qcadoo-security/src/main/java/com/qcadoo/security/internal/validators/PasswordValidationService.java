@@ -23,14 +23,12 @@
  */
 package com.qcadoo.security.internal.validators;
 
-import org.springframework.stereotype.Service;
-
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
+import org.springframework.stereotype.Service;
 
 @Service
 public class PasswordValidationService {
-
     private static final String L_PASSWORD = "password";
 
     public boolean checkPassword(final DataDefinition dataDefinition, final Entity entity) {

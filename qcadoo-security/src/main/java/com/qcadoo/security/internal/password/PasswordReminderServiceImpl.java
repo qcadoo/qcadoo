@@ -25,12 +25,14 @@ package com.qcadoo.security.internal.password;
 
 import com.google.common.base.Preconditions;
 import com.qcadoo.localization.api.TranslationService;
+import com.qcadoo.localization.api.utils.DateUtils;
 import com.qcadoo.mail.api.InvalidMailAddressException;
 import com.qcadoo.mail.api.MailService;
 import com.qcadoo.mail.internal.MailServiceImpl;
 import com.qcadoo.model.api.Entity;
-import com.qcadoo.security.api.PasswordGeneratorService;
 import com.qcadoo.security.api.PasswordReminderService;
+import com.qcadoo.security.api.PasswordResetTokenService;
+import com.qcadoo.security.constants.PasswordResetTokenFields;
 import com.qcadoo.security.internal.api.InternalSecurityService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +41,11 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
+import java.util.Objects;
+
 import static org.springframework.context.i18n.LocaleContextHolder.getLocale;
+import static org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromCurrentContextPath;
 
 @Service
 public class PasswordReminderServiceImpl implements PasswordReminderService {
@@ -57,45 +63,56 @@ public class PasswordReminderServiceImpl implements PasswordReminderService {
     private InternalSecurityService securityService;
 
     @Autowired
-    private PasswordGeneratorService passwordGeneratorService;
+    private PasswordResetTokenService passwordResetTokenService;
 
     @Autowired
     private TranslationService translationService;
 
     @Override
     @Transactional
-    public void generateAndSendNewPassword(final String userName) throws UsernameNotFoundException {
+    public void generateAndSendPasswordResetLink(final String userName) throws UsernameNotFoundException {
         Preconditions.checkArgument(StringUtils.isNotEmpty(userName), "user name should not be empty");
-        Entity userEntity = getUserEntity(userName);
-        String userEmail = userEntity.getStringField("email");
+
+        Entity user = getUserEntity(userName);
+        String userEmail = user.getStringField("email");
+
         if (!MailServiceImpl.isValidEmail(userEmail)) {
             throw new InvalidMailAddressException("invalid recipient email address");
         }
-        Preconditions.checkNotNull(userEmail, "e-mail for user " + userName + " was not specified.");
-        String newPassword = passwordGeneratorService.generatePassword();
 
-        updateUserPassword(userEntity, newPassword);
-        sendNewPassword(userEmail, userName, newPassword);
+        Preconditions.checkNotNull(userEmail, "e-mail for user " + userName + " was not specified.");
+
+        Entity passwordResetToken = passwordResetTokenService.createPasswordResetTokenForUser(user);
+
+        sendPasswordResetLink(userEmail, userName, passwordResetToken);
     }
 
     private Entity getUserEntity(final String userName) {
-        Entity userEntity = securityService.getUserEntity(userName);
-        if (userEntity == null) {
+        Entity user = securityService.getUserEntity(userName);
+
+        if (Objects.isNull(user)) {
             throw new UsernameNotFoundException("Username " + userName + " not found");
         }
-        return userEntity;
+
+        return user;
     }
 
-    private void updateUserPassword(final Entity userEntity, final String password) {
-        userEntity.setField("password", password);
-        userEntity.setField("passwordConfirmation", password);
-        userEntity.getDataDefinition().save(userEntity);
+    private void updateUserPassword(final Entity user, final String password) {
+        user.setField("password", password);
+        user.setField("passwordConfirmation", password);
+
+        user.getDataDefinition().save(user);
     }
 
-    private void sendNewPassword(final String userEmail, final String userName, final String newPassword) {
+    private void sendPasswordResetLink(final String userEmail, final String userName, final Entity tokenEntity) {
+        String expiration = new SimpleDateFormat(DateUtils.L_DATE_TIME_FORMAT)
+                .format(tokenEntity.getDateField(PasswordResetTokenFields.EXPIRATION_TIME));
+        String token = tokenEntity.getStringField(PasswordResetTokenFields.TOKEN);
+        String link = fromCurrentContextPath().path("passwordChange.html").queryParam("token", token).build().toString();
         String topic = translationService.translate("security.message.passwordReset.mail.topic", getLocale(), company);
         String body = translationService.translate("security.message.passwordReset.mail.body", getLocale(), userName,
-                newPassword, company, contactMail);
+                link, expiration, company, contactMail);
+
         mailService.sendEmail(userEmail, topic, body);
     }
 

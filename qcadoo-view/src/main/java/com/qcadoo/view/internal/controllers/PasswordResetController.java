@@ -28,7 +28,6 @@ import com.qcadoo.mail.api.InvalidMailAddressException;
 import com.qcadoo.security.api.PasswordReminderService;
 import com.qcadoo.view.internal.LogoComponent;
 
-import com.qcadoo.view.internal.hooks.AbstractViewHookDefinition;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -91,12 +90,12 @@ public final class PasswordResetController {
             return "loginIsBlank";
         }
 
-        return performPasswordReseting(login);
+        return performPasswordResetting(login);
     }
 
-    private String performPasswordReseting(final String login) {
+    private String performPasswordResetting(final String login) {
         try {
-            passwordReminderService.generateAndSendNewPassword(login);
+            passwordReminderService.generateAndSendPasswordResetLink(login);
         } catch (UsernameNotFoundException e) {
             return "userNotFound";
         } catch (InvalidMailAddressException e) {

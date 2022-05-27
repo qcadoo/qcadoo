@@ -29,7 +29,9 @@
 <![CDATA[ERROR PAGE: <c:out value="${errorHeader}" escapeXml="true" />##<c:out value="${errorExplanation}" escapeXml="true" />]]>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
 <html>
+
 	<head>
 		<title>${applicationDisplayName} :: error</title>
 		
@@ -150,7 +152,7 @@
 			var hideDetailsText = '<c:out value="${hideDetailsText}"/>';
 
 			var errorDetailsVisible = false;
-			
+
 			jQuery(document).ready(function(){
 
 				var errorDetailsContent = $("#errorDetailsContent");
@@ -174,8 +176,8 @@
 				});
 			});
 		</script>
-		
 	</head>
+
     <body>
     	<div id="content">
    			<c:choose>
@@ -212,4 +214,5 @@
 	        </div>
 		</div>
     </body>
+
 </html>

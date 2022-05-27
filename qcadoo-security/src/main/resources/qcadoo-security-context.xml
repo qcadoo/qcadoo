@@ -47,6 +47,7 @@
 
     <security:http pattern="/browserNotSupported.html" security="none"/>
     <security:http pattern="/passwordReset.html" security="none"/>
+    <security:http pattern="/passwordChange.html" security="none"/>
     <security:http pattern="/login.html" security="none"/>
     <security:http pattern="/css/**" security="none"/>
     <security:http pattern="/js/**" security="none"/>
@@ -55,6 +56,10 @@
 
     <security:http use-expressions="true" auto-config="false"
                    entry-point-ref="loginUrlAuthenticationEntryPoint">
+
+        <security:headers>
+            <security:frame-options policy="SAMEORIGIN"/>
+        </security:headers>
 
         <security:intercept-url pattern="/**"
                                 access="isAuthenticated()"/>
@@ -141,6 +146,12 @@
     <bean id="mySessionExpirationFilter"
           class="com.qcadoo.security.internal.filters.SessionExpirationFilter"/>
 
+    <bean id="loginAttemptService" class="com.qcadoo.security.internal.LoginAttemptService">
+        <property name="lockAccountTimeMinutes" value="${lockAccountTimeMinutes:1440}" />
+        <property name="maxUnsuccessfullAttempts" value="${maxUnsuccessfullAttempts:3}" />
+        <property name="lockAccountMode" value="${lockAccountMode:IP}" />
+    </bean>
+
     <bean id="concurrencyFilter"
                 class="org.springframework.security.web.session.ConcurrentSessionFilter">
         <property name="sessionRegistry" ref="sessionRegistry" />
@@ -153,7 +164,9 @@
         <property name="authenticationFailureHandler" ref="failureHandler"/>
         <property name="authenticationSuccessHandler" ref="successHandler"/>
         <property name="rememberMeServices" ref="rememberMeServices"/>
-        <property name="sessionAuthenticationStrategy" ref="sas" />
+        <property name="sessionAuthenticationStrategy">
+            <bean class="org.springframework.security.web.authentication.session.SessionFixationProtectionStrategy"/>
+        </property>
     </bean>
 
     <bean id="sas" class="org.springframework.security.web.authentication.session.CompositeSessionAuthenticationStrategy">

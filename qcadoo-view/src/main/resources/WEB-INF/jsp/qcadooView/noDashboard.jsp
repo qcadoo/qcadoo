@@ -25,39 +25,39 @@
 --%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
 <html>
-<head>
 
-	<c:choose>
-		<c:when test="${useCompressedStaticResources}">
-			<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/qcadoo-min.css?ver=${buildNumber}" type="text/css" />
-			<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/custom.css?ver=${buildNumber}" type="text/css" />
-		</c:when>
-		<c:otherwise>
-			<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/core/dashboard.css?ver=${buildNumber}" type="text/css" />
-			<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/core/menu/style.css?ver=${buildNumber}" type="text/css" />
-			<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/custom.css?ver=${buildNumber}" type="text/css" />
-		</c:otherwise>
-	</c:choose>
-	
-	
-</head>
-<body>
+    <head>
+        <c:choose>
+            <c:when test="${useCompressedStaticResources}">
+                <link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/qcadoo-min.css?ver=${buildNumber}" type="text/css" />
+                <link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/custom.css?ver=${buildNumber}" type="text/css" />
+            </c:when>
+            <c:otherwise>
+                <link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/core/dashboard.css?ver=${buildNumber}" type="text/css" />
+                <link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/core/menu/style.css?ver=${buildNumber}" type="text/css" />
+                <link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/custom.css?ver=${buildNumber}" type="text/css" />
+            </c:otherwise>
+        </c:choose>
+    </head>
 
-	<div id="windowContainer">
-		<div id="windowContainerContentBody">
-			<div id="contentWrapperMiddle">
-			<div id="dashboardContentWrapper">
-				<div id="descriptionElement">
-					<div id="descriptionHeader">
-						${translationsMap['qcadooView.noDashboardPage.header']}
-					</div>
-				</div>
-			</div>
-			</div>
-		</div>
-	</div>
-</body>
+    <body>
+        <div id="windowContainer">
+            <div id="windowContainerContentBody">
+                <div id="contentWrapperMiddle">
+                <div id="dashboardContentWrapper">
+                    <div id="descriptionElement">
+                        <div id="descriptionHeader">
+                            ${translationsMap['qcadooView.noDashboardPage.header']}
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+    </body>
+
 </html>

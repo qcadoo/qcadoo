@@ -23,34 +23,6 @@
  */
 package com.qcadoo.security.internal;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
-
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationListener;
-import org.springframework.security.authentication.event.AbstractAuthenticationEvent;
-import org.springframework.security.authentication.event.AbstractAuthenticationFailureEvent;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.GrantedAuthorityImpl;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.web.authentication.rememberme.PersistentRememberMeToken;
-import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
-import org.springframework.stereotype.Service;
-
 import com.google.common.collect.Lists;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.DataDefinitionService;
@@ -61,13 +33,36 @@ import com.qcadoo.model.api.search.SearchOrders;
 import com.qcadoo.model.api.search.SearchRestrictions;
 import com.qcadoo.security.api.SecurityRole;
 import com.qcadoo.security.api.SecurityRolesService;
-import com.qcadoo.security.constants.GroupFields;
-import com.qcadoo.security.constants.PersistentTokenFields;
-import com.qcadoo.security.constants.QcadooSecurityConstants;
-import com.qcadoo.security.constants.RoleFields;
-import com.qcadoo.security.constants.UserFields;
+import com.qcadoo.security.constants.*;
 import com.qcadoo.security.internal.api.InternalSecurityService;
 import com.qcadoo.security.internal.api.QcadooUser;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationListener;
+import org.springframework.security.authentication.event.AbstractAuthenticationEvent;
+import org.springframework.security.authentication.event.AbstractAuthenticationFailureEvent;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.GrantedAuthorityImpl;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.web.authentication.rememberme.PersistentRememberMeToken;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.stereotype.Service;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 
 @Service("userDetailsService")
 public class SecurityServiceImpl implements InternalSecurityService, UserDetailsService, PersistentTokenRepository,
@@ -75,7 +70,7 @@ public class SecurityServiceImpl implements InternalSecurityService, UserDetails
 
     private static final String L_TARGET_ROLE_IDENTIFIER_MUST_BE_GIVEN = "targetRoleIdentifier must be given";
 
-    private static final String L_USER_ENTITY_MUST_BE_GIVEN = "User entity must be given";;
+    private static final String L_USER_ENTITY_MUST_BE_GIVEN = "User entity must be given";
 
     private static final String L_QCADOO_BOT = "qcadoo_bot";
 
@@ -84,6 +79,9 @@ public class SecurityServiceImpl implements InternalSecurityService, UserDetails
 
     @Autowired
     private SecurityRolesService securityRolesService;
+
+    @Autowired
+    private LoginAttemptService loginAttemptService;
 
     @Autowired(required = false)
     private HttpServletRequest request;
@@ -167,7 +165,8 @@ public class SecurityServiceImpl implements InternalSecurityService, UserDetails
         SecurityContext context = getContext();
         Authentication authentication = getAuthentication();
 
-        if (Objects.isNull(context) || Objects.isNull(authentication) || Objects.isNull(authentication.getName())) {
+        if (Objects.isNull(context) || Objects.isNull(authentication) || Objects.isNull(authentication.getName())
+                || authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ANONYMOUS"))) {
             return null;
         }
 
@@ -241,8 +240,17 @@ public class SecurityServiceImpl implements InternalSecurityService, UserDetails
         checkState(!grantedAuthorities.isEmpty(), "Current user with login %s cannot be found",
                 user.getStringField(UserFields.USER_NAME));
 
-        return new User(user.getStringField(UserFields.USER_NAME), user.getStringField(UserFields.PASSWORD), true, true, true,
-                true, grantedAuthorities);
+        String username = user.getStringField(UserFields.USER_NAME);
+        String password = user.getStringField(UserFields.PASSWORD);
+        String ipAddress = loginAttemptService.getClientIP(request);
+
+        boolean isAccountNonLocked = true;
+
+        if (loginAttemptService.isBlocked(username, ipAddress)) {
+            isAccountNonLocked = false;
+        }
+
+        return new User(username, password, true, true, true, isAccountNonLocked, grantedAuthorities);
     }
 
     @Override

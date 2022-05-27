@@ -62,6 +62,7 @@
         <model:model model="persistentToken" resource="model/persistentToken.xml"/>
         <model:model model="group" resource="model/group.xml"/>
         <model:model model="role" resource="model/role.xml"/>
+        <model:model model="passwordResetToken" resource="model/passwordResetToken.xml"/>
 
         <security:role identifier="ROLE_USER"/>
         <security:role identifier="ROLE_ADMIN"/>

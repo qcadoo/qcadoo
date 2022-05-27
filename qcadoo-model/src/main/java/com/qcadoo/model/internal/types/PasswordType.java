@@ -23,19 +23,18 @@
  */
 package com.qcadoo.model.internal.types;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Locale;
-import java.util.regex.Pattern;
-
-import org.springframework.security.authentication.encoding.PasswordEncoder;
-
 import com.google.common.collect.Lists;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.internal.api.DefaultValidatorsProvider;
 import com.qcadoo.model.internal.api.FieldHookDefinition;
 import com.qcadoo.model.internal.api.ValueAndError;
 import com.qcadoo.model.internal.validators.LengthValidator;
+import org.springframework.security.authentication.encoding.PasswordEncoder;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Locale;
+import java.util.regex.Pattern;
 
 public final class PasswordType extends AbstractFieldType implements DefaultValidatorsProvider {
 

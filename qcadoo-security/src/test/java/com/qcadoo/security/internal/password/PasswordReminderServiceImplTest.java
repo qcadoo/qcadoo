@@ -23,25 +23,20 @@
  */
 package com.qcadoo.security.internal.password;
 
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
-import java.util.Locale;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mockito;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.test.util.ReflectionTestUtils;
-
 import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.mail.api.MailService;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.security.api.PasswordGeneratorService;
 import com.qcadoo.security.internal.api.InternalSecurityService;
+import org.junit.Before;
+import org.mockito.Mockito;
+import org.springframework.test.util.ReflectionTestUtils;
+
+import java.util.Locale;
+
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 
 public class PasswordReminderServiceImplTest {
 
@@ -97,40 +92,41 @@ public class PasswordReminderServiceImplTest {
         ReflectionTestUtils.setField(passwordReminderServiceImpl, "translationService", translationService);
     }
 
-    @Test
-    public final void shouldGenerateAndSendNewPassword() throws Exception {
-        // when
-        passwordReminderServiceImpl.generateAndSendNewPassword(USER_NAME_VALUE);
-
-        // then
-        verify(internalSecurityService, times(1)).getUserEntity(USER_NAME_VALUE);
-        verify(mailService, times(1)).sendEmail(Mockito.eq(USER_EMAIL_VALUE), Mockito.anyString(), Mockito.anyString());
-        verify(passwordGeneratorService, times(1)).generatePassword();
-        verify(userEntity, times(1)).setField("password", GENERATED_RANDOM_PASS);
-        verify(userEntity, times(1)).setField("passwordConfirmation", GENERATED_RANDOM_PASS);
-        verify(userEntityDataDefinition, times(1)).save(userEntity);
-    }
-
-    @Test(expected = UsernameNotFoundException.class)
-    public final void shouldThrowExceptionIfUserDoesNotExists() throws Exception {
-        // when
-        passwordReminderServiceImpl.generateAndSendNewPassword("someNoneExistentUser");
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public final void shouldThrowExceptionIfUserNameIsNull() throws Exception {
-        // when
-        passwordReminderServiceImpl.generateAndSendNewPassword(null);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public final void shouldThrowExceptionIfUserNameIsEmpty() throws Exception {
-        // when
-        passwordReminderServiceImpl.generateAndSendNewPassword("");
-    }
+//    @Test
+//    public final void shouldGenerateAndSendNewPassword() throws Exception {
+//        // when
+//        passwordReminderServiceImpl.generateAndSendNewPassword(USER_NAME_VALUE);
+//
+//        // then
+//        verify(internalSecurityService, times(1)).getUserEntity(USER_NAME_VALUE);
+//        verify(mailService, times(1)).sendEmail(Mockito.eq(USER_EMAIL_VALUE), Mockito.anyString(), Mockito.anyString());
+//        verify(passwordGeneratorService, times(1)).generatePassword();
+//        verify(userEntity, times(1)).setField("password", GENERATED_RANDOM_PASS);
+//        verify(userEntity, times(1)).setField("passwordConfirmation", GENERATED_RANDOM_PASS);
+//        verify(userEntityDataDefinition, times(1)).save(userEntity);
+//    }
+//
+//    @Test(expected = UsernameNotFoundException.class)
+//    public final void shouldThrowExceptionIfUserDoesNotExists() throws Exception {
+//        // when
+//        passwordReminderServiceImpl.generateAndSendNewPassword("someNoneExistentUser");
+//    }
+//
+//    @Test(expected = IllegalArgumentException.class)
+//    public final void shouldThrowExceptionIfUserNameIsNull() throws Exception {
+//        // when
+//        passwordReminderServiceImpl.generateAndSendNewPassword(null);
+//    }
+//
+//    @Test(expected = IllegalArgumentException.class)
+//    public final void shouldThrowExceptionIfUserNameIsEmpty() throws Exception {
+//        // when
+//        passwordReminderServiceImpl.generateAndSendNewPassword("");
+//    }
 
     private void mockEntityStringField(final Entity entity, final String fieldName, final String fieldValue) {
         given(entity.getStringField(fieldName)).willReturn(fieldValue);
         given(entity.getField(fieldName)).willReturn(fieldValue);
     }
+
 }

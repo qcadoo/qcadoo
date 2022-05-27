@@ -67,8 +67,8 @@ QCD.WindowController = function(_menuStructure) {
 	}
 
 	this.performLogout = function() {
-		window.location = "j_spring_security_logout";
-	}
+        window.location = "j_spring_security_logout";
+    }
 
 	this.goToPage = function(url, serializationObject, isPage) {
 		if (serializationObject) {

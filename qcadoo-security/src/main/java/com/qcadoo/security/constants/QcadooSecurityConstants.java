@@ -40,6 +40,8 @@ public final class QcadooSecurityConstants {
 
     public static final String MODEL_ROLE = "role";
 
+    public static final String MODEL_PASSWORD_RESET_TOKEN = "passwordResetToken";
+
     // ROLE
     public static final String ROLE_SUPERADMIN = "ROLE_SUPERADMIN";
 
