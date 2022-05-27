@@ -165,17 +165,19 @@ QCD.WindowController = function(_menuStructure) {
 		if(statesStack.length > 0){
             var stateObject = statesStack.pop();
             serializationObjectToInsert = stateObject;
-            if (stateObject.openedModal) {
-                modal = modalsStack.pop();
-                modal.hide();
-                if (modalsStack.length == 0) {
-                    onIframeLoad();
+            if (stateObject != undefined) {
+                if (stateObject.openedModal) {
+                    modal = modalsStack.pop();
+                    modal.hide();
+                    if (modalsStack.length == 0) {
+                        onIframeLoad();
+                    } else {
+                        onIframeLoad(modalsStack[modalsStack.length - 1].iframe[0]);
+                    }
                 } else {
-                    onIframeLoad(modalsStack[modalsStack.length - 1].iframe[0]);
+                    currentPage = stateObject.url;
+                    performGoToPage(currentPage);
                 }
-            } else {
-                currentPage = stateObject.url;
-                performGoToPage(currentPage);
             }
 		} else {
 		    this.goToDashboard();

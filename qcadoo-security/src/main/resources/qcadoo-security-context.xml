@@ -158,6 +158,12 @@
         <property name="expiredUrl" value="/login.html?timeout=true" />
     </bean>
 
+    <bean id="contentSecurityPolicyFilter" class="com.qcadoo.security.internal.filters.ContentSecurityPolicyFilter">
+        <property name="responseHeaderXSSProtection" value="${responseHeaderXSSProtection}" />
+        <property name="responseHeaderContentSecurityPolicy" value="${responseHeaderContentSecurityPolicy}" />
+        <property name="includeSandboxForFrames" value="${includeSandboxCSP}"/>
+    </bean>
+
     <bean id="customAuthenticationFilter"
           class="com.qcadoo.security.internal.filters.CustomAuthenticationFilter">
         <property name="authenticationManager" ref="authenticationManager"/>
