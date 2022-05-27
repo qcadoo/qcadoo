@@ -25,6 +25,7 @@
 --%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <![CDATA[ERROR PAGE: <c:out value="${errorHeader}" escapeXml="true" />##<c:out value="${errorExplanation}" escapeXml="true" />]]>
 
@@ -33,19 +34,21 @@
 <html>
 
 	<head>
+	    <sec:csrfMetaTags/>
+
 		<title>${applicationDisplayName} :: error</title>
-		
+
 		<link rel="shortcut icon" href="/qcadooView/public/img/core/icons/favicon.png">
 
 		<script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/_jquery-1.4.2.min.js?ver=${buildNumber}"></script>
-		
+
 		<style type="text/css">
 			body {
 				background: #9B9B9B;
 				color: white;
 				font-family:Arial, Helvetica, sans-serif;
 			}
-			
+
 			#content {
 				width: 950px;
 				margin: auto;
@@ -91,7 +94,7 @@
 				font-weight: normal;
 				color: white;
 			}
-		
+
 			#content #contentDiv #showExceptionLink {
 				border: solid #d7d7d7 1px;
 				color: #d7d7d7;
@@ -141,11 +144,11 @@
 				margin-bottom: 3px;
 			}
 			#content #contentDiv #errorDetailsContent .errorDetailsContentItem .errorDetailsContentItemContent {
-				
+
 			}
 		</style>
 		<link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/custom.css?ver=${buildNumber}" type="text/css" />
-		
+
 		<script type="text/javascript">
 
 			var showDetailsText = '<c:out value="${showDetailsText}"/>';
@@ -159,7 +162,7 @@
 				var showExceptionLink = $("#showExceptionLink");
 				var showExceptionLinkTextSpan = $("#showExceptionLinkTextSpan");
 				var showExceptionLinkSignSpan = $("#showExceptionLinkSignSpan");
-				
+
 				$("#showExceptionLink").click(function() {
 					if (errorDetailsVisible) {
 						errorDetailsContent.hide();
@@ -175,6 +178,21 @@
 					errorDetailsVisible = !errorDetailsVisible;
 				});
 			});
+
+            $(function () {
+                var csrfMetaNameSelector = "meta[name='_csrf']";
+                var csrfHeadMetaNameSelector = "meta[name='_csrf_header']";
+
+                var csrfToken = $(csrfMetaNameSelector).attr("content");
+                window.top.$(csrfMetaNameSelector).attr("content", csrfToken);
+                window.top.$('iframe').contents().find(csrfMetaNameSelector).attr("content", csrfToken);
+
+                $(document).ajaxSend(function(e, xhr, options) {
+                    var token = $(csrfMetaNameSelector).attr("content");
+                    var header = $(csrfHeadMetaNameSelector).attr("content");
+                    xhr.setRequestHeader(header, token);
+                });
+            });
 		</script>
 	</head>
 

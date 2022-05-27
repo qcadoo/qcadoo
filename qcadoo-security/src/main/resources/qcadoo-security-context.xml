@@ -25,8 +25,10 @@
 
 -->
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:security="http://www.springframework.org/schema/security"
-       xmlns:context="http://www.springframework.org/schema/context" xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:security="http://www.springframework.org/schema/security"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util"
        xsi:schemaLocation="
        http://www.springframework.org/schema/beans 
        http://www.springframework.org/schema/beans/spring-beans-3.1.xsd 
@@ -46,9 +48,6 @@
     </security:global-method-security>
 
     <security:http pattern="/browserNotSupported.html" security="none"/>
-    <security:http pattern="/passwordReset.html" security="none"/>
-    <security:http pattern="/passwordChange.html" security="none"/>
-    <security:http pattern="/login.html" security="none"/>
     <security:http pattern="/css/**" security="none"/>
     <security:http pattern="/js/**" security="none"/>
     <security:http pattern="/v2/api-docs.json" security="none"/>
@@ -61,17 +60,22 @@
             <security:frame-options policy="SAMEORIGIN"/>
         </security:headers>
 
+        <security:csrf request-matcher-ref="csrfRequestMatcher"/>
+
+        <security:intercept-url pattern="/passwordReset.html" access="permitAll"/>
+        <security:intercept-url pattern="/passwordChange.html" access="permitAll"/>
+        <security:intercept-url pattern="/login.html" access="permitAll"/>
+
         <security:intercept-url pattern="/**"
                                 access="isAuthenticated()"/>
 
         <security:logout logout-success-url="/login.html?logout=true"/>
 
         <security:session-management session-authentication-strategy-ref="sas"
-                invalid-session-url="/login.html?timeout=true">
+                                     invalid-session-url="/login.html?timeout=true">
         </security:session-management>
 
-
-        <security:custom-filter position="CONCURRENT_SESSION_FILTER" ref="concurrencyFilter" />
+        <security:custom-filter position="CONCURRENT_SESSION_FILTER" ref="concurrencyFilter"/>
         <security:custom-filter ref="mySessionExpirationFilter"
                                 before="FORM_LOGIN_FILTER"/>
 
@@ -94,6 +98,8 @@
             <security:password-encoder ref="passwordEncoder"/>
         </security:authentication-provider>
     </security:authentication-manager>
+
+    <bean id="csrfRequestMatcher" class="com.qcadoo.security.internal.matchers.CustomCsrfRequestMatcher"/>
 
     <bean id="passwordEncoder"
           class="org.springframework.security.authentication.encoding.ShaPasswordEncoder">
@@ -147,20 +153,20 @@
           class="com.qcadoo.security.internal.filters.SessionExpirationFilter"/>
 
     <bean id="loginAttemptService" class="com.qcadoo.security.internal.LoginAttemptService">
-        <property name="lockAccountTimeMinutes" value="${lockAccountTimeMinutes:1440}" />
-        <property name="maxUnsuccessfullAttempts" value="${maxUnsuccessfullAttempts:3}" />
-        <property name="lockAccountMode" value="${lockAccountMode:IP}" />
+        <property name="lockAccountTimeMinutes" value="${lockAccountTimeMinutes:1440}"/>
+        <property name="maxUnsuccessfullAttempts" value="${maxUnsuccessfullAttempts:3}"/>
+        <property name="lockAccountMode" value="${lockAccountMode:IP}"/>
     </bean>
 
     <bean id="concurrencyFilter"
-                class="org.springframework.security.web.session.ConcurrentSessionFilter">
-        <property name="sessionRegistry" ref="sessionRegistry" />
-        <property name="expiredUrl" value="/login.html?timeout=true" />
+          class="org.springframework.security.web.session.ConcurrentSessionFilter">
+        <property name="sessionRegistry" ref="sessionRegistry"/>
+        <property name="expiredUrl" value="/login.html?timeout=true"/>
     </bean>
 
     <bean id="contentSecurityPolicyFilter" class="com.qcadoo.security.internal.filters.ContentSecurityPolicyFilter">
-        <property name="responseHeaderXSSProtection" value="${responseHeaderXSSProtection}" />
-        <property name="responseHeaderContentSecurityPolicy" value="${responseHeaderContentSecurityPolicy}" />
+        <property name="responseHeaderXSSProtection" value="${responseHeaderXSSProtection}"/>
+        <property name="responseHeaderContentSecurityPolicy" value="${responseHeaderContentSecurityPolicy}"/>
         <property name="includeSandboxForFrames" value="${includeSandboxCSP}"/>
     </bean>
 
@@ -173,12 +179,13 @@
         <property name="sessionAuthenticationStrategy" ref="sas"/>
     </bean>
 
-    <bean id="sas" class="org.springframework.security.web.authentication.session.CompositeSessionAuthenticationStrategy">
+    <bean id="sas"
+          class="org.springframework.security.web.authentication.session.CompositeSessionAuthenticationStrategy">
         <constructor-arg>
             <list>
                 <bean class="org.springframework.security.web.authentication.session.ConcurrentSessionControlAuthenticationStrategy">
                     <constructor-arg ref="sessionRegistry"/>
-                    <property name="maximumSessions" value="1" />
+                    <property name="maximumSessions" value="1"/>
                 </bean>
                 <bean class="org.springframework.security.web.authentication.session.SessionFixationProtectionStrategy">
                 </bean>
@@ -190,7 +197,7 @@
     </bean>
 
     <bean id="sessionRegistry"
-                class="org.springframework.security.core.session.SessionRegistryImpl" />
+          class="org.springframework.security.core.session.SessionRegistryImpl"/>
 
     <bean id="successHandler"
           class="org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler">

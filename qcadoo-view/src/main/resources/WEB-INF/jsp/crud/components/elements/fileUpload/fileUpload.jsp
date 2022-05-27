@@ -92,12 +92,12 @@ String ctx = request.getContextPath();
 
 </script>
 
-<form method="post" action="<%=ctx%>/fileUpload.html" enctype="multipart/form-data" id="form" style="text-align: left">
+<form method="post" action="<%=ctx%>/fileUpload.html?${_csrf.parameterName}=${_csrf.token}" enctype="multipart/form-data" id="form" style="text-align: left">
 
 	<div style="margin-left: 10px; margin-top: 10px; font: 11px arial; font-weight: bold;">
 		${chooseFileLabel}
 	</div>
-	
+
 	<div style="margin-top: 5px; margin-bottom: 20px; margin-left: 10px;">
 		<input type="file" name="file" size="40" style="width: 460px" onChange="onInputChange(this.value);"/>
 	</div>
