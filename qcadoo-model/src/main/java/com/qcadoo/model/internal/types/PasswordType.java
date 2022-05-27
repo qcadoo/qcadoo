@@ -29,7 +29,7 @@ import com.qcadoo.model.internal.api.DefaultValidatorsProvider;
 import com.qcadoo.model.internal.api.FieldHookDefinition;
 import com.qcadoo.model.internal.api.ValueAndError;
 import com.qcadoo.model.internal.validators.LengthValidator;
-import org.springframework.security.authentication.encoding.PasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -56,10 +56,10 @@ public final class PasswordType extends AbstractFieldType implements DefaultVali
 
     @Override
     public ValueAndError toObject(final FieldDefinition fieldDefinition, final Object value) {
-        if (isHashedPassword((String) value)) {
+        if (!fieldDefinition.isPersistent() || isHashedPassword((String) value)) {
             return ValueAndError.withoutError(value);
         } else {
-            return ValueAndError.withoutError(passwordEncoder.encodePassword(String.valueOf(value), null));
+            return ValueAndError.withoutError(passwordEncoder.encode(String.valueOf(value)));
         }
     }
 
@@ -74,7 +74,7 @@ public final class PasswordType extends AbstractFieldType implements DefaultVali
     }
 
     private boolean isHashedPassword(final String value) {
-        return Pattern.matches("[0-9a-f]{64}", value);
+        return value.startsWith("$2a$") || value.startsWith("$2b$") || value.startsWith("$2y$") || Pattern.matches("[0-9a-f]{64}", value);
     }
 
     @Override
@@ -86,7 +86,8 @@ public final class PasswordType extends AbstractFieldType implements DefaultVali
                 }
             }
         }
-        return Lists.<FieldHookDefinition> newArrayList(new LengthValidator(null, null, 255));
+
+        return Lists.newArrayList(new LengthValidator(null, null, 255));
     }
 
 }

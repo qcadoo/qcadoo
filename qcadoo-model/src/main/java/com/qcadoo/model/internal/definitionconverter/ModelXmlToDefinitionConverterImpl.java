@@ -53,7 +53,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
-import org.springframework.security.authentication.encoding.PasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -246,7 +246,7 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
 
         if (otherTag == IDENTIFIER) {
             dataDefinition.setIdentifierExpression(getIdentifierExpression(reader));
-        } else if (otherTag == MASTERMODEL) {
+        } else if(otherTag == MASTERMODEL){
             dataDefinition.setMasterModel(getMasterModel(reader));
         }
     }
@@ -388,7 +388,7 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
     }
 
     private FieldDefinition getAuditFieldDefinition(final DataDefinitionImpl dataDefinition, final String name,
-                                                    final FieldType type) {
+            final FieldType type) {
         FieldDefinitionImpl fieldDefinition = new FieldDefinitionImpl(dataDefinition, name);
 
         fieldDefinition.withReadOnly(false);
@@ -399,7 +399,7 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
     }
 
     private FieldDefinition getFieldDefinition(final XMLStreamReader reader, final DataDefinitionImpl dataDefinition,
-                                               final FieldsTag fieldTag) throws XMLStreamException, HookInitializationException, ModelXmlParsingException {
+            final FieldsTag fieldTag) throws XMLStreamException, HookInitializationException, ModelXmlParsingException {
         String fieldType = reader.getLocalName();
         String name = getStringAttribute(reader, "name");
 
@@ -450,7 +450,7 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
     }
 
     private Collection<FieldHookDefinition> parseFieldValidators(final XMLStreamReader reader, final String fieldType,
-                                                                 final FieldDefinition fieldDefinition) throws XMLStreamException, HookInitializationException,
+            final FieldDefinition fieldDefinition) throws XMLStreamException, HookInitializationException,
             ModelXmlParsingException {
         List<FieldHookDefinition> fieldValidators = Lists.newArrayList();
 
@@ -472,7 +472,7 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
     }
 
     private FieldHookDefinition createFieldElement(final XMLStreamReader reader, final FieldDefinition fieldDefinition,
-                                                   final String tag) throws HookInitializationException, ModelXmlParsingException {
+            final String tag) throws HookInitializationException, ModelXmlParsingException {
         FieldHookDefinition fieldHookDefinition;
 
         switch (FieldTag.valueOf(tag.toUpperCase(Locale.ENGLISH))) {
@@ -524,7 +524,7 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
     }
 
     private FieldType getFieldType(final XMLStreamReader reader, final DataDefinition dataDefinition, final String fieldName,
-                                   final FieldsTag fieldTag, final String fieldType) throws XMLStreamException, ModelXmlParsingException {
+            final FieldsTag fieldTag, final String fieldType) throws XMLStreamException, ModelXmlParsingException {
         // TODO DEV_TEAM consider move default value resolving from converter into concrete field type's constructor.
         Boolean isCopyable = getBooleanAttribute(reader, "copyable", true);
 
@@ -674,7 +674,7 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
 
         @Around("execHookDefinitionGetter(reader) && cflow(execGetDataDefinition(pluginIdentifier))")
         public Object appendPluginIdentifierToHook(final ProceedingJoinPoint pjp, final XMLStreamReader reader,
-                                                   final String pluginIdentifier) throws Throwable {
+                final String pluginIdentifier) throws Throwable {
             Object[] args = pjp.getArgs();
             args[1] = getSourcePluginName(reader, pluginIdentifier);
 
@@ -683,7 +683,7 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
 
         @Around("execFieldDefinitionGetter(reader) && cflow(execGetDataDefinition(pluginIdentifier))")
         public Object appendPluginIdentifierToField(final ProceedingJoinPoint pjp, final XMLStreamReader reader,
-                                                    final String pluginIdentifier) throws Throwable {
+                final String pluginIdentifier) throws Throwable {
             String sourcePluginIdentifier = getSourcePluginName(reader, pluginIdentifier);
             FieldDefinitionImpl fieldDefinition = (FieldDefinitionImpl) pjp.proceed();
             fieldDefinition.setPluginIdentifier(sourcePluginIdentifier);

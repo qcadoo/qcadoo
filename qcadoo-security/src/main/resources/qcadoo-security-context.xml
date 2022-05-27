@@ -101,9 +101,22 @@
 
     <bean id="csrfRequestMatcher" class="com.qcadoo.security.internal.matchers.CustomCsrfRequestMatcher"/>
 
-    <bean id="passwordEncoder"
-          class="org.springframework.security.authentication.encoding.ShaPasswordEncoder">
-        <constructor-arg value="256"/>
+    <bean id="passwordEncoder" class="com.qcadoo.security.internal.password.SelectablePasswordEncoder">
+        <property name="encoder" value="${passwordEncoder:bcrypt}"/>
+        <property name="bcryptPasswordEncoder">
+            <bean class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder">
+                <constructor-arg name="strength" value="11" />
+            </bean>
+        </property>
+        <property name="shaPasswordEncoder">
+            <bean class="com.qcadoo.security.internal.password.ShaPasswordEncoderAdapter">
+                <constructor-arg>
+                    <bean class="org.springframework.security.authentication.encoding.ShaPasswordEncoder">
+                        <constructor-arg value="256"/>
+                    </bean>
+                </constructor-arg>
+            </bean>
+        </property>
     </bean>
 
     <bean id="globalDefinitionPermissionEvaluator"
