@@ -23,21 +23,23 @@
  */
 package com.qcadoo.report.api;
 
-import java.io.IOException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
 import com.lowagie.text.pdf.BaseFont;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import java.io.IOException;
+import java.util.Objects;
 
 /**
  * Utilities for pdf fonts management.
- * 
  */
+@Component
 public final class FontUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(FontUtils.class);
@@ -88,27 +90,46 @@ public final class FontUtils {
 
     private static BaseFont dejavu;
 
+    private static String fontPath;
+
+    public static String getFontPath() {
+        return fontPath;
+    }
+
+    @Value("${fontPath}")
+    public void setFontPath(final String fontPath) {
+        FontUtils.fontPath = fontPath;
+    }
+
     private FontUtils() {
+
     }
 
     /**
      * Prepare fonts.
-     * 
+     *
      * @throws DocumentException
      * @throws IOException
      */
     public static synchronized void prepare() throws DocumentException, IOException {
-        if (dejavuBold10Dark == null) {
+        if (Objects.isNull(dejavuBold10Dark)) {
             if (LOG.isDebugEnabled()) {
                 LOG.debug("Pdf fonts initialization");
             }
+
             try {
-                FontFactory.register("/fonts/dejaVu/DejaVuSans.ttf");
-                dejavu = BaseFont.createFont("/fonts/dejaVu/DejaVuSans.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+                if (Objects.nonNull(fontPath)) {
+                    FontFactory.register("/fonts/" + fontPath);
+                    dejavu = BaseFont.createFont("/fonts/" + fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+                } else {
+                    FontFactory.register("/fonts/dejaVu/DejaVuSans.ttf");
+                    dejavu = BaseFont.createFont("/fonts/dejaVu/DejaVuSans.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+                }
             } catch (ExceptionConverter e) {
                 LOG.warn("Font not found, using embedded font helvetica");
                 dejavu = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.EMBEDDED);
             }
+
             dejavuBold70Light = new Font(dejavu, 70);
             dejavuBold70Light.setStyle(Font.BOLD);
             dejavuBold70Light.setColor(ColorUtils.getLightColor());
