@@ -35,6 +35,7 @@
 			<xs:attribute name="name" type="notEmptyString" use="required" />
 			<xs:attribute name="identifier" type="notEmptyString" use="required" />
 			<xs:attribute name="roles" type="xs:string" use="required" />
+			<xs:attribute name="permissionType" type="notEmptyString" use="required" />
 		</xs:complexType>
 	</xs:element>
 	

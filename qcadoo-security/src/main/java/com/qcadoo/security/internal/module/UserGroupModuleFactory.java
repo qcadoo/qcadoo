@@ -41,12 +41,14 @@ public class UserGroupModuleFactory extends ModuleFactory<UserGroupModule> {
         String name = getRequiredAttribute(element, "name");
         String identifier = getRequiredAttribute(element, "identifier");
         String roles = getRequiredAttribute(element, "roles");
+        String permissionType = getRequiredAttribute(element, "permissionType");
 
         checkNotNull(name, "Missing name attribute of " + getIdentifier() + " module");
         checkNotNull(identifier, "Missing identifier attribute of " + getIdentifier() + " module");
         checkNotNull(roles, "Missing roles attribute of " + getIdentifier() + " module");
+        checkNotNull(permissionType, "Missing permissionType attribute of " + getIdentifier() + " module");
 
-        return new UserGroupModule(name, identifier, roles, dataDefinitionService);
+        return new UserGroupModule(name, identifier, roles, permissionType, dataDefinitionService);
     }
 
     @Override
