@@ -285,16 +285,16 @@ public class FileServiceImpl implements FileService {
 
     private String getReportFullPath(final String name, final Date date) {
         String translatedReportName = translationService.translate(name, LocaleContextHolder.getLocale());
+        String fileName = translatedReportName + "_" + new SimpleDateFormat(DateUtils.L_REPORT_DATE_TIME_FORMAT, getLocale()).format(date);
 
-        return getReportPath() + translatedReportName + "_"
-                + new SimpleDateFormat(DateUtils.L_REPORT_DATE_TIME_FORMAT, getLocale()).format(date);
+        return getReportPath() + getNormalizedFileName(fileName);
     }
 
     private String getReportFullPathWithArgs(final String name, final Date date, final String... args) {
         String translatedReportName = translationService.translate(name, LocaleContextHolder.getLocale(), args);
+        String fileName = translatedReportName + "_" + new SimpleDateFormat(DateUtils.L_REPORT_DATE_TIME_FORMAT, getLocale()).format(date);
 
-        return getReportPath() + translatedReportName + "_"
-                + new SimpleDateFormat(DateUtils.L_REPORT_DATE_TIME_FORMAT, getLocale()).format(date);
+        return getReportPath() + getNormalizedFileName(fileName);
     }
 
     private String getReportPath() {

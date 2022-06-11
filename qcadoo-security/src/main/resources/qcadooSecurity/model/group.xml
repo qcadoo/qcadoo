@@ -32,8 +32,9 @@
 		<string name="identifier" unique="true" />
 		<text name="description" />
 		<manyToMany name="roles" joinField="groups"
-			model="role" cascade="nullify" copyable="true" />
-		<hasMany name="users" joinField="group" model="user" cascade="nullify"/>
+		            model="role" copyable="true" />
+		<hasMany name="users" joinField="group" model="user"/>
+		<enum name="permissionType" required="true" values="01superAdmin,02officeLicense,03terminalLicense,04lackOfAccess" default="02officeLicense"/>
 	</fields>
 	<hooks >
 	    <validatesWith class="com.qcadoo.security.internal.validators.GroupRolesValidationService" method="checkUserAddingRoleSuperadmin"/>

@@ -72,10 +72,10 @@
         <security:role identifier="ROLE_GROUPS_VIEW"/>
         <security:role identifier="ROLE_GROUPS_EDIT"/>
 
-        <security:user-group name="Admin" identifier="ADMIN" roles="ROLE_ADMIN, ROLE_DICTIONARY_VIEW"/>
-        <security:user-group name="User" identifier="USER" roles="ROLE_USER"/>
-        <security:user-group name="Super admin" identifier="SUPER_ADMIN" roles="ROLE_SUPERADMIN, ROLE_DICTIONARY_VIEW"/>
-        <security:user-group name="API" identifier="API" roles="ROLE_API"/>
+        <security:user-group name="Admin" identifier="ADMIN" roles="ROLE_ADMIN, ROLE_DICTIONARY_VIEW" permissionType="02officeLicense"/>
+        <security:user-group name="User" identifier="USER" roles="ROLE_USER" permissionType="02officeLicense"/>
+        <security:user-group name="Super admin" identifier="SUPER_ADMIN" roles="ROLE_SUPERADMIN, ROLE_DICTIONARY_VIEW" permissionType="01superAdmin"/>
+        <security:user-group name="API" identifier="API" roles="ROLE_API" permissionType="01superAdmin"/>
 
         <security:user login="admin" password="admin" email="admin@qcadoo.com" firstName="generated admin"
                        lastName="generated admin" groupIdentifier="ADMIN"/>

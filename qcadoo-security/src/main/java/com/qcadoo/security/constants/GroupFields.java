@@ -38,4 +38,6 @@ public final class GroupFields {
     public static final String USERS = "users";
 
     public static final String IDENTIFIER = "identifier";
+
+    public static final String PERMISSION_TYPE = "permissionType";
 }

@@ -37,15 +37,18 @@ public class UserGroupModule extends Module {
 
     private final String roles;
 
+    private final String permissionType;
+
     private final DataDefinitionService dataDefinitionService;
 
-    public UserGroupModule(final String name, final String identifier, final String roles,
+    public UserGroupModule(final String name, final String identifier, final String roles, final String permissionType,
             final DataDefinitionService dataDefinitionService) {
         super();
 
         this.name = name;
         this.identifier = identifier;
         this.roles = roles;
+        this.permissionType = permissionType;
         this.dataDefinitionService = dataDefinitionService;
     }
 
@@ -59,6 +62,7 @@ public class UserGroupModule extends Module {
         Entity entity = dataDefinitionService.get("qcadooSecurity", "group").create();
         entity.setField("name", name);
         entity.setField("identifier", identifier);
+        entity.setField("permissionType", permissionType);
         DataDefinition roleDD = dataDefinitionService.get("qcadooSecurity", "role");
         entity.setField("roles", roleDD.find().add(SearchRestrictions.in("identifier", (Object[]) roles.split(","))).list()
                 .getEntities());

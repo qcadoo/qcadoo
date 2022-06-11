@@ -42,11 +42,12 @@
 			<option type="column" name="identifier" fields="identifier" link="true"/>
 			<option type="column" name="description" fields="identifier,description"
 					expression="(#description == null) ? ((#identifier == null) ? '' : '@qcadooSecurity.group.' + #identifier + '.description') : #description"/>
+			<option type="column" name="permissionType" fields="permissionType"/>
 
 			<option type="order" column="name" direction="asc"/>
 
-			<option type="orderable" value="name,identifier"/>
-			<option type="searchable" value="name,identifier"/>
+			<option type="orderable" value="name,identifier,permissionType"/>
+			<option type="searchable" value="name,identifier,permissionType"/>
 
 			<option type="correspondingView" value="qcadooUsers/groupDetails"/>
 			<option type="correspondingComponent" value="form"/>

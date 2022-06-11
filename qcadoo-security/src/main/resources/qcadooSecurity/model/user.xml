@@ -50,6 +50,7 @@
 		<datetime name="lastActivity" />
 		<string name="ipAddress" />
 		<belongsTo name="group" model="group" required="true"/>
+		<hasMany name="passwordResetTokens" model="passwordResetToken" joinField="user" cascade="delete"/>
 	</fields>
 
 	<hooks>

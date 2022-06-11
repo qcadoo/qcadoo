@@ -43,7 +43,11 @@
 				<layoutElement column="1" row="1">
 					<component type="input" name="name" field="name" reference="name"/>
 				</layoutElement>
-				<layoutElement column="1" row="2" height="3">
+				<layoutElement column="1" row="2">
+					<component type="select" name="permissionType" field="permissionType"
+					           reference="permissionType"/>
+				</layoutElement>
+				<layoutElement column="1" row="3" height="3">
 					<component type="textarea" name="description" field="description" reference="description"/>
 				</layoutElement>
 				<layoutElement column="2" row="1" width="2" height="8">
