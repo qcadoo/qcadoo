@@ -29,6 +29,7 @@ import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.security.api.SecurityService;
 import com.qcadoo.security.constants.UserFields;
+
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -69,6 +70,11 @@ public class UserModelHooks {
         if (ObjectUtils.equals(securityService.getCurrentUserId(), user.getId())) {
             user.addGlobalError(L_SELF_DELETION_ERROR);
 
+            return false;
+        }
+
+        if (user.getDateField(UserFields.LAST_ACTIVITY) != null) {
+            user.addGlobalError("security.message.error.deletionOfUsedUser");
             return false;
         }
 

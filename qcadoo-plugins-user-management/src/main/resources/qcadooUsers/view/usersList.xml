@@ -31,7 +31,7 @@
     <component type="window" name="window">
 
         <ribbon>
-            <group template="gridNewAndRemoveAction" defaultAuthorizationRole="ROLE_SUPERADMIN"/>
+            <group template="gridNewAndRemoveAction" defaultAuthorizationRole="ROLE_USERS_EDIT"/>
             <group template="gridGenericExportAction" defaultAuthorizationRole="ROLE_SUPERADMIN"/>
         </ribbon>
 
@@ -42,13 +42,14 @@
                     link="true"/>
             <option type="column" name="lastName" fields="lastName" link="true"/>
             <option type="column" name="groupName" fields="group" expression="#group['name']"/>
+            <option type="column" name="groupPermissionType" fields="group" expression="#group['permissionType']"/>
             <option type="column" name="lastActivity" fields="lastActivity"/>
             <option type="column" name="ipAddress" fields="ipAddress"/>
 
             <option type="order" column="login" direction="asc"/>
 
-            <option type="orderable" value="login,email,firstName,lastName,lastActivity,groupName"/>
-            <option type="searchable" value="login,email,firstName,lastName,groupName"/>
+            <option type="orderable" value="login,email,firstName,lastName,lastActivity,groupName,groupPermissionType"/>
+            <option type="searchable" value="login,email,firstName,lastName,groupName,groupPermissionType"/>
 
             <option type="correspondingView" value="qcadooUsers/userDetails"/>
             <option type="correspondingComponent" value="form"/>

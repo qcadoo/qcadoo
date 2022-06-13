@@ -24,16 +24,21 @@
 package com.qcadoo.plugins.users.internal;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 
+import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.security.api.SecurityService;
+import com.qcadoo.security.constants.GroupFields;
 import com.qcadoo.security.constants.QcadooSecurityConstants;
+import com.qcadoo.security.constants.UserFields;
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.api.components.FieldComponent;
 import com.qcadoo.view.api.components.FormComponent;
+import com.qcadoo.view.api.components.LookupComponent;
 import com.qcadoo.view.api.components.WindowComponent;
 import com.qcadoo.view.api.ribbon.RibbonActionItem;
 import com.qcadoo.view.api.ribbon.RibbonGroup;
@@ -47,6 +52,9 @@ public final class UserService {
 
     @Autowired
     private DataDefinitionService dataDefinitionService;
+
+    @Autowired
+    private TranslationService translationService;
 
     public void setPasswordAndOldPasswordAdRequired(final ViewDefinitionState state) {
         FieldComponent viewIdentifier = (FieldComponent) state.getComponentByReference("viewIdentifierHiddenInput");
@@ -96,7 +104,7 @@ public final class UserService {
         Entity loggedUser = dataDefinitionService.get(QcadooSecurityConstants.PLUGIN_IDENTIFIER,
                 QcadooSecurityConstants.MODEL_USER).get(securityService.getCurrentUserId());
 
-        if (!securityService.hasRole(loggedUser, "ROLE_SUPERADMIN")) {
+        if (!securityService.hasRole(loggedUser, "ROLE_USERS_EDIT")) {
             form.setFormEnabled(false);
         }
     }
@@ -115,14 +123,16 @@ public final class UserService {
         }
     }
 
-    public void setupRibbonForAdmins(final ViewDefinitionState state) {
-        WindowComponent window = (WindowComponent) state.getComponentByReference(QcadooViewConstants.L_WINDOW);
-        if(!securityService.hasCurrentUserRole("ROLE_SUPERADMIN") && securityService.hasCurrentUserRole("ROLE_ADMIN")){
-            RibbonGroup actions = window.getRibbon().getGroupByName("actions");
-            for (RibbonActionItem actionItem : actions.getItems()) {
-                actionItem.setEnabled(false);
-                actionItem.requestUpdate(true);
-            }
+    public void showPermissionTypeForGroup(final ViewDefinitionState state) {
+        FieldComponent groupPermissionType = (FieldComponent) state.getComponentByReference("groupPermissionType");
+        LookupComponent groupField = (LookupComponent) state.getComponentByReference("groupLookup");
+
+        Entity group = groupField.getEntity();
+        if (group != null) {
+            groupPermissionType.setFieldValue(translationService.translate("qcadooSecurity.group.permissionType.value." + group.getStringField(GroupFields.PERMISSION_TYPE),
+                    state.getLocale()));
+        } else {
+            groupPermissionType.setFieldValue(null);
         }
     }
 
