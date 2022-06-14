@@ -44,12 +44,13 @@
             <option type="column" name="groupName" fields="group" expression="#group['name']"/>
             <option type="column" name="groupPermissionType" fields="group" expression="#group['permissionType']"/>
             <option type="column" name="lastActivity" fields="lastActivity"/>
+            <option type="column" name="groupChangeDate" fields="groupChangeDate"/>
             <option type="column" name="ipAddress" fields="ipAddress"/>
 
             <option type="order" column="login" direction="asc"/>
 
-            <option type="orderable" value="login,email,firstName,lastName,lastActivity,groupName,groupPermissionType"/>
-            <option type="searchable" value="login,email,firstName,lastName,groupName,groupPermissionType"/>
+            <option type="orderable" value="login,email,firstName,lastName,lastActivity,groupName,groupPermissionType,groupChangeDate"/>
+            <option type="searchable" value="login,email,firstName,lastName,groupName,groupPermissionType,groupChangeDate"/>
 
             <option type="correspondingView" value="qcadooUsers/userDetails"/>
             <option type="correspondingComponent" value="form"/>
