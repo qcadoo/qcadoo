@@ -41,7 +41,6 @@ public class UserRoleValidationService {
     private SecurityService securityService;
 
     public boolean checkUserCreatingSuperadmin(final DataDefinition dataDefinition, final Entity entity) {
-
         Boolean isRoleSuperadminInNewGroup = securityService.hasRole(entity, QcadooSecurityConstants.ROLE_SUPERADMIN);
         Boolean isRoleSuperadminInOldGroup = entity.getId() != null && securityService.hasRole(
                 dataDefinition.get(entity.getId()), QcadooSecurityConstants.ROLE_SUPERADMIN);
