@@ -53,6 +53,9 @@
                             <criteriaModifier
                                     class="com.qcadoo.plugins.users.internal.UserCriteriaModifiers"
                                     method="criteriaForGroup"/>
+                            <listener event="onSelectedEntityChange"
+                                      class="com.qcadoo.view.api.listeners.RerenderListener"
+                                      method="onChangeRerender"/>
                         </component>
                         <component type="input" name="groupPermissionType" reference="groupPermissionType" defaultEnabled="never"/>
                         <component type="input" name="email" field="email" hasDescription="true"/>

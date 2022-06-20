@@ -55,6 +55,9 @@ public class UserRoleValidationService {
 
     private boolean isCurrentUserSuperAdmin(final DataDefinition userDataDefinition) {
         final Long currentUserId = securityService.getCurrentUserId();
+        if(currentUserId == null){
+            return false;
+        }
         final Entity currentUserEntity = userDataDefinition.get(currentUserId);
         return securityService.hasRole(currentUserEntity, QcadooSecurityConstants.ROLE_SUPERADMIN);
     }
