@@ -186,30 +186,4 @@ public class GroupRolesValidationServiceTest {
         assertTrue(isValid);
     }
 
-    @Test
-    public final void shouldAlloveAddingRoleSuperadminWhenPerformedByShop() {
-        // given
-        stubGroupRoles(existingUserGroupMock, QcadooSecurityConstants.ROLE_ADMIN);
-        stubGroupRoles(userGroupMock, QcadooSecurityConstants.ROLE_ADMIN, QcadooSecurityConstants.ROLE_SUPERADMIN);
-        // when
-
-        final boolean isValid = groupRolesValidationService.checkUserAddingRoleSuperadmin(groupDataDefMock, userGroupMock);
-
-        // then
-        assertTrue(isValid);
-    }
-
-    @Test
-    public final void shouldAlloveRemovingRoleSuperadminWhenPerformedByShop() {
-        // given
-        stubGroupRoles(existingUserGroupMock, QcadooSecurityConstants.ROLE_ADMIN, QcadooSecurityConstants.ROLE_SUPERADMIN);
-        stubGroupRoles(userGroupMock, QcadooSecurityConstants.ROLE_ADMIN);
-        // when
-
-        final boolean isValid = groupRolesValidationService.checkUserAddingRoleSuperadmin(groupDataDefMock, userGroupMock);
-
-        // then
-        assertTrue(isValid);
-    }
-
 }

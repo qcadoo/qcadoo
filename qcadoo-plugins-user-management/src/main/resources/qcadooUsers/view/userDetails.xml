@@ -90,6 +90,8 @@
         <beforeRender class="com.qcadoo.plugins.users.internal.UserService"
                       method="disableFormForAdmin"/>
         <beforeRender class="com.qcadoo.plugins.users.internal.UserService"
+                      method="disableFormForSuperadmin"/>
+        <beforeRender class="com.qcadoo.plugins.users.internal.UserService"
                       method="showPermissionTypeForGroup"/>
     </hooks>
 
