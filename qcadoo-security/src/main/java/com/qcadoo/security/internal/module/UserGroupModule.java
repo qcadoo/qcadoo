@@ -28,6 +28,7 @@ import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.search.SearchRestrictions;
 import com.qcadoo.plugin.api.Module;
+import com.qcadoo.security.constants.QcadooSecurityConstants;
 
 public class UserGroupModule extends Module {
 
@@ -54,18 +55,18 @@ public class UserGroupModule extends Module {
 
     @Override
     public void multiTenantEnable() {
-        if (dataDefinitionService.get("qcadooSecurity", "group").find().add(SearchRestrictions.eq("identifier", identifier))
+        if (dataDefinitionService.get(QcadooSecurityConstants.PLUGIN_IDENTIFIER, QcadooSecurityConstants.MODEL_GROUP).find().add(SearchRestrictions.eq("identifier", identifier))
                 .list().getTotalNumberOfEntities() > 0) {
             return;
         }
 
-        Entity entity = dataDefinitionService.get("qcadooSecurity", "group").create();
+        Entity entity = dataDefinitionService.get(QcadooSecurityConstants.PLUGIN_IDENTIFIER, QcadooSecurityConstants.MODEL_GROUP).create();
         entity.setField("name", name);
         entity.setField("identifier", identifier);
         entity.setField("permissionType", permissionType);
-        DataDefinition roleDD = dataDefinitionService.get("qcadooSecurity", "role");
+        DataDefinition roleDD = dataDefinitionService.get(QcadooSecurityConstants.PLUGIN_IDENTIFIER, "role");
         entity.setField("roles", roleDD.find().add(SearchRestrictions.in("identifier", (Object[]) roles.split(","))).list()
                 .getEntities());
-        dataDefinitionService.get("qcadooSecurity", "group").save(entity);
+        dataDefinitionService.get(QcadooSecurityConstants.PLUGIN_IDENTIFIER, QcadooSecurityConstants.MODEL_GROUP).save(entity);
     }
 }

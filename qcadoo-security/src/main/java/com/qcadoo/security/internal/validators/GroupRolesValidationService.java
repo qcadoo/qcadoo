@@ -47,12 +47,14 @@ public class GroupRolesValidationService {
     private DataDefinitionService dataDefinitionService;
 
     public boolean checkUserAddingRoleSuperadmin(final DataDefinition dataDefinition, final Entity entity) {
+        if (isCalledFromSecurityModules() || isCurrentUserSuperAdmin(dataDefinitionService.get(QcadooSecurityConstants.PLUGIN_IDENTIFIER,
+                QcadooSecurityConstants.MODEL_USER))) {
+            return true;
+        }
         Boolean isRoleSuperadminInNewGroup = hasRoleSuperAdmin(entity);
         Boolean isRoleSuperadminInOldGroup = entity.getId() != null && hasRoleSuperAdmin(dataDefinition.get(entity.getId()));
 
-        if (Objects.equal(isRoleSuperadminInNewGroup, isRoleSuperadminInOldGroup)
-                || isCurrentUserSuperAdmin(dataDefinitionService.get(QcadooSecurityConstants.PLUGIN_IDENTIFIER,
-                        QcadooSecurityConstants.MODEL_USER))) {
+        if (Objects.equal(isRoleSuperadminInNewGroup, isRoleSuperadminInOldGroup)) {
             return true;
         }
 
@@ -72,11 +74,12 @@ public class GroupRolesValidationService {
 
     private boolean isCurrentUserSuperAdmin(final DataDefinition userDataDefinition) {
         final Long currentUserId = securityService.getCurrentUserId();
-        if(currentUserId == null){
-            return false;
-        }
         final Entity currentUserEntity = userDataDefinition.get(currentUserId);
         return securityService.hasRole(currentUserEntity, QcadooSecurityConstants.ROLE_SUPERADMIN);
+    }
+
+    private boolean isCalledFromSecurityModules() {
+        return SecurityContextHolder.getContext().getAuthentication() == null;
     }
 
 }

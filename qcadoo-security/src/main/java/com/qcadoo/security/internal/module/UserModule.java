@@ -27,6 +27,7 @@ import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.search.SearchRestrictions;
 import com.qcadoo.plugin.api.Module;
+import com.qcadoo.security.constants.QcadooSecurityConstants;
 
 public class UserModule extends Module {
 
@@ -59,15 +60,15 @@ public class UserModule extends Module {
 
     @Override
     public void multiTenantEnable() {
-        if (dataDefinitionService.get("qcadooSecurity", "user").find().add(SearchRestrictions.eq("userName", login)).list()
+        if (dataDefinitionService.get(QcadooSecurityConstants.PLUGIN_IDENTIFIER, QcadooSecurityConstants.MODEL_USER).find().add(SearchRestrictions.eq("userName", login)).list()
                 .getTotalNumberOfEntities() > 0) {
             return;
         }
 
-        Entity group = dataDefinitionService.get("qcadooSecurity", "group").find()
+        Entity group = dataDefinitionService.get(QcadooSecurityConstants.PLUGIN_IDENTIFIER, "group").find()
                 .add(SearchRestrictions.eq("identifier", groupIdentifier)).list().getEntities().get(0);
 
-        Entity entity = dataDefinitionService.get("qcadooSecurity", "user").create();
+        Entity entity = dataDefinitionService.get(QcadooSecurityConstants.PLUGIN_IDENTIFIER, QcadooSecurityConstants.MODEL_USER).create();
         entity.setField("userName", login);
         entity.setField("email", email);
         entity.setField("firstName", firstName);
@@ -76,6 +77,6 @@ public class UserModule extends Module {
         entity.setField("passwordConfirmation", password);
         entity.setField("enabled", true);
         entity.setField("group", group);
-        dataDefinitionService.get("qcadooSecurity", "user").save(entity);
+        dataDefinitionService.get(QcadooSecurityConstants.PLUGIN_IDENTIFIER, QcadooSecurityConstants.MODEL_USER).save(entity);
     }
 }

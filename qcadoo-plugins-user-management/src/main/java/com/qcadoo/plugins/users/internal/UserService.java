@@ -32,6 +32,7 @@ import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.security.api.SecurityService;
 import com.qcadoo.security.constants.GroupFields;
+import com.qcadoo.security.constants.PermissionType;
 import com.qcadoo.security.constants.QcadooSecurityConstants;
 import com.qcadoo.security.constants.UserFields;
 import com.qcadoo.view.api.ComponentState;
@@ -113,13 +114,16 @@ public final class UserService {
         FormComponent form = (FormComponent) state.getComponentByReference(QcadooViewConstants.L_FORM);
 
         Long viewedUserId = form.getEntityId();
-        Entity viewedUser = dataDefinitionService.get(QcadooSecurityConstants.PLUGIN_IDENTIFIER,
-                QcadooSecurityConstants.MODEL_USER).get(viewedUserId);
-        Entity loggedUser = dataDefinitionService.get(QcadooSecurityConstants.PLUGIN_IDENTIFIER,
-                QcadooSecurityConstants.MODEL_USER).get(securityService.getCurrentUserId());
+        if (viewedUserId != null) {
+            Entity viewedUser = dataDefinitionService.get(QcadooSecurityConstants.PLUGIN_IDENTIFIER,
+                    QcadooSecurityConstants.MODEL_USER).get(viewedUserId);
+            Entity loggedUser = dataDefinitionService.get(QcadooSecurityConstants.PLUGIN_IDENTIFIER,
+                    QcadooSecurityConstants.MODEL_USER).get(securityService.getCurrentUserId());
 
-        if (!securityService.hasRole(loggedUser, "ROLE_SUPERADMIN") && securityService.hasRole(viewedUser, "ROLE_SUPERADMIN")) {
-            form.setFormEnabled(false);
+            if (!securityService.hasRole(loggedUser, "ROLE_SUPERADMIN") && (securityService.hasRole(viewedUser, "ROLE_SUPERADMIN")
+                    || PermissionType.SUPER_ADMIN.getStringValue().equals(viewedUser.getBelongsToField(UserFields.GROUP).getStringField(GroupFields.PERMISSION_TYPE)))) {
+                form.setFormEnabled(false);
+            }
         }
     }
 
