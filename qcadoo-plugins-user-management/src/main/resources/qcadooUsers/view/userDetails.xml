@@ -32,7 +32,7 @@
 
         <ribbon>
             <group template="navigation"/>
-            <group template="formSaveAndRemoveActions" defaultAuthorizationRole="ROLE_USERS_EDIT"/>
+            <group template="formSaveAndRemoveActions" defaultAuthorizationRole="ROLE_ADMIN"/>
         </ribbon>
 
         <component type="form" name="user" reference="form">
@@ -93,6 +93,8 @@
                       method="disableFormForSuperadmin"/>
         <beforeRender class="com.qcadoo.plugins.users.internal.UserService"
                       method="showPermissionTypeForGroup"/>
+        <beforeRender class="com.qcadoo.plugins.users.internal.UserService"
+                      method="setupRibbonForAdmins"/>
     </hooks>
 
 </view>

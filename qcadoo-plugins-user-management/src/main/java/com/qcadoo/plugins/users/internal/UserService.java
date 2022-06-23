@@ -140,4 +140,15 @@ public final class UserService {
         }
     }
 
+    public void setupRibbonForAdmins(final ViewDefinitionState state) {
+        WindowComponent window = (WindowComponent) state.getComponentByReference(QcadooViewConstants.L_WINDOW);
+        if(!securityService.hasCurrentUserRole("ROLE_USERS_EDIT") && securityService.hasCurrentUserRole("ROLE_ADMIN")){
+            RibbonGroup actions = window.getRibbon().getGroupByName("actions");
+            for (RibbonActionItem actionItem : actions.getItems()) {
+                actionItem.setEnabled(false);
+                actionItem.requestUpdate(true);
+            }
+        }
+    }
+
 }
