@@ -26,13 +26,13 @@
 -->
 <plugin plugin="qcadooUsers" group="framework" version="${qcadoo.plugin.version}"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schema.qcadoo.org/plugin"
-	xmlns:model="http://schema.qcadoo.org/modules/model" xmlns:view="http://schema.qcadoo.org/modules/view"
+    xmlns:security="http://schema.qcadoo.org/modules/security" xmlns:view="http://schema.qcadoo.org/modules/view"
 	xmlns:menu="http://schema.qcadoo.org/modules/menu" xmlns:localization="http://schema.qcadoo.org/modules/localization"
 	xsi:schemaLocation="
 		http://schema.qcadoo.org/plugin 
 		http://schema.qcadoo.org/plugin.xsd 
-		http://schema.qcadoo.org/modules/model 
-		http://schema.qcadoo.org/modules/model.xsd 
+		http://schema.qcadoo.org/modules/security
+		http://schema.qcadoo.org/modules/security.xsd
 		http://schema.qcadoo.org/modules/view 
 		http://schema.qcadoo.org/modules/view.xsd 
 		http://schema.qcadoo.org/modules/localization 
@@ -58,6 +58,8 @@
 	</dependencies>
 
 	<modules>
+		<security:role identifier="ROLE_USERS_EDIT"/>
+
 		<localization:translation path="locales" />
 
 		<menu:menu-item name="users" category="administration"

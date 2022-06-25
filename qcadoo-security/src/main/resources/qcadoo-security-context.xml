@@ -164,9 +164,7 @@
         <property name="authenticationFailureHandler" ref="failureHandler"/>
         <property name="authenticationSuccessHandler" ref="successHandler"/>
         <property name="rememberMeServices" ref="rememberMeServices"/>
-        <property name="sessionAuthenticationStrategy">
-            <bean class="org.springframework.security.web.authentication.session.SessionFixationProtectionStrategy"/>
-        </property>
+        <property name="sessionAuthenticationStrategy" ref="sas"/>
     </bean>
 
     <bean id="sas" class="org.springframework.security.web.authentication.session.CompositeSessionAuthenticationStrategy">

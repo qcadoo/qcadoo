@@ -240,17 +240,6 @@ public class UserRoleValidationServiceTest {
     }
 
     @Test
-    public final void shouldMarkTransitionFromBlankToSuperadminAsValidWhenPerformedByShop() {
-        stubRoleTransition(" ", ROLE_SUPERADMIN);
-
-        // when
-        final boolean isValid = userRoleValidationService.checkUserCreatingSuperadmin(userDataDefMock, userEntityMock);
-
-        // then
-        assertTrue(isValid);
-    }
-
-    @Test
     public final void shouldMarkTransitionFromSuperadminToSuperadminAsValidWhenPerformedByNonSuperadmin() {
         // given
         stubSecurityContextWithAuthentication();
@@ -354,18 +343,6 @@ public class UserRoleValidationServiceTest {
         // then
         assertFalse(isValid);
         verify(userEntityMock).addError(Mockito.eq(userRoleFieldDefMock), Mockito.anyString());
-    }
-
-    @Test
-    public final void shouldMarkTransitionFromNonSuperadminToSuperadminAsValidWhenPerformedByShop() {
-        // given
-        stubRoleTransition("99anyOtherRole", ROLE_SUPERADMIN);
-
-        // when
-        final boolean isValid = userRoleValidationService.checkUserCreatingSuperadmin(userDataDefMock, userEntityMock);
-
-        // then
-        assertTrue(isValid);
     }
 
     @Test

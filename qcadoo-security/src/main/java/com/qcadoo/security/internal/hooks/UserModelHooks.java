@@ -28,7 +28,9 @@ import com.qcadoo.mail.api.MailService;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.security.api.SecurityService;
+import com.qcadoo.security.constants.GroupFields;
 import com.qcadoo.security.constants.UserFields;
+
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -37,6 +39,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -72,6 +77,11 @@ public class UserModelHooks {
             return false;
         }
 
+        if (user.getDateField(UserFields.LAST_ACTIVITY) != null) {
+            user.addGlobalError("security.message.error.deletionOfUsedUser");
+            return false;
+        }
+
         return true;
     }
 
@@ -86,6 +96,20 @@ public class UserModelHooks {
         if (StringUtils.isBlank(fieldValue)) {
             user.setField(fieldName, user.getStringField(UserFields.USER_NAME));
         }
+    }
+
+    public boolean validateGroupChangeDate(final DataDefinition userDD, final Entity user) {
+        if (user.getId() == null) {
+            user.setField(UserFields.GROUP_CHANGE_DATE, new Date());
+        } else if (!userDD.get(user.getId()).getBelongsToField(UserFields.GROUP).getStringField(GroupFields.PERMISSION_TYPE).equals(user.getBelongsToField(UserFields.GROUP).getStringField(GroupFields.PERMISSION_TYPE))) {
+            if (user.getDateField(UserFields.GROUP_CHANGE_DATE).toInstant().atZone(ZoneId.systemDefault()).toLocalDate().isAfter(LocalDate.now().minusDays(7))) {
+                user.addError(userDD.getField(UserFields.GROUP), "qcadooUsers.validate.global.error.forbiddenGroupChange");
+                return false;
+            } else {
+                user.setField(UserFields.GROUP_CHANGE_DATE, new Date());
+            }
+        }
+        return true;
     }
 
     public void checkIfEmailNotificationShouldBeSent(final DataDefinition userDD, final Entity user) {

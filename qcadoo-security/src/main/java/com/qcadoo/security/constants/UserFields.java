@@ -57,4 +57,6 @@ public final class UserFields {
 
 	public static final String PASSWORD_RESET_TOKENS = "passwordResetTokens";
 
+	public static final String GROUP_CHANGE_DATE = "groupChangeDate";
+
 }

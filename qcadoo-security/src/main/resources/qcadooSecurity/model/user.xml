@@ -48,6 +48,7 @@
 		<password name="oldPassword" persistent="false" />
 		<string name="viewIdentifier" persistent="false" />
 		<datetime name="lastActivity" />
+		<datetime name="groupChangeDate" />
 		<string name="ipAddress" />
 		<belongsTo name="group" model="group" required="true"/>
 		<hasMany name="passwordResetTokens" model="passwordResetToken" joinField="user" cascade="delete"/>
@@ -58,6 +59,8 @@
 			method="checkPassword" />
 		<validatesWith class="com.qcadoo.security.internal.validators.UserRoleValidationService"
 			method="checkUserCreatingSuperadmin" />
+		<validatesWith class="com.qcadoo.security.internal.hooks.UserModelHooks"
+		               method="validateGroupChangeDate" />
 
         <onCreate class="com.qcadoo.security.internal.hooks.UserModelHooks"
             method="setDefaultNames" />

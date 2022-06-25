@@ -33,6 +33,7 @@ import com.qcadoo.model.api.search.SearchCriteriaBuilder;
 import com.qcadoo.model.api.search.SearchRestrictions;
 import com.qcadoo.security.api.SecurityService;
 import com.qcadoo.security.constants.GroupFields;
+import com.qcadoo.security.constants.PermissionType;
 import com.qcadoo.security.constants.QcadooSecurityConstants;
 import com.qcadoo.security.constants.UserFields;
 import com.qcadoo.view.api.components.lookup.FilterValueHolder;
@@ -46,17 +47,12 @@ public class UserCriteriaModifiers {
     @Autowired
     private DataDefinitionService dataDefinitionService;
 
-    public void criteriaForRole(final SearchCriteriaBuilder scb, final FilterValueHolder filterValue) {
-
+    public void criteriaForGroup(final SearchCriteriaBuilder scb, final FilterValueHolder filterValue) {
         Entity loggedUser = dataDefinitionService
                 .get(QcadooSecurityConstants.PLUGIN_IDENTIFIER, QcadooSecurityConstants.MODEL_USER).get(
                         securityService.getCurrentUserId());
-        Entity superAdminGroup = dataDefinitionService
-                .get(QcadooSecurityConstants.PLUGIN_IDENTIFIER, QcadooSecurityConstants.MODEL_GROUP).find().add(
-                        SearchRestrictions.eq(GroupFields.IDENTIFIER, "SUPER_ADMIN")).setMaxResults(1).uniqueResult();
-        if (securityService.hasRole(loggedUser, "ROLE_ADMIN")) {
-            scb.createAlias(UserFields.GROUP, "gr", JoinType.INNER);
-            scb.add(SearchRestrictions.ne("gr.id", superAdminGroup.getId()));
+        if (!securityService.hasRole(loggedUser, "ROLE_SUPERADMIN")) {
+            scb.add(SearchRestrictions.ne(GroupFields.PERMISSION_TYPE, PermissionType.SUPER_ADMIN.getStringValue()));
         }
 
     }
