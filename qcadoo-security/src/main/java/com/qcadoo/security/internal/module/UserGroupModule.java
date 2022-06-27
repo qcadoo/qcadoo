@@ -28,7 +28,9 @@ import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.search.SearchRestrictions;
 import com.qcadoo.plugin.api.Module;
+import com.qcadoo.security.constants.GroupFields;
 import com.qcadoo.security.constants.QcadooSecurityConstants;
+import com.qcadoo.security.constants.RoleFields;
 
 public class UserGroupModule extends Module {
 
@@ -43,7 +45,7 @@ public class UserGroupModule extends Module {
     private final DataDefinitionService dataDefinitionService;
 
     public UserGroupModule(final String name, final String identifier, final String roles, final String permissionType,
-            final DataDefinitionService dataDefinitionService) {
+                           final DataDefinitionService dataDefinitionService) {
         super();
 
         this.name = name;
@@ -55,17 +57,17 @@ public class UserGroupModule extends Module {
 
     @Override
     public void multiTenantEnable() {
-        if (dataDefinitionService.get(QcadooSecurityConstants.PLUGIN_IDENTIFIER, QcadooSecurityConstants.MODEL_GROUP).find().add(SearchRestrictions.eq("identifier", identifier))
+        if (dataDefinitionService.get(QcadooSecurityConstants.PLUGIN_IDENTIFIER, QcadooSecurityConstants.MODEL_GROUP).find().add(SearchRestrictions.eq(GroupFields.IDENTIFIER, identifier))
                 .list().getTotalNumberOfEntities() > 0) {
             return;
         }
 
         Entity entity = dataDefinitionService.get(QcadooSecurityConstants.PLUGIN_IDENTIFIER, QcadooSecurityConstants.MODEL_GROUP).create();
         entity.setField("name", name);
-        entity.setField("identifier", identifier);
+        entity.setField(GroupFields.IDENTIFIER, identifier);
         entity.setField("permissionType", permissionType);
         DataDefinition roleDD = dataDefinitionService.get(QcadooSecurityConstants.PLUGIN_IDENTIFIER, "role");
-        entity.setField("roles", roleDD.find().add(SearchRestrictions.in("identifier", (Object[]) roles.split(","))).list()
+        entity.setField("roles", roleDD.find().add(SearchRestrictions.in(RoleFields.IDENTIFIER, (Object[]) roles.split(","))).list()
                 .getEntities());
         dataDefinitionService.get(QcadooSecurityConstants.PLUGIN_IDENTIFIER, QcadooSecurityConstants.MODEL_GROUP).save(entity);
     }
