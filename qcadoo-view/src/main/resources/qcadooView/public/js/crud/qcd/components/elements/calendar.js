@@ -266,8 +266,11 @@ QCD.components.elements.Calendar = function (element, mainController) {
         $.mask.definitions['2'] = '[0-2]';
         $.mask.definitions['3'] = '[0-3]';
         $.mask.definitions['6'] = '[0-5]';
-        
-        options = $.datepicker.regional[window.locale];
+
+        var locale = (window.locale == 'cn') ? 'zh-CN' : window.locale;
+
+        options = $.datepicker.regional[locale];
+
         if (!options) {
             options = $.datepicker.regional[''];
         }

@@ -1913,6 +1913,8 @@ function updateLocale(name, config) {
 
 // returns locale data
 function getLocale (key) {
+    key = (key == 'cn') ? 'zh-cn' : key;
+
     var locale;
 
     if (key && key._locale && key._locale._abbr) {
