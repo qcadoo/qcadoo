@@ -1148,7 +1148,7 @@ jQuery(function($){
 		firstDay: 1,
 		isRTL: false,
 		showMonthAfterYear: true,
-		yearSuffix: '年'};
+		yearSuffix: ''};
 	$.datepicker.setDefaults($.datepicker.regional['zh-CN']);
 });
 /* Chinese initialisation for the jQuery UI date picker plugin. */
