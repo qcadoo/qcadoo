@@ -24,7 +24,6 @@
 package com.qcadoo.plugins.users.internal;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.qcadoo.localization.api.TranslationService;
@@ -142,7 +141,7 @@ public final class UserService {
 
     public void setupRibbonForAdmins(final ViewDefinitionState state) {
         WindowComponent window = (WindowComponent) state.getComponentByReference(QcadooViewConstants.L_WINDOW);
-        if(!securityService.hasCurrentUserRole("ROLE_USERS_EDIT") && securityService.hasCurrentUserRole("ROLE_ADMIN")){
+        if (!securityService.hasCurrentUserRole("ROLE_USERS_EDIT") && securityService.hasCurrentUserRole("ROLE_ADMIN")) {
             RibbonGroup actions = window.getRibbon().getGroupByName("actions");
             for (RibbonActionItem actionItem : actions.getItems()) {
                 actionItem.setEnabled(false);

@@ -51,8 +51,12 @@ public class FileInputComponentState extends FieldComponentState {
         JSONObject json = super.renderContent();
 
         if (Objects.nonNull(getFieldValue()) && StringUtils.hasText((String) getFieldValue())) {
-            String securedUrl = FileAccessUtils.getInstance().getFileAccessService()
-                    .createSecuredUrl(FileUtils.getInstance().getUrl((String) getFieldValue()));
+            String url = FileUtils.getInstance().getUrl((String) getFieldValue());
+            String securedUrl = null;
+
+            if (Objects.nonNull(url)) {
+                securedUrl = FileAccessUtils.getInstance().getFileAccessService().createSecuredUrl(url);
+            }
 
             json.put(JSON_FILE_NAME, FileUtils.getInstance().getName((String) getFieldValue()));
             json.put(JSON_FILE_URL, securedUrl);
