@@ -1803,7 +1803,8 @@
             }
 
             if (!moment.localeData(locale)) {
-                throw new TypeError('locale() locale ' + locale + ' is not loaded from moment locales!');
+                options.locale = 'en';
+                //throw new TypeError('locale() locale ' + locale + ' is not loaded from moment locales!');
             }
 
             options.locale = locale;
