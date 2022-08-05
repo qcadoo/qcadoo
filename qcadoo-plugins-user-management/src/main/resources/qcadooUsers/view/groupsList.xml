@@ -53,6 +53,7 @@
 			<option type="correspondingComponent" value="form"/>
 
 			<option type="fullscreen" value="true"/>
+			<option type="multiselect" value="true"/>
 		</component>
 
 		<option type="fixedHeight" value="true"/>
