@@ -166,6 +166,11 @@ public final class ProxyEntity implements Entity, EntityAwareCopyPerformers, Ent
     }
 
     @Override
+    public void setCopied(final boolean copied) {
+        getEntity().setCopied(copied);
+    }
+
+    @Override
     public Entity copy() {
         return copy(new PerformerEntitiesChainImpl(this));
     }
@@ -263,6 +268,11 @@ public final class ProxyEntity implements Entity, EntityAwareCopyPerformers, Ent
 
     private boolean definitionsAreEquals(final Entity other) {
         return new EqualsBuilder().append(id, other.getId()).append(dataDefinition, other.getDataDefinition()).isEquals();
+    }
+
+    @Override
+    public boolean isCopied() {
+        return false;
     }
 
     @Override

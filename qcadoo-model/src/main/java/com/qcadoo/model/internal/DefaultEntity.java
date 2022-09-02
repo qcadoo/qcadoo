@@ -56,6 +56,8 @@ public final class DefaultEntity implements Entity, EntityAwareCopyPerformers, E
 
     private boolean active = true;
 
+    private boolean isCopied = false;
+
     public DefaultEntity(final DataDefinition dataDefinition, final Long id, final Map<String, Object> fields) {
         this.dataDefinition = dataDefinition;
         this.id = id;
@@ -83,6 +85,10 @@ public final class DefaultEntity implements Entity, EntityAwareCopyPerformers, E
     @Override
     public void setActive(final boolean active) {
         this.active = active;
+    }
+    @Override
+    public void setCopied(final boolean copied) {
+        this.isCopied = copied;
     }
 
     @Override
@@ -475,6 +481,11 @@ public final class DefaultEntity implements Entity, EntityAwareCopyPerformers, E
         }
         throw new IllegalArgumentException("Field " + fieldName + " in " + dataDefinition.getPluginIdentifier() + '.'
                 + dataDefinition.getName() + " does not contain correct Date value");
+    }
+
+    @Override
+    public boolean isCopied() {
+        return isCopied;
     }
 
 }
