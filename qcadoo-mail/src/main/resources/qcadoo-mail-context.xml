@@ -50,7 +50,8 @@
 				<prop key="mail.transport.protocol">${mail.transport.protocol}</prop>
 				<prop key="mail.smtp.auth">${mail.smtp.auth}</prop>
 				<prop key="mail.smtp.starttls.enable">${mail.smtp.tls}</prop>
-				<prop key="mail.smtp.ssl.protocols">TLSv1.2</prop>
+				<prop key="mail.smtp.ssl.enable">${mail.smtp.ssl}</prop>
+				<prop key="mail.smtp.ssl.protocols">${mail.smtp.protocols}</prop>
 				<prop key="mail.debug">${mail.debug}</prop>
 			</props>
 		</property>
