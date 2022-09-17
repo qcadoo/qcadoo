@@ -216,6 +216,11 @@ public final class EntityTreeNodeImpl implements EntityTreeNode, EntityAwareCopy
     }
 
     @Override
+    public void setCopied(final boolean copied) {
+        entity.setCopied(copied);
+    }
+
+    @Override
     public EntityTreeNodeImpl copy() {
         return copy(new PerformerEntitiesChainImpl(this));
     }
@@ -268,4 +273,8 @@ public final class EntityTreeNodeImpl implements EntityTreeNode, EntityAwareCopy
         return entity.getDateField(fieldName);
     }
 
+    @Override
+    public boolean isCopied() {
+        return entity.isCopied();
+    }
 }

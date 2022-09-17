@@ -515,7 +515,6 @@ public class DataAccessServiceImpl implements DataAccessService {
             if (!targetEntity.isValid()) {
                 throw new CopyException(targetEntity);
             }
-
             copiedEntities.add(targetEntity);
         }
 
@@ -526,6 +525,7 @@ public class DataAccessServiceImpl implements DataAccessService {
         InternalDataDefinition dataDefinitionToCopy = getDataDefinitionByMasterModel(dataDefinition);
 
         Entity targetEntity = dataDefinitionToCopy.create();
+        targetEntity.setCopied(true);
 
         for (Entry<String, FieldDefinition> fieldEntry : dataDefinitionToCopy.getFields().entrySet()) {
             FieldDefinition fieldDefinition = fieldEntry.getValue();

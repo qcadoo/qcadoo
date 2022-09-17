@@ -227,4 +227,8 @@ public interface Entity extends EntityMessagesHolder {
      */
     boolean isActive();
 
+    boolean isCopied();
+
+    void setCopied(boolean copied);
+
 }
