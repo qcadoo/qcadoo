@@ -39,6 +39,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
@@ -60,6 +61,8 @@ public class UserModelHooks {
 
     private static final String L_QCADOOSECURITY_USER_IMPORTANT_FIELD_CHANGE_MAIL_BODY = "qcadooSecurity.user.importantFieldChange.mailBody";
 
+    @Autowired
+    private HttpServletRequest httpServletRequest;
 
     @Autowired
     private SecurityService securityService;
@@ -166,9 +169,13 @@ public class UserModelHooks {
         String fieldTranslated = translationService.translate(L_QCADOOSECURITY_USER + fieldName + L_LABEL, locale);
 
         String topic = translationService.translate(L_QCADOOSECURITY_USER_IMPORTANT_FIELD_CHANGE_MAIL_TOPIC, locale, fieldTranslated);
-        String body = translationService.translate(L_QCADOOSECURITY_USER_IMPORTANT_FIELD_CHANGE_MAIL_BODY, locale, fieldTranslated);
+        String body = translationService.translate(L_QCADOOSECURITY_USER_IMPORTANT_FIELD_CHANGE_MAIL_BODY, locale, fieldTranslated, getApplicationUrl());
 
         mailService.sendEmail(email, topic, body);
+    }
+
+    private String getApplicationUrl() {
+        return new StringBuilder(httpServletRequest.getScheme()).append("://").append(httpServletRequest.getServerName()).toString();
     }
 
 }
