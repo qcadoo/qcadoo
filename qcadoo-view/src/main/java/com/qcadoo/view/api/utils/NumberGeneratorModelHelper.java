@@ -47,12 +47,12 @@ public class NumberGeneratorModelHelper {
 
     private static final String GET_PREFIX_AWARE_NUMBERS_QUERY_TEMPLATE = "select "
             + "distinct trim(LEADING '0' from substring(${NUMBER_FIELD}, ${NUMBER_STARTS_AT})) as ${NUM_PROJECTION_ALIAS} "
-            + "from #${PLUGIN_IDENTIFIER}_${MODEL_NAME} " + "where ${NUMBER_FIELD} like '${PREFIX}%'"
+            + "from #${PLUGIN_IDENTIFIER}_${MODEL_NAME} " + "where lower(${NUMBER_FIELD}) like '${PREFIX}%'"
             + "order by ${NUM_PROJECTION_ALIAS} desc";
 
     private static final String GET_SUFFIX_AWARE_NUMBERS_QUERY_TEMPLATE = "select "
             + "distinct trim(LEADING '0' from substring(${NUMBER_FIELD}, 1, locate('${SUFFIX}', ${NUMBER_FIELD}) - 1)) as ${NUM_PROJECTION_ALIAS} "
-            + "from #${PLUGIN_IDENTIFIER}_${MODEL_NAME} " + "where ${NUMBER_FIELD} like '%${SUFFIX}'"
+            + "from #${PLUGIN_IDENTIFIER}_${MODEL_NAME} " + "where lower(${NUMBER_FIELD}) like '%${SUFFIX}'"
             + "order by ${NUM_PROJECTION_ALIAS} desc";
 
     @Autowired
@@ -93,12 +93,14 @@ public class NumberGeneratorModelHelper {
 
         String query;
         if (StringUtils.isNotEmpty(prefix)) {
-            placeholderValues.put("PREFIX", prefix);
-            int prefixLength = StringUtils.length(prefix);
+            String prefixLower = prefix.toLowerCase();
+            placeholderValues.put("PREFIX", prefixLower);
+            int prefixLength = StringUtils.length(prefixLower);
             placeholderValues.put("NUMBER_STARTS_AT", String.valueOf(prefixLength + 1));
             query = GET_PREFIX_AWARE_NUMBERS_QUERY_TEMPLATE;
         } else if (StringUtils.isNotEmpty(suffix)) {
-            placeholderValues.put("SUFFIX", suffix);
+            String suffixLower = suffix.toLowerCase();
+            placeholderValues.put("SUFFIX", suffixLower);
             query = GET_SUFFIX_AWARE_NUMBERS_QUERY_TEMPLATE;
         } else {
             query = GET_NUMBERS_QUERY_TEMPLATE;
