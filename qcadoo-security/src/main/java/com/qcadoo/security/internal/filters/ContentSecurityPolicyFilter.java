@@ -12,6 +12,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.List;
+import java.util.Objects;
 
 public class ContentSecurityPolicyFilter implements Filter {
 
@@ -203,9 +204,11 @@ public class ContentSecurityPolicyFilter implements Filter {
         }
 
         // If resource is a frame add Frame/Sandbox CSP policy
-        if (INCLUDE_SECURE_FRAMES) {
+        String userAgent = httpServletRequest.getHeader("User-Agent");
+
+        if (INCLUDE_SECURE_FRAMES && Objects.nonNull(userAgent)) {
             // Frame + Sandbox : Here sandbox allow nothing, customize sandbox options depending on your app....
-            if (httpServletRequest.getHeader("User-Agent").contains("Edge")) {
+            if (userAgent.contains("Edge")) {
                 policiesBuffer.append(";").append("frame-src 'self'");
             } else {
                 policiesBuffer.append(";").append("child-src 'self'");
@@ -215,7 +218,7 @@ public class ContentSecurityPolicyFilter implements Filter {
                 }
             }
 
-            if (includeSandboxForFrames && !httpServletRequest.getHeader("User-Agent").contains("Trident")) {
+            if (includeSandboxForFrames && !userAgent.contains("Trident")) {
                 policiesBuffer.append(";").append("sandbox allow-scripts allow-modals allow-same-origin allow-forms allow-popups allow-top-navigation-by-user-activation allow-popups-to-escape-sandbox allow-downloads");
             }
         }
