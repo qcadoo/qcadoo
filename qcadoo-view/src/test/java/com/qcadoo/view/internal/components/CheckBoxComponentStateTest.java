@@ -23,15 +23,14 @@
  */
 package com.qcadoo.view.internal.components;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.context.ApplicationContext;
+
+import static org.junit.Assert.*;
+import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 public class CheckBoxComponentStateTest {
 
@@ -40,9 +39,14 @@ public class CheckBoxComponentStateTest {
     @Mock
     private FieldComponentPattern pattern;
 
+    @Mock
+    private ApplicationContext applicationContext;
+
     @Before
     public final void init() {
         MockitoAnnotations.initMocks(this);
+
+        setField(pattern, "applicationContext", applicationContext);
 
         this.checkBoxComponentState = new CheckBoxComponentState(pattern);
     }
@@ -118,4 +122,5 @@ public class CheckBoxComponentStateTest {
         // then
         assertNull(fieldValue);
     }
+
 }

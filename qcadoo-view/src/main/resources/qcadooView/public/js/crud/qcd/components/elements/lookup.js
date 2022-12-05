@@ -201,13 +201,11 @@ QCD.components.elements.Lookup = function(_element, _mainController) {
 					: dataState.currentCode;
 		}
 		dataState.selectedEntity.id = data.value ? data.value : null;
-		dataState.selectedEntity.value = data.selectedEntityValue;
-		dataState.selectedEntity.code = data.selectedEntityCode;
+		dataState.selectedEntity.value = jQuery('<div/>').html(data.selectedEntityValue).text();
+        dataState.selectedEntity.code = jQuery('<div/>').html(data.selectedEntityCode).text();
 		dataState.selectedEntity.active = data.selectedEntityActive;
-		dataState.autocomplete.matches = data.autocompleteMatches ? data.autocompleteMatches
-				: [];
-		dataState.autocomplete.code = data.autocompleteCode ? data.autocompleteCode
-				: "";
+		dataState.autocomplete.matches = data.autocompleteMatches ? data.autocompleteMatches : [];
+		dataState.autocomplete.code = data.autocompleteCode ? jQuery('<div/>').html(data.autocompleteCode).text() : "";
 		dataState.autocomplete.entitiesNumber = data.autocompleteEntitiesNumber;
 		dataState.criteriaModifierParameter = data.criteriaModifierParameter;
 		if (dataState.contextEntityId != data.contextEntityId) {
@@ -280,10 +278,12 @@ QCD.components.elements.Lookup = function(_element, _mainController) {
 
 				} else if (lookupDropdown.getMouseSelected()) {
 					performSelectEntity(lookupDropdown.getMouseSelected());
-					dataState.currentCode = lookupDropdown.getMouseSelected().code;
+					var decodedValue = jQuery('<div/>').html(lookupDropdown.getMouseSelected().code).text();
+                    dataState.currentCode = decodedValue;
 				} else if (lookupDropdown.getSelected()) {
-					performSelectEntity(lookupDropdown.getSelected());
-					dataState.currentCode = lookupDropdown.getSelected().code;
+                    performSelectEntity(lookupDropdown.getSelected());
+                    var decodedValue = jQuery('<div/>').html(lookupDropdown.getSelected().code).text();
+                    dataState.currentCode = decodedValue;
 				}
 				elements.input.val(stripHTML(dataState.selectedEntity.value));
 				elements.text.html(dataState.selectedEntity.value);
@@ -370,8 +370,8 @@ QCD.components.elements.Lookup = function(_element, _mainController) {
 		}
 		if (entity) {
 			dataState.selectedEntity.id = entity.id;
-			dataState.selectedEntity.code = entity.code;
-			dataState.selectedEntity.value = entity.value;
+			dataState.selectedEntity.code = jQuery('<div/>').html(entity.code).text();
+            dataState.selectedEntity.value = jQuery('<div/>').html(entity.value).text();
 			dataState.selectedEntity.active = entity.active;
 		} else {
 			dataState.selectedEntity.id = null;

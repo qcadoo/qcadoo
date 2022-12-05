@@ -23,6 +23,7 @@
  */
 package com.qcadoo.view.internal.components.lookup;
 
+import com.google.common.collect.Lists;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.FieldDefinition;
 import com.qcadoo.model.api.expression.ExpressionUtils;
@@ -34,17 +35,17 @@ import com.qcadoo.model.api.search.SearchResult;
 import com.qcadoo.model.api.types.BelongsToType;
 import com.qcadoo.view.api.components.LookupComponent;
 import com.qcadoo.view.api.components.lookup.FilterValueHolder;
+import com.qcadoo.view.api.utils.SecurityEscapeService;
 import com.qcadoo.view.internal.CriteriaModifier;
 import com.qcadoo.view.internal.FilterValueHolderImpl;
 import com.qcadoo.view.internal.components.FieldComponentState;
-
-import java.util.LinkedList;
-import java.util.List;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.util.StringUtils;
+
+import java.util.List;
+import java.util.Objects;
 
 public final class LookupComponentState extends FieldComponentState implements LookupComponent {
 
@@ -107,16 +108,21 @@ public final class LookupComponentState extends FieldComponentState implements L
     private final CriteriaModifier criteriaModifier;
 
     private final FilterValueHolder criteriaModifierParameter;
-    
+
+    private final SecurityEscapeService securityEscapeService;
+
     public LookupComponentState(final FieldDefinition scopeField, final String fieldCode, final String expression,
-            final LookupComponentPattern pattern) {
+                                final LookupComponentPattern pattern) {
         super(pattern);
+
         this.belongsToFieldDefinition = scopeField;
         this.fieldCode = fieldCode;
         this.expression = expression;
         this.criteriaModifier = pattern.getCriteriaModifier();
-        this.criteriaModifierParameter = this.criteriaModifier != null ? new FilterValueHolderImpl() : null;
+        this.criteriaModifierParameter = Objects.nonNull(this.criteriaModifier) ? new FilterValueHolderImpl() : null;
         this.onlyActive = pattern.isOnlyActive();
+        this.securityEscapeService = pattern.getApplicationContext().getBean(SecurityEscapeService.class);
+
         registerEvent("initialize", eventPerformer, "initialize");
         registerEvent("autompleteSearch", eventPerformer, "autompleteSearch");
         registerEvent("onSelectedEntityChange", eventPerformer, "onSelectedEntityChange");
@@ -127,14 +133,17 @@ public final class LookupComponentState extends FieldComponentState implements L
         super.initializeContent(json);
 
         if (json.has(JSON_TEXT) && !json.isNull(JSON_TEXT)) {
-            selectedEntityValue = json.getString(JSON_TEXT);
+            selectedEntityValue = securityEscapeService.decodeHtml(json.getString(JSON_TEXT));
         }
+
         if (json.has(JSON_CODE) && !json.isNull(JSON_CODE)) {
-            selectedEntityCode = json.getString(JSON_CODE);
+            selectedEntityCode = securityEscapeService.decodeHtml(json.getString(JSON_CODE));
         }
+
         if (json.has(JSON_BELONGS_TO_ENTITY_ID) && !json.isNull(JSON_BELONGS_TO_ENTITY_ID)) {
             belongsToEntityId = json.getLong(JSON_BELONGS_TO_ENTITY_ID);
         }
+
         if (json.has(JSON_OLD_SELECTED_ENTITY_ID) && !json.isNull(JSON_OLD_SELECTED_ENTITY_ID)) {
             oldSelectedEntityId = json.getLong(JSON_OLD_SELECTED_ENTITY_ID);
         }
@@ -144,14 +153,14 @@ public final class LookupComponentState extends FieldComponentState implements L
         }
 
         if (json.has(JSON_AUTOCOMPLETE_CODE) && !json.isNull(JSON_AUTOCOMPLETE_CODE)) {
-            autocompleteCode = json.getString(JSON_AUTOCOMPLETE_CODE);
+            autocompleteCode = securityEscapeService.decodeHtml(json.getString(JSON_AUTOCOMPLETE_CODE));
         }
 
         if (json.has(JSON_CRITERIA_MODIFIER_PARAMETER) && !json.isNull(JSON_CRITERIA_MODIFIER_PARAMETER)) {
             criteriaModifierParameter.initialize(json.getJSONObject(JSON_CRITERIA_MODIFIER_PARAMETER));
         }
 
-        if (belongsToFieldDefinition != null && belongsToEntityId == null) {
+        if (Objects.nonNull(belongsToFieldDefinition) && Objects.isNull(belongsToEntityId)) {
             setEnabled(false);
         }
     }
@@ -159,8 +168,9 @@ public final class LookupComponentState extends FieldComponentState implements L
     @Override
     protected JSONObject renderContent() throws JSONException {
         JSONObject json = super.renderContent();
-        json.put(JSON_TEXT, selectedEntityValue);
-        json.put(JSON_CODE, selectedEntityCode);
+
+        json.put(JSON_TEXT, securityEscapeService.encodeHtml(selectedEntityValue));
+        json.put(JSON_CODE, securityEscapeService.encodeHtml(selectedEntityCode));
         json.put(JSON_ACTIVE, selectedEntityActive);
         json.put(JSON_BELONGS_TO_ENTITY_ID, belongsToEntityId);
 
@@ -168,23 +178,27 @@ public final class LookupComponentState extends FieldComponentState implements L
             json.put(JSON_CLEAR_CURRENT_CODE, clearCurrentCode);
         }
 
-        if (autocompleteMatches != null) {
+        if (Objects.nonNull(autocompleteMatches)) {
             JSONArray matches = new JSONArray();
+
             for (Entity entity : autocompleteMatches) {
                 JSONObject matchEntity = new JSONObject();
+
                 matchEntity.put("id", entity.getId());
-                matchEntity.put("value", ExpressionUtils.getValue(entity, expression, getLocale()));
-                matchEntity.put("code", String.valueOf(entity.getField(fieldCode)));
+                matchEntity.put("value", securityEscapeService.encodeHtml(ExpressionUtils.getValue(entity, expression, getLocale())));
+                matchEntity.put("code", securityEscapeService.encodeHtml(String.valueOf(entity.getField(fieldCode))));
                 matchEntity.put("active", entity.isActive());
+
                 matches.put(matchEntity);
             }
-            json.put(JSON_AUTOCOMPLETE_MATCHES, matches);
-            json.put(JSON_AUTOCOMPLETE_CODE, autocompleteCode);
-            json.put(JSON_AUTOCOMPLETE_ENTITIES_NUMBER, autocompleteEntitiesNumber);
 
+
+            json.put(JSON_AUTOCOMPLETE_MATCHES, matches);
+            json.put(JSON_AUTOCOMPLETE_CODE, securityEscapeService.encodeHtml(autocompleteCode));
+            json.put(JSON_AUTOCOMPLETE_ENTITIES_NUMBER, autocompleteEntitiesNumber);
         }
 
-        if (criteriaModifierParameter != null && !criteriaModifierParameter.isEmpty()) {
+        if (Objects.nonNull(criteriaModifierParameter) && !criteriaModifierParameter.isEmpty()) {
             json.put(JSON_CRITERIA_MODIFIER_PARAMETER, criteriaModifierParameter.toJSON());
         }
 
@@ -222,19 +236,22 @@ public final class LookupComponentState extends FieldComponentState implements L
     @Override
     public void setFieldValue(final Object value) {
         setFieldValueWithoutRefreshing(convertToLong(value));
+
         if (!this.isHasError()) {
             clearCurrentCode = true;
         }
+
         eventPerformer.refresh();
     }
 
     private void setFieldValueWithoutRefreshing(final Long value) {
         super.setFieldValue(value);
+
         notifyEntityIdChangeListeners(convertToLong(value));
     }
 
     private Long convertToLong(final Object value) {
-        if (value == null) {
+        if (Objects.isNull(value)) {
             return null;
         } else if (value instanceof Long) {
             return (Long) value;
@@ -247,20 +264,24 @@ public final class LookupComponentState extends FieldComponentState implements L
 
     @Override
     public void onScopeEntityIdChange(final Long scopeEntityId) {
-        if (belongsToFieldDefinition == null) {
+        if (Objects.isNull(belongsToFieldDefinition)) {
             throw new IllegalStateException("Lookup doesn't have scopeField, it cannot set scopeEntityId");
         }
+
         belongsToEntityId = scopeEntityId;
-        setEnabled(scopeEntityId != null);
+
+        setEnabled(Objects.nonNull(scopeEntityId));
         requestRender();
     }
 
     @Override
     public Entity getEntity() {
         Long entityId = getFieldValueWithoutSearching();
-        if (entityId == null) {
+
+        if (Objects.isNull(entityId)) {
             return null;
         }
+
         return getDataDefinition().get(entityId);
     }
 
@@ -272,22 +293,23 @@ public final class LookupComponentState extends FieldComponentState implements L
         }
 
         public void autompleteSearch(final String[] args) {
-            if ((belongsToFieldDefinition == null || belongsToEntityId != null)) {
+            if (Objects.isNull(belongsToFieldDefinition) || Objects.nonNull(belongsToEntityId)) {
                 SearchCriteriaBuilder searchCriteriaBuilder = getDataDefinition().find();
 
-                if(StringUtils.hasText(currentCode)){
+                if (StringUtils.hasText(currentCode)) {
                     searchCriteriaBuilder.add(SearchRestrictions.ilike(fieldCode, currentCode, SearchMatchMode.ANYWHERE));
                 }
-                
-                if (belongsToFieldDefinition != null && belongsToEntityId != null
+
+                if (Objects.nonNull(belongsToFieldDefinition) && Objects.nonNull(belongsToEntityId)
                         && belongsToFieldDefinition.getType() instanceof BelongsToType) {
                     BelongsToType type = (BelongsToType) belongsToFieldDefinition.getType();
+
                     searchCriteriaBuilder.add(SearchRestrictions.belongsTo(belongsToFieldDefinition.getName(), type
                             .getDataDefinition().get(belongsToEntityId)));
                 }
 
                 if (getDataDefinition().isActivable() && onlyActive) {
-                    if (oldSelectedEntityId == null) {
+                    if (Objects.isNull(oldSelectedEntityId)) {
                         searchCriteriaBuilder.add(SearchRestrictions.eq("active", true));
                     } else {
                         searchCriteriaBuilder.add(SearchRestrictions.or(SearchRestrictions.eq("active", true),
@@ -297,32 +319,31 @@ public final class LookupComponentState extends FieldComponentState implements L
 
                 searchCriteriaBuilder.addOrder(SearchOrders.asc(fieldCode));
 
-                if (criteriaModifier != null) {
+                if (Objects.nonNull(criteriaModifier)) {
                     criteriaModifier.modifyCriteria(searchCriteriaBuilder, criteriaModifierParameter);
                 }
 
                 searchCriteriaBuilder.setMaxResults(25);
-                
+
                 SearchResult results = searchCriteriaBuilder.list();
 
                 autocompleteEntitiesNumber = results.getTotalNumberOfEntities();
 
                 if (results.getTotalNumberOfEntities() > 25) {
-                    autocompleteMatches = new LinkedList<>();
-                    
+                    autocompleteMatches = Lists.newLinkedList();
                 } else {
                     autocompleteMatches = results.getEntities();
                 }
-                
             } else {
-                autocompleteMatches = new LinkedList<>();
+                autocompleteMatches = Lists.newLinkedList();
             }
 
-            if(!StringUtils.hasText(currentCode)){
+            if (!StringUtils.hasText(currentCode)) {
                 setFieldValue("");
-            }            
-            
+            }
+
             autocompleteCode = currentCode;
+
             requestRender();
         }
 
@@ -332,15 +353,20 @@ public final class LookupComponentState extends FieldComponentState implements L
 
         private void refresh() {
             Long entityId = getFieldValueWithoutSearching();
-            if (entityId == null) {
+
+            if (Objects.isNull(entityId)) {
                 selectedEntityCode = "";
                 selectedEntityValue = "";
                 selectedEntityActive = true;
+
                 return;
             }
+
             Entity entity = getDataDefinition().get(entityId);
-            if (entity == null) {
+
+            if (Objects.isNull(entity)) {
                 setFieldValueWithoutRefreshing(null);
+
                 selectedEntityCode = "";
                 selectedEntityValue = "";
                 selectedEntityActive = true;
@@ -350,25 +376,28 @@ public final class LookupComponentState extends FieldComponentState implements L
                 selectedEntityActive = entity.isActive();
             }
         }
-
     }
 
     @Override
     public FilterValueHolder getFilterValue() {
-        if (criteriaModifier == null) {
+        if (Objects.isNull(criteriaModifier)) {
             throw new IllegalStateException(CRITERIA_MODIFIER_NOT_PRESENT);
         }
 
         FilterValueHolder holder = new FilterValueHolderImpl(criteriaModifierParameter);
+
         return holder;
     }
 
     @Override
-    public void setFilterValue(FilterValueHolder value) {
-        if (criteriaModifier == null) {
+    public void setFilterValue(final FilterValueHolder value) {
+        if (Objects.isNull(criteriaModifier)) {
             throw new IllegalStateException(CRITERIA_MODIFIER_NOT_PRESENT);
         }
+
         criteriaModifierParameter.initialize(value.toJSON());
+
         requestRender();
     }
+
 }

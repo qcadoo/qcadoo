@@ -23,10 +23,11 @@
  */
 package com.qcadoo.view.internal.components.lookup;
 
-import static org.mockito.Mockito.when;
-
-import java.util.Locale;
-
+import com.qcadoo.model.api.DataDefinition;
+import com.qcadoo.model.api.Entity;
+import com.qcadoo.model.api.ExpressionService;
+import com.qcadoo.model.api.FieldDefinition;
+import com.qcadoo.model.internal.ExpressionServiceImpl;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.After;
@@ -35,13 +36,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.context.ApplicationContext;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import com.qcadoo.model.api.DataDefinition;
-import com.qcadoo.model.api.Entity;
-import com.qcadoo.model.api.ExpressionService;
-import com.qcadoo.model.api.FieldDefinition;
-import com.qcadoo.model.internal.ExpressionServiceImpl;
+import java.util.Locale;
+
+import static org.mockito.Mockito.when;
+import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 public class LookupComponentStateTest {
 
@@ -57,7 +58,7 @@ public class LookupComponentStateTest {
     private DataDefinition dataDefinition;
 
     @Mock
-    private LookupComponentPattern componentPattern;
+    private LookupComponentPattern pattern;
 
     @Mock
     private ExpressionService expressionService;
@@ -65,38 +66,54 @@ public class LookupComponentStateTest {
     @Mock
     private JSONObject json;
 
-    ExpressionServiceImpl esi;
+    @Mock
+    private ApplicationContext applicationContext;
+
+    ExpressionServiceImpl expressionServiceImpl;
 
     @Before
     public void init() throws JSONException {
         MockitoAnnotations.initMocks(this);
-        when(componentPattern.isPersistent()).thenReturn(true);
-        lookup = new LookupComponentState(scopeField, "fieldCode", "expression", componentPattern);
+
+        when(pattern.isPersistent()).thenReturn(true);
+
+        setField(pattern, "applicationContext", applicationContext);
+
+        lookup = new LookupComponentState(scopeField, "fieldCode", "expression", pattern);
+
         lookup.initialize(json, Locale.ENGLISH);
         lookup.setDataDefinition(dataDefinition);
-        esi = new ExpressionServiceImpl();
-        ReflectionTestUtils.invokeMethod(esi, "initialise", expressionService);
+
+        expressionServiceImpl = new ExpressionServiceImpl();
+
+        ReflectionTestUtils.invokeMethod(expressionServiceImpl, "initialise", expressionService);
     }
 
     @After
     public void after() throws JSONException {
-        ReflectionTestUtils.invokeMethod(esi, "initialise", new ExpressionServiceImpl());
+        ReflectionTestUtils.invokeMethod(expressionServiceImpl, "initialise", new ExpressionServiceImpl());
     }
 
     @Test
     public void shouldReturnNullWhenValueIsNull() throws Exception {
+        // given
         lookup.setFieldValue(null);
+
         // when
         Entity result = lookup.getEntity();
+
         // then
         Assert.assertNull(result);
     }
 
     @Test
     public void shouldReturnNullWhenValueIsIncorrect() throws Exception {
-        lookup.setFieldValue("");
         // given
+        lookup.setFieldValue("");
+
+        // when
         Entity result = lookup.getEntity();
+
         // then
         Assert.assertNull(result);
     }
@@ -107,8 +124,10 @@ public class LookupComponentStateTest {
         String id = "1";
         when(dataDefinition.get(Long.valueOf(id))).thenReturn(entity);
         lookup.setFieldValue(id);
+
         // when
         Entity result = lookup.getEntity();
+
         // then
         Assert.assertEquals(entity, result);
     }
@@ -119,8 +138,10 @@ public class LookupComponentStateTest {
         Long id = 1L;
         lookup.setFieldValue(id);
         when(dataDefinition.get(id)).thenReturn(null);
+
         // when
         Entity result = lookup.getEntity();
+
         // then
         Assert.assertNull(result);
     }
@@ -131,8 +152,10 @@ public class LookupComponentStateTest {
         Long id = 1L;
         when(dataDefinition.get(id)).thenReturn(entity);
         lookup.setFieldValue(id);
+
         // when
         Entity result = lookup.getEntity();
+
         // then
         Assert.assertEquals(entity, result);
     }
@@ -188,4 +211,5 @@ public class LookupComponentStateTest {
         // then
         Assert.assertFalse(result);
     }
+
 }

@@ -103,13 +103,13 @@ QCD.components.elements.TextInput = function (_element, _mainController) {
 
     this.getComponentData = function () {
         return {
-            value: input.val()
+            value : Encoder.htmlEncode(input.val())
         }
     }
 
     this.setComponentData = function (data) {
         if (data.value) {
-            this.input.val(data.value);
+            this.input.val(jQuery('<div/>').html(data.value).text());
             textRepresentation.html(data.value);
         } else {
             this.input.val("");

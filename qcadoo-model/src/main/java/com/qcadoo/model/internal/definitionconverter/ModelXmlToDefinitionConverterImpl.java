@@ -50,12 +50,12 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.security.authentication.encoding.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -65,10 +65,10 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkState;
 import static com.qcadoo.model.internal.AbstractModelXmlConverter.FieldsTag.PRIORITY;
@@ -102,10 +102,16 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
     @Autowired
     private TranslationService translationService;
 
+    @Value("${stringAndTextXSSProtectRegex:}")
+    private String stringAndTextXSSProtectRegex;
+
+    @Value("${stringAndTextXSSProtectRegexErrorMessage:}")
+    private String stringAndTextXSSProtectRegexErrorMessage;
+
     @Transactional
     @Override
     public Collection<DataDefinition> convert(final Resource... resources) {
-        List<DataDefinition> dataDefinitions = new ArrayList<DataDefinition>();
+        List<DataDefinition> dataDefinitions = Lists.newArrayList();
 
         for (Resource resource : resources) {
             if (resource.isReadable()) {
@@ -131,6 +137,7 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
         while (reader.hasNext() && reader.next() > 0) {
             if (isTagStarted(reader, TAG_MODEL)) {
                 dataDefinition = getDataDefinition(reader, getPluginIdentifier(reader));
+
                 break;
             }
         }
@@ -156,7 +163,8 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
             }
 
             String tag = getTagStarted(reader);
-            if (tag != null) {
+
+            if (Objects.nonNull(tag)) {
                 addOtherElement(reader, dataDefinition, tag);
             }
         });
@@ -175,6 +183,7 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
 
     private void addVersionFields(final DataDefinitionImpl dataDefinition) {
         FieldDefinitionImpl fieldDefinition = new FieldDefinitionImpl(dataDefinition, VersionableConstants.VERSION_FIELD_NAME);
+
         fieldDefinition.withReadOnly(false);
         fieldDefinition.setPersistent(true);
         fieldDefinition.withType(new LongType(false));
@@ -205,7 +214,8 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
             }
 
             String childTag = getTagStarted(reader);
-            if (childTag != null) {
+
+            if (Objects.nonNull(childTag)) {
                 strategy.apply(childTag);
             }
         }
@@ -213,8 +223,8 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
 
     private void addHookElement(final XMLStreamReader reader, final DataDefinitionImpl dataDefinition, final String tag)
             throws XMLStreamException, HookInitializationException, ModelXmlParsingException {
-
         HooksTag hooksTag;
+
         try {
             hooksTag = HooksTag.valueOf(tag.toUpperCase(Locale.ENGLISH));
         } catch (Exception e) {
@@ -222,6 +232,7 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
         }
 
         EntityHookDefinition hookDefinition = getHookDefinition(reader);
+
         if (HooksTag.VALIDATESWITH.equals(hooksTag)) {
             hookDefinition = new CustomEntityValidator(hookDefinition);
         }
@@ -232,6 +243,7 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
     private void addOtherElement(final XMLStreamReader reader, final DataDefinitionImpl dataDefinition, final String tag)
             throws XMLStreamException {
         OtherTag otherTag = OtherTag.valueOf(tag.toUpperCase(Locale.ENGLISH));
+
         if (otherTag == IDENTIFIER) {
             dataDefinition.setIdentifierExpression(getIdentifierExpression(reader));
         } else if (otherTag == MASTERMODEL) {
@@ -242,6 +254,7 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
     private void addFieldElement(final XMLStreamReader reader, final DataDefinitionImpl dataDefinition, final String tag)
             throws XMLStreamException, HookInitializationException, ModelXmlParsingException {
         FieldsTag fieldTag = FieldsTag.valueOf(tag.toUpperCase(Locale.ENGLISH));
+
         if (fieldTag == PRIORITY) {
             dataDefinition.addPriorityField(getPriorityFieldDefinition(reader, dataDefinition));
         } else {
@@ -260,26 +273,35 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
         dataDefinition.setUpdatable(getBooleanAttribute(reader, "updatable", true));
         dataDefinition.setActivable(getBooleanAttribute(reader, "activable", false));
         dataDefinition.setAuditable(getBooleanAttribute(reader, "auditable", false));
+        dataDefinition.setSecureStrings(getBooleanAttribute(reader, "secureStrings", true));
+
         if (dataDefinition.isAuditable()) {
             addAuditFields(dataDefinition);
         }
+
         dataDefinition.setVersionable(getBooleanAttribute(reader, VersionableConstants.VERSIONABLE_ATTRIBUTE_NAME, false));
+
         if (dataDefinition.isVersionable()) {
             addVersionFields(dataDefinition);
         }
+
         dataDefinition.setFullyQualifiedClassName(ClassNameUtils.getFullyQualifiedClassName(pluginIdentifier, modelName));
+
         return dataDefinition;
     }
 
     private FieldType getDictionaryType(final XMLStreamReader reader) {
         String dictionaryName = getStringAttribute(reader, "dictionary");
+
         checkState(hasText(dictionaryName), "Dictionary name is required");
+
         return new DictionaryType(dictionaryName, dictionaryService, getBooleanAttribute(reader, "copyable", true));
     }
 
     private FieldType getEnumType(final XMLStreamReader reader, final boolean copyable, final String translationPath)
             throws XMLStreamException {
         String values = getStringAttribute(reader, "values");
+
         if (hasText(values)) {
             return new EnumType(translationService, translationPath, copyable, values.split(","));
         } else {
@@ -289,18 +311,21 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
 
     private FieldType getHasManyType(final XMLStreamReader reader, final String pluginIdentifier) {
         CollectionTypeCommonParams params = new CollectionTypeCommonParams(reader, pluginIdentifier);
+
         return new HasManyEntitiesType(params.getPluginName(), params.getModelName(), params.getJoinFieldName(),
                 params.getCascade(), params.isCopyable(), dataDefinitionService);
     }
 
     private FieldType getManyToManyType(final XMLStreamReader reader, final String pluginIdentifier) {
         CollectionTypeCommonParams params = new CollectionTypeCommonParams(reader, pluginIdentifier);
+
         return new ManyToManyEntitiesType(params.getPluginName(), params.getModelName(), params.getJoinFieldName(),
                 params.getCascade(), params.isCopyable(), params.isLazyLoading(), dataDefinitionService);
     }
 
     private FieldType getTreeType(final XMLStreamReader reader, final String pluginIdentifier) {
         CollectionTypeCommonParams params = new CollectionTypeCommonParams(reader, pluginIdentifier);
+
         return new TreeEntitiesType(params.getPluginName(), params.getModelName(), params.getJoinFieldName(),
                 params.getCascade(), params.isCopyable(), dataDefinitionService);
     }
@@ -358,15 +383,18 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
         String modelName = getStringAttribute(reader, TAG_MODEL);
         boolean lazy = getBooleanAttribute(reader, "lazy", true);
         boolean isCopyable = getBooleanAttribute(reader, "copyable", true);
+
         return new BelongsToEntityType(pluginName, modelName, dataDefinitionService, lazy, isCopyable);
     }
 
     private FieldDefinition getAuditFieldDefinition(final DataDefinitionImpl dataDefinition, final String name,
                                                     final FieldType type) {
         FieldDefinitionImpl fieldDefinition = new FieldDefinitionImpl(dataDefinition, name);
+
         fieldDefinition.withReadOnly(false);
         fieldDefinition.setPersistent(true);
         fieldDefinition.withType(type);
+
         return fieldDefinition;
     }
 
@@ -374,28 +402,48 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
                                                final FieldsTag fieldTag) throws XMLStreamException, HookInitializationException, ModelXmlParsingException {
         String fieldType = reader.getLocalName();
         String name = getStringAttribute(reader, "name");
+
         FieldDefinitionImpl fieldDefinition = new FieldDefinitionImpl(dataDefinition, name);
+
         fieldDefinition.withReadOnly(getBooleanAttribute(reader, "readonly", false));
         fieldDefinition.withDefaultValue(getStringAttribute(reader, "default"));
         fieldDefinition.setPersistent(getBooleanAttribute(reader, "persistent", true));
         fieldDefinition.setExpression(getStringAttribute(reader, "expression"));
+
         FieldType type = getFieldType(reader, dataDefinition, name, fieldTag, fieldType);
+
         fieldDefinition.withType(type);
+
+        if (dataDefinition.isSecureStrings() && hasText(stringAndTextXSSProtectRegex) && !stringAndTextXSSProtectRegex.startsWith("${")
+                && hasText(fieldType)) {
+            if ("string".equals(fieldType) || "text".equals(fieldType)) {
+                FieldHookDefinition validator = new RegexValidator(stringAndTextXSSProtectRegex);
+                if (hasText(stringAndTextXSSProtectRegexErrorMessage)) {
+                    ((ErrorMessageDefinition) validator).setErrorMessage(stringAndTextXSSProtectRegexErrorMessage);
+                }
+
+                fieldDefinition.withValidator(getValidatorDefinition(reader, validator));
+            }
+        }
 
         if (getBooleanAttribute(reader, "required", false)) {
             fieldDefinition.withValidator(getValidatorDefinition(reader, new RequiredValidator()));
         }
+
         if (getBooleanAttribute(reader, "unique", false)) {
             if (type.isCopyable() && !fieldDefinition.canBeBothCopyableAndUnique()) {
                 String message = String
                         .format("Unique field can not have the copyable attribute set to true. Add 'copyable=\"false\"' to #%s_%s.%s to fix it.",
                                 dataDefinition.getPluginIdentifier(), dataDefinition.getName(), name);
+
                 throw new IllegalStateException(message);
             }
+
             fieldDefinition.withValidator(getValidatorDefinition(reader, new UniqueValidator()));
         }
 
         parseFieldValidators(reader, fieldType, fieldDefinition).forEach(fieldDefinition::withValidator);
+
         fieldDefinition.withMissingDefaultValidators();
 
         return fieldDefinition;
@@ -405,52 +453,73 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
                                                                  final FieldDefinition fieldDefinition) throws XMLStreamException, HookInitializationException,
             ModelXmlParsingException {
         List<FieldHookDefinition> fieldValidators = Lists.newArrayList();
+
         while (reader.hasNext() && reader.next() > 0) {
             if (isTagEnded(reader, fieldType)) {
                 break;
             }
+
             String tag = getTagStarted(reader);
-            if (tag == null) {
+
+            if (Objects.isNull(tag)) {
                 continue;
             }
+
             fieldValidators.add(createFieldElement(reader, fieldDefinition, tag));
         }
+
         return fieldValidators;
     }
 
     private FieldHookDefinition createFieldElement(final XMLStreamReader reader, final FieldDefinition fieldDefinition,
                                                    final String tag) throws HookInitializationException, ModelXmlParsingException {
         FieldHookDefinition fieldHookDefinition;
+
         switch (FieldTag.valueOf(tag.toUpperCase(Locale.ENGLISH))) {
             case VALIDATESLENGTH:
                 fieldHookDefinition = getValidatorDefinition(reader, new LengthValidator(getIntegerAttribute(reader, "min"),
                         getIntegerAttribute(reader, "is"), getIntegerAttribute(reader, "max")));
+
                 break;
+
             case VALIDATESUNSCALEDVALUE:
                 fieldHookDefinition = getValidatorDefinition(reader,
                         new UnscaledValueValidator(getIntegerAttribute(reader, "min"), getIntegerAttribute(reader, "is"),
                                 getIntegerAttribute(reader, "max")));
+
                 break;
+
             case VALIDATESSCALE:
                 fieldHookDefinition = getValidatorDefinition(reader, new ScaleValidator(getIntegerAttribute(reader, "min"),
                         getIntegerAttribute(reader, "is"), getIntegerAttribute(reader, "max")));
+
                 break;
+
             case VALIDATESRANGE:
                 FieldType type = fieldDefinition.getType();
+
                 Object from = getRangeForType(getStringAttribute(reader, "from"), type);
                 Object to = getRangeForType(getStringAttribute(reader, "to"), type);
                 boolean exclusively = getBooleanAttribute(reader, "exclusively", false);
+
                 fieldHookDefinition = getValidatorDefinition(reader, new RangeValidator(from, to, exclusively));
+
                 break;
+
             case VALIDATESWITH:
                 fieldHookDefinition = getValidatorDefinition(reader, new CustomValidator(getFieldHookDefinition(reader)));
+
                 break;
+
             case VALIDATESREGEX:
                 fieldHookDefinition = getValidatorDefinition(reader, new RegexValidator(getStringAttribute(reader, "pattern")));
+
                 break;
+
             default:
                 throw new ModelXmlParsingException("Illegal type of field's validator '" + tag + "'");
         }
+
         return fieldHookDefinition;
     }
 
@@ -458,45 +527,62 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
                                    final FieldsTag fieldTag, final String fieldType) throws XMLStreamException, ModelXmlParsingException {
         // TODO DEV_TEAM consider move default value resolving from converter into concrete field type's constructor.
         Boolean isCopyable = getBooleanAttribute(reader, "copyable", true);
+
         switch (fieldTag) {
             case INTEGER:
                 return new IntegerType(isCopyable);
+
             case STRING:
                 return new StringType(isCopyable);
+
             case FILE:
                 return new FileType(isCopyable);
+
             case TEXT:
                 return new TextType(isCopyable);
+
             case DECIMAL:
                 return new DecimalType(isCopyable);
+
             case DATETIME:
                 return new DateTimeType(isCopyable);
+
             case DATE:
                 return new DateType(isCopyable);
+
             case BOOLEAN:
                 return new BooleanType(isCopyable);
+
             case BELONGSTO:
                 return getBelongsToType(reader, dataDefinition.getPluginIdentifier());
+
             case HASMANY:
                 return getHasManyType(reader, dataDefinition.getPluginIdentifier());
+
             case MANYTOMANY:
                 return getManyToManyType(reader, dataDefinition.getPluginIdentifier());
+
             case TREE:
                 return getTreeType(reader, dataDefinition.getPluginIdentifier());
+
             case ENUM:
                 String translationPath = dataDefinition.getPluginIdentifier() + "." + dataDefinition.getName() + "." + fieldName;
+
                 return getEnumType(reader, isCopyable, translationPath);
+
             case DICTIONARY:
                 return getDictionaryType(reader);
+
             case PASSWORD:
                 return new PasswordType(passwordEncoder, isCopyable);
+
             default:
                 throw new ModelXmlParsingException("Illegal type of field '" + fieldType + "'");
         }
     }
 
     private Object getRangeForType(final String range, final FieldType type) throws ModelXmlParsingException {
-        if (range == null) {
+        if (Objects.isNull(range)) {
             return null;
         } else if (type instanceof DateTimeType) {
             try {
@@ -523,9 +609,11 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
 
     private FieldHookDefinition getValidatorDefinition(final XMLStreamReader reader, final FieldHookDefinition validator) {
         String customMessage = getStringAttribute(reader, "message");
-        if (StringUtils.hasText(customMessage) && validator instanceof ErrorMessageDefinition) {
+
+        if (hasText(customMessage) && validator instanceof ErrorMessageDefinition) {
             ((ErrorMessageDefinition) validator).setErrorMessage(customMessage);
         }
+
         return validator;
     }
 
@@ -537,6 +625,7 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
             throws HookInitializationException {
         String className = getStringAttribute(reader, "class");
         String methodName = getStringAttribute(reader, "method");
+
         return new EntityHookDefinitionImpl(className, methodName, pluginIdentifier, applicationContext);
     }
 
@@ -548,15 +637,18 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
             throws HookInitializationException {
         String className = getStringAttribute(reader, "class");
         String methodName = getStringAttribute(reader, "method");
+
         return new FieldHookDefinitionImpl(className, methodName, pluginIdentifier, applicationContext);
     }
 
     private FieldDefinition getPriorityFieldDefinition(final XMLStreamReader reader, final DataDefinitionImpl dataDefinition) {
         String scopeAttribute = getStringAttribute(reader, "scope");
         FieldDefinition scopedField = null;
-        if (scopeAttribute != null) {
+
+        if (Objects.nonNull(scopeAttribute)) {
             scopedField = dataDefinition.getField(scopeAttribute);
         }
+
         return new FieldDefinitionImpl(dataDefinition, getStringAttribute(reader, "name"))
                 .withType(new PriorityType(scopedField));
     }
@@ -585,6 +677,7 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
                                                    final String pluginIdentifier) throws Throwable {
             Object[] args = pjp.getArgs();
             args[1] = getSourcePluginName(reader, pluginIdentifier);
+
             return pjp.proceed(args);
         }
 
@@ -594,14 +687,16 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
             String sourcePluginIdentifier = getSourcePluginName(reader, pluginIdentifier);
             FieldDefinitionImpl fieldDefinition = (FieldDefinitionImpl) pjp.proceed();
             fieldDefinition.setPluginIdentifier(sourcePluginIdentifier);
+
             return fieldDefinition;
         }
 
         private String getSourcePluginName(final XMLStreamReader reader, final String targetPluginName) {
             String sourcePluginIdentifier = reader.getAttributeValue(null, "sourcePluginIdentifier");
-            if (sourcePluginIdentifier == null && targetPluginName == null) {
+
+            if (Objects.isNull(sourcePluginIdentifier) && Objects.isNull(targetPluginName)) {
                 throw new IllegalStateException("Missing plugin identifier");
-            } else if (sourcePluginIdentifier == null) {
+            } else if (Objects.isNull(sourcePluginIdentifier)) {
                 return targetPluginName;
             } else {
                 return sourcePluginIdentifier;

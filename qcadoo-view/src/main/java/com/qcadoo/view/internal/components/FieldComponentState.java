@@ -23,11 +23,14 @@
  */
 package com.qcadoo.view.internal.components;
 
+import com.qcadoo.view.api.utils.SecurityEscapeService;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.qcadoo.view.api.components.FieldComponent;
 import com.qcadoo.view.internal.states.AbstractComponentState;
+
+import java.util.Objects;
 
 public class FieldComponentState extends AbstractComponentState implements FieldComponent {
 
@@ -41,17 +44,24 @@ public class FieldComponentState extends AbstractComponentState implements Field
 
     private boolean persistent;
 
+    private final SecurityEscapeService securityEscapeService;
+
     public FieldComponentState(final FieldComponentPattern pattern) {
         super(pattern);
+
         defaultRequired = pattern.isRequired();
         persistent = pattern.isPersistent();
+
+        this.securityEscapeService = pattern.getApplicationContext().getBean(SecurityEscapeService.class);
     }
 
     @Override
     protected void initializeContext(final JSONObject json) throws JSONException {
         super.initializeContext(json);
+
         if (json.has(JSON_COMPONENT_OPTIONS) && !json.isNull(JSON_COMPONENT_OPTIONS)) {
             JSONObject jsonOptions = json.getJSONObject(JSON_COMPONENT_OPTIONS);
+
             passValueFromJson(jsonOptions);
         }
     }
@@ -65,8 +75,9 @@ public class FieldComponentState extends AbstractComponentState implements Field
     @Override
     protected void initializeContent(final JSONObject json) throws JSONException {
         if (json.has(JSON_VALUE) && !json.isNull(JSON_VALUE)) {
-            value = json.getString(JSON_VALUE);
+            value = securityEscapeService.decodeHtml(json.getString(JSON_VALUE));
         }
+
         if (json.has(JSON_REQUIRED) && !json.isNull(JSON_REQUIRED)) {
             required = json.getBoolean(JSON_REQUIRED);
         }
@@ -75,14 +86,17 @@ public class FieldComponentState extends AbstractComponentState implements Field
     @Override
     protected JSONObject renderContent() throws JSONException {
         JSONObject json = new JSONObject();
+
         json.put(JSON_VALUE, value);
         json.put(JSON_REQUIRED, isRequired());
+
         return json;
     }
 
     @Override
     public void setFieldValue(final Object value) {
-        this.value = value == null ? null : value.toString();
+        this.value = Objects.isNull(value) ? null : value.toString();
+
         requestRender();
     }
 

@@ -59,7 +59,19 @@ QCD.components.elements.TextArea = function (element, mainController) {
 		}
 		this.input.parent().parent().parent().height(height);
 	};
-	
+
+	this.getComponentData = function() {
+		return {
+			value : Encoder.htmlEncode(this.input.val())
+		}
+	}
+
+	this.setComponentData = function(data) {
+		if (data.value) {
+			this.input.val(jQuery('<div/>').html(data.value).text());
+		}
+	}
+
 	function construct() {
         if (that.input) {
             that.input.change(inputDataChanged);

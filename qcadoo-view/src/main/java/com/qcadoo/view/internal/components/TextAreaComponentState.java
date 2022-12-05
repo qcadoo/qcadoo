@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 1.4
+ * Version: 1.3
  *
  * This file is part of Qcadoo.
  *
@@ -23,43 +23,29 @@
  */
 package com.qcadoo.view.internal.components;
 
-import com.qcadoo.model.api.FieldDefinition;
-import com.qcadoo.model.api.types.EnumeratedType;
 import com.qcadoo.view.api.utils.SecurityEscapeService;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Objects;
-
-public class TranslatedFieldComponentState extends FieldComponentState {
-
-    private final FieldComponentPattern pattern;
+public class TextAreaComponentState extends FieldComponentState {
 
     private final SecurityEscapeService securityEscapeService;
 
-    public TranslatedFieldComponentState(final FieldComponentPattern pattern) {
+    public TextAreaComponentState(final TextAreaComponentPattern pattern) {
         super(pattern);
 
-        this.pattern = pattern;
-
         this.securityEscapeService = pattern.getApplicationContext().getBean(SecurityEscapeService.class);
-
     }
 
     @Override
     protected JSONObject renderContent() throws JSONException {
-        JSONObject json = new JSONObject();
+        JSONObject json = super.renderContent();
 
-        String value = (String) getFieldValue();
+        if (json.has(JSON_VALUE)) {
+            String encodedValue = securityEscapeService.encodeHtml(json.getString(JSON_VALUE));
 
-        FieldDefinition fieldDefinition = pattern.getFieldComponentFieldDefinition();
-
-        if (Objects.nonNull(fieldDefinition) && EnumeratedType.class.isAssignableFrom(fieldDefinition.getType().getClass())) {
-            value = ((EnumeratedType) fieldDefinition.getType()).activeValues(getLocale()).get(value);
+            json.put(JSON_VALUE, encodedValue);
         }
-
-        json.put(JSON_VALUE, securityEscapeService.encodeHtml(value));
-        json.put(JSON_REQUIRED, isRequired());
 
         return json;
     }

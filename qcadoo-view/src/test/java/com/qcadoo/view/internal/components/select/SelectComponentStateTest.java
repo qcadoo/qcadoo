@@ -23,24 +23,6 @@
  */
 package com.qcadoo.view.internal.components.select;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.util.ReflectionTestUtils.getField;
-import static org.springframework.test.util.ReflectionTestUtils.setField;
-
-import java.util.Collections;
-import java.util.Locale;
-import java.util.Map;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.qcadoo.localization.api.TranslationService;
@@ -50,6 +32,24 @@ import com.qcadoo.model.internal.types.DictionaryType;
 import com.qcadoo.view.internal.ComponentDefinition;
 import com.qcadoo.view.internal.ComponentOption;
 import com.qcadoo.view.internal.api.InternalViewDefinition;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.context.ApplicationContext;
+
+import java.util.Collections;
+import java.util.Locale;
+import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.util.ReflectionTestUtils.getField;
+import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 public class SelectComponentStateTest {
 
@@ -64,15 +64,21 @@ public class SelectComponentStateTest {
     @Mock
     private DictionaryService dictionaryService;
 
+    @Mock
+    private TranslationService translationService;
+
+    @Mock
+    private FieldDefinition fieldDefinition;
+
+    @Mock
+    private ApplicationContext applicationContext;
+
     @Before
     public void init() {
         MockitoAnnotations.initMocks(this);
 
         DictionaryType dictionaryType = new DictionaryType(DICTIONARY_NAME, dictionaryService, false);
 
-        TranslationService translationService = mock(TranslationService.class);
-
-        FieldDefinition fieldDefinition = mock(FieldDefinition.class);
         when(fieldDefinition.getType()).thenReturn(dictionaryType);
         when(fieldDefinition.isRequired()).thenReturn(true);
         when(fieldDefinition.getDefaultValue()).thenReturn("asd");
@@ -80,28 +86,35 @@ public class SelectComponentStateTest {
         ComponentDefinition definition = new ComponentDefinition();
         definition.setName("selectComponent");
         definition.setViewDefinition(mock(InternalViewDefinition.class));
+
         SelectComponentPattern pattern = new SelectComponentPattern(definition);
 
+        setField(pattern, "applicationContext", applicationContext);
         setField(pattern, "fieldDefinition", fieldDefinition);
         setField(pattern, "translationService", translationService);
+
         componentState = new SelectComponentState(pattern, Lists.newArrayList());
+
         setField(componentState, "locale", Locale.ENGLISH);
+
         setField(pattern, "defaultRequired", true);
     }
 
-    private void stubValues(String... values) {
+    private void stubValues(final String... values) {
         Map<String, String> array = Maps.newLinkedHashMap();
+
         for (String value : values) {
             array.put(value, value);
         }
+
         when(dictionaryService.getActiveValues(DICTIONARY_NAME, Locale.ENGLISH)).thenReturn(array);
     }
 
     @Test
     public void shouldNotAddAnotherValue() throws JSONException {
         // given
-
         stubValues("aaaa", "bbbb", "cccc", "dddd");
+
         componentState.setFieldValue("cccc");
 
         // when
@@ -119,8 +132,8 @@ public class SelectComponentStateTest {
     @Test
     public void shouldAddDeactivatedValueAtTheBeginning() throws JSONException {
         // given
-
         stubValues("bbbb", "cccc", "dddd", "eeee");
+
         componentState.setFieldValue("aaaa");
 
         // when
@@ -139,8 +152,8 @@ public class SelectComponentStateTest {
     @Test
     public void shouldAddDeactivatedValueToTheEnd() throws JSONException {
         // given
-
         stubValues("aaaa", "bbbb", "cccc", "dddd");
+
         componentState.setFieldValue("eeee");
 
         // when
@@ -159,8 +172,8 @@ public class SelectComponentStateTest {
     @Test
     public void shouldAddDeactivatedValueInTheMiddle() throws JSONException {
         // given
-
         stubValues("aaaa", "bbbb", "dddd", "eeee");
+
         componentState.setFieldValue("cccc");
 
         // when
@@ -176,7 +189,7 @@ public class SelectComponentStateTest {
         assertEquals("eeee", content.getJSONArray(VALUES).getJSONObject(4).getString(KEY));
     }
 
-    private void stubValuesOption(String optionValue) throws JSONException {
+    private void stubValuesOption(final String optionValue) throws JSONException {
         SelectComponentPattern pattern = (SelectComponentPattern)getField(componentState, "selectComponentPattern");
 
         ComponentOption option = new ComponentOption("values", Collections.singletonMap("value", optionValue));
@@ -210,6 +223,7 @@ public class SelectComponentStateTest {
 
         // when
         JSONObject content = componentState.renderContent();
+
         // then
         assertNotNull(content.getJSONArray("values"));
         assertEquals(2, content.getJSONArray("values").length());
@@ -229,4 +243,5 @@ public class SelectComponentStateTest {
         assertNotNull(content.getJSONArray("values"));
         assertEquals(0, content.getJSONArray("values").length());
     }
+
 }

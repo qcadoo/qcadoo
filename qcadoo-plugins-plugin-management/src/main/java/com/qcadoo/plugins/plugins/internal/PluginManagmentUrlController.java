@@ -31,6 +31,7 @@ import com.qcadoo.plugin.api.artifact.InputStreamPluginArtifact;
 import com.qcadoo.plugin.api.artifact.PluginArtifact;
 import com.qcadoo.plugins.plugins.constants.QcadooPluginsConstants;
 import com.qcadoo.view.api.crud.CrudService;
+import com.qcadoo.view.api.utils.SecurityEscapeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -58,6 +59,9 @@ public class PluginManagmentUrlController {
 
     @Autowired
     private TranslationService translationService;
+
+    @Autowired
+    private SecurityEscapeService securityEscapeService;
 
     @Autowired
     private PluginAccessor pluginAccessor;
@@ -100,16 +104,17 @@ public class PluginManagmentUrlController {
             mav.addObject(L_HEADER_LABEL, translationService.translate("qcadooPlugins.pluginInfo.confirmHeader", locale));
             mav.addObject("isConfirm", true);
             mav.addObject("cancelButtonLabel",
-                    translationService.translate("qcadooPlugins.pluginInfo.buttons." + arguments.get("cancelLabel"), locale));
+                    translationService.translate("qcadooPlugins.pluginInfo.buttons." + securityEscapeService.encodeHtml(arguments.get("cancelLabel")), locale));
             mav.addObject("acceptButtonLabel",
-                    translationService.translate("qcadooPlugins.pluginInfo.buttons." + arguments.get("acceptLabel"), locale));
+                    translationService.translate("qcadooPlugins.pluginInfo.buttons." + securityEscapeService.encodeHtml(arguments.get("acceptLabel")), locale));
             mav.addObject("acceptRedirect", arguments.get("acceptRedirect"));
 
         } else {
-            throw new IllegalStateException("Unsuported plugin info type: " + arguments.get(L_TYPE));
+            throw new IllegalStateException("Unsuported plugin info type: " + securityEscapeService.encodeHtml(arguments.get(L_TYPE)));
         }
+
         mav.addObject("content",
-                translationService.translate("qcadooPlugins.pluginInfo.content." + arguments.get("status"), locale));
+                translationService.translate("qcadooPlugins.pluginInfo.content." + securityEscapeService.encodeHtml(arguments.get("status")), locale));
         mav.addObject("deps", createDependenciesMap(arguments, locale));
 
         return mav;
