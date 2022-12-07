@@ -3,7 +3,7 @@ package com.qcadoo.security.internal.password;
 import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-final class ShaPasswordEncoderAdapter implements PasswordEncoder {
+public final class ShaPasswordEncoderAdapter implements PasswordEncoder {
 
     private final ShaPasswordEncoder shaPasswordEncoder;
 

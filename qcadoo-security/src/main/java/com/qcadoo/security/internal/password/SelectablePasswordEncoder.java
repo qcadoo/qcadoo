@@ -4,7 +4,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.Assert;
 
-final class SelectablePasswordEncoder implements PasswordEncoder, InitializingBean {
+public final class SelectablePasswordEncoder implements PasswordEncoder, InitializingBean {
 
     private String encoder;
 
@@ -14,8 +14,16 @@ final class SelectablePasswordEncoder implements PasswordEncoder, InitializingBe
 
     private PasswordEncoder shaPasswordEncoder;
 
+    public PasswordEncoder getBcryptPasswordEncoder() {
+        return bcryptPasswordEncoder;
+    }
+
     public void setBcryptPasswordEncoder(final PasswordEncoder bcryptPasswordEncoder) {
         this.bcryptPasswordEncoder = bcryptPasswordEncoder;
+    }
+
+    public PasswordEncoder getShaPasswordEncoder() {
+        return shaPasswordEncoder;
     }
 
     public void setShaPasswordEncoder(final PasswordEncoder shaPasswordEncoder) {

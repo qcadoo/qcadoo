@@ -26,6 +26,7 @@ package com.qcadoo.security.internal.validators;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.security.constants.UserFields;
+import com.qcadoo.security.internal.password.SelectablePasswordEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -43,7 +44,7 @@ public class PasswordValidationService {
         String passwordConfirmation = user.getStringField(UserFields.PASSWORD_CONFIRMATION);
         String oldPassword = user.getStringField(UserFields.OLD_PASSWORD);
 
-        String viewIdentifier = user.getId() == null ? "userChangePassword" : user.getStringField(UserFields.VIEW_IDENTIFIER);
+        String viewIdentifier = Objects.isNull(user.getId()) ? "userChangePassword" : user.getStringField(UserFields.VIEW_IDENTIFIER);
 
         if (!"profileChangePassword".equals(viewIdentifier) && !"userChangePassword".equals(viewIdentifier)) {
             return true;
@@ -84,6 +85,8 @@ public class PasswordValidationService {
 
             return false;
         }
+
+        user.setField(UserFields.NEW_PASSWORD, ((SelectablePasswordEncoder) passwordEncoder).getBcryptPasswordEncoder().encode(passwordConfirmation));
 
         return true;
     }

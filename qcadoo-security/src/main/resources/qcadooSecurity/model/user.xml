@@ -45,6 +45,7 @@
 		<password name="password" /><!-- TODO validatesPresenceOnCreate -->
 		<password name="passwordConfirmation" persistent="false" /><!-- 
 			TODO validatesPresenceOnCreate -->
+		<password name="newPassword"/>
 		<password name="oldPassword" persistent="false" />
 		<string name="viewIdentifier" persistent="false" />
 		<datetime name="lastActivity" />

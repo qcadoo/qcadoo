@@ -45,6 +45,8 @@ public final class UserFields {
 
     public static final String PASSWORD_CONFIRMATION = "passwordConfirmation";
 
+    public static final String NEW_PASSWORD = "newPassword";
+
     public static final String OLD_PASSWORD = "oldPassword";
 
     public static final String VIEW_IDENTIFIER = "viewIdentifier";

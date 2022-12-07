@@ -1,17 +1,5 @@
 package com.qcadoo.security.internal.password;
 
-import static com.qcadoo.model.api.search.SearchRestrictions.eq;
-import static com.qcadoo.model.api.search.SearchRestrictions.ge;
-
-import java.util.Calendar;
-import java.util.Date;
-import java.util.UUID;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.DataDefinitionService;
 import com.qcadoo.model.api.Entity;
@@ -22,9 +10,21 @@ import com.qcadoo.security.api.PasswordResetTokenService;
 import com.qcadoo.security.constants.PasswordResetTokenFields;
 import com.qcadoo.security.constants.QcadooSecurityConstants;
 import com.qcadoo.security.constants.UserFields;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Objects;
+import java.util.UUID;
+
+import static com.qcadoo.model.api.search.SearchRestrictions.eq;
+import static com.qcadoo.model.api.search.SearchRestrictions.ge;
 
 @Service
-final class PasswordResetTokenServiceImpl implements PasswordResetTokenService {
+public final class PasswordResetTokenServiceImpl implements PasswordResetTokenService {
 
     @Value("${passwordResetTokenExpirationInDays:3}")
     private Integer passwordResetTokenExpirationInDays;
@@ -37,38 +37,49 @@ final class PasswordResetTokenServiceImpl implements PasswordResetTokenService {
     }
 
     @Override
-    public Entity createPasswordResetTokenForUser(Entity userEntity) {
+    public Entity createPasswordResetTokenForUser(final Entity user) {
         DataDefinition passwordResetTokenDD = passwordResetTokenDD();
+
         Entity passwordResetToken = passwordResetTokenDD.create();
-        passwordResetToken.setField(PasswordResetTokenFields.USER, userEntity);
+
+        passwordResetToken.setField(PasswordResetTokenFields.USER, user);
         passwordResetToken.setField(PasswordResetTokenFields.EXPIRATION_TIME, generateExpirationDate());
         passwordResetToken.setField(PasswordResetTokenFields.ACTIVE, Boolean.TRUE);
         passwordResetToken.setField(PasswordResetTokenFields.TOKEN, generateToken());
+
         return passwordResetTokenDD.save(passwordResetToken);
     }
 
     @Override
     @Transactional
-    public Entity processPasswordChange(String token, String password, String passwordConfirmation) {
+    public Entity processPasswordChange(final String token, final String password, final String passwordConfirmation) {
         Entity passwordResetToken = findValidByToken(token);
-        if (passwordResetToken == null) {
+
+        if (Objects.isNull(passwordResetToken)) {
             throw new IllegalArgumentException();
         }
-        Entity entity = updateUserPassword(passwordResetToken.getBelongsToField(PasswordResetTokenFields.USER), password,
+
+        Entity user = updateUserPassword(passwordResetToken.getBelongsToField(PasswordResetTokenFields.USER), password,
                 passwordConfirmation);
-        if (entity.isValid()) {
+
+        if (user.isValid()) {
             passwordResetToken.setActive(false);
+
             passwordResetTokenDD().save(passwordResetToken);
         }
-        return entity;
+
+        return user;
     }
 
-    private Entity findValidByToken(String token) {
+    private Entity findValidByToken(final String token) {
         SearchConjunction conjunction = SearchRestrictions.conjunction();
+
         conjunction.add(eq(PasswordResetTokenFields.TOKEN, token));
         conjunction.add(eq(PasswordResetTokenFields.ACTIVE, Boolean.TRUE));
         conjunction.add(ge(PasswordResetTokenFields.EXPIRATION_TIME, new Date()));
+
         SearchResult result = passwordResetTokenDD().find().add(conjunction).list();
+
         return result.getTotalNumberOfEntities() == 1 ? result.getEntities().get(0) : null;
     }
 
@@ -79,14 +90,18 @@ final class PasswordResetTokenServiceImpl implements PasswordResetTokenService {
 
     private Date generateExpirationDate() {
         Calendar cal = Calendar.getInstance();
+
         cal.add(Calendar.DATE, passwordResetTokenExpirationInDays);
+
         return cal.getTime();
     }
 
-    private Entity updateUserPassword(final Entity userEntity, final String password, String passwordConfirmation) {
-        userEntity.setField(UserFields.PASSWORD, password);
-        userEntity.setField(UserFields.PASSWORD_CONFIRMATION, passwordConfirmation);
-        userEntity.setField(UserFields.VIEW_IDENTIFIER, "userChangePassword");
-        return userEntity.getDataDefinition().save(userEntity);
+    private Entity updateUserPassword(final Entity user, final String password, final String passwordConfirmation) {
+        user.setField(UserFields.PASSWORD, password);
+        user.setField(UserFields.PASSWORD_CONFIRMATION, passwordConfirmation);
+        user.setField(UserFields.VIEW_IDENTIFIER, "userChangePassword");
+
+        return user.getDataDefinition().save(user);
     }
+
 }
