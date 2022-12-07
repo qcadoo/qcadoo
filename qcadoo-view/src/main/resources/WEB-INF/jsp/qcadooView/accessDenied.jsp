@@ -31,16 +31,75 @@
 <html>
 
     <head>
-        <link rel="stylesheet" href="css/login.css?ver=${buildNumber}" type="text/css" />
+    	<title>${applicationDisplayName} :: error</title>
+
+        <link rel="shortcut icon" href="/qcadooView/public/img/core/icons/favicon.png">
+
+        <script type="text/javascript" src="${pageContext.request.contextPath}/qcadooView/public/js/core/lib/_jquery-1.4.2.min.js?ver=${buildNumber}"></script>
+
+        <style type="text/css">
+            body {
+                background: #9B9B9B;
+                color: white;
+                font-family:Arial, Helvetica, sans-serif;
+            }
+
+            #content {
+                width: 950px;
+                margin: auto;
+                margin-top: 20px;
+            }
+
+            #content #codeDivSad {
+                width: 130px;
+                height: 130px;
+                background-image: url('/qcadooView/public/img/core/error/errorCodeBgSad.png');
+                background-repeat: no-repeat;
+                font-size: 45px;
+                text-align: center;
+                padding-top: 37px;
+                display: inline-block;
+                vertical-align: top;
+                margin-right: 10px;
+            }
+            #content #contentDiv {
+                width: 800px;
+                display: inline-block;
+                color: #d7d7d7;
+                font-size: 15px;
+            }
+            #content #contentDiv a {
+                text-decoration: none;
+            }
+            #content #contentDiv h1 {
+                margin-top: 37px;
+                margin-bottom: 10px;
+                font-size: 45px;
+                font-weight: normal;
+                color: white;
+            }
+
+            #content #contentDiv #showExceptionLink span {
+                height: 100%;
+                display: inline-block;
+                padding: 5px;
+            }
+
+        </style>
         <link rel="stylesheet" href="${pageContext.request.contextPath}/qcadooView/public/css/custom.css?ver=${buildNumber}" type="text/css" />
     </head>
 
     <body>
-        <div class="errorMessageHeader">
-            ${translation["security.message.accessDenied.header"] }
-        </div>
-        <div class="errorMessageContent">
-            ${translation["security.message.accessDenied.info"] }
+        <div id="content">
+
+            <div id="codeDivSad"> </div>
+
+            <div id="contentDiv">
+                    <h1>${translation["security.message.accessDenied.header"]}</h1>
+                <div>
+                     ${translation["security.message.accessDenied.info"]}
+                </div>
+            </div>
         </div>
     </body>
 

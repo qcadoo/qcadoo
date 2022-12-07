@@ -25,6 +25,7 @@ package com.qcadoo.view.internal.controllers;
 
 import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.view.api.crud.CrudService;
+import com.qcadoo.view.utils.ViewParametersAppender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
