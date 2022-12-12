@@ -36,6 +36,8 @@ String ctx = request.getContextPath();
 	var selectRibbonItem = null;
 
 	jQuery(document).ready(function(){
+	    $("#window").css("visibility", "");
+
 		window.mainController.setWindowHeader("${headerLabel}");
 		$('#form').ajaxForm(function(responseText, statusText, xhr) {
 

@@ -168,6 +168,8 @@
 	}
 
 	jQuery(document).ready(function(){
+	    $("#window").css("visibility", "hidden");
+
 		controller = new QCD.PageController();
 		controller.constructor(viewName, pluginIdentifier, hasDataDefinition, popup);
 		context = $.trim(context);

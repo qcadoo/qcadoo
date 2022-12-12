@@ -370,6 +370,8 @@ QCD.PageController = function() {
 			var component = pageComponents[i];
 			component.setValue(data.components[i]);
 		}
+
+		$("#window").css("visibility", "");
 	}
 
 	this.getComponent = function(componentPath) {
