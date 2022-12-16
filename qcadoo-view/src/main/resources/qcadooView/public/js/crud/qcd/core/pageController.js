@@ -87,9 +87,6 @@ QCD.PageController = function() {
 	}
 
 	this.init = function(serializationObject, dimensions) {
-	    function setWindowVisible() {
-	        $("#window").css("visibility", "");
-	    }
         function tryFocusFirstInput() {
             try {
                 var form = window.mainController.getComponentByReferenceName("form");
@@ -127,7 +124,6 @@ QCD.PageController = function() {
 		} else {
 			if (hasDataDefinition) {
 				this.callEvent("initialize", null, function() {
-				    setWindowVisible();
                     tryFocusFirstInput();
                     QCD.components.elements.utils.LoadingIndicator.unblockElement($("body"))
                 });
@@ -154,7 +150,6 @@ QCD.PageController = function() {
 			contextComponent.addContext(contextField, context[i]);
 		}
 	}
-
 
 	this.callEvent = function(eventName, component, completeFunction, args, actionsPerformer, type) {
 		var initParameters = new Object();
@@ -248,6 +243,9 @@ QCD.PageController = function() {
 		return arg;
 	}
 
+    function setWindowVisible() {
+	    $("#window").css("visibility", "");
+	}
 
 	function performEvent(parameters, completeFunction, actionsPerformer, type) {
 		blockButtons();
@@ -272,6 +270,7 @@ QCD.PageController = function() {
 				}
 			} else {
 				setValueData(response);
+				setWindowVisible();
 			}
 			if (actionsPerformer && ! (response.content && response.content.status && response.content.status != "ok") && (typeof actionsPerformer.performNext === 'function')) {
 				actionsPerformer.performNext();
