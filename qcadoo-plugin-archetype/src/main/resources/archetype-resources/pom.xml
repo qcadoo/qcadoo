@@ -41,7 +41,7 @@
 	<repositories>
 		<repository>
 			<id>qcadoo-releases-repository</id>
-			<url>http://nexus.qcadoo.org/content/repositories/releases</url>
+			<url>https://nexus.qcadoo.org/content/repositories/releases</url>
 			<releases>
 				<enabled>true</enabled>
 				<updatePolicy>never</updatePolicy>
@@ -53,7 +53,7 @@
 		</repository>
 		<repository>
 			<id>qcadoo-snapshots-repository</id>
-			<url>http://nexus.qcadoo.org/content/repositories/snapshots</url>
+			<url>https://nexus.qcadoo.org/content/repositories/snapshots</url>
 			<releases>
 				<enabled>false</enabled>
 				<updatePolicy>never</updatePolicy>
@@ -68,7 +68,7 @@
         <pluginRepositories>
             <pluginRepository>
                 <id>qcadoo-releases-plugin-repository</id>
-                <url>http://nexus.qcadoo.org/content/repositories/releases</url>
+                <url>https://nexus.qcadoo.org/content/repositories/releases</url>
                 <releases>
                     <enabled>true</enabled>
                     <updatePolicy>never</updatePolicy>
@@ -80,7 +80,7 @@
              </pluginRepository>
              <pluginRepository>
                 <id>qcadoo-snapshots-plugin-repository</id>
-                <url>http://nexus.qcadoo.org/content/repositories/snapshots</url>
+                <url>https://nexus.qcadoo.org/content/repositories/snapshots</url>
                 <releases>
                     <enabled>false</enabled>
                     <updatePolicy>never</updatePolicy>
