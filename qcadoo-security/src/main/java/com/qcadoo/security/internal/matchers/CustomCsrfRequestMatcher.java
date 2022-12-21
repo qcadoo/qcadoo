@@ -19,6 +19,7 @@ public class CustomCsrfRequestMatcher implements RequestMatcher {
             new AntPathRequestMatcher("/rest/delivery/**"),
             new AntPathRequestMatcher("/rest/document/**"),
             new AntPathRequestMatcher("/rest/pipedrive/**"),
+            new AntPathRequestMatcher("/rest/scheduleGantt/**"),
             new AntPathRequestMatcher("/rest/sgOrdsGantt/**"),
             new AntPathRequestMatcher("/rest/sgOrdersGantt/**"),
             new AntPathRequestMatcher("/rest/operTasksGantt/**"),
