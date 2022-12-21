@@ -117,8 +117,11 @@ QCD.PageController = function() {
 		if (serializationObject) {
 			setComponentState(serializationObject);
 			if (hasDataDefinition) {
-				this.callEvent("initializeAfterBack", null, function() {QCD.components.elements.utils.LoadingIndicator.unblockElement($("body"))});
+				this.callEvent("initializeAfterBack", null, function() {
+				    QCD.components.elements.utils.LoadingIndicator.unblockElement($("body"))
+				});
 			} else {
+			    setWindowVisible();
 				QCD.components.elements.utils.LoadingIndicator.unblockElement($("body"));
 			}
 		} else {
