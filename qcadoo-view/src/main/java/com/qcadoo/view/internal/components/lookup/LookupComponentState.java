@@ -185,7 +185,7 @@ public final class LookupComponentState extends FieldComponentState implements L
                 JSONObject matchEntity = new JSONObject();
 
                 matchEntity.put("id", entity.getId());
-                matchEntity.put("value", securityEscapeService.encodeHtml(ExpressionUtils.getValue(entity, expression, getLocale())));
+                matchEntity.put("value", ExpressionUtils.getValue(entity, expression, getLocale()));
                 matchEntity.put("code", securityEscapeService.encodeHtml(String.valueOf(entity.getField(fieldCode))));
                 matchEntity.put("active", entity.isActive());
 
