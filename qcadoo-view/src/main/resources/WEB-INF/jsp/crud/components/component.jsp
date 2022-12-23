@@ -43,7 +43,13 @@
     <c:set var="isRequiredStyle" value="required"/>
 </c:if> 
 
-<div id="${component['path']}" class="component ${isRequiredStyle}" style="height: 100%; ${isVisibleStyle}">
+<c:set var="isHiddenOnLoad" value=""/>
+<c:if test="${component['path'] == 'window'}">
+	<c:set var="isHiddenOnLoad" value="visibility: hidden;"/>
+</c:if>
+
+
+<div id="${component['path']}" class="component ${isRequiredStyle}" style="height: 100%; ${isVisibleStyle} ${isHiddenOnLoad}">
     <div class="element_js_object" style="display: none">${component['jsObjectName']}</div>
     <div class="element_options" style="display: none">${component['jsOptions']}</div>
 
