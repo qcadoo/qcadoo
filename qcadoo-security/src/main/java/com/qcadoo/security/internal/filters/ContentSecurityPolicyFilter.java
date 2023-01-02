@@ -211,7 +211,11 @@ public class ContentSecurityPolicyFilter implements Filter {
             if (userAgent.contains("Edge")) {
                 policiesBuffer.append(";").append("frame-src 'self'");
             } else {
-                policiesBuffer.append(";").append("child-src 'self'");
+                if (userAgent.contains("Mozilla")) {
+                    policiesBuffer.append(";").append("child-src 'self' blob:");
+                } else {
+                    policiesBuffer.append(";").append("child-src 'self'");
+                }
 
                 if (INCLUDE_MOZILLA_CSP_DIRECTIVES) {
                     policiesBuffer.append(";").append("frame-ancestors 'self'");
