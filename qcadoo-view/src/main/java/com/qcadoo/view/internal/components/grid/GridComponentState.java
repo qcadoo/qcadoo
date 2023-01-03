@@ -614,7 +614,16 @@ public final class GridComponentState extends AbstractComponentState implements 
         JSONObject fields = new JSONObject();
 
         for (GridComponentColumn column : pattern.filterColumnsWithAccess(columns.values())) {
-            fields.put(column.getName(), securityEscapeService.encodeHtml(column.getValue(entity, getLocale())));
+            String name = column.getName();
+            String value;
+
+            if (column.getName().toLowerCase().contains("unit")) {
+                value = column.getValue(entity, getLocale());
+            } else {
+                value = securityEscapeService.encodeHtml(column.getValue(entity, getLocale()));
+            }
+
+            fields.put(name, value);
         }
 
         json.put("fields", fields);
