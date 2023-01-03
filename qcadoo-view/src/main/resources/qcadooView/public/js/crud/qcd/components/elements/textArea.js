@@ -69,7 +69,9 @@ QCD.components.elements.TextArea = function (element, mainController) {
 	this.setComponentData = function(data) {
 		if (data.value) {
 			this.input.val(jQuery('<div/>').html(data.value).text());
-		}
+		} else {
+            this.input.val("");
+        }
 	}
 
 	function construct() {
