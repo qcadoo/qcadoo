@@ -100,6 +100,8 @@ public final class PasswordResetTokenServiceImpl implements PasswordResetTokenSe
         user.setField(UserFields.PASSWORD, password);
         user.setField(UserFields.PASSWORD_CONFIRMATION, passwordConfirmation);
         user.setField(UserFields.VIEW_IDENTIFIER, "userChangePassword");
+        user.setField(UserFields.PSWD_LAST_CHANGED, new Date());
+        user.setField(UserFields.AFTER_FIRST_PSWD_CHANGE, true);
 
         return user.getDataDefinition().save(user);
     }
