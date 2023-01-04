@@ -192,26 +192,30 @@ public class UserModelHooks {
         if (Objects.isNull(userId)) {
             user.setField(UserFields.PSWD_LAST_CHANGED, new Date());
         } else {
-            String passwordNew = user.getStringField(UserFields.PASSWORD);
+            String viewIdentifier = user.getStringField(UserFields.VIEW_IDENTIFIER);
 
-            Entity userFromDB = userDD.get(userId);
+            if (Objects.nonNull(viewIdentifier)) {
+                String passwordNew = user.getStringField(UserFields.PASSWORD);
 
-            String passwordOld = userFromDB.getStringField(UserFields.PASSWORD);
+                Entity userFromDB = userDD.get(userId);
 
-            if (Objects.nonNull(passwordOld) && Objects.nonNull(passwordNew)) {
-                if (passwordOld.compareTo(passwordNew) == 0) {
-                    user.addError(userDD.getField(UserFields.PASSWORD), L_QCADOO_SECURITY_USER_PASSWORD_SAME_AS_OLD);
-                } else {
-                    user.setField(UserFields.PSWD_LAST_CHANGED, new Date());
+                String passwordOld = userFromDB.getStringField(UserFields.PASSWORD);
 
-                    if (!user.getBooleanField(UserFields.AFTER_FIRST_PSWD_CHANGE)) {
-                        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+                if (Objects.nonNull(passwordOld) && Objects.nonNull(passwordNew)) {
+                    if (passwordOld.compareTo(passwordNew) == 0) {
+                        user.addError(userDD.getField(UserFields.PASSWORD), L_QCADOO_SECURITY_USER_PASSWORD_SAME_AS_OLD);
+                    } else {
+                        user.setField(UserFields.PSWD_LAST_CHANGED, new Date());
 
-                        if (Objects.nonNull(authentication)) {
-                            String login = authentication.getName();
+                        if (!user.getBooleanField(UserFields.AFTER_FIRST_PSWD_CHANGE)) {
+                            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-                            if (login.equals(user.getStringField(UserFields.USER_NAME))) {
-                                user.setField(UserFields.AFTER_FIRST_PSWD_CHANGE, true);
+                            if (Objects.nonNull(authentication)) {
+                                String login = authentication.getName();
+
+                                if (login.equals(user.getStringField(UserFields.USER_NAME))) {
+                                    user.setField(UserFields.AFTER_FIRST_PSWD_CHANGE, true);
+                                }
                             }
                         }
                     }
