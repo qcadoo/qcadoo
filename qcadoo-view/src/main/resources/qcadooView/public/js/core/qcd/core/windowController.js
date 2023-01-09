@@ -67,7 +67,11 @@ QCD.WindowController = function(_menuStructure) {
 	}
 
 	this.performLogout = function() {
-        window.location = "j_spring_security_logout";
+        var token = $("meta[name='_csrf']").attr("content");
+        var parameter = $("meta[name='_csrf_parameter']").attr("content");
+        var csrfHiddenField = $('<input/>').attr('type', 'hidden').attr('name', parameter).val(token);
+
+        $('<form/>').attr('action', 'j_spring_security_logout').attr('method', 'post').append(csrfHiddenField).appendTo($('body')).submit();
     }
 
 	this.goToPage = function(url, serializationObject, isPage) {
@@ -165,17 +169,19 @@ QCD.WindowController = function(_menuStructure) {
 		if(statesStack.length > 0){
             var stateObject = statesStack.pop();
             serializationObjectToInsert = stateObject;
-            if (stateObject.openedModal) {
-                modal = modalsStack.pop();
-                modal.hide();
-                if (modalsStack.length == 0) {
-                    onIframeLoad();
+            if (stateObject != undefined) {
+                if (stateObject.openedModal) {
+                    modal = modalsStack.pop();
+                    modal.hide();
+                    if (modalsStack.length == 0) {
+                        onIframeLoad();
+                    } else {
+                        onIframeLoad(modalsStack[modalsStack.length - 1].iframe[0]);
+                    }
                 } else {
-                    onIframeLoad(modalsStack[modalsStack.length - 1].iframe[0]);
+                    currentPage = stateObject.url;
+                    performGoToPage(currentPage);
                 }
-            } else {
-                currentPage = stateObject.url;
-                performGoToPage(currentPage);
             }
 		} else {
 		    this.goToDashboard();

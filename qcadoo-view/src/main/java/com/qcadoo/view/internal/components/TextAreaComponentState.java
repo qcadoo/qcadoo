@@ -2,7 +2,7 @@
  * ***************************************************************************
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
- * Version: 1.4
+ * Version: 1.3
  *
  * This file is part of Qcadoo.
  *
@@ -21,32 +21,33 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * ***************************************************************************
  */
-package com.qcadoo.view.internal.controllers;
+package com.qcadoo.view.internal.components;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.ModelAndView;
+import com.qcadoo.view.api.utils.SecurityEscapeService;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-@Component
-public class ViewParametersAppender {
+public class TextAreaComponentState extends FieldComponentState {
 
-    @Value("${applicationDisplayName}")
-    private String applicationDisplayName;
+    private final SecurityEscapeService securityEscapeService;
 
-    @Value("${useCompressedStaticResources}")
-    private boolean useCompressedStaticResources;
+    public TextAreaComponentState(final TextAreaComponentPattern pattern) {
+        super(pattern);
 
-    @Value("${applicationProfile}")
-    private String applicationProfile;
-
-    public void appendCommonViewObjects(final ModelAndView mav) {
-        mav.addObject("applicationDisplayName", applicationDisplayName);
-        mav.addObject("useCompressedStaticResources", useCompressedStaticResources);
-        mav.addObject("applicationProfile", applicationProfile);
+        this.securityEscapeService = pattern.getApplicationContext().getBean(SecurityEscapeService.class);
     }
 
-    public String getApplicationProfile() {
-        return applicationProfile;
+    @Override
+    protected JSONObject renderContent() throws JSONException {
+        JSONObject json = super.renderContent();
+
+        if (json.has(JSON_VALUE)) {
+            String encodedValue = securityEscapeService.encodeHtml(json.getString(JSON_VALUE));
+
+            json.put(JSON_VALUE, encodedValue);
+        }
+
+        return json;
     }
 
 }

@@ -21,24 +21,32 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * ***************************************************************************
  */
-package com.qcadoo.model.integration;
+package com.qcadoo.view.utils;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.ModelAndView;
 
-public class MockPasswordEncoder implements PasswordEncoder {
+@Component
+public class ViewParametersAppender {
 
-    @Override
-    public String encode(final CharSequence rawPass) {
-        return rawPass.toString();
+    @Value("${applicationDisplayName}")
+    private String applicationDisplayName;
+
+    @Value("${useCompressedStaticResources}")
+    private boolean useCompressedStaticResources;
+
+    @Value("${applicationProfile}")
+    private String applicationProfile;
+
+    public void appendCommonViewObjects(final ModelAndView mav) {
+        mav.addObject("applicationDisplayName", applicationDisplayName);
+        mav.addObject("useCompressedStaticResources", useCompressedStaticResources);
+        mav.addObject("applicationProfile", applicationProfile);
     }
 
-    public boolean isPasswordValid(final String encPass, final String rawPass, final Object salt) {
-        return true;
-    }
-
-    @Override
-    public boolean matches(final CharSequence rawPassword, final String encodedPassword) {
-        return true;
+    public String getApplicationProfile() {
+        return applicationProfile;
     }
 
 }

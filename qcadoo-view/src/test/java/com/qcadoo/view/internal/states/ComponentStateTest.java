@@ -23,30 +23,54 @@
  */
 package com.qcadoo.view.internal.states;
 
-import static junit.framework.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-import static org.springframework.test.util.ReflectionTestUtils.setField;
-
-import java.util.Locale;
-
-import org.json.JSONObject;
-import org.junit.Test;
-import org.springframework.context.ApplicationContext;
-
 import com.google.common.collect.ImmutableMap;
 import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.internal.ExpressionServiceImpl;
 import com.qcadoo.view.api.ComponentState.MessageType;
+import com.qcadoo.view.api.utils.SecurityEscapeService;
 import com.qcadoo.view.internal.api.InternalComponentState;
 import com.qcadoo.view.internal.components.SimpleComponentState;
 import com.qcadoo.view.internal.components.form.FormComponentPattern;
 import com.qcadoo.view.internal.components.form.FormComponentState;
+import org.json.JSONObject;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.context.ApplicationContext;
+
+import java.util.Locale;
+
+import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.BDDMockito.given;
+import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 public class ComponentStateTest {
+
+    @Mock
+    private TranslationService translationService;
+
+    @Mock
+    private DataDefinition dataDefinition;
+
+    @Mock
+    private FormComponentPattern pattern;
+
+    @Mock
+    private ApplicationContext applicationContext;
+
+    @Mock
+    private SecurityEscapeService securityEscapeService;
+
+    @Before
+    public final void init() {
+        MockitoAnnotations.initMocks(this);
+
+        setField(pattern, "applicationContext", applicationContext);
+    }
 
     @Test
     public void shouldHaveFieldValueAfterInitialize() throws Exception {
@@ -69,6 +93,7 @@ public class ComponentStateTest {
     public void shouldRenderJsonWithFieldValue() throws Exception {
         // given
         InternalComponentState componentState = new SimpleComponentState();
+
         componentState.setFieldValue("text");
         componentState.initialize(new JSONObject(), Locale.ENGLISH);
 
@@ -83,6 +108,7 @@ public class ComponentStateTest {
     public void shouldRenderJsonWithNullFieldValue() throws Exception {
         // given
         InternalComponentState componentState = new SimpleComponentState();
+
         componentState.setFieldValue(null);
         componentState.initialize(new JSONObject(), Locale.ENGLISH);
 
@@ -110,14 +136,15 @@ public class ComponentStateTest {
         // given
         new ExpressionServiceImpl().init();
 
-        TranslationService translationService = mock(TranslationService.class);
-        DataDefinition dataDefinition = mock(DataDefinition.class);
-        FormComponentPattern pattern = mock(FormComponentPattern.class);
+        setField(pattern, "applicationContext", applicationContext);
+
         given(pattern.getExpressionNew()).willReturn(null);
         given(pattern.getExpressionEdit()).willReturn("2");
-        ApplicationContext applicationContext = mock(ApplicationContext.class);
-        setField(pattern, "applicationContext", applicationContext);
+
+        given(applicationContext.getBean(SecurityEscapeService.class)).willReturn(securityEscapeService);
+
         AbstractComponentState componentState = new FormComponentState(pattern);
+
         componentState.setTranslationService(translationService);
         componentState.setDataDefinition(dataDefinition);
         componentState.setFieldValue(13L);
@@ -133,13 +160,11 @@ public class ComponentStateTest {
     @Test
     public void shouldNotHaveRequestUpdateStateIfNotValid() throws Exception {
         // given
-        TranslationService translationService = mock(TranslationService.class);
-        FormComponentPattern pattern = mock(FormComponentPattern.class);
         given(pattern.getExpressionNew()).willReturn(null);
         given(pattern.getExpressionEdit()).willReturn(null);
-        ApplicationContext applicationContext = mock(ApplicationContext.class);
-        setField(pattern, "applicationContext", applicationContext);
+
         AbstractComponentState componentState = new FormComponentState(pattern);
+
         componentState.setTranslationService(translationService);
         componentState.initialize(new JSONObject(ImmutableMap.of("components", new JSONObject())), Locale.ENGLISH);
         componentState.addMessage("test", MessageType.FAILURE);

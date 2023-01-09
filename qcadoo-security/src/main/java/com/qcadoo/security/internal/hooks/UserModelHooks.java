@@ -30,13 +30,14 @@ import com.qcadoo.model.api.Entity;
 import com.qcadoo.security.api.SecurityService;
 import com.qcadoo.security.constants.GroupFields;
 import com.qcadoo.security.constants.UserFields;
-
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -53,13 +54,15 @@ public class UserModelHooks {
 
     private static final String L_SELF_DELETION_ERROR = "security.message.error.selfDeletion";
 
-    private static final String L_QCADOOSECURITY_USER = "qcadooSecurity.user.";
+    private static final String L_QCADOO_SECURITY_USER = "qcadooSecurity.user.";
 
     private static final String L_LABEL = ".label";
 
-    private static final String L_QCADOOSECURITY_USER_IMPORTANT_FIELD_CHANGE_MAIL_TOPIC = "qcadooSecurity.user.importantFieldChange.mailTopic";
+    private static final String L_QCADOO_SECURITY_USER_IMPORTANT_FIELD_CHANGE_MAIL_TOPIC = "qcadooSecurity.user.importantFieldChange.mailTopic";
 
-    private static final String L_QCADOOSECURITY_USER_IMPORTANT_FIELD_CHANGE_MAIL_BODY = "qcadooSecurity.user.importantFieldChange.mailBody";
+    private static final String L_QCADOO_SECURITY_USER_IMPORTANT_FIELD_CHANGE_MAIL_BODY = "qcadooSecurity.user.importantFieldChange.mailBody";
+
+    private static final String L_QCADOO_SECURITY_USER_PASSWORD_SAME_AS_OLD = "qcadooSecurity.user.password.sameAsOld";
 
     @Autowired
     private HttpServletRequest httpServletRequest;
@@ -80,8 +83,9 @@ public class UserModelHooks {
             return false;
         }
 
-        if (user.getDateField(UserFields.LAST_ACTIVITY) != null) {
+        if (Objects.nonNull(user.getDateField(UserFields.LAST_ACTIVITY))) {
             user.addGlobalError("security.message.error.deletionOfUsedUser");
+
             return false;
         }
 
@@ -102,16 +106,20 @@ public class UserModelHooks {
     }
 
     public boolean validateGroupChangeDate(final DataDefinition userDD, final Entity user) {
-        if (user.getId() == null) {
+        Long userId = user.getId();
+
+        if (Objects.isNull(userId)) {
             user.setField(UserFields.GROUP_CHANGE_DATE, new Date());
-        } else if (!userDD.get(user.getId()).getBelongsToField(UserFields.GROUP).getStringField(GroupFields.PERMISSION_TYPE).equals(user.getBelongsToField(UserFields.GROUP).getStringField(GroupFields.PERMISSION_TYPE))) {
+        } else if (!userDD.get(userId).getBelongsToField(UserFields.GROUP).getStringField(GroupFields.PERMISSION_TYPE).equals(user.getBelongsToField(UserFields.GROUP).getStringField(GroupFields.PERMISSION_TYPE))) {
             if (user.getDateField(UserFields.GROUP_CHANGE_DATE).toInstant().atZone(ZoneId.systemDefault()).toLocalDate().isAfter(LocalDate.now().minusDays(7))) {
                 user.addError(userDD.getField(UserFields.GROUP), "qcadooUsers.validate.global.error.forbiddenGroupChange");
+
                 return false;
             } else {
                 user.setField(UserFields.GROUP_CHANGE_DATE, new Date());
             }
         }
+
         return true;
     }
 
@@ -166,16 +174,54 @@ public class UserModelHooks {
     private void sendEmail(final String email, final String fieldName) {
         Locale locale = LocaleContextHolder.getLocale();
 
-        String fieldTranslated = translationService.translate(L_QCADOOSECURITY_USER + fieldName + L_LABEL, locale);
+        String fieldTranslated = translationService.translate(L_QCADOO_SECURITY_USER + fieldName + L_LABEL, locale);
 
-        String topic = translationService.translate(L_QCADOOSECURITY_USER_IMPORTANT_FIELD_CHANGE_MAIL_TOPIC, locale, fieldTranslated);
-        String body = translationService.translate(L_QCADOOSECURITY_USER_IMPORTANT_FIELD_CHANGE_MAIL_BODY, locale, fieldTranslated, getApplicationUrl());
+        String topic = translationService.translate(L_QCADOO_SECURITY_USER_IMPORTANT_FIELD_CHANGE_MAIL_TOPIC, locale, fieldTranslated);
+        String body = translationService.translate(L_QCADOO_SECURITY_USER_IMPORTANT_FIELD_CHANGE_MAIL_BODY, locale, fieldTranslated, getApplicationUrl());
 
         mailService.sendEmail(email, topic, body);
     }
 
     private String getApplicationUrl() {
         return new StringBuilder(httpServletRequest.getScheme()).append("://").append(httpServletRequest.getServerName()).toString();
+    }
+
+    public void updatePswdLastChanged(final DataDefinition userDD, final Entity user) {
+        Long userId = user.getId();
+
+        if (Objects.isNull(userId)) {
+            user.setField(UserFields.PSWD_LAST_CHANGED, new Date());
+        } else {
+            String viewIdentifier = user.getStringField(UserFields.VIEW_IDENTIFIER);
+
+            if (Objects.nonNull(viewIdentifier)) {
+                String passwordNew = user.getStringField(UserFields.PASSWORD);
+
+                Entity userFromDB = userDD.get(userId);
+
+                String passwordOld = userFromDB.getStringField(UserFields.PASSWORD);
+
+                if (Objects.nonNull(passwordOld) && Objects.nonNull(passwordNew)) {
+                    if (passwordOld.compareTo(passwordNew) == 0) {
+                        user.addError(userDD.getField(UserFields.PASSWORD), L_QCADOO_SECURITY_USER_PASSWORD_SAME_AS_OLD);
+                    } else {
+                        user.setField(UserFields.PSWD_LAST_CHANGED, new Date());
+
+                        if (!user.getBooleanField(UserFields.AFTER_FIRST_PSWD_CHANGE)) {
+                            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+                            if (Objects.nonNull(authentication)) {
+                                String login = authentication.getName();
+
+                                if (login.equals(user.getStringField(UserFields.USER_NAME))) {
+                                    user.setField(UserFields.AFTER_FIRST_PSWD_CHANGE, true);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
 }

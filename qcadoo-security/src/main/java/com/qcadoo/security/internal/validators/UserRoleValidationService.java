@@ -23,16 +23,17 @@
  */
 package com.qcadoo.security.internal.validators;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
-
-import com.google.common.base.Objects;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.security.api.SecurityService;
 import com.qcadoo.security.constants.QcadooSecurityConstants;
 import com.qcadoo.security.constants.UserFields;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+
+import java.util.Objects;
 
 @Service
 public class UserRoleValidationService {
@@ -44,24 +45,31 @@ public class UserRoleValidationService {
         if (isCalledFromSecurityModules() || isCurrentUserSuperAdmin(dataDefinition)) {
             return true;
         }
+
         Boolean isRoleSuperadminInNewGroup = securityService.hasRole(entity, QcadooSecurityConstants.ROLE_SUPERADMIN);
-        Boolean isRoleSuperadminInOldGroup = entity.getId() != null && securityService.hasRole(
+        Boolean isRoleSuperadminInOldGroup = Objects.nonNull(entity.getId()) && securityService.hasRole(
                 dataDefinition.get(entity.getId()), QcadooSecurityConstants.ROLE_SUPERADMIN);
 
-        if (Objects.equal(isRoleSuperadminInOldGroup, isRoleSuperadminInNewGroup)) {
+        if (Objects.equals(isRoleSuperadminInOldGroup, isRoleSuperadminInNewGroup)) {
             return true;
         }
+
         entity.addError(dataDefinition.getField(UserFields.GROUP), "qcadooUsers.validate.global.error.forbiddenRole");
+
         return false;
     }
 
     private boolean isCurrentUserSuperAdmin(final DataDefinition userDataDefinition) {
         final Long currentUserId = securityService.getCurrentUserId();
+
         final Entity currentUserEntity = userDataDefinition.get(currentUserId);
+
         return securityService.hasRole(currentUserEntity, QcadooSecurityConstants.ROLE_SUPERADMIN);
     }
 
     private boolean isCalledFromSecurityModules() {
-        return SecurityContextHolder.getContext().getAuthentication() == null;
+        return Objects.isNull(SecurityContextHolder.getContext().getAuthentication())
+                || (SecurityContextHolder.getContext().getAuthentication() instanceof AnonymousAuthenticationToken);
     }
+
 }

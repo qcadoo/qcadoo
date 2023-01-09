@@ -30,18 +30,12 @@ import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.EntityOpResult;
 import com.qcadoo.model.api.FieldDefinition;
-import com.qcadoo.model.api.search.CustomRestriction;
-import com.qcadoo.model.api.search.JoinType;
-import com.qcadoo.model.api.search.SearchCriteriaBuilder;
-import com.qcadoo.model.api.search.SearchOrders;
-import com.qcadoo.model.api.search.SearchRestrictions;
-import com.qcadoo.model.api.search.SearchResult;
+import com.qcadoo.model.api.search.*;
 import com.qcadoo.model.api.types.BelongsToType;
 import com.qcadoo.model.api.types.FieldType;
 import com.qcadoo.model.api.types.JoinFieldHolder;
 import com.qcadoo.model.api.types.ManyToManyType;
 import com.qcadoo.model.api.validators.ErrorMessage;
-import com.qcadoo.model.api.validators.GlobalMessage;
 import com.qcadoo.model.internal.ProxyEntity;
 import com.qcadoo.model.internal.types.EnumType;
 import com.qcadoo.security.api.SecurityRole;
@@ -49,22 +43,17 @@ import com.qcadoo.security.api.SecurityRolesService;
 import com.qcadoo.view.api.components.GridComponent;
 import com.qcadoo.view.api.components.grid.GridComponentMultiSearchFilter;
 import com.qcadoo.view.api.components.lookup.FilterValueHolder;
+import com.qcadoo.view.api.utils.SecurityEscapeService;
 import com.qcadoo.view.internal.CriteriaModifier;
 import com.qcadoo.view.internal.FilterValueHolderImpl;
 import com.qcadoo.view.internal.RowStyleResolver;
 import com.qcadoo.view.internal.states.AbstractComponentState;
-
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.*;
 
 public final class GridComponentState extends AbstractComponentState implements GridComponent {
 
@@ -186,8 +175,6 @@ public final class GridComponentState extends AbstractComponentState implements 
 
     private boolean deleteEnabled = false;
 
-    private final SecurityRolesService securityRolesService;
-
     private boolean useDto = false;
 
     private boolean footerRow = false;
@@ -202,6 +189,10 @@ public final class GridComponentState extends AbstractComponentState implements 
 
     private Set<String> userHiddenColumns = Sets.newHashSet();
 
+    private final SecurityRolesService securityRolesService;
+
+    private final SecurityEscapeService securityEscapeService;
+
     public GridComponentState(final DataDefinition dataDefinition, final GridComponentPattern pattern) {
         super(pattern);
 
@@ -212,6 +203,7 @@ public final class GridComponentState extends AbstractComponentState implements 
             Set<String> set = Sets.newHashSet();
 
             Collections.addAll(set, pattern.getDefaultOrderColumn().split("\\s*,\\s*"));
+
             set.forEach(column -> {
                 this.orderColumns
                         .add(new GridComponentOrderColumn(column, pattern.getDefaultOrderDirection()));
@@ -229,6 +221,7 @@ public final class GridComponentState extends AbstractComponentState implements 
         this.defaultPredefinedFilter = pattern.getDefaultPredefinedFilter();
         this.authorizationRole = pattern.getAuthorizationRole();
         this.securityRolesService = pattern.getApplicationContext().getBean(SecurityRolesService.class);
+        this.securityEscapeService = pattern.getApplicationContext().getBean(SecurityEscapeService.class);
         this.deletable = pattern.isDeletable();
         this.deletableAuthorizationRole = pattern.getDeletableAuthorizationRole();
         this.autoRefresh = pattern.isAutoRefresh();
@@ -258,6 +251,7 @@ public final class GridComponentState extends AbstractComponentState implements 
 
         while (iterator.hasNext()) {
             String field = iterator.next();
+
             if (JSON_BELONGS_TO_ENTITY_ID.equals(field)) {
                 onScopeEntityIdChange(json.getLong(field));
             } else if (JSON_COMPONENT_OPTIONS.equals(field)) {
@@ -278,9 +272,11 @@ public final class GridComponentState extends AbstractComponentState implements 
         if (json.has(JSON_SELECTED_ENTITY_ID) && !json.isNull(JSON_SELECTED_ENTITY_ID)) {
             selectedEntityId = json.getLong(JSON_SELECTED_ENTITY_ID);
         }
+
         if (json.has(JSON_MULTISELECT_MODE) && !json.isNull(JSON_MULTISELECT_MODE)) {
             multiselectMode = json.getBoolean(JSON_MULTISELECT_MODE);
         }
+
         if (json.has(JSON_SELECTED_ENTITIES) && !json.isNull(JSON_SELECTED_ENTITIES)) {
             JSONObject selectedEntitiesObj = json.getJSONObject(JSON_SELECTED_ENTITIES);
 
@@ -300,21 +296,27 @@ public final class GridComponentState extends AbstractComponentState implements 
                 }
             }
         }
+
         if (json.has(JSON_BELONGS_TO_ENTITY_ID) && !json.isNull(JSON_BELONGS_TO_ENTITY_ID)) {
             belongsToEntityId = json.getLong(JSON_BELONGS_TO_ENTITY_ID);
         }
+
         if (json.has(JSON_FIRST_ENTITY) && !json.isNull(JSON_FIRST_ENTITY)) {
             firstResult = json.getInt(JSON_FIRST_ENTITY);
         }
+
         if (json.has(JSON_MAX_ENTITIES) && !json.isNull(JSON_MAX_ENTITIES)) {
             maxResults = json.getInt(JSON_MAX_ENTITIES);
         }
+
         if (json.has(JSON_ONLY_ACTIVE) && !json.isNull(JSON_ONLY_ACTIVE) && activable) {
             onlyActive = json.getBoolean(JSON_ONLY_ACTIVE);
         }
+
         if (json.has(JSON_ONLY_INACTIVE) && !json.isNull(JSON_ONLY_INACTIVE) && activable) {
             onlyInactive = json.getBoolean(JSON_ONLY_INACTIVE);
         }
+
         if (json.has(JSON_ORDER)) {
             JSONArray orderJson = json.getJSONArray(JSON_ORDER);
 
@@ -329,13 +331,16 @@ public final class GridComponentState extends AbstractComponentState implements 
                 }
             }
         }
+
         if (json.has(JSON_AUTOMATIC_REFRESH)) {
             autoRefresh = json.getBoolean(JSON_AUTOMATIC_REFRESH);
         }
+
         if ((Objects.nonNull(belongsToFieldDefinition) && Objects.isNull(belongsToEntityId))
                 || !securityRolesService.canAccess(authorizationRole)) {
             setEnabled(false);
         }
+
         if (json.has(JSON_USER_HIDDEN_COLUMNS)) {
             JSONArray hiddenColumnsJson = json.getJSONArray(JSON_USER_HIDDEN_COLUMNS);
 
@@ -345,6 +350,7 @@ public final class GridComponentState extends AbstractComponentState implements 
                 userHiddenColumns.add(hiddenColumnName);
             }
         }
+
         if (deletable && StringUtils.isNotEmpty(deletableAuthorizationRole)
                 && securityRolesService.canAccess(deletableAuthorizationRole)
                 || deletable && StringUtils.isEmpty(deletableAuthorizationRole)) {
@@ -411,6 +417,7 @@ public final class GridComponentState extends AbstractComponentState implements 
                 multiSearchFilter.setGroupOperator(
                         jsonMultiSearchFilter.getString(GridComponentMultiSearchFilter.JSON_GROUP_OPERATOR_FIELD));
             }
+
             if (jsonMultiSearchFilter.has(GridComponentMultiSearchFilter.JSON_RULES_FIELD)
                     && !jsonMultiSearchFilter.isNull(GridComponentMultiSearchFilter.JSON_RULES_FIELD)) {
                 JSONArray jsonMultiSearchFilterRules = jsonMultiSearchFilter
@@ -485,6 +492,7 @@ public final class GridComponentState extends AbstractComponentState implements 
 
         if (Objects.nonNull(belongsToEntityId) && !belongsToEntityId.equals(scopeEntityId)) {
             setSelectedEntityId(null);
+
             selectedEntities = Sets.newHashSet();
             multiselectMode = false;
         }
@@ -552,6 +560,7 @@ public final class GridComponentState extends AbstractComponentState implements 
             jsonOrder.put(JSON_ORDER_DIRECTION, orderColumn.getDirection());
             jsonOrderList.put(jsonOrder);
         }
+
         if (!orderColumns.isEmpty()) {
             json.put(JSON_ORDER, jsonOrderList);
         }
@@ -708,7 +717,7 @@ public final class GridComponentState extends AbstractComponentState implements 
                 return;
             }
 
-            JSONArray selectedEntitiesArray = null;
+            JSONArray selectedEntitiesArray;
 
             if (selectedEntities[0].contains("[")) {
                 selectedEntitiesArray = new JSONArray(selectedEntities[0]);

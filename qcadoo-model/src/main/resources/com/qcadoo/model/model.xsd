@@ -58,6 +58,7 @@
 			<xs:attribute name="auditable" type="xs:boolean" />
 			<xs:attribute name="cacheable" type="xs:boolean" />
 			<xs:attribute name="versionable" type="xs:boolean" />
+			<xs:attribute name="secureStrings" type="xs:boolean" default="true" />
 		</xs:complexType>
 	</xs:element>
 
