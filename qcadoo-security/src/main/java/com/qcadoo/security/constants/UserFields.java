@@ -25,38 +25,46 @@ package com.qcadoo.security.constants;
 
 public final class UserFields {
 
-	private UserFields() {
+    private UserFields() {
 
-	}
+    }
 
-	public static final String USER_NAME = "userName";
+    public static final String USER_NAME = "userName";
 
-	public static final String EMAIL = "email";
+    public static final String EMAIL = "email";
 
-	public static final String FIRST_NAME = "firstName";
+    public static final String FIRST_NAME = "firstName";
 
-	public static final String LAST_NAME = "lastName";
+    public static final String LAST_NAME = "lastName";
 
-	public static final String ENABLED = "enabled";
+    public static final String ENABLED = "enabled";
 
-	public static final String DESCRIPTION = "description";
+    public static final String DESCRIPTION = "description";
 
-	public static final String PASSWORD = "password";
+    public static final String PASSWORD = "password";
 
-	public static final String PASSWORD_CONFIRMATION = "passwordConfirmation";
+    public static final String PASSWORD_CONFIRMATION = "passwordConfirmation";
 
-	public static final String OLD_PASSWORD = "oldPassword";
+    public static final String NEW_PASSWORD = "newPassword";
 
-	public static final String VIEW_IDENTIFIER = "viewIdentifier";
+    public static final String OLD_PASSWORD = "oldPassword";
 
-	public static final String LAST_ACTIVITY = "lastActivity";
+    public static final String VIEW_IDENTIFIER = "viewIdentifier";
 
-	public static final String IP_ADDRESS = "ipAddress";
+    public static final String LAST_ACTIVITY = "lastActivity";
 
-	public static final String GROUP = "group";
+    public static final String IP_ADDRESS = "ipAddress";
 
-	public static final String PASSWORD_RESET_TOKENS = "passwordResetTokens";
+    public static final String GROUP = "group";
 
-	public static final String GROUP_CHANGE_DATE = "groupChangeDate";
+    public static final String GROUP_CHANGE_DATE = "groupChangeDate";
+
+    public static final String PASSWORD_RESET_TOKENS = "passwordResetTokens";
+
+    public static final String PSWD_LAST_CHANGED = "pswdLastChanged";
+
+    public static final String AFTER_FIRST_PSWD_CHANGE = "afterFirstPswdChange";
+
+    public static final String IS_BLOCKED = "isBlocked";
 
 }

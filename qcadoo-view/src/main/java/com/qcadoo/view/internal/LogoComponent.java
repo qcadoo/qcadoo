@@ -3,7 +3,7 @@ package com.qcadoo.view.internal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.qcadoo.view.internal.controllers.ViewParametersAppender;
+import com.qcadoo.view.utils.ViewParametersAppender;
 
 @Component
 public class LogoComponent {

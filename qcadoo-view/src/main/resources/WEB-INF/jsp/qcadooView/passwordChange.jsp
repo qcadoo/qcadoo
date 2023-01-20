@@ -25,12 +25,15 @@
 --%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <!DOCTYPE html>
 
 <html>
 
     <head>
+        <sec:csrfMetaTags/>
+
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
@@ -129,6 +132,14 @@
 
             jQuery(document).ready(function() {
                 QCD.passwordChange.init();
+            });
+
+            $(function () {
+                var token = $("meta[name='_csrf']").attr("content");
+                var header = $("meta[name='_csrf_header']").attr("content");
+                $(document).ajaxSend(function(e, xhr, options) {
+                    xhr.setRequestHeader(header, token);
+                });
             });
         </script>
     </body>

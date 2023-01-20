@@ -24,6 +24,7 @@
 package com.qcadoo.view.internal.controllers;
 
 import com.qcadoo.localization.api.TranslationService;
+import com.qcadoo.view.utils.ViewParametersAppender;
 import com.qcadoo.view.internal.LogoComponent;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,9 @@ public final class LoginController {
     private static final String MESSAGE_CONTENT = "messageContent";
 
     private static final String LOGO_PATH = "logoPath";
+
+    @Value("${rememberMeFeatureAvailable:false}")
+    private Boolean rememberMeAvailable;
 
     @Autowired
     private TranslationService translationService;
@@ -82,6 +86,7 @@ public final class LoginController {
         mav.addObject("iframe", iframe);
         mav.addObject("popup", popup);
         mav.addObject("targetUrl", targetUrl);
+        mav.addObject("rememberMeAvailable", rememberMeAvailable);
 
         if (logout) {
             mav.addObject(MESSAGE_TYPE, "success");

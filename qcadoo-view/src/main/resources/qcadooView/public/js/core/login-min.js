@@ -215,6 +215,10 @@ QCD.login = (function () {
                         lockForm(false);
                     break;
 
+                    case "sessionExpired":
+                        window.location = "?timeout=true";
+                    break;
+
                     default:
                         showMessagePanel("danger", errorHeaderText, errorContentText);
 
@@ -223,9 +227,7 @@ QCD.login = (function () {
                 }
             },
             error: function (xhr, textStatus, errorThrown) {
-                showMessageBox("danger", errorHeaderText, errorContentText);
-
-                lockForm(false);
+                window.location = "?loginError=true";
             }
         });
     }

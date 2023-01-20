@@ -45,6 +45,7 @@
 		<password name="password" /><!-- TODO validatesPresenceOnCreate -->
 		<password name="passwordConfirmation" persistent="false" /><!-- 
 			TODO validatesPresenceOnCreate -->
+		<password name="newPassword"/>
 		<password name="oldPassword" persistent="false" />
 		<string name="viewIdentifier" persistent="false" />
 		<datetime name="lastActivity" />
@@ -52,6 +53,9 @@
 		<string name="ipAddress" />
 		<belongsTo name="group" model="group" required="true"/>
 		<hasMany name="passwordResetTokens" model="passwordResetToken" joinField="user" cascade="delete"/>
+		<datetime name="pswdLastChanged"/>
+		<boolean name="afterFirstPswdChange" default="false"/>
+		<boolean name="isBlocked" default="false"/>
 	</fields>
 
 	<hooks>
@@ -70,6 +74,8 @@
 
 		<onSave class="com.qcadoo.security.internal.hooks.UserModelHooks"
 				  method="checkIfEmailNotificationShouldBeSent" />
+		<onSave class="com.qcadoo.security.internal.hooks.UserModelHooks"
+				method="updatePswdLastChanged" />
 	</hooks>
 
 	<identifier expression="#userName" />

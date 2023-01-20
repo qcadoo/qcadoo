@@ -27,6 +27,7 @@ import com.google.common.collect.Maps;
 import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.api.file.FileUtils;
 import com.qcadoo.view.api.crud.CrudService;
+import com.qcadoo.view.utils.ViewParametersAppender;
 import com.qcadoo.view.constants.QcadooViewConstants;
 import com.qcadoo.view.utils.FileAccessUtils;
 import org.json.JSONException;

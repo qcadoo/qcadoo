@@ -26,6 +26,7 @@ package com.qcadoo.view.internal.controllers;
 import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.security.api.PasswordResetTokenService;
+import com.qcadoo.view.utils.ViewParametersAppender;
 import com.qcadoo.view.internal.LogoComponent;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;

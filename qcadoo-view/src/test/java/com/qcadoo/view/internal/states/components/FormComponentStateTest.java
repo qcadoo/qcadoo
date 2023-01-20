@@ -23,47 +23,18 @@
  */
 package com.qcadoo.view.internal.states.components;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNull;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.springframework.test.util.ReflectionTestUtils.setField;
-
-import java.util.Collections;
-import java.util.Locale;
-import java.util.Map;
-
-import org.json.JSONObject;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-import org.springframework.context.ApplicationContext;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.qcadoo.localization.api.TranslationService;
-import com.qcadoo.model.api.DataDefinition;
-import com.qcadoo.model.api.Entity;
-import com.qcadoo.model.api.EntityMessagesHolder;
-import com.qcadoo.model.api.EntityOpResult;
-import com.qcadoo.model.api.FieldDefinition;
+import com.qcadoo.model.api.*;
 import com.qcadoo.model.api.validators.ErrorMessage;
 import com.qcadoo.model.internal.DefaultEntity;
 import com.qcadoo.model.internal.ExpressionServiceImpl;
 import com.qcadoo.model.internal.types.StringType;
 import com.qcadoo.security.api.SecurityRolesService;
 import com.qcadoo.view.api.ViewDefinitionState;
+import com.qcadoo.view.api.utils.SecurityEscapeService;
 import com.qcadoo.view.internal.api.InternalComponentState;
 import com.qcadoo.view.internal.components.FieldComponentPattern;
 import com.qcadoo.view.internal.components.FieldComponentState;
@@ -71,39 +42,76 @@ import com.qcadoo.view.internal.components.form.FormComponentPattern;
 import com.qcadoo.view.internal.components.form.FormComponentState;
 import com.qcadoo.view.internal.states.AbstractComponentState;
 import com.qcadoo.view.internal.states.AbstractStateTest;
+import org.json.JSONObject;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Answers;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+import org.springframework.context.ApplicationContext;
+
+import java.util.Collections;
+import java.util.Locale;
+import java.util.Map;
+
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNull;
+import static org.junit.Assert.*;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 public class FormComponentStateTest extends AbstractStateTest {
-
-    private Entity entity;
-
-    private ViewDefinitionState viewDefinitionState;
 
     private FieldComponentState name;
 
     private FormComponentState form;
 
+    @Mock
+    private Entity entity;
+
+    @Mock
+    private ViewDefinitionState viewDefinitionState;
+
+    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private DataDefinition dataDefinition;
 
+    @Mock
     private FieldDefinition fieldDefinition;
 
+    @Mock
     private TranslationService translationService;
 
+    @Mock
     private ApplicationContext applicationContext;
+
+    @Mock
+    private SecurityRolesService securityRolesService;
+
+    @Mock
+    private SecurityEscapeService securityEscapeService;
+
+    @Mock
+    private FieldComponentPattern namePattern;
+
+    @Mock
+    private FormComponentPattern pattern;
+
+    @Mock
+    private EntityMessagesHolder messagesHolder;
 
     @Before
     public void init() throws Exception {
-        entity = mock(Entity.class);
+        MockitoAnnotations.initMocks(this);
+
         given(entity.getField("name")).willReturn("text");
 
-        viewDefinitionState = mock(ViewDefinitionState.class);
-
-        translationService = mock(TranslationService.class);
-
-        fieldDefinition = mock(FieldDefinition.class);
         given(fieldDefinition.getType()).willReturn(new StringType());
         given(fieldDefinition.getName()).willReturn("name");
 
-        dataDefinition = mock(DataDefinition.class, RETURNS_DEEP_STUBS);
         given(dataDefinition.get(12L)).willReturn(null);
         given(dataDefinition.get(13L)).willReturn(entity);
         given(dataDefinition.getPluginIdentifier()).willReturn("plugin");
@@ -116,40 +124,44 @@ public class FormComponentStateTest extends AbstractStateTest {
             @Override
             public Entity answer(final InvocationOnMock invocation) throws Throwable {
                 Long id = (Long) invocation.getArguments()[0];
+
                 return new DefaultEntity(dataDefinition, id);
             }
         });
 
-        FieldComponentPattern namePattern = mock(FieldComponentPattern.class);
+        setField(namePattern, "applicationContext", applicationContext);
+
         given(namePattern.isRequired()).willReturn(false);
         given(namePattern.isPersistent()).willReturn(true);
+
+        setField(pattern, "applicationContext", applicationContext);
+
+        given(pattern.getExpressionNew()).willReturn(null);
+        given(pattern.getExpressionEdit()).willReturn("'static expression'");
+
+        given(applicationContext.getBean(SecurityRolesService.class)).willReturn(securityRolesService);
+        given(applicationContext.getBean(SecurityEscapeService.class)).willReturn(securityEscapeService);
+
         name = new FieldComponentState(namePattern);
         name.setTranslationService(translationService);
         name.setName("name");
         name.initialize(new JSONObject(), Locale.ENGLISH);
 
-        FormComponentPattern pattern = mock(FormComponentPattern.class);
-        given(pattern.getExpressionNew()).willReturn(null);
-        given(pattern.getExpressionEdit()).willReturn("'static expression'");
-        applicationContext = mock(ApplicationContext.class);
-        setField(pattern, "applicationContext", applicationContext);
-        SecurityRolesService securityRolesService = mock(SecurityRolesService.class);
-        given(applicationContext.getBean(SecurityRolesService.class)).willReturn(securityRolesService);
         form = new FormComponentState(pattern);
         form.setDataDefinition(dataDefinition);
         form.setTranslationService(translationService);
         form.addFieldEntityIdChangeListener("name", name);
         form.initialize(new JSONObject(ImmutableMap.of("components", new JSONObject())), Locale.ENGLISH);
+
         new ExpressionServiceImpl().init();
     }
 
     @Test
-    public void shouldInitialeFormWithEntityId() throws Exception {
+    public void shouldInitializeFormWithEntityId() throws Exception {
         // given
-        FormComponentPattern pattern = mock(FormComponentPattern.class);
         given(pattern.getExpressionNew()).willReturn(null);
         given(pattern.getExpressionEdit()).willReturn(null);
-        setField(pattern, "applicationContext", applicationContext);
+
         InternalComponentState componentState = new FormComponentState(pattern);
 
         JSONObject json = new JSONObject();
@@ -167,12 +179,11 @@ public class FormComponentStateTest extends AbstractStateTest {
     }
 
     @Test
-    public void shouldInitialeFormWithNullEntityId() throws Exception {
+    public void shouldInitializeFormWithNullEntityId() throws Exception {
         // given
-        FormComponentPattern pattern = mock(FormComponentPattern.class);
         given(pattern.getExpressionNew()).willReturn(null);
         given(pattern.getExpressionEdit()).willReturn(null);
-        setField(pattern, "applicationContext", applicationContext);
+
         InternalComponentState componentState = new FormComponentState(pattern);
 
         JSONObject json = new JSONObject();
@@ -192,13 +203,11 @@ public class FormComponentStateTest extends AbstractStateTest {
     @Test
     public void shouldRenderFormEntityId() throws Exception {
         // given
-        TranslationService translationService = mock(TranslationService.class);
-        DataDefinition dataDefinition = mock(DataDefinition.class);
-        FormComponentPattern pattern = mock(FormComponentPattern.class);
         given(pattern.getExpressionNew()).willReturn(null);
         given(pattern.getExpressionEdit()).willReturn("2");
-        setField(pattern, "applicationContext", applicationContext);
+
         AbstractComponentState componentState = new FormComponentState(pattern);
+
         componentState.setTranslationService(translationService);
         componentState.setDataDefinition(dataDefinition);
         componentState.setFieldValue(13L);
@@ -224,7 +233,6 @@ public class FormComponentStateTest extends AbstractStateTest {
         // then
         assertFalse(form.isValid());
         assertTrue(form.render().toString().contains("translated entityNotFound"));
-
     }
 
     @Test
@@ -283,7 +291,6 @@ public class FormComponentStateTest extends AbstractStateTest {
     @Test
     public void shouldNotDeleteFormEntity() throws Exception {
         // given
-        EntityMessagesHolder messagesHolder = mock(EntityMessagesHolder.class);
         final String message = "some.message";
         ErrorMessage errorMessage = new ErrorMessage(message);
         given(messagesHolder.getGlobalErrors()).willReturn(Lists.newArrayList(errorMessage));
@@ -313,8 +320,10 @@ public class FormComponentStateTest extends AbstractStateTest {
         // given
         Entity entity = new DefaultEntity(dataDefinition, null, Collections.singletonMap("name", (Object) "text"));
         Entity savedEntity = new DefaultEntity(dataDefinition, 13L, Collections.singletonMap("name", (Object) "text2"));
+
         given(dataDefinition.create(null)).willReturn(new DefaultEntity(dataDefinition));
         given(dataDefinition.save(eq(entity))).willReturn(savedEntity);
+
         name.setFieldValue("text");
 
         form.setFieldValue(null);
@@ -333,8 +342,10 @@ public class FormComponentStateTest extends AbstractStateTest {
     public void shouldCopyFormEntity() throws Exception {
         // given
         Entity copiedEntity = new DefaultEntity(dataDefinition, 14L, Collections.singletonMap("name", (Object) "text(1)"));
+
         given(dataDefinition.copy(13L)).willReturn(Collections.singletonList(copiedEntity));
         given(dataDefinition.get(14L)).willReturn(copiedEntity);
+
         name.setFieldValue("text");
         form.setFieldValue(13L);
 
@@ -353,9 +364,11 @@ public class FormComponentStateTest extends AbstractStateTest {
         // given
         Entity entity = new DefaultEntity(dataDefinition, 13L, Collections.singletonMap("name", (Object) "text2"));
         Entity savedEntity = new DefaultEntity(dataDefinition, 13L, Collections.singletonMap("name", (Object) "text2"));
+
         given(dataDefinition.create(13L)).willReturn(new DefaultEntity(dataDefinition, 13L));
         given(dataDefinition.save(eq(entity))).willReturn(savedEntity);
         given(dataDefinition.getFields().keySet()).willReturn(Collections.singleton("name"));
+
         name.setFieldValue("text");
 
         JSONObject json = new JSONObject();
@@ -385,6 +398,7 @@ public class FormComponentStateTest extends AbstractStateTest {
         // given
         Entity entity = new DefaultEntity(dataDefinition, null, Collections.singletonMap("name", (Object) "text"));
         Entity savedEntity = new DefaultEntity(dataDefinition, null, Collections.singletonMap("name", (Object) "text2"));
+
         savedEntity.addGlobalError("global.error");
         savedEntity.addError(fieldDefinition, "field.error");
 
@@ -392,6 +406,7 @@ public class FormComponentStateTest extends AbstractStateTest {
         given(translationService.translate(eq("field.error"), any(Locale.class))).willReturn("translated field error");
         given(dataDefinition.create(null)).willReturn(new DefaultEntity(dataDefinition));
         given(dataDefinition.save(eq(entity))).willReturn(savedEntity);
+
         name.setFieldValue("text");
 
         form.setFieldValue(null);
@@ -422,6 +437,7 @@ public class FormComponentStateTest extends AbstractStateTest {
         alreadyPersistedEntity.setField(numberFieldName, numberFieldValue);
 
         given(dataDefinition.get(id)).willReturn(alreadyPersistedEntity);
+
         form.setEntity(formEntity);
 
         // when
@@ -447,6 +463,7 @@ public class FormComponentStateTest extends AbstractStateTest {
         formEntity.setField(nameFieldName, nameFieldFormValue);
 
         given(dataDefinition.get(id)).willReturn(null);
+
         form.setEntity(formEntity);
 
         // when
@@ -471,6 +488,7 @@ public class FormComponentStateTest extends AbstractStateTest {
         formEntity.setField(nameFieldName, nameFieldFormValue);
 
         given(dataDefinition.get(anyLong())).willReturn(null);
+
         form.setEntity(formEntity);
 
         // when
@@ -526,6 +544,7 @@ public class FormComponentStateTest extends AbstractStateTest {
         alreadyPersistedEntity.setField(numberFieldName, numberFieldValue);
 
         given(dataDefinition.get(id)).willReturn(alreadyPersistedEntity);
+
         form.setEntity(formEntity);
 
         // when
@@ -538,4 +557,5 @@ public class FormComponentStateTest extends AbstractStateTest {
         assertNull(resultEntity.getStringField(numberFieldName));
         assertEquals(1, resultEntity.getFields().size());
     }
+
 }

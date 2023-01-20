@@ -33,6 +33,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import com.qcadoo.view.utils.ViewParametersAppender;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

@@ -39,7 +39,7 @@ import com.qcadoo.model.internal.api.ValueAndError;
 import com.qcadoo.model.internal.types.*;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
-import org.springframework.security.authentication.encoding.PasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.math.BigDecimal;
 import java.util.Date;

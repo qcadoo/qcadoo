@@ -40,19 +40,12 @@ import com.qcadoo.model.internal.search.SearchCriteria;
 import com.qcadoo.model.internal.search.SearchCriteriaImpl;
 import com.qcadoo.model.internal.search.SearchQueryImpl;
 import com.qcadoo.model.internal.types.PriorityType;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
+
+import java.util.*;
+
+import static com.google.common.base.Preconditions.*;
 import static com.qcadoo.model.api.search.SearchOrders.asc;
 import static com.qcadoo.model.api.search.SearchProjections.alias;
 import static com.qcadoo.model.api.search.SearchProjections.rowCount;
@@ -89,6 +82,8 @@ public final class DataDefinitionImpl implements InternalDataDefinition {
 
     private boolean activable = false;
 
+    private boolean secureStrings = true;
+
     private String identifierExpression = "#id";
 
     private Class<?> classForEntity;
@@ -121,6 +116,7 @@ public final class DataDefinitionImpl implements InternalDataDefinition {
         if (!this.equals(entity.getDataDefinition())) {
             throw new IllegalStateException("Incompatible types");
         }
+
         return dataAccessService.save(this, entity);
     }
 
@@ -129,6 +125,7 @@ public final class DataDefinitionImpl implements InternalDataDefinition {
         if (!this.equals(entity.getDataDefinition())) {
             throw new IllegalStateException("Incompatible types");
         }
+
         return dataAccessService.validate(this, entity);
     }
 
@@ -137,12 +134,14 @@ public final class DataDefinitionImpl implements InternalDataDefinition {
         if (!this.equals(entity.getDataDefinition())) {
             throw new IllegalStateException("Incompatible types");
         }
+
         return dataAccessService.fastSave(this, entity);
     }
 
     @Override
     public SearchQueryBuilder find(final String queryString) {
-        checkArgument(queryString != null, "HQL query string must be given");
+        checkArgument(Objects.nonNull(queryString), "HQL query string must be given");
+
         return new SearchQueryImpl(this, dataAccessService, queryString);
     }
 
@@ -152,21 +151,25 @@ public final class DataDefinitionImpl implements InternalDataDefinition {
     }
 
     @Override
-    public long count(){
+    public long count() {
         return count(null);
     }
 
     @Override
     public long count(final SearchCriterion criterion) {
         final String countAlias = "count";
+
         SearchCriteriaBuilder scb = find();
-        if (criterion != null) {
+
+        if (Objects.nonNull(criterion)) {
             scb.add(criterion);
         }
+
         scb.setProjection(alias(rowCount(), countAlias));
         scb.addOrder(asc(countAlias));
 
         Entity countProjection = scb.setMaxResults(1).uniqueResult();
+
         return (Long) countProjection.getField(countAlias);
     }
 
@@ -183,7 +186,6 @@ public final class DataDefinitionImpl implements InternalDataDefinition {
     @Override
     public void move(final Long id, final int offset) {
         dataAccessService.move(this, id, offset);
-
     }
 
     @Override
@@ -242,7 +244,7 @@ public final class DataDefinitionImpl implements InternalDataDefinition {
     public FieldDefinition getField(final String fieldName) {
         if (fields.containsKey(fieldName)) {
             return fields.get(fieldName);
-        } else if (priorityField != null && priorityField.getName().equals(fieldName)) {
+        } else if (Objects.nonNull(priorityField) && priorityField.getName().equals(fieldName)) {
             return priorityField;
         } else {
             return null;
@@ -252,8 +254,10 @@ public final class DataDefinitionImpl implements InternalDataDefinition {
     @Override
     public EntityHookDefinition getHook(final String type, final String className, final String methodName) {
         EntityHookDefinition hook = hooksByMethodPath.get(type.toUpperCase(Locale.ENGLISH) + "." + className + "." + methodName);
+
         checkNotNull(hook, "Cannot find hook " + type.toUpperCase(Locale.ENGLISH) + "." + className + "." + methodName
                 + " for dataDefinition " + this);
+
         return hook;
     }
 
@@ -315,6 +319,7 @@ public final class DataDefinitionImpl implements InternalDataDefinition {
 
     public void addHook(final HooksTag tag, final EntityHookDefinition hook) {
         hook.initialize(this);
+
         hooksByMethodPath.put(tag.toString() + "." + hook.getName(), hook);
         entityHooks.put(tag, hook);
     }
@@ -369,6 +374,7 @@ public final class DataDefinitionImpl implements InternalDataDefinition {
                 return false;
             }
         }
+
         return true;
     }
 
@@ -380,6 +386,7 @@ public final class DataDefinitionImpl implements InternalDataDefinition {
     @Override
     public Object getInstanceForEntity() {
         Class<?> entityClass = getClassForEntity();
+
         try {
             return entityClass.newInstance();
         } catch (InstantiationException e) {
@@ -391,11 +398,12 @@ public final class DataDefinitionImpl implements InternalDataDefinition {
 
     @Override
     public boolean isPrioritizable() {
-        return priorityField != null;
+        return Objects.nonNull(priorityField);
     }
 
     public void addPriorityField(final FieldDefinition priorityField) {
         checkState(priorityField.getType() instanceof PriorityType, "priority field has wrong type");
+
         this.priorityField = priorityField;
     }
 
@@ -441,11 +449,11 @@ public final class DataDefinitionImpl implements InternalDataDefinition {
     }
 
     @Override
-    public boolean isVersionable(){
+    public boolean isVersionable() {
         return versionable;
     }
 
-    public void setVersionable(boolean versionable){
+    public void setVersionable(boolean versionable) {
         this.versionable = versionable;
     }
 
@@ -479,7 +487,7 @@ public final class DataDefinitionImpl implements InternalDataDefinition {
 
     @Override
     public boolean equals(final Object obj) {
-        if (obj == null) {
+        if (Objects.isNull(obj)) {
             return false;
         }
         if (obj == this) {
@@ -488,7 +496,9 @@ public final class DataDefinitionImpl implements InternalDataDefinition {
         if (!(obj instanceof DataDefinitionImpl)) {
             return false;
         }
+
         DataDefinitionImpl other = (DataDefinitionImpl) obj;
+
         return new EqualsBuilder().append(name, other.name).append(pluginIdentifier, other.pluginIdentifier).isEquals();
     }
 
@@ -516,26 +526,36 @@ public final class DataDefinitionImpl implements InternalDataDefinition {
         this.activable = activable;
     }
 
+    public boolean isSecureStrings() {
+        return secureStrings;
+    }
+
+    public void setSecureStrings(boolean secureStrings) {
+        this.secureStrings = secureStrings;
+    }
+
     @Override
     public MasterModel getMasterModel() {
         return masterModel;
     }
 
     @Override
-    public void setMasterModel(MasterModel masterModel) {
+    public void setMasterModel(final MasterModel masterModel) {
         this.masterModel = masterModel;
     }
 
     @Override
-    public Entity getMasterModelEntity(Long id) {
+    public Entity getMasterModelEntity(final Long id) {
         return dataAccessService.getMasterModelEntity(this, id);
     }
 
     @Override
-    public Entity tryGetMasterModelEntity(Long id) {
-        if(getMasterModel() == null){
+    public Entity tryGetMasterModelEntity(final Long id) {
+        if (Objects.isNull(getMasterModel())) {
             return null;
         }
+
         return dataAccessService.getMasterModelEntity(this, id);
     }
+
 }

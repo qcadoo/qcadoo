@@ -23,14 +23,13 @@
  */
 package com.qcadoo.view.internal.components;
 
-import java.util.Locale;
-import java.util.Map;
-
-import org.json.JSONException;
-
 import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.internal.ComponentDefinition;
 import com.qcadoo.view.internal.ComponentOption;
+import org.json.JSONException;
+
+import java.util.Locale;
+import java.util.Map;
 
 public final class TextAreaComponentPattern extends FieldComponentPattern {
 
@@ -47,6 +46,7 @@ public final class TextAreaComponentPattern extends FieldComponentPattern {
     @Override
     protected void initializeComponent() throws JSONException {
         super.initializeComponent();
+
         for (ComponentOption option : getOptions()) {
             if ("rows".equals(option.getType())) {
                 rows = Integer.parseInt(option.getValue());
@@ -59,13 +59,15 @@ public final class TextAreaComponentPattern extends FieldComponentPattern {
     @Override
     protected Map<String, Object> getJspOptions(final Locale locale) {
         Map<String, Object> options = super.getJspOptions(locale);
+
         options.put("rows", rows);
+
         return options;
     }
 
     @Override
     public ComponentState getComponentStateInstance() {
-        return new FieldComponentState(this);
+        return new TextAreaComponentState(this);
     }
 
     @Override
@@ -82,4 +84,5 @@ public final class TextAreaComponentPattern extends FieldComponentPattern {
     public String getJsObjectName() {
         return JS_OBJECT;
     }
+
 }

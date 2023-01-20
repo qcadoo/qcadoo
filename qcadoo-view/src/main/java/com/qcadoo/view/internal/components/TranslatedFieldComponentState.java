@@ -23,19 +23,27 @@
  */
 package com.qcadoo.view.internal.components;
 
+import com.qcadoo.model.api.FieldDefinition;
+import com.qcadoo.model.api.types.EnumeratedType;
+import com.qcadoo.view.api.utils.SecurityEscapeService;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.qcadoo.model.api.FieldDefinition;
-import com.qcadoo.model.api.types.EnumeratedType;
+import java.util.Objects;
 
 public class TranslatedFieldComponentState extends FieldComponentState {
 
     private final FieldComponentPattern pattern;
 
+    private final SecurityEscapeService securityEscapeService;
+
     public TranslatedFieldComponentState(final FieldComponentPattern pattern) {
         super(pattern);
+
         this.pattern = pattern;
+
+        this.securityEscapeService = pattern.getApplicationContext().getBean(SecurityEscapeService.class);
+
     }
 
     @Override
@@ -46,12 +54,13 @@ public class TranslatedFieldComponentState extends FieldComponentState {
 
         FieldDefinition fieldDefinition = pattern.getFieldComponentFieldDefinition();
 
-        if (fieldDefinition != null && EnumeratedType.class.isAssignableFrom(fieldDefinition.getType().getClass())) {
+        if (Objects.nonNull(fieldDefinition) && EnumeratedType.class.isAssignableFrom(fieldDefinition.getType().getClass())) {
             value = ((EnumeratedType) fieldDefinition.getType()).activeValues(getLocale()).get(value);
         }
 
-        json.put(JSON_VALUE, value);
+        json.put(JSON_VALUE, securityEscapeService.encodeHtml(value));
         json.put(JSON_REQUIRED, isRequired());
+
         return json;
     }
 

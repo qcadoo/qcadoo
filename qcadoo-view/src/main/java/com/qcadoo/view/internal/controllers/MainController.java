@@ -25,6 +25,7 @@ package com.qcadoo.view.internal.controllers;
 
 import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.security.api.SecurityService;
+import com.qcadoo.view.utils.ViewParametersAppender;
 import com.qcadoo.view.internal.LogoComponent;
 import com.qcadoo.view.internal.api.ViewDefinitionService;
 import com.qcadoo.view.internal.menu.MenuService;
