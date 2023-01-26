@@ -87,18 +87,6 @@ QCD.PageController = function() {
 	}
 
 	this.init = function(serializationObject, dimensions) {
-        function tryFocusFirstInput() {
-            try {
-                var form = window.mainController.getComponentByReferenceName("form");
-                if (typeof form === "undefined") {
-                    return;
-                }
-                $(form.element).find("input, textarea").not(".lookupInputWrapper input").first().focus();
-            } catch (e) {
-                console.error(e);
-            }
-        }
-
 		if (isPopup) {
 			if (window.parent.changeModalSize) {
 				var modalWidth = (dimensions ? dimensions.width : pageOptions.windowWidth) || 1000;
@@ -127,7 +115,6 @@ QCD.PageController = function() {
 		} else {
 			if (hasDataDefinition) {
 				this.callEvent("initialize", null, function() {
-                    tryFocusFirstInput();
                     QCD.components.elements.utils.LoadingIndicator.unblockElement($("body"))
                 });
 			} else {
@@ -246,6 +233,18 @@ QCD.PageController = function() {
 		return arg;
 	}
 
+    function tryFocusFirstInput() {
+        try {
+            var form = window.mainController.getComponentByReferenceName("form");
+            if (typeof form === "undefined") {
+                return;
+            }
+            $(form.element).find("input, textarea").not(".lookupInputWrapper input").first().focus();
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
     function setWindowVisible() {
 	    $("#window").css("visibility", "");
 	}
@@ -274,6 +273,7 @@ QCD.PageController = function() {
 			} else {
 				setValueData(response);
 				setWindowVisible();
+				tryFocusFirstInput();
 			}
 			if (actionsPerformer && ! (response.content && response.content.status && response.content.status != "ok") && (typeof actionsPerformer.performNext === 'function')) {
 				actionsPerformer.performNext();
