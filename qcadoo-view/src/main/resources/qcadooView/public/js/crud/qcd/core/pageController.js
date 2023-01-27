@@ -106,15 +106,20 @@ QCD.PageController = function() {
 			setComponentState(serializationObject);
 			if (hasDataDefinition) {
 				this.callEvent("initializeAfterBack", null, function() {
+                    setWindowVisible();
+                    tryFocusFirstInput();
 				    QCD.components.elements.utils.LoadingIndicator.unblockElement($("body"))
 				});
 			} else {
 			    setWindowVisible();
+			    tryFocusFirstInput();
 				QCD.components.elements.utils.LoadingIndicator.unblockElement($("body"));
 			}
 		} else {
 			if (hasDataDefinition) {
 				this.callEvent("initialize", null, function() {
+				    setWindowVisible();
+                    tryFocusFirstInput();
                     QCD.components.elements.utils.LoadingIndicator.unblockElement($("body"))
                 });
 			} else {
@@ -272,8 +277,6 @@ QCD.PageController = function() {
 				}
 			} else {
 				setValueData(response);
-				setWindowVisible();
-				tryFocusFirstInput();
 			}
 			if (actionsPerformer && ! (response.content && response.content.status && response.content.status != "ok") && (typeof actionsPerformer.performNext === 'function')) {
 				actionsPerformer.performNext();
