@@ -50,7 +50,6 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -101,12 +100,6 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
 
     @Autowired
     private TranslationService translationService;
-
-    @Value("${stringAndTextXSSProtectRegex:}")
-    private String stringAndTextXSSProtectRegex;
-
-    @Value("${stringAndTextXSSProtectRegexErrorMessage:}")
-    private String stringAndTextXSSProtectRegexErrorMessage;
 
     @Transactional
     @Override
@@ -413,18 +406,6 @@ public final class ModelXmlToDefinitionConverterImpl extends AbstractModelXmlCon
         FieldType type = getFieldType(reader, dataDefinition, name, fieldTag, fieldType);
 
         fieldDefinition.withType(type);
-
-        if (dataDefinition.isSecureStrings() && hasText(stringAndTextXSSProtectRegex) && !stringAndTextXSSProtectRegex.startsWith("${")
-                && hasText(fieldType)) {
-            if ("string".equals(fieldType) || "text".equals(fieldType)) {
-                FieldHookDefinition validator = new RegexValidator(stringAndTextXSSProtectRegex);
-                if (hasText(stringAndTextXSSProtectRegexErrorMessage)) {
-                    ((ErrorMessageDefinition) validator).setErrorMessage(stringAndTextXSSProtectRegexErrorMessage);
-                }
-
-                fieldDefinition.withValidator(getValidatorDefinition(reader, validator));
-            }
-        }
 
         if (getBooleanAttribute(reader, "required", false)) {
             fieldDefinition.withValidator(getValidatorDefinition(reader, new RequiredValidator()));
