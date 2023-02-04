@@ -26,7 +26,6 @@ package com.qcadoo.security.internal.validators;
 import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.security.constants.UserFields;
-import com.qcadoo.security.internal.password.SelectablePasswordEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -85,8 +84,6 @@ public class PasswordValidationService {
 
             return false;
         }
-
-        user.setField(UserFields.NEW_PASSWORD, ((SelectablePasswordEncoder) passwordEncoder).getBcryptPasswordEncoder().encode(passwordConfirmation));
 
         return true;
     }
