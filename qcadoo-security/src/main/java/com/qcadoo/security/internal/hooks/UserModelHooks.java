@@ -206,6 +206,7 @@ public class UserModelHooks {
                         user.addError(userDD.getField(UserFields.PASSWORD), L_QCADOO_SECURITY_USER_PASSWORD_SAME_AS_OLD);
                     } else {
                         user.setField(UserFields.PSWD_LAST_CHANGED, new Date());
+                        user.setField(UserFields.IS_BLOCKED, false);
 
                         if (!user.getBooleanField(UserFields.AFTER_FIRST_PSWD_CHANGE)) {
                             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
