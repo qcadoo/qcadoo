@@ -50,8 +50,10 @@ QCD.components.elements.Tree = function(_element, _mainController) {
 	
 	var isEnabled = false;
 	
+	var offPermanentlyDisabled = this.options.offPermanentlyDisabled;
+
 	var selectableWhenDisabled = this.options.selectableWhenDisabled;
-	
+
 	var listeners = this.options.listeners;
 	
 	var openedNodesArrayToInsert;
@@ -620,7 +622,7 @@ QCD.components.elements.Tree = function(_element, _mainController) {
 			var params = new Object();
 			var entityId = getSelectedEntityId()
 			dataType = dataTypesMap[nodeDataTypesMap[entityId]];
-			if (!isEnabled) {
+			if (!isEnabled && !offPermanentlyDisabled) {
 				params["window.permanentlyDisabled"] = true;
 			}
 			params[dataType.correspondingComponent+".id"] = entityId;
