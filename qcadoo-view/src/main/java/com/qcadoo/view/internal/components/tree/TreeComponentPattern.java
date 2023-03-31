@@ -61,6 +61,8 @@ public final class TreeComponentPattern extends FieldComponentPattern {
 
     private boolean selectableWhenDisabled = false;
 
+    private boolean offPermanentlyDisabled = false;
+
     private String customActionIcon = "collapseAllIcon16.png";
 
     public TreeComponentPattern(final ComponentDefinition componentDefinition) {
@@ -126,6 +128,8 @@ public final class TreeComponentPattern extends FieldComponentPattern {
                 hasMoveButton = Boolean.parseBoolean(option.getValue());
             } else if ("selectableWhenDisabled".equals(option.getType())) {
                 selectableWhenDisabled = Boolean.parseBoolean(option.getValue());
+            } else if ("offPermanentlyDisabled".equals(option.getType())) {
+                offPermanentlyDisabled = Boolean.parseBoolean(option.getValue());
             } else if ("customActionIcon".equals(option.getType())) {
                 customActionIcon = String.valueOf(option.getValue());
             }
@@ -156,6 +160,7 @@ public final class TreeComponentPattern extends FieldComponentPattern {
         json.put("buttonsOptions", buttonsOptions);
 
         json.put("selectableWhenDisabled", selectableWhenDisabled);
+        json.put("offPermanentlyDisabled", offPermanentlyDisabled);
 
         JSONObject translations = new JSONObject();
         for (String dataTypeName : dataTypes.keySet()) {
