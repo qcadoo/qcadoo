@@ -57,6 +57,9 @@ import java.util.*;
 
 public final class GridComponentState extends AbstractComponentState implements GridComponent {
 
+    public static final String L_CONFIGURATION = "configuration";
+    public static final String L_ONLY_CONTEXT_FILTERS = "onlyContextFilters";
+
     enum ExportMode {
         ALL, SELECTED
     }
@@ -381,6 +384,28 @@ public final class GridComponentState extends AbstractComponentState implements 
 
     @SuppressWarnings("unchecked")
     private void passFiltersFromJson(final JSONObject json) throws JSONException {
+
+        if(json.has(L_CONFIGURATION)) {
+            JSONObject configuration = json.getJSONObject(L_CONFIGURATION);
+            if (configuration.has(L_ONLY_CONTEXT_FILTERS) && json.has(JSON_FILTERS) && !json.isNull(JSON_FILTERS)) {
+                if(configuration.getBoolean(L_ONLY_CONTEXT_FILTERS)) {
+                    filtersEnabled = true;
+                    filters.clear();
+                    JSONObject filtersJson = json.getJSONObject(JSON_FILTERS);
+
+                    Iterator<String> filtersKeys = filtersJson.keys();
+
+                    while (filtersKeys.hasNext()) {
+                        String column = filtersKeys.next();
+
+                        filters.put(column, filtersJson.getString(column).trim());
+                    }
+
+                    return;
+                }
+            }
+        }
+
         if (json.has(JSON_FILTERS_ENABLED) && !json.isNull(JSON_FILTERS_ENABLED)) {
             filtersEnabled = json.getBoolean(JSON_FILTERS_ENABLED);
         }
