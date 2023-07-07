@@ -3,19 +3,19 @@
  * Copyright (c) 2010 Qcadoo Limited
  * Project: Qcadoo Framework
  * Version: 1.4
- *
+ * <p>
  * This file is part of Qcadoo.
- *
+ * <p>
  * Qcadoo is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
  * by the Free Software Foundation; either version 3 of the License,
  * or (at your option) any later version.
- *
+ * <p>
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty
  * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Affero General Public License for more details.
- *
+ * <p>
  * You should have received a copy of the GNU Affero General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -56,6 +56,7 @@ import org.json.JSONObject;
 import java.util.*;
 
 public final class GridComponentState extends AbstractComponentState implements GridComponent {
+
 
     enum ExportMode {
         ALL, SELECTED
@@ -149,7 +150,7 @@ public final class GridComponentState extends AbstractComponentState implements 
 
     private final GridComponentMultiSearchFilter multiSearchFilter = new GridComponentMultiSearchFilter();
 
-    private final PredefinedFilter defaultPredefinedFilter;
+    private PredefinedFilter defaultPredefinedFilter;
 
     private boolean onlyActive = true;
 
@@ -381,6 +382,7 @@ public final class GridComponentState extends AbstractComponentState implements 
 
     @SuppressWarnings("unchecked")
     private void passFiltersFromJson(final JSONObject json) throws JSONException {
+
         if (json.has(JSON_FILTERS_ENABLED) && !json.isNull(JSON_FILTERS_ENABLED)) {
             filtersEnabled = json.getBoolean(JSON_FILTERS_ENABLED);
         }
@@ -1178,6 +1180,12 @@ public final class GridComponentState extends AbstractComponentState implements 
     @Override
     public GridComponentMultiSearchFilter getMultiSearchFilter() {
         return multiSearchFilter;
+    }
+
+    @Override
+    public void removeFilterForField(String field) {
+        if (filters.containsKey(field))
+            filters.remove(field);
     }
 
 }

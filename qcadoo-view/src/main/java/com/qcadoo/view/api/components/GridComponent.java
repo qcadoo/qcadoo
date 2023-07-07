@@ -33,6 +33,7 @@ import com.qcadoo.view.api.ComponentState;
 import com.qcadoo.view.api.components.grid.GridComponentMultiSearchFilter;
 import com.qcadoo.view.api.components.lookup.FilterValueHolder;
 import com.qcadoo.view.internal.components.grid.GridComponentColumn;
+import com.qcadoo.view.internal.components.grid.PredefinedFilter;
 
 /**
  * Represents grid component
@@ -161,4 +162,6 @@ public interface GridComponent extends ComponentState {
     Set<String> getUserHiddenColumns();
 
     GridComponentMultiSearchFilter getMultiSearchFilter();
+
+    void removeFilterForField(String field);
 }

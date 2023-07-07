@@ -877,4 +877,7 @@ public class GridComponentPattern extends AbstractComponentPattern {
         return Strings.isNullOrEmpty(linkAuthorizationRole) || securityRolesService.canAccess(linkAuthorizationRole);
     }
 
+    public Map<String, PredefinedFilter> getPredefinedFilters() {
+        return predefinedFilters;
+    }
 }
