@@ -27,6 +27,7 @@ public class CustomCsrfRequestMatcher implements RequestMatcher {
             new AntPathRequestMatcher("/rest/cmms/**"),
             new AntPathRequestMatcher("/wms/**"),
             new AntPathRequestMatcher("/rest/planner/**"),
+            new AntPathRequestMatcher("/rest/workstationsWChart/**")
     };
 
     @Override
