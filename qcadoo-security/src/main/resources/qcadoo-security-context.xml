@@ -52,6 +52,7 @@
     <security:http pattern="/js/**" security="none"/>
     <security:http pattern="/v2/api-docs.json" security="none"/>
     <security:http pattern="/rest/asana/notification" security="none"/>
+    <security:http pattern="/rest/planner/positions" security="none"/>
 
     <security:http use-expressions="true" auto-config="false"
                    entry-point-ref="loginUrlAuthenticationEntryPoint">
