@@ -46,16 +46,12 @@ QCD.components.elements.TimeInput = function(_element, _mainController) {
 
 		input.focus(function() {
 		}).blur(function() {
-			checkTimeFormat(input.val(),noHours);
+			checkTimeFormat(input.val());
 		});
 	}
 
 	function checkTimeFormat(value){
-		if(noHours >2){
-			var fragmentaryValues = [value.substr(0,noHours), value.substr(parseInt(noHours)+1,2), value.substr(parseInt(noHours)+4,2) ];
-		}else{
-			var fragmentaryValues = [value.substr(0,2), value.substr(3,2), value.substr(6,2) ];
-		}
+        var fragmentaryValues = value.split(":");
 		for (var i = 0; i < fragmentaryValues.length; i++) {
 			var value = fragmentaryValues[i]; 
 				var intIndexOfMatch = value.indexOf( "_" );
