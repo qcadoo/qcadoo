@@ -33,16 +33,19 @@
 		margin: 20px;
 		font-family:Arial, Helvetica, sans-serif;
 	}
+
 	#systemInfoContent .systemInfoItem {
 		margin-top: 10px;
 		margin-left: 20px;
 		font-size: 13px;
 	}
+
 	#systemInfoContent .systemInfoItem .systemInfoItemLabel {
 		display: inline-block;
-		width: 115px;
+		width: 150px;
 		color: #616161;
 	}
+
 	#systemInfoContent .systemInfoItem .systemInfoItemValue {
 		
 	}
@@ -75,4 +78,8 @@
 		<span class="systemInfoItemLabel">${translationsMap['qcadooView.systemInfo.buildRevision.label']}</span>
 		<span class="systemInfoItemValue">${buildRevision}</span>
 	</div>
+	<div class="systemInfoItem">
+        <span class="systemInfoItemLabel">${translationsMap['qcadooView.systemInfo.nextUpdateTime.label']}</span>
+        <span class="systemInfoItemValue">${nextUpdateTime}</span>
+    </div>
 </div>

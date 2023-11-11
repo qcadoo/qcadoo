@@ -23,8 +23,12 @@
  */
 package com.qcadoo.view.internal.controllers;
 
+import com.google.common.collect.Maps;
 import com.qcadoo.localization.api.TranslationService;
+import com.qcadoo.localization.api.utils.DateUtils;
 import com.qcadoo.view.api.crud.CrudService;
+import com.qcadoo.view.constants.SystemInfoFields;
+import com.qcadoo.view.internal.SystemInfoService;
 import com.qcadoo.view.utils.ViewParametersAppender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,18 +38,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.HashMap;
+import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
 
 @Controller
 public final class SystemInfoController {
-
-    @Autowired
-    private TranslationService translationService;
-
-    @Autowired
-    private CrudService crudController;
 
     @Value("${buildApplicationName}")
     private String buildApplicationName;
@@ -69,15 +67,27 @@ public final class SystemInfoController {
     private String buildRevision;
 
     @Autowired
+    private TranslationService translationService;
+
+    @Autowired
+    private CrudService crudController;
+
+    @Autowired
     private ViewParametersAppender viewParametersAppender;
+
+    @Autowired
+    private SystemInfoService systemInfoService;
 
     @RequestMapping(value = "systemInfo", method = RequestMethod.GET)
     public ModelAndView getSystemInfoView(@RequestParam final Map<String, String> arguments, final Locale locale) {
         ModelAndView mav = crudController.prepareView("qcadooView", "systemInfo", arguments, locale);
+
         viewParametersAppender.appendCommonViewObjects(mav);
 
-        Map<String, String> translationsMap = new HashMap<String, String>();
-        translationsMap.put("qcadooView.systemInfo.header", translationService.translate("qcadooView.systemInfo.header", locale));
+        Map<String, String> translationsMap = Maps.newHashMap();
+
+        translationsMap.put("qcadooView.systemInfo.header",
+                translationService.translate("qcadooView.systemInfo.header", locale));
         translationsMap.put("qcadooView.systemInfo.buildApplicationName.label",
                 translationService.translate("qcadooView.systemInfo.buildApplicationName.label", locale));
         translationsMap.put("qcadooView.systemInfo.buildApplicationVersion.label",
@@ -90,6 +100,9 @@ public final class SystemInfoController {
                 translationService.translate("qcadooView.systemInfo.buildRevision.label", locale));
         translationsMap.put("qcadooView.systemInfo.buildTime.label",
                 translationService.translate("qcadooView.systemInfo.buildTime.label", locale));
+        translationsMap.put("qcadooView.systemInfo.nextUpdateTime.label",
+                translationService.translate("qcadooView.systemInfo.nextUpdateTime.label", locale));
+
         mav.addObject("translationsMap", translationsMap);
 
         mav.addObject("buildApplicationName", buildApplicationName);
@@ -98,7 +111,15 @@ public final class SystemInfoController {
         mav.addObject("buildNumber", buildNumber);
         mav.addObject("buildTime", buildTime);
         mav.addObject("buildRevision", buildRevision);
+        mav.addObject("nextUpdateTime", getNextUpdateTime());
 
         return mav;
     }
+
+    private String getNextUpdateTime() {
+        Date nextUpdateTime = systemInfoService.getSystemInfo().getDateField(SystemInfoFields.NEXT_UPDATE_TIME);
+
+        return DateUtils.toDateTimeString(nextUpdateTime);
+    }
+
 }
