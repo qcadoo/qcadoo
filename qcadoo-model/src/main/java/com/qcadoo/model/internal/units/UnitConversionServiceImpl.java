@@ -59,6 +59,11 @@ public final class UnitConversionServiceImpl implements UnitConversionService {
     }
 
     @Override
+    public PossibleUnitConversions getPossibleConversions(final String unit, final String additionalUnit) {
+        return getPossibleConversions(unit, unitConversionModelService.find(additionalUnit));
+    }
+
+    @Override
     public PossibleUnitConversions getPossibleConversions(final String unit, final CustomRestriction customRestriction) {
         return getPossibleConversions(unit, unitConversionModelService.find(unit, customRestriction));
     }

@@ -23,7 +23,10 @@
  */
 package com.qcadoo.model.api.units;
 
+import com.qcadoo.model.api.Entity;
 import com.qcadoo.model.api.search.CustomRestriction;
+
+import java.util.List;
 
 /**
  * Unit conversion service
@@ -47,4 +50,5 @@ public interface UnitConversionService {
      */
     PossibleUnitConversions getPossibleConversions(final String unit, final CustomRestriction customRestriction);
 
+    PossibleUnitConversions getPossibleConversions(final String unit, final String additionalUnit);
 }
