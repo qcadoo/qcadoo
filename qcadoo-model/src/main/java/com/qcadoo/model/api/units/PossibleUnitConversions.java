@@ -55,12 +55,12 @@ public interface PossibleUnitConversions {
     /**
      * @param value
      * @param unitTo
-     * @param roundMode
+     * @param roundingMode
      * @return value in specified unit
      * @throws UnsupportedUnitConversionException
      *             if conversion is not defined
      */
-    BigDecimal convertTo(final BigDecimal value, final String unitTo, final int roundMode);
+    BigDecimal convertTo(final BigDecimal value, final String unitTo, final int roundingMode);
 
     /**
      * @return true if there is no available conversions matching source unit (source unit can be obtained using

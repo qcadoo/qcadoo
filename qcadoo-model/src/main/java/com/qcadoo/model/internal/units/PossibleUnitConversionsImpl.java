@@ -35,10 +35,8 @@ import com.qcadoo.model.api.units.UnsupportedUnitConversionException;
 import com.qcadoo.model.constants.UnitConversionItemFields;
 
 import java.math.BigDecimal;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.math.RoundingMode;
+import java.util.*;
 
 public final class PossibleUnitConversionsImpl implements InternalPossibleUnitConversions {
 
@@ -55,7 +53,7 @@ public final class PossibleUnitConversionsImpl implements InternalPossibleUnitCo
     private final DictionaryService dictionaryService;
 
     public PossibleUnitConversionsImpl(final String unitFrom, final NumberService numberService,
-            final DataDefinition unitConversionItemDD, DictionaryService dictionaryService) {
+                                       final DataDefinition unitConversionItemDD, DictionaryService dictionaryService) {
         Preconditions.checkNotNull(unitFrom);
         Preconditions.checkNotNull(numberService);
         Preconditions.checkNotNull(unitConversionItemDD);
@@ -72,7 +70,9 @@ public final class PossibleUnitConversionsImpl implements InternalPossibleUnitCo
     @Override
     public void addConversion(final UnitConversion unitConversion) {
         Preconditions.checkArgument(unitFrom.equals(unitConversion.getUnitFrom()), "Wrong source unit!");
+
         final String unit = unitConversion.getUnitTo();
+
         if (!isDefinedFor(unit)) {
             targetUnitToFactor.put(unitConversion.getUnitTo(), unitConversion.getRatio());
         }
@@ -96,11 +96,15 @@ public final class PossibleUnitConversionsImpl implements InternalPossibleUnitCo
     @Override
     public BigDecimal convertTo(final BigDecimal quantityFrom, final String unitTo) {
         final BigDecimal ratio = targetUnitToFactor.get(unitTo);
-        if (ratio == null) {
+
+        if (Objects.isNull(ratio)) {
             throw new UnsupportedUnitConversionException(unitFrom, unitTo);
         }
+
         BigDecimal convertedValue = quantityFrom.multiply(ratio);
+
         boolean unitIsInteger = targetUnitToIsInteger.computeIfAbsent(unitTo, dictionaryService::checkIfUnitIsInteger);
+
         if (unitIsInteger) {
             return numberService.setScaleWithDefaultMathContext(numberService.setScaleWithDefaultMathContext(convertedValue, 0));
         } else {
@@ -109,17 +113,21 @@ public final class PossibleUnitConversionsImpl implements InternalPossibleUnitCo
     }
 
     @Override
-    public BigDecimal convertTo(BigDecimal quantityFrom, String unitTo, int roundMode) {
+    public BigDecimal convertTo(final BigDecimal quantityFrom, final String unitTo, final int roundingMode) {
         final BigDecimal ratio = targetUnitToFactor.get(unitTo);
-        if (ratio == null) {
+
+        if (Objects.isNull(ratio)) {
             throw new UnsupportedUnitConversionException(unitFrom, unitTo);
         }
+
         BigDecimal convertedValue = quantityFrom.multiply(ratio);
+
         boolean unitIsInteger = targetUnitToIsInteger.computeIfAbsent(unitTo, dictionaryService::checkIfUnitIsInteger);
+
         if (unitIsInteger) {
-            return numberService.setScaleWithDefaultMathContext(numberService.setScaleWithDefaultMathContext(convertedValue, 0));
+            return numberService.setScaleWithDefaultMathContext(convertedValue.setScale(0, RoundingMode.valueOf(roundingMode)));
         } else {
-            return convertedValue.setScale(NumberService.DEFAULT_MAX_FRACTION_DIGITS_IN_DECIMAL, roundMode);
+            return numberService.setScaleWithDefaultMathContext(convertedValue.setScale(NumberService.DEFAULT_MAX_FRACTION_DIGITS_IN_DECIMAL, RoundingMode.valueOf(roundingMode)));
         }
     }
 
@@ -136,27 +144,33 @@ public final class PossibleUnitConversionsImpl implements InternalPossibleUnitCo
     @Override
     public List<Entity> asEntities(final String ownerFieldName, final Entity ownerEntity) {
         final List<Entity> entities = Lists.newArrayList();
+
         for (final Map.Entry<String, BigDecimal> unitToFactorMapEntry : targetUnitToFactor.entrySet()) {
             final Entity entity = buildUnitConversionItem(unitToFactorMapEntry.getKey(), unitToFactorMapEntry.getValue(),
                     ownerEntity);
+
             entity.setField(ownerFieldName, ownerEntity);
+
             entities.add(entity);
         }
+
         return entities;
     }
 
     private Entity buildUnitConversionItem(final String unitTo, final BigDecimal ratio, final Entity ownerEntity) {
         final Entity unitConversionItem = unitConversionItemDD.create();
+
         unitConversionItem.setField(UnitConversionItemFields.UNIT_FROM, unitFrom);
         unitConversionItem.setField(UnitConversionItemFields.UNIT_TO, unitTo);
         unitConversionItem.setField(UnitConversionItemFields.QUANTITY_FROM, numberService.setScaleWithDefaultMathContext(BigDecimal.ONE));
-        unitConversionItem.setField(UnitConversionItemFields.QUANTITY_TO,
-                calculateQuantityTo(unitFrom, unitTo, ratio, ownerEntity));
+        unitConversionItem.setField(UnitConversionItemFields.QUANTITY_TO, calculateQuantityTo(unitFrom, unitTo, ratio, ownerEntity));
+
         return unitConversionItem;
     }
 
     private BigDecimal calculateQuantityTo(final String unitFrom, final String unitTo, final BigDecimal ratio,
-            final Entity ownerEntity) {
+                                           final Entity ownerEntity) {
         return numberService.setScaleWithDefaultMathContext(BigDecimal.ONE.multiply(ratio));
     }
+
 }
