@@ -60,7 +60,7 @@ public final class IntegerType extends AbstractFieldType implements DefaultValid
         try {
             return ValueAndError.withoutError(Integer.parseInt(String.valueOf(value)));
         } catch (NumberFormatException e) {
-            return ValueAndError.withError("qcadooView.validate.field.error.invalidNumericFormat");
+            return ValueAndError.withError("qcadooView.validate.field.error.invalidIntegerFormat");
         }
     }
 
