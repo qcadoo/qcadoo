@@ -40,7 +40,6 @@ import com.qcadoo.report.api.FontUtils;
 import com.qcadoo.report.api.FooterResolver;
 import com.qcadoo.report.api.pdf.PdfHelper;
 import com.qcadoo.report.api.pdf.PdfPageNumbering;
-import com.qcadoo.security.api.SecurityRolesService;
 import com.qcadoo.view.api.ViewDefinitionState;
 import com.qcadoo.view.api.components.GridComponent;
 import com.qcadoo.view.api.crud.CrudService;
@@ -82,9 +81,6 @@ public class ExportToPdfController {
     private TranslationService translationService;
 
     @Autowired
-    private SecurityRolesService securityRolesService;
-
-    @Autowired
     private PdfHelper pdfHelper;
 
     @Autowired
@@ -115,8 +111,7 @@ public class ExportToPdfController {
             }
 
             Document document = new Document(PageSize.A4.rotate());
-            String date = DateFormat.getDateInstance().format(new Date());
-            File file = fileService.createExportFile("export_" + grid.getName() + "_" + date + ".pdf");
+            File file = getExportFile(grid, viewName);
 
             FileOutputStream fileOutputStream = new FileOutputStream(file);
             PdfWriter pdfWriter = PdfWriter.getInstance(document, fileOutputStream);
@@ -167,6 +162,11 @@ public class ExportToPdfController {
         }
     }
 
+    private File getExportFile(final GridComponent grid, final String viewName) {
+        String date = DateFormat.getDateInstance().format(new Date());
+        return fileService.createExportFile("export_" + grid.getName() + "_" + date + ".pdf");
+    }
+
     private List<String> getColumns(final GridComponent grid) {
         return exportToFileColumnsHelper.getColumns(grid, ExportToPdfColumns.class);
     }
@@ -187,11 +187,7 @@ public class ExportToPdfController {
 
     private void addPdfTableCells(final PdfPTable pdfTable, final List<Map<String, String>> rows, final List<String> columns,
             final String viewName) {
-        rows.forEach(row -> {
-            columns.forEach(column -> {
-                pdfTable.addCell(new Phrase(row.get(column), FontUtils.getDejavuRegular7Dark()));
-            });
-        });
+        rows.forEach(row -> columns.forEach(column -> pdfTable.addCell(new Phrase(row.get(column), FontUtils.getDejavuRegular7Dark()))));
     }
 
     private void changeMaxResults(final JSONObject json) throws JSONException {
