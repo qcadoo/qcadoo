@@ -200,6 +200,10 @@ public class FileServiceImpl implements FileService {
     }
 
     public File getFileFromFilenameWithRandomDirectory(final String filename) {
+        return getFileFromFilenameWithRandomDirectory(filename, true);
+    }
+
+    public File getFileFromFilenameWithRandomDirectory(final String filename, final boolean withDate) {
         String date = Long.toString(System.currentTimeMillis());
 
         File directory = new File(uploadDirectory, MultiTenantUtil.getCurrentTenantId() + File.separator
@@ -207,7 +211,11 @@ public class FileServiceImpl implements FileService {
 
         directory.mkdirs();
 
-        return new File(directory, date + "_" + getNormalizedFileName(filename));
+        if (withDate) {
+            return new File(directory, date + "_" + getNormalizedFileName(filename));
+        } else {
+            return new File(directory, getNormalizedFileName(filename));
+        }
     }
 
     private String getNormalizedFileName(final String filename) {
@@ -232,7 +240,8 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public Entity updateReportFileName(final Entity entity, final String dateFieldName, final String name, final String... args) {
+    public Entity updateReportFileName(final Entity entity, final String dateFieldName, final String name,
+                                       final String... args) {
         String currentFiles = entity.getStringField("fileName");
 
         if (currentFiles == null) {
