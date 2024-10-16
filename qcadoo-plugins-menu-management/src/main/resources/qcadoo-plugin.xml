@@ -26,18 +26,16 @@
 -->
 <plugin plugin="qcadooMenu" group="framework" version="${qcadoo.plugin.version}"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schema.qcadoo.org/plugin"
-	xmlns:model="http://schema.qcadoo.org/modules/model" xmlns:view="http://schema.qcadoo.org/modules/view"
+	xmlns:view="http://schema.qcadoo.org/modules/view" xmlns:security="http://schema.qcadoo.org/modules/security"
 	xmlns:menu="http://schema.qcadoo.org/modules/menu" xmlns:localization="http://schema.qcadoo.org/modules/localization"
 	xsi:schemaLocation="
 		http://schema.qcadoo.org/plugin 
 		http://schema.qcadoo.org/plugin.xsd 
-		http://schema.qcadoo.org/modules/model 
-		http://schema.qcadoo.org/modules/model.xsd 
-		http://schema.qcadoo.org/modules/view 
+		http://schema.qcadoo.org/modules/view
 		http://schema.qcadoo.org/modules/view.xsd 
 		http://schema.qcadoo.org/modules/localization 
-		http://schema.qcadoo.org/modules/localization.xsd 
-		http://schema.qcadoo.org/modules/menu 
+		http://schema.qcadoo.org/modules/localization.xsd
+		http://schema.qcadoo.org/modules/menu
 		http://schema.qcadoo.org/modules/menu.xsd">
 
 	<information>
@@ -59,9 +57,10 @@
 
 	<modules>
 		<localization:translation path="locales" />
+		<security:role identifier="ROLE_MENU_VIEW"/>
 
 		<menu:menu-item name="menu" category="administration"
-			view="menuCategoriesList" />
+			view="menuCategoriesList" defaultAuthorizationRole="ROLE_MENU_VIEW"/>
 
 		<view:view resource="view/menuCategoriesList.xml" />
 		<view:view resource="view/menuCategoryDetails.xml" />
