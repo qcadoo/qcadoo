@@ -27,7 +27,7 @@
 <view xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schema.qcadoo.org/view"
 	  xsi:schemaLocation="http://schema.qcadoo.org/view http://schema.qcadoo.org/view.xsd"
 	  name="menuViewDefinitionItemDetails" modelPlugin="qcadooView" modelName="item"
-	  defaultAuthorizationRole="ROLE_ADMIN">
+	  defaultAuthorizationRole="ROLE_MENU_VIEW">
 
 	<component type="window" name="window" reference="window">
 
