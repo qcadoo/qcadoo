@@ -2,7 +2,8 @@ package com.qcadoo.security.constants;
 
 public enum PermissionType {
 
-    SUPER_ADMIN("01superAdmin"), OFFICE_LICENSE("02officeLicense"), TERMINAL_LICENSE("03terminalLicense"), LACK_OF_ACCESS("04lackOfAccess");
+    SUPER_ADMIN("01superAdmin"), OFFICE_LICENSE("02officeLicense"), APS_LICENSE("03APSLicense"), WMS_MOBILE_LICENSE("04WMSMobileLicense"),
+    TERMINAL_LICENSE("05terminalLicense"), LACK_OF_ACCESS("06lackOfAccess");
 
     private final String value;
 
