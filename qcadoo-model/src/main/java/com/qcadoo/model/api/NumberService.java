@@ -41,7 +41,7 @@ public interface NumberService {
     int DEFAULT_MAX_FRACTION_DIGITS_IN_DECIMAL = 5;
 
     /**
-     * Default maximum number of fraction digits in decimal number
+     * Default minimum number of fraction digits in decimal number
      * 
      * @since 1.2.1
      */
