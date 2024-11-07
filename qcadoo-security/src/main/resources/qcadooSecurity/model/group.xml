@@ -35,7 +35,7 @@
         <manyToMany name="roles" joinField="groups"
                     model="role" copyable="true"/>
         <hasMany name="users" joinField="group" model="user"/>
-        <enum name="permissionType" required="true" values="01superAdmin,02officeLicense,04lackOfAccess"
+        <enum name="permissionType" required="true" values="01superAdmin,02officeLicense,03APSLicense,04WMSMobileLicense,06lackOfAccess"
               default="02officeLicense"/>
     </fields>
 
