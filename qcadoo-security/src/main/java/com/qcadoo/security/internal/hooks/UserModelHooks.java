@@ -29,6 +29,7 @@ import com.qcadoo.model.api.DataDefinition;
 import com.qcadoo.model.api.Entity;
 import com.qcadoo.security.api.SecurityService;
 import com.qcadoo.security.constants.GroupFields;
+import com.qcadoo.security.constants.QcadooSecurityConstants;
 import com.qcadoo.security.constants.UserFields;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -111,7 +112,7 @@ public class UserModelHooks {
         if (Objects.isNull(userId)) {
             user.setField(UserFields.GROUP_CHANGE_DATE, new Date());
         } else if (!userDD.get(userId).getBelongsToField(UserFields.GROUP).getStringField(GroupFields.PERMISSION_TYPE).equals(user.getBelongsToField(UserFields.GROUP).getStringField(GroupFields.PERMISSION_TYPE))) {
-            if (user.getDateField(UserFields.GROUP_CHANGE_DATE).toInstant().atZone(ZoneId.systemDefault()).toLocalDate().isAfter(LocalDate.now().minusDays(7))) {
+            if (!securityService.hasCurrentUserRole(QcadooSecurityConstants.ROLE_SUPERADMIN) && user.getDateField(UserFields.GROUP_CHANGE_DATE).toInstant().atZone(ZoneId.systemDefault()).toLocalDate().isAfter(LocalDate.now().minusDays(7))) {
                 user.addError(userDD.getField(UserFields.GROUP), "qcadooUsers.validate.global.error.forbiddenGroupChange");
 
                 return false;
@@ -134,7 +135,8 @@ public class UserModelHooks {
         }
     }
 
-    private void checkIfEmailNotificationShouldBeSent(final Entity oldUser, final Entity newUser, final String fieldName) {
+    private void checkIfEmailNotificationShouldBeSent(final Entity oldUser, final Entity newUser,
+                                                      final String fieldName) {
         boolean passwordMode = UserFields.PASSWORD.equals(fieldName);
 
         String oldString = oldUser.getStringField(fieldName);
