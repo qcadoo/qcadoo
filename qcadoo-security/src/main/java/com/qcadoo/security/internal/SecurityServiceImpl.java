@@ -331,12 +331,7 @@ public class SecurityServiceImpl implements InternalSecurityService, UserDetails
         checkNotNull(targetRoleIdentifier, L_TARGET_ROLE_IDENTIFIER_MUST_BE_GIVEN);
 
         Entity user = getUserEntity(getCurrentUserName());
-        Entity group = user.getBelongsToField(UserFields.GROUP);
-
-        return getGroupDD().find().createAlias(GroupFields.ROLES, GroupFields.ROLES, JoinType.LEFT)
-                .add(SearchRestrictions.eq("id", group.getId()))
-                .add(SearchRestrictions.eq(GroupFields.ROLES + "." + RoleFields.IDENTIFIER, targetRoleIdentifier))
-                .list().getTotalNumberOfEntities() > 0;
+        return hasRole(user, targetRoleIdentifier);
     }
 
     private DataDefinition getPersistentTokenDD() {
