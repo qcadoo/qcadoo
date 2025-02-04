@@ -31,8 +31,11 @@ import com.lowagie.text.pdf.PdfWriter;
 import com.qcadoo.report.api.FooterResolver;
 import com.qcadoo.report.api.ReportService;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Locale;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -78,11 +81,11 @@ public abstract class ReportPdfView extends AbstractPdfView {
                 "inline; filename=" + fileName.replaceAll(",", ".") + "." + ReportService.ReportType.PDF.getExtension());
     }
 
-    public void buildTestedPdfDocumentToFile(final Map<String, Object> model, final String filePath) {
-
+    public void buildPdfDocumentToFile(final Map<String, Object> model, File file) {
         try {
             Document document = newDocument();
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(filePath));
+
+            PdfWriter writer = PdfWriter.getInstance(document, Files.newOutputStream(file.toPath()));
             writer.setViewerPreferences(getViewerPreferences());
             setPageEvent(writer);
 
@@ -93,7 +96,6 @@ public abstract class ReportPdfView extends AbstractPdfView {
             addContent(document, model, LocaleContextHolder.getLocale(), writer);
 
             document.close();
-
         } catch (DocumentException | IOException e) {
             throw new IllegalStateException(e.getMessage(), e);
         }
