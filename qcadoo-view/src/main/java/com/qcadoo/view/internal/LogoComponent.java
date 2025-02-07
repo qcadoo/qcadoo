@@ -1,9 +1,11 @@
 package com.qcadoo.view.internal;
 
+import com.qcadoo.view.constants.ApplicationProfile;
+import com.qcadoo.view.utils.ViewParametersAppender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.qcadoo.view.utils.ViewParametersAppender;
+import static com.qcadoo.view.constants.ApplicationProfile.*;
 
 @Component
 public class LogoComponent {
@@ -11,12 +13,6 @@ public class LogoComponent {
     private final static String L_DEFAULT_LOGO_BASE_PATH = "/qcadooView/public/css/core/images/login/new/";
 
     private final static String L_MENU_LOGO_BASE_PATH = "/qcadooView/public/css/core/menu/images-new/";
-
-    private final static String L_LOGO_NAME = "qcadoo-logo.png";
-
-    private final static String L_TEST_LOGO_NAME = "qcadoo-test-logo.png";
-
-    private final static String L_TEST_APPLICATION_PROFILE = "TEST";
 
     private ViewParametersAppender viewParametersAppender;
 
@@ -26,20 +22,35 @@ public class LogoComponent {
     }
 
     public String prepareDefaultLogoPath() {
-        return prepare(L_DEFAULT_LOGO_BASE_PATH);
-    }
+        StringBuilder logoBuilder = new StringBuilder(L_DEFAULT_LOGO_BASE_PATH);
 
-    public String prepareMenuLogoPath() {
-        return prepare(L_MENU_LOGO_BASE_PATH);
-    }
-
-    private String prepare(String path) {
-        StringBuilder logoBuilder = new StringBuilder(path);
-
-        if (L_TEST_APPLICATION_PROFILE.equals(viewParametersAppender.getApplicationProfile())) {
-            logoBuilder.append(L_TEST_LOGO_NAME);
+        if (parseString(viewParametersAppender.getApplicationProfile()) == TEST) {
+            logoBuilder.append(TEST.getLogo());
         } else {
-            logoBuilder.append(L_LOGO_NAME);
+            logoBuilder.append(MES.getLogo());
+        }
+
+        return logoBuilder.toString();
+    }
+
+    public String prepareMenuLogoPath(){
+        StringBuilder logoBuilder = new StringBuilder(LogoComponent.L_MENU_LOGO_BASE_PATH);
+
+        switch (ApplicationProfile.parseString(viewParametersAppender.getApplicationProfile())) {
+            case MES:
+                logoBuilder.append(MES.getLogo());
+                break;
+            case APS:
+                logoBuilder.append(APS.getLogo());
+                break;
+            case MES_APS:
+                logoBuilder.append(MES_APS.getLogo());
+                break;
+            case WMS:
+                logoBuilder.append(WMS.getLogo());
+                break;
+            default:
+                logoBuilder.append(TEST.getLogo());
         }
 
         return logoBuilder.toString();
