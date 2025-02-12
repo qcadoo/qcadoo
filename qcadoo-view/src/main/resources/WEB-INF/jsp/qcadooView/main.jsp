@@ -406,7 +406,7 @@
                 <div class="logoDropdownBoxToggle">
                     <div class="logo">
                         <img src="${logoPath}" class="logoDark" alt="qcadoo MES logo" onclick="windowController.goToDashboard()">
-                        <img src="/qcadooView/public/css/core/menu/images-new/qcadoo-white-logo.png" class="logoWhite" alt="qcadoo MES logo" onclick="windowController.goToDashboard()">
+                        <img src="${logoWhitePath}" class="logoWhite" alt="qcadoo MES logo" onclick="windowController.goToDashboard()">
                     </div>
                     <a href="#" class="arrow"">
                         <i></i>

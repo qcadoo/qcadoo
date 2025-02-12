@@ -27,7 +27,7 @@ import org.apache.commons.lang3.StringUtils;
 
 public enum ApplicationProfile {
 
-    MES("mes-logo.png"), APS( "aps-logo.png"), MES_APS( "mes-aps-logo.png"), WMS( "wms-logo.png"), TEST( "test-logo.png");
+    MES("mes-logo"), APS( "aps-logo"), MES_APS( "mes-aps-logo"), WMS( "wms-logo"), TEST( "test-logo");
 
     private final String logo;
 

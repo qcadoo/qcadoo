@@ -80,7 +80,7 @@
                     <div class="mt-3"></div>
                 </c:if>
 
-                <img class="logo mb-4" src="/qcadooView/public/css/core/images/login/new/qcadoo-logo.png" alt="Logo"/>
+                <img class="logo mb-4" src="${logoPath}" alt="Logo"/>
 
                 <div class="card">
                     <h5 class="card-header bg-secondary text-white">${translation["qcadooView.browserNotSupported.content"]}</h5>

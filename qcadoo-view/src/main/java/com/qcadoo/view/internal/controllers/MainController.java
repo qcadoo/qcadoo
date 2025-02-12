@@ -26,7 +26,7 @@ package com.qcadoo.view.internal.controllers;
 import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.security.api.SecurityService;
 import com.qcadoo.view.utils.ViewParametersAppender;
-import com.qcadoo.view.internal.LogoComponent;
+import com.qcadoo.view.api.LogoComponent;
 import com.qcadoo.view.internal.api.ViewDefinitionService;
 import com.qcadoo.view.internal.menu.MenuService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,8 +43,6 @@ import java.util.Map;
 
 @Controller
 public final class MainController {
-
-    private static final String LOGO_PATH = "logoPath";
 
     @Value("${dbNotificationsEnabled:true}")
     private boolean dbNotificationsEnabled;
@@ -97,7 +95,8 @@ public final class MainController {
         mav.addObject("systemNotificationsIntervalInSeconds", systemNotificationsIntervalInSeconds);
         mav.addObject("activityStreamEnabled", activityStreamEnabled);
         mav.addObject("activityStreamIntervalInSeconds", activityStreamIntervalInSeconds);
-        mav.addObject("logoPath", logoComponent.prepareMenuLogoPath());
+        mav.addObject("logoPath", logoComponent.prepareMenuLogoPath(false));
+        mav.addObject("logoWhitePath", logoComponent.prepareMenuLogoPath(true));
 
         return mav;
     }

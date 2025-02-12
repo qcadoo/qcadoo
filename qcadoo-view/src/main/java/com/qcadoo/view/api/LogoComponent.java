@@ -1,4 +1,4 @@
-package com.qcadoo.view.internal;
+package com.qcadoo.view.api;
 
 import com.qcadoo.view.constants.ApplicationProfile;
 import com.qcadoo.view.utils.ViewParametersAppender;
@@ -30,10 +30,11 @@ public class LogoComponent {
             logoBuilder.append(MES.getLogo());
         }
 
+        logoBuilder.append(".png");
         return logoBuilder.toString();
     }
 
-    public String prepareMenuLogoPath(){
+    public String prepareMenuLogoPath(boolean white) {
         StringBuilder logoBuilder = new StringBuilder(LogoComponent.L_MENU_LOGO_BASE_PATH);
 
         switch (ApplicationProfile.parseString(viewParametersAppender.getApplicationProfile())) {
@@ -53,6 +54,10 @@ public class LogoComponent {
                 logoBuilder.append(TEST.getLogo());
         }
 
+        if (white) {
+            logoBuilder.append("-white");
+        }
+        logoBuilder.append(".png");
         return logoBuilder.toString();
     }
 
