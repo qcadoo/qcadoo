@@ -27,7 +27,7 @@ import com.qcadoo.localization.api.TranslationService;
 import com.qcadoo.mail.api.InvalidMailAddressException;
 import com.qcadoo.security.api.PasswordReminderService;
 import com.qcadoo.view.utils.ViewParametersAppender;
-import com.qcadoo.view.internal.LogoComponent;
+import com.qcadoo.view.api.LogoComponent;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
