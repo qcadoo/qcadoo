@@ -59,11 +59,12 @@
 
 	<modules>
 		<security:role identifier="ROLE_USERS_EDIT"/>
+		<security:role identifier="ROLE_USERS_VIEW"/>
 
 		<localization:translation path="locales" />
 
 		<menu:menu-item name="users" category="administration"
-			view="usersList" />
+			view="usersList" defaultAuthorizationRole="ROLE_USERS_VIEW"/>
 		<menu:menu-item-url name="profile" category="administration"
 			url="/userProfile.html" defaultAuthorizationRole="ROLE_HOME_PROFILE"/>
 			
