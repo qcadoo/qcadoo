@@ -18,7 +18,7 @@ public abstract class AbstractXLSXView extends AbstractView {
     /** The extension to look for existing templates */
     protected static final String EXTENSION = ".xlsx";
 
-    private static final String CREATOR = "qcadoo MES";
+    private static final String CREATOR = "qcadoo";
 
     private String url;
 
