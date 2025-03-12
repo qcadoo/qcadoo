@@ -32,6 +32,9 @@ public final class Constants {
 
     public static final String XSL = "com/qcadoo/model/model.xsl";
 
+    // add this file to support mysql database
+    public static final String XSL_MYSQL = "com/qcadoo/model/model-mysql.xsl";
+
     public static final String XSL_ORACLE_10G = "com/qcadoo/model/model-ora10g.xsl";
 
     public static final String XSD = "com/qcadoo/model/model.xsd";
