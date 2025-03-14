@@ -30,27 +30,23 @@ import com.lowagie.text.pdf.PdfDestination;
 import com.lowagie.text.pdf.PdfWriter;
 import com.qcadoo.report.api.FooterResolver;
 import com.qcadoo.report.api.ReportService;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Locale;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.web.servlet.view.document.AbstractPdfView;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * Abstract superclass for report PDF views, using Bruno Lowagie's
  * <a href="http://www.lowagie.com/iText">iText</a> package.
  * Application-specific view classes will extend this class. The view will be
  * held in the subclass itself, not in a template.
- *
  */
 public abstract class ReportPdfView extends AbstractPdfView {
 
@@ -62,7 +58,7 @@ public abstract class ReportPdfView extends AbstractPdfView {
 
     @Override
     protected void buildPdfDocument(final Map<String, Object> model, final Document document, final PdfWriter writer,
-            final HttpServletRequest request, final HttpServletResponse response) {
+                                    final HttpServletRequest request, final HttpServletResponse response) {
         String fileName;
 
         try {
@@ -111,14 +107,16 @@ public abstract class ReportPdfView extends AbstractPdfView {
     }
 
     @Override
-    protected void prepareWriter(final Map<String, Object> model, final PdfWriter writer, final HttpServletRequest request)
+    protected void prepareWriter(final Map<String, Object> model, final PdfWriter writer,
+                                 final HttpServletRequest request)
             throws DocumentException {
         super.prepareWriter(model, writer, request);
 
         setPageEvent(writer);
     }
 
-    protected void prepareCoustomWriter(final Map<String, Object> model, final PdfWriter writer, final HttpServletRequest request)
+    protected void prepareCoustomWriter(final Map<String, Object> model, final PdfWriter writer,
+                                        final HttpServletRequest request)
             throws DocumentException {
         super.prepareWriter(model, writer, request);
     }
@@ -130,14 +128,14 @@ public abstract class ReportPdfView extends AbstractPdfView {
 
     @Override
     protected final void buildPdfMetadata(final Map<String, Object> model, final Document document,
-            final HttpServletRequest request) {
+                                          final HttpServletRequest request) {
         addTitle(document, LocaleContextHolder.getLocale());
 
         pdfHelper.addMetaData(document);
     }
 
     protected abstract String addContent(final Document document, final Map<String, Object> model, final Locale locale,
-            final PdfWriter writer) throws DocumentException, IOException;
+                                         final PdfWriter writer) throws DocumentException, IOException;
 
     protected abstract void addTitle(final Document document, final Locale locale);
 
