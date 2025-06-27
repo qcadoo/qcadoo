@@ -26,6 +26,7 @@ public class CustomCsrfRequestMatcher implements RequestMatcher {
             new AntPathRequestMatcher("/rest/operationalTasksGantt/**"),
             new AntPathRequestMatcher("/rest/cmms/**"),
             new AntPathRequestMatcher("/wms/**"),
+            new AntPathRequestMatcher("/passwordReset**"),
             new AntPathRequestMatcher("/rest/planner/**"),
             new AntPathRequestMatcher("/rest/workstationsWChart/**"),
             new AntPathRequestMatcher("/rest/activityStream/markAsViewed")
