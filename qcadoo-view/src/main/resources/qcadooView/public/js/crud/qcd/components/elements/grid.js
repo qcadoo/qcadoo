@@ -838,7 +838,7 @@ QCD.components.elements.Grid = function (element, mainController) {
                 if(val === false){
                     totalSum = false;
                     break;
-                } else if (val.indexOf("gridLink") > 0) {
+                } else if (val.indexOf("gridLink") > 0 || val.indexOf("green-cell") > 0) {
                     val = $(val).text();
                 }
                 if(locale === "pl_PL" || locale === "pl"){
@@ -876,7 +876,7 @@ QCD.components.elements.Grid = function (element, mainController) {
                 if (val === false) {
                     totalSum = false;
                     break;
-                } else if (val.indexOf("gridLink") > 0) {
+                } else if (val.indexOf("gridLink") > 0 || val.indexOf("green-cell") > 0) {
                     val = $(val).text();
                 }
                 if (locale === "pl_PL" || locale === "pl") {
@@ -944,7 +944,7 @@ QCD.components.elements.Grid = function (element, mainController) {
                 if(val === false){
                     totalSum = false;
                     break;
-                } else if (val.indexOf("gridLink") > 0) {
+                } else if (val.indexOf("gridLink") > 0 || val.indexOf("green-cell") > 0) {
                     val = $(val).text();
                 }
                 totalSum += toSeconds(val);
@@ -970,7 +970,7 @@ QCD.components.elements.Grid = function (element, mainController) {
                   if(val === false){
                     totalSum = false;
                     break;
-                  } else if (val.indexOf("gridLink") > 0) {
+                  } else if (val.indexOf("gridLink") > 0 || val.indexOf("green-cell") > 0) {
                     val = $(val).text();
                   }
                   totalSum += toSeconds(val);
