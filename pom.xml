@@ -11,7 +11,7 @@
 
 	<groupId>com.qcadoo</groupId>
 	<artifactId>qcadoo</artifactId>
-	<version>1.5-SNAPSHOT</version>
+	<version>1.5-SNAPSHOT-DEV</version>
 	<packaging>pom</packaging>
 
 	<modules>
