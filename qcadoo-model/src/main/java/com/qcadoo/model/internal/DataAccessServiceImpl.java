@@ -1099,11 +1099,12 @@ public class DataAccessServiceImpl implements DataAccessService {
 
     private String errorDetails(Entity errorEntity) {
         StringBuilder sb = new StringBuilder();
+        sb.append("\n");
         for (ErrorMessage error : errorEntity.getGlobalErrors()) {
-            sb.append("<br />").append(translationService.translate(error.getMessage(), LocaleContextHolder.getLocale(), error.getVars()));
+            sb.append("- ").append(translationService.translate(error.getMessage(), LocaleContextHolder.getLocale(), error.getVars())).append("\n");
         }
         for (Map.Entry<String, ErrorMessage> error : errorEntity.getErrors().entrySet()) {
-            sb.append("<br />").append(translationService.translate(error.getValue().getMessage(), LocaleContextHolder.getLocale(), error.getValue().getVars()));
+            sb.append("- ").append(translationService.translate(error.getValue().getMessage(), LocaleContextHolder.getLocale(), error.getValue().getVars())).append("\n");
         }
         
         return sb.toString();
