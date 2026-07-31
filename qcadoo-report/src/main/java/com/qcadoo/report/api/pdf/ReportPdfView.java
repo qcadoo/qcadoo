@@ -67,9 +67,7 @@ public abstract class ReportPdfView extends AbstractPdfView {
             writer.setOpenAction(ac);
 
             fileName = addContent(document, model, LocaleContextHolder.getLocale(), writer);
-        } catch (DocumentException e) {
-            throw new IllegalStateException(e.getMessage(), e);
-        } catch (IOException e) {
+        } catch (DocumentException | IOException e) {
             throw new IllegalStateException(e.getMessage(), e);
         }
 
