@@ -262,3 +262,16 @@ input.editor-checkbox {
     border-right-color: silver;
     border-right-style: solid;
 }
+
+/* Style the slick grid hyperlink */
+.slick-blue-link {
+    color: #0066cc !important;
+    text-decoration: underline !important;
+    cursor: pointer;
+}
+
+/* Optional hover state */
+.slick-blue-link:hover {
+    color: #0033aa !important;
+    text-decoration: none !important;
+}
