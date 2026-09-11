@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>com.qcadoo</groupId>
 		<artifactId>qcadoo</artifactId>
-		<version>1.5-SNAPSHOT</version>
+		<version>1.5-SNAPSHOT-DEV</version>
 	</parent>
 
 	<artifactId>qcadoo-view</artifactId>
@@ -17,22 +17,22 @@
 		<dependency>
 			<groupId>com.qcadoo</groupId>
 			<artifactId>qcadoo-localization</artifactId>
-			<version>1.5-SNAPSHOT</version>
+			<version>1.5-SNAPSHOT-DEV</version>
 		</dependency>
 		<dependency>
 			<groupId>com.qcadoo</groupId>
 			<artifactId>qcadoo-model</artifactId>
-			<version>1.5-SNAPSHOT</version>
+			<version>1.5-SNAPSHOT-DEV</version>
 		</dependency>
 		<dependency>
 			<groupId>com.qcadoo</groupId>
 			<artifactId>qcadoo-security</artifactId>
-			<version>1.5-SNAPSHOT</version>
+			<version>1.5-SNAPSHOT-DEV</version>
 		</dependency>
         <dependency>
             <groupId>com.qcadoo</groupId>
             <artifactId>qcadoo-testing</artifactId>
-            <version>1.5-SNAPSHOT</version>
+            <version>1.5-SNAPSHOT-DEV</version>
             <scope>test</scope>
         </dependency>
 		<dependency>
