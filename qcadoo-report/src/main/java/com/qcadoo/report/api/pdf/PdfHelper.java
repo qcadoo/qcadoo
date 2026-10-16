@@ -118,6 +118,9 @@ public interface PdfHelper {
     void addTableCellAsTable(final PdfPTable table, final String label, final Object fieldValue, final Font headerFont,
             final Font valueFont, final int columns);
 
+    void addTableCellAsTable(final PdfPTable table, final String label, final Object fieldValue, final Font headerFont,
+                             final Font valueFont, final int[] columnWidths);
+
     /**
      * Add cell with table to current table.
      * 
