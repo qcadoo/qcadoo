@@ -68,9 +68,8 @@ public class MailServiceImpl implements MailService {
         Preconditions.checkArgument(StringUtils.isNotBlank(subject), "e-mail subject should not be blank");
         Preconditions.checkArgument(StringUtils.isNotBlank(body), "e-mail body should not be blank");
 
-        ((JavaMailSenderImpl) mailSender).setDefaultEncoding("utf-8");
         MimeMessage mimeMessage = mailSender.createMimeMessage();
-        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage);
+        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, "utf-8");
 
         try {
             mimeMessageHelper.setFrom(sender);
