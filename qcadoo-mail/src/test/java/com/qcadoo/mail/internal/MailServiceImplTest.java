@@ -81,8 +81,8 @@ public class MailServiceImplTest {
         verify(mailSender, Mockito.times(1)).send(mailMessageCaptor.capture());
         verify(mimeMessage).setFrom(new InternetAddress(DEFAULT_SENDER));
         verify(mimeMessage).setRecipient(Message.RecipientType.TO, new InternetAddress(DEFAULT_RECIPIENT));
-        verify(mimeMessage).setSubject(DEFAULT_SUBJECT);
-        verify(mimeMessage).setContent(DEFAULT_BODY, "text/html");
+        verify(mimeMessage).setSubject(DEFAULT_SUBJECT, "utf-8");
+        verify(mimeMessage).setContent(DEFAULT_BODY, "text/html;charset=utf-8");
     }
 
     @Test(expected = MailConfigurationException.class)
