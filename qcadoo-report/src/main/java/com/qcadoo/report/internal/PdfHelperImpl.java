@@ -210,6 +210,12 @@ public final class PdfHelperImpl implements PdfHelper {
     }
 
     @Override
+    public void addTableCellAsTable(final PdfPTable table, final String label, final Object fieldValue, final Font headerFont,
+                                    final Font valueFont, final int[] columnWidths) {
+        addTableCellAsTable(table, label, fieldValue, "-", headerFont, valueFont, columnWidths.length, columnWidths);
+    }
+
+    @Override
     public void addTableCellAsTable(final PdfPTable table, final String label, final Object fieldValue, final String nullValue,
             final Font headerFont, final Font valueFont, final int columns) {
         addTableCellAsTable(table, label, fieldValue, nullValue, headerFont, valueFont, columns, new int[] {});
