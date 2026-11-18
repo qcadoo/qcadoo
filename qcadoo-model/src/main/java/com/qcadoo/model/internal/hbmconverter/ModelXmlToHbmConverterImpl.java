@@ -80,6 +80,10 @@ public class ModelXmlToHbmConverterImpl implements ModelXmlToHbmConverter {
         if (hibernateDialect != null && "org.hibernate.dialect.Oracle10gDialect".equalsIgnoreCase(hibernateDialect.trim())) {
             xslFileName = Constants.XSL_ORACLE_10G;
         }
+        // if using mysql database
+        if (hibernateDialect != null && hibernateDialect.toLowerCase().indexOf("mysql") > 0 ){
+            xslFileName = Constants.XSL_MYSQL;
+        }
         return new ClassPathResource(xslFileName);
     }
 
